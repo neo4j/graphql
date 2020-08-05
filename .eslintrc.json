@@ -1,0 +1,286 @@
+{
+    "root": true,
+    "env": {
+        "node": true,
+        "es6": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier/@typescript-eslint",
+        "plugin:prettier/recommended",
+        "plugin:jest/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "plugins": ["@typescript-eslint/eslint-plugin"],
+    "overrides": [
+        {
+            "files": ["**/*.js"],
+            "rules": {
+                "@typescript-eslint/no-var-requires": "off"
+            }
+        },
+        {
+            "files": ["**/*.ts"],
+            "rules": {
+                "@typescript-eslint/no-use-before-define": [
+                    "error",
+                    {
+                        "classes": false,
+                        "functions": false
+                    }
+                ]
+            }
+        },
+        {
+            "files": ["packages/**/graphql.schema.ts"],
+            "rules": {
+                "@typescript-eslint/interface-name-prefix": "off"
+            }
+        },
+        {
+            "files": ["packages/cli/src/commands/**/*.test.ts", "packages/cli/src/**/*.e2e.ts"],
+            "rules": {
+                "jest/no-standalone-expect": ["off"]
+            }
+        },
+        {
+            "files": ["packages/web/**/*.e2e.ts", "packages/electron/**/*.e2e.ts"],
+            "rules": {
+                "jest/expect-expect": ["off"]
+            }
+        },
+        {
+            "files": ["packages/types/src/**/*.ts"],
+            "rules": {
+                "@typescript-eslint/ban-ts-ignore": ["off"]
+            }
+        }
+    ],
+    "rules": {
+        "@typescript-eslint/interface-name-prefix": ["error", "always"],
+        "@typescript-eslint/no-unused-vars": ["error", { "args": "none" }],
+        "array-bracket-spacing": ["error", "never"],
+        "array-callback-return": "error",
+        "arrow-body-style": "off",
+        "arrow-parens": ["error", "always"],
+        "arrow-spacing": "error",
+        "block-scoped-var": "error",
+        "block-spacing": ["error", "always"],
+        "brace-style": "error",
+        "camelcase": "error",
+        "comma-dangle": ["error", "always-multiline"],
+        "comma-style": ["error", "last"],
+        "complexity": ["warn", 10],
+        "computed-property-spacing": "error",
+        "consistent-return": "error",
+        "consistent-this": ["error", "self"],
+        "constructor-super": "error",
+        "curly": ["error", "all"],
+        "default-case": "error",
+        "default-param-last": "warn",
+        "dot-location": ["error", "property"],
+        "dot-notation": "error",
+        "eol-last": "error",
+        "eqeqeq": "error",
+        "func-call-spacing": "error",
+        "func-names": "error",
+        "func-style": ["error", "declaration", { "allowArrowFunctions": true }],
+        "function-call-argument-newline": ["error", "consistent"],
+        "generator-star-spacing": "error",
+        "grouped-accessor-pairs": "warn",
+        "indent": ["error", 4, { "SwitchCase": 1 }],
+        "key-spacing": "error",
+        "keyword-spacing": "error",
+        "line-comment-position": "error",
+        "linebreak-style": "error",
+        "lines-around-comment": "warn",
+        "lines-between-class-members": "error",
+        "max-depth": "error",
+        "max-len": ["error", { "code": 120, "comments": 120, "ignoreUrls": true }],
+        "max-lines": ["warn", 500],
+        "max-lines-per-function": ["warn", 100],
+        "max-nested-callbacks": ["error", 5],
+        "max-params": ["warn", 4],
+        "max-statements": "warn",
+        "max-statements-per-line": "error",
+        "new-parens": "error",
+        "newline-per-chained-call": "error",
+        "no-alert": "error",
+        "no-array-constructor": "error",
+        "no-await-in-loop": "error",
+        "no-buffer-constructor": "error",
+        "no-caller": "error",
+        "no-confusing-arrow": "error",
+        "no-console": "error",
+        "no-constructor-return": "error",
+        "no-constant-condition": "error",
+        "no-debugger": "error",
+        "no-dupe-else-if": "error",
+        "no-duplicate-imports": "error",
+        "no-else-return": "error",
+        "no-empty-function": [
+            "error",
+            {
+                "allow": ["constructors"]
+            }
+        ],
+        "no-eq-null": "error",
+        "no-eval": "error",
+        "no-extend-native": "error",
+        "no-extra-bind": "error",
+        "no-extra-label": "error",
+        "no-floating-decimal": "error",
+        "no-implicit-coercion": "error",
+        "no-implicit-globals": "error",
+        "no-implied-eval": "error",
+        "no-import-assign": "error",
+        "no-invalid-this": "off",
+        "no-iterator": "error",
+        "no-labels": "error",
+        "no-lone-blocks": "error",
+        "no-lonely-if": "error",
+        "no-loop-func": "error",
+        "no-magic-numbers": "off",
+        "no-multi-assign": "error",
+        "no-multi-spaces": "error",
+        "no-multi-str": "error",
+        "no-multiple-empty-lines": "error",
+        "no-nested-ternary": "error",
+        "no-new": "error",
+        "no-new-func": "error",
+        "no-new-object": "error",
+        "no-new-wrappers": "error",
+        "no-octal-escape": "error",
+        "no-param-reassign": "error",
+        "no-path-concat": "error",
+        "no-plusplus": [
+            "error",
+            {
+                "allowForLoopAfterthoughts": true
+            }
+        ],
+        "no-proto": "error",
+        "no-restricted-globals": "error",
+        "no-restricted-syntax": [
+            "error",
+            {
+                "selector": "NewExpression[callee.name='TestDbmss']",
+                "message": "Do not use 'new TestDbmss()', use 'TestDbmss.init()' instead."
+            }
+        ],
+        "no-restricted-properties": [
+            "error",
+            {
+                "object": "fse",
+                "property": "rename",
+                "message": "Use fse.move instead"
+            },
+            {
+                "object": "fs",
+                "property": "rename",
+                "message": "Use fse.move instead"
+            },
+            {
+                "object": "flags",
+                "property": "credentials",
+                "message": "Use passwordPrompt instead"
+            },
+            {
+                "object": "flags",
+                "property": "password",
+                "message": "Use passwordPrompt instead"
+            }
+        ],
+        "no-return-assign": "error",
+        "no-return-await": "error",
+        "no-self-compare": "error",
+        "no-sequences": "error",
+        "no-setter-return": "error",
+        "no-shadow": "error",
+        "no-sync": "error",
+        "no-tabs": "error",
+        "no-template-curly-in-string": "error",
+        "no-trailing-spaces": "error",
+        "no-underscore-dangle": "error",
+        "no-unmodified-loop-condition": "error",
+        "no-unneeded-ternary": "error",
+        "no-unreachable": "error",
+        "no-unused-expressions": "error",
+        "no-use-before-define": [
+            "error",
+            {
+                "classes": false,
+                "functions": false
+            }
+        ],
+        "no-useless-call": "error",
+        "no-useless-computed-key": "error",
+        "no-useless-concat": "error",
+        "no-useless-rename": "error",
+        "no-useless-return": "error",
+        "no-var": "error",
+        "no-void": "error",
+        "no-whitespace-before-property": "error",
+        "object-curly-newline": "error",
+        "object-curly-spacing": "error",
+        "object-property-newline": "error",
+        "one-var": ["error", "never"],
+        "one-var-declaration-per-line": ["error", "always"],
+        "operator-assignment": "error",
+        "operator-linebreak": "error",
+        "padded-blocks": ["error", "never"],
+        "padding-line-between-statements": "error",
+        "prefer-arrow-callback": "error",
+        "prefer-const": "error",
+        "prefer-destructuring": [
+            "error",
+            {
+                "VariableDeclarator": {
+                    "array": true,
+                    "object": true
+                },
+                "AssignmentExpression": {
+                    "array": false,
+                    "object": false
+                }
+            }
+        ],
+        "prefer-numeric-literals": "error",
+        "prefer-promise-reject-errors": "error",
+        "prefer-rest-params": "error",
+        "prefer-spread": "error",
+        "prefer-template": "error",
+        "radix": "error",
+        "require-atomic-updates": "warn",
+        "require-await": "error",
+        "rest-spread-spacing": "error",
+        "semi": "error",
+        "semi-spacing": "error",
+        "semi-style": "error",
+        "sort-keys": "off",
+        "space-before-blocks": "error",
+        "space-before-function-paren": [
+            "error",
+            {
+                "anonymous": "always",
+                "asyncArrow": "always",
+                "named": "never"
+            }
+        ],
+        "space-in-parens": "error",
+        "space-infix-ops": "error",
+        "space-unary-ops": "error",
+        "spaced-comment": "error",
+        "switch-colon-spacing": "error",
+        "symbol-description": "error",
+        "template-curly-spacing": "error",
+        "template-tag-spacing": "error",
+        "yield-star-spacing": "error",
+        "yoda": "error"
+    }
+}
