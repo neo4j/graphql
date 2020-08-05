@@ -1,0 +1,37 @@
+{
+    "name": "graphql",
+    "author": "Neo4j Inc.",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/neo4j/graphql.git"
+    },
+    "private": true,
+    "scripts": {
+        "prettify": "prettier --write \"packages/**/*.ts\"",
+        "lint": "eslint . --ext .ts",
+        "test:teardown": "node scripts/tests/teardown.js",
+        "test:setup": "node scripts/tests/setup.js",
+        "lerna:test": "lerna run test --concurrency 1",
+        "test": "run-s --continue-on-error test:setup lerna:test test:teardown",
+        "test:pr": "run-s lint test",
+        "lerna:clean": "lerna clean -y",
+        "lerna:bootstrap": "lerna bootstrap",
+        "prepare": "run-s lerna:clean lerna:bootstrap",
+        "generate:docs": "lerna run generate:doc",
+        "watch": "lerna run watch --stream --parallel"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "3.8.0",
+        "@typescript-eslint/parser": "3.8.0",
+        "eslint": "7.6.0",
+        "eslint-config-prettier": "6.11.0",
+        "eslint-plugin-jest": "23.20.0",
+        "eslint-plugin-prettier": "3.1.4",
+        "husky": "4.2.5",
+        "lerna": "^3.22.1",
+        "lint-staged": "10.2.11",
+        "npm-run-all": "4.1.5",
+        "prettier": "2.0.5",
+        "typescript": "3.9.7"
+    }
+}
