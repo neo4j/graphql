@@ -1,5 +1,5 @@
 {
-    "name": "graphql",
+    "name": "neo4j-graphql",
     "author": "Neo4j Inc.",
     "repository": {
         "type": "git",
