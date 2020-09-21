@@ -23,5 +23,10 @@
         "rimraf": "3.0.2",
         "ts-jest": "26.1.4",
         "typescript": "3.9.7"
+    },
+    "dependencies": {
+        "graphql": "15.3.0",
+        "graphql-tag": "2.11.0",
+        "graphql-tools": "6.2.2"
     }
 }
