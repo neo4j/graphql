@@ -16,5 +16,6 @@
         "skipLibCheck": true,
         "declaration": true,
         "downlevelIteration": true
-    }
+    },
+    "exclude": ["node_modules", "**/*.test.ts"]
 }
