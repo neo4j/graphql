@@ -9,6 +9,7 @@
         "prepare": "npm run build:clean",
         "clean": "rimraf dist",
         "test": "jest",
+        "test:watch": "jest --watch",
         "build": "tsc",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",

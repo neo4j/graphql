@@ -5,11 +5,7 @@
         "prettier",
         "prettier/@typescript-eslint"
     ],
-    "plugins": [
-        "import",
-        "prettier",
-        "@typescript-eslint"
-    ],
+    "plugins": ["import", "prettier", "@typescript-eslint"],
     "env": {
         "node": true,
         "jest": true
@@ -19,9 +15,8 @@
         "project": "./tsconfig.json"
     },
     "rules": {
-        "@typescript-eslint/no-unused-vars": [
-            0
-        ],
+        "@typescript-eslint/no-use-before-define": "off",
+        "@typescript-eslint/no-unused-vars": [0],
         "prettier/prettier": [
             "error",
             {
@@ -35,20 +30,14 @@
                 "ts": "never"
             }
         ],
-        "import/prefer-default-export": [
-            0
-        ]
+        "import/prefer-default-export": [0]
     },
     "settings": {
         "import/resolver": {
             "node": {
-                "extensions": [
-                    ".ts"
-                ]
+                "extensions": [".ts"]
             }
         },
-        "import/extensions": [
-            ".ts"
-        ]
+        "import/extensions": [".ts"]
     }
 }
