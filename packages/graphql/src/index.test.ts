@@ -16,13 +16,13 @@ const movieSchema = gql`
 describe("cypherQuery", () => {
     test("simple query", async () => {
         const graphqlQuery = `{
-            Movie(title: "River Runs Through It, A") {
+            Movie {
                 title
               }
         }`;
 
-        const expectedCQuery = "MATCH (`movie`:`Movie` {title:$title}) RETURN `movie` { .title } AS `movie`";
-        const expectedCParams = { title: "River Runs Through It, A" };
+        const expectedCQuery = "MATCH (`movie`:`Movie`) RETURN `movie` { .title } AS `movie`";
+        const expectedCParams = {};
 
         const resolver = (_object: any, params: any, ctx: Context, resolveInfo: any) => {
             const [cQuery, cQueryParams] = cypherQuery(params, ctx, resolveInfo);
