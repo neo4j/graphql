@@ -89,4 +89,82 @@ describe("cypherQuery", () => {
 
         noGraphQLErrors(await graphql(augmentedSchema, graphqlQuery, null, null, {}));
     });
+
+    test("should return the correct cypher and parameters with a single concatenated argument", async () => {
+        const graphqlQuery = `{
+            Movie(title: "some title") {
+                id
+                title
+              }
+        }`;
+
+        const expectedCQuery = `
+            MATCH (\`movie\`:\`Movie\` { \`title\`:$title }) 
+            RETURN \`movie\` { .id, .title } AS \`movie\`
+        `;
+
+        const expectedCParams = {
+            title: "some title",
+        };
+
+        const resolver = (_object: any, params: any, ctx: Context, resolveInfo: any) => {
+            const [cQuery, cQueryParams] = cypherQuery(params, ctx, resolveInfo);
+
+            expect(trimmer(cQuery)).toEqual(trimmer(expectedCQuery));
+            expect(cQueryParams).toEqual(expectedCParams);
+        };
+
+        const resolvers = {
+            Query: {
+                Movie: resolver,
+            },
+        };
+
+        const augmentedSchema = makeExecutableSchema({
+            typeDefs: movieSchema,
+            resolvers,
+        });
+
+        noGraphQLErrors(await graphql(augmentedSchema, graphqlQuery, null, null, {}));
+    });
+
+    test("should return the correct cypher and parameters with a single variable argument", async () => {
+        const graphqlQuery = `
+            query($title: String){
+                Movie(title: $title) {
+                    id
+                    title
+                }
+            }
+        `;
+
+        const expectedCQuery = `
+            MATCH (\`movie\`:\`Movie\` { \`title\`:$title }) 
+            RETURN \`movie\` { .id, .title } AS \`movie\`
+        `;
+
+        const expectedCParams = {
+            title: "some title",
+        };
+
+        const resolver = (_object: any, params: any, ctx: Context, resolveInfo: any) => {
+            const [cQuery, cQueryParams] = cypherQuery(params, ctx, resolveInfo);
+
+            expect(trimmer(cQuery)).toEqual(trimmer(expectedCQuery));
+            expect(cQueryParams).toEqual(expectedCParams);
+        };
+
+        const resolvers = {
+            Query: {
+                Movie: resolver,
+            },
+        };
+
+        const augmentedSchema = makeExecutableSchema({
+            typeDefs: movieSchema,
+            resolvers,
+        });
+
+        noGraphQLErrors(await graphql(augmentedSchema, graphqlQuery, null, null, { title: "some title" }));
+    });
 });
