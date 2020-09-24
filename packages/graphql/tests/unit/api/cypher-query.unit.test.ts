@@ -28,8 +28,8 @@ describe("cypherQuery", () => {
         }`;
 
         const expectedCQuery = `
-            MATCH (\`Movie\`:\`Movie\`) 
-            RETURN \`Movie\` { .title } AS \`Movie\`
+            MATCH (\`movie\`:\`Movie\`) 
+            RETURN \`movie\` { .title } AS \`movie\`
         `;
 
         const expectedCParams = {};
@@ -64,8 +64,8 @@ describe("cypherQuery", () => {
         }`;
 
         const expectedCQuery = `
-            MATCH (\`Movie\`:\`Movie\`) 
-            RETURN \`Movie\` { .id, .title } AS \`Movie\`
+            MATCH (\`movie\`:\`Movie\`) 
+            RETURN \`movie\` { .id, .title } AS \`movie\`
         `;
 
         const expectedCParams = {};
@@ -100,8 +100,8 @@ describe("cypherQuery", () => {
         }`;
 
         const expectedCQuery = `
-            MATCH (\`Movie\`:\`Movie\` { \`title\`:$title }) 
-            RETURN \`Movie\` { .id, .title } AS \`Movie\`
+            MATCH (\`movie\`:\`Movie\` { \`title\`:$title }) 
+            RETURN \`movie\` { .id, .title } AS \`movie\`
         `;
 
         const expectedCParams = {
@@ -140,8 +140,8 @@ describe("cypherQuery", () => {
         `;
 
         const expectedCQuery = `
-            MATCH (\`Movie\`:\`Movie\` { \`title\`:$title }) 
-            RETURN \`Movie\` { .id, .title } AS \`Movie\`
+            MATCH (\`movie\`:\`Movie\` { \`title\`:$title }) 
+            RETURN \`movie\` { .id, .title } AS \`movie\`
         `;
 
         const expectedCParams = {
@@ -179,8 +179,8 @@ describe("cypherQuery", () => {
             }`;
 
             const expectedCQuery = `
-                MATCH (\`Movie\`:\`Movie\`) 
-                RETURN \`Movie\` { .id, .title } AS \`Movie\`
+                MATCH (\`movie\`:\`Movie\`) 
+                RETURN \`movie\` { .id, .title } AS \`movie\`
                 SKIP $skip
             `;
 
@@ -218,8 +218,8 @@ describe("cypherQuery", () => {
             }`;
 
             const expectedCQuery = `
-                MATCH (\`Movie\`:\`Movie\`) 
-                RETURN \`Movie\` { .id, .title } AS \`Movie\`
+                MATCH (\`movie\`:\`Movie\`) 
+                RETURN \`movie\` { .id, .title } AS \`movie\`
                 LIMIT $limit
             `;
 
@@ -257,8 +257,8 @@ describe("cypherQuery", () => {
             }`;
 
             const expectedCQuery = `
-                MATCH (\`Movie\`:\`Movie\`) 
-                RETURN \`Movie\` { .id, .title } AS \`Movie\`
+                MATCH (\`movie\`:\`Movie\`) 
+                RETURN \`movie\` { .id, .title } AS \`movie\`
                 SKIP $skip
                 LIMIT $limit
             `;
@@ -299,8 +299,8 @@ describe("cypherQuery", () => {
             }`;
 
             const expectedCQuery = `
-                MATCH (\`Movie\`:\`Movie\`) 
-                RETURN \`Movie\` { .id, .title } AS \`Movie\`
+                MATCH (\`movie\`:\`Movie\`) 
+                RETURN \`movie\` { .id, .title } AS \`movie\`
                 SKIP $skip
                 LIMIT $limit
             `;
@@ -341,8 +341,8 @@ describe("cypherQuery", () => {
             }`;
 
             const expectedCQuery = `
-                MATCH (\`Movie\`:\`Movie\` { \`title\`:$title }) 
-                RETURN \`Movie\` { .id, .title } AS \`Movie\`
+                MATCH (\`movie\`:\`Movie\` { \`title\`:$title }) 
+                RETURN \`movie\` { .id, .title } AS \`movie\`
                 SKIP $skip
                 LIMIT $limit
             `;

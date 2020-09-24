@@ -1,9 +1,7 @@
 import { GraphQLResolveInfo } from "graphql";
-import { getArguments, getSelections } from "../graphql";
-import { formatCypherProperties } from "../neo4j";
-
-const safe = (w: string) => w.replace(/\[/g, "").replace(/\]/g, "").replace(/!/g, "");
-const escape = (w: string) => `\`${w}\``;
+import { getArguments, getSelections, removeTypeMeta } from "../graphql";
+import { formatCypherProperties, escapeVar } from "../neo4j";
+import { lowFirstLetter } from "../utils";
 
 function cypherQuery(args: any, _context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
     const { returnType } = resolveInfo;
@@ -12,7 +10,8 @@ function cypherQuery(args: any, _context: any, resolveInfo: GraphQLResolveInfo):
     const selections = getSelections(resolveInfo);
     const queryArgs = getArguments(resolveInfo);
 
-    const safeName = escape(safe(typeName));
+    const escapedTypeName = escapeVar(removeTypeMeta(typeName));
+    const safeVar = escapeVar(lowFirstLetter(removeTypeMeta(typeName)));
 
     let cypherParams: { [k: string]: any } = {};
 
@@ -43,7 +42,7 @@ function cypherQuery(args: any, _context: any, resolveInfo: GraphQLResolveInfo):
                         ...allArgs.propertiesArgs,
                         [currentArg.name.value]: incomingArg,
                     },
-                    propertiesArr: allArgs.propertiesArr.concat(`${escape(argName)}:$${argName}`),
+                    propertiesArr: allArgs.propertiesArr.concat(`${escapeVar(argName)}:$${argName}`),
                 };
             },
             { propertiesArr: [], propertiesArgs: {} } as { propertiesArr: string[]; propertiesArgs: any }
@@ -76,8 +75,8 @@ function cypherQuery(args: any, _context: any, resolveInfo: GraphQLResolveInfo):
     }
 
     const query = `
-        MATCH (${safeName}:${safeName}${formatCypherProperties(properties.propertiesArr)})
-        RETURN ${safeName}${formatCypherProperties(projection)} AS ${safeName}
+        MATCH (${safeVar}:${escapedTypeName}${formatCypherProperties(properties.propertiesArr)})
+        RETURN ${safeVar}${formatCypherProperties(projection)} AS ${safeVar}
         ${skipStr || ""}
         ${limitStr || ""}
     `;

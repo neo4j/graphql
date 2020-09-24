@@ -4,6 +4,7 @@ import { GraphQLSchema, print, GraphQLResolveInfo } from "graphql";
 import { SchemaComposer } from "graphql-compose";
 import cypherQuery from "./cypher-query";
 import * as neo4j from "../neo4j";
+import { lowFirstLetter } from "../utils";
 
 interface Input {
     typeDefs: any;
@@ -58,7 +59,7 @@ function makeAugmentedSchema(input: Input): GraphQLSchema {
 
                         const result = await neo4j.query({ cypher, params, driver });
 
-                        return result.map((r) => r[definition.name.value]);
+                        return result.map((r) => r[lowFirstLetter(definition.name.value)]);
                     },
                     args: looseArgs,
                 },
