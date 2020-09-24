@@ -1,8 +1,9 @@
 import { graphql } from "graphql";
-import { makeExecutableSchema } from "graphql-tools";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import gql from "graphql-tag";
-import { cypherQuery, Context } from "./index";
-import { noGraphQLErrors } from "../../../scripts/tests/utils";
+import { describe, test, expect } from "@jest/globals";
+import cypherQuery from "../../../src/api/cypher-query";
+import { noGraphQLErrors } from "../../../../../scripts/tests/utils";
 
 const movieSchema = gql`
     type Movie {
@@ -27,13 +28,13 @@ describe("cypherQuery", () => {
         }`;
 
         const expectedCQuery = `
-            MATCH (\`movie\`:\`Movie\`) 
-            RETURN \`movie\` { .title } AS \`movie\`
+            MATCH (\`Movie\`:\`Movie\`) 
+            RETURN \`Movie\` { .title } AS \`Movie\`
         `;
 
         const expectedCParams = {};
 
-        const resolver = (_object: any, params: any, ctx: Context, resolveInfo: any) => {
+        const resolver = (_object: any, params: any, ctx: any, resolveInfo: any) => {
             const [cQuery, cQueryParams] = cypherQuery(params, ctx, resolveInfo);
 
             expect(trimmer(cQuery)).toEqual(trimmer(expectedCQuery));
@@ -63,13 +64,13 @@ describe("cypherQuery", () => {
         }`;
 
         const expectedCQuery = `
-            MATCH (\`movie\`:\`Movie\`) 
-            RETURN \`movie\` { .id, .title } AS \`movie\`
+            MATCH (\`Movie\`:\`Movie\`) 
+            RETURN \`Movie\` { .id, .title } AS \`Movie\`
         `;
 
         const expectedCParams = {};
 
-        const resolver = (_object: any, params: any, ctx: Context, resolveInfo: any) => {
+        const resolver = (_object: any, params: any, ctx: any, resolveInfo: any) => {
             const [cQuery, cQueryParams] = cypherQuery(params, ctx, resolveInfo);
 
             expect(trimmer(cQuery)).toEqual(trimmer(expectedCQuery));
@@ -99,15 +100,15 @@ describe("cypherQuery", () => {
         }`;
 
         const expectedCQuery = `
-            MATCH (\`movie\`:\`Movie\` { \`title\`:$title }) 
-            RETURN \`movie\` { .id, .title } AS \`movie\`
+            MATCH (\`Movie\`:\`Movie\` { \`title\`:$title }) 
+            RETURN \`Movie\` { .id, .title } AS \`Movie\`
         `;
 
         const expectedCParams = {
             title: "some title",
         };
 
-        const resolver = (_object: any, params: any, ctx: Context, resolveInfo: any) => {
+        const resolver = (_object: any, params: any, ctx: any, resolveInfo: any) => {
             const [cQuery, cQueryParams] = cypherQuery(params, ctx, resolveInfo);
 
             expect(trimmer(cQuery)).toEqual(trimmer(expectedCQuery));
@@ -139,15 +140,15 @@ describe("cypherQuery", () => {
         `;
 
         const expectedCQuery = `
-            MATCH (\`movie\`:\`Movie\` { \`title\`:$title }) 
-            RETURN \`movie\` { .id, .title } AS \`movie\`
+            MATCH (\`Movie\`:\`Movie\` { \`title\`:$title }) 
+            RETURN \`Movie\` { .id, .title } AS \`Movie\`
         `;
 
         const expectedCParams = {
             title: "some title",
         };
 
-        const resolver = (_object: any, params: any, ctx: Context, resolveInfo: any) => {
+        const resolver = (_object: any, params: any, ctx: any, resolveInfo: any) => {
             const [cQuery, cQueryParams] = cypherQuery(params, ctx, resolveInfo);
 
             expect(trimmer(cQuery)).toEqual(trimmer(expectedCQuery));
@@ -178,8 +179,8 @@ describe("cypherQuery", () => {
             }`;
 
             const expectedCQuery = `
-                MATCH (\`movie\`:\`Movie\`) 
-                RETURN \`movie\` { .id, .title } AS \`movie\`
+                MATCH (\`Movie\`:\`Movie\`) 
+                RETURN \`Movie\` { .id, .title } AS \`Movie\`
                 SKIP $skip
             `;
 
@@ -187,7 +188,7 @@ describe("cypherQuery", () => {
                 skip: 1,
             };
 
-            const resolver = (_object: any, params: any, ctx: Context, resolveInfo: any) => {
+            const resolver = (_object: any, params: any, ctx: any, resolveInfo: any) => {
                 const [cQuery, cQueryParams] = cypherQuery(params, ctx, resolveInfo);
 
                 expect(trimmer(cQuery)).toEqual(trimmer(expectedCQuery));
@@ -217,8 +218,8 @@ describe("cypherQuery", () => {
             }`;
 
             const expectedCQuery = `
-                MATCH (\`movie\`:\`Movie\`) 
-                RETURN \`movie\` { .id, .title } AS \`movie\`
+                MATCH (\`Movie\`:\`Movie\`) 
+                RETURN \`Movie\` { .id, .title } AS \`Movie\`
                 LIMIT $limit
             `;
 
@@ -226,7 +227,7 @@ describe("cypherQuery", () => {
                 limit: 1,
             };
 
-            const resolver = (_object: any, params: any, ctx: Context, resolveInfo: any) => {
+            const resolver = (_object: any, params: any, ctx: any, resolveInfo: any) => {
                 const [cQuery, cQueryParams] = cypherQuery(params, ctx, resolveInfo);
 
                 expect(trimmer(cQuery)).toEqual(trimmer(expectedCQuery));
@@ -256,8 +257,8 @@ describe("cypherQuery", () => {
             }`;
 
             const expectedCQuery = `
-                MATCH (\`movie\`:\`Movie\`) 
-                RETURN \`movie\` { .id, .title } AS \`movie\`
+                MATCH (\`Movie\`:\`Movie\`) 
+                RETURN \`Movie\` { .id, .title } AS \`Movie\`
                 SKIP $skip
                 LIMIT $limit
             `;
@@ -267,7 +268,7 @@ describe("cypherQuery", () => {
                 limit: 1,
             };
 
-            const resolver = (_object: any, params: any, ctx: Context, resolveInfo: any) => {
+            const resolver = (_object: any, params: any, ctx: any, resolveInfo: any) => {
                 const [cQuery, cQueryParams] = cypherQuery(params, ctx, resolveInfo);
 
                 expect(trimmer(cQuery)).toEqual(trimmer(expectedCQuery));
@@ -298,8 +299,8 @@ describe("cypherQuery", () => {
             }`;
 
             const expectedCQuery = `
-                MATCH (\`movie\`:\`Movie\`) 
-                RETURN \`movie\` { .id, .title } AS \`movie\`
+                MATCH (\`Movie\`:\`Movie\`) 
+                RETURN \`Movie\` { .id, .title } AS \`Movie\`
                 SKIP $skip
                 LIMIT $limit
             `;
@@ -309,7 +310,7 @@ describe("cypherQuery", () => {
                 limit: 1,
             };
 
-            const resolver = (_object: any, params: any, ctx: Context, resolveInfo: any) => {
+            const resolver = (_object: any, params: any, ctx: any, resolveInfo: any) => {
                 const [cQuery, cQueryParams] = cypherQuery(params, ctx, resolveInfo);
 
                 expect(trimmer(cQuery)).toEqual(trimmer(expectedCQuery));
@@ -340,8 +341,8 @@ describe("cypherQuery", () => {
             }`;
 
             const expectedCQuery = `
-                MATCH (\`movie\`:\`Movie\` { \`title\`:$title }) 
-                RETURN \`movie\` { .id, .title } AS \`movie\`
+                MATCH (\`Movie\`:\`Movie\` { \`title\`:$title }) 
+                RETURN \`Movie\` { .id, .title } AS \`Movie\`
                 SKIP $skip
                 LIMIT $limit
             `;
@@ -352,7 +353,7 @@ describe("cypherQuery", () => {
                 title: "some title",
             };
 
-            const resolver = (_object: any, params: any, ctx: Context, resolveInfo: any) => {
+            const resolver = (_object: any, params: any, ctx: any, resolveInfo: any) => {
                 const [cQuery, cQueryParams] = cypherQuery(params, ctx, resolveInfo);
 
                 expect(trimmer(cQuery)).toEqual(trimmer(expectedCQuery));

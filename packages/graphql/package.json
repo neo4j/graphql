@@ -8,8 +8,10 @@
     "scripts": {
         "prepare": "npm run build:clean",
         "clean": "rimraf dist",
-        "test": "jest",
-        "test:watch": "jest --watch",
+        "test:unit": "jest unit",
+        "test:unit:watch": "jest unit --watch",
+        "test:int": "jest int",
+        "test:int:watch": "jest int --watch",
         "build": "tsc",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
@@ -17,17 +19,22 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
+        "@jest/globals": "26.4.2",
         "@types/jest": "26.0.8",
         "@types/node": "14.0.27",
         "jest": "26.2.2",
         "npm-run-all": "4.1.5",
+        "randomstring": "1.1.5",
         "rimraf": "3.0.2",
         "ts-jest": "26.1.4",
         "typescript": "3.9.7"
     },
     "dependencies": {
+        "@graphql-tools/merge": "6.2.3",
+        "@graphql-tools/schema": "6.2.3",
         "graphql": "15.3.0",
+        "graphql-compose": "7.21.4",
         "graphql-tag": "2.11.0",
-        "graphql-tools": "6.2.2"
+        "neo4j-driver": "4.1.2"
     }
 }

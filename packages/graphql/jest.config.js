@@ -2,7 +2,7 @@ const globalConf = require("../../jest-global.config");
 
 module.exports = {
     ...globalConf,
-    roots: ["src"],
+    roots: ["tests"],
     transform: {
         "^.+\\.ts$": "ts-jest",
     },
