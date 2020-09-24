@@ -24,7 +24,7 @@ $ npm run build
 
 #### Unit
 ```
-$ npm test:init
+$ npm test:unit
 ```
 
 #### Integration
