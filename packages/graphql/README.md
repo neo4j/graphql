@@ -38,4 +38,9 @@ _Running with docker 🐋_
 $ docker-compose -f ./docker-compose.integration.test.yml up --build --abort-on-container-exit --exit-code-from integration
 ```
 
+#### TCK
+
+```
+$ npm test:tck
+```
 
