@@ -26,30 +26,31 @@ export function generateTestCasesFromMd(dir: string): TestCase[] {
 }
 function generateTests(filePath): TestCase {
     const data = fs.readFileSync(filePath, { encoding: "utf8" });
+
     const out = {
         schema: extractSchema(data.toString()),
         tests: extractTests(data.toString()),
-        file: filePath.split("/").pop(),
+        file: path.basename(filePath),
     };
     return out;
 }
 
 function extractSchema(contents: string): Schema {
     // eslint-disable-next-line
-    const re = new RegExp("```schema(?<capture>(.|\n)*?)```");
+    const re = /```schema(?<capture>(.|\s)*?)```/;
     return captureOrEmptyString(contents, re);
 }
 
 function extractTests(contents: string): Test[] {
     const nameRe = /###(?<capture>([^\n]+))/;
     // eslint-disable-next-line
-    const graphqlQueryRe = new RegExp("```graphql(?<capture>(.|\n)*?)```");
+    const graphqlQueryRe = /```graphql(?<capture>(.|\s)*?)```/;
     // eslint-disable-next-line
-    const graphqlParamsRe = new RegExp("```graphql-params(?<capture>(.|\n)*?)```");
+    const graphqlParamsRe = /```graphql-params(?<capture>(.|\s)*?)```/;
     // eslint-disable-next-line
-    const cypherQueryRe = new RegExp("```cypher(?<capture>(.|\n)*?)```");
+    const cypherQueryRe = /```cypher(?<capture>(.|\s)*?)```/;
     // eslint-disable-next-line
-    const cypherParamsRe = new RegExp("```cypher-params(?<capture>(.|\n)*?)```");
+    const cypherParamsRe = /```cypher-params(?<capture>(.|\s)*?)```/;
 
     // Strip head of file
     const testParts = contents.split("---").slice(1);
