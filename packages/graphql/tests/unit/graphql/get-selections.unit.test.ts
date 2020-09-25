@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { describe, expect, test } from "@jest/globals";
 import { GraphQLResolveInfo } from "graphql";
 import getSelections from "../../../src/graphql/get-selections";
 

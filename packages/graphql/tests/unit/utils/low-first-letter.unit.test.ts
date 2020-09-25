@@ -1,4 +1,3 @@
-import { describe, expect, test } from "@jest/globals";
 import lowFirstLetter from "../../../src/utils/low-first-letter";
 
 describe("lowFirstLetter", () => {

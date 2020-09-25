@@ -1,4 +1,3 @@
-import { describe, test, expect } from "@jest/globals";
 import makeAugmentedSchema from "../../../src/api/make-augmented-schema";
 
 describe("makeAugmentedSchema", () => {
