@@ -1,4 +1,3 @@
-import { describe, expect, test } from "@jest/globals";
 import removeTypeMeta from "../../../src/graphql/remove-type-meta";
 
 describe("removeTypeMeta", () => {
