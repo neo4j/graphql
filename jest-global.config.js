@@ -7,4 +7,5 @@ module.exports = {
     // to take that long.
     testTimeout: 120000,
     testMatch: [`./**/*.test.ts`],
+    moduleFileExtensions: ["js", "json", "jsx", "ts", "tsx", "node", "md"],
 };
