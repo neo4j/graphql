@@ -1,4 +1,5 @@
 import makeAugmentedSchema from "../../../src/api/make-augmented-schema";
+import { NeoSchema } from "../../../src/classes";
 
 describe("makeAugmentedSchema", () => {
     test("should be a function", () => {
@@ -14,5 +15,7 @@ describe("makeAugmentedSchema", () => {
         `;
 
         const schema = makeAugmentedSchema({ typeDefs });
+
+        expect(schema).toBeInstanceOf(NeoSchema);
     });
 });

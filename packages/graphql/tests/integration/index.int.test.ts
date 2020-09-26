@@ -24,7 +24,7 @@ describe("integration", () => {
             }
         `;
 
-        const schema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = makeAugmentedSchema({ typeDefs });
 
         const query = `
             query($id: ID){
@@ -46,7 +46,12 @@ describe("integration", () => {
                 { id }
             );
 
-            const result = await graphql({ schema, source: query, variableValues: { id }, contextValue: { driver } });
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: { id },
+                contextValue: { driver },
+            });
 
             expect(result.errors).toBeFalsy();
 

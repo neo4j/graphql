@@ -1,20 +1,25 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { GraphQLSchema, print, GraphQLResolveInfo, ObjectTypeDefinitionNode, visit } from "graphql";
+import { print, GraphQLResolveInfo, ObjectTypeDefinitionNode, visit } from "graphql";
 import { SchemaComposer } from "graphql-compose";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import cypherQuery from "./cypher-query";
 import * as neo4j from "../neo4j";
 import { lowFirstLetter } from "../utils";
+import { NeoSchema, NeoSchemaConstructor } from "../classes";
 
 interface Input {
     typeDefs: any;
     resolvers?: any;
 }
 
-function makeAugmentedSchema(input: Input): GraphQLSchema {
+function makeAugmentedSchema(input: Input): NeoSchema {
     const document = mergeTypeDefs(Array.isArray(input.typeDefs) ? input.typeDefs : [input.typeDefs]);
 
     const composer = new SchemaComposer();
+
+    // @ts-ignore
+    const neoSchemaInput: NeoSchemaConstructor = {};
 
     function createObjectType(definition: ObjectTypeDefinitionNode) {
         if (["Query", "Mutation", "Subscription"].includes(definition.name.value)) {
@@ -70,7 +75,17 @@ function makeAugmentedSchema(input: Input): GraphQLSchema {
 
     visit(document, { enter: visitor });
 
-    return composer.buildSchema();
+    const generatedTypeDefs = composer.toSDL();
+    const generatedResolvers = composer.getResolveMethods();
+
+    neoSchemaInput.schema = makeExecutableSchema({
+        typeDefs: generatedTypeDefs,
+        resolvers: generatedResolvers,
+    });
+
+    const neoSchema = new NeoSchema(neoSchemaInput);
+
+    return neoSchema;
 }
 
 export default makeAugmentedSchema;
