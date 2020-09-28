@@ -16,7 +16,7 @@ describe("getArguments", () => {
             fieldName: name,
         };
 
-        const args = getArguments(resolveInfo);
+        const args = getArguments(resolveInfo, name);
 
         // @ts-ignore
         expect(args).toMatchObject(resolveInfo.fieldNodes[0].arguments);

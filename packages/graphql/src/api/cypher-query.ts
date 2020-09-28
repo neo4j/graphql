@@ -1,87 +1,113 @@
-import { GraphQLResolveInfo } from "graphql";
-import { getArguments, getSelections, removeTypeMeta } from "../graphql";
-import { formatCypherProperties, escapeVar } from "../neo4j";
-import { lowFirstLetter } from "../utils";
+/* eslint-disable prefer-destructuring */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { GraphQLResolveInfo, ObjectValueNode, SelectionNode, ArgumentNode } from "graphql";
+import { NeoSchema, Node } from "../classes";
+import {
+    createWhereAndParams,
+    createProjectionAndParams,
+    createLimitAndParams,
+    createSkipAndParams,
+    createSortAndParams,
+} from "../neo4j";
 
-function cypherQuery(args: any, _context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
-    const { returnType } = resolveInfo;
-    const typeName = returnType.toString();
+function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
+    // @ts-ignore
+    // eslint-disable-next-line prefer-destructuring
+    const neoSchema: NeoSchema = context.neoSchema;
 
-    const selections = getSelections(resolveInfo);
-    const queryArgs = getArguments(resolveInfo);
+    if (!neoSchema || !(neoSchema instanceof NeoSchema)) {
+        throw new Error("invalid schema");
+    }
 
-    const escapedTypeName = escapeVar(removeTypeMeta(typeName));
-    const safeVar = escapeVar(lowFirstLetter(removeTypeMeta(typeName)));
+    const { fieldName } = resolveInfo;
+
+    const [operation, nodeName] = fieldName.split("_");
+
+    const node = neoSchema.nodes.find((x) => x.name === nodeName) as Node;
+
+    const selections = resolveInfo.fieldNodes.find((n) => n.name.value === fieldName)?.selectionSet
+        ?.selections as SelectionNode[];
 
     let cypherParams: { [k: string]: any } = {};
-
-    const projection = selections?.reduce((proj: string[], selection) => {
-        if (selection.kind !== "Field") {
-            return proj;
-        }
-
-        return proj.concat(`.${selection.name.value}`);
-    }, []) as string[];
-
-    const properties = queryArgs
-        .filter((x) => !["skip", "limit"].includes(x.name.value))
-        .reduce(
-            (allArgs, currentArg) => {
-                let incomingArg;
-
-                if ("value" in currentArg.value) {
-                    incomingArg = currentArg.value.value;
-                } else {
-                    incomingArg = args[currentArg.name.value];
-                }
-
-                const argName = currentArg.name.value;
-
-                return {
-                    propertiesArgs: {
-                        ...allArgs.propertiesArgs,
-                        [currentArg.name.value]: incomingArg,
-                    },
-                    propertiesArr: allArgs.propertiesArr.concat(`${escapeVar(argName)}:$${argName}`),
-                };
-            },
-            { propertiesArr: [], propertiesArgs: {} } as { propertiesArr: string[]; propertiesArgs: any }
-        );
-
-    cypherParams = { ...cypherParams, ...properties.propertiesArgs };
-
+    const matchStr = `MATCH (this:${node.name})`;
+    let whereStr = "";
     let skipStr = "";
-    const skipArg = queryArgs.find((x) => x.name.value === "skip");
-    if (skipArg) {
-        skipStr = "SKIP $skip";
-
-        if ("value" in skipArg.value) {
-            cypherParams.skip = skipArg.value.value;
-        } else {
-            cypherParams.skip = args[skipArg.name.value];
-        }
-    }
-
     let limitStr = "";
-    const limitArg = queryArgs.find((x) => x.name.value === "limit");
-    if (limitArg) {
-        limitStr = "LIMIT $limit";
+    let sortStr = "";
+    let projStr = "";
 
-        if ("value" in limitArg.value) {
-            cypherParams.limit = limitArg.value.value;
-        } else {
-            cypherParams.limit = args[limitArg.name.value];
-        }
+    switch (operation) {
+        case "FindOne":
+            {
+                const value = resolveInfo.fieldNodes
+                    .find((x) => x.name.value === resolveInfo.fieldName)
+                    ?.arguments?.find((x) => x.name.value === "query")?.value as ObjectValueNode;
+
+                const where = createWhereAndParams({ value, node, neoSchema, graphQLArgs, varName: `this` });
+                whereStr = where[0];
+                cypherParams = { ...cypherParams, ...where[1] };
+
+                const projection = createProjectionAndParams({ node, neoSchema, selections, graphQLArgs });
+                projStr = projection[0];
+                cypherParams = { ...cypherParams, ...projection[1] };
+
+                limitStr = "LIMIT 1";
+            }
+            break;
+
+        case "FindMany":
+            {
+                const astArgs = resolveInfo.fieldNodes.find((x) => x.name.value === resolveInfo.fieldName)
+                    ?.arguments as ArgumentNode[];
+
+                const value = astArgs?.find((x) => x.name.value === "query")?.value as ObjectValueNode;
+
+                const where = createWhereAndParams({ value, node, neoSchema, graphQLArgs, varName: `this` });
+                whereStr = where[0];
+                cypherParams = { ...cypherParams, ...where[1] };
+
+                const projection = createProjectionAndParams({ node, neoSchema, selections, graphQLArgs });
+                projStr = projection[0];
+                cypherParams = { ...cypherParams, ...projection[1] };
+
+                const skip = createSkipAndParams({
+                    astArgs,
+                    graphQLArgs,
+                });
+                skipStr = skip[0];
+                cypherParams = { ...cypherParams, ...skip[1] };
+
+                const limit = createLimitAndParams({
+                    astArgs,
+                    graphQLArgs,
+                });
+                limitStr = limit[0];
+                cypherParams = { ...cypherParams, ...limit[1] };
+
+                const sort = createSortAndParams({
+                    astArgs,
+                    graphQLArgs,
+                    varName: "this",
+                });
+                sortStr = sort[0];
+                cypherParams = { ...cypherParams, ...sort[1] };
+            }
+            break;
+
+        default:
+            throw new Error("Invalid query");
     }
 
-    const query = `
-        MATCH (${safeVar}:${escapedTypeName}${formatCypherProperties(properties.propertiesArr)})
-        RETURN ${safeVar}${formatCypherProperties(projection)} AS ${safeVar}
+    const cypher = `
+        ${matchStr}
+        ${whereStr}
+        RETURN this ${projStr} as this
+        ${sortStr || ""}
         ${skipStr || ""}
         ${limitStr || ""}
     `;
 
-    return [query, args];
+    return [cypher, cypherParams];
 }
 
 export default cypherQuery;

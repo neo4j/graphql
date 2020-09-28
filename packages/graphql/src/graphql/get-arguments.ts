@@ -1,7 +1,7 @@
 import { GraphQLResolveInfo, ArgumentNode } from "graphql";
 
-function getArguments(resolveInfo: GraphQLResolveInfo): ArgumentNode[] {
-    const node = resolveInfo.fieldNodes.find((n) => n.name.value === resolveInfo.fieldName);
+function getArguments(resolveInfo: GraphQLResolveInfo, name): ArgumentNode[] {
+    const node = resolveInfo.fieldNodes.find((n) => n.name.value === name);
 
     const args = node?.arguments as ArgumentNode[];
 
