@@ -16,7 +16,7 @@ describe("getSelections", () => {
             fieldName: name,
         };
 
-        const args = getSelections(resolveInfo);
+        const args = getSelections(resolveInfo, name);
 
         // @ts-ignore
         expect(args).toMatchObject(resolveInfo.fieldNodes[0].selectionSet.selections);

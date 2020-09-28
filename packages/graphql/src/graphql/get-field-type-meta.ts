@@ -3,18 +3,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable default-case */
 import { FieldDefinitionNode } from "graphql";
+import { TypeMeta } from "../types";
 
-interface Meta {
-    name: string;
-    array: boolean;
-    required: boolean;
-    pretty: string;
-    prettyBy(str: string): string;
-}
-
-function getFieldTypeMeta(field: FieldDefinitionNode): Meta {
+function getFieldTypeMeta(field: FieldDefinitionNode): TypeMeta {
     // @ts-ignore
-    let result: Meta = {};
+    let result: TypeMeta = {};
 
     switch (field.type.kind) {
         case "NonNullType":
@@ -27,7 +20,6 @@ function getFieldTypeMeta(field: FieldDefinitionNode): Meta {
                         required: true,
                         // @ts-ignore
                         pretty: `[${field.type.type.type.name.value}]!`,
-                        prettyBy: (s) => `[${s}]!`,
                     };
                     break;
 
@@ -37,7 +29,6 @@ function getFieldTypeMeta(field: FieldDefinitionNode): Meta {
                         array: false,
                         required: true,
                         pretty: `${field.type.type.name.value}!`,
-                        prettyBy: (s) => `${s}!`,
                     };
 
                     break;
@@ -49,7 +40,6 @@ function getFieldTypeMeta(field: FieldDefinitionNode): Meta {
                 array: false,
                 required: false,
                 pretty: `${field.type.name.value}`,
-                prettyBy: (s) => s,
             };
             break;
         case "ListType":
@@ -61,7 +51,6 @@ function getFieldTypeMeta(field: FieldDefinitionNode): Meta {
                         array: true,
                         required: false,
                         pretty: `[${field.type.type.name.value}]`,
-                        prettyBy: (s) => `[${s}]`,
                     };
                     break;
 
@@ -73,7 +62,6 @@ function getFieldTypeMeta(field: FieldDefinitionNode): Meta {
                         required: true,
                         // @ts-ignore
                         pretty: `[${field.type.type.type.name.value}!]`,
-                        prettyBy: (s) => `[${s}!]`,
                     };
                     break;
             }

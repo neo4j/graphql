@@ -22,7 +22,6 @@ describe("getFieldTypeMeta", () => {
             required: true,
             array: true,
             pretty: "[ABC]!",
-            prettyBy: res.prettyBy,
         });
     });
 
@@ -45,7 +44,6 @@ describe("getFieldTypeMeta", () => {
             required: true,
             array: false,
             pretty: "ABC!",
-            prettyBy: res.prettyBy,
         });
     });
 
@@ -68,7 +66,6 @@ describe("getFieldTypeMeta", () => {
             required: false,
             array: false,
             pretty: "String",
-            prettyBy: res.prettyBy,
         });
     });
 
@@ -91,7 +88,6 @@ describe("getFieldTypeMeta", () => {
             required: false,
             array: true,
             pretty: "[ABC]",
-            prettyBy: res.prettyBy,
         });
     });
 
@@ -114,7 +110,6 @@ describe("getFieldTypeMeta", () => {
             required: true,
             array: true,
             pretty: "[ABC!]",
-            prettyBy: res.prettyBy,
         });
     });
 });
