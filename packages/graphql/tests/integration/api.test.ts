@@ -10,11 +10,20 @@ const typeDefs = `
                 movies: [Movie] @relation(type: "ACTED_IN", direction: "IN")
             }
 
+
+            type Person {
+                name: String
+            }
+
             type Movie {
                 id: ID
-                title: String!
-                actors: [Actor] @relation(type: "ACTED_IN", direction: "OUT")
+                title: String
+                actors: [Actor]! @relation(type: "ACTED_IN", direction: "OUT")
                 mainActor: Actor @relation(type: "MAIN_ACTOR", direction: "OUT")
+                people: [Person] @cypher(statement: """
+                    MATCH (p:Person)
+                    RETURN p
+                    """)
             }
         `;
 

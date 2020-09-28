@@ -140,7 +140,7 @@ function makeAugmentedSchema(input: Input): NeoSchema {
 
         neoSchemaInput.nodes.push(node);
 
-        const composeNodeFields = [...primitiveFields, ...nestedFields].map(
+        const composeNodeFields = [...primitiveFields, ...nestedFields, ...cypherFields].map(
             (x) => `${x.fieldName}: ${x.typeMeta.pretty}`
         );
         const composeNode = composer.createObjectTC(
