@@ -130,26 +130,36 @@ function makeAugmentedSchema(input: Input): NeoSchema {
             nestedFields: NestedField[];
         };
 
+        const node = new Node({
+            name: definition.name.value,
+            relationFields,
+            primitiveFields,
+            cypherFields,
+            nestedFields,
+        });
+
+        neoSchemaInput.nodes.push(node);
+
         const composeNodeFields = [...primitiveFields, ...nestedFields].map(
             (x) => `${x.fieldName}: ${x.typeMeta.pretty}`
         );
         const composeNode = composer.createObjectTC(
             `
-            type ${definition.name.value} {
+            type ${node.name} {
                 ${composeNodeFields.join("\n")}
             }
            `
         );
 
         composer.createObjectTC(`
-            type ${definition.name.value}Edge {
-                node: ${definition.name.value}
+            type ${node.name}Edge {
+                node: ${node.name}
             }
         `);
 
         composer.createObjectTC(`
-            type ${definition.name.value}Connection {
-                edges: [${definition.name.value}Edge]
+            type ${node.name}Connection {
+                edges: [${node.name}Edge]
                 pageInfo: PageInfo
             }
         `);
@@ -173,7 +183,7 @@ function makeAugmentedSchema(input: Input): NeoSchema {
         });
 
         const sortEnum = composer.createEnumTC({
-            name: `${definition.name.value}_SORT`,
+            name: `${node.name}_SORT`,
             values: primitiveFields.reduce((res, v) => {
                 return {
                     ...res,
@@ -191,52 +201,42 @@ function makeAugmentedSchema(input: Input): NeoSchema {
         }, {});
 
         composer.createInputTC({
-            name: `${definition.name.value}_AND`,
+            name: `${node.name}_AND`,
             fields: {
                 ...looseFields,
-                OR: `[${definition.name.value}_OR]`,
-                AND: `[${definition.name.value}_AND]`,
+                OR: `[${node.name}_OR]`,
+                AND: `[${node.name}_AND]`,
             },
         });
 
         composer.createInputTC({
-            name: `${definition.name.value}_OR`,
+            name: `${node.name}_OR`,
             fields: {
                 ...looseFields,
-                OR: `[${definition.name.value}_OR]`,
-                AND: `[${definition.name.value}_AND]`,
+                OR: `[${node.name}_OR]`,
+                AND: `[${node.name}_AND]`,
             },
         });
 
         composer.createInputTC({
-            name: `${definition.name.value}Query`,
+            name: `${node.name}Query`,
             fields: {
                 ...looseFields,
-                AND: `[${definition.name.value}_AND]`,
-                OR: `[${definition.name.value}_OR]`,
+                AND: `[${node.name}_AND]`,
+                OR: `[${node.name}_OR]`,
             },
         });
 
         composer.createInputTC({
-            name: `${definition.name.value}Options`,
+            name: `${node.name}Options`,
             fields: { sort: sortEnum.List, limit: "Int", skip: "Int" },
         });
 
         // @ts-ignore
         composer.Query.addFields({
-            [`FindOne_${definition.name.value}`]: findOne({ definition, getSchema: () => neoSchema }),
-            [`FindMany_${definition.name.value}`]: findMany({ definition, getSchema: () => neoSchema }),
+            [`FindOne_${node.name}`]: findOne({ definition, getSchema: () => neoSchema }),
+            [`FindMany_${node.name}`]: findMany({ definition, getSchema: () => neoSchema }),
         });
-
-        const node = new Node({
-            name: definition.name.value,
-            relationFields,
-            primitiveFields,
-            cypherFields,
-            nestedFields,
-        });
-
-        neoSchemaInput.nodes.push(node);
     }
 
     const visitor = {
