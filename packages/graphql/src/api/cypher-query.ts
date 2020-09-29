@@ -7,7 +7,7 @@ import {
     createSkipAndParams,
     createSortAndParams,
 } from "../neo4j";
-import { trimmer } from "../utils";
+import { stripLoc, trimmer } from "../utils";
 
 function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
     // @ts-ignore
@@ -65,7 +65,7 @@ function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolve
 
                 const skip = createSkipAndParams({
                     astArgs,
-                    graphQLArgs,
+                    variableValues: resolveInfo.variableValues,
                 });
                 skipStr = skip[0];
                 cypherParams = { ...cypherParams, ...skip[1] };
@@ -100,6 +100,10 @@ function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolve
         ${limitStr || ""}
     `;
 
+    console.log("=======GRAPHQL RESOLVE=======");
+    console.log(JSON.stringify(stripLoc(resolveInfo), null, 2));
+    console.log("=======GRAPHQL ARGS=======");
+    console.log(JSON.stringify(graphQLArgs, null, 2));
     console.log("=======CYPHER=======");
     console.log(trimmer(cypher));
     console.log("=======Params=======");
