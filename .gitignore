@@ -74,3 +74,5 @@ oclif.manifest.json
 # E2E generated dirs
 e2e/fixtures/data/
 e2e/fixtures/cache/
+
+test-api.ts
