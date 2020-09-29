@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { GraphQLResolveInfo, ObjectTypeDefinitionNode } from "graphql";
 import * as neo4j from "../neo4j";
 import { cypherQuery } from "../api";

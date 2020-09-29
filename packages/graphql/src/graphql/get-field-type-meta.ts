@@ -1,6 +1,5 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-fallthrough */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable default-case */
 import { FieldDefinitionNode } from "graphql";
 import { TypeMeta } from "../types";

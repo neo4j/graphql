@@ -1,11 +1,10 @@
-import { RelationField, CypherField, PrimitiveField, NestedField } from "../types";
+import { RelationField, CypherField, PrimitiveField } from "../types";
 
 export interface NodeConstructor {
     name: string;
     relationFields: RelationField[];
     cypherFields: CypherField[];
     primitiveFields: PrimitiveField[];
-    nestedFields: NestedField[];
 }
 
 class Node {
@@ -17,14 +16,11 @@ class Node {
 
     public primitiveFields: PrimitiveField[];
 
-    public nestedFields: NestedField[];
-
     constructor(input: NodeConstructor) {
         this.name = input.name;
         this.relationFields = input.relationFields;
         this.cypherFields = input.cypherFields;
         this.primitiveFields = input.primitiveFields;
-        this.nestedFields = input.nestedFields;
     }
 }
 

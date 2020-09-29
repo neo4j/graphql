@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { ArgumentNode, ObjectValueNode, ListValueNode, EnumValueNode } from "graphql";
 
 function createSortAndParams({

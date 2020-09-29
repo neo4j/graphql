@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import { SelectionNode, FieldNode, ObjectValueNode } from "graphql";
+import { SelectionNode, FieldNode } from "graphql";
 import { generate } from "randomstring";
 import { NeoSchema, Node } from "../classes";
 import formatCypherProperties from "./format-cypher-properties";
@@ -35,6 +34,9 @@ function createProjectionAndParams({
             return [...proj, ...nodeSelection.selectionSet?.selections.reduce(reducer, [])];
         }
 
+        /* TODO should we concatenate? Need a better recursive mechanism other than parentID. 
+           Using IDS may lead to cleaner code but also sacrifice clean testing.
+        */
         const id = generate({
             charset: "alphabetic",
         });
@@ -50,7 +52,9 @@ function createProjectionAndParams({
                 fieldNode: selection,
             });
 
-            const apocStr = `${id} IN apoc.cypher.runFirstColumn("${cypherField.statement}", {this: this}, true) | ${id} ${cypherProjection[0]}`;
+            const apocStr = `${id} IN apoc.cypher.runFirstColumn("${cypherField.statement}", {this: ${
+                parentID || "this"
+            }}, true) | ${id} ${cypherProjection[0]}`;
 
             if (cypherField.typeMeta.array) {
                 return proj.concat(`${selection.name.value}: [${apocStr}]`);
@@ -66,18 +70,24 @@ function createProjectionAndParams({
             const relType = relationField.type;
             const relDirection = relationField.direction;
 
+            let whereStr = "";
+            let projectionStr = "";
+
             // @ts-ignore
-            const value = fieldNode.arguments?.find((x) => x.name === "query") as ObjectValueNode;
+            const queryArg = selection.arguments?.find((x) => x.name.value === "query") as ArgumentNode;
+            if (queryArg) {
+                const where = createWhereAndParams({
+                    graphQLArgs,
+                    neoSchema,
+                    node: referenceNode,
+                    varName: id,
+                    objectValue: queryArg.value,
+                });
 
-            const where = createWhereAndParams({
-                graphQLArgs,
-                neoSchema,
-                node: referenceNode,
-                varName: id,
-                value,
-            });
+                whereStr = where[0];
 
-            args = { ...args, ...where[1] };
+                args = { ...args, ...where[1] };
+            }
 
             const projection = createProjectionAndParams({
                 node: referenceNode,
@@ -86,23 +96,24 @@ function createProjectionAndParams({
                 graphQLArgs,
                 parentID: id,
             });
-
+            projectionStr = projection[0];
             args = { ...args, ...projection[1] };
 
-            const match = `${selection.name.value}: [ (${parentID || "this"})${
+            // TODO limit, skip, sort
+            const nestedQuery = `${selection.name.value}: [ (${parentID || "this"})${
                 relDirection === "IN" ? "<-" : "-"
-            }[:${relType}]${relDirection === "OUT" ? "->" : "-"}(${id}:${referenceNode?.name})${
-                where[0] ? where[0] : ""
-            } | ${id} ${projection[0]}  ]`;
+            }[:${relType}]${relDirection === "OUT" ? "->" : "-"}(${id}:${
+                referenceNode?.name
+            }) ${whereStr} | ${id} ${projectionStr} ]`;
 
-            return proj.concat(match);
+            return proj.concat(nestedQuery);
         }
 
         return proj.concat(`.${selection.name.value}`);
     }
 
     // @ts-ignore
-    return [formatCypherProperties(fieldNode.selectionSet?.selections.reduce(reducer, [])), {}];
+    return [formatCypherProperties(fieldNode.selectionSet?.selections.reduce(reducer, [])), args];
 }
 
 export default createProjectionAndParams;

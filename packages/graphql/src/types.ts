@@ -23,5 +23,3 @@ export interface CypherField extends BaseField {
 }
 
 export type PrimitiveField = BaseField;
-
-export type NestedField = BaseField;

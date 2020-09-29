@@ -1,5 +1,3 @@
-/* eslint-disable prefer-destructuring */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { GraphQLResolveInfo, ObjectValueNode, FieldNode, ArgumentNode } from "graphql";
 import { NeoSchema, Node } from "../classes";
 import {
@@ -9,10 +7,10 @@ import {
     createSkipAndParams,
     createSortAndParams,
 } from "../neo4j";
+import { trimmer } from "../utils";
 
 function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
     // @ts-ignore
-    // eslint-disable-next-line prefer-destructuring
     const neoSchema: NeoSchema = context.neoSchema;
 
     if (!neoSchema || !(neoSchema instanceof NeoSchema)) {
@@ -35,14 +33,15 @@ function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolve
     let sortStr = "";
     let projStr = "";
 
+    const astArgs = resolveInfo.fieldNodes.find((x) => x.name.value === resolveInfo.fieldName)
+        ?.arguments as ArgumentNode[];
+
+    const objectValue = astArgs.find((x) => x.name.value === "query")?.value as ObjectValueNode;
+
     switch (operation) {
         case "FindOne":
             {
-                const value = resolveInfo.fieldNodes
-                    .find((x) => x.name.value === resolveInfo.fieldName)
-                    ?.arguments?.find((x) => x.name.value === "query")?.value as ObjectValueNode;
-
-                const where = createWhereAndParams({ value, node, neoSchema, graphQLArgs, varName: `this` });
+                const where = createWhereAndParams({ objectValue, node, neoSchema, graphQLArgs, varName: `this` });
                 whereStr = where[0];
                 cypherParams = { ...cypherParams, ...where[1] };
 
@@ -56,12 +55,7 @@ function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolve
 
         case "FindMany":
             {
-                const astArgs = resolveInfo.fieldNodes.find((x) => x.name.value === resolveInfo.fieldName)
-                    ?.arguments as ArgumentNode[];
-
-                const value = astArgs?.find((x) => x.name.value === "query")?.value as ObjectValueNode;
-
-                const where = createWhereAndParams({ value, node, neoSchema, graphQLArgs, varName: `this` });
+                const where = createWhereAndParams({ objectValue, node, neoSchema, graphQLArgs, varName: `this` });
                 whereStr = where[0];
                 cypherParams = { ...cypherParams, ...where[1] };
 
@@ -106,7 +100,12 @@ function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolve
         ${limitStr || ""}
     `;
 
-    return [cypher, cypherParams];
+    console.log("=======CYPHER=======");
+    console.log(trimmer(cypher));
+    console.log("=======Params=======");
+    console.log(JSON.stringify(cypherParams, null, 2));
+
+    return [trimmer(cypher), cypherParams];
 }
 
 export default cypherQuery;

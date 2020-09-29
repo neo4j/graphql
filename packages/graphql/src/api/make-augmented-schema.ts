@@ -1,42 +1,25 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { GraphQLSchema, ObjectTypeDefinitionNode, visit } from "graphql";
+import { ObjectTypeDefinitionNode, visit } from "graphql";
 import { SchemaComposer } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { NeoSchema, NeoSchemaConstructor, Node } from "../classes";
 import { getFieldDirective, getFieldTypeMeta, findOne, findMany } from "../graphql";
-import { RelationField, CypherField, NestedField, PrimitiveField, BaseField } from "../types";
+import { RelationField, CypherField, PrimitiveField, BaseField } from "../types";
 
-interface Input {
+export interface MakeAugmentedSchemaOptions {
     typeDefs: any;
-    resolvers?: any;
 }
 
-function makeAugmentedSchema(input: Input): NeoSchema {
-    const document = mergeTypeDefs(Array.isArray(input.typeDefs) ? input.typeDefs : [input.typeDefs]);
+function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
+    const document = mergeTypeDefs(Array.isArray(options.typeDefs) ? options.typeDefs : [options.typeDefs]);
 
     const composer = new SchemaComposer();
 
     let neoSchema: NeoSchema;
-
-    composer.addTypeDefs(`
-        type PageInfo {
-            hasNextPage: Int
-        }
-    `);
-
     // @ts-ignore
     const neoSchemaInput: NeoSchemaConstructor = {
         nodes: [],
     };
-
-    const documentReferenceNames = document.definitions.reduce((res: string[], def) => {
-        if (def.kind !== "ObjectTypeDefinition") {
-            return res;
-        }
-
-        return [...res, def.name.value];
-    }, []) as string[];
 
     function createObjectType(definition: ObjectTypeDefinitionNode) {
         if (["Query", "Mutation", "Subscription"].includes(definition.name.value)) {
@@ -44,22 +27,22 @@ function makeAugmentedSchema(input: Input): NeoSchema {
             return;
         }
 
-        const { relationFields, primitiveFields, cypherFields, nestedFields } = definition?.fields?.reduce(
+        const { relationFields, primitiveFields, cypherFields } = definition?.fields?.reduce(
             (
                 res: {
                     relationFields: RelationField[];
                     primitiveFields: PrimitiveField[];
                     cypherFields: CypherField[];
-                    nestedFields: NestedField[];
                 },
                 field
             ) => {
                 const typeMeta = getFieldTypeMeta(field);
 
-                const relationDirective = getFieldDirective(field, "relation");
+                const relationDirective = getFieldDirective(field, "relationship");
                 const cypherDirective = getFieldDirective(field, "cypher");
-                const isNested = documentReferenceNames.includes(typeMeta.name);
-                const otherDirectives = field.directives?.filter((x) => !["relation", "cypher"].includes(x.name.value));
+                const otherDirectives = field.directives?.filter(
+                    (x) => !["relationship", "cypher"].includes(x.name.value)
+                );
 
                 const baseField: BaseField = {
                     fieldName: field.name.value,
@@ -70,18 +53,18 @@ function makeAugmentedSchema(input: Input): NeoSchema {
                 if (relationDirective) {
                     const directionArg = relationDirective.arguments?.find((x) => x.name.value === "direction");
                     if (!directionArg) {
-                        throw new Error("@relation direction required");
+                        throw new Error("@relationship direction required");
                     }
                     if (directionArg.value.kind !== "StringValue") {
-                        throw new Error("@relation direction not a string");
+                        throw new Error("@relationship direction not a string");
                     }
 
                     const typeArg = relationDirective.arguments?.find((x) => x.name.value === "type");
                     if (!typeArg) {
-                        throw new Error("@relation type required");
+                        throw new Error("@relationship type required");
                     }
                     if (typeArg.value.kind !== "StringValue") {
-                        throw new Error("@relation type not a string");
+                        throw new Error("@relationship type not a string");
                     }
 
                     const direction = directionArg.value.value;
@@ -112,9 +95,6 @@ function makeAugmentedSchema(input: Input): NeoSchema {
                     };
 
                     res.cypherFields.push(cypherField);
-                } else if (isNested) {
-                    const nestedField: NestedField = baseField;
-                    res.nestedFields.push(nestedField);
                 } else {
                     const primitiveField: PrimitiveField = baseField;
                     res.primitiveFields.push(primitiveField);
@@ -122,12 +102,11 @@ function makeAugmentedSchema(input: Input): NeoSchema {
 
                 return res;
             },
-            { relationFields: [], primitiveFields: [], cypherFields: [], nestedFields: [] }
+            { relationFields: [], primitiveFields: [], cypherFields: [] }
         ) as {
             relationFields: RelationField[];
             primitiveFields: PrimitiveField[];
             cypherFields: CypherField[];
-            nestedFields: NestedField[];
         };
 
         const node = new Node({
@@ -135,12 +114,11 @@ function makeAugmentedSchema(input: Input): NeoSchema {
             relationFields,
             primitiveFields,
             cypherFields,
-            nestedFields,
         });
 
         neoSchemaInput.nodes.push(node);
 
-        const composeNodeFields = [...primitiveFields, ...nestedFields, ...cypherFields].map(
+        const composeNodeFields = [...primitiveFields, ...cypherFields].map(
             (x) => `${x.fieldName}: ${x.typeMeta.pretty}`
         );
         const composeNode = composer.createObjectTC(
@@ -151,36 +129,21 @@ function makeAugmentedSchema(input: Input): NeoSchema {
            `
         );
 
-        composer.createObjectTC(`
-            type ${node.name}Edge {
-                node: ${node.name}
-            }
-        `);
-
-        composer.createObjectTC(`
-            type ${node.name}Connection {
-                edges: [${node.name}Edge]
-                pageInfo: PageInfo
-            }
-        `);
-
-        relationFields.forEach((relation) => {
-            if (relation.typeMeta.array) {
-                composeNode.addFields({
+        composeNode.addFields(
+            relationFields.reduce(
+                (res, relation) => ({
+                    ...res,
                     [relation.fieldName]: {
-                        type: `${relation.typeMeta.name}Connection`,
-                        args: { query: `${relation.typeMeta.name}Query`, options: `${relation.typeMeta.name}Options` },
+                        type: relation.typeMeta.pretty,
+                        args: {
+                            query: `${relation.typeMeta.name}Query`,
+                            options: `${relation.typeMeta.name}Options`,
+                        },
                     },
-                });
-            } else {
-                composeNode.addFields({
-                    [relation.fieldName]: {
-                        type: relation.typeMeta.name,
-                        args: { query: `${relation.typeMeta.name}Query` },
-                    },
-                });
-            }
-        });
+                }),
+                {}
+            )
+        );
 
         const sortEnum = composer.createEnumTC({
             name: `${node.name}_SORT`,
@@ -200,12 +163,16 @@ function makeAugmentedSchema(input: Input): NeoSchema {
             };
         }, {});
 
+        const andOrFields = {
+            OR: `[${node.name}_OR]`,
+            AND: `[${node.name}_AND]`,
+        };
+
         composer.createInputTC({
             name: `${node.name}_AND`,
             fields: {
                 ...looseFields,
-                OR: `[${node.name}_OR]`,
-                AND: `[${node.name}_AND]`,
+                ...andOrFields,
             },
         });
 
@@ -213,8 +180,7 @@ function makeAugmentedSchema(input: Input): NeoSchema {
             name: `${node.name}_OR`,
             fields: {
                 ...looseFields,
-                OR: `[${node.name}_OR]`,
-                AND: `[${node.name}_AND]`,
+                ...andOrFields,
             },
         });
 
@@ -222,8 +188,7 @@ function makeAugmentedSchema(input: Input): NeoSchema {
             name: `${node.name}Query`,
             fields: {
                 ...looseFields,
-                AND: `[${node.name}_AND]`,
-                OR: `[${node.name}_OR]`,
+                ...andOrFields,
             },
         });
 
@@ -232,7 +197,6 @@ function makeAugmentedSchema(input: Input): NeoSchema {
             fields: { sort: sortEnum.List, limit: "Int", skip: "Int" },
         });
 
-        // @ts-ignore
         composer.Query.addFields({
             [`FindOne_${node.name}`]: findOne({ definition, getSchema: () => neoSchema }),
             [`FindMany_${node.name}`]: findMany({ definition, getSchema: () => neoSchema }),
