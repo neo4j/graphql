@@ -7,18 +7,22 @@ import makeAugmentedSchema from "../../src/api/make-augmented-schema";
 const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relation(type: "ACTED_IN", direction: "IN")
+                movies: [Movie] @relation(type: "ACTED_IN", direction: "OUT")
             }
 
 
             type Person {
                 name: String
+                movie: Movie @cypher(statement: """
+                MATCH (m:Movie)
+                RETURN m
+                """)
             }
 
             type Movie {
                 id: ID
                 title: String
-                actors: [Actor]! @relation(type: "ACTED_IN", direction: "OUT")
+                actors: [Actor]! @relation(type: "ACTED_IN", direction: "IN")
                 mainActor: Actor @relation(type: "MAIN_ACTOR", direction: "OUT")
                 people: [Person] @cypher(statement: """
                     MATCH (p:Person)

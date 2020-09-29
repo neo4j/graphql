@@ -15,6 +15,7 @@ export interface BaseField {
 
 export interface RelationField extends BaseField {
     direction: "OUT" | "IN";
+    type: string;
 }
 
 export interface CypherField extends BaseField {
