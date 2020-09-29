@@ -10,23 +10,23 @@ function createSkipAndParams({ astArgs, graphQLArgs }: { graphQLArgs: any; astAr
     if (optionsArg) {
         const optionsValue = optionsArg.value as ObjectValueNode;
 
-        const skipField = optionsValue.fields.find((x) => x.name.value === "limit");
+        const skipArg = optionsValue.fields.find((x) => x.name.value === "skip");
 
-        if (skipField) {
+        if (skipArg) {
             skipStr = "SKIP $skip";
 
-            if ("value" in skipField.value) {
-                params.skip = skipField.value.value;
+            if ("value" in skipArg.value) {
+                params.skip = skipArg.value.value;
 
-                if (skipField.value.kind === "IntValue") {
-                    params.skip = int(parseInt(skipField.value.value, 10));
+                if (skipArg.value.kind === "IntValue") {
+                    params.skip = int(parseInt(skipArg.value.value, 10));
                 }
 
-                if (skipField.value.kind === "FloatValue") {
-                    params.skip = parseFloat(skipField.value.value);
+                if (skipArg.value.kind === "FloatValue") {
+                    params.skip = parseFloat(skipArg.value.value);
                 }
             } else {
-                params.skip = int(graphQLArgs.options[skipField.name.value]);
+                params.skip = int(graphQLArgs.options[skipArg.name.value]);
             }
         }
     }

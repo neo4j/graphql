@@ -10,23 +10,23 @@ function createLimitAndParams({ astArgs, graphQLArgs }: { graphQLArgs: any; astA
     if (optionsArg) {
         const optionsValue = optionsArg.value as ObjectValueNode;
 
-        const limitField = optionsValue.fields.find((x) => x.name.value === "limit");
+        const limitArg = optionsValue.fields.find((x) => x.name.value === "limit");
 
-        if (limitField) {
+        if (limitArg) {
             limitStr = "LIMIT $limit";
 
-            if ("value" in limitField.value) {
-                params.limit = limitField.value.value;
+            if ("value" in limitArg.value) {
+                params.limit = limitArg.value.value;
 
-                if (limitField.value.kind === "IntValue") {
-                    params.limit = int(parseInt(limitField.value.value, 10));
+                if (limitArg.value.kind === "IntValue") {
+                    params.limit = int(parseInt(limitArg.value.value, 10));
                 }
 
-                if (limitField.value.kind === "FloatValue") {
-                    params.limit = parseFloat(limitField.value.value);
+                if (limitArg.value.kind === "FloatValue") {
+                    params.limit = parseFloat(limitArg.value.value);
                 }
             } else {
-                params.limit = int(graphQLArgs.options[limitField.name.value]);
+                params.limit = int(graphQLArgs.options[limitArg.name.value]);
             }
         }
     }

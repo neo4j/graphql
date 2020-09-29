@@ -1,5 +1,5 @@
 import { Driver } from "neo4j-driver";
-import { graphql, printSchema } from "graphql";
+import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import makeAugmentedSchema from "../../src/api/make-augmented-schema";
@@ -21,14 +21,14 @@ describe("findOne", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relation(type: "ACTED_IN", direction: "IN")
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: "IN")
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relation(type: "ACTED_IN", direction: "OUT")
-                mainActor: Actor @relation(type: "MAIN_ACTOR", direction: "OUT")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: "OUT")
+                mainActor: Actor @relationship(type: "MAIN_ACTOR", direction: "OUT")
             }
         `;
 
@@ -75,14 +75,14 @@ describe("findOne", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relation(type: "ACTED_IN", direction: "IN")
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: "IN")
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relation(type: "ACTED_IN", direction: "OUT")
-                mainActor: Actor @relation(type: "MAIN_ACTOR", direction: "OUT")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: "OUT")
+                mainActor: Actor @relationship(type: "MAIN_ACTOR", direction: "OUT")
             }
         `;
 
@@ -132,14 +132,14 @@ describe("findOne", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relation(type: "ACTED_IN", direction: "IN")
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: "IN")
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relation(type: "ACTED_IN", direction: "OUT")
-                mainActor: Actor @relation(type: "MAIN_ACTOR", direction: "OUT")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: "OUT")
+                mainActor: Actor @relationship(type: "MAIN_ACTOR", direction: "OUT")
             }
         `;
 
@@ -189,14 +189,14 @@ describe("findOne", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relation(type: "ACTED_IN", direction: "IN")
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: "IN")
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relation(type: "ACTED_IN", direction: "OUT")
-                mainActor: Actor @relation(type: "MAIN_ACTOR", direction: "OUT")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: "OUT")
+                mainActor: Actor @relationship(type: "MAIN_ACTOR", direction: "OUT")
             }
         `;
 
