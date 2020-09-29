@@ -1,4 +1,4 @@
-import { SelectionNode, FieldNode } from "graphql";
+import { SelectionNode, FieldNode, ArgumentNode, ObjectValueNode } from "graphql";
 import { generate } from "randomstring";
 import { NeoSchema, Node } from "../classes";
 import formatCypherProperties from "./format-cypher-properties";
@@ -22,16 +22,6 @@ function createProjectionAndParams({
     function reducer(proj: string[], selection: SelectionNode) {
         if (selection.kind !== "Field") {
             return proj;
-        }
-
-        if (selection.name.value === "edges") {
-            const edgesSelection = selection.selectionSet?.selections as SelectionNode[];
-
-            // @ts-ignore
-            const nodeSelection = edgesSelection.find((x) => x.name.value === "node") as FieldNode;
-
-            // @ts-ignore
-            return [...proj, ...nodeSelection.selectionSet?.selections.reduce(reducer, [])];
         }
 
         /* TODO should we concatenate? Need a better recursive mechanism other than parentID. 
@@ -73,15 +63,16 @@ function createProjectionAndParams({
             let whereStr = "";
             let projectionStr = "";
 
-            // @ts-ignore
-            const queryArg = selection.arguments?.find((x) => x.name.value === "query") as ArgumentNode;
+            const queryArg = selection.arguments?.find((x) => x.name.value === "query") as ArgumentNode | undefined;
             if (queryArg) {
+                const objectValue = queryArg.value as ObjectValueNode;
+
                 const where = createWhereAndParams({
                     graphQLArgs,
                     neoSchema,
                     node: referenceNode,
                     varName: id,
-                    objectValue: queryArg.value,
+                    objectValue,
                 });
 
                 whereStr = where[0];
