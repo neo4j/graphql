@@ -1,6 +1,6 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { GraphQLResolveInfo, ObjectValueNode, SelectionNode, ArgumentNode } from "graphql";
+import { GraphQLResolveInfo, ObjectValueNode, FieldNode, ArgumentNode } from "graphql";
 import { NeoSchema, Node } from "../classes";
 import {
     createWhereAndParams,
@@ -25,8 +25,7 @@ function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolve
 
     const node = neoSchema.nodes.find((x) => x.name === nodeName) as Node;
 
-    const selections = resolveInfo.fieldNodes.find((n) => n.name.value === fieldName)?.selectionSet
-        ?.selections as SelectionNode[];
+    const fieldNode = resolveInfo.fieldNodes.find((n) => n.name.value === fieldName) as FieldNode;
 
     let cypherParams: { [k: string]: any } = {};
     const matchStr = `MATCH (this:${node.name})`;
@@ -47,7 +46,7 @@ function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolve
                 whereStr = where[0];
                 cypherParams = { ...cypherParams, ...where[1] };
 
-                const projection = createProjectionAndParams({ node, neoSchema, selections, graphQLArgs });
+                const projection = createProjectionAndParams({ node, neoSchema, fieldNode, graphQLArgs });
                 projStr = projection[0];
                 cypherParams = { ...cypherParams, ...projection[1] };
 
@@ -66,7 +65,7 @@ function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolve
                 whereStr = where[0];
                 cypherParams = { ...cypherParams, ...where[1] };
 
-                const projection = createProjectionAndParams({ node, neoSchema, selections, graphQLArgs });
+                const projection = createProjectionAndParams({ node, neoSchema, fieldNode, graphQLArgs });
                 projStr = projection[0];
                 cypherParams = { ...cypherParams, ...projection[1] };
 

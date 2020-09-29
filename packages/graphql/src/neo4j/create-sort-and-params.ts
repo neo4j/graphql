@@ -18,7 +18,7 @@ function createSortAndParams({
     if (optionsArg) {
         const optionsValue = optionsArg.value as ObjectValueNode;
 
-        const sortArg = optionsValue.fields.find((x) => x.name.value === "limit");
+        const sortArg = optionsValue.fields.find((x) => x.name.value === "sort");
 
         if (sortArg) {
             let sorts: string[] = [];
