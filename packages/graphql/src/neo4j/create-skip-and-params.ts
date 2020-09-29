@@ -1,9 +1,18 @@
+/* eslint-disable default-case */
 import { ArgumentNode, ObjectValueNode } from "graphql";
 import { int } from "neo4j-driver";
+import { generate } from "randomstring";
 
-function createSkipAndParams({ astArgs, graphQLArgs }: { graphQLArgs: any; astArgs: ArgumentNode[] }): [string, any] {
+function createSkipAndParams({
+    astArgs,
+    variableValues,
+}: {
+    astArgs: ArgumentNode[];
+    variableValues: any;
+}): [string, any, number] {
     let skipStr = "";
     const params: any = {};
+    let skipNumber = 0;
 
     const optionsArg = astArgs.find((x) => x.name.value === "options");
 
@@ -12,26 +21,34 @@ function createSkipAndParams({ astArgs, graphQLArgs }: { graphQLArgs: any; astAr
 
         const skipArg = optionsValue.fields.find((x) => x.name.value === "skip");
 
+        /* TODO should we concatenate? Need a better recursive mechanism other than parentID. 
+           Using IDS may lead to cleaner code but also sacrifice clean testing.
+        */
+        const id = generate({
+            charset: "alphabetic",
+        });
+
         if (skipArg) {
-            skipStr = "SKIP $skip";
+            switch (skipArg.value.kind) {
+                case "Variable":
+                    params[id] = int(parseInt(variableValues[skipArg.value.name.value], 10));
+                    break;
 
-            if ("value" in skipArg.value) {
-                params.skip = skipArg.value.value;
+                case "IntValue":
+                    params[id] = int(parseInt(skipArg.value.value, 10));
+                    break;
 
-                if (skipArg.value.kind === "IntValue") {
-                    params.skip = int(parseInt(skipArg.value.value, 10));
-                }
-
-                if (skipArg.value.kind === "FloatValue") {
-                    params.skip = parseFloat(skipArg.value.value);
-                }
-            } else {
-                params.skip = int(graphQLArgs.options[skipArg.name.value]);
+                case "FloatValue":
+                    params[id] = parseFloat(skipArg.value.value);
+                    break;
             }
+
+            skipStr = `SKIP $${id}`;
+            skipNumber = params[id];
         }
     }
 
-    return [skipStr, params];
+    return [skipStr, params, skipNumber];
 }
 
 export default createSkipAndParams;
