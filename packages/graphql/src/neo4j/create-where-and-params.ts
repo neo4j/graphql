@@ -1,158 +1,87 @@
-/* eslint-disable no-inner-declarations */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/naming-convention */
-import { ObjectValueNode } from "graphql";
 import { generate } from "randomstring";
-import { NeoSchema, Node } from "../classes";
-
-type Parent = {
-    parent?: Parent;
-    type: "AND" | "OR";
-    index: number;
-};
 
 function createWhereAndParams({
-    objectValue,
-    graphQLArgs,
+    query,
     varName,
-    node,
-    neoSchema,
-    parent,
+    parentName,
 }: {
-    objectValue: ObjectValueNode;
-    node: Node;
-    neoSchema: NeoSchema;
-    graphQLArgs: any;
+    query: any;
     varName: string;
-    parent?: Parent;
+    parentName?: string;
 }): [string, any] {
     let params = {};
-
     let where = `WHERE`;
 
-    if (!objectValue) {
-        return ["", params];
-    }
+    const keys = Object.keys(query);
+    for (let i = 0; i < keys.length; i += 1) {
+        const k = keys[i];
+        const v = query[k];
 
-    const { fields } = objectValue;
+        if (!Array.isArray(v) && Object.keys(v).length && typeof v !== "string") {
+            const r = createWhereAndParams({ query: v, parentName: k, varName });
 
-    for (let i = 0; i < fields.length; i += 1) {
-        const field = fields[i];
-        const next = fields[i + 1];
+            const whereGone = r[0].replace("WHERE", "");
+            where += ` (${whereGone})`;
+            params = { ...params, ...r[1] };
+        } else {
+            const key = parentName || k;
+            const [fieldName, operator] = key.split("_");
 
-        const id = generate({
-            charset: "alphabetic",
-        });
+            /* TODO should we concatenate? Need a better recursive mechanism other than parentID. 
+               Using IDS may lead to cleaner code but also sacrifice clean testing.
+            */
+            const id = generate({
+                charset: "alphabetic",
+            });
 
-        switch (field.name.value) {
-            case "AND":
-                {
-                    // @ts-ignore
-                    const values = field.value.values as ObjectValueNode[];
+            switch (operator) {
+                case "IN":
+                    where += ` ${varName}.${fieldName} IN $${id}`;
+                    params[id] = v;
+                    break;
+                case "AND":
+                    where += ` (`;
+                    for (let ii = 0; ii < v.length; ii += 1) {
+                        const r = createWhereAndParams({ query: v[ii], parentName, varName });
 
+                        const whereGone = r[0].replace("WHERE", "");
+                        where += ` (${whereGone}) `;
+                        params = { ...params, ...r[1] };
+
+                        if (v[ii + 1]) {
+                            where += " AND";
+                        }
+                    }
+
+                    where += ` ) `;
+
+                    break;
+                case "OR":
                     where += ` (`;
 
-                    for (let ii = 0; ii < values.length; ii += 1) {
-                        const and = values[ii];
-                        const n = values[ii + 1];
+                    for (let ii = 0; ii < v.length; ii += 1) {
+                        const r = createWhereAndParams({ query: v[ii], parentName, varName });
 
-                        const _parent: Parent = {
-                            parent,
-                            type: "AND",
-                            index: ii,
-                        };
+                        const whereGone = r[0].replace("WHERE", "");
+                        where += ` (${whereGone}) `;
+                        params = { ...params, ...r[1] };
 
-                        const andWhere = createWhereAndParams({
-                            objectValue: and,
-                            graphQLArgs,
-                            varName,
-                            node,
-                            neoSchema,
-                            parent: _parent,
-                        });
-
-                        const whereGone = andWhere[0].replace("WHERE", "");
-                        where += `(${whereGone})`;
-
-                        params = { ...params, ...andWhere[1] };
-
-                        if (n) {
-                            where += " AND ";
+                        if (v[ii + 1]) {
+                            where += " OR";
                         }
                     }
 
-                    where += ` )`;
-                }
-                break;
+                    where += ` ) `;
+                    break;
 
-            case "OR":
-                {
-                    // @ts-ignore
-                    const values = field.value.values as ObjectValueNode[];
-
-                    where += ` (`;
-
-                    for (let ii = 0; ii < values.length; ii += 1) {
-                        const or = values[ii];
-                        const n = values[ii + 1];
-
-                        const _parent: Parent = {
-                            parent,
-                            type: "OR",
-                            index: ii,
-                        };
-
-                        const orWhere = createWhereAndParams({
-                            objectValue: or,
-                            graphQLArgs,
-                            varName,
-                            node,
-                            neoSchema,
-                            parent: _parent,
-                        });
-
-                        const whereGone = orWhere[0].replace("WHERE", "");
-                        where += `(${whereGone})`;
-
-                        params = { ...params, ...orWhere[1] };
-
-                        if (n) {
-                            where += " OR ";
-                        }
-                    }
-
-                    where += ` )`;
-                }
-                break;
-
-            default: {
-                where += ` ${varName}.${field.name.value} = $${id}`;
-                let incomingArg;
-
-                if ("value" in field.value) {
-                    incomingArg = field.value.value;
-                } else {
-                    incomingArg = graphQLArgs.query[field.name.value];
-
-                    if (parent) {
-                        function walker(p: Parent, obj) {
-                            if (p?.parent) {
-                                return walker(p.parent, obj[p.type][p.index]);
-                            }
-
-                            return obj[p?.type][p?.index][field.name.value];
-                        }
-
-                        incomingArg = walker(parent, graphQLArgs.query);
-                    }
-                }
-
-                params[id] = incomingArg;
+                default:
+                    where += ` ${varName}.${fieldName} = $${id}`;
+                    params[id] = v;
             }
         }
 
-        if (next) {
-            where += " AND ";
+        if (keys[i + 1]) {
+            where += " AND";
         }
     }
 
