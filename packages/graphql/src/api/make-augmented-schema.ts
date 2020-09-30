@@ -8,6 +8,7 @@ import { RelationField, CypherField, PrimitiveField, BaseField } from "../types"
 
 export interface MakeAugmentedSchemaOptions {
     typeDefs: any;
+    debug?: boolean | ((...values: any[]) => void);
 }
 
 function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
@@ -19,6 +20,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     // @ts-ignore
     const neoSchemaInput: NeoSchemaConstructor = {
         nodes: [],
+        options,
     };
 
     function createObjectType(definition: ObjectTypeDefinitionNode) {
@@ -160,12 +162,13 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             return {
                 ...res,
                 [v.fieldName]: v.typeMeta.array ? `[${v.typeMeta.name}]` : v.typeMeta.name,
+                ...(!v.typeMeta.array ? { [`${v.fieldName}_IN`]: `[${v.typeMeta.name}]` } : {}),
             };
         }, {});
 
         const andOrFields = {
-            OR: `[${node.name}_OR]`,
-            AND: `[${node.name}_AND]`,
+            _OR: `[${node.name}_OR]`,
+            _AND: `[${node.name}_AND]`,
         };
 
         composer.createInputTC({

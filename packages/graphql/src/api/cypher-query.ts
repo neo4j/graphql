@@ -1,15 +1,10 @@
-import { GraphQLResolveInfo, ObjectValueNode, FieldNode, ArgumentNode } from "graphql";
+import { GraphQLResolveInfo } from "graphql";
+import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import { NeoSchema, Node } from "../classes";
-import {
-    createWhereAndParams,
-    createProjectionAndParams,
-    createLimitAndParams,
-    createSkipAndParams,
-    createSortAndParams,
-} from "../neo4j";
-import { stripLoc, trimmer } from "../utils";
+import { createWhereAndParams, createProjectionAndParams } from "../neo4j";
+import { trimmer } from "../utils";
 
-function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
+function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
     // @ts-ignore
     const neoSchema: NeoSchema = context.neoSchema;
 
@@ -17,13 +12,13 @@ function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolve
         throw new Error("invalid schema");
     }
 
-    const { fieldName } = resolveInfo;
-
-    const [operation, nodeName] = fieldName.split("_");
+    const resolveTree = parseResolveInfo(resolveInfo) as ResolveTree;
+    const [operation, nodeName] = resolveTree.name.split("_");
+    const query = resolveTree.args.query as any;
+    const options = resolveTree.args.options as any;
+    const fieldsByTypeName = resolveTree.fieldsByTypeName;
 
     const node = neoSchema.nodes.find((x) => x.name === nodeName) as Node;
-
-    const fieldNode = resolveInfo.fieldNodes.find((n) => n.name.value === fieldName) as FieldNode;
 
     let cypherParams: { [k: string]: any } = {};
     const matchStr = `MATCH (this:${node.name})`;
@@ -33,19 +28,47 @@ function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolve
     let sortStr = "";
     let projStr = "";
 
-    const astArgs = resolveInfo.fieldNodes.find((x) => x.name.value === resolveInfo.fieldName)
-        ?.arguments as ArgumentNode[];
+    const sort = () => {
+        const sortArr = options.sort.map((s) => {
+            let key;
+            let direc;
 
-    const objectValue = astArgs.find((x) => x.name.value === "query")?.value as ObjectValueNode;
+            if (s.includes("_DESC")) {
+                direc = "DESC";
+                [key] = s.split("_DESC");
+            } else {
+                direc = "ASC";
+                [key] = s.split("_ASC");
+            }
+
+            return `this.${key} ${direc}`;
+        });
+
+        if (!sortArr.length) {
+            return "";
+        }
+
+        return `ORDER BY ${sortArr.join(", ")}`;
+    };
 
     switch (operation) {
         case "FindOne":
             {
-                const where = createWhereAndParams({ objectValue, node, neoSchema, graphQLArgs, varName: `this` });
-                whereStr = where[0];
-                cypherParams = { ...cypherParams, ...where[1] };
+                if (query) {
+                    const where = createWhereAndParams({
+                        query,
+                        varName: `this`,
+                    });
+                    whereStr = where[0];
+                    cypherParams = { ...cypherParams, ...where[1] };
+                }
 
-                const projection = createProjectionAndParams({ node, neoSchema, fieldNode, graphQLArgs });
+                const projection = createProjectionAndParams({
+                    node,
+                    neoSchema,
+                    fieldsByTypeName,
+                    typeName: node.name,
+                });
                 projStr = projection[0];
                 cypherParams = { ...cypherParams, ...projection[1] };
 
@@ -55,35 +78,37 @@ function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolve
 
         case "FindMany":
             {
-                const where = createWhereAndParams({ objectValue, node, neoSchema, graphQLArgs, varName: `this` });
-                whereStr = where[0];
-                cypherParams = { ...cypherParams, ...where[1] };
+                if (query) {
+                    const where = createWhereAndParams({
+                        query,
+                        varName: `this`,
+                    });
+                    whereStr = where[0];
+                    cypherParams = { ...cypherParams, ...where[1] };
+                }
 
-                const projection = createProjectionAndParams({ node, neoSchema, fieldNode, graphQLArgs });
+                const projection = createProjectionAndParams({
+                    node,
+                    neoSchema,
+                    fieldsByTypeName,
+                    typeName: node.name,
+                });
                 projStr = projection[0];
                 cypherParams = { ...cypherParams, ...projection[1] };
 
-                const skip = createSkipAndParams({
-                    astArgs,
-                    variableValues: resolveInfo.variableValues,
-                });
-                skipStr = skip[0];
-                cypherParams = { ...cypherParams, ...skip[1] };
+                if (options) {
+                    if (options.skip) {
+                        skipStr = `SKIP ${options.skip}`;
+                    }
 
-                const limit = createLimitAndParams({
-                    astArgs,
-                    graphQLArgs,
-                });
-                limitStr = limit[0];
-                cypherParams = { ...cypherParams, ...limit[1] };
+                    if (options.limit) {
+                        limitStr = `LIMIT ${options.limit}`;
+                    }
 
-                const sort = createSortAndParams({
-                    astArgs,
-                    graphQLArgs,
-                    varName: "this",
-                });
-                sortStr = sort[0];
-                cypherParams = { ...cypherParams, ...sort[1] };
+                    if (options.sort) {
+                        sortStr = sort();
+                    }
+                }
             }
             break;
 
@@ -100,14 +125,19 @@ function cypherQuery(graphQLArgs: any, context: any, resolveInfo: GraphQLResolve
         ${limitStr || ""}
     `;
 
-    console.log("=======GRAPHQL RESOLVE=======");
-    console.log(JSON.stringify(stripLoc(resolveInfo), null, 2));
-    console.log("=======GRAPHQL ARGS=======");
-    console.log(JSON.stringify(graphQLArgs, null, 2));
-    console.log("=======CYPHER=======");
-    console.log(trimmer(cypher));
-    console.log("=======Params=======");
-    console.log(JSON.stringify(cypherParams, null, 2));
+    if (neoSchema.options.debug) {
+        // eslint-disable-next-line no-console
+        let debug = console.log;
+
+        if (typeof neoSchema.options.debug === "function") {
+            debug = neoSchema.options.debug;
+        }
+
+        debug("=======CYPHER=======");
+        debug(trimmer(cypher));
+        debug("=======Params=======");
+        debug(JSON.stringify(cypherParams, null, 2));
+    }
 
     return [trimmer(cypher), cypherParams];
 }
