@@ -3,7 +3,7 @@ function formatCypherProperties(properties: string[]): string {
         return "";
     }
 
-    return ` { ${properties.join(", ")} }`;
+    return `{ ${properties.join(", ")} }`;
 }
 
 export default formatCypherProperties;
