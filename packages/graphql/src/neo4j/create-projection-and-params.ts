@@ -39,10 +39,16 @@ function createProjectionAndParams({
                 neoSchema,
                 typeName: referenceNode?.name,
             });
+            args = { ...args, ...field.args, ...cypherProjection[1] };
+
+            const apocFieldArgs = Object.keys(field.args).reduce(
+                (res: string[], v) => [...res, `${v}:$${v}`],
+                []
+            ) as string[];
 
             const apocStr = `${id} IN apoc.cypher.runFirstColumn("${cypherField.statement}", {this: ${
                 parentID || "this"
-            }}, true) | ${id} ${cypherProjection[0]}`;
+            }, ${apocFieldArgs.join(", ")}}, true) | ${id} ${cypherProjection[0]}`;
 
             if (cypherField.typeMeta.array) {
                 return proj.concat(`${k}: [${apocStr}]`);
@@ -90,7 +96,7 @@ function createProjectionAndParams({
             const relTypeStr = `[:${relType}]`;
             const outStr = relDirection === "OUT" ? "->" : "-";
             const nodeOutStr = `(${id}:${referenceNode?.name})`;
-
+            const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
             let nestedQuery;
 
             if (options) {
@@ -119,14 +125,14 @@ function createProjectionAndParams({
                         return `'^${fieldName}'`;
                     });
 
-                    nestedQuery = `${k}: apoc.coll.sortMulti([ ${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr} ${whereStr} | ${id} ${projectionStr} ], [${sorts.join(
+                    nestedQuery = `${k}: apoc.coll.sortMulti([ ${pathStr} ${whereStr} | ${id} ${projectionStr} ], [${sorts.join(
                         ", "
                     )}])${sortLimitStr}`;
                 }
 
-                nestedQuery = `${k}: [ ${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr} ${whereStr} | ${id} ${projectionStr} ]${sortLimitStr}`;
+                nestedQuery = `${k}: [ ${pathStr} ${whereStr} | ${id} ${projectionStr} ]${sortLimitStr}`;
             } else {
-                nestedQuery = `${k}: [ ${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr} ${whereStr} | ${id} ${projectionStr} ]`;
+                nestedQuery = `${k}: [ ${pathStr} ${whereStr} | ${id} ${projectionStr} ]`;
             }
 
             return proj.concat(nestedQuery);

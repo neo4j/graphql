@@ -50,6 +50,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     fieldName: field.name.value,
                     typeMeta,
                     ...(otherDirectives ? { otherDirectives } : { otherDirectives: [] }),
+                    ...(field.arguments ? { arguments: [...field.arguments] } : { arguments: [] }),
                 };
 
                 if (relationDirective) {
@@ -120,16 +121,33 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         neoSchemaInput.nodes.push(node);
 
-        const composeNodeFields = [...primitiveFields, ...cypherFields].map(
-            (x) => `${x.fieldName}: ${x.typeMeta.pretty}`
-        );
-        const composeNode = composer.createObjectTC(
-            `
-            type ${node.name} {
-                ${composeNodeFields.join("\n")}
-            }
-           `
-        );
+        const composeNode = composer.createObjectTC({
+            name: node.name,
+            fields: [...primitiveFields, ...cypherFields].reduce((res, v) => {
+                const field = { type: v.typeMeta.pretty, args: [] } as {
+                    type: string;
+                    args: { [k: string]: any };
+                };
+
+                if (v.arguments) {
+                    field.args = v.arguments.reduce((_args, arg) => {
+                        const meta = getFieldTypeMeta(arg);
+
+                        const newArg = {} as any;
+                        newArg.type = meta.pretty;
+                        newArg.description = arg.description;
+                        newArg.defaultValue = arg.defaultValue;
+
+                        return {
+                            ..._args,
+                            [arg.name.value]: newArg,
+                        };
+                    }, {});
+                }
+
+                return { ...res, [v.fieldName]: field };
+            }, {}),
+        });
 
         composeNode.addFields(
             relationFields.reduce(
