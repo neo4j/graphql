@@ -1,4 +1,4 @@
-import { DirectiveNode } from "graphql";
+import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 
 export interface TypeMeta {
     name: string;
@@ -11,6 +11,7 @@ export interface BaseField {
     fieldName: string;
     typeMeta: TypeMeta;
     otherDirectives: DirectiveNode[];
+    arguments: InputValueDefinitionNode[];
 }
 
 export interface RelationField extends BaseField {

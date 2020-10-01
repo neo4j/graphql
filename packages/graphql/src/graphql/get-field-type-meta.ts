@@ -1,10 +1,10 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-fallthrough */
 /* eslint-disable default-case */
-import { FieldDefinitionNode } from "graphql";
+import { FieldDefinitionNode, InputValueDefinitionNode } from "graphql";
 import { TypeMeta } from "../types";
 
-function getFieldTypeMeta(field: FieldDefinitionNode): TypeMeta {
+function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode): TypeMeta {
     // @ts-ignore
     let result: TypeMeta = {};
 
