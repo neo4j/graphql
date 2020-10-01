@@ -8,7 +8,7 @@
     "scripts": {
         "prepare": "npm run build:clean",
         "clean": "rimraf dist",
-        "test": "run-s test:unit test:int",
+        "test": "run-s test:unit test:int test:tck",
         "test:unit": "jest unit",
         "test:unit:watch": "jest unit --watchAll",
         "test:tck": "jest tck",

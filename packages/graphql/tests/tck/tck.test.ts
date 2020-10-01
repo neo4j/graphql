@@ -1,8 +1,8 @@
-import { graphql } from "graphql";
-import gql from "graphql-tag";
+/* eslint-disable no-param-reassign */
+import { graphql, printSchema } from "graphql";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import path from "path";
-import { cypherQuery as generateCypherQuery } from "../../src/api/index";
+import { cypherQuery as generateCypherQuery, makeAugmentedSchema } from "../../src/api/index";
 import { noGraphQLErrors } from "../../../../scripts/tests/utils";
 import { generateTestCasesFromMd, Test, TestCase } from "./utils/generate-test-cases-from-md.utils";
 
@@ -16,29 +16,39 @@ describe("TCK Generated tests", () => {
 
     testCases.forEach(({ schema, tests, file }) => {
         describe(file, () => {
+            const neoSchema = makeAugmentedSchema({ typeDefs: schema });
+
             test.each(tests.map((t) => [t.name, t as Test]))("%s", async (_name, obj) => {
                 // @ts-ignore
                 const { graphQlQuery, graphQlParams, cypherQuery, cypherParams } = obj;
+
                 const resolver = (_object: any, params: any, ctx: any, resolveInfo: any) => {
+                    if (!ctx) {
+                        // @ts-ignore
+                        ctx = {};
+                    }
+                    ctx.neoSchema = neoSchema;
                     const [cQuery, cQueryParams] = generateCypherQuery(params, ctx, resolveInfo);
 
                     expect(trimmer(cQuery)).toEqual(trimmer(cypherQuery));
                     expect(cQueryParams).toEqual(cypherParams);
+
+                    return [];
                 };
+
                 const resolvers = {
                     Query: {
-                        Movie: resolver,
+                        FindOne_Movie: resolver,
+                        FindMany_Movie: resolver,
                     },
                 };
 
-                const augmentedSchema = makeExecutableSchema({
-                    typeDefs: gql`
-                        ${schema}
-                    `,
+                const executableSchema = makeExecutableSchema({
+                    typeDefs: printSchema(neoSchema.schema),
                     resolvers,
                 });
 
-                noGraphQLErrors(await graphql(augmentedSchema, graphQlQuery, null, null, graphQlParams));
+                noGraphQLErrors(await graphql(executableSchema, graphQlQuery, null, null, graphQlParams));
             });
         });
     });

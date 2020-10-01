@@ -9,17 +9,6 @@ type Movie {
     id: ID
     title: String
 }
-
-enum Movie_SORT {
-    id_DESC
-    id_ASC
-    title_DESC
-    title_ASC
-}
-
-type Query {
-    Movie(title: String, skip: Int, limit: Int, sort: [Movie_SORT]): Movie
-}
 ```
 
 ---
@@ -30,8 +19,7 @@ type Query {
 
 ```graphql
 {
-    Movie(sort: [id_DESC]) {
-        id
+    FindMany_Movie(options: {sort: [id_DESC]}) {
         title
     }
 }
@@ -40,9 +28,9 @@ type Query {
 **Expected Cypher output**
 
 ```cypher
-MATCH (`movie`:`Movie`)
-RETURN `movie` { .id, .title } AS `movie`
-ORDER BY `movie`.id DESC
+MATCH (this:Movie) 
+RETURN this { .title } as this
+ORDER BY this.id DESC
 ```
 
 **Expected Cypher params**
@@ -59,8 +47,7 @@ ORDER BY `movie`.id DESC
 
 ```graphql
 {
-    Movie(sort: [id_DESC, title_ASC]) {
-        id
+    FindMany_Movie(options: {sort: [id_DESC, title_ASC]}) {
         title
     }
 }
@@ -69,9 +56,9 @@ ORDER BY `movie`.id DESC
 **Expected Cypher output**
 
 ```cypher
-MATCH (`movie`:`Movie`)
-RETURN `movie` { .id, .title } AS `movie`
-ORDER BY `movie`.id DESC, `movie`.title ASC
+MATCH (this:Movie) 
+RETURN this { .title } as this
+ORDER BY this.id DESC, this.title ASC
 ```
 
 **Expected Cypher params**
@@ -87,9 +74,11 @@ ORDER BY `movie`.id DESC, `movie`.title ASC
 **GraphQL input**
 
 ```graphql
-query($title: String, $skip: Int, $limit: Int, $sort: [Movie_SORT]) {
-    Movie(title: $title, skip: $skip, limit: $limit, sort: $sort) {
-        id
+query($title: String, $skip: Int, $limit: Int, $sort: [Movie_SORT]){
+    FindMany_Movie(
+        options: {sort: $sort, skip: $skip, limit: $limit},
+        query: {title: $title}
+    ) {
         title
     }
 }
@@ -109,19 +98,26 @@ query($title: String, $skip: Int, $limit: Int, $sort: [Movie_SORT]) {
 **Expected Cypher output**
 
 ```cypher
-MATCH (`movie`:`Movie` { `title`:$title })
-RETURN `movie` { .id, .title } AS `movie`
-ORDER BY `movie`.id DESC, `movie`.title ASC
-SKIP $skip
-LIMIT $limit
+MATCH (this:Movie) 
+WHERE this.title = $this_title
+RETURN this { .title } as this
+ORDER BY this.id DESC, this.title ASC
+SKIP $this_skip
+LIMIT $this_limit
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
 {
-    "limit": 2,
-    "skip": 1,
-    "title": "some title"
+    "this_limit": {
+        "high": 0,
+        "low": 2
+    },
+    "this_skip": {
+        "high": 0,
+        "low": 1
+    },
+    "this_title": "some title"
 }
 ```
