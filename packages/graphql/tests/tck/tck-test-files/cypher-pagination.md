@@ -9,10 +9,6 @@ type Movie {
     id: ID
     title: String
 }
-
-type Query {
-    Movie(title: String, skip: Int, limit: Int): Movie
-}
 ```
 
 ---
@@ -23,8 +19,7 @@ type Query {
 
 ```graphql
 {
-    Movie(skip: 1) {
-        id
+    FindMany_Movie(options: {skip: 1}) {
         title
     }
 }
@@ -33,16 +28,19 @@ type Query {
 **Expected Cypher output**
 
 ```cypher
-MATCH (`movie`:`Movie`)
-RETURN `movie` { .id, .title } AS `movie`
-SKIP $skip
+MATCH (this:Movie) 
+RETURN this { .title } as this
+SKIP $this_skip
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
 {
-    "skip": 1
+    "this_skip": {
+        "high": 0,
+        "low": 1
+    }
 }
 ```
 
@@ -54,8 +52,7 @@ SKIP $skip
 
 ```graphql
 {
-    Movie(limit: 1) {
-        id
+    FindMany_Movie(options: {limit: 1}) {
         title
     }
 }
@@ -64,16 +61,19 @@ SKIP $skip
 **Expected Cypher output**
 
 ```cypher
-MATCH (`movie`:`Movie`)
-RETURN `movie` { .id, .title } AS `movie`
-LIMIT $limit
+MATCH (this:Movie) 
+RETURN this { .title } as this
+LIMIT $this_limit
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
 {
-    "limit": 1
+    "this_limit": {
+        "high": 0,
+        "low": 1
+    }
 }
 ```
 
@@ -85,8 +85,7 @@ LIMIT $limit
 
 ```graphql
 {
-    Movie(limit: 2, skip: 1) {
-        id
+    FindMany_Movie(options: {limit: 1, skip: 2}) {
         title
     }
 }
@@ -95,18 +94,24 @@ LIMIT $limit
 **Expected Cypher output**
 
 ```cypher
-MATCH (`movie`:`Movie`)
-RETURN `movie` { .id, .title } AS `movie`
-SKIP $skip
-LIMIT $limit
+MATCH (this:Movie) 
+RETURN this { .title } as this
+SKIP $this_skip
+LIMIT $this_limit
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
 {
-    "limit": 2,
-    "skip": 1
+    "this_limit": {
+        "high": 0,
+        "low": 1
+    },
+    "this_skip": {
+        "high": 0,
+        "low": 2
+    }
 }
 ```
 
@@ -118,8 +123,7 @@ LIMIT $limit
 
 ```graphql
 query($skip: Int, $limit: Int) {
-    Movie(skip: $skip, limit: $limit) {
-        id
+    FindMany_Movie(options: {limit: $limit, skip: $skip}) {
         title
     }
 }
@@ -129,26 +133,32 @@ query($skip: Int, $limit: Int) {
 
 ```graphql-params
 {
-    "limit": 2,
-    "skip": 1
+    "skip": 2,
+    "limit": 1
 }
 ```
 
 **Expected Cypher output**
 
 ```cypher
-MATCH (`movie`:`Movie`)
-RETURN `movie` { .id, .title } AS `movie`
-SKIP $skip
-LIMIT $limit
+MATCH (this:Movie) 
+RETURN this { .title } as this
+SKIP $this_skip
+LIMIT $this_limit
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
 {
-    "limit": 2,
-    "skip": 1
+    "this_skip": {
+        "high": 0,
+        "low": 2
+    },
+    "this_limit": {
+        "high": 0,
+        "low": 1
+    }
 }
 ```
 
@@ -159,9 +169,11 @@ LIMIT $limit
 **GraphQL input**
 
 ```graphql
-query($title: String, $skip: Int, $limit: Int) {
-    Movie(title: $title, skip: $skip, limit: $limit) {
-        id
+query($skip: Int, $limit: Int, $title: String) {
+    FindMany_Movie(
+        options: {limit: $limit, skip: $skip},
+        query: {title: $title}
+    ) {
         title
     }
 }
@@ -171,8 +183,8 @@ query($title: String, $skip: Int, $limit: Int) {
 
 ```graphql-params
 {
-    "limit": 2,
-    "skip": 1,
+    "limit": 1,
+    "skip": 2,
     "title": "some title"
 }
 ```
@@ -180,18 +192,25 @@ query($title: String, $skip: Int, $limit: Int) {
 **Expected Cypher output**
 
 ```cypher
-MATCH (`movie`:`Movie` { `title`:$title })
-RETURN `movie` { .id, .title } AS `movie`
-SKIP $skip
-LIMIT $limit
+MATCH (this:Movie) 
+WHERE this.title = $this_title
+RETURN this { .title } as this
+SKIP $this_skip
+LIMIT $this_limit
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
 {
-    "limit": 2,
-    "skip": 1,
-    "title": "some title"
+    "this_limit": {
+        "high": 0,
+        "low": 1
+    },
+    "this_skip": {
+        "high": 0,
+        "low": 2
+    },
+    "this_title": "some title"
 }
 ```

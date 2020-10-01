@@ -1,5 +1,6 @@
 import { GraphQLResolveInfo } from "graphql";
 import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
+import { int } from "neo4j-driver";
 import { NeoSchema, Node } from "../classes";
 import { createWhereAndParams, createProjectionAndParams } from "../neo4j";
 import { trimmer } from "../utils";
@@ -75,11 +76,13 @@ function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string,
 
                 if (options) {
                     if (options.skip) {
-                        skipStr = `SKIP ${options.skip}`;
+                        skipStr = `SKIP $${varName}_skip`;
+                        cypherParams[`${varName}_skip`] = int(options.skip);
                     }
 
                     if (options.limit) {
-                        limitStr = `LIMIT ${options.limit}`;
+                        limitStr = `LIMIT $${varName}_limit`;
+                        cypherParams[`${varName}_limit`] = int(options.limit);
                     }
 
                     if (options.sort && options.sort.length) {
