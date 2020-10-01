@@ -5,7 +5,6 @@ import { createWhereAndParams, createProjectionAndParams } from "../neo4j";
 import { trimmer } from "../utils";
 
 function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
-    // @ts-ignore
     const neoSchema: NeoSchema = context.neoSchema;
 
     if (!neoSchema || !(neoSchema instanceof NeoSchema)) {
@@ -13,43 +12,21 @@ function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string,
     }
 
     const resolveTree = parseResolveInfo(resolveInfo) as ResolveTree;
-    const [operation, nodeName] = resolveTree.name.split("_");
     const query = resolveTree.args.query as any;
     const options = resolveTree.args.options as any;
     const fieldsByTypeName = resolveTree.fieldsByTypeName;
+    const [operation, nodeName] = resolveTree.name.split("_");
 
     const node = neoSchema.nodes.find((x) => x.name === nodeName) as Node;
+    const varName = "this";
 
-    let cypherParams: { [k: string]: any } = {};
-    const matchStr = `MATCH (this:${node.name})`;
+    const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
     let skipStr = "";
     let limitStr = "";
     let sortStr = "";
     let projStr = "";
-
-    const sort = () => {
-        const sortArr = options.sort.map((s) => {
-            let key;
-            let direc;
-
-            if (s.includes("_DESC")) {
-                direc = "DESC";
-                [key] = s.split("_DESC");
-            } else {
-                direc = "ASC";
-                [key] = s.split("_ASC");
-            }
-
-            return `this.${key} ${direc}`;
-        });
-
-        if (!sortArr.length) {
-            return "";
-        }
-
-        return `ORDER BY ${sortArr.join(", ")}`;
-    };
+    let cypherParams: { [k: string]: any } = {};
 
     switch (operation) {
         case "FindOne":
@@ -57,7 +34,7 @@ function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string,
                 if (query) {
                     const where = createWhereAndParams({
                         query,
-                        varName: `this`,
+                        varName,
                     });
                     whereStr = where[0];
                     cypherParams = { ...cypherParams, ...where[1] };
@@ -81,7 +58,7 @@ function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string,
                 if (query) {
                     const where = createWhereAndParams({
                         query,
-                        varName: `this`,
+                        varName,
                     });
                     whereStr = where[0];
                     cypherParams = { ...cypherParams, ...where[1] };
@@ -105,8 +82,23 @@ function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string,
                         limitStr = `LIMIT ${options.limit}`;
                     }
 
-                    if (options.sort) {
-                        sortStr = sort();
+                    if (options.sort && options.sort.length) {
+                        const sortArr = options.sort.map((s) => {
+                            let key;
+                            let direc;
+
+                            if (s.includes("_DESC")) {
+                                direc = "DESC";
+                                [key] = s.split("_DESC");
+                            } else {
+                                direc = "ASC";
+                                [key] = s.split("_ASC");
+                            }
+
+                            return `${varName}.${key} ${direc}`;
+                        });
+
+                        sortStr = `ORDER BY ${sortArr.join(", ")}`;
                     }
                 }
             }
@@ -119,7 +111,7 @@ function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string,
     const cypher = `
         ${matchStr}
         ${whereStr}
-        RETURN this ${projStr} as this
+        RETURN ${varName} ${projStr} as ${varName}
         ${sortStr || ""}
         ${skipStr || ""}
         ${limitStr || ""}
