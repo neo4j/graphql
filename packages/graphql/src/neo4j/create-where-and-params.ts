@@ -3,99 +3,78 @@ import { int } from "neo4j-driver";
 function createWhereAndParams({
     query,
     varName,
-    paramVarName,
+    chainStr,
 }: {
     query: any;
     varName: string;
-    paramVarName?: string;
+    chainStr?: string;
 }): [string, any] {
     let params = {};
-    let where = `WHERE`;
-
     const keys = Object.keys(query);
+    const clauses: string[] = [];
+
+    if (!keys.length) {
+        return ["", params];
+    }
+
     for (let i = 0; i < keys.length; i += 1) {
         const key = keys[i];
-        const v = query[key];
+        const value = query[key];
 
         const [fieldName, operator] = key.split("_");
 
         let param = "";
-        if (paramVarName) {
-            param = `${paramVarName}_${key}`;
+        if (chainStr) {
+            param = `${chainStr}_${key}`;
         } else {
             param = `${varName}_${key}`;
         }
 
-        if (!Array.isArray(v) && Object.keys(v).length && typeof v !== "string") {
-            const r = createWhereAndParams({ query: v, varName });
-
-            const whereGone = r[0].replace("WHERE", "");
-            where += ` (${whereGone})`;
+        const valueIsObject = Boolean(!Array.isArray(value) && Object.keys(value).length && typeof value !== "string");
+        if (valueIsObject) {
+            const r = createWhereAndParams({ query: value, varName });
+            clauses.push(`(${r[0]})`);
             params = { ...params, ...r[1] };
         } else {
             switch (operator) {
                 case "IN":
-                    where += ` ${varName}.${fieldName} IN $${param}`;
-                    params[param] = v;
+                    clauses.push(`${varName}.${fieldName} IN $${param}`);
+                    params[param] = value;
                     break;
                 case "AND":
-                    where += ` (`;
-                    for (let ii = 0; ii < v.length; ii += 1) {
-                        const r = createWhereAndParams({
-                            query: v[ii],
-                            varName,
-                            paramVarName: `${param}${ii > 0 ? ii : ""}`,
-                        });
-
-                        const whereGone = r[0].replace("WHERE", "");
-                        where += ` (${whereGone}) `;
-                        params = { ...params, ...r[1] };
-
-                        if (v[ii + 1]) {
-                            where += " AND";
-                        }
-                    }
-
-                    where += ` ) `;
-
-                    break;
                 case "OR":
-                    where += ` (`;
+                    {
+                        const innerClauses: string[] = [];
 
-                    for (let ii = 0; ii < v.length; ii += 1) {
-                        const r = createWhereAndParams({
-                            query: v[ii],
-                            varName,
-                            paramVarName: `${param}${ii > 0 ? ii : ""}`,
-                        });
+                        for (let ii = 0; ii < value.length; ii += 1) {
+                            const r = createWhereAndParams({
+                                query: value[ii],
+                                varName,
+                                chainStr: `${param}${ii > 0 ? ii : ""}`,
+                            });
 
-                        const whereGone = r[0].replace("WHERE", "");
-                        where += ` (${whereGone}) `;
-                        params = { ...params, ...r[1] };
-
-                        if (v[ii + 1]) {
-                            where += " OR";
+                            innerClauses.push(r[0]);
+                            params = { ...params, ...r[1] };
                         }
-                    }
 
-                    where += ` ) `;
+                        clauses.push(`(${innerClauses.join(` ${operator} `)})`);
+                    }
                     break;
 
                 default:
-                    where += ` ${varName}.${fieldName} = $${param}`;
+                    clauses.push(`${varName}.${fieldName} = $${param}`);
 
-                    if (typeof v === "number") {
-                        params[param] = int(v);
+                    if (typeof value === "number") {
+                        params[param] = int(value);
                     } else {
-                        params[param] = v;
+                        params[param] = value;
                     }
             }
         }
-
-        if (keys[i + 1]) {
-            where += " AND";
-        }
     }
+
+    let where = `WHERE `;
+    where += clauses.join(" AND ").replace(/WHERE/gi, "");
 
     return [where, params];
 }
