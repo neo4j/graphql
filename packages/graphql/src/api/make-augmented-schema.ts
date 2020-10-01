@@ -1,6 +1,6 @@
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { ObjectTypeDefinitionNode, visit } from "graphql";
-import { SchemaComposer } from "graphql-compose";
+import { SchemaComposer, ObjectTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { NeoSchema, NeoSchemaConstructor, Node } from "../classes";
 import { getFieldDirective, getFieldTypeMeta, findOne, findMany } from "../graphql";
@@ -13,9 +13,7 @@ export interface MakeAugmentedSchemaOptions {
 
 function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     const document = mergeTypeDefs(Array.isArray(options.typeDefs) ? options.typeDefs : [options.typeDefs]);
-
     const composer = new SchemaComposer();
-
     let neoSchema: NeoSchema;
     // @ts-ignore
     const neoSchemaInput: NeoSchemaConstructor = {
@@ -25,7 +23,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
     function createObjectType(definition: ObjectTypeDefinitionNode) {
         if (["Query", "Mutation", "Subscription"].includes(definition.name.value)) {
-            // TODO
+            // TODO custom resolvers
             return;
         }
 
@@ -38,8 +36,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                 },
                 field
             ) => {
-                const typeMeta = getFieldTypeMeta(field);
-
                 const relationDirective = getFieldDirective(field, "relationship");
                 const cypherDirective = getFieldDirective(field, "cypher");
                 const otherDirectives = field.directives?.filter(
@@ -48,7 +44,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
                 const baseField: BaseField = {
                     fieldName: field.name.value,
-                    typeMeta,
+                    typeMeta: getFieldTypeMeta(field),
                     ...(otherDirectives ? { otherDirectives } : { otherDirectives: [] }),
                     ...(field.arguments ? { arguments: [...field.arguments] } : { arguments: [] }),
                 };
@@ -61,6 +57,9 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     if (directionArg.value.kind !== "StringValue") {
                         throw new Error("@relationship direction not a string");
                     }
+                    if (!["IN", "OUT"].includes(directionArg.value.value)) {
+                        throw new Error("@relationship direction invalid");
+                    }
 
                     const typeArg = relationDirective.arguments?.find((x) => x.name.value === "type");
                     if (!typeArg) {
@@ -70,13 +69,12 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                         throw new Error("@relationship type not a string");
                     }
 
-                    const direction = directionArg.value.value;
-                    const type = typeArg.value.value;
+                    const direction = directionArg.value.value as "IN" | "OUT";
+                    const type = typeArg.value.value as string;
 
                     const relationField: RelationField = {
                         ...baseField,
                         type,
-                        // @ts-ignore
                         direction,
                     };
 
@@ -118,34 +116,32 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             primitiveFields,
             cypherFields,
         });
-
         neoSchemaInput.nodes.push(node);
 
         const composeNode = composer.createObjectTC({
             name: node.name,
-            fields: [...primitiveFields, ...cypherFields].reduce((res, v) => {
-                const field = { type: v.typeMeta.pretty, args: [] } as {
-                    type: string;
-                    args: { [k: string]: any };
-                };
+            fields: [...primitiveFields, ...cypherFields].reduce((res, field) => {
+                const newField = {
+                    type: field.typeMeta.pretty,
+                    args: {},
+                } as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
 
-                if (v.arguments) {
-                    field.args = v.arguments.reduce((_args, arg) => {
+                if (field.arguments) {
+                    newField.args = field.arguments.reduce((args, arg) => {
                         const meta = getFieldTypeMeta(arg);
 
-                        const newArg = {} as any;
-                        newArg.type = meta.pretty;
-                        newArg.description = arg.description;
-                        newArg.defaultValue = arg.defaultValue;
-
                         return {
-                            ..._args,
-                            [arg.name.value]: newArg,
+                            ...args,
+                            [arg.name.value]: {
+                                type: meta.pretty,
+                                description: arg.description,
+                                defaultValue: arg.defaultValue,
+                            },
                         };
                     }, {});
                 }
 
-                return { ...res, [v.fieldName]: field };
+                return { ...res, [field.fieldName]: newField };
             }, {}),
         });
 
