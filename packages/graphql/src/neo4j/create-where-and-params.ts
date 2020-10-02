@@ -1,5 +1,3 @@
-import { int } from "neo4j-driver";
-
 function createWhereAndParams({
     query,
     varName,
@@ -63,12 +61,7 @@ function createWhereAndParams({
 
                 default:
                     clauses.push(`${varName}.${fieldName} = $${param}`);
-
-                    if (typeof value === "number") {
-                        params[param] = int(value);
-                    } else {
-                        params[param] = value;
-                    }
+                    params[param] = value;
             }
         }
     }

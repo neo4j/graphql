@@ -1,8 +1,9 @@
 import { Driver } from "neo4j-driver";
+import { NeoSchema } from "../../../src/classes";
 import execute from "../../../src/neo4j/execute";
 
 describe("execute", () => {
-    test("should execute READ return records returned toObject", async () => {
+    test("should execute return records.toObject", async () => {
         await Promise.all(
             ["READ", "WRITE"].map(async (access) => {
                 const defaultAccessMode = access as "READ" | "WRITE";
@@ -34,7 +35,9 @@ describe("execute", () => {
                     },
                 };
 
-                const result = await execute({ driver, cypher, params, defaultAccessMode });
+                // @ts-ignore
+                const neoSchema: NeoSchema = { options: {} };
+                const result = await execute({ driver, cypher, params, defaultAccessMode, neoSchema });
 
                 expect(result).toEqual([{ title }]);
             })

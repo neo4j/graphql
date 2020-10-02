@@ -19,7 +19,7 @@ function findOne({ definition, getSchema }: { definition: ObjectTypeDefinitionNo
 
         const [cypher, params] = cypherQuery(args, context, resolveInfo);
 
-        const result = await neo4j.execute({ cypher, params, driver, defaultAccessMode: "READ" });
+        const result = await neo4j.execute({ cypher, params, driver, defaultAccessMode: "READ", neoSchema });
 
         const single = result.map((r) => r.this)[0];
 
