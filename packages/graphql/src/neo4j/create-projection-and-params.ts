@@ -1,7 +1,11 @@
 import { FieldsByTypeName } from "graphql-parse-resolve-info";
 import { NeoSchema, Node } from "../classes";
-import formatCypherProperties from "./format-cypher-properties";
 import createWhereAndParams from "./create-where-and-params";
+
+interface Res {
+    projection: string[];
+    params: any;
+}
 
 function createProjectionAndParams({
     fieldsByTypeName,
@@ -16,9 +20,7 @@ function createProjectionAndParams({
     chainStr?: string;
     varName: string;
 }): [string, any] {
-    let params = {};
-
-    function reducer(proj: string[], [key, field]: [string, FieldsByTypeName]) {
+    function reducer(res: Res, [key, field]: [string, FieldsByTypeName]): Res {
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
@@ -41,13 +43,10 @@ function createProjectionAndParams({
                     chainStr: param,
                 });
                 projectionStr = cypherProjection[0];
-                params = { ...params, ...field.args, ...cypherProjection[1] };
+                res.params = { ...res.params, ...field.args, ...cypherProjection[1] };
             }
 
-            const apocFieldArgs = Object.keys(field.args).reduce(
-                (res: string[], v) => [...res, `${v}: $${v}`],
-                []
-            ) as string[];
+            const apocFieldArgs = Object.keys(field.args).map((x) => `${x}: $${x}`);
 
             const apocStr = `${param} IN apoc.cypher.runFirstColumn("${cypherField.statement}", {this: ${
                 chainStr || varName
@@ -56,10 +55,12 @@ function createProjectionAndParams({
             }`;
 
             if (!cypherField.typeMeta.array) {
-                return proj.concat(`${key}: head([${apocStr}])`);
+                res.projection.push(`${key}: head([${apocStr}])`);
+                return res;
             }
 
-            return proj.concat(`${key}: [${apocStr}]`);
+            res.projection.push(`${key}: [${apocStr}]`);
+            return res;
         }
 
         const relationField = node.relationFields.find((x) => x.fieldName === key);
@@ -81,7 +82,7 @@ function createProjectionAndParams({
                     varName: `${varName}_${key}`,
                 });
                 whereStr = where[0];
-                params = { ...params, ...where[1] };
+                res.params = { ...res.params, ...where[1] };
             }
 
             const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
@@ -93,7 +94,7 @@ function createProjectionAndParams({
                 chainStr: param,
             });
             projectionStr = projection[0];
-            params = { ...params, ...projection[1] };
+            res.params = { ...res.params, ...projection[1] };
 
             const nodeMatchStr = `(${chainStr || varName})`;
             const inStr = relDirection === "IN" ? "<-" : "-";
@@ -141,14 +142,21 @@ function createProjectionAndParams({
                 nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
             }
 
-            return proj.concat(nestedQuery);
+            res.projection.push(nestedQuery);
+            return res;
         }
 
-        return proj.concat(`.${key}`);
+        res.projection.push(`.${key}`);
+        return res;
     }
 
     // @ts-ignore
-    return [formatCypherProperties(Object.entries(fieldsByTypeName[node.name]).reduce(reducer, [])), params];
+    const { projection, params } = Object.entries(fieldsByTypeName[node.name]).reduce(reducer, {
+        projection: [],
+        params: {},
+    }) as Res;
+
+    return [`{ ${projection.join(", ")} }`, params];
 }
 
 export default createProjectionAndParams;
