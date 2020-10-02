@@ -8,8 +8,8 @@ function replacer(_, value: any): any {
     return value;
 }
 
-function serialize(result: any): any {
+function deserialize(result: any): any {
     return JSON.parse(JSON.stringify(result, replacer));
 }
 
-export default serialize;
+export default deserialize;
