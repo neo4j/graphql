@@ -68,7 +68,7 @@ describe("findMany", () => {
         }
     });
 
-    it("should find many Move by id and limit", async () => {
+    it("should findMany Move by id and limit", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -383,7 +383,7 @@ describe("findMany", () => {
         }
     });
 
-    it("should find many Movie and populate nested cypher query", async () => {
+    it("should findMany Movie and populate nested cypher query", async () => {
         const session = driver.session();
 
         const typeDefs = `

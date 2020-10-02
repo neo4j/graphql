@@ -15,7 +15,7 @@ describe("findOne", () => {
         await driver.close();
     });
 
-    test("should find one movie by its id", async () => {
+    test("should findOne Movie by its id", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -69,7 +69,7 @@ describe("findOne", () => {
         }
     });
 
-    it("should use AND and find a movie by id and title", async () => {
+    it("should use AND and findOne Movie by id and title", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -126,7 +126,7 @@ describe("findOne", () => {
         }
     });
 
-    it("should use nested AND and find a movie by id and title", async () => {
+    it("should use nested AND and findOne Movie by id and title", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -183,7 +183,7 @@ describe("findOne", () => {
         }
     });
 
-    it("should use OR and find a movie by id or title", async () => {
+    it("should use OR and findOne Movie by id or title", async () => {
         const session = driver.session();
 
         const typeDefs = `
