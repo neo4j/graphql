@@ -1,4 +1,4 @@
-## Cypher relationship
+## Cypher directive
 
 Tests for queries on cypher directives.
 
@@ -10,6 +10,9 @@ type Actor {
     movies(title: String): [Movie] @cypher(statement: """
         MATCH (m:Movie {title: $title})
         RETURN m
+    """)
+    randomNumber: Int @cypher(statement: """
+            RETURN rand()
     """)
 }
 
@@ -53,6 +56,35 @@ RETURN this {
     topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this}, true) | this_topActor { 
         .name
     }]) 
+} as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{}
+```
+
+---
+
+### Simple directive (primitive)
+
+**GraphQL input**
+
+```graphql
+{
+    FindMany_Actor {
+        randomNumber
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Actor) 
+RETURN this { 
+    randomNumber: head([this_randomNumber IN apoc.cypher.runFirstColumn("RETURN rand()", {this: this}, true) ]) 
 } as this
 ```
 
