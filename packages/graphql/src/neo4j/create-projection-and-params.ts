@@ -16,7 +16,7 @@ function createProjectionAndParams({
     chainStr?: string;
     varName: string;
 }): [string, any] {
-    let args = {};
+    let params = {};
 
     function reducer(proj: string[], [key, field]: [string, FieldsByTypeName]) {
         let param = "";
@@ -41,7 +41,7 @@ function createProjectionAndParams({
                     chainStr: param,
                 });
                 projectionStr = cypherProjection[0];
-                args = { ...args, ...field.args, ...cypherProjection[1] };
+                params = { ...params, ...field.args, ...cypherProjection[1] };
             }
 
             const apocFieldArgs = Object.keys(field.args).reduce(
@@ -81,7 +81,7 @@ function createProjectionAndParams({
                     varName: `${varName}_${key}`,
                 });
                 whereStr = where[0];
-                args = { ...args, ...where[1] };
+                params = { ...params, ...where[1] };
             }
 
             const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
@@ -93,7 +93,7 @@ function createProjectionAndParams({
                 chainStr: param,
             });
             projectionStr = projection[0];
-            args = { ...args, ...projection[1] };
+            params = { ...params, ...projection[1] };
 
             const nodeMatchStr = `(${chainStr || varName})`;
             const inStr = relDirection === "IN" ? "<-" : "-";
@@ -148,7 +148,7 @@ function createProjectionAndParams({
     }
 
     // @ts-ignore
-    return [formatCypherProperties(Object.entries(fieldsByTypeName[node.name]).reduce(reducer, [])), args];
+    return [formatCypherProperties(Object.entries(fieldsByTypeName[node.name]).reduce(reducer, [])), params];
 }
 
 export default createProjectionAndParams;
