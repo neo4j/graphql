@@ -45,7 +45,7 @@ function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string,
                     node,
                     neoSchema,
                     fieldsByTypeName,
-                    typeName: node.name,
+                    varName,
                 });
                 projStr = projection[0];
                 cypherParams = { ...cypherParams, ...projection[1] };
@@ -69,7 +69,7 @@ function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string,
                     node,
                     neoSchema,
                     fieldsByTypeName,
-                    typeName: node.name,
+                    varName,
                 });
                 projStr = projection[0];
                 cypherParams = { ...cypherParams, ...projection[1] };
