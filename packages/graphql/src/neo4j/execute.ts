@@ -1,4 +1,5 @@
 import { Driver } from "neo4j-driver";
+import serialize from "./serialize";
 
 async function execute(input: {
     driver: Driver;
@@ -11,7 +12,7 @@ async function execute(input: {
     try {
         const result = await session.run(input.cypher, input.params);
 
-        return result.records.map((r) => r.toObject());
+        return serialize(result.records.map((r) => r.toObject()));
     } finally {
         await session.close();
     }
