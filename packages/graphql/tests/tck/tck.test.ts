@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { graphql, printSchema } from "graphql";
+import { graphql, printSchema, parse } from "graphql";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import path from "path";
 import { cypherQuery as generateCypherQuery, makeAugmentedSchema } from "../../src/api/index";
@@ -16,6 +16,7 @@ describe("TCK Generated tests", () => {
 
     testCases.forEach(({ schema, tests, file }) => {
         describe(file, () => {
+            const document = parse(schema);
             const neoSchema = makeAugmentedSchema({ typeDefs: schema });
 
             test.each(tests.map((t) => [t.name, t as Test]))("%s", async (_name, obj) => {
@@ -36,12 +37,19 @@ describe("TCK Generated tests", () => {
                     return [];
                 };
 
-                const resolvers = {
-                    Query: {
-                        FindOne_Movie: resolver,
-                        FindMany_Movie: resolver,
-                    },
-                };
+                const queries = document.definitions.reduce((res, def) => {
+                    if (def.kind !== "ObjectTypeDefinition") {
+                        return res;
+                    }
+
+                    return {
+                        ...res,
+                        [`FindOne_${def.name.value}`]: resolver,
+                        [`FindMany_${def.name.value}`]: resolver,
+                    };
+                }, {});
+
+                const resolvers = { Query: queries };
 
                 const executableSchema = makeExecutableSchema({
                     typeDefs: printSchema(neoSchema.schema),
