@@ -28,17 +28,21 @@ function createProjectionAndParams({
 
         const cypherField = node.cypherFields.find((x) => x.fieldName === key);
         if (cypherField) {
-            const referenceNode = neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name) as Node;
+            let projectionStr = "";
 
-            const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
-            const cypherProjection = createProjectionAndParams({
-                fieldsByTypeName: fieldFields,
-                node: referenceNode || node,
-                neoSchema,
-                varName: `${varName}_${key}`,
-                chainStr: param,
-            });
-            args = { ...args, ...field.args, ...cypherProjection[1] };
+            const referenceNode = neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
+            if (referenceNode) {
+                const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
+                const cypherProjection = createProjectionAndParams({
+                    fieldsByTypeName: fieldFields,
+                    node: referenceNode || node,
+                    neoSchema,
+                    varName: `${varName}_${key}`,
+                    chainStr: param,
+                });
+                projectionStr = cypherProjection[0];
+                args = { ...args, ...field.args, ...cypherProjection[1] };
+            }
 
             const apocFieldArgs = Object.keys(field.args).reduce(
                 (res: string[], v) => [...res, `${v}: $${v}`],
@@ -47,7 +51,9 @@ function createProjectionAndParams({
 
             const apocStr = `${param} IN apoc.cypher.runFirstColumn("${cypherField.statement}", {this: ${
                 chainStr || varName
-            }${apocFieldArgs.length ? `, ${apocFieldArgs.join(", ")}` : ""}}, true) | ${param} ${cypherProjection[0]}`;
+            }${apocFieldArgs.length ? `, ${apocFieldArgs.join(", ")}` : ""}}, true) ${
+                projectionStr ? `| ${param} ${projectionStr}` : ""
+            }`;
 
             if (!cypherField.typeMeta.array) {
                 return proj.concat(`${key}: head([${apocStr}])`);
@@ -59,7 +65,6 @@ function createProjectionAndParams({
         const relationField = node.relationFields.find((x) => x.fieldName === key);
         if (relationField) {
             const referenceNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-
             const relType = relationField.type;
             const relDirection = relationField.direction;
             const isArray = relationField.typeMeta.array;
