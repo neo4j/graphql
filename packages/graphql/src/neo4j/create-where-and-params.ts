@@ -1,3 +1,8 @@
+interface Res {
+    clauses: string[];
+    params: any;
+}
+
 function createWhereAndParams({
     query,
     varName,
@@ -7,20 +12,11 @@ function createWhereAndParams({
     varName: string;
     chainStr?: string;
 }): [string, any] {
-    let params = {};
-    const keys = Object.keys(query);
-    const clauses: string[] = [];
-
-    if (!keys.length) {
-        return ["", params];
+    if (!Object.keys(query).length) {
+        return ["", {}];
     }
 
-    for (let i = 0; i < keys.length; i += 1) {
-        const key = keys[i];
-        const value = query[key];
-
-        const [fieldName, operator] = key.split("_");
-
+    function reducer(res: Res, [key, value]: [string, any]): Res {
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
@@ -28,44 +24,51 @@ function createWhereAndParams({
             param = `${varName}_${key}`;
         }
 
+        const [fieldName, operator] = key.split("_");
+
         const valueIsObject = Boolean(!Array.isArray(value) && Object.keys(value).length && typeof value !== "string");
         if (valueIsObject) {
             const r = createWhereAndParams({ query: value, varName });
-            clauses.push(`(${r[0]})`);
-            params = { ...params, ...r[1] };
-        } else {
-            switch (operator) {
-                case "IN":
-                    clauses.push(`${varName}.${fieldName} IN $${param}`);
-                    params[param] = value;
-                    break;
-                case "AND":
-                case "OR":
-                    {
-                        const innerClauses: string[] = [];
+            res.clauses.push(`(${r[0]})`);
+            res.params = { ...res.params, ...r[1] };
 
-                        for (let ii = 0; ii < value.length; ii += 1) {
-                            const r = createWhereAndParams({
-                                query: value[ii],
-                                varName,
-                                chainStr: `${param}${ii > 0 ? ii : ""}`,
-                            });
-
-                            innerClauses.push(r[0]);
-                            params = { ...params, ...r[1] };
-                        }
-
-                        clauses.push(`(${innerClauses.join(` ${operator} `)})`);
-                    }
-                    break;
-
-                default:
-                    clauses.push(`${varName}.${fieldName} = $${param}`);
-                    params[param] = value;
-            }
+            return res;
         }
+
+        switch (operator) {
+            case "IN":
+                res.clauses.push(`${varName}.${fieldName} IN $${param}`);
+                res.params[param] = value;
+                break;
+            case "AND":
+            case "OR":
+                {
+                    const innerClauses: string[] = [];
+
+                    value.forEach((v: any, i) => {
+                        const r = createWhereAndParams({
+                            query: v,
+                            varName,
+                            chainStr: `${param}${i > 0 ? i : ""}`,
+                        });
+
+                        innerClauses.push(`${r[0]}`);
+                        res.params = { ...res.params, ...r[1] };
+                    });
+
+                    res.clauses.push(`(${innerClauses.join(` ${operator} `)})`);
+                }
+                break;
+
+            default:
+                res.clauses.push(`${varName}.${fieldName} = $${param}`);
+                res.params[param] = value;
+        }
+
+        return res;
     }
 
+    const { clauses, params } = Object.entries(query).reduce(reducer, { clauses: [], params: {} });
     let where = `WHERE `;
     where += clauses.join(" AND ").replace(/WHERE/gi, "");
 
