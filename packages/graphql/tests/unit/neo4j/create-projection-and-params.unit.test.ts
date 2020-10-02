@@ -42,9 +42,7 @@ describe("createProjectionAndParams", () => {
             nodes: [node],
         };
 
-        const typeName = "Movie";
-
-        const result = createProjectionAndParams({ fieldsByTypeName, node, neoSchema, typeName });
+        const result = createProjectionAndParams({ fieldsByTypeName, node, neoSchema, varName: "this" });
 
         expect(result[0]).toEqual(`{ .title }`);
         expect(result[1]).toMatchObject({});
