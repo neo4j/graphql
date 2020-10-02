@@ -19,7 +19,7 @@ function findMany({ definition, getSchema }: { definition: ObjectTypeDefinitionN
 
         const [cypher, params] = cypherQuery(args, context, resolveInfo);
 
-        const result = await neo4j.execute({ cypher, params, driver, defaultAccessMode: "READ" });
+        const result = await neo4j.execute({ cypher, params, driver, defaultAccessMode: "READ", neoSchema });
 
         return result.map((x) => x.this);
     }

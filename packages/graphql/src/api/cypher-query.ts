@@ -1,6 +1,5 @@
 import { GraphQLResolveInfo } from "graphql";
 import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
-import { int } from "neo4j-driver";
 import { NeoSchema, Node } from "../classes";
 import { createWhereAndParams, createProjectionAndParams } from "../neo4j";
 import { trimmer } from "../utils";
@@ -77,12 +76,12 @@ function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string,
                 if (options) {
                     if (options.skip) {
                         skipStr = `SKIP $${varName}_skip`;
-                        cypherParams[`${varName}_skip`] = int(options.skip);
+                        cypherParams[`${varName}_skip`] = options.skip;
                     }
 
                     if (options.limit) {
                         limitStr = `LIMIT $${varName}_limit`;
-                        cypherParams[`${varName}_limit`] = int(options.limit);
+                        cypherParams[`${varName}_limit`] = options.limit;
                     }
 
                     if (options.sort && options.sort.length) {
@@ -119,20 +118,6 @@ function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string,
         ${skipStr || ""}
         ${limitStr || ""}
     `;
-
-    if (neoSchema.options.debug) {
-        // eslint-disable-next-line no-console
-        let debug = console.log;
-
-        if (typeof neoSchema.options.debug === "function") {
-            debug = neoSchema.options.debug;
-        }
-
-        debug("=======CYPHER=======");
-        debug(trimmer(cypher));
-        debug("=======Params=======");
-        debug(JSON.stringify(cypherParams, null, 2));
-    }
 
     return [trimmer(cypher), cypherParams];
 }
