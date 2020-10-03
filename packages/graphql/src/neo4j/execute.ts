@@ -23,7 +23,7 @@ async function execute(input: {
                 debug = input.neoSchema.options.debug;
             }
 
-            debug("=======CYPHER=======");
+            debug("=======Cypher=======");
             debug(input.cypher);
             debug("=======Params=======");
             debug(JSON.stringify(serializedParams, null, 2));
