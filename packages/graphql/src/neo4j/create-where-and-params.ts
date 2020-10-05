@@ -70,7 +70,7 @@ function createWhereAndParams({
 
     const { clauses, params } = Object.entries(query).reduce(reducer, { clauses: [], params: {} });
     let where = `WHERE `;
-    where += clauses.join(" AND ").replace(/WHERE/gi, "");
+    where += clauses.join(" AND ").replace(/WHERE /gi, "");
 
     return [where, params];
 }
