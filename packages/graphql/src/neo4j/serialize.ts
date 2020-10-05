@@ -1,15 +1,7 @@
 import { int } from "neo4j-driver";
 
-function traverse(o: any) {
+function traverse(v: any) {
     function reducer(res: any, [key, value]: [string, any]) {
-        const valueIsObject = Boolean(!Array.isArray(value) && Object.keys(value).length && typeof value !== "string");
-        if (valueIsObject) {
-            return {
-                ...res,
-                [key]: traverse(value),
-            };
-        }
-
         if (Array.isArray(value)) {
             return {
                 ...res,
@@ -17,22 +9,22 @@ function traverse(o: any) {
             };
         }
 
-        switch (typeof value) {
-            case "number":
-                return {
-                    ...res,
-                    [key]: int(value),
-                };
-
-            default:
-                return {
-                    ...res,
-                    [key]: value,
-                };
-        }
+        return {
+            ...res,
+            [key]: traverse(value),
+        };
     }
 
-    return Object.entries(o).reduce(reducer, {});
+    switch (typeof v) {
+        case "number":
+            return int(v);
+
+        case "string":
+            return v;
+
+        default:
+            return Object.entries(v).reduce(reducer, {});
+    }
 }
 
 function serialize(result: any): any {
