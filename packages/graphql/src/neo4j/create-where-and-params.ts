@@ -28,7 +28,7 @@ function createWhereAndParams({
 
         const valueIsObject = Boolean(!Array.isArray(value) && Object.keys(value).length && typeof value !== "string");
         if (valueIsObject) {
-            const r = createWhereAndParams({ query: value, varName });
+            const r = createWhereAndParams({ query: value, varName, chainStr });
             res.clauses.push(`(${r[0]})`);
             res.params = { ...res.params, ...r[1] };
 
