@@ -1,3 +1,5 @@
+import { GraphQLQueryArg } from "../types";
+
 interface Res {
     clauses: string[];
     params: any;
@@ -8,7 +10,7 @@ function createWhereAndParams({
     varName,
     chainStr,
 }: {
-    query: any;
+    query: GraphQLQueryArg;
     varName: string;
     chainStr?: string;
 }): [string, any] {
@@ -16,7 +18,7 @@ function createWhereAndParams({
         return ["", {}];
     }
 
-    function reducer(res: Res, [key, value]: [string, any]): Res {
+    function reducer(res: Res, [key, value]: [string, GraphQLQueryArg]): Res {
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;

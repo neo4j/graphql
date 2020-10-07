@@ -1,6 +1,7 @@
 import { FieldsByTypeName } from "graphql-parse-resolve-info";
 import { NeoSchema, Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
+import { GraphQLOptionsArg, GraphQLQueryArg } from "../types";
 
 interface Res {
     projection: string[];
@@ -27,6 +28,9 @@ function createProjectionAndParams({
         } else {
             param = `${varName}_${key}`;
         }
+
+        const query = field.args.query as GraphQLQueryArg;
+        const options = field.args.options as GraphQLOptionsArg;
 
         const cypherField = node.cypherFields.find((x) => x.fieldName === key);
         if (cypherField) {
@@ -85,9 +89,6 @@ function createProjectionAndParams({
 
             let whereStr = "";
             let projectionStr = "";
-
-            const query = field.args.query as any;
-            const options = field.args.options as any;
 
             if (query) {
                 const where = createWhereAndParams({

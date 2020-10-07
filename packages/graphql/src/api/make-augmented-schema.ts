@@ -61,7 +61,9 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     };
                     res.cypherFields.push(cypherField);
                 } else {
-                    const primitiveField: PrimitiveField = baseField;
+                    const primitiveField: PrimitiveField = {
+                        ...baseField,
+                    };
                     res.primitiveFields.push(primitiveField);
                 }
 
