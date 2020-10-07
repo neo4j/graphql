@@ -3,6 +3,7 @@ import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import { NeoSchema, Node } from "../classes";
 import { createWhereAndParams, createProjectionAndParams } from "../neo4j";
 import { trimmer } from "../utils";
+import { GraphQLQueryArg, GraphQLOptionsArg } from "../types";
 
 function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
     const neoSchema: NeoSchema = context.neoSchema;
@@ -12,11 +13,10 @@ function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string,
     }
 
     const resolveTree = parseResolveInfo(resolveInfo) as ResolveTree;
-    const query = resolveTree.args.query as any;
-    const options = resolveTree.args.options as any;
+    const query = resolveTree.args.query as GraphQLQueryArg;
+    const options = resolveTree.args.options as GraphQLOptionsArg;
     const fieldsByTypeName = resolveTree.fieldsByTypeName;
     const [operation, nodeName] = resolveTree.name.split("_");
-
     const node = neoSchema.nodes.find((x) => x.name === nodeName) as Node;
     const varName = "this";
 
@@ -28,80 +28,58 @@ function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string,
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
 
+    const projection = createProjectionAndParams({
+        node,
+        neoSchema,
+        fieldsByTypeName,
+        varName,
+    });
+    projStr = projection[0];
+    cypherParams = { ...cypherParams, ...projection[1] };
+
+    if (query) {
+        const where = createWhereAndParams({
+            query,
+            varName,
+        });
+        whereStr = where[0];
+        cypherParams = { ...cypherParams, ...where[1] };
+    }
+
     switch (operation) {
         case "FindOne":
-            {
-                if (query) {
-                    const where = createWhereAndParams({
-                        query,
-                        varName,
-                    });
-                    whereStr = where[0];
-                    cypherParams = { ...cypherParams, ...where[1] };
-                }
-
-                const projection = createProjectionAndParams({
-                    node,
-                    neoSchema,
-                    fieldsByTypeName,
-                    varName,
-                });
-                projStr = projection[0];
-                cypherParams = { ...cypherParams, ...projection[1] };
-
-                limitStr = "LIMIT 1";
-            }
+            limitStr = "LIMIT 1";
             break;
 
         case "FindMany":
-            {
-                if (query) {
-                    const where = createWhereAndParams({
-                        query,
-                        varName,
-                    });
-                    whereStr = where[0];
-                    cypherParams = { ...cypherParams, ...where[1] };
+            if (options) {
+                if (options.skip) {
+                    skipStr = `SKIP $${varName}_skip`;
+                    cypherParams[`${varName}_skip`] = options.skip;
                 }
 
-                const projection = createProjectionAndParams({
-                    node,
-                    neoSchema,
-                    fieldsByTypeName,
-                    varName,
-                });
-                projStr = projection[0];
-                cypherParams = { ...cypherParams, ...projection[1] };
+                if (options.limit) {
+                    limitStr = `LIMIT $${varName}_limit`;
+                    cypherParams[`${varName}_limit`] = options.limit;
+                }
 
-                if (options) {
-                    if (options.skip) {
-                        skipStr = `SKIP $${varName}_skip`;
-                        cypherParams[`${varName}_skip`] = options.skip;
-                    }
+                if (options.sort && options.sort.length) {
+                    const sortArr = options.sort.map((s) => {
+                        let key;
+                        let direc;
 
-                    if (options.limit) {
-                        limitStr = `LIMIT $${varName}_limit`;
-                        cypherParams[`${varName}_limit`] = options.limit;
-                    }
+                        if (s.includes("_DESC")) {
+                            direc = "DESC";
+                            [key] = s.split("_DESC");
+                        } else {
+                            direc = "ASC";
+                            [key] = s.split("_ASC");
+                        }
 
-                    if (options.sort && options.sort.length) {
-                        const sortArr = options.sort.map((s) => {
-                            let key;
-                            let direc;
+                        return `${varName}.${key} ${direc}`;
+                    });
 
-                            if (s.includes("_DESC")) {
-                                direc = "DESC";
-                                [key] = s.split("_DESC");
-                            } else {
-                                direc = "ASC";
-                                [key] = s.split("_ASC");
-                            }
-
-                            return `${varName}.${key} ${direc}`;
-                        });
-
-                        sortStr = `ORDER BY ${sortArr.join(", ")}`;
-                    }
+                    sortStr = `ORDER BY ${sortArr.join(", ")}`;
                 }
             }
             break;
