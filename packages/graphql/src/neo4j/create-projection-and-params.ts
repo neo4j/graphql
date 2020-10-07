@@ -43,14 +43,27 @@ function createProjectionAndParams({
                     chainStr: param,
                 });
                 projectionStr = cypherProjection[0];
-                res.params = { ...res.params, ...field.args, ...cypherProjection[1] };
+                res.params = { ...res.params, ...cypherProjection[1] };
             }
 
-            const apocFieldArgs = Object.keys(field.args).map((x) => `${x}: $${x}`);
+            const apocParams = Object.entries(field.args).reduce(
+                (r: { strs: string[]; params: any }, f) => {
+                    const argName = `${param}_${f[0]}`;
+
+                    return {
+                        strs: [...r.strs, `${f[0]}: $${argName}`],
+                        params: { ...r.params, [argName]: f[1] },
+                    };
+                },
+                { strs: [], params: {} }
+            ) as { strs: string[]; params: any };
+            res.params = { ...res.params, ...apocParams.params };
+
+            const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
 
             const apocStr = `${param} IN apoc.cypher.runFirstColumn("${cypherField.statement}", {this: ${
                 chainStr || varName
-            }${apocFieldArgs.length ? `, ${apocFieldArgs.join(", ")}` : ""}}, true) ${
+            }${apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""}}, ${expectMultipleValues}) ${
                 projectionStr ? `| ${param} ${projectionStr}` : ""
             }`;
 
