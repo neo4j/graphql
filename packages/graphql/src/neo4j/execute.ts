@@ -29,13 +29,9 @@ async function execute(input: {
             debug(JSON.stringify(serializedParams, null, 2));
         }
 
-        let result;
-
-        if (input.defaultAccessMode === "READ") {
-            result = await session.readTransaction((tx) => tx.run(input.cypher, serializedParams));
-        } else {
-            result = await session.writeTransaction((tx) => tx.run(input.cypher, serializedParams));
-        }
+        const result = await session[`${input.defaultAccessMode.toLowerCase()}Transaction`]((tx) =>
+            tx.run(input.cypher, serializedParams)
+        );
 
         return deserialize(result.records.map((r) => r.toObject()));
     } finally {
