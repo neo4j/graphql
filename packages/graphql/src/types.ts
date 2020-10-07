@@ -59,6 +59,6 @@ export interface GraphQLOptionsArg {
  */
 export interface GraphQLQueryArg {
     [k: string]: any | GraphQLOptionsArg | GraphQLOptionsArg[];
-    _AND?: any | GraphQLOptionsArg | GraphQLOptionsArg[];
-    _OR?: any | GraphQLOptionsArg | GraphQLOptionsArg[];
+    _AND?: GraphQLOptionsArg[];
+    _OR?: GraphQLOptionsArg[];
 }
