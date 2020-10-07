@@ -3,7 +3,7 @@ import { ObjectTypeDefinitionNode, visit } from "graphql";
 import { SchemaComposer, ObjectTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { NeoSchema, NeoSchemaConstructor, Node } from "../classes";
-import { getFieldDirective, getFieldTypeMeta, findOne, findMany } from "../graphql";
+import { getFieldTypeMeta, findOne, findMany, getCypherMeta, getRelationshipMeta } from "../graphql";
 import { RelationField, CypherField, PrimitiveField, BaseField } from "../types";
 
 export interface MakeAugmentedSchemaOptions {
@@ -36,65 +36,29 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                 },
                 field
             ) => {
-                const relationDirective = getFieldDirective(field, "relationship");
-                const cypherDirective = getFieldDirective(field, "cypher");
-                const otherDirectives = field.directives?.filter(
-                    (x) => !["relationship", "cypher"].includes(x.name.value)
-                );
+                const relationshipMeta = getRelationshipMeta(field);
+                const cypherMeta = getCypherMeta(field);
 
                 const baseField: BaseField = {
                     fieldName: field.name.value,
                     typeMeta: getFieldTypeMeta(field),
-                    ...(otherDirectives ? { otherDirectives } : { otherDirectives: [] }),
+                    otherDirectives: (field.directives || []).filter(
+                        (x) => !["relationship", "cypher"].includes(x.name.value)
+                    ),
                     ...(field.arguments ? { arguments: [...field.arguments] } : { arguments: [] }),
                 };
 
-                if (relationDirective) {
-                    const directionArg = relationDirective.arguments?.find((x) => x.name.value === "direction");
-                    if (!directionArg) {
-                        throw new Error("@relationship direction required");
-                    }
-                    if (directionArg.value.kind !== "StringValue") {
-                        throw new Error("@relationship direction not a string");
-                    }
-                    if (!["IN", "OUT"].includes(directionArg.value.value)) {
-                        throw new Error("@relationship direction invalid");
-                    }
-
-                    const typeArg = relationDirective.arguments?.find((x) => x.name.value === "type");
-                    if (!typeArg) {
-                        throw new Error("@relationship type required");
-                    }
-                    if (typeArg.value.kind !== "StringValue") {
-                        throw new Error("@relationship type not a string");
-                    }
-
-                    const direction = directionArg.value.value as "IN" | "OUT";
-                    const type = typeArg.value.value as string;
-
+                if (relationshipMeta) {
                     const relationField: RelationField = {
                         ...baseField,
-                        type,
-                        direction,
+                        ...relationshipMeta,
                     };
-
                     res.relationFields.push(relationField);
-                } else if (cypherDirective) {
-                    const stmtArg = cypherDirective.arguments?.find((x) => x.name.value === "statement");
-                    if (!stmtArg) {
-                        throw new Error("@cypher statement required");
-                    }
-                    if (stmtArg.value.kind !== "StringValue") {
-                        throw new Error("@cypher statement not a string");
-                    }
-
-                    const statement = stmtArg.value.value;
-
+                } else if (cypherMeta) {
                     const cypherField: CypherField = {
                         ...baseField,
-                        statement,
+                        ...cypherMeta,
                     };
-
                     res.cypherFields.push(cypherField);
                 } else {
                     const primitiveField: PrimitiveField = baseField;
