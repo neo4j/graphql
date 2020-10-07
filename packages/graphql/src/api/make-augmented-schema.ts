@@ -195,6 +195,8 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     const generatedTypeDefs = composer.toSDL();
     const generatedResolvers = composer.getResolveMethods();
 
+    neoSchemaInput.typeDefs = generatedTypeDefs;
+    neoSchemaInput.resolvers = generatedResolvers;
     neoSchemaInput.schema = makeExecutableSchema({
         typeDefs: generatedTypeDefs,
         resolvers: generatedResolvers,
