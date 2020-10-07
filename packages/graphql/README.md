@@ -1,41 +1,48 @@
 # @neo4j/graphql
 
-Neo4j GraphQL Lib in TypeScript
+> Work in progress ⚠
+
+## Usage
 
 ### Installation
-
 ```
-$ npm ci
-```
-
-### Development
-
-```
-$ npm run dev
+$ npm install @neo4j/graphql
 ```
 
-### Building
-
-```
-$ npm run build
-```
-
-### Testing
-
-#### Unit
-```
-$ npm test:unit
+### Importing
+```js
+const { makeAugmentedSchema } = require("@neo4j/graphql");
 ```
 
-#### Integration
-_You need a neo4j instance_
-```
-$ cross-env NEO_USER=admin NEO_PASSWORD=password NEO_URL=neo4j://localhost:7687/neo4j npm run test:int
-```
+### Quick Start
+```js
+const { makeAugmentedSchema } = require("@neo4j/graphql");
+const { v1: neo4j } = require("neo4j-driver");
 
-#### TCK
+const typeDefs = `
+    type Movie {
+        title: String
+        year: Int
+        imdbRating: Float
+        genres: [Genre] @relation(name: "IN_GENRE", direction: "OUT")
+    }
 
-```
-$ npm test:tck
+    type Genre {
+        name: String
+        movies: [Movie] @relation(name: "IN_GENRE", direction: "IN")
+    }
+`;
+
+const neoSchema = makeAugmentedSchema({ typeDefs });
+
+const driver = neo4j.driver(
+  'bolt://localhost:7687',
+  neo4j.auth.basic('neo4j', 'letmein')
+);
+
+const server = new ApolloServer({ 
+    schema: neoSchema.schema,
+    context: { driver } 
+});
 ```
 
