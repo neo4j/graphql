@@ -46,3 +46,9 @@ const server = new ApolloServer({
 });
 ```
 
+### Debug
+```js
+const neoSchema = makeAugmentedSchema({ typeDefs, debug: true });
+// or
+const neoSchema = makeAugmentedSchema({ typeDefs, debug: (...args) => console.log(args) });
+```
