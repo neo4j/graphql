@@ -12,7 +12,7 @@ type Actor {
         RETURN m
     """)
     randomNumber: Int @cypher(statement: """
-            RETURN rand()
+        RETURN rand()
     """)
 }
 
@@ -53,7 +53,7 @@ type Movie {
 MATCH (this:Movie) 
 RETURN this { 
     .title, 
-    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this}, true) | this_topActor { 
+    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this}, false) | this_topActor { 
         .name
     }]) 
 } as this
@@ -84,7 +84,7 @@ RETURN this {
 ```cypher
 MATCH (this:Actor) 
 RETURN this { 
-    randomNumber: head([this_randomNumber IN apoc.cypher.runFirstColumn("RETURN rand()", {this: this}, true) ]) 
+    randomNumber: head([this_randomNumber IN apoc.cypher.runFirstColumn("RETURN rand()", {this: this}, false) ]) 
 } as this
 ```
 
@@ -106,7 +106,7 @@ RETURN this {
         title
         topActor {
             name
-            movies {
+            movies(title: "some title") {
                 title
             }
         }
@@ -120,9 +120,9 @@ RETURN this {
 MATCH (this:Movie) 
 RETURN this { 
     .title, 
-    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this}, true) | this_topActor { 
+    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this}, false) | this_topActor { 
         .name,
-        movies: [this_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor}, true) | this_topActor_movies {
+        movies: [this_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor, title: $this_topActor_movies_title}, true) | this_topActor_movies {
             .title
         }]
     }]) 
@@ -132,7 +132,9 @@ RETURN this {
 **Expected Cypher params**
 
 ```cypher-params
-{}
+{
+    "this_topActor_movies_title": "some title"
+}
 ```
 
 ---
@@ -147,11 +149,11 @@ RETURN this {
         title
         topActor {
             name
-            movies {
+            movies(title: "some title") {
                 title
                 topActor {
                     name
-                    movies {
+                    movies(title: "another title") {
                         title
                     }
                 }
@@ -166,13 +168,14 @@ RETURN this {
 ```cypher
 MATCH (this:Movie)
 RETURN this { 
-    .title, topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this}, true) | this_topActor { 
+    .title, 
+    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this}, false) | this_topActor { 
         .name, 
-        movies: [this_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor}, true) | this_topActor_movies { 
+        movies: [this_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor, title: $this_topActor_movies_title}, true) | this_topActor_movies { 
             .title, 
-            topActor: head([this_topActor_movies_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this_topActor_movies}, true) | this_topActor_movies_topActor { 
+            topActor: head([this_topActor_movies_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this_topActor_movies}, false) | this_topActor_movies_topActor { 
                 .name, 
-                movies: [this_topActor_movies_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor_movies_topActor}, true) | this_topActor_movies_topActor_movies {
+                movies: [this_topActor_movies_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor_movies_topActor, title: $this_topActor_movies_topActor_movies_title}, true) | this_topActor_movies_topActor_movies {
                      .title
                 }] 
             }]) 
@@ -184,7 +187,10 @@ RETURN this {
 **Expected Cypher params**
 
 ```cypher-params
-{}
+{
+    "this_topActor_movies_title": "some title",
+    "this_topActor_movies_topActor_movies_title": "another title"
+}
 ```
 
 ---
@@ -210,12 +216,12 @@ RETURN this {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 RETURN this { 
-    .title, 
-    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this}, true) | this_topActor { 
+    .title,
+    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this}, false) | this_topActor { 
         .name,
-        movies: [this_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor, title: $title}, true) | this_topActor_movies {
+        movies: [this_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor, title: $this_topActor_movies_title}, true) | this_topActor_movies { 
             .title
         }]
     }]) 
@@ -226,7 +232,7 @@ RETURN this {
 
 ```cypher-params
 {
-    "title": "some title"
+    "this_topActor_movies_title": "some title"
 }
 ```
 
