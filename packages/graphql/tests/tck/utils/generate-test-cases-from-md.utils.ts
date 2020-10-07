@@ -5,17 +5,24 @@ type Params = {
     [key: string]: unknown;
 };
 
+type Kind = "cypher" | "schema";
+
 export type Test = {
     name: string;
-    graphQlQuery: string;
-    graphQlParams: Params;
-    cypherQuery: string;
-    cypherParams: Params;
+    graphQlQuery?: string;
+    graphQlParams?: Params;
+    cypherQuery?: string;
+    cypherParams?: Params;
+    typeDefs?: string;
+    schemaOutPut?: string;
 };
 
-export type Schema = string;
-
-export type TestCase = { schema: Schema; tests: Test[]; file: string };
+export type TestCase = {
+    kind: Kind;
+    schema?: string;
+    tests: Test[];
+    file: string;
+};
 
 export function generateTestCasesFromMd(dir: string): TestCase[] {
     const files = fs
@@ -24,37 +31,62 @@ export function generateTestCasesFromMd(dir: string): TestCase[] {
         .map((dirent) => path.join(dir, dirent.name));
     return files.map(generateTests);
 }
+
+const nameRe = /###(?<capture>([^\n]+))/;
+const graphqlQueryRe = /```graphql(?<capture>(.|\s)*?)```/;
+const graphqlParamsRe = /```graphql-params(?<capture>(.|\s)*?)```/;
+const cypherQueryRe = /```cypher(?<capture>(.|\s)*?)```/;
+const cypherParamsRe = /```cypher-params(?<capture>(.|\s)*?)```/;
+const typeDefsInputRe = /```typedefs-input(?<capture>(.|\s)*?)```/;
+const schemaOutputRe = /```schema-output(?<capture>(.|\s)*?)```/;
+
 function generateTests(filePath): TestCase {
     const data = fs.readFileSync(filePath, { encoding: "utf8" });
+    const file = path.basename(filePath);
+    const [kind] = file.split("-") as [Kind];
 
-    const out = {
-        schema: extractSchema(data.toString()),
-        tests: extractTests(data.toString()),
-        file: path.basename(filePath),
+    const out: TestCase = {
+        kind,
+        tests: extractTests(data.toString(), kind),
+        file,
     };
+
+    if (kind === "cypher") {
+        out.schema = extractSchema(data.toString());
+    }
+
     return out;
 }
 
-function extractSchema(contents: string): Schema {
+function extractSchema(contents: string): string {
     // eslint-disable-next-line
     const re = /```schema(?<capture>(.|\s)*?)```/;
     return captureOrEmptyString(contents, re);
 }
 
-function extractTests(contents: string): Test[] {
-    const nameRe = /###(?<capture>([^\n]+))/;
-    // eslint-disable-next-line
-    const graphqlQueryRe = /```graphql(?<capture>(.|\s)*?)```/;
-    // eslint-disable-next-line
-    const graphqlParamsRe = /```graphql-params(?<capture>(.|\s)*?)```/;
-    // eslint-disable-next-line
-    const cypherQueryRe = /```cypher(?<capture>(.|\s)*?)```/;
-    // eslint-disable-next-line
-    const cypherParamsRe = /```cypher-params(?<capture>(.|\s)*?)```/;
-
+function extractTests(contents: string, kind: Kind): Test[] {
     // Strip head of file
     const testParts = contents.split("---").slice(1);
     const generatedTests = testParts.map((t) => t.trim());
+
+    if (kind === "schema") {
+        return generatedTests
+            .map(
+                (t): Test => {
+                    const name = captureOrEmptyString(t, nameRe).trim();
+                    if (!name) {
+                        return {} as Test;
+                    }
+
+                    const typeDefs = captureOrEmptyString(t, typeDefsInputRe);
+                    const schemaOutPut = captureOrEmptyString(t, schemaOutputRe);
+
+                    return { schemaOutPut, typeDefs, name };
+                }
+            )
+            .filter((t) => t.name);
+    }
+
     return generatedTests
         .map(
             (t): Test => {
@@ -62,18 +94,19 @@ function extractTests(contents: string): Test[] {
                 if (!name) {
                     return {} as Test;
                 }
+
                 const graphQlQuery = captureOrEmptyString(t, graphqlQueryRe);
                 const graphQlParams = JSON.parse(captureOrEmptyString(t, graphqlParamsRe) || "{}") as Params;
                 const cypherQuery = captureOrEmptyString(t, cypherQueryRe);
                 const cypherParams = JSON.parse(captureOrEmptyString(t, cypherParamsRe) || "{}") as Params;
-                const ret: Test = {
+
+                return {
                     name,
                     graphQlQuery,
                     graphQlParams,
                     cypherQuery,
                     cypherParams,
                 };
-                return ret;
             }
         )
         .filter((t) => t.name);
