@@ -6,6 +6,8 @@ export interface NeoSchemaConstructor {
     schema: GraphQLSchema;
     nodes: Node[];
     options: MakeAugmentedSchemaOptions;
+    resolvers: any;
+    typeDefs: string;
 }
 
 class NeoSchema {
@@ -15,10 +17,16 @@ class NeoSchema {
 
     public options: MakeAugmentedSchemaOptions;
 
+    public resolvers: any;
+
+    public typeDefs: string;
+
     constructor(input: NeoSchemaConstructor) {
         this.schema = input.schema;
         this.nodes = input.nodes;
         this.options = input.options;
+        this.resolvers = input.resolvers;
+        this.typeDefs = input.typeDefs;
     }
 }
 
