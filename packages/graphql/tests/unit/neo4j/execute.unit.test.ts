@@ -23,12 +23,23 @@ describe("execute", () => {
                     session: (options) => {
                         expect(options).toMatchObject({ defaultAccessMode });
 
-                        return {
+                        const tx = {
                             run: async (paramCypher, paramParams) => {
                                 expect(paramCypher).toEqual(cypher);
                                 expect(paramParams).toEqual(params);
 
                                 return { records };
+                            },
+                        };
+
+                        return {
+                            readTransaction: (fn) => {
+                                // @ts-ignore
+                                return fn(tx);
+                            },
+                            writeTransaction: (fn) => {
+                                // @ts-ignore
+                                return fn(tx);
                             },
                             close: async () => true,
                         };
