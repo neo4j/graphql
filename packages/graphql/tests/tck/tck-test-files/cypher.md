@@ -9,9 +9,6 @@ type Movie {
     id: ID
     title: String
 }
-type Query {
-    Movie(title: String): Movie
-}
 ```
 
 ---
@@ -22,7 +19,7 @@ type Query {
 
 ```graphql
 {
-    Movie(title: "River Runs Through It, A") {
+    FindOne_Movie(query: {title: "River Runs Through It, A"}) {
         title
     }
 }
@@ -31,13 +28,16 @@ type Query {
 **Expected Cypher output**
 
 ```cypher
-MATCH (`movie`:`Movie` { `title`:$title }) RETURN `movie` { .title } AS `movie`
+MATCH (this:Movie) 
+WHERE this.title = $this_title
+RETURN this { .title } as this
+LIMIT 1
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
-{ "title": "River Runs Through It, A" }
+{ "this_title": "River Runs Through It, A" }
 ```
 
 ---
@@ -48,7 +48,7 @@ MATCH (`movie`:`Movie` { `title`:$title }) RETURN `movie` { .title } AS `movie`
 
 ```graphql
 {
-    Movie(title: "River Runs Through It, A") {
+    FindOne_Movie(query: {title: "River Runs Through It, A"}) {
         id
         title
     }
@@ -58,13 +58,16 @@ MATCH (`movie`:`Movie` { `title`:$title }) RETURN `movie` { .title } AS `movie`
 **Expected Cypher output**
 
 ```cypher
-MATCH (`movie`:`Movie` { `title`:$title }) RETURN `movie` { .id, .title } AS `movie`
+MATCH (this:Movie) 
+WHERE this.title = $this_title
+RETURN this { .id, .title } as this
+LIMIT 1
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
-{ "title": "River Runs Through It, A" }
+{ "this_title": "River Runs Through It, A" }
 ```
 
 ---
@@ -75,7 +78,7 @@ MATCH (`movie`:`Movie` { `title`:$title }) RETURN `movie` { .id, .title } AS `mo
 
 ```graphql
 query($title: String) {
-    Movie(title: $title) {
+    FindOne_Movie(query: {title: $title}) {
         id
         title
     }
@@ -91,11 +94,14 @@ query($title: String) {
 **Expected Cypher output**
 
 ```cypher
-MATCH (`movie`:`Movie` { `title`:$title }) RETURN `movie` { .id, .title } AS `movie`
+MATCH (this:Movie) 
+WHERE this.title = $this_title
+RETURN this { .id, .title } as this
+LIMIT 1
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
-{ "title": "some title" }
+{ "this_title": "some title" }
 ```

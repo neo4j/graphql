@@ -5,10 +5,14 @@
         "prettier",
         "prettier/@typescript-eslint"
     ],
-    "plugins": ["import", "prettier", "@typescript-eslint"],
+    "plugins": [
+        "import",
+        "prettier",
+        "@typescript-eslint"
+    ],
     "env": {
         "node": true,
-        "jest/globals": true
+        "jest": true
     },
     "parserOptions": {
         "sourceType": "module",
@@ -16,9 +20,12 @@
     },
     "rules": {
         "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-use-before-define": "off",
-        "@typescript-eslint/no-unused-vars": [0],
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-unused-vars": [
+            0
+        ],
         "prettier/prettier": [
             "error",
             {
@@ -32,14 +39,21 @@
                 "ts": "never"
             }
         ],
-        "import/prefer-default-export": [0]
+        "import/prefer-default-export": [
+            0
+        ],
+        "prefer-destructuring": "off"
     },
     "settings": {
         "import/resolver": {
             "node": {
-                "extensions": [".ts"]
+                "extensions": [
+                    ".ts"
+                ]
             }
         },
-        "import/extensions": [".ts"]
+        "import/extensions": [
+            ".ts"
+        ]
     }
 }

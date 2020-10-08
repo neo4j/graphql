@@ -8,7 +8,7 @@
     "scripts": {
         "prepare": "npm run build:clean",
         "clean": "rimraf dist",
-        "test": "run-s test:unit test:tck test:int",
+        "test": "run-s test:unit test:int test:tck",
         "test:unit": "jest unit",
         "test:unit:watch": "jest unit --watchAll",
         "test:tck": "jest tck",
@@ -25,6 +25,7 @@
         "@jest/globals": "26.4.2",
         "@types/jest": "26.0.8",
         "@types/node": "14.0.27",
+        "apollo-server": "2.18.1",
         "jest": "26.2.2",
         "npm-run-all": "4.1.5",
         "randomstring": "1.1.5",
@@ -37,7 +38,7 @@
         "@graphql-tools/schema": "6.2.3",
         "graphql": "15.3.0",
         "graphql-compose": "7.21.4",
-        "graphql-tag": "2.11.0",
+        "graphql-parse-resolve-info": "4.9.0",
         "neo4j-driver": "4.1.2"
     }
 }
