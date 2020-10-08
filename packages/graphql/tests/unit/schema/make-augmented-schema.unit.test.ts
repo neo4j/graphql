@@ -1,5 +1,5 @@
 import { printSchema, parse, ObjectTypeDefinitionNode, NamedTypeNode, ListTypeNode, NonNullTypeNode } from "graphql";
-import makeAugmentedSchema from "../../../src/api/make-augmented-schema";
+import makeAugmentedSchema from "../../../src/schema/make-augmented-schema";
 import { Node } from "../../../src/classes";
 
 describe("makeAugmentedSchema", () => {
