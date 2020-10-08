@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo, ObjectTypeDefinitionNode } from "graphql";
-import * as neo4j from "../neo4j";
+import { execute } from "../utils";
 import { translate } from "../translate";
 import { NeoSchema } from "../classes";
 
@@ -19,7 +19,7 @@ function findMany({ definition, getSchema }: { definition: ObjectTypeDefinitionN
 
         const [cypher, params] = translate(args, context, resolveInfo);
 
-        const result = await neo4j.execute({ cypher, params, driver, defaultAccessMode: "READ", neoSchema });
+        const result = await execute({ cypher, params, driver, defaultAccessMode: "READ", neoSchema });
 
         return result.map((x) => x.this);
     }

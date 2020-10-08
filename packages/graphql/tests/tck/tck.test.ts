@@ -4,7 +4,7 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import path from "path";
 import { translate } from "../../src/translate";
 import { makeAugmentedSchema } from "../../src";
-import { serialize } from "../../src/neo4j";
+import serialize from "../../src/utils/serialize";
 import { noGraphQLErrors } from "../../../../scripts/tests/utils";
 import { generateTestCasesFromMd, Test, TestCase } from "./utils/generate-test-cases-from-md.utils";
 import { trimmer } from "../../src/utils";

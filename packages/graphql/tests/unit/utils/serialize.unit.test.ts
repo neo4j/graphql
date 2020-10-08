@@ -1,5 +1,5 @@
 import { int } from "neo4j-driver";
-import serialize from "../../../src/neo4j/serialize";
+import serialize from "../../../src/utils/serialize";
 
 describe("serialize", () => {
     test("should serialize object to neo4j object", () => {

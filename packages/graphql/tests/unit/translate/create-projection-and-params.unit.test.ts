@@ -1,4 +1,4 @@
-import createProjectionAndParams from "../../../src/neo4j/create-projection-and-params";
+import createProjectionAndParams from "../../../src/translate/create-projection-and-params";
 import { NeoSchema } from "../../../src/classes";
 
 describe("createProjectionAndParams", () => {

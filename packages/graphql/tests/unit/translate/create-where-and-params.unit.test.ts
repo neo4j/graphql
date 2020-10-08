@@ -1,4 +1,4 @@
-import createWhereAndParams from "../../../src/neo4j/create-where-and-params";
+import createWhereAndParams from "../../../src/translate/create-where-and-params";
 
 describe("createWhereAndParams", () => {
     test("should be a function", () => {

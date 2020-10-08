@@ -1,7 +1,8 @@
 import { GraphQLResolveInfo } from "graphql";
 import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import { NeoSchema, Node } from "../classes";
-import { createWhereAndParams, createProjectionAndParams } from "../neo4j";
+import createWhereAndParams from "./create-where-and-params";
+import createProjectionAndParams from "./create-projection-and-params";
 import { trimmer } from "../utils";
 import { GraphQLQueryArg, GraphQLOptionsArg } from "../types";
 
