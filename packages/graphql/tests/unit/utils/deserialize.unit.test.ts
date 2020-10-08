@@ -1,5 +1,5 @@
 import { int } from "neo4j-driver";
-import deserialize from "../../../src/neo4j/deserialize";
+import deserialize from "../../../src/utils/deserialize";
 
 describe("deserialize", () => {
     test("should deserialize neo4j object to normal object", () => {

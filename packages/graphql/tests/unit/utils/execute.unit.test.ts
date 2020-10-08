@@ -1,6 +1,6 @@
 import { Driver } from "neo4j-driver";
 import { NeoSchema } from "../../../src/classes";
-import execute from "../../../src/neo4j/execute";
+import execute from "../../../src/utils/execute";
 
 describe("execute", () => {
     test("should execute return records.toObject", async () => {

@@ -1,1 +1,1 @@
-export * from "./schema";
+export { MakeAugmentedSchemaOptions, makeAugmentedSchema } from "./schema";
