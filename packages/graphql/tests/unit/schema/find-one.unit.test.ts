@@ -1,8 +1,8 @@
 import { ObjectTypeDefinitionNode } from "graphql";
 import { NeoSchema } from "../../../src/classes";
-import findMany from "../../../src/graphql/find-many";
+import findOne from "../../../src/schema/find-one";
 
-describe("findMany", () => {
+describe("findOne", () => {
     test("should return the correct; type, args and resolve", () => {
         // @ts-ignore
         const neoSchema: NeoSchema = {};
@@ -15,12 +15,11 @@ describe("findMany", () => {
             },
         };
 
-        const result = findMany({ definition, getSchema: () => neoSchema });
-        expect(result.type).toEqual(`[Movie]!`);
+        const result = findOne({ definition, getSchema: () => neoSchema });
+        expect(result.type).toEqual(`Movie`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
             query: `MovieQuery`,
-            options: `MovieOptions`,
         });
     });
 });

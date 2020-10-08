@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { parse, ObjectTypeDefinitionNode } from "graphql";
-import getFieldTypeMeta from "../../../src/graphql/get-field-type-meta";
+import getFieldTypeMeta from "../../../src/schema/get-field-type-meta";
 
 describe("getFieldTypeMeta", () => {
     test("should return NonNullType ListType type name", () => {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { FieldDefinitionNode } from "graphql";
-import getRelationshipMeta from "../../../src/graphql/get-relationship-meta";
+import getRelationshipMeta from "../../../src/schema/get-relationship-meta";
 
 describe("getRelationshipMeta", () => {
     test("should return undefined if no directive found", () => {

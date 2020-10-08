@@ -3,7 +3,11 @@ import { ObjectTypeDefinitionNode, visit } from "graphql";
 import { SchemaComposer, ObjectTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { NeoSchema, NeoSchemaConstructor, Node } from "../classes";
-import { getFieldTypeMeta, findOne, findMany, getCypherMeta, getRelationshipMeta } from "../graphql";
+import getFieldTypeMeta from "./get-field-type-meta";
+import getCypherMeta from "./get-cypher-meta";
+import getRelationshipMeta from "./get-relationship-meta";
+import findMany from "./find-many";
+import findOne from "./find-one";
 import { RelationField, CypherField, PrimitiveField, BaseField } from "../types";
 
 export interface MakeAugmentedSchemaOptions {
