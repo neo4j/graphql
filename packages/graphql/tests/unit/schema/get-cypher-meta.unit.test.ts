@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { FieldDefinitionNode } from "graphql";
-import getCypherMeta from "../../../src/graphql/get-cypher-meta";
+import getCypherMeta from "../../../src/schema/get-cypher-meta";
 
 describe("getCypherMeta", () => {
     test("should return undefined if no directive found", () => {

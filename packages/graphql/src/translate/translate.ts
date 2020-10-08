@@ -5,7 +5,7 @@ import { createWhereAndParams, createProjectionAndParams } from "../neo4j";
 import { trimmer } from "../utils";
 import { GraphQLQueryArg, GraphQLOptionsArg } from "../types";
 
-function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
+function translate(_, context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
     const neoSchema: NeoSchema = context.neoSchema;
 
     if (!neoSchema || !(neoSchema instanceof NeoSchema)) {
@@ -100,4 +100,4 @@ function cypherQuery(_, context: any, resolveInfo: GraphQLResolveInfo): [string,
     return [trimmer(cypher), cypherParams];
 }
 
-export default cypherQuery;
+export default translate;

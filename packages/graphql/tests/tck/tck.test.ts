@@ -2,7 +2,7 @@
 import { graphql, printSchema, parse } from "graphql";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import path from "path";
-import { cypherQuery as generateCypherQuery } from "../../src/api/index";
+import { translate } from "../../src/translate";
 import { makeAugmentedSchema } from "../../src";
 import { serialize } from "../../src/neo4j";
 import { noGraphQLErrors } from "../../../../scripts/tests/utils";
@@ -35,7 +35,7 @@ describe("TCK Generated tests", () => {
                         }
                         ctx.neoSchema = neoSchema;
 
-                        const [cQuery, cQueryParams] = generateCypherQuery(params, ctx, resolveInfo);
+                        const [cQuery, cQueryParams] = translate(params, ctx, resolveInfo);
                         expect(trimmer(cQuery)).toEqual(trimmer(cypherQuery));
                         expect(serialize(cQueryParams)).toEqual(cypherParams);
 

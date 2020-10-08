@@ -1,9 +1,9 @@
 import { GraphQLResolveInfo, ObjectTypeDefinitionNode } from "graphql";
 import * as neo4j from "../neo4j";
-import { cypherQuery } from "../api";
+import { translate } from "../translate";
 import { NeoSchema } from "../classes";
 
-function findMany({ definition, getSchema }: { definition: ObjectTypeDefinitionNode; getSchema: () => NeoSchema }) {
+function findOne({ definition, getSchema }: { definition: ObjectTypeDefinitionNode; getSchema: () => NeoSchema }) {
     async function resolve(_: any, args: any, context: any, resolveInfo: GraphQLResolveInfo) {
         const neoSchema = getSchema();
 
@@ -17,18 +17,20 @@ function findMany({ definition, getSchema }: { definition: ObjectTypeDefinitionN
             throw new Error("context.driver missing");
         }
 
-        const [cypher, params] = cypherQuery(args, context, resolveInfo);
+        const [cypher, params] = translate(args, context, resolveInfo);
 
         const result = await neo4j.execute({ cypher, params, driver, defaultAccessMode: "READ", neoSchema });
 
-        return result.map((x) => x.this);
+        const single = result.map((r) => r.this)[0];
+
+        return single;
     }
 
     return {
-        type: `[${definition.name.value}]!`,
+        type: `${definition.name.value}`,
         resolve,
-        args: { query: `${definition.name.value}Query`, options: `${definition.name.value}Options` },
+        args: { query: `${definition.name.value}Query` },
     };
 }
 
-export default findMany;
+export default findOne;
