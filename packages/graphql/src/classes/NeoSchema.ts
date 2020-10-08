@@ -1,6 +1,6 @@
 import { GraphQLSchema } from "graphql";
 import Node from "./Node";
-import { MakeAugmentedSchemaOptions } from "../api/index";
+import { MakeAugmentedSchemaOptions } from "../schema/index";
 
 export interface NeoSchemaConstructor {
     schema: GraphQLSchema;
