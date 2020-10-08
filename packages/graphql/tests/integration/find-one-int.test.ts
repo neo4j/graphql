@@ -2,7 +2,7 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
-import makeAugmentedSchema from "../../src/api/make-augmented-schema";
+import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
 
 describe("findOne", () => {
     let driver: Driver;

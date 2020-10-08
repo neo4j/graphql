@@ -1,8 +1,9 @@
 /* eslint-disable no-param-reassign */
-import { graphql, printSchema, parse, print } from "graphql";
+import { graphql, printSchema, parse } from "graphql";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import path from "path";
-import { cypherQuery as generateCypherQuery, makeAugmentedSchema } from "../../src/api/index";
+import { cypherQuery as generateCypherQuery } from "../../src/api/index";
+import { makeAugmentedSchema } from "../../src";
 import { serialize } from "../../src/neo4j";
 import { noGraphQLErrors } from "../../../../scripts/tests/utils";
 import { generateTestCasesFromMd, Test, TestCase } from "./utils/generate-test-cases-from-md.utils";
