@@ -36,7 +36,7 @@ describe("findOne", () => {
 
         const query = `
             query($id: ID){
-                FindOne_Movie(query: {id: $id}){
+                FindOne_Movie(where: {id: $id}){
                     id
                 }
             }
@@ -90,7 +90,7 @@ describe("findOne", () => {
 
         const query = `
             query($id: ID){
-                FindOne_Movie(query: {AND: [{title: "Movie"}, {id: $id}]}){
+                FindOne_Movie(where: {AND: [{title: "Movie"}, {id: $id}]}){
                     id
                     title
                 }
@@ -147,7 +147,7 @@ describe("findOne", () => {
 
         const query = `
             query($id: ID){
-                FindOne_Movie(query: {AND: [{id: $id, AND: [{AND: [{title: "Movie"}]}] }]}){
+                FindOne_Movie(where: {AND: [{id: $id, AND: [{AND: [{title: "Movie"}]}] }]}){
                     id
                     title
                 }
@@ -211,8 +211,8 @@ describe("findOne", () => {
         });
 
         const query = `
-            query($movieQuery: MovieQuery){
-                FindOne_Movie(query: $movieQuery){
+            query($movieWhere: MovieWhere){
+                FindOne_Movie(where: $movieWhere){
                     id
                     title
                 }
@@ -230,7 +230,7 @@ describe("findOne", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                variableValues: { movieQuery: { OR: [{ title, id }] } },
+                variableValues: { movieWhere: { OR: [{ title, id }] } },
                 contextValue: { driver },
             });
 

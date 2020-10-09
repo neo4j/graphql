@@ -127,11 +127,11 @@ RETURN this {
 
 ```graphql
 {
-    FindMany_Movie(query: {title: "some title"}) {
+    FindMany_Movie(where: {title: "some title"}) {
         title
-        topActor(query: {name: "top actor"}) {
+        topActor(where: {name: "top actor"}) {
             name
-            movies(query: {title: "top actor movie"}) {
+            movies(where: {title: "top actor movie"}) {
                 title
             }
         }

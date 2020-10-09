@@ -39,7 +39,7 @@ describe("findMany", () => {
 
         const query = `
             query($id: ID){
-                FindMany_Movie(query: {id: $id}){
+                FindMany_Movie(where: {id: $id}){
                     id
                 }
             }
@@ -92,7 +92,7 @@ describe("findMany", () => {
 
         const query = `
             query($id: ID){
-                FindMany_Movie(query: {id: $id}, options: {limit: 2}){
+                FindMany_Movie(where: {id: $id}, options: {limit: 2}){
                     id
                 }
             }
@@ -151,7 +151,7 @@ describe("findMany", () => {
 
         const query = `
             query($ids: [ID]){
-                FindMany_Movie(query: {id_IN: $ids}){
+                FindMany_Movie(where: {id_IN: $ids}){
                     id
                 }
             }
@@ -215,7 +215,7 @@ describe("findMany", () => {
 
         const query = `
             query($ids: [ID], $title: String){
-                FindMany_Movie(query: {id_IN: $ids, title: $title}){
+                FindMany_Movie(where: {id_IN: $ids, title: $title}){
                     id
                     title
                 }
@@ -287,9 +287,9 @@ describe("findMany", () => {
 
         const query = `
             query($movieIds: [ID], $actorIds: [ID]){
-                FindMany_Movie(query: {id_IN: $movieIds}){
+                FindMany_Movie(where: {id_IN: $movieIds}){
                     id
-                    actors(query: {id_IN: $actorIds}){
+                    actors(where: {id_IN: $actorIds}){
                         id
                         movies {
                             id
@@ -427,7 +427,7 @@ describe("findMany", () => {
 
         const query = `
             query($movieIds: [ID], $actorIds: [ID]){
-                FindMany_Movie(query: {id_IN: $movieIds}){
+                FindMany_Movie(where: {id_IN: $movieIds}){
                     id
                     actors(actorIds: $actorIds) {
                         id

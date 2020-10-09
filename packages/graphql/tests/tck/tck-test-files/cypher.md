@@ -19,7 +19,7 @@ type Movie {
 
 ```graphql
 {
-    FindOne_Movie(query: {title: "River Runs Through It, A"}) {
+    FindOne_Movie(where: {title: "River Runs Through It, A"}) {
         title
     }
 }
@@ -48,7 +48,7 @@ LIMIT 1
 
 ```graphql
 {
-    FindOne_Movie(query: {title: "River Runs Through It, A"}) {
+    FindOne_Movie(where: {title: "River Runs Through It, A"}) {
         id
         title
     }
@@ -78,7 +78,7 @@ LIMIT 1
 
 ```graphql
 query($title: String) {
-    FindOne_Movie(query: {title: $title}) {
+    FindOne_Movie(where: {title: $title}) {
         id
         title
     }

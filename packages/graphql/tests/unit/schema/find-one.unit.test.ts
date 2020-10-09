@@ -19,7 +19,7 @@ describe("findOne", () => {
         expect(result.type).toEqual(`Movie`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
-            query: `MovieQuery`,
+            where: `MovieWhere`,
         });
     });
 });

@@ -6,15 +6,15 @@ describe("createWhereAndParams", () => {
     });
 
     test("should return the correct clause with 1 param", () => {
-        const query = {
+        const whereInput = {
             title: "some title",
         };
 
         const varName = "this";
 
-        const result = createWhereAndParams({ query, varName });
+        const result = createWhereAndParams({ whereInput, varName });
 
         expect(result[0]).toEqual(`WHERE this.title = $this_title`);
-        expect(result[1]).toMatchObject({ this_title: query.title });
+        expect(result[1]).toMatchObject({ this_title: whereInput.title });
     });
 });
