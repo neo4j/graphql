@@ -27,7 +27,7 @@ function findMany({ definition, getSchema }: { definition: ObjectTypeDefinitionN
     return {
         type: `[${definition.name.value}]!`,
         resolve,
-        args: { query: `${definition.name.value}Query`, options: `${definition.name.value}Options` },
+        args: { where: `${definition.name.value}Where`, options: `${definition.name.value}Options` },
     };
 }
 

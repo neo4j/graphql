@@ -122,7 +122,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     [relation.fieldName]: {
                         type: relation.typeMeta.pretty,
                         args: {
-                            query: `${relation.typeMeta.name}Query`,
+                            where: `${relation.typeMeta.name}Where`,
                             options: `${relation.typeMeta.name}Options`,
                         },
                     },
@@ -172,7 +172,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
 
         composer.createInputTC({
-            name: `${node.name}Query`,
+            name: `${node.name}Where`,
             fields: {
                 ...looseFields,
                 ...andOrFields,

@@ -29,7 +29,7 @@ function findOne({ definition, getSchema }: { definition: ObjectTypeDefinitionNo
     return {
         type: `${definition.name.value}`,
         resolve,
-        args: { query: `${definition.name.value}Query` },
+        args: { where: `${definition.name.value}Where` },
     };
 }
 

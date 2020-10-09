@@ -1,4 +1,4 @@
-import { GraphQLQueryArg } from "../types";
+import { GraphQLWhereArg } from "../types";
 
 interface Res {
     clauses: string[];
@@ -6,19 +6,19 @@ interface Res {
 }
 
 function createWhereAndParams({
-    query,
+    whereInput,
     varName,
     chainStr,
 }: {
-    query: GraphQLQueryArg;
+    whereInput: GraphQLWhereArg;
     varName: string;
     chainStr?: string;
 }): [string, any] {
-    if (!Object.keys(query).length) {
+    if (!Object.keys(whereInput).length) {
         return ["", {}];
     }
 
-    function reducer(res: Res, [key, value]: [string, GraphQLQueryArg]): Res {
+    function reducer(res: Res, [key, value]: [string, GraphQLWhereArg]): Res {
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
@@ -28,7 +28,7 @@ function createWhereAndParams({
 
         const valueIsObject = Boolean(!Array.isArray(value) && Object.keys(value).length && typeof value !== "string");
         if (valueIsObject) {
-            const r = createWhereAndParams({ query: value, varName, chainStr });
+            const r = createWhereAndParams({ whereInput: value, varName, chainStr });
             res.clauses.push(`(${r[0]})`);
             res.params = { ...res.params, ...r[1] };
 
@@ -51,7 +51,7 @@ function createWhereAndParams({
 
                             value.forEach((v: any, i) => {
                                 const r = createWhereAndParams({
-                                    query: v,
+                                    whereInput: v,
                                     varName,
                                     chainStr: `${param}${i > 0 ? i : ""}`,
                                 });
@@ -73,7 +73,7 @@ function createWhereAndParams({
         return res;
     }
 
-    const { clauses, params } = Object.entries(query).reduce(reducer, { clauses: [], params: {} });
+    const { clauses, params } = Object.entries(whereInput).reduce(reducer, { clauses: [], params: {} });
     let where = `WHERE `;
     where += clauses.join(" AND ").replace(/WHERE /gi, "");
 
