@@ -55,7 +55,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    FindMany_Movie(query: {_AND: [{title: "some title"}]}) {
+    FindMany_Movie(query: {AND: [{title: "some title"}]}) {
         title
     }
 }
@@ -65,7 +65,7 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie) 
-WHERE (this.title = $this__AND_title) 
+WHERE (this.title = $this_AND_title) 
 RETURN this { .title } as this
 ```
 
@@ -73,7 +73,7 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this__AND_title": "some title"
+    "this_AND_title": "some title"
 }
 ```
 
@@ -85,7 +85,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    FindMany_Movie(query: {_AND: [{_AND:[{title: "some title"}]}]}) {
+    FindMany_Movie(query: {AND: [{AND: [{title: "some title"}]}]}) {
         title
     }
 }
@@ -95,7 +95,7 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie) 
-WHERE ((this.title = $this__AND__AND_title)) 
+WHERE ((this.title = $this_AND_AND_title)) 
 RETURN this { .title } as this
 ```
 
@@ -103,7 +103,7 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this__AND__AND_title": "some title"
+    "this_AND_AND_title": "some title"
 }
 ```
 
@@ -115,7 +115,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    FindMany_Movie(query: {_AND: [{_AND:[{_AND: [{title: "some title"}]}]}]}) {
+    FindMany_Movie(query: {AND: [{AND: [{AND: [{title: "some title"}]}]}]}) {
         title
     }
 }
@@ -125,7 +125,7 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie) 
-WHERE (((this.title = $this__AND__AND__AND_title)))
+WHERE (((this.title = $this_AND_AND_AND_title)))
 RETURN this { .title } as this
 ```
 
@@ -133,7 +133,7 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this__AND__AND__AND_title": "some title"
+    "this_AND_AND_AND_title": "some title"
 }
 ```
 
@@ -145,7 +145,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    FindMany_Movie(query: {_OR: [{title: "some title"}]}) {
+    FindMany_Movie(query: {OR: [{title: "some title"}]}) {
         title
     }
 }
@@ -155,7 +155,7 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie) 
-WHERE (this.title = $this__OR_title) 
+WHERE (this.title = $this_OR_title) 
 RETURN this { .title } as this
 ```
 
@@ -163,7 +163,7 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this__OR_title": "some title"
+    "this_OR_title": "some title"
 }
 ```
 
@@ -175,7 +175,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    FindMany_Movie(query: {_OR: [{_OR:[{title: "some title"}]}]}) {
+    FindMany_Movie(query: {OR: [{OR: [{title: "some title"}]}]}) {
         title
     }
 }
@@ -185,7 +185,7 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie) 
-WHERE ((this.title = $this__OR__OR_title)) 
+WHERE ((this.title = $this_OR_OR_title)) 
 RETURN this { .title } as this
 ```
 
@@ -193,7 +193,7 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this__OR__OR_title": "some title"
+    "this_OR_OR_title": "some title"
 }
 ```
 
@@ -205,7 +205,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    FindMany_Movie(query: {_OR: [{_OR:[{_OR: [{title: "some title"}]}]}]}) {
+    FindMany_Movie(query: {OR: [{OR: [{OR: [{title: "some title"}]}]}]}) {
         title
     }
 }
@@ -215,7 +215,7 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie) 
-WHERE (((this.title = $this__OR__OR__OR_title)))
+WHERE (((this.title = $this_OR_OR_OR_title)))
 RETURN this { .title } as this
 ```
 
@@ -223,7 +223,7 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this__OR__OR__OR_title": "some title"
+    "this_OR_OR_OR_title": "some title"
 }
 ```
 

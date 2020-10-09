@@ -21,18 +21,18 @@ type Movie {
   id: ID
 }
 
-input Movie_AND {
+input MovieAND {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
-input Movie_OR {
+input MovieOR {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
 enum Movie_SORT {
@@ -49,8 +49,8 @@ input MovieOptions {
 input MovieQuery {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
 type Query {
@@ -83,11 +83,11 @@ type Actor {
   name: String
 }
 
-input Actor_AND {
+input ActorAND {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 enum Actor_SORT {
@@ -95,11 +95,11 @@ enum Actor_SORT {
   name_ASC
 }
 
-input Actor_OR {
+input ActorOR {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 
@@ -112,8 +112,8 @@ input ActorOptions {
 input ActorQuery {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 type Movie {
@@ -121,18 +121,18 @@ type Movie {
   actors(query: ActorQuery, options: ActorOptions): [Actor]!
 }
 
-input Movie_AND {
+input MovieAND {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
-input Movie_OR {
+input MovieOR {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
 enum Movie_SORT {
@@ -149,8 +149,8 @@ input MovieOptions {
 input MovieQuery {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
 type Query {
@@ -187,11 +187,11 @@ type Actor {
   movies(query: MovieQuery, options: MovieOptions): [Movie]
 }
 
-input Actor_AND {
+input ActorAND {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 enum Actor_SORT {
@@ -199,11 +199,11 @@ enum Actor_SORT {
   name_ASC
 }
 
-input Actor_OR {
+input ActorOR {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 
@@ -216,8 +216,8 @@ input ActorOptions {
 input ActorQuery {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 type Movie {
@@ -225,18 +225,18 @@ type Movie {
   actors(query: ActorQuery, options: ActorOptions): [Actor]!
 }
 
-input Movie_AND {
+input MovieAND {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
-input Movie_OR {
+input MovieOR {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
 enum Movie_SORT {
@@ -253,8 +253,8 @@ input MovieOptions {
 input MovieQuery {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
 type Query {
@@ -293,11 +293,11 @@ type Actor {
   name: String
 }
 
-input Actor_AND {
+input ActorAND {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 enum Actor_SORT {
@@ -305,11 +305,11 @@ enum Actor_SORT {
   name_ASC
 }
 
-input Actor_OR {
+input ActorOR {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 
@@ -322,8 +322,8 @@ input ActorOptions {
 input ActorQuery {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 type Movie {
@@ -331,18 +331,18 @@ type Movie {
   actors(title: String): [Actor]
 }
 
-input Movie_AND {
+input MovieAND {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
-input Movie_OR {
+input MovieOR {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
 enum Movie_SORT {
@@ -359,8 +359,8 @@ input MovieOptions {
 input MovieQuery {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
 type Query {

@@ -59,13 +59,13 @@ describe("makeAugmentedSchema", () => {
 
             // OR
             const or = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}_OR`
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}OR`
             );
             expect(or).toBeTruthy();
 
             // AND
             const and = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}_AND`
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}AND`
             );
             expect(and).toBeTruthy();
 
