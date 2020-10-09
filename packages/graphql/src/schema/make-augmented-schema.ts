@@ -151,12 +151,12 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         }, {});
 
         const andOrFields = {
-            _OR: `[${node.name}_OR]`,
-            _AND: `[${node.name}_AND]`,
+            OR: `[${node.name}OR]`,
+            AND: `[${node.name}AND]`,
         };
 
         composer.createInputTC({
-            name: `${node.name}_AND`,
+            name: `${node.name}AND`,
             fields: {
                 ...looseFields,
                 ...andOrFields,
@@ -164,7 +164,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
 
         composer.createInputTC({
-            name: `${node.name}_OR`,
+            name: `${node.name}OR`,
             fields: {
                 ...looseFields,
                 ...andOrFields,
