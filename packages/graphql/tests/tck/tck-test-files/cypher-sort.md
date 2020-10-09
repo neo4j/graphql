@@ -77,7 +77,7 @@ ORDER BY this.id DESC, this.title ASC
 query($title: String, $skip: Int, $limit: Int, $sort: [Movie_SORT]){
     FindMany_Movie(
         options: {sort: $sort, skip: $skip, limit: $limit},
-        query: {title: $title}
+        where: {title: $title}
     ) {
         title
     }

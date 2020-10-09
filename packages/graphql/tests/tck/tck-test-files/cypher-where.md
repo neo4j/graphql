@@ -1,6 +1,6 @@
 ## Cypher WHERE
 
-Tests for queries using options.query
+Tests for queries using options.where
 
 Schema:
 
@@ -25,7 +25,7 @@ type Movie {
 
 ```graphql
 {
-    FindMany_Movie(query: {title: "some title"}) {
+    FindMany_Movie(where: {title: "some title"}) {
         title
     }
 }
@@ -55,7 +55,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    FindMany_Movie(query: {AND: [{title: "some title"}]}) {
+    FindMany_Movie(where: {AND: [{title: "some title"}]}) {
         title
     }
 }
@@ -85,7 +85,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    FindMany_Movie(query: {AND: [{AND: [{title: "some title"}]}]}) {
+    FindMany_Movie(where: {AND: [{AND: [{title: "some title"}]}]}) {
         title
     }
 }
@@ -115,7 +115,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    FindMany_Movie(query: {AND: [{AND: [{AND: [{title: "some title"}]}]}]}) {
+    FindMany_Movie(where: {AND: [{AND: [{AND: [{title: "some title"}]}]}]}) {
         title
     }
 }
@@ -145,7 +145,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    FindMany_Movie(query: {OR: [{title: "some title"}]}) {
+    FindMany_Movie(where: {OR: [{title: "some title"}]}) {
         title
     }
 }
@@ -175,7 +175,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    FindMany_Movie(query: {OR: [{OR: [{title: "some title"}]}]}) {
+    FindMany_Movie(where: {OR: [{OR: [{title: "some title"}]}]}) {
         title
     }
 }
@@ -205,7 +205,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    FindMany_Movie(query: {OR: [{OR: [{OR: [{title: "some title"}]}]}]}) {
+    FindMany_Movie(where: {OR: [{OR: [{OR: [{title: "some title"}]}]}]}) {
         title
     }
 }
@@ -235,7 +235,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    FindMany_Movie(query: {title_IN: ["some title"]}) {
+    FindMany_Movie(where: {title_IN: ["some title"]}) {
         title
     }
 }

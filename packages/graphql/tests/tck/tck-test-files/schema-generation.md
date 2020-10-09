@@ -46,7 +46,7 @@ input MovieOptions {
   skip: Int
 }
 
-input MovieQuery {
+input MovieWhere {
   id: ID
   id_IN: [ID]
   OR: [MovieOR]
@@ -54,8 +54,8 @@ input MovieQuery {
 }
 
 type Query {
-  FindOne_Movie(query: MovieQuery): Movie
-  FindMany_Movie(query: MovieQuery, options: MovieOptions): [Movie]!
+  FindOne_Movie(where: MovieWhere): Movie
+  FindMany_Movie(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
@@ -109,7 +109,7 @@ input ActorOptions {
   skip: Int
 }
 
-input ActorQuery {
+input ActorWhere {
   name: String
   name_IN: [String]
   OR: [ActorOR]
@@ -118,7 +118,7 @@ input ActorQuery {
 
 type Movie {
   id: ID
-  actors(query: ActorQuery, options: ActorOptions): [Actor]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor]!
 }
 
 input MovieAND {
@@ -146,7 +146,7 @@ input MovieOptions {
   skip: Int
 }
 
-input MovieQuery {
+input MovieWhere {
   id: ID
   id_IN: [ID]
   OR: [MovieOR]
@@ -154,10 +154,10 @@ input MovieQuery {
 }
 
 type Query {
-  FindOne_Actor(query: ActorQuery): Actor
-  FindMany_Actor(query: ActorQuery, options: ActorOptions): [Actor]!
-  FindOne_Movie(query: MovieQuery): Movie
-  FindMany_Movie(query: MovieQuery, options: MovieOptions): [Movie]!
+  FindOne_Actor(where: ActorWhere): Actor
+  FindMany_Actor(where: ActorWhere, options: ActorOptions): [Actor]!
+  FindOne_Movie(where: MovieWhere): Movie
+  FindMany_Movie(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
@@ -184,7 +184,7 @@ type Movie {
 ```schema-output
 type Actor {
   name: String
-  movies(query: MovieQuery, options: MovieOptions): [Movie]
+  movies(where: MovieWhere, options: MovieOptions): [Movie]
 }
 
 input ActorAND {
@@ -213,7 +213,7 @@ input ActorOptions {
   skip: Int
 }
 
-input ActorQuery {
+input ActorWhere {
   name: String
   name_IN: [String]
   OR: [ActorOR]
@@ -222,7 +222,7 @@ input ActorQuery {
 
 type Movie {
   id: ID
-  actors(query: ActorQuery, options: ActorOptions): [Actor]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor]!
 }
 
 input MovieAND {
@@ -250,7 +250,7 @@ input MovieOptions {
   skip: Int
 }
 
-input MovieQuery {
+input MovieWhere {
   id: ID
   id_IN: [ID]
   OR: [MovieOR]
@@ -258,10 +258,10 @@ input MovieQuery {
 }
 
 type Query {
-  FindOne_Actor(query: ActorQuery): Actor
-  FindMany_Actor(query: ActorQuery, options: ActorOptions): [Actor]!
-  FindOne_Movie(query: MovieQuery): Movie
-  FindMany_Movie(query: MovieQuery, options: MovieOptions): [Movie]!
+  FindOne_Actor(where: ActorWhere): Actor
+  FindMany_Actor(where: ActorWhere, options: ActorOptions): [Actor]!
+  FindOne_Movie(where: MovieWhere): Movie
+  FindMany_Movie(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
@@ -319,7 +319,7 @@ input ActorOptions {
   skip: Int
 }
 
-input ActorQuery {
+input ActorWhere {
   name: String
   name_IN: [String]
   OR: [ActorOR]
@@ -356,7 +356,7 @@ input MovieOptions {
   skip: Int
 }
 
-input MovieQuery {
+input MovieWhere {
   id: ID
   id_IN: [ID]
   OR: [MovieOR]
@@ -364,10 +364,10 @@ input MovieQuery {
 }
 
 type Query {
-  FindOne_Actor(query: ActorQuery): Actor
-  FindMany_Actor(query: ActorQuery, options: ActorOptions): [Actor]!
-  FindOne_Movie(query: MovieQuery): Movie
-  FindMany_Movie(query: MovieQuery, options: MovieOptions): [Movie]!
+  FindOne_Actor(where: ActorWhere): Actor
+  FindMany_Actor(where: ActorWhere, options: ActorOptions): [Actor]!
+  FindOne_Movie(where: MovieWhere): Movie
+  FindMany_Movie(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 

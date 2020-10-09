@@ -51,11 +51,11 @@ describe("makeAugmentedSchema", () => {
             );
             expect(options).toBeTruthy();
 
-            // Query
-            const query = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}Query`
+            // Where
+            const where = document.definitions.find(
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}Where`
             );
-            expect(query).toBeTruthy();
+            expect(where).toBeTruthy();
 
             // OR
             const or = document.definitions.find(

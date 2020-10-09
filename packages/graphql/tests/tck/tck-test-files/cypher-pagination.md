@@ -172,7 +172,7 @@ LIMIT $this_limit
 query($skip: Int, $limit: Int, $title: String) {
     FindMany_Movie(
         options: {limit: $limit, skip: $skip},
-        query: {title: $title}
+        where: {title: $title}
     ) {
         title
     }
