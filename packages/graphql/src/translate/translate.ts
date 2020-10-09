@@ -4,7 +4,7 @@ import { NeoSchema, Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import { trimmer } from "../utils";
-import { GraphQLQueryArg, GraphQLOptionsArg } from "../types";
+import { GraphQLWhereArg, GraphQLOptionsArg } from "../types";
 
 function translate(_, context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
     const neoSchema: NeoSchema = context.neoSchema;
@@ -14,8 +14,8 @@ function translate(_, context: any, resolveInfo: GraphQLResolveInfo): [string, a
     }
 
     const resolveTree = parseResolveInfo(resolveInfo) as ResolveTree;
-    const query = resolveTree.args.query as GraphQLQueryArg;
-    const options = resolveTree.args.options as GraphQLOptionsArg;
+    const whereInput = resolveTree.args.where as GraphQLWhereArg;
+    const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
     const fieldsByTypeName = resolveTree.fieldsByTypeName;
     const [operation, nodeName] = resolveTree.name.split("_");
     const node = neoSchema.nodes.find((x) => x.name === nodeName) as Node;
@@ -38,9 +38,9 @@ function translate(_, context: any, resolveInfo: GraphQLResolveInfo): [string, a
     projStr = projection[0];
     cypherParams = { ...cypherParams, ...projection[1] };
 
-    if (query) {
+    if (whereInput) {
         const where = createWhereAndParams({
-            query,
+            whereInput,
             varName,
         });
         whereStr = where[0];
@@ -53,19 +53,19 @@ function translate(_, context: any, resolveInfo: GraphQLResolveInfo): [string, a
             break;
 
         case "FindMany":
-            if (options) {
-                if (options.skip) {
+            if (optionsInput) {
+                if (optionsInput.skip) {
                     skipStr = `SKIP $${varName}_skip`;
-                    cypherParams[`${varName}_skip`] = options.skip;
+                    cypherParams[`${varName}_skip`] = optionsInput.skip;
                 }
 
-                if (options.limit) {
+                if (optionsInput.limit) {
                     limitStr = `LIMIT $${varName}_limit`;
-                    cypherParams[`${varName}_limit`] = options.limit;
+                    cypherParams[`${varName}_limit`] = optionsInput.limit;
                 }
 
-                if (options.sort && options.sort.length) {
-                    const sortArr = options.sort.map((s) => {
+                if (optionsInput.sort && optionsInput.sort.length) {
+                    const sortArr = optionsInput.sort.map((s) => {
                         let key;
                         let direc;
 
