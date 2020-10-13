@@ -2,12 +2,12 @@ import { mergeTypeDefs } from "@graphql-tools/merge";
 import { ObjectTypeDefinitionNode, visit } from "graphql";
 import { SchemaComposer, ObjectTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
+import pluralize from "pluralize";
 import { NeoSchema, NeoSchemaConstructor, Node } from "../classes";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getRelationshipMeta from "./get-relationship-meta";
-import findMany from "./find-many";
-import findOne from "./find-one";
+import find from "./find";
 import { RelationField, CypherField, PrimitiveField, BaseField } from "../types";
 
 export interface MakeAugmentedSchemaOptions {
@@ -132,7 +132,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         );
 
         const sortEnum = composer.createEnumTC({
-            name: `${node.name}_SORT`,
+            name: `${node.name}Sort`,
             values: primitiveFields.reduce((res, v) => {
                 return {
                     ...res,
@@ -185,8 +185,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
 
         composer.Query.addFields({
-            [`FindOne_${node.name}`]: findOne({ definition, getSchema: () => neoSchema }),
-            [`FindMany_${node.name}`]: findMany({ definition, getSchema: () => neoSchema }),
+            [pluralize(node.name)]: find({ definition, getSchema: () => neoSchema }),
         });
     }
 
