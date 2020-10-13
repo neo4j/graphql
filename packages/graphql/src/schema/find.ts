@@ -3,7 +3,7 @@ import { execute } from "../utils";
 import { translate } from "../translate";
 import { NeoSchema } from "../classes";
 
-function findMany({ definition, getSchema }: { definition: ObjectTypeDefinitionNode; getSchema: () => NeoSchema }) {
+function find({ definition, getSchema }: { definition: ObjectTypeDefinitionNode; getSchema: () => NeoSchema }) {
     async function resolve(_: any, args: any, context: any, resolveInfo: GraphQLResolveInfo) {
         const neoSchema = getSchema();
 
@@ -31,4 +31,4 @@ function findMany({ definition, getSchema }: { definition: ObjectTypeDefinitionN
     };
 }
 
-export default findMany;
+export default find;
