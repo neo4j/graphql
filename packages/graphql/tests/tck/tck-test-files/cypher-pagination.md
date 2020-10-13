@@ -19,7 +19,7 @@ type Movie {
 
 ```graphql
 {
-    FindMany_Movie(options: {skip: 1}) {
+    Movies(options: {skip: 1}) {
         title
     }
 }
@@ -52,7 +52,7 @@ SKIP $this_skip
 
 ```graphql
 {
-    FindMany_Movie(options: {limit: 1}) {
+    Movies(options: {limit: 1}) {
         title
     }
 }
@@ -85,7 +85,7 @@ LIMIT $this_limit
 
 ```graphql
 {
-    FindMany_Movie(options: {limit: 1, skip: 2}) {
+    Movies(options: {limit: 1, skip: 2}) {
         title
     }
 }
@@ -123,7 +123,7 @@ LIMIT $this_limit
 
 ```graphql
 query($skip: Int, $limit: Int) {
-    FindMany_Movie(options: {limit: $limit, skip: $skip}) {
+    Movies(options: {limit: $limit, skip: $skip}) {
         title
     }
 }
@@ -170,7 +170,7 @@ LIMIT $this_limit
 
 ```graphql
 query($skip: Int, $limit: Int, $title: String) {
-    FindMany_Movie(
+    Movies(
         options: {limit: $limit, skip: $skip},
         where: {title: $title}
     ) {

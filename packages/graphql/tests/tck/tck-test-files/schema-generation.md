@@ -35,13 +35,13 @@ input MovieOR {
   AND: [MovieAND]
 }
 
-enum Movie_SORT {
+enum MovieSort {
   id_DESC
   id_ASC
 }
 
 input MovieOptions {
-  sort: [Movie_SORT]
+  sort: [MovieSort]
   limit: Int
   skip: Int
 }
@@ -54,8 +54,7 @@ input MovieWhere {
 }
 
 type Query {
-  FindOne_Movie(where: MovieWhere): Movie
-  FindMany_Movie(where: MovieWhere, options: MovieOptions): [Movie]!
+  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
@@ -90,7 +89,7 @@ input ActorAND {
   AND: [ActorAND]
 }
 
-enum Actor_SORT {
+enum ActorSort {
   name_DESC
   name_ASC
 }
@@ -104,7 +103,7 @@ input ActorOR {
 
 
 input ActorOptions {
-  sort: [Actor_SORT]
+  sort: [ActorSort]
   limit: Int
   skip: Int
 }
@@ -135,13 +134,13 @@ input MovieOR {
   AND: [MovieAND]
 }
 
-enum Movie_SORT {
+enum MovieSort {
   id_DESC
   id_ASC
 }
 
 input MovieOptions {
-  sort: [Movie_SORT]
+  sort: [MovieSort]
   limit: Int
   skip: Int
 }
@@ -154,10 +153,8 @@ input MovieWhere {
 }
 
 type Query {
-  FindOne_Actor(where: ActorWhere): Actor
-  FindMany_Actor(where: ActorWhere, options: ActorOptions): [Actor]!
-  FindOne_Movie(where: MovieWhere): Movie
-  FindMany_Movie(where: MovieWhere, options: MovieOptions): [Movie]!
+  Actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
@@ -194,7 +191,7 @@ input ActorAND {
   AND: [ActorAND]
 }
 
-enum Actor_SORT {
+enum ActorSort {
   name_DESC
   name_ASC
 }
@@ -208,7 +205,7 @@ input ActorOR {
 
 
 input ActorOptions {
-  sort: [Actor_SORT]
+  sort: [ActorSort]
   limit: Int
   skip: Int
 }
@@ -239,13 +236,13 @@ input MovieOR {
   AND: [MovieAND]
 }
 
-enum Movie_SORT {
+enum MovieSort {
   id_DESC
   id_ASC
 }
 
 input MovieOptions {
-  sort: [Movie_SORT]
+  sort: [MovieSort]
   limit: Int
   skip: Int
 }
@@ -258,10 +255,8 @@ input MovieWhere {
 }
 
 type Query {
-  FindOne_Actor(where: ActorWhere): Actor
-  FindMany_Actor(where: ActorWhere, options: ActorOptions): [Actor]!
-  FindOne_Movie(where: MovieWhere): Movie
-  FindMany_Movie(where: MovieWhere, options: MovieOptions): [Movie]!
+  Actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
@@ -300,7 +295,7 @@ input ActorAND {
   AND: [ActorAND]
 }
 
-enum Actor_SORT {
+enum ActorSort {
   name_DESC
   name_ASC
 }
@@ -314,7 +309,7 @@ input ActorOR {
 
 
 input ActorOptions {
-  sort: [Actor_SORT]
+  sort: [ActorSort]
   limit: Int
   skip: Int
 }
@@ -345,13 +340,13 @@ input MovieOR {
   AND: [MovieAND]
 }
 
-enum Movie_SORT {
+enum MovieSort {
   id_DESC
   id_ASC
 }
 
 input MovieOptions {
-  sort: [Movie_SORT]
+  sort: [MovieSort]
   limit: Int
   skip: Int
 }
@@ -364,10 +359,8 @@ input MovieWhere {
 }
 
 type Query {
-  FindOne_Actor(where: ActorWhere): Actor
-  FindMany_Actor(where: ActorWhere, options: ActorOptions): [Actor]!
-  FindOne_Movie(where: MovieWhere): Movie
-  FindMany_Movie(where: MovieWhere, options: MovieOptions): [Movie]!
+  Actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 

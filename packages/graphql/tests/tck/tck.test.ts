@@ -2,6 +2,7 @@
 import { graphql, printSchema, parse } from "graphql";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import path from "path";
+import pluralize from "pluralize";
 import { translate } from "../../src/translate";
 import { makeAugmentedSchema } from "../../src";
 import serialize from "../../src/utils/serialize";
@@ -49,8 +50,7 @@ describe("TCK Generated tests", () => {
 
                         return {
                             ...res,
-                            [`FindOne_${def.name.value}`]: resolver,
-                            [`FindMany_${def.name.value}`]: resolver,
+                            [pluralize(def.name.value)]: resolver,
                         };
                     }, {});
 

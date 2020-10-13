@@ -19,7 +19,7 @@ type Movie {
 
 ```graphql
 {
-    FindMany_Movie(options: {sort: [id_DESC]}) {
+    Movies(options: {sort: [id_DESC]}) {
         title
     }
 }
@@ -47,7 +47,7 @@ ORDER BY this.id DESC
 
 ```graphql
 {
-    FindMany_Movie(options: {sort: [id_DESC, title_ASC]}) {
+    Movies(options: {sort: [id_DESC, title_ASC]}) {
         title
     }
 }
@@ -74,8 +74,8 @@ ORDER BY this.id DESC, this.title ASC
 **GraphQL input**
 
 ```graphql
-query($title: String, $skip: Int, $limit: Int, $sort: [Movie_SORT]){
-    FindMany_Movie(
+query($title: String, $skip: Int, $limit: Int, $sort: [MovieSort]){
+    Movies(
         options: {sort: $sort, skip: $skip, limit: $limit},
         where: {title: $title}
     ) {
