@@ -19,7 +19,7 @@ type Movie {
 
 ```graphql
 {
-    FindOne_Movie(query: {title: "River Runs Through It, A"}) {
+    Movies(where: {title: "River Runs Through It, A"}) {
         title
     }
 }
@@ -31,7 +31,6 @@ type Movie {
 MATCH (this:Movie) 
 WHERE this.title = $this_title
 RETURN this { .title } as this
-LIMIT 1
 ```
 
 **Expected Cypher params**
@@ -48,7 +47,7 @@ LIMIT 1
 
 ```graphql
 {
-    FindOne_Movie(query: {title: "River Runs Through It, A"}) {
+    Movies(where: {title: "River Runs Through It, A"}) {
         id
         title
     }
@@ -61,7 +60,6 @@ LIMIT 1
 MATCH (this:Movie) 
 WHERE this.title = $this_title
 RETURN this { .id, .title } as this
-LIMIT 1
 ```
 
 **Expected Cypher params**
@@ -78,7 +76,7 @@ LIMIT 1
 
 ```graphql
 query($title: String) {
-    FindOne_Movie(query: {title: $title}) {
+    Movies(where: {title: $title}) {
         id
         title
     }
@@ -97,7 +95,6 @@ query($title: String) {
 MATCH (this:Movie) 
 WHERE this.title = $this_title
 RETURN this { .id, .title } as this
-LIMIT 1
 ```
 
 **Expected Cypher params**

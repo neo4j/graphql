@@ -26,7 +26,7 @@ type Movie {
 
 ```graphql
 {
-    FindMany_Movie {
+    Movies {
         title
         topActor {
             name
@@ -56,7 +56,7 @@ RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor
 
 ```graphql
 {
-    FindMany_Movie {
+    Movies {
         title
         actors {
             name
@@ -86,7 +86,7 @@ RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor) | this_a
 
 ```graphql
 {
-    FindMany_Movie {
+    Movies {
         title
         topActor {
             name
@@ -127,11 +127,11 @@ RETURN this {
 
 ```graphql
 {
-    FindMany_Movie(query: {title: "some title"}) {
+    Movies(where: {title: "some title"}) {
         title
-        topActor(query: {name: "top actor"}) {
+        topActor(where: {name: "top actor"}) {
             name
-            movies(query: {title: "top actor movie"}) {
+            movies(where: {title: "top actor movie"}) {
                 title
             }
         }

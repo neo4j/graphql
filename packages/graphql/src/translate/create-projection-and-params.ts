@@ -1,7 +1,7 @@
 import { FieldsByTypeName } from "graphql-parse-resolve-info";
 import { NeoSchema, Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
-import { GraphQLOptionsArg, GraphQLQueryArg } from "../types";
+import { GraphQLOptionsArg, GraphQLWhereArg } from "../types";
 
 interface Res {
     projection: string[];
@@ -29,8 +29,8 @@ function createProjectionAndParams({
             param = `${varName}_${key}`;
         }
 
-        const query = field.args.query as GraphQLQueryArg;
-        const options = field.args.options as GraphQLOptionsArg;
+        const whereInput = field.args.where as GraphQLWhereArg;
+        const optionsInput = field.args.options as GraphQLOptionsArg;
 
         const cypherField = node.cypherFields.find((x) => x.fieldName === key);
         if (cypherField) {
@@ -90,9 +90,9 @@ function createProjectionAndParams({
             let whereStr = "";
             let projectionStr = "";
 
-            if (query) {
+            if (whereInput) {
                 const where = createWhereAndParams({
-                    query,
+                    whereInput,
                     varName: `${varName}_${key}`,
                 });
                 whereStr = where[0];
@@ -120,23 +120,23 @@ function createProjectionAndParams({
 
             let nestedQuery;
 
-            if (options) {
+            if (optionsInput) {
                 let sortLimitStr = "";
 
-                if (options.skip && !options.limit) {
-                    sortLimitStr = `[${options.skip}..]`;
+                if (optionsInput.skip && !optionsInput.limit) {
+                    sortLimitStr = `[${optionsInput.skip}..]`;
                 }
 
-                if (options.limit && !options.skip) {
-                    sortLimitStr = `[..${options.limit}]`; // TODO options.limit + 1 ?
+                if (optionsInput.limit && !optionsInput.skip) {
+                    sortLimitStr = `[..${optionsInput.limit}]`; // TODO options.limit + 1 ?
                 }
 
-                if (options.limit && options.skip) {
-                    sortLimitStr = `[${options.skip}..${options.limit}]`;
+                if (optionsInput.limit && optionsInput.skip) {
+                    sortLimitStr = `[${optionsInput.skip}..${optionsInput.limit}]`;
                 }
 
-                if (options.sort) {
-                    const sorts = options.sort.map((x) => {
+                if (optionsInput.sort) {
+                    const sorts = optionsInput.sort.map((x) => {
                         const [fieldName, op] = x.split("_");
 
                         if (op === "DESC") {

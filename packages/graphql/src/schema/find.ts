@@ -3,7 +3,7 @@ import { execute } from "../utils";
 import { translate } from "../translate";
 import { NeoSchema } from "../classes";
 
-function findOne({ definition, getSchema }: { definition: ObjectTypeDefinitionNode; getSchema: () => NeoSchema }) {
+function find({ definition, getSchema }: { definition: ObjectTypeDefinitionNode; getSchema: () => NeoSchema }) {
     async function resolve(_: any, args: any, context: any, resolveInfo: GraphQLResolveInfo) {
         const neoSchema = getSchema();
 
@@ -21,16 +21,14 @@ function findOne({ definition, getSchema }: { definition: ObjectTypeDefinitionNo
 
         const result = await execute({ cypher, params, driver, defaultAccessMode: "READ", neoSchema });
 
-        const single = result.map((r) => r.this)[0];
-
-        return single;
+        return result.map((x) => x.this);
     }
 
     return {
-        type: `${definition.name.value}`,
+        type: `[${definition.name.value}]!`,
         resolve,
-        args: { query: `${definition.name.value}Query` },
+        args: { where: `${definition.name.value}Where`, options: `${definition.name.value}Options` },
     };
 }
 
-export default findOne;
+export default find;
