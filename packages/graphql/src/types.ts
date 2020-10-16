@@ -54,11 +54,11 @@ export interface GraphQLOptionsArg {
 }
 
 /**
- * Representation of the query arg
+ * Representation of the where arg
  * passed to resolvers.
  */
-export interface GraphQLQueryArg {
+export interface GraphQLWhereArg {
     [k: string]: any | GraphQLOptionsArg | GraphQLOptionsArg[];
-    _AND?: GraphQLOptionsArg[];
-    _OR?: GraphQLOptionsArg[];
+    AND?: GraphQLOptionsArg[];
+    OR?: GraphQLOptionsArg[];
 }

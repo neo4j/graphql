@@ -4,7 +4,7 @@ import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
 
-describe("findMany", () => {
+describe("find", () => {
     let driver: Driver;
 
     beforeAll(async () => {
@@ -15,7 +15,7 @@ describe("findMany", () => {
         await driver.close();
     });
 
-    test("should findMany Movie by id", async () => {
+    test("should find Movie by id", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -39,7 +39,7 @@ describe("findMany", () => {
 
         const query = `
             query($id: ID){
-                FindMany_Movie(query: {id: $id}){
+                Movies(where: {id: $id}){
                     id
                 }
             }
@@ -62,13 +62,13 @@ describe("findMany", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.FindMany_Movie).toEqual([{ id }, { id }, { id }]);
+            expect(result?.data?.Movies).toEqual([{ id }, { id }, { id }]);
         } finally {
             await session.close();
         }
     });
 
-    it("should findMany Move by id and limit", async () => {
+    it("should find Move by id and limit", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -92,7 +92,7 @@ describe("findMany", () => {
 
         const query = `
             query($id: ID){
-                FindMany_Movie(query: {id: $id}, options: {limit: 2}){
+                Movies(where: {id: $id}, options: {limit: 2}){
                     id
                 }
             }
@@ -115,13 +115,13 @@ describe("findMany", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.FindMany_Movie).toEqual([{ id }, { id }]);
+            expect(result?.data?.Movies).toEqual([{ id }, { id }]);
         } finally {
             await session.close();
         }
     });
 
-    test("should findMany Movie IN ids", async () => {
+    test("should find Movie IN ids", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -151,7 +151,7 @@ describe("findMany", () => {
 
         const query = `
             query($ids: [ID]){
-                FindMany_Movie(query: {id_IN: $ids}){
+                Movies(where: {id_IN: $ids}){
                     id
                 }
             }
@@ -174,7 +174,7 @@ describe("findMany", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.FindMany_Movie.forEach((e: { id: string }) => {
+            result?.data?.Movies.forEach((e: { id: string }) => {
                 expect([id1, id2, id3].includes(e.id)).toBeTruthy();
             });
         } finally {
@@ -182,7 +182,7 @@ describe("findMany", () => {
         }
     });
 
-    test("should findMany Movie IN ids with one other param", async () => {
+    test("should find Movie IN ids with one other param", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -215,7 +215,7 @@ describe("findMany", () => {
 
         const query = `
             query($ids: [ID], $title: String){
-                FindMany_Movie(query: {id_IN: $ids, title: $title}){
+                Movies(where: {id_IN: $ids, title: $title}){
                     id
                     title
                 }
@@ -239,7 +239,7 @@ describe("findMany", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.FindMany_Movie.forEach((e: { id: string; title: string }) => {
+            result?.data?.Movies.forEach((e: { id: string; title: string }) => {
                 expect([id1, id2, id3].includes(e.id)).toBeTruthy();
                 expect(e.title).toEqual(title);
             });
@@ -248,7 +248,7 @@ describe("findMany", () => {
         }
     });
 
-    test("should findMany Movie IN id and many Movie.actor IN id", async () => {
+    test("should find Movie IN id and many Movie.actor IN id", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -287,9 +287,9 @@ describe("findMany", () => {
 
         const query = `
             query($movieIds: [ID], $actorIds: [ID]){
-                FindMany_Movie(query: {id_IN: $movieIds}){
+                Movies(where: {id_IN: $movieIds}){
                     id
-                    actors(query: {id_IN: $actorIds}){
+                    actors(where: {id_IN: $actorIds}){
                         id
                         movies {
                             id
@@ -331,7 +331,7 @@ describe("findMany", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.FindMany_Movie.forEach((movie: { id: string; title: string; actors: { id: string }[] }) => {
+            result?.data?.Movies.forEach((movie: { id: string; title: string; actors: { id: string }[] }) => {
                 expect([movieId1, movieId2, movieId3].includes(movie.id)).toBeTruthy();
 
                 switch (movie.id) {
@@ -383,7 +383,7 @@ describe("findMany", () => {
         }
     });
 
-    it("should findMany Movie and populate nested cypher query", async () => {
+    it("should find Movie and populate nested cypher query", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -427,7 +427,7 @@ describe("findMany", () => {
 
         const query = `
             query($movieIds: [ID], $actorIds: [ID]){
-                FindMany_Movie(query: {id_IN: $movieIds}){
+                Movies(where: {id_IN: $movieIds}){
                     id
                     actors(actorIds: $actorIds) {
                         id
@@ -465,13 +465,72 @@ describe("findMany", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.FindMany_Movie.forEach((movie: { id: string; actors: { id: string }[] }) => {
+            result?.data?.Movies.forEach((movie: { id: string; actors: { id: string }[] }) => {
                 expect([movieId1, movieId2, movieId3].includes(movie.id)).toBeTruthy();
 
                 movie.actors.forEach((actor) => {
                     expect([actorId1, actorId2, actorId3].includes(actor.id));
                 });
             });
+        } finally {
+            await session.close();
+        }
+    });
+
+    it("should use OR and find Movie by id or title", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Actor {
+                name: String
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: "IN")
+            }
+
+            type Movie {
+                id: ID!
+                title: String!
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: "OUT")
+                mainActor: Actor @relationship(type: "MAIN_ACTOR", direction: "OUT")
+            }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const title = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            query($movieWhere: MovieWhere){
+                Movies(where: $movieWhere){
+                    id
+                    title
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+              CREATE (:Movie {id: $id, title: $title})
+            `,
+                { id, title }
+            );
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: { movieWhere: { OR: [{ title, id }] } },
+                contextValue: { driver },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.Movies).toEqual([{ id, title }]);
         } finally {
             await session.close();
         }

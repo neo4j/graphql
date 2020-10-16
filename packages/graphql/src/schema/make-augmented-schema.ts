@@ -2,12 +2,12 @@ import { mergeTypeDefs } from "@graphql-tools/merge";
 import { ObjectTypeDefinitionNode, visit } from "graphql";
 import { SchemaComposer, ObjectTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
+import pluralize from "pluralize";
 import { NeoSchema, NeoSchemaConstructor, Node } from "../classes";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getRelationshipMeta from "./get-relationship-meta";
-import findMany from "./find-many";
-import findOne from "./find-one";
+import find from "./find";
 import { RelationField, CypherField, PrimitiveField, BaseField } from "../types";
 
 export interface MakeAugmentedSchemaOptions {
@@ -122,7 +122,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     [relation.fieldName]: {
                         type: relation.typeMeta.pretty,
                         args: {
-                            query: `${relation.typeMeta.name}Query`,
+                            where: `${relation.typeMeta.name}Where`,
                             options: `${relation.typeMeta.name}Options`,
                         },
                     },
@@ -132,7 +132,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         );
 
         const sortEnum = composer.createEnumTC({
-            name: `${node.name}_SORT`,
+            name: `${node.name}Sort`,
             values: primitiveFields.reduce((res, v) => {
                 return {
                     ...res,
@@ -151,12 +151,12 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         }, {});
 
         const andOrFields = {
-            _OR: `[${node.name}_OR]`,
-            _AND: `[${node.name}_AND]`,
+            OR: `[${node.name}OR]`,
+            AND: `[${node.name}AND]`,
         };
 
         composer.createInputTC({
-            name: `${node.name}_AND`,
+            name: `${node.name}AND`,
             fields: {
                 ...looseFields,
                 ...andOrFields,
@@ -164,7 +164,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
 
         composer.createInputTC({
-            name: `${node.name}_OR`,
+            name: `${node.name}OR`,
             fields: {
                 ...looseFields,
                 ...andOrFields,
@@ -172,7 +172,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
 
         composer.createInputTC({
-            name: `${node.name}Query`,
+            name: `${node.name}Where`,
             fields: {
                 ...looseFields,
                 ...andOrFields,
@@ -185,8 +185,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
 
         composer.Query.addFields({
-            [`FindOne_${node.name}`]: findOne({ definition, getSchema: () => neoSchema }),
-            [`FindMany_${node.name}`]: findMany({ definition, getSchema: () => neoSchema }),
+            [pluralize(node.name)]: find({ definition, getSchema: () => neoSchema }),
         });
     }
 

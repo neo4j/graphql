@@ -21,41 +21,40 @@ type Movie {
   id: ID
 }
 
-input Movie_AND {
+input MovieAND {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
-input Movie_OR {
+input MovieOR {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
-enum Movie_SORT {
+enum MovieSort {
   id_DESC
   id_ASC
 }
 
 input MovieOptions {
-  sort: [Movie_SORT]
+  sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-input MovieQuery {
+input MovieWhere {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
 type Query {
-  FindOne_Movie(query: MovieQuery): Movie
-  FindMany_Movie(query: MovieQuery, options: MovieOptions): [Movie]!
+  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
@@ -83,81 +82,79 @@ type Actor {
   name: String
 }
 
-input Actor_AND {
+input ActorAND {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
-enum Actor_SORT {
+enum ActorSort {
   name_DESC
   name_ASC
 }
 
-input Actor_OR {
+input ActorOR {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 
 input ActorOptions {
-  sort: [Actor_SORT]
+  sort: [ActorSort]
   limit: Int
   skip: Int
 }
 
-input ActorQuery {
+input ActorWhere {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 type Movie {
   id: ID
-  actors(query: ActorQuery, options: ActorOptions): [Actor]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor]!
 }
 
-input Movie_AND {
+input MovieAND {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
-input Movie_OR {
+input MovieOR {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
-enum Movie_SORT {
+enum MovieSort {
   id_DESC
   id_ASC
 }
 
 input MovieOptions {
-  sort: [Movie_SORT]
+  sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-input MovieQuery {
+input MovieWhere {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
 type Query {
-  FindOne_Actor(query: ActorQuery): Actor
-  FindMany_Actor(query: ActorQuery, options: ActorOptions): [Actor]!
-  FindOne_Movie(query: MovieQuery): Movie
-  FindMany_Movie(query: MovieQuery, options: MovieOptions): [Movie]!
+  Actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
@@ -184,84 +181,82 @@ type Movie {
 ```schema-output
 type Actor {
   name: String
-  movies(query: MovieQuery, options: MovieOptions): [Movie]
+  movies(where: MovieWhere, options: MovieOptions): [Movie]
 }
 
-input Actor_AND {
+input ActorAND {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
-enum Actor_SORT {
+enum ActorSort {
   name_DESC
   name_ASC
 }
 
-input Actor_OR {
+input ActorOR {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 
 input ActorOptions {
-  sort: [Actor_SORT]
+  sort: [ActorSort]
   limit: Int
   skip: Int
 }
 
-input ActorQuery {
+input ActorWhere {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 type Movie {
   id: ID
-  actors(query: ActorQuery, options: ActorOptions): [Actor]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor]!
 }
 
-input Movie_AND {
+input MovieAND {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
-input Movie_OR {
+input MovieOR {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
-enum Movie_SORT {
+enum MovieSort {
   id_DESC
   id_ASC
 }
 
 input MovieOptions {
-  sort: [Movie_SORT]
+  sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-input MovieQuery {
+input MovieWhere {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
 type Query {
-  FindOne_Actor(query: ActorQuery): Actor
-  FindMany_Actor(query: ActorQuery, options: ActorOptions): [Actor]!
-  FindOne_Movie(query: MovieQuery): Movie
-  FindMany_Movie(query: MovieQuery, options: MovieOptions): [Movie]!
+  Actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
@@ -293,37 +288,37 @@ type Actor {
   name: String
 }
 
-input Actor_AND {
+input ActorAND {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
-enum Actor_SORT {
+enum ActorSort {
   name_DESC
   name_ASC
 }
 
-input Actor_OR {
+input ActorOR {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 
 input ActorOptions {
-  sort: [Actor_SORT]
+  sort: [ActorSort]
   limit: Int
   skip: Int
 }
 
-input ActorQuery {
+input ActorWhere {
   name: String
   name_IN: [String]
-  _OR: [Actor_OR]
-  _AND: [Actor_AND]
+  OR: [ActorOR]
+  AND: [ActorAND]
 }
 
 type Movie {
@@ -331,43 +326,41 @@ type Movie {
   actors(title: String): [Actor]
 }
 
-input Movie_AND {
+input MovieAND {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
-input Movie_OR {
+input MovieOR {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
-enum Movie_SORT {
+enum MovieSort {
   id_DESC
   id_ASC
 }
 
 input MovieOptions {
-  sort: [Movie_SORT]
+  sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-input MovieQuery {
+input MovieWhere {
   id: ID
   id_IN: [ID]
-  _OR: [Movie_OR]
-  _AND: [Movie_AND]
+  OR: [MovieOR]
+  AND: [MovieAND]
 }
 
 type Query {
-  FindOne_Actor(query: ActorQuery): Actor
-  FindMany_Actor(query: ActorQuery, options: ActorOptions): [Actor]!
-  FindOne_Movie(query: MovieQuery): Movie
-  FindMany_Movie(query: MovieQuery, options: MovieOptions): [Movie]!
+  Actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 

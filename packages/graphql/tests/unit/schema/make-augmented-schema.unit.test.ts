@@ -1,4 +1,5 @@
 import { printSchema, parse, ObjectTypeDefinitionNode, NamedTypeNode, ListTypeNode, NonNullTypeNode } from "graphql";
+import { pluralize } from "graphql-compose";
 import makeAugmentedSchema from "../../../src/schema/make-augmented-schema";
 import { Node } from "../../../src/classes";
 
@@ -34,16 +35,11 @@ describe("makeAugmentedSchema", () => {
             );
             expect(nodeObject).toBeTruthy();
 
-            // FindOne
-            const nodeFindOneQuery = queryObject.fields?.find((x) => x.name.value === `FindOne_${type}`);
-            const nodeFindOneQueryType = nodeFindOneQuery?.type as NamedTypeNode;
-            expect(nodeFindOneQueryType.name.value === type);
-
-            // FindMany
-            const nodeFindManyQuery = queryObject.fields?.find((x) => x.name.value === `FindMany_${type}`);
-            const nodeFindManyQueryType = ((nodeFindManyQuery?.type as NonNullTypeNode).type as ListTypeNode)
+            // Find
+            const nodeFindQuery = queryObject.fields?.find((x) => x.name.value === pluralize(type));
+            const nodeFindQueryType = ((nodeFindQuery?.type as NonNullTypeNode).type as ListTypeNode)
                 .type as NamedTypeNode;
-            expect(nodeFindManyQueryType.name.value === type);
+            expect(nodeFindQueryType.name.value === type);
 
             // Options
             const options = document.definitions.find(
@@ -51,27 +47,27 @@ describe("makeAugmentedSchema", () => {
             );
             expect(options).toBeTruthy();
 
-            // Query
-            const query = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}Query`
+            // Where
+            const where = document.definitions.find(
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}Where`
             );
-            expect(query).toBeTruthy();
+            expect(where).toBeTruthy();
 
             // OR
             const or = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}_OR`
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}OR`
             );
             expect(or).toBeTruthy();
 
             // AND
             const and = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}_AND`
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}AND`
             );
             expect(and).toBeTruthy();
 
             // SORT
             const sort = document.definitions.find(
-                (x) => x.kind === "EnumTypeDefinition" && x.name.value === `${type}_SORT`
+                (x) => x.kind === "EnumTypeDefinition" && x.name.value === `${type}Sort`
             );
             expect(sort).toBeTruthy();
         });
