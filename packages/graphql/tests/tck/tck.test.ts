@@ -54,7 +54,18 @@ describe("TCK Generated tests", () => {
                         };
                     }, {});
 
-                    const resolvers = { Query: queries };
+                    const mutations = document.definitions.reduce((res, def) => {
+                        if (def.kind !== "ObjectTypeDefinition") {
+                            return res;
+                        }
+
+                        return {
+                            ...res,
+                            [`create${pluralize(def.name.value)}`]: resolver,
+                        };
+                    }, {});
+
+                    const resolvers = { Query: queries, Mutation: mutations };
 
                     const executableSchema = makeExecutableSchema({
                         typeDefs: printSchema(neoSchema.schema),
