@@ -9,6 +9,7 @@ import getCypherMeta from "./get-cypher-meta";
 import getRelationshipMeta from "./get-relationship-meta";
 import find from "./find";
 import { RelationField, CypherField, PrimitiveField, BaseField } from "../types";
+import { upperFirstLetter } from "../utils";
 
 export interface MakeAugmentedSchemaOptions {
     typeDefs: any;
@@ -194,6 +195,66 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     };
 
     visit(document, { enter: visitor });
+
+    neoSchemaInput.nodes.forEach((node) => {
+        const nodeInput = composer.createInputTC({
+            name: `${node.name}CreateInput`,
+            fields: node.primitiveFields.reduce((r, f) => {
+                return {
+                    ...r,
+                    [f.fieldName]: f.typeMeta.pretty,
+                };
+            }, {}),
+        });
+
+        const nodeConnectInput = composer.createInputTC({
+            name: `${node.name}ConnectInput`,
+            fields: {},
+        });
+
+        composer.createInputTC({
+            name: `${node.name}ConnectFieldInput`,
+            fields: {
+                where: `${node.name}Where`,
+                ...(node.relationFields.length ? { connect: nodeConnectInput } : {}),
+            },
+        });
+
+        node.relationFields.forEach((rel) => {
+            const refNode = neoSchemaInput.nodes.find((x) => x.name === rel.typeMeta.name) as Node;
+
+            const create = rel.typeMeta.array ? `[${refNode.name}CreateInput]` : `${refNode.name}CreateInput`;
+            const connect = rel.typeMeta.array
+                ? `[${refNode.name}ConnectFieldInput]`
+                : `${refNode.name}ConnectFieldInput`;
+
+            const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
+
+            composer.createInputTC({
+                name: nodeFieldInputName,
+                fields: {
+                    create,
+                    ...(refNode.relationFields.length ? { connect } : {}),
+                },
+            });
+
+            nodeConnectInput.addFields({
+                [rel.fieldName]: connect,
+            });
+            nodeInput.addFields({
+                [rel.fieldName]: nodeFieldInputName,
+            });
+        });
+
+        composer.Mutation.addFields({
+            [`create${pluralize(node.name)}`]: {
+                args: { input: `[${node.name}CreateInput]!` },
+                type: `[${node.name}]!`,
+                // @ts-ignore
+                resolve: () => null,
+            },
+        });
+    });
 
     const generatedTypeDefs = composer.toSDL();
     const generatedResolvers = composer.getResolveMethods();
