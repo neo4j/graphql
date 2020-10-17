@@ -21,7 +21,7 @@ function create({ node, getSchema }: { node: Node; getSchema: () => NeoSchema })
 
         const result = await execute({ cypher, params, driver, defaultAccessMode: "WRITE", neoSchema });
 
-        return result.map((x) => x.this);
+        return Object.entries(result[0] as any).reduce((res: any[], [, v]: [string, any]) => [...res, v], []) as any[];
     }
 
     return {
