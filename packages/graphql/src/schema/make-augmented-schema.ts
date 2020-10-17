@@ -10,6 +10,7 @@ import getRelationshipMeta from "./get-relationship-meta";
 import find from "./find";
 import { RelationField, CypherField, PrimitiveField, BaseField } from "../types";
 import { upperFirstLetter } from "../utils";
+import create from "./create";
 
 export interface MakeAugmentedSchemaOptions {
     typeDefs: any;
@@ -223,8 +224,8 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         node.relationFields.forEach((rel) => {
             const refNode = neoSchemaInput.nodes.find((x) => x.name === rel.typeMeta.name) as Node;
 
-            const create = rel.typeMeta.array ? `[${refNode.name}CreateInput]` : `${refNode.name}CreateInput`;
-            const connect = rel.typeMeta.array
+            const createField = rel.typeMeta.array ? `[${refNode.name}CreateInput]` : `${refNode.name}CreateInput`;
+            const connectField = rel.typeMeta.array
                 ? `[${refNode.name}ConnectFieldInput]`
                 : `${refNode.name}ConnectFieldInput`;
 
@@ -233,13 +234,13 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             composer.createInputTC({
                 name: nodeFieldInputName,
                 fields: {
-                    create,
-                    ...(refNode.relationFields.length ? { connect } : {}),
+                    create: createField,
+                    ...(refNode.relationFields.length ? { connect: connectField } : {}),
                 },
             });
 
             nodeConnectInput.addFields({
-                [rel.fieldName]: connect,
+                [rel.fieldName]: connectField,
             });
             nodeInput.addFields({
                 [rel.fieldName]: nodeFieldInputName,
@@ -247,12 +248,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
 
         composer.Mutation.addFields({
-            [`create${pluralize(node.name)}`]: {
-                args: { input: `[${node.name}CreateInput]!` },
-                type: `[${node.name}]!`,
-                // @ts-ignore
-                resolve: () => null,
-            },
+            [`create${pluralize(node.name)}`]: create({ node, getSchema: () => neoSchema }),
         });
     });
 
