@@ -25,7 +25,6 @@ describe("create", () => {
 
             type Movie {
                 id: ID!
-               
             }
         `;
 
@@ -64,6 +63,64 @@ describe("create", () => {
             );
 
             expect((reFind.records[0].toObject() as any).m.properties).toMatchObject({ id });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should create 2 movies", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Actor {
+                name: String
+            }
+
+            type Movie {
+                id: ID!
+            }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const id1 = generate({
+            charset: "alphabetic",
+        });
+        const id2 = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+        mutation($id1: ID!, $id2: ID!) {
+            createMovies(input: [{ id: $id1 }, {id: $id2}]) {
+              id
+            }
+          }
+        `;
+
+        try {
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: { id1, id2 },
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.createMovies).toEqual([{ id: id1 }, { id: id2 }]);
+
+            const reFind = await session.run(
+                `
+              MATCH (m:Movie)
+              WHERE m.id = $id1 OR m.id = $id2
+              RETURN m
+            `,
+                { id1, id2 }
+            );
+
+            expect((reFind.records[0].toObject() as any).m.properties.id).toEqual(id1);
+            expect((reFind.records[1].toObject() as any).m.properties.id).toEqual(id2);
         } finally {
             await session.close();
         }
