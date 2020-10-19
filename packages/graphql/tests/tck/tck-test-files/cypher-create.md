@@ -213,3 +213,42 @@ RETURN this0 { .id } as this0, this1 { .id } as this1
 ```
 
 ---
+
+### Simple create and connect
+
+**GraphQL input**
+
+```graphql
+mutation {
+  createMovies(
+    input: [{ id: 1, actors: { connect: [{ where: { name: "Dan" } }] } }]
+  ) {
+    id
+  }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+CREATE (this0:Movie)
+SET this0.id = $this0_id
+
+  WITH this0
+  MATCH (this0_actors0:Actor)
+  WHERE this0_actors0.name = $this0_actors0_name
+  MERGE (this0)<-[:ACTED_IN]-(this0_actors0)
+
+RETURN this0 { .id } as this0
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this0_id": "1",
+    "this0_actors0_name": "Dan"
+}
+```
+
+---

@@ -95,11 +95,10 @@ function translateCreate(_, context: any, resolveInfo: GraphQLResolveInfo): [str
     const node = neoSchema.nodes.find(
         (x) => x.name === pluralize.singular(resolveTree.name.split("create")[1])
     ) as Node;
-
     const withVars: string[] = [];
 
     const [createStrs, params, projStrs] = (resolveTree.args.input as any[]).reduce(
-        (res: [string[], any], input, index) => {
+        (res: [string[], any, string[]], input, index) => {
             const varName = `this${index}`;
             withVars.push(varName);
 
@@ -118,15 +117,18 @@ function translateCreate(_, context: any, resolveInfo: GraphQLResolveInfo): [str
                 varName,
             });
 
-            return [[...res[0], cypher], { ...res[1], ...createAndParams[1], ...projection[1] }, projection[0]];
+            return [
+                [...res[0], cypher],
+                { ...res[1], ...createAndParams[1], ...projection[1] },
+                [...res[2], projection[0]],
+            ];
         },
-        [[], {}]
+        [[], {}, []]
     ) as [string[], any, string[]];
 
     const cypher = `
-        ${createStrs.join("\n")}
-
-        RETURN ${createStrs.map((__, index) => `this${index} ${projStrs} as this${index}`).join(", ")}
+    ${createStrs.join("\n")}
+    RETURN ${createStrs.map((__, index) => `this${index} ${projStrs[index]} as this${index}`).join(", ")}
     `;
 
     return [cypher, { ...params }];
