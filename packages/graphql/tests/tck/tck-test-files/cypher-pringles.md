@@ -1,0 +1,175 @@
+## Cypher Create
+
+Tests operations for Pringles base case. see @ https://paper.dropbox.com/doc/Nested-mutations--A9l6qeiLzvYSxcyrii1ru0MNAg-LbUKLCTNN1nMO3Ka4VBoV
+
+Schema:
+
+```schema
+
+type Product {
+    id: ID!
+    name: String!
+    sizes: [Size] @relationship(type: "HAS_SIZE", direction: "OUT")
+    colors: [Color] @relationship(type: "HAS_COLOR", direction: "OUT")
+    photos: [Photo] @relationship(type: "HAS_PHOTO", direction: "OUT")
+}
+
+type Size {
+    id: ID!
+    name: String!
+}
+
+type Color {
+    id: ID!
+    name: String!
+    photos: [Photo] @relationship(type: "OF_COLOR", direction: "IN")
+}
+
+type Photo {
+    id: ID!
+    description: String!
+    url: String!
+    color: Color @relationship(type: "OF_COLOR", direction: "OUT")
+}
+```
+
+---
+
+### Create Pringles
+
+Test the creation of the Pringles.
+
+**GraphQL input**
+
+```graphql
+mutation {
+  createProducts(
+    input: [
+      {
+        id: 1
+        name: "Pringles"
+        sizes: {
+          create: [{ id: 103, name: "Small" }, { id: 104, name: "Large" }]
+        }
+        colors: {
+          create: [{ id: 100, name: "Red" }, { id: 102, name: "Green" }]
+        }
+        photos: {
+          create: [
+            { id: 105, description: "Outdoor photo", url: "outdoor.png" }
+            {
+              id: 106
+              description: "Green photo"
+              url: "g.png"
+              color: { connect: { where: { id: 102 } } }
+            }
+            {
+              id: 107
+              description: "Red photo"
+              url: "r.png"
+              color: { connect: { where: { id: 100 } } }
+            }
+          ]
+        }
+      }
+    ]
+  ) {
+    id
+  }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+CREATE (this0:Product)
+SET this0.id = $this0_id
+SET this0.name = $this0_name
+  
+  WITH this0
+  CREATE (this0_sizes0:Size)
+  SET this0_sizes0.id = $this0_sizes0_id
+  SET this0_sizes0.name = $this0_sizes0_name
+  MERGE (this0)-[:HAS_SIZE]->(this0_sizes0)
+
+  WITH this0
+  CREATE (this0_sizes1:Size)
+  SET this0_sizes1.id = $this0_sizes1_id
+  SET this0_sizes1.name = $this0_sizes1_name
+  MERGE (this0)-[:HAS_SIZE]->(this0_sizes1)
+
+  WITH this0
+  CREATE (this0_colors0:Color)
+  SET this0_colors0.id = $this0_colors0_id
+  SET this0_colors0.name = $this0_colors0_name
+  MERGE (this0)-[:HAS_COLOR]->(this0_colors0)
+
+  WITH this0
+  CREATE (this0_colors1:Color)
+  SET this0_colors1.id = $this0_colors1_id
+  SET this0_colors1.name = $this0_colors1_name
+  MERGE (this0)-[:HAS_COLOR]->(this0_colors1)
+
+  WITH this0
+  CREATE (this0_photos0:Photo)
+  SET this0_photos0.id = $this0_photos0_id
+  SET this0_photos0.description = $this0_photos0_description
+  SET this0_photos0.url = $this0_photos0_url
+  MERGE (this0)-[:HAS_PHOTO]->(this0_photos0)
+
+  WITH this0
+  CREATE (this0_photos1:Photo)
+  SET this0_photos1.id = $this0_photos1_id
+  SET this0_photos1.description = $this0_photos1_description
+  SET this0_photos1.url = $this0_photos1_url
+    
+    WITH this0, this0_photos1
+    MATCH (this0_photos1_color0:Color)
+    WHERE this0_photos1_color0.id = $this0_photos1_color0_id
+    MERGE (this0_photos1)-[:OF_COLOR]->(this0_photos1_color0)
+  MERGE (this0)-[:HAS_PHOTO]->(this0_photos1)
+
+  WITH this0
+  CREATE (this0_photos2:Photo)
+  SET this0_photos2.id = $this0_photos2_id
+  SET this0_photos2.description = $this0_photos2_description
+  SET this0_photos2.url = $this0_photos2_url
+
+    WITH this0, this0_photos2
+    MATCH (this0_photos2_color0:Color)
+    WHERE this0_photos2_color0.id = $this0_photos2_color0_id
+    MERGE (this0_photos2)-[:OF_COLOR]->(this0_photos2_color0)  
+  MERGE (this0)-[:HAS_PHOTO]->(this0_photos2)
+
+RETURN this0 { .id } as this0
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+  "this0_id": "1",
+  "this0_name": "Pringles",
+  "this0_sizes0_id": "103",
+  "this0_sizes0_name": "Small",
+  "this0_sizes1_id": "104",
+  "this0_sizes1_name": "Large",
+  "this0_colors0_id": "100",
+  "this0_colors0_name": "Red",
+  "this0_colors1_id": "102",
+  "this0_colors1_name": "Green",
+  "this0_photos0_id": "105",
+  "this0_photos0_description": "Outdoor photo",
+  "this0_photos0_url": "outdoor.png",
+  "this0_photos1_id": "106",
+  "this0_photos1_description": "Green photo",
+  "this0_photos1_url": "g.png",
+  "this0_photos1_color0_id": "102",
+  "this0_photos2_id": "107",
+  "this0_photos2_description": "Red photo",
+  "this0_photos2_url": "r.png",
+  "this0_photos2_color0_id": "100"
+}
+```
+
+---
