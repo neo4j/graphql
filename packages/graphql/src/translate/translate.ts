@@ -99,16 +99,13 @@ function translateCreate(_, context: any, resolveInfo: GraphQLResolveInfo): [str
 
     const [createStrs, params, projStrs] = (resolveTree.args.input as any[]).reduce(
         (res: [string[], any, string[]], input, index) => {
+            let cypher = "";
             const varName = `this${index}`;
             withVars.push(varName);
 
             const createAndParams = createCreateAndParams({ input, node, neoSchema, varName, withVars });
-
             const withStr = withVars.length > 1 ? `WITH ${[...withVars].slice(0, withVars.length - 1).join(", ")}` : "";
-            const cypher = `
-                ${withStr}
-                ${createAndParams[0]}
-            `;
+            cypher += `${withStr}\n${createAndParams[0]}`;
 
             const projection = createProjectionAndParams({
                 node,
@@ -126,10 +123,10 @@ function translateCreate(_, context: any, resolveInfo: GraphQLResolveInfo): [str
         [[], {}, []]
     ) as [string[], any, string[]];
 
-    const cypher = `
-    ${createStrs.join("\n")}
-    RETURN ${createStrs.map((__, index) => `this${index} ${projStrs[index]} as this${index}`).join(", ")}
-    `;
+    // eslint-disable-next-line prettier/prettier
+    const cypher = `${createStrs.join("\n")}\n\nRETURN ${createStrs
+        .map((__, i) => `this${i} ${projStrs[i]} as this${i}`)
+        .join(", ")}`;
 
     return [cypher, { ...params }];
 }
