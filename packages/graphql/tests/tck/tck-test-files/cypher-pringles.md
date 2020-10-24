@@ -124,9 +124,11 @@ SET this0.name = $this0_name
   SET this0_photos1.url = $this0_photos1_url
     
     WITH this0, this0_photos1
-    MATCH (this0_photos1_color0:Color)
-    WHERE this0_photos1_color0.id = $this0_photos1_color0_id
-    MERGE (this0_photos1)-[:OF_COLOR]->(this0_photos1_color0)
+    OPTIONAL MATCH (this0_photos1_color_connect0:Color)
+    WHERE this0_photos1_color_connect0.id = $this0_photos1_color_connect0_id
+    FOREACH(_ IN CASE [] WHEN NULL THEN [] ELSE [1] END |
+      MERGE (this0_photos1)-[:OF_COLOR]->(this0_photos1_color_connect0)
+    )
   MERGE (this0)-[:HAS_PHOTO]->(this0_photos1)
 
   WITH this0
@@ -136,9 +138,11 @@ SET this0.name = $this0_name
   SET this0_photos2.url = $this0_photos2_url
 
     WITH this0, this0_photos2
-    MATCH (this0_photos2_color0:Color)
-    WHERE this0_photos2_color0.id = $this0_photos2_color0_id
-    MERGE (this0_photos2)-[:OF_COLOR]->(this0_photos2_color0)  
+    OPTIONAL MATCH (this0_photos2_color_connect0:Color)
+    WHERE this0_photos2_color_connect0.id = $this0_photos2_color_connect0_id
+    FOREACH(_ IN CASE [] WHEN NULL THEN [] ELSE [1] END | 
+      MERGE (this0_photos2)-[:OF_COLOR]->(this0_photos2_color_connect0)  
+    )
   MERGE (this0)-[:HAS_PHOTO]->(this0_photos2)
 
 RETURN this0 { .id } as this0
@@ -164,11 +168,11 @@ RETURN this0 { .id } as this0
   "this0_photos1_id": "106",
   "this0_photos1_description": "Green photo",
   "this0_photos1_url": "g.png",
-  "this0_photos1_color0_id": "102",
+  "this0_photos1_color_connect0_id": "102",
   "this0_photos2_id": "107",
   "this0_photos2_description": "Red photo",
   "this0_photos2_url": "r.png",
-  "this0_photos2_color0_id": "100"
+  "this0_photos2_color_connect0_id": "100"
 }
 ```
 
