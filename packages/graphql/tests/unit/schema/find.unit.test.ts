@@ -1,5 +1,4 @@
-import { ObjectTypeDefinitionNode } from "graphql";
-import { NeoSchema } from "../../../src/classes";
+import { NeoSchema, Node } from "../../../src/classes";
 import find from "../../../src/schema/find";
 
 describe("find", () => {
@@ -8,14 +7,12 @@ describe("find", () => {
         const neoSchema: NeoSchema = {};
 
         // @ts-ignore
-        const definition: ObjectTypeDefinitionNode = {
+        const node: Node = {
             // @ts-ignore
-            name: {
-                value: "Movie",
-            },
+            name: "Movie",
         };
 
-        const result = find({ definition, getSchema: () => neoSchema });
+        const result = find({ node, getSchema: () => neoSchema });
         expect(result.type).toEqual(`[Movie]!`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({

@@ -1,9 +1,9 @@
-import { GraphQLResolveInfo, ObjectTypeDefinitionNode } from "graphql";
+import { GraphQLResolveInfo } from "graphql";
 import { execute } from "../utils";
 import { translate } from "../translate";
-import { NeoSchema } from "../classes";
+import { NeoSchema, Node } from "../classes";
 
-function find({ definition, getSchema }: { definition: ObjectTypeDefinitionNode; getSchema: () => NeoSchema }) {
+function find({ node, getSchema }: { node: Node; getSchema: () => NeoSchema }) {
     async function resolve(_: any, args: any, context: any, resolveInfo: GraphQLResolveInfo) {
         const neoSchema = getSchema();
 
@@ -25,9 +25,9 @@ function find({ definition, getSchema }: { definition: ObjectTypeDefinitionNode;
     }
 
     return {
-        type: `[${definition.name.value}]!`,
+        type: `[${node.name}]!`,
         resolve,
-        args: { where: `${definition.name.value}Where`, options: `${definition.name.value}Options` },
+        args: { where: `${node.name}Where`, options: `${node.name}Options` },
     };
 }
 
