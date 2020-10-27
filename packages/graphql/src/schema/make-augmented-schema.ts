@@ -1,15 +1,15 @@
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { ObjectTypeDefinitionNode, visit } from "graphql";
-import { SchemaComposer, ObjectTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
+import { ObjectTypeDefinitionNode } from "graphql";
+import { SchemaComposer, ObjectTypeComposerFieldConfigAsObjectDefinition, InputTypeComposer } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import pluralize from "pluralize";
 import { NeoSchema, NeoSchemaConstructor, Node } from "../classes";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getRelationshipMeta from "./get-relationship-meta";
-import find from "./find";
 import { RelationField, CypherField, PrimitiveField, BaseField } from "../types";
 import { upperFirstLetter } from "../utils";
+import find from "./find";
 import create from "./create";
 
 export interface MakeAugmentedSchemaOptions {
@@ -23,16 +23,12 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     let neoSchema: NeoSchema;
     // @ts-ignore
     const neoSchemaInput: NeoSchemaConstructor = {
-        nodes: [],
         options,
     };
 
-    function createObjectType(definition: ObjectTypeDefinitionNode) {
-        if (["Query", "Mutation", "Subscription"].includes(definition.name.value)) {
-            // TODO custom resolvers
-            return;
-        }
-
+    neoSchemaInput.nodes = (document.definitions.filter(
+        (x) => x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)
+    ) as ObjectTypeDefinitionNode[]).map((definition) => {
         const { relationFields, primitiveFields, cypherFields } = definition?.fields?.reduce(
             (
                 res: {
@@ -88,11 +84,14 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             primitiveFields,
             cypherFields,
         });
-        neoSchemaInput.nodes.push(node);
 
+        return node;
+    });
+
+    neoSchemaInput.nodes.forEach((node) => {
         const composeNode = composer.createObjectTC({
             name: node.name,
-            fields: [...primitiveFields, ...cypherFields].reduce((res, field) => {
+            fields: [...node.primitiveFields, ...node.cypherFields].reduce((res, field) => {
                 const newField = {
                     type: field.typeMeta.pretty,
                     args: {},
@@ -118,7 +117,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
 
         composeNode.addFields(
-            relationFields.reduce(
+            node.relationFields.reduce(
                 (res, relation) => ({
                     ...res,
                     [relation.fieldName]: {
@@ -135,50 +134,31 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         const sortEnum = composer.createEnumTC({
             name: `${node.name}Sort`,
-            values: primitiveFields.reduce((res, v) => {
+            values: node.primitiveFields.reduce((res, f) => {
                 return {
                     ...res,
-                    [`${v.fieldName}_DESC`]: { value: `${v.fieldName}_DESC` },
-                    [`${v.fieldName}_ASC`]: { value: `${v.fieldName}_ASC` },
+                    [`${f.fieldName}_DESC`]: { value: `${f.fieldName}_DESC` },
+                    [`${f.fieldName}_ASC`]: { value: `${f.fieldName}_ASC` },
                 };
             }, {}),
         });
 
-        const looseFields = primitiveFields.reduce((res, v) => {
-            return {
-                ...res,
-                [v.fieldName]: v.typeMeta.array ? `[${v.typeMeta.name}]` : v.typeMeta.name,
-                ...(!v.typeMeta.array ? { [`${v.fieldName}_IN`]: `[${v.typeMeta.name}]` } : {}),
-            };
-        }, {});
-
-        const andOrFields = {
-            OR: `[${node.name}OR]`,
-            AND: `[${node.name}AND]`,
-        };
-
-        composer.createInputTC({
-            name: `${node.name}AND`,
-            fields: {
-                ...looseFields,
-                ...andOrFields,
+        const queryFields = node.primitiveFields.reduce(
+            (res, f) => {
+                return {
+                    ...res,
+                    [f.fieldName]: f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name,
+                    ...(!f.typeMeta.array ? { [`${f.fieldName}_IN`]: `[${f.typeMeta.name}]` } : {}),
+                };
             },
-        });
+            { OR: `[${node.name}OR]`, AND: `[${node.name}AND]` }
+        );
 
-        composer.createInputTC({
-            name: `${node.name}OR`,
-            fields: {
-                ...looseFields,
-                ...andOrFields,
-            },
-        });
-
-        composer.createInputTC({
-            name: `${node.name}Where`,
-            fields: {
-                ...looseFields,
-                ...andOrFields,
-            },
+        ["AND", "OR", "Where"].forEach((value) => {
+            composer.createInputTC({
+                name: `${node.name}${value}`,
+                fields: queryFields,
+            });
         });
 
         composer.createInputTC({
@@ -186,18 +166,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             fields: { sort: sortEnum.List, limit: "Int", skip: "Int" },
         });
 
-        composer.Query.addFields({
-            [pluralize(node.name)]: find({ definition, getSchema: () => neoSchema }),
-        });
-    }
-
-    const visitor = {
-        ObjectTypeDefinition: createObjectType,
-    };
-
-    visit(document, { enter: visitor });
-
-    neoSchemaInput.nodes.forEach((node) => {
         const nodeInput = composer.createInputTC({
             name: `${node.name}CreateInput`,
             fields: node.primitiveFields.reduce((r, f) => {
@@ -208,10 +176,13 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             }, {}),
         });
 
-        const nodeConnectInput = composer.createInputTC({
-            name: `${node.name}ConnectInput`,
-            fields: {},
-        });
+        let nodeConnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
+        if (node.relationFields.length) {
+            nodeConnectInput = composer.createInputTC({
+                name: `${node.name}ConnectInput`,
+                fields: {},
+            });
+        }
 
         composer.createInputTC({
             name: `${node.name}ConnectFieldInput`,
@@ -223,13 +194,11 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         node.relationFields.forEach((rel) => {
             const refNode = neoSchemaInput.nodes.find((x) => x.name === rel.typeMeta.name) as Node;
-
             const createField = rel.typeMeta.array ? `[${refNode.name}CreateInput]` : `${refNode.name}CreateInput`;
+            const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
             const connectField = rel.typeMeta.array
                 ? `[${refNode.name}ConnectFieldInput]`
                 : `${refNode.name}ConnectFieldInput`;
-
-            const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
 
             composer.createInputTC({
                 name: nodeFieldInputName,
@@ -239,12 +208,17 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                 },
             });
 
-            nodeConnectInput.addFields({
-                [rel.fieldName]: connectField,
-            });
             nodeInput.addFields({
                 [rel.fieldName]: nodeFieldInputName,
             });
+
+            nodeConnectInput.addFields({
+                [rel.fieldName]: connectField,
+            });
+        });
+
+        composer.Query.addFields({
+            [pluralize(node.name)]: find({ node, getSchema: () => neoSchema }),
         });
 
         composer.Mutation.addFields({
