@@ -38,7 +38,7 @@ function createConnectAndParams({
             res.connect += `\n${where[0]}`;
             res.params = { ...res.params, ...where[1] };
         }
-        res.connect += `\nFOREACH(_ IN CASE [] WHEN NULL THEN [] ELSE [1] END | `; // TODO replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
+        res.connect += `\nFOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END | `; // TODO replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
         res.connect += `\nMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName})`;
         res.connect += `\n)`; // close FOREACH
 

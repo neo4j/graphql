@@ -126,7 +126,7 @@ SET this0.name = $this0_name
     WITH this0, this0_photos1
     OPTIONAL MATCH (this0_photos1_color_connect0:Color)
     WHERE this0_photos1_color_connect0.id = $this0_photos1_color_connect0_id
-    FOREACH(_ IN CASE [] WHEN NULL THEN [] ELSE [1] END |
+    FOREACH(_ IN CASE this0_photos1_color_connect0 WHEN NULL THEN [] ELSE [1] END |
       MERGE (this0_photos1)-[:OF_COLOR]->(this0_photos1_color_connect0)
     )
   MERGE (this0)-[:HAS_PHOTO]->(this0_photos1)
@@ -140,7 +140,7 @@ SET this0.name = $this0_name
     WITH this0, this0_photos2
     OPTIONAL MATCH (this0_photos2_color_connect0:Color)
     WHERE this0_photos2_color_connect0.id = $this0_photos2_color_connect0_id
-    FOREACH(_ IN CASE [] WHEN NULL THEN [] ELSE [1] END | 
+    FOREACH(_ IN CASE this0_photos2_color_connect0 WHEN NULL THEN [] ELSE [1] END | 
       MERGE (this0_photos2)-[:OF_COLOR]->(this0_photos2_color_connect0)  
     )
   MERGE (this0)-[:HAS_PHOTO]->(this0_photos2)
