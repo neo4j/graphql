@@ -28,9 +28,9 @@ function createWhereAndParams({
 
         const valueIsObject = Boolean(!Array.isArray(value) && Object.keys(value).length && typeof value !== "string");
         if (valueIsObject) {
-            const r = createWhereAndParams({ whereInput: value, varName, chainStr });
-            res.clauses.push(`(${r[0]})`);
-            res.params = { ...res.params, ...r[1] };
+            const recurse = createWhereAndParams({ whereInput: value, varName, chainStr });
+            res.clauses.push(`(${recurse[0]})`);
+            res.params = { ...res.params, ...recurse[1] };
 
             return res;
         }
@@ -50,14 +50,14 @@ function createWhereAndParams({
                             const innerClauses: string[] = [];
 
                             value.forEach((v: any, i) => {
-                                const r = createWhereAndParams({
+                                const recurse = createWhereAndParams({
                                     whereInput: v,
                                     varName,
                                     chainStr: `${param}${i > 0 ? i : ""}`,
                                 });
 
-                                innerClauses.push(`${r[0]}`);
-                                res.params = { ...res.params, ...r[1] };
+                                innerClauses.push(`${recurse[0]}`);
+                                res.params = { ...res.params, ...recurse[1] };
                             });
 
                             res.clauses.push(`(${innerClauses.join(` ${fieldName} `)})`);

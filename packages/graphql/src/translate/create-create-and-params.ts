@@ -33,15 +33,15 @@ function createCreateAndParams({
                     const withStr = `\nWITH ${[...withVars].join(", ")}`;
                     res.create += `\n${withStr}`;
 
-                    const innerCreate = createCreateAndParams({
+                    const recurse = createCreateAndParams({
                         input: create,
                         neoSchema,
                         node: refNode,
                         varName: innerVarName,
                         withVars: [...withVars, innerVarName],
                     });
-                    res.create += `\n${innerCreate[0]}`;
-                    res.params = { ...res.params, ...innerCreate[1] };
+                    res.create += `\n${recurse[0]}`;
+                    res.params = { ...res.params, ...recurse[1] };
 
                     const inStr = relationField.direction === "IN" ? "<-" : "-";
                     const outStr = relationField.direction === "OUT" ? "->" : "-";
