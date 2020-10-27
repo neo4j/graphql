@@ -1,4 +1,3 @@
-/* eslint-disable prefer-const */
 import { GraphQLResolveInfo } from "graphql";
 import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import pluralize from "pluralize";
@@ -9,10 +8,7 @@ import createCreateAndParams from "./create-create-and-params";
 import { trimmer } from "../utils";
 import { GraphQLWhereArg, GraphQLOptionsArg } from "../types";
 
-function translateRead(_, context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
-    const neoSchema: NeoSchema = context.neoSchema;
-
-    const resolveTree = parseResolveInfo(resolveInfo) as ResolveTree;
+function translateRead({ neoSchema, resolveTree }: { neoSchema: NeoSchema; resolveTree: ResolveTree }): [string, any] {
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
     const fieldsByTypeName = resolveTree.fieldsByTypeName;
@@ -88,23 +84,34 @@ function translateRead(_, context: any, resolveInfo: GraphQLResolveInfo): [strin
     return [trimmer(cypher), cypherParams];
 }
 
-function translateCreate(_, context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
-    const neoSchema: NeoSchema = context.neoSchema;
-    const resolveTree = parseResolveInfo(resolveInfo) as ResolveTree;
+function translateCreate({
+    neoSchema,
+    resolveTree,
+}: {
+    neoSchema: NeoSchema;
+    resolveTree: ResolveTree;
+}): [string, any] {
     const fieldsByTypeName = resolveTree.fieldsByTypeName;
     const node = neoSchema.nodes.find(
         (x) => x.name === pluralize.singular(resolveTree.name.split("create")[1])
     ) as Node;
-    const withVars: string[] = [];
 
-    const [createStrs, params, projStrs] = (resolveTree.args.input as any[]).reduce(
-        (res: [string[], any, string[]], input, index) => {
+    interface Res {
+        createStrs: string[];
+        params: any;
+        projectionStrs: string[];
+        withVars: string[];
+    }
+
+    const { createStrs, params, projectionStrs } = (resolveTree.args.input as any[]).reduce(
+        (res: Res, input, index) => {
             let cypher = "";
             const varName = `this${index}`;
-            withVars.push(varName);
+            res.withVars.push(varName);
 
-            const createAndParams = createCreateAndParams({ input, node, neoSchema, varName, withVars });
-            const withStr = withVars.length > 1 ? `WITH ${[...withVars].slice(0, withVars.length - 1).join(", ")}` : "";
+            const createAndParams = createCreateAndParams({ input, node, neoSchema, varName, withVars: res.withVars });
+            const withStr =
+                res.withVars.length > 1 ? `WITH ${[...res.withVars].slice(0, res.withVars.length - 1).join(", ")}` : "";
             cypher += `${withStr}\n${createAndParams[0]}`;
 
             const projection = createProjectionAndParams({
@@ -114,40 +121,39 @@ function translateCreate(_, context: any, resolveInfo: GraphQLResolveInfo): [str
                 varName,
             });
 
-            return [
-                [...res[0], cypher],
-                { ...res[1], ...createAndParams[1], ...projection[1] },
-                [...res[2], projection[0]],
-            ];
-        },
-        [[], {}, []]
-    ) as [string[], any, string[]];
+            res.createStrs.push(cypher);
+            res.projectionStrs.push(projection[0]);
+            res.params = { ...res.params, ...createAndParams[1], ...projection[1] };
 
-    // eslint-disable-next-line prettier/prettier
+            return res;
+        },
+        { createStrs: [], params: {}, projectionStrs: [], withVars: [] }
+    ) as Res;
+
     const cypher = `${createStrs.join("\n")}\n\nRETURN ${createStrs
-        .map((__, i) => `this${i} ${projStrs[i]} as this${i}`)
+        .map((__, i) => `this${i} ${projectionStrs[i]} as this${i}`)
         .join(", ")}`;
 
     return [cypher, { ...params }];
 }
 
-function translate(_, context: any, resolveInfo: GraphQLResolveInfo): [string, any] {
+function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQLResolveInfo }): [string, any] {
     const neoSchema: NeoSchema = context.neoSchema;
-
     if (!neoSchema || !(neoSchema instanceof NeoSchema)) {
         throw new Error("invalid schema");
     }
 
+    const resolveTree = parseResolveInfo(resolveInfo) as ResolveTree;
     const operationType = resolveInfo.operation.operation;
     const operationName = resolveInfo.fieldName;
 
     if (operationType === "mutation") {
         if (operationName.includes("create")) {
-            return translateCreate(_, context, resolveInfo);
+            return translateCreate({ resolveTree, neoSchema });
         }
     }
 
-    return translateRead(_, context, resolveInfo);
+    return translateRead({ resolveTree, neoSchema });
 }
 
 export default translate;
