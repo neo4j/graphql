@@ -61,7 +61,6 @@ function createCreateAndParams({
                     parentNode: node,
                     refNode,
                 });
-
                 res.create += `\n${connectAndParams[0]}`;
                 res.params = { ...res.params, ...connectAndParams[1] };
             }

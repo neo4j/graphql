@@ -4,7 +4,7 @@ import { translate } from "../translate";
 import { NeoSchema, Node } from "../classes";
 
 function create({ node, getSchema }: { node: Node; getSchema: () => NeoSchema }) {
-    async function resolve(_: any, args: any, context: any, resolveInfo: GraphQLResolveInfo) {
+    async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
         const neoSchema = getSchema();
 
         // @ts-ignore
@@ -17,7 +17,7 @@ function create({ node, getSchema }: { node: Node; getSchema: () => NeoSchema })
             throw new Error("context.driver missing");
         }
 
-        const [cypher, params] = translate(args, context, resolveInfo);
+        const [cypher, params] = translate({ context, resolveInfo });
 
         const result = await execute({ cypher, params, driver, defaultAccessMode: "WRITE", neoSchema });
 

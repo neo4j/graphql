@@ -30,13 +30,13 @@ describe("TCK Generated tests", () => {
                     const cypherQuery = test.cypherQuery as string;
                     const cypherParams = test.cypherParams as any;
 
-                    const resolver = (_object: any, params: any, ctx: any, resolveInfo: any) => {
-                        if (!ctx) {
-                            ctx = {};
+                    const resolver = (_roto: any, _params: any, context: any, resolveInfo: any) => {
+                        if (!context) {
+                            context = {};
                         }
-                        ctx.neoSchema = neoSchema;
+                        context.neoSchema = neoSchema;
 
-                        const [cQuery, cQueryParams] = translate(params, ctx, resolveInfo);
+                        const [cQuery, cQueryParams] = translate({ context, resolveInfo });
                         expect(trimmer(cQuery)).toEqual(trimmer(cypherQuery));
                         expect(serialize(cQueryParams)).toEqual(cypherParams);
 
