@@ -36,7 +36,7 @@ mutation {
 CREATE (this0:Movie)
 SET this0.id = $this0_id
 
-RETURN this0 { .id } as this0
+RETURN this0 { .id } AS this0
 ```
 
 **Expected Cypher params**
@@ -71,8 +71,8 @@ WITH this0
 CREATE (this1:Movie)
 SET this1.id = $this1_id
 
-RETURN this0 { .id } as this0,
-       this1 { .id } as this1
+RETURN this0 { .id } AS this0,
+       this1 { .id } AS this1
 ```
 
 **Expected Cypher params**
@@ -124,7 +124,7 @@ SET this1.id = $this1_id
   SET this1_actors0.name = $this1_actors0_name
   MERGE (this1)<-[:ACTED_IN]-(this1_actors0)
 
-RETURN this0 { .id } as this0, this1 { .id } as this1
+RETURN this0 { .id } AS this0, this1 { .id } AS this1
 ```
 
 **Expected Cypher params**
@@ -196,7 +196,7 @@ SET this1.id = $this1_id
     MERGE (this1_actors0)-[:ACTED_IN]->(this1_actors0_movies0)
     MERGE (this1)<-[:ACTED_IN]-(this1_actors0)
 
-RETURN this0 { .id } as this0, this1 { .id } as this1
+RETURN this0 { .id } AS this0, this1 { .id } AS this1
 ```
 
 **Expected Cypher params**
@@ -241,7 +241,7 @@ SET this0.id = $this0_id
     MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0)
   )
 
-RETURN this0 { .id } as this0
+RETURN this0 { .id } AS this0
 ```
 
 **Expected Cypher params**
