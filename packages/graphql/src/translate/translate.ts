@@ -99,11 +99,10 @@ function translateCreate({
     interface Res {
         createStrs: string[];
         params: any;
-        projectionStrs: string[];
         withVars: string[];
     }
 
-    const { createStrs, params, projectionStrs } = (resolveTree.args.input as any[]).reduce(
+    const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res: Res, input, index) => {
             let cypher = "";
             const varName = `this${index}`;
@@ -114,27 +113,36 @@ function translateCreate({
                 res.withVars.length > 1 ? `WITH ${[...res.withVars].slice(0, res.withVars.length - 1).join(", ")}` : "";
             cypher += `${withStr}\n${createAndParams[0]}`;
 
-            const projection = createProjectionAndParams({
-                node,
-                neoSchema,
-                fieldsByTypeName,
-                varName,
-            });
-
             res.createStrs.push(cypher);
-            res.projectionStrs.push(projection[0]);
-            res.params = { ...res.params, ...createAndParams[1], ...projection[1] };
+            res.params = { ...res.params, ...createAndParams[1] };
 
             return res;
         },
-        { createStrs: [], params: {}, projectionStrs: [], withVars: [] }
+        { createStrs: [], params: {}, withVars: [] }
     ) as Res;
 
-    const cypher = `${createStrs.join("\n")}\n\nRETURN ${createStrs
-        .map((__, i) => `this${i} ${projectionStrs[i]} as this${i}`)
-        .join(", ")}`;
+    /* so projection params don't conflict with create params. We only need to call createProjectionAndParams once. */
+    const projection = createProjectionAndParams({
+        node,
+        neoSchema,
+        fieldsByTypeName,
+        varName: "REPLACE_ME",
+    });
+    const replacedProjectionParams = Object.entries(projection[1]).reduce((res, [key, value]) => {
+        return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
+    }, {});
 
-    return [cypher, { ...params }];
+    const cypher = `${createStrs.join("\n")}\n\n\nRETURN ${createStrs
+        .map(
+            (_, i) =>
+                `\nthis${i} ${projection[0]
+                    .replace(/\$REPLACE_ME/g, "$projection")
+                    .replace(/REPLACE_ME/g, `this${i}`)} AS this${i}`
+        )
+        .join(", ")}
+    `;
+
+    return [cypher, { ...params, ...replacedProjectionParams }];
 }
 
 function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQLResolveInfo }): [string, any] {

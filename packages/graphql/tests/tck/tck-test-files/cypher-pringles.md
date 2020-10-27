@@ -1,4 +1,4 @@
-## Cypher Create
+## Cypher Create Pringles
 
 Tests operations for Pringles base case. see @ https://paper.dropbox.com/doc/Nested-mutations--A9l6qeiLzvYSxcyrii1ru0MNAg-LbUKLCTNN1nMO3Ka4VBoV
 
@@ -8,7 +8,7 @@ Schema:
 
 type Product {
     id: ID!
-    name: String!
+    name: String
     sizes: [Size] @relationship(type: "HAS_SIZE", direction: "OUT")
     colors: [Color] @relationship(type: "HAS_COLOR", direction: "OUT")
     photos: [Photo] @relationship(type: "HAS_PHOTO", direction: "OUT")
@@ -145,7 +145,7 @@ SET this0.name = $this0_name
     )
   MERGE (this0)-[:HAS_PHOTO]->(this0_photos2)
 
-RETURN this0 { .id } as this0
+RETURN this0 { .id } AS this0
 ```
 
 **Expected Cypher params**
