@@ -237,7 +237,7 @@ SET this0.id = $this0_id
   WITH this0
   OPTIONAL MATCH (this0_actors_connect0:Actor)
   WHERE this0_actors_connect0.name = $this0_actors_connect0_name
-  FOREACH(_ IN CASE [] WHEN NULL THEN [] ELSE [1] END | 
+  FOREACH(_ IN CASE this0_actors_connect0 WHEN NULL THEN [] ELSE [1] END | 
     MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0)
   )
 
