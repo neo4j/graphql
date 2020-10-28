@@ -1,11 +1,8 @@
 ## Cypher Projection
 
-Tests operations for Pringles base case. see @ https://paper.dropbox.com/doc/Nested-mutations--A9l6qeiLzvYSxcyrii1ru0MNAg-LbUKLCTNN1nMO3Ka4VBoV
-
 Schema:
 
 ```schema
-
 type Product {
     id: ID!
     name: String
