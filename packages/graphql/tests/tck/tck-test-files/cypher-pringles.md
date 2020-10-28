@@ -5,7 +5,6 @@ Tests operations for Pringles base case. see @ https://paper.dropbox.com/doc/Nes
 Schema:
 
 ```schema
-
 type Product {
     id: ID!
     name: String
