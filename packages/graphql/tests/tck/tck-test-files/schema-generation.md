@@ -21,6 +21,11 @@ type Movie {
   id: ID
 }
 
+type DeleteInfo {
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
+
 input MovieAND {
   id: ID
   id_IN: [ID]
@@ -59,6 +64,7 @@ input MovieWhere {
 
 type Mutation {
   createMovies(input: [MovieCreateInput]!): [Movie]!
+  deleteMovies(where: MovieWhere): DeleteInfo!
 }
 
 type Query {
@@ -88,6 +94,11 @@ type Movie {
 ```schema-output
 type Actor {
   name: String
+}
+
+type DeleteInfo {
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
 }
 
 input ActorAND {
@@ -175,6 +186,8 @@ input MovieWhere {
 type Mutation {
   createActors(input: [ActorCreateInput]!): [Actor]!
   createMovies(input: [MovieCreateInput]!): [Movie]!
+  deleteMovies(where: MovieWhere): DeleteInfo!
+  deleteActors(where: ActorWhere): DeleteInfo!
 }
 
 type Query {
@@ -207,6 +220,11 @@ type Movie {
 type Actor {
   name: String
   movies(where: MovieWhere, options: MovieOptions): [Movie]
+}
+
+type DeleteInfo {
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
 }
 
 input ActorAND {
@@ -319,6 +337,8 @@ input MovieWhere {
 type Mutation {
   createActors(input: [ActorCreateInput]!): [Actor]!
   createMovies(input: [MovieCreateInput]!): [Movie]!
+  deleteMovies(where: MovieWhere): DeleteInfo!
+  deleteActors(where: ActorWhere): DeleteInfo!
 }
 
 type Query {
@@ -353,6 +373,11 @@ type Movie {
 ```schema-output
 type Actor {
   name: String
+}
+
+type DeleteInfo {
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
 }
 
 input ActorAND {
@@ -435,6 +460,8 @@ input MovieWhere {
 type Mutation {
   createActors(input: [ActorCreateInput]!): [Actor]!
   createMovies(input: [MovieCreateInput]!): [Movie]!
+  deleteMovies(where: MovieWhere): DeleteInfo!
+  deleteActors(where: ActorWhere): DeleteInfo!
 }
 
 type Query {
