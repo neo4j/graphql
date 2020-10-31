@@ -6,6 +6,7 @@ import pluralize from "pluralize";
 import { NeoSchema, NeoSchemaConstructor, Node } from "../classes";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
+import getAuth from "./get-auth";
 import getRelationshipMeta from "./get-relationship-meta";
 import { RelationField, CypherField, PrimitiveField, BaseField } from "../types";
 import { upperFirstLetter } from "../utils";
@@ -38,6 +39,12 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     neoSchemaInput.nodes = (document.definitions.filter(
         (x) => x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)
     ) as ObjectTypeDefinitionNode[]).map((definition) => {
+        const authDirective = definition.directives?.find((x) => x.name.value === "auth");
+        if (authDirective) {
+            // todo
+            const authMeta = getAuth(authDirective);
+        }
+
         const { relationFields, primitiveFields, cypherFields } = definition?.fields?.reduce(
             (
                 res: {
@@ -92,6 +99,8 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             relationFields,
             primitiveFields,
             cypherFields,
+            // @ts-ignore
+            auth: {},
         });
 
         return node;
