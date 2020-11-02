@@ -1,9 +1,4 @@
-export enum AuthOperations {
-    "create",
-    "read",
-    "update",
-    "delete",
-}
+export type AuthOperations = "create" | "read" | "update" | "delete";
 
 export type AuthRule = {
     isAuthenticated?: boolean;

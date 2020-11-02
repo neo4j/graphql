@@ -1,17 +1,26 @@
 import { GraphQLResolveInfo } from "graphql";
 import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import pluralize from "pluralize";
-import { NeoSchema, Node } from "../classes";
+import { NeoSchema, Node, AuthRule } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import { GraphQLWhereArg, GraphQLOptionsArg } from "../types";
+import { getRoles, verifyAndDecodeToken } from "../auth";
 
-function translateRead({ neoSchema, resolveTree }: { neoSchema: NeoSchema; resolveTree: ResolveTree }): [string, any] {
+function translateRead({
+    neoSchema,
+    resolveTree,
+    node,
+}: {
+    neoSchema: NeoSchema;
+    resolveTree: ResolveTree;
+    context: any;
+    node: Node;
+}): [string, any] {
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
     const fieldsByTypeName = resolveTree.fieldsByTypeName;
-    const node = neoSchema.nodes.find((x) => x.name === pluralize.singular(resolveTree.name)) as Node;
     const varName = "this";
 
     const matchStr = `MATCH (${varName}:${node.name})`;
@@ -86,14 +95,14 @@ function translateRead({ neoSchema, resolveTree }: { neoSchema: NeoSchema; resol
 function translateCreate({
     neoSchema,
     resolveTree,
+    node,
 }: {
     neoSchema: NeoSchema;
     resolveTree: ResolveTree;
+    context: any;
+    node: Node;
 }): [string, any] {
     const fieldsByTypeName = resolveTree.fieldsByTypeName;
-    const node = neoSchema.nodes.find(
-        (x) => x.name === pluralize.singular(resolveTree.name.split("create")[1])
-    ) as Node;
 
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {
@@ -145,15 +154,13 @@ function translateCreate({
 }
 
 function translateDelete({
-    neoSchema,
     resolveTree,
+    node,
 }: {
     neoSchema: NeoSchema;
     resolveTree: ResolveTree;
+    node: Node;
 }): [string, any] {
-    const node = neoSchema.nodes.find(
-        (x) => x.name === pluralize.singular(resolveTree.name.split("delete")[1])
-    ) as Node;
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const varName = "this";
 
@@ -184,18 +191,99 @@ function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQ
     const resolveTree = parseResolveInfo(resolveInfo) as ResolveTree;
     const operationType = resolveInfo.operation.operation;
     const operationName = resolveInfo.fieldName;
+    let operation: "create" | "read" | "delete";
+    let node: Node | undefined;
+    let jwt: any;
+    let jwtRoles: string[];
 
     if (operationType === "mutation") {
         if (operationName.includes("create")) {
-            return translateCreate({ resolveTree, neoSchema });
+            operation = "create";
+            node = neoSchema.nodes.find(
+                (x) => x.name === pluralize.singular(resolveTree.name.split(operation)[1])
+            ) as Node;
         }
 
         if (operationName.includes("delete")) {
-            return translateDelete({ resolveTree, neoSchema });
+            operation = "delete";
+            node = neoSchema.nodes.find(
+                (x) => x.name === pluralize.singular(resolveTree.name.split(operation)[1])
+            ) as Node;
+        }
+    } else {
+        operation = "read";
+        node = neoSchema.nodes.find((x) => x.name === pluralize.singular(resolveTree.name)) as Node;
+    }
+
+    const realNode = node as Node;
+
+    const checkRoles = (rules: AuthRule[]) => {
+        rules.forEach((rule) => {
+            if (!jwt) {
+                jwt = verifyAndDecodeToken({ context });
+            }
+
+            if (rule.roles) {
+                rule.roles.forEach((role) => {
+                    if (!jwtRoles) {
+                        jwtRoles = getRoles(jwt);
+                    }
+
+                    if (!jwtRoles.includes(role)) {
+                        throw new Error("Forbidden");
+                    }
+                });
+            }
+        });
+    };
+
+    if (operationType === "mutation") {
+        if (operationName.includes("create")) {
+            let createRules: AuthRule[] = [];
+            if (realNode.auth) {
+                createRules = realNode.auth.rules.filter(
+                    (x) => x.operations?.includes("create") && x.isAuthenticated !== false
+                );
+                checkRoles(createRules);
+            }
+
+            return translateCreate({
+                resolveTree,
+                neoSchema,
+                context,
+                node: node as Node,
+            });
+        }
+
+        if (operationName.includes("delete")) {
+            let deleteRules: AuthRule[] = [];
+            if (realNode.auth) {
+                deleteRules = realNode.auth.rules.filter(
+                    (x) => x.operations?.includes("delete") && x.isAuthenticated !== false
+                );
+                checkRoles(deleteRules);
+            }
+
+            return translateDelete({
+                resolveTree,
+                neoSchema,
+                node: node as Node,
+            });
         }
     }
 
-    return translateRead({ resolveTree, neoSchema });
+    let readRules: AuthRule[] = [];
+    if (realNode.auth) {
+        readRules = realNode.auth.rules.filter((x) => x.operations?.includes("read") && x.isAuthenticated !== false);
+        checkRoles(readRules);
+    }
+
+    return translateRead({
+        resolveTree,
+        neoSchema,
+        context,
+        node: node as Node,
+    });
 }
 
 export default translate;

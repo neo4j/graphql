@@ -3,7 +3,7 @@ import { ObjectTypeDefinitionNode } from "graphql";
 import { SchemaComposer, ObjectTypeComposerFieldConfigAsObjectDefinition, InputTypeComposer } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import pluralize from "pluralize";
-import { NeoSchema, NeoSchemaConstructor, Node } from "../classes";
+import { Auth, NeoSchema, NeoSchemaConstructor, Node } from "../classes";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getAuth from "./get-auth";
@@ -40,9 +40,10 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         (x) => x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)
     ) as ObjectTypeDefinitionNode[]).map((definition) => {
         const authDirective = definition.directives?.find((x) => x.name.value === "auth");
+        let auth: Auth;
         if (authDirective) {
             // todo
-            const authMeta = getAuth(authDirective);
+            auth = getAuth(authDirective);
         }
 
         const { relationFields, primitiveFields, cypherFields } = definition?.fields?.reduce(
@@ -100,7 +101,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             primitiveFields,
             cypherFields,
             // @ts-ignore
-            auth: {},
+            auth,
         });
 
         return node;
