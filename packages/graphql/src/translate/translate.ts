@@ -170,13 +170,9 @@ function translateDelete({
         cypherParams = { ...cypherParams, ...where[1] };
     }
 
-    const cypher = `
-        ${matchStr}
-        ${whereStr}
-        DETACH DELETE ${varName}
-    `;
+    const cypher = [matchStr, whereStr, `DETACH DELETE ${varName}`];
 
-    return [trimmer(cypher), cypherParams];
+    return [cypher.filter(Boolean).join("\n"), cypherParams];
 }
 
 function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQLResolveInfo }): [string, any] {
