@@ -30,8 +30,7 @@ function createCreateAndParams({
                 const creates = relationField.typeMeta.array ? value.create : [value.create];
                 creates.forEach((create, index) => {
                     const innerVarName = `${_varName}${index}`;
-                    const withStr = `\nWITH ${[...withVars].join(", ")}`;
-                    res.create += `\n${withStr}`;
+                    res.create += `\n\nWITH ${withVars.join(", ")}`;
 
                     const recurse = createCreateAndParams({
                         input: create,

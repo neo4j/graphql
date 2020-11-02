@@ -163,8 +163,7 @@ function createProjectionAndParams({
         return res;
     }
 
-    // @ts-ignore
-    const { projection, params } = Object.entries(fieldsByTypeName[node.name]).reduce(reducer, {
+    const { projection, params } = Object.entries(fieldsByTypeName[node.name] as { [k: string]: any }).reduce(reducer, {
         projection: [],
         params: {},
     }) as Res;
