@@ -39,6 +39,7 @@
         "graphql": "15.3.0",
         "graphql-compose": "7.21.4",
         "graphql-parse-resolve-info": "4.9.0",
+        "jsonwebtoken": "8.5.1",
         "neo4j-driver": "4.1.2",
         "pluralize": "8.0.0"
     }
