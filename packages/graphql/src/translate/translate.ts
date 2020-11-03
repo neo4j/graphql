@@ -7,16 +7,21 @@ import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import { GraphQLWhereArg, GraphQLOptionsArg } from "../types";
 import { getRoles, verifyAndDecodeToken } from "../auth";
+import createAuthAndParams from "./create-auth-and-params";
 
 function translateRead({
     neoSchema,
     resolveTree,
     node,
+    rules,
+    jwt,
 }: {
     neoSchema: NeoSchema;
     resolveTree: ResolveTree;
     context: any;
     node: Node;
+    rules: AuthRule[];
+    jwt: any;
 }): [string, any] {
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
@@ -80,16 +85,25 @@ function translateRead({
         }
     }
 
+    const authAndParams = createAuthAndParams({
+        rules: rules.filter((r) => r.allow),
+        jwt,
+        node,
+        neoSchema,
+        varName,
+    });
+
     const cypher = [
         matchStr,
         whereStr,
+        authAndParams[0],
         `RETURN ${varName} ${projStr} as ${varName}`,
         `${sortStr || ""}`,
         `${skipStr || ""}`,
         `${limitStr || ""}`,
     ];
 
-    return [cypher.filter(Boolean).join("\n"), cypherParams];
+    return [cypher.filter(Boolean).join("\n"), { ...cypherParams, ...authAndParams[1] }];
 }
 
 function translateCreate({
@@ -148,9 +162,9 @@ function translateCreate({
         )
         .join(", ");
 
-    const cypher = `${createStrs.join("\n")}\n\nRETURN ${projectionStr}`;
+    const cypher = [`${createStrs.join("\n")}`, `\nRETURN ${projectionStr}`];
 
-    return [cypher, { ...params, ...replacedProjectionParams }];
+    return [cypher.join("\n"), { ...params, ...replacedProjectionParams }];
 }
 
 function translateDelete({
@@ -283,6 +297,8 @@ function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQ
         neoSchema,
         context,
         node: node as Node,
+        rules: readRules,
+        jwt,
     });
 }
 
