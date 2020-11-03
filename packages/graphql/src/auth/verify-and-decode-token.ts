@@ -1,10 +1,9 @@
 import jsonwebtoken from "jsonwebtoken";
 import { IncomingMessage } from "http";
 
-const { JWT_SECRET, JWT_NO_VERIFY } = process.env;
-
 function verifyAndDecodeToken({ context }: { context: any }) {
     const req = context instanceof IncomingMessage ? context : context.req || context.request;
+    const { JWT_SECRET, JWT_NO_VERIFY } = process.env;
 
     if (
         !req ||

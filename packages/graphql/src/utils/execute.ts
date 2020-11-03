@@ -39,6 +39,13 @@ async function execute(input: {
         }
 
         return deserialize(result.records.map((r) => r.toObject()));
+    } catch (error) {
+        if (error.message.includes("Failed to invoke procedure `apoc.util.validate")) {
+            const [, message] = error.message.split("Caused by: java.lang.RuntimeException: ");
+            throw new Error(message);
+        }
+
+        throw error;
     } finally {
         await session.close();
     }
