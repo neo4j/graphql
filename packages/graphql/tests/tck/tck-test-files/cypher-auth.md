@@ -11,10 +11,6 @@ type Product @auth(rules: [
         allow: { id: "read_id" }
     },
     {
-        operations: ["create"],
-        allow: { id: "create_id" }
-    },
-    {
         operations: ["delete"],
         allow: { id: "delete_id" }
     }

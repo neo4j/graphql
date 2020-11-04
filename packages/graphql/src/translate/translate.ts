@@ -110,11 +110,13 @@ function translateCreate({
     neoSchema,
     resolveTree,
     node,
+    jwt,
 }: {
     neoSchema: NeoSchema;
     resolveTree: ResolveTree;
     context: any;
     node: Node;
+    jwt: any;
 }): [string, any] {
     const fieldsByTypeName = resolveTree.fieldsByTypeName;
 
@@ -124,7 +126,14 @@ function translateCreate({
             const varName = `this${index}`;
             res.withVars.push(varName);
 
-            const createAndParams = createCreateAndParams({ input, node, neoSchema, varName, withVars: res.withVars });
+            const createAndParams = createCreateAndParams({
+                input,
+                node,
+                neoSchema,
+                varName,
+                withVars: res.withVars,
+                jwt,
+            });
             const withStr =
                 res.withVars.length > 1
                     ? `\nWITH ${[...res.withVars].slice(0, res.withVars.length - 1).join(", ")}`
@@ -266,9 +275,8 @@ function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQ
 
     if (operationType === "mutation") {
         if (operationName.includes("create")) {
-            let createRules: AuthRule[] = [];
             if (realNode.auth) {
-                createRules = realNode.auth.rules.filter(
+                const createRules = realNode.auth.rules.filter(
                     (x) => x.operations?.includes("create") && x.isAuthenticated !== false
                 );
                 checkRoles(createRules);
@@ -279,6 +287,7 @@ function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQ
                 neoSchema,
                 context,
                 node: node as Node,
+                jwt,
             });
         }
 

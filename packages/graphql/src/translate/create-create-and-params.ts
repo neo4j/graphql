@@ -1,5 +1,6 @@
-import { NeoSchema, Node } from "../classes";
+import { NeoSchema, Node, AuthRule } from "../classes";
 import createConnectAndParams from "./create-connect-and-params";
+import { getRoles } from "../auth";
 
 interface Res {
     create: string;
@@ -12,12 +13,14 @@ function createCreateAndParams({
     node,
     neoSchema,
     withVars,
+    jwt,
 }: {
     input: any;
     varName: string;
     node: Node;
     neoSchema: NeoSchema;
     withVars: string[];
+    jwt: any;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const _varName = `${varName}_${key}`;
@@ -27,6 +30,31 @@ function createCreateAndParams({
             const refNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
             if (value.create) {
+                let jwtRoles: string[];
+
+                if (refNode.auth) {
+                    if (
+                        !refNode.auth.rules.filter((rule) => rule.operations && rule.operations.includes("create"))
+                            .length
+                    ) {
+                        throw new Error("Forbidden");
+                    }
+
+                    refNode.auth.rules
+                        .filter((x) => x.operations?.includes("create") && x.isAuthenticated !== false && x.roles)
+                        .forEach((rule) => {
+                            ((rule.roles as unknown) as string[]).forEach((role) => {
+                                if (!jwtRoles) {
+                                    jwtRoles = getRoles(jwt);
+                                }
+
+                                if (!jwtRoles.includes(role)) {
+                                    throw new Error("Forbidden");
+                                }
+                            });
+                        });
+                }
+
                 const creates = relationField.typeMeta.array ? value.create : [value.create];
                 creates.forEach((create, index) => {
                     const innerVarName = `${_varName}${index}`;
@@ -38,6 +66,7 @@ function createCreateAndParams({
                         node: refNode,
                         varName: innerVarName,
                         withVars: [...withVars, innerVarName],
+                        jwt,
                     });
                     res.create += `\n${recurse[0]}`;
                     res.params = { ...res.params, ...recurse[1] };
