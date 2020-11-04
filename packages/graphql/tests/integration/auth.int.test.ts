@@ -131,14 +131,9 @@ describe("auth", () => {
     });
 
     test("should throw Forbidden invalid equality on JWT property vs node property using allow", async () => {
-        // todo create delete
         await Promise.all(
             ["read", "delete"].map(async (type) => {
                 const session = driver.session();
-
-                const id = generate({
-                    charset: "alphabetic",
-                });
 
                 const typeDefs = `
                     type Product @auth(rules: [{
@@ -155,16 +150,6 @@ describe("auth", () => {
                 const neoSchema = makeAugmentedSchema({ typeDefs });
 
                 let query: string | undefined;
-
-                if (type === "create") {
-                    query = `
-                        mutation {
-                            createProducts(input: [{id: 123, name: "pringles"}]) {
-                                id
-                            }
-                        }
-                    `;
-                }
 
                 if (type === "delete") {
                     query = `
@@ -206,7 +191,6 @@ describe("auth", () => {
     });
 
     test("should allow equality on JWT property vs node property using allow", async () => {
-        // todo create delete
         await Promise.all(
             ["read", "delete"].map(async (type) => {
                 const session = driver.session();
@@ -230,16 +214,6 @@ describe("auth", () => {
                 const neoSchema = makeAugmentedSchema({ typeDefs });
 
                 let query: string | undefined;
-
-                if (type === "create") {
-                    query = `
-                        mutation {
-                            createProducts(input: [{id: 123, name: "pringles"}]) {
-                                id
-                            }
-                        }
-                    `;
-                }
 
                 if (type === "delete") {
                     query = `
@@ -273,10 +247,6 @@ describe("auth", () => {
                     });
 
                     expect(gqlResult.errors).toEqual(undefined);
-
-                    if (type === "create") {
-                        expect((gqlResult.data as any).createProducts[0]).toEqual({ id });
-                    }
 
                     if (type === "delete") {
                         expect((gqlResult.data as any).deleteProducts).toEqual({ nodesDeleted: 0 });
