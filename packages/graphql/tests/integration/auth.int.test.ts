@@ -133,7 +133,7 @@ describe("auth", () => {
     test("should throw Forbidden invalid equality on JWT property vs node property using allow", async () => {
         // todo create delete
         await Promise.all(
-            ["read"].map(async (type) => {
+            ["read", "delete"].map(async (type) => {
                 const session = driver.session();
 
                 const id = generate({
@@ -208,7 +208,7 @@ describe("auth", () => {
     test("should allow equality on JWT property vs node property using allow", async () => {
         // todo create delete
         await Promise.all(
-            ["read"].map(async (type) => {
+            ["read", "delete"].map(async (type) => {
                 const session = driver.session();
 
                 const id = generate({
