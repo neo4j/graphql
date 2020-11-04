@@ -38,6 +38,7 @@ describe("createCreateAndParams", () => {
             neoSchema,
             varName: "this0",
             withVars: ["this0"],
+            jwt: {},
         });
 
         expect(trimmer(result[0])).toEqual(
