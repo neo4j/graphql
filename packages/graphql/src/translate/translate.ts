@@ -170,10 +170,15 @@ function translateCreate({
 function translateDelete({
     resolveTree,
     node,
+    rules,
+    neoSchema,
+    jwt,
 }: {
     neoSchema: NeoSchema;
     resolveTree: ResolveTree;
     node: Node;
+    rules: AuthRule[];
+    jwt: any;
 }): [string, any] {
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const varName = "this";
@@ -191,9 +196,17 @@ function translateDelete({
         cypherParams = { ...cypherParams, ...where[1] };
     }
 
-    const cypher = [matchStr, whereStr, `DETACH DELETE ${varName}`];
+    const authAndParams = createAuthAndParams({
+        rules: rules.filter((r) => r.allow),
+        jwt,
+        node,
+        neoSchema,
+        varName,
+    });
 
-    return [cypher.filter(Boolean).join("\n"), cypherParams];
+    const cypher = [matchStr, whereStr, authAndParams[0], `DETACH DELETE ${varName}`];
+
+    return [cypher.filter(Boolean).join("\n"), { ...cypherParams, ...authAndParams[1] }];
 }
 
 function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQLResolveInfo }): [string, any] {
@@ -282,6 +295,8 @@ function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQ
                 resolveTree,
                 neoSchema,
                 node: node as Node,
+                rules: deleteRules,
+                jwt,
             });
         }
     }

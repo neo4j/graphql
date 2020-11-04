@@ -65,3 +65,42 @@ RETURN this { .id, .name } as this
 ```
 
 ---
+
+### Simple Auth Delete
+
+**GraphQL input**
+
+```graphql
+mutation {
+  deleteProducts(where: {id: "123"}) {
+    nodesDeleted
+  }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Product) 
+WHERE this.id = $this_id
+CALL apoc.util.validate(NOT(this.id = $this_auth0_id), "Forbidden", [0])
+DETACH DELETE this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "123",
+    "this_auth0_id": "super_admin_delete_id"
+}
+```
+
+**JWT Object**
+```jwt
+{
+    "delete_id": "super_admin_delete_id"
+}
+```
+
+---
