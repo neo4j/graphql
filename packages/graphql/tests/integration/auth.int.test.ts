@@ -145,6 +145,20 @@ describe("auth", () => {
                     }
                 `;
 
+                const id1 = generate({
+                    charset: "alphabetic",
+                });
+                const id2 = generate({
+                    charset: "alphabetic",
+                });
+
+                await session.run(
+                    `
+                        CREATE (:Product {id: $id1}), (:Product {id: $id2})
+                    `,
+                    { id1, id2 }
+                );
+
                 const token = jsonwebtoken.sign({ sub: "invalid" }, process.env.JWT_SECRET);
 
                 const neoSchema = makeAugmentedSchema({ typeDefs });
@@ -255,6 +269,95 @@ describe("auth", () => {
                     if (type === "read") {
                         expect((gqlResult.data as any).Products).toEqual([]);
                     }
+                } finally {
+                    await session.close();
+                }
+            })
+        );
+    });
+
+    test("should allow * on operations", async () => {
+        await Promise.all(
+            ["read", "delete", "create"].map(async (type) => {
+                const session = driver.session();
+
+                const typeDefs = `
+                    type Product @auth(rules: [{
+                        operations: ["${type}"],
+                        allow: { id: "sub" }
+                    },
+                    {
+                        operations: ["${type}"],
+                        roles: ["admin"]
+                    }
+                    {
+                        operations: ["${type}"],
+                        allow: "*"
+                    }
+                   ]) {
+                        id: ID
+                        name: String
+                        colors: [Color] @relationship(type: "OF_COLOR", direction: "OUT")
+                    }
+
+                    type Color @auth(rules: [{allow: "*", operations: ["create"]}]) {
+                        name: String
+                    }
+                `;
+
+                const token = jsonwebtoken.sign({ sub: "ALLOW *" }, process.env.JWT_SECRET);
+
+                const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                let query: string | undefined;
+
+                if (type === "create") {
+                    query = `
+                        mutation {
+                            createProducts(input:[{
+                                name: "Pringles", 
+                                colors: {
+                                    create: [{ name: "Red" }]
+                                }
+                            }]){
+                                id
+                            }
+                        }
+                    `;
+                }
+
+                if (type === "delete") {
+                    query = `
+                        mutation {
+                            deleteProducts {
+                                nodesDeleted
+                            }
+                        }
+                    `;
+                }
+
+                if (type === "read") {
+                    query = `
+                        {
+                            Products {
+                                id
+                            }
+                        }
+                    `;
+                }
+
+                try {
+                    const socket = new Socket({ readable: true });
+                    const req = new IncomingMessage(socket);
+                    req.headers.authorization = `Bearer ${token}`;
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source: query as string,
+                        contextValue: { driver, req },
+                    });
+
+                    expect(gqlResult.errors).toEqual(undefined);
                 } finally {
                     await session.close();
                 }

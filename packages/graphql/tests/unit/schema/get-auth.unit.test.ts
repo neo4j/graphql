@@ -172,7 +172,7 @@ describe("getAuth", () => {
         }
     });
 
-    test("should throw rules[0].allow must be a ObjectValue", () => {
+    test("should throw invalid rules[0].allow StringValue", () => {
         const typeDefs = `
             type Movie @auth(rules: [
                 {
@@ -194,7 +194,33 @@ describe("getAuth", () => {
 
             throw new Error();
         } catch (error) {
-            expect(error.message).toEqual("rules[0].allow must be a ObjectValue");
+            expect(error.message).toEqual("rules[0].allow invalid StringValue");
+        }
+    });
+
+    test("should throw rules[0].allow must be a ObjectValue or StringValue", () => {
+        const typeDefs = `
+            type Movie @auth(rules: [
+                {
+                    allow: true,
+                    operations: ["read"]
+                }
+            ]) {
+                id: ID!
+            }
+         `;
+
+        const parsed = parse(typeDefs);
+
+        // @ts-ignore
+        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0] as DirectiveNode;
+
+        try {
+            getAuth(directive);
+
+            throw new Error();
+        } catch (error) {
+            expect(error.message).toEqual("rules[0].allow must be a ObjectValue or StringValue");
         }
     });
 
@@ -285,7 +311,8 @@ describe("getAuth", () => {
                 { 
                     allow: { author_id: "sub", moderator_id: "sub" }, 
                     operations: ["update", "delete"] 
-                }
+                },
+                { allow: "*", operations: ["update"] },
             ]) {
                 id: ID
                 title: String
@@ -307,6 +334,7 @@ describe("getAuth", () => {
                 { roles: ["admin", "publisher"], operations: ["update", "delete"] },
                 { roles: ["editors"], operations: ["update"] },
                 { allow: { author_id: "sub", moderator_id: "sub" }, operations: ["update", "delete"] },
+                { allow: "*", operations: ["update"] },
             ],
             type: "JWT",
         });
