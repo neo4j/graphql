@@ -168,7 +168,7 @@ describe("auth", () => {
                 if (type === "delete") {
                     query = `
                         mutation {
-                            deleteProducts {
+                            deleteProducts(where: {id: "${id1}"}) {
                                 nodesDeleted
                             }
                         }
@@ -178,7 +178,7 @@ describe("auth", () => {
                 if (type === "read") {
                     query = `
                         {
-                            Products {
+                            Products(where: {id: "${id2}"}) {
                                 id
                             }
                         }
@@ -212,6 +212,13 @@ describe("auth", () => {
                 const id = generate({
                     charset: "alphabetic",
                 });
+
+                await session.run(
+                    `
+                        CREATE (:Product {id: $id})
+                    `,
+                    { id }
+                );
 
                 const typeDefs = `
                     type Product @auth(rules: [{
@@ -263,11 +270,11 @@ describe("auth", () => {
                     expect(gqlResult.errors).toEqual(undefined);
 
                     if (type === "delete") {
-                        expect((gqlResult.data as any).deleteProducts).toEqual({ nodesDeleted: 0 });
+                        expect((gqlResult.data as any).deleteProducts).toEqual({ nodesDeleted: 1 });
                     }
 
                     if (type === "read") {
-                        expect((gqlResult.data as any).Products).toEqual([]);
+                        expect((gqlResult.data as any).Products).toEqual([{ id }]);
                     }
                 } finally {
                     await session.close();
@@ -305,6 +312,10 @@ describe("auth", () => {
                     }
                 `;
 
+                const id = generate({
+                    charset: "alphabetic",
+                });
+
                 const token = jsonwebtoken.sign({ sub: "ALLOW *" }, process.env.JWT_SECRET);
 
                 const neoSchema = makeAugmentedSchema({ typeDefs });
@@ -327,9 +338,16 @@ describe("auth", () => {
                 }
 
                 if (type === "delete") {
+                    await session.run(
+                        `
+                            CREATE (:Product {id: $id})
+                        `,
+                        { id }
+                    );
+
                     query = `
                         mutation {
-                            deleteProducts {
+                            deleteProducts(where: {id: "${id}"}) {
                                 nodesDeleted
                             }
                         }
@@ -337,9 +355,16 @@ describe("auth", () => {
                 }
 
                 if (type === "read") {
+                    await session.run(
+                        `
+                            CREATE (:Product {id: $id})
+                        `,
+                        { id }
+                    );
+
                     query = `
                         {
-                            Products {
+                            Products(where: {id: "${id}"}) {
                                 id
                             }
                         }
