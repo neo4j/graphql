@@ -20,6 +20,10 @@ function createAuthAndParams({
     function reducer(res: Res, rule: AuthRule, index: number): Res {
         const chainStr = `${varName}_auth${index}`;
 
+        if (rules.filter((x) => x.allow === "*").length) {
+            return res;
+        }
+
         Object.entries(rule.allow as { [k: string]: string }).forEach(([key, value]) => {
             const isPrimitiveField = node.primitiveFields.find((x) => x.fieldName === key);
             if (isPrimitiveField) {

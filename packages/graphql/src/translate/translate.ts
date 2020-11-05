@@ -266,7 +266,9 @@ function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQ
                     }
 
                     if (!jwtRoles.includes(role)) {
-                        throw new Error("Forbidden");
+                        if (!rules.filter((x) => x.allow === "*").length) {
+                            throw new Error("Forbidden");
+                        }
                     }
                 });
             }

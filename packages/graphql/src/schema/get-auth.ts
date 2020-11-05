@@ -63,21 +63,31 @@ function getAuth(directive: DirectiveNode): Auth {
 
         const allow = value.fields.find((x) => x.name.value === "allow");
         if (allow) {
-            if (allow.value.kind !== "ObjectValue") {
-                throw new Error(`rules[${i}].allow must be a ObjectValue`);
+            if (!["ObjectValue", "StringValue"].includes(allow.value.kind)) {
+                throw new Error(`rules[${i}].allow must be a ObjectValue or StringValue`);
             }
 
-            allow.value.fields.forEach((field) => {
-                if (field.value.kind !== "StringValue") {
-                    throw new Error(`rules[${i}].allow[${field.name.value}] must be a string`);
+            if (allow.value.kind === "ObjectValue") {
+                allow.value.fields.forEach((field) => {
+                    if (field.value.kind !== "StringValue") {
+                        throw new Error(`rules[${i}].allow[${field.name.value}] must be a string`);
+                    }
+
+                    if (!rule.allow) {
+                        rule.allow = {};
+                    }
+
+                    rule.allow[field.name.value] = field.value.value;
+                });
+            }
+
+            if (allow.value.kind === "StringValue") {
+                if (allow.value.value !== "*") {
+                    throw new Error(`rules[${i}].allow invalid StringValue`);
                 }
 
-                if (!rule.allow) {
-                    rule.allow = {};
-                }
-
-                rule.allow[field.name.value] = field.value.value;
-            });
+                rule.allow = "*";
+            }
         }
 
         const roles = value.fields.find((x) => x.name.value === "roles");
