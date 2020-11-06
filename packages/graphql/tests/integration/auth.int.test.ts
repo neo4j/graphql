@@ -445,6 +445,75 @@ describe("auth", () => {
         }
     });
 
+    test("should allow users to nest mutations because of allow *", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Product @auth(rules: [{
+                roles: ["admin"],
+                operations: ["create"]
+            }, 
+            {
+                allow: "*"
+                operations: ["create", "read", "update", "delete"]
+            }]) {
+                id: ID
+                name: String
+                colors: [Color] @relationship(type: "OF_COLOR", direction: "OUT")
+            }
+
+            type Color @auth(rules: [{
+                roles: ["admin"],
+                operations: ["create"]
+            },
+            {
+                allow: "*",
+                operations: ["create", "read", "update", "delete"]
+            }]) {
+                name: String
+            }
+        `;
+
+        const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.JWT_SECRET);
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            mutation {
+                createProducts(input:[{
+                    id: "${id}", 
+                    colors: {
+                        create: [{ name: "Red" }]
+                    }
+                }]){
+                    id
+                }
+            }
+        `;
+
+        try {
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query as string,
+                contextValue: { driver, req },
+            });
+
+            expect(gqlResult.errors).toEqual(undefined);
+
+            expect((gqlResult.data as any).createProducts[0].id).toEqual(id);
+        } finally {
+            await session.close();
+        }
+    });
+
     test("should allow users with correct role to nest mutations", async () => {
         const session = driver.session();
 
