@@ -23,7 +23,7 @@ function createAuthAndParams({
     function reducer(res: Res, ruleValue: any, index: number): Res {
         let param = "";
         if (chainStr) {
-            param = `${chainStr}_${index}`;
+            param = chainStr;
         } else {
             param = `${varName}_auth${index}`;
         }
@@ -48,14 +48,24 @@ function createAuthAndParams({
                 case "AND":
                 case "OR":
                     {
-                        // TODO better recurse REPLACE ME
                         const inner: string[] = [];
 
                         ((value as unknown) as any[]).forEach((v, i) => {
-                            const reduced = reducer({ authPredicates: [], params: [] }, v, i);
+                            const recurse = createAuthAndParams({
+                                rules: [{ allow: v }],
+                                jwt,
+                                varName,
+                                node,
+                                chainStr: `${param}_${key}${i}`,
+                                neoSchema,
+                            });
 
-                            inner.push(reduced.authPredicates.join(" "));
-                            res.params = { ...res.params, ...reduced.params };
+                            inner.push(
+                                recurse[0]
+                                    .replace("CALL apoc.util.validate(NOT(", "")
+                                    .replace(`), "Forbidden", [0])`, "")
+                            );
+                            res.params = { ...res.params, ...recurse[1] };
                         });
 
                         res.authPredicates.push(`(${inner.join(` ${key} `)})`);
