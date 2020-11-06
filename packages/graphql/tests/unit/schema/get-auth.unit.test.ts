@@ -168,85 +168,7 @@ describe("getAuth", () => {
 
             throw new Error();
         } catch (error) {
-            expect(error.message).toEqual("rules[0].isAuthenticated must be a boolean");
-        }
-    });
-
-    test("should throw invalid rules[0].allow StringValue", () => {
-        const typeDefs = `
-            type Movie @auth(rules: [
-                {
-                    allow: "true",
-                    operations: ["read"]
-                }
-            ]) {
-                id: ID!
-            }
-         `;
-
-        const parsed = parse(typeDefs);
-
-        // @ts-ignore
-        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0] as DirectiveNode;
-
-        try {
-            getAuth(directive);
-
-            throw new Error();
-        } catch (error) {
-            expect(error.message).toEqual("rules[0].allow invalid StringValue");
-        }
-    });
-
-    test("should throw rules[0].allow must be a ObjectValue or StringValue", () => {
-        const typeDefs = `
-            type Movie @auth(rules: [
-                {
-                    allow: true,
-                    operations: ["read"]
-                }
-            ]) {
-                id: ID!
-            }
-         `;
-
-        const parsed = parse(typeDefs);
-
-        // @ts-ignore
-        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0] as DirectiveNode;
-
-        try {
-            getAuth(directive);
-
-            throw new Error();
-        } catch (error) {
-            expect(error.message).toEqual("rules[0].allow must be a ObjectValue or StringValue");
-        }
-    });
-
-    test("should throw rules[0].allow[abc] must be a string", () => {
-        const typeDefs = `
-            type Movie @auth(rules: [
-                { 
-                    allow: { abc: true },
-                    operations: ["read"]
-                }
-            ]) {
-                id: ID!
-            }
-         `;
-
-        const parsed = parse(typeDefs);
-
-        // @ts-ignore
-        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0] as DirectiveNode;
-
-        try {
-            getAuth(directive);
-
-            throw new Error();
-        } catch (error) {
-            expect(error.message).toEqual("rules[0].allow[abc] must be a string");
+            expect(error.message).toEqual("rules[0].isAuthenticated must be a BooleanValue");
         }
     });
 
@@ -304,6 +226,11 @@ describe("getAuth", () => {
 
     test("should return AuthRule", () => {
         const typeDefs = `
+            type Person {
+                id: ID
+                name: String
+            }
+
             type Movie @auth(rules: [
                 { isAuthenticated: true, operations: ["create"] },
                 { roles: ["admin", "publisher"], operations: ["update", "delete"] },
@@ -313,16 +240,20 @@ describe("getAuth", () => {
                     operations: ["update", "delete"] 
                 },
                 { allow: "*", operations: ["update"] },
+                { allow: {OR: [{director_id: "sub"}, {actor_id: "sub"}]}, operations: ["update"] },
             ]) {
                 id: ID
                 title: String
+                director: Person @relationship(type: "DIRECTOR_OF", direction: "IN")
+                actor: Person @relationship(type: "ACTED_IN", direction: "IN")
             }
         `;
 
         const parsed = parse(typeDefs);
 
         // @ts-ignore
-        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0] as DirectiveNode;
+        const directive = (parsed.definitions.find((x) => x.name.value === "Movie") as ObjectTypeDefinitionNode)
+            .directives[0] as DirectiveNode;
 
         const auth = getAuth(directive);
 
@@ -335,6 +266,7 @@ describe("getAuth", () => {
                 { roles: ["editors"], operations: ["update"] },
                 { allow: { author_id: "sub", moderator_id: "sub" }, operations: ["update", "delete"] },
                 { allow: "*", operations: ["update"] },
+                { allow: { OR: [{ director_id: "sub" }, { actor_id: "sub" }] }, operations: ["update"] },
             ],
             type: "JWT",
         });

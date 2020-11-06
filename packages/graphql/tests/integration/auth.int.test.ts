@@ -505,4 +505,162 @@ describe("auth", () => {
             await session.close();
         }
     });
+
+    test("should use allow relationship filtering to throw Forbidden when user is not a creator of a post", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type User {
+                id: String
+                name: String
+            }
+            
+            type Post @auth(
+                rules: [
+                    {
+                        allow: {
+                            OR: [
+                                { creator_id: "sub" },
+                                { moderator_id: "sub" }
+                            ]
+                        },
+                        operations: ["read"]
+                    }
+                ]
+            ) {
+                id: String
+                title: String
+                creator: User @relationship(type: "CREATOR", direction: "OUT")
+                moderator: User @relationship(type: "MODERATOR", direction: "IN")
+            }
+        `;
+
+        const token = jsonwebtoken.sign({ sub: "INVALID" }, process.env.JWT_SECRET);
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const postId = generate({
+            charset: "alphabetic",
+        });
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
+        await session.run(
+            `
+            CREATE (p:Post {id: $postId})
+            MERGE (p)-[:CREATOR]->(:User {id: $userId})
+            MERGE (p)<-[:MODERATOR]-(:User {id: $userId})
+        `,
+            { postId, userId }
+        );
+
+        const query = `
+            {
+                Posts(where: {id: "${postId}"}) {
+                    id
+                    title
+                    creator {
+                        id
+                    }
+                }
+            }
+        `;
+
+        try {
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query as string,
+                contextValue: { driver, req },
+            });
+
+            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should use allow relationship filtering to allow the read of a post when the user is a creator", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type User {
+                id: String
+                name: String
+            }
+            
+            type Post @auth(
+                rules: [
+                    {
+                        allow: {
+                            OR: [
+                                { creator_id: "sub" },
+                                { moderator_id: "sub" }
+                            ]
+                        },
+                        operations: ["read"]
+                    }
+                ]
+            ) {
+                id: String
+                title: String
+                creator: User @relationship(type: "CREATOR", direction: "OUT")
+                moderator: User @relationship(type: "MODERATOR", direction: "IN")
+            }
+        `;
+
+        const postId = generate({
+            charset: "alphabetic",
+        });
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
+        const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET);
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        await session.run(
+            `
+            CREATE (p:Post {id: $postId})
+            MERGE (p)-[:CREATOR]->(:User {id: $userId})
+            MERGE (p)<-[:MODERATOR]-(:User {id: $userId})
+        `,
+            { postId, userId }
+        );
+
+        const query = `
+            {
+                Posts(where: {id: "${postId}"}) {
+                    id
+                    title
+                    creator {
+                        id
+                    }
+                }
+            }
+        `;
+
+        try {
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query as string,
+                contextValue: { driver, req },
+            });
+
+            expect(gqlResult.errors).toEqual(undefined);
+        } finally {
+            await session.close();
+        }
+    });
 });

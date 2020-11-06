@@ -24,6 +24,7 @@ describe("createAuthAndParams", () => {
                     arguments: [],
                 },
             ],
+            relationFields: [],
             auth,
         };
 

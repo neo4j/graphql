@@ -3,7 +3,7 @@ export type AuthOperations = "create" | "read" | "update" | "delete";
 export type AuthRule = {
     isAuthenticated?: boolean;
     operations?: AuthOperations[];
-    allow?: { [k: string]: string } | "*";
+    allow?: { [k: string]: any } | "*";
     roles?: string[];
 };
 
