@@ -50,8 +50,7 @@ type Post @auth(
 
 ```cypher
 MATCH (this:Post)
-WHERE this.id = $this_id 
-CALL apoc.util.validate(NOT((EXISTS((this)-[:CREATOR]->(:User)) AND ALL(creator IN [(this)-[:CREATOR]->(creator:User) | creator] WHERE creator.id = $this_auth0_creator_id) OR EXISTS((this)<-[:MODERATOR]-(:User)) AND ALL(moderator IN [(this)<-[:MODERATOR]-(moderator:User) | moderator] WHERE moderator.id = $this_auth1_moderator_id))), "Forbidden", [0]) 
+WHERE this.id = $this_id CALL apoc.util.validate(NOT((EXISTS((this)-[:CREATOR]->(:User)) AND ALL(creator IN [(this)-[:CREATOR]->(creator:User) | creator] WHERE creator.id = $this_auth0_OR0_creator_id) OR EXISTS((this)<-[:MODERATOR]-(:User)) AND ALL(moderator IN [(this)<-[:MODERATOR]-(moderator:User) | moderator] WHERE moderator.id = $this_auth0_OR1_moderator_id))), "Forbidden", [0])
 RETURN this { .id, .title } as this
 ```
 
@@ -60,8 +59,8 @@ RETURN this { .id, .title } as this
 ```cypher-params
 {
     "this_id": "123",
-    "this_auth0_creator_id": "super_admin",
-    "this_auth1_moderator_id": "super_admin"
+    "this_auth0_OR0_creator_id": "super_admin",
+    "this_auth0_OR1_moderator_id": "super_admin"
 }
 ```
 
