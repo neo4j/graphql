@@ -32,28 +32,30 @@ function createCreateAndParams({
             if (value.create) {
                 let jwtRoles: string[];
 
-                // TODO allow *
                 if (refNode.auth) {
-                    if (
-                        !refNode.auth.rules.filter((rule) => rule.operations && rule.operations.includes("create"))
-                            .length
-                    ) {
+                    const createRules = refNode.auth.rules.filter((x) => x.operations?.includes("create"));
+
+                    if (!createRules.length) {
                         throw new Error("Forbidden");
                     }
 
-                    refNode.auth.rules
-                        .filter((x) => x.operations?.includes("create") && x.isAuthenticated !== false && x.roles)
-                        .forEach((rule) => {
-                            ((rule.roles as unknown) as string[]).forEach((role) => {
-                                if (!jwtRoles) {
-                                    jwtRoles = getRoles(jwt);
-                                }
+                    const allowStar = createRules.filter((x) => x.allow && x.allow === "*");
 
-                                if (!jwtRoles.includes(role)) {
-                                    throw new Error("Forbidden");
-                                }
+                    if (!allowStar.length) {
+                        createRules
+                            .filter((x) => x.isAuthenticated !== false && x.roles)
+                            .forEach((rule) => {
+                                ((rule.roles as unknown) as string[]).forEach((role) => {
+                                    if (!jwtRoles) {
+                                        jwtRoles = getRoles(jwt);
+                                    }
+
+                                    if (!jwtRoles.includes(role)) {
+                                        throw new Error("Forbidden");
+                                    }
+                                });
                             });
-                        });
+                    }
                 }
 
                 const creates = relationField.typeMeta.array ? value.create : [value.create];
