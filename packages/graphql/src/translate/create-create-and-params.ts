@@ -1,4 +1,4 @@
-import { NeoSchema, Node, AuthRule } from "../classes";
+import { NeoSchema, Node } from "../classes";
 import createConnectAndParams from "./create-connect-and-params";
 import { getRoles } from "../auth";
 
@@ -32,6 +32,7 @@ function createCreateAndParams({
             if (value.create) {
                 let jwtRoles: string[];
 
+                // TODO allow *
                 if (refNode.auth) {
                     if (
                         !refNode.auth.rules.filter((rule) => rule.operations && rule.operations.includes("create"))

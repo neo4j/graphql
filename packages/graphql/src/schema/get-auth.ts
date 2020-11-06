@@ -1,4 +1,3 @@
-/* eslint-disable no-inner-declarations */
 import { DirectiveNode, valueFromASTUntyped } from "graphql";
 import { Auth, AuthRule, AuthConstructor } from "../classes";
 

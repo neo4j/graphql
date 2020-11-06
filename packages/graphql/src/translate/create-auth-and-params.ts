@@ -1,4 +1,4 @@
-import { Auth, AuthRule, NeoSchema, Node } from "../classes";
+import { AuthRule, NeoSchema, Node } from "../classes";
 
 interface Res {
     authPredicates: string[];
@@ -48,6 +48,7 @@ function createAuthAndParams({
                 case "AND":
                 case "OR":
                     {
+                        // TODO better recurse REPLACE ME
                         const inner: string[] = [];
 
                         ((value as unknown) as any[]).forEach((v, i) => {
