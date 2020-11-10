@@ -8,6 +8,7 @@
     },
     "author": "Neo4j Inc.",
     "dependencies": {
-        "@neo4j/graphql": "^1.0.0"
+        "@neo4j/graphql": "file:../package",
+        "graphql": "^15.4.0"
     }
 }
