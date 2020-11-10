@@ -9,8 +9,5 @@
     "author": "Neo4j Inc.",
     "devDependencies": {
         "typescript": "3.9.7"
-    },
-    "dependencies": {
-        "@neo4j/graphql": "^1.0.0"
     }
 }
