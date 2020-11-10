@@ -3,8 +3,14 @@
     "private": true,
     "version": "1.0.0",
     "description": "",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "exports": {
+        "require": "./dist/cjs/index.js"
+    },
+    "main": "./dist/cjs/index.js",
+    "types": "./dist/cjs/index.d.ts",
+    "files": [
+        "dist/"
+    ],
     "scripts": {
         "prepare": "npm run build:clean",
         "clean": "rimraf dist",
@@ -15,7 +21,8 @@
         "test:tck:watch": "jest tck --watchAll",
         "test:int": "jest int",
         "test:int:watch": "jest int --watch",
-        "build": "tsc",
+        "build": "npm run build:cjs",
+        "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
         "start": "run-s build:clean watch"
