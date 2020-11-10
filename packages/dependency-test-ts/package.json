@@ -1,0 +1,16 @@
+{
+    "name": "@neo4j/dependency-test-ts",
+    "private": true,
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "test": "tsc && node dist/test.js"
+    },
+    "author": "Neo4j Inc.",
+    "devDependencies": {
+        "typescript": "3.9.7"
+    },
+    "dependencies": {
+        "@neo4j/graphql": "^1.0.0"
+    }
+}
