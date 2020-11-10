@@ -3,7 +3,8 @@
     "baseUrl": "./",
     "sourceRoot": "./",
     "compilerOptions": {
-        "outDir": "./dist"
+        "outDir": "./dist",
+        "rootDir": "./src"
     },
-    "include": ["src/**/*", "typings/**/*", "tests/**/*"]
+    "include": ["src/**/*"]
 }
