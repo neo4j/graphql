@@ -13,11 +13,5 @@
         "setup:typescript": "cd typescript && npm install",
         "test:all": "npm run setup && npm run test:commonjs && npm run test:typescript && npm run test:babel"
     },
-    "author": "Neo4j Inc.",
-    "dependencies": {
-        "@graphql-tools/merge": "^6.2.3",
-        "@graphql-tools/schema": "^6.2.3",
-        "@neo4j/graphql": "./package",
-        "graphql": "^15.4.0"
-    }
+    "author": "Neo4j Inc."
 }
