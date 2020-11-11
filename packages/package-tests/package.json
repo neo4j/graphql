@@ -1,0 +1,23 @@
+{
+    "name": "@neo4j/package-tests",
+    "private": true,
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "setup": "npm run setup:commonjs && npm run setup:babel && npm run setup:typescript",
+        "test:commonjs": "cd node-common-js && npm run test",
+        "setup:commonjs": "cd node-common-js && npm install",
+        "test:babel": "cd babel && npm run test",
+        "setup:babel": "cd babel && npm install",
+        "test:typescript": "cd typescript && npm run test",
+        "setup:typescript": "cd typescript && npm install",
+        "test": "npm run setup && npm run test:commonjs && npm run test:typescript && npm run test:babel"
+    },
+    "author": "Neo4j Inc.",
+    "dependencies": {
+        "@graphql-tools/merge": "^6.2.3",
+        "@graphql-tools/schema": "^6.2.3",
+        "@neo4j/graphql": "./package",
+        "graphql": "^15.4.0"
+    }
+}

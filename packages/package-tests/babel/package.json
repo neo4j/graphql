@@ -4,15 +4,13 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "test": "babel-node test.js"
+        "test": "babel-node index.js"
     },
     "author": "Neo4j Inc.",
-    "dependencies": {
-        "@neo4j/graphql": "file:../package",
-        "graphql": "^15.4.0"
-    },
+    "dependencies": {},
     "devDependencies": {
         "@babel/core": "^7.12.3",
-        "@babel/node": "^7.12.6"
+        "@babel/node": "^7.12.6",
+        "@babel/preset-env": "^7.12.1"
     }
 }
