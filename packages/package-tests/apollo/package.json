@@ -4,13 +4,14 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "start": "node server.js"
+        "start": "node server.js",
+        "test": "node server.test.js"
     },
     "author": "Neo4j Inc.",
     "dependencies": {
-        "apollo-server": "^2.19.0",
-        "neo4j-driver": "^4.1.2",
         "@neo4j/graphql": "./package",
-        "graphql": "^15.4.0"
+        "apollo-server": "^2.19.0",
+        "graphql": "^15.4.0",
+        "node-fetch": "^2.6.1"
     }
 }
