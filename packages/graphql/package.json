@@ -3,8 +3,14 @@
     "private": true,
     "version": "1.0.0",
     "description": "",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "exports": {
+        "require": "./dist/cjs/index.js"
+    },
+    "main": "./dist/cjs/index.js",
+    "types": "./dist/cjs/index.d.ts",
+    "files": [
+        "dist/"
+    ],
     "scripts": {
         "prepare": "npm run build:clean",
         "clean": "rimraf dist",
@@ -15,17 +21,26 @@
         "test:tck:watch": "jest tck --watchAll",
         "test:int": "jest int",
         "test:int:watch": "jest int --watch",
-        "build": "tsc",
+        "setup:package-tests": "npm pack && mv *.tgz ../package-tests/ && cd ../package-tests/ && rimraf package && tar -xvzf *.tgz && npm install",
+        "posttest:package-tests": "npm run cleanup:package-tests",
+        "test:package-tests": "npm run setup:package-tests && cd ../package-tests/ && npm run test:all",
+        "cleanup:package-tests": "cd ../package-tests/ && npm run cleanup && rimraf ./package/ && rimraf *.tgz",
+        "build": "npm run build:cjs",
+        "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
         "start": "run-s build:clean watch"
     },
     "author": "Neo4j Inc.",
+    "peerDependencies": {
+        "graphql": "^15.0.0"
+    },
     "devDependencies": {
         "@jest/globals": "26.4.2",
         "@types/jest": "26.0.8",
         "@types/node": "14.0.27",
         "apollo-server": "2.18.1",
+        "graphql": "15.3.0",
         "jest": "26.2.2",
         "npm-run-all": "4.1.5",
         "randomstring": "1.1.5",
@@ -34,13 +49,12 @@
         "typescript": "3.9.7"
     },
     "dependencies": {
-        "@graphql-tools/merge": "6.2.3",
-        "@graphql-tools/schema": "6.2.3",
-        "graphql": "15.3.0",
         "graphql-compose": "7.21.4",
         "graphql-parse-resolve-info": "4.9.0",
         "jsonwebtoken": "8.5.1",
         "neo4j-driver": "4.1.2",
-        "pluralize": "8.0.0"
+        "pluralize": "8.0.0",
+        "@graphql-tools/merge": "^6.2.3",
+        "@graphql-tools/schema": "^6.2.3"
     }
 }

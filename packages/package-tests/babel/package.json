@@ -1,0 +1,19 @@
+{
+    "name": "@neo4j/dependency-test-babel",
+    "private": true,
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "test": "babel-node index.js"
+    },
+    "author": "Neo4j Inc.",
+    "dependencies": {
+        "@neo4j/graphql": "./package",
+        "graphql": "^15.4.0"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.12.3",
+        "@babel/node": "^7.12.6",
+        "@babel/preset-env": "^7.12.1"
+    }
+}
