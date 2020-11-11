@@ -22,7 +22,7 @@
         "test:int": "jest int",
         "test:int:watch": "jest int --watch",
         "setup:builds-test": "npm pack && mv *.tgz ../package-tests/ && cd ../package-tests/ && rimraf package && tar -xvzf *.tgz && npm install",
-        "test:builds": "npm run setup:builds-test && cd ../package-tests/ && npm run test; cd ../graphql && npm run cleanup:builds-test",
+        "test:builds": "npm run setup:builds-test && cd ../package-tests/ && npm run test:all; cd ../graphql && npm run cleanup:builds-test",
         "cleanup:builds-test": "cd ../package-tests/ && rimraf package; rimraf *.tgz;",
         "build": "npm run build:cjs",
         "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",

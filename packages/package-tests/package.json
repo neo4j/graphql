@@ -11,7 +11,7 @@
         "setup:babel": "cd babel && npm install",
         "test:typescript": "cd typescript && npm run test",
         "setup:typescript": "cd typescript && npm install",
-        "test": "npm run setup && npm run test:commonjs && npm run test:typescript && npm run test:babel"
+        "test:all": "npm run setup && npm run test:commonjs && npm run test:typescript && npm run test:babel"
     },
     "author": "Neo4j Inc.",
     "dependencies": {
