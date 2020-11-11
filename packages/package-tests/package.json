@@ -17,7 +17,7 @@
         "test:typescript": "cd typescript && npm run test",
         "setup:typescript": "cp -R ./package ./typescript/ && cd typescript && npm install",
         "cleanup:typescript": "rimraf ./typescript/package/ && rimraf ./typescript/node_modules/",
-        "test:all": "npm run setup && npm run test:commonjs && npm run test:typescript && npm run test:babel && npm run test:apollo",
+        "test:all": "npm run test:commonjs && npm run test:typescript && npm run test:babel && npm run test:apollo",
         "cleanup": "rimraf ./**/package {apollo,babel,commonjs,typescript}/node_modules/ ./typescript/dist"
     },
     "author": "Neo4j Inc.",
