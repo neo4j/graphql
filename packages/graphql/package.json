@@ -23,7 +23,7 @@
         "test:int:watch": "jest int --watch",
         "setup:builds-test": "npm pack && mv *.tgz ../package-tests/ && cd ../package-tests/ && rimraf package && tar -xvzf *.tgz && npm install",
         "test:builds": "npm run setup:builds-test && cd ../package-tests/ && npm run test:all || cd ../graphql && npm run cleanup:builds-test",
-        "cleanup:builds-test": "cd ../package-tests/ || rimraf package || rimraf *.tgz",
+        "cleanup:builds-test": "cd ../package-tests/ || rimraf package || rimraf *.tgz || npm run cleanup",
         "build": "npm run build:cjs",
         "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
         "build:clean": "run-s clean build",
@@ -32,13 +32,9 @@
     },
     "author": "Neo4j Inc.",
     "peerDependencies": {
-        "@graphql-tools/merge": "^6.2.3",
-        "@graphql-tools/schema": "^6.2.3",
         "graphql": "^15.0.0"
     },
     "devDependencies": {
-        "@graphql-tools/merge": "6.2.3",
-        "@graphql-tools/schema": "6.2.3",
         "@jest/globals": "26.4.2",
         "@types/jest": "26.0.8",
         "@types/node": "14.0.27",
@@ -55,6 +51,8 @@
         "graphql-compose": "7.21.4",
         "graphql-parse-resolve-info": "4.9.0",
         "neo4j-driver": "4.1.2",
-        "pluralize": "8.0.0"
+        "pluralize": "8.0.0",
+        "@graphql-tools/merge": "^6.2.3",
+        "@graphql-tools/schema": "^6.2.3"
     }
 }
