@@ -1,6 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { ApolloServer } = require("apollo-server");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { makeAugmentedSchema } = require("@neo4j/graphql");
-const neo4j = require("neo4j-driver");
 
 const typeDefs = `
 type Movie {
