@@ -1,0 +1,14 @@
+{
+    "name": "@neo4j/dependency-test-node-common-js",
+    "private": true,
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "test": "node test.js"
+    },
+    "author": "Neo4j Inc.",
+    "dependencies": {
+        "@neo4j/graphql": "./package",
+        "graphql": "^15.4.0"
+    }
+}
