@@ -8,9 +8,7 @@
     },
     "author": "Neo4j Inc.",
     "dependencies": {
-        "@graphql-tools/merge": "^6.2.3",
-        "@graphql-tools/schema": "^6.2.3",
-        "@neo4j/graphql": "../package",
+        "@neo4j/graphql": "./package",
         "graphql": "^15.4.0"
     }
 }

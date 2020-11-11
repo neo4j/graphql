@@ -6,12 +6,13 @@
     "scripts": {
         "setup": "npm run setup:commonjs && npm run setup:babel && npm run setup:typescript",
         "test:commonjs": "cd node-common-js && npm run test",
-        "setup:commonjs": "cd node-common-js && npm install",
+        "setup:commonjs": "cp -R ./package ./node-common-js/ && cd node-common-js && npm install",
         "test:babel": "cd babel && npm run test",
-        "setup:babel": "cd babel && npm install",
+        "setup:babel": "cp -R ./package ./babel/ && cd babel && npm install",
         "test:typescript": "cd typescript && npm run test",
-        "setup:typescript": "cd typescript && npm install",
-        "test:all": "npm run setup && npm run test:commonjs && npm run test:typescript && npm run test:babel"
+        "setup:typescript": "cp -R ./package ./typescript/ && cd typescript && npm install",
+        "test:all": "npm run setup && npm run test:commonjs && npm run test:typescript && npm run test:babel",
+        "cleanup": "rimraf ./node-common-js/package && rimraf ./babel/package && rimraf ./typescript/package"
     },
     "author": "Neo4j Inc."
 }
