@@ -7,6 +7,12 @@
         "test": "tsc && node dist/test.js"
     },
     "author": "Neo4j Inc.",
+    "dependencies": {
+        "@graphql-tools/merge": "^6.2.3",
+        "@graphql-tools/schema": "^6.2.3",
+        "@neo4j/graphql": "../package",
+        "graphql": "^15.4.0"
+    },
     "devDependencies": {
         "typescript": "3.9.7"
     }
