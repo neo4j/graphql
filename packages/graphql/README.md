@@ -66,7 +66,7 @@ To make sure the build packages expose the endpoint we expected it to, we run a 
 on the production package.
 
 ```bash
-npm run test:builds
+npm run test:package-tests
 ```
 
 This script will create a npm package, move it into `packages/package-tests` (so it doesn't have
