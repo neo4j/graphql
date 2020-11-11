@@ -16,8 +16,8 @@ type Post @auth(
         {
             allow: {
                 OR: [
-                    { creator_id: "sub" },
-                    { moderator_id: "sub" }
+                    { creator: { id: "sub" } },
+                    { moderator: { id: "sub" } }
                 ]
             },
             operations: ["read"]

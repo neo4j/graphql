@@ -32,18 +32,7 @@ function createAuthAndParams({
             return res;
         }
 
-        Object.entries(ruleValue as { [k: string]: string }).forEach(([key, value]) => {
-            const valueIsObject = Boolean(
-                !Array.isArray(value) && Object.keys(value).length && typeof value !== "string"
-            );
-            if (valueIsObject) {
-                const recurse = createAuthAndParams({ rules, jwt, varName, node, chainStr, neoSchema });
-                res.authPredicates.push(`(${recurse[0]})`);
-                res.params = { ...res.params, ...recurse[1] };
-
-                return;
-            }
-
+        Object.entries(ruleValue).forEach(([key, value]) => {
             switch (key) {
                 case "AND":
                 case "OR":
@@ -73,27 +62,44 @@ function createAuthAndParams({
                     break;
 
                 default: {
-                    const isPrimitiveField = node.primitiveFields.find((x) => x.fieldName === key);
-                    if (isPrimitiveField) {
+                    if (typeof value === "string") {
                         const _param = `${param}_${key}`;
                         res.authPredicates.push(`${varName}.${key} = $${_param}`);
                         res.params[_param] = jwt[value];
                     }
 
-                    const relationField = node.relationFields.find((x) => key.startsWith(x.fieldName));
+                    const relationField = node.relationFields.find((x) => key === x.fieldName);
                     if (relationField) {
+                        const refNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+
                         const inStr = relationField.direction === "IN" ? "<-" : "-";
                         const outStr = relationField.direction === "OUT" ? "->" : "-";
                         const relTypeStr = `[:${relationField.type}]`;
                         const relationVarName = relationField.fieldName;
-                        const [, relationKey] = key.split(`${relationField.fieldName}_`);
-                        const _param = `${param}_${key}`;
 
-                        const existsStr = `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`;
-                        const allStr = `ALL(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}:${relationField.typeMeta.name}) | ${relationVarName}] WHERE ${relationVarName}.${relationKey} = $${_param})`;
+                        let resultStr = [
+                            `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
+                            `AND ALL(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}:${relationField.typeMeta.name}) | ${relationVarName}] WHERE `,
+                        ].join(" ");
 
-                        res.authPredicates.push(`${existsStr} AND\n${allStr}`);
-                        res.params[_param] = jwt[value];
+                        Object.entries(value as any).forEach(([k, v]: [string, any]) => {
+                            const recurse = createAuthAndParams({
+                                node: refNode,
+                                neoSchema,
+                                chainStr: `${param}_${key}`,
+                                varName: relationVarName,
+                                jwt,
+                                rules: [{ allow: { [k]: v } }],
+                            });
+
+                            resultStr += recurse[0]
+                                .replace("CALL apoc.util.validate(NOT(", "")
+                                .replace(`), "Forbidden", [0])`, "");
+
+                            resultStr += ")"; // close ALL
+                            res.params = { ...res.params, ...recurse[1] };
+                            res.authPredicates.push(resultStr);
+                        });
                     }
                 }
             }
