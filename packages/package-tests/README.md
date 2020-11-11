@@ -7,7 +7,7 @@ These tests needs to be setup before they're run, so you run them from the `pack
 
 ```bash
 cd packages/graphql
-npm run test:builds
+npm run test:package-tests
 ```
 
 This script will create a npm package, move it into `packages/package-tests` (so it doesn't have
