@@ -5,16 +5,24 @@
     "description": "",
     "scripts": {
         "setup": "npm run setup:commonjs && npm run setup:babel && npm run setup:typescript && npm run setup:apollo",
-        "test:commonjs": "cd node-common-js && npm run test",
-        "setup:commonjs": "cp -R ./package ./node-common-js/ && cd node-common-js && npm install",
+        "test:commonjs": "cd commonjs && npm run test",
+        "setup:commonjs": "cp -R ./package ./commonjs/ && cd commonjs && npm install",
+        "cleanup:commonjs": "rimraf ./commonjs/package/ && rimraf ./commonjs/node_modules/",
         "test:apollo": "cd apollo && npm run test",
         "setup:apollo": "cp -R ./package ./apollo/ && cd apollo && npm install",
+        "cleanup:apollo": "rimraf ./apollo/package/ && rimraf ./apollo/node_modules/",
         "test:babel": "cd babel && npm run test",
         "setup:babel": "cp -R ./package ./babel/ && cd babel && npm install",
+        "cleanup:babel": "rimraf ./babel/package/ && rimraf ./babel/node_modules/",
         "test:typescript": "cd typescript && npm run test",
         "setup:typescript": "cp -R ./package ./typescript/ && cd typescript && npm install",
+        "cleanup:typescript": "rimraf ./typescript/package/ && rimraf ./typescript/node_modules/",
         "test:all": "npm run setup && npm run test:commonjs && npm run test:typescript && npm run test:babel && npm run test:apollo",
-        "cleanup": "rimraf ./node-common-js/package && rimraf ./babel/package && rimraf ./typescript/package"
+        "cleanup": "rimraf ./**/package {apollo,babel,commonjs,typescript}/node_modules/ ./typescript/dist"
     },
-    "author": "Neo4j Inc."
+    "author": "Neo4j Inc.",
+    "devDependencies": {
+        "npm-run-all": "^4.1.5",
+        "rimraf": "^3.0.2"
+    }
 }
