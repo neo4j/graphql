@@ -1,0 +1,18 @@
+{
+    "name": "@neo4j/package-tests-apollo",
+    "private": true,
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "author": "Neo4j Inc.",
+    "dependencies": {
+        "apollo-server": "^2.19.0",
+        "neo4j-driver": "^4.1.2",
+        "@graphql-tools/merge": "^6.2.3",
+        "@graphql-tools/schema": "^6.2.3",
+        "@neo4j/graphql": "file:../package",
+        "graphql": "^15.4.0"
+    }
+}
