@@ -5,7 +5,9 @@
     "description": "",
     "scripts": {
         "start": "node .",
-        "test": "node server.test.js"
+        "test": "node server.test.js",
+        "bootstrap": "cd ../../graphql && npm run setup:package-tests",
+        "cleanup": "cd ../../graphql && npm run cleanup:package-tests"
     },
     "author": "Neo4j Inc.",
     "dependencies": {
