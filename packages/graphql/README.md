@@ -27,12 +27,12 @@ const typeDefs = `
         title: String
         year: Int
         imdbRating: Float
-        genres: [Genre] @relationship(name: "IN_GENRE", direction: "OUT")
+        genres: [Genre] @relationship(type: "IN_GENRE", direction: "OUT")
     }
 
     type Genre {
         name: String
-        movies: [Movie] @relationship(name: "IN_GENRE", direction: "IN")
+        movies: [Movie] @relationship(type: "IN_GENRE", direction: "IN")
     }
 `;
 
