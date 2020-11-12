@@ -204,7 +204,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                 name: nodeFieldInputName,
                 fields: {
                     create: createField,
-                    ...(refNode.relationFields.length ? { connect: connectField } : {}),
+                    connect: connectField,
                 },
             });
 
