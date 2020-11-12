@@ -97,7 +97,6 @@ function translateCreate({
 
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {
-            let cypher = "";
             const varName = `this${index}`;
             res.withVars.push(varName);
 
@@ -106,9 +105,8 @@ function translateCreate({
                 res.withVars.length > 1
                     ? `\nWITH ${[...res.withVars].slice(0, res.withVars.length - 1).join(", ")}`
                     : "";
-            cypher += `${withStr}\n${createAndParams[0]}`;
 
-            res.createStrs.push(cypher);
+            res.createStrs.push(`${withStr}\n${createAndParams[0]}`);
             res.params = { ...res.params, ...createAndParams[1] };
 
             return res;
