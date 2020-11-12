@@ -137,12 +137,17 @@ input ActorWhere {
   AND: [ActorAND]
 }
 
+input ActorConnectFieldInput {
+  where: ActorWhere
+}
+
 type Movie {
   id: ID
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
 }
 
 input MovieActorsFieldInput {
+  connect: [ActorConnectFieldInput]
   create: [ActorCreateInput]
 }
 
