@@ -93,6 +93,18 @@ describe("TCK Generated tests", () => {
 
                                 return [];
                             },
+                            [`update${pluralize(def.name.value)}`]: (
+                                _root: any,
+                                _params: any,
+                                ctx: any,
+                                resolveInfo: any
+                            ) => {
+                                ctx.neoSchema = neoSchema;
+
+                                compare(context, resolveInfo);
+
+                                return [];
+                            },
                             [`delete${pluralize(def.name.value)}`]: (
                                 _root: any,
                                 _params: any,
