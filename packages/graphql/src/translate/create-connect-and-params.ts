@@ -3,7 +3,7 @@ import { RelationField } from "../types";
 import createWhereAndParams from "./create-where-and-params";
 
 interface Res {
-    connect: string;
+    connects: string[];
     params: any;
 }
 
@@ -31,27 +31,27 @@ function createConnectAndParams({
         const outStr = relationField.direction === "OUT" ? "->" : "-";
         const relTypeStr = `[:${relationField.type}]`;
 
-        res.connect += `\nWITH ${withVars.join(", ")}`;
-        res.connect += `\nOPTIONAL MATCH (${_varName}:${relationField.typeMeta.name})`;
+        res.connects.push(`WITH ${withVars.join(", ")}`);
+        res.connects.push(`OPTIONAL MATCH (${_varName}:${relationField.typeMeta.name})`);
         if (connect.where) {
             const where = createWhereAndParams({ varName: _varName, whereInput: connect.where });
-            res.connect += `\n${where[0]}`;
+            res.connects.push(where[0]);
             res.params = { ...res.params, ...where[1] };
         }
 
         /* 
-           replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
+           Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100 
         */
-        res.connect += `\nFOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END | `;
-        res.connect += `\nMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName})`;
-        res.connect += `\n)`; // close FOREACH
+        res.connects.push(`FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END | `);
+        res.connects.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName})`);
+        res.connects.push(`)`); // close FOREACH
 
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
             connects.forEach((c) => {
-                const { str, params } = Object.entries(c).reduce(
-                    (r, [k, v]) => {
+                const reduced = Object.entries(c).reduce(
+                    (r: Res, [k, v]) => {
                         const relField = refNode.relationFields.find((x) => x.fieldName === k) as RelationField;
 
                         const recurse = createConnectAndParams({
@@ -64,28 +64,28 @@ function createConnectAndParams({
                             parentNode: refNode,
                             refNode: neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node,
                         });
-                        r.str += `\n${recurse[0]}`;
+                        r.connects.push(recurse[0]);
                         r.params = { ...r.params, ...recurse[1] };
 
                         return r;
                     },
-                    { str: "", params: {} }
-                );
+                    { connects: [], params: {} }
+                ) as Res;
 
-                res.connect += `\n${str}`;
-                res.params = { ...res.params, ...params };
+                res.connects.push(reduced.connects.join("\n"));
+                res.params = { ...res.params, ...reduced.params };
             });
         }
 
         return res;
     }
 
-    const { connect, params } = ((relationField.typeMeta.array ? value : [value]) as any[]).reduce(reducer, {
-        connect: "",
+    const { connects, params } = ((relationField.typeMeta.array ? value : [value]) as any[]).reduce(reducer, {
+        connects: [],
         params: {},
     });
 
-    return [connect, params];
+    return [connects.join("\n"), params];
 }
 
 export default createConnectAndParams;
