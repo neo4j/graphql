@@ -3,7 +3,7 @@ import createConnectAndParams from "./create-connect-and-params";
 import { getRoles } from "../auth";
 
 interface Res {
-    create: string;
+    creates: string[];
     params: any;
 }
 
@@ -61,7 +61,7 @@ function createCreateAndParams({
                 const creates = relationField.typeMeta.array ? value.create : [value.create];
                 creates.forEach((create, index) => {
                     const innerVarName = `${_varName}${index}`;
-                    res.create += `\n\nWITH ${withVars.join(", ")}`;
+                    res.creates.push(`\nWITH ${withVars.join(", ")}`);
 
                     const recurse = createCreateAndParams({
                         input: create,
@@ -71,13 +71,13 @@ function createCreateAndParams({
                         withVars: [...withVars, innerVarName],
                         jwt,
                     });
-                    res.create += `\n${recurse[0]}`;
+                    res.creates.push(recurse[0]);
                     res.params = { ...res.params, ...recurse[1] };
 
                     const inStr = relationField.direction === "IN" ? "<-" : "-";
                     const outStr = relationField.direction === "OUT" ? "->" : "-";
                     const relTypeStr = `[:${relationField.type}]`;
-                    res.create += `\nMERGE (${varName})${inStr}${relTypeStr}${outStr}(${innerVarName})`;
+                    res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${innerVarName})`);
                 });
             }
 
@@ -92,25 +92,25 @@ function createCreateAndParams({
                     parentNode: node,
                     refNode,
                 });
-                res.create += `\n${connectAndParams[0]}`;
+                res.creates.push(connectAndParams[0]);
                 res.params = { ...res.params, ...connectAndParams[1] };
             }
 
             return res;
         }
 
-        res.create += `\nSET ${varName}.${key} = $${_varName}`;
+        res.creates.push(`SET ${varName}.${key} = $${_varName}`);
         res.params[_varName] = value;
 
         return res;
     }
 
-    const { create, params } = Object.entries(input).reduce(reducer, {
-        create: `CREATE (${varName}:${node.name})`,
+    const { creates, params } = Object.entries(input).reduce(reducer, {
+        creates: [`CREATE (${varName}:${node.name})`],
         params: {},
     }) as Res;
 
-    return [create, params];
+    return [creates.join("\n"), params];
 }
 
 export default createCreateAndParams;
