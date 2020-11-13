@@ -8,6 +8,7 @@ import createCreateAndParams from "./create-create-and-params";
 import { GraphQLWhereArg, GraphQLOptionsArg } from "../types";
 import { getRoles, verifyAndDecodeToken } from "../auth";
 import createAuthAndParams from "./create-auth-and-params";
+import createUpdateAndParams from "./create-update-and-params";
 
 function translateRead({
     neoSchema,
@@ -216,6 +217,62 @@ function translateDelete({
     return [cypher.filter(Boolean).join("\n"), { ...cypherParams, ...authAndParams[1] }];
 }
 
+function translateUpdate({
+    resolveTree,
+    node,
+    neoSchema,
+}: {
+    neoSchema: NeoSchema;
+    resolveTree: ResolveTree;
+    node: Node;
+}): [string, any] {
+    const whereInput = resolveTree.args.where as GraphQLWhereArg;
+    const updateInput = resolveTree.args.update;
+    const connectInput = resolveTree.args.connect;
+    const disconnectInput = resolveTree.args.disconnect;
+    const fieldsByTypeName = resolveTree.fieldsByTypeName;
+    const varName = "this";
+
+    const matchStr = `MATCH (${varName}:${node.name})`;
+    let whereStr = "";
+    let updateStr = "";
+    let projStr = "";
+    let cypherParams: { [k: string]: any } = {};
+
+    if (whereInput) {
+        const where = createWhereAndParams({
+            whereInput,
+            varName,
+        });
+        whereStr = where[0];
+        cypherParams = { ...cypherParams, ...where[1] };
+    }
+
+    if (updateInput) {
+        const updateAndParams = createUpdateAndParams({
+            neoSchema,
+            node,
+            updateInput,
+            varName,
+        });
+        updateStr = updateAndParams[0];
+        cypherParams = { ...cypherParams, ...updateAndParams[1] };
+    }
+
+    const projection = createProjectionAndParams({
+        node,
+        neoSchema,
+        fieldsByTypeName,
+        varName,
+    });
+    projStr = projection[0];
+    cypherParams = { ...cypherParams, ...projection[1] };
+
+    const cypher = [matchStr, whereStr, updateStr, `RETURN ${varName} ${projStr} AS ${varName}`];
+
+    return [cypher.join("\n"), cypherParams];
+}
+
 function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQLResolveInfo }): [string, any] {
     const neoSchema: NeoSchema = context.neoSchema;
     if (!neoSchema || !(neoSchema instanceof NeoSchema)) {
@@ -225,7 +282,7 @@ function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQ
     const resolveTree = parseResolveInfo(resolveInfo) as ResolveTree;
     const operationType = resolveInfo.operation.operation;
     const operationName = resolveInfo.fieldName;
-    let operation: "create" | "read" | "delete";
+    let operation: "create" | "read" | "delete" | "update";
     let node: Node | undefined;
     let jwt: any;
     let jwtRoles: string[];
@@ -240,6 +297,13 @@ function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQ
 
         if (operationName.includes("delete")) {
             operation = "delete";
+            node = neoSchema.nodes.find(
+                (x) => x.name === pluralize.singular(resolveTree.name.split(operation)[1])
+            ) as Node;
+        }
+
+        if (operationName.includes("update")) {
+            operation = "update";
             node = neoSchema.nodes.find(
                 (x) => x.name === pluralize.singular(resolveTree.name.split(operation)[1])
             ) as Node;
@@ -306,6 +370,14 @@ function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQ
                 node: node as Node,
                 rules: deleteRules,
                 jwt,
+            });
+        }
+
+        if (operationName.includes("update")) {
+            return translateUpdate({
+                resolveTree,
+                neoSchema,
+                node: node as Node,
             });
         }
     }
