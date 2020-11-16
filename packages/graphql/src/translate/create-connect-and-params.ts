@@ -22,7 +22,6 @@ function createConnectAndParams({
     relationField: RelationField;
     parentVar: string;
     neoSchema: NeoSchema;
-    parentNode: Node;
     refNode: Node;
 }): [string, any] {
     function reducer(res: Res, connect: any, index): Res {
@@ -61,7 +60,6 @@ function createConnectAndParams({
                             relationField: relField,
                             parentVar: _varName,
                             neoSchema,
-                            parentNode: refNode,
                             refNode: neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node,
                         });
                         r.connects.push(recurse[0]);

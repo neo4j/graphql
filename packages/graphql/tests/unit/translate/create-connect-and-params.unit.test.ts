@@ -37,7 +37,6 @@ describe("createConnectAndParams", () => {
             relationField: node.relationFields[0],
             parentVar: "this",
             neoSchema,
-            parentNode: node,
             refNode: node,
         });
 

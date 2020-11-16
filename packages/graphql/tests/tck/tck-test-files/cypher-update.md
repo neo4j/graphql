@@ -169,4 +169,39 @@ RETURN this { .id } AS this
 
 ---
 
+### Simple Update as Connect
 
+**GraphQL input**
+
+```graphql
+mutation {
+  updateMovies(where: { id: "1" }, connect: {actors: [{where: {name: "Daniel"}}]}) {
+    id
+  }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie) 
+WHERE this.id = $this_id 
+WITH this 
+OPTIONAL MATCH (this_connect_actors0:Actor) 
+WHERE this_connect_actors0.name = $this_connect_actors0_name 
+FOREACH(_ IN CASE this_connect_actors0 WHEN NULL THEN [] ELSE [1] END | 
+MERGE (this)<-[:ACTED_IN]-(this_connect_actors0) 
+) 
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "1",
+    "this_connect_actors0_name": "Daniel"
+}
+```
+
+---
