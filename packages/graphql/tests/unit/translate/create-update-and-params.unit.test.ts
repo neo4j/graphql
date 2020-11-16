@@ -3,7 +3,7 @@ import { NeoSchema } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
 describe("createUpdateAndParams", () => {
-    test("should return the correct projection with 1 selection", () => {
+    test("should return the correct update and params", () => {
         const node = {
             name: "Movie",
             relationFields: [],
@@ -33,6 +33,8 @@ describe("createUpdateAndParams", () => {
             node,
             neoSchema,
             varName: "this",
+            parentVar: "this",
+            withVars: ["this"],
         });
 
         expect(trimmer(result[0])).toEqual(
