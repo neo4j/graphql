@@ -71,4 +71,154 @@ describe("update", () => {
             await session.close();
         }
     });
+
+    test("should update nested actors from a movie", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Actor {
+                name: String
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+            }
+                
+            type Movie {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
+            }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const movieId = generate({
+            charset: "alphabetic",
+        });
+
+        const initialName = generate({
+            charset: "alphabetic",
+        });
+        const updatedName = generate({
+            charset: "alphabetic",
+        });
+
+        await session.run(
+            `
+            CREATE (m:Movie {id: $movieId})
+            CREATE (a:Actor {name: $initialName})
+            MERGE (a)-[:ACTED_IN]->(m)
+        `,
+            {
+                movieId,
+                initialName,
+            }
+        );
+
+        const query = `
+        mutation($movieId: ID, $initialName: String, $updatedName: String) {
+            updateMovies(
+              where: { id: $movieId },
+              update: { 
+                actors: {
+                  where: { name: $initialName },
+                  update: { name: $updatedName }
+                }
+              }
+          ) {
+              id
+              actors {
+                  name
+              }
+            }
+          }
+        `;
+
+        try {
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: { movieId, updatedName, initialName },
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateMovies).toEqual([{ id: movieId, actors: [{ name: updatedName }] }]);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should update nested actors from a move then update the movie from the nested actors", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Actor {
+              name: String
+              movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+            }
+              
+            type Movie {
+              id: ID
+              title: String
+              actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
+             }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const movieId = generate({
+            charset: "alphabetic",
+        });
+
+        await session.run(
+            `
+            CREATE (:Movie {id: $movieId, title: "old movie title"})<-[:ACTED_IN]-(:Actor {name: "old actor name"})
+        `,
+            {
+                movieId,
+            }
+        );
+
+        const query = `
+        mutation {
+            updateMovies(
+              where: { id: "${movieId}" }
+              update: {
+                actors: {
+                  where: { name: "old actor name" }
+                  update: {
+                    name: "new actor name"
+                    movies: {
+                      where: { title: "old movie title" }
+                      update: { title: "new movie title" }
+                    }
+                  }
+                }
+              }
+            ) {
+              id
+              title
+              actors {
+                name
+              }
+            }
+          }          
+        `;
+
+        try {
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: {},
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateMovies).toEqual([
+                { id: movieId, title: "new movie title", actors: [{ name: "new actor name" }] },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
 });

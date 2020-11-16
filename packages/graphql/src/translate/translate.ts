@@ -254,6 +254,8 @@ function translateUpdate({
             node,
             updateInput,
             varName,
+            parentVar: varName,
+            withVars: [varName],
         });
         updateStr = updateAndParams[0];
         cypherParams = { ...cypherParams, ...updateAndParams[1] };

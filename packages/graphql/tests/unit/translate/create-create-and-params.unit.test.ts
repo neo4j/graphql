@@ -3,7 +3,7 @@ import { NeoSchema } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
 describe("createCreateAndParams", () => {
-    test("should return the correct projection with 1 selection", () => {
+    test("should return the correct create and params", () => {
         const input = {
             title: "some title",
         };
