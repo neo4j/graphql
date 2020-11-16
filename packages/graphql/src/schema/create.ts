@@ -3,7 +3,7 @@ import { execute } from "../utils";
 import { translate } from "../translate";
 import { NeoSchema, Node } from "../classes";
 
-function find({ node, getSchema }: { node: Node; getSchema: () => NeoSchema }) {
+function create({ node, getSchema }: { node: Node; getSchema: () => NeoSchema }) {
     async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
         const neoSchema = getSchema();
         context.neoSchema = neoSchema;
@@ -19,18 +19,18 @@ function find({ node, getSchema }: { node: Node; getSchema: () => NeoSchema }) {
             cypher,
             params,
             driver,
-            defaultAccessMode: "READ",
+            defaultAccessMode: "WRITE",
             neoSchema,
         });
 
-        return result.map((x) => x.this);
+        return Object.values((result[0] || {}) as any);
     }
 
     return {
         type: `[${node.name}]!`,
         resolve,
-        args: { where: `${node.name}Where`, options: `${node.name}Options` },
+        args: { input: `[${node.name}CreateInput]!` },
     };
 }
 
-export default find;
+export default create;

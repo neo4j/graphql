@@ -31,23 +31,23 @@ function createProjectionAndParams({
 
         const whereInput = field.args.where as GraphQLWhereArg;
         const optionsInput = field.args.options as GraphQLOptionsArg;
-
+        const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
         const cypherField = node.cypherFields.find((x) => x.fieldName === key);
+
         if (cypherField) {
             let projectionStr = "";
 
             const referenceNode = neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
             if (referenceNode) {
-                const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
-                const cypherProjection = createProjectionAndParams({
+                const recurse = createProjectionAndParams({
                     fieldsByTypeName: fieldFields,
                     node: referenceNode || node,
                     neoSchema,
                     varName: `${varName}_${key}`,
                     chainStr: param,
                 });
-                projectionStr = cypherProjection[0];
-                res.params = { ...res.params, ...cypherProjection[1] };
+                projectionStr = recurse[0];
+                res.params = { ...res.params, ...recurse[1] };
             }
 
             const apocParams = Object.entries(field.args).reduce(
@@ -99,16 +99,15 @@ function createProjectionAndParams({
                 res.params = { ...res.params, ...where[1] };
             }
 
-            const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
-            const projection = createProjectionAndParams({
+            const recurse = createProjectionAndParams({
                 fieldsByTypeName: fieldFields,
                 node: referenceNode || node,
                 neoSchema,
                 varName: `${varName}_${key}`,
                 chainStr: param,
             });
-            projectionStr = projection[0];
-            res.params = { ...res.params, ...projection[1] };
+            projectionStr = recurse[0];
+            res.params = { ...res.params, ...recurse[1] };
 
             const nodeMatchStr = `(${chainStr || varName})`;
             const inStr = relDirection === "IN" ? "<-" : "-";
@@ -164,8 +163,7 @@ function createProjectionAndParams({
         return res;
     }
 
-    // @ts-ignore
-    const { projection, params } = Object.entries(fieldsByTypeName[node.name]).reduce(reducer, {
+    const { projection, params } = Object.entries(fieldsByTypeName[node.name] as { [k: string]: any }).reduce(reducer, {
         projection: [],
         params: {},
     }) as Res;
