@@ -221,4 +221,67 @@ describe("update", () => {
             await session.close();
         }
     });
+
+    test("should connect a single movie to a actor", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Actor {
+                id: ID
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+            }
+            
+            type Movie {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
+            }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const movieId = generate({
+            charset: "alphabetic",
+        });
+
+        const actorId = generate({
+            charset: "alphabetic",
+        });
+
+        await session.run(
+            `
+            CREATE (:Movie {id: $movieId})
+            CREATE (:Actor {id: $actorId})
+        `,
+            {
+                movieId,
+                actorId,
+            }
+        );
+
+        const query = `
+        mutation {
+            updateMovies(where: { id: "${movieId}" }, connect: {actors: [{where: {id: "${actorId}"}}]}) {
+              id
+              actors {
+                  id
+              }
+            }
+          }
+        `;
+
+        try {
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: {},
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateMovies).toEqual([{ id: movieId, actors: [{ id: actorId }] }]);
+        } finally {
+            await session.close();
+        }
+    });
 });

@@ -5,10 +5,11 @@ import { NeoSchema, Node, AuthRule } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { GraphQLWhereArg, GraphQLOptionsArg } from "../types";
+import { GraphQLWhereArg, GraphQLOptionsArg, RelationField } from "../types";
 import { getRoles, verifyAndDecodeToken } from "../auth";
 import createAuthAndParams from "./create-auth-and-params";
 import createUpdateAndParams from "./create-update-and-params";
+import createConnectAndParams from "./create-connect-and-params";
 
 function translateRead({
     neoSchema,
@@ -236,6 +237,7 @@ function translateUpdate({
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
     let updateStr = "";
+    let connectStr = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
 
@@ -261,6 +263,25 @@ function translateUpdate({
         cypherParams = { ...cypherParams, ...updateAndParams[1] };
     }
 
+    if (connectInput) {
+        Object.entries(connectInput).forEach((entry) => {
+            const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
+            const refNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+
+            const connectAndParams = createConnectAndParams({
+                neoSchema,
+                parentVar: varName,
+                refNode,
+                relationField,
+                value: entry[1],
+                varName: `${varName}_connect_${entry[0]}`,
+                withVars: [varName],
+            });
+            connectStr = connectAndParams[0];
+            cypherParams = { ...cypherParams, ...connectAndParams[1] };
+        });
+    }
+
     const projection = createProjectionAndParams({
         node,
         neoSchema,
@@ -270,7 +291,7 @@ function translateUpdate({
     projStr = projection[0];
     cypherParams = { ...cypherParams, ...projection[1] };
 
-    const cypher = [matchStr, whereStr, updateStr, `RETURN ${varName} ${projStr} AS ${varName}`];
+    const cypher = [matchStr, whereStr, updateStr, connectStr, `RETURN ${varName} ${projStr} AS ${varName}`];
 
     return [cypher.join("\n"), cypherParams];
 }
