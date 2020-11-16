@@ -28,6 +28,16 @@ input MovieAND {
   AND: [MovieAND]
 }
 
+input MovieCreateInput {
+  id: ID
+}
+
+input MovieOptions {
+  sort: [MovieSort]
+  limit: Int
+  skip: Int
+}
+
 input MovieOR {
   id: ID
   id_IN: [ID]
@@ -40,17 +50,15 @@ enum MovieSort {
   id_ASC
 }
 
-input MovieOptions {
-  sort: [MovieSort]
-  limit: Int
-  skip: Int
-}
-
 input MovieWhere {
   id: ID
   id_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
+}
+
+type Mutation {
+  createMovies(input: [MovieCreateInput]!): [Movie]!
 }
 
 type Query {
@@ -89,9 +97,14 @@ input ActorAND {
   AND: [ActorAND]
 }
 
-enum ActorSort {
-  name_DESC
-  name_ASC
+input ActorCreateInput {
+  name: String
+}
+
+input ActorOptions {
+  sort: [ActorSort]
+  limit: Int
+  skip: Int
 }
 
 input ActorOR {
@@ -101,11 +114,9 @@ input ActorOR {
   AND: [ActorAND]
 }
 
-
-input ActorOptions {
-  sort: [ActorSort]
-  limit: Int
-  skip: Int
+enum ActorSort {
+  name_DESC
+  name_ASC
 }
 
 input ActorWhere {
@@ -115,9 +126,18 @@ input ActorWhere {
   AND: [ActorAND]
 }
 
+input ActorConnectFieldInput {
+  where: ActorWhere
+}
+
 type Movie {
   id: ID
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
+}
+
+input MovieActorsFieldInput {
+  connect: [ActorConnectFieldInput]
+  create: [ActorCreateInput]
 }
 
 input MovieAND {
@@ -125,6 +145,17 @@ input MovieAND {
   id_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
+}
+
+input MovieCreateInput {
+  id: ID
+  actors: MovieActorsFieldInput
+}
+
+input MovieOptions {
+  sort: [MovieSort]
+  limit: Int
+  skip: Int
 }
 
 input MovieOR {
@@ -139,17 +170,16 @@ enum MovieSort {
   id_ASC
 }
 
-input MovieOptions {
-  sort: [MovieSort]
-  limit: Int
-  skip: Int
-}
-
 input MovieWhere {
   id: ID
   id_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
+}
+
+type Mutation {
+  createActors(input: [ActorCreateInput]!): [Actor]!
+  createMovies(input: [MovieCreateInput]!): [Movie]!
 }
 
 type Query {
@@ -191,9 +221,29 @@ input ActorAND {
   AND: [ActorAND]
 }
 
-enum ActorSort {
-  name_DESC
-  name_ASC
+input ActorConnectFieldInput {
+  where: ActorWhere
+  connect: ActorConnectInput
+}
+
+input ActorConnectInput {
+  movies: [MovieConnectFieldInput]
+}
+
+input ActorCreateInput {
+  name: String
+  movies: ActorMoviesFieldInput
+}
+
+input ActorMoviesFieldInput {
+  create: [MovieCreateInput]
+  connect: [MovieConnectFieldInput]
+}
+
+input ActorOptions {
+  sort: [ActorSort]
+  limit: Int
+  skip: Int
 }
 
 input ActorOR {
@@ -203,11 +253,9 @@ input ActorOR {
   AND: [ActorAND]
 }
 
-
-input ActorOptions {
-  sort: [ActorSort]
-  limit: Int
-  skip: Int
+enum ActorSort {
+  name_DESC
+  name_ASC
 }
 
 input ActorWhere {
@@ -222,11 +270,36 @@ type Movie {
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
 }
 
+input MovieActorsFieldInput {
+  create: [ActorCreateInput]
+  connect: [ActorConnectFieldInput]
+}
+
 input MovieAND {
   id: ID
   id_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
+}
+
+input MovieConnectFieldInput {
+  where: MovieWhere
+  connect: MovieConnectInput
+}
+
+input MovieConnectInput {
+  actors: [ActorConnectFieldInput]
+}
+
+input MovieCreateInput {
+  id: ID
+  actors: MovieActorsFieldInput
+}
+
+input MovieOptions {
+  sort: [MovieSort]
+  limit: Int
+  skip: Int
 }
 
 input MovieOR {
@@ -241,17 +314,16 @@ enum MovieSort {
   id_ASC
 }
 
-input MovieOptions {
-  sort: [MovieSort]
-  limit: Int
-  skip: Int
-}
-
 input MovieWhere {
   id: ID
   id_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
+}
+
+type Mutation {
+  createActors(input: [ActorCreateInput]!): [Actor]!
+  createMovies(input: [MovieCreateInput]!): [Movie]!
 }
 
 type Query {
@@ -295,9 +367,14 @@ input ActorAND {
   AND: [ActorAND]
 }
 
-enum ActorSort {
-  name_DESC
-  name_ASC
+input ActorCreateInput {
+  name: String
+}
+
+input ActorOptions {
+  sort: [ActorSort]
+  limit: Int
+  skip: Int
 }
 
 input ActorOR {
@@ -307,11 +384,9 @@ input ActorOR {
   AND: [ActorAND]
 }
 
-
-input ActorOptions {
-  sort: [ActorSort]
-  limit: Int
-  skip: Int
+enum ActorSort {
+  name_DESC
+  name_ASC
 }
 
 input ActorWhere {
@@ -333,6 +408,16 @@ input MovieAND {
   AND: [MovieAND]
 }
 
+input MovieCreateInput {
+  id: ID
+}
+
+input MovieOptions {
+  sort: [MovieSort]
+  limit: Int
+  skip: Int
+}
+
 input MovieOR {
   id: ID
   id_IN: [ID]
@@ -345,17 +430,16 @@ enum MovieSort {
   id_ASC
 }
 
-input MovieOptions {
-  sort: [MovieSort]
-  limit: Int
-  skip: Int
-}
-
 input MovieWhere {
   id: ID
   id_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
+}
+
+type Mutation {
+  createActors(input: [ActorCreateInput]!): [Actor]!
+  createMovies(input: [MovieCreateInput]!): [Movie]!
 }
 
 type Query {

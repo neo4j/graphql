@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { graphql, printSchema, parse } from "graphql";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import path from "path";
 import pluralize from "pluralize";
@@ -9,7 +10,6 @@ import serialize from "../../src/utils/serialize";
 import { noGraphQLErrors } from "../../../../scripts/tests/utils";
 import { generateTestCasesFromMd, Test, TestCase } from "./utils/generate-test-cases-from-md.utils";
 import { trimmer } from "../../src/utils";
-import diffSchema from "./utils/diff-schema.utils";
 
 const TCK_DIR = path.join(__dirname, "tck-test-files");
 
@@ -30,13 +30,13 @@ describe("TCK Generated tests", () => {
                     const cypherQuery = test.cypherQuery as string;
                     const cypherParams = test.cypherParams as any;
 
-                    const resolver = (_object: any, params: any, ctx: any, resolveInfo: any) => {
-                        if (!ctx) {
-                            ctx = {};
+                    const resolver = (_roto: any, _params: any, context: any, resolveInfo: any) => {
+                        if (!context) {
+                            context = {};
                         }
-                        ctx.neoSchema = neoSchema;
+                        context.neoSchema = neoSchema;
 
-                        const [cQuery, cQueryParams] = translate(params, ctx, resolveInfo);
+                        const [cQuery, cQueryParams] = translate({ context, resolveInfo });
                         expect(trimmer(cQuery)).toEqual(trimmer(cypherQuery));
                         expect(serialize(cQueryParams)).toEqual(cypherParams);
 
@@ -54,7 +54,18 @@ describe("TCK Generated tests", () => {
                         };
                     }, {});
 
-                    const resolvers = { Query: queries };
+                    const mutations = document.definitions.reduce((res, def) => {
+                        if (def.kind !== "ObjectTypeDefinition") {
+                            return res;
+                        }
+
+                        return {
+                            ...res,
+                            [`create${pluralize(def.name.value)}`]: resolver,
+                        };
+                    }, {});
+
+                    const resolvers = { Query: queries, Mutation: mutations };
 
                     const executableSchema = makeExecutableSchema({
                         typeDefs: printSchema(neoSchema.schema),
@@ -76,7 +87,9 @@ describe("TCK Generated tests", () => {
                     const resolvers = neoSchema.resolvers;
                     const outPutSchema = makeExecutableSchema({ typeDefs: schemaOutPut, resolvers });
 
-                    expect(diffSchema(neoSchema.schema, outPutSchema)).toEqual(true);
+                    expect(printSchema(lexicographicSortSchema(neoSchema.schema))).toEqual(
+                        printSchema(lexicographicSortSchema(outPutSchema))
+                    );
                 });
             }
         });
