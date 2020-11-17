@@ -71,4 +71,61 @@ describe("delete", () => {
             await session.close();
         }
     });
+
+    test("should not delete a movie if predicate does not yield true", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Movie {
+                id: ID!
+            }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const mutation = `
+        mutation($id: ID!) {
+            deleteMovies(where: { id: $id }) {
+              nodesDeleted
+              relationshipsDeleted
+            }
+          }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (:Movie {id: $id})
+            `,
+                { id }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: mutation,
+                variableValues: { id: "NOT FOUND" },
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.deleteMovies).toEqual({ nodesDeleted: 0, relationshipsDeleted: 0 });
+
+            const reFind = await session.run(
+                `
+              MATCH (m:Movie {id: $id})
+              RETURN m
+            `,
+                { id }
+            );
+
+            expect(reFind.records.length).toEqual(1);
+        } finally {
+            await session.close();
+        }
+    });
 });
