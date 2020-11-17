@@ -9,6 +9,7 @@ async function execute(input: {
     params: any;
     defaultAccessMode: "READ" | "WRITE";
     neoSchema: NeoSchema;
+    statistics?: boolean;
 }): Promise<any> {
     const session = input.driver.session({ defaultAccessMode: input.defaultAccessMode });
 
@@ -32,6 +33,10 @@ async function execute(input: {
         const result = await session[`${input.defaultAccessMode.toLowerCase()}Transaction`]((tx) =>
             tx.run(input.cypher, serializedParams)
         );
+
+        if (input.statistics) {
+            return result.summary.updateStatistics._stats;
+        }
 
         return deserialize(result.records.map((r) => r.toObject()));
     } finally {
