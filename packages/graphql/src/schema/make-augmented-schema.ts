@@ -9,8 +9,8 @@ import getCypherMeta from "./get-cypher-meta";
 import getRelationshipMeta from "./get-relationship-meta";
 import { RelationField, CypherField, PrimitiveField, BaseField } from "../types";
 import { upperFirstLetter } from "../utils";
-import find from "./find";
-import create from "./create";
+import findResolver from "./find";
+import createResolver from "./create";
 import deleteResolver from "./delete";
 
 export interface MakeAugmentedSchemaOptions {
@@ -227,11 +227,11 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
 
         composer.Query.addFields({
-            [pluralize(node.name)]: find({ node, getSchema: () => neoSchema }),
+            [pluralize(node.name)]: findResolver({ node, getSchema: () => neoSchema }),
         });
 
         composer.Mutation.addFields({
-            [`create${pluralize(node.name)}`]: create({ node, getSchema: () => neoSchema }),
+            [`create${pluralize(node.name)}`]: createResolver({ node, getSchema: () => neoSchema }),
             [`delete${pluralize(node.name)}`]: deleteResolver({ node, getSchema: () => neoSchema }),
         });
     });
