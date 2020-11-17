@@ -44,22 +44,24 @@ function createUpdateAndParams({
             const outStr = relationField.direction === "OUT" ? "->" : "-";
             const relTypeStr = `[:${relationField.type}]`;
 
-            if (withVars) {
-                res.strs.push(`WITH ${withVars.join(", ")}`);
-            }
-
-            res.strs.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${refNode.name})`);
-
-            if (value.where) {
-                const whereAndParams = createWhereAndParams({
-                    varName: _varName,
-                    whereInput: value.where,
-                });
-                res.strs.push(whereAndParams[0]);
-                res.params = { ...res.params, ...whereAndParams[1] };
-            }
-
             if (value.update) {
+                if (withVars) {
+                    res.strs.push(`WITH ${withVars.join(", ")}`);
+                }
+
+                res.strs.push(
+                    `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${refNode.name})`
+                );
+
+                if (value.where) {
+                    const whereAndParams = createWhereAndParams({
+                        varName: _varName,
+                        whereInput: value.where,
+                    });
+                    res.strs.push(whereAndParams[0]);
+                    res.params = { ...res.params, ...whereAndParams[1] };
+                }
+
                 res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
 
                 const updateAndParams = createUpdateAndParams({
@@ -98,21 +100,7 @@ function createUpdateAndParams({
                     refNode,
                     value: value.connect,
                     varName: `${_varName}_connect`,
-                    withVars: [...withVars, _varName],
-                    parentVar,
-                    relationField,
-                });
-                res.strs.push(connectAndParams[0]);
-                res.params = { ...res.params, ...connectAndParams[1] };
-            }
-
-            if (value.connect) {
-                const connectAndParams = createConnectAndParams({
-                    neoSchema,
-                    refNode,
-                    value: value.connect,
-                    varName: `${_varName}_connect`,
-                    withVars: [...withVars, _varName],
+                    withVars,
                     parentVar,
                     relationField,
                 });
@@ -126,7 +114,7 @@ function createUpdateAndParams({
                     refNode,
                     value: value.disconnect,
                     varName: `${_varName}_disconnect`,
-                    withVars: [...withVars, _varName],
+                    withVars,
                     parentVar,
                     relationField,
                 });
