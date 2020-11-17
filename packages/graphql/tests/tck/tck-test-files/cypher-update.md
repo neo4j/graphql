@@ -205,3 +205,40 @@ RETURN this { .id } AS this
 ```
 
 ---
+
+### Simple Update as Disconnect
+
+**GraphQL input**
+
+```graphql
+mutation {
+  updateMovies(where: { id: "1" }, disconnect: {actors: [{where: {name: "Daniel"}}]}) {
+    id
+  }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie) 
+WHERE this.id = $this_id 
+WITH this 
+OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
+WHERE this_disconnect_actors0.name = $this_disconnect_actors0_name 
+FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END | 
+DELETE this_disconnect_actors0_rel
+) 
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "1",
+    "this_disconnect_actors0_name": "Daniel"
+}
+```
+
+---

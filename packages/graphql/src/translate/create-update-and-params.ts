@@ -1,5 +1,6 @@
 import { Node, NeoSchema } from "../classes";
 import createConnectAndParams from "./create-connect-and-params";
+import createDisconnectAndParams from "./create-disconnect-and-params";
 import createWhereAndParams from "./create-where-and-params";
 
 interface Res {
@@ -94,7 +95,6 @@ function createUpdateAndParams({
             if (value.connect) {
                 const connectAndParams = createConnectAndParams({
                     neoSchema,
-                    parentNode: node,
                     refNode,
                     value: value.connect,
                     varName: `${_varName}_connect`,
@@ -104,6 +104,34 @@ function createUpdateAndParams({
                 });
                 res.strs.push(connectAndParams[0]);
                 res.params = { ...res.params, ...connectAndParams[1] };
+            }
+
+            if (value.connect) {
+                const connectAndParams = createConnectAndParams({
+                    neoSchema,
+                    refNode,
+                    value: value.connect,
+                    varName: `${_varName}_connect`,
+                    withVars: [...withVars, _varName],
+                    parentVar,
+                    relationField,
+                });
+                res.strs.push(connectAndParams[0]);
+                res.params = { ...res.params, ...connectAndParams[1] };
+            }
+
+            if (value.disconnect) {
+                const disconnectAndParams = createDisconnectAndParams({
+                    neoSchema,
+                    refNode,
+                    value: value.disconnect,
+                    varName: `${_varName}_disconnect`,
+                    withVars: [...withVars, _varName],
+                    parentVar,
+                    relationField,
+                });
+                res.strs.push(disconnectAndParams[0]);
+                res.params = { ...res.params, ...disconnectAndParams[1] };
             }
 
             return res;
