@@ -10,6 +10,7 @@ import { getRoles, verifyAndDecodeToken } from "../auth";
 import createAuthAndParams from "./create-auth-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
+import createDisconnectAndParams from "./create-disconnect-and-params";
 
 function translateRead({
     neoSchema,
@@ -238,6 +239,7 @@ function translateUpdate({
     let whereStr = "";
     let updateStr = "";
     let connectStr = "";
+    let disconnectStr = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
 
@@ -282,6 +284,25 @@ function translateUpdate({
         });
     }
 
+    if (disconnectInput) {
+        Object.entries(disconnectInput).forEach((entry) => {
+            const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
+            const refNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+
+            const disconnectAndParams = createDisconnectAndParams({
+                neoSchema,
+                parentVar: varName,
+                refNode,
+                relationField,
+                value: entry[1],
+                varName: `${varName}_disconnect_${entry[0]}`,
+                withVars: [varName],
+            });
+            disconnectStr = disconnectAndParams[0];
+            cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
+        });
+    }
+
     const projection = createProjectionAndParams({
         node,
         neoSchema,
@@ -291,7 +312,14 @@ function translateUpdate({
     projStr = projection[0];
     cypherParams = { ...cypherParams, ...projection[1] };
 
-    const cypher = [matchStr, whereStr, updateStr, connectStr, `RETURN ${varName} ${projStr} AS ${varName}`];
+    const cypher = [
+        matchStr,
+        whereStr,
+        updateStr,
+        connectStr,
+        disconnectStr,
+        `RETURN ${varName} ${projStr} AS ${varName}`,
+    ];
 
     return [cypher.join("\n"), cypherParams];
 }

@@ -37,16 +37,6 @@ describe("update", () => {
             charset: "alphabetic",
         });
 
-        await session.run(
-            `
-            CREATE (:Movie {id: $id, name: $initialName})
-        `,
-            {
-                id,
-                initialName,
-            }
-        );
-
         const query = `
         mutation($id: ID, $name: String) {
             updateMovies(where: { id: $id }, update: {name: $name}) {
@@ -57,6 +47,16 @@ describe("update", () => {
         `;
 
         try {
+            await session.run(
+                `
+                CREATE (:Movie {id: $id, name: $initialName})
+            `,
+                {
+                    id,
+                    initialName,
+                }
+            );
+
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
@@ -100,18 +100,6 @@ describe("update", () => {
             charset: "alphabetic",
         });
 
-        await session.run(
-            `
-            CREATE (m:Movie {id: $movieId})
-            CREATE (a:Actor {name: $initialName})
-            MERGE (a)-[:ACTED_IN]->(m)
-        `,
-            {
-                movieId,
-                initialName,
-            }
-        );
-
         const query = `
         mutation($movieId: ID, $initialName: String, $updatedName: String) {
             updateMovies(
@@ -132,6 +120,18 @@ describe("update", () => {
         `;
 
         try {
+            await session.run(
+                `
+                CREATE (m:Movie {id: $movieId})
+                CREATE (a:Actor {name: $initialName})
+                MERGE (a)-[:ACTED_IN]->(m)
+            `,
+                {
+                    movieId,
+                    initialName,
+                }
+            );
+
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
@@ -169,15 +169,6 @@ describe("update", () => {
             charset: "alphabetic",
         });
 
-        await session.run(
-            `
-            CREATE (:Movie {id: $movieId, title: "old movie title"})<-[:ACTED_IN]-(:Actor {name: "old actor name"})
-        `,
-            {
-                movieId,
-            }
-        );
-
         const query = `
         mutation {
             updateMovies(
@@ -205,6 +196,15 @@ describe("update", () => {
         `;
 
         try {
+            await session.run(
+                `
+            CREATE (:Movie {id: $movieId, title: "old movie title"})<-[:ACTED_IN]-(:Actor {name: "old actor name"})
+        `,
+                {
+                    movieId,
+                }
+            );
+
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
@@ -247,17 +247,6 @@ describe("update", () => {
             charset: "alphabetic",
         });
 
-        await session.run(
-            `
-            CREATE (:Movie {id: $movieId})
-            CREATE (:Actor {id: $actorId})
-        `,
-            {
-                movieId,
-                actorId,
-            }
-        );
-
         const query = `
         mutation {
             updateMovies(where: { id: "${movieId}" }, connect: {actors: [{where: {id: "${actorId}"}}]}) {
@@ -270,6 +259,17 @@ describe("update", () => {
         `;
 
         try {
+            await session.run(
+                `
+                CREATE (:Movie {id: $movieId})
+                CREATE (:Actor {id: $actorId})
+            `,
+                {
+                    movieId,
+                    actorId,
+                }
+            );
+
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
@@ -280,6 +280,161 @@ describe("update", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             expect(gqlResult?.data?.updateMovies).toEqual([{ id: movieId, actors: [{ id: actorId }] }]);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should disconnect an actor from a movie", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Actor {
+                id: ID
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+            }
+            
+            type Movie {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
+            }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const movieId = generate({
+            charset: "alphabetic",
+        });
+
+        const actorId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+        mutation {
+            updateMovies(where: { id: "${movieId}" }, disconnect: {actors: [{where: {id: "${actorId}"}}]}) {
+              id
+              actors {
+                  id
+              }
+            }
+          }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (m:Movie {id: $movieId})
+                CREATE (a:Actor {id: $actorId})
+                MERGE (m)<-[:ACTED_IN]-(a)
+            `,
+                {
+                    movieId,
+                    actorId,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: {},
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateMovies).toEqual([{ id: movieId, actors: [] }]);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should disconnect a color from a photo through a product", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Product {
+                id: ID
+                photos: [Photo] @relationship(type: "HAS_PHOTO", direction: "OUT")
+            }
+            
+            
+            type Color {
+                id: ID
+            }
+            
+            type Photo {
+                id: ID
+                color: Color @relationship(type: "OF_COLOR", direction: "OUT")
+            }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const productId = generate({
+            charset: "alphabetic",
+        });
+
+        const photoId = generate({
+            charset: "alphabetic",
+        });
+
+        const colorId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+        mutation {
+            updateProducts(
+              where: { id: "${productId}" }
+              update: {
+                photos: {
+                  where: { id: "${photoId}" }
+                  update: {
+                    color: { disconnect: { where: { id: "${colorId}" } } }
+                  }
+                }
+              }
+            ){
+              id
+              photos {
+                  id
+                  color {
+                      id
+                  }
+              }
+            }
+          }          
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (p:Product {id: $productId})
+                CREATE (photo:Photo {id: $photoId})
+                CREATE (color:Color {id: $colorId})
+                MERGE (p)-[:HAS_PHOTO]->(photo)-[:OF_COLOR]->(color)
+                
+            `,
+                {
+                    productId,
+                    photoId,
+                    colorId,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: {},
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateProducts).toEqual([
+                { id: productId, photos: [{ id: photoId, color: null }] },
+            ]);
         } finally {
             await session.close();
         }
