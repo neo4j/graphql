@@ -3,17 +3,16 @@ import { ObjectTypeDefinitionNode } from "graphql";
 import { SchemaComposer, ObjectTypeComposerFieldConfigAsObjectDefinition, InputTypeComposer } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import pluralize from "pluralize";
-import { Auth, NeoSchema, NeoSchemaConstructor, Node } from "../classes";
+import { NeoSchema, NeoSchemaConstructor, Node } from "../classes";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
-import getAuth from "./get-auth";
 import getRelationshipMeta from "./get-relationship-meta";
 import { RelationField, CypherField, PrimitiveField, BaseField } from "../types";
 import { upperFirstLetter } from "../utils";
 import findResolver from "./find";
 import createResolver from "./create";
 import deleteResolver from "./delete";
-import update from "./update";
+import updateResolver from "./update";
 
 export interface MakeAugmentedSchemaOptions {
     typeDefs: any;
@@ -40,13 +39,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     neoSchemaInput.nodes = (document.definitions.filter(
         (x) => x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)
     ) as ObjectTypeDefinitionNode[]).map((definition) => {
-        const authDirective = definition.directives?.find((x) => x.name.value === "auth");
-        let auth: Auth;
-        if (authDirective) {
-            // todo
-            auth = getAuth(authDirective);
-        }
-
         const { relationFields, primitiveFields, cypherFields } = definition?.fields?.reduce(
             (
                 res: {
@@ -101,8 +93,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             relationFields,
             primitiveFields,
             cypherFields,
-            // @ts-ignore
-            auth,
         });
 
         return node;
@@ -291,7 +281,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         composer.Mutation.addFields({
             [`create${pluralize(node.name)}`]: createResolver({ node, getSchema: () => neoSchema }),
             [`delete${pluralize(node.name)}`]: deleteResolver({ node, getSchema: () => neoSchema }),
-            [`update${pluralize(node.name)}`]: update({ node, getSchema: () => neoSchema }),
+            [`update${pluralize(node.name)}`]: updateResolver({ node, getSchema: () => neoSchema }),
         });
     });
 
