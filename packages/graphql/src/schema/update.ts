@@ -23,7 +23,7 @@ function update({ node, getSchema }: { node: Node; getSchema: () => NeoSchema })
             neoSchema,
         });
 
-        return Object.values((result[0] || {}) as any);
+        return result.map((x) => x.this);
     }
 
     return {
