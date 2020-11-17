@@ -142,6 +142,37 @@ function translateCreate({
     return [cypher, { ...params, ...replacedProjectionParams }];
 }
 
+function translateDelete({
+    neoSchema,
+    resolveTree,
+}: {
+    neoSchema: NeoSchema;
+    resolveTree: ResolveTree;
+}): [string, any] {
+    const node = neoSchema.nodes.find(
+        (x) => x.name === pluralize.singular(resolveTree.name.split("delete")[1])
+    ) as Node;
+    const whereInput = resolveTree.args.where as GraphQLWhereArg;
+    const varName = "this";
+
+    const matchStr = `MATCH (${varName}:${node.name})`;
+    let whereStr = "";
+    let cypherParams: { [k: string]: any } = {};
+
+    if (whereInput) {
+        const where = createWhereAndParams({
+            whereInput,
+            varName,
+        });
+        whereStr = where[0];
+        cypherParams = { ...cypherParams, ...where[1] };
+    }
+
+    const cypher = [matchStr, whereStr, `DETACH DELETE ${varName}`];
+
+    return [cypher.filter(Boolean).join("\n"), cypherParams];
+}
+
 function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQLResolveInfo }): [string, any] {
     const neoSchema: NeoSchema = context.neoSchema;
     if (!neoSchema || !(neoSchema instanceof NeoSchema)) {
@@ -155,6 +186,10 @@ function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQ
     if (operationType === "mutation") {
         if (operationName.includes("create")) {
             return translateCreate({ resolveTree, neoSchema });
+        }
+
+        if (operationName.includes("delete")) {
+            return translateDelete({ resolveTree, neoSchema });
         }
     }
 

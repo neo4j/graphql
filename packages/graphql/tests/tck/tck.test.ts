@@ -30,17 +30,10 @@ describe("TCK Generated tests", () => {
                     const cypherQuery = test.cypherQuery as string;
                     const cypherParams = test.cypherParams as any;
 
-                    const resolver = (_roto: any, _params: any, context: any, resolveInfo: any) => {
-                        if (!context) {
-                            context = {};
-                        }
-                        context.neoSchema = neoSchema;
-
+                    const compare = (context: any, resolveInfo: any) => {
                         const [cQuery, cQueryParams] = translate({ context, resolveInfo });
                         expect(trimmer(cQuery)).toEqual(trimmer(cypherQuery));
                         expect(serialize(cQueryParams)).toEqual(cypherParams);
-
-                        return [];
                     };
 
                     const queries = document.definitions.reduce((res, def) => {
@@ -50,7 +43,16 @@ describe("TCK Generated tests", () => {
 
                         return {
                             ...res,
-                            [pluralize(def.name.value)]: resolver,
+                            [pluralize(def.name.value)]: (_root: any, _params: any, context: any, resolveInfo: any) => {
+                                if (!context) {
+                                    context = {};
+                                }
+                                context.neoSchema = neoSchema;
+
+                                compare(context, resolveInfo);
+
+                                return [];
+                            },
                         };
                     }, {});
 
@@ -61,7 +63,36 @@ describe("TCK Generated tests", () => {
 
                         return {
                             ...res,
-                            [`create${pluralize(def.name.value)}`]: resolver,
+                            [`create${pluralize(def.name.value)}`]: (
+                                _root: any,
+                                _params: any,
+                                context: any,
+                                resolveInfo: any
+                            ) => {
+                                if (!context) {
+                                    context = {};
+                                }
+                                context.neoSchema = neoSchema;
+
+                                compare(context, resolveInfo);
+
+                                return [];
+                            },
+                            [`delete${pluralize(def.name.value)}`]: (
+                                _root: any,
+                                _params: any,
+                                context: any,
+                                resolveInfo: any
+                            ) => {
+                                if (!context) {
+                                    context = {};
+                                }
+                                context.neoSchema = neoSchema;
+
+                                compare(context, resolveInfo);
+
+                                return { nodesDeleted: 1, relationshipsDeleted: 1 };
+                            },
                         };
                     }, {});
 
