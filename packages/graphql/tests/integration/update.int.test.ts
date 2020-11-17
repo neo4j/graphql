@@ -1,6 +1,7 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
+import { describe, beforeAll, afterAll, expect, test } from "@jest/globals";
 import neo4j from "./neo4j";
 import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
 
@@ -30,9 +31,11 @@ describe("update", () => {
         const id = generate({
             charset: "alphabetic",
         });
+
         const initialName = generate({
             charset: "alphabetic",
         });
+
         const updatedName = generate({
             charset: "alphabetic",
         });
@@ -72,6 +75,69 @@ describe("update", () => {
         }
     });
 
+    test("should update 2 movies", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Movie {
+                id: ID!
+                name: String
+            }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const id1 = generate({
+            charset: "alphabetic",
+        });
+
+        const id2 = generate({
+            charset: "alphabetic",
+        });
+
+        const updatedName = "Beer";
+
+        const query = `
+        mutation($id1: ID, $id2: ID, $name: String) {
+            updateMovies(where: { OR: [{id: $id1}, {id: $id2}] }, update: {name: $name}) {
+              id
+              name
+            }
+          }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (:Movie {id: $id1})
+                CREATE (:Movie {id: $id2})
+            `,
+                {
+                    id1,
+                    id2,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: { id1, id2, name: updatedName },
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect((gqlResult?.data?.updateMovies as any[]).length).toEqual(2);
+
+            (gqlResult?.data?.updateMovies as any[]).forEach((movie) => {
+                expect([id1, id2].includes(movie.id)).toEqual(true);
+                expect(movie.name).toEqual(updatedName);
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
     test("should update nested actors from a movie", async () => {
         const session = driver.session();
 
@@ -96,6 +162,7 @@ describe("update", () => {
         const initialName = generate({
             charset: "alphabetic",
         });
+
         const updatedName = generate({
             charset: "alphabetic",
         });
@@ -160,7 +227,7 @@ describe("update", () => {
               id: ID
               title: String
               actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
-             }
+            }
         `;
 
         const neoSchema = makeAugmentedSchema({ typeDefs });
@@ -356,8 +423,7 @@ describe("update", () => {
             type Product {
                 id: ID
                 photos: [Photo] @relationship(type: "HAS_PHOTO", direction: "OUT")
-            }
-            
+            }     
             
             type Color {
                 id: ID
