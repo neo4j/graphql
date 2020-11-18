@@ -3,7 +3,7 @@ import { NeoSchema } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
 describe("createCreateAndParams", () => {
-    test("should return the correct create and params", () => {
+    test("should return the correct projection with 1 selection", () => {
         const input = {
             title: "some title",
         };
@@ -38,6 +38,7 @@ describe("createCreateAndParams", () => {
             neoSchema,
             varName: "this0",
             withVars: ["this0"],
+            jwt: {},
         });
 
         expect(trimmer(result[0])).toEqual(
