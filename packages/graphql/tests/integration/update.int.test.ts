@@ -16,6 +16,51 @@ describe("update", () => {
         await driver.close();
     });
 
+    test("should update no movies where predicate yields false", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Movie {
+                id: ID!
+                name: String
+            }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const updatedName = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+        mutation($id: ID, $name: String) {
+            updateMovies(where: { id: $id }, update: {name: $name}) {
+              id
+              name
+            }
+          }
+        `;
+
+        try {
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: { id, name: updatedName },
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateMovies).toEqual([]);
+        } finally {
+            await session.close();
+        }
+    });
+
     test("should update a single movie", async () => {
         const session = driver.session();
 
