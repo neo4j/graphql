@@ -4,9 +4,6 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import path from "path";
 import pluralize from "pluralize";
-import jsonwebtoken from "jsonwebtoken";
-import { IncomingMessage } from "http";
-import { Socket } from "net";
 import { translate } from "../../src/translate";
 import { makeAugmentedSchema } from "../../src";
 import serialize from "../../src/utils/serialize";
@@ -15,14 +12,6 @@ import { generateTestCasesFromMd, Test, TestCase } from "./utils/generate-test-c
 import { trimmer } from "../../src/utils";
 
 const TCK_DIR = path.join(__dirname, "tck-test-files");
-
-beforeAll(() => {
-    process.env.JWT_SECRET = "secret";
-});
-
-afterAll(() => {
-    delete process.env.JWT_SECRET;
-});
 
 describe("TCK Generated tests", () => {
     const testCases: TestCase[] = generateTestCasesFromMd(TCK_DIR);
@@ -40,7 +29,6 @@ describe("TCK Generated tests", () => {
                     const graphQlParams = test.graphQlParams as any;
                     const cypherQuery = test.cypherQuery as string;
                     const cypherParams = test.cypherParams as any;
-                    const jwt = test.jwt;
 
                     const compare = (context: any, resolveInfo: any) => {
                         const [cQuery, cQueryParams] = translate({ context, resolveInfo });
@@ -48,14 +36,7 @@ describe("TCK Generated tests", () => {
                         expect(serialize(cQueryParams)).toEqual(cypherParams);
                     };
 
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    const token = jsonwebtoken.sign(jwt, process.env.JWT_SECRET);
-                    req.headers.authorization = `Bearer ${token}`;
-
-                    const context = {
-                        req,
-                    };
+                    const context = {};
 
                     const queries = document.definitions.reduce((res, def) => {
                         if (def.kind !== "ObjectTypeDefinition") {
@@ -82,6 +63,18 @@ describe("TCK Generated tests", () => {
                         return {
                             ...res,
                             [`create${pluralize(def.name.value)}`]: (
+                                _root: any,
+                                _params: any,
+                                ctx: any,
+                                resolveInfo: any
+                            ) => {
+                                ctx.neoSchema = neoSchema;
+
+                                compare(context, resolveInfo);
+
+                                return [];
+                            },
+                            [`update${pluralize(def.name.value)}`]: (
                                 _root: any,
                                 _params: any,
                                 ctx: any,
