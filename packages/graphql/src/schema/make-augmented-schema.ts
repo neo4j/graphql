@@ -246,6 +246,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     update: updateField,
                     connect: connectField,
                     disconnect: disconnectField,
+                    create: createField,
                 },
             });
 

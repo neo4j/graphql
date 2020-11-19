@@ -204,6 +204,7 @@ input MovieUpdateInput {
 
 input MovieActorsUpdateFieldInput {
   connect: [ActorConnectFieldInput]
+  create: [ActorCreateInput]
   disconnect: [ActorDisconnectFieldInput]
   update: ActorUpdateInput
   where: ActorWhere
@@ -301,6 +302,7 @@ input ActorMoviesUpdateFieldInput {
   where: MovieWhere
   update: MovieUpdateInput
   connect: [MovieConnectFieldInput]
+  create: [MovieCreateInput]
   disconnect: [MovieDisconnectFieldInput]
 }
 
@@ -352,6 +354,7 @@ input MovieActorsFieldInput {
 input MovieActorsUpdateFieldInput {
   where: ActorWhere
   update: ActorUpdateInput
+  create: [ActorCreateInput]
   connect: [ActorConnectFieldInput]
   disconnect: [ActorDisconnectFieldInput]
 }
