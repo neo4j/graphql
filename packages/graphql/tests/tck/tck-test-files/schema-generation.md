@@ -199,7 +199,7 @@ input MovieWhere {
 
 input MovieUpdateInput {
   id: ID
-  actors: MovieActorsUpdateFieldInput
+  actors: [MovieActorsUpdateFieldInput]
 }
 
 input MovieActorsUpdateFieldInput {
@@ -324,7 +324,7 @@ enum ActorSort {
 
 input ActorUpdateInput {
   name: String
-  movies: ActorMoviesUpdateFieldInput
+  movies: [ActorMoviesUpdateFieldInput]
 }
 
 input ActorWhere {
@@ -406,7 +406,7 @@ enum MovieSort {
 
 input MovieUpdateInput {
   id: ID
-  actors: MovieActorsUpdateFieldInput
+  actors: [MovieActorsUpdateFieldInput]
 }
 
 input MovieWhere {

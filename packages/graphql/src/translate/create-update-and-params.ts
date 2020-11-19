@@ -38,89 +38,93 @@ function createUpdateAndParams({
 
         const relationField = node.relationFields.find((x) => x.fieldName === key);
         if (relationField) {
-            const _varName = `${varName}_${key}`;
+            const updates = relationField.typeMeta.array ? value : [value];
             const refNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const outStr = relationField.direction === "OUT" ? "->" : "-";
             const relTypeStr = `[:${relationField.type}]`;
 
-            if (value.update) {
-                if (withVars) {
-                    res.strs.push(`WITH ${withVars.join(", ")}`);
-                }
+            updates.forEach((update, index) => {
+                const _varName = `${varName}_${key}${index}`;
 
-                res.strs.push(
-                    `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${refNode.name})`
-                );
+                if (update.update) {
+                    if (withVars) {
+                        res.strs.push(`WITH ${withVars.join(", ")}`);
+                    }
 
-                if (value.where) {
-                    const whereAndParams = createWhereAndParams({
+                    res.strs.push(
+                        `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${refNode.name})`
+                    );
+
+                    if (update.where) {
+                        const whereAndParams = createWhereAndParams({
+                            varName: _varName,
+                            whereInput: update.where,
+                        });
+                        res.strs.push(whereAndParams[0]);
+                        res.params = { ...res.params, ...whereAndParams[1] };
+                    }
+
+                    res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
+
+                    const updateAndParams = createUpdateAndParams({
+                        neoSchema,
+                        node: refNode,
+                        updateInput: update.update,
                         varName: _varName,
-                        whereInput: value.where,
+                        withVars: [...withVars, _varName],
+                        parentVar: _varName,
+                        chainStr: `${param}${index}`,
+                        insideDoWhen: true,
                     });
-                    res.strs.push(whereAndParams[0]);
-                    res.params = { ...res.params, ...whereAndParams[1] };
+                    res.params = { ...res.params, ...updateAndParams[1] };
+
+                    const updateStrs = [updateAndParams[0], "RETURN count(*)"];
+                    const apocArgs = `{${parentVar}:${parentVar}, ${_varName}:${_varName}REPLACE_ME}`;
+
+                    if (insideDoWhen) {
+                        updateStrs.push(`\\", \\"\\", ${apocArgs})`);
+                    } else {
+                        updateStrs.push(`", "", ${apocArgs})`);
+                    }
+                    updateStrs.push("YIELD value as _");
+
+                    const paramsString = (Object.keys(updateAndParams[1]).reduce(
+                        (r: string[], k) => [...r, `${k}:$${k}`],
+                        []
+                    ) as string[]).join(",");
+                    const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
+                    res.strs.push(updateStr);
                 }
 
-                res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
-
-                const updateAndParams = createUpdateAndParams({
-                    neoSchema,
-                    node: refNode,
-                    updateInput: value.update,
-                    varName: _varName,
-                    withVars: [...withVars, _varName],
-                    parentVar: _varName,
-                    chainStr: param,
-                    insideDoWhen: true,
-                });
-                res.params = { ...res.params, ...updateAndParams[1] };
-
-                const updateStrs = [updateAndParams[0], "RETURN count(*)"];
-                const apocArgs = `{${parentVar}:${parentVar}, ${_varName}:${_varName}REPLACE_ME}`;
-
-                if (insideDoWhen) {
-                    updateStrs.push(`\\", \\"\\", ${apocArgs})`);
-                } else {
-                    updateStrs.push(`", "", ${apocArgs})`);
+                if (update.connect) {
+                    const connectAndParams = createConnectAndParams({
+                        neoSchema,
+                        refNode,
+                        value: update.connect,
+                        varName: `${_varName}_connect`,
+                        withVars,
+                        parentVar,
+                        relationField,
+                    });
+                    res.strs.push(connectAndParams[0]);
+                    res.params = { ...res.params, ...connectAndParams[1] };
                 }
-                updateStrs.push("YIELD value as _");
 
-                const paramsString = (Object.keys(updateAndParams[1]).reduce(
-                    (r: string[], k) => [...r, `${k}:$${k}`],
-                    []
-                ) as string[]).join(",");
-                const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
-                res.strs.push(updateStr);
-            }
-
-            if (value.connect) {
-                const connectAndParams = createConnectAndParams({
-                    neoSchema,
-                    refNode,
-                    value: value.connect,
-                    varName: `${_varName}_connect`,
-                    withVars,
-                    parentVar,
-                    relationField,
-                });
-                res.strs.push(connectAndParams[0]);
-                res.params = { ...res.params, ...connectAndParams[1] };
-            }
-
-            if (value.disconnect) {
-                const disconnectAndParams = createDisconnectAndParams({
-                    neoSchema,
-                    refNode,
-                    value: value.disconnect,
-                    varName: `${_varName}_disconnect`,
-                    withVars,
-                    parentVar,
-                    relationField,
-                });
-                res.strs.push(disconnectAndParams[0]);
-                res.params = { ...res.params, ...disconnectAndParams[1] };
-            }
+                if (update.disconnect) {
+                    const disconnectAndParams = createDisconnectAndParams({
+                        neoSchema,
+                        refNode,
+                        value: update.disconnect,
+                        varName: `${_varName}_disconnect`,
+                        withVars,
+                        parentVar,
+                        relationField,
+                    });
+                    res.strs.push(disconnectAndParams[0]);
+                    res.params = { ...res.params, ...disconnectAndParams[1] };
+                }
+            });
 
             return res;
         }
