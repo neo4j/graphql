@@ -189,7 +189,7 @@ mutation {
   updateProducts(
     where: { name: "Pringles" }
     update: {
-      photos: {
+      photos: [{
         where: { description: "Green Photo" }
         update: {
           description: "Light Green Photo"
@@ -198,7 +198,7 @@ mutation {
             disconnect: { where: { name: "Green" } }
           }
         }
-      }
+      }]
     }
   ) {
     id
@@ -213,32 +213,32 @@ MATCH (this:Product)
 WHERE this.name = $this_name 
 
 WITH this 
-OPTIONAL MATCH (this)-[:HAS_PHOTO]->(this_photos:Photo) 
-WHERE this_photos.description = $this_photos_description 
-CALL apoc.do.when(this_photos IS NOT NULL, 
-   " 
-    SET this_photos.description = $this_update_photos_description 
-
-    WITH this, this_photos 
-    OPTIONAL MATCH (this_photos_color_connect0:Color) 
-    WHERE this_photos_color_connect0.name = $this_photos_color_connect0_name 
-    FOREACH(_ IN CASE this_photos_color_connect0 WHEN NULL THEN [] ELSE [1] END | 
-      MERGE (this_photos)-[:OF_COLOR]->(this_photos_color_connect0) 
+OPTIONAL MATCH (this)-[:HAS_PHOTO]->(this_photos0:Photo) 
+WHERE this_photos0.description = $this_photos0_description 
+CALL apoc.do.when(this_photos0 IS NOT NULL, 
+  " 
+    SET this_photos0.description = $this_update_photos0_description 
+    
+    WITH this, this_photos0 
+    OPTIONAL MATCH (this_photos0_color0_connect0:Color) 
+    WHERE this_photos0_color0_connect0.name = $this_photos0_color0_connect0_name 
+    FOREACH(_ IN CASE this_photos0_color0_connect0 WHEN NULL THEN [] ELSE [1] END | 
+      MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0) 
     ) 
     
-    WITH this, this_photos 
-    OPTIONAL MATCH (this_photos)-[this_photos_color_disconnect0_rel:OF_COLOR]->(this_photos_color_disconnect0:Color) 
-    WHERE this_photos_color_disconnect0.name = $this_photos_color_disconnect0_name 
-    FOREACH(_ IN CASE this_photos_color_disconnect0 WHEN NULL THEN [] ELSE [1] END | 
-      DELETE this_photos_color_disconnect0_rel 
+    WITH this, this_photos0 
+    OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color) 
+    WHERE this_photos0_color0_disconnect0.name = $this_photos0_color0_disconnect0_name 
+    FOREACH(_ IN CASE this_photos0_color0_disconnect0 WHEN NULL THEN [] ELSE [1] END | 
+      DELETE this_photos0_color0_disconnect0_rel 
     ) 
     
-    RETURN count(*) 
-  ", 
-  "", 
-  {this:this, this_photos:this_photos, this_update_photos_description:$this_update_photos_description,this_photos_color_connect0_name:$this_photos_color_connect0_name,this_photos_color_disconnect0_name:$this_photos_color_disconnect0_name}) YIELD value as _ 
-
-RETURN this { .id } AS this
+    RETURN count(*)
+  ",
+  "",
+  {this:this, this_photos0:this_photos0, this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_connect0_name:$this_photos0_color0_connect0_name,this_photos0_color0_disconnect0_name:$this_photos0_color0_disconnect0_name}) YIELD value as _ 
+  
+  RETURN this { .id } AS this
 ```
 
 **Expected Cypher params**
@@ -246,10 +246,10 @@ RETURN this { .id } AS this
 ```cypher-params
 {
   "this_name": "Pringles",
-  "this_photos_description": "Green Photo",
-  "this_update_photos_description": "Light Green Photo",
-  "this_photos_color_connect0_name": "Light Green",
-  "this_photos_color_disconnect0_name": "Green"
+  "this_photos0_description": "Green Photo",
+  "this_update_photos0_description": "Light Green Photo",
+  "this_photos0_color0_connect0_name": "Light Green",
+  "this_photos0_color0_disconnect0_name": "Green"
 }
 ```
 
