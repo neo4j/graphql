@@ -706,4 +706,101 @@ describe("update", () => {
             await session.close();
         }
     });
+
+    test("should update a Product via creating a new Photo and creating a new Color", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+          type Product {
+             id: ID
+             name: String
+             photos: [Photo] @relationship(type: "HAS_PHOTO", direction: "OUT")
+           }
+
+
+           type Color {
+             name: String
+             id: ID
+           }
+
+           type Photo {
+             id: ID
+             name: String
+             color: Color @relationship(type: "OF_COLOR", direction: "OUT")
+           }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const productId = generate({
+            charset: "alphabetic",
+        });
+
+        const photoId = generate({
+            charset: "alphabetic",
+        });
+
+        const colorId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            mutation {
+                updateProducts(
+                  where: { id: "${productId}" }
+                  update: {
+                      photos: [{
+                          create: [{ 
+                            id: "${photoId}", 
+                            name: "Green Photo",
+                            color: {
+                                create: {
+                                    id: "${colorId}",
+                                    name: "Green"
+                                }
+                            }
+                         }]
+                      }]
+                  }
+                ) {
+                  id
+                  photos {
+                    id
+                    name
+                    color {
+                      id
+                      name
+                    }
+                  }
+                }
+              }             
+        `;
+
+        try {
+            await session.run(
+                `
+                    CREATE (product:Product {name: "Pringles", id: $productId})
+            `,
+                {
+                    productId,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: {},
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect((gqlResult?.data?.updateProducts as any[])[0]).toMatchObject({
+                id: productId,
+                photos: [{ id: photoId, name: "Green Photo", color: { id: colorId, name: "Green" } }],
+            });
+        } finally {
+            await session.close();
+        }
+    });
 });
