@@ -262,7 +262,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             });
 
             nodeUpdateInput.addFields({
-                [rel.fieldName]: nodeFieldUpdateInputName,
+                [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldUpdateInputName}]` : nodeFieldUpdateInputName,
             });
 
             nodeConnectInput.addFields({
