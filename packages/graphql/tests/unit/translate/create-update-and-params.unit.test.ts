@@ -1,13 +1,9 @@
-import createCreateAndParams from "../../../src/translate/create-create-and-params";
+import createUpdateAndParams from "../../../src/translate/create-update-and-params";
 import { NeoSchema } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
-describe("createCreateAndParams", () => {
-    test("should return the correct create and params", () => {
-        const input = {
-            title: "some title",
-        };
-
+describe("createUpdateAndParams", () => {
+    test("should return the correct update and params", () => {
         const node = {
             name: "Movie",
             relationFields: [],
@@ -32,23 +28,23 @@ describe("createCreateAndParams", () => {
             nodes: [node],
         };
 
-        const result = createCreateAndParams({
-            input,
+        const result = createUpdateAndParams({
+            updateInput: { id: "new" },
             node,
             neoSchema,
-            varName: "this0",
-            withVars: ["this0"],
+            varName: "this",
+            parentVar: "this",
+            withVars: ["this"],
         });
 
         expect(trimmer(result[0])).toEqual(
             trimmer(`
-                CREATE (this0:Movie)
-                SET this0.title = $this0_title
+                SET this.id = $this_update_id
             `)
         );
 
         expect(result[1]).toMatchObject({
-            this0_title: "some title",
+            this_update_id: "new",
         });
     });
 });
