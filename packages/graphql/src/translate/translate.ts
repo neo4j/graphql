@@ -201,6 +201,7 @@ function translateUpdate({
     const updateInput = resolveTree.args.update;
     const connectInput = resolveTree.args.connect;
     const disconnectInput = resolveTree.args.disconnect;
+    const createInput = resolveTree.args.create;
     const fieldsByTypeName = resolveTree.fieldsByTypeName;
     const varName = "this";
 
@@ -209,6 +210,7 @@ function translateUpdate({
     let updateStr = "";
     let connectStr = "";
     let disconnectStr = "";
+    let createStr = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
 
@@ -272,6 +274,32 @@ function translateUpdate({
         });
     }
 
+    if (createInput) {
+        Object.entries(createInput).forEach((entry) => {
+            const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
+            const refNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const inStr = relationField.direction === "IN" ? "<-" : "-";
+            const outStr = relationField.direction === "OUT" ? "->" : "-";
+            const relTypeStr = `[:${relationField.type}]`;
+
+            const creates = relationField.typeMeta.array ? entry[1] : [entry[1]];
+            creates.forEach((create, index) => {
+                const innerVarName = `${varName}_create_${entry[0]}${index}`;
+
+                const createAndParams = createCreateAndParams({
+                    neoSchema,
+                    node: refNode,
+                    input: create,
+                    varName: innerVarName,
+                    withVars: [varName, innerVarName],
+                });
+                createStr = createAndParams[0];
+                cypherParams = { ...cypherParams, ...createAndParams[1] };
+                createStr += `\nMERGE (${varName})${inStr}${relTypeStr}${outStr}(${innerVarName})`;
+            });
+        });
+    }
+
     const projection = createProjectionAndParams({
         node,
         neoSchema,
@@ -287,10 +315,11 @@ function translateUpdate({
         updateStr,
         connectStr,
         disconnectStr,
+        createStr,
         `RETURN ${varName} ${projStr} AS ${varName}`,
     ];
 
-    return [cypher.join("\n"), cypherParams];
+    return [cypher.filter(Boolean).join("\n"), cypherParams];
 }
 
 function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQLResolveInfo }): [string, any] {

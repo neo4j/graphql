@@ -198,6 +198,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         let nodeConnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
         let nodeDisconnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
+        let nodeRelationInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
         if (node.relationFields.length) {
             nodeConnectInput = composer.createInputTC({
                 name: `${node.name}ConnectInput`,
@@ -206,6 +207,11 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
             nodeDisconnectInput = composer.createInputTC({
                 name: `${node.name}DisconnectInput`,
+                fields: {},
+            });
+
+            nodeRelationInput = composer.createInputTC({
+                name: `${node.name}RelationInput`,
                 fields: {},
             });
         }
@@ -256,6 +262,10 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     create: createField,
                     connect: connectField,
                 },
+            });
+
+            nodeRelationInput.addFields({
+                [rel.fieldName]: createField,
             });
 
             nodeInput.addFields({
