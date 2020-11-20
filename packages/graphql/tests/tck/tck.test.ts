@@ -36,6 +36,8 @@ describe("TCK Generated tests", () => {
                         expect(serialize(cQueryParams)).toEqual(cypherParams);
                     };
 
+                    const context = {};
+
                     const queries = document.definitions.reduce((res, def) => {
                         if (def.kind !== "ObjectTypeDefinition") {
                             return res;
@@ -43,11 +45,8 @@ describe("TCK Generated tests", () => {
 
                         return {
                             ...res,
-                            [pluralize(def.name.value)]: (_root: any, _params: any, context: any, resolveInfo: any) => {
-                                if (!context) {
-                                    context = {};
-                                }
-                                context.neoSchema = neoSchema;
+                            [pluralize(def.name.value)]: (_root: any, _params: any, ctx: any, resolveInfo: any) => {
+                                ctx.neoSchema = neoSchema;
 
                                 compare(context, resolveInfo);
 
@@ -66,13 +65,22 @@ describe("TCK Generated tests", () => {
                             [`create${pluralize(def.name.value)}`]: (
                                 _root: any,
                                 _params: any,
-                                context: any,
+                                ctx: any,
                                 resolveInfo: any
                             ) => {
-                                if (!context) {
-                                    context = {};
-                                }
-                                context.neoSchema = neoSchema;
+                                ctx.neoSchema = neoSchema;
+
+                                compare(context, resolveInfo);
+
+                                return [];
+                            },
+                            [`update${pluralize(def.name.value)}`]: (
+                                _root: any,
+                                _params: any,
+                                ctx: any,
+                                resolveInfo: any
+                            ) => {
+                                ctx.neoSchema = neoSchema;
 
                                 compare(context, resolveInfo);
 
@@ -81,13 +89,10 @@ describe("TCK Generated tests", () => {
                             [`delete${pluralize(def.name.value)}`]: (
                                 _root: any,
                                 _params: any,
-                                context: any,
+                                ctx: any,
                                 resolveInfo: any
                             ) => {
-                                if (!context) {
-                                    context = {};
-                                }
-                                context.neoSchema = neoSchema;
+                                ctx.neoSchema = neoSchema;
 
                                 compare(context, resolveInfo);
 
@@ -103,7 +108,7 @@ describe("TCK Generated tests", () => {
                         resolvers,
                     });
 
-                    noGraphQLErrors(await graphql(executableSchema, graphQlQuery, null, null, graphQlParams));
+                    noGraphQLErrors(await graphql(executableSchema, graphQlQuery, null, context, graphQlParams));
                 });
             }
 

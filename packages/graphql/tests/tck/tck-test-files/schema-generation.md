@@ -62,9 +62,14 @@ input MovieWhere {
   AND: [MovieAND]
 }
 
+input MovieUpdateInput {
+  id: ID
+}
+
 type Mutation {
   createMovies(input: [MovieCreateInput]!): [Movie]!
   deleteMovies(where: MovieWhere): DeleteInfo!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): [Movie]!
 }
 
 type Query {
@@ -141,6 +146,10 @@ input ActorConnectFieldInput {
   where: ActorWhere
 }
 
+input ActorDisconnectFieldInput {
+  where: ActorWhere
+}
+
 type Movie {
   id: ID
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
@@ -149,6 +158,10 @@ type Movie {
 input MovieActorsFieldInput {
   connect: [ActorConnectFieldInput]
   create: [ActorCreateInput]
+}
+
+input MovieRelationInput {
+  actors: [ActorCreateInput]
 }
 
 input MovieAND {
@@ -188,11 +201,38 @@ input MovieWhere {
   AND: [MovieAND]
 }
 
+input MovieUpdateInput {
+  id: ID
+  actors: [MovieActorsUpdateFieldInput]
+}
+
+input MovieActorsUpdateFieldInput {
+  connect: [ActorConnectFieldInput]
+  create: [ActorCreateInput]
+  disconnect: [ActorDisconnectFieldInput]
+  update: ActorUpdateInput
+  where: ActorWhere
+}
+
+input MovieConnectInput {
+  actors: [ActorConnectFieldInput]
+}
+
+input MovieDisconnectInput {
+  actors: [ActorDisconnectFieldInput]
+}
+
+input ActorUpdateInput {
+  name: String
+}
+
 type Mutation {
   createActors(input: [ActorCreateInput]!): [Actor]!
   createMovies(input: [MovieCreateInput]!): [Movie]!
   deleteMovies(where: MovieWhere): DeleteInfo!
   deleteActors(where: ActorWhere): DeleteInfo!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput): [Movie]!
+  updateActors(where: ActorWhere, update: ActorUpdateInput): [Actor]!
 }
 
 type Query {
@@ -227,16 +267,11 @@ type Actor {
   movies(where: MovieWhere, options: MovieOptions): [Movie]
 }
 
-type DeleteInfo {
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
-
 input ActorAND {
-  name: String
-  name_IN: [String]
   OR: [ActorOR]
   AND: [ActorAND]
+  name: String
+  name_IN: [String]
 }
 
 input ActorConnectFieldInput {
@@ -253,9 +288,30 @@ input ActorCreateInput {
   movies: ActorMoviesFieldInput
 }
 
+input ActorRelationInput {
+  movies: [MovieCreateInput]
+}
+
+input ActorDisconnectFieldInput {
+  where: ActorWhere
+  disconnect: ActorDisconnectInput
+}
+
+input ActorDisconnectInput {
+  movies: [MovieDisconnectFieldInput]
+}
+
 input ActorMoviesFieldInput {
   create: [MovieCreateInput]
   connect: [MovieConnectFieldInput]
+}
+
+input ActorMoviesUpdateFieldInput {
+  where: MovieWhere
+  update: MovieUpdateInput
+  connect: [MovieConnectFieldInput]
+  create: [MovieCreateInput]
+  disconnect: [MovieDisconnectFieldInput]
 }
 
 input ActorOptions {
@@ -265,10 +321,10 @@ input ActorOptions {
 }
 
 input ActorOR {
-  name: String
-  name_IN: [String]
   OR: [ActorOR]
   AND: [ActorAND]
+  name: String
+  name_IN: [String]
 }
 
 enum ActorSort {
@@ -276,11 +332,21 @@ enum ActorSort {
   name_ASC
 }
 
-input ActorWhere {
+input ActorUpdateInput {
   name: String
-  name_IN: [String]
+  movies: [ActorMoviesUpdateFieldInput]
+}
+
+input ActorWhere {
   OR: [ActorOR]
   AND: [ActorAND]
+  name: String
+  name_IN: [String]
+}
+
+type DeleteInfo {
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
 }
 
 type Movie {
@@ -293,11 +359,19 @@ input MovieActorsFieldInput {
   connect: [ActorConnectFieldInput]
 }
 
+input MovieActorsUpdateFieldInput {
+  where: ActorWhere
+  update: ActorUpdateInput
+  create: [ActorCreateInput]
+  connect: [ActorConnectFieldInput]
+  disconnect: [ActorDisconnectFieldInput]
+}
+
 input MovieAND {
-  id: ID
-  id_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
+  id: ID
+  id_IN: [ID]
 }
 
 input MovieConnectFieldInput {
@@ -314,6 +388,15 @@ input MovieCreateInput {
   actors: MovieActorsFieldInput
 }
 
+input MovieDisconnectFieldInput {
+  where: MovieWhere
+  disconnect: MovieDisconnectInput
+}
+
+input MovieDisconnectInput {
+  actors: [ActorDisconnectFieldInput]
+}
+
 input MovieOptions {
   sort: [MovieSort]
   limit: Int
@@ -321,10 +404,14 @@ input MovieOptions {
 }
 
 input MovieOR {
-  id: ID
-  id_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
+  id: ID
+  id_IN: [ID]
+}
+
+input MovieRelationInput {
+  actors: [ActorCreateInput]
 }
 
 enum MovieSort {
@@ -332,18 +419,37 @@ enum MovieSort {
   id_ASC
 }
 
-input MovieWhere {
+input MovieUpdateInput {
   id: ID
-  id_IN: [ID]
+  actors: [MovieActorsUpdateFieldInput]
+}
+
+input MovieWhere {
   OR: [MovieOR]
   AND: [MovieAND]
+  id: ID
+  id_IN: [ID]
 }
 
 type Mutation {
   createActors(input: [ActorCreateInput]!): [Actor]!
+  deleteActors(where: ActorWhere): DeleteInfo!
+  updateActors(
+    where: ActorWhere
+    update: ActorUpdateInput
+    connect: ActorConnectInput
+    disconnect: ActorDisconnectInput
+    create: ActorRelationInput
+  ): [Actor]!
   createMovies(input: [MovieCreateInput]!): [Movie]!
   deleteMovies(where: MovieWhere): DeleteInfo!
-  deleteActors(where: ActorWhere): DeleteInfo!
+  updateMovies(
+    where: MovieWhere
+    update: MovieUpdateInput
+    connect: MovieConnectInput
+    disconnect: MovieDisconnectInput
+    create: MovieRelationInput
+  ): [Movie]!
 }
 
 type Query {
@@ -380,16 +486,11 @@ type Actor {
   name: String
 }
 
-type DeleteInfo {
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
-}
-
 input ActorAND {
-  name: String
-  name_IN: [String]
   OR: [ActorOR]
   AND: [ActorAND]
+  name: String
+  name_IN: [String]
 }
 
 input ActorCreateInput {
@@ -403,10 +504,10 @@ input ActorOptions {
 }
 
 input ActorOR {
-  name: String
-  name_IN: [String]
   OR: [ActorOR]
   AND: [ActorAND]
+  name: String
+  name_IN: [String]
 }
 
 enum ActorSort {
@@ -414,11 +515,20 @@ enum ActorSort {
   name_ASC
 }
 
-input ActorWhere {
+input ActorUpdateInput {
   name: String
-  name_IN: [String]
+}
+
+input ActorWhere {
   OR: [ActorOR]
   AND: [ActorAND]
+  name: String
+  name_IN: [String]
+}
+
+type DeleteInfo {
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
 }
 
 type Movie {
@@ -427,10 +537,10 @@ type Movie {
 }
 
 input MovieAND {
-  id: ID
-  id_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
+  id: ID
+  id_IN: [ID]
 }
 
 input MovieCreateInput {
@@ -444,10 +554,10 @@ input MovieOptions {
 }
 
 input MovieOR {
-  id: ID
-  id_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
+  id: ID
+  id_IN: [ID]
 }
 
 enum MovieSort {
@@ -455,18 +565,24 @@ enum MovieSort {
   id_ASC
 }
 
-input MovieWhere {
+input MovieUpdateInput {
   id: ID
-  id_IN: [ID]
+}
+
+input MovieWhere {
   OR: [MovieOR]
   AND: [MovieAND]
+  id: ID
+  id_IN: [ID]
 }
 
 type Mutation {
   createActors(input: [ActorCreateInput]!): [Actor]!
+  deleteActors(where: ActorWhere): DeleteInfo!
+  updateActors(where: ActorWhere, update: ActorUpdateInput): [Actor]!
   createMovies(input: [MovieCreateInput]!): [Movie]!
   deleteMovies(where: MovieWhere): DeleteInfo!
-  deleteActors(where: ActorWhere): DeleteInfo!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): [Movie]!
 }
 
 type Query {

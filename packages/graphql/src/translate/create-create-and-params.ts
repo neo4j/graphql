@@ -57,7 +57,6 @@ function createCreateAndParams({
                     parentVar: varName,
                     relationField,
                     neoSchema,
-                    parentNode: node,
                     refNode,
                 });
                 res.creates.push(connectAndParams[0]);
