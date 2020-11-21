@@ -160,6 +160,10 @@ input MovieActorsFieldInput {
   create: [ActorCreateInput]
 }
 
+input MovieRelationInput {
+  actors: [ActorCreateInput]
+}
+
 input MovieAND {
   id: ID
   id_IN: [ID]
@@ -204,6 +208,7 @@ input MovieUpdateInput {
 
 input MovieActorsUpdateFieldInput {
   connect: [ActorConnectFieldInput]
+  create: [ActorCreateInput]
   disconnect: [ActorDisconnectFieldInput]
   update: ActorUpdateInput
   where: ActorWhere
@@ -226,7 +231,7 @@ type Mutation {
   createMovies(input: [MovieCreateInput]!): [Movie]!
   deleteMovies(where: MovieWhere): DeleteInfo!
   deleteActors(where: ActorWhere): DeleteInfo!
-  updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput): [Movie]!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput): [Movie]!
   updateActors(where: ActorWhere, update: ActorUpdateInput): [Actor]!
 }
 
@@ -283,6 +288,10 @@ input ActorCreateInput {
   movies: ActorMoviesFieldInput
 }
 
+input ActorRelationInput {
+  movies: [MovieCreateInput]
+}
+
 input ActorDisconnectFieldInput {
   where: ActorWhere
   disconnect: ActorDisconnectInput
@@ -301,6 +310,7 @@ input ActorMoviesUpdateFieldInput {
   where: MovieWhere
   update: MovieUpdateInput
   connect: [MovieConnectFieldInput]
+  create: [MovieCreateInput]
   disconnect: [MovieDisconnectFieldInput]
 }
 
@@ -352,6 +362,7 @@ input MovieActorsFieldInput {
 input MovieActorsUpdateFieldInput {
   where: ActorWhere
   update: ActorUpdateInput
+  create: [ActorCreateInput]
   connect: [ActorConnectFieldInput]
   disconnect: [ActorDisconnectFieldInput]
 }
@@ -399,6 +410,10 @@ input MovieOR {
   id_IN: [ID]
 }
 
+input MovieRelationInput {
+  actors: [ActorCreateInput]
+}
+
 enum MovieSort {
   id_DESC
   id_ASC
@@ -424,6 +439,7 @@ type Mutation {
     update: ActorUpdateInput
     connect: ActorConnectInput
     disconnect: ActorDisconnectInput
+    create: ActorRelationInput
   ): [Actor]!
   createMovies(input: [MovieCreateInput]!): [Movie]!
   deleteMovies(where: MovieWhere): DeleteInfo!
@@ -432,6 +448,7 @@ type Mutation {
     update: MovieUpdateInput
     connect: MovieConnectInput
     disconnect: MovieDisconnectInput
+    create: MovieRelationInput
   ): [Movie]!
 }
 
