@@ -2,6 +2,7 @@ import { Node, NeoSchema } from "../classes";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createWhereAndParams from "./create-where-and-params";
+import createCreateAndParams from "./create-create-and-params";
 
 interface Res {
     strs: string[];
@@ -109,6 +110,29 @@ function createUpdateAndParams({
                     });
                     res.strs.push(connectAndParams[0]);
                     res.params = { ...res.params, ...connectAndParams[1] };
+                }
+
+                if (update.create) {
+                    if (withVars) {
+                        res.strs.push(`WITH ${withVars.join(", ")}`);
+                    }
+
+                    const creates = relationField.typeMeta.array ? update.create : [update.create];
+                    creates.forEach((create, i) => {
+                        const innerVarName = `${_varName}_create${i}`;
+
+                        const createAndParams = createCreateAndParams({
+                            neoSchema,
+                            node: refNode,
+                            input: create,
+                            varName: innerVarName,
+                            withVars: [...withVars, innerVarName],
+                        });
+                        res.strs.push(createAndParams[0]);
+                        res.params = { ...res.params, ...createAndParams[1] };
+
+                        res.strs.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${innerVarName})`);
+                    });
                 }
 
                 if (update.disconnect) {
