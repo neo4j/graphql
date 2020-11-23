@@ -23,4 +23,14 @@ describe("serialize", () => {
             number: { int: int(1), nestedNumber: [{ number: [{ number: { int: int(20) } }] }] },
         });
     });
+
+    test("should preserve booleans", () => {
+        const obj = {
+            isTrue: true,
+        };
+
+        const result = serialize(obj);
+
+        expect(result).toMatchObject({ isTrue: true });
+    });
 });
