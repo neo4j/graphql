@@ -22,6 +22,9 @@ function traverse(v: any) {
         case "string":
             return v;
 
+        case "boolean":
+            return v;
+
         default:
             return Object.entries(v).reduce(reducer, {});
     }
