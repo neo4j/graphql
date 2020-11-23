@@ -1,7 +1,8 @@
-import { Auth, Node } from "../../../src/classes";
-import createAuthAndParams from "../../../src/translate/create-auth-and-params";
+import { describe, test, expect } from "@jest/globals";
+import { Auth, Node, Context } from "../../../src/classes";
+import createAllowAndParams from "../../../src/translate/create-allow-and-params";
 
-describe("createAuthAndParams", () => {
+describe("createAllowAndParams", () => {
     test("should return the correct auth and params", () => {
         const auth: Auth = {
             type: "JWT",
@@ -33,9 +34,13 @@ describe("createAuthAndParams", () => {
             nodes: [node],
         };
 
-        const [str, params] = createAuthAndParams({
-            jwt: { sub: "123" },
-            neoSchema,
+        // @ts-ignore
+        const context = new Context({ neoSchema });
+
+        context.jwt = { sub: "123" };
+
+        const [str, params] = createAllowAndParams({
+            context,
             node,
             rules: auth.rules,
             varName: "this",

@@ -1,5 +1,6 @@
+import { describe, test, expect } from "@jest/globals";
 import createCreateAndParams from "../../../src/translate/create-create-and-params";
-import { NeoSchema } from "../../../src/classes";
+import { NeoSchema, Context } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
 describe("createCreateAndParams", () => {
@@ -32,13 +33,15 @@ describe("createCreateAndParams", () => {
             nodes: [node],
         };
 
+        // @ts-ignore
+        const context = new Context({ neoSchema });
+
         const result = createCreateAndParams({
             input,
             node,
-            neoSchema,
+            context,
             varName: "this0",
             withVars: ["this0"],
-            jwt: {},
         });
 
         expect(trimmer(result[0])).toEqual(

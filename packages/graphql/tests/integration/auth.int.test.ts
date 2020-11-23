@@ -63,7 +63,7 @@ describe("auth", () => {
 
     test("should throw Forbidden if JWT is missing a role", async () => {
         await Promise.all(
-            ["create", "read", "delete"].map(async (type) => {
+            ["create", "read", "delete", "update"].map(async (type) => {
                 const session = driver.session();
 
                 const typeDefs = `
@@ -112,74 +112,10 @@ describe("auth", () => {
                     `;
                 }
 
-                try {
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
-
-                    const gqlResult = await graphql({
-                        schema: neoSchema.schema,
-                        source: query as string,
-                        contextValue: { driver, req },
-                    });
-
-                    expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
-                } finally {
-                    await session.close();
-                }
-            })
-        );
-    });
-
-    test("should throw Forbidden invalid equality on JWT property vs node property using allow", async () => {
-        await Promise.all(
-            ["read", "delete"].map(async (type) => {
-                const session = driver.session();
-
-                const typeDefs = `
-                    type Product @auth(rules: [{
-                        operations: ["${type}"],
-                        allow: { id: "sub" }
-                    }]) {
-                        id: ID
-                        name: String
-                    }
-                `;
-
-                const id1 = generate({
-                    charset: "alphabetic",
-                });
-                const id2 = generate({
-                    charset: "alphabetic",
-                });
-
-                await session.run(
-                    `
-                        CREATE (:Product {id: $id1}), (:Product {id: $id2})
-                    `,
-                    { id1, id2 }
-                );
-
-                const token = jsonwebtoken.sign({ sub: "invalid" }, process.env.JWT_SECRET);
-
-                const neoSchema = makeAugmentedSchema({ typeDefs });
-
-                let query: string | undefined;
-
-                if (type === "delete") {
+                if (type === "update") {
                     query = `
                         mutation {
-                            deleteProducts(where: {id: "${id1}"}) {
-                                nodesDeleted
-                            }
-                        }
-                    `;
-                }
-
-                if (type === "read") {
-                    query = `
-                        {
-                            Products(where: {id: "${id2}"}) {
+                            updateProducts(update: {name: "test"}){
                                 id
                             }
                         }
@@ -205,21 +141,95 @@ describe("auth", () => {
         );
     });
 
-    test("should allow equality on JWT property vs node property using allow", async () => {
+    test("should throw Forbidden invalid equality on JWT property vs node property using allow", async () => {
         await Promise.all(
-            ["read", "delete"].map(async (type) => {
+            ["read", "delete", "update"].map(async (type) => {
                 const session = driver.session();
+
+                const typeDefs = `
+                    type Product @auth(rules: [{
+                        operations: ["${type}"],
+                        allow: { id: "sub" }
+                    }]) {
+                        id: ID
+                        name: String
+                    }
+                `;
 
                 const id = generate({
                     charset: "alphabetic",
                 });
 
-                await session.run(
-                    `
-                        CREATE (:Product {id: $id})
-                    `,
-                    { id }
-                );
+                const token = jsonwebtoken.sign({ sub: "invalid" }, process.env.JWT_SECRET);
+
+                const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                let query: string | undefined;
+
+                if (type === "delete") {
+                    query = `
+                        mutation {
+                            deleteProducts(where: {id: "${id}"}) {
+                                nodesDeleted
+                            }
+                        }
+                    `;
+                }
+
+                if (type === "update") {
+                    query = `
+                        mutation {
+                            updateProducts(where: {id: "${id}"}, update: {name: "test"}) {
+                                name
+                            }
+                        }
+                    `;
+                }
+
+                if (type === "read") {
+                    query = `
+                        {
+                            Products(where: {id: "${id}"}) {
+                                id
+                            }
+                        }
+                    `;
+                }
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (:Product {id: $id})
+                        `,
+                        { id }
+                    );
+
+                    const socket = new Socket({ readable: true });
+                    const req = new IncomingMessage(socket);
+                    req.headers.authorization = `Bearer ${token}`;
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source: query as string,
+                        contextValue: { driver, req },
+                    });
+
+                    expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                } finally {
+                    await session.close();
+                }
+            })
+        );
+    });
+
+    test("should allow equality on JWT property vs node property using allow", async () => {
+        await Promise.all(
+            ["read", "delete", "update"].map(async (type) => {
+                const session = driver.session();
+
+                const id = generate({
+                    charset: "alphabetic",
+                });
 
                 const typeDefs = `
                     type Product @auth(rules: [{
@@ -247,6 +257,16 @@ describe("auth", () => {
                     `;
                 }
 
+                if (type === "update") {
+                    query = `
+                        mutation {
+                            updateProducts(where: {id: "${id}"}) {
+                                id
+                            }
+                        }
+                    `;
+                }
+
                 if (type === "read") {
                     query = `
                         {
@@ -258,6 +278,13 @@ describe("auth", () => {
                 }
 
                 try {
+                    await session.run(
+                        `
+                        CREATE (:Product {id: $id})
+                    `,
+                        { id }
+                    );
+
                     const socket = new Socket({ readable: true });
                     const req = new IncomingMessage(socket);
                     req.headers.authorization = `Bearer ${token}`;
@@ -286,7 +313,7 @@ describe("auth", () => {
 
     test("should allow * on operations", async () => {
         await Promise.all(
-            ["read", "delete", "create"].map(async (type) => {
+            ["read", "delete", "create", "update"].map(async (type) => {
                 const session = driver.session();
 
                 const typeDefs = `
@@ -308,7 +335,20 @@ describe("auth", () => {
                         colors: [Color] @relationship(type: "OF_COLOR", direction: "OUT")
                     }
 
-                    type Color @auth(rules: [{allow: "*", operations: ["create"]}]) {
+                    type Color @auth(rules: [
+                        { 
+                            operations: ["${type}"],
+                            allow: "*",
+                        },
+                        {
+                            operations: ["${type}"],
+                            allow: { id: "sub" }
+                        },
+                        {
+                            operations: ["${type}"],
+                            roles: ["admin"]
+                        }
+                    ]) {
                         name: String
                     }
                 `;
@@ -338,41 +378,58 @@ describe("auth", () => {
                     `;
                 }
 
-                if (type === "delete") {
-                    await session.run(
-                        `
-                            CREATE (:Product {id: $id})
-                        `,
-                        { id }
-                    );
-
-                    query = `
-                        mutation {
-                            deleteProducts(where: {id: "${id}"}) {
-                                nodesDeleted
-                            }
-                        }
-                    `;
-                }
-
-                if (type === "read") {
-                    await session.run(
-                        `
-                            CREATE (:Product {id: $id})
-                        `,
-                        { id }
-                    );
-
-                    query = `
-                        {
-                            Products(where: {id: "${id}"}) {
-                                id
-                            }
-                        }
-                    `;
-                }
-
                 try {
+                    if (type === "delete") {
+                        await session.run(
+                            `
+                                CREATE (:Product {id: $id})
+                            `,
+                            { id }
+                        );
+
+                        query = `
+                            mutation {
+                                deleteProducts(where: {id: "${id}"}) {
+                                    nodesDeleted
+                                }
+                            }
+                        `;
+                    }
+
+                    if (type === "read") {
+                        await session.run(
+                            `
+                                CREATE (:Product {id: $id})
+                            `,
+                            { id }
+                        );
+
+                        query = `
+                            {
+                                Products(where: {id: "${id}"}) {
+                                    id
+                                }
+                            }
+                        `;
+                    }
+
+                    if (type === "update") {
+                        await session.run(
+                            `
+                                CREATE (:Product {id: $id})
+                            `,
+                            { id }
+                        );
+
+                        query = `
+                            mutation {
+                                updateProducts(where: {id: "${id}"}, update: {colors: {where: {name: "Green"}, update: {name: "red" }}}) {
+                                    id
+                                }
+                            }
+                        `;
+                    }
+
                     const socket = new Socket({ readable: true });
                     const req = new IncomingMessage(socket);
                     req.headers.authorization = `Bearer ${token}`;
@@ -391,45 +448,377 @@ describe("auth", () => {
         );
     });
 
-    test("should throw Forbidden when using roles and nested mutations", async () => {
+    test("should throw Forbidden using nested mutations because user dose not required role", async () => {
+        await Promise.all(
+            ["create", "update"].map(async (type) => {
+                const session = driver.session();
+
+                const typeDefs = `
+                type Product {
+                    id: ID
+                    name: String
+                    colors: [Color] @relationship(type: "OF_COLOR", direction: "OUT")
+                }
+    
+                type Color @auth(rules: [{
+                    roles: ["admin"],
+                    operations: ["${type}"]
+                }]) {
+                    name: String
+                }
+            `;
+
+                const token = jsonwebtoken.sign({}, process.env.JWT_SECRET);
+
+                const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                let query: string | undefined;
+
+                if (type === "create") {
+                    query = `
+                        mutation {
+                            createProducts(input:[{
+                                name: "Pringles", 
+                                colors: {
+                                    create: [{ name: "Red" }]
+                                }
+                            }]){
+                                id
+                            }
+                        }
+                    `;
+                }
+
+                if (type === "update") {
+                    query = `
+                        mutation {
+                            updateProducts(
+                                where: { name: "Pringles" }
+                                update: {
+                                    colors: {
+                                        where: { name: "Red" },
+                                        update: { name: "Red_Color" }
+                                    }
+                                }
+                            ){
+                                name
+                            }
+                        }
+                    `;
+                }
+
+                try {
+                    const socket = new Socket({ readable: true });
+                    const req = new IncomingMessage(socket);
+                    req.headers.authorization = `Bearer ${token}`;
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source: query as string,
+                        contextValue: { driver, req },
+                    });
+
+                    expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                } finally {
+                    await session.close();
+                }
+            })
+        );
+    });
+
+    test("should allow users to nest mutations because of allow *", async () => {
+        await Promise.all(
+            ["create", "update"].map(async (type) => {
+                const session = driver.session();
+
+                const typeDefs = `
+                    type Product @auth(rules: [{
+                        roles: ["admin"],
+                        operations: ["${type}"]
+                    }, 
+                    {
+                        allow: "*"
+                        operations: ["${type}"]
+                    }]) {
+                        id: ID
+                        name: String
+                        colors: [Color] @relationship(type: "OF_COLOR", direction: "OUT")
+                    }
+
+                    type Color @auth(rules: [{
+                        roles: ["admin"],
+                        operations: ["${type}"]
+                    },
+                    {
+                        allow: "*",
+                        operations: ["${type}"]
+                    }]) {
+                        name: String
+                    }
+                `;
+
+                const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.JWT_SECRET);
+
+                const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                const id = generate({
+                    charset: "alphabetic",
+                });
+
+                let query: string | undefined;
+
+                if (type === "create") {
+                    query = `
+                        mutation {
+                            createProducts(input:[{
+                                id: "${id}", 
+                                colors: {
+                                    create: [{ name: "Red" }]
+                                }
+                            }]){
+                                id
+                            }
+                        }
+                    `;
+                }
+
+                if (type === "update") {
+                    query = `
+                        mutation {
+                            updateProducts(
+                                where: { id: "${id}" }
+                                update: {
+                                    colors: {
+                                        where: { name: "Red" },
+                                        update: { name: "Red_Color" }
+                                    }
+                                }
+                            ){
+                                id
+                            }
+                        }
+                    `;
+                }
+
+                try {
+                    if (type === "update") {
+                        await session.run(
+                            `
+                            CREATE (p:Product {id: $id})
+                        `,
+                            { id }
+                        );
+                    }
+
+                    const socket = new Socket({ readable: true });
+                    const req = new IncomingMessage(socket);
+                    req.headers.authorization = `Bearer ${token}`;
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source: query as string,
+                        contextValue: { driver, req },
+                    });
+
+                    expect(gqlResult.errors).toEqual(undefined);
+
+                    if (type === "create") {
+                        expect((gqlResult.data as any).createProducts[0].id).toEqual(id);
+                    }
+
+                    if (type === "update") {
+                        expect((gqlResult.data as any).updateProducts[0].id).toEqual(id);
+                    }
+                } finally {
+                    await session.close();
+                }
+            })
+        );
+    });
+
+    test("should allow users with correct role to nest mutations", async () => {
+        await Promise.all(
+            ["create", "update"].map(async (type) => {
+                const session = driver.session();
+
+                const typeDefs = `
+                    type Product @auth(rules: [{
+                        roles: ["admin"],
+                        operations: ["${type}"]
+                    }]) {
+                        id: ID
+                        name: String
+                        colors: [Color] @relationship(type: "OF_COLOR", direction: "OUT")
+                    }
+        
+                    type Color @auth(rules: [{
+                        roles: ["admin"],
+                        operations: ["${type}"]
+                    }]) {
+                        id: ID
+                    }
+                `;
+
+                const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.JWT_SECRET);
+
+                const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                const productId = generate({
+                    charset: "alphabetic",
+                });
+
+                const colorId1 = generate({
+                    charset: "alphabetic",
+                });
+                const colorId2 = generate({
+                    charset: "alphabetic",
+                });
+
+                let query: string | undefined;
+
+                if (type === "create") {
+                    query = `
+                        mutation {
+                            createProducts(input:[{
+                                id: "${productId}", 
+                                colors: {
+                                    create: [{ id: "${colorId1}"  }]
+                                }
+                            }]){
+                                id
+                                colors {
+                                    id
+                                }
+                            }
+                        }
+                    `;
+                }
+
+                if (type === "update") {
+                    query = `
+                        mutation {
+                            updateProducts(
+                                where: { id: "${productId}" }
+                                update: {
+                                    colors: {
+                                        where: { id: "${colorId1}" },
+                                        update: { id: "${colorId2}" }
+                                    }
+                                }
+                            ){
+                                id
+                                colors {
+                                    id
+                                }
+                            }
+                        }
+                    `;
+                }
+
+                try {
+                    if (type === "update") {
+                        await session.run(
+                            `
+                            CREATE (p:Product {id: $productId})
+                            CREATE (c:Color {id: $colorId1})
+                            MERGE (p)-[:OF_COLOR]->(c)
+                        `,
+                            { productId, colorId1 }
+                        );
+                    }
+
+                    const socket = new Socket({ readable: true });
+                    const req = new IncomingMessage(socket);
+                    req.headers.authorization = `Bearer ${token}`;
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source: query as string,
+                        contextValue: { driver, req },
+                    });
+
+                    expect(gqlResult.errors).toEqual(undefined);
+
+                    if (type === "create") {
+                        expect((gqlResult.data as any).createProducts[0]).toMatchObject({
+                            id: productId,
+                            colors: [{ id: colorId1 }],
+                        });
+                    }
+
+                    if (type === "update") {
+                        expect((gqlResult.data as any).updateProducts[0]).toMatchObject({
+                            id: productId,
+                            colors: [{ id: colorId2 }],
+                        });
+                    }
+                } finally {
+                    await session.close();
+                }
+            })
+        );
+    });
+
+    test("should throw forbidden using allow and nested update", async () => {
         const session = driver.session();
 
         const typeDefs = `
-            type Product @auth(rules: [{
-                roles: ["admin"],
-                operations: ["create"]
-            }]) {
+            type Post {
                 id: ID
-                name: String
-                colors: [Color] @relationship(type: "OF_COLOR", direction: "OUT")
+                title: String
+                user: User @relationship(type: "HAS_POST", direction: "IN")
             }
-
-            type Color @auth(rules: [{
-                roles: ["admin"],
-                operations: ["read"]
-            }]) {
+            
+            type User @auth(rules:[
+                { 
+                    allow: { id: "sub" }, 
+                    operations: ["update"]
+                }
+            ]) {
+                id: ID
                 name: String
             }
         `;
 
-        const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.JWT_SECRET);
+        const token = jsonwebtoken.sign({ sub: "NOT VALID" }, process.env.JWT_SECRET);
 
         const neoSchema = makeAugmentedSchema({ typeDefs });
 
+        const postId = generate({
+            charset: "alphabetic",
+        });
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
         const query = `
-            mutation {
-                createProducts(input:[{
-                    name: "Pringles", 
-                    colors: {
-                        create: [{ name: "Red" }]
-                    }
-                }]){
-                    id
-                }
-            }
-        `;
+               mutation {
+                   updatePosts(
+                        where: { id: "${postId}" },
+                        update: {
+                            user: {
+                                update: {
+                                    name: "new name"        
+                                }
+                            }
+                        }
+                   ) {
+                       id
+                   }
+               }
+            `;
 
         try {
+            await session.run(
+                `
+                   CREATE (u:User {id: $userId})
+                   CREATE (p:Post {id: $postId})
+                   MERGE (u)-[:HAS_POST]->(p)
+                `,
+                { postId, userId }
+            );
+
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
             req.headers.authorization = `Bearer ${token}`;
@@ -446,57 +835,78 @@ describe("auth", () => {
         }
     });
 
-    test("should allow users to nest mutations because of allow *", async () => {
+    test("should allow, using allow, nested update", async () => {
         const session = driver.session();
 
         const typeDefs = `
-            type Product @auth(rules: [{
-                roles: ["admin"],
-                operations: ["create"]
-            }, 
-            {
-                allow: "*"
-                operations: ["create", "read", "update", "delete"]
-            }]) {
+            type Post {
                 id: ID
-                name: String
-                colors: [Color] @relationship(type: "OF_COLOR", direction: "OUT")
+                title: String
+                user: User @relationship(type: "HAS_POST", direction: "IN")
             }
-
-            type Color @auth(rules: [{
-                roles: ["admin"],
-                operations: ["create"]
-            },
-            {
-                allow: "*",
-                operations: ["create", "read", "update", "delete"]
-            }]) {
+            
+            type User @auth(rules:[
+                { 
+                    allow: { id: "sub" }, 
+                    operations: ["update"]
+                }
+            ]) {
+                id: ID
                 name: String
             }
         `;
 
-        const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.JWT_SECRET);
-
-        const neoSchema = makeAugmentedSchema({ typeDefs });
-
-        const id = generate({
+        const postId = generate({
             charset: "alphabetic",
         });
 
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
+        const initialName = generate({
+            charset: "alphabetic",
+        });
+
+        const newName = generate({
+            charset: "alphabetic",
+        });
+
+        const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET);
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
         const query = `
-            mutation {
-                createProducts(input:[{
-                    id: "${id}", 
-                    colors: {
-                        create: [{ name: "Red" }]
-                    }
-                }]){
-                    id
-                }
-            }
-        `;
+               mutation {
+                   updatePosts(
+                        where: { id: "${postId}" },
+                        update: {
+                            user: {
+                                update: {
+                                    name: "${newName}"        
+                                }
+                            }
+                        }
+                   ) {
+                       id
+                       user {
+                           id
+                           name
+                       }
+                   }
+               }
+            `;
 
         try {
+            await session.run(
+                `
+                   CREATE (u:User {id: $userId, name: $initialName})
+                   CREATE (p:Post {id: $postId})
+                   MERGE (u)-[:HAS_POST]->(p)
+                `,
+                { postId, userId, initialName }
+            );
+
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
             req.headers.authorization = `Bearer ${token}`;
@@ -507,70 +917,13 @@ describe("auth", () => {
                 contextValue: { driver, req },
             });
 
-            expect(gqlResult.errors).toEqual(undefined);
-
-            expect((gqlResult.data as any).createProducts[0].id).toEqual(id);
-        } finally {
-            await session.close();
-        }
-    });
-
-    test("should allow users with correct role to nest mutations", async () => {
-        const session = driver.session();
-
-        const typeDefs = `
-            type Product @auth(rules: [{
-                roles: ["admin"],
-                operations: ["create"]
-            }]) {
-                id: ID
-                name: String
-                colors: [Color] @relationship(type: "OF_COLOR", direction: "OUT")
-            }
-
-            type Color @auth(rules: [{
-                roles: ["admin"],
-                operations: ["create"]
-            }]) {
-                name: String
-            }
-        `;
-
-        const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.JWT_SECRET);
-
-        const neoSchema = makeAugmentedSchema({ typeDefs });
-
-        const id = generate({
-            charset: "alphabetic",
-        });
-
-        const query = `
-            mutation {
-                createProducts(input:[{
-                    id: "${id}", 
-                    colors: {
-                        create: [{ name: "Red" }]
-                    }
-                }]){
-                    id
-                }
-            }
-        `;
-
-        try {
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
-            const gqlResult = await graphql({
-                schema: neoSchema.schema,
-                source: query as string,
-                contextValue: { driver, req },
+            expect(((gqlResult.data as any).updatePosts as any[])[0]).toMatchObject({
+                id: postId,
+                user: {
+                    id: userId,
+                    name: newName,
+                },
             });
-
-            expect(gqlResult.errors).toEqual(undefined);
-
-            expect((gqlResult.data as any).createProducts[0].id).toEqual(id);
         } finally {
             await session.close();
         }

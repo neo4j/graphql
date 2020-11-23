@@ -1,11 +1,11 @@
 import { describe, test, expect } from "@jest/globals";
-import Auth from "../../../src/classes/Auth";
+import Context from "../../../src/classes/Context";
 
-describe("Auth", () => {
+describe("Context", () => {
     test("should construct", () => {
         const input = {};
 
         // @ts-ignore
-        expect(new Auth(input)).toMatchObject({});
+        expect(new Context(input)).toMatchObject({});
     });
 });

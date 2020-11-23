@@ -13,6 +13,10 @@ type Product @auth(rules: [
     {
         operations: ["delete"],
         allow: { id: "delete_id" }
+    },
+    {
+        operations: ["update"],
+        allow: { id: "update_id" }
     }
 ]) {
     id: ID
@@ -148,6 +152,47 @@ DETACH DELETE this
 ```jwt
 {
     "delete_id": "super_admin_delete_id"
+}
+```
+
+---
+
+### Simple Auth Update
+
+**GraphQL input**
+
+```graphql
+mutation {
+  updateProducts(where: {id: "123"}, update: {name: "Pringles"}) {
+    name
+  }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Product) 
+WHERE this.id = $this_id 
+CALL apoc.util.validate(NOT(this.id = $this_auth0_id), "Forbidden", [0]) 
+SET this.name = $this_update_name 
+RETURN this { .name } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "123",
+    "this_auth0_id": "super_admin_update_id",
+    "this_update_name": "Pringles"
+}
+```
+
+**JWT Object**
+```jwt
+{
+    "update_id": "super_admin_update_id"
 }
 ```
 

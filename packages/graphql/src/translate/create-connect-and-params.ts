@@ -1,4 +1,4 @@
-import { NeoSchema, Node } from "../classes";
+import { Context, Node } from "../classes";
 import { RelationField } from "../types";
 import createWhereAndParams from "./create-where-and-params";
 
@@ -14,14 +14,14 @@ function createConnectAndParams({
     relationField,
     parentVar,
     refNode,
-    neoSchema,
+    context,
 }: {
     withVars: string[];
     value: any;
     varName: string;
     relationField: RelationField;
     parentVar: string;
-    neoSchema: NeoSchema;
+    context: Context;
     refNode: Node;
 }): [string, any] {
     function reducer(res: Res, connect: any, index): Res {
@@ -32,6 +32,7 @@ function createConnectAndParams({
 
         res.connects.push(`WITH ${withVars.join(", ")}`);
         res.connects.push(`OPTIONAL MATCH (${_varName}:${relationField.typeMeta.name})`);
+
         if (connect.where) {
             const where = createWhereAndParams({ varName: _varName, whereInput: connect.where });
             res.connects.push(where[0]);
@@ -59,8 +60,8 @@ function createConnectAndParams({
                             varName: `${_varName}_${k}`,
                             relationField: relField,
                             parentVar: _varName,
-                            neoSchema,
-                            refNode: neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node,
+                            context,
+                            refNode: context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node,
                         });
                         r.connects.push(recurse[0]);
                         r.params = { ...r.params, ...recurse[1] };
