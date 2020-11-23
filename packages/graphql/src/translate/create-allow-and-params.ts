@@ -1,22 +1,20 @@
-import { AuthRule, NeoSchema, Node } from "../classes";
+import { AuthRule, Context, Node } from "../classes";
 
 interface Res {
-    authPredicates: string[];
+    allows: string[];
     params: any;
 }
 
-function createAuthAndParams({
+function createAllowAndParams({
     rules,
-    jwt,
     varName,
     node,
     chainStr,
-    neoSchema,
+    context,
 }: {
     rules: AuthRule[];
-    jwt: any;
     node: Node;
-    neoSchema: NeoSchema;
+    context: Context;
     varName: string;
     chainStr?: string;
 }): [string, any] {
@@ -40,13 +38,12 @@ function createAuthAndParams({
                         const inner: string[] = [];
 
                         ((value as unknown) as any[]).forEach((v, i) => {
-                            const recurse = createAuthAndParams({
+                            const recurse = createAllowAndParams({
                                 rules: [{ allow: v }],
-                                jwt,
                                 varName,
                                 node,
                                 chainStr: `${param}_${key}${i}`,
-                                neoSchema,
+                                context,
                             });
 
                             inner.push(
@@ -57,20 +54,22 @@ function createAuthAndParams({
                             res.params = { ...res.params, ...recurse[1] };
                         });
 
-                        res.authPredicates.push(`(${inner.join(` ${key} `)})`);
+                        res.allows.push(`(${inner.join(` ${key} `)})`);
                     }
                     break;
 
                 default: {
                     if (typeof value === "string") {
                         const _param = `${param}_${key}`;
-                        res.authPredicates.push(`${varName}.${key} = $${_param}`);
-                        res.params[_param] = jwt[value];
+                        res.allows.push(`${varName}.${key} = $${_param}`);
+                        res.params[_param] = context.getJWT()[value];
                     }
 
                     const relationField = node.relationFields.find((x) => key === x.fieldName);
                     if (relationField) {
-                        const refNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+                        const refNode = context.neoSchema.nodes.find(
+                            (x) => x.name === relationField.typeMeta.name
+                        ) as Node;
 
                         const inStr = relationField.direction === "IN" ? "<-" : "-";
                         const outStr = relationField.direction === "OUT" ? "->" : "-";
@@ -83,12 +82,11 @@ function createAuthAndParams({
                         ].join(" ");
 
                         Object.entries(value as any).forEach(([k, v]: [string, any]) => {
-                            const recurse = createAuthAndParams({
+                            const recurse = createAllowAndParams({
                                 node: refNode,
-                                neoSchema,
+                                context,
                                 chainStr: `${param}_${key}`,
                                 varName: relationVarName,
-                                jwt,
                                 rules: [{ allow: { [k]: v } }],
                             });
 
@@ -98,7 +96,7 @@ function createAuthAndParams({
 
                             resultStr += ")"; // close ALL
                             res.params = { ...res.params, ...recurse[1] };
-                            res.authPredicates.push(resultStr);
+                            res.allows.push(resultStr);
                         });
                     }
                 }
@@ -108,16 +106,14 @@ function createAuthAndParams({
         return res;
     }
 
-    const { authPredicates, params } = rules.reduce((res: Res, value, i) => reducer(res, value.allow as any, i), {
-        authPredicates: [],
+    const { allows, params } = rules.reduce((res: Res, value, i) => reducer(res, value.allow as any, i), {
+        allows: [],
         params: {},
     }) as Res;
 
-    const authStr = authPredicates.length
-        ? `CALL apoc.util.validate(NOT(${authPredicates.join(" AND ")}), "Forbidden", [0])`
-        : "";
+    const allow = allows.length ? `CALL apoc.util.validate(NOT(${allows.join(" AND ")}), "Forbidden", [0])` : "";
 
-    return [authStr, params];
+    return [allow, params];
 }
 
-export default createAuthAndParams;
+export default createAllowAndParams;

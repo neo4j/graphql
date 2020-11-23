@@ -1,5 +1,5 @@
 import { FieldsByTypeName } from "graphql-parse-resolve-info";
-import { NeoSchema, Node } from "../classes";
+import { Context, Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLWhereArg } from "../types";
 
@@ -11,13 +11,13 @@ interface Res {
 function createProjectionAndParams({
     fieldsByTypeName,
     node,
-    neoSchema,
+    context,
     chainStr,
     varName,
 }: {
     fieldsByTypeName: FieldsByTypeName;
     node: Node;
-    neoSchema: NeoSchema;
+    context: Context;
     chainStr?: string;
     varName: string;
 }): [string, any] {
@@ -37,12 +37,12 @@ function createProjectionAndParams({
         if (cypherField) {
             let projectionStr = "";
 
-            const referenceNode = neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
+            const referenceNode = context.neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
             if (referenceNode) {
                 const recurse = createProjectionAndParams({
                     fieldsByTypeName: fieldFields,
                     node: referenceNode || node,
-                    neoSchema,
+                    context,
                     varName: `${varName}_${key}`,
                     chainStr: param,
                 });
@@ -82,7 +82,7 @@ function createProjectionAndParams({
 
         const relationField = node.relationFields.find((x) => x.fieldName === key);
         if (relationField) {
-            const referenceNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const relType = relationField.type;
             const relDirection = relationField.direction;
             const isArray = relationField.typeMeta.array;
@@ -102,7 +102,7 @@ function createProjectionAndParams({
             const recurse = createProjectionAndParams({
                 fieldsByTypeName: fieldFields,
                 node: referenceNode || node,
-                neoSchema,
+                context,
                 varName: `${varName}_${key}`,
                 chainStr: param,
             });

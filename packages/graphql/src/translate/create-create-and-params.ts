@@ -1,6 +1,6 @@
-import { NeoSchema, Node } from "../classes";
+import { Context, Node } from "../classes";
 import createConnectAndParams from "./create-connect-and-params";
-import { getRoles } from "../auth";
+import { checkRoles } from "../auth";
 
 interface Res {
     creates: string[];
@@ -11,51 +11,25 @@ function createCreateAndParams({
     input,
     varName,
     node,
-    neoSchema,
+    context,
     withVars,
-    jwt,
 }: {
     input: any;
     varName: string;
     node: Node;
-    neoSchema: NeoSchema;
+    context: Context;
     withVars: string[];
-    jwt: any;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const _varName = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => x.fieldName === key);
 
         if (relationField) {
-            const refNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
             if (value.create) {
-                let jwtRoles: string[];
-
                 if (refNode.auth) {
-                    const createRules = refNode.auth.rules.filter((x) => x.operations?.includes("create"));
-
-                    if (!createRules.length) {
-                        throw new Error("Forbidden");
-                    }
-
-                    const allowStar = createRules.filter((x) => x.allow && x.allow === "*");
-
-                    if (!allowStar.length) {
-                        createRules
-                            .filter((x) => x.isAuthenticated !== false && x.roles)
-                            .forEach((rule) => {
-                                ((rule.roles as unknown) as string[]).forEach((role) => {
-                                    if (!jwtRoles) {
-                                        jwtRoles = getRoles(jwt);
-                                    }
-
-                                    if (!jwtRoles.includes(role)) {
-                                        throw new Error("Forbidden");
-                                    }
-                                });
-                            });
-                    }
+                    checkRoles({ node: refNode, context, operation: "create" });
                 }
 
                 const creates = relationField.typeMeta.array ? value.create : [value.create];
@@ -65,11 +39,10 @@ function createCreateAndParams({
 
                     const recurse = createCreateAndParams({
                         input: create,
-                        neoSchema,
+                        context,
                         node: refNode,
                         varName: innerVarName,
                         withVars: [...withVars, innerVarName],
-                        jwt,
                     });
                     res.creates.push(recurse[0]);
                     res.params = { ...res.params, ...recurse[1] };
@@ -88,7 +61,7 @@ function createCreateAndParams({
                     varName: `${_varName}_connect`,
                     parentVar: varName,
                     relationField,
-                    neoSchema,
+                    context,
                     refNode,
                 });
                 res.creates.push(connectAndParams[0]);

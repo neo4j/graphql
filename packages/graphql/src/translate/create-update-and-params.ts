@@ -1,8 +1,10 @@
-import { Node, NeoSchema } from "../classes";
+import { Node, Context } from "../classes";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createWhereAndParams from "./create-where-and-params";
 import createCreateAndParams from "./create-create-and-params";
+import createAllowAndParams from "./create-allow-and-params";
+import { checkRoles } from "../auth";
 
 interface Res {
     strs: string[];
@@ -13,20 +15,20 @@ function createUpdateAndParams({
     updateInput,
     varName,
     node,
-    neoSchema,
     parentVar,
     chainStr,
     insideDoWhen,
     withVars,
+    context,
 }: {
     parentVar: string;
     updateInput: any;
     varName: string;
     chainStr?: string;
     node: Node;
-    neoSchema: NeoSchema;
     withVars: string[];
     insideDoWhen?: boolean;
+    context: Context;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]) {
         let param;
@@ -39,12 +41,17 @@ function createUpdateAndParams({
 
         const relationField = node.relationFields.find((x) => x.fieldName === key);
         if (relationField) {
-            const updates = relationField.typeMeta.array ? value : [value];
-            const refNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+
+            if (refNode.auth) {
+                checkRoles({ node: refNode, context, operation: "update" });
+            }
+
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const outStr = relationField.direction === "OUT" ? "->" : "-";
             const relTypeStr = `[:${relationField.type}]`;
 
+            const updates = relationField.typeMeta.array ? value : [value];
             updates.forEach((update, index) => {
                 const _varName = `${varName}_${key}${index}`;
 
@@ -56,6 +63,15 @@ function createUpdateAndParams({
                     res.strs.push(
                         `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${refNode.name})`
                     );
+
+                    const allowAndParams = createAllowAndParams({
+                        rules: (refNode?.auth?.rules || []).filter((r) => r.operations?.includes("update") && r.allow),
+                        node: refNode,
+                        context,
+                        varName: _varName,
+                    });
+                    res.strs.push(allowAndParams[0]);
+                    res.params = { ...res.params, ...allowAndParams[1] };
 
                     if (update.where) {
                         const whereAndParams = createWhereAndParams({
@@ -69,7 +85,7 @@ function createUpdateAndParams({
                     res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
 
                     const updateAndParams = createUpdateAndParams({
-                        neoSchema,
+                        context,
                         node: refNode,
                         updateInput: update.update,
                         varName: _varName,
@@ -100,7 +116,7 @@ function createUpdateAndParams({
 
                 if (update.connect) {
                     const connectAndParams = createConnectAndParams({
-                        neoSchema,
+                        context,
                         refNode,
                         value: update.connect,
                         varName: `${_varName}_connect`,
@@ -122,7 +138,7 @@ function createUpdateAndParams({
                         const innerVarName = `${_varName}_create${i}`;
 
                         const createAndParams = createCreateAndParams({
-                            neoSchema,
+                            context,
                             node: refNode,
                             input: create,
                             varName: innerVarName,
@@ -137,7 +153,7 @@ function createUpdateAndParams({
 
                 if (update.disconnect) {
                     const disconnectAndParams = createDisconnectAndParams({
-                        neoSchema,
+                        context,
                         refNode,
                         value: update.disconnect,
                         varName: `${_varName}_disconnect`,
