@@ -14,6 +14,7 @@ type Movie {
     id: ID
     title: String
     actors: [Actor] @relationship(type: "ACTED_IN", direction: "IN")
+    isFavorite: Boolean
 }
 ```
 
@@ -24,11 +25,15 @@ type Movie {
 **GraphQL input**
 
 ```graphql
-{
-    Movies(where: {title: "some title"}) {
+query($title: String, $isFavorite: Boolean) {
+    Movies(where: { title: $title, isFavorite: $isFavorite }) {
         title
     }
 }
+```
+
+```graphql-params
+{ "title": "some title", "isFavorite": true }
 ```
 
 **Expected Cypher output**
@@ -36,6 +41,7 @@ type Movie {
 ```cypher
 MATCH (this:Movie)
 WHERE this.title = $this_title
+AND this.isFavorite = $this_isFavorite
 RETURN this { .title } as this
 ```
 
@@ -43,7 +49,8 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this_title": "some title"
+    "this_title": "some title",
+    "this_isFavorite": true
 }
 ```
 
@@ -55,7 +62,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: {AND: [{title: "some title"}]}) {
+    Movies(where: { AND: [{ title: "some title" }] }) {
         title
     }
 }
@@ -64,8 +71,8 @@ RETURN this { .title } as this
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
-WHERE (this.title = $this_AND_title) 
+MATCH (this:Movie)
+WHERE (this.title = $this_AND_title)
 RETURN this { .title } as this
 ```
 
@@ -85,7 +92,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: {AND: [{AND: [{title: "some title"}]}]}) {
+    Movies(where: { AND: [{ AND: [{ title: "some title" }] }] }) {
         title
     }
 }
@@ -94,8 +101,8 @@ RETURN this { .title } as this
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
-WHERE ((this.title = $this_AND_AND_title)) 
+MATCH (this:Movie)
+WHERE ((this.title = $this_AND_AND_title))
 RETURN this { .title } as this
 ```
 
@@ -115,7 +122,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: {AND: [{AND: [{AND: [{title: "some title"}]}]}]}) {
+    Movies(where: { AND: [{ AND: [{ AND: [{ title: "some title" }] }] }] }) {
         title
     }
 }
@@ -124,7 +131,7 @@ RETURN this { .title } as this
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 WHERE (((this.title = $this_AND_AND_AND_title)))
 RETURN this { .title } as this
 ```
@@ -145,7 +152,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: {OR: [{title: "some title"}]}) {
+    Movies(where: { OR: [{ title: "some title" }] }) {
         title
     }
 }
@@ -154,8 +161,8 @@ RETURN this { .title } as this
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
-WHERE (this.title = $this_OR_title) 
+MATCH (this:Movie)
+WHERE (this.title = $this_OR_title)
 RETURN this { .title } as this
 ```
 
@@ -175,7 +182,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: {OR: [{OR: [{title: "some title"}]}]}) {
+    Movies(where: { OR: [{ OR: [{ title: "some title" }] }] }) {
         title
     }
 }
@@ -184,8 +191,8 @@ RETURN this { .title } as this
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
-WHERE ((this.title = $this_OR_OR_title)) 
+MATCH (this:Movie)
+WHERE ((this.title = $this_OR_OR_title))
 RETURN this { .title } as this
 ```
 
@@ -205,7 +212,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: {OR: [{OR: [{OR: [{title: "some title"}]}]}]}) {
+    Movies(where: { OR: [{ OR: [{ OR: [{ title: "some title" }] }] }] }) {
         title
     }
 }
@@ -214,7 +221,7 @@ RETURN this { .title } as this
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 WHERE (((this.title = $this_OR_OR_OR_title)))
 RETURN this { .title } as this
 ```
@@ -235,7 +242,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: {title_IN: ["some title"]}) {
+    Movies(where: { title_IN: ["some title"] }) {
         title
     }
 }
