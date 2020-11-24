@@ -11,12 +11,14 @@ function createAllowAndParams({
     node,
     chainStr,
     context,
+    functionType,
 }: {
     rules: AuthRule[];
     node: Node;
     context: Context;
     varName: string;
     chainStr?: string;
+    functionType?: boolean;
 }): [string, any] {
     function reducer(res: Res, ruleValue: any, index: number): Res {
         let param = "";
@@ -112,6 +114,10 @@ function createAllowAndParams({
     }) as Res;
 
     const allow = allows.length ? `CALL apoc.util.validate(NOT(${allows.join(" AND ")}), "Forbidden", [0])` : "";
+
+    if (functionType) {
+        return [allow.replace(/CALL/g, "").replace(/apoc.util.validate/g, "apoc.util.validatePredicate"), params];
+    }
 
     return [allow, params];
 }

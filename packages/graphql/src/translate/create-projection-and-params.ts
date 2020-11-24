@@ -2,6 +2,8 @@ import { FieldsByTypeName } from "graphql-parse-resolve-info";
 import { Context, Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLWhereArg } from "../types";
+import { checkRoles } from "../auth";
+import createAllowAndParams from "./create-allow-and-params";
 
 interface Res {
     projection: string[];
@@ -87,8 +89,13 @@ function createProjectionAndParams({
             const relDirection = relationField.direction;
             const isArray = relationField.typeMeta.array;
 
+            if (referenceNode.auth) {
+                checkRoles({ node: referenceNode, context, operation: "read" });
+            }
+
             let whereStr = "";
             let projectionStr = "";
+            let authStr = "";
 
             if (whereInput) {
                 const where = createWhereAndParams({
@@ -97,6 +104,18 @@ function createProjectionAndParams({
                 });
                 whereStr = where[0];
                 res.params = { ...res.params, ...where[1] };
+            }
+
+            if (referenceNode.auth) {
+                const allowAndParams = createAllowAndParams({
+                    rules: (referenceNode?.auth?.rules || []).filter((r) => r.operations?.includes("read") && r.allow),
+                    node: referenceNode,
+                    context,
+                    varName: `${varName}_${key}`,
+                    functionType: true,
+                });
+                authStr = allowAndParams[0];
+                res.params = { ...res.params, ...allowAndParams[1] };
             }
 
             const recurse = createProjectionAndParams({
@@ -115,7 +134,9 @@ function createProjectionAndParams({
             const outStr = relDirection === "OUT" ? "->" : "-";
             const nodeOutStr = `(${param}:${referenceNode?.name})`;
             const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
-            const innerStr = `${pathStr} ${whereStr} | ${param} ${projectionStr}`;
+            const innerStr = `${pathStr} ${whereStr} ${
+                authStr ? `${!whereStr ? "WHERE " : ""} ${whereStr ? "AND " : ""} ${authStr}` : ""
+            } | ${param} ${projectionStr}`;
 
             let nestedQuery;
 

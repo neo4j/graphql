@@ -40,7 +40,10 @@ async function execute(input: {
 
         return deserialize(result.records.map((r) => r.toObject()));
     } catch (error) {
-        if (error.message.includes("Failed to invoke procedure `apoc.util.validate")) {
+        if (
+            error.message.includes("Failed to invoke procedure `apoc.util.validate`") ||
+            error.message.includes("Failed to invoke function `apoc.util.validatePredicate`")
+        ) {
             throw new Error("Forbidden");
         }
 
