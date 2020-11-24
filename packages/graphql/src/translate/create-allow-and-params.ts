@@ -64,7 +64,14 @@ function createAllowAndParams({
                     if (typeof value === "string") {
                         const _param = `${param}_${key}`;
                         res.allows.push(`${varName}.${key} = $${_param}`);
-                        res.params[_param] = context.getJWT()[value];
+
+                        const jwt = context.getJWT();
+
+                        if (!jwt) {
+                            throw new Error("Unauthorized");
+                        }
+
+                        res.params[_param] = jwt[value];
                     }
 
                     const relationField = node.relationFields.find((x) => key === x.fieldName);
