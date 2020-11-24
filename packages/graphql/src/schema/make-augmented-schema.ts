@@ -43,7 +43,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         const authDirective = definition.directives?.find((x) => x.name.value === "auth");
         let auth: Auth;
         if (authDirective) {
-            // todo
             auth = getAuth(authDirective);
         }
 
