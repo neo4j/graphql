@@ -97,9 +97,9 @@ function translateRead({
         whereStr,
         allowAndParams[0],
         `RETURN ${varName} ${projStr} as ${varName}`,
-        `${sortStr}`,
-        `${skipStr}`,
-        `${limitStr}`,
+        sortStr,
+        skipStr,
+        limitStr,
     ];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
