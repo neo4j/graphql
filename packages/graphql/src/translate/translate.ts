@@ -29,6 +29,7 @@ function translateRead({
 
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
+    let authStr = "";
     let skipStr = "";
     let limitStr = "";
     let sortStr = "";
@@ -51,6 +52,19 @@ function translateRead({
         });
         whereStr = where[0];
         cypherParams = { ...cypherParams, ...where[1] };
+    }
+
+    if (node.auth) {
+        const allowAndParams = createAllowAndParams({
+            rules: (node.auth.rules || []).filter(
+                (r) => r.operations?.includes("read") && r.allow && r.isAuthenticated !== false
+            ),
+            node,
+            context,
+            varName,
+        });
+        cypherParams = { ...cypherParams, ...allowAndParams[1] };
+        authStr = allowAndParams[0];
     }
 
     if (optionsInput) {
@@ -84,18 +98,10 @@ function translateRead({
         }
     }
 
-    const allowAndParams = createAllowAndParams({
-        rules: (node?.auth?.rules || []).filter((r) => r.operations?.includes("read") && r.allow),
-        node,
-        context,
-        varName,
-    });
-    cypherParams = { ...cypherParams, ...allowAndParams[1] };
-
     const cypher = [
         matchStr,
         whereStr,
-        allowAndParams[0],
+        authStr,
         `RETURN ${varName} ${projStr} as ${varName}`,
         sortStr,
         skipStr,
@@ -188,6 +194,7 @@ function translateUpdate({
 
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
+    let authStr = "";
     let updateStr = "";
     let connectStr = "";
     let disconnectStr = "";
@@ -202,6 +209,19 @@ function translateUpdate({
         });
         whereStr = where[0];
         cypherParams = { ...cypherParams, ...where[1] };
+    }
+
+    if (node.auth) {
+        const allowAndParams = createAllowAndParams({
+            rules: (node.auth.rules || []).filter(
+                (r) => r.operations?.includes("update") && r.allow && r.isAuthenticated !== false
+            ),
+            node,
+            context,
+            varName,
+        });
+        cypherParams = { ...cypherParams, ...allowAndParams[1] };
+        authStr = allowAndParams[0];
     }
 
     if (updateInput) {
@@ -290,18 +310,10 @@ function translateUpdate({
     projStr = projection[0];
     cypherParams = { ...cypherParams, ...projection[1] };
 
-    const allowAndParams = createAllowAndParams({
-        rules: (node?.auth?.rules || []).filter((r) => r.operations?.includes("update") && r.allow),
-        node,
-        context,
-        varName,
-    });
-    cypherParams = { ...cypherParams, ...allowAndParams[1] };
-
     const cypher = [
         matchStr,
         whereStr,
-        allowAndParams[0],
+        authStr,
         updateStr,
         connectStr,
         disconnectStr,
@@ -326,6 +338,7 @@ function translateDelete({
 
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
+    let authStr = "";
     let cypherParams: { [k: string]: any } = {};
 
     if (whereInput) {
@@ -337,15 +350,20 @@ function translateDelete({
         cypherParams = { ...cypherParams, ...where[1] };
     }
 
-    const allowAndParams = createAllowAndParams({
-        rules: (node?.auth?.rules || []).filter((r) => r.operations?.includes("delete") && r.allow),
-        node,
-        context,
-        varName,
-    });
-    cypherParams = { ...cypherParams, ...allowAndParams[1] };
+    if (node.auth) {
+        const allowAndParams = createAllowAndParams({
+            rules: (node.auth.rules || []).filter(
+                (r) => r.operations?.includes("delete") && r.allow && r.isAuthenticated !== false
+            ),
+            node,
+            context,
+            varName,
+        });
+        cypherParams = { ...cypherParams, ...allowAndParams[1] };
+        authStr = allowAndParams[0];
+    }
 
-    const cypher = [matchStr, whereStr, allowAndParams[0], `DETACH DELETE ${varName}`];
+    const cypher = [matchStr, whereStr, authStr, `DETACH DELETE ${varName}`];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
 }
