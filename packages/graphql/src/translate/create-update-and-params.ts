@@ -64,15 +64,6 @@ function createUpdateAndParams({
                         `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${refNode.name})`
                     );
 
-                    const allowAndParams = createAllowAndParams({
-                        rules: (refNode?.auth?.rules || []).filter((r) => r.operations?.includes("update") && r.allow),
-                        node: refNode,
-                        context,
-                        varName: _varName,
-                    });
-                    res.strs.push(allowAndParams[0]);
-                    res.params = { ...res.params, ...allowAndParams[1] };
-
                     if (update.where) {
                         const whereAndParams = createWhereAndParams({
                             varName: _varName,
@@ -83,6 +74,22 @@ function createUpdateAndParams({
                     }
 
                     res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
+
+                    let innerApocParams = {};
+
+                    if (refNode.auth) {
+                        const allowAndParams = createAllowAndParams({
+                            rules: (refNode?.auth?.rules || []).filter(
+                                (r) => r.operations?.includes("update") && r.allow && r.isAuthenticated !== false
+                            ),
+                            node: refNode,
+                            context,
+                            varName: _varName,
+                        });
+                        res.strs.push(allowAndParams[0].replace(/"/g, '\\"'));
+                        res.params = { ...res.params, ...allowAndParams[1] };
+                        innerApocParams = { ...innerApocParams, ...allowAndParams[1] };
+                    }
 
                     const updateAndParams = createUpdateAndParams({
                         context,
@@ -95,6 +102,7 @@ function createUpdateAndParams({
                         insideDoWhen: true,
                     });
                     res.params = { ...res.params, ...updateAndParams[1] };
+                    innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
 
                     const updateStrs = [updateAndParams[0], "RETURN count(*)"];
                     const apocArgs = `{${parentVar}:${parentVar}, ${_varName}:${_varName}REPLACE_ME}`;
@@ -106,10 +114,11 @@ function createUpdateAndParams({
                     }
                     updateStrs.push("YIELD value as _");
 
-                    const paramsString = (Object.keys(updateAndParams[1]).reduce(
+                    const paramsString = (Object.keys(innerApocParams).reduce(
                         (r: string[], k) => [...r, `${k}:$${k}`],
                         []
                     ) as string[]).join(",");
+
                     const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
                     res.strs.push(updateStr);
                 }

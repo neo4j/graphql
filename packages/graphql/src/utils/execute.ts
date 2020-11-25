@@ -40,10 +40,7 @@ async function execute(input: {
 
         return deserialize(result.records.map((r) => r.toObject()));
     } catch (error) {
-        if (
-            error.message.includes("Failed to invoke procedure `apoc.util.validate`") ||
-            error.message.includes("Failed to invoke function `apoc.util.validatePredicate`")
-        ) {
+        if (error.message.includes("Caused by: java.lang.RuntimeException: Forbidden")) {
             throw new Error("Forbidden");
         }
 

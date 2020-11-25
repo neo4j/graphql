@@ -108,7 +108,9 @@ function createProjectionAndParams({
 
             if (referenceNode.auth) {
                 const allowAndParams = createAllowAndParams({
-                    rules: (referenceNode?.auth?.rules || []).filter((r) => r.operations?.includes("read") && r.allow),
+                    rules: (referenceNode?.auth?.rules || []).filter(
+                        (r) => r.operations?.includes("read") && r.allow && r.isAuthenticated !== false
+                    ),
                     node: referenceNode,
                     context,
                     varName: `${varName}_${key}`,
