@@ -62,7 +62,7 @@ WHERE this.id = $this_id
 
 RETURN this { 
     .name, 
-    posts: [ (this)-[:HAS_POST]->(this_posts:Post) WHERE apoc.util.validatePredicate(NOT((EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id = $this_posts_auth0_OR0_creator_id) OR EXISTS((this_posts)-[:OF_GROUP]->(:Group)) AND ALL(group IN [(this_posts)-[:OF_GROUP]->(group:Group) | group] WHERE EXISTS((group)<-[:OF_GROUP]-(:User)) AND ALL(users IN [(group)<-[:OF_GROUP]-(users:User) | users] WHERE users.id = $this_posts_auth0_OR1_group_users_id)))), "Forbidden", [0]) | this_posts { .title } ] 
+    posts: [ (this)-[:HAS_POST]->(this_posts:Post) WHERE apoc.util.validatePredicate(NOT((EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id = $this_posts_auth0_OR0_creator_id) OR EXISTS((this_posts)-[:OF_GROUP]->(:Group)) AND ANY(group IN [(this_posts)-[:OF_GROUP]->(group:Group) | group] WHERE EXISTS((group)<-[:OF_GROUP]-(:User)) AND ANY(users IN [(group)<-[:OF_GROUP]-(users:User) | users] WHERE users.id = $this_posts_auth0_OR1_group_users_id)))), "Forbidden", [0]) | this_posts { .title } ] 
 } as this
 ```
 

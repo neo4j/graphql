@@ -87,7 +87,7 @@ function createAllowAndParams({
 
                         let resultStr = [
                             `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
-                            `AND ALL(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}:${relationField.typeMeta.name}) | ${relationVarName}] WHERE `,
+                            `AND ANY(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}:${relationField.typeMeta.name}) | ${relationVarName}] WHERE `,
                         ].join(" ");
 
                         Object.entries(value as any).forEach(([k, v]: [string, any]) => {
