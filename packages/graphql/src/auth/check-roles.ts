@@ -1,14 +1,7 @@
 import { Node, Context } from "../classes";
+import { AuthOperations } from "../types";
 
-function checkRoles({
-    node,
-    context,
-    operation,
-}: {
-    node: Node;
-    context: Context;
-    operation: "create" | "read" | "update" | "delete";
-}) {
+function checkRoles({ node, context, operation }: { node: Node; context: Context; operation: AuthOperations }) {
     if (!node.auth) {
         return;
     }

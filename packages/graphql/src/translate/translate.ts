@@ -6,7 +6,7 @@ import { NeoSchema, Node, Context } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { GraphQLWhereArg, GraphQLOptionsArg, RelationField } from "../types";
+import { GraphQLWhereArg, GraphQLOptionsArg, RelationField, AuthOperations } from "../types";
 import { checkRoles } from "../auth";
 import createAllowAndParams from "./create-allow-and-params";
 import createUpdateAndParams from "./create-update-and-params";
@@ -390,7 +390,7 @@ function translate({
     const operationType = resolveInfo.operation.operation;
     const operationName = resolveInfo.fieldName;
 
-    let operation: "create" | "read" | "delete" | "update" = "read";
+    let operation: AuthOperations = "read";
     let node: Node | undefined;
 
     if (operationType === "mutation") {

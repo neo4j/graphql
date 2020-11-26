@@ -28,10 +28,6 @@ function createCreateAndParams({
             const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
             if (value.create) {
-                if (refNode.auth) {
-                    checkRoles({ node: refNode, context, operation: "create" });
-                }
-
                 const creates = relationField.typeMeta.array ? value.create : [value.create];
                 creates.forEach((create, index) => {
                     const innerVarName = `${_varName}${index}`;
@@ -76,6 +72,8 @@ function createCreateAndParams({
 
         return res;
     }
+
+    checkRoles({ node, context, operation: "create" });
 
     const { creates, params } = Object.entries(input).reduce(reducer, {
         creates: [`CREATE (${varName}:${node.name})`],
