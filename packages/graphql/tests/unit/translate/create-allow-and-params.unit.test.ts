@@ -6,7 +6,7 @@ describe("createAllowAndParams", () => {
     test("should return the correct auth and params", () => {
         const auth: Auth = {
             type: "JWT",
-            rules: [{ allow: { id: "sub" } }],
+            rules: [{ allow: { id: "sub" }, operations: ["create"] }],
         };
 
         // @ts-ignore
@@ -42,8 +42,8 @@ describe("createAllowAndParams", () => {
         const [str, params] = createAllowAndParams({
             context,
             node,
-            rules: auth.rules,
             varName: "this",
+            operation: "create",
         });
 
         expect(str).toEqual(`CALL apoc.util.validate(NOT(this.id = $this_auth0_id), "Forbidden", [0])`);
