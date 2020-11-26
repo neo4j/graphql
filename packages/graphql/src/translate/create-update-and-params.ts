@@ -74,9 +74,7 @@ function createUpdateAndParams({
 
                     if (refNode.auth) {
                         const allowAndParams = createAllowAndParams({
-                            rules: (refNode?.auth?.rules || []).filter(
-                                (r) => r.operations?.includes("update") && r.allow && r.isAuthenticated !== false
-                            ),
+                            operation: "update",
                             node: refNode,
                             context,
                             varName: _varName,

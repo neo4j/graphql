@@ -1,4 +1,5 @@
 import { AuthRule, Context, Node } from "../classes";
+import { AuthOperations } from "../types";
 
 interface Res {
     allows: string[];
@@ -6,30 +7,36 @@ interface Res {
 }
 
 function createAllowAndParams({
-    rules,
     varName,
     node,
     chainStr,
     context,
     functionType,
+    recurseArray,
+    operation,
 }: {
-    rules: AuthRule[];
     node: Node;
     context: Context;
     varName: string;
     chainStr?: string;
     functionType?: boolean;
+    recurseArray?: AuthRule[];
+    operation: AuthOperations;
 }): [string, any] {
+    const rules = (node?.auth?.rules || []).filter(
+        (r) => r.operations?.includes(operation) && r.allow && r.isAuthenticated !== false
+    );
+
+    if (rules.filter((x) => x.allow === "*").length) {
+        return ["", {}];
+    }
+
     function reducer(res: Res, ruleValue: any, index: number): Res {
         let param = "";
         if (chainStr) {
             param = chainStr;
         } else {
             param = `${varName}_auth${index}`;
-        }
-
-        if (rules.filter((x) => x.allow === "*").length) {
-            return res;
         }
 
         Object.entries(ruleValue).forEach(([key, value]) => {
@@ -41,11 +48,12 @@ function createAllowAndParams({
 
                         ((value as unknown) as any[]).forEach((v, i) => {
                             const recurse = createAllowAndParams({
-                                rules: [{ allow: v }],
+                                recurseArray: [{ allow: v }],
                                 varName,
                                 node,
                                 chainStr: `${param}_${key}${i}`,
                                 context,
+                                operation,
                             });
 
                             inner.push(
@@ -96,7 +104,8 @@ function createAllowAndParams({
                                 context,
                                 chainStr: `${param}_${key}`,
                                 varName: relationVarName,
-                                rules: [{ allow: { [k]: v } }],
+                                recurseArray: [{ allow: { [k]: v } }],
+                                operation,
                             });
 
                             resultStr += recurse[0]
@@ -115,10 +124,13 @@ function createAllowAndParams({
         return res;
     }
 
-    const { allows, params } = rules.reduce((res: Res, value, i) => reducer(res, value.allow as any, i), {
-        allows: [],
-        params: {},
-    }) as Res;
+    const { allows, params } = (recurseArray || rules).reduce(
+        (res: Res, value, i) => reducer(res, value.allow as any, i),
+        {
+            allows: [],
+            params: {},
+        }
+    ) as Res;
 
     const allow = allows.length ? `CALL apoc.util.validate(NOT(${allows.join(" AND ")}), "Forbidden", [0])` : "";
 

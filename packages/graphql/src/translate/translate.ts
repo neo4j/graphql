@@ -56,9 +56,7 @@ function translateRead({
 
     if (node.auth) {
         const allowAndParams = createAllowAndParams({
-            rules: (node.auth.rules || []).filter(
-                (r) => r.operations?.includes("read") && r.allow && r.isAuthenticated !== false
-            ),
+            operation: "read",
             node,
             context,
             varName,
@@ -213,9 +211,7 @@ function translateUpdate({
 
     if (node.auth) {
         const allowAndParams = createAllowAndParams({
-            rules: (node.auth.rules || []).filter(
-                (r) => r.operations?.includes("update") && r.allow && r.isAuthenticated !== false
-            ),
+            operation: "update",
             node,
             context,
             varName,
@@ -352,9 +348,7 @@ function translateDelete({
 
     if (node.auth) {
         const allowAndParams = createAllowAndParams({
-            rules: (node.auth.rules || []).filter(
-                (r) => r.operations?.includes("delete") && r.allow && r.isAuthenticated !== false
-            ),
+            operation: "delete",
             node,
             context,
             varName,
