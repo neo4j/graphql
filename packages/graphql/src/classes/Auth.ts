@@ -1,4 +1,4 @@
-export type AuthOperations = "create" | "read" | "update" | "delete";
+import { AuthOperations } from "../types";
 
 export type AuthRule = {
     isAuthenticated?: boolean;

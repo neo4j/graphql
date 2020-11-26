@@ -42,11 +42,6 @@ function createUpdateAndParams({
         const relationField = node.relationFields.find((x) => x.fieldName === key);
         if (relationField) {
             const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-
-            if (refNode.auth) {
-                checkRoles({ node: refNode, context, operation: "update" });
-            }
-
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const outStr = relationField.direction === "OUT" ? "->" : "-";
             const relTypeStr = `[:${relationField.type}]`;
@@ -155,7 +150,6 @@ function createUpdateAndParams({
                         });
                         res.strs.push(createAndParams[0]);
                         res.params = { ...res.params, ...createAndParams[1] };
-
                         res.strs.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${innerVarName})`);
                     });
                 }
@@ -177,6 +171,8 @@ function createUpdateAndParams({
 
             return res;
         }
+
+        checkRoles({ node, context, operation: "update" });
 
         res.strs.push(`SET ${varName}.${key} = $${param}`);
         res.params[param] = value;
