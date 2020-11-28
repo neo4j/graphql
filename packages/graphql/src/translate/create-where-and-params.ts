@@ -68,6 +68,11 @@ function createWhereAndParams({
                 res.params[param] = value;
                 break;
 
+            case "NOT_STARTS_WITH":
+                res.clauses.push(`(NOT ${varName}.${fieldName} STARTS WITH $${param})`);
+                res.params[param] = value;
+                break;
+
             default:
                 switch (fieldName) {
                     case "AND":
