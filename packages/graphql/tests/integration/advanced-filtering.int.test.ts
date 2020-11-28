@@ -267,7 +267,69 @@ describe("Advanced Filtering", () => {
             );
         });
 
-        test.todo("should find Movies NOT_CONTAINS string");
+        test("should find Movies NOT_CONTAINS string", async () => {
+            await Promise.all(
+                ["ID", "String"].map(async (type) => {
+                    const session = driver.session();
+
+                    const randomType = generate({
+                        charset: "alphabetic",
+                    });
+
+                    const pluralRandomType = pluralize(randomType);
+
+                    const typeDefs = `
+                        type ${randomType} {
+                            property: ${type}
+                        }
+                    `;
+
+                    const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                    const value = generate({
+                        charset: "alphabetic",
+                    });
+
+                    const notValue = generate({
+                        charset: "alphabetic",
+                    });
+
+                    try {
+                        await session.run(
+                            `
+                            CREATE (:${randomType} {property: $value})
+                            CREATE (:${randomType} {property: $notValue})
+                            CREATE (:${randomType} {property: $notValue})
+                        `,
+                            { value, notValue }
+                        );
+
+                        const query = `
+                            { 
+                                ${pluralRandomType}(where: { property_NOT_CONTAINS: "${notValue}" }) {
+                                    property
+                                }
+                            }
+                        `;
+
+                        const gqlResult = await graphql({
+                            schema: neoSchema.schema,
+                            source: query,
+                            contextValue: { driver },
+                        });
+
+                        expect(gqlResult.errors).toEqual(undefined);
+
+                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+
+                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
+                    } finally {
+                        session.close();
+                    }
+                })
+            );
+        });
+
         test.todo("should find Movies STARTS_WITH string");
         test.todo("should find Movies NOT_STARTS_WITH string");
         test.todo("should find Movies ENDS_WITH string");

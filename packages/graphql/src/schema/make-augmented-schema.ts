@@ -175,6 +175,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     res[`${f.fieldName}_NOT`] = `${f.typeMeta.name}`;
                     res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.name}]`;
                     res[`${f.fieldName}_CONTAINS`] = `${f.typeMeta.name}`;
+                    res[`${f.fieldName}_NOT_CONTAINS`] = `${f.typeMeta.name}`;
                 }
 
                 if (["Boolean"].includes(f.typeMeta.name)) {
