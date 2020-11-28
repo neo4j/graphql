@@ -103,3 +103,33 @@ RETURN this { .id } as this
 ```
 
 ---
+
+### Simple CONTAINS
+
+**GraphQL input**
+
+```graphql
+{
+    Movies(where: { id_CONTAINS: "123" }){
+        id
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.id CONTAINS $this_id_CONTAINS
+RETURN this { .id } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id_CONTAINS": "123"
+}
+```
+
+---
