@@ -550,7 +550,73 @@ describe("Advanced Filtering", () => {
             );
         });
 
-        test.todo("should find Movies NOT_ENDS_WITH string");
+        test("should find Movies NOT_ENDS_WITH string", async () => {
+            await Promise.all(
+                ["ID", "String"].map(async (type) => {
+                    const session = driver.session();
+
+                    const randomType = generate({
+                        charset: "alphabetic",
+                    });
+
+                    const pluralRandomType = pluralize(randomType);
+
+                    const typeDefs = `
+                        type ${randomType} {
+                            property: ${type}
+                        }
+                    `;
+
+                    const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                    const value = generate({
+                        charset: "alphabetic",
+                    });
+
+                    const notValue = generate({
+                        charset: "alphabetic",
+                    });
+
+                    const superValue = value + value;
+
+                    try {
+                        await session.run(
+                            `
+                            CREATE (:${randomType} {property: $value})
+                            CREATE (:${randomType} {property: $notValue})
+                            CREATE (:${randomType} {property: $superValue})
+                        `,
+                            { value, notValue, superValue }
+                        );
+
+                        const query = `
+                            { 
+                                ${pluralRandomType}(where: { property_NOT_ENDS_WITH: "${value}" }) {
+                                    property
+                                }
+                            }
+                        `;
+
+                        const gqlResult = await graphql({
+                            schema: neoSchema.schema,
+                            source: query,
+                            contextValue: { driver },
+                        });
+
+                        if (gqlResult.errors) {
+                            console.log(JSON.stringify(gqlResult.errors, null, 2));
+                        }
+
+                        expect(gqlResult.errors).toEqual(undefined);
+
+                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(notValue);
+                    } finally {
+                        session.close();
+                    }
+                })
+            );
+        });
     });
 
     describe("Number/Float Filtering", () => {

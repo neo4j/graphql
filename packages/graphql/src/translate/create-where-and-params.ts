@@ -78,6 +78,11 @@ function createWhereAndParams({
                 res.params[param] = value;
                 break;
 
+            case "NOT_ENDS_WITH":
+                res.clauses.push(`(NOT ${varName}.${fieldName} ENDS WITH $${param})`);
+                res.params[param] = value;
+                break;
+
             default:
                 switch (fieldName) {
                     case "AND":
