@@ -53,6 +53,11 @@ function createWhereAndParams({
                 res.params[param] = value;
                 break;
 
+            case "CONTAINS":
+                res.clauses.push(`${varName}.${fieldName} CONTAINS $${param}`);
+                res.params[param] = value;
+                break;
+
             default:
                 switch (fieldName) {
                     case "AND":
