@@ -223,3 +223,33 @@ RETURN this { .id } as this
 ```
 
 ---
+
+### Simple ENDS_WITH
+
+**GraphQL input**
+
+```graphql
+{
+    Movies(where: { id_ENDS_WITH: "123" }){
+        id
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.id ENDS WITH $this_id_ENDS_WITH
+RETURN this { .id } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id_ENDS_WITH": "123"
+}
+```
+
+---
