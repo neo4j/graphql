@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { describe, expect, test, afterAll, beforeAll } from "@jest/globals";
 import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
@@ -65,6 +66,10 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver },
                         });
 
+                        if (gqlResult.errors) {
+                            console.log(JSON.stringify(gqlResult.errors, null, 2));
+                        }
+
                         expect(gqlResult.errors).toEqual(undefined);
 
                         expect((gqlResult.data as any).Movies.length).toEqual(1);
@@ -126,6 +131,10 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: { driver },
                         });
+
+                        if (gqlResult.errors) {
+                            console.log(JSON.stringify(gqlResult.errors, null, 2));
+                        }
 
                         expect(gqlResult.errors).toEqual(undefined);
 
@@ -194,6 +203,10 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver },
                         });
 
+                        if (gqlResult.errors) {
+                            console.log(JSON.stringify(gqlResult.errors, null, 2));
+                        }
+
                         expect(gqlResult.errors).toEqual(undefined);
 
                         expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
@@ -254,6 +267,10 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: { driver },
                         });
+
+                        if (gqlResult.errors) {
+                            console.log(JSON.stringify(gqlResult.errors, null, 2));
+                        }
 
                         expect(gqlResult.errors).toEqual(undefined);
 
@@ -318,6 +335,10 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver },
                         });
 
+                        if (gqlResult.errors) {
+                            console.log(JSON.stringify(gqlResult.errors, null, 2));
+                        }
+
                         expect(gqlResult.errors).toEqual(undefined);
 
                         expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
@@ -330,7 +351,73 @@ describe("Advanced Filtering", () => {
             );
         });
 
-        test.todo("should find Movies STARTS_WITH string");
+        test("should find Movies STARTS_WITH string", async () => {
+            await Promise.all(
+                ["ID", "String"].map(async (type) => {
+                    const session = driver.session();
+
+                    const randomType = generate({
+                        charset: "alphabetic",
+                    });
+
+                    const pluralRandomType = pluralize(randomType);
+
+                    const typeDefs = `
+                        type ${randomType} {
+                            property: ${type}
+                        }
+                    `;
+
+                    const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                    const value = generate({
+                        charset: "alphabetic",
+                    });
+
+                    const superValue = value + value;
+
+                    try {
+                        await session.run(
+                            `
+                            CREATE (:${randomType} {property: $superValue})
+                            CREATE (:${randomType} {property: $superValue})
+                            CREATE (:${randomType} {property: $superValue})
+                        `,
+                            { superValue }
+                        );
+
+                        const query = `
+                            { 
+                                ${pluralRandomType}(where: { property_STARTS_WITH: "${value}" }) {
+                                    property
+                                }
+                            }
+                        `;
+
+                        const gqlResult = await graphql({
+                            schema: neoSchema.schema,
+                            source: query,
+                            contextValue: { driver },
+                        });
+
+                        if (gqlResult.errors) {
+                            console.log(JSON.stringify(gqlResult.errors, null, 2));
+                        }
+
+                        expect(gqlResult.errors).toEqual(undefined);
+
+                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(3);
+
+                        ((gqlResult.data as any)[pluralRandomType] as any[]).forEach((x) => {
+                            expect(x.property).toEqual(superValue);
+                        });
+                    } finally {
+                        session.close();
+                    }
+                })
+            );
+        });
+
         test.todo("should find Movies NOT_STARTS_WITH string");
         test.todo("should find Movies ENDS_WITH string");
         test.todo("should find Movies NOT_ENDS_WITH string");

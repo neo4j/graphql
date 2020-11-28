@@ -163,3 +163,33 @@ RETURN this { .id } as this
 ```
 
 ---
+
+### Simple STARTS_WITH
+
+**GraphQL input**
+
+```graphql
+{
+    Movies(where: { id_STARTS_WITH: "123" }){
+        id
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.id STARTS WITH $this_id_STARTS_WITH
+RETURN this { .id } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id_STARTS_WITH": "123"
+}
+```
+
+---
