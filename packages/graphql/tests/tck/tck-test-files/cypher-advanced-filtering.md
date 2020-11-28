@@ -193,3 +193,33 @@ RETURN this { .id } as this
 ```
 
 ---
+
+### Simple NOT_STARTS_WITH
+
+**GraphQL input**
+
+```graphql
+{
+    Movies(where: { id_NOT_STARTS_WITH: "123" }){
+        id
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE (NOT this.id STARTS WITH $this_id_NOT_STARTS_WITH)
+RETURN this { .id } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id_NOT_STARTS_WITH": "123"
+}
+```
+
+---
