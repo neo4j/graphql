@@ -35,7 +35,8 @@ function createWhereAndParams({
             return res;
         }
 
-        const [fieldName, operator] = key.split("_");
+        const [fieldName, ...rest] = key.split("_");
+        const operator = rest.join("_");
         switch (operator) {
             case "IN":
                 res.clauses.push(`${varName}.${fieldName} IN $${param}`);
@@ -44,6 +45,11 @@ function createWhereAndParams({
 
             case "NOT":
                 res.clauses.push(`(NOT ${varName}.${fieldName} = $${param})`);
+                res.params[param] = value;
+                break;
+
+            case "NOT_IN":
+                res.clauses.push(`(NOT ${varName}.${fieldName} IN $${param})`);
                 res.params[param] = value;
                 break;
 

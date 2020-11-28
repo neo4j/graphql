@@ -73,3 +73,33 @@ RETURN this { .id } as this
 ```
 
 ---
+
+### Simple NOT_IN
+
+**GraphQL input**
+
+```graphql
+{
+    Movies(where: { id_NOT_IN: ["123"] }){
+        id
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE (NOT this.id IN $this_id_NOT_IN)
+RETURN this { .id } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id_NOT_IN": ["123"]
+}
+```
+
+---

@@ -30,6 +30,7 @@ input MovieAND {
   id: ID
   id_IN: [ID]
   id_NOT: ID
+  id_NOT_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -48,6 +49,7 @@ input MovieOR {
   id: ID
   id_IN: [ID]
   id_NOT: ID
+  id_NOT_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -61,6 +63,7 @@ input MovieWhere {
   id: ID
   id_IN: [ID]
   id_NOT: ID
+  id_NOT_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -113,6 +116,7 @@ input ActorAND {
   name: String
   name_IN: [String]
   name_NOT: String
+  name_NOT_IN: [String]
   OR: [ActorOR]
   AND: [ActorAND]
 }
@@ -131,6 +135,7 @@ input ActorOR {
   name: String
   name_IN: [String]
   name_NOT: String
+  name_NOT_IN: [String]
   OR: [ActorOR]
   AND: [ActorAND]
 }
@@ -144,6 +149,7 @@ input ActorWhere {
   name: String
   name_IN: [String]
   name_NOT: String
+  name_NOT_IN: [String]
   OR: [ActorOR]
   AND: [ActorAND]
 }
@@ -174,6 +180,7 @@ input MovieAND {
   id: ID
   id_IN: [ID]
   id_NOT: ID
+  id_NOT_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -193,6 +200,7 @@ input MovieOR {
   id: ID
   id_IN: [ID]
   id_NOT: ID
+  id_NOT_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -206,6 +214,7 @@ input MovieWhere {
   id: ID
   id_IN: [ID]
   id_NOT: ID
+  id_NOT_IN: [ID]
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -282,6 +291,7 @@ input ActorAND {
   name: String
   name_IN: [String]
   name_NOT: String
+  name_NOT_IN: [String]
 }
 
 input ActorConnectFieldInput {
@@ -336,6 +346,7 @@ input ActorOR {
   name: String
   name_IN: [String]
   name_NOT: String
+  name_NOT_IN: [String]
 }
 
 enum ActorSort {
@@ -354,6 +365,7 @@ input ActorWhere {
   name: String
   name_IN: [String]
   name_NOT: String
+  name_NOT_IN: [String]
 }
 
 type DeleteInfo {
@@ -385,6 +397,7 @@ input MovieAND {
   id: ID
   id_IN: [ID]
   id_NOT: ID
+  id_NOT_IN: [ID]
 }
 
 input MovieConnectFieldInput {
@@ -422,6 +435,7 @@ input MovieOR {
   id: ID
   id_IN: [ID]
   id_NOT: ID
+  id_NOT_IN: [ID]
 }
 
 input MovieRelationInput {
@@ -444,6 +458,7 @@ input MovieWhere {
   id: ID
   id_IN: [ID]
   id_NOT: ID
+  id_NOT_IN: [ID]
 }
 
 type Mutation {
@@ -507,6 +522,7 @@ input ActorAND {
   name: String
   name_IN: [String]
   name_NOT: String
+  name_NOT_IN: [String]
 }
 
 input ActorCreateInput {
@@ -525,6 +541,7 @@ input ActorOR {
   name: String
   name_IN: [String]
   name_NOT: String
+  name_NOT_IN: [String]
 }
 
 enum ActorSort {
@@ -542,6 +559,7 @@ input ActorWhere {
   name: String
   name_IN: [String]
   name_NOT: String
+  name_NOT_IN: [String]
 }
 
 type DeleteInfo {
@@ -560,6 +578,7 @@ input MovieAND {
   id: ID
   id_IN: [ID]
   id_NOT: ID
+  id_NOT_IN: [ID]
 }
 
 input MovieCreateInput {
@@ -578,6 +597,7 @@ input MovieOR {
   id: ID
   id_IN: [ID]
   id_NOT: ID
+  id_NOT_IN: [ID]
 }
 
 enum MovieSort {
@@ -595,6 +615,7 @@ input MovieWhere {
   id: ID
   id_IN: [ID]
   id_NOT: ID
+  id_NOT_IN: [ID]
 }
 
 type Mutation {
