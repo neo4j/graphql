@@ -164,11 +164,29 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         const queryFields = node.primitiveFields.reduce(
             (res, f) => {
-                return {
-                    ...res,
-                    [f.fieldName]: f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name,
-                    ...(!f.typeMeta.array ? { [`${f.fieldName}_IN`]: `[${f.typeMeta.name}]` } : {}),
-                };
+                if (f.typeMeta.array) {
+                    res[f.fieldName] = `[${f.typeMeta.name}]`;
+
+                    return res;
+                }
+
+                if (["ID", "String"].includes(f.typeMeta.name)) {
+                    res[`${f.fieldName}_IN`] = `[${f.typeMeta.name}]`;
+                    res[`${f.fieldName}_NOT`] = `${f.typeMeta.name}`;
+                }
+
+                if (["Boolean"].includes(f.typeMeta.name)) {
+                    res[`${f.fieldName}_IN`] = `[${f.typeMeta.name}]`;
+                }
+
+                if (["Float", "Int"].includes(f.typeMeta.name)) {
+                    res[`${f.fieldName}_IN`] = `[${f.typeMeta.name}]`;
+                }
+
+                // equality
+                res[f.fieldName] = f.typeMeta.name;
+
+                return res;
             },
             { OR: `[${node.name}OR]`, AND: `[${node.name}AND]` }
         );
