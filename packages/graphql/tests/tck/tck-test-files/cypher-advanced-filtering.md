@@ -133,3 +133,33 @@ RETURN this { .id } as this
 ```
 
 ---
+
+### Simple NOT_CONTAINS
+
+**GraphQL input**
+
+```graphql
+{
+    Movies(where: { id_NOT_CONTAINS: "123" }){
+        id
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE (NOT this.id CONTAINS $this_id_NOT_CONTAINS)
+RETURN this { .id } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id_NOT_CONTAINS": "123"
+}
+```
+
+---

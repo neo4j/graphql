@@ -58,6 +58,11 @@ function createWhereAndParams({
                 res.params[param] = value;
                 break;
 
+            case "NOT_CONTAINS":
+                res.clauses.push(`(NOT ${varName}.${fieldName} CONTAINS $${param})`);
+                res.params[param] = value;
+                break;
+
             default:
                 switch (fieldName) {
                     case "AND":
