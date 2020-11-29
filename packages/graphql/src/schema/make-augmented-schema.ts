@@ -192,6 +192,8 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     res[`${f.fieldName}_NOT`] = `${f.typeMeta.name}`;
                     res[`${f.fieldName}_LT`] = `${f.typeMeta.name}`;
                     res[`${f.fieldName}_LTE`] = `${f.typeMeta.name}`;
+                    res[`${f.fieldName}_GT`] = `${f.typeMeta.name}`;
+                    res[`${f.fieldName}_GTE`] = `${f.typeMeta.name}`;
                 }
 
                 // equality
