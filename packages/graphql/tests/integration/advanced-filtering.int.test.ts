@@ -660,17 +660,17 @@ describe("Advanced Filtering", () => {
                     let property: number;
 
                     if (type === "Int") {
-                        property = Math.floor(Math.random() * 100);
+                        property = Math.floor(Math.random() * 9999);
                     } else {
-                        property = Math.floor(Math.random() * 100) + 0.5;
+                        property = Math.floor(Math.random() * 9999) + 0.5;
                     }
 
                     let notProperty: number;
 
                     if (type === "Int") {
-                        notProperty = Math.floor(Math.random() * 100);
+                        notProperty = Math.floor(Math.random() * 9999);
                     } else {
-                        notProperty = Math.floor(Math.random() * 100) + 0.5;
+                        notProperty = Math.floor(Math.random() * 9999) + 0.5;
                     }
 
                     try {
@@ -733,25 +733,25 @@ describe("Advanced Filtering", () => {
                     let value: number;
 
                     if (type === "Int") {
-                        value = Math.floor(Math.random() * 100);
+                        value = Math.floor(Math.random() * 9999);
                     } else {
-                        value = Math.floor(Math.random() * 100) + 0.5;
+                        value = Math.floor(Math.random() * 9999) + 0.5;
                     }
 
                     let randomValue1: number;
 
                     if (type === "Int") {
-                        randomValue1 = Math.floor(Math.random() * 100);
+                        randomValue1 = Math.floor(Math.random() * 9999);
                     } else {
-                        randomValue1 = Math.floor(Math.random() * 100) + 0.5;
+                        randomValue1 = Math.floor(Math.random() * 9999) + 0.5;
                     }
 
                     let randomValue2: number;
 
                     if (type === "Int") {
-                        randomValue2 = Math.floor(Math.random() * 100);
+                        randomValue2 = Math.floor(Math.random() * 9999);
                     } else {
-                        randomValue2 = Math.floor(Math.random() * 100) + 0.5;
+                        randomValue2 = Math.floor(Math.random() * 9999) + 0.5;
                     }
 
                     try {
@@ -791,8 +791,155 @@ describe("Advanced Filtering", () => {
             );
         });
 
-        test.todo("should find Movies NOT_IN numbers");
-        test.todo("should find Movies LT number");
+        test("should find Movies NOT_IN numbers", async () => {
+            await Promise.all(
+                ["Int", "Float"].map(async (type) => {
+                    const session = driver.session();
+
+                    const randomType = `${generate({
+                        charset: "alphabetic",
+                    })}Movie`;
+
+                    const pluralRandomType = pluralize(randomType);
+
+                    const typeDefs = `
+                        type ${randomType} {
+                            property: ${type}
+                        }
+                    `;
+
+                    const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                    let value: number;
+
+                    if (type === "Int") {
+                        value = Math.floor(Math.random() * 9999);
+                    } else {
+                        value = Math.floor(Math.random() * 9999) + 0.5;
+                    }
+
+                    let randomValue1: number;
+
+                    if (type === "Int") {
+                        randomValue1 = Math.floor(Math.random() * 99999);
+                    } else {
+                        randomValue1 = Math.floor(Math.random() * 99999) + 0.5;
+                    }
+
+                    let randomValue2: number;
+
+                    if (type === "Int") {
+                        randomValue2 = Math.floor(Math.random() * 99999);
+                    } else {
+                        randomValue2 = Math.floor(Math.random() * 99999) + 0.5;
+                    }
+
+                    try {
+                        await session.run(
+                            `
+                            CREATE (:${randomType} {property: $value})
+                            CREATE (:${randomType} {property: $randomValue1})
+                            CREATE (:${randomType} {property: $randomValue2})
+                        `,
+                            { value, randomValue1, randomValue2 }
+                        );
+
+                        const query = `
+                            { 
+                                ${pluralRandomType}(where: { property_NOT_IN: [${randomValue1}, ${randomValue2}] }) {
+                                    property
+                                }
+                            }
+                        `;
+
+                        const gqlResult = await graphql({
+                            schema: neoSchema.schema,
+                            source: query,
+                            contextValue: { driver },
+                        });
+
+                        if (gqlResult.errors) {
+                            console.log(JSON.stringify(gqlResult.errors, null, 2));
+                        }
+
+                        expect(gqlResult.errors).toEqual(undefined);
+
+                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
+                    } finally {
+                        session.close();
+                    }
+                })
+            );
+        });
+
+        test("should find Movies LT number", async () => {
+            await Promise.all(
+                ["Int", "Float"].map(async (type) => {
+                    const session = driver.session();
+
+                    const randomType = `${generate({
+                        charset: "alphabetic",
+                    })}Movie`;
+
+                    const pluralRandomType = pluralize(randomType);
+
+                    const typeDefs = `
+                        type ${randomType} {
+                            property: ${type}
+                        }
+                    `;
+
+                    const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                    let value: number;
+
+                    if (type === "Int") {
+                        value = Math.floor(Math.random() * 9999);
+                    } else {
+                        value = Math.floor(Math.random() * 9999) + 0.5;
+                    }
+
+                    const lessThanValue = value - (value + 1);
+
+                    try {
+                        await session.run(
+                            `
+                            CREATE (:${randomType} {property: $value})
+                            CREATE (:${randomType} {property: $lessThanValue})
+                        `,
+                            { value, lessThanValue }
+                        );
+
+                        const query = `
+                            { 
+                                ${pluralRandomType}(where: { property_LT: ${lessThanValue + 1} }) {
+                                    property
+                                }
+                            }
+                        `;
+
+                        const gqlResult = await graphql({
+                            schema: neoSchema.schema,
+                            source: query,
+                            contextValue: { driver },
+                        });
+
+                        if (gqlResult.errors) {
+                            console.log(JSON.stringify(gqlResult.errors, null, 2));
+                        }
+
+                        expect(gqlResult.errors).toEqual(undefined);
+
+                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(lessThanValue);
+                    } finally {
+                        session.close();
+                    }
+                })
+            );
+        });
+
         test.todo("should find Movies LTE number");
         test.todo("should find Movies GT number");
         test.todo("should find Movies GTE number");

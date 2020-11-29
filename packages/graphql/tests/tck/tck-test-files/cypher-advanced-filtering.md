@@ -8,6 +8,7 @@ Schema:
 type Movie {
     id: ID
     title: String
+    actorCount: Int
 }
 ```
 
@@ -279,6 +280,39 @@ RETURN this { .id } as this
 ```cypher-params
 {
     "this_id_NOT_ENDS_WITH": "123"
+}
+```
+
+---
+
+### Simple LT
+
+**GraphQL input**
+
+```graphql
+{
+    Movies(where: { actorCount_LT: 123 }){
+        actorCount
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.actorCount < $this_actorCount_LT
+RETURN this { .actorCount } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_actorCount_LT": {
+        "high": 0,
+        "low": 123
+    }
 }
 ```
 
