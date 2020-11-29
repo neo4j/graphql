@@ -1249,7 +1249,90 @@ describe("Advanced Filtering", () => {
     });
 
     describe("Relationship Filtering", () => {
-        test.todo("should find Movies genres equality");
+        test("should find relationship equality", async () => {
+            const session = driver.session();
+
+            const randomType1 = `${generate({
+                charset: "alphabetic",
+            })}Movie`;
+
+            const randomType2 = `${generate({
+                charset: "alphabetic",
+            })}Genre`;
+
+            const pluralRandomType1 = pluralize(randomType1);
+            const pluralRandomType2 = pluralize(randomType2);
+
+            const typeDefs = `
+                    type ${randomType1} {
+                        id: ID
+                        ${pluralRandomType2}: [${randomType2}] @relationship(type: "IN_GENRE", direction: "OUT")
+                    }
+
+                    type ${randomType2} {
+                        id: ID
+                    }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const rootId = generate({
+                charset: "alphabetic",
+            });
+
+            const relationId = generate({
+                charset: "alphabetic",
+            });
+
+            const randomId = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                await session.run(
+                    `
+                            CREATE (root:${randomType1} {id: $rootId})
+                            CREATE (:${randomType1} {id: $randomId})
+                            CREATE (relation:${randomType2} {id: $relationId})
+                            CREATE (:${randomType2} {id: $randomId})
+                            MERGE (root)-[:IN_GENRE]->(relation)
+                        `,
+                    { rootId, relationId, randomId }
+                );
+
+                const query = `
+                    { 
+                        ${pluralRandomType1}(where: { ${pluralRandomType2}: { id: "${relationId}" } }) {
+                            id
+                            ${pluralRandomType2} {
+                                id
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toEqual(undefined);
+
+                expect((gqlResult.data as any)[pluralRandomType1].length).toEqual(1);
+                expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
+                    id: rootId,
+                    [pluralRandomType2]: [{ id: relationId }],
+                });
+            } finally {
+                session.close();
+            }
+        });
+
         test.todo("should find Movies genres_NOT");
         test.todo("should find Movies genres_IN");
         test.todo("should find Movies genres_NOT_IN");

@@ -1,4 +1,5 @@
 import { GraphQLWhereArg } from "../types";
+import { Context, Node } from "../classes";
 
 interface Res {
     clauses: string[];
@@ -9,10 +10,16 @@ function createWhereAndParams({
     whereInput,
     varName,
     chainStr,
+    node,
+    context,
+    recursing,
 }: {
+    node: Node;
+    context: Context;
     whereInput: GraphQLWhereArg;
     varName: string;
     chainStr?: string;
+    recursing?: boolean;
 }): [string, any] {
     if (!Object.keys(whereInput).length) {
         return ["", {}];
@@ -26,9 +33,10 @@ function createWhereAndParams({
             param = `${varName}_${key}`;
         }
 
+        const relationField = node.relationFields.find((x) => key === x.fieldName);
         const valueIsObject = Boolean(!Array.isArray(value) && Object.keys(value).length && typeof value !== "string");
-        if (valueIsObject) {
-            const recurse = createWhereAndParams({ whereInput: value, varName, chainStr });
+        if (valueIsObject && !relationField) {
+            const recurse = createWhereAndParams({ whereInput: value, varName, chainStr, node, context, recursing });
             res.clauses.push(`(${recurse[0]})`);
             res.params = { ...res.params, ...recurse[1] };
 
@@ -115,6 +123,9 @@ function createWhereAndParams({
                                     whereInput: v,
                                     varName,
                                     chainStr: `${param}${i > 0 ? i : ""}`,
+                                    node,
+                                    context,
+                                    recursing: true,
                                 });
 
                                 innerClauses.push(`${recurse[0]}`);
@@ -125,9 +136,39 @@ function createWhereAndParams({
                         }
                         break;
 
-                    default:
-                        res.clauses.push(`${varName}.${fieldName} = $${param}`);
-                        res.params[param] = value;
+                    default: {
+                        if (relationField) {
+                            const refNode = context.neoSchema.nodes.find(
+                                (x) => x.name === relationField.typeMeta.name
+                            ) as Node;
+
+                            const inStr = relationField.direction === "IN" ? "<-" : "-";
+                            const outStr = relationField.direction === "OUT" ? "->" : "-";
+                            const relTypeStr = `[:${relationField.type}]`;
+
+                            let resultStr = [
+                                `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
+                                `AND ALL(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${relationField.typeMeta.name}) | ${param}] INNER_WHERE `,
+                            ].join(" ");
+
+                            const recurse = createWhereAndParams({
+                                whereInput: value,
+                                varName: param,
+                                chainStr: param,
+                                node: refNode,
+                                context,
+                                recursing: true,
+                            });
+
+                            resultStr += recurse[0];
+                            resultStr += ")"; // close ALL
+                            res.clauses.push(resultStr);
+                            res.params = { ...res.params, ...recurse[1] };
+                        } else {
+                            res.clauses.push(`${varName}.${fieldName} = $${param}`);
+                            res.params[param] = value;
+                        }
+                    }
                 }
         }
 
@@ -135,8 +176,8 @@ function createWhereAndParams({
     }
 
     const { clauses, params } = Object.entries(whereInput).reduce(reducer, { clauses: [], params: {} });
-    let where = `WHERE `;
-    where += clauses.join(" AND ").replace(/WHERE /gi, "");
+    let where = `${!recursing ? "WHERE " : ""}`;
+    where += clauses.join(" AND ").replace(/INNER_WHERE/gi, "WHERE");
 
     return [where, params];
 }

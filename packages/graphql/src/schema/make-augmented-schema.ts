@@ -204,8 +204,8 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             { OR: `[${node.name}OR]`, AND: `[${node.name}AND]` }
         );
 
-        ["AND", "OR", "Where"].forEach((value) => {
-            composer.createInputTC({
+        const [andInput, orInput, whereInput] = ["AND", "OR", "Where"].map((value) => {
+            return composer.createInputTC({
                 name: `${node.name}${value}`,
                 fields: queryFields,
             });
@@ -284,6 +284,12 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             const disconnectField = rel.typeMeta.array
                 ? `[${refNode.name}DisconnectFieldInput]`
                 : `${refNode.name}DisconnectFieldInput`;
+
+            [whereInput, andInput, orInput].forEach((inputType) => {
+                inputType.addFields({
+                    [rel.fieldName]: `${refNode.name}Where`,
+                });
+            });
 
             composer.createInputTC({
                 name: nodeFieldUpdateInputName,
