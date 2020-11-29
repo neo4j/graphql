@@ -317,3 +317,36 @@ RETURN this { .actorCount } as this
 ```
 
 ---
+
+### Simple LTE
+
+**GraphQL input**
+
+```graphql
+{
+    Movies(where: { actorCount_LTE: 123 }){
+        actorCount
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.actorCount <= $this_actorCount_LTE
+RETURN this { .actorCount } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_actorCount_LTE": {
+        "high": 0,
+        "low": 123
+    }
+}
+```
+
+---
