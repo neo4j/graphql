@@ -9,6 +9,12 @@ type Movie {
     id: ID
     title: String
     actorCount: Int
+    genres: [Genre] @relationship(type: "IN_GENRE", direction: "OUT")
+}
+
+type Genre {
+  name: String
+  movies: [Movie] @relationship(type: "IN_GENRE", direction: "IN")
 }
 ```
 
@@ -413,6 +419,36 @@ RETURN this { .actorCount } as this
         "high": 0,
         "low": 123
     }
+}
+```
+
+---
+
+### Simple Relationship equality
+
+**GraphQL input**
+
+```graphql
+{
+    Movies(where: { genres: { name: "some genre" } }){
+        actorCount
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie) 
+WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres IN [(this)-[:IN_GENRE]->(this_genres:Genre) | this_genres] WHERE this_genres.name = $this_genres_name) 
+RETURN this { .actorCount } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_genres_name": "some genre"
 }
 ```
 

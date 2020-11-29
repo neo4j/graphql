@@ -36,7 +36,12 @@ function createDisconnectAndParams({
         );
 
         if (disconnect.where) {
-            const where = createWhereAndParams({ varName: _varName, whereInput: disconnect.where });
+            const where = createWhereAndParams({
+                varName: _varName,
+                whereInput: disconnect.where,
+                node: refNode,
+                context,
+            });
             res.disconnects.push(where[0]);
             res.params = { ...res.params, ...where[1] };
         }
