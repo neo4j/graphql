@@ -33,14 +33,17 @@ describe("Advanced Filtering", () => {
                     const neoSchema = makeAugmentedSchema({ typeDefs });
 
                     const value = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
                     const randomValue1 = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
                     const randomValue2 = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
@@ -87,9 +90,9 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = generate({
+                    const randomType = `${generate({
                         charset: "alphabetic",
-                    });
+                    })}Movie`;
 
                     const pluralRandomType = pluralize(randomType);
 
@@ -102,10 +105,12 @@ describe("Advanced Filtering", () => {
                     const neoSchema = makeAugmentedSchema({ typeDefs });
 
                     const value = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
                     const randomValue1 = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
@@ -153,9 +158,9 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = generate({
+                    const randomType = `${generate({
                         charset: "alphabetic",
-                    });
+                    })}Movie`;
 
                     const pluralRandomType = pluralize(randomType);
 
@@ -168,14 +173,17 @@ describe("Advanced Filtering", () => {
                     const neoSchema = makeAugmentedSchema({ typeDefs });
 
                     const value = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
                     const randomValue1 = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
                     const randomValue2 = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
@@ -224,9 +232,9 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = generate({
+                    const randomType = `${generate({
                         charset: "alphabetic",
-                    });
+                    })}Movie`;
 
                     const pluralRandomType = pluralize(randomType);
 
@@ -239,6 +247,7 @@ describe("Advanced Filtering", () => {
                     const neoSchema = makeAugmentedSchema({ typeDefs });
 
                     const value = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
@@ -289,9 +298,9 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = generate({
+                    const randomType = `${generate({
                         charset: "alphabetic",
-                    });
+                    })}Movie`;
 
                     const pluralRandomType = pluralize(randomType);
 
@@ -304,10 +313,12 @@ describe("Advanced Filtering", () => {
                     const neoSchema = makeAugmentedSchema({ typeDefs });
 
                     const value = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
                     const notValue = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
@@ -356,9 +367,9 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = generate({
+                    const randomType = `${generate({
                         charset: "alphabetic",
-                    });
+                    })}Movie`;
 
                     const pluralRandomType = pluralize(randomType);
 
@@ -371,6 +382,7 @@ describe("Advanced Filtering", () => {
                     const neoSchema = makeAugmentedSchema({ typeDefs });
 
                     const value = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
@@ -423,9 +435,9 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = generate({
+                    const randomType = `${generate({
                         charset: "alphabetic",
-                    });
+                    })}Movie`;
 
                     const pluralRandomType = pluralize(randomType);
 
@@ -438,10 +450,12 @@ describe("Advanced Filtering", () => {
                     const neoSchema = makeAugmentedSchema({ typeDefs });
 
                     const value = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
                     const notValue = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
@@ -488,9 +502,9 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = generate({
+                    const randomType = `${generate({
                         charset: "alphabetic",
-                    });
+                    })}Movie`;
 
                     const pluralRandomType = pluralize(randomType);
 
@@ -503,10 +517,12 @@ describe("Advanced Filtering", () => {
                     const neoSchema = makeAugmentedSchema({ typeDefs });
 
                     const value = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
                     const notValue = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
@@ -555,9 +571,9 @@ describe("Advanced Filtering", () => {
                 ["ID", "String"].map(async (type) => {
                     const session = driver.session();
 
-                    const randomType = generate({
+                    const randomType = `${generate({
                         charset: "alphabetic",
-                    });
+                    })}Movie`;
 
                     const pluralRandomType = pluralize(randomType);
 
@@ -570,10 +586,12 @@ describe("Advanced Filtering", () => {
                     const neoSchema = makeAugmentedSchema({ typeDefs });
 
                     const value = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
                     const notValue = generate({
+                        readable: true,
                         charset: "alphabetic",
                     });
 
@@ -620,7 +638,79 @@ describe("Advanced Filtering", () => {
     });
 
     describe("Number/Float Filtering", () => {
-        test.todo("should find Movies NOT number");
+        test("should find Movies NOT number", async () => {
+            await Promise.all(
+                ["Int", "Float"].map(async (type) => {
+                    const session = driver.session();
+
+                    const randomType = `${generate({
+                        charset: "alphabetic",
+                    })}Movie`;
+
+                    const pluralRandomType = pluralize(randomType);
+
+                    const typeDefs = `
+                        type ${randomType} {
+                            property: ${type}
+                        }
+                    `;
+
+                    const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                    let property: number;
+
+                    if (type === "Int") {
+                        property = 10;
+                    } else {
+                        property = 10.5;
+                    }
+
+                    let notProperty: number;
+
+                    if (type === "Int") {
+                        notProperty = 20;
+                    } else {
+                        notProperty = 20.5;
+                    }
+
+                    try {
+                        await session.run(
+                            `
+                            CREATE (:${randomType} {property: $property})
+                            CREATE (:${randomType} {property: $notProperty})
+                        `,
+                            { property, notProperty }
+                        );
+
+                        const query = `
+                            { 
+                                ${pluralRandomType}(where: { property_NOT: ${notProperty} }) {
+                                    property
+                                }
+                            }
+                        `;
+
+                        const gqlResult = await graphql({
+                            schema: neoSchema.schema,
+                            source: query,
+                            contextValue: { driver },
+                        });
+
+                        if (gqlResult.errors) {
+                            console.log(JSON.stringify(gqlResult.errors, null, 2));
+                        }
+
+                        expect(gqlResult.errors).toEqual(undefined);
+
+                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(property);
+                    } finally {
+                        session.close();
+                    }
+                })
+            );
+        });
+
         test.todo("should find Movies IN numbers");
         test.todo("should find Movies NOT_IN numbers");
         test.todo("should find Movies LT number");

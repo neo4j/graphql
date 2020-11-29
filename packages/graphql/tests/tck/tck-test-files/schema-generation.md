@@ -11,6 +11,8 @@ Tests that the provided typeDefs return the correct schema.
 ```typedefs-input
 type Movie {
     id: ID
+    actorCount: Int
+    averageRating: Float
 }
 ```
 
@@ -19,6 +21,8 @@ type Movie {
 ```schema-output
 type Movie {
   id: ID
+  actorCount: Int
+  averageRating: Float
 }
 
 type DeleteInfo {
@@ -37,12 +41,20 @@ input MovieAND {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  actorCount: Int
+  actorCount_IN: [Int]
+  actorCount_NOT: Int
+  averageRating: Float
+  averageRating_IN: [Float]
+  averageRating_NOT: Float
   OR: [MovieOR]
   AND: [MovieAND]
 }
 
 input MovieCreateInput {
   id: ID
+  actorCount: Int
+  averageRating: Float
 }
 
 input MovieOptions {
@@ -62,6 +74,12 @@ input MovieOR {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  actorCount: Int
+  actorCount_IN: [Int]
+  actorCount_NOT: Int
+  averageRating: Float
+  averageRating_IN: [Float]
+  averageRating_NOT: Float
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -69,6 +87,10 @@ input MovieOR {
 enum MovieSort {
   id_DESC
   id_ASC
+  actorCount_DESC
+  actorCount_ASC
+  averageRating_DESC
+  averageRating_ASC
 }
 
 input MovieWhere {
@@ -82,12 +104,20 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  actorCount: Int
+  actorCount_IN: [Int]
+  actorCount_NOT: Int
+  averageRating: Float
+  averageRating_IN: [Float]
+  averageRating_NOT: Float
   OR: [MovieOR]
   AND: [MovieAND]
 }
 
 input MovieUpdateInput {
   id: ID
+  actorCount: Int
+  averageRating: Float
 }
 
 type Mutation {

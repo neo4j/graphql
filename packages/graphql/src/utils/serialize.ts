@@ -1,5 +1,9 @@
 import { int } from "neo4j-driver";
 
+function isFloat(n: number) {
+    return Number(n) === n && n % 1 !== 0;
+}
+
 function traverse(v: any) {
     function reducer(res: any, [key, value]: [string, any]) {
         if (Array.isArray(value)) {
@@ -17,6 +21,10 @@ function traverse(v: any) {
 
     switch (typeof v) {
         case "number":
+            if (isFloat(v)) {
+                return v;
+            }
+
             return int(v);
 
         case "string":
