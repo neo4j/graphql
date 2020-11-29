@@ -660,17 +660,17 @@ describe("Advanced Filtering", () => {
                     let property: number;
 
                     if (type === "Int") {
-                        property = 10;
+                        property = Math.floor(Math.random() * 100);
                     } else {
-                        property = 10.5;
+                        property = Math.floor(Math.random() * 100) + 0.5;
                     }
 
                     let notProperty: number;
 
                     if (type === "Int") {
-                        notProperty = 20;
+                        notProperty = Math.floor(Math.random() * 100);
                     } else {
-                        notProperty = 20.5;
+                        notProperty = Math.floor(Math.random() * 100) + 0.5;
                     }
 
                     try {
@@ -711,7 +711,86 @@ describe("Advanced Filtering", () => {
             );
         });
 
-        test.todo("should find Movies IN numbers");
+        test("should find Movies IN numbers", async () => {
+            await Promise.all(
+                ["Int", "Float"].map(async (type) => {
+                    const session = driver.session();
+
+                    const randomType = `${generate({
+                        charset: "alphabetic",
+                    })}Movie`;
+
+                    const pluralRandomType = pluralize(randomType);
+
+                    const typeDefs = `
+                        type ${randomType} {
+                            property: ${type}
+                        }
+                    `;
+
+                    const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                    let value: number;
+
+                    if (type === "Int") {
+                        value = Math.floor(Math.random() * 100);
+                    } else {
+                        value = Math.floor(Math.random() * 100) + 0.5;
+                    }
+
+                    let randomValue1: number;
+
+                    if (type === "Int") {
+                        randomValue1 = Math.floor(Math.random() * 100);
+                    } else {
+                        randomValue1 = Math.floor(Math.random() * 100) + 0.5;
+                    }
+
+                    let randomValue2: number;
+
+                    if (type === "Int") {
+                        randomValue2 = Math.floor(Math.random() * 100);
+                    } else {
+                        randomValue2 = Math.floor(Math.random() * 100) + 0.5;
+                    }
+
+                    try {
+                        await session.run(
+                            `
+                            CREATE (:${randomType} {property: $value})
+                        `,
+                            { value }
+                        );
+
+                        const query = `
+                            { 
+                                ${pluralRandomType}(where: { property_IN: [${value}, ${randomValue1}, ${randomValue2}] }) {
+                                    property
+                                }
+                            }
+                        `;
+
+                        const gqlResult = await graphql({
+                            schema: neoSchema.schema,
+                            source: query,
+                            contextValue: { driver },
+                        });
+
+                        if (gqlResult.errors) {
+                            console.log(JSON.stringify(gqlResult.errors, null, 2));
+                        }
+
+                        expect(gqlResult.errors).toEqual(undefined);
+
+                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
+                    } finally {
+                        session.close();
+                    }
+                })
+            );
+        });
+
         test.todo("should find Movies NOT_IN numbers");
         test.todo("should find Movies LT number");
         test.todo("should find Movies LTE number");
