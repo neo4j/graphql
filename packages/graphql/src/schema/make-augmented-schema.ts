@@ -183,7 +183,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                 }
 
                 if (["Boolean"].includes(f.typeMeta.name)) {
-                    res[`${f.fieldName}_IN`] = `[${f.typeMeta.name}]`;
+                    res[`${f.fieldName}_NOT`] = `${f.typeMeta.name}`;
                 }
 
                 if (["Float", "Int"].includes(f.typeMeta.name)) {

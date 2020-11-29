@@ -13,6 +13,7 @@ type Movie {
     id: ID
     actorCount: Int
     averageRating: Float
+    isActive: Boolean
 }
 ```
 
@@ -23,6 +24,7 @@ type Movie {
   id: ID
   actorCount: Int
   averageRating: Float
+  isActive: Boolean
 }
 
 type DeleteInfo {
@@ -57,6 +59,8 @@ input MovieAND {
   averageRating_LTE: Float
   averageRating_GT: Float
   averageRating_GTE: Float
+  isActive: Boolean
+  isActive_NOT: Boolean
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -65,6 +69,7 @@ input MovieCreateInput {
   id: ID
   actorCount: Int
   averageRating: Float
+  isActive: Boolean
 }
 
 input MovieOptions {
@@ -100,6 +105,8 @@ input MovieOR {
   averageRating_LTE: Float
   averageRating_GT: Float
   averageRating_GTE: Float
+  isActive: Boolean
+  isActive_NOT: Boolean
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -111,6 +118,8 @@ enum MovieSort {
   actorCount_ASC
   averageRating_DESC
   averageRating_ASC
+  isActive_DESC
+  isActive_ASC
 }
 
 input MovieWhere {
@@ -140,6 +149,8 @@ input MovieWhere {
   averageRating_LTE: Float
   averageRating_GT: Float
   averageRating_GTE: Float
+  isActive: Boolean
+  isActive_NOT: Boolean
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -148,6 +159,7 @@ input MovieUpdateInput {
   id: ID
   actorCount: Int
   averageRating: Float
+  isActive: Boolean
 }
 
 type Mutation {

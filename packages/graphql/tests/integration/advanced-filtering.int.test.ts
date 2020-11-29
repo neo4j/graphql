@@ -1141,8 +1141,111 @@ describe("Advanced Filtering", () => {
     });
 
     describe("Boolean Filtering", () => {
-        test.todo("should find Movies equality equality");
-        test.todo("should find Movies NOT boolean");
+        test("should find Movies equality equality", async () => {
+            const session = driver.session();
+
+            const randomType = `${generate({
+                charset: "alphabetic",
+            })}Movie`;
+
+            const pluralRandomType = pluralize(randomType);
+
+            const typeDefs = `
+                        type ${randomType} {
+                            property: Boolean
+                        }
+                    `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const value = false;
+
+            try {
+                await session.run(
+                    `
+                            CREATE (:${randomType} {property: $value})
+                        `,
+                    { value }
+                );
+
+                const query = `
+                            { 
+                                ${pluralRandomType}(where: { property: false }) {
+                                    property
+                                }
+                            }
+                        `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toEqual(undefined);
+
+                expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+            } finally {
+                session.close();
+            }
+        });
+
+        test("should find Movies NOT boolean", async () => {
+            const session = driver.session();
+
+            const randomType = `${generate({
+                charset: "alphabetic",
+            })}Movie`;
+
+            const pluralRandomType = pluralize(randomType);
+
+            const typeDefs = `
+                        type ${randomType} {
+                            property: Boolean
+                        }
+                    `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const value = false;
+
+            try {
+                await session.run(
+                    `
+                            CREATE (:${randomType} {property: $value})
+                        `,
+                    { value }
+                );
+
+                const query = `
+                            { 
+                                ${pluralRandomType}(where: { property_NOT: false }) {
+                                    property
+                                }
+                            }
+                        `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toEqual(undefined);
+
+                expect((gqlResult.data as any)[pluralRandomType].length).toEqual(0);
+            } finally {
+                session.close();
+            }
+        });
     });
 
     describe("Relationship Filtering", () => {
