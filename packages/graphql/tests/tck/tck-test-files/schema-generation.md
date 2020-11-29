@@ -44,9 +44,13 @@ input MovieAND {
   actorCount: Int
   actorCount_IN: [Int]
   actorCount_NOT: Int
+  actorCount_NOT_IN: [Int]
+  actorCount_LT: Int
   averageRating: Float
   averageRating_IN: [Float]
   averageRating_NOT: Float
+  averageRating_NOT_IN: [Float]
+  averageRating_LT: Float
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -77,9 +81,13 @@ input MovieOR {
   actorCount: Int
   actorCount_IN: [Int]
   actorCount_NOT: Int
+  actorCount_NOT_IN: [Int]
+  actorCount_LT: Int
   averageRating: Float
   averageRating_IN: [Float]
   averageRating_NOT: Float
+  averageRating_NOT_IN: [Float]
+  averageRating_LT: Float
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -107,9 +115,13 @@ input MovieWhere {
   actorCount: Int
   actorCount_IN: [Int]
   actorCount_NOT: Int
+  actorCount_NOT_IN: [Int]
+  actorCount_LT: Int
   averageRating: Float
   averageRating_IN: [Float]
   averageRating_NOT: Float
+  averageRating_NOT_IN: [Float]
+  averageRating_LT: Float
   OR: [MovieOR]
   AND: [MovieAND]
 }

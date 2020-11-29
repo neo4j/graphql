@@ -188,7 +188,9 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
                 if (["Float", "Int"].includes(f.typeMeta.name)) {
                     res[`${f.fieldName}_IN`] = `[${f.typeMeta.name}]`;
+                    res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.name}]`;
                     res[`${f.fieldName}_NOT`] = `${f.typeMeta.name}`;
+                    res[`${f.fieldName}_LT`] = `${f.typeMeta.name}`;
                 }
 
                 // equality

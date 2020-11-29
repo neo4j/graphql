@@ -83,6 +83,11 @@ function createWhereAndParams({
                 res.params[param] = value;
                 break;
 
+            case "LT":
+                res.clauses.push(`${varName}.${fieldName} < $${param}`);
+                res.params[param] = value;
+                break;
+
             default:
                 switch (fieldName) {
                     case "AND":
