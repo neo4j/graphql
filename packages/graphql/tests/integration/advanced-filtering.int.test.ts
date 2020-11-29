@@ -1006,8 +1006,138 @@ describe("Advanced Filtering", () => {
             );
         });
 
-        test.todo("should find Movies GT number");
-        test.todo("should find Movies GTE number");
+        test("should find Movies GT number", async () => {
+            await Promise.all(
+                ["Int", "Float"].map(async (type) => {
+                    const session = driver.session();
+
+                    const randomType = `${generate({
+                        charset: "alphabetic",
+                    })}Movie`;
+
+                    const pluralRandomType = pluralize(randomType);
+
+                    const typeDefs = `
+                        type ${randomType} {
+                            property: ${type}
+                        }
+                    `;
+
+                    const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                    let value: number;
+
+                    if (type === "Int") {
+                        value = Math.floor(Math.random() * 9999);
+                    } else {
+                        value = Math.floor(Math.random() * 9999) + 0.5;
+                    }
+
+                    const graterThanValue = value + 1;
+
+                    try {
+                        await session.run(
+                            `
+                            CREATE (:${randomType} {property: $value})
+                            CREATE (:${randomType} {property: $graterThanValue})
+                        `,
+                            { value, graterThanValue }
+                        );
+
+                        const query = `
+                            { 
+                                ${pluralRandomType}(where: { property_GT: ${graterThanValue - 1} }) {
+                                    property
+                                }
+                            }
+                        `;
+
+                        const gqlResult = await graphql({
+                            schema: neoSchema.schema,
+                            source: query,
+                            contextValue: { driver },
+                        });
+
+                        if (gqlResult.errors) {
+                            console.log(JSON.stringify(gqlResult.errors, null, 2));
+                        }
+
+                        expect(gqlResult.errors).toEqual(undefined);
+
+                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(graterThanValue);
+                    } finally {
+                        session.close();
+                    }
+                })
+            );
+        });
+
+        test("should find Movies GTE number", async () => {
+            await Promise.all(
+                ["Int", "Float"].map(async (type) => {
+                    const session = driver.session();
+
+                    const randomType = `${generate({
+                        charset: "alphabetic",
+                    })}Movie`;
+
+                    const pluralRandomType = pluralize(randomType);
+
+                    const typeDefs = `
+                        type ${randomType} {
+                            property: ${type}
+                        }
+                    `;
+
+                    const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                    let value: number;
+
+                    if (type === "Int") {
+                        value = Math.floor(Math.random() * 9999);
+                    } else {
+                        value = Math.floor(Math.random() * 9999) + 0.5;
+                    }
+
+                    const greaterThan = value + 1;
+
+                    try {
+                        await session.run(
+                            `
+                            CREATE (:${randomType} {property: $value})
+                            CREATE (:${randomType} {property: $greaterThan})
+                        `,
+                            { value, greaterThan }
+                        );
+
+                        const query = `
+                            { 
+                                ${pluralRandomType}(where: { property_GTE: ${value} }) {
+                                    property
+                                }
+                            }
+                        `;
+
+                        const gqlResult = await graphql({
+                            schema: neoSchema.schema,
+                            source: query,
+                            contextValue: { driver },
+                        });
+
+                        if (gqlResult.errors) {
+                            console.log(JSON.stringify(gqlResult.errors, null, 2));
+                        }
+
+                        expect(gqlResult.errors).toEqual(undefined);
+
+                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(2);
+                    } finally {
+                        session.close();
+                    }
+                })
+            );
+        });
     });
 
     describe("Boolean Filtering", () => {

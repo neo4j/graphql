@@ -350,3 +350,70 @@ RETURN this { .actorCount } as this
 ```
 
 ---
+
+
+### Simple GT
+
+**GraphQL input**
+
+```graphql
+{
+    Movies(where: { actorCount_GT: 123 }){
+        actorCount
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.actorCount > $this_actorCount_GT
+RETURN this { .actorCount } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_actorCount_GT": {
+        "high": 0,
+        "low": 123
+    }
+}
+```
+
+---
+
+### Simple GTE
+
+**GraphQL input**
+
+```graphql
+{
+    Movies(where: { actorCount_GTE: 123 }){
+        actorCount
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.actorCount >= $this_actorCount_GTE
+RETURN this { .actorCount } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_actorCount_GTE": {
+        "high": 0,
+        "low": 123
+    }
+}
+```
+
+---
