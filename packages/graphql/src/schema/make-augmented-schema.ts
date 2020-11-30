@@ -290,6 +290,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     [rel.fieldName]: `${refNode.name}Where`,
                     [`${rel.fieldName}_NOT`]: `${refNode.name}Where`,
                     [`${rel.fieldName}_IN`]: `[${refNode.name}Where]`,
+                    [`${rel.fieldName}_NOT_IN`]: `[${refNode.name}Where]`,
                 });
             });
 

@@ -105,6 +105,36 @@ function createWhereAndParams({
                     }
                     break;
 
+                case "NOT_IN":
+                    {
+                        let resultStr = [
+                            `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
+                            `AND ALL(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${relationField.typeMeta.name}) | ${param}] INNER_WHERE NOT(`,
+                        ].join(" ");
+
+                        const inner: string[] = [];
+
+                        (value as any[]).forEach((v, i) => {
+                            const recurse = createWhereAndParams({
+                                whereInput: v,
+                                varName: param,
+                                chainStr: `${param}${i}`,
+                                node: refNode,
+                                context,
+                                recursing: true,
+                            });
+
+                            inner.push(recurse[0]);
+                            res.params = { ...res.params, ...recurse[1] };
+                        });
+
+                        resultStr += inner.join(" OR ");
+                        resultStr += ")"; // close NOT
+                        resultStr += ")"; // close ALL
+                        res.clauses.push(resultStr);
+                    }
+                    break;
+
                 // equality
                 default: {
                     let resultStr = [
