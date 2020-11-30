@@ -6,6 +6,7 @@ Schema:
 
 ```schema
 type Movie {
+    _id: ID
     id: ID
     title: String
     actorCount: Int
@@ -20,13 +21,43 @@ type Genre {
 
 ---
 
-### Simple IN
+### IN
 
 **GraphQL input**
 
 ```graphql
 {
-    Movies(where: { id_IN: ["123"] }){
+    Movies(where: { _id_IN: ["123"] }){
+        _id
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this._id IN $this__id_IN
+RETURN this { ._id } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this__id_IN": ["123"]
+}
+```
+
+---
+
+### REGEX
+
+**GraphQL input**
+
+```graphql
+{
+    Movies(where: { id_REGEX: "(?i)123.*" }){
         id
     }
 }
@@ -36,7 +67,7 @@ type Genre {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id IN $this_id_IN
+WHERE this.id =~ $this_id_REGEX
 RETURN this { .id } as this
 ```
 
@@ -44,14 +75,13 @@ RETURN this { .id } as this
 
 ```cypher-params
 {
-    "this_id_IN": ["123"]
+    "this_id_REGEX": "(?i)123.*"
 }
 ```
 
 ---
 
-
-### Simple NOT
+### NOT
 
 **GraphQL input**
 
@@ -81,7 +111,7 @@ RETURN this { .id } as this
 
 ---
 
-### Simple NOT_IN
+### NOT_IN
 
 **GraphQL input**
 
@@ -111,7 +141,7 @@ RETURN this { .id } as this
 
 ---
 
-### Simple CONTAINS
+### CONTAINS
 
 **GraphQL input**
 
@@ -141,7 +171,7 @@ RETURN this { .id } as this
 
 ---
 
-### Simple NOT_CONTAINS
+### NOT_CONTAINS
 
 **GraphQL input**
 
@@ -171,7 +201,7 @@ RETURN this { .id } as this
 
 ---
 
-### Simple STARTS_WITH
+### STARTS_WITH
 
 **GraphQL input**
 
@@ -201,7 +231,7 @@ RETURN this { .id } as this
 
 ---
 
-### Simple NOT_STARTS_WITH
+### NOT_STARTS_WITH
 
 **GraphQL input**
 
@@ -231,7 +261,7 @@ RETURN this { .id } as this
 
 ---
 
-### Simple ENDS_WITH
+### ENDS_WITH
 
 **GraphQL input**
 
@@ -261,7 +291,7 @@ RETURN this { .id } as this
 
 ---
 
-### Simple NOT_ENDS_WITH
+### NOT_ENDS_WITH
 
 **GraphQL input**
 
@@ -291,7 +321,7 @@ RETURN this { .id } as this
 
 ---
 
-### Simple LT
+### LT
 
 **GraphQL input**
 
@@ -324,7 +354,7 @@ RETURN this { .actorCount } as this
 
 ---
 
-### Simple LTE
+### LTE
 
 **GraphQL input**
 
@@ -358,7 +388,7 @@ RETURN this { .actorCount } as this
 ---
 
 
-### Simple GT
+### GT
 
 **GraphQL input**
 
@@ -391,7 +421,7 @@ RETURN this { .actorCount } as this
 
 ---
 
-### Simple GTE
+### GTE
 
 **GraphQL input**
 
@@ -424,7 +454,7 @@ RETURN this { .actorCount } as this
 
 ---
 
-### Simple Relationship equality
+### Relationship equality
 
 **GraphQL input**
 
@@ -454,7 +484,7 @@ RETURN this { .actorCount } as this
 
 ---
 
-### Simple Relationship NOT
+### Relationship NOT
 
 **GraphQL input**
 
@@ -484,7 +514,7 @@ RETURN this { .actorCount } as this
 
 ---
 
-### Simple Relationship IN
+### Relationship IN
 
 **GraphQL input**
 
@@ -515,7 +545,7 @@ RETURN this { .actorCount } as this
 
 ---
 
-## Simple Relationship NOT_IN
+## Relationship NOT_IN
 
 **GraphQL input**
 

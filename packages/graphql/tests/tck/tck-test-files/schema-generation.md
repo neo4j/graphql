@@ -43,6 +43,7 @@ input MovieAND {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  id_REGEX: String
   actorCount: Int
   actorCount_IN: [Int]
   actorCount_NOT: Int
@@ -89,6 +90,7 @@ input MovieOR {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  id_REGEX: String
   actorCount: Int
   actorCount_IN: [Int]
   actorCount_NOT: Int
@@ -133,6 +135,7 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  id_REGEX: String
   actorCount: Int
   actorCount_IN: [Int]
   actorCount_NOT: Int
@@ -213,6 +216,7 @@ input ActorAND {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
+  name_REGEX: String
   OR: [ActorOR]
   AND: [ActorAND]
 }
@@ -238,6 +242,7 @@ input ActorOR {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
+  name_REGEX: String
   OR: [ActorOR]
   AND: [ActorAND]
 }
@@ -258,6 +263,7 @@ input ActorWhere {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
+  name_REGEX: String
   OR: [ActorOR]
   AND: [ActorAND]
 }
@@ -295,6 +301,7 @@ input MovieAND {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  id_REGEX: String
   OR: [MovieOR]
   AND: [MovieAND]
   actors: ActorWhere
@@ -325,6 +332,7 @@ input MovieOR {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  id_REGEX: String
   OR: [MovieOR]
   AND: [MovieAND]
   actors: ActorWhere
@@ -349,6 +357,7 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  id_REGEX: String
   OR: [MovieOR]
   AND: [MovieAND]
   actors: ActorWhere
@@ -436,6 +445,7 @@ input ActorAND {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
+  name_REGEX: String
   movies: MovieWhere
   movies_NOT: MovieWhere
   movies_IN: [MovieWhere]
@@ -501,6 +511,7 @@ input ActorOR {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
+  name_REGEX: String
   movies: MovieWhere
   movies_NOT: MovieWhere
   movies_IN: [MovieWhere]
@@ -530,6 +541,7 @@ input ActorWhere {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
+  name_REGEX: String
   movies: MovieWhere
   movies_NOT: MovieWhere
   movies_IN: [MovieWhere]
@@ -572,6 +584,7 @@ input MovieAND {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  id_REGEX: String
   actors: ActorWhere
   actors_NOT: ActorWhere
   actors_IN: [ActorWhere]
@@ -620,6 +633,7 @@ input MovieOR {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  id_REGEX: String
   actors: ActorWhere
   actors_NOT: ActorWhere
   actors_IN: [ActorWhere]
@@ -653,6 +667,7 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  id_REGEX: String
   actors: ActorWhere
   actors_NOT: ActorWhere
   actors_IN: [ActorWhere]
@@ -727,6 +742,7 @@ input ActorAND {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
+  name_REGEX: String
 }
 
 input ActorCreateInput {
@@ -752,6 +768,7 @@ input ActorOR {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
+  name_REGEX: String
 }
 
 enum ActorSort {
@@ -776,6 +793,7 @@ input ActorWhere {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
+  name_REGEX: String
 }
 
 type DeleteInfo {
@@ -801,6 +819,7 @@ input MovieAND {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  id_REGEX: String
 }
 
 input MovieCreateInput {
@@ -826,6 +845,7 @@ input MovieOR {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  id_REGEX: String
 }
 
 enum MovieSort {
@@ -850,6 +870,7 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  id_REGEX: String
 }
 
 type Mutation {

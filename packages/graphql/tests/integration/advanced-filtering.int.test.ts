@@ -85,6 +85,68 @@ describe("Advanced Filtering", () => {
             );
         });
 
+        test("should find Movies REGEX", async () => {
+            await Promise.all(
+                ["ID", "String"].map(async (type) => {
+                    const session = driver.session();
+
+                    const randomType = `${generate({
+                        charset: "alphabetic",
+                    })}Movie`;
+
+                    const pluralRandomType = pluralize(randomType);
+
+                    const typeDefs = `
+                        type ${randomType} {
+                            property: ${type}
+                        }
+                    `;
+
+                    const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                    const value = generate({
+                        readable: true,
+                        charset: "alphabetic",
+                    });
+
+                    try {
+                        await session.run(
+                            `
+                            CREATE (:${randomType} {property: $value})
+                        `,
+                            { value: value + value }
+                        );
+
+                        const query = `
+                            { 
+                                ${pluralRandomType}(where: { property_REGEX: "(?i)${value}.*" }) {
+                                    property
+                                }
+                            }
+                        `;
+
+                        const gqlResult = await graphql({
+                            schema: neoSchema.schema,
+                            source: query,
+                            contextValue: { driver },
+                        });
+
+                        if (gqlResult.errors) {
+                            console.log(JSON.stringify(gqlResult.errors, null, 2));
+                        }
+
+                        expect(gqlResult.errors).toEqual(undefined);
+
+                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+
+                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value + value);
+                    } finally {
+                        session.close();
+                    }
+                })
+            );
+        });
+
         test("should find Movies NOT string", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
