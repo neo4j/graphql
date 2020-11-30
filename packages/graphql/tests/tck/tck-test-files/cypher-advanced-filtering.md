@@ -453,3 +453,33 @@ RETURN this { .actorCount } as this
 ```
 
 ---
+
+### Simple Relationship NOT
+
+**GraphQL input**
+
+```graphql
+{
+    Movies(where: { genres_NOT: { name: "some genre" } }){
+        actorCount
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie) 
+WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND NONE(this_genres_NOT IN [(this)-[:IN_GENRE]->(this_genres_NOT:Genre) | this_genres_NOT] WHERE this_genres_NOT.name = $this_genres_NOT_name) 
+RETURN this { .actorCount } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_genres_NOT_name": "some genre"
+}
+```
+
+---

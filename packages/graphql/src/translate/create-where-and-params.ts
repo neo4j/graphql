@@ -33,8 +33,11 @@ function createWhereAndParams({
             param = `${varName}_${key}`;
         }
 
-        const relationField = node.relationFields.find((x) => key === x.fieldName);
+        const [fieldName, ...rest] = key.split("_");
+        const operator = rest.join("_");
+        const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
         const valueIsObject = Boolean(!Array.isArray(value) && Object.keys(value).length && typeof value !== "string");
+
         if (valueIsObject && !relationField) {
             const recurse = createWhereAndParams({ whereInput: value, varName, chainStr, node, context, recursing });
             res.clauses.push(`(${recurse[0]})`);
@@ -43,8 +46,62 @@ function createWhereAndParams({
             return res;
         }
 
-        const [fieldName, ...rest] = key.split("_");
-        const operator = rest.join("_");
+        if (relationField) {
+            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const inStr = relationField.direction === "IN" ? "<-" : "-";
+            const outStr = relationField.direction === "OUT" ? "->" : "-";
+            const relTypeStr = `[:${relationField.type}]`;
+
+            switch (operator) {
+                case "NOT":
+                    {
+                        let resultStr = [
+                            `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
+                            `AND NONE(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${relationField.typeMeta.name}) | ${param}] INNER_WHERE `,
+                        ].join(" ");
+
+                        const recurse = createWhereAndParams({
+                            whereInput: value,
+                            varName: param,
+                            chainStr: param,
+                            node: refNode,
+                            context,
+                            recursing: true,
+                        });
+
+                        resultStr += recurse[0];
+                        resultStr += ")"; // close ALL
+                        res.clauses.push(resultStr);
+                        res.params = { ...res.params, ...recurse[1] };
+                    }
+                    break;
+
+                // equality
+                default: {
+                    let resultStr = [
+                        `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
+                        `AND ALL(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${relationField.typeMeta.name}) | ${param}] INNER_WHERE `,
+                    ].join(" ");
+
+                    const recurse = createWhereAndParams({
+                        whereInput: value,
+                        varName: param,
+                        chainStr: param,
+                        node: refNode,
+                        context,
+                        recursing: true,
+                    });
+
+                    resultStr += recurse[0];
+                    resultStr += ")"; // close ALL
+                    res.clauses.push(resultStr);
+                    res.params = { ...res.params, ...recurse[1] };
+                }
+            }
+
+            return res;
+        }
+
         switch (operator) {
             case "IN":
                 res.clauses.push(`${varName}.${fieldName} IN $${param}`);
@@ -137,37 +194,8 @@ function createWhereAndParams({
                         break;
 
                     default: {
-                        if (relationField) {
-                            const refNode = context.neoSchema.nodes.find(
-                                (x) => x.name === relationField.typeMeta.name
-                            ) as Node;
-
-                            const inStr = relationField.direction === "IN" ? "<-" : "-";
-                            const outStr = relationField.direction === "OUT" ? "->" : "-";
-                            const relTypeStr = `[:${relationField.type}]`;
-
-                            let resultStr = [
-                                `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
-                                `AND ALL(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${relationField.typeMeta.name}) | ${param}] INNER_WHERE `,
-                            ].join(" ");
-
-                            const recurse = createWhereAndParams({
-                                whereInput: value,
-                                varName: param,
-                                chainStr: param,
-                                node: refNode,
-                                context,
-                                recursing: true,
-                            });
-
-                            resultStr += recurse[0];
-                            resultStr += ")"; // close ALL
-                            res.clauses.push(resultStr);
-                            res.params = { ...res.params, ...recurse[1] };
-                        } else {
-                            res.clauses.push(`${varName}.${fieldName} = $${param}`);
-                            res.params[param] = value;
-                        }
+                        res.clauses.push(`${varName}.${fieldName} = $${param}`);
+                        res.params[param] = value;
                     }
                 }
         }
