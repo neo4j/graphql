@@ -483,3 +483,34 @@ RETURN this { .actorCount } as this
 ```
 
 ---
+
+### Simple Relationship IN
+
+**GraphQL input**
+
+```graphql
+{
+    Movies(where: { genres_IN: [{ name: "first genre" }, { name: "second genre" }] }){
+        actorCount
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie) 
+WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres_IN IN [(this)-[:IN_GENRE]->(this_genres_IN:Genre) | this_genres_IN] WHERE this_genres_IN.name = $this_genres_IN0_name OR this_genres_IN.name = $this_genres_IN1_name)
+RETURN this { .actorCount } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_genres_IN0_name": "first genre",
+    "this_genres_IN1_name": "second genre"
+}
+```
+
+---
