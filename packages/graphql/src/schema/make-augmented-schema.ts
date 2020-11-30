@@ -172,28 +172,29 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
                 if (["ID", "String"].includes(f.typeMeta.name)) {
                     res[`${f.fieldName}_IN`] = `[${f.typeMeta.name}]`;
-                    res[`${f.fieldName}_NOT`] = `${f.typeMeta.name}`;
+                    res[`${f.fieldName}_NOT`] = f.typeMeta.name;
                     res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.name}]`;
-                    res[`${f.fieldName}_CONTAINS`] = `${f.typeMeta.name}`;
-                    res[`${f.fieldName}_NOT_CONTAINS`] = `${f.typeMeta.name}`;
-                    res[`${f.fieldName}_STARTS_WITH`] = `${f.typeMeta.name}`;
-                    res[`${f.fieldName}_NOT_STARTS_WITH`] = `${f.typeMeta.name}`;
-                    res[`${f.fieldName}_ENDS_WITH`] = `${f.typeMeta.name}`;
-                    res[`${f.fieldName}_NOT_ENDS_WITH`] = `${f.typeMeta.name}`;
+                    res[`${f.fieldName}_CONTAINS`] = f.typeMeta.name;
+                    res[`${f.fieldName}_NOT_CONTAINS`] = f.typeMeta.name;
+                    res[`${f.fieldName}_STARTS_WITH`] = f.typeMeta.name;
+                    res[`${f.fieldName}_NOT_STARTS_WITH`] = f.typeMeta.name;
+                    res[`${f.fieldName}_ENDS_WITH`] = f.typeMeta.name;
+                    res[`${f.fieldName}_NOT_ENDS_WITH`] = f.typeMeta.name;
+                    res[`${f.fieldName}_REGEX`] = "String";
                 }
 
                 if (["Boolean"].includes(f.typeMeta.name)) {
-                    res[`${f.fieldName}_NOT`] = `${f.typeMeta.name}`;
+                    res[`${f.fieldName}_NOT`] = f.typeMeta.name;
                 }
 
                 if (["Float", "Int"].includes(f.typeMeta.name)) {
                     res[`${f.fieldName}_IN`] = `[${f.typeMeta.name}]`;
                     res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.name}]`;
-                    res[`${f.fieldName}_NOT`] = `${f.typeMeta.name}`;
-                    res[`${f.fieldName}_LT`] = `${f.typeMeta.name}`;
-                    res[`${f.fieldName}_LTE`] = `${f.typeMeta.name}`;
-                    res[`${f.fieldName}_GT`] = `${f.typeMeta.name}`;
-                    res[`${f.fieldName}_GTE`] = `${f.typeMeta.name}`;
+                    res[`${f.fieldName}_NOT`] = f.typeMeta.name;
+                    res[`${f.fieldName}_LT`] = f.typeMeta.name;
+                    res[`${f.fieldName}_LTE`] = f.typeMeta.name;
+                    res[`${f.fieldName}_GT`] = f.typeMeta.name;
+                    res[`${f.fieldName}_GTE`] = f.typeMeta.name;
                 }
 
                 // equality
