@@ -298,6 +298,7 @@ input MovieAND {
   OR: [MovieOR]
   AND: [MovieAND]
   actors: ActorWhere
+  actors_NOT: ActorWhere
 }
 
 input MovieCreateInput {
@@ -325,6 +326,7 @@ input MovieOR {
   OR: [MovieOR]
   AND: [MovieAND]
   actors: ActorWhere
+  actors_NOT: ActorWhere
 }
 
 enum MovieSort {
@@ -346,6 +348,7 @@ input MovieWhere {
   OR: [MovieOR]
   AND: [MovieAND]
   actors: ActorWhere
+  actors_NOT: ActorWhere
 }
 
 input MovieUpdateInput {
@@ -428,6 +431,7 @@ input ActorAND {
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
   movies: MovieWhere
+  movies_NOT: MovieWhere
 }
 
 input ActorConnectFieldInput {
@@ -490,6 +494,7 @@ input ActorOR {
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
   movies: MovieWhere
+  movies_NOT: MovieWhere
 }
 
 enum ActorSort {
@@ -516,6 +521,7 @@ input ActorWhere {
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
   movies: MovieWhere
+  movies_NOT: MovieWhere
 }
 
 type DeleteInfo {
@@ -555,6 +561,7 @@ input MovieAND {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   actors: ActorWhere
+  actors_NOT: ActorWhere
 }
 
 input MovieConnectFieldInput {
@@ -600,6 +607,7 @@ input MovieOR {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   actors: ActorWhere
+  actors_NOT: ActorWhere
 }
 
 input MovieRelationInput {
@@ -630,6 +638,7 @@ input MovieWhere {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   actors: ActorWhere
+  actors_NOT: ActorWhere
 }
 
 type Mutation {

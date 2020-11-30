@@ -288,6 +288,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             [whereInput, andInput, orInput].forEach((inputType) => {
                 inputType.addFields({
                     [rel.fieldName]: `${refNode.name}Where`,
+                    [`${rel.fieldName}_NOT`]: `${refNode.name}Where`,
                 });
             });
 
