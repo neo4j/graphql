@@ -289,6 +289,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                 inputType.addFields({
                     [rel.fieldName]: `${refNode.name}Where`,
                     [`${rel.fieldName}_NOT`]: `${refNode.name}Where`,
+                    [`${rel.fieldName}_IN`]: `[${refNode.name}Where]`,
                 });
             });
 
