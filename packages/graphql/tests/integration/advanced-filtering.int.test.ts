@@ -1601,13 +1601,5 @@ describe("Advanced Filtering", () => {
                 session.close();
             }
         });
-
-        test.todo("should find Movies genres_SOME");
-
-        test.todo("should find Movies genres_NONE");
-
-        test.todo("should find Movies genres_SINGLE");
-
-        test.todo("should find Movies genres_EVERY");
     });
 });
