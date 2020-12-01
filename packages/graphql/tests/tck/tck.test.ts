@@ -50,7 +50,7 @@ describe("TCK Generated tests", () => {
 
                     const socket = new Socket({ readable: true });
                     const req = new IncomingMessage(socket);
-                    const token = jsonwebtoken.sign(jwt, process.env.JWT_SECRET);
+                    const token = jsonwebtoken.sign(jwt, process.env.JWT_SECRET as string);
                     req.headers.authorization = `Bearer ${token}`;
 
                     const context = {

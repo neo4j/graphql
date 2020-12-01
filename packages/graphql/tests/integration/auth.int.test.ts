@@ -76,7 +76,7 @@ describe("auth", () => {
                     }
                 `;
 
-                const token = jsonwebtoken.sign({ roles: ["not admin"] }, process.env.JWT_SECRET);
+                const token = jsonwebtoken.sign({ roles: ["not admin"] }, process.env.JWT_SECRET as string);
 
                 const neoSchema = makeAugmentedSchema({ typeDefs });
 
@@ -161,7 +161,7 @@ describe("auth", () => {
                         charset: "alphabetic",
                     });
 
-                    const token = jsonwebtoken.sign({ sub: "invalid" }, process.env.JWT_SECRET);
+                    const token = jsonwebtoken.sign({ sub: "invalid" }, process.env.JWT_SECRET as string);
 
                     const neoSchema = makeAugmentedSchema({ typeDefs });
 
@@ -242,7 +242,7 @@ describe("auth", () => {
                             }
                         `;
 
-                    const token = jsonwebtoken.sign({ sub: id }, process.env.JWT_SECRET);
+                    const token = jsonwebtoken.sign({ sub: id }, process.env.JWT_SECRET as string);
 
                     const neoSchema = makeAugmentedSchema({ typeDefs });
 
@@ -359,7 +359,7 @@ describe("auth", () => {
                     charset: "alphabetic",
                 });
 
-                const token = jsonwebtoken.sign({ sub: "ALLOW *" }, process.env.JWT_SECRET);
+                const token = jsonwebtoken.sign({ sub: "ALLOW *" }, process.env.JWT_SECRET as string);
 
                 const neoSchema = makeAugmentedSchema({ typeDefs });
 
@@ -470,7 +470,7 @@ describe("auth", () => {
                 }
             `;
 
-                const token = jsonwebtoken.sign({}, process.env.JWT_SECRET);
+                const token = jsonwebtoken.sign({}, process.env.JWT_SECRET as string);
 
                 const neoSchema = makeAugmentedSchema({ typeDefs });
 
@@ -559,7 +559,7 @@ describe("auth", () => {
                     }
                 `;
 
-                const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.JWT_SECRET);
+                const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.JWT_SECRET as string);
 
                 const neoSchema = makeAugmentedSchema({ typeDefs });
 
@@ -661,7 +661,7 @@ describe("auth", () => {
                     }
                 `;
 
-                const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.JWT_SECRET);
+                const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.JWT_SECRET as string);
 
                 const neoSchema = makeAugmentedSchema({ typeDefs });
 
@@ -783,7 +783,7 @@ describe("auth", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ sub: "NOT VALID" }, process.env.JWT_SECRET);
+            const token = jsonwebtoken.sign({ sub: "NOT VALID" }, process.env.JWT_SECRET as string);
 
             const neoSchema = makeAugmentedSchema({ typeDefs });
 
@@ -875,7 +875,7 @@ describe("auth", () => {
                 charset: "alphabetic",
             });
 
-            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET);
+            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
             const neoSchema = makeAugmentedSchema({ typeDefs });
 
@@ -957,7 +957,7 @@ describe("auth", () => {
 
             const neoSchema = makeAugmentedSchema({ typeDefs });
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.JWT_SECRET);
+            const token = jsonwebtoken.sign({ roles: [] }, process.env.JWT_SECRET as string);
 
             const postId = generate({
                 charset: "alphabetic",
@@ -1030,7 +1030,7 @@ describe("auth", () => {
 
             const neoSchema = makeAugmentedSchema({ typeDefs });
 
-            const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.JWT_SECRET);
+            const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.JWT_SECRET as string);
 
             const postId = generate({
                 charset: "alphabetic",
@@ -1112,7 +1112,7 @@ describe("auth", () => {
                     }
                 `;
 
-                const token = jsonwebtoken.sign({ sub: "INVALID" }, process.env.JWT_SECRET);
+                const token = jsonwebtoken.sign({ sub: "INVALID" }, process.env.JWT_SECRET as string);
 
                 const neoSchema = makeAugmentedSchema({ typeDefs });
 
@@ -1199,7 +1199,7 @@ describe("auth", () => {
                     charset: "alphabetic",
                 });
 
-                const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET);
+                const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
                 const neoSchema = makeAugmentedSchema({ typeDefs });
 
@@ -1277,7 +1277,7 @@ describe("auth", () => {
 
                 const neoSchema = makeAugmentedSchema({ typeDefs });
 
-                const token = jsonwebtoken.sign({ sub: "INVALID" }, process.env.JWT_SECRET);
+                const token = jsonwebtoken.sign({ sub: "INVALID" }, process.env.JWT_SECRET as string);
 
                 const postId = generate({
                     charset: "alphabetic",
@@ -1377,7 +1377,7 @@ describe("auth", () => {
                     charset: "alphabetic",
                 });
 
-                const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET);
+                const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
                 const query = `
                 {
@@ -1455,7 +1455,7 @@ describe("auth", () => {
 
                 const neoSchema = makeAugmentedSchema({ typeDefs });
 
-                const token = jsonwebtoken.sign({ sub: "INVALID" }, process.env.JWT_SECRET);
+                const token = jsonwebtoken.sign({ sub: "INVALID" }, process.env.JWT_SECRET as string);
 
                 const postId = generate({
                     charset: "alphabetic",
@@ -1556,7 +1556,7 @@ describe("auth", () => {
                     charset: "alphabetic",
                 });
 
-                const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET);
+                const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
                 const query = `
                 {
