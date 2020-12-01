@@ -8,7 +8,7 @@ function verifyAndDecodeToken(token: string): any {
             return jsonwebtoken.decode(token);
         }
 
-        return jsonwebtoken.verify(token, JWT_SECRET, {
+        return jsonwebtoken.verify(token, JWT_SECRET as string, {
             algorithms: ["HS256", "RS256"],
         });
     } catch (err) {
