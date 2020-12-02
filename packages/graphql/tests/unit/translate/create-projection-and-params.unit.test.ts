@@ -1,5 +1,6 @@
+import { describe, test, expect } from "@jest/globals";
 import createProjectionAndParams from "../../../src/translate/create-projection-and-params";
-import { NeoSchema } from "../../../src/classes";
+import { NeoSchema, Context } from "../../../src/classes";
 
 describe("createProjectionAndParams", () => {
     test("should be a function", () => {
@@ -42,7 +43,10 @@ describe("createProjectionAndParams", () => {
             nodes: [node],
         };
 
-        const result = createProjectionAndParams({ fieldsByTypeName, node, neoSchema, varName: "this" });
+        // @ts-ignore
+        const context = new Context({ neoSchema });
+
+        const result = createProjectionAndParams({ fieldsByTypeName, node, context, varName: "this" });
 
         expect(result[0]).toEqual(`{ .title }`);
         expect(result[1]).toMatchObject({});

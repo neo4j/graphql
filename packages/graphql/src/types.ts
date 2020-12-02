@@ -62,3 +62,5 @@ export interface GraphQLWhereArg {
     AND?: GraphQLOptionsArg[];
     OR?: GraphQLOptionsArg[];
 }
+
+export type AuthOperations = "create" | "read" | "update" | "delete";

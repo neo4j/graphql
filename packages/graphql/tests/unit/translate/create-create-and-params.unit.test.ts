@@ -1,9 +1,10 @@
+import { describe, test, expect } from "@jest/globals";
 import createCreateAndParams from "../../../src/translate/create-create-and-params";
-import { NeoSchema } from "../../../src/classes";
+import { NeoSchema, Context } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
 describe("createCreateAndParams", () => {
-    test("should return the correct create and params", () => {
+    test("should return the correct projection with 1 selection", () => {
         const input = {
             title: "some title",
         };
@@ -32,10 +33,13 @@ describe("createCreateAndParams", () => {
             nodes: [node],
         };
 
+        // @ts-ignore
+        const context = new Context({ neoSchema });
+
         const result = createCreateAndParams({
             input,
             node,
-            neoSchema,
+            context,
             varName: "this0",
             withVars: ["this0"],
         });

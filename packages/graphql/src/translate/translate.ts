@@ -1,23 +1,25 @@
 import { GraphQLResolveInfo } from "graphql";
 import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import pluralize from "pluralize";
-import { NeoSchema, Node } from "../classes";
+import { Driver } from "neo4j-driver";
+import { NeoSchema, Node, Context } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { GraphQLWhereArg, GraphQLOptionsArg, RelationField } from "../types";
+import { GraphQLWhereArg, GraphQLOptionsArg, RelationField, AuthOperations } from "../types";
+import { checkRoles } from "../auth";
+import createAllowAndParams from "./create-allow-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 
 function translateRead({
-    neoSchema,
     resolveTree,
     node,
+    context,
 }: {
-    neoSchema: NeoSchema;
     resolveTree: ResolveTree;
-    context: any;
+    context: Context;
     node: Node;
 }): [string, any] {
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
@@ -27,6 +29,7 @@ function translateRead({
 
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
+    let authStr = "";
     let skipStr = "";
     let limitStr = "";
     let sortStr = "";
@@ -35,7 +38,7 @@ function translateRead({
 
     const projection = createProjectionAndParams({
         node,
-        neoSchema,
+        context,
         fieldsByTypeName,
         varName,
     });
@@ -49,6 +52,17 @@ function translateRead({
         });
         whereStr = where[0];
         cypherParams = { ...cypherParams, ...where[1] };
+    }
+
+    if (node.auth) {
+        const allowAndParams = createAllowAndParams({
+            operation: "read",
+            node,
+            context,
+            varName,
+        });
+        cypherParams = { ...cypherParams, ...allowAndParams[1] };
+        authStr = allowAndParams[0];
     }
 
     if (optionsInput) {
@@ -85,23 +99,23 @@ function translateRead({
     const cypher = [
         matchStr,
         whereStr,
+        authStr,
         `RETURN ${varName} ${projStr} as ${varName}`,
-        `${sortStr || ""}`,
-        `${skipStr || ""}`,
-        `${limitStr || ""}`,
+        sortStr,
+        skipStr,
+        limitStr,
     ];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
 }
 
 function translateCreate({
-    neoSchema,
+    context,
     resolveTree,
     node,
 }: {
-    neoSchema: NeoSchema;
     resolveTree: ResolveTree;
-    context: any;
+    context: Context;
     node: Node;
 }): [string, any] {
     const fieldsByTypeName = resolveTree.fieldsByTypeName;
@@ -114,7 +128,7 @@ function translateCreate({
             const createAndParams = createCreateAndParams({
                 input,
                 node,
-                neoSchema,
+                context,
                 varName,
                 withVars: res.withVars,
             });
@@ -138,7 +152,7 @@ function translateCreate({
     /* so projection params don't conflict with create params. We only need to call createProjectionAndParams once. */
     const projection = createProjectionAndParams({
         node,
-        neoSchema,
+        context,
         fieldsByTypeName,
         varName: "REPLACE_ME",
     });
@@ -159,43 +173,14 @@ function translateCreate({
     return [cypher.join("\n"), { ...params, ...replacedProjectionParams }];
 }
 
-function translateDelete({
-    resolveTree,
-    node,
-}: {
-    neoSchema: NeoSchema;
-    resolveTree: ResolveTree;
-    node: Node;
-}): [string, any] {
-    const whereInput = resolveTree.args.where as GraphQLWhereArg;
-    const varName = "this";
-
-    const matchStr = `MATCH (${varName}:${node.name})`;
-    let whereStr = "";
-    let cypherParams: { [k: string]: any } = {};
-
-    if (whereInput) {
-        const where = createWhereAndParams({
-            whereInput,
-            varName,
-        });
-        whereStr = where[0];
-        cypherParams = { ...cypherParams, ...where[1] };
-    }
-
-    const cypher = [matchStr, whereStr, `DETACH DELETE ${varName}`];
-
-    return [cypher.filter(Boolean).join("\n"), cypherParams];
-}
-
 function translateUpdate({
     resolveTree,
     node,
-    neoSchema,
+    context,
 }: {
-    neoSchema: NeoSchema;
     resolveTree: ResolveTree;
     node: Node;
+    context: Context;
 }): [string, any] {
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const updateInput = resolveTree.args.update;
@@ -207,6 +192,7 @@ function translateUpdate({
 
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
+    let authStr = "";
     let updateStr = "";
     let connectStr = "";
     let disconnectStr = "";
@@ -223,9 +209,20 @@ function translateUpdate({
         cypherParams = { ...cypherParams, ...where[1] };
     }
 
+    if (node.auth) {
+        const allowAndParams = createAllowAndParams({
+            operation: "update",
+            node,
+            context,
+            varName,
+        });
+        cypherParams = { ...cypherParams, ...allowAndParams[1] };
+        authStr = allowAndParams[0];
+    }
+
     if (updateInput) {
         const updateAndParams = createUpdateAndParams({
-            neoSchema,
+            context,
             node,
             updateInput,
             varName,
@@ -239,10 +236,10 @@ function translateUpdate({
     if (connectInput) {
         Object.entries(connectInput).forEach((entry) => {
             const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
-            const refNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
             const connectAndParams = createConnectAndParams({
-                neoSchema,
+                context,
                 parentVar: varName,
                 refNode,
                 relationField,
@@ -258,10 +255,10 @@ function translateUpdate({
     if (disconnectInput) {
         Object.entries(disconnectInput).forEach((entry) => {
             const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
-            const refNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
             const disconnectAndParams = createDisconnectAndParams({
-                neoSchema,
+                context,
                 parentVar: varName,
                 refNode,
                 relationField,
@@ -277,7 +274,7 @@ function translateUpdate({
     if (createInput) {
         Object.entries(createInput).forEach((entry) => {
             const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
-            const refNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const outStr = relationField.direction === "OUT" ? "->" : "-";
             const relTypeStr = `[:${relationField.type}]`;
@@ -287,7 +284,7 @@ function translateUpdate({
                 const innerVarName = `${varName}_create_${entry[0]}${index}`;
 
                 const createAndParams = createCreateAndParams({
-                    neoSchema,
+                    context,
                     node: refNode,
                     input: create,
                     varName: innerVarName,
@@ -302,7 +299,7 @@ function translateUpdate({
 
     const projection = createProjectionAndParams({
         node,
-        neoSchema,
+        context,
         fieldsByTypeName,
         varName,
     });
@@ -312,6 +309,7 @@ function translateUpdate({
     const cypher = [
         matchStr,
         whereStr,
+        authStr,
         updateStr,
         connectStr,
         disconnectStr,
@@ -322,16 +320,71 @@ function translateUpdate({
     return [cypher.filter(Boolean).join("\n"), cypherParams];
 }
 
-function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQLResolveInfo }): [string, any] {
-    const neoSchema: NeoSchema = context.neoSchema;
+function translateDelete({
+    resolveTree,
+    node,
+    context,
+}: {
+    resolveTree: ResolveTree;
+    node: Node;
+    context: Context;
+}): [string, any] {
+    const whereInput = resolveTree.args.where as GraphQLWhereArg;
+    const varName = "this";
+
+    const matchStr = `MATCH (${varName}:${node.name})`;
+    let whereStr = "";
+    let authStr = "";
+    let cypherParams: { [k: string]: any } = {};
+
+    if (whereInput) {
+        const where = createWhereAndParams({
+            whereInput,
+            varName,
+        });
+        whereStr = where[0];
+        cypherParams = { ...cypherParams, ...where[1] };
+    }
+
+    if (node.auth) {
+        const allowAndParams = createAllowAndParams({
+            operation: "delete",
+            node,
+            context,
+            varName,
+        });
+        cypherParams = { ...cypherParams, ...allowAndParams[1] };
+        authStr = allowAndParams[0];
+    }
+
+    const cypher = [matchStr, whereStr, authStr, `DETACH DELETE ${varName}`];
+
+    return [cypher.filter(Boolean).join("\n"), cypherParams];
+}
+
+function translate({
+    context: graphQLContext,
+    resolveInfo,
+}: {
+    context: any;
+    resolveInfo: GraphQLResolveInfo;
+}): [string, any] {
+    const neoSchema: NeoSchema = graphQLContext.neoSchema;
     if (!neoSchema || !(neoSchema instanceof NeoSchema)) {
         throw new Error("invalid schema");
     }
 
+    const context = new Context({
+        graphQLContext,
+        neoSchema,
+        driver: graphQLContext.driver as Driver,
+    });
+
     const resolveTree = parseResolveInfo(resolveInfo) as ResolveTree;
     const operationType = resolveInfo.operation.operation;
     const operationName = resolveInfo.fieldName;
-    let operation: "create" | "read" | "delete" | "update" = "read";
+
+    let operation: AuthOperations = "read";
     let node: Node | undefined;
 
     if (operationType === "mutation") {
@@ -347,41 +400,45 @@ function translate({ context, resolveInfo }: { context: any; resolveInfo: GraphQ
             operation = "update";
         }
 
-        node = neoSchema.nodes.find((x) => x.name === pluralize.singular(resolveTree.name.split(operation)[1])) as Node;
+        node = context.neoSchema.nodes.find(
+            (x) => x.name === pluralize.singular(resolveTree.name.split(operation)[1])
+        ) as Node;
     } else {
         operation = "read";
-        node = neoSchema.nodes.find((x) => x.name === pluralize.singular(resolveTree.name)) as Node;
+        node = context.neoSchema.nodes.find((x) => x.name === pluralize.singular(resolveTree.name)) as Node;
+    }
+
+    if (node.auth) {
+        checkRoles({ node, context, operation });
     }
 
     switch (operation) {
         case "create":
             return translateCreate({
                 resolveTree,
-                neoSchema,
+                node,
                 context,
-                node: node as Node,
             });
 
         case "update":
             return translateUpdate({
                 resolveTree,
-                neoSchema,
-                node: node as Node,
+                node,
+                context,
             });
 
         case "delete":
             return translateDelete({
                 resolveTree,
-                neoSchema,
-                node: node as Node,
+                node,
+                context,
             });
 
         default:
             return translateRead({
                 resolveTree,
-                neoSchema,
+                node,
                 context,
-                node: node as Node,
             });
     }
 }

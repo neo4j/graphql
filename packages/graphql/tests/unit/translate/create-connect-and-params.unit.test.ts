@@ -1,5 +1,6 @@
+import { describe, test, expect } from "@jest/globals";
 import createConnectAndParams from "../../../src/translate/create-connect-and-params";
-import { NeoSchema, Node } from "../../../src/classes";
+import { NeoSchema, Node, Context } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
 describe("createConnectAndParams", () => {
@@ -30,13 +31,16 @@ describe("createConnectAndParams", () => {
             nodes: [node],
         };
 
+        // @ts-ignore
+        const context = new Context({ neoSchema });
+
         const result = createConnectAndParams({
             withVars: ["this"],
             value: [{ where: { title: "abc" }, connect: { similarMovies: [{ where: { title: "cba" } }] } }],
             varName: "this",
             relationField: node.relationFields[0],
             parentVar: "this",
-            neoSchema,
+            context,
             refNode: node,
         });
 

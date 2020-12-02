@@ -15,6 +15,7 @@ export type Test = {
     cypherParams?: Params;
     typeDefs?: string;
     schemaOutPut?: string;
+    jwt?: any;
 };
 
 export type TestCase = {
@@ -39,6 +40,7 @@ const cypherQueryRe = /```cypher(?<capture>(.|\s)*?)```/;
 const cypherParamsRe = /```cypher-params(?<capture>(.|\s)*?)```/;
 const typeDefsInputRe = /```typedefs-input(?<capture>(.|\s)*?)```/;
 const schemaOutputRe = /```schema-output(?<capture>(.|\s)*?)```/;
+const jwtRe = /```jwt(?<capture>(.|\s)*?)```/;
 
 function generateTests(filePath): TestCase {
     const data = fs.readFileSync(filePath, { encoding: "utf8" });
@@ -96,6 +98,7 @@ function extractTests(contents: string, kind: Kind): Test[] {
                 }
 
                 const graphQlQuery = captureOrEmptyString(t, graphqlQueryRe);
+                const jwt = JSON.parse(captureOrEmptyString(t, jwtRe) || "{}");
                 const graphQlParams = JSON.parse(captureOrEmptyString(t, graphqlParamsRe) || "{}") as Params;
                 const cypherQuery = captureOrEmptyString(t, cypherQueryRe);
                 const cypherParams = JSON.parse(captureOrEmptyString(t, cypherParamsRe) || "{}") as Params;
@@ -106,6 +109,7 @@ function extractTests(contents: string, kind: Kind): Test[] {
                     graphQlParams,
                     cypherQuery,
                     cypherParams,
+                    jwt,
                 };
             }
         )

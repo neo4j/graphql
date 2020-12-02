@@ -39,6 +39,12 @@ async function execute(input: {
         }
 
         return deserialize(result.records.map((r) => r.toObject()));
+    } catch (error) {
+        if (error.message.includes("Caused by: java.lang.RuntimeException: Forbidden")) {
+            throw new Error("Forbidden");
+        }
+
+        throw error;
     } finally {
         await session.close();
     }

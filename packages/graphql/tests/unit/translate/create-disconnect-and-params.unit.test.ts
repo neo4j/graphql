@@ -1,6 +1,6 @@
 import { describe, test, expect } from "@jest/globals";
 import createDisconnectAndParams from "../../../src/translate/create-disconnect-and-params";
-import { NeoSchema, Node } from "../../../src/classes";
+import { NeoSchema, Node, Context } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
 describe("createDisconnectAndParams", () => {
@@ -31,13 +31,16 @@ describe("createDisconnectAndParams", () => {
             nodes: [node],
         };
 
+        // @ts-ignore
+        const context = new Context({ neoSchema });
+
         const result = createDisconnectAndParams({
             withVars: ["this"],
             value: [{ where: { title: "abc" }, disconnect: { similarMovies: [{ where: { title: "cba" } }] } }],
             varName: "this",
             relationField: node.relationFields[0],
             parentVar: "this",
-            neoSchema,
+            context,
             refNode: node,
         });
 

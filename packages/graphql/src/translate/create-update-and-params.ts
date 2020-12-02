@@ -1,8 +1,10 @@
-import { Node, NeoSchema } from "../classes";
+import { Node, Context } from "../classes";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createWhereAndParams from "./create-where-and-params";
 import createCreateAndParams from "./create-create-and-params";
+import createAllowAndParams from "./create-allow-and-params";
+import { checkRoles } from "../auth";
 
 interface Res {
     strs: string[];
@@ -13,20 +15,20 @@ function createUpdateAndParams({
     updateInput,
     varName,
     node,
-    neoSchema,
     parentVar,
     chainStr,
     insideDoWhen,
     withVars,
+    context,
 }: {
     parentVar: string;
     updateInput: any;
     varName: string;
     chainStr?: string;
     node: Node;
-    neoSchema: NeoSchema;
     withVars: string[];
     insideDoWhen?: boolean;
+    context: Context;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]) {
         let param;
@@ -39,12 +41,12 @@ function createUpdateAndParams({
 
         const relationField = node.relationFields.find((x) => x.fieldName === key);
         if (relationField) {
-            const updates = relationField.typeMeta.array ? value : [value];
-            const refNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const outStr = relationField.direction === "OUT" ? "->" : "-";
             const relTypeStr = `[:${relationField.type}]`;
 
+            const updates = relationField.typeMeta.array ? value : [value];
             updates.forEach((update, index) => {
                 const _varName = `${varName}_${key}${index}`;
 
@@ -68,8 +70,22 @@ function createUpdateAndParams({
 
                     res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
 
+                    let innerApocParams = {};
+
+                    if (refNode.auth) {
+                        const allowAndParams = createAllowAndParams({
+                            operation: "update",
+                            node: refNode,
+                            context,
+                            varName: _varName,
+                        });
+                        res.strs.push(allowAndParams[0].replace(/"/g, '\\"'));
+                        res.params = { ...res.params, ...allowAndParams[1] };
+                        innerApocParams = { ...innerApocParams, ...allowAndParams[1] };
+                    }
+
                     const updateAndParams = createUpdateAndParams({
-                        neoSchema,
+                        context,
                         node: refNode,
                         updateInput: update.update,
                         varName: _varName,
@@ -79,6 +95,7 @@ function createUpdateAndParams({
                         insideDoWhen: true,
                     });
                     res.params = { ...res.params, ...updateAndParams[1] };
+                    innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
 
                     const updateStrs = [updateAndParams[0], "RETURN count(*)"];
                     const apocArgs = `{${parentVar}:${parentVar}, ${_varName}:${_varName}REPLACE_ME}`;
@@ -90,17 +107,18 @@ function createUpdateAndParams({
                     }
                     updateStrs.push("YIELD value as _");
 
-                    const paramsString = (Object.keys(updateAndParams[1]).reduce(
+                    const paramsString = (Object.keys(innerApocParams).reduce(
                         (r: string[], k) => [...r, `${k}:$${k}`],
                         []
                     ) as string[]).join(",");
+
                     const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
                     res.strs.push(updateStr);
                 }
 
                 if (update.connect) {
                     const connectAndParams = createConnectAndParams({
-                        neoSchema,
+                        context,
                         refNode,
                         value: update.connect,
                         varName: `${_varName}_connect`,
@@ -122,7 +140,7 @@ function createUpdateAndParams({
                         const innerVarName = `${_varName}_create${i}`;
 
                         const createAndParams = createCreateAndParams({
-                            neoSchema,
+                            context,
                             node: refNode,
                             input: create,
                             varName: innerVarName,
@@ -130,14 +148,13 @@ function createUpdateAndParams({
                         });
                         res.strs.push(createAndParams[0]);
                         res.params = { ...res.params, ...createAndParams[1] };
-
                         res.strs.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${innerVarName})`);
                     });
                 }
 
                 if (update.disconnect) {
                     const disconnectAndParams = createDisconnectAndParams({
-                        neoSchema,
+                        context,
                         refNode,
                         value: update.disconnect,
                         varName: `${_varName}_disconnect`,
@@ -152,6 +169,8 @@ function createUpdateAndParams({
 
             return res;
         }
+
+        checkRoles({ node, context, operation: "update" });
 
         res.strs.push(`SET ${varName}.${key} = $${param}`);
         res.params[param] = value;

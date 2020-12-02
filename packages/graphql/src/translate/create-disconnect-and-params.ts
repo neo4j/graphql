@@ -1,4 +1,4 @@
-import { NeoSchema, Node } from "../classes";
+import { Context, Node } from "../classes";
 import { RelationField } from "../types";
 import createWhereAndParams from "./create-where-and-params";
 
@@ -14,14 +14,14 @@ function createDisconnectAndParams({
     relationField,
     parentVar,
     refNode,
-    neoSchema,
+    context,
 }: {
     withVars: string[];
     value: any;
     varName: string;
     relationField: RelationField;
     parentVar: string;
-    neoSchema: NeoSchema;
+    context: Context;
     refNode: Node;
 }): [string, any] {
     function reducer(res: Res, disconnect: any, index): Res {
@@ -34,6 +34,7 @@ function createDisconnectAndParams({
         res.disconnects.push(
             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${relationField.typeMeta.name})`
         );
+
         if (disconnect.where) {
             const where = createWhereAndParams({ varName: _varName, whereInput: disconnect.where });
             res.disconnects.push(where[0]);
@@ -52,6 +53,7 @@ function createDisconnectAndParams({
             const disconnects = (Array.isArray(disconnect.disconnect)
                 ? disconnect.disconnect
                 : [disconnect.disconnect]) as any[];
+
             disconnects.forEach((c) => {
                 const reduced = Object.entries(c).reduce(
                     (r: Res, [k, v]) => {
@@ -63,8 +65,8 @@ function createDisconnectAndParams({
                             varName: `${_varName}_${k}`,
                             relationField: relField,
                             parentVar: _varName,
-                            neoSchema,
-                            refNode: neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node,
+                            context,
+                            refNode: context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node,
                         });
                         r.disconnects.push(recurse[0]);
                         r.params = { ...r.params, ...recurse[1] };
