@@ -164,17 +164,49 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         const queryFields = node.primitiveFields.reduce(
             (res, f) => {
-                return {
-                    ...res,
-                    [f.fieldName]: f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name,
-                    ...(!f.typeMeta.array ? { [`${f.fieldName}_IN`]: `[${f.typeMeta.name}]` } : {}),
-                };
+                if (f.typeMeta.array) {
+                    res[f.fieldName] = `[${f.typeMeta.name}]`;
+
+                    return res;
+                }
+
+                if (["ID", "String"].includes(f.typeMeta.name)) {
+                    res[`${f.fieldName}_IN`] = `[${f.typeMeta.name}]`;
+                    res[`${f.fieldName}_NOT`] = f.typeMeta.name;
+                    res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.name}]`;
+                    res[`${f.fieldName}_CONTAINS`] = f.typeMeta.name;
+                    res[`${f.fieldName}_NOT_CONTAINS`] = f.typeMeta.name;
+                    res[`${f.fieldName}_STARTS_WITH`] = f.typeMeta.name;
+                    res[`${f.fieldName}_NOT_STARTS_WITH`] = f.typeMeta.name;
+                    res[`${f.fieldName}_ENDS_WITH`] = f.typeMeta.name;
+                    res[`${f.fieldName}_NOT_ENDS_WITH`] = f.typeMeta.name;
+                    res[`${f.fieldName}_REGEX`] = "String";
+                }
+
+                if (["Boolean"].includes(f.typeMeta.name)) {
+                    res[`${f.fieldName}_NOT`] = f.typeMeta.name;
+                }
+
+                if (["Float", "Int"].includes(f.typeMeta.name)) {
+                    res[`${f.fieldName}_IN`] = `[${f.typeMeta.name}]`;
+                    res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.name}]`;
+                    res[`${f.fieldName}_NOT`] = f.typeMeta.name;
+                    res[`${f.fieldName}_LT`] = f.typeMeta.name;
+                    res[`${f.fieldName}_LTE`] = f.typeMeta.name;
+                    res[`${f.fieldName}_GT`] = f.typeMeta.name;
+                    res[`${f.fieldName}_GTE`] = f.typeMeta.name;
+                }
+
+                // equality
+                res[f.fieldName] = f.typeMeta.name;
+
+                return res;
             },
             { OR: `[${node.name}OR]`, AND: `[${node.name}AND]` }
         );
 
-        ["AND", "OR", "Where"].forEach((value) => {
-            composer.createInputTC({
+        const [andInput, orInput, whereInput] = ["AND", "OR", "Where"].map((value) => {
+            return composer.createInputTC({
                 name: `${node.name}${value}`,
                 fields: queryFields,
             });
@@ -253,6 +285,15 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             const disconnectField = rel.typeMeta.array
                 ? `[${refNode.name}DisconnectFieldInput]`
                 : `${refNode.name}DisconnectFieldInput`;
+
+            [whereInput, andInput, orInput].forEach((inputType) => {
+                inputType.addFields({
+                    [rel.fieldName]: `${refNode.name}Where`,
+                    [`${rel.fieldName}_NOT`]: `${refNode.name}Where`,
+                    [`${rel.fieldName}_IN`]: `[${refNode.name}Where]`,
+                    [`${rel.fieldName}_NOT_IN`]: `[${refNode.name}Where]`,
+                });
+            });
 
             composer.createInputTC({
                 name: nodeFieldUpdateInputName,
