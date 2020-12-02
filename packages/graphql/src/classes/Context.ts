@@ -53,6 +53,8 @@ class Context {
 
         const jwt = verifyAndDecodeToken(token);
 
+        this.jwt = jwt;
+
         return jwt;
     }
 }
