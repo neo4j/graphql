@@ -49,6 +49,8 @@ function translateRead({
         const where = createWhereAndParams({
             whereInput,
             varName,
+            node,
+            context,
         });
         whereStr = where[0];
         cypherParams = { ...cypherParams, ...where[1] };
@@ -204,6 +206,8 @@ function translateUpdate({
         const where = createWhereAndParams({
             whereInput,
             varName,
+            node,
+            context,
         });
         whereStr = where[0];
         cypherParams = { ...cypherParams, ...where[1] };
@@ -341,6 +345,8 @@ function translateDelete({
         const where = createWhereAndParams({
             whereInput,
             varName,
+            node,
+            context,
         });
         whereStr = where[0];
         cypherParams = { ...cypherParams, ...where[1] };

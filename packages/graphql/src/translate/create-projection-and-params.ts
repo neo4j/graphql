@@ -101,6 +101,8 @@ function createProjectionAndParams({
                 const where = createWhereAndParams({
                     whereInput,
                     varName: `${varName}_${key}`,
+                    node,
+                    context,
                 });
                 whereStr = where[0];
                 res.params = { ...res.params, ...where[1] };
