@@ -11,7 +11,7 @@
     },
     "author": "Neo4j Inc.",
     "dependencies": {
-        "@neo4j/graphql": "./package",
+        "@neo4j/graphql": "file:./package",
         "apollo-server": "^2.19.0",
         "graphql": "^15.4.0",
         "neo4j-driver": "^4.1.2",

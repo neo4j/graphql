@@ -1,5 +1,6 @@
+import { describe, test, expect } from "@jest/globals";
 import createUpdateAndParams from "../../../src/translate/create-update-and-params";
-import { NeoSchema } from "../../../src/classes";
+import { NeoSchema, Context } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
 describe("createUpdateAndParams", () => {
@@ -28,10 +29,13 @@ describe("createUpdateAndParams", () => {
             nodes: [node],
         };
 
+        // @ts-ignore
+        const context = new Context({ neoSchema });
+
         const result = createUpdateAndParams({
             updateInput: { id: "new" },
             node,
-            neoSchema,
+            context,
             varName: "this",
             parentVar: "this",
             withVars: ["this"],

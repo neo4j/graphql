@@ -21,7 +21,7 @@ async function start(typeDefs = defaultTypeDefs, driver = {}) {
     const neoSchema = makeAugmentedSchema({ typeDefs });
     const server = new ApolloServer({
         schema: neoSchema.schema,
-        context: { driver },
+        context: ({ req }) => ({ driver, req }),
     });
     const { url } = await server.listen();
     console.log(`🚀  Server ready at ${url}`);

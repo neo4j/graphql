@@ -1,5 +1,6 @@
-import { NeoSchema, Node } from "../classes";
+import { Context, Node } from "../classes";
 import createConnectAndParams from "./create-connect-and-params";
+import { checkRoles } from "../auth";
 
 interface Res {
     creates: string[];
@@ -10,13 +11,13 @@ function createCreateAndParams({
     input,
     varName,
     node,
-    neoSchema,
+    context,
     withVars,
 }: {
     input: any;
     varName: string;
     node: Node;
-    neoSchema: NeoSchema;
+    context: Context;
     withVars: string[];
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
@@ -24,7 +25,7 @@ function createCreateAndParams({
         const relationField = node.relationFields.find((x) => x.fieldName === key);
 
         if (relationField) {
-            const refNode = neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
             if (value.create) {
                 const creates = relationField.typeMeta.array ? value.create : [value.create];
@@ -34,7 +35,7 @@ function createCreateAndParams({
 
                     const recurse = createCreateAndParams({
                         input: create,
-                        neoSchema,
+                        context,
                         node: refNode,
                         varName: innerVarName,
                         withVars: [...withVars, innerVarName],
@@ -56,7 +57,7 @@ function createCreateAndParams({
                     varName: `${_varName}_connect`,
                     parentVar: varName,
                     relationField,
-                    neoSchema,
+                    context,
                     refNode,
                 });
                 res.creates.push(connectAndParams[0]);
@@ -71,6 +72,8 @@ function createCreateAndParams({
 
         return res;
     }
+
+    checkRoles({ node, context, operation: "create" });
 
     const { creates, params } = Object.entries(input).reduce(reducer, {
         creates: [`CREATE (${varName}:${node.name})`],
