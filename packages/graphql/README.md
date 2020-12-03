@@ -1,22 +1,29 @@
 # @neo4j/graphql
 
-> Work in progress ⚠
+> Pre-Alpha 🏗
 
-## Usage
+A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations.
 
+
+1. [Introduction](https://github.com/neo4j/graphql/blob/master/packages/graphql/docs/introduction.md) — Introducing graph database concepts, Neo4j and GraphQL mapping.
+2. [Tutorial](https://github.com/neo4j/graphql/blob/master/packages/graphql/docs/tutorial.md) — Follow along as you get started using neo4j/graphql.
+3. [Reference](https://github.com/neo4j/graphql/blob/master/packages/graphql/docs/reference.md) — Reference documentation for neo4j/graphql.
+4. [Contributing](https://github.com/neo4j/graphql/blob/master/packages/graphql/CONTRIBUTING.md) - We ❤ all contributor's but please checkout the guide first. 
+
+## Quick Start
 ### Installation
 
 ```
 $ npm install @neo4j/graphql
 ```
 
-### Importing
+⚠ `graphql` is a **peerDependency** 
 
-```js
-const { makeAugmentedSchema } = require("@neo4j/graphql");
+```
+$ npm install graphql
 ```
 
-### Quick Start
+### Usage
 
 ```js
 const { makeAugmentedSchema } = require("@neo4j/graphql");
@@ -36,7 +43,7 @@ const typeDefs = `
     }
 `;
 
-const neoSchema = makeAugmentedSchema({ typeDefs });
+const neoSchema = makeAugmentedSchema({ typeDefs, debug: true });
 
 const driver = neo4j.driver(
     "bolt://localhost:7687",
@@ -48,30 +55,3 @@ const server = new ApolloServer({
     context: { driver },
 });
 ```
-
-### Debug
-
-```js
-const neoSchema = makeAugmentedSchema({ typeDefs, debug: true });
-// or
-const neoSchema = makeAugmentedSchema({
-    typeDefs,
-    debug: (...args) => console.log(args),
-});
-```
-
-## Package tests
-
-To make sure the build packages expose the endpoint we expected it to, we run a few tests
-on the production package.
-
-```bash
-npm run test:package-tests
-```
-
-This script will create a npm package, move it into `packages/package-tests` (so it doesn't have
-the devDependencies from `@neo4j/graphql` in scope), unpack it and run tests on it in different environments and setups.  
-It should cleanup after itself.
-
-NOTE: These tests do **not** run when `lerna run test` is executed, because these are not
-tests that needds to be run in development. They should run on PR:s and before releases though.
