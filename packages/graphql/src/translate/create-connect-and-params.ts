@@ -34,7 +34,12 @@ function createConnectAndParams({
         res.connects.push(`OPTIONAL MATCH (${_varName}:${relationField.typeMeta.name})`);
 
         if (connect.where) {
-            const where = createWhereAndParams({ varName: _varName, whereInput: connect.where });
+            const where = createWhereAndParams({
+                varName: _varName,
+                whereInput: connect.where,
+                node: refNode,
+                context,
+            });
             res.connects.push(where[0]);
             res.params = { ...res.params, ...where[1] };
         }

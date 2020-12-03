@@ -11,6 +11,9 @@ Tests that the provided typeDefs return the correct schema.
 ```typedefs-input
 type Movie {
     id: ID
+    actorCount: Int
+    averageRating: Float
+    isActive: Boolean
 }
 ```
 
@@ -19,6 +22,9 @@ type Movie {
 ```schema-output
 type Movie {
   id: ID
+  actorCount: Int
+  averageRating: Float
+  isActive: Boolean
 }
 
 type DeleteInfo {
@@ -29,12 +35,42 @@ type DeleteInfo {
 input MovieAND {
   id: ID
   id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
+  actorCount: Int
+  actorCount_IN: [Int]
+  actorCount_NOT: Int
+  actorCount_NOT_IN: [Int]
+  actorCount_LT: Int
+  actorCount_LTE: Int
+  actorCount_GT: Int
+  actorCount_GTE: Int
+  averageRating: Float
+  averageRating_IN: [Float]
+  averageRating_NOT: Float
+  averageRating_NOT_IN: [Float]
+  averageRating_LT: Float
+  averageRating_LTE: Float
+  averageRating_GT: Float
+  averageRating_GTE: Float
+  isActive: Boolean
+  isActive_NOT: Boolean
   OR: [MovieOR]
   AND: [MovieAND]
 }
 
 input MovieCreateInput {
   id: ID
+  actorCount: Int
+  averageRating: Float
+  isActive: Boolean
 }
 
 input MovieOptions {
@@ -46,6 +82,33 @@ input MovieOptions {
 input MovieOR {
   id: ID
   id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
+  actorCount: Int
+  actorCount_IN: [Int]
+  actorCount_NOT: Int
+  actorCount_NOT_IN: [Int]
+  actorCount_LT: Int
+  actorCount_LTE: Int
+  actorCount_GT: Int
+  actorCount_GTE: Int
+  averageRating: Float
+  averageRating_IN: [Float]
+  averageRating_NOT: Float
+  averageRating_NOT_IN: [Float]
+  averageRating_LT: Float
+  averageRating_LTE: Float
+  averageRating_GT: Float
+  averageRating_GTE: Float
+  isActive: Boolean
+  isActive_NOT: Boolean
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -53,17 +116,53 @@ input MovieOR {
 enum MovieSort {
   id_DESC
   id_ASC
+  actorCount_DESC
+  actorCount_ASC
+  averageRating_DESC
+  averageRating_ASC
+  isActive_DESC
+  isActive_ASC
 }
 
 input MovieWhere {
   id: ID
   id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
+  actorCount: Int
+  actorCount_IN: [Int]
+  actorCount_NOT: Int
+  actorCount_NOT_IN: [Int]
+  actorCount_LT: Int
+  actorCount_LTE: Int
+  actorCount_GT: Int
+  actorCount_GTE: Int
+  averageRating: Float
+  averageRating_IN: [Float]
+  averageRating_NOT: Float
+  averageRating_NOT_IN: [Float]
+  averageRating_LT: Float
+  averageRating_LTE: Float
+  averageRating_GT: Float
+  averageRating_GTE: Float
+  isActive: Boolean
+  isActive_NOT: Boolean
   OR: [MovieOR]
   AND: [MovieAND]
 }
 
 input MovieUpdateInput {
   id: ID
+  actorCount: Int
+  averageRating: Float
+  isActive: Boolean
 }
 
 type Mutation {
@@ -109,6 +208,15 @@ type DeleteInfo {
 input ActorAND {
   name: String
   name_IN: [String]
+  name_NOT: String
+  name_NOT_IN: [String]
+  name_CONTAINS: String
+  name_NOT_CONTAINS: String
+  name_STARTS_WITH: String
+  name_NOT_STARTS_WITH: String
+  name_ENDS_WITH: String
+  name_NOT_ENDS_WITH: String
+  name_REGEX: String
   OR: [ActorOR]
   AND: [ActorAND]
 }
@@ -126,6 +234,15 @@ input ActorOptions {
 input ActorOR {
   name: String
   name_IN: [String]
+  name_NOT: String
+  name_NOT_IN: [String]
+  name_CONTAINS: String
+  name_NOT_CONTAINS: String
+  name_STARTS_WITH: String
+  name_NOT_STARTS_WITH: String
+  name_ENDS_WITH: String
+  name_NOT_ENDS_WITH: String
+  name_REGEX: String
   OR: [ActorOR]
   AND: [ActorAND]
 }
@@ -138,6 +255,15 @@ enum ActorSort {
 input ActorWhere {
   name: String
   name_IN: [String]
+  name_NOT: String
+  name_NOT_IN: [String]
+  name_CONTAINS: String
+  name_NOT_CONTAINS: String
+  name_STARTS_WITH: String
+  name_NOT_STARTS_WITH: String
+  name_ENDS_WITH: String
+  name_NOT_ENDS_WITH: String
+  name_REGEX: String
   OR: [ActorOR]
   AND: [ActorAND]
 }
@@ -167,8 +293,21 @@ input MovieRelationInput {
 input MovieAND {
   id: ID
   id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
   OR: [MovieOR]
   AND: [MovieAND]
+  actors: ActorWhere
+  actors_NOT: ActorWhere
+  actors_IN: [ActorWhere]
+  actors_NOT_IN: [ActorWhere]
 }
 
 input MovieCreateInput {
@@ -185,8 +324,21 @@ input MovieOptions {
 input MovieOR {
   id: ID
   id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
   OR: [MovieOR]
   AND: [MovieAND]
+  actors: ActorWhere
+  actors_NOT: ActorWhere
+  actors_IN: [ActorWhere]
+  actors_NOT_IN: [ActorWhere]
 }
 
 enum MovieSort {
@@ -197,8 +349,21 @@ enum MovieSort {
 input MovieWhere {
   id: ID
   id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
   OR: [MovieOR]
   AND: [MovieAND]
+  actors: ActorWhere
+  actors_NOT: ActorWhere
+  actors_IN: [ActorWhere]
+  actors_NOT_IN: [ActorWhere]
 }
 
 input MovieUpdateInput {
@@ -272,6 +437,19 @@ input ActorAND {
   AND: [ActorAND]
   name: String
   name_IN: [String]
+  name_NOT: String
+  name_NOT_IN: [String]
+  name_CONTAINS: String
+  name_NOT_CONTAINS: String
+  name_STARTS_WITH: String
+  name_NOT_STARTS_WITH: String
+  name_ENDS_WITH: String
+  name_NOT_ENDS_WITH: String
+  name_REGEX: String
+  movies: MovieWhere
+  movies_NOT: MovieWhere
+  movies_IN: [MovieWhere]
+  movies_NOT_IN: [MovieWhere]
 }
 
 input ActorConnectFieldInput {
@@ -325,6 +503,19 @@ input ActorOR {
   AND: [ActorAND]
   name: String
   name_IN: [String]
+  name_NOT: String
+  name_NOT_IN: [String]
+  name_CONTAINS: String
+  name_NOT_CONTAINS: String
+  name_STARTS_WITH: String
+  name_NOT_STARTS_WITH: String
+  name_ENDS_WITH: String
+  name_NOT_ENDS_WITH: String
+  name_REGEX: String
+  movies: MovieWhere
+  movies_NOT: MovieWhere
+  movies_IN: [MovieWhere]
+  movies_NOT_IN: [MovieWhere]
 }
 
 enum ActorSort {
@@ -342,6 +533,19 @@ input ActorWhere {
   AND: [ActorAND]
   name: String
   name_IN: [String]
+  name_NOT: String
+  name_NOT_IN: [String]
+  name_CONTAINS: String
+  name_NOT_CONTAINS: String
+  name_STARTS_WITH: String
+  name_NOT_STARTS_WITH: String
+  name_ENDS_WITH: String
+  name_NOT_ENDS_WITH: String
+  name_REGEX: String
+  movies: MovieWhere
+  movies_NOT: MovieWhere
+  movies_IN: [MovieWhere]
+  movies_NOT_IN: [MovieWhere]
 }
 
 type DeleteInfo {
@@ -372,6 +576,19 @@ input MovieAND {
   AND: [MovieAND]
   id: ID
   id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
+  actors: ActorWhere
+  actors_NOT: ActorWhere
+  actors_IN: [ActorWhere]
+  actors_NOT_IN: [ActorWhere]
 }
 
 input MovieConnectFieldInput {
@@ -408,6 +625,19 @@ input MovieOR {
   AND: [MovieAND]
   id: ID
   id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
+  actors: ActorWhere
+  actors_NOT: ActorWhere
+  actors_IN: [ActorWhere]
+  actors_NOT_IN: [ActorWhere]
 }
 
 input MovieRelationInput {
@@ -429,6 +659,19 @@ input MovieWhere {
   AND: [MovieAND]
   id: ID
   id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
+  actors: ActorWhere
+  actors_NOT: ActorWhere
+  actors_IN: [ActorWhere]
+  actors_NOT_IN: [ActorWhere]
 }
 
 type Mutation {
@@ -491,6 +734,15 @@ input ActorAND {
   AND: [ActorAND]
   name: String
   name_IN: [String]
+  name_NOT: String
+  name_NOT_IN: [String]
+  name_CONTAINS: String
+  name_NOT_CONTAINS: String
+  name_STARTS_WITH: String
+  name_NOT_STARTS_WITH: String
+  name_ENDS_WITH: String
+  name_NOT_ENDS_WITH: String
+  name_REGEX: String
 }
 
 input ActorCreateInput {
@@ -508,6 +760,15 @@ input ActorOR {
   AND: [ActorAND]
   name: String
   name_IN: [String]
+  name_NOT: String
+  name_NOT_IN: [String]
+  name_CONTAINS: String
+  name_NOT_CONTAINS: String
+  name_STARTS_WITH: String
+  name_NOT_STARTS_WITH: String
+  name_ENDS_WITH: String
+  name_NOT_ENDS_WITH: String
+  name_REGEX: String
 }
 
 enum ActorSort {
@@ -524,6 +785,15 @@ input ActorWhere {
   AND: [ActorAND]
   name: String
   name_IN: [String]
+  name_NOT: String
+  name_NOT_IN: [String]
+  name_CONTAINS: String
+  name_NOT_CONTAINS: String
+  name_STARTS_WITH: String
+  name_NOT_STARTS_WITH: String
+  name_ENDS_WITH: String
+  name_NOT_ENDS_WITH: String
+  name_REGEX: String
 }
 
 type DeleteInfo {
@@ -541,6 +811,15 @@ input MovieAND {
   AND: [MovieAND]
   id: ID
   id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
 }
 
 input MovieCreateInput {
@@ -558,6 +837,15 @@ input MovieOR {
   AND: [MovieAND]
   id: ID
   id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
 }
 
 enum MovieSort {
@@ -574,6 +862,15 @@ input MovieWhere {
   AND: [MovieAND]
   id: ID
   id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
 }
 
 type Mutation {
