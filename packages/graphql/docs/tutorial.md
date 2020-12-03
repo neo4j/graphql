@@ -145,3 +145,96 @@ main()
 [Apollo Server](https://www.apollographql.com/docs/apollo-server/getting-started/) comes with a neat playground, to test GraphQL queries. Once you run your server using the example provided in [Starting Your Server](#Starting-your-Server) navigate, in your browser, to http://localhost:4000. You should be greeted with something like;
 
 ![GraphQL PlayGround](./assets/playground.jpg)
+
+### Inspecting the Schema
+Using the playground you can inspect the generated schema by clicking the `schema` tab. This will tell you what Queries and Mutations you can call. Think of Queries and Mutations to be functions that fetch and modify data in your Neo4j database.
+
+Queries;
+
+```graphql
+type Query {
+  Products(where: ProductWhere, options: ProductOptions): [Product]!
+  Photos(where: PhotoWhere, options: PhotoOptions): [Photo]!
+  Sizes(where: SizeWhere, options: SizeOptions): [Size]!
+  Colors(where: ColorWhere, options: ColorOptions): [Color]!
+}
+```
+
+
+Mutations;
+
+```graphql
+type Mutation {
+  createProducts(input: [ProductCreateInput]!): [Product]!
+  deleteProducts(where: ProductWhere): DeleteInfo!
+  updateProducts(
+    where: ProductWhere
+    update: ProductUpdateInput
+    connect: ProductConnectInput
+    disconnect: ProductDisconnectInput
+    create: ProductRelationInput
+  ): [Product]!
+  createPhotos(input: [PhotoCreateInput]!): [Photo]!
+  deletePhotos(where: PhotoWhere): DeleteInfo!
+  updatePhotos(
+    where: PhotoWhere
+    update: PhotoUpdateInput
+    connect: PhotoConnectInput
+    disconnect: PhotoDisconnectInput
+    create: PhotoRelationInput
+  ): [Photo]!
+  createSizes(input: [SizeCreateInput]!): [Size]!
+  deleteSizes(where: SizeWhere): DeleteInfo!
+  updateSizes(where: SizeWhere, update: SizeUpdateInput): [Size]!
+  createColors(input: [ColorCreateInput]!): [Color]!
+  deleteColors(where: ColorWhere): DeleteInfo!
+  updateColors(where: ColorWhere, update: ColorUpdateInput): [Color]!
+}
+```
+
+### Creating Your First Node
+Lets being with creating our first Product. In your playground instance, on th left hand side, create your product;
+
+```graphql
+mutation {
+    createProducts(input:[{
+        id: "product_id",
+        name: "Pringles"
+    }]){
+        id
+        name
+    }
+}
+```
+
+If your using Neo4j Browser or desktop you can query for this data & you should have the following in your database;
+
+![shop-create-first](./assets/shop-create-first-node.jpg)
+
+
+### Connecting Your First Node
+Now we have a product we need to build some relations. Here we will use the `updateProducts` Mutation to create and connect the product to all the `relationships` stated in our `typeDefs`. We will be creating a Green Photo, Small Size and Green Color all related together;
+
+```graphql
+mutation {
+  updateProducts(
+    where: { id: "product_id" }
+    update: {
+      sizes: { create: [{ id: "small_size_id", name: "Small" }] }
+      photos: {
+        create: [
+          {
+            id: "green_photo_id"
+            description: "Green Photo"
+            color: { create: { id: "green_color_id", name: "Green" } }
+          }
+        ]
+      }
+    }
+  ) {
+    id
+  }
+}
+```
+
+This above query is using a feature called 'Nested Mutations' available on both create and update mutations.
