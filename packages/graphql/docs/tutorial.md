@@ -41,7 +41,7 @@ type Color {
 }
 ```
 
-In the Javascript ecosystem you have many ways to define thease `typeDefs` such as;
+In the Javascript ecosystem you have many ways to define these `typeDefs` such as;
 
 **GraphQL Tag**
 
@@ -146,7 +146,7 @@ main()
 
 ![GraphQL PlayGround](./assets/playground.jpg)
 
-### Inspecting the Schema
+### Inspecting The Schema
 Using the playground you can inspect the generated schema by clicking the `schema` tab. This will tell you what Queries and Mutations you can call. Think of Queries and Mutations to be functions that fetch and modify data in your Neo4j database.
 
 Queries;
@@ -192,8 +192,8 @@ type Mutation {
 }
 ```
 
-### Creating Your First Node
-Lets being with creating our first Product. In your playground instance, on th left hand side, create your product;
+### Creating Nodes
+Lets being with creating our first Product. In your playground instance, on the left hand side, create your product;
 
 ```graphql
 mutation {
@@ -211,6 +211,36 @@ If your using [Neo4j Browser](https://neo4j.com/developer/neo4j-browser/) or [Ne
 
 ![shop-create-first](./assets/shop-create-first-node.jpg)
 
+
+### Reading Nodes
+Now that you have created your first node you can query the GraphQL api for it;
+
+```graphql
+query {
+  Products(where: { id: "product_id" }) {
+    id
+  }
+}
+```
+
+Notice we are only selecting the `id` field. If we have connections on our node we could ask for the connections inside the selection set;
+
+```graphql
+query {
+  Products(where: { id: "product_id" }) {
+    id
+    photos {
+      description
+      color {
+        name
+      }
+    }
+    sizes {
+      name
+    }
+  }
+}
+```
 
 ### Connecting Nodes
 Now we have a product we need to build some relations. Here we will use the `updateProducts` Mutation to create and connect the product to all the `relationships` stated in our `typeDefs`. We will be creating a Green Photo, Small Size and Green Color all related together;
@@ -285,3 +315,11 @@ mutation {
 ```
 
 ⚠ If `exiting_photo` is not found the mutation will bypass the operation and not attempt to `MERGE`.
+
+### Updating Nodes
+
+
+#### Disconnecting Nodes
+
+
+### Deleting Nodes
