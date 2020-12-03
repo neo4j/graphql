@@ -63,6 +63,8 @@ function createUpdateAndParams({
                         const whereAndParams = createWhereAndParams({
                             varName: _varName,
                             whereInput: update.where,
+                            node: refNode,
+                            context,
                         });
                         res.strs.push(whereAndParams[0]);
                         res.params = { ...res.params, ...whereAndParams[1] };
