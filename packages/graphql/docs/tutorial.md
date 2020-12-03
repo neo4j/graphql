@@ -207,12 +207,12 @@ mutation {
 }
 ```
 
-If your using Neo4j Browser or desktop you can query for this data & you should have the following in your database;
+If your using [Neo4j Browser](https://neo4j.com/developer/neo4j-browser/) or [Neo4j Desktop](https://neo4j.com/developer/neo4j-desktop/) you can query for this data & you should have the following in your database;
 
 ![shop-create-first](./assets/shop-create-first-node.jpg)
 
 
-### Connecting Your First Node
+### Connecting Nodes
 Now we have a product we need to build some relations. Here we will use the `updateProducts` Mutation to create and connect the product to all the `relationships` stated in our `typeDefs`. We will be creating a Green Photo, Small Size and Green Color all related together;
 
 ```graphql
@@ -237,4 +237,51 @@ mutation {
 }
 ```
 
-This above query is using a feature called 'Nested Mutations' available on both create and update mutations.
+This above query is using a feature called 'Nested Mutations' available on both create and update mutations. After executing your data should look something like;
+
+
+![shop-connect-first](./assets/shop-connect-first.jpg)
+
+Its worth point out that you could have bypassed the extra update mutation and create the Product, Size, Photo and Color in the initial create call; 
+
+```graphql
+mutation {
+  createProducts(
+    input: [
+      {
+        id: "product_id"
+        name: "Pringles"
+        sizes: { create: [{ id: "small_size_id", name: "Small" }] }
+        photos: {
+          create: [
+            {
+              id: "green_photo_id"
+              description: "Green Photo"
+              color: { create: { id: "green_color_id", name: "Green" } }
+            }
+          ]
+        }
+      }
+    ]
+  ) {
+    id
+  }
+}
+
+```
+
+#### Connecting To Existing Nodes
+The above Mutations are demonstrating creating and connecting to node...however if you only want to connect to a node, without creating a new one, use the sub property `connect`. Here we connect the product to a pre-existing Photo. 
+
+```graphql
+mutation {
+  updateProducts(
+    where: { id: "product_id" }
+    update: { photos: { connect: { where: { id: "exiting_photo" } } } }
+  ) {
+    id
+  }
+}
+```
+
+⚠ If `exiting_photo` is not found the mutation will bypass the operation and not attempt to `MERGE`.
