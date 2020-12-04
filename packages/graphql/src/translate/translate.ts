@@ -237,25 +237,6 @@ function translateUpdate({
         cypherParams = { ...cypherParams, ...updateAndParams[1] };
     }
 
-    if (connectInput) {
-        Object.entries(connectInput).forEach((entry) => {
-            const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
-            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-
-            const connectAndParams = createConnectAndParams({
-                context,
-                parentVar: varName,
-                refNode,
-                relationField,
-                value: entry[1],
-                varName: `${varName}_connect_${entry[0]}`,
-                withVars: [varName],
-            });
-            connectStr = connectAndParams[0];
-            cypherParams = { ...cypherParams, ...connectAndParams[1] };
-        });
-    }
-
     if (disconnectInput) {
         Object.entries(disconnectInput).forEach((entry) => {
             const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
@@ -272,6 +253,25 @@ function translateUpdate({
             });
             disconnectStr = disconnectAndParams[0];
             cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
+        });
+    }
+
+    if (connectInput) {
+        Object.entries(connectInput).forEach((entry) => {
+            const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
+            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+
+            const connectAndParams = createConnectAndParams({
+                context,
+                parentVar: varName,
+                refNode,
+                relationField,
+                value: entry[1],
+                varName: `${varName}_connect_${entry[0]}`,
+                withVars: [varName],
+            });
+            connectStr = connectAndParams[0];
+            cypherParams = { ...cypherParams, ...connectAndParams[1] };
         });
     }
 
