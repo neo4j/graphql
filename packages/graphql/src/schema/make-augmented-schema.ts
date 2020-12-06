@@ -1,9 +1,11 @@
 import {
     DirectiveDefinitionNode,
+    DirectiveNode,
     EnumTypeDefinitionNode,
     ObjectTypeDefinitionNode,
     print,
     ScalarTypeDefinitionNode,
+    ValueNode,
 } from "graphql";
 import {
     SchemaComposer,
@@ -63,7 +65,9 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     const nodes = (document.definitions.filter(
         (x) => x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)
     ) as ObjectTypeDefinitionNode[]).map((definition) => {
-        const authDirective = definition.directives?.find((x) => x.name.value === "auth");
+        const otherDirectives = (definition.directives || []).filter((x) => x.name.value !== "auth") as DirectiveNode[];
+        const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
+
         let auth: Auth;
         if (authDirective) {
             auth = getAuth(authDirective);
@@ -139,6 +143,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             cypherFields,
             scalarFields,
             enumFields,
+            otherDirectives,
             // @ts-ignore
             auth,
         });
@@ -196,6 +201,15 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         const composeNode = composer.createObjectTC({
             name: node.name,
             fields: nodeFields,
+            extensions: {
+                directives: node.otherDirectives.map((direc) => ({
+                    args: parseValueNode({
+                        kind: "ListValue",
+                        values: (direc.arguments || []).map((x) => x.value) as ValueNode[],
+                    }),
+                    name: direc.name.value,
+                })),
+            },
         });
 
         composeNode.addFields(

@@ -1,5 +1,12 @@
 /* eslint-disable no-param-reassign */
-import { graphql, printSchema, parse, GraphQLScalarType, ScalarTypeExtensionNode } from "graphql";
+import {
+    graphql,
+    printSchema,
+    parse,
+    GraphQLScalarType,
+    ScalarTypeExtensionNode,
+    DirectiveDefinitionNode,
+} from "graphql";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import path from "path";
@@ -8,6 +15,7 @@ import jsonwebtoken from "jsonwebtoken";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import { beforeAll, afterAll, describe, expect } from "@jest/globals";
+import { SchemaDirectiveVisitor, printSchemaWithDirectives } from "@graphql-tools/utils";
 import { translate } from "../../src/translate";
 import { makeAugmentedSchema } from "../../src";
 import serialize from "../../src/utils/serialize";
@@ -31,6 +39,14 @@ function generateCustomScalar(name: string): GraphQLScalarType {
         serialize: (value) => value,
         parseValue: (value) => value,
     });
+}
+
+class CustomDirective extends SchemaDirectiveVisitor {
+    // eslint-disable-next-line class-methods-use-this
+    visitFieldDefinition(field) {
+        const { defaultFieldResolver } = field;
+        return defaultFieldResolver();
+    }
 }
 
 describe("TCK Generated tests", () => {
@@ -142,10 +158,22 @@ describe("TCK Generated tests", () => {
                         return { ...r, [name.value]: generateCustomScalar(name.value) };
                     }, {});
 
+                    const directives = document.definitions.reduce((r, def) => {
+                        if (def.kind !== "DirectiveDefinition") {
+                            return r;
+                        }
+
+                        const { name } = (def as unknown) as DirectiveDefinitionNode;
+
+                        // @ts-ignore
+                        return { ...r, [name.value]: new CustomDirective() };
+                    }, {});
+
                     const executableSchema = makeExecutableSchema({
                         typeDefs: printSchema(neoSchema.schema),
                         resolvers,
                         ...customScalars,
+                        schemaDirectives: directives,
                     });
 
                     noGraphQLErrors(await graphql(executableSchema, graphQlQuery, null, context, graphQlParams));
@@ -164,8 +192,8 @@ describe("TCK Generated tests", () => {
                     const resolvers = neoSchema.resolvers;
                     const outPutSchema = makeExecutableSchema({ typeDefs: schemaOutPut, resolvers });
 
-                    expect(printSchema(lexicographicSortSchema(neoSchema.schema))).toEqual(
-                        printSchema(lexicographicSortSchema(outPutSchema))
+                    expect(printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema))).toEqual(
+                        printSchemaWithDirectives(lexicographicSortSchema(outPutSchema))
                     );
                 });
             }

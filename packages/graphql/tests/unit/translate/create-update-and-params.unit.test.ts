@@ -5,6 +5,7 @@ import { trimmer } from "../../../src/utils";
 
 describe("createUpdateAndParams", () => {
     test("should return the correct update and params", () => {
+        // @ts-ignore
         const node: Node = {
             name: "Movie",
             relationFields: [],
