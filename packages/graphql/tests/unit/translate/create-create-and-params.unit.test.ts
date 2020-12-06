@@ -9,6 +9,7 @@ describe("createCreateAndParams", () => {
             title: "some title",
         };
 
+        // @ts-ignore
         const node: Node = {
             name: "Movie",
             relationFields: [],

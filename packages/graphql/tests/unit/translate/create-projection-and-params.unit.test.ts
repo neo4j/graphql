@@ -19,6 +19,7 @@ describe("createProjectionAndParams", () => {
             },
         };
 
+        // @ts-ignore
         const node: Node = {
             name: "Movie",
             relationFields: [],
