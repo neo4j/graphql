@@ -1,14 +1,16 @@
 import { describe, test, expect } from "@jest/globals";
 import createUpdateAndParams from "../../../src/translate/create-update-and-params";
-import { NeoSchema, Context } from "../../../src/classes";
+import { NeoSchema, Context, Node } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
 describe("createUpdateAndParams", () => {
     test("should return the correct update and params", () => {
-        const node = {
+        const node: Node = {
             name: "Movie",
             relationFields: [],
             cypherFields: [],
+            enumFields: [],
+            scalarFields: [],
             primitiveFields: [
                 {
                     fieldName: "title",

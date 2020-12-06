@@ -196,7 +196,7 @@ function extendDefinition(def: DefinitionNode, ext) {
     }
 }
 
-function mergeExtensionsIntoAST(document: DocumentNode) {
+function mergeExtensionsIntoAST(document: DocumentNode): DocumentNode {
     const definitions = new Map();
     const extensions = new Map();
 

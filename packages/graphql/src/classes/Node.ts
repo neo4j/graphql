@@ -1,4 +1,4 @@
-import { RelationField, CypherField, PrimitiveField } from "../types";
+import { RelationField, CypherField, PrimitiveField, CustomEnumField, CustomScalarField } from "../types";
 import Auth from "./Auth";
 
 export interface NodeConstructor {
@@ -6,6 +6,8 @@ export interface NodeConstructor {
     relationFields: RelationField[];
     cypherFields: CypherField[];
     primitiveFields: PrimitiveField[];
+    scalarFields: CustomScalarField[];
+    enumFields: CustomEnumField[];
     auth?: Auth;
 }
 
@@ -18,6 +20,10 @@ class Node {
 
     public primitiveFields: PrimitiveField[];
 
+    public scalarFields: CustomScalarField[];
+
+    public enumFields: CustomEnumField[];
+
     public auth?: Auth;
 
     constructor(input: NodeConstructor) {
@@ -25,6 +31,8 @@ class Node {
         this.relationFields = input.relationFields;
         this.cypherFields = input.cypherFields;
         this.primitiveFields = input.primitiveFields;
+        this.scalarFields = input.scalarFields;
+        this.enumFields = input.enumFields;
         this.auth = input.auth;
     }
 }

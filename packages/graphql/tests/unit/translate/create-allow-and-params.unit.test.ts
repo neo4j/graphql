@@ -12,6 +12,8 @@ describe("createAllowAndParams", () => {
         // @ts-ignore
         const node: Node = {
             name: "Movie",
+            enumFields: [],
+            scalarFields: [],
             primitiveFields: [
                 {
                     fieldName: "id",
