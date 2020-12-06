@@ -36,6 +36,7 @@
         "graphql": "^15.0.0"
     },
     "devDependencies": {
+        "@graphql-tools/utils": "7.1.4",
         "@jest/globals": "26.4.2",
         "@types/jest": "26.0.8",
         "@types/jsonwebtoken": "8.5.0",
