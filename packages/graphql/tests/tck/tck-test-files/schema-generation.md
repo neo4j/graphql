@@ -889,3 +889,378 @@ type Query {
 ```
 
 ---
+
+### Extend
+
+**TypeDefs**
+
+
+```typedefs-input
+type Movie {
+  id: ID
+}
+
+extend type Movie {
+  name: String
+}
+```
+
+**Output**
+
+```schema-output
+type Movie {
+  id: ID
+  name: String
+}
+
+type DeleteInfo {
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
+
+input MovieAND {
+  id: ID
+  id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
+  name: String
+  name_IN: [String]
+  name_NOT: String
+  name_NOT_IN: [String]
+  name_CONTAINS: String
+  name_NOT_CONTAINS: String
+  name_STARTS_WITH: String
+  name_NOT_STARTS_WITH: String
+  name_ENDS_WITH: String
+  name_NOT_ENDS_WITH: String
+  name_REGEX: String
+  OR: [MovieOR]
+  AND: [MovieAND]
+}
+
+input MovieCreateInput {
+  id: ID
+  name: String
+}
+
+input MovieOptions {
+  sort: [MovieSort]
+  limit: Int
+  skip: Int
+}
+
+input MovieOR {
+  id: ID
+  id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
+  name: String
+  name_IN: [String]
+  name_NOT: String
+  name_NOT_IN: [String]
+  name_CONTAINS: String
+  name_NOT_CONTAINS: String
+  name_STARTS_WITH: String
+  name_NOT_STARTS_WITH: String
+  name_ENDS_WITH: String
+  name_NOT_ENDS_WITH: String
+  name_REGEX: String
+  OR: [MovieOR]
+  AND: [MovieAND]
+}
+
+enum MovieSort {
+  id_DESC
+  id_ASC
+  name_DESC
+  name_ASC
+}
+
+input MovieWhere {
+  id: ID
+  id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
+  name: String
+  name_IN: [String]
+  name_NOT: String
+  name_NOT_IN: [String]
+  name_CONTAINS: String
+  name_NOT_CONTAINS: String
+  name_STARTS_WITH: String
+  name_NOT_STARTS_WITH: String
+  name_ENDS_WITH: String
+  name_NOT_ENDS_WITH: String
+  name_REGEX: String
+  OR: [MovieOR]
+  AND: [MovieAND]
+}
+
+input MovieUpdateInput {
+  id: ID
+  name: String
+}
+
+type Mutation {
+  createMovies(input: [MovieCreateInput]!): [Movie]!
+  deleteMovies(where: MovieWhere): DeleteInfo!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): [Movie]!
+}
+
+type Query {
+  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+}
+```
+
+---
+
+### Scalars
+
+**TypeDefs**
+
+```typedefs-input
+scalar CustomScalar
+
+type Movie {
+  id: ID
+  myCustomScalar: CustomScalar
+}
+```
+
+**Output**
+
+```schema-output
+scalar CustomScalar
+
+type Movie {
+  id: ID
+  myCustomScalar: CustomScalar
+}
+
+type DeleteInfo {
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
+
+input MovieAND {
+  id: ID
+  id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
+  myCustomScalar: CustomScalar
+  OR: [MovieOR]
+  AND: [MovieAND]
+}
+
+input MovieCreateInput {
+  id: ID
+  myCustomScalar: CustomScalar
+}
+
+input MovieOptions {
+  sort: [MovieSort]
+  limit: Int
+  skip: Int
+}
+
+input MovieOR {
+  id: ID
+  id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
+  myCustomScalar: CustomScalar
+  OR: [MovieOR]
+  AND: [MovieAND]
+}
+
+enum MovieSort {
+  id_DESC
+  id_ASC
+  myCustomScalar_DESC
+  myCustomScalar_ASC
+}
+
+input MovieWhere {
+  id: ID
+  id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  id_REGEX: String
+  myCustomScalar: CustomScalar
+  OR: [MovieOR]
+  AND: [MovieAND]
+}
+
+input MovieUpdateInput {
+  id: ID
+  myCustomScalar: CustomScalar
+}
+
+type Mutation {
+  createMovies(input: [MovieCreateInput]!): [Movie]!
+  deleteMovies(where: MovieWhere): DeleteInfo!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): [Movie]!
+}
+
+type Query {
+  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+}
+```
+
+---
+
+### Enums
+
+**TypeDefs**
+
+
+```typedefs-input
+enum Status {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
+type Movie {
+  status: Status
+}
+```
+
+**Output**
+
+```schema-output
+enum Status {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
+type Movie {
+  status: Status
+}
+
+type DeleteInfo {
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
+
+input MovieAND {
+  status: String
+  status_IN: [String]
+  status_NOT: String
+  status_NOT_IN: [String]
+  status_CONTAINS: String
+  status_NOT_CONTAINS: String
+  status_STARTS_WITH: String
+  status_NOT_STARTS_WITH: String
+  status_ENDS_WITH: String
+  status_NOT_ENDS_WITH: String
+  status_REGEX: String
+  OR: [MovieOR]
+  AND: [MovieAND]
+}
+
+input MovieCreateInput {
+  status: Status
+}
+
+input MovieOptions {
+  sort: [MovieSort]
+  limit: Int
+  skip: Int
+}
+
+input MovieOR {
+  status: String
+  status_IN: [String]
+  status_NOT: String
+  status_NOT_IN: [String]
+  status_CONTAINS: String
+  status_NOT_CONTAINS: String
+  status_STARTS_WITH: String
+  status_NOT_STARTS_WITH: String
+  status_ENDS_WITH: String
+  status_NOT_ENDS_WITH: String
+  status_REGEX: String
+  OR: [MovieOR]
+  AND: [MovieAND]
+}
+
+enum MovieSort {
+  status_DESC
+  status_ASC
+}
+
+input MovieWhere {
+  status: String
+  status_IN: [String]
+  status_NOT: String
+  status_NOT_IN: [String]
+  status_CONTAINS: String
+  status_NOT_CONTAINS: String
+  status_STARTS_WITH: String
+  status_NOT_STARTS_WITH: String
+  status_ENDS_WITH: String
+  status_NOT_ENDS_WITH: String
+  status_REGEX: String
+  OR: [MovieOR]
+  AND: [MovieAND]
+}
+
+input MovieUpdateInput {
+  status: Status
+}
+
+type Mutation {
+  createMovies(input: [MovieCreateInput]!): [Movie]!
+  deleteMovies(where: MovieWhere): DeleteInfo!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): [Movie]!
+}
+
+type Query {
+  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+}
+```
+
+---

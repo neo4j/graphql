@@ -1,6 +1,16 @@
-import { mergeTypeDefs } from "@graphql-tools/merge";
-import { ObjectTypeDefinitionNode } from "graphql";
-import { SchemaComposer, ObjectTypeComposerFieldConfigAsObjectDefinition, InputTypeComposer } from "graphql-compose";
+import {
+    DirectiveDefinitionNode,
+    EnumTypeDefinitionNode,
+    ObjectTypeDefinitionNode,
+    print,
+    ScalarTypeDefinitionNode,
+} from "graphql";
+import {
+    SchemaComposer,
+    ObjectTypeComposerFieldConfigAsObjectDefinition,
+    InputTypeComposer,
+    DirectiveArgs,
+} from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import pluralize from "pluralize";
 import { Auth, NeoSchema, NeoSchemaConstructor, Node } from "../classes";
@@ -8,20 +18,25 @@ import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getAuth from "./get-auth";
 import getRelationshipMeta from "./get-relationship-meta";
-import { RelationField, CypherField, PrimitiveField, BaseField } from "../types";
+import { RelationField, CypherField, PrimitiveField, BaseField, CustomEnumField, CustomScalarField } from "../types";
 import { upperFirstLetter } from "../utils";
 import findResolver from "./find";
 import createResolver from "./create";
 import deleteResolver from "./delete";
 import updateResolver from "./update";
+import mergeExtensionsIntoAST from "./merge-extensions-into-ast";
+import parseValueNode from "./parse-value-node";
+import mergeTypeDefs from "./merge-typedefs";
 
 export interface MakeAugmentedSchemaOptions {
     typeDefs: any;
+    resolvers?: any;
+    schemaDirectives?: any;
     debug?: boolean | ((...values: any[]) => void);
 }
 
 function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
-    const document = mergeTypeDefs(Array.isArray(options.typeDefs) ? options.typeDefs : [options.typeDefs]);
+    const document = mergeExtensionsIntoAST(mergeTypeDefs(options.typeDefs));
     const composer = new SchemaComposer();
     let neoSchema: NeoSchema;
     // @ts-ignore
@@ -37,7 +52,15 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         },
     });
 
-    neoSchemaInput.nodes = (document.definitions.filter(
+    const scalars = document.definitions.filter((x) => x.kind === "ScalarTypeDefinition") as ScalarTypeDefinitionNode[];
+    const scalarNames = scalars.map((x) => x.name.value);
+    const enums = document.definitions.filter((x) => x.kind === "EnumTypeDefinition") as EnumTypeDefinitionNode[];
+    const enumNames = enums.map((x) => x.name.value);
+    const directives = document.definitions.filter(
+        (x) => x.kind === "DirectiveDefinition"
+    ) as DirectiveDefinitionNode[];
+
+    const nodes = (document.definitions.filter(
         (x) => x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)
     ) as ObjectTypeDefinitionNode[]).map((definition) => {
         const authDirective = definition.directives?.find((x) => x.name.value === "auth");
@@ -46,12 +69,14 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             auth = getAuth(authDirective);
         }
 
-        const { relationFields, primitiveFields, cypherFields } = definition?.fields?.reduce(
+        const { relationFields, primitiveFields, cypherFields, scalarFields, enumFields } = definition?.fields?.reduce(
             (
                 res: {
                     relationFields: RelationField[];
                     primitiveFields: PrimitiveField[];
                     cypherFields: CypherField[];
+                    scalarFields: CustomScalarField[];
+                    enumFields: CustomEnumField[];
                 },
                 field
             ) => {
@@ -64,7 +89,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     otherDirectives: (field.directives || []).filter(
                         (x) => !["relationship", "cypher"].includes(x.name.value)
                     ),
-                    ...(field.arguments ? { arguments: [...field.arguments] } : { arguments: [] }),
+                    arguments: [...(field.arguments || [])],
                 };
 
                 if (relationshipMeta) {
@@ -79,6 +104,16 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                         ...cypherMeta,
                     };
                     res.cypherFields.push(cypherField);
+                } else if (scalarNames.includes(baseField.typeMeta.name)) {
+                    const scalarField: CustomScalarField = {
+                        ...baseField,
+                    };
+                    res.scalarFields.push(scalarField);
+                } else if (enumNames.includes(baseField.typeMeta.name)) {
+                    const enumField: CustomEnumField = {
+                        ...baseField,
+                    };
+                    res.enumFields.push(enumField);
                 } else {
                     const primitiveField: PrimitiveField = {
                         ...baseField,
@@ -88,11 +123,13 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
                 return res;
             },
-            { relationFields: [], primitiveFields: [], cypherFields: [] }
+            { relationFields: [], primitiveFields: [], cypherFields: [], scalarFields: [], enumFields: [] }
         ) as {
             relationFields: RelationField[];
             primitiveFields: PrimitiveField[];
             cypherFields: CypherField[];
+            scalarFields: CustomScalarField[];
+            enumFields: CustomEnumField[];
         };
 
         const node = new Node({
@@ -100,6 +137,8 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             relationFields,
             primitiveFields,
             cypherFields,
+            scalarFields,
+            enumFields,
             // @ts-ignore
             auth,
         });
@@ -107,32 +146,56 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         return node;
     });
 
+    const nodeNames = nodes.map((x) => x.name);
+    neoSchemaInput.nodes = nodes;
+
     neoSchemaInput.nodes.forEach((node) => {
+        const nodeFields = [
+            ...node.primitiveFields,
+            ...node.cypherFields,
+            ...node.enumFields,
+            ...node.scalarFields,
+        ].reduce((res, field) => {
+            const newField = {
+                type: field.typeMeta.pretty,
+                args: {},
+            } as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
+
+            if (field.otherDirectives.length) {
+                newField.extensions = { directives: [] };
+
+                field.otherDirectives.forEach((directive) => {
+                    newField.extensions?.directives?.push({
+                        args: directive.arguments?.reduce(
+                            (r: DirectiveArgs, d) => ({ ...r, [d.name.value]: parseValueNode(d.value) }),
+                            {}
+                        ) as DirectiveArgs,
+                        name: directive.name.value,
+                    });
+                });
+            }
+
+            if (field.arguments) {
+                newField.args = field.arguments.reduce((args, arg) => {
+                    const meta = getFieldTypeMeta(arg);
+
+                    return {
+                        ...args,
+                        [arg.name.value]: {
+                            type: meta.pretty,
+                            description: arg.description,
+                            defaultValue: arg.defaultValue,
+                        },
+                    };
+                }, {});
+            }
+
+            return { ...res, [field.fieldName]: newField };
+        }, {});
+
         const composeNode = composer.createObjectTC({
             name: node.name,
-            fields: [...node.primitiveFields, ...node.cypherFields].reduce((res, field) => {
-                const newField = {
-                    type: field.typeMeta.pretty,
-                    args: {},
-                } as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
-
-                if (field.arguments) {
-                    newField.args = field.arguments.reduce((args, arg) => {
-                        const meta = getFieldTypeMeta(arg);
-
-                        return {
-                            ...args,
-                            [arg.name.value]: {
-                                type: meta.pretty,
-                                description: arg.description,
-                                defaultValue: arg.defaultValue,
-                            },
-                        };
-                    }, {});
-                }
-
-                return { ...res, [field.fieldName]: newField };
-            }, {}),
+            fields: nodeFields,
         });
 
         composeNode.addFields(
@@ -153,7 +216,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         const sortEnum = composer.createEnumTC({
             name: `${node.name}Sort`,
-            values: node.primitiveFields.reduce((res, f) => {
+            values: [...node.primitiveFields, ...node.enumFields, ...node.scalarFields].reduce((res, f) => {
                 return {
                     ...res,
                     [`${f.fieldName}_DESC`]: { value: `${f.fieldName}_DESC` },
@@ -162,32 +225,53 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             }, {}),
         });
 
-        const queryFields = node.primitiveFields.reduce(
+        const queryFields = [...node.primitiveFields, ...node.enumFields, ...node.scalarFields].reduce(
             (res, f) => {
-                if (f.typeMeta.array) {
-                    res[f.fieldName] = `[${f.typeMeta.name}]`;
+                if (["ID", "String"].includes(f.typeMeta.name) || enumNames.includes(f.typeMeta.name)) {
+                    const type = f.typeMeta.name === "ID" ? "ID" : "String";
+
+                    // equality
+                    if (f.typeMeta.array) {
+                        res[f.fieldName] = `[${type}]`;
+                    } else {
+                        res[f.fieldName] = type;
+                    }
+
+                    res[`${f.fieldName}_IN`] = `[${type}]`;
+                    res[`${f.fieldName}_NOT`] = type;
+                    res[`${f.fieldName}_NOT_IN`] = `[${type}]`;
+                    res[`${f.fieldName}_CONTAINS`] = type;
+                    res[`${f.fieldName}_NOT_CONTAINS`] = type;
+                    res[`${f.fieldName}_STARTS_WITH`] = type;
+                    res[`${f.fieldName}_NOT_STARTS_WITH`] = type;
+                    res[`${f.fieldName}_ENDS_WITH`] = type;
+                    res[`${f.fieldName}_NOT_ENDS_WITH`] = type;
+                    res[`${f.fieldName}_REGEX`] = "String";
 
                     return res;
                 }
 
-                if (["ID", "String"].includes(f.typeMeta.name)) {
-                    res[`${f.fieldName}_IN`] = `[${f.typeMeta.name}]`;
-                    res[`${f.fieldName}_NOT`] = f.typeMeta.name;
-                    res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.name}]`;
-                    res[`${f.fieldName}_CONTAINS`] = f.typeMeta.name;
-                    res[`${f.fieldName}_NOT_CONTAINS`] = f.typeMeta.name;
-                    res[`${f.fieldName}_STARTS_WITH`] = f.typeMeta.name;
-                    res[`${f.fieldName}_NOT_STARTS_WITH`] = f.typeMeta.name;
-                    res[`${f.fieldName}_ENDS_WITH`] = f.typeMeta.name;
-                    res[`${f.fieldName}_NOT_ENDS_WITH`] = f.typeMeta.name;
-                    res[`${f.fieldName}_REGEX`] = "String";
-                }
-
                 if (["Boolean"].includes(f.typeMeta.name)) {
-                    res[`${f.fieldName}_NOT`] = f.typeMeta.name;
+                    // equality
+                    if (f.typeMeta.array) {
+                        res[f.fieldName] = `[Boolean]`;
+                    } else {
+                        res[f.fieldName] = "Boolean";
+                    }
+
+                    res[`${f.fieldName}_NOT`] = "Boolean";
+
+                    return res;
                 }
 
                 if (["Float", "Int"].includes(f.typeMeta.name)) {
+                    if (f.typeMeta.array) {
+                        res[f.fieldName] = `[${f.typeMeta.name}]`;
+                    } else {
+                        // equality
+                        res[f.fieldName] = f.typeMeta.name;
+                    }
+
                     res[`${f.fieldName}_IN`] = `[${f.typeMeta.name}]`;
                     res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.name}]`;
                     res[`${f.fieldName}_NOT`] = f.typeMeta.name;
@@ -195,10 +279,16 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     res[`${f.fieldName}_LTE`] = f.typeMeta.name;
                     res[`${f.fieldName}_GT`] = f.typeMeta.name;
                     res[`${f.fieldName}_GTE`] = f.typeMeta.name;
+
+                    return res;
                 }
 
                 // equality
-                res[f.fieldName] = f.typeMeta.name;
+                if (f.typeMeta.array) {
+                    res[f.fieldName] = `[${f.typeMeta.name}]`;
+                } else {
+                    res[f.fieldName] = f.typeMeta.name;
+                }
 
                 return res;
             },
@@ -219,7 +309,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         const nodeInput = composer.createInputTC({
             name: `${node.name}CreateInput`,
-            fields: node.primitiveFields.reduce((r, f) => {
+            fields: [...node.primitiveFields, ...node.scalarFields, ...node.enumFields].reduce((r, f) => {
                 return {
                     ...r,
                     [f.fieldName]: f.typeMeta.pretty,
@@ -229,7 +319,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         const nodeUpdateInput = composer.createInputTC({
             name: `${node.name}UpdateInput`,
-            fields: node.primitiveFields.reduce((res, f) => {
+            fields: [...node.primitiveFields, ...node.scalarFields, ...node.enumFields].reduce((res, f) => {
                 return {
                     ...res,
                     [f.fieldName]: f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name,
@@ -346,14 +436,85 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
     });
 
+    const extraDefinitions = [...enums, ...scalars, ...directives];
+    if (extraDefinitions.length) {
+        composer.addTypeDefs(print({ kind: "Document", definitions: extraDefinitions }));
+    }
+
     const generatedTypeDefs = composer.toSDL();
-    const generatedResolvers = composer.getResolveMethods();
+    let generatedResolvers = composer.getResolveMethods();
+    if (options.resolvers) {
+        const {
+            Query: customQueries = {},
+            Mutation: customMutations = {},
+            Subscription: customSubscriptions = {},
+            ...rest
+        } = options.resolvers;
+
+        if (customQueries) {
+            if (generatedResolvers.Query) {
+                generatedResolvers.Query = { ...generatedResolvers.Query, ...customQueries };
+            } else {
+                generatedResolvers.Query = customQueries;
+            }
+        }
+
+        if (customMutations) {
+            if (generatedResolvers.Mutation) {
+                generatedResolvers.Mutation = { ...generatedResolvers.Mutation, ...customMutations };
+            } else {
+                generatedResolvers.Mutation = customMutations;
+            }
+        }
+
+        if (Object.keys(customSubscriptions).length) {
+            generatedResolvers.Subscription = customSubscriptions;
+        }
+
+        const typeResolvers = Object.entries(rest).reduce((r, entry) => {
+            const [key, value] = entry;
+
+            if (!nodeNames.includes(key)) {
+                return r;
+            }
+
+            return {
+                ...r,
+                [key]: {
+                    ...generatedResolvers[key],
+                    ...(value as any),
+                },
+            };
+        }, {});
+        generatedResolvers = {
+            ...generatedResolvers,
+            ...typeResolvers,
+        };
+
+        const otherResolvers = Object.entries(rest).reduce((r, entry) => {
+            const [key, value] = entry;
+
+            if (nodeNames.includes(key)) {
+                return r;
+            }
+
+            return {
+                ...r,
+                [key]: value,
+            };
+        }, {});
+        generatedResolvers = {
+            ...generatedResolvers,
+            ...otherResolvers,
+        };
+    }
 
     neoSchemaInput.typeDefs = generatedTypeDefs;
     neoSchemaInput.resolvers = generatedResolvers;
     neoSchemaInput.schema = makeExecutableSchema({
         typeDefs: generatedTypeDefs,
         resolvers: generatedResolvers,
+        schemaDirectives: options.schemaDirectives,
     });
 
     neoSchema = new NeoSchema(neoSchemaInput);

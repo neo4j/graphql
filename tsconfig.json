@@ -4,7 +4,7 @@
         "esModuleInterop": true,
         "emitDecoratorMetadata": true,
         "allowSyntheticDefaultImports": true,
-        "target": "es6",
+        "target": "ES2019",
         "strict": true,
         "sourceMap": true,
         "noImplicitAny": false,

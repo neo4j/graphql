@@ -44,6 +44,16 @@ export interface CypherField extends BaseField {
 export type PrimitiveField = BaseField;
 
 /**
+ * custom scalars.
+ */
+export type CustomScalarField = BaseField;
+
+/**
+ * custom Enum.
+ */
+export type CustomEnumField = BaseField;
+
+/**
  * Representation of the options arg
  * passed to resolvers.
  */

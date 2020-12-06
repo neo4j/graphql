@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { graphql, printSchema, parse } from "graphql";
+import { graphql, printSchema, parse, GraphQLScalarType, ScalarTypeExtensionNode } from "graphql";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import path from "path";
@@ -7,6 +7,7 @@ import pluralize from "pluralize";
 import jsonwebtoken from "jsonwebtoken";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
+import { beforeAll, afterAll, describe, expect } from "@jest/globals";
 import { translate } from "../../src/translate";
 import { makeAugmentedSchema } from "../../src";
 import serialize from "../../src/utils/serialize";
@@ -24,6 +25,14 @@ afterAll(() => {
     delete process.env.JWT_SECRET;
 });
 
+function generateCustomScalar(name: string): GraphQLScalarType {
+    return new GraphQLScalarType({
+        name,
+        serialize: (value) => value,
+        parseValue: (value) => value,
+    });
+}
+
 describe("TCK Generated tests", () => {
     const testCases: TestCase[] = generateTestCasesFromMd(TCK_DIR);
 
@@ -33,6 +42,7 @@ describe("TCK Generated tests", () => {
                 const document = parse(schema as string);
                 const neoSchema = makeAugmentedSchema({ typeDefs: schema });
 
+                // @ts-ignore
                 test.each(tests.map((t) => [t.name, t as Test]))("%s", async (_, obj) => {
                     const test = obj as Test;
 
@@ -122,9 +132,20 @@ describe("TCK Generated tests", () => {
 
                     const resolvers = { Query: queries, Mutation: mutations };
 
+                    const customScalars = document.definitions.reduce((r, def) => {
+                        if (def.kind !== "ScalarTypeDefinition") {
+                            return r;
+                        }
+
+                        const { name } = (def as unknown) as ScalarTypeExtensionNode;
+
+                        return { ...r, [name.value]: generateCustomScalar(name.value) };
+                    }, {});
+
                     const executableSchema = makeExecutableSchema({
                         typeDefs: printSchema(neoSchema.schema),
                         resolvers,
+                        ...customScalars,
                     });
 
                     noGraphQLErrors(await graphql(executableSchema, graphQlQuery, null, context, graphQlParams));
@@ -132,6 +153,7 @@ describe("TCK Generated tests", () => {
             }
 
             if (kind === "schema") {
+                // @ts-ignore
                 test.each(tests.map((t) => [t.name, t as Test]))("%s", (_, obj) => {
                     const test = obj as Test;
 
