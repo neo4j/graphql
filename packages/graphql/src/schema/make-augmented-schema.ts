@@ -1,17 +1,22 @@
 import {
+    DefinitionNode,
     DirectiveDefinitionNode,
     DirectiveNode,
     EnumTypeDefinitionNode,
+    InputObjectTypeDefinitionNode,
+    InterfaceTypeDefinitionNode,
+    NamedTypeNode,
     ObjectTypeDefinitionNode,
     print,
     ScalarTypeDefinitionNode,
-    ValueNode,
+    UnionTypeDefinitionNode,
 } from "graphql";
 import {
     SchemaComposer,
     ObjectTypeComposerFieldConfigAsObjectDefinition,
     InputTypeComposer,
     DirectiveArgs,
+    ObjectTypeComposer,
 } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import pluralize from "pluralize";
@@ -20,11 +25,21 @@ import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getAuth from "./get-auth";
 import getRelationshipMeta from "./get-relationship-meta";
-import { RelationField, CypherField, PrimitiveField, BaseField, CustomEnumField, CustomScalarField } from "../types";
+import {
+    RelationField,
+    CypherField,
+    PrimitiveField,
+    BaseField,
+    CustomEnumField,
+    CustomScalarField,
+    UnionField,
+    InterfaceField,
+} from "../types";
 import { upperFirstLetter } from "../utils";
 import findResolver from "./find";
 import createResolver from "./create";
 import deleteResolver from "./delete";
+import cypherResolver from "./cypher-resolver";
 import updateResolver from "./update";
 import mergeExtensionsIntoAST from "./merge-extensions-into-ast";
 import parseValueNode from "./parse-value-node";
@@ -35,6 +50,153 @@ export interface MakeAugmentedSchemaOptions {
     resolvers?: any;
     schemaDirectives?: any;
     debug?: boolean | ((...values: any[]) => void);
+}
+
+interface ObjectFields {
+    relationFields: RelationField[];
+    primitiveFields: PrimitiveField[];
+    cypherFields: CypherField[];
+    scalarFields: CustomScalarField[];
+    enumFields: CustomEnumField[];
+    unionFields: UnionField[];
+    interfaceFields: InterfaceField[];
+}
+
+interface CustomResolvers {
+    customQuery?: ObjectTypeDefinitionNode;
+    customCypherQuery?: ObjectTypeDefinitionNode;
+    customMutation?: ObjectTypeDefinitionNode;
+    customCypherMutation?: ObjectTypeDefinitionNode;
+    customSubscription?: ObjectTypeDefinitionNode;
+}
+
+function getObjFieldMeta({
+    obj,
+    interfaces,
+    scalars,
+    unions,
+    enums,
+}: {
+    obj: ObjectTypeDefinitionNode;
+    interfaces: InterfaceTypeDefinitionNode[];
+    unions: UnionTypeDefinitionNode[];
+    scalars: ScalarTypeDefinitionNode[];
+    enums: EnumTypeDefinitionNode[];
+}) {
+    return obj?.fields?.reduce(
+        (res: ObjectFields, field) => {
+            const relationshipMeta = getRelationshipMeta(field);
+            const cypherMeta = getCypherMeta(field);
+            const typeMeta = getFieldTypeMeta(field);
+            const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
+            const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);
+            const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
+            const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
+
+            const baseField: BaseField = {
+                fieldName: field.name.value,
+                typeMeta,
+                otherDirectives: (field.directives || []).filter(
+                    (x) => !["relationship", "cypher"].includes(x.name.value)
+                ),
+                arguments: [...(field.arguments || [])],
+            };
+
+            if (relationshipMeta) {
+                if (fieldInterface) {
+                    throw new Error("cannot have interface on relationship");
+                }
+
+                const relationField: RelationField = {
+                    ...baseField,
+                    ...relationshipMeta,
+                };
+                res.relationFields.push(relationField);
+            } else if (cypherMeta) {
+                const cypherField: CypherField = {
+                    ...baseField,
+                    ...cypherMeta,
+                };
+                res.cypherFields.push(cypherField);
+            } else if (fieldScalar) {
+                const scalarField: CustomScalarField = {
+                    ...baseField,
+                };
+                res.scalarFields.push(scalarField);
+            } else if (fieldEnum) {
+                const enumField: CustomEnumField = {
+                    ...baseField,
+                };
+                res.enumFields.push(enumField);
+            } else if (fieldUnion) {
+                const unionField: UnionField = {
+                    ...baseField,
+                };
+                res.enumFields.push(unionField);
+            } else if (fieldInterface) {
+                const interfaceField: InterfaceField = {
+                    ...baseField,
+                };
+                res.interfaceFields.push(interfaceField);
+            } else {
+                const primitiveField: PrimitiveField = {
+                    ...baseField,
+                };
+                res.primitiveFields.push(primitiveField);
+            }
+
+            return res;
+        },
+        {
+            relationFields: [],
+            primitiveFields: [],
+            cypherFields: [],
+            scalarFields: [],
+            enumFields: [],
+            unionFields: [],
+            interfaceFields: [],
+        }
+    ) as ObjectFields;
+}
+
+function objectFieldsToComposeFields(
+    fields: BaseField[]
+): { [k: string]: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> } {
+    return fields.reduce((res, field) => {
+        const newField = {
+            type: field.typeMeta.pretty,
+            args: {},
+        } as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
+
+        if (field.otherDirectives.length) {
+            newField.extensions = {
+                directives: field.otherDirectives.map((directive) => ({
+                    args: (directive.arguments || [])?.reduce(
+                        (r: DirectiveArgs, d) => ({ ...r, [d.name.value]: parseValueNode(d.value) }),
+                        {}
+                    ) as DirectiveArgs,
+                    name: directive.name.value,
+                })),
+            };
+        }
+
+        if (field.arguments) {
+            newField.args = field.arguments.reduce((args, arg) => {
+                const meta = getFieldTypeMeta(arg);
+
+                return {
+                    ...args,
+                    [arg.name.value]: {
+                        type: meta.pretty,
+                        description: arg.description,
+                        defaultValue: arg.defaultValue,
+                    },
+                };
+            }, {});
+        }
+
+        return { ...res, [field.fieldName]: newField };
+    }, {});
 }
 
 function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
@@ -54,96 +216,105 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         },
     });
 
+    const customResolvers = (document.definitions || []).reduce((res: CustomResolvers, definition) => {
+        if (definition.kind !== "ObjectTypeDefinition") {
+            return res;
+        }
+
+        if (!["Query", "Mutation", "Subscription"].includes(definition.name.value)) {
+            return res;
+        }
+
+        const cypherOnes = (definition.fields || []).filter(
+            (field) => field.directives && field.directives.find((direc) => direc.name.value === "cypher")
+        );
+        const normalOnes = (definition.fields || []).filter(
+            (field) =>
+                (field.directives && !field.directives.find((direc) => direc.name.value === "cypher")) ||
+                !field.directives
+        );
+
+        if (definition.name.value === "Query") {
+            if (cypherOnes.length) {
+                res.customCypherQuery = {
+                    ...definition,
+                    fields: cypherOnes,
+                };
+            }
+
+            if (normalOnes.length) {
+                res.customQuery = {
+                    ...definition,
+                    fields: normalOnes,
+                };
+            }
+        }
+
+        if (definition.name.value === "Mutation") {
+            if (cypherOnes.length) {
+                res.customCypherMutation = {
+                    ...definition,
+                    fields: cypherOnes,
+                };
+            }
+
+            if (normalOnes.length) {
+                res.customMutation = {
+                    ...definition,
+                    fields: normalOnes,
+                };
+            }
+        }
+
+        if (definition.name.value === "Subscription") {
+            if (normalOnes.length) {
+                res.customSubscription = {
+                    ...definition,
+                    fields: normalOnes,
+                };
+            }
+        }
+
+        return res;
+    }, {}) as CustomResolvers;
+
     const scalars = document.definitions.filter((x) => x.kind === "ScalarTypeDefinition") as ScalarTypeDefinitionNode[];
-    const scalarNames = scalars.map((x) => x.name.value);
+
     const enums = document.definitions.filter((x) => x.kind === "EnumTypeDefinition") as EnumTypeDefinitionNode[];
-    const enumNames = enums.map((x) => x.name.value);
+
+    const inputs = document.definitions.filter(
+        (x) => x.kind === "InputObjectTypeDefinition"
+    ) as InputObjectTypeDefinitionNode[];
+
+    const interfaces = document.definitions.filter(
+        (x) => x.kind === "InterfaceTypeDefinition"
+    ) as InterfaceTypeDefinitionNode[];
+
     const directives = document.definitions.filter(
         (x) => x.kind === "DirectiveDefinition"
     ) as DirectiveDefinitionNode[];
+
+    const unions = document.definitions.filter((x) => x.kind === "EnumTypeDefinition") as UnionTypeDefinitionNode[];
 
     const nodes = (document.definitions.filter(
         (x) => x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)
     ) as ObjectTypeDefinitionNode[]).map((definition) => {
         const otherDirectives = (definition.directives || []).filter((x) => x.name.value !== "auth") as DirectiveNode[];
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
+        const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
         let auth: Auth;
         if (authDirective) {
             auth = getAuth(authDirective);
         }
 
-        const { relationFields, primitiveFields, cypherFields, scalarFields, enumFields } = definition?.fields?.reduce(
-            (
-                res: {
-                    relationFields: RelationField[];
-                    primitiveFields: PrimitiveField[];
-                    cypherFields: CypherField[];
-                    scalarFields: CustomScalarField[];
-                    enumFields: CustomEnumField[];
-                },
-                field
-            ) => {
-                const relationshipMeta = getRelationshipMeta(field);
-                const cypherMeta = getCypherMeta(field);
-
-                const baseField: BaseField = {
-                    fieldName: field.name.value,
-                    typeMeta: getFieldTypeMeta(field),
-                    otherDirectives: (field.directives || []).filter(
-                        (x) => !["relationship", "cypher"].includes(x.name.value)
-                    ),
-                    arguments: [...(field.arguments || [])],
-                };
-
-                if (relationshipMeta) {
-                    const relationField: RelationField = {
-                        ...baseField,
-                        ...relationshipMeta,
-                    };
-                    res.relationFields.push(relationField);
-                } else if (cypherMeta) {
-                    const cypherField: CypherField = {
-                        ...baseField,
-                        ...cypherMeta,
-                    };
-                    res.cypherFields.push(cypherField);
-                } else if (scalarNames.includes(baseField.typeMeta.name)) {
-                    const scalarField: CustomScalarField = {
-                        ...baseField,
-                    };
-                    res.scalarFields.push(scalarField);
-                } else if (enumNames.includes(baseField.typeMeta.name)) {
-                    const enumField: CustomEnumField = {
-                        ...baseField,
-                    };
-                    res.enumFields.push(enumField);
-                } else {
-                    const primitiveField: PrimitiveField = {
-                        ...baseField,
-                    };
-                    res.primitiveFields.push(primitiveField);
-                }
-
-                return res;
-            },
-            { relationFields: [], primitiveFields: [], cypherFields: [], scalarFields: [], enumFields: [] }
-        ) as {
-            relationFields: RelationField[];
-            primitiveFields: PrimitiveField[];
-            cypherFields: CypherField[];
-            scalarFields: CustomScalarField[];
-            enumFields: CustomEnumField[];
-        };
+        const nodeFields = getObjFieldMeta({ obj: definition, enums, interfaces, scalars, unions });
 
         const node = new Node({
             name: definition.name.value,
-            relationFields,
-            primitiveFields,
-            cypherFields,
-            scalarFields,
-            enumFields,
+            interfaces: nodeInterfaces,
             otherDirectives,
+            ...nodeFields,
             // @ts-ignore
             auth,
         });
@@ -155,61 +326,27 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     neoSchemaInput.nodes = nodes;
 
     neoSchemaInput.nodes.forEach((node) => {
-        const nodeFields = [
+        const nodeFields = objectFieldsToComposeFields([
             ...node.primitiveFields,
             ...node.cypherFields,
             ...node.enumFields,
             ...node.scalarFields,
-        ].reduce((res, field) => {
-            const newField = {
-                type: field.typeMeta.pretty,
-                args: {},
-            } as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
-
-            if (field.otherDirectives.length) {
-                newField.extensions = { directives: [] };
-
-                field.otherDirectives.forEach((directive) => {
-                    newField.extensions?.directives?.push({
-                        args: directive.arguments?.reduce(
-                            (r: DirectiveArgs, d) => ({ ...r, [d.name.value]: parseValueNode(d.value) }),
-                            {}
-                        ) as DirectiveArgs,
-                        name: directive.name.value,
-                    });
-                });
-            }
-
-            if (field.arguments) {
-                newField.args = field.arguments.reduce((args, arg) => {
-                    const meta = getFieldTypeMeta(arg);
-
-                    return {
-                        ...args,
-                        [arg.name.value]: {
-                            type: meta.pretty,
-                            description: arg.description,
-                            defaultValue: arg.defaultValue,
-                        },
-                    };
-                }, {});
-            }
-
-            return { ...res, [field.fieldName]: newField };
-        }, {});
+            ...node.interfaceFields,
+        ]);
 
         const composeNode = composer.createObjectTC({
             name: node.name,
             fields: nodeFields,
             extensions: {
-                directives: node.otherDirectives.map((direc) => ({
-                    args: parseValueNode({
-                        kind: "ListValue",
-                        values: (direc.arguments || []).map((x) => x.value) as ValueNode[],
-                    }),
-                    name: direc.name.value,
+                directives: node.otherDirectives.map((directive) => ({
+                    args: (directive.arguments || [])?.reduce(
+                        (r: DirectiveArgs, d) => ({ ...r, [d.name.value]: parseValueNode(d.value) }),
+                        {}
+                    ) as DirectiveArgs,
+                    name: directive.name.value,
                 })),
             },
+            interfaces: node.interfaces.map((x) => x.name.value),
         });
 
         composeNode.addFields(
@@ -241,7 +378,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         const queryFields = [...node.primitiveFields, ...node.enumFields, ...node.scalarFields].reduce(
             (res, f) => {
-                if (["ID", "String"].includes(f.typeMeta.name) || enumNames.includes(f.typeMeta.name)) {
+                if (["ID", "String"].includes(f.typeMeta.name) || enums.find((x) => x.name.value === f.typeMeta.name)) {
                     const type = f.typeMeta.name === "ID" ? "ID" : "String";
 
                     // equality
@@ -450,7 +587,53 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
     });
 
-    const extraDefinitions = [...enums, ...scalars, ...directives];
+    ["Mutation", "Query"].forEach((type) => {
+        const objectComposer = composer[type] as ObjectTypeComposer;
+        const cypherType = customResolvers[`customCypher${type}`] as
+            | CustomResolvers["customCypherQuery"]
+            | CustomResolvers["customCypherMutation"];
+
+        if (cypherType) {
+            const objectFields = getObjFieldMeta({ obj: cypherType, scalars, enums, interfaces, unions });
+
+            const objectComposeFields = objectFieldsToComposeFields([
+                ...objectFields.enumFields,
+                ...objectFields.interfaceFields,
+                ...objectFields.primitiveFields,
+                ...objectFields.relationFields,
+                ...objectFields.scalarFields,
+                ...objectFields.unionFields,
+            ]);
+
+            objectComposer.addFields(objectComposeFields);
+
+            objectFields.cypherFields.forEach((field) => {
+                const customResolver = cypherResolver({
+                    defaultAccessMode: type === "Query" ? "READ" : "WRITE",
+                    field,
+                    statement: field.statement,
+                    getSchema: () => neoSchema,
+                });
+
+                const composedField = objectFieldsToComposeFields([field])[field.fieldName];
+
+                objectComposer.addFields({ [field.fieldName]: { ...composedField, ...customResolver } });
+            });
+        }
+    });
+
+    const extraDefinitions = [
+        ...enums,
+        ...scalars,
+        ...directives,
+        ...interfaces,
+        ...inputs,
+        ...([
+            customResolvers.customQuery,
+            customResolvers.customMutation,
+            customResolvers.customSubscription,
+        ] as ObjectTypeDefinitionNode[]),
+    ].filter(Boolean) as DefinitionNode[];
     if (extraDefinitions.length) {
         composer.addTypeDefs(print({ kind: "Document", definitions: extraDefinitions }));
     }

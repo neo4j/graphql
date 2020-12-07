@@ -1,5 +1,6 @@
 import { printSchema, parse, ObjectTypeDefinitionNode, NamedTypeNode, ListTypeNode, NonNullTypeNode } from "graphql";
 import { pluralize } from "graphql-compose";
+import { describe, test, expect } from "@jest/globals";
 import makeAugmentedSchema from "../../../src/schema/make-augmented-schema";
 import { Node } from "../../../src/classes";
 
@@ -71,5 +72,25 @@ describe("makeAugmentedSchema", () => {
             );
             expect(sort).toBeTruthy();
         });
+    });
+
+    test("should throw cannot have interface on relationship", () => {
+        try {
+            const typeDefs = `
+                interface Node {
+                    id: ID
+                }
+
+                type Movie {
+                    title: String!
+                    nodes: [Node] @relationship(type: "NODE", direction: "IN")
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("cannot have interface on relationship");
+        }
     });
 });

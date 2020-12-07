@@ -54,6 +54,16 @@ export type CustomScalarField = BaseField;
 export type CustomEnumField = BaseField;
 
 /**
+ * custom Union.
+ */
+export type UnionField = BaseField;
+
+/**
+ * custom Interface.
+ */
+export type InterfaceField = BaseField;
+
+/**
  * Representation of the options arg
  * passed to resolvers.
  */
