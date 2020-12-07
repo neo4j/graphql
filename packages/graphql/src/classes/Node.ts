@@ -1,5 +1,13 @@
-import { DirectiveNode } from "graphql";
-import { RelationField, CypherField, PrimitiveField, CustomEnumField, CustomScalarField } from "../types";
+import { DirectiveNode, NamedTypeNode } from "graphql";
+import {
+    RelationField,
+    CypherField,
+    PrimitiveField,
+    CustomEnumField,
+    CustomScalarField,
+    UnionField,
+    InterfaceField,
+} from "../types";
 import Auth from "./Auth";
 
 export interface NodeConstructor {
@@ -10,6 +18,9 @@ export interface NodeConstructor {
     scalarFields: CustomScalarField[];
     enumFields: CustomEnumField[];
     otherDirectives: DirectiveNode[];
+    unionFields: UnionField[];
+    interfaceFields: InterfaceField[];
+    interfaces: NamedTypeNode[];
     auth?: Auth;
 }
 
@@ -28,6 +39,12 @@ class Node {
 
     public otherDirectives: DirectiveNode[];
 
+    public unionFields: UnionField[];
+
+    public interfaceFields: InterfaceField[];
+
+    public interfaces: NamedTypeNode[];
+
     public auth?: Auth;
 
     constructor(input: NodeConstructor) {
@@ -38,6 +55,9 @@ class Node {
         this.scalarFields = input.scalarFields;
         this.enumFields = input.enumFields;
         this.otherDirectives = input.otherDirectives;
+        this.unionFields = input.unionFields;
+        this.interfaceFields = input.interfaceFields;
+        this.interfaces = input.interfaces;
         this.auth = input.auth;
     }
 }

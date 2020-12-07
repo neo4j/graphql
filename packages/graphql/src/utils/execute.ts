@@ -10,6 +10,7 @@ async function execute(input: {
     defaultAccessMode: "READ" | "WRITE";
     neoSchema: NeoSchema;
     statistics?: boolean;
+    raw?: boolean;
 }): Promise<any> {
     const session = input.driver.session({ defaultAccessMode: input.defaultAccessMode });
 
@@ -36,6 +37,10 @@ async function execute(input: {
 
         if (input.statistics) {
             return result.summary.updateStatistics._stats;
+        }
+
+        if (input.raw) {
+            return result;
         }
 
         return deserialize(result.records.map((r) => r.toObject()));
