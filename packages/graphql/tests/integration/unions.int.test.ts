@@ -76,16 +76,12 @@ describe("unions", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data as any).toEqual({
-                Movies: [
-                    {
-                        search: [
-                            { __typename: "Movie", title: movieTitle },
-                            { __typename: "Genre", name: genreName },
-                        ],
-                    },
-                ],
-            });
+            const movies = (gqlResult.data as any).Movies[0] as any;
+
+            const movieSearch = movies.search.find((x) => x.__typename === "Movie");
+            expect(movieSearch.title).toEqual(movieTitle);
+            const genreSearch = movies.search.find((x) => x.__typename === "Genre");
+            expect(genreSearch.name).toEqual(genreName);
         } finally {
             await session.close();
         }
