@@ -118,6 +118,20 @@ function createUpdateAndParams({
                     res.strs.push(updateStr);
                 }
 
+                if (update.disconnect) {
+                    const disconnectAndParams = createDisconnectAndParams({
+                        context,
+                        refNode,
+                        value: update.disconnect,
+                        varName: `${_varName}_disconnect`,
+                        withVars,
+                        parentVar,
+                        relationField,
+                    });
+                    res.strs.push(disconnectAndParams[0]);
+                    res.params = { ...res.params, ...disconnectAndParams[1] };
+                }
+
                 if (update.connect) {
                     const connectAndParams = createConnectAndParams({
                         context,
@@ -152,20 +166,6 @@ function createUpdateAndParams({
                         res.params = { ...res.params, ...createAndParams[1] };
                         res.strs.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${innerVarName})`);
                     });
-                }
-
-                if (update.disconnect) {
-                    const disconnectAndParams = createDisconnectAndParams({
-                        context,
-                        refNode,
-                        value: update.disconnect,
-                        varName: `${_varName}_disconnect`,
-                        withVars,
-                        parentVar,
-                        relationField,
-                    });
-                    res.strs.push(disconnectAndParams[0]);
-                    res.params = { ...res.params, ...disconnectAndParams[1] };
                 }
             });
 
