@@ -1,4 +1,4 @@
-import { DirectiveNode, NamedTypeNode } from "graphql";
+import { DirectiveNode, NamedTypeNode, ObjectFieldNode } from "graphql";
 import {
     RelationField,
     CypherField,
@@ -7,6 +7,7 @@ import {
     CustomScalarField,
     UnionField,
     InterfaceField,
+    ObjectField,
 } from "../types";
 import Auth from "./Auth";
 
@@ -21,6 +22,7 @@ export interface NodeConstructor {
     unionFields: UnionField[];
     interfaceFields: InterfaceField[];
     interfaces: NamedTypeNode[];
+    objectFields: ObjectField[];
     auth?: Auth;
 }
 
@@ -45,6 +47,8 @@ class Node {
 
     public interfaces: NamedTypeNode[];
 
+    public objectFields: ObjectField[];
+
     public auth?: Auth;
 
     constructor(input: NodeConstructor) {
@@ -58,6 +62,7 @@ class Node {
         this.unionFields = input.unionFields;
         this.interfaceFields = input.interfaceFields;
         this.interfaces = input.interfaces;
+        this.objectFields = input.objectFields;
         this.auth = input.auth;
     }
 }

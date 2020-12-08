@@ -87,10 +87,33 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            makeAugmentedSchema({ typeDefs });
+
             throw new Error("something went wrong if i throw");
         } catch (error) {
             expect(error.message).toEqual("cannot have interface on relationship");
+        }
+    });
+
+    test("should throw type X does not implement interface X correctly", () => {
+        try {
+            const typeDefs = `
+            interface Node @auth(rules: [{operations: ["read"], allow: "*"}]) {
+                id: ID
+                relation: [Movie] @relationship(type: "SOME_TYPE", direction: "OUT")
+                cypher: [Movie] @cypher(statement: "MATCH (a) RETURN a")
+            }
+
+            type Movie implements Node {
+                title: String!
+            }
+            `;
+
+            makeAugmentedSchema({ typeDefs });
+
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("type Movie does not implement interface Node correctly");
         }
     });
 });
