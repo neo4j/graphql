@@ -27,6 +27,7 @@ export interface BaseField {
 export interface RelationField extends BaseField {
     direction: "OUT" | "IN";
     type: string;
+    union?: UnionField;
 }
 
 /**
@@ -56,7 +57,9 @@ export type CustomEnumField = BaseField;
 /**
  * custom Union.
  */
-export type UnionField = BaseField;
+export interface UnionField extends BaseField {
+    nodes?: string[];
+}
 
 /**
  * custom Interface.
