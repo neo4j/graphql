@@ -802,6 +802,9 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
     const generatedTypeDefs = composer.toSDL();
     let generatedResolvers = composer.getResolveMethods();
+    unions.forEach((union) => {
+        generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
+    });
     if (options.resolvers) {
         const {
             Query: customQueries = {},
