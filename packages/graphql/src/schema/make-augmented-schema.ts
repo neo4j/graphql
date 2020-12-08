@@ -117,6 +117,27 @@ function getObjFieldMeta({
                     ...baseField,
                     ...relationshipMeta,
                 };
+
+                if (fieldUnion) {
+                    const nodes: string[] = [];
+
+                    fieldUnion.types?.forEach((type) => {
+                        const node = objects.find((x) => x.name.value === type.name.value);
+                        if (!node) {
+                            throw new Error(`relationship union type ${type.name.value} must be an object type`);
+                        }
+
+                        nodes.push(type.name.value);
+                    });
+
+                    const unionField: UnionField = {
+                        ...baseField,
+                        nodes,
+                    };
+
+                    relationField.union = unionField;
+                }
+
                 res.relationFields.push(relationField);
             } else if (cypherMeta) {
                 const cypherField: CypherField = {
@@ -228,6 +249,14 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         },
     });
 
+    const queryOptions = composer.createInputTC({
+        name: "QueryOptions",
+        fields: {
+            skip: "Int",
+            limit: "Int",
+        },
+    });
+
     const customResolvers = (document.definitions || []).reduce((res: CustomResolvers, definition) => {
         if (definition.kind !== "ObjectTypeDefinition") {
             return res;
@@ -310,7 +339,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         (x) => x.kind === "DirectiveDefinition"
     ) as DirectiveDefinitionNode[];
 
-    const unions = document.definitions.filter((x) => x.kind === "EnumTypeDefinition") as UnionTypeDefinitionNode[];
+    const unions = document.definitions.filter((x) => x.kind === "UnionTypeDefinition") as UnionTypeDefinitionNode[];
 
     const nodes = objectNodes.map((definition) => {
         checkNodeImplementsInterfaces(definition, interfaces);
@@ -372,22 +401,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             },
             interfaces: node.interfaces.map((x) => x.name.value),
         });
-
-        composeNode.addFields(
-            node.relationFields.reduce(
-                (res, relation) => ({
-                    ...res,
-                    [relation.fieldName]: {
-                        type: relation.typeMeta.pretty,
-                        args: {
-                            where: `${relation.typeMeta.name}Where`,
-                            options: `${relation.typeMeta.name}Options`,
-                        },
-                    },
-                }),
-                {}
-            )
-        );
 
         const sortEnum = composer.createEnumTC({
             name: `${node.name}Sort`,
@@ -539,31 +552,125 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
 
         node.relationFields.forEach((rel) => {
-            const refNode = neoSchemaInput.nodes.find((x) => x.name === rel.typeMeta.name) as Node;
-            const createField = rel.typeMeta.array ? `[${refNode.name}CreateInput]` : `${refNode.name}CreateInput`;
-            const updateField = `${refNode.name}UpdateInput`;
+            if (rel.union) {
+                const refNodes = neoSchemaInput.nodes.filter((x) => rel.union?.nodes?.includes(x.name)) as Node[];
+
+                composeNode.addFields({
+                    [rel.fieldName]: {
+                        type: rel.typeMeta.pretty,
+                        args: {
+                            options: queryOptions.getTypeName(),
+                        },
+                    },
+                });
+
+                refNodes.forEach((n) => {
+                    const concatFieldName = `${rel.fieldName}_${n.name}`;
+                    const createField = rel.typeMeta.array ? `[${n.name}CreateInput]` : `${n.name}CreateInput`;
+                    const updateField = `${n.name}UpdateInput`;
+                    const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${n.name}FieldInput`;
+                    const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${
+                        n.name
+                    }UpdateFieldInput`;
+
+                    const connectField = rel.typeMeta.array
+                        ? `[${n.name}ConnectFieldInput]`
+                        : `${n.name}ConnectFieldInput`;
+                    const disconnectField = rel.typeMeta.array
+                        ? `[${n.name}DisconnectFieldInput]`
+                        : `${n.name}DisconnectFieldInput`;
+
+                    [whereInput, andInput, orInput].forEach((inputType) => {
+                        inputType.addFields({
+                            [`${rel.fieldName}_${n.name}`]: `${n.name}Where`,
+                            [`${rel.fieldName}_${n.name}_NOT`]: `${n.name}Where`,
+                            [`${rel.fieldName}_${n.name}_IN`]: `[${n.name}Where]`,
+                            [`${rel.fieldName}_${n.name}_NOT_IN`]: `[${n.name}Where]`,
+                        });
+                    });
+
+                    composeNode.addFieldArgs(rel.fieldName, {
+                        [n.name]: `${n.name}Where`,
+                    });
+
+                    composer.createInputTC({
+                        name: nodeFieldUpdateInputName,
+                        fields: {
+                            where: `${n.name}Where`,
+                            update: updateField,
+                            connect: connectField,
+                            disconnect: disconnectField,
+                            create: createField,
+                        },
+                    });
+
+                    composer.createInputTC({
+                        name: nodeFieldInputName,
+                        fields: {
+                            create: createField,
+                            connect: connectField,
+                        },
+                    });
+
+                    nodeRelationInput.addFields({
+                        [concatFieldName]: createField,
+                    });
+
+                    nodeInput.addFields({
+                        [concatFieldName]: nodeFieldInputName,
+                    });
+
+                    nodeUpdateInput.addFields({
+                        [concatFieldName]: rel.typeMeta.array
+                            ? `[${nodeFieldUpdateInputName}]`
+                            : nodeFieldUpdateInputName,
+                    });
+
+                    nodeConnectInput.addFields({
+                        [concatFieldName]: connectField,
+                    });
+
+                    nodeDisconnectInput.addFields({
+                        [concatFieldName]: disconnectField,
+                    });
+                });
+
+                return;
+            }
+
+            const n = neoSchemaInput.nodes.find((x) => x.name === rel.typeMeta.name) as Node;
+            const createField = rel.typeMeta.array ? `[${n.name}CreateInput]` : `${n.name}CreateInput`;
+            const updateField = `${n.name}UpdateInput`;
             const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
             const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}UpdateFieldInput`;
-            const connectField = rel.typeMeta.array
-                ? `[${refNode.name}ConnectFieldInput]`
-                : `${refNode.name}ConnectFieldInput`;
+            const connectField = rel.typeMeta.array ? `[${n.name}ConnectFieldInput]` : `${n.name}ConnectFieldInput`;
             const disconnectField = rel.typeMeta.array
-                ? `[${refNode.name}DisconnectFieldInput]`
-                : `${refNode.name}DisconnectFieldInput`;
+                ? `[${n.name}DisconnectFieldInput]`
+                : `${n.name}DisconnectFieldInput`;
 
             [whereInput, andInput, orInput].forEach((inputType) => {
                 inputType.addFields({
-                    [rel.fieldName]: `${refNode.name}Where`,
-                    [`${rel.fieldName}_NOT`]: `${refNode.name}Where`,
-                    [`${rel.fieldName}_IN`]: `[${refNode.name}Where]`,
-                    [`${rel.fieldName}_NOT_IN`]: `[${refNode.name}Where]`,
+                    [rel.fieldName]: `${n.name}Where`,
+                    [`${rel.fieldName}_NOT`]: `${n.name}Where`,
+                    [`${rel.fieldName}_IN`]: `[${n.name}Where]`,
+                    [`${rel.fieldName}_NOT_IN`]: `[${n.name}Where]`,
                 });
+            });
+
+            composeNode.addFields({
+                [rel.fieldName]: {
+                    type: rel.typeMeta.pretty,
+                    args: {
+                        where: `${rel.typeMeta.name}Where`,
+                        options: `${rel.typeMeta.name}Options`,
+                    },
+                },
             });
 
             composer.createInputTC({
                 name: nodeFieldUpdateInputName,
                 fields: {
-                    where: `${refNode.name}Where`,
+                    where: `${n.name}Where`,
                     update: updateField,
                     connect: connectField,
                     disconnect: disconnectField,
@@ -659,6 +766,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         ...scalars,
         ...directives,
         ...inputs,
+        ...unions,
         ...([
             customResolvers.customQuery,
             customResolvers.customMutation,

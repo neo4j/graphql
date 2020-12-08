@@ -116,4 +116,23 @@ describe("makeAugmentedSchema", () => {
             expect(error.message).toEqual("type Movie does not implement interface Node correctly");
         }
     });
+
+    test("should throw relationship union type String must be an object type", () => {
+        try {
+            const typeDefs = `
+                union Test = String | Movie
+
+                type Movie  {
+                    title: String!
+                    relation: [Test] @relationship(type: "SOME_TYPE", direction: "OUT")
+                }
+            `;
+
+            makeAugmentedSchema({ typeDefs });
+
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("relationship union type String must be an object type");
+        }
+    });
 });
