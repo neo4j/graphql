@@ -34,6 +34,7 @@ import {
     CustomScalarField,
     UnionField,
     InterfaceField,
+    ObjectField,
 } from "../types";
 import { upperFirstLetter } from "../utils";
 import findResolver from "./find";
@@ -44,6 +45,7 @@ import updateResolver from "./update";
 import mergeExtensionsIntoAST from "./merge-extensions-into-ast";
 import parseValueNode from "./parse-value-node";
 import mergeTypeDefs from "./merge-typedefs";
+import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 
 export interface MakeAugmentedSchemaOptions {
     typeDefs: any;
@@ -60,6 +62,7 @@ interface ObjectFields {
     enumFields: CustomEnumField[];
     unionFields: UnionField[];
     interfaceFields: InterfaceField[];
+    objectFields: ObjectField[];
 }
 
 interface CustomResolvers {
@@ -72,12 +75,14 @@ interface CustomResolvers {
 
 function getObjFieldMeta({
     obj,
+    objects,
     interfaces,
     scalars,
     unions,
     enums,
 }: {
-    obj: ObjectTypeDefinitionNode;
+    obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
+    objects: ObjectTypeDefinitionNode[];
     interfaces: InterfaceTypeDefinitionNode[];
     unions: UnionTypeDefinitionNode[];
     scalars: ScalarTypeDefinitionNode[];
@@ -92,6 +97,7 @@ function getObjFieldMeta({
             const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
             const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
+            const fieldObject = objects.find((x) => x.name.value === typeMeta.name);
 
             const baseField: BaseField = {
                 fieldName: field.name.value,
@@ -138,6 +144,11 @@ function getObjFieldMeta({
                     ...baseField,
                 };
                 res.interfaceFields.push(interfaceField);
+            } else if (fieldObject) {
+                const objectField: ObjectField = {
+                    ...baseField,
+                };
+                res.objectFields.push(objectField);
             } else {
                 const primitiveField: PrimitiveField = {
                     ...baseField,
@@ -155,6 +166,7 @@ function getObjFieldMeta({
             enumFields: [],
             unionFields: [],
             interfaceFields: [],
+            objectFields: [],
         }
     ) as ObjectFields;
 }
@@ -280,6 +292,10 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
     const scalars = document.definitions.filter((x) => x.kind === "ScalarTypeDefinition") as ScalarTypeDefinitionNode[];
 
+    const objectNodes = document.definitions.filter(
+        (x) => x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)
+    ) as ObjectTypeDefinitionNode[];
+
     const enums = document.definitions.filter((x) => x.kind === "EnumTypeDefinition") as EnumTypeDefinitionNode[];
 
     const inputs = document.definitions.filter(
@@ -296,9 +312,9 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
     const unions = document.definitions.filter((x) => x.kind === "EnumTypeDefinition") as UnionTypeDefinitionNode[];
 
-    const nodes = (document.definitions.filter(
-        (x) => x.kind === "ObjectTypeDefinition" && !["Query", "Mutation", "Subscription"].includes(x.name.value)
-    ) as ObjectTypeDefinitionNode[]).map((definition) => {
+    const nodes = objectNodes.map((definition) => {
+        checkNodeImplementsInterfaces(definition, interfaces);
+
         const otherDirectives = (definition.directives || []).filter((x) => x.name.value !== "auth") as DirectiveNode[];
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
@@ -308,7 +324,14 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             auth = getAuth(authDirective);
         }
 
-        const nodeFields = getObjFieldMeta({ obj: definition, enums, interfaces, scalars, unions });
+        const nodeFields = getObjFieldMeta({
+            obj: definition,
+            enums,
+            interfaces,
+            scalars,
+            unions,
+            objects: objectNodes,
+        });
 
         const node = new Node({
             name: definition.name.value,
@@ -332,6 +355,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...node.enumFields,
             ...node.scalarFields,
             ...node.interfaceFields,
+            ...node.objectFields,
         ]);
 
         const composeNode = composer.createObjectTC({
@@ -594,7 +618,14 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             | CustomResolvers["customCypherMutation"];
 
         if (cypherType) {
-            const objectFields = getObjFieldMeta({ obj: cypherType, scalars, enums, interfaces, unions });
+            const objectFields = getObjFieldMeta({
+                obj: cypherType,
+                scalars,
+                enums,
+                interfaces,
+                unions,
+                objects: objectNodes,
+            });
 
             const objectComposeFields = objectFieldsToComposeFields([
                 ...objectFields.enumFields,
@@ -603,6 +634,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                 ...objectFields.relationFields,
                 ...objectFields.scalarFields,
                 ...objectFields.unionFields,
+                ...objectFields.objectFields,
             ]);
 
             objectComposer.addFields(objectComposeFields);
@@ -626,7 +658,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         ...enums,
         ...scalars,
         ...directives,
-        ...interfaces,
         ...inputs,
         ...([
             customResolvers.customQuery,
@@ -637,6 +668,28 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     if (extraDefinitions.length) {
         composer.addTypeDefs(print({ kind: "Document", definitions: extraDefinitions }));
     }
+
+    interfaces.forEach((inter) => {
+        const objectFields = getObjFieldMeta({ obj: inter, scalars, enums, interfaces, unions, objects: objectNodes });
+
+        const objectComposeFields = objectFieldsToComposeFields(Object.values(objectFields).flatMap((x) => x));
+
+        composer.createInterfaceTC({
+            name: inter.name.value,
+            fields: objectComposeFields,
+            extensions: {
+                directives: (inter.directives || [])
+                    .filter((x) => x.name.value !== "auth")
+                    .map((directive) => ({
+                        args: (directive.arguments || [])?.reduce(
+                            (r: DirectiveArgs, d) => ({ ...r, [d.name.value]: parseValueNode(d.value) }),
+                            {}
+                        ) as DirectiveArgs,
+                        name: directive.name.value,
+                    })),
+            },
+        });
+    });
 
     const generatedTypeDefs = composer.toSDL();
     let generatedResolvers = composer.getResolveMethods();

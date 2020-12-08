@@ -64,6 +64,11 @@ export type UnionField = BaseField;
 export type InterfaceField = BaseField;
 
 /**
+ * custom Object Node.
+ */
+export type ObjectField = BaseField;
+
+/**
  * Representation of the options arg
  * passed to resolvers.
  */
