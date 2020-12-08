@@ -109,6 +109,10 @@ function createProjectionAndParams({
                         return;
                     }
 
+                    if (n.auth) {
+                        checkRoles({ node: n, context, operation: "read" });
+                    }
+
                     const _param = `${param}_${n.name}`;
 
                     const innenrHeadStr: string[] = [];
