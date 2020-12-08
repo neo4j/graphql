@@ -18,6 +18,7 @@ type Genre {
 type Movie {
     id: ID
     search: [Search] @relationship(type: "SEARCH", direction: "OUT")
+    searchNoDirective: Search
 }
 ```
 
@@ -113,6 +114,7 @@ input GenreWhere {
 type Movie {
   id: ID
   search(options: QueryOptions, Genre: GenreWhere, Movie: MovieWhere): [Search]
+  searchNoDirective: Search
 }
 
 input MovieAND {

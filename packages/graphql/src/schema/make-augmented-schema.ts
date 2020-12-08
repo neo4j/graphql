@@ -159,7 +159,7 @@ function getObjFieldMeta({
                 const unionField: UnionField = {
                     ...baseField,
                 };
-                res.enumFields.push(unionField);
+                res.unionFields.push(unionField);
             } else if (fieldInterface) {
                 const interfaceField: InterfaceField = {
                     ...baseField,
@@ -385,6 +385,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...node.scalarFields,
             ...node.interfaceFields,
             ...node.objectFields,
+            ...node.unionFields,
         ]);
 
         const composeNode = composer.createObjectTC({
