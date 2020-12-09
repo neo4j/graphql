@@ -524,6 +524,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                 })
             );
         }
+
         composer.createInputTC({
             name: `${node.name}ConnectFieldInput`,
             fields: {
