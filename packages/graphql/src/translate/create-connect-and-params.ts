@@ -15,6 +15,7 @@ function createConnectAndParams({
     parentVar,
     refNode,
     context,
+    labelOverride,
 }: {
     withVars: string[];
     value: any;
@@ -23,6 +24,7 @@ function createConnectAndParams({
     parentVar: string;
     context: Context;
     refNode: Node;
+    labelOverride?: string;
 }): [string, any] {
     function reducer(res: Res, connect: any, index): Res {
         const _varName = `${varName}${index}`;
@@ -31,7 +33,7 @@ function createConnectAndParams({
         const relTypeStr = `[:${relationField.type}]`;
 
         res.connects.push(`WITH ${withVars.join(", ")}`);
-        res.connects.push(`OPTIONAL MATCH (${_varName}:${relationField.typeMeta.name})`);
+        res.connects.push(`OPTIONAL MATCH (${_varName}:${labelOverride || relationField.typeMeta.name})`);
 
         if (connect.where) {
             const where = createWhereAndParams({
@@ -57,16 +59,26 @@ function createConnectAndParams({
             connects.forEach((c) => {
                 const reduced = Object.entries(c).reduce(
                     (r: Res, [k, v]) => {
-                        const relField = refNode.relationFields.find((x) => x.fieldName === k) as RelationField;
+                        const relField = refNode.relationFields.find((x) => k.startsWith(x.fieldName));
+                        let newRefNode: Node;
+
+                        if (relationField.union) {
+                            const [modelName] = k.split(`${relationField.fieldName}_`).join("").split("_");
+                            newRefNode = context.neoSchema.nodes.find((x) => x.name === modelName) as Node;
+                        } else {
+                            newRefNode = context.neoSchema.nodes.find(
+                                (x) => x.name === (relField as RelationField).typeMeta.name
+                            ) as Node;
+                        }
 
                         const recurse = createConnectAndParams({
                             withVars: [...withVars, _varName],
                             value: v,
                             varName: `${_varName}_${k}`,
-                            relationField: relField,
+                            relationField: relField as RelationField,
                             parentVar: _varName,
                             context,
-                            refNode: context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node,
+                            refNode: newRefNode as Node,
                         });
                         r.connects.push(recurse[0]);
                         r.params = { ...r.params, ...recurse[1] };

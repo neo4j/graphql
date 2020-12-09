@@ -104,26 +104,26 @@ function createProjectionAndParams({
 
                 const headStrs: string[] = [];
 
-                referenceNodes.forEach((n) => {
+                referenceNodes.forEach((refNode) => {
                     if (!fieldsByTypeName) {
                         return;
                     }
 
-                    if (n.auth) {
-                        checkRoles({ node: n, context, operation: "read" });
+                    if (refNode.auth) {
+                        checkRoles({ node: refNode, context, operation: "read" });
                     }
 
-                    const _param = `${param}_${n.name}`;
+                    const _param = `${param}_${refNode.name}`;
 
                     const innenrHeadStr: string[] = [];
                     innenrHeadStr.push("[");
-                    innenrHeadStr.push(`${param} IN [${param}] WHERE "${n.name}" IN labels (${param})`);
+                    innenrHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
 
-                    const thisWhere = field.args[n.name];
+                    const thisWhere = field.args[refNode.name];
                     if (thisWhere) {
                         const whereAndParams = createWhereAndParams({
                             context,
-                            node: n,
+                            node: refNode,
                             varName: param,
                             whereInput: thisWhere,
                             chainStrOverRide: _param,
@@ -132,9 +132,9 @@ function createProjectionAndParams({
                         res.params = { ...res.params, ...whereAndParams[1] };
                     }
 
-                    if (n.auth) {
+                    if (refNode.auth) {
                         const allowAndParams = createAllowAndParams({
-                            node: n,
+                            node: refNode,
                             context,
                             varName: param,
                             chainStrOverRide: `${_param}_auth`,
@@ -147,18 +147,23 @@ function createProjectionAndParams({
 
                     innenrHeadStr.push(`| ${param}`);
 
-                    const recurse = createProjectionAndParams({
-                        // @ts-ignore
-                        fieldsByTypeName: field.fieldsByTypeName,
-                        node: n,
-                        context,
-                        varName: param,
-                        chainStrOverRide: _param,
-                    });
-                    innenrHeadStr.push(
-                        [`{ __resolveType: "${n.name}", `, ...recurse[0].replace("{", "").split("")].join("")
-                    );
-                    res.params = { ...res.params, ...recurse[1] };
+                    if (field.fieldsByTypeName[refNode.name]) {
+                        const recurse = createProjectionAndParams({
+                            // @ts-ignore
+                            fieldsByTypeName: field.fieldsByTypeName,
+                            node: refNode,
+                            context,
+                            varName: param,
+                            chainStrOverRide: _param,
+                        });
+                        innenrHeadStr.push(
+                            [`{ __resolveType: "${refNode.name}", `, ...recurse[0].replace("{", "").split("")].join("")
+                        );
+                        res.params = { ...res.params, ...recurse[1] };
+                    } else {
+                        innenrHeadStr.push(`{ __resolveType: "${refNode.name}" } `);
+                    }
+
                     innenrHeadStr.push(`]`);
 
                     headStrs.push(innenrHeadStr.join(" "));
