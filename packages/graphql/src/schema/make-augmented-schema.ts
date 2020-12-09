@@ -496,46 +496,34 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             fields: { sort: sortEnum.List, limit: "Int", skip: "Int" },
         });
 
-        const nodeInput = composer.createInputTC({
-            name: `${node.name}CreateInput`,
-            fields: [...node.primitiveFields, ...node.scalarFields, ...node.enumFields].reduce((r, f) => {
-                return {
-                    ...r,
-                    [f.fieldName]: f.typeMeta.pretty,
-                };
-            }, {}),
-        });
-
-        const nodeUpdateInput = composer.createInputTC({
-            name: `${node.name}UpdateInput`,
-            fields: [...node.primitiveFields, ...node.scalarFields, ...node.enumFields].reduce((res, f) => {
-                return {
-                    ...res,
-                    [f.fieldName]: f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name,
-                };
-            }, {}),
-        });
+        const [nodeInput, nodeUpdateInput] = ["CreateInput", "UpdateInput"].map((type) =>
+            composer.createInputTC({
+                name: `${node.name}${type}`,
+                fields: [...node.primitiveFields, ...node.scalarFields, ...node.enumFields].reduce(
+                    (res, f) => ({
+                        ...res,
+                        [f.fieldName]: f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name,
+                    }),
+                    {}
+                ),
+            })
+        );
 
         let nodeConnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
         let nodeDisconnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
         let nodeRelationInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
         if (node.relationFields.length) {
-            nodeConnectInput = composer.createInputTC({
-                name: `${node.name}ConnectInput`,
-                fields: {},
-            });
-
-            nodeDisconnectInput = composer.createInputTC({
-                name: `${node.name}DisconnectInput`,
-                fields: {},
-            });
-
-            nodeRelationInput = composer.createInputTC({
-                name: `${node.name}RelationInput`,
-                fields: {},
-            });
+            [nodeConnectInput, nodeDisconnectInput, nodeRelationInput] = [
+                "ConnectInput",
+                "DisconnectInput",
+                "RelationInput",
+            ].map((type) =>
+                composer.createInputTC({
+                    name: `${node.name}${type}`,
+                    fields: {},
+                })
+            );
         }
-
         composer.createInputTC({
             name: `${node.name}ConnectFieldInput`,
             fields: {
