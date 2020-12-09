@@ -131,14 +131,6 @@ input MovieAND {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  search_Genre: GenreWhere
-  search_Genre_NOT: GenreWhere
-  search_Genre_IN: [GenreWhere]
-  search_Genre_NOT_IN: [GenreWhere]
-  search_Movie: MovieWhere
-  search_Movie_NOT: MovieWhere
-  search_Movie_IN: [MovieWhere]
-  search_Movie_NOT_IN: [MovieWhere]
 }
 
 input MovieConnectFieldInput {
@@ -187,14 +179,6 @@ input MovieOR {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  search_Genre: GenreWhere
-  search_Genre_NOT: GenreWhere
-  search_Genre_IN: [GenreWhere]
-  search_Genre_NOT_IN: [GenreWhere]
-  search_Movie: MovieWhere
-  search_Movie_NOT: MovieWhere
-  search_Movie_IN: [MovieWhere]
-  search_Movie_NOT_IN: [MovieWhere]
 }
 
 input MovieRelationInput {
@@ -253,14 +237,6 @@ input MovieWhere {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  search_Genre: GenreWhere
-  search_Genre_NOT: GenreWhere
-  search_Genre_IN: [GenreWhere]
-  search_Genre_NOT_IN: [GenreWhere]
-  search_Movie: MovieWhere
-  search_Movie_NOT: MovieWhere
-  search_Movie_IN: [MovieWhere]
-  search_Movie_NOT_IN: [MovieWhere]
 }
 
 type Mutation {

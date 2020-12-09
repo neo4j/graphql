@@ -95,3 +95,190 @@ RETURN this {
 ```
 
 ---
+
+### Create Unions
+
+**GraphQL input**
+
+```graphql
+mutation {
+    createMovies(input: [{
+        title: "some movie",
+        search_Genre: {
+            create: [{
+                name: "some genre"
+            }]
+        }
+    }]) {
+        title
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+CREATE (this0:Movie) 
+SET this0.title = $this0_title
+
+WITH this0 
+CREATE (this0_search_Genre0:Genre) 
+SET this0_search_Genre0.name = $this0_search_Genre0_name 
+MERGE (this0)-[:SEARCH]->(this0_search_Genre0) 
+
+RETURN this0 { 
+    .title
+} AS this0
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+   "this0_title": "some movie",
+   "this0_search_Genre0_name": "some genre"
+}
+```
+
+---
+
+### Connect Unions
+
+**GraphQL input**
+
+```graphql
+mutation {
+    createMovies(input: [{
+        title: "some movie",
+        search_Genre: {
+            connect: [{
+                where: { name: "some genre" }
+            }]
+        }
+    }]) {
+        title
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+CREATE (this0:Movie) 
+SET this0.title = $this0_title 
+
+WITH this0 
+OPTIONAL MATCH (this0_search_Genre_connect0:Genre) 
+WHERE this0_search_Genre_connect0.name = $this0_search_Genre_connect0_name 
+FOREACH(_ IN CASE this0_search_Genre_connect0 WHEN NULL THEN [] ELSE [1] END | 
+    MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0) 
+) 
+
+RETURN this0 { .title } AS this0
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+   "this0_title": "some movie",
+   "this0_search_Genre_connect0_name": "some genre"
+}
+
+```
+
+---
+
+### Update Unions
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateMovies(
+        where: { title: "some movie" },
+        update: {
+            search_Genre: {
+                where: { name: "some genre" },
+                update: {
+                    name: "some new genre"
+                }
+            }
+        }    
+    ) {
+        title
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie) 
+WHERE this.title = $this_title 
+
+WITH this 
+OPTIONAL MATCH (this)-[:SEARCH]->(this_search_Genre0:Genre) 
+WHERE this_search_Genre0.name = $this_search_Genre0_name 
+CALL apoc.do.when(this_search_Genre0 IS NOT NULL, " SET this_search_Genre0.name = $this_update_search_Genre0_name RETURN count(*) ", "", {this:this, this_search_Genre0:this_search_Genre0, this_update_search_Genre0_name:$this_update_search_Genre0_name}) YIELD value as _ 
+
+RETURN this { .title } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+   "this_title": "some movie",
+   "this_search_Genre0_name": "some genre",
+   "this_update_search_Genre0_name": "some new genre"
+}
+```
+
+---
+
+### Disconnect Unions
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateMovies(
+        where: { title: "some movie" },
+        update: {
+            search_Genre: {
+                disconnect: [{
+                    where: { name: "some genre" }
+                }]
+            }
+        }    
+    ) {
+        title
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie) 
+WHERE this.title = $this_title 
+
+WITH this 
+OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre) 
+WHERE this_search_Genre0_disconnect0.name = $this_search_Genre0_disconnect0_name 
+FOREACH(_ IN CASE this_search_Genre0_disconnect0 WHEN NULL THEN [] ELSE [1] END | 
+    DELETE this_search_Genre0_disconnect0_rel 
+)
+
+RETURN this { .title } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+   "this_title": "some movie",
+   "this_search_Genre0_disconnect0_name": "some genre"
+}
+```

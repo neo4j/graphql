@@ -570,15 +570,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                         ? `[${n.name}DisconnectFieldInput]`
                         : `${n.name}DisconnectFieldInput`;
 
-                    [whereInput, andInput, orInput].forEach((inputType) => {
-                        inputType.addFields({
-                            [`${rel.fieldName}_${n.name}`]: `${n.name}Where`,
-                            [`${rel.fieldName}_${n.name}_NOT`]: `${n.name}Where`,
-                            [`${rel.fieldName}_${n.name}_IN`]: `[${n.name}Where]`,
-                            [`${rel.fieldName}_${n.name}_NOT_IN`]: `[${n.name}Where]`,
-                        });
-                    });
-
                     composeNode.addFieldArgs(rel.fieldName, {
                         [n.name]: `${n.name}Where`,
                     });

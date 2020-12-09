@@ -22,10 +22,19 @@ function createCreateAndParams({
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const _varName = `${varName}_${key}`;
-        const relationField = node.relationFields.find((x) => x.fieldName === key);
+
+        const relationField = node.relationFields.find((x) => key.startsWith(x.fieldName));
+        let unionTypeName = "";
 
         if (relationField) {
-            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            let refNode: Node;
+
+            if (relationField.union) {
+                [unionTypeName] = key.split(`${relationField.fieldName}_`).join("").split("_");
+                refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
+            } else {
+                refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            }
 
             if (value.create) {
                 const creates = relationField.typeMeta.array ? value.create : [value.create];
@@ -59,6 +68,7 @@ function createCreateAndParams({
                     relationField,
                     context,
                     refNode,
+                    labelOverride: unionTypeName,
                 });
                 res.creates.push(connectAndParams[0]);
                 res.params = { ...res.params, ...connectAndParams[1] };
