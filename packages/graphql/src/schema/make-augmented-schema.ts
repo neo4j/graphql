@@ -761,7 +761,9 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     interfaces.forEach((inter) => {
         const objectFields = getObjFieldMeta({ obj: inter, scalars, enums, interfaces, unions, objects: objectNodes });
 
-        const objectComposeFields = objectFieldsToComposeFields(Object.values(objectFields).flatMap((x) => x));
+        const objectComposeFields = objectFieldsToComposeFields(
+            Object.values(objectFields).reduce((acc, x) => [...acc, ...x], [])
+        );
 
         composer.createInterfaceTC({
             name: inter.name.value,

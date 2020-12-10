@@ -76,3 +76,4 @@ e2e/fixtures/data/
 e2e/fixtures/cache/
 
 test-api.ts
+packages/package-tests/**/package-lock.json
