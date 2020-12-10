@@ -1,17 +1,17 @@
-import { DocumentNode, parse, print } from "graphql";
+import { DefinitionNode, DocumentNode, parse, print } from "graphql";
 
 function mergeTypeDefs(typeDefs: (string | DocumentNode) | (string | DocumentNode)[]): DocumentNode {
     const arrayOfTypeDefs = Array.isArray(typeDefs) ? typeDefs : [typeDefs];
 
     return {
         kind: "Document",
-        definitions: arrayOfTypeDefs.flatMap((type) => {
+        definitions: arrayOfTypeDefs.reduce((acc: DefinitionNode[], type) => {
             if (typeof type === "string") {
-                return parse(type).definitions;
+                return [...acc, ...parse(type).definitions];
             }
 
-            return parse(print(type)).definitions;
-        }),
+            return [...acc, ...parse(print(type)).definitions];
+        }, []),
     };
 }
 
