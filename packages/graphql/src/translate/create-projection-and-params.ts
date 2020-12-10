@@ -89,6 +89,12 @@ function createProjectionAndParams({
 
         const relationField = node.relationFields.find((x) => x.fieldName === key);
         if (relationField) {
+            const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const nodeMatchStr = `(${chainStr || varName})`;
+            const inStr = relationField.direction === "IN" ? "<-" : "-";
+            const relTypeStr = `[:${relationField.type}]`;
+            const outStr = relationField.direction === "OUT" ? "->" : "-";
+            const nodeOutStr = `(${param}:${referenceNode?.name})`;
             const isArray = relationField.typeMeta.array;
 
             if (relationField.union) {
@@ -97,7 +103,9 @@ function createProjectionAndParams({
                 ) as Node[];
 
                 const unionStrs: string[] = [
-                    `${key}: ${!isArray ? "head(" : ""} [(${chainStr || varName})--(${param})`,
+                    `${key}: ${!isArray ? "head(" : ""} [(${
+                        chainStr || varName
+                    })${inStr}${relTypeStr}${outStr}(${param})`,
                     `WHERE ${referenceNodes.map((x) => `"${x.name}" IN labels(${param})`).join(" OR ")}`,
                     `| head(`,
                 ];
@@ -191,10 +199,6 @@ function createProjectionAndParams({
                 return res;
             }
 
-            const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-            const relType = relationField.type;
-            const relDirection = relationField.direction;
-
             if (referenceNode.auth) {
                 checkRoles({ node: referenceNode, context, operation: "read" });
             }
@@ -236,11 +240,6 @@ function createProjectionAndParams({
             projectionStr = recurse[0];
             res.params = { ...res.params, ...recurse[1] };
 
-            const nodeMatchStr = `(${chainStr || varName})`;
-            const inStr = relDirection === "IN" ? "<-" : "-";
-            const relTypeStr = `[:${relType}]`;
-            const outStr = relDirection === "OUT" ? "->" : "-";
-            const nodeOutStr = `(${param}:${referenceNode?.name})`;
             const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
             const innerStr = `${pathStr} ${whereStr} ${
                 authStr ? `${!whereStr ? "WHERE " : ""} ${whereStr ? "AND " : ""} ${authStr}` : ""
