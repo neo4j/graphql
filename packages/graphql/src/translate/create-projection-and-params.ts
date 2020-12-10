@@ -105,19 +105,14 @@ function createProjectionAndParams({
                 const headStrs: string[] = [];
 
                 referenceNodes.forEach((refNode) => {
-                    if (!fieldsByTypeName) {
-                        return;
-                    }
+                    const _param = `${param}_${refNode.name}`;
+                    const innenrHeadStr: string[] = [];
+                    innenrHeadStr.push("[");
+                    innenrHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
 
                     if (refNode.auth) {
                         checkRoles({ node: refNode, context, operation: "read" });
                     }
-
-                    const _param = `${param}_${refNode.name}`;
-
-                    const innenrHeadStr: string[] = [];
-                    innenrHeadStr.push("[");
-                    innenrHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
 
                     const thisWhere = field.args[refNode.name];
                     if (thisWhere) {
@@ -165,7 +160,6 @@ function createProjectionAndParams({
                     }
 
                     innenrHeadStr.push(`]`);
-
                     headStrs.push(innenrHeadStr.join(" "));
                 });
 
