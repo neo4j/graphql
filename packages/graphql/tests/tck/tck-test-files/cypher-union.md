@@ -52,7 +52,7 @@ MATCH (this:Movie)
 WHERE this.title = $this_title
 
 RETURN this { 
-    search: [(this)--(this_search) 
+    search: [(this)-[:SEARCH]->(this_search) 
         WHERE "Genre" IN labels(this_search) OR "Movie" IN labels(this_search) | 
         head( 
             [ this_search IN [this_search] 
