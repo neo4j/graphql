@@ -16,14 +16,24 @@ function printSelectionSet(selectionSet: string | DocumentNode): string {
     return print(selectionSet);
 }
 
+function removeNull(data: any) {
+    return JSON.parse(JSON.stringify(data), (_key, value) => {
+        if (value === null) {
+            return undefined;
+        }
+
+        return value;
+    });
+}
+
 class Model<T = any> {
     public name: string;
 
-    public namePluralized: string;
+    private namePluralized: string;
 
     private getGraphQLSchema: () => GraphQLSchema;
 
-    private selectionSet: string;
+    protected selectionSet: string;
 
     constructor(input: ModelConstructor) {
         this.name = input.name;
@@ -41,7 +51,14 @@ class Model<T = any> {
         options,
         selectionSet,
         args = {},
-    }: { where?: any; options?: GraphQLOptionsArg; selectionSet?: string | DocumentNode; args?: any } = {}) {
+        context = {},
+    }: {
+        where?: any;
+        options?: GraphQLOptionsArg;
+        selectionSet?: string | DocumentNode;
+        args?: any;
+        context?: any;
+    } = {}) {
         const argDefinitions = [
             `${where || options ? "(" : ""}`,
             `${where ? `$where: ${this.name}Where` : ""}`,
@@ -64,22 +81,15 @@ class Model<T = any> {
 
         const schema = this.getGraphQLSchema();
         const rootValue = null;
-        const contextValue = {};
         const variableValues = { where, options, ...args };
 
-        const result = await graphql(schema, query, rootValue, contextValue, variableValues);
+        const result = await graphql(schema, query, rootValue, context, variableValues);
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
         }
 
-        return JSON.parse(JSON.stringify((result.data as any)[this.namePluralized] as T[]), (_key, value) => {
-            if (value === null) {
-                return undefined;
-            }
-
-            return value;
-        });
+        return removeNull((result.data as any)[this.namePluralized]) as T[];
     }
 }
 
