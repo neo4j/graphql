@@ -13,6 +13,7 @@ function createWhereAndParams({
     node,
     context,
     recursing,
+    chainStrOverRide,
 }: {
     node: Node;
     context: Context;
@@ -20,6 +21,7 @@ function createWhereAndParams({
     varName: string;
     chainStr?: string;
     recursing?: boolean;
+    chainStrOverRide?: string;
 }): [string, any] {
     if (!Object.keys(whereInput).length) {
         return ["", {}];
@@ -29,6 +31,8 @@ function createWhereAndParams({
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
+        } else if (chainStrOverRide) {
+            param = `${chainStrOverRide}_${key}`;
         } else {
             param = `${varName}_${key}`;
         }

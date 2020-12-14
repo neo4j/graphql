@@ -17,6 +17,10 @@ describe("createWhereAndParams", () => {
         // @ts-ignore
         const node: Node = {
             relationFields: [],
+            cypherFields: [],
+            enumFields: [],
+            scalarFields: [],
+            primitiveFields: [],
         };
 
         // @ts-ignore

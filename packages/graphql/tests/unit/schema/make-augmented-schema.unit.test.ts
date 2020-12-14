@@ -1,5 +1,6 @@
 import { printSchema, parse, ObjectTypeDefinitionNode, NamedTypeNode, ListTypeNode, NonNullTypeNode } from "graphql";
 import { pluralize } from "graphql-compose";
+import { describe, test, expect } from "@jest/globals";
 import makeAugmentedSchema from "../../../src/schema/make-augmented-schema";
 import { Node } from "../../../src/classes";
 
@@ -71,5 +72,67 @@ describe("makeAugmentedSchema", () => {
             );
             expect(sort).toBeTruthy();
         });
+    });
+
+    test("should throw cannot have interface on relationship", () => {
+        try {
+            const typeDefs = `
+                interface Node {
+                    id: ID
+                }
+
+                type Movie {
+                    title: String!
+                    nodes: [Node] @relationship(type: "NODE", direction: "IN")
+                }
+            `;
+
+            makeAugmentedSchema({ typeDefs });
+
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("cannot have interface on relationship");
+        }
+    });
+
+    test("should throw type X does not implement interface X correctly", () => {
+        try {
+            const typeDefs = `
+            interface Node @auth(rules: [{operations: ["read"], allow: "*"}]) {
+                id: ID
+                relation: [Movie] @relationship(type: "SOME_TYPE", direction: "OUT")
+                cypher: [Movie] @cypher(statement: "MATCH (a) RETURN a")
+            }
+
+            type Movie implements Node {
+                title: String!
+            }
+            `;
+
+            makeAugmentedSchema({ typeDefs });
+
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("type Movie does not implement interface Node correctly");
+        }
+    });
+
+    test("should throw relationship union type String must be an object type", () => {
+        try {
+            const typeDefs = `
+                union Test = String | Movie
+
+                type Movie  {
+                    title: String!
+                    relation: [Test] @relationship(type: "SOME_TYPE", direction: "OUT")
+                }
+            `;
+
+            makeAugmentedSchema({ typeDefs });
+
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("relationship union type String must be an object type");
+        }
     });
 });

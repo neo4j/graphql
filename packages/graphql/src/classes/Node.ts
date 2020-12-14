@@ -1,4 +1,14 @@
-import { RelationField, CypherField, PrimitiveField } from "../types";
+import { DirectiveNode, NamedTypeNode, ObjectFieldNode } from "graphql";
+import {
+    RelationField,
+    CypherField,
+    PrimitiveField,
+    CustomEnumField,
+    CustomScalarField,
+    UnionField,
+    InterfaceField,
+    ObjectField,
+} from "../types";
 import Auth from "./Auth";
 
 export interface NodeConstructor {
@@ -6,6 +16,13 @@ export interface NodeConstructor {
     relationFields: RelationField[];
     cypherFields: CypherField[];
     primitiveFields: PrimitiveField[];
+    scalarFields: CustomScalarField[];
+    enumFields: CustomEnumField[];
+    otherDirectives: DirectiveNode[];
+    unionFields: UnionField[];
+    interfaceFields: InterfaceField[];
+    interfaces: NamedTypeNode[];
+    objectFields: ObjectField[];
     auth?: Auth;
 }
 
@@ -18,6 +35,20 @@ class Node {
 
     public primitiveFields: PrimitiveField[];
 
+    public scalarFields: CustomScalarField[];
+
+    public enumFields: CustomEnumField[];
+
+    public otherDirectives: DirectiveNode[];
+
+    public unionFields: UnionField[];
+
+    public interfaceFields: InterfaceField[];
+
+    public interfaces: NamedTypeNode[];
+
+    public objectFields: ObjectField[];
+
     public auth?: Auth;
 
     constructor(input: NodeConstructor) {
@@ -25,6 +56,13 @@ class Node {
         this.relationFields = input.relationFields;
         this.cypherFields = input.cypherFields;
         this.primitiveFields = input.primitiveFields;
+        this.scalarFields = input.scalarFields;
+        this.enumFields = input.enumFields;
+        this.otherDirectives = input.otherDirectives;
+        this.unionFields = input.unionFields;
+        this.interfaceFields = input.interfaceFields;
+        this.interfaces = input.interfaces;
+        this.objectFields = input.objectFields;
         this.auth = input.auth;
     }
 }
