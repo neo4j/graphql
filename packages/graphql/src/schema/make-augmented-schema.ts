@@ -52,6 +52,7 @@ export interface MakeAugmentedSchemaOptions {
     resolvers?: any;
     schemaDirectives?: any;
     debug?: boolean | ((...values: any[]) => void);
+    context?: any;
 }
 
 interface ObjectFields {
@@ -369,6 +370,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...nodeFields,
             // @ts-ignore
             auth,
+            getGraphQLSchema: () => neoSchemaInput.schema,
         });
 
         return node;

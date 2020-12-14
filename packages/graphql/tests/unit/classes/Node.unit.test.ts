@@ -1,10 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import Node from "../../../src/classes/Node";
+import { describe, test, expect } from "@jest/globals";
+import Node, { NodeConstructor } from "../../../src/classes/Node";
 
 describe("Node", () => {
     test("should construct", () => {
-        const input = {
+        // @ts-ignore
+        const input: NodeConstructor = {
             name: "Movie",
+            cypherFields: [],
+            enumFields: [],
+            primitiveFields: [],
+            scalarFields: [],
         };
 
         // @ts-ignore

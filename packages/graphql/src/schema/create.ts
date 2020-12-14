@@ -7,6 +7,9 @@ function create({ node, getSchema }: { node: Node; getSchema: () => NeoSchema })
     async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
         const neoSchema = getSchema();
         context.neoSchema = neoSchema;
+        if (neoSchema.options.context) {
+            context = { ...context, ...neoSchema.options.context };
+        }
 
         const { driver } = context;
         if (!driver) {
