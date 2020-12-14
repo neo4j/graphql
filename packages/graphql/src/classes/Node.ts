@@ -1,4 +1,4 @@
-import { DirectiveNode, NamedTypeNode, ObjectFieldNode } from "graphql";
+import { DirectiveNode, NamedTypeNode, GraphQLSchema } from "graphql";
 import {
     RelationField,
     CypherField,
@@ -8,8 +8,10 @@ import {
     UnionField,
     InterfaceField,
     ObjectField,
+    BaseField,
 } from "../types";
 import Auth from "./Auth";
+import Model from "./Model";
 
 export interface NodeConstructor {
     name: string;
@@ -24,6 +26,7 @@ export interface NodeConstructor {
     interfaces: NamedTypeNode[];
     objectFields: ObjectField[];
     auth?: Auth;
+    getGraphQLSchema: () => GraphQLSchema;
 }
 
 class Node {
@@ -51,6 +54,8 @@ class Node {
 
     public auth?: Auth;
 
+    public model: Model;
+
     constructor(input: NodeConstructor) {
         this.name = input.name;
         this.relationFields = input.relationFields;
@@ -64,6 +69,19 @@ class Node {
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
         this.auth = input.auth;
+
+        const selectionSet = `
+            {
+                ${
+                    [this.primitiveFields, this.scalarFields, this.enumFields].reduce(
+                        (res: string[], v: BaseField[]) => [...res, ...v.map((x) => x.fieldName)],
+                        []
+                    ) as string[]
+                }
+            }
+        `;
+
+        this.model = new Model({ name: this.name, selectionSet, getGraphQLSchema: input.getGraphQLSchema });
     }
 }
 
