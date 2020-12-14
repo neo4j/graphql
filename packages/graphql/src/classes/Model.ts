@@ -52,13 +52,15 @@ class Model<T = any> {
         selectionSet,
         args = {},
         context = {},
+        rootValue = null,
     }: {
         where?: any;
         options?: GraphQLOptionsArg;
         selectionSet?: string | DocumentNode;
         args?: any;
         context?: any;
-    } = {}) {
+        rootValue?: any;
+    } = {}): Promise<T> {
         const argDefinitions = [
             `${where || options ? "(" : ""}`,
             `${where ? `$where: ${this.name}Where` : ""}`,
@@ -80,7 +82,6 @@ class Model<T = any> {
         `;
 
         const schema = this.getGraphQLSchema();
-        const rootValue = null;
         const variableValues = { where, options, ...args };
 
         const result = await graphql(schema, query, rootValue, context, variableValues);
@@ -89,7 +90,44 @@ class Model<T = any> {
             throw new Error(result.errors[0].message);
         }
 
-        return removeNull((result.data as any)[this.namePluralized]) as T[];
+        return removeNull((result.data as any)[this.namePluralized]) as T;
+    }
+
+    async create({
+        input,
+        selectionSet,
+        args = {},
+        context = {},
+        rootValue = null,
+    }: {
+        input?: any;
+        selectionSet?: string | DocumentNode;
+        args?: any;
+        context?: any;
+        rootValue?: any;
+    } = {}): Promise<T> {
+        let upperFirst: string | string[] = this.namePluralized.split("");
+        upperFirst[0] = upperFirst[0].toLocaleUpperCase();
+        upperFirst = upperFirst.join("");
+
+        const mutationName = `create${upperFirst}`;
+
+        const mutation = `
+            mutation ($input: [${this.name}CreateInput]!){
+               ${mutationName}(input: $input) ${printSelectionSet(selectionSet || this.selectionSet)}
+            }
+        `;
+
+        const schema = this.getGraphQLSchema();
+        const variableValues = { ...args, input };
+
+        const result = await graphql(schema, mutation, rootValue, context, variableValues);
+
+        if (result.errors?.length) {
+            throw new Error(result.errors[0].message);
+        }
+
+        return removeNull((result.data as any)[mutationName]) as T;
     }
 }
 
