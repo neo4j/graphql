@@ -16,17 +16,21 @@ function createProjectionAndParams({
     context,
     chainStr,
     varName,
+    chainStrOverRide,
 }: {
     fieldsByTypeName: FieldsByTypeName;
     node: Node;
     context: Context;
     chainStr?: string;
     varName: string;
+    chainStrOverRide?: string;
 }): [string, any] {
     function reducer(res: Res, [key, field]: [string, FieldsByTypeName]): Res {
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
+        } else if (chainStrOverRide) {
+            param = `${chainStrOverRide}_${key}`;
         } else {
             param = `${varName}_${key}`;
         }
@@ -79,15 +83,121 @@ function createProjectionAndParams({
             }
 
             res.projection.push(`${key}: [${apocStr}]`);
+
             return res;
         }
 
         const relationField = node.relationFields.find((x) => x.fieldName === key);
         if (relationField) {
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-            const relType = relationField.type;
-            const relDirection = relationField.direction;
+            const nodeMatchStr = `(${chainStr || varName})`;
+            const inStr = relationField.direction === "IN" ? "<-" : "-";
+            const relTypeStr = `[:${relationField.type}]`;
+            const outStr = relationField.direction === "OUT" ? "->" : "-";
+            const nodeOutStr = `(${param}:${referenceNode?.name})`;
             const isArray = relationField.typeMeta.array;
+
+            if (relationField.union) {
+                const referenceNodes = context.neoSchema.nodes.filter((x) =>
+                    relationField.union?.nodes?.includes(x.name)
+                ) as Node[];
+
+                const unionStrs: string[] = [
+                    `${key}: ${!isArray ? "head(" : ""} [(${
+                        chainStr || varName
+                    })${inStr}${relTypeStr}${outStr}(${param})`,
+                    `WHERE ${referenceNodes.map((x) => `"${x.name}" IN labels(${param})`).join(" OR ")}`,
+                    `| head(`,
+                ];
+
+                const headStrs: string[] = [];
+
+                referenceNodes.forEach((refNode) => {
+                    const _param = `${param}_${refNode.name}`;
+                    const innenrHeadStr: string[] = [];
+                    innenrHeadStr.push("[");
+                    innenrHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
+
+                    if (refNode.auth) {
+                        checkRoles({ node: refNode, context, operation: "read" });
+                    }
+
+                    const thisWhere = field.args[refNode.name];
+                    if (thisWhere) {
+                        const whereAndParams = createWhereAndParams({
+                            context,
+                            node: refNode,
+                            varName: param,
+                            whereInput: thisWhere,
+                            chainStrOverRide: _param,
+                        });
+                        innenrHeadStr.push(`AND ${whereAndParams[0].replace("WHERE", "")}`);
+                        res.params = { ...res.params, ...whereAndParams[1] };
+                    }
+
+                    if (refNode.auth) {
+                        const allowAndParams = createAllowAndParams({
+                            node: refNode,
+                            context,
+                            varName: param,
+                            chainStrOverRide: `${_param}_auth`,
+                            functionType: true,
+                            operation: "read",
+                        });
+                        innenrHeadStr.push(`AND ${allowAndParams[0]}`);
+                        res.params = { ...res.params, ...allowAndParams[1] };
+                    }
+
+                    innenrHeadStr.push(`| ${param}`);
+
+                    if (field.fieldsByTypeName[refNode.name]) {
+                        const recurse = createProjectionAndParams({
+                            // @ts-ignore
+                            fieldsByTypeName: field.fieldsByTypeName,
+                            node: refNode,
+                            context,
+                            varName: param,
+                            chainStrOverRide: _param,
+                        });
+                        innenrHeadStr.push(
+                            [`{ __resolveType: "${refNode.name}", `, ...recurse[0].replace("{", "").split("")].join("")
+                        );
+                        res.params = { ...res.params, ...recurse[1] };
+                    } else {
+                        innenrHeadStr.push(`{ __resolveType: "${refNode.name}" } `);
+                    }
+
+                    innenrHeadStr.push(`]`);
+                    headStrs.push(innenrHeadStr.join(" "));
+                });
+
+                unionStrs.push(headStrs.join(" + "));
+                unionStrs.push(")");
+                unionStrs.push("]");
+
+                if (optionsInput) {
+                    let sortLimitStr = "";
+
+                    if (optionsInput.skip && !optionsInput.limit) {
+                        sortLimitStr = `[${optionsInput.skip}..]`;
+                    }
+
+                    if (optionsInput.limit && !optionsInput.skip) {
+                        sortLimitStr = `[..${optionsInput.limit}]`;
+                    }
+
+                    if (optionsInput.limit && optionsInput.skip) {
+                        sortLimitStr = `[${optionsInput.skip}..${optionsInput.limit}]`;
+                    }
+
+                    unionStrs.push(sortLimitStr);
+                }
+
+                unionStrs.push(`${!isArray ? ")" : ""}`);
+                res.projection.push(unionStrs.join(" "));
+
+                return res;
+            }
 
             if (referenceNode.auth) {
                 checkRoles({ node: referenceNode, context, operation: "read" });
@@ -130,11 +240,6 @@ function createProjectionAndParams({
             projectionStr = recurse[0];
             res.params = { ...res.params, ...recurse[1] };
 
-            const nodeMatchStr = `(${chainStr || varName})`;
-            const inStr = relDirection === "IN" ? "<-" : "-";
-            const relTypeStr = `[:${relType}]`;
-            const outStr = relDirection === "OUT" ? "->" : "-";
-            const nodeOutStr = `(${param}:${referenceNode?.name})`;
             const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
             const innerStr = `${pathStr} ${whereStr} ${
                 authStr ? `${!whereStr ? "WHERE " : ""} ${whereStr ? "AND " : ""} ${authStr}` : ""
@@ -150,7 +255,7 @@ function createProjectionAndParams({
                 }
 
                 if (optionsInput.limit && !optionsInput.skip) {
-                    sortLimitStr = `[..${optionsInput.limit}]`; // TODO options.limit + 1 ?
+                    sortLimitStr = `[..${optionsInput.limit}]`;
                 }
 
                 if (optionsInput.limit && optionsInput.skip) {

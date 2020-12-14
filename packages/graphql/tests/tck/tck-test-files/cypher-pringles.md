@@ -60,13 +60,13 @@ mutation {
               id: 106
               description: "Green photo"
               url: "g.png"
-              color: { connect: { where: { id: 102 } } }
+              color: { connect: { where: { id: "102" } } }
             }
             {
               id: 107
               description: "Red photo"
               url: "r.png"
-              color: { connect: { where: { id: 100 } } }
+              color: { connect: { where: { id: "100" } } }
             }
           ]
         }

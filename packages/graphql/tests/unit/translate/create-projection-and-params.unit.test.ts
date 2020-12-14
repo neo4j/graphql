@@ -1,6 +1,6 @@
 import { describe, test, expect } from "@jest/globals";
 import createProjectionAndParams from "../../../src/translate/create-projection-and-params";
-import { NeoSchema, Context } from "../../../src/classes";
+import { NeoSchema, Context, Node } from "../../../src/classes";
 
 describe("createProjectionAndParams", () => {
     test("should be a function", () => {
@@ -19,10 +19,13 @@ describe("createProjectionAndParams", () => {
             },
         };
 
-        const node = {
+        // @ts-ignore
+        const node: Node = {
             name: "Movie",
             relationFields: [],
             cypherFields: [],
+            enumFields: [],
+            scalarFields: [],
             primitiveFields: [
                 {
                     fieldName: "title",

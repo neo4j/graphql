@@ -8,6 +8,9 @@ describe("createConnectAndParams", () => {
         // @ts-ignore
         const node: Node = {
             name: "Movie",
+            enumFields: [],
+            scalarFields: [],
+            primitiveFields: [],
             relationFields: [
                 {
                     direction: "OUT",

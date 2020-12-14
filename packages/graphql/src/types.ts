@@ -27,6 +27,7 @@ export interface BaseField {
 export interface RelationField extends BaseField {
     direction: "OUT" | "IN";
     type: string;
+    union?: UnionField;
 }
 
 /**
@@ -42,6 +43,33 @@ export interface CypherField extends BaseField {
  * String, Int, Float, ID, Boolean... (custom scalars).
  */
 export type PrimitiveField = BaseField;
+
+/**
+ * custom scalars.
+ */
+export type CustomScalarField = BaseField;
+
+/**
+ * custom Enum.
+ */
+export type CustomEnumField = BaseField;
+
+/**
+ * custom Union.
+ */
+export interface UnionField extends BaseField {
+    nodes?: string[];
+}
+
+/**
+ * custom Interface.
+ */
+export type InterfaceField = BaseField;
+
+/**
+ * custom Object Node.
+ */
+export type ObjectField = BaseField;
 
 /**
  * Representation of the options arg

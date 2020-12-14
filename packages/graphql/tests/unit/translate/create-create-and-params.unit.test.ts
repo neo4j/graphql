@@ -1,6 +1,6 @@
 import { describe, test, expect } from "@jest/globals";
 import createCreateAndParams from "../../../src/translate/create-create-and-params";
-import { NeoSchema, Context } from "../../../src/classes";
+import { NeoSchema, Context, Node } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
 describe("createCreateAndParams", () => {
@@ -9,10 +9,13 @@ describe("createCreateAndParams", () => {
             title: "some title",
         };
 
-        const node = {
+        // @ts-ignore
+        const node: Node = {
             name: "Movie",
             relationFields: [],
             cypherFields: [],
+            enumFields: [],
+            scalarFields: [],
             primitiveFields: [
                 {
                     fieldName: "title",
