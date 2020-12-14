@@ -372,7 +372,7 @@ function translate({
     context: graphQLContext,
     resolveInfo,
 }: {
-    context: any;
+    context: { [k: string]: any } & { driver?: Driver };
     resolveInfo: GraphQLResolveInfo;
 }): [string, any] {
     const neoSchema: NeoSchema = graphQLContext.neoSchema;
