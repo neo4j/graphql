@@ -1,6 +1,6 @@
 import { DocumentNode, graphql, GraphQLSchema, parse, print } from "graphql";
 import pluralize from "pluralize";
-import { GraphQLOptionsArg } from "../types";
+import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
 
 export interface ModelConstructor {
     name: string;
@@ -54,7 +54,7 @@ class Model<T = any> {
         context = {},
         rootValue = null,
     }: {
-        where?: any;
+        where?: GraphQLWhereArg;
         options?: GraphQLOptionsArg;
         selectionSet?: string | DocumentNode;
         args?: any;
@@ -141,7 +141,7 @@ class Model<T = any> {
         context = {},
         rootValue = null,
     }: {
-        where?: any;
+        where?: GraphQLWhereArg;
         update?: any;
         connect?: any;
         disconnect?: any;
@@ -195,6 +195,50 @@ class Model<T = any> {
         }
 
         return removeNull((result.data as any)[mutationName]) as T;
+    }
+
+    async delete({
+        where,
+        context = {},
+        rootValue = null,
+    }: {
+        where?: GraphQLWhereArg;
+        context?: any;
+        rootValue?: any;
+    } = {}): Promise<DeleteInfo> {
+        let upperFirst: string | string[] = this.namePluralized.split("");
+        upperFirst[0] = upperFirst[0].toLocaleUpperCase();
+        upperFirst = upperFirst.join("");
+
+        const mutationName = `delete${upperFirst}`;
+
+        const argDefinitions = [
+            `${where ? "(" : ""}`,
+            `${where ? `$where: ${this.name}Where` : ""}`,
+            `${where ? ")" : ""}`,
+        ];
+
+        const argsApply = [`${where ? "(" : ""}`, `${where ? `where: $where` : ""}`, `${where ? ")" : ""}`];
+
+        const mutation = `
+            mutation ${argDefinitions.join(" ")}{
+               ${mutationName}${argsApply.join(" ")} {
+                   nodesDeleted
+                   relationshipsDeleted
+               }
+            }
+        `;
+
+        const schema = this.getGraphQLSchema();
+        const variableValues = { where };
+
+        const result = await graphql(schema, mutation, rootValue, context, variableValues);
+
+        if (result.errors?.length) {
+            throw new Error(result.errors[0].message);
+        }
+
+        return (result.data as any)[mutationName] as DeleteInfo;
     }
 }
 
