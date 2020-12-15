@@ -6,7 +6,7 @@ import gql from "graphql-tag";
 import neo4j from "./neo4j";
 import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
 
-describe("ogm", () => {
+describe("OGM", () => {
     let driver: Driver;
 
     beforeAll(async () => {
