@@ -84,144 +84,50 @@ describe("ogm", () => {
             }
         });
 
-        describe("Selection Set", () => {
-            test("should find and populate relationship using custom string", async () => {
-                const session = driver.session();
+        test("should find and populate relationship using custom selectionSet", async () => {
+            const session = driver.session();
 
-                const typeDefs = `
-                    type Genre {
-                        id: ID
-                    }
-
-                    type Movie {
-                        id: ID
-                        genres: [Genre] @relationship(type: "HAS_GENRE", direction: "OUT")
-                    }
-                `;
-
-                const selectionSet = `
-                    {
-                        id
-                        genres {
-                            id
-                        }
-                    }
-                `;
-
-                const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
-
-                const id = generate({
-                    charset: "alphabetic",
-                });
-
-                try {
-                    await session.run(`
-                        CREATE (m:Movie {id: "${id}"})
-                        CREATE (g:Genre {id: "${id}"})
-                        MERGE (m)-[:HAS_GENRE]->(g)
-                    `);
-
-                    const Movie = neoSchema.model("Movie");
-
-                    const movies = await Movie.find({ where: { id }, selectionSet });
-
-                    expect(movies).toEqual([{ id, genres: [{ id }] }]);
-                } finally {
-                    await session.close();
+            const typeDefs = `
+                type Genre {
+                    id: ID
                 }
+
+                type Movie {
+                    id: ID
+                    genres: [Genre] @relationship(type: "HAS_GENRE", direction: "OUT")
+                }
+            `;
+
+            const selectionSet = `
+                {
+                    id
+                    genres {
+                        id
+                    }
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+
+            const id = generate({
+                charset: "alphabetic",
             });
 
-            test("should find and populate relationship using document", async () => {
-                const session = driver.session();
-
-                const typeDefs = `
-                    type Genre {
-                        id: ID
-                    }
-
-                    type Movie {
-                        id: ID
-                        genres: [Genre] @relationship(type: "HAS_GENRE", direction: "OUT")
-                    }
-                `;
-
-                const selectionSet = parse(`
-                    {
-                        id
-                        genres {
-                            id
-                        }
-                    }
+            try {
+                await session.run(`
+                    CREATE (m:Movie {id: "${id}"})
+                    CREATE (g:Genre {id: "${id}"})
+                    MERGE (m)-[:HAS_GENRE]->(g)
                 `);
 
-                const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+                const Movie = neoSchema.model("Movie");
 
-                const id = generate({
-                    charset: "alphabetic",
-                });
+                const movies = await Movie.find({ where: { id }, selectionSet });
 
-                try {
-                    await session.run(`
-                        CREATE (m:Movie {id: "${id}"})
-                        CREATE (g:Genre {id: "${id}"})
-                        MERGE (m)-[:HAS_GENRE]->(g)
-                    `);
-
-                    const Movie = neoSchema.model("Movie");
-
-                    const movies = await Movie.find({ where: { id }, selectionSet });
-
-                    expect(movies).toEqual([{ id, genres: [{ id }] }]);
-                } finally {
-                    await session.close();
-                }
-            });
-
-            test("should find and populate relationship using gql-tag", async () => {
-                const session = driver.session();
-
-                const typeDefs = `
-                    type Genre {
-                        id: ID
-                    }
-                
-                    type Movie {
-                        id: ID
-                        genres: [Genre] @relationship(type: "HAS_GENRE", direction: "OUT")
-                    }
-                `;
-
-                const selectionSet = gql`
-                    {
-                        id
-                        genres {
-                            id
-                        }
-                    }
-                `;
-
-                const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
-
-                const id = generate({
-                    charset: "alphabetic",
-                });
-
-                try {
-                    await session.run(`
-                        CREATE (m:Movie {id: "${id}"})
-                        CREATE (g:Genre {id: "${id}"})
-                        MERGE (m)-[:HAS_GENRE]->(g)
-                    `);
-
-                    const Movie = neoSchema.model("Movie");
-
-                    const movies = await Movie.find({ where: { id }, selectionSet });
-
-                    expect(movies).toEqual([{ id, genres: [{ id }] }]);
-                } finally {
-                    await session.close();
-                }
-            });
+                expect(movies).toEqual([{ id, genres: [{ id }] }]);
+            } finally {
+                await session.close();
+            }
         });
     });
 
@@ -263,7 +169,7 @@ describe("ogm", () => {
             }
         });
 
-        test("should create 2 movies", async () => {
+        test("should create 2 nodes", async () => {
             const session = driver.session();
 
             const typeDefs = `
