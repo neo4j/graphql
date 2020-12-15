@@ -129,6 +129,73 @@ class Model<T = any> {
 
         return removeNull((result.data as any)[mutationName]) as T;
     }
+
+    async update({
+        where,
+        update,
+        connect,
+        disconnect,
+        create,
+        selectionSet,
+        args = {},
+        context = {},
+        rootValue = null,
+    }: {
+        where?: any;
+        update?: any;
+        connect?: any;
+        disconnect?: any;
+        create?: any;
+        selectionSet?: string | DocumentNode;
+        args?: any;
+        context?: any;
+        rootValue?: any;
+    } = {}): Promise<T> {
+        let upperFirst: string | string[] = this.namePluralized.split("");
+        upperFirst[0] = upperFirst[0].toLocaleUpperCase();
+        upperFirst = upperFirst.join("");
+
+        const mutationName = `update${upperFirst}`;
+
+        const argWorthy = where || update || connect || disconnect || create;
+
+        const argDefinitions = [
+            `${argWorthy ? "(" : ""}`,
+            `${where ? `$where: ${this.name}Where` : ""}`,
+            `${update ? `$update: ${this.name}UpdateInput` : ""}`,
+            `${connect ? `$connect: ${this.name}ConnectInput` : ""}`,
+            `${disconnect ? `$disconnect: ${this.name}DisconnectInput` : ""}`,
+            `${create ? `$create: ${this.name}RelationInput` : ""}`,
+            `${argWorthy ? ")" : ""}`,
+        ];
+
+        const argsApply = [
+            `${argWorthy ? "(" : ""}`,
+            `${where ? `where: $where` : ""}`,
+            `${update ? `update: $update` : ""}`,
+            `${connect ? `connect: $connect` : ""}`,
+            `${disconnect ? `disconnect: $disconnect` : ""}`,
+            `${create ? `create: $create` : ""}`,
+            `${argWorthy ? ")" : ""}`,
+        ];
+
+        const mutation = `
+            mutation ${argDefinitions.join(" ")}{
+               ${mutationName}${argsApply.join(" ")} ${printSelectionSet(selectionSet || this.selectionSet)}
+            }
+        `;
+
+        const schema = this.getGraphQLSchema();
+        const variableValues = { ...args, where, update, connect, disconnect, create };
+
+        const result = await graphql(schema, mutation, rootValue, context, variableValues);
+
+        if (result.errors?.length) {
+            throw new Error(result.errors[0].message);
+        }
+
+        return removeNull((result.data as any)[mutationName]) as T;
+    }
 }
 
 export default Model;

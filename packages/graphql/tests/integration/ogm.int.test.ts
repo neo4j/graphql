@@ -1,7 +1,6 @@
 import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
-import { parse } from "graphql";
+import { describe, beforeAll, afterAll, test, expect, it } from "@jest/globals";
 import gql from "graphql-tag";
 import neo4j from "./neo4j";
 import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
@@ -356,6 +355,281 @@ describe("OGM", () => {
             neo4jProduct.photos.colors.forEach((photoColor) => {
                 expect(colors.map((x) => x.id).includes(photoColor)).toBeTruthy();
             });
+        });
+    });
+
+    describe("update", () => {
+        test("should update a single node", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type Movie {
+                    id: ID!
+                    name: String
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+
+            const id = generate({
+                charset: "alphabetic",
+            });
+
+            const initialName = generate({
+                charset: "alphabetic",
+            });
+
+            const updatedName = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                await session.run(
+                    `
+                    CREATE (:Movie {id: $id, name: $initialName})
+                `,
+                    {
+                        id,
+                        initialName,
+                    }
+                );
+
+                const Movie = neoSchema.model("Movie");
+
+                const movies = await Movie.update({ where: { id }, update: { name: updatedName } });
+
+                expect(movies).toEqual([{ id, name: updatedName }]);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should update 2 nodes", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type Movie {
+                    id: ID!
+                    name: String
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+
+            const id1 = generate({
+                charset: "alphabetic",
+            });
+
+            const id2 = generate({
+                charset: "alphabetic",
+            });
+
+            const initialName = generate({
+                charset: "alphabetic",
+            });
+
+            const updatedName = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                await session.run(
+                    `
+                    CREATE (:Movie {id: $id1, name: $initialName})
+                    CREATE (:Movie {id: $id2, name: $initialName})
+                `,
+                    {
+                        id1,
+                        id2,
+                        initialName,
+                    }
+                );
+
+                const Movie = neoSchema.model("Movie");
+
+                const movies = await Movie.update({ where: { id_IN: [id1, id2] }, update: { name: updatedName } });
+
+                const movie1 = movies.find((x) => x.id === id1);
+                expect(movie1.name).toEqual(updatedName);
+
+                const movie2 = movies.find((x) => x.id === id2);
+                expect(movie2.name).toEqual(updatedName);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should connect to a single node", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type Actor {
+                    id: ID
+                    movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+                }
+                
+                type Movie {
+                    id: ID
+                    actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const actorId = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                await session.run(
+                    `
+                    CREATE (:Movie {id: $movieId})
+                    CREATE (:Actor {id: $actorId})
+                `,
+                    {
+                        movieId,
+                        actorId,
+                    }
+                );
+
+                const Movie = neoSchema.model("Movie");
+
+                const movies = await Movie.update({
+                    where: { id: movieId },
+                    connect: { actors: [{ where: { id: actorId } }] },
+                    selectionSet: `
+                        {
+                            id
+                            actors {
+                                id
+                            }
+                        }
+                    `,
+                });
+
+                expect(movies).toEqual([{ id: movieId, actors: [{ id: actorId }] }]);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should connect and create a single node", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type Actor {
+                    id: ID
+                    movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+                }
+                
+                type Movie {
+                    id: ID
+                    actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const actorId = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                await session.run(
+                    `
+                    CREATE (:Movie {id: $movieId})
+                `,
+                    {
+                        movieId,
+                    }
+                );
+
+                const Movie = neoSchema.model("Movie");
+
+                const movies = await Movie.update({
+                    where: { id: movieId },
+                    create: { actors: [{ id: actorId }] },
+                    selectionSet: `
+                        {
+                            id
+                            actors {
+                                id
+                            }
+                        }
+                    `,
+                });
+
+                expect(movies).toEqual([{ id: movieId, actors: [{ id: actorId }] }]);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should disconnect from single node", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type Actor {
+                    id: ID
+                    movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+                }
+                
+                type Movie {
+                    id: ID
+                    actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+
+            const actorId = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                await session.run(
+                    `
+                    CREATE (m:Movie {id: $movieId})
+                    CREATE (a:Actor {id: $actorId})
+                    MERGE (m)<-[:ACTED_IN]-(a)
+                `,
+                    {
+                        movieId,
+                        actorId,
+                    }
+                );
+
+                const Movie = neoSchema.model("Movie");
+
+                const movies = await Movie.update({
+                    where: { id: movieId },
+                    disconnect: { actors: [{ where: { id: actorId } }] },
+                    selectionSet: `
+                        {
+                            id
+                            actors {
+                                id
+                            }
+                        }
+                    `,
+                });
+
+                expect(movies).toEqual([{ id: movieId, actors: [] }]);
+            } finally {
+                await session.close();
+            }
         });
     });
 });
