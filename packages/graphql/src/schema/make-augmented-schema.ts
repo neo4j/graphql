@@ -20,6 +20,7 @@ import {
 } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import pluralize from "pluralize";
+import { Driver } from "neo4j-driver";
 import { Auth, NeoSchema, NeoSchemaConstructor, Node } from "../classes";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
@@ -52,7 +53,7 @@ export interface MakeAugmentedSchemaOptions {
     resolvers?: any;
     schemaDirectives?: any;
     debug?: boolean | ((...values: any[]) => void);
-    context?: any;
+    context?: { [k: string]: any } & { driver?: Driver };
 }
 
 interface ObjectFields {
