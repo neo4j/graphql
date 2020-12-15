@@ -118,13 +118,17 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-CREATE (this0:Movie) 
-SET this0.title = $this0_title
+CALL {
+    CREATE (this0:Movie) 
+    SET this0.title = $this0_title
 
-WITH this0 
-CREATE (this0_search_Genre0:Genre) 
-SET this0_search_Genre0.name = $this0_search_Genre0_name 
-MERGE (this0)-[:SEARCH]->(this0_search_Genre0) 
+    WITH this0 
+    CREATE (this0_search_Genre0:Genre) 
+    SET this0_search_Genre0.name = $this0_search_Genre0_name 
+    MERGE (this0)-[:SEARCH]->(this0_search_Genre0) 
+
+    RETURN this0
+}
 
 RETURN this0 { 
     .title
@@ -164,15 +168,19 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-CREATE (this0:Movie) 
-SET this0.title = $this0_title 
+CALL {
+    CREATE (this0:Movie) 
+    SET this0.title = $this0_title 
 
-WITH this0 
-OPTIONAL MATCH (this0_search_Genre_connect0:Genre) 
-WHERE this0_search_Genre_connect0.name = $this0_search_Genre_connect0_name 
-FOREACH(_ IN CASE this0_search_Genre_connect0 WHEN NULL THEN [] ELSE [1] END | 
-    MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0) 
-) 
+    WITH this0 
+    OPTIONAL MATCH (this0_search_Genre_connect0:Genre) 
+    WHERE this0_search_Genre_connect0.name = $this0_search_Genre_connect0_name 
+    FOREACH(_ IN CASE this0_search_Genre_connect0 WHEN NULL THEN [] ELSE [1] END | 
+        MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0) 
+    ) 
+
+    RETURN this0
+}
 
 RETURN this0 { .title } AS this0
 ```
