@@ -200,7 +200,7 @@ describe("OGM", () => {
         test("should create a pringles product", async () => {
             const session = driver.session();
 
-            const typeDefs = `
+            const typeDefs = gql`
                 type Product {
                     id: ID!
                     name: String!
@@ -208,18 +208,18 @@ describe("OGM", () => {
                     colors: [Color] @relationship(type: "HAS_COLOR", direction: "OUT")
                     photos: [Photo] @relationship(type: "HAS_PHOTO", direction: "OUT")
                 }
-                
+
                 type Size {
                     id: ID!
                     name: String!
                 }
-                
+
                 type Color {
                     id: ID!
                     name: String!
                     photos: [Photo] @relationship(type: "OF_COLOR", direction: "IN")
                 }
-                
+
                 type Photo {
                     id: ID!
                     description: String!
@@ -462,12 +462,12 @@ describe("OGM", () => {
         test("should connect to a single node", async () => {
             const session = driver.session();
 
-            const typeDefs = `
+            const typeDefs = gql`
                 type Actor {
                     id: ID
                     movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
                 }
-                
+
                 type Movie {
                     id: ID
                     actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
@@ -627,6 +627,39 @@ describe("OGM", () => {
                 });
 
                 expect(movies).toEqual([{ id: movieId, actors: [] }]);
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
+    describe("delete", () => {
+        test("should delete a single node", async () => {
+            const session = driver.session();
+
+            const typeDefs = gql`
+                type Movie {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+
+            const id = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                await session.run(`
+                    CREATE (:Movie {id: "${id}"})
+                `);
+
+                const Movie = neoSchema.model("Movie");
+
+                const result = await Movie.delete({ where: { id } });
+
+                expect(result).toEqual({ nodesDeleted: 1, relationshipsDeleted: 0 });
             } finally {
                 await session.close();
             }

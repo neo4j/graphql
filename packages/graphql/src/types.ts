@@ -92,3 +92,11 @@ export interface GraphQLWhereArg {
 }
 
 export type AuthOperations = "create" | "read" | "update" | "delete";
+
+/**
+ * Whats returned when deleting nodes
+ */
+export interface DeleteInfo {
+    nodesDeleted: number;
+    relationshipsDeleted: number;
+}
