@@ -125,21 +125,21 @@ function translateCreate({
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {
             const varName = `this${index}`;
-            res.withVars.push(varName);
+
+            const create = [`CALL {`];
 
             const createAndParams = createCreateAndParams({
                 input,
                 node,
                 context,
                 varName,
-                withVars: res.withVars,
+                withVars: [varName],
             });
-            const withStr =
-                res.withVars.length > 1
-                    ? `\nWITH ${[...res.withVars].slice(0, res.withVars.length - 1).join(", ")}`
-                    : "";
+            create.push(`${createAndParams[0]}`);
+            create.push(`RETURN ${varName}`);
+            create.push(`}`);
 
-            res.createStrs.push(`${withStr}\n${createAndParams[0]}`);
+            res.createStrs.push(create.join("\n"));
             res.params = { ...res.params, ...createAndParams[1] };
 
             return res;
@@ -148,7 +148,6 @@ function translateCreate({
     ) as {
         createStrs: string[];
         params: any;
-        withVars: string[];
     };
 
     /* so projection params don't conflict with create params. We only need to call createProjectionAndParams once. */
@@ -158,9 +157,11 @@ function translateCreate({
         fieldsByTypeName,
         varName: "REPLACE_ME",
     });
+
     const replacedProjectionParams = Object.entries(projection[1]).reduce((res, [key, value]) => {
         return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
     }, {});
+
     const projectionStr = createStrs
         .map(
             (_, i) =>
