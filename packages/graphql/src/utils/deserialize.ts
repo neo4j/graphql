@@ -1,8 +1,12 @@
-import { isInt } from "neo4j-driver";
+import { isInt, isDateTime } from "neo4j-driver";
 
 function replacer(_, value: any): any {
     if (isInt(value)) {
         return value.toNumber();
+    }
+
+    if (isDateTime(value)) {
+        return new Date(value.toString()).toISOString();
     }
 
     return value;

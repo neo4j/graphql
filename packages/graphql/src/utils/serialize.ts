@@ -1,4 +1,5 @@
 import { int } from "neo4j-driver";
+import { DateTime } from "neo4j-driver/lib/temporal-types";
 
 function isFloat(n: number) {
     return Number(n) === n && n % 1 !== 0;
@@ -17,6 +18,14 @@ function traverse(v: any) {
             ...res,
             [key]: traverse(value),
         };
+    }
+
+    if (v instanceof Date) {
+        return DateTime.fromStandardDate(v);
+    }
+
+    if (Array.isArray(v)) {
+        return v.map((x) => traverse(x));
     }
 
     switch (typeof v) {
