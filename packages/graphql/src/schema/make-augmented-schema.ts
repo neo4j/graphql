@@ -175,16 +175,18 @@ function getObjFieldMeta({
                 };
                 res.objectFields.push(objectField);
             } else {
+                // eslint-disable-next-line no-lonely-if
                 if (typeMeta.name === "DateTime") {
                     const dateTimeField: DateTimeField = {
                         ...baseField,
                     };
                     res.dateTimeFields.push(dateTimeField);
+                } else {
+                    const primitiveField: PrimitiveField = {
+                        ...baseField,
+                    };
+                    res.primitiveFields.push(primitiveField);
                 }
-                const primitiveField: PrimitiveField = {
-                    ...baseField,
-                };
-                res.primitiveFields.push(primitiveField);
             }
 
             return res;
