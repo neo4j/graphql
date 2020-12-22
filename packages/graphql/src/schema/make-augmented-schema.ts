@@ -4,6 +4,7 @@ import {
     DirectiveNode,
     EnumTypeDefinitionNode,
     InputObjectTypeDefinitionNode,
+    InputValueDefinitionNode,
     InterfaceTypeDefinitionNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
@@ -263,6 +264,16 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
     const dateTime = composer.createScalarTC(DateTime);
 
+    const [createdAt, updatedAt] = ["createdAt", "updatedAt"].map(
+        (fieldName) =>
+            ({
+                typeMeta: { name: DateTime.name, required: true, pretty: `${DateTime.name}!`, array: false },
+                fieldName,
+                arguments: [] as InputValueDefinitionNode[],
+                otherDirectives: [] as DirectiveNode[],
+            } as DateTimeField)
+    );
+
     const queryOptions = composer.createInputTC({
         name: "QueryOptions",
         fields: {
@@ -358,9 +369,12 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     const nodes = objectNodes.map((definition) => {
         checkNodeImplementsInterfaces(definition, interfaces);
 
-        const otherDirectives = (definition.directives || []).filter((x) => x.name.value !== "auth") as DirectiveNode[];
+        const otherDirectives = (definition.directives || []).filter(
+            (x) => !["auth", "timestamps"].includes(x.name.value)
+        ) as DirectiveNode[];
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
+        const timeStamps = (definition.directives || []).find((x) => x.name.value === "timestamps");
 
         let auth: Auth;
         if (authDirective) {
@@ -383,6 +397,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...nodeFields,
             // @ts-ignore
             auth,
+            timestamps: Boolean(timeStamps),
         });
 
         return node;
@@ -401,6 +416,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...node.objectFields,
             ...node.unionFields,
             ...node.dateTimeFields,
+            ...(node.timestamps ? ([createdAt, updatedAt] as DateTimeField[]) : []),
         ]);
 
         const composeNode = composer.createObjectTC({
@@ -420,16 +436,19 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         const sortEnum = composer.createEnumTC({
             name: `${node.name}Sort`,
-            values: [...node.primitiveFields, ...node.enumFields, ...node.scalarFields, ...node.dateTimeFields].reduce(
-                (res, f) => {
-                    return {
-                        ...res,
-                        [`${f.fieldName}_DESC`]: { value: `${f.fieldName}_DESC` },
-                        [`${f.fieldName}_ASC`]: { value: `${f.fieldName}_ASC` },
-                    };
-                },
-                {}
-            ),
+            values: [
+                ...node.primitiveFields,
+                ...node.enumFields,
+                ...node.scalarFields,
+                ...node.dateTimeFields,
+                ...(node.timestamps ? ([createdAt, updatedAt] as DateTimeField[]) : []),
+            ].reduce((res, f) => {
+                return {
+                    ...res,
+                    [`${f.fieldName}_DESC`]: { value: `${f.fieldName}_DESC` },
+                    [`${f.fieldName}_ASC`]: { value: `${f.fieldName}_ASC` },
+                };
+            }, {}),
         });
 
         const queryFields = [
@@ -437,20 +456,21 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...node.enumFields,
             ...node.scalarFields,
             ...node.dateTimeFields,
+            ...(node.timestamps ? ([createdAt, updatedAt] as DateTimeField[]) : []),
         ].reduce(
             (res, f) => {
-                if (f.typeMeta.name === "DateTime") {
+                if (f.typeMeta.name === DateTime.name) {
                     // equality
                     if (f.typeMeta.array) {
-                        res[f.fieldName] = `[DateTime]`;
+                        res[f.fieldName] = `[${DateTime.name}]`;
                     } else {
-                        res[f.fieldName] = "DateTime";
+                        res[f.fieldName] = DateTime.name;
                     }
 
-                    res[`${f.fieldName}_LT`] = "DateTime";
-                    res[`${f.fieldName}_LTE`] = "DateTime";
-                    res[`${f.fieldName}_GT`] = "DateTime";
-                    res[`${f.fieldName}_GTE`] = "DateTime";
+                    res[`${f.fieldName}_LT`] = DateTime.name;
+                    res[`${f.fieldName}_LTE`] = DateTime.name;
+                    res[`${f.fieldName}_GT`] = DateTime.name;
+                    res[`${f.fieldName}_GTE`] = DateTime.name;
                 }
 
                 if (["ID", "String"].includes(f.typeMeta.name) || enums.find((x) => x.name.value === f.typeMeta.name)) {

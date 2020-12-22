@@ -85,8 +85,15 @@ function createCreateAndParams({
 
     checkRoles({ node, context, operation: "create" });
 
+    const initial = [
+        `CREATE (${varName}:${node.name})`,
+        ...(node.timestamps
+            ? [`SET ${varName}.createdAt = datetime()`, `SET ${varName}.updatedAt = ${varName}.createdAt`]
+            : []),
+    ];
+
     const { creates, params } = Object.entries(input).reduce(reducer, {
-        creates: [`CREATE (${varName}:${node.name})`],
+        creates: initial,
         params: {},
     }) as Res;
 

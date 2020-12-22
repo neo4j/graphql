@@ -26,6 +26,7 @@ export interface NodeConstructor {
     objectFields: ObjectField[];
     dateTimeFields: DateTimeField[];
     auth?: Auth;
+    timestamps?: boolean;
 }
 
 class Node {
@@ -55,6 +56,8 @@ class Node {
 
     public auth?: Auth;
 
+    public timestamps?: boolean;
+
     constructor(input: NodeConstructor) {
         this.name = input.name;
         this.relationFields = input.relationFields;
@@ -69,6 +72,7 @@ class Node {
         this.objectFields = input.objectFields;
         this.dateTimeFields = input.dateTimeFields;
         this.auth = input.auth;
+        this.timestamps = input.timestamps;
     }
 }
 
