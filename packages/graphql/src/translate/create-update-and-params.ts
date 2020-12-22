@@ -30,6 +30,8 @@ function createUpdateAndParams({
     insideDoWhen?: boolean;
     context: Context;
 }): [string, any] {
+    let updatedAt = false;
+
     function reducer(res: Res, [key, value]: [string, any]) {
         let param;
 
@@ -185,6 +187,11 @@ function createUpdateAndParams({
         }
 
         checkRoles({ node, context, operation: "update" });
+
+        if (node.timestamps && !updatedAt) {
+            res.strs.push(`SET ${varName}.updatedAt = datetime()`);
+            updatedAt = true;
+        }
 
         res.strs.push(`SET ${varName}.${key} = $${param}`);
         res.params[param] = value;
