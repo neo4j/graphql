@@ -7,25 +7,18 @@ function isFloat(n: number) {
 
 function traverse(v: any) {
     function reducer(res: any, [key, value]: [string, any]) {
-        if (Array.isArray(value)) {
-            return {
-                ...res,
-                [key]: value.map((x) => traverse(x)),
-            };
-        }
-
         return {
             ...res,
             [key]: traverse(value),
         };
     }
 
-    if (v instanceof Date) {
-        return DateTime.fromStandardDate(v);
-    }
-
     if (Array.isArray(v)) {
         return v.map((x) => traverse(x));
+    }
+
+    if (v instanceof Date) {
+        return DateTime.fromStandardDate(v);
     }
 
     switch (typeof v) {
