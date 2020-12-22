@@ -160,18 +160,10 @@ function getObjFieldMeta({
                 };
                 res.enumFields.push(enumField);
             } else if (fieldUnion) {
-                if (typeMeta.name === "DateTime") {
-                    const dateTimeField: DateTimeField = {
-                        ...baseField,
-                    };
-
-                    res.dateTimeFields.push(dateTimeField);
-                } else {
-                    const unionField: UnionField = {
-                        ...baseField,
-                    };
-                    res.unionFields.push(unionField);
-                }
+                const unionField: UnionField = {
+                    ...baseField,
+                };
+                res.unionFields.push(unionField);
             } else if (fieldInterface) {
                 const interfaceField: InterfaceField = {
                     ...baseField,
@@ -183,6 +175,12 @@ function getObjFieldMeta({
                 };
                 res.objectFields.push(objectField);
             } else {
+                if (typeMeta.name === "DateTime") {
+                    const dateTimeField: DateTimeField = {
+                        ...baseField,
+                    };
+                    res.dateTimeFields.push(dateTimeField);
+                }
                 const primitiveField: PrimitiveField = {
                     ...baseField,
                 };
