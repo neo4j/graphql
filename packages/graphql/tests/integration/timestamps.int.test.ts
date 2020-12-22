@@ -5,7 +5,7 @@ import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import neo4j from "./neo4j";
 import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
 
-describe("DateTime", () => {
+describe("TimeStamps", () => {
     let driver: Driver;
 
     beforeAll(async () => {
