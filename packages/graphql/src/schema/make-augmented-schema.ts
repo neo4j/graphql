@@ -35,6 +35,7 @@ import {
     UnionField,
     InterfaceField,
     ObjectField,
+    DateTimeField,
 } from "../types";
 import { upperFirstLetter } from "../utils";
 import findResolver from "./find";
@@ -46,6 +47,7 @@ import mergeExtensionsIntoAST from "./merge-extensions-into-ast";
 import parseValueNode from "./parse-value-node";
 import mergeTypeDefs from "./merge-typedefs";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
+import DateTime from "./DateTime";
 
 export interface MakeAugmentedSchemaOptions {
     typeDefs: any;
@@ -63,6 +65,7 @@ interface ObjectFields {
     unionFields: UnionField[];
     interfaceFields: InterfaceField[];
     objectFields: ObjectField[];
+    dateTimeFields: DateTimeField[];
 }
 
 interface CustomResolvers {
@@ -156,10 +159,18 @@ function getObjFieldMeta({
                 };
                 res.enumFields.push(enumField);
             } else if (fieldUnion) {
-                const unionField: UnionField = {
-                    ...baseField,
-                };
-                res.unionFields.push(unionField);
+                if (typeMeta.name === "DateTime") {
+                    const dateTimeField: DateTimeField = {
+                        ...baseField,
+                    };
+
+                    res.dateTimeFields.push(dateTimeField);
+                } else {
+                    const unionField: UnionField = {
+                        ...baseField,
+                    };
+                    res.unionFields.push(unionField);
+                }
             } else if (fieldInterface) {
                 const interfaceField: InterfaceField = {
                     ...baseField,
@@ -188,6 +199,7 @@ function getObjFieldMeta({
             unionFields: [],
             interfaceFields: [],
             objectFields: [],
+            dateTimeFields: [],
         }
     ) as ObjectFields;
 }
@@ -248,6 +260,8 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             relationshipsDeleted: "Int!",
         },
     });
+
+    const dateTime = composer.createScalarTC(DateTime);
 
     const queryOptions = composer.createInputTC({
         name: "QueryOptions",
@@ -386,6 +400,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...node.interfaceFields,
             ...node.objectFields,
             ...node.unionFields,
+            ...node.dateTimeFields,
         ]);
 
         const composeNode = composer.createObjectTC({
@@ -405,17 +420,39 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         const sortEnum = composer.createEnumTC({
             name: `${node.name}Sort`,
-            values: [...node.primitiveFields, ...node.enumFields, ...node.scalarFields].reduce((res, f) => {
-                return {
-                    ...res,
-                    [`${f.fieldName}_DESC`]: { value: `${f.fieldName}_DESC` },
-                    [`${f.fieldName}_ASC`]: { value: `${f.fieldName}_ASC` },
-                };
-            }, {}),
+            values: [...node.primitiveFields, ...node.enumFields, ...node.scalarFields, ...node.dateTimeFields].reduce(
+                (res, f) => {
+                    return {
+                        ...res,
+                        [`${f.fieldName}_DESC`]: { value: `${f.fieldName}_DESC` },
+                        [`${f.fieldName}_ASC`]: { value: `${f.fieldName}_ASC` },
+                    };
+                },
+                {}
+            ),
         });
 
-        const queryFields = [...node.primitiveFields, ...node.enumFields, ...node.scalarFields].reduce(
+        const queryFields = [
+            ...node.primitiveFields,
+            ...node.enumFields,
+            ...node.scalarFields,
+            ...node.dateTimeFields,
+        ].reduce(
             (res, f) => {
+                if (f.typeMeta.name === "DateTime") {
+                    // equality
+                    if (f.typeMeta.array) {
+                        res[f.fieldName] = `[DateTime]`;
+                    } else {
+                        res[f.fieldName] = "DateTime";
+                    }
+
+                    res[`${f.fieldName}_LT`] = "DateTime";
+                    res[`${f.fieldName}_LTE`] = "DateTime";
+                    res[`${f.fieldName}_GT`] = "DateTime";
+                    res[`${f.fieldName}_GTE`] = "DateTime";
+                }
+
                 if (["ID", "String"].includes(f.typeMeta.name) || enums.find((x) => x.name.value === f.typeMeta.name)) {
                     const type = f.typeMeta.name === "ID" ? "ID" : "String";
 
@@ -499,7 +536,12 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         const [nodeInput, nodeUpdateInput] = ["CreateInput", "UpdateInput"].map((type) =>
             composer.createInputTC({
                 name: `${node.name}${type}`,
-                fields: [...node.primitiveFields, ...node.scalarFields, ...node.enumFields].reduce(
+                fields: [
+                    ...node.primitiveFields,
+                    ...node.scalarFields,
+                    ...node.enumFields,
+                    ...node.dateTimeFields,
+                ].reduce(
                     (res, f) => ({
                         ...res,
                         [f.fieldName]: f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name,
@@ -783,10 +825,13 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     });
 
     const generatedTypeDefs = composer.toSDL();
-    let generatedResolvers = composer.getResolveMethods();
+    let generatedResolvers = composer.getResolveMethods() as any;
     unions.forEach((union) => {
         generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
     });
+    if (generatedTypeDefs.includes("scalar DateTime")) {
+        generatedResolvers.DateTime = DateTime;
+    }
     if (options.resolvers) {
         const {
             Query: customQueries = {},

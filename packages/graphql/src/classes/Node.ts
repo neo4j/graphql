@@ -8,6 +8,7 @@ import {
     UnionField,
     InterfaceField,
     ObjectField,
+    DateTimeField,
 } from "../types";
 import Auth from "./Auth";
 
@@ -23,6 +24,7 @@ export interface NodeConstructor {
     interfaceFields: InterfaceField[];
     interfaces: NamedTypeNode[];
     objectFields: ObjectField[];
+    dateTimeFields: DateTimeField[];
     auth?: Auth;
 }
 
@@ -49,6 +51,8 @@ class Node {
 
     public objectFields: ObjectField[];
 
+    public dateTimeFields: DateTimeField[];
+
     public auth?: Auth;
 
     constructor(input: NodeConstructor) {
@@ -63,6 +67,7 @@ class Node {
         this.interfaceFields = input.interfaceFields;
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
+        this.dateTimeFields = input.dateTimeFields;
         this.auth = input.auth;
     }
 }
