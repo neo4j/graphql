@@ -153,6 +153,7 @@ function createUpdateAndParams({
                         parentVar,
                         relationField,
                         labelOverride: unionTypeName,
+                        parentNode: node,
                     });
                     res.strs.push(disconnectAndParams[0]);
                     res.params = { ...res.params, ...disconnectAndParams[1] };
