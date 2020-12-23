@@ -70,6 +70,7 @@ function createCreateAndParams({
                     context,
                     refNode,
                     labelOverride: unionTypeName,
+                    parentNode: node,
                 });
                 res.creates.push(connectAndParams[0]);
                 res.params = { ...res.params, ...connectAndParams[1] };

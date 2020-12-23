@@ -1604,5 +1604,93 @@ describe("auth", () => {
                 }
             });
         });
+
+        test("should throw forbidden when user trying to make a post on blog they don't belong to (allow connect)", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                    type User {
+                        id: ID
+                    }
+                    
+                    type Blog @auth(rules: [
+                        { 
+                            operations: ["connect"],
+                            allow: {
+                                creator: { id: "sub" }
+                            }
+                        }
+                    ]) {
+                        id: ID
+                        creator: User @relationship(type: "HAS_BLOG", direction: "IN")
+                        posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                    }
+
+                    type Post {
+                        id: ID
+                        blog: Blog @relationship(type: "HAS_POST", direction: "IN")
+                    }
+                `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs, debug: true });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const secondaryUserId = generate({
+                charset: "alphabetic",
+            });
+
+            const blogId = generate({
+                charset: "alphabetic",
+            });
+
+            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
+
+            const query = `
+                    mutation {
+                        createPosts(input: [
+                            { 
+                                id: "${postId}",
+                                blog: {
+                                    connect: {
+                                        where: { id: "${blogId}" }
+                                    }
+                                }
+                            }
+                        ]) {
+                            id
+                        }
+                    }
+                `;
+
+            try {
+                await session.run(
+                    `
+                            CREATE (:User {id: "${userId}"})
+                            CREATE (:User {id: "${secondaryUserId}"})-[:HAS_BLOG]->(:Blog {id: "${blogId}"})
+                        `
+                );
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query as string,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
     });
 });
