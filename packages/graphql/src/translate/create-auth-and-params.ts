@@ -2,11 +2,11 @@ import { AuthRule, Context, Node } from "../classes";
 import { AuthOperations } from "../types";
 
 interface Res {
-    allows: string[];
+    strs: string[];
     params: any;
 }
 
-function createAllowAndParams({
+function createAuthAndParams({
     varName,
     node,
     chainStr,
@@ -15,6 +15,7 @@ function createAllowAndParams({
     recurseArray,
     operation,
     chainStrOverRide,
+    type,
 }: {
     node: Node;
     context: Context;
@@ -24,12 +25,13 @@ function createAllowAndParams({
     recurseArray?: AuthRule[];
     operation: AuthOperations;
     chainStrOverRide?: string;
+    type: "bind" | "allow";
 }): [string, any] {
     const rules = (node?.auth?.rules || []).filter(
-        (r) => r.operations?.includes(operation) && r.allow && r.isAuthenticated !== false
+        (r) => r.operations?.includes(operation) && r[type] && r.isAuthenticated !== false
     );
 
-    if (rules.filter((x) => x.allow === "*").length) {
+    if (rules.filter((x) => x[type] === "*").length) {
         return ["", {}];
     }
 
@@ -51,13 +53,14 @@ function createAllowAndParams({
                         const inner: string[] = [];
 
                         ((value as unknown) as any[]).forEach((v, i) => {
-                            const recurse = createAllowAndParams({
-                                recurseArray: [{ allow: v }],
+                            const recurse = createAuthAndParams({
+                                recurseArray: [{ [type]: v }],
                                 varName,
                                 node,
                                 chainStr: `${param}_${key}${i}`,
                                 context,
                                 operation,
+                                type,
                             });
 
                             inner.push(
@@ -68,14 +71,14 @@ function createAllowAndParams({
                             res.params = { ...res.params, ...recurse[1] };
                         });
 
-                        res.allows.push(`(${inner.join(` ${key} `)})`);
+                        res.strs.push(`(${inner.join(` ${key} `)})`);
                     }
                     break;
 
                 default: {
                     if (typeof value === "string") {
                         const _param = `${param}_${key}`;
-                        res.allows.push(`${varName}.${key} = $${_param}`);
+                        res.strs.push(`${varName}.${key} = $${_param}`);
 
                         const jwt = context.getJWT();
 
@@ -99,17 +102,22 @@ function createAllowAndParams({
 
                         let resultStr = [
                             `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
-                            `AND ANY(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}:${relationField.typeMeta.name}) | ${relationVarName}] WHERE `,
+                            `AND ${
+                                type === "bind" ? "ALL" : "ANY"
+                            }(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}:${
+                                relationField.typeMeta.name
+                            }) | ${relationVarName}] WHERE `,
                         ].join(" ");
 
                         Object.entries(value as any).forEach(([k, v]: [string, any]) => {
-                            const recurse = createAllowAndParams({
+                            const recurse = createAuthAndParams({
                                 node: refNode,
                                 context,
                                 chainStr: `${param}_${key}`,
                                 varName: relationVarName,
-                                recurseArray: [{ allow: { [k]: v } }],
+                                recurseArray: [{ [type]: { [k]: v } }],
                                 operation,
+                                type,
                             });
 
                             resultStr += recurse[0]
@@ -118,7 +126,7 @@ function createAllowAndParams({
 
                             resultStr += ")"; // close ALL
                             res.params = { ...res.params, ...recurse[1] };
-                            res.allows.push(resultStr);
+                            res.strs.push(resultStr);
                         });
                     }
                 }
@@ -128,21 +136,21 @@ function createAllowAndParams({
         return res;
     }
 
-    const { allows, params } = (recurseArray || rules).reduce(
-        (res: Res, value, i) => reducer(res, value.allow as any, i),
+    const { strs, params } = (recurseArray || rules).reduce(
+        (res: Res, value, i) => reducer(res, value[type] as any, i),
         {
-            allows: [],
+            strs: [],
             params: {},
         }
     ) as Res;
 
-    const allow = allows.length ? `CALL apoc.util.validate(NOT(${allows.join(" AND ")}), "Forbidden", [0])` : "";
+    const auth = strs.length ? `CALL apoc.util.validate(NOT(${strs.join(" AND ")}), "Forbidden", [0])` : "";
 
     if (functionType) {
-        return [allow.replace(/CALL/g, "").replace(/apoc.util.validate/g, "apoc.util.validatePredicate"), params];
+        return [auth.replace(/CALL/g, "").replace(/apoc.util.validate/g, "apoc.util.validatePredicate"), params];
     }
 
-    return [allow, params];
+    return [auth, params];
 }
 
-export default createAllowAndParams;
+export default createAuthAndParams;

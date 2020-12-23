@@ -1,6 +1,7 @@
 import { Context, Node } from "../classes";
 import createConnectAndParams from "./create-connect-and-params";
 import { checkRoles } from "../auth";
+import createAuthAndParams from "./create-auth-and-params";
 
 interface Res {
     creates: string[];
@@ -85,10 +86,27 @@ function createCreateAndParams({
 
     checkRoles({ node, context, operation: "create" });
 
-    const { creates, params } = Object.entries(input).reduce(reducer, {
+    // eslint-disable-next-line prefer-const
+    let { creates, params } = Object.entries(input).reduce(reducer, {
         creates: [`CREATE (${varName}:${node.name})`],
         params: {},
     }) as Res;
+
+    if (node.auth) {
+        const bindAndParams = createAuthAndParams({
+            context,
+            node,
+            operation: "create",
+            varName,
+            chainStrOverRide: `${varName}_bind`,
+            type: "bind",
+        });
+        if (bindAndParams[0]) {
+            creates.push(`WITH ${withVars.join(", ")}`);
+        }
+        creates.push(bindAndParams[0]);
+        params = { ...params, ...bindAndParams[1] };
+    }
 
     return [creates.join("\n"), params];
 }

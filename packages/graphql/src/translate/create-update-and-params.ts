@@ -3,7 +3,7 @@ import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createWhereAndParams from "./create-where-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import createAllowAndParams from "./create-allow-and-params";
+import createAuthAndParams from "./create-auth-and-params";
 import { checkRoles } from "../auth";
 
 interface Res {
@@ -85,11 +85,12 @@ function createUpdateAndParams({
                     let innerApocParams = {};
 
                     if (refNode.auth) {
-                        const allowAndParams = createAllowAndParams({
+                        const allowAndParams = createAuthAndParams({
                             operation: "update",
                             node: refNode,
                             context,
                             varName: _varName,
+                            type: "allow",
                         });
                         res.strs.push(allowAndParams[0].replace(/"/g, '\\"'));
                         res.params = { ...res.params, ...allowAndParams[1] };
@@ -108,6 +109,20 @@ function createUpdateAndParams({
                     });
                     res.params = { ...res.params, ...updateAndParams[1] };
                     innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
+
+                    if (refNode.auth) {
+                        const bindAndParams = createAuthAndParams({
+                            operation: "update",
+                            node: refNode,
+                            context,
+                            varName: _varName,
+                            chainStrOverRide: `${_varName}_bind`,
+                            type: "bind",
+                        });
+                        res.strs.push(bindAndParams[0].replace(/"/g, '\\"'));
+                        res.params = { ...res.params, ...bindAndParams[1] };
+                        innerApocParams = { ...innerApocParams, ...bindAndParams[1] };
+                    }
 
                     const updateStrs = [updateAndParams[0], "RETURN count(*)"];
                     const apocArgs = `{${parentVar}:${parentVar}, ${_varName}:${_varName}REPLACE_ME}`;
