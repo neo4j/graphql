@@ -8,7 +8,7 @@ import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import { GraphQLWhereArg, GraphQLOptionsArg, RelationField, AuthOperations } from "../types";
 import { checkRoles } from "../auth";
-import createAllowAndParams from "./create-allow-and-params";
+import createAuthAndParams from "./create-auth-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
@@ -57,11 +57,12 @@ function translateRead({
     }
 
     if (node.auth) {
-        const allowAndParams = createAllowAndParams({
+        const allowAndParams = createAuthAndParams({
             operation: "read",
             node,
             context,
             varName,
+            type: "allow",
         });
         cypherParams = { ...cypherParams, ...allowAndParams[1] };
         authStr = allowAndParams[0];
@@ -195,11 +196,12 @@ function translateUpdate({
 
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
-    let authStr = "";
+    let allowStr = "";
     let updateStr = "";
     let connectStr = "";
     let disconnectStr = "";
     let createStr = "";
+    let bindStr = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
 
@@ -215,14 +217,15 @@ function translateUpdate({
     }
 
     if (node.auth) {
-        const allowAndParams = createAllowAndParams({
+        const allowAndParams = createAuthAndParams({
             operation: "update",
             node,
             context,
             varName,
+            type: "allow",
         });
         cypherParams = { ...cypherParams, ...allowAndParams[1] };
-        authStr = allowAndParams[0];
+        allowStr = allowAndParams[0];
     }
 
     if (updateInput) {
@@ -302,6 +305,19 @@ function translateUpdate({
         });
     }
 
+    if (node.auth) {
+        const bindAndParams = createAuthAndParams({
+            operation: "update",
+            node,
+            context,
+            varName,
+            type: "bind",
+            chainStrOverRide: `${varName}_bind`,
+        });
+        cypherParams = { ...cypherParams, ...bindAndParams[1] };
+        bindStr = `WITH ${varName}\n${bindAndParams[0]}`;
+    }
+
     const projection = createProjectionAndParams({
         node,
         context,
@@ -314,11 +330,12 @@ function translateUpdate({
     const cypher = [
         matchStr,
         whereStr,
-        authStr,
+        allowStr,
         updateStr,
         connectStr,
         disconnectStr,
         createStr,
+        bindStr,
         `RETURN ${varName} ${projStr} AS ${varName}`,
     ];
 
@@ -354,11 +371,12 @@ function translateDelete({
     }
 
     if (node.auth) {
-        const allowAndParams = createAllowAndParams({
+        const allowAndParams = createAuthAndParams({
             operation: "delete",
             node,
             context,
             varName,
+            type: "allow",
         });
         cypherParams = { ...cypherParams, ...allowAndParams[1] };
         authStr = allowAndParams[0];

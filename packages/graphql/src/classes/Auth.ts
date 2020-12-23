@@ -4,6 +4,7 @@ export type AuthRule = {
     isAuthenticated?: boolean;
     operations?: AuthOperations[];
     allow?: { [k: string]: any } | "*";
+    bind?: { [k: string]: any } | "*";
     roles?: string[];
 };
 

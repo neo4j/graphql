@@ -1,8 +1,8 @@
 import { describe, test, expect } from "@jest/globals";
 import { Auth, Node, Context } from "../../../src/classes";
-import createAllowAndParams from "../../../src/translate/create-allow-and-params";
+import createAuthAndParams from "../../../src/translate/create-auth-and-params";
 
-describe("createAllowAndParams", () => {
+describe("createAuthAndParams", () => {
     test("should return the correct auth and params", () => {
         const auth: Auth = {
             type: "JWT",
@@ -41,11 +41,12 @@ describe("createAllowAndParams", () => {
 
         context.jwt = { sub: "123" };
 
-        const [str, params] = createAllowAndParams({
+        const [str, params] = createAuthAndParams({
             context,
             node,
             varName: "this",
             operation: "create",
+            type: "allow",
         });
 
         expect(str).toEqual(`CALL apoc.util.validate(NOT(this.id = $this_auth0_id), "Forbidden", [0])`);

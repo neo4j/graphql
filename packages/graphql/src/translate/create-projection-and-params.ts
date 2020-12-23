@@ -3,7 +3,7 @@ import { Context, Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLWhereArg } from "../types";
 import { checkRoles } from "../auth";
-import createAllowAndParams from "./create-allow-and-params";
+import createAuthAndParams from "./create-auth-and-params";
 
 interface Res {
     projection: string[];
@@ -136,13 +136,14 @@ function createProjectionAndParams({
                     }
 
                     if (refNode.auth) {
-                        const allowAndParams = createAllowAndParams({
+                        const allowAndParams = createAuthAndParams({
                             node: refNode,
                             context,
                             varName: param,
                             chainStrOverRide: `${_param}_auth`,
                             functionType: true,
                             operation: "read",
+                            type: "allow",
                         });
                         innenrHeadStr.push(`AND ${allowAndParams[0]}`);
                         res.params = { ...res.params, ...allowAndParams[1] };
@@ -219,12 +220,13 @@ function createProjectionAndParams({
             }
 
             if (referenceNode.auth) {
-                const allowAndParams = createAllowAndParams({
+                const allowAndParams = createAuthAndParams({
                     node: referenceNode,
                     context,
                     varName: `${varName}_${key}`,
                     functionType: true,
                     operation: "read",
+                    type: "allow",
                 });
                 authStr = allowAndParams[0];
                 res.params = { ...res.params, ...allowAndParams[1] };
