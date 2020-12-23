@@ -1,6 +1,7 @@
 import { Context, Node } from "../classes";
 import { RelationField } from "../types";
 import createWhereAndParams from "./create-where-and-params";
+import createAuthAndParams from "./create-auth-and-params";
 
 interface Res {
     disconnects: string[];
@@ -16,6 +17,7 @@ function createDisconnectAndParams({
     refNode,
     context,
     labelOverride,
+    parentNode,
 }: {
     withVars: string[];
     value: any;
@@ -25,6 +27,7 @@ function createDisconnectAndParams({
     context: Context;
     refNode: Node;
     labelOverride?: string;
+    parentNode: Node;
 }): [string, any] {
     function reducer(res: Res, disconnect: any, index): Res {
         const _varName = `${varName}${index}`;
@@ -48,6 +51,19 @@ function createDisconnectAndParams({
             });
             res.disconnects.push(where[0]);
             res.params = { ...res.params, ...where[1] };
+        }
+
+        if (refNode.auth) {
+            const allowAndParams = createAuthAndParams({
+                context,
+                node: refNode,
+                operation: "disconnect",
+                varName: _varName,
+                chainStrOverRide: `${_varName}_allow`,
+                type: "allow",
+            });
+            res.disconnects.push(allowAndParams[0]);
+            res.params = { ...res.params, ...allowAndParams[1] };
         }
 
         /* 
@@ -86,6 +102,7 @@ function createDisconnectAndParams({
                             parentVar: _varName,
                             context,
                             refNode: newRefNode as Node,
+                            parentNode: refNode,
                         });
                         r.disconnects.push(recurse[0]);
                         r.params = { ...r.params, ...recurse[1] };
@@ -103,9 +120,25 @@ function createDisconnectAndParams({
         return res;
     }
 
+    const initialStrs: string[] = [];
+    let initialParams = {};
+
+    if (parentNode.auth) {
+        const allowAndParams = createAuthAndParams({
+            context,
+            node: parentNode,
+            operation: "disconnect",
+            varName: parentVar,
+            chainStrOverRide: `${parentVar}_allow`,
+            type: "allow",
+        });
+        initialStrs.push(allowAndParams[0]);
+        initialParams = { ...initialParams, ...allowAndParams[1] };
+    }
+
     const { disconnects, params } = ((relationField.typeMeta.array ? value : [value]) as any[]).reduce(reducer, {
-        disconnects: [],
-        params: {},
+        disconnects: initialStrs,
+        params: initialParams,
     });
 
     return [disconnects.join("\n"), params];

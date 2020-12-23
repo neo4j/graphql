@@ -254,6 +254,7 @@ function translateUpdate({
                 value: entry[1],
                 varName: `${varName}_disconnect_${entry[0]}`,
                 withVars: [varName],
+                parentNode: node,
             });
             disconnectStr = disconnectAndParams[0];
             cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
