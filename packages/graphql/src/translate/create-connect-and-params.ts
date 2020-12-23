@@ -18,6 +18,7 @@ function createConnectAndParams({
     context,
     labelOverride,
     parentNode,
+    fromCreate,
 }: {
     withVars: string[];
     value: any;
@@ -28,6 +29,7 @@ function createConnectAndParams({
     refNode: Node;
     labelOverride?: string;
     parentNode: Node;
+    fromCreate?: boolean;
 }): [string, any] {
     function reducer(res: Res, connect: any, index): Res {
         const _varName = `${varName}${index}`;
@@ -113,10 +115,13 @@ function createConnectAndParams({
         return res;
     }
 
-    const initialStrs: string[] = [];
-    let initialParams = {};
+    // eslint-disable-next-line prefer-const
+    let { connects, params } = ((relationField.typeMeta.array ? value : [value]) as any[]).reduce(reducer, {
+        connects: [],
+        params: {},
+    });
 
-    if (parentNode.auth) {
+    if (parentNode.auth && !fromCreate) {
         const allowAndParams = createAuthAndParams({
             context,
             node: parentNode,
@@ -125,14 +130,16 @@ function createConnectAndParams({
             chainStrOverRide: `${parentVar}_allow`,
             type: "allow",
         });
-        initialStrs.push(allowAndParams[0]);
-        initialParams = { ...initialParams, ...allowAndParams[1] };
-    }
+        params = { ...params, ...allowAndParams[1] };
 
-    const { connects, params } = ((relationField.typeMeta.array ? value : [value]) as any[]).reduce(reducer, {
-        connects: initialStrs,
-        params: initialParams,
-    });
+        if (allowAndParams[0]) {
+            if (withVars) {
+                connects = [`WITH ${withVars.join(", ")}`, ...connects];
+            }
+
+            connects = [allowAndParams[0], ...connects];
+        }
+    }
 
     return [connects.join("\n"), params];
 }
