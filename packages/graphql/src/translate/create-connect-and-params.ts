@@ -1,6 +1,7 @@
 import { Context, Node } from "../classes";
 import { RelationField } from "../types";
 import createWhereAndParams from "./create-where-and-params";
+import createAuthAndParams from "./create-auth-and-params";
 
 interface Res {
     connects: string[];
@@ -16,6 +17,7 @@ function createConnectAndParams({
     refNode,
     context,
     labelOverride,
+    parentNode,
 }: {
     withVars: string[];
     value: any;
@@ -25,6 +27,7 @@ function createConnectAndParams({
     context: Context;
     refNode: Node;
     labelOverride?: string;
+    parentNode: Node;
 }): [string, any] {
     function reducer(res: Res, connect: any, index): Res {
         const _varName = `${varName}${index}`;
@@ -44,6 +47,19 @@ function createConnectAndParams({
             });
             res.connects.push(where[0]);
             res.params = { ...res.params, ...where[1] };
+        }
+
+        if (refNode.auth) {
+            const allowAndParams = createAuthAndParams({
+                context,
+                node: refNode,
+                operation: "connect",
+                varName: _varName,
+                chainStrOverRide: `${_varName}_allow`,
+                type: "allow",
+            });
+            res.connects.push(allowAndParams[0]);
+            res.params = { ...res.params, ...allowAndParams[1] };
         }
 
         /* 
@@ -79,6 +95,7 @@ function createConnectAndParams({
                             parentVar: _varName,
                             context,
                             refNode: newRefNode as Node,
+                            parentNode: refNode,
                         });
                         r.connects.push(recurse[0]);
                         r.params = { ...r.params, ...recurse[1] };
@@ -96,9 +113,25 @@ function createConnectAndParams({
         return res;
     }
 
+    const initialStrs: string[] = [];
+    let initialParams = {};
+
+    if (parentNode.auth) {
+        const allowAndParams = createAuthAndParams({
+            context,
+            node: parentNode,
+            operation: "connect",
+            varName: parentVar,
+            chainStrOverRide: `${parentVar}_allow`,
+            type: "allow",
+        });
+        initialStrs.push(allowAndParams[0]);
+        initialParams = { ...initialParams, ...allowAndParams[1] };
+    }
+
     const { connects, params } = ((relationField.typeMeta.array ? value : [value]) as any[]).reduce(reducer, {
-        connects: [],
-        params: {},
+        connects: initialStrs,
+        params: initialParams,
     });
 
     return [connects.join("\n"), params];

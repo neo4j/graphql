@@ -91,4 +91,4 @@ export interface GraphQLWhereArg {
     OR?: GraphQLOptionsArg[];
 }
 
-export type AuthOperations = "create" | "read" | "update" | "delete";
+export type AuthOperations = "create" | "read" | "update" | "delete" | "connect" | "disconnect";

@@ -45,6 +45,7 @@ describe("createConnectAndParams", () => {
             parentVar: "this",
             context,
             refNode: node,
+            parentNode: node,
         });
 
         expect(trimmer(result[0])).toEqual(

@@ -273,6 +273,7 @@ function translateUpdate({
                 value: entry[1],
                 varName: `${varName}_connect_${entry[0]}`,
                 withVars: [varName],
+                parentNode: node,
             });
             connectStr = connectAndParams[0];
             cypherParams = { ...cypherParams, ...connectAndParams[1] };
