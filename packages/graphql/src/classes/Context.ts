@@ -57,6 +57,18 @@ class Context {
 
         return jwt;
     }
+
+    getJWTSafe(): any {
+        let jwt = {};
+
+        try {
+            jwt = this.getJWT() || {};
+        } catch (error) {
+            return {};
+        }
+
+        return jwt;
+    }
 }
 
 export default Context;
