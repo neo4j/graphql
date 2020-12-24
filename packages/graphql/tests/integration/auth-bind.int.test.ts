@@ -317,7 +317,7 @@ describe("auth-bind", () => {
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
-            const neoSchema = makeAugmentedSchema({ typeDefs, debug: true });
+            const neoSchema = makeAugmentedSchema({ typeDefs });
 
             const query = `
                 mutation createPost($title: String!, $content: String!, $user: ID, $blog: ID) {
