@@ -177,6 +177,162 @@ describe("auth-bind", () => {
                 await session.close();
             }
         });
+
+        test("should allow user to create a post related to its blog and account", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    id: ID! 
+                    email: String!
+                    password: String ## protect to admins
+                    blogs: [Blog] @relationship(type: "HAS_BLOG", direction: "OUT")
+                }
+        
+                type Blog {
+                    id: ID
+                    name: String
+                    creator: User @relationship(type: "HAS_BLOG", direction: "IN")
+                    authors: [User] @relationship(type: "CAN_POST", direction: "IN")
+                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                    isCreator: Boolean # TODO
+                    isAuthor: Boolean # TODO
+                }
+
+                type Post {
+                    id: ID
+                    title: String
+                    content: String
+                    blog: Blog @relationship(type: "HAS_POST", direction: "IN")
+                    author: User @relationship(type: "WROTE", direction: "IN")
+                    isCreator: Boolean # TODO
+                    isAuthor: Boolean # TODO
+                }
+            
+                extend type Post
+                    @auth(
+                        rules: [
+                            { operations: ["create"], bind: { author: { id: "sub" } } }
+                            { operations: ["read"], allow: "*" }
+                            {
+                                operations: ["update"]
+                                allow: {
+                                    OR: [
+                                        { author: { id: "sub" } }
+                                        {
+                                            blog: {
+                                                OR: [
+                                                    { creator: { id: "sub" } }
+                                                    { authors: { id: "sub" } }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                            {
+                                operations: ["delete"]
+                                allow: {
+                                    OR: [
+                                        { author: { id: "sub" } }
+                                        { blog: { creator: { id: "sub" } } }
+                                    ]
+                                }
+                            }
+                        ]
+                    )
+            
+                extend type Blog
+                    @auth(
+                        rules: [
+                            { operations: ["create"], bind: { creator: { id: "sub" } } }
+                            { operations: ["read"], allow: "*" }
+                            {
+                                operations: ["update"]
+                                allow: { creator: { id: "sub" } }
+                                bind: { creator: { id: "sub" } }
+                            }
+                            {
+                                operations: ["connect"]
+                                allow: {
+                                    OR: [
+                                        { creator: { id: "sub" } }
+                                        { authors: { id: "sub" } }
+                                    ]
+                                }
+                            }
+                            {
+                                operations: ["disconnect"]
+                                allow: {
+                                    OR: [
+                                        { creator: { id: "sub" } }
+                                        { authors: { id: "sub" } }
+                                        { posts: { author: { id: "sub" } } }
+                                    ]
+                                }
+                            }
+                            { operations: ["delete"], allow: { creator: { id: "sub" } } }
+                        ]
+                    )
+            `;
+
+            const blogId = generate({
+                charset: "alphabetic",
+            });
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
+
+            const neoSchema = makeAugmentedSchema({ typeDefs, debug: true });
+
+            const query = `
+                mutation createPost($title: String!, $content: String!, $user: ID, $blog: ID) {
+                    createPosts(
+                      input: [
+                        {
+                          title: $title
+                          content: $content
+                          blog: { connect: { where: { id: $blog } } }
+                          author: { connect: { where: { id: $user } } }
+                        }
+                      ]
+                    ) {
+                      id
+                    }
+                }
+            `;
+
+            try {
+                await session.run(
+                    `
+                    CREATE (:User {id: "${userId}"})-[:HAS_BLOG]->(:Blog {id: "${blogId}"})
+                `
+                );
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query as string,
+                    variableValues: {
+                        title: "some title",
+                        content: "some content",
+                        user: userId,
+                        blog: blogId,
+                    },
+                    contextValue: { driver, req },
+                });
+
+                expect(gqlResult.errors).toEqual(undefined);
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("update", () => {
