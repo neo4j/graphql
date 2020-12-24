@@ -237,6 +237,19 @@ function translateUpdate({
             parentVar: varName,
             withVars: [varName],
         });
+        if (updateAndParams[0]) {
+            if (node.auth) {
+                const allowAndParams = createAuthAndParams({
+                    operation: "update",
+                    node,
+                    context,
+                    varName,
+                    type: "allow",
+                });
+                cypherParams = { ...cypherParams, ...allowAndParams[1] };
+                allowStr = allowAndParams[0];
+            }
+        }
         updateStr = updateAndParams[0];
         cypherParams = { ...cypherParams, ...updateAndParams[1] };
     }
