@@ -208,6 +208,37 @@ describe("auth-bind", () => {
                     isCreator: Boolean # TODO
                     isAuthor: Boolean # TODO
                 }
+
+                extend type User
+                @auth(
+                    rules: [
+                        { operations: ["read"], allow: "*" }
+                        { operations: ["create"], allow: "*" }
+                        { operations: ["connect"], allow: "*" }
+                        {
+                            operations: ["update"]
+                            allow: { id: "sub" }
+                            bind: { id: "sub" }
+                        }
+                        { operations: ["delete"], allow: { id: "sub" } }
+                        {
+                            operations: ["disconnect"]
+                            allow: {
+                                OR: [
+                                    { id: "sub" }
+                                    {
+                                        blogs: {
+                                            OR: [
+                                                { creator: { id: "sub" } }
+                                                { authors: { id: "sub" } }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                )        
             
                 extend type Post
                     @auth(
