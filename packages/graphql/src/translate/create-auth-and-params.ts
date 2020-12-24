@@ -31,7 +31,7 @@ function createAuthAndParams({
         (r) => r.operations?.includes(operation) && r[type] && r.isAuthenticated !== false
     );
 
-    if (rules.filter((x) => x[type] === "*").length) {
+    if (rules.filter((x) => x[type] === "*").length && !recurseArray) {
         return ["", {}];
     }
 
