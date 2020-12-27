@@ -105,8 +105,8 @@ function translateRead({
         matchStr,
         whereStr,
         authStr,
+        ...(sortStr ? [`WITH ${varName}`, sortStr] : []),
         `RETURN ${varName} ${projStr} as ${varName}`,
-        sortStr,
         skipStr,
         limitStr,
     ];
