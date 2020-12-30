@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-syntax */
-import { DefinitionNode, DocumentNode, Kind } from "graphql";
+import { DefinitionNode, DocumentNode, FieldDefinitionNode, Kind } from "graphql";
 
 function getKindInfo(def: DefinitionNode): { isExtension: boolean; typeName: string } {
     switch (def.kind) {
@@ -114,6 +114,32 @@ function getKindInfo(def: DefinitionNode): { isExtension: boolean; typeName: str
     }
 }
 
+function mergeFieldDirectives(
+    fields: FieldDefinitionNode[] = [],
+    extFields: FieldDefinitionNode[] = []
+): FieldDefinitionNode[] {
+    const result = [...fields];
+
+    extFields.forEach((extField) => {
+        const existingIndex = result.findIndex((x) => x.name.value === extField.name.value);
+        if (existingIndex !== -1) {
+            const existing = result[existingIndex];
+            result[existingIndex] = {
+                ...existing,
+                ...extField,
+                directives: [
+                    ...(existing.directives ? existing.directives : []),
+                    ...(extField.directives ? extField.directives : []),
+                ],
+            };
+        } else {
+            result.push(extField);
+        }
+    });
+
+    return result;
+}
+
 function extendDefinition(def: DefinitionNode, ext) {
     const extendLocation = (loc, loc2) => ({
         ...loc,
@@ -123,7 +149,7 @@ function extendDefinition(def: DefinitionNode, ext) {
     // @ts-ignore
     const directives = [...(def.directives || []), ...(ext.directives || [])];
     // @ts-ignore
-    const fields = [...(def.fields || []), ...(ext.fields || [])];
+    const fields = mergeFieldDirectives(def.fields, ext.fields);
     const loc = extendLocation(def.loc, ext.loc);
 
     switch (def.kind) {
