@@ -1,8 +1,33 @@
 # Introduction
 
-> This chapter is an introduction to the Neo4j GraphQL mapping library (@neo4j/graphql). It also outlines requirements and where to get support.
+This is an introduction to the Neo4j GraphQL mapping library (@neo4j/graphql). It also outlines requirements and where to get support. If you are already familiar with @neo4j/graphql, feel free to jump directly to the [reference](./reference.md) section.
 
-If you are already familiar with @neo4j/graphql, feel free to jump directly to the [reference](./reference.md) section.
+## Requirements
+
+@neo4j/graphql 0.0.x at minimum, requires:
+
+-   [Neo4j](https://neo4j.com/) Database 4.1.0 and above.
+
+-   [Apoc](https://neo4j.com/labs/apoc/) 4.1.0 and above
+
+## Additional Resources
+
+### Project Metadata
+
+-   Version Control - https://github.com/neo4j/graphql
+-   Bug Tracker - https://github.com/neo4j/graphql/issues
+
+## What is neo4j/graphql ?
+
+GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations. This library makes it easier to use Neo4j and GraphQL together. Translating GraphQL queries into a single Cypher query means users do not need to understand the Cypher Query language & can let the library handle all the database talking.
+
+Using this library users can focus on building great applications while just writing minimal backend code.
+
+### Goals of @neo4j/graphql
+
+-   Provide an abstraction for GraphQL developers ontop of Neo4j.
+
+-   Enable the integration with common community library's and tools.
 
 ## What's the difference from `neo4j-graphql-js` ?
 
@@ -102,30 +127,3 @@ await Movie.create({
 ```
 
 Read more about auth in the reference section [here](./reference#ogm).
-
-## Requirements
-
-@neo4j/graphql 0.0.x at minimum, requires:
-
--   [Neo4j](https://neo4j.com/) Database 4.1.0 and above.
-
--   [Apoc](https://neo4j.com/labs/apoc/) 4.1.0 and above
-
-## Additional Resources
-
-### Project Metadata
-
--   Version Control - https://github.com/neo4j/graphql
--   Bug Tracker - https://github.com/neo4j/graphql/issues
-
-## What is neo4j/graphql ?
-
-GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations. This library makes it easier to use Neo4j and GraphQL together. Translating GraphQL queries into a single Cypher query means users do not need to understand the Cypher Query language & can let the library handle all the database talking.
-
-Using this library users can focus on building great applications while just writing minimal backend code.
-
-### Goals of @neo4j/graphql
-
--   Provide an abstraction for GraphQL developers ontop of Neo4j.
-
--   Enable the integration with common community library's and tools.
