@@ -8,8 +8,6 @@ A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL imple
 2. [Reference](https://github.com/neo4j/graphql/blob/master/packages/graphql/docs/reference.md)
 3. [Contributing](https://github.com/neo4j/graphql/blob/master/packages/graphql/CONTRIBUTING.md)
 
-> Checkout [neo-push](https://github.com/danstarns/neo-push) for an Example blog site built with @neo4j/graphql & React.js
-
 ## Installation
 
 ```
@@ -22,9 +20,7 @@ $ npm install @neo4j/graphql
 $ npm install graphql
 ```
 
-## Usage
-
-### Quick Start
+## Quick Start
 
 ```js
 const { makeAugmentedSchema } = require("@neo4j/graphql");
@@ -56,7 +52,11 @@ const server = new ApolloServer({
     schema: neoSchema.schema,
     context: { driver },
 });
+
+server.listen(4000).then(() => console.log("Online"));
 ```
+
+## Example Queries
 
 ### Create Movie
 
@@ -85,7 +85,7 @@ mutation {
 }
 ```
 
-### Create Both Movie & Genre at the same time
+### Create Movie and connect Genre
 
 ```graphql
 mutation {
@@ -95,7 +95,9 @@ mutation {
                 title: "The Matrix"
                 year: 1999
                 imdbRating: 8.7
-                genres: { create: [{ name: "Sci-fi" }, { name: "Action" }] }
+                genres: {
+                    connect: { where: [{ name: "Sci-fi" }, { name: "Action" }] }
+                }
             }
         ]
     ) {
@@ -114,5 +116,50 @@ query {
             name
         }
     }
+}
+```
+
+## Using OGM
+
+Use the GraphQL schema language to power an OGM layer. Read more about OGM in the reference section [here](https://github.com/neo4j/graphql/blob/master/packages/graphql/docs/refrence#ogm.md).
+
+```js
+const OGM = makeAugmentedSchema({ typeDefs });
+
+const UserModel = OGM.model("User");
+
+await UserModel.create({
+    input: [
+        {
+            title: "The Matrix"
+            year: 1999
+            imdbRating: 8.7
+            genres: {
+                connect: { where: [{ name: "Sci-fi" }, { name: "Action" }] }
+            }
+        }
+    ]
+});
+```
+
+## Complex Auth
+
+Define complex, nested & related, authorization rules such as; “grant update access to all moderators of a post”. Read more about auth in the reference section [here](https://github.com/neo4j/graphql/blob/master/packages/graphql/docs/refrence#auth.md).
+
+```graphql
+type User {
+  id: ID!
+  username: String!
+}
+
+type Post @auth(rules: [
+  {
+    allow: [{ "moderator.id": "sub"}], # "sub" being "req.jwt.sub"
+    operations: ["update"]
+  }
+]) {
+  id: ID!
+  title: String!
+  moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
 }
 ```
