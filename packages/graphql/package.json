@@ -36,6 +36,7 @@
         "graphql": "^15.0.0"
     },
     "devDependencies": {
+        "@graphql-tools/utils": "7.1.4",
         "@jest/globals": "26.4.2",
         "@types/jest": "26.0.8",
         "@types/jsonwebtoken": "8.5.0",
@@ -50,12 +51,13 @@
         "typescript": "3.9.7"
     },
     "dependencies": {
+        "@graphql-tools/merge": "^6.2.3",
+        "@graphql-tools/schema": "^6.2.3",
+        "deep-equal": "2.0.5",
         "graphql-compose": "7.21.4",
         "graphql-parse-resolve-info": "4.9.0",
         "jsonwebtoken": "8.5.1",
         "neo4j-driver": "4.1.2",
-        "pluralize": "8.0.0",
-        "@graphql-tools/merge": "^6.2.3",
-        "@graphql-tools/schema": "^6.2.3"
+        "pluralize": "8.0.0"
     }
 }

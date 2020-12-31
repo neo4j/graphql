@@ -58,12 +58,19 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-CREATE (this0:Product)
-SET this0.id = $this0_id
+CALL {
+  CREATE (this0:Product)
+  SET this0.id = $this0_id
 
-WITH this0
-CREATE (this1:Product)
-SET this1.id = $this1_id
+  RETURN this0
+}
+
+CALL {
+  CREATE (this1:Product)
+  SET this1.id = $this1_id
+
+  RETURN this1
+}
 
 RETURN 
 this0 { 

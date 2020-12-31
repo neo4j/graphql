@@ -60,13 +60,13 @@ mutation {
               id: 106
               description: "Green photo"
               url: "g.png"
-              color: { connect: { where: { id: 102 } } }
+              color: { connect: { where: { id: "102" } } }
             }
             {
               id: 107
               description: "Red photo"
               url: "r.png"
-              color: { connect: { where: { id: 100 } } }
+              color: { connect: { where: { id: "100" } } }
             }
           ]
         }
@@ -81,68 +81,72 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-CREATE (this0:Product)
-SET this0.id = $this0_id
-SET this0.name = $this0_name
-  
-  WITH this0
-  CREATE (this0_sizes0:Size)
-  SET this0_sizes0.id = $this0_sizes0_id
-  SET this0_sizes0.name = $this0_sizes0_name
-  MERGE (this0)-[:HAS_SIZE]->(this0_sizes0)
-
-  WITH this0
-  CREATE (this0_sizes1:Size)
-  SET this0_sizes1.id = $this0_sizes1_id
-  SET this0_sizes1.name = $this0_sizes1_name
-  MERGE (this0)-[:HAS_SIZE]->(this0_sizes1)
-
-  WITH this0
-  CREATE (this0_colors0:Color)
-  SET this0_colors0.id = $this0_colors0_id
-  SET this0_colors0.name = $this0_colors0_name
-  MERGE (this0)-[:HAS_COLOR]->(this0_colors0)
-
-  WITH this0
-  CREATE (this0_colors1:Color)
-  SET this0_colors1.id = $this0_colors1_id
-  SET this0_colors1.name = $this0_colors1_name
-  MERGE (this0)-[:HAS_COLOR]->(this0_colors1)
-
-  WITH this0
-  CREATE (this0_photos0:Photo)
-  SET this0_photos0.id = $this0_photos0_id
-  SET this0_photos0.description = $this0_photos0_description
-  SET this0_photos0.url = $this0_photos0_url
-  MERGE (this0)-[:HAS_PHOTO]->(this0_photos0)
-
-  WITH this0
-  CREATE (this0_photos1:Photo)
-  SET this0_photos1.id = $this0_photos1_id
-  SET this0_photos1.description = $this0_photos1_description
-  SET this0_photos1.url = $this0_photos1_url
+CALL {
+  CREATE (this0:Product)
+  SET this0.id = $this0_id
+  SET this0.name = $this0_name
     
-    WITH this0, this0_photos1
-    OPTIONAL MATCH (this0_photos1_color_connect0:Color)
-    WHERE this0_photos1_color_connect0.id = $this0_photos1_color_connect0_id
-    FOREACH(_ IN CASE this0_photos1_color_connect0 WHEN NULL THEN [] ELSE [1] END |
-      MERGE (this0_photos1)-[:OF_COLOR]->(this0_photos1_color_connect0)
-    )
-  MERGE (this0)-[:HAS_PHOTO]->(this0_photos1)
+    WITH this0
+    CREATE (this0_sizes0:Size)
+    SET this0_sizes0.id = $this0_sizes0_id
+    SET this0_sizes0.name = $this0_sizes0_name
+    MERGE (this0)-[:HAS_SIZE]->(this0_sizes0)
 
-  WITH this0
-  CREATE (this0_photos2:Photo)
-  SET this0_photos2.id = $this0_photos2_id
-  SET this0_photos2.description = $this0_photos2_description
-  SET this0_photos2.url = $this0_photos2_url
+    WITH this0
+    CREATE (this0_sizes1:Size)
+    SET this0_sizes1.id = $this0_sizes1_id
+    SET this0_sizes1.name = $this0_sizes1_name
+    MERGE (this0)-[:HAS_SIZE]->(this0_sizes1)
 
-    WITH this0, this0_photos2
-    OPTIONAL MATCH (this0_photos2_color_connect0:Color)
-    WHERE this0_photos2_color_connect0.id = $this0_photos2_color_connect0_id
-    FOREACH(_ IN CASE this0_photos2_color_connect0 WHEN NULL THEN [] ELSE [1] END | 
-      MERGE (this0_photos2)-[:OF_COLOR]->(this0_photos2_color_connect0)  
-    )
-  MERGE (this0)-[:HAS_PHOTO]->(this0_photos2)
+    WITH this0
+    CREATE (this0_colors0:Color)
+    SET this0_colors0.id = $this0_colors0_id
+    SET this0_colors0.name = $this0_colors0_name
+    MERGE (this0)-[:HAS_COLOR]->(this0_colors0)
+
+    WITH this0
+    CREATE (this0_colors1:Color)
+    SET this0_colors1.id = $this0_colors1_id
+    SET this0_colors1.name = $this0_colors1_name
+    MERGE (this0)-[:HAS_COLOR]->(this0_colors1)
+
+    WITH this0
+    CREATE (this0_photos0:Photo)
+    SET this0_photos0.id = $this0_photos0_id
+    SET this0_photos0.description = $this0_photos0_description
+    SET this0_photos0.url = $this0_photos0_url
+    MERGE (this0)-[:HAS_PHOTO]->(this0_photos0)
+
+    WITH this0
+    CREATE (this0_photos1:Photo)
+    SET this0_photos1.id = $this0_photos1_id
+    SET this0_photos1.description = $this0_photos1_description
+    SET this0_photos1.url = $this0_photos1_url
+      
+      WITH this0, this0_photos1
+      OPTIONAL MATCH (this0_photos1_color_connect0:Color)
+      WHERE this0_photos1_color_connect0.id = $this0_photos1_color_connect0_id
+      FOREACH(_ IN CASE this0_photos1_color_connect0 WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this0_photos1)-[:OF_COLOR]->(this0_photos1_color_connect0)
+      )
+    MERGE (this0)-[:HAS_PHOTO]->(this0_photos1)
+
+    WITH this0
+    CREATE (this0_photos2:Photo)
+    SET this0_photos2.id = $this0_photos2_id
+    SET this0_photos2.description = $this0_photos2_description
+    SET this0_photos2.url = $this0_photos2_url
+
+      WITH this0, this0_photos2
+      OPTIONAL MATCH (this0_photos2_color_connect0:Color)
+      WHERE this0_photos2_color_connect0.id = $this0_photos2_color_connect0_id
+      FOREACH(_ IN CASE this0_photos2_color_connect0 WHEN NULL THEN [] ELSE [1] END | 
+        MERGE (this0_photos2)-[:OF_COLOR]->(this0_photos2_color_connect0)  
+      )
+    MERGE (this0)-[:HAS_PHOTO]->(this0_photos2)
+
+  RETURN this0
+}
 
 RETURN this0 { .id } AS this0
 ```
@@ -218,6 +222,12 @@ WHERE this_photos0.description = $this_photos0_description
 CALL apoc.do.when(this_photos0 IS NOT NULL, 
   " 
     SET this_photos0.description = $this_update_photos0_description 
+    WITH this, this_photos0 
+    OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color) 
+    WHERE this_photos0_color0_disconnect0.name = $this_photos0_color0_disconnect0_name 
+    FOREACH(_ IN CASE this_photos0_color0_disconnect0 WHEN NULL THEN [] ELSE [1] END | 
+      DELETE this_photos0_color0_disconnect0_rel 
+    ) 
     
     WITH this, this_photos0 
     OPTIONAL MATCH (this_photos0_color0_connect0:Color) 
@@ -226,19 +236,12 @@ CALL apoc.do.when(this_photos0 IS NOT NULL,
       MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0) 
     ) 
     
-    WITH this, this_photos0 
-    OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color) 
-    WHERE this_photos0_color0_disconnect0.name = $this_photos0_color0_disconnect0_name 
-    FOREACH(_ IN CASE this_photos0_color0_disconnect0 WHEN NULL THEN [] ELSE [1] END | 
-      DELETE this_photos0_color0_disconnect0_rel 
-    ) 
-    
-    RETURN count(*)
-  ",
+    RETURN count(*) 
+  ", 
   "",
-  {this:this, this_photos0:this_photos0, this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_connect0_name:$this_photos0_color0_connect0_name,this_photos0_color0_disconnect0_name:$this_photos0_color0_disconnect0_name}) YIELD value as _ 
-  
-  RETURN this { .id } AS this
+  {this:this, this_photos0:this_photos0, this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_disconnect0_name:$this_photos0_color0_disconnect0_name,this_photos0_color0_connect0_name:$this_photos0_color0_connect0_name}) YIELD value as _ 
+
+RETURN this { .id } AS this
 ```
 
 **Expected Cypher params**

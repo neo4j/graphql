@@ -39,9 +39,19 @@ function createUpdateAndParams({
             param = `${parentVar}_update_${key}`;
         }
 
-        const relationField = node.relationFields.find((x) => x.fieldName === key);
+        const relationField = node.relationFields.find((x) => key.startsWith(x.fieldName));
+        let unionTypeName = "";
+
         if (relationField) {
-            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            let refNode: Node;
+
+            if (relationField.union) {
+                [unionTypeName] = key.split(`${relationField.fieldName}_`).join("").split("_");
+                refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
+            } else {
+                refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            }
+
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const outStr = relationField.direction === "OUT" ? "->" : "-";
             const relTypeStr = `[:${relationField.type}]`;
@@ -118,6 +128,21 @@ function createUpdateAndParams({
                     res.strs.push(updateStr);
                 }
 
+                if (update.disconnect) {
+                    const disconnectAndParams = createDisconnectAndParams({
+                        context,
+                        refNode,
+                        value: update.disconnect,
+                        varName: `${_varName}_disconnect`,
+                        withVars,
+                        parentVar,
+                        relationField,
+                        labelOverride: unionTypeName,
+                    });
+                    res.strs.push(disconnectAndParams[0]);
+                    res.params = { ...res.params, ...disconnectAndParams[1] };
+                }
+
                 if (update.connect) {
                     const connectAndParams = createConnectAndParams({
                         context,
@@ -127,6 +152,7 @@ function createUpdateAndParams({
                         withVars,
                         parentVar,
                         relationField,
+                        labelOverride: unionTypeName,
                     });
                     res.strs.push(connectAndParams[0]);
                     res.params = { ...res.params, ...connectAndParams[1] };
@@ -152,20 +178,6 @@ function createUpdateAndParams({
                         res.params = { ...res.params, ...createAndParams[1] };
                         res.strs.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${innerVarName})`);
                     });
-                }
-
-                if (update.disconnect) {
-                    const disconnectAndParams = createDisconnectAndParams({
-                        context,
-                        refNode,
-                        value: update.disconnect,
-                        varName: `${_varName}_disconnect`,
-                        withVars,
-                        parentVar,
-                        relationField,
-                    });
-                    res.strs.push(disconnectAndParams[0]);
-                    res.params = { ...res.params, ...disconnectAndParams[1] };
                 }
             });
 

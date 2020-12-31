@@ -125,21 +125,21 @@ function translateCreate({
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {
             const varName = `this${index}`;
-            res.withVars.push(varName);
+
+            const create = [`CALL {`];
 
             const createAndParams = createCreateAndParams({
                 input,
                 node,
                 context,
                 varName,
-                withVars: res.withVars,
+                withVars: [varName],
             });
-            const withStr =
-                res.withVars.length > 1
-                    ? `\nWITH ${[...res.withVars].slice(0, res.withVars.length - 1).join(", ")}`
-                    : "";
+            create.push(`${createAndParams[0]}`);
+            create.push(`RETURN ${varName}`);
+            create.push(`}`);
 
-            res.createStrs.push(`${withStr}\n${createAndParams[0]}`);
+            res.createStrs.push(create.join("\n"));
             res.params = { ...res.params, ...createAndParams[1] };
 
             return res;
@@ -148,7 +148,6 @@ function translateCreate({
     ) as {
         createStrs: string[];
         params: any;
-        withVars: string[];
     };
 
     /* so projection params don't conflict with create params. We only need to call createProjectionAndParams once. */
@@ -158,9 +157,11 @@ function translateCreate({
         fieldsByTypeName,
         varName: "REPLACE_ME",
     });
+
     const replacedProjectionParams = Object.entries(projection[1]).reduce((res, [key, value]) => {
         return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
     }, {});
+
     const projectionStr = createStrs
         .map(
             (_, i) =>
@@ -237,25 +238,6 @@ function translateUpdate({
         cypherParams = { ...cypherParams, ...updateAndParams[1] };
     }
 
-    if (connectInput) {
-        Object.entries(connectInput).forEach((entry) => {
-            const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
-            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-
-            const connectAndParams = createConnectAndParams({
-                context,
-                parentVar: varName,
-                refNode,
-                relationField,
-                value: entry[1],
-                varName: `${varName}_connect_${entry[0]}`,
-                withVars: [varName],
-            });
-            connectStr = connectAndParams[0];
-            cypherParams = { ...cypherParams, ...connectAndParams[1] };
-        });
-    }
-
     if (disconnectInput) {
         Object.entries(disconnectInput).forEach((entry) => {
             const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
@@ -272,6 +254,25 @@ function translateUpdate({
             });
             disconnectStr = disconnectAndParams[0];
             cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
+        });
+    }
+
+    if (connectInput) {
+        Object.entries(connectInput).forEach((entry) => {
+            const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
+            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+
+            const connectAndParams = createConnectAndParams({
+                context,
+                parentVar: varName,
+                refNode,
+                relationField,
+                value: entry[1],
+                varName: `${varName}_connect_${entry[0]}`,
+                withVars: [varName],
+            });
+            connectStr = connectAndParams[0];
+            cypherParams = { ...cypherParams, ...connectAndParams[1] };
         });
     }
 
@@ -372,7 +373,7 @@ function translate({
     context: graphQLContext,
     resolveInfo,
 }: {
-    context: any;
+    context: { [k: string]: any } & { driver?: Driver };
     resolveInfo: GraphQLResolveInfo;
 }): [string, any] {
     const neoSchema: NeoSchema = graphQLContext.neoSchema;
