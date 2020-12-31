@@ -24,6 +24,8 @@ describe("createDisconnectAndParams", () => {
                 },
             ],
             cypherFields: [],
+            enumFields: [],
+            scalarFields: [],
         };
 
         // @ts-ignore

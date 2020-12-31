@@ -14,6 +14,7 @@ function createAllowAndParams({
     functionType,
     recurseArray,
     operation,
+    chainStrOverRide,
 }: {
     node: Node;
     context: Context;
@@ -22,6 +23,7 @@ function createAllowAndParams({
     functionType?: boolean;
     recurseArray?: AuthRule[];
     operation: AuthOperations;
+    chainStrOverRide?: string;
 }): [string, any] {
     const rules = (node?.auth?.rules || []).filter(
         (r) => r.operations?.includes(operation) && r.allow && r.isAuthenticated !== false
@@ -33,8 +35,10 @@ function createAllowAndParams({
 
     function reducer(res: Res, ruleValue: any, index: number): Res {
         let param = "";
-        if (chainStr) {
+        if (chainStr && !chainStrOverRide) {
             param = chainStr;
+        } else if (chainStrOverRide) {
+            param = `${chainStrOverRide}${index}`;
         } else {
             param = `${varName}_auth${index}`;
         }
