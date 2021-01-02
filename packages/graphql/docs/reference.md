@@ -27,6 +27,63 @@ const neoSchema = makeAugmentedSchema({
 });
 ```
 
+### Implementing Custom Resolvers
+
+This library will auto-generate resolvers for queries and mutations, you don't need to implement resolvers yourself, however if you have some custom code you can specify custom resolvers.
+
+#### Custom Field Resolver
+
+```js
+const typeDefs = `
+    type User {
+        userId: ID!
+        firstName: String
+        lastName: String
+        fullName: String
+    }
+`;
+
+const resolvers = {
+    User: {
+        fullName(root, params, ctx, resolveInfo) {
+            return `${root.firstName} ${root.lastName}`;
+        },
+    },
+};
+
+const schema = makeAugmentedSchema({
+    typeDefs,
+    resolvers,
+});
+```
+
+#### Custom Query Resolver
+
+> Same applies for Mutations and Subscriptions
+
+```js
+const typeDefs = `
+    type User {
+        userId: ID!
+    }
+
+    type Query {
+        users: [User]
+    }
+`;
+
+const resolvers = {
+    Query: {
+        users: () => // do some logic
+    }
+};
+
+const schema = makeAugmentedSchema({
+    typeDefs,
+    resolvers,
+});
+```
+
 ### NeoSchema
 
 Core class of the library. Holds all metadata about schema plus access to the OGM.
@@ -136,7 +193,8 @@ We pre-generate a pre-defined selection set. We don't include any `relationships
 
 This means that by default, querying for `Node`(s), you would only get the `.id` and `.name` properties returned. If a user wants to select more they can either define a selection set at execution time or as a static on the `Model`;
 
-**Define a selection set at execution time**
+<details>
+<summary> Selection set at execution time</summary>
 
 ```js
 const typeDefs = `
@@ -166,10 +224,14 @@ const selectionSet = `
         }
     }
 `;
+
 const movies = await Node.find({ selectionSet });
 ```
 
-**Define a selection set as a static**
+</details>
+
+<details>
+<summary> Selection set as a static</summary>
 
 ```js
 const typeDefs = `
@@ -202,6 +264,8 @@ const selectionSet = `
 
 Node.setSelectionSet(selectionSet);
 ```
+
+</details>
 
 ### translate
 
@@ -248,9 +312,7 @@ type Node {
 
 ### Relationships
 
-To represent a relationship between two nodes use the `@relationship` directive.
-
-_Usage_
+To represent a relationship between two nodes use the `@relationship` directive;
 
 ```graphql
 type Node {
@@ -259,12 +321,117 @@ type Node {
 }
 ```
 
-_Definition_
+### @cypher
 
-> You do not need to define this. It is for documentation purposes only.
+GraphQL schema directive that can be used to bind a GraphQL field to the results of a Cypher query. For example, let's add a field similarMovies to our Movie which is bound to a Cypher query to find other movies with an overlap of actors;
 
 ```graphql
-directive @relationship(type: String!, direction: String) on FIELD
+type Actor {
+    actorId: ID!
+    name: String
+    movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+}
+
+type Movie {
+    movieId: ID!
+    title: String
+    description: String
+    year: Int
+    actors(limit: Int = 10): [Actor]
+        @relationship(type: "ACTED_IN", direction: "IN")
+    similarMovies(limit: Int = 10): [Movie]
+        @cypher(
+            statement: """
+            MATCH (this)<-[:ACTED_IN]-(:Actor)-[:ACTED_IN]->(rec:Movie)
+            WITH rec, COUNT(*) AS score ORDER BY score DESC
+            RETURN rec LIMIT $limit
+            """
+        )
+}
+```
+
+As well as fields on types you can also define a custom `@cypher` directive on a custom Query or Mutation;
+
+```graphql
+type Actor {
+    actorId: ID!
+    name: String
+}
+
+type Query {
+    allActors: [Actor]
+        @cypher(
+            statement: """
+            MATCH (a:Actor)
+            RETURN a
+            """
+        )
+}
+```
+
+#### Statement Globals
+
+Global variables available inside the `@cypher` statement.
+
+1. `this` - bound to the currently resolved node
+2. `jwt` - The decoded `jwt` object or `{}`
+
+#### Returning from the cypher statement
+
+You must return a single value representing corresponding type;
+
+_Primitives_
+
+```graphql
+type Query {
+    randomNumber: Int @cypher(statement: "RETURN rand()") ## ✅ Supported
+}
+```
+
+_Nodes_
+
+```graphql
+type Query {
+    users: [User]
+        @cypher(
+            statement: """
+            MATCH (u:User)
+            RETURN u
+            """
+        ) ## ✅ Supported
+}
+```
+
+_Objects_
+
+```graphql
+type User {
+    id
+}
+
+type Query {
+    users: [User] @cypher(statement: """
+        MATCH (u:User)
+        RETURN {
+            id: u.id
+        }
+    """) ## ✅ Supported
+}
+```
+
+_Multiple Rows_ ❌
+
+```graphql
+type User {
+    id
+}
+
+type Query {
+    users: [User] @cypher(statement: """
+        MATCH (u:User)-[:HAS_POST]->(p:Post)
+        RETURN u, p
+    """) ## ❌ Not Supported
+}
 ```
 
 ### @auth
@@ -454,7 +621,7 @@ You can also filter on dates using the following;
 3. createdAt_GT
 4. createdAt_GTE
 
-#### @timestamps
+### @timestamps
 
 Appends properties createdAt & updatedAt on specified nodes. You are able to filter, sort and query by timestamps too! Timestamps use the [datetime](https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime) temporal type and are generated from within the database.
 
@@ -465,7 +632,7 @@ type Flight @timestamps {
 }
 ```
 
-#### @readonly
+### @readonly
 
 Specify what fields cant be modified. You can still create readonly fields.
 
@@ -477,11 +644,7 @@ type Post {
 }
 ```
 
-#### @cypher
-
-TODO 🚧
-
-#### @autogenerated
+### @autogenerated
 
 On creating, if not specified, will create a [`randomUUID`](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-randomuuid).
 
@@ -513,10 +676,6 @@ You are highly encouraged to 'spin up' a playground and experiment will the full
 
 ### Reading
 
-You can use the pluralized Query of your node;
-
-_GraphQL Query_
-
 ```graphql
 query {
     Users {
@@ -538,8 +697,6 @@ const users = await User.find();
 </details>
 
 ### Reading Relationships
-
-_GraphQL Query_
 
 ```graphql
 query {
@@ -578,8 +735,6 @@ const users = await User.find({
 
 Use the `where` argument;
 
-_GraphQL Query_
-
 ```graphql
 query {
     Users(where: { id: "123" }) {
@@ -605,8 +760,6 @@ const users = await User.find({
 ### Filtering Relationships
 
 Use the `where` argument, on the field;
-
-_GraphQL Query_
 
 ```graphql
 query {
@@ -647,8 +800,6 @@ const users = await User.find({
 
 Sort using the `options` argument;
 
-_GraphQL Query_
-
 ```graphql
 query {
     Users(options: { sort: createdAt_DESC }) {
@@ -675,8 +826,6 @@ const users = await User.find({
 ### Sorting Relationships
 
 Sort using the `options` argument, on the field;
-
-_GraphQL Query_
 
 ```graphql
 query {
@@ -717,8 +866,6 @@ const users = await User.find({
 
 Limit using the `options` argument;
 
-_GraphQL Query_
-
 ```graphql
 query {
     Users(options: { limit: 10 }) {
@@ -745,8 +892,6 @@ const users = await User.find({
 ### Limiting Relationships
 
 Limit using the `options` argument, on the field;
-
-_GraphQL Query_
 
 ```graphql
 query {
@@ -787,8 +932,6 @@ const users = await User.find({
 
 Limit using the `options` argument;
 
-_GraphQL Query_
-
 ```graphql
 query {
     Users(options: { skip: 10 }) {
@@ -815,8 +958,6 @@ const users = await User.find({
 ### Skipping Relationships
 
 Limit using the `options` argument, on the field;
-
-_GraphQL Query_
 
 ```graphql
 query {
@@ -853,8 +994,230 @@ const users = await User.find({
 
 </details>
 
----
+### Creating
 
-2. Creating
-3. Updating
-4. Deleting
+```graphql
+mutation {
+    createUsers(input: [{ name: "dan" }]) {
+        id
+        name
+    }
+}
+```
+
+<details>
+<summary>OGM Call</summary>
+
+```js
+const User = neoSchema.model("User");
+
+const users = await User.create({ input: [{ name: "dan" }] });
+```
+
+</details>
+
+### Creating a relationship (Create Mutation)
+
+```graphql
+mutation {
+    createUsers(
+        input: [
+            {
+                name: "dan"
+                posts: { create: [{ content: "cool nested mutations" }] }
+            }
+        ]
+    ) {
+        id
+        name
+    }
+}
+```
+
+<details>
+<summary>OGM Call</summary>
+
+```js
+const User = neoSchema.model("User");
+
+const users = await User.create({
+    input: [
+        {
+            name: "dan",
+            posts: { create: [{ content: "cool nested mutations" }] },
+        },
+    ],
+});
+```
+
+</details>
+
+### Connecting a relationship (Create Mutation)
+
+```graphql
+mutation {
+    createUsers(
+        input: [
+            {
+                name: "dan"
+                posts: {
+                    connect: { where: { content: "cool nested mutations" } }
+                }
+            }
+        ]
+    ) {
+        id
+        name
+    }
+}
+```
+
+<details>
+<summary>OGM Call</summary>
+
+```js
+const User = neoSchema.model("User");
+
+const users = await User.create({
+    input: [
+        {
+            name: "dan",
+            posts: { connect: { where: { content: "cool nested mutations" } } },
+        },
+    ],
+});
+```
+
+</details>
+
+### Updating
+
+```graphql
+mutation {
+    updateUsers(where: { name: "dan" }, update: { name: "dan" }) {
+        id
+        name
+    }
+}
+```
+
+<details>
+<summary>OGM Call</summary>
+
+```js
+const User = neoSchema.model("User");
+
+const users = await User.update({
+    where: { name: "dan" },
+    update: { name: "dan" },
+});
+```
+
+</details>
+
+### Creating a relationship (Update Mutation)
+
+```graphql
+mutation {
+    updateUsers(
+        where: { name: "dan" }
+        create: { posts: [{ content: "cool nested mutations" }] }
+    ) {
+        id
+        name
+    }
+}
+```
+
+<details>
+<summary>OGM Call</summary>
+
+```js
+const User = neoSchema.model("User");
+
+const users = await User.update({
+    where: { name: "dan" },
+    create: { posts: [{ content: "cool nested mutations" }] },
+});
+```
+
+</details>
+
+### Connecting a relationship (Update Mutation)
+
+```graphql
+mutation {
+    updateUsers(
+        where: { name: "dan" }
+        connect: { posts: { where: { content: "cool nested mutations" } } }
+    ) {
+        id
+        name
+    }
+}
+```
+
+<details>
+<summary>OGM Call</summary>
+
+```js
+const User = neoSchema.model("User");
+
+const users = await User.update({
+    where: { name: "dan" },
+    connect: { posts: { where: { content: "cool nested mutations" } } },
+});
+```
+
+</details>
+
+### Disconnecting a relationship
+
+```graphql
+mutation {
+    updateUsers(
+        where: { name: "dan" }
+        disconnect: { posts: { where: { content: "cool nested mutations" } } }
+    ) {
+        id
+        name
+    }
+}
+```
+
+<details>
+<summary>OGM Call</summary>
+
+```js
+const User = neoSchema.model("User");
+
+const users = await User.update({
+    where: { name: "dan" },
+    disconnect: { posts: { where: { content: "cool nested mutations" } } },
+});
+```
+
+</details>
+
+### Deleting
+
+```graphql
+mutation {
+    deleteUsers(where: { name: "dan" }) {
+        nodesDeleted
+    }
+}
+```
+
+<details>
+<summary>OGM Call</summary>
+
+```js
+const User = neoSchema.model("User");
+
+await User.delete({
+    where: { name: "dan" },
+});
+```
+
+</details>

@@ -12,8 +12,6 @@ This is an introduction to the Neo4j GraphQL mapping library (@neo4j/graphql). I
 
 ## Additional Resources
 
-### Project Metadata
-
 -   Version Control - https://github.com/neo4j/graphql
 -   Bug Tracker - https://github.com/neo4j/graphql/issues
 
@@ -49,10 +47,7 @@ mutation {
         input: [
             {
                 title: "nested mutations are cool"
-                author: {
-                    connect: { where: { name: "dan" } }
-                    blog: { connect: { where: { name: "dans blog" } } }
-                }
+                author: { connect: { where: { name: "dan" } } }
             }
         ]
     ) {
