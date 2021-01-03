@@ -6,7 +6,7 @@ A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL imple
 
 1. [Introduction](https://github.com/neo4j/graphql/blob/master/packages/graphql/docs/introduction.md)
 2. [Reference](https://github.com/neo4j/graphql/blob/master/packages/graphql/docs/reference.md)
-3. [Contributing](https://github.com/neo4j/graphql/blob/master/packages/graphql/CONTRIBUTING.md)
+3. [Contributing](https://github.com/neo4j/graphql/blob/master/packages/graphql/docs/contributing.md)
 
 ## Installation
 
@@ -121,7 +121,7 @@ query {
 
 ## Using OGM
 
-Use the GraphQL schema language to power an OGM layer. Read more about OGM in the reference section [here](https://github.com/neo4j/graphql/blob/master/packages/graphql/docs/refrence#ogm.md).
+Use the GraphQL schema language to power an OGM layer.
 
 ```js
 const OGM = makeAugmentedSchema({ typeDefs });
@@ -144,7 +144,7 @@ await UserModel.create({
 
 ## Complex Auth
 
-Define complex, nested & related, authorization rules such as; “grant update access to all moderators of a post”. Read more about auth in the reference section [here](https://github.com/neo4j/graphql/blob/master/packages/graphql/docs/refrence#auth.md).
+Define complex, nested & related, authorization rules such as; “grant update access to all moderators of a post”;
 
 ```graphql
 type User {

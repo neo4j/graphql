@@ -7,6 +7,7 @@ This document is split into zones;
 1. Setup - Importable functions and classes
 2. Schema - Defining your GraphQL Schema
 3. Querying - Interacting with the generated schema
+4. Developer Notes - Some tips, pointers and gotchas pointed out
 
 ## Setup
 
@@ -450,7 +451,7 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3O
 content-type: application/json
 ```
 
-You will need to inject the request object into the contex before you can use auth. Here is an example using Apollo Sever.
+You will need to inject the request object into the context before you can use auth. Here is an example using Apollo Sever.
 
 ```js
 const neoSchema = makeAugmentedSchema({});
@@ -462,8 +463,6 @@ const server = new ApolloServer({
 ```
 
 #### Placement
-
-One has to specify the directive somewhere lets take look at where it should and should not be placed;
 
 ```
 type User @auth() { // ✅ here is fine
@@ -597,10 +596,10 @@ Above we are enforcing that users cannot change there ID. You can traverse relat
 This library supports the DateTime scalar. Fields with the scalar will map to a [datetime](https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime) temporal type.
 
 ```graphql
-type Flight {
+type User {
     id: ID
     createdAt: DateTime
-    delayed: DateTime
+    updatedAt: DateTime
 }
 ```
 
@@ -608,7 +607,7 @@ You can filter using equality;
 
 ```
 query {
-    Flights(where: { createdAt: "2021-01-01T20:26:08.748Z" }) {
+    Users(where: { createdAt: "2021-01-01T20:26:08.748Z" }) {
         id
     }
 }
@@ -626,9 +625,8 @@ You can also filter on dates using the following;
 Appends properties createdAt & updatedAt on specified nodes. You are able to filter, sort and query by timestamps too! Timestamps use the [datetime](https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime) temporal type and are generated from within the database.
 
 ```graphql
-type Flight @timestamps {
+type User @timestamps {
     id: ID
-    delayed: DateTime
 }
 ```
 
@@ -1221,3 +1219,13 @@ await User.delete({
 ```
 
 </details>
+
+## Developer Notes
+
+Some tips, pointers and gotchas pointed out
+
+### Large Mutations
+
+There is no lie that nested mutations are very powerful. We have to generate complex cypher to provide the abstractions such as `connect` and `disconnect`. Due to the complexity and size of the cypher we generate its not advised to abuse it. Using the Generated GraphQL schema, If you were to attempt the creation of say one hundred nodes and relations at once Neo4j may throw memory errors. This is simply because of the size of the cypher we generate. If you need to do large edits to the graph you may be better using cypher directly, that being said the abstraction's provided should be fine for most use cases.
+
+> If memory issues are a regular occurrence. You can edit the `dbms.memory.heap.max_size` in the DBMS settings

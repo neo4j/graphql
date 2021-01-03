@@ -78,8 +78,6 @@ type Post @auth(rules: [
 }
 ```
 
-Read more about auth in the reference section [here](./reference#auth).
-
 #### OGM
 
 We created an OGM(Object Graph Model) on top of the pre-existing GraphQL work and abstractions. Generate your normal GraphQL schema & use the exposed .model method to receive an instance of a model.
@@ -121,4 +119,56 @@ await Movie.create({
 });
 ```
 
-Read more about auth in the reference section [here](./reference#ogm).
+### Excluded ~~Features~~
+
+Features we have chosen to exclude for the first version of @neo4j/graphql.
+
+#### Spatial Types
+
+Although the power Spatial types expose... We have chosen to exclude support for them in the first version.
+
+#### Relationship Properties
+
+We found the existing implementation [here](https://grandstack.io/docs/graphql-relationship-types/), where you have to use the 'top-level' relation directive;
+
+```graphql
+type Rated @relation(name: "RATED") {
+    ....
+}
+```
+
+Tricky to reason about. Before adding this feature back in we want to explore some more expressive ideas and take any community feedback on board. **The library doesn't know the concept of relationship properties** meaning you cannot; create, read, or filter by properties on a relationship.
+
+#### Top Level Union's
+
+In `neo4j-graphql-js` users could query top-level Unions such as;
+
+```graphql
+union Search = Genre | Movie
+```
+
+```graphql
+query {
+	Search {
+		... on Genre {}
+		... on Movie {}
+	}
+}
+```
+
+In the new implementation, **you cannot do this.** We made this decision on the fact that we had to create nodes with multiple labels causing issues. **You can use unions on a `@relationship`.**
+
+#### Interface Querying
+
+Similar to the reasons states in the Top Level Unions... we found that adding multiple labels onto a node can sometimes cause more problems it's trying to solve plus if you take into consideration the complexity. In the version, **users cannot query top-level Interfaces Nor use them as a `@relationship`.** In this implementation interfaces give you no real database support therefor no; query, update, delete, filter support. But instead used as a language feature to safeguard your schema. Great for When dealing with repetitive or large schemas you can essentially put "The side railings up".
+
+#### Further Excluded Features
+
+1. Multiple Databases
+2. additionalLabels
+3. graphql-schema-directives
+4. GraphQL Architect
+5. Excluding Types and Relationships
+6. Indexes and Constraints
+7. Inferring a Schema
+8. Federation Support - We found federation very specific to Apollo users & not beneficial for our greater audience
