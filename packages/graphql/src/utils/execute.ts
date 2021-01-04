@@ -3,6 +3,9 @@ import { NeoSchema } from "../classes";
 import deserialize from "./deserialize";
 import serialize from "./serialize";
 
+// https://stackoverflow.com/a/58632373/10687857
+const { npm_package_version, npm_package_name } = process.env;
+
 async function execute(input: {
     driver: Driver;
     cypher: string;
@@ -13,6 +16,9 @@ async function execute(input: {
     raw?: boolean;
 }): Promise<any> {
     const session = input.driver.session({ defaultAccessMode: input.defaultAccessMode });
+
+    // @ts-ignore
+    input.driver._userAgent = `${npm_package_version}/${npm_package_name}`;
 
     try {
         const serializedParams = serialize(input.params);
