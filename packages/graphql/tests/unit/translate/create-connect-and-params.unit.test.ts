@@ -10,12 +10,19 @@ describe("createConnectAndParams", () => {
             name: "Movie",
             enumFields: [],
             scalarFields: [],
-            primitiveFields: [],
+            primitiveFields: [
+                {
+                    fieldName: "title",
+                    // @ts-ignore
+                    typeMeta: { name: "Sting" },
+                },
+            ],
             relationFields: [
                 {
                     direction: "OUT",
                     type: "SIMILAR",
                     fieldName: "similarMovies",
+                    // @ts-ignore
                     typeMeta: {
                         name: "Movie",
                         array: true,
