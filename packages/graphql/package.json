@@ -41,6 +41,7 @@
         "@types/jest": "26.0.8",
         "@types/jsonwebtoken": "8.5.0",
         "@types/node": "14.0.27",
+        "@types/npm": "2.0.31",
         "apollo-server": "2.18.1",
         "graphql": "15.3.0",
         "jest": "26.2.2",
