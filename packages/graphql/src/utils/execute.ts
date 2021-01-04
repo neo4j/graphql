@@ -2,6 +2,7 @@ import { Driver } from "neo4j-driver";
 import { NeoSchema } from "../classes";
 import deserialize from "./deserialize";
 import serialize from "./serialize";
+import { name, version } from "../../package.json";
 
 async function execute(input: {
     driver: Driver;
@@ -13,6 +14,9 @@ async function execute(input: {
     raw?: boolean;
 }): Promise<any> {
     const session = input.driver.session({ defaultAccessMode: input.defaultAccessMode });
+
+    // @ts-ignore
+    input.driver._userAgent = `${name}/${version}`;
 
     try {
         const serializedParams = serialize(input.params);
