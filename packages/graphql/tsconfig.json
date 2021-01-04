@@ -4,10 +4,7 @@
     "sourceRoot": "./",
     "compilerOptions": {
         "outDir": "./dist",
-        "rootDir": "./",
-        "resolveJsonModule": true,
-        "module": "commonjs",
-        "esModuleInterop": true,
+        "rootDir": "./src"
     },
     "include": ["src/**/*"]
 }
