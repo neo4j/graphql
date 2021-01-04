@@ -119,29 +119,6 @@ query {
 }
 ```
 
-## Using OGM
-
-Use the GraphQL schema language to power an OGM layer.
-
-```js
-const OGM = makeAugmentedSchema({ typeDefs });
-
-const UserModel = OGM.model("User");
-
-await UserModel.create({
-    input: [
-        {
-            title: "The Matrix"
-            year: 1999
-            imdbRating: 8.7
-            genres: {
-                connect: { where: [{ name: "Sci-fi" }, { name: "Action" }] }
-            }
-        }
-    ]
-});
-```
-
 ## Complex Auth
 
 Define complex, nested & related, authorization rules such as; “grant update access to all moderators of a post”;
