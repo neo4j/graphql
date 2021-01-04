@@ -166,9 +166,8 @@ Similar to the reasons states in the Top Level Unions... we found that adding mu
 
 1. Multiple Databases
 2. additionalLabels
-3. graphql-schema-directives
-4. GraphQL Architect
-5. Excluding Types and Relationships
-6. Indexes and Constraints
-7. Inferring a Schema
-8. Federation Support - We found federation very specific to Apollo users & not beneficial for our greater audience
+3. GraphQL Architect
+4. Excluding Types and Relationships
+5. Indexes and Constraints
+6. Inferring a Schema
+7. Federation Support - We found federation very specific to Apollo users & not beneficial for our greater audience
