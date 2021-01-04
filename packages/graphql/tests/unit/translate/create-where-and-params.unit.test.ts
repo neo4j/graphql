@@ -20,7 +20,13 @@ describe("createWhereAndParams", () => {
             cypherFields: [],
             enumFields: [],
             scalarFields: [],
-            primitiveFields: [],
+            primitiveFields: [
+                {
+                    fieldName: "title",
+                    // @ts-ignore
+                    typeMeta: { name: "Sting" },
+                },
+            ],
         };
 
         // @ts-ignore
