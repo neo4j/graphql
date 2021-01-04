@@ -7,7 +7,7 @@ import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
 
 describe("floats", () => {
     let driver: Driver;
-    const rating = 4.9;
+    const imdbRating = 4.9;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -23,7 +23,7 @@ describe("floats", () => {
         const typeDefs = `
             type Movie {
                 id: String
-                rating: Float
+                imdbRating: Float
             }
         `;
 
@@ -35,9 +35,9 @@ describe("floats", () => {
 
         const create = `
             mutation {
-                createMovies(input:[{id: "${id}", rating: ${rating}}]) {
+                createMovies(input:[{id: "${id}", imdbRating: ${imdbRating}}]) {
                     id
-                    rating
+                    imdbRating
                 }
             }
         `;
@@ -50,14 +50,14 @@ describe("floats", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).createMovies[0]).toEqual({ id, rating });
+            expect((gqlResult.data as any).createMovies[0]).toEqual({ id, imdbRating });
 
             const result = await session.run(`
                 MATCH (m:Movie {id: "${id}"})
-                RETURN m {.id, .rating} as m
+                RETURN m {.id, .imdbRating} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({ id, rating });
+            expect((result.records[0].toObject() as any).m).toEqual({ id, imdbRating });
         } finally {
             await session.close();
         }
@@ -69,7 +69,7 @@ describe("floats", () => {
         const typeDefs = `
             type Movie {
                 id: String
-                rating: Float
+                imdbRating: Float
             }
         `;
 
@@ -80,10 +80,10 @@ describe("floats", () => {
         });
 
         const create = `
-            mutation($rating: Float) {
-                createMovies(input:[{id: "${id}", rating: $rating}]) {
+            mutation($imdbRating: Float) {
+                createMovies(input:[{id: "${id}", imdbRating: $imdbRating}]) {
                     id
-                    rating
+                    imdbRating
                 }
             }
         `;
@@ -93,18 +93,18 @@ describe("floats", () => {
                 schema: neoSchema.schema,
                 source: create,
                 contextValue: { driver },
-                variableValues: { rating },
+                variableValues: { imdbRating },
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).createMovies[0]).toEqual({ id, rating });
+            expect((gqlResult.data as any).createMovies[0]).toEqual({ id, imdbRating });
 
             const result = await session.run(`
                 MATCH (m:Movie {id: "${id}"})
-                RETURN m {.id, .rating} as m
+                RETURN m {.id, .imdbRating} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({ id, rating });
+            expect((result.records[0].toObject() as any).m).toEqual({ id, imdbRating });
         } finally {
             await session.close();
         }
