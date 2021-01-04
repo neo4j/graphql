@@ -111,7 +111,7 @@ const driver = neo4j.driver(
 
 const apolloServer = new ApolloServer({
     schema: neoSchema.schema,
-    context: { driver }
+    context: ({ req }) => ({ req, driver })
 });
 ```
 
@@ -299,7 +299,7 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3O
 content-type: application/json
 ```
 
-You will need to inject the request object into the context before you can use auth. Here is an example using Apollo Sever.
+⚠ You will need to inject the request object into the context before you can use auth. Here is an example using Apollo Sever.
 
 ```js
 const neoSchema = makeAugmentedSchema({});
