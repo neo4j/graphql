@@ -78,47 +78,6 @@ type Post @auth(rules: [
 }
 ```
 
-#### OGM
-
-We created an OGM(Object Graph Model) on top of the pre-existing GraphQL work and abstractions. Generate your normal GraphQL schema & use the exposed .model method to receive an instance of a model.
-
-```js
-const typeDefs = `
-   type Genre {
-      id: String
-   }
-
-   type Movie {
-      id: String
-      name: String
-      genres: [Genre] @relationship(type: "HAS_GENRE", direction: "OUT")
-    }
-`;
-
-const driver = neo4j.driver(
-    "bolt://localhost:7687",
-    neo4j.auth.basic("admin", "password")
-);
-
-const neoSchema = makeAugmentedSchema({
-    typeDefs,
-    context: { driver },
-});
-
-const Movie = neoSchema.model("Movie"); // Hi I am your model
-
-await Movie.find({ where: { id: "123" } });
-// Nested Mutations
-await Movie.create({
-    input: [
-        {
-            title: "Saw",
-            genres: { create: [{ name: "Horror" }] },
-        },
-    ],
-});
-```
-
 ### Excluded ~~Features~~
 
 Features we have chosen to exclude for the first version of @neo4j/graphql.
