@@ -50,7 +50,7 @@ const driver = neo4j.driver(
 
 const server = new ApolloServer({
     schema: neoSchema.schema,
-    context: { driver },
+    context: ({ req }) => ({ req, driver }),
 });
 
 server.listen(4000).then(() => console.log("Online"));
