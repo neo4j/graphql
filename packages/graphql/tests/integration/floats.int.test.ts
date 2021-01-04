@@ -1,4 +1,4 @@
-import { Driver } from "neo4j-driver";
+import { Driver, int } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
@@ -7,7 +7,8 @@ import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
 
 describe("floats", () => {
     let driver: Driver;
-    const imdbRating = 4.9;
+    const imdbRating_float = 4.9;
+    const imdbRating_int = 4.0;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -23,7 +24,8 @@ describe("floats", () => {
         const typeDefs = `
             type Movie {
                 id: String
-                imdbRating: Float
+                imdbRating_float: Float
+                imdbRating_int: Int
             }
         `;
 
@@ -35,9 +37,14 @@ describe("floats", () => {
 
         const create = `
             mutation {
-                createMovies(input:[{id: "${id}", imdbRating: ${imdbRating}}]) {
+                createMovies(input:[{
+                    id: "${id}",
+                    imdbRating_float: ${imdbRating_float}
+                    imdbRating_int: ${imdbRating_int}
+                }]) {
                     id
-                    imdbRating
+                    imdbRating_float
+                    imdbRating_int
                 }
             }
         `;
@@ -50,14 +57,18 @@ describe("floats", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).createMovies[0]).toEqual({ id, imdbRating });
+            expect((gqlResult.data as any).createMovies[0]).toEqual({ id, imdbRating_float, imdbRating_int });
 
             const result = await session.run(`
                 MATCH (m:Movie {id: "${id}"})
-                RETURN m {.id, .imdbRating} as m
+                RETURN m {.id, .imdbRating_float, .imdbRating_int} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({ id, imdbRating });
+            expect((result.records[0].toObject() as any).m).toEqual({
+                id,
+                imdbRating_float,
+                imdbRating_int: int(imdbRating_int),
+            });
         } finally {
             await session.close();
         }
@@ -69,7 +80,8 @@ describe("floats", () => {
         const typeDefs = `
             type Movie {
                 id: String
-                imdbRating: Float
+                imdbRating_float: Float
+                imdbRating_int: Int
             }
         `;
 
@@ -80,10 +92,15 @@ describe("floats", () => {
         });
 
         const create = `
-            mutation($imdbRating: Float) {
-                createMovies(input:[{id: "${id}", imdbRating: $imdbRating}]) {
+            mutation($imdbRating_float: Float, $imdbRating_int: Int) {
+                createMovies(input:[{
+                    id: "${id}",
+                    imdbRating_float: $imdbRating_float,
+                    imdbRating_int: $imdbRating_int
+                }]) {
                     id
-                    imdbRating
+                    imdbRating_float
+                    imdbRating_int
                 }
             }
         `;
@@ -93,18 +110,25 @@ describe("floats", () => {
                 schema: neoSchema.schema,
                 source: create,
                 contextValue: { driver },
-                variableValues: { imdbRating },
+                variableValues: {
+                    imdbRating_float,
+                    imdbRating_int,
+                },
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).createMovies[0]).toEqual({ id, imdbRating });
+            expect((gqlResult.data as any).createMovies[0]).toEqual({ id, imdbRating_float, imdbRating_int });
 
             const result = await session.run(`
                 MATCH (m:Movie {id: "${id}"})
-                RETURN m {.id, .imdbRating} as m
+                RETURN m {.id, .imdbRating_float, .imdbRating_int} as m
             `);
 
-            expect((result.records[0].toObject() as any).m).toEqual({ id, imdbRating });
+            expect((result.records[0].toObject() as any).m).toEqual({
+                id,
+                imdbRating_float,
+                imdbRating_int: int(imdbRating_int),
+            });
         } finally {
             await session.close();
         }
