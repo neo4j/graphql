@@ -2,7 +2,9 @@ import { Driver } from "neo4j-driver";
 import { NeoSchema } from "../classes";
 import deserialize from "./deserialize";
 import serialize from "./serialize";
-import { name, version } from "../../package.json";
+
+// https://stackoverflow.com/a/58632373/10687857
+const { npm_package_version, npm_package_name } = process.env;
 
 async function execute(input: {
     driver: Driver;
@@ -16,7 +18,7 @@ async function execute(input: {
     const session = input.driver.session({ defaultAccessMode: input.defaultAccessMode });
 
     // @ts-ignore
-    input.driver._userAgent = `${name}/${version}`;
+    input.driver._userAgent = `${npm_package_version}/${npm_package_name}`;
 
     try {
         const serializedParams = serialize(input.params);
