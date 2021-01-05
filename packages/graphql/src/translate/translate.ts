@@ -1,7 +1,7 @@
 import { GraphQLResolveInfo } from "graphql";
 import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import pluralize from "pluralize";
-import { Driver, int } from "neo4j-driver";
+import { Driver } from "neo4j-driver";
 import { NeoSchema, Node, Context } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
@@ -70,12 +70,12 @@ function translateRead({
     if (optionsInput) {
         if (optionsInput.skip) {
             skipStr = `SKIP $${varName}_skip`;
-            cypherParams[`${varName}_skip`] = int(optionsInput.skip);
+            cypherParams[`${varName}_skip`] = optionsInput.skip;
         }
 
         if (optionsInput.limit) {
             limitStr = `LIMIT $${varName}_limit`;
-            cypherParams[`${varName}_limit`] = int(optionsInput.limit);
+            cypherParams[`${varName}_limit`] = optionsInput.limit;
         }
 
         if (optionsInput.sort && optionsInput.sort.length) {

@@ -1,6 +1,5 @@
 import { isInt } from "neo4j-driver";
-import { parse } from "graphql";
-import { deserialize, execute, serializeArbitraryGraphQLArguments } from "../utils";
+import { deserialize, execute, serialize } from "../utils";
 import { BaseField } from "../types";
 import getFieldTypeMeta from "./get-field-type-meta";
 import { NeoSchema } from "../classes";
@@ -29,7 +28,7 @@ function cypherResolver({
 
         const result = await execute({
             cypher: statement,
-            params: serializeArbitraryGraphQLArguments(field.arguments, parse(neoSchema.typeDefs), args),
+            params: serialize(args),
             driver,
             defaultAccessMode,
             neoSchema,

@@ -1,6 +1,5 @@
-import { GraphQLWhereArg, PrimitiveField } from "../types";
+import { GraphQLWhereArg } from "../types";
 import { Context, Node } from "../classes";
-import { serializeGraphQLValueByType, serializeUnknownValue } from "../utils";
 
 interface Res {
     clauses: string[];
@@ -67,21 +66,8 @@ function createWhereAndParams({
                 res.clauses.push(resultStr);
                 res.params = { ...res.params, ...recurse[1] };
             } else {
-                const primitiveField = (node.primitiveFields.find(
-                    (x) => x.fieldName === fieldName
-                ) as unknown) as PrimitiveField;
-
                 res.clauses.push(`(NOT ${varName}.${fieldName} = $${param})`);
-                res.params[param] = serializeGraphQLValueByType(
-                    {
-                        kind: "NamedType",
-                        name: {
-                            kind: "Name",
-                            value: primitiveField.typeMeta.name,
-                        },
-                    },
-                    value
-                );
+                res.params[param] = value;
             }
 
             return res;
@@ -123,24 +109,8 @@ function createWhereAndParams({
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
             } else {
-                const primitiveField = (node.primitiveFields.find(
-                    (x) => x.fieldName === fieldName
-                ) as unknown) as PrimitiveField;
-
                 res.clauses.push(`(NOT ${varName}.${fieldName} IN $${param})`);
-                res.params[param] = serializeGraphQLValueByType(
-                    {
-                        kind: "ListType",
-                        type: {
-                            kind: "NamedType",
-                            name: {
-                                kind: "Name",
-                                value: primitiveField.typeMeta.name,
-                            },
-                        },
-                    },
-                    value
-                );
+                res.params[param] = value;
             }
 
             return res;
@@ -181,24 +151,8 @@ function createWhereAndParams({
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
             } else {
-                const primitiveField = (node.primitiveFields.find(
-                    (x) => x.fieldName === fieldName
-                ) as unknown) as PrimitiveField;
-
                 res.clauses.push(`${varName}.${fieldName} IN $${param}`);
-                res.params[param] = serializeGraphQLValueByType(
-                    {
-                        kind: "ListType",
-                        type: {
-                            kind: "NamedType",
-                            name: {
-                                kind: "Name",
-                                value: primitiveField.typeMeta.name,
-                            },
-                        },
-                    },
-                    value
-                );
+                res.params[param] = value;
             }
 
             return res;
@@ -235,231 +189,88 @@ function createWhereAndParams({
 
         if (key.endsWith("_REGEX")) {
             const [fieldName] = key.split("_REGEX");
-            const primitiveField = (node.primitiveFields.find(
-                (x) => x.fieldName === fieldName
-            ) as unknown) as PrimitiveField;
-
             res.clauses.push(`${varName}.${fieldName} =~ $${param}`);
-            res.params[param] = serializeGraphQLValueByType(
-                {
-                    kind: "NamedType",
-                    name: {
-                        kind: "Name",
-                        value: primitiveField.typeMeta.name,
-                    },
-                },
-                value
-            );
+            res.params[param] = value;
 
             return res;
         }
 
         if (key.endsWith("_NOT_CONTAINS")) {
             const [fieldName] = key.split("_NOT_CONTAINS");
-            const primitiveField = (node.primitiveFields.find(
-                (x) => x.fieldName === fieldName
-            ) as unknown) as PrimitiveField;
-
             res.clauses.push(`(NOT ${varName}.${fieldName} CONTAINS $${param})`);
-            res.params[param] = serializeGraphQLValueByType(
-                {
-                    kind: "NamedType",
-                    name: {
-                        kind: "Name",
-                        value: primitiveField.typeMeta.name,
-                    },
-                },
-                value
-            );
+            res.params[param] = value;
 
             return res;
         }
 
         if (key.endsWith("_CONTAINS")) {
             const [fieldName] = key.split("_CONTAINS");
-            const primitiveField = (node.primitiveFields.find(
-                (x) => x.fieldName === fieldName
-            ) as unknown) as PrimitiveField;
-
             res.clauses.push(`${varName}.${fieldName} CONTAINS $${param}`);
-            res.params[param] = serializeGraphQLValueByType(
-                {
-                    kind: "NamedType",
-                    name: {
-                        kind: "Name",
-                        value: primitiveField.typeMeta.name,
-                    },
-                },
-                value
-            );
+            res.params[param] = value;
 
             return res;
         }
 
         if (key.endsWith("_NOT_STARTS_WITH")) {
             const [fieldName] = key.split("_NOT_STARTS_WITH");
-            const primitiveField = (node.primitiveFields.find(
-                (x) => x.fieldName === fieldName
-            ) as unknown) as PrimitiveField;
-
             res.clauses.push(`(NOT ${varName}.${fieldName} STARTS WITH $${param})`);
-            res.params[param] = serializeGraphQLValueByType(
-                {
-                    kind: "NamedType",
-                    name: {
-                        kind: "Name",
-                        value: primitiveField.typeMeta.name,
-                    },
-                },
-                value
-            );
+            res.params[param] = value;
 
             return res;
         }
 
         if (key.endsWith("_STARTS_WITH")) {
             const [fieldName] = key.split("_STARTS_WITH");
-            const primitiveField = (node.primitiveFields.find(
-                (x) => x.fieldName === fieldName
-            ) as unknown) as PrimitiveField;
-
             res.clauses.push(`${varName}.${fieldName} STARTS WITH $${param}`);
-            res.params[param] = serializeGraphQLValueByType(
-                {
-                    kind: "NamedType",
-                    name: {
-                        kind: "Name",
-                        value: primitiveField.typeMeta.name,
-                    },
-                },
-                value
-            );
+            res.params[param] = value;
 
             return res;
         }
 
         if (key.endsWith("_NOT_ENDS_WITH")) {
             const [fieldName] = key.split("_NOT_ENDS_WITH");
-            const primitiveField = (node.primitiveFields.find(
-                (x) => x.fieldName === fieldName
-            ) as unknown) as PrimitiveField;
-
             res.clauses.push(`(NOT ${varName}.${fieldName} ENDS WITH $${param})`);
-            res.params[param] = serializeGraphQLValueByType(
-                {
-                    kind: "NamedType",
-                    name: {
-                        kind: "Name",
-                        value: primitiveField.typeMeta.name,
-                    },
-                },
-                value
-            );
+            res.params[param] = value;
 
             return res;
         }
 
         if (key.endsWith("_ENDS_WITH")) {
             const [fieldName] = key.split("_ENDS_WITH");
-            const primitiveField = (node.primitiveFields.find(
-                (x) => x.fieldName === fieldName
-            ) as unknown) as PrimitiveField;
-
             res.clauses.push(`${varName}.${fieldName} ENDS WITH $${param}`);
-            res.params[param] = serializeGraphQLValueByType(
-                {
-                    kind: "NamedType",
-                    name: {
-                        kind: "Name",
-                        value: primitiveField.typeMeta.name,
-                    },
-                },
-                value
-            );
+            res.params[param] = value;
 
             return res;
         }
 
         if (key.endsWith("_LT")) {
             const [fieldName] = key.split("_LT");
-            const primitiveField = (node.primitiveFields.find(
-                (x) => x.fieldName === fieldName
-            ) as unknown) as PrimitiveField;
-
             res.clauses.push(`${varName}.${fieldName} < $${param}`);
-            res.params[param] = serializeGraphQLValueByType(
-                {
-                    kind: "NamedType",
-                    name: {
-                        kind: "Name",
-                        value: primitiveField.typeMeta.name,
-                    },
-                },
-                value
-            );
+            res.params[param] = value;
 
             return res;
         }
 
         if (key.endsWith("_LTE")) {
             const [fieldName] = key.split("_LTE");
-            const primitiveField = (node.primitiveFields.find(
-                (x) => x.fieldName === fieldName
-            ) as unknown) as PrimitiveField;
-
             res.clauses.push(`${varName}.${fieldName} <= $${param}`);
-            res.params[param] = serializeGraphQLValueByType(
-                {
-                    kind: "NamedType",
-                    name: {
-                        kind: "Name",
-                        value: primitiveField.typeMeta.name,
-                    },
-                },
-                value
-            );
+            res.params[param] = value;
 
             return res;
         }
 
         if (key.endsWith("_GT")) {
             const [fieldName] = key.split("_GT");
-            const primitiveField = (node.primitiveFields.find(
-                (x) => x.fieldName === fieldName
-            ) as unknown) as PrimitiveField;
-
             res.clauses.push(`${varName}.${fieldName} > $${param}`);
-            res.params[param] = serializeGraphQLValueByType(
-                {
-                    kind: "NamedType",
-                    name: {
-                        kind: "Name",
-                        value: primitiveField.typeMeta.name,
-                    },
-                },
-                value
-            );
+            res.params[param] = value;
 
             return res;
         }
 
         if (key.endsWith("_GTE")) {
             const [fieldName] = key.split("_GTE");
-            const primitiveField = (node.primitiveFields.find(
-                (x) => x.fieldName === fieldName
-            ) as unknown) as PrimitiveField;
-
             res.clauses.push(`${varName}.${fieldName} >= $${param}`);
-            res.params[param] = serializeGraphQLValueByType(
-                {
-                    kind: "NamedType",
-                    name: {
-                        kind: "Name",
-                        value: primitiveField.typeMeta.name,
-                    },
-                },
-                value
-            );
+            res.params[param] = value;
 
             return res;
         }
@@ -486,23 +297,8 @@ function createWhereAndParams({
             return res;
         }
 
-        const primitiveField = (node.primitiveFields.find((x) => x.fieldName === key) as unknown) as PrimitiveField;
-        if (primitiveField) {
-            res.clauses.push(`${varName}.${key} = $${param}`);
-            res.params[param] = serializeGraphQLValueByType(
-                {
-                    kind: "NamedType",
-                    name: {
-                        kind: "Name",
-                        value: primitiveField.typeMeta.name,
-                    },
-                },
-                value
-            );
-        } else {
-            res.clauses.push(`${varName}.${key} = $${param}`);
-            res.params[param] = serializeUnknownValue(value);
-        }
+        res.clauses.push(`${varName}.${key} = $${param}`);
+        res.params[param] = value;
 
         return res;
     }
