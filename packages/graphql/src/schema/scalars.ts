@@ -31,6 +31,7 @@ export const Int = new GraphQLScalarType({
     },
     serialize(value: Integer) {
         // value sent to the client
+
         if (value.toNumber) {
             return value.toNumber();
         }
