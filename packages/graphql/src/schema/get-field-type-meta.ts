@@ -6,16 +6,13 @@ import { TypeMeta } from "../types";
 
 function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode): TypeMeta {
     // @ts-ignore
-    let result: TypeMeta = {
-        type: field.type,
-    };
+    let result: TypeMeta = {};
 
     switch (field.type.kind) {
         case "NonNullType":
             switch (field.type.type.kind) {
                 case "ListType":
                     result = {
-                        ...result,
                         // @ts-ignore
                         name: field.type.type.type.name.value,
                         array: true,
@@ -27,7 +24,6 @@ function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode)
 
                 case "NamedType":
                     result = {
-                        ...result,
                         name: field.type.type.name.value,
                         array: false,
                         required: true,
@@ -39,7 +35,6 @@ function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode)
             break;
         case "NamedType":
             result = {
-                ...result,
                 name: field.type.name.value,
                 array: false,
                 required: false,
@@ -50,7 +45,6 @@ function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode)
             switch (field.type.type.kind) {
                 case "NamedType":
                     result = {
-                        ...result,
                         // @ts-ignore
                         name: field.type.type.name.value,
                         array: true,
@@ -61,7 +55,6 @@ function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode)
 
                 case "NonNullType":
                     result = {
-                        ...result,
                         // @ts-ignore
                         name: field.type.type.type.name.value,
                         array: true,

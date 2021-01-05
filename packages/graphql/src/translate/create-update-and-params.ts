@@ -5,8 +5,6 @@ import createWhereAndParams from "./create-where-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createAllowAndParams from "./create-allow-and-params";
 import { checkRoles } from "../auth";
-import { serializeGraphQLValueByType } from "../utils";
-import { PrimitiveField } from "../types";
 
 interface Res {
     strs: string[];
@@ -188,9 +186,8 @@ function createUpdateAndParams({
 
         checkRoles({ node, context, operation: "update" });
 
-        const primitiveField = (node.primitiveFields.find((x) => x.fieldName === key) as unknown) as PrimitiveField;
         res.strs.push(`SET ${varName}.${key} = $${param}`);
-        res.params[param] = serializeGraphQLValueByType(primitiveField.typeMeta.type, value);
+        res.params[param] = value;
 
         return res;
     }

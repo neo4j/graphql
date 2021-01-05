@@ -14,8 +14,7 @@ describe("createUpdateAndParams", () => {
             scalarFields: [],
             primitiveFields: [
                 {
-                    fieldName: "id",
-                    // @ts-ignore
+                    fieldName: "title",
                     typeMeta: {
                         name: "String",
                         array: false,

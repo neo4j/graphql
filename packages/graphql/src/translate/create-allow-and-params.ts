@@ -1,6 +1,5 @@
 import { AuthRule, Context, Node } from "../classes";
 import { AuthOperations } from "../types";
-import { serializeUnknownValue } from "../utils";
 
 interface Res {
     allows: string[];
@@ -84,7 +83,7 @@ function createAllowAndParams({
                             throw new Error("Unauthorized");
                         }
 
-                        res.params[_param] = serializeUnknownValue(jwt[value]);
+                        res.params[_param] = jwt[value];
                     }
 
                     const relationField = node.relationFields.find((x) => key === x.fieldName);

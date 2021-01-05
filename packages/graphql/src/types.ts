@@ -1,4 +1,4 @@
-import { InputValueDefinitionNode, DirectiveNode, TypeNode } from "graphql";
+import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 
 /**
  * Metadata about a field.type on either
@@ -9,7 +9,6 @@ export interface TypeMeta {
     array: boolean;
     required: boolean;
     pretty: string;
-    type: TypeNode;
 }
 
 /**

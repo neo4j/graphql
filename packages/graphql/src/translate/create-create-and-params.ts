@@ -1,8 +1,6 @@
 import { Context, Node } from "../classes";
 import createConnectAndParams from "./create-connect-and-params";
 import { checkRoles } from "../auth";
-import { serializeGraphQLValueByType } from "../utils";
-import { PrimitiveField } from "../types";
 
 interface Res {
     creates: string[];
@@ -79,9 +77,8 @@ function createCreateAndParams({
             return res;
         }
 
-        const primitiveField = (node.primitiveFields.find((x) => x.fieldName === key) as unknown) as PrimitiveField;
         res.creates.push(`SET ${varName}.${key} = $${_varName}`);
-        res.params[_varName] = serializeGraphQLValueByType(primitiveField?.typeMeta.type, value);
+        res.params[_varName] = value;
 
         return res;
     }
