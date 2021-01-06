@@ -187,17 +187,20 @@ function createProjectionAndParams({
                 unionStrs.push("]");
 
                 if (optionsInput) {
+                    const hasSkip = Boolean(optionsInput.skip) || optionsInput.skip === 0;
+                    const hasLimit = Boolean(optionsInput.limit) || optionsInput.limit === 0;
+
                     let sortLimitStr = "";
 
-                    if (optionsInput.skip && !optionsInput.limit) {
+                    if (hasSkip && !hasLimit) {
                         sortLimitStr = `[${optionsInput.skip}..]`;
                     }
 
-                    if (optionsInput.limit && !optionsInput.skip) {
+                    if (hasLimit && !hasSkip) {
                         sortLimitStr = `[..${optionsInput.limit}]`;
                     }
 
-                    if (optionsInput.limit && optionsInput.skip) {
+                    if (hasLimit && hasSkip) {
                         sortLimitStr = `[${optionsInput.skip}..${optionsInput.limit}]`;
                     }
 
