@@ -505,7 +505,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             fields: { sort: sortEnum.List, limit: "Int", skip: "Int" },
         });
 
-        // TODO stop input types being created if ignored
         const [nodeInput, nodeUpdateInput] = ["CreateInput", "UpdateInput"].map((type) =>
             composer.createInputTC({
                 name: `${node.name}${type}`,
