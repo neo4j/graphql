@@ -19,7 +19,7 @@ type Movie {
 
 ```graphql
 {
-    Movies(options: {skip: 1}) {
+    Movies(options: { skip: 1 }) {
         title
     }
 }
@@ -28,7 +28,7 @@ type Movie {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 RETURN this { .title } as this
 SKIP $this_skip
 ```
@@ -52,7 +52,7 @@ SKIP $this_skip
 
 ```graphql
 {
-    Movies(options: {limit: 1}) {
+    Movies(options: { limit: 1 }) {
         title
     }
 }
@@ -61,7 +61,7 @@ SKIP $this_skip
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 RETURN this { .title } as this
 LIMIT $this_limit
 ```
@@ -85,7 +85,7 @@ LIMIT $this_limit
 
 ```graphql
 {
-    Movies(options: {limit: 1, skip: 2}) {
+    Movies(options: { limit: 1, skip: 2 }) {
         title
     }
 }
@@ -94,7 +94,7 @@ LIMIT $this_limit
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 RETURN this { .title } as this
 SKIP $this_skip
 LIMIT $this_limit
@@ -123,7 +123,7 @@ LIMIT $this_limit
 
 ```graphql
 query($skip: Int, $limit: Int) {
-    Movies(options: {limit: $limit, skip: $skip}) {
+    Movies(options: { limit: $limit, skip: $skip }) {
         title
     }
 }
@@ -133,15 +133,15 @@ query($skip: Int, $limit: Int) {
 
 ```graphql-params
 {
-    "skip": 2,
-    "limit": 1
+    "skip": 0,
+    "limit": 0
 }
 ```
 
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 RETURN this { .title } as this
 SKIP $this_skip
 LIMIT $this_limit
@@ -153,11 +153,11 @@ LIMIT $this_limit
 {
     "this_skip": {
         "high": 0,
-        "low": 2
+        "low": 0
     },
     "this_limit": {
         "high": 0,
-        "low": 1
+        "low": 0
     }
 }
 ```
@@ -170,10 +170,7 @@ LIMIT $this_limit
 
 ```graphql
 query($skip: Int, $limit: Int, $title: String) {
-    Movies(
-        options: {limit: $limit, skip: $skip},
-        where: {title: $title}
-    ) {
+    Movies(options: { limit: $limit, skip: $skip }, where: { title: $title }) {
         title
     }
 }
@@ -192,7 +189,7 @@ query($skip: Int, $limit: Int, $title: String) {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 WHERE this.title = $this_title
 RETURN this { .title } as this
 SKIP $this_skip

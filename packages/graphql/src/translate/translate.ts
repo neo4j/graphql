@@ -68,12 +68,15 @@ function translateRead({
     }
 
     if (optionsInput) {
-        if (optionsInput.skip) {
+        const hasSkip = Boolean(optionsInput.skip) || optionsInput.skip === 0;
+        const hasLimit = Boolean(optionsInput.limit) || optionsInput.limit === 0;
+
+        if (hasSkip) {
             skipStr = `SKIP $${varName}_skip`;
             cypherParams[`${varName}_skip`] = optionsInput.skip;
         }
 
-        if (optionsInput.limit) {
+        if (hasLimit) {
             limitStr = `LIMIT $${varName}_limit`;
             cypherParams[`${varName}_limit`] = optionsInput.limit;
         }
@@ -102,8 +105,8 @@ function translateRead({
         matchStr,
         whereStr,
         authStr,
+        ...(sortStr ? [`WITH ${varName}`, sortStr] : []),
         `RETURN ${varName} ${projStr} as ${varName}`,
-        sortStr,
         skipStr,
         limitStr,
     ];
