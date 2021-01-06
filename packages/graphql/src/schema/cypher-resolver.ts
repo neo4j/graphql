@@ -1,8 +1,8 @@
-import { isInt } from "neo4j-driver";
+import { isInt, Driver } from "neo4j-driver";
 import { deserialize, execute, serialize } from "../utils";
 import { BaseField } from "../types";
 import getFieldTypeMeta from "./get-field-type-meta";
-import { NeoSchema } from "../classes";
+import { NeoSchema, Context } from "../classes";
 
 /**
  * Called on custom (Queries & Mutations "TOP LEVEL") with a @cypher directive. Not to mistaken for @cypher type fields.
@@ -18,17 +18,26 @@ function cypherResolver({
     statement: string;
     getSchema: () => NeoSchema;
 }) {
-    async function resolve(_root: any, args: any, context: any) {
+    async function resolve(_root: any, args: any, graphQLContext: any) {
         const neoSchema = getSchema();
 
-        const { driver } = context;
+        const { driver } = graphQLContext;
         if (!driver) {
             throw new Error("context.driver missing");
         }
 
+        const context = new Context({
+            graphQLContext,
+            neoSchema,
+            driver: driver as Driver,
+        });
+
+        const safeJWT = context.getJWTSafe();
+        const cypherParams = context.getCypherParams();
+
         const result = await execute({
             cypher: statement,
-            params: serialize(args),
+            params: serialize({ ...args, jwt: safeJWT, cypherParams }),
             driver,
             defaultAccessMode,
             neoSchema,

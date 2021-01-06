@@ -57,6 +57,22 @@ class Context {
 
         return jwt;
     }
+
+    getJWTSafe(): any {
+        let jwt = {};
+
+        try {
+            jwt = this.getJWT() || {};
+        } catch (error) {
+            return {};
+        }
+
+        return jwt;
+    }
+
+    getCypherParams(): any {
+        return this.graphQLContext.cypherParams || {};
+    }
 }
 
 export default Context;

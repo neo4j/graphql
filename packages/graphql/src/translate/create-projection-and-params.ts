@@ -42,6 +42,9 @@ function createProjectionAndParams({
 
         if (cypherField) {
             let projectionStr = "";
+            const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime"].includes(
+                cypherField.typeMeta.name
+            );
 
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
             if (referenceNode) {
@@ -56,6 +59,9 @@ function createProjectionAndParams({
                 res.params = { ...res.params, ...recurse[1] };
             }
 
+            const safeJWT = context.getJWTSafe();
+            const cypherParams = context.getCypherParams();
+
             const apocParams = Object.entries(field.args).reduce(
                 (r: { strs: string[]; params: any }, f) => {
                     const argName = `${param}_${f[0]}`;
@@ -65,24 +71,29 @@ function createProjectionAndParams({
                         params: { ...r.params, [argName]: f[1] },
                     };
                 },
-                { strs: [], params: {} }
+                { strs: [`jwt: $jwt`, `cypherParams: $cypherParams`], params: {} }
             ) as { strs: string[]; params: any };
-            res.params = { ...res.params, ...apocParams.params };
+            res.params = { ...res.params, ...apocParams.params, jwt: safeJWT, cypherParams };
 
             const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
 
-            const apocStr = `${param} IN apoc.cypher.runFirstColumn("${cypherField.statement}", {this: ${
-                chainStr || varName
-            }${apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""}}, ${expectMultipleValues}) ${
-                projectionStr ? `| ${param} ${projectionStr}` : ""
-            }`;
+            const apocStr = `${!isPrimitive ? `${param} IN` : ""} apoc.cypher.runFirstColumn("${
+                cypherField.statement
+            }", {this: ${chainStr || varName}${
+                apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
+            }}, ${expectMultipleValues}) ${projectionStr ? `| ${param} ${projectionStr}` : ""}`;
 
             if (!cypherField.typeMeta.array) {
                 res.projection.push(`${key}: head([${apocStr}])`);
+
                 return res;
             }
 
-            res.projection.push(`${key}: [${apocStr}]`);
+            if (isPrimitive) {
+                res.projection.push(`${key}: ${apocStr}`);
+            } else {
+                res.projection.push(`${key}: [${apocStr}]`);
+            }
 
             return res;
         }
