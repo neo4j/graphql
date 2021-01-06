@@ -114,10 +114,7 @@ function getKindInfo(def: DefinitionNode): { isExtension: boolean; typeName: str
     }
 }
 
-function mergeFieldDirectives(
-    fields: FieldDefinitionNode[] = [],
-    extFields: FieldDefinitionNode[] = []
-): FieldDefinitionNode[] {
+function mergeFields(fields: FieldDefinitionNode[] = [], extFields: FieldDefinitionNode[] = []): FieldDefinitionNode[] {
     const result = [...fields];
 
     extFields.forEach((extField) => {
@@ -149,7 +146,7 @@ function extendDefinition(def: DefinitionNode, ext) {
     // @ts-ignore
     const directives = [...(def.directives || []), ...(ext.directives || [])];
     // @ts-ignore
-    const fields = mergeFieldDirectives(def.fields, ext.fields);
+    const fields = mergeFields(def.fields, ext.fields);
     const loc = extendLocation(def.loc, ext.loc);
 
     switch (def.kind) {
