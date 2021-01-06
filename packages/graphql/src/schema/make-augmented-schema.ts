@@ -46,6 +46,7 @@ import mergeExtensionsIntoAST from "./merge-extensions-into-ast";
 import parseValueNode from "./parse-value-node";
 import mergeTypeDefs from "./merge-typedefs";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
+import parseIgnoredDirective from "./parse-ignored-directive";
 
 export interface MakeAugmentedSchemaOptions {
     typeDefs: any;
@@ -344,8 +345,13 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     const nodes = objectNodes.map((definition) => {
         checkNodeImplementsInterfaces(definition, interfaces);
 
-        const otherDirectives = (definition.directives || []).filter((x) => x.name.value !== "auth") as DirectiveNode[];
+        const neoDirectiveNames = ["ignored"];
+
+        const otherDirectives = (definition.directives || []).filter(
+            (x) => ![...neoDirectiveNames, "auth"].includes(x.name.value)
+        ) as DirectiveNode[];
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
+        const neoDirectives = (definition.directives || []).filter((x) => neoDirectiveNames.includes(x.name.value));
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
         let auth: Auth;
@@ -365,6 +371,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         const node = new Node({
             name: definition.name.value,
             interfaces: nodeInterfaces,
+            neoDirectives,
             otherDirectives,
             ...nodeFields,
             // @ts-ignore
@@ -387,6 +394,8 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...node.objectFields,
             ...node.unionFields,
         ]);
+
+        const ignoredResolvers = parseIgnoredDirective(node);
 
         const composeNode = composer.createObjectTC({
             name: node.name,
@@ -496,6 +505,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             fields: { sort: sortEnum.List, limit: "Int", skip: "Int" },
         });
 
+        // TODO stop input types being created if ignored
         const [nodeInput, nodeUpdateInput] = ["CreateInput", "UpdateInput"].map((type) =>
             composer.createInputTC({
                 name: `${node.name}${type}`,
@@ -688,15 +698,29 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             });
         });
 
-        composer.Query.addFields({
-            [pluralize(node.name)]: findResolver({ node, getSchema: () => neoSchema }),
-        });
+        if (!ignoredResolvers.includes("read")) {
+            composer.Query.addFields({
+                [pluralize(node.name)]: findResolver({ node, getSchema: () => neoSchema }),
+            });
+        }
 
-        composer.Mutation.addFields({
-            [`create${pluralize(node.name)}`]: createResolver({ node, getSchema: () => neoSchema }),
-            [`delete${pluralize(node.name)}`]: deleteResolver({ node, getSchema: () => neoSchema }),
-            [`update${pluralize(node.name)}`]: updateResolver({ node, getSchema: () => neoSchema }),
-        });
+        if (!ignoredResolvers.includes("create")) {
+            composer.Mutation.addFields({
+                [`create${pluralize(node.name)}`]: createResolver({ node, getSchema: () => neoSchema }),
+            });
+        }
+
+        if (!ignoredResolvers.includes("delete")) {
+            composer.Mutation.addFields({
+                [`delete${pluralize(node.name)}`]: deleteResolver({ node, getSchema: () => neoSchema }),
+            });
+        }
+
+        if (!ignoredResolvers.includes("update")) {
+            composer.Mutation.addFields({
+                [`update${pluralize(node.name)}`]: updateResolver({ node, getSchema: () => neoSchema }),
+            });
+        }
     });
 
     ["Mutation", "Query"].forEach((type) => {
