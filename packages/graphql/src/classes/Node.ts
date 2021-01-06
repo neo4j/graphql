@@ -18,6 +18,7 @@ export interface NodeConstructor {
     primitiveFields: PrimitiveField[];
     scalarFields: CustomScalarField[];
     enumFields: CustomEnumField[];
+    neoDirectives: DirectiveNode[];
     otherDirectives: DirectiveNode[];
     unionFields: UnionField[];
     interfaceFields: InterfaceField[];
@@ -39,6 +40,8 @@ class Node {
 
     public enumFields: CustomEnumField[];
 
+    public neoDirectives: DirectiveNode[];
+
     public otherDirectives: DirectiveNode[];
 
     public unionFields: UnionField[];
@@ -58,6 +61,7 @@ class Node {
         this.primitiveFields = input.primitiveFields;
         this.scalarFields = input.scalarFields;
         this.enumFields = input.enumFields;
+        this.neoDirectives = input.neoDirectives;
         this.otherDirectives = input.otherDirectives;
         this.unionFields = input.unionFields;
         this.interfaceFields = input.interfaceFields;
