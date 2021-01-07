@@ -3,14 +3,14 @@ import * as util from "util";
 
 let driver;
 
-async function Connect(): Promise<neo4j.Driver> {
+async function connect(): Promise<neo4j.Driver> {
     if (driver) {
         return driver;
     }
 
     const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
-    if (process.env.NEO_WAIT) {
+    if (process.env.NEO_WAIT && !driver) {
         await util.promisify(setTimeout)(Number(process.env.NEO_WAIT));
     }
 
@@ -21,12 +21,10 @@ async function Connect(): Promise<neo4j.Driver> {
     try {
         await driver.verifyConnectivity();
     } catch (error) {
-        console.log(error);
-
-        process.exit(1);
+        throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${error.message}`);
     }
 
     return driver;
 }
 
-export = Connect;
+export default connect;
