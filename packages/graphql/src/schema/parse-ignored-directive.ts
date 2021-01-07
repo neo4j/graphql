@@ -1,16 +1,14 @@
-import { valueFromASTUntyped } from "graphql";
-import { Node } from "../classes";
+import { DirectiveNode, valueFromASTUntyped } from "graphql";
+import { Node, Ignored } from "../classes";
 
-function parseIgnoredDirective(node: Node) {
-    const ignoredDirective = (node.neoDirectives || []).find((directive) => directive.name.value === "ignored");
-
-    if (!ignoredDirective) {
-        return [];
+function parseIgnoredDirective(ignoredDirective: DirectiveNode, type: string) {
+    if (!ignoredDirective || ignoredDirective.name.value !== "ignored") {
+        throw new Error("Undefined or incorrect directive passed into parseIgnoredDirective function");
     }
 
-    const allResolvers = ["create", "read", "update", "delete"];
+    const error = new Error(`type ${type} does not implement directive ${ignoredDirective.name.value} correctly`);
     const result: string[] = [];
-    const error = new Error(`type ${node.name} does not implement directive ${ignoredDirective.name.value} correctly`);
+    const allResolvers = ["create", "read", "update", "delete"];
 
     ignoredDirective.arguments?.forEach((argument) => {
         if (argument.name.value !== "resolvers") {
@@ -32,7 +30,7 @@ function parseIgnoredDirective(node: Node) {
         }
     });
 
-    return result;
+    return new Ignored({ resolvers: result });
 }
 
 export default parseIgnoredDirective;
