@@ -418,6 +418,50 @@ type Post @auth(rules: [
 }
 ```
 
+### @ignored
+
+This directive can be used to tell `makeAugmentedSchema` to skip the automatic generation of the Query or Mutations for a certain type.
+
+#### Argument
+
+##### resolvers
+
+The only (and required) argument for this directive. Its value must either be an array containing a subset of strings from `["read", "create", "update", "delete"]`, or the string `"*"` if you wish to skip the generation of the Query and all Mutations for a particular type.
+
+#### Examples
+
+To disable Query generation:
+
+```graphql
+type User @ignored(resolvers: ["read"]) {
+    name: String
+}
+```
+
+To disable single Mutation generation:
+
+```graphql
+type User @ignored(resolvers: ["create"]) {
+    name: String
+}
+```
+
+To disable multiple Mutation generation:
+
+```graphql
+type User @ignored(resolvers: ["create", "delete"]) {
+    name: String
+}
+```
+
+To disable all automatic Query and Mutation generation:
+
+```graphql
+type User @ignored(resolvers: "*") {
+    name: String
+}
+```
+
 ## Querying
 
 Interacting with the generated schema. For the purposes of this section we will use the following schema;
