@@ -21,7 +21,7 @@ async function Connect(): Promise<neo4j.Driver> {
     try {
         await driver.verifyConnectivity();
     } catch (error) {
-        console.error(error);
+        console.log(error);
 
         process.exit(1);
     }
