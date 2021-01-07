@@ -10,6 +10,7 @@ import {
     ObjectField,
 } from "../types";
 import Auth from "./Auth";
+import Ignored from "./Ignored";
 
 export interface NodeConstructor {
     name: string;
@@ -18,13 +19,13 @@ export interface NodeConstructor {
     primitiveFields: PrimitiveField[];
     scalarFields: CustomScalarField[];
     enumFields: CustomEnumField[];
-    neoDirectives: DirectiveNode[];
     otherDirectives: DirectiveNode[];
     unionFields: UnionField[];
     interfaceFields: InterfaceField[];
     interfaces: NamedTypeNode[];
     objectFields: ObjectField[];
     auth?: Auth;
+    ignored?: Ignored;
 }
 
 class Node {
@@ -40,8 +41,6 @@ class Node {
 
     public enumFields: CustomEnumField[];
 
-    public neoDirectives: DirectiveNode[];
-
     public otherDirectives: DirectiveNode[];
 
     public unionFields: UnionField[];
@@ -54,6 +53,8 @@ class Node {
 
     public auth?: Auth;
 
+    public ignored?: Ignored;
+
     constructor(input: NodeConstructor) {
         this.name = input.name;
         this.relationFields = input.relationFields;
@@ -61,13 +62,13 @@ class Node {
         this.primitiveFields = input.primitiveFields;
         this.scalarFields = input.scalarFields;
         this.enumFields = input.enumFields;
-        this.neoDirectives = input.neoDirectives;
         this.otherDirectives = input.otherDirectives;
         this.unionFields = input.unionFields;
         this.interfaceFields = input.interfaceFields;
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
         this.auth = input.auth;
+        this.ignored = input.ignored;
     }
 }
 

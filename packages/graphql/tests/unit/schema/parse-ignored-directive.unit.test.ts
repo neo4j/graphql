@@ -2,15 +2,23 @@ import { describe, test, expect } from "@jest/globals";
 import { parse, ValueNode } from "graphql";
 import parseIgnoredDirective from "../../../src/schema/parse-ignored-directive";
 import Node from "../../../src/classes/Node";
+import { Ignored } from "../../../src/classes";
 
 describe("parseIgnoredDirective", () => {
-    test("should return an empty array if the @ignored directive is not specified on a type", () => {
-        const input = {
-            name: "TestType",
-        };
+    test("should throw an error if incorrect directive is passed in", () => {
+        const typeDefs = `
+            type TestType @wrongdirective {
+                name: String
+            }
+        `;
 
         // @ts-ignore
-        expect(parseIgnoredDirective(new Node(input))).toMatchObject([]);
+        const directive = parse(typeDefs).definitions[0].directives[0];
+
+        // @ts-ignore
+        expect(() => parseIgnoredDirective(directive, "TestType")).toThrow(
+            "Undefined or incorrect directive passed into parseIgnoredDirective function"
+        );
     });
 
     test("should return array of resolvers to ignore given valid array input", () => {
@@ -21,15 +29,12 @@ describe("parseIgnoredDirective", () => {
         `;
 
         // @ts-ignore
-        const directives = parse(typeDefs).definitions[0].directives;
+        const directive = parse(typeDefs).definitions[0].directives[0];
 
-        const nodeInput = {
-            name: "TestType",
-            neoDirectives: directives,
-        };
+        const expected = new Ignored({ resolvers: ["create", "delete"] });
 
         // @ts-ignore
-        expect(parseIgnoredDirective(new Node(nodeInput))).toMatchObject(["create", "delete"]);
+        expect(parseIgnoredDirective(directive, "TestType")).toMatchObject(expected);
     });
 
     test("should return array of all resolvers to ignore given valid input of '*'", () => {
@@ -40,15 +45,12 @@ describe("parseIgnoredDirective", () => {
         `;
 
         // @ts-ignore
-        const directives = parse(typeDefs).definitions[0].directives;
+        const directive = parse(typeDefs).definitions[0].directives[0];
 
-        const nodeInput = {
-            name: "TestType",
-            neoDirectives: directives,
-        };
+        const expected = new Ignored({ resolvers: ["create", "read", "update", "delete"] });
 
         // @ts-ignore
-        expect(parseIgnoredDirective(new Node(nodeInput))).toMatchObject(["create", "read", "update", "delete"]);
+        expect(parseIgnoredDirective(directive, "TestType")).toMatchObject(expected);
     });
 
     test("should throw an error if an argument other than 'resolvers' is given in the directive", () => {
@@ -59,15 +61,10 @@ describe("parseIgnoredDirective", () => {
         `;
 
         // @ts-ignore
-        const directives = parse(typeDefs).definitions[0].directives;
-
-        const nodeInput = {
-            name: "TestType",
-            neoDirectives: directives,
-        };
+        const directive = parse(typeDefs).definitions[0].directives[0];
 
         // @ts-ignore
-        expect(() => parseIgnoredDirective(new Node(nodeInput))).toThrow(
+        expect(() => parseIgnoredDirective(directive, "TestType")).toThrow(
             "type TestType does not implement directive ignored correctly"
         );
     });
@@ -80,15 +77,10 @@ describe("parseIgnoredDirective", () => {
         `;
 
         // @ts-ignore
-        const directives = parse(typeDefs).definitions[0].directives;
-
-        const nodeInput = {
-            name: "TestType",
-            neoDirectives: directives,
-        };
+        const directive = parse(typeDefs).definitions[0].directives[0];
 
         // @ts-ignore
-        expect(() => parseIgnoredDirective(new Node(nodeInput))).toThrow(
+        expect(() => parseIgnoredDirective(directive, "TestType")).toThrow(
             "type TestType does not implement directive ignored correctly"
         );
     });

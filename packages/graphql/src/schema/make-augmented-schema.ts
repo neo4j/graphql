@@ -7,6 +7,7 @@ import {
     InterfaceTypeDefinitionNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
+    parse,
     print,
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode,
@@ -20,7 +21,7 @@ import {
 } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import pluralize from "pluralize";
-import { Auth, NeoSchema, NeoSchemaConstructor, Node } from "../classes";
+import { Auth, NeoSchema, NeoSchemaConstructor, Node, Ignored } from "../classes";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getAuth from "./get-auth";
@@ -345,18 +346,21 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     const nodes = objectNodes.map((definition) => {
         checkNodeImplementsInterfaces(definition, interfaces);
 
-        const neoDirectiveNames = ["ignored"];
-
         const otherDirectives = (definition.directives || []).filter(
-            (x) => ![...neoDirectiveNames, "auth"].includes(x.name.value)
+            (x) => !["auth", "ignored"].includes(x.name.value)
         ) as DirectiveNode[];
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
-        const neoDirectives = (definition.directives || []).filter((x) => neoDirectiveNames.includes(x.name.value));
+        const ignoredDirective = (definition.directives || []).find((x) => x.name.value === "ignored");
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
         let auth: Auth;
         if (authDirective) {
             auth = getAuth(authDirective);
+        }
+
+        let ignored: Ignored;
+        if (ignoredDirective) {
+            ignored = parseIgnoredDirective(ignoredDirective, definition.name.value);
         }
 
         const nodeFields = getObjFieldMeta({
@@ -371,11 +375,12 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         const node = new Node({
             name: definition.name.value,
             interfaces: nodeInterfaces,
-            neoDirectives,
             otherDirectives,
             ...nodeFields,
             // @ts-ignore
             auth,
+            // @ts-ignore
+            ignored,
         });
 
         return node;
@@ -394,8 +399,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...node.objectFields,
             ...node.unionFields,
         ]);
-
-        const ignoredResolvers = parseIgnoredDirective(node);
 
         const composeNode = composer.createObjectTC({
             name: node.name,
@@ -697,25 +700,25 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             });
         });
 
-        if (!ignoredResolvers.includes("read")) {
+        if (!node.ignored?.resolvers.includes("read")) {
             composer.Query.addFields({
                 [pluralize(node.name)]: findResolver({ node, getSchema: () => neoSchema }),
             });
         }
 
-        if (!ignoredResolvers.includes("create")) {
+        if (!node.ignored?.resolvers.includes("create")) {
             composer.Mutation.addFields({
                 [`create${pluralize(node.name)}`]: createResolver({ node, getSchema: () => neoSchema }),
             });
         }
 
-        if (!ignoredResolvers.includes("delete")) {
+        if (!node.ignored?.resolvers.includes("delete")) {
             composer.Mutation.addFields({
                 [`delete${pluralize(node.name)}`]: deleteResolver({ node, getSchema: () => neoSchema }),
             });
         }
 
-        if (!ignoredResolvers.includes("update")) {
+        if (!node.ignored?.resolvers.includes("update")) {
             composer.Mutation.addFields({
                 [`update${pluralize(node.name)}`]: updateResolver({ node, getSchema: () => neoSchema }),
             });
