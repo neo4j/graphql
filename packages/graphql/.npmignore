@@ -1,9 +1,7 @@
-src
+src/
+docs/
+tests/
 .npmrc
-typings
+.npmignore
 jest.config.js
-.eslintrc.json
 tsconfig.json
-documentation
-**/*.test.js
-**/*.e2e.js
