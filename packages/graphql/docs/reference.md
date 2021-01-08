@@ -225,36 +225,6 @@ Global variables available inside the `@cypher` statement.
 
 1. `this` - bound to the currently resolved node
 2. `jwt` - decoded JWT object or `{}`
-3. `cypherParams` - see below
-
-#### cypherParams
-
-Inject params into the cypher statement using the GraphQL context;
-
-```graphql
-type Query {
-    myParam: String
-        @cypher(
-            statement: """
-            RETURN $cypherParams.myParam
-            """
-        )
-}
-```
-
-```js
-const ApolloServer = new ApolloServer({
-    schema: neoSchema.schema,
-    context: ({ req }) => {
-        return {
-            req,
-            cypherParams: {
-                myParam: "123",
-            },
-        };
-    },
-});
-```
 
 #### Returning from the cypher statement
 
