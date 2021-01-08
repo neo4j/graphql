@@ -60,7 +60,6 @@ function createProjectionAndParams({
             }
 
             const safeJWT = context.getJWTSafe();
-            const cypherParams = context.getCypherParams();
 
             const apocParams = Object.entries(field.args).reduce(
                 (r: { strs: string[]; params: any }, f) => {
@@ -71,9 +70,9 @@ function createProjectionAndParams({
                         params: { ...r.params, [argName]: f[1] },
                     };
                 },
-                { strs: [`jwt: $jwt`, `cypherParams: $cypherParams`], params: {} }
+                { strs: [`jwt: $jwt`], params: {} }
             ) as { strs: string[]; params: any };
-            res.params = { ...res.params, ...apocParams.params, jwt: safeJWT, cypherParams };
+            res.params = { ...res.params, ...apocParams.params, jwt: safeJWT };
 
             const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
 

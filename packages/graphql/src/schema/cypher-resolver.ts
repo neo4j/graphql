@@ -33,11 +33,10 @@ function cypherResolver({
         });
 
         const safeJWT = context.getJWTSafe();
-        const cypherParams = context.getCypherParams();
 
         const result = await execute({
             cypher: statement,
-            params: serialize({ ...args, jwt: safeJWT, cypherParams }),
+            params: serialize({ ...args, jwt: safeJWT }),
             driver,
             defaultAccessMode,
             neoSchema,
