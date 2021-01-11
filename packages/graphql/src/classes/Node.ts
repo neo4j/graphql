@@ -10,7 +10,7 @@ import {
     ObjectField,
 } from "../types";
 import Auth from "./Auth";
-import Ignored from "./Ignored";
+import Exclude from "./Exclude";
 
 export interface NodeConstructor {
     name: string;
@@ -25,7 +25,7 @@ export interface NodeConstructor {
     interfaces: NamedTypeNode[];
     objectFields: ObjectField[];
     auth?: Auth;
-    ignored?: Ignored;
+    exclude?: Exclude;
 }
 
 class Node {
@@ -53,7 +53,7 @@ class Node {
 
     public auth?: Auth;
 
-    public ignored?: Ignored;
+    public exclude?: Exclude;
 
     constructor(input: NodeConstructor) {
         this.name = input.name;
@@ -68,7 +68,7 @@ class Node {
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
         this.auth = input.auth;
-        this.ignored = input.ignored;
+        this.exclude = input.exclude;
     }
 }
 
