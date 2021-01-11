@@ -1,15 +1,15 @@
 ## Schema Cypher Directive
 
-Tests that the provided typeDefs return the correct schema (with `@ignored` directives).
+Tests that the provided typeDefs return the correct schema (with `@exclude` directives).
 
 ---
 
-### Using `@ignored` directive to skip generation of Query
+### Using `@exclude` directive to skip generation of Query
 
 **TypeDefs**
 
 ```typedefs-input
-type Actor @ignored(resolvers: ["read"]) {
+type Actor @exclude(operations: ["read"]) {
   name: String
 }
 
@@ -173,12 +173,12 @@ type Query {
 
 ---
 
-### Using `@ignored` directive to skip generator of Mutation
+### Using `@exclude` directive to skip generator of Mutation
 
 **TypeDefs**
 
 ```typedefs-input
-type Actor @ignored(resolvers: ["create"]) {
+type Actor @exclude(operations: ["create"]) {
   name: String
 }
 ```
@@ -270,12 +270,12 @@ type Query {
 
 ---
 
-### Using `@ignored` directive with `"*"` skips generation of all Queries and Mutations and removes the type itself if not referenced elsewhere
+### Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations and removes the type itself if not referenced elsewhere
 
 **TypeDefs**
 
 ```typedefs-input
-type Actor @ignored(resolvers: "*") {
+type Actor @exclude(operations: "*") {
   name: String
 }
 
@@ -376,12 +376,12 @@ type Query {
 
 ---
 
-### Using `@ignored` directive with `"*"` skips generation of all Queries and Mutations but retains the type itself if referenced elsewhere
+### Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations but retains the type itself if referenced elsewhere
 
 **TypeDefs**
 
 ```typedefs-input
-type Actor @ignored(resolvers: "*") {
+type Actor @exclude(operations: "*") {
   name: String
 }
 
@@ -491,12 +491,12 @@ type Query {
 
 ---
 
-### Using `@ignored` directive with `"*"` skips generation of all Queries and Mutations but retains the type itself if referenced in a `@relationship` directive
+### Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations but retains the type itself if referenced in a `@relationship` directive
 
 **TypeDefs**
 
 ```typedefs-input
-type Actor @ignored(resolvers: "*") {
+type Actor @exclude(operations: "*") {
   name: String
 }
 
@@ -716,12 +716,12 @@ type Query {
 
 ---
 
-### Ensure generation doesn't break if `@ignored` is provided with an empty array
+### Ensure generation doesn't break if `@exclude` is provided with an empty array
 
 **TypeDefs**
 
 ```typedefs-input
-type Actor @ignored(resolvers: []) {
+type Actor @exclude(operations: []) {
   name: String
 }
 ```

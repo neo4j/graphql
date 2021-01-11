@@ -1,17 +1,17 @@
 import { DirectiveNode, valueFromASTUntyped } from "graphql";
-import { Node, Ignored } from "../classes";
+import { Node, Exclude } from "../classes";
 
-function parseIgnoredDirective(ignoredDirective: DirectiveNode, type: string) {
-    if (!ignoredDirective || ignoredDirective.name.value !== "ignored") {
-        throw new Error("Undefined or incorrect directive passed into parseIgnoredDirective function");
+function parseExcludeDirective(excludeDirective: DirectiveNode, type: string) {
+    if (!excludeDirective || excludeDirective.name.value !== "exclude") {
+        throw new Error("Undefined or incorrect directive passed into parseExcludeDirective function");
     }
 
-    const error = new Error(`type ${type} does not implement directive ${ignoredDirective.name.value} correctly`);
+    const error = new Error(`type ${type} does not implement directive ${excludeDirective.name.value} correctly`);
     const result: string[] = [];
     const allResolvers = ["create", "read", "update", "delete"];
 
-    ignoredDirective.arguments?.forEach((argument) => {
-        if (argument.name.value !== "resolvers") {
+    excludeDirective.arguments?.forEach((argument) => {
+        if (argument.name.value !== "operations") {
             throw error;
         } else {
             const argumentValue = valueFromASTUntyped(argument.value);
@@ -30,7 +30,7 @@ function parseIgnoredDirective(ignoredDirective: DirectiveNode, type: string) {
         }
     });
 
-    return new Ignored({ resolvers: result });
+    return new Exclude({ operations: result });
 }
 
-export default parseIgnoredDirective;
+export default parseExcludeDirective;
