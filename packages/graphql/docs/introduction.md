@@ -62,19 +62,22 @@ Define complex, nested & related, authorization rules such as; “grant update a
 
 ```graphql
 type User {
-  id: ID!
-  username: String!
+    id: ID!
+    username: String!
 }
 
-type Post @auth(rules: [
-  {
-    allow: [{ "moderator.id": "sub"}], # "sub" being "req.jwt.sub"
-    operations: ["update"]
-  }
-]) {
-  id: ID!
-  title: String!
-  moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
+type Post
+    @auth(
+        rules: [
+            {
+                allow: [{ moderator: { id: "sub" } }] # "sub" being "req.jwt.sub"
+                operations: ["update"]
+            }
+        ]
+    ) {
+    id: ID!
+    title: String!
+    moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
 }
 ```
 

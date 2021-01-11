@@ -342,7 +342,7 @@ The only, required, parameter as part of the directive. Each rule allows you to 
 
 ```ts
 rules: {
-    operations: ("create" | "read" | "update" | "delete" | "connect" | "disconnect")[];
+    operations: ("create" | "read" | "update" | "delete")[];
     roles?: string[];
     isAuthenticated?: boolean
     allow?: any | "*";
@@ -352,7 +352,7 @@ rules: {
 
 #### operations
 
-Array of either `"create" | "read" | "update" | "delete" | "connect" | "disconnect"` the corresponding `allow`, `bind` and `roles` will be checked on each subsequent operation.
+Array of either `"create" | "read" | "update" | "delete"` the corresponding `allow` and `roles` will be checked on each subsequent operation.
 
 #### roles
 
@@ -402,19 +402,22 @@ You can traverse relationships in the directive to satisfy complex authorization
 
 ```graphql
 type User {
-  id: ID!
-  username: String!
+    id: ID!
+    username: String!
 }
 
-type Post @auth(rules: [
-  {
-    allow: [{ "moderator.id": "sub"}], # "sub" being "req.jwt.sub"
-    operations: ["update"]
-  }
-]) {
-  id: ID!
-  title: String!
-  moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
+type Post
+    @auth(
+        rules: [
+            {
+                allow: [{ moderator: { id: "sub" } }] # "sub" being "req.jwt.sub"
+                operations: ["update"]
+            }
+        ]
+    ) {
+    id: ID!
+    title: String!
+    moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
 }
 ```
 
