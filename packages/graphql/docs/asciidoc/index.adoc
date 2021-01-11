@@ -1,0 +1,72 @@
+[[graphql]]
+= Neo4j GraphQL
+:experimental:
+:sectnums:
+:chapter-label:
+:toc-title: Contents
+//:front-cover-image: image::title-page.png[]
+:header-title: NEO4J GRAPHQL
+:title-page-background-image: image::title-page.png[]
+
+ifndef::backend-pdf[]
+License: link:{common-license-page-uri}[Creative Commons 4.0]
+endif::[]
+
+ifdef::backend-pdf[]
+(C) {copyright}
+
+License: <<license, Creative Commons 4.0>>
+endif::[]
+
+{nbsp} +
+
+[.lead]
+*Neo4j Bloom*
+
+Neo4j Bloom is a graph exploration application for visually interacting with graph data.
+
+A graph puts any information into context, connecting all the dots. People, places and things.
+Products, services and accounts. Transactions, identities and events.
+Neo4j Bloom shows the patterns you intuitively know are there in your data, and reveals new patterns you may not have expected.
+This new data vision opens up new ways of thinking, new ways of working and new possibilities.
+And it's fun.
+
+Neo4j Bloom is powered by the Neo4j graph database, an immensely powerful engine for storing and querying connected data.
+Bloom wraps that power into an interactive graph visualization environment, presenting a business view of the graph.
+
+
+[.lead]
+*Contents of this guide*
+
+This _Getting Started_ guide gives an introduction to Neo4j Bloom, its components and installation.
+If you are already familiar with the app concept, you can skip ahead to the <<quick-start, Quick Start>> to begin exploring the graph right away.
+
+The following areas of Neo4j Bloom are covered in this guide:
+
+* <<about-bloom>> - An overview of Neo4j Bloom components and their features.
+* <<quick-start>> - Quick start tips for eager users to discover their way around Neo4j Bloom.
+* <<installation>> - Instructions on how to install the components of Neo4j Bloom.
+* <<visual-tour>> - A visual look at the Neo4j Bloom user interface.
+* <<perspectives>> - A detailed view into Perspectives in Neo4j Bloom.
+* <<tutorial>> - A closer look at the most commonly used features of Neo4j Bloom.
+
+_Who should read this?_
+
+This guide is written for:
+
+* Any user getting started with Neo4j Bloom.
+* The graph analyst creating Perspectives and exploring the business graph to discover insights.
+* The graph evangelist bringing graph exploration to the organization.
+* The graph administrator enabling business users to get started with graph exploration.
+
+include::about-bloom.adoc[leveloffset=+1]
+
+include::bloom-quickstart.adoc[leveloffset=+1]
+
+include::bloom-installation.adoc[leveloffset=+1]
+
+include::bloom-visual-tour.adoc[leveloffset=+1]
+
+include::bloom-perspectives.adoc[leveloffset=+1]
+
+include::bloom-tutorial.adoc[leveloffset=+1]
