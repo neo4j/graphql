@@ -2,6 +2,9 @@
     "name": "@neo4j/graphql",
     "version": "1.0.0",
     "description": "",
+    "publishConfig": {
+        "access": "public"
+    },
     "exports": {
         "require": "./dist/cjs/index.js"
     },
