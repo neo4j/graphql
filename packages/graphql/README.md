@@ -22,7 +22,8 @@ $ npm install graphql
 
 ## Quick Start
 
-```js
+[source, javascript]
+----
 const { makeAugmentedSchema } = require("@neo4j/graphql");
 const { v1: neo4j } = require("neo4j-driver");
 const { ApolloServer } = require("apollo-server");
