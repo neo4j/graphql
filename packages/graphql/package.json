@@ -1,6 +1,5 @@
 {
     "name": "@neo4j/graphql",
-    "private": true,
     "version": "1.0.0",
     "description": "",
     "exports": {
