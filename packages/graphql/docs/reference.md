@@ -768,4 +768,4 @@ There is no lie that nested mutations are very powerful. We have to generate com
 
 ### Precision Loss
 
-We currently wrap the Int and Float scalars and pass them through to the database accordingly. One caveat here is that Neo4j Integers are 64-bit and JS numbers are only 53-bit, so there's potential precision loss here, not to mention that GraphQL Int's are only 32-bit: http://spec.graphql.org/June2018/#sec-Int. If using Int you may have precision loss.
+We currently wrap the Int and Float scalars and pass them through to the database accordingly. One caveat here is that Neo4j Integers are 64-bit and JS numbers are only 53-bit, so there's potential precision loss here, not to mention that GraphQL Int's are only 32-bit: http://spec.graphql.org/June2018/#sec-Int. **We only support 32-bit integers because of the GraphQL limit.**
