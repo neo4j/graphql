@@ -1,7 +1,9 @@
 {
     "name": "@neo4j/graphql",
     "version": "1.0.0-alpha.1",
-    "description": "",
+    "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
+    "keywords": ["neo4j", "graphql"],
+    "license": "Apache-2.0",
     "exports": {
         "require": "./dist/cjs/index.js"
     },
