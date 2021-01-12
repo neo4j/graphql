@@ -1,24 +1,30 @@
 [[reference]]
 = Reference
 
-This is the reference documentation for @neo4j/graphql. It covers the programming model, APIs, concepts, annotations and technical details of the library.
+This is the reference documentation for @neo4j/graphql.
+It covers the programming model, APIs, concepts, annotations and technical details of the library.
 
 This document is split into zones;
 
-1. Setup - Importable functions and classes
-2. Schema - Defining your GraphQL Schema
-3. Querying - Interacting with the generated schema
-4. Developer Notes - Some tips, pointers and gotchas pointed out
+. Setup - Importable functions and classes
+. Schema - Defining your GraphQL Schema
+. Querying - Interacting with the generated schema
+. Developer Notes - Some tips, pointers and gotchas pointed out
 
-## Setup
 
-Importable functions and classes
+== Setup
 
-### makeAugmentedSchema
+Importable functions and classes.
 
-Main Entry to the library. Use to construct an instance of `NeoSchema`.
 
-```js
+=== `makeAugmentedSchema`
+
+Main Entry to the library.
+Use to construct an instance of `NeoSchema`.
+
+[source, javascript]
+
+----
 const { makeAugmentedSchema } = require("@neo4j/graphql");
 
 const neoSchema = makeAugmentedSchema({
@@ -27,15 +33,18 @@ const neoSchema = makeAugmentedSchema({
     schemaDirectives?,
     debug?,
 });
-```
+----
 
-### Implementing Custom Resolvers
+
+=== Implementing Custom Resolvers
 
 This library will auto-generate resolvers for queries and mutations, you don't need to implement resolvers yourself, however if you have some custom code you can specify custom resolvers.
 
-#### Custom Field Resolver
 
-```js
+==== Custom Field Resolver
+
+[source, javascript]
+----
 const typeDefs = `
     type User {
         userId: ID!
@@ -57,13 +66,17 @@ const schema = makeAugmentedSchema({
     typeDefs,
     resolvers,
 });
-```
+----
 
-#### Custom Query Resolver
 
-> Same applies for Mutations and Subscriptions
+==== Custom Query Resolver
 
-```js
+--
+Same applies for Mutations and Subscriptions
+--
+
+[source, javascript]
+----
 const typeDefs = `
     type User {
         userId: ID!
@@ -84,15 +97,20 @@ const schema = makeAugmentedSchema({
     typeDefs,
     resolvers,
 });
-```
+----
 
-### NeoSchema
 
-Core class of the library. Holds all metadata about schema plus access to the OGM.
+=== `NeoSchema`
 
-#### With Apollo Server
+Core class of the library.
+Holds all metadata about schema plus access to the OGM.
 
-```js
+
+==== With Apollo server
+
+[source, javascript]
+
+----
 const neo4j = require("neo4j-driver");
 const { makeAugmentedSchema } = require("@neo4j/graphql");
 const { ApolloServer } = require("apollo-server");
@@ -114,15 +132,17 @@ const apolloServer = new ApolloServer({
     schema: neoSchema.schema,
     context: ({ req }) => ({ req, driver })
 });
-```
+----
 
 > Notice `context` driver injection
 
-### translate
+
+=== `translate`
 
 Used to translate the `resolveInfo` object of a custom resolver into cypher and params. Only to be used on custom/overridden resolvers. Using this function can act as both a pre and post mechanism for your resolvers.
 
-```js
+[source, javascript]
+----
 const { makeAugmentedSchema, translate } = require("@neo4j/neo4j-graphql");
 
 const typeDefs = `
@@ -145,38 +165,44 @@ const resolvers = {
 };
 
 const neoSchema = makeAugmentedSchema({ typeDefs, resolvers });
-```
+----
 
-## Schema
+
+== Schema
 
 Defining your GraphQL Schema.
 
-### Nodes
+=== Nodes
 
 To represent a node in the GraphQL schema use the `type` definition;
 
-```graphql
+[source, graphql]
+----
 type Node {
     id: ID
 }
-```
+----
 
-### Relationships
+
+=== Relationships
 
 To represent a relationship between two nodes use the `@relationship` directive;
 
-```graphql
+[source, graphql]
+----
 type Node {
     id: ID
     related: [Node] @relationship(type: "RELATED", direction: "OUT")
 }
-```
+----
 
-### @cypher
+=== @cypher
 
-GraphQL schema directive that can be used to bind a GraphQL field to the results of a Cypher query. For example, let's add a field similarMovies to our Movie which is bound to a Cypher query to find other movies with an overlap of actors;
+GraphQL schema directive that can be used to bind a GraphQL field to the results of a Cypher query.
+For example, let's add a field `similarMovies` to our Movie which is bound to a Cypher query to find other movies with an overlap of actors;
 
-```graphql
+[source, graphql]
+----
 type Actor {
     actorId: ID!
     name: String
@@ -199,11 +225,12 @@ type Movie {
             """
         )
 }
-```
+----
 
 As well as fields on types you can also define a custom `@cypher` directive on a custom Query or Mutation;
 
-```graphql
+[source, graphql]
+----
 type Actor {
     actorId: ID!
     name: String
@@ -218,29 +245,32 @@ type Query {
             """
         )
 }
-```
+----
 
-#### Statement Globals
+
+==== Statement Globals
 
 Global variables available inside the `@cypher` statement.
 
-1. `this` - bound to the currently resolved node
+. `this` - bound to the currently resolved node
 
-#### Returning from the cypher statement
+==== Returning from the cypher statement
 
 You must return a single value representing corresponding type;
 
 _Primitives_
 
-```graphql
+[source, graphql]
+----
 type Query {
     randomNumber: Int @cypher(statement: "RETURN rand()") ## ✅ Supported
 }
-```
+----
 
 _Nodes_
 
-```graphql
+[source, graphql]
+----
 type Query {
     users: [User]
         @cypher(
@@ -250,11 +280,12 @@ type Query {
             """
         ) ## ✅ Supported
 }
-```
+----
 
 _Objects_
 
-```graphql
+[source, graphql]
+----
 type User {
     id
 }
@@ -267,11 +298,12 @@ type Query {
         }
     """) ## ✅ Supported
 }
-```
+----
 
 _Multiple Rows_ ❌
 
-```graphql
+[source, graphql]
+----
 type User {
     id
 }
@@ -282,66 +314,76 @@ type Query {
         RETURN u, p
     """) ## ❌ Not Supported
 }
-```
+----
 
-### @auth
+
+=== @auth
 
 Once specified it will ‘wrap’ generated Queries & Mutations, interacting with an incoming JWT, adding predicates to the generated cypher.
 
-#### Setup
+==== Setup
 
 This implementation only accepts JWT's in the request. You can use ENV `JWT_SECRET` to specificity the JWT secret and use `JWT_NO_VERIFY=true` to disable the verification of the JWT, handy for development. The accepted token type should be Bearer where the header should be authorization.
 
 _Example HTTP Request_
 
-```
+[source]
+----
 POST / HTTP/1.1
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlcyI6WyJ1c2VyX2FkbWluIiwicG9zdF9hZG1pbiIsImdyb3VwX2FkbWluIl19.IY0LWqgHcjEtOsOw60mqKazhuRFKroSXFQkpCtWpgQI
 content-type: application/json
-```
+----
 
 ⚠ You will need to inject the request object into the context before you can use auth. Here is an example using Apollo Sever.
 
-```js
+[source, javascript]
+----
 const neoSchema = makeAugmentedSchema({});
 
 const server = new ApolloServer({
     schema: neoSchema.schema,
     context: ({ req }) => ({ req }),
 });
-```
+----
 
-#### Placement
 
-```
+==== Placement
+
+[source]
+----
 type User @auth() { // ✅ here is fine
     name: String
 }
-```
+----
 
-```
+[source]
+----
 type User {
     name: String @auth() // ❌ not here
 }
-```
+----
 
-```
+[source]
+----
 type User {
     posts: [Post] @relationship(...) @auth() // ❌ not here
 }
-```
+----
 
-```
+[source]
+----
 type User @auth() @auth() { // ⚠ Only the first one will be used
     name: String
 }
-```
+----
 
-#### rules
+
+==== rules
 
 The only, required, parameter as part of the directive. Each rule allows you to specify the following properties;
 
-```ts
+[source, ts]
+----
 rules: {
     operations: ("create" | "read" | "update" | "delete" | "connect" | "disconnect")[];
     roles?: string[];
@@ -349,28 +391,32 @@ rules: {
     allow?: any | "*";
     bind?: any | "*";
 }[]
-```
+----
 
-#### operations
+
+==== operations
 
 Array of either `"create" | "read" | "update" | "delete" | "connect" | "disconnect"` the corresponding `allow`, `bind` and `roles` will be checked on each subsequent operation.
 
-#### roles
+==== roles
 
 Array of strings to be checked against the JWT roles.
 
-```graphql
+[source, graphql]
+----
 type User @auth(rules: [{ operations: ["update"], roles: ["admin"] }]) {
     id: ID
     name: String
 }
-```
+----
 
-#### isAuthenticated
+
+==== `isAuthenticated`
 
 A boolean to specify if the user should have a valid JWT on specified operations. It only really makes sense to have this as true and setting to false is for semantics only;
 
-```graphql
+[source, graphql]
+----
 type User
     @auth(
         rules: [{ operations: ["create", "update"], isAuthenticated: true }]
@@ -378,13 +424,15 @@ type User
     id: ID
     name: String
 }
-```
+----
 
-#### allow
+
+==== `allow`
 
 `allow` is a map used to compare a property on the incoming JTW against a property on a node. Allow is called before matching a node, this includes updating, deleting and projecting. Given the following `auth` users can only update there own node;
 
-```graphql
+[source, graphql]
+----
 type User
     @auth(
         rules: [
@@ -397,11 +445,12 @@ type User
     id: ID
     username: String
 }
-```
+----
 
 You can traverse relationships in the directive to satisfy complex authorization 'questions' such as; "grant update access to all moderators of a post";
 
-```graphql
+[source, graphql]
+----
 type User {
   id: ID!
   username: String!
@@ -417,13 +466,15 @@ type Post @auth(rules: [
   title: String!
   moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
 }
-```
+----
 
-## Querying
+
+== Querying
 
 Interacting with the generated schema. For the purposes of this section we will use the following schema;
 
-```graphql
+[source, graphql]
+----
 type Post @timestamps {
     id: ID! @autogenerated
     content: String!
@@ -435,24 +486,28 @@ type User @timestamps {
     name: String
     posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
 }
-```
+----
 
 You are highly encouraged to 'spin up' a playground and experiment will the full generated schema. You can also checkout the [TCK test's](https://github.com/neo4j/graphql/tree/master/packages/graphql/tests/tck/tck-test-files) for more a detailed view.
 
-### Reading
 
-```graphql
+=== Reading
+
+[source, graphql]
+----
 query {
     Users {
         id
         name
     }
 }
-```
+----
 
-### Reading Relationships
 
-```graphql
+=== Reading Relationships
+
+[source, graphql]
+----
 query {
     Users {
         posts {
@@ -460,28 +515,30 @@ query {
         }
     }
 }
-```
+----
 
-### Filtering
+=== Filtering
 
 > Checkout [TCK](https://github.com/neo4j/graphql/blob/master/packages/graphql/tests/tck/tck-test-files/cypher-advanced-filtering.md) for more advanced querying.
 
 Use the `where` argument;
 
-```graphql
+[source, graphql]
+----
 query {
     Users(where: { id: "123" }) {
         id
         name
     }
 }
-```
+----
 
-### Filtering Relationships
+=== Filtering Relationships
 
 Use the `where` argument, on the field;
 
-```graphql
+[source, graphql]
+----
 query {
     Users {
         id
@@ -491,13 +548,15 @@ query {
         }
     }
 }
-```
+----
 
-### Sorting
+
+=== Sorting
 
 Sort using the `options` argument;
 
-```graphql
+[source, graphql]
+----
 query {
     Users(options: { sort: createdAt_DESC }) {
         id
@@ -505,13 +564,15 @@ query {
         createdAt
     }
 }
-```
+----
 
-### Sorting Relationships
+
+=== Sorting Relationships
 
 Sort using the `options` argument, on the field;
 
-```graphql
+[source, graphql]
+----
 query {
     Users {
         id
@@ -521,13 +582,14 @@ query {
         }
     }
 }
-```
+----
 
-### Limiting
+=== Limiting
 
 Limit using the `options` argument;
 
-```graphql
+[source, graphql]
+----
 query {
     Users(options: { limit: 10 }) {
         id
@@ -535,13 +597,14 @@ query {
         createdAt
     }
 }
-```
+----
 
-### Limiting Relationships
+=== Limiting Relationships
 
 Limit using the `options` argument, on the field;
 
-```graphql
+[source, graphql]
+----
 query {
     Users {
         id
@@ -551,13 +614,14 @@ query {
         }
     }
 }
-```
+----
 
-### Skipping
+=== Skipping
 
 Limit using the `options` argument;
 
-```graphql
+[source, graphql]
+----
 query {
     Users(options: { skip: 10 }) {
         id
@@ -565,13 +629,14 @@ query {
         createdAt
     }
 }
-```
+----
 
-### Skipping Relationships
+=== Skipping Relationships
 
 Limit using the `options` argument, on the field;
 
-```graphql
+[source, graphql]
+----
 query {
     Users {
         id
@@ -581,22 +646,24 @@ query {
         }
     }
 }
-```
+----
 
-### Creating
+=== Creating
 
-```graphql
+[source, graphql]
+----
 mutation {
     createUsers(input: [{ name: "dan" }]) {
         id
         name
     }
 }
-```
+----
 
-### Creating a relationship (Create Mutation)
+=== Creating a relationship (Create Mutation)
 
-```graphql
+[source, graphql]
+----
 mutation {
     createUsers(
         input: [
@@ -610,11 +677,12 @@ mutation {
         name
     }
 }
-```
+----
 
-### Connecting a relationship (Create Mutation)
+=== Connecting a relationship (Create Mutation)
 
-```graphql
+[source, graphql]
+----
 mutation {
     createUsers(
         input: [
@@ -630,22 +698,24 @@ mutation {
         name
     }
 }
-```
+----
 
-### Updating
+=== Updating
 
-```graphql
+[source, graphql]
+----
 mutation {
     updateUsers(where: { name: "dan" }, update: { name: "dan" }) {
         id
         name
     }
 }
-```
+----
 
-### Creating a relationship (Update Mutation)
+=== Creating a relationship (Update Mutation)
 
-```graphql
+[source, graphql]
+----
 mutation {
     updateUsers(
         where: { name: "dan" }
@@ -655,11 +725,12 @@ mutation {
         name
     }
 }
-```
+----
 
-### Connecting a relationship (Update Mutation)
+=== Connecting a relationship (Update Mutation)
 
-```graphql
+[source, graphql]
+----
 mutation {
     updateUsers(
         where: { name: "dan" }
@@ -669,11 +740,12 @@ mutation {
         name
     }
 }
-```
+----
 
-### Disconnecting a relationship
+=== Disconnecting a relationship
 
-```graphql
+[source, graphql]
+----
 mutation {
     updateUsers(
         where: { name: "dan" }
@@ -683,23 +755,24 @@ mutation {
         name
     }
 }
-```
+----
 
-### Deleting
+=== Deleting
 
-```graphql
+[source, graphql]
+----
 mutation {
     deleteUsers(where: { name: "dan" }) {
         nodesDeleted
     }
 }
-```
+----
 
-## Developer Notes
+== Developer notes
 
 Some tips, pointers and gotchas pointed out
 
-### Large Mutations
+=== Large mutations
 
 There is no lie that nested mutations are very powerful. We have to generate complex cypher to provide the abstractions such as `connect` and `disconnect`. Due to the complexity and size of the cypher we generate its not advised to abuse it. Using the Generated GraphQL schema, If you were to attempt the creation of say one hundred nodes and relations at once Neo4j may throw memory errors. This is simply because of the size of the cypher we generate. If you need to do large edits to the graph you may be better using cypher directly, that being said the abstraction's provided should be fine for most use cases.
 
