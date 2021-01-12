@@ -74,14 +74,18 @@ describe("TCK Generated tests", () => {
                         expect(serialize(cQueryParams)).toEqual(cypherParams);
                     };
 
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    const token = jsonwebtoken.sign(jwt, process.env.JWT_SECRET as string);
-                    req.headers.authorization = `Bearer ${token}`;
+                    let context = {};
 
-                    const context = {
-                        req,
-                    };
+                    if (!cypherParams.jwt) {
+                        const socket = new Socket({ readable: true });
+                        const req = new IncomingMessage(socket);
+                        const token = jsonwebtoken.sign(jwt, process.env.JWT_SECRET as string);
+                        req.headers.authorization = `Bearer ${token}`;
+
+                        context = {
+                            req,
+                        };
+                    }
 
                     const queries = document.definitions.reduce((res, def) => {
                         if (def.kind !== "ObjectTypeDefinition") {
