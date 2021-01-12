@@ -1,7 +1,6 @@
 {
     "name": "@neo4j/graphql",
-    "private": true,
-    "version": "1.0.0",
+    "version": "1.0.0-alpha.1",
     "description": "",
     "exports": {
         "require": "./dist/cjs/index.js"
@@ -29,7 +28,8 @@
         "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
-        "start": "run-s build:clean watch"
+        "start": "run-s build:clean watch",
+        "pack": "npm pack"
     },
     "author": "Neo4j Inc.",
     "peerDependencies": {
