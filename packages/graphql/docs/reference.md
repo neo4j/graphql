@@ -87,7 +87,7 @@ const schema = makeAugmentedSchema({
 
 ### NeoSchema
 
-Core class of the library. Holds all metadata about schema plus access to the OGM.
+Core class of the library. Holds all metadata about schema.
 
 #### With Apollo Server
 
@@ -224,6 +224,7 @@ type Query {
 Global variables available inside the `@cypher` statement.
 
 1. `this` - bound to the currently resolved node
+2. `jwt` - decoded JWT object or `{}`
 
 #### Returning from the cypher statement
 
