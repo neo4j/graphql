@@ -91,11 +91,25 @@ Core class of the library. Holds all metadata about schema.
 
 #### With Apollo Server
 
-```js
-const neo4j = require("neo4j-driver");
-const { makeAugmentedSchema } = require("@neo4j/graphql");
-const { ApolloServer } = require("apollo-server");
+Import libraries using either `import`:
 
+```js
+import { makeAugmentedSchema } from "@neo4j/graphql";
+import * as neo4j from "neo4j-driver";
+import { ApolloServer } from "apollo-server";
+```
+
+Or `require`:
+
+```js
+const { makeAugmentedSchema } = require("@neo4j/graphql");
+const neo4j = require("neo4j-driver");
+const { ApolloServer } = require("apollo-server");
+```
+
+Then proceed to create schema objects and serve over port 4000 using Apollo Server:
+
+```js
 const neoSchema = makeAugmentedSchema({
     typeDefs,
     resolvers?,
@@ -419,6 +433,48 @@ type Post
     id: ID!
     title: String!
     moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
+}
+```
+
+### @exclude
+
+This directive can be used to tell `makeAugmentedSchema` to skip the automatic generation of the Query or Mutations for a certain type.
+
+#### operations
+
+The only (and required) argument for this directive. Its value must either be an array containing a subset of strings from `["read", "create", "update", "delete"]`, or the string `"*"` if you wish to skip the generation of the Query and all Mutations for a particular type.
+
+#### Examples
+
+To disable Query generation:
+
+```graphql
+type User @exclude(operations: ["read"]) {
+    name: String
+}
+```
+
+To disable single Mutation generation:
+
+```graphql
+type User @exclude(operations: ["create"]) {
+    name: String
+}
+```
+
+To disable multiple Mutation generation:
+
+```graphql
+type User @exclude(operations: ["create", "delete"]) {
+    name: String
+}
+```
+
+To disable all automatic Query and Mutation generation:
+
+```graphql
+type User @exclude(operations: "*") {
+    name: String
 }
 ```
 

@@ -7,6 +7,7 @@ import {
     InterfaceTypeDefinitionNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
+    parse,
     print,
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode,
@@ -21,7 +22,7 @@ import {
 } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import pluralize from "pluralize";
-import { Auth, NeoSchema, NeoSchemaConstructor, Node } from "../classes";
+import { Auth, NeoSchema, NeoSchemaConstructor, Node, Exclude } from "../classes";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getAuth from "./get-auth";
@@ -47,6 +48,7 @@ import mergeExtensionsIntoAST from "./merge-extensions-into-ast";
 import parseValueNode from "./parse-value-node";
 import mergeTypeDefs from "./merge-typedefs";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
+import parseExcludeDirective from "./parse-exclude-directive";
 
 export interface MakeAugmentedSchemaOptions {
     typeDefs: any;
@@ -359,13 +361,21 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     const nodes = objectNodes.map((definition) => {
         checkNodeImplementsInterfaces(definition, interfaces);
 
-        const otherDirectives = (definition.directives || []).filter((x) => x.name.value !== "auth") as DirectiveNode[];
+        const otherDirectives = (definition.directives || []).filter(
+            (x) => !["auth", "exclude"].includes(x.name.value)
+        ) as DirectiveNode[];
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
+        const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
         let auth: Auth;
         if (authDirective) {
             auth = getAuth(authDirective);
+        }
+
+        let exclude: Exclude;
+        if (excludeDirective) {
+            exclude = parseExcludeDirective(excludeDirective, definition.name.value);
         }
 
         const nodeFields = getObjFieldMeta({
@@ -384,6 +394,8 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...nodeFields,
             // @ts-ignore
             auth,
+            // @ts-ignore
+            exclude,
         });
 
         return node;
@@ -721,15 +733,29 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             });
         });
 
-        composer.Query.addFields({
-            [pluralize(node.name)]: findResolver({ node, getSchema: () => neoSchema }),
-        });
+        if (!node.exclude?.operations.includes("read")) {
+            composer.Query.addFields({
+                [pluralize(node.name)]: findResolver({ node, getSchema: () => neoSchema }),
+            });
+        }
 
-        composer.Mutation.addFields({
-            [`create${pluralize(node.name)}`]: createResolver({ node, getSchema: () => neoSchema }),
-            [`delete${pluralize(node.name)}`]: deleteResolver({ node, getSchema: () => neoSchema }),
-            [`update${pluralize(node.name)}`]: updateResolver({ node, getSchema: () => neoSchema }),
-        });
+        if (!node.exclude?.operations.includes("create")) {
+            composer.Mutation.addFields({
+                [`create${pluralize(node.name)}`]: createResolver({ node, getSchema: () => neoSchema }),
+            });
+        }
+
+        if (!node.exclude?.operations.includes("delete")) {
+            composer.Mutation.addFields({
+                [`delete${pluralize(node.name)}`]: deleteResolver({ node, getSchema: () => neoSchema }),
+            });
+        }
+
+        if (!node.exclude?.operations.includes("update")) {
+            composer.Mutation.addFields({
+                [`update${pluralize(node.name)}`]: updateResolver({ node, getSchema: () => neoSchema }),
+            });
+        }
     });
 
     ["Mutation", "Query"].forEach((type) => {
