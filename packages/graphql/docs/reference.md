@@ -422,6 +422,17 @@ type Post
 }
 ```
 
+### @autogenerate
+
+If the directive is specified and not provided on create will use the [database to generate a uuid](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-randomuuid).
+
+```graphql
+type User {
+    id: ID! @autogenerate
+    username: String!
+}
+```
+
 ## Querying
 
 Interacting with the generated schema. For the purposes of this section we will use the following schema;
