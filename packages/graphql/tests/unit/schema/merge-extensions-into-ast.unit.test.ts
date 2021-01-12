@@ -155,4 +155,30 @@ describe("mergeExtensionsIntoAST", () => {
 
         expect(print(mergedDocument)).toEqual(expected);
     });
+
+    test("should extend a field with a new directive", () => {
+        const typeDefs = `
+        type User {
+            password: String
+        }
+      
+        extend type User {
+            password: String @readonly
+        }
+    `;
+
+        const document = parse(typeDefs);
+
+        const mergedDocument = mergeExtensionsIntoAST(document);
+
+        const expected = print(
+            parse(`
+            type User {
+                password: String @readonly
+            }
+        `)
+        );
+
+        expect(print(mergedDocument)).toEqual(expected);
+    });
 });
