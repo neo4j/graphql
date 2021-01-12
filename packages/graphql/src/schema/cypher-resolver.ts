@@ -1,5 +1,5 @@
 import { isInt, Driver } from "neo4j-driver";
-import { deserialize, execute, serialize } from "../utils";
+import { execute } from "../utils";
 import { BaseField } from "../types";
 import getFieldTypeMeta from "./get-field-type-meta";
 import { NeoSchema, Context } from "../classes";
@@ -36,7 +36,7 @@ function cypherResolver({
 
         const result = await execute({
             cypher: statement,
-            params: serialize({ ...args, jwt: safeJWT }),
+            params: { ...args, jwt: safeJWT },
             driver,
             defaultAccessMode,
             neoSchema,
@@ -59,10 +59,10 @@ function cypherResolver({
             }
 
             if (value.identity && value.labels && value.properties) {
-                return deserialize(value.properties);
+                return value.properties;
             }
 
-            return deserialize(value);
+            return value;
         });
 
         if (!field.typeMeta.array) {
