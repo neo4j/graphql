@@ -7,7 +7,6 @@ import {
     InterfaceTypeDefinitionNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
-    parse,
     print,
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode,
@@ -50,6 +49,7 @@ import mergeTypeDefs from "./merge-typedefs";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import { Float, Int } from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
+import graphqlArgsToCompose from "./graphql-arg-to-compose";
 
 export interface MakeAugmentedSchemaOptions {
     typeDefs: any;
@@ -232,18 +232,7 @@ function objectFieldsToComposeFields(
         }
 
         if (field.arguments) {
-            newField.args = field.arguments.reduce((args, arg) => {
-                const meta = getFieldTypeMeta(arg);
-
-                return {
-                    ...args,
-                    [arg.name.value]: {
-                        type: meta.pretty,
-                        description: arg.description,
-                        defaultValue: arg.defaultValue,
-                    },
-                };
-            }, {});
+            newField.args = graphqlArgsToCompose(field.arguments);
         }
 
         return { ...res, [field.fieldName]: newField };
