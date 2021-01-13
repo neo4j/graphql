@@ -31,8 +31,10 @@ describe("autogenerate", () => {
         const create = `
             mutation {
                 createMovies(input:[{name: "dan"}]) {
-                    id
-                    name
+                    movies {
+                        id
+                        name
+                    }
                 }
             }
         `;
@@ -46,7 +48,7 @@ describe("autogenerate", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            const { id, name } = (gqlResult.data as any).createMovies[0];
+            const { id, name } = (gqlResult.data as any).createMovies.movies[0];
 
             expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](id))).toEqual(true);
             expect(name).toEqual("dan");
@@ -84,10 +86,12 @@ describe("autogenerate", () => {
                         }
                     ]
                 ) {
-                    id
-                    name
-                    genres {
+                    movies {
                         id
+                        name
+                        genres {
+                            id
+                        }
                     }
                 }
             }
@@ -102,7 +106,7 @@ describe("autogenerate", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            const { id, name, genres } = (gqlResult.data as any).createMovies[0];
+            const { id, name, genres } = (gqlResult.data as any).createMovies.movies[0];
 
             expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](id))).toEqual(true);
             expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](genres[0].id))).toEqual(true);
