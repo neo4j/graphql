@@ -4,9 +4,9 @@
 
 A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations.
 
-1. [Introduction](https://github.com/neo4j/graphql/blob/master/packages/graphql/docs/introduction.md)
-2. [Reference](https://github.com/neo4j/graphql/blob/master/packages/graphql/docs/reference.md)
-3. [Contributing](https://github.com/neo4j/graphql/blob/master/packages/graphql/docs/contributing.md)
+1. [Introduction](https://github.com/neo4j/graphql-tracker-temp/blob/master/introduction.md)
+2. [Reference](https://github.com/neo4j/graphql-tracker-temp/blob/master/reference.md)
+3. [Contributing](https://github.com/neo4j/graphql-tracker-temp/blob/master/contributing.md)
 
 ## Installation
 
@@ -22,11 +22,25 @@ $ npm install graphql
 
 ## Quick Start
 
+Import libraries using either `import`:
+
+```js
+import { makeAugmentedSchema } from "@neo4j/graphql";
+import * as neo4j from "neo4j-driver";
+import { ApolloServer } from "apollo-server";
+```
+
+Or `require`:
+
 ```js
 const { makeAugmentedSchema } = require("@neo4j/graphql");
-const { v1: neo4j } = require("neo4j-driver");
+const neo4j = require("neo4j-driver");
 const { ApolloServer } = require("apollo-server");
+```
 
+Then proceed to create schema objects and serve over port 4000 using Apollo Server:
+
+```js
 const typeDefs = `
     type Movie {
         title: String
@@ -131,18 +145,21 @@ Define complex, nested & related, authorization rules such as; “grant update a
 
 ```graphql
 type User {
-  id: ID!
-  username: String!
+    id: ID!
+    username: String!
 }
 
-type Post @auth(rules: [
-  {
-    allow: [{ "moderator.id": "sub"}], # "sub" being "req.jwt.sub"
-    operations: ["update"]
-  }
-]) {
-  id: ID!
-  title: String!
-  moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
+type Post
+    @auth(
+        rules: [
+            {
+                allow: [{ moderator: { id: "sub" } }] # "sub" being "req.jwt.sub"
+                operations: ["update"]
+            }
+        ]
+    ) {
+    id: ID!
+    title: String!
+    moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
 }
 ```
