@@ -4,6 +4,10 @@
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": ["neo4j", "graphql"],
     "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/neo4j/graphql-tracker-temp/issues"
+    },
+    "homepage": "https://github.com/neo4j/graphql-tracker-temp/blob/master/README.md",
     "exports": {
         "require": "./dist/cjs/index.js"
     },
