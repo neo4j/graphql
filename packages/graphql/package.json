@@ -1,8 +1,11 @@
 {
     "name": "@neo4j/graphql",
-    "version": "1.0.0-alpha.1",
+    "version": "1.0.0-alpha.2",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
-    "keywords": ["neo4j", "graphql"],
+    "keywords": [
+        "neo4j",
+        "graphql"
+    ],
     "license": "Apache-2.0",
     "bugs": {
         "url": "https://github.com/neo4j/graphql-tracker-temp/issues"
