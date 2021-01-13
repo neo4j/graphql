@@ -123,7 +123,10 @@ function translateCreate({
     context: Context;
     node: Node;
 }): [string, any] {
-    const fieldsByTypeName = resolveTree.fieldsByTypeName;
+    const fieldsByTypeName =
+        resolveTree.fieldsByTypeName[`Create${pluralize(node.name)}MutationResponse`][
+            pluralize(node.name.charAt(0).toLowerCase() + node.name.slice(1))
+        ].fieldsByTypeName;
 
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {
@@ -193,7 +196,10 @@ function translateUpdate({
     const connectInput = resolveTree.args.connect;
     const disconnectInput = resolveTree.args.disconnect;
     const createInput = resolveTree.args.create;
-    const fieldsByTypeName = resolveTree.fieldsByTypeName;
+    const fieldsByTypeName =
+        resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][
+            pluralize(node.name.charAt(0).toLowerCase() + node.name.slice(1))
+        ].fieldsByTypeName;
     const varName = "this";
 
     const matchStr = `MATCH (${varName}:${node.name})`;
