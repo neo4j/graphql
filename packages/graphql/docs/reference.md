@@ -440,9 +440,7 @@ type Post
 
 This directive can be used to tell `makeAugmentedSchema` to skip the automatic generation of the Query or Mutations for a certain type.
 
-#### Argument
-
-##### operations
+#### operations
 
 The only (and required) argument for this directive. Its value must either be an array containing a subset of strings from `["read", "create", "update", "delete"]`, or the string `"*"` if you wish to skip the generation of the Query and all Mutations for a particular type.
 
@@ -477,6 +475,17 @@ To disable all automatic Query and Mutation generation:
 ```graphql
 type User @exclude(operations: "*") {
     name: String
+}
+```
+
+### @autogenerate
+
+If the directive is specified and not provided on create will use the [database to generate a uuid](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-randomuuid).
+
+```graphql
+type User {
+    id: ID! @autogenerate
+    username: String!
 }
 ```
 

@@ -18,6 +18,7 @@ import {
     InputTypeComposer,
     DirectiveArgs,
     ObjectTypeComposer,
+    InputTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import pluralize from "pluralize";
@@ -96,6 +97,7 @@ function getObjFieldMeta({
             const relationshipMeta = getRelationshipMeta(field);
             const cypherMeta = getCypherMeta(field);
             const typeMeta = getFieldTypeMeta(field);
+            const autogenerate = field?.directives?.find((x) => x.name.value === "autogenerate");
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
             const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
@@ -106,7 +108,7 @@ function getObjFieldMeta({
                 fieldName: field.name.value,
                 typeMeta,
                 otherDirectives: (field.directives || []).filter(
-                    (x) => !["relationship", "cypher"].includes(x.name.value)
+                    (x) => !["relationship", "cypher", "autogenerate"].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
             };
@@ -177,6 +179,19 @@ function getObjFieldMeta({
                 const primitiveField: PrimitiveField = {
                     ...baseField,
                 };
+
+                if (autogenerate) {
+                    if (baseField.typeMeta.name !== "ID") {
+                        throw new Error("cannot auto-generate a non ID field");
+                    }
+
+                    if (baseField.typeMeta.array) {
+                        throw new Error("cannot auto-generate an array");
+                    }
+
+                    primitiveField.autogenerate = true;
+                }
+
                 res.primitiveFields.push(primitiveField);
             }
 
@@ -509,18 +524,36 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             fields: { sort: sortEnum.List, limit: "Int", skip: "Int" },
         });
 
-        const [nodeInput, nodeUpdateInput] = ["CreateInput", "UpdateInput"].map((type) =>
-            composer.createInputTC({
-                name: `${node.name}${type}`,
-                fields: [...node.primitiveFields, ...node.scalarFields, ...node.enumFields].reduce(
-                    (res, f) => ({
-                        ...res,
-                        [f.fieldName]: f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name,
-                    }),
-                    {}
-                ),
-            })
-        );
+        const nodeInput = composer.createInputTC({
+            name: `${node.name}CreateInput`,
+            fields: [...node.primitiveFields, ...node.scalarFields, ...node.enumFields].reduce((res, f) => {
+                if ((f as PrimitiveField)?.autogenerate) {
+                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
+                        type: f.typeMeta.name,
+                        defaultValue: "autogenerate",
+                    };
+                    res[f.fieldName] = field;
+                } else {
+                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
+                        type: f.typeMeta.array ? `[${f.typeMeta.pretty}]` : f.typeMeta.pretty,
+                    };
+                    res[f.fieldName] = field;
+                }
+
+                return res;
+            }, {}),
+        });
+
+        const nodeUpdateInput = composer.createInputTC({
+            name: `${node.name}UpdateInput`,
+            fields: [...node.primitiveFields, ...node.scalarFields, ...node.enumFields].reduce(
+                (res, f) => ({
+                    ...res,
+                    [f.fieldName]: f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name,
+                }),
+                {}
+            ),
+        });
 
         let nodeConnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
         let nodeDisconnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
