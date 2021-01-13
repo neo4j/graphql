@@ -117,7 +117,9 @@ describe("TCK Generated tests", () => {
 
                                 compare(context, resolveInfo);
 
-                                return [];
+                                return {
+                                    [pluralize(def.name.value.charAt(0).toLowerCase() + def.name.value.slice(1))]: [],
+                                };
                             },
                             [`update${pluralize(def.name.value)}`]: (
                                 _root: any,
@@ -129,7 +131,9 @@ describe("TCK Generated tests", () => {
 
                                 compare(context, resolveInfo);
 
-                                return [];
+                                return {
+                                    [pluralize(def.name.value.charAt(0).toLowerCase() + def.name.value.slice(1))]: [],
+                                };
                             },
                             [`delete${pluralize(def.name.value)}`]: (
                                 _root: any,
