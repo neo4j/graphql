@@ -65,7 +65,9 @@ mutation {
     createMovies(
         input: [{ title: "The Matrix", year: 1999, imdbRating: 8.7 }]
     ) {
-        title
+        movies {
+            title
+        }
     }
 }
 ```
@@ -80,7 +82,9 @@ mutation {
             genres: { where: { OR: [{ name: "Sci-fi" }, { name: "Action" }] } }
         }
     ) {
-        title
+        movies {
+            title
+        }
     }
 }
 ```
@@ -101,7 +105,9 @@ mutation {
             }
         ]
     ) {
-        title
+        movies {
+            title
+        }
     }
 }
 ```

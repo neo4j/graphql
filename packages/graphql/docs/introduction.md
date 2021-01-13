@@ -51,7 +51,9 @@ mutation {
             }
         ]
     ) {
-        id
+        posts {
+            id
+        }
     }
 }
 ```
