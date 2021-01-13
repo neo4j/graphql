@@ -105,10 +105,18 @@ input MovieUpdateInput {
   id: ID
 }
 
+type CreateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type UpdateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): [Movie]!
+  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
-  updateMovies(where: MovieWhere, update: MovieUpdateInput): [Movie]!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
 
 type Query {
