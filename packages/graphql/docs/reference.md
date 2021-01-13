@@ -587,8 +587,10 @@ query {
 ```graphql
 mutation {
     createUsers(input: [{ name: "dan" }]) {
-        id
-        name
+        users {
+            id
+            name
+        }
     }
 }
 ```
@@ -605,8 +607,10 @@ mutation {
             }
         ]
     ) {
-        id
-        name
+        users {
+            id
+            name
+        }
     }
 }
 ```
@@ -625,8 +629,10 @@ mutation {
             }
         ]
     ) {
-        id
-        name
+        users {
+            id
+            name
+        }
     }
 }
 ```
@@ -636,8 +642,10 @@ mutation {
 ```graphql
 mutation {
     updateUsers(where: { name: "dan" }, update: { name: "dan" }) {
-        id
-        name
+        users {
+            id
+            name
+        }
     }
 }
 ```
@@ -650,8 +658,10 @@ mutation {
         where: { name: "dan" }
         create: { posts: [{ content: "cool nested mutations" }] }
     ) {
-        id
-        name
+        users {
+            id
+            name
+        }
     }
 }
 ```
@@ -664,8 +674,10 @@ mutation {
         where: { name: "dan" }
         connect: { posts: { where: { content: "cool nested mutations" } } }
     ) {
-        id
-        name
+        users {
+            id
+            name
+        }
     }
 }
 ```
@@ -678,8 +690,10 @@ mutation {
         where: { name: "dan" }
         disconnect: { posts: { where: { content: "cool nested mutations" } } }
     ) {
-        id
-        name
+        users {
+            id
+            name
+        }
     }
 }
 ```
