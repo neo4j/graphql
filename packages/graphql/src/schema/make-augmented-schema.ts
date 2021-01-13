@@ -509,6 +509,15 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             })
         );
 
+        ["Create", "Update"].map((operation) =>
+            composer.createObjectTC({
+                name: `${operation}${pluralize(node.name)}MutationResponse`,
+                fields: {
+                    [pluralize(node.name.charAt(0).toLowerCase() + node.name.slice(1))]: `[${node.name}!]!`,
+                },
+            })
+        );
+
         let nodeConnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
         let nodeDisconnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
         let nodeRelationInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
