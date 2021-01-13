@@ -87,15 +87,29 @@ const schema = makeAugmentedSchema({
 
 ### NeoSchema
 
-Core class of the library. Holds all metadata about schema plus access to the OGM.
+Core class of the library. Holds all metadata about schema.
 
 #### With Apollo Server
 
-```js
-const neo4j = require("neo4j-driver");
-const { makeAugmentedSchema } = require("@neo4j/graphql");
-const { ApolloServer } = require("apollo-server");
+Import libraries using either `import`:
 
+```js
+import { makeAugmentedSchema } from "@neo4j/graphql";
+import * as neo4j from "neo4j-driver";
+import { ApolloServer } from "apollo-server";
+```
+
+Or `require`:
+
+```js
+const { makeAugmentedSchema } = require("@neo4j/graphql");
+const neo4j = require("neo4j-driver");
+const { ApolloServer } = require("apollo-server");
+```
+
+Then proceed to create schema objects and serve over port 4000 using Apollo Server:
+
+```js
 const neoSchema = makeAugmentedSchema({
     typeDefs,
     resolvers?,
@@ -224,6 +238,7 @@ type Query {
 Global variables available inside the `@cypher` statement.
 
 1. `this` - bound to the currently resolved node
+2. `jwt` - decoded JWT object or `{}`
 
 #### Returning from the cypher statement
 
@@ -342,7 +357,7 @@ The only, required, parameter as part of the directive. Each rule allows you to 
 
 ```ts
 rules: {
-    operations: ("create" | "read" | "update" | "delete" | "connect" | "disconnect")[];
+    operations: ("create" | "read" | "update" | "delete")[];
     roles?: string[];
     isAuthenticated?: boolean
     allow?: any | "*";
@@ -352,7 +367,7 @@ rules: {
 
 #### operations
 
-Array of either `"create" | "read" | "update" | "delete" | "connect" | "disconnect"` the corresponding `allow`, `bind` and `roles` will be checked on each subsequent operation.
+Array of either `"create" | "read" | "update" | "delete"` the corresponding `allow` and `roles` will be checked on each subsequent operation.
 
 #### roles
 
@@ -402,19 +417,75 @@ You can traverse relationships in the directive to satisfy complex authorization
 
 ```graphql
 type User {
-  id: ID!
-  username: String!
+    id: ID!
+    username: String!
 }
 
-type Post @auth(rules: [
-  {
-    allow: [{ "moderator.id": "sub"}], # "sub" being "req.jwt.sub"
-    operations: ["update"]
-  }
-]) {
-  id: ID!
-  title: String!
-  moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
+type Post
+    @auth(
+        rules: [
+            {
+                allow: [{ moderator: { id: "sub" } }] # "sub" being "req.jwt.sub"
+                operations: ["update"]
+            }
+        ]
+    ) {
+    id: ID!
+    title: String!
+    moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
+}
+```
+
+### @exclude
+
+This directive can be used to tell `makeAugmentedSchema` to skip the automatic generation of the Query or Mutations for a certain type.
+
+#### operations
+
+The only (and required) argument for this directive. Its value must either be an array containing a subset of strings from `["read", "create", "update", "delete"]`, or the string `"*"` if you wish to skip the generation of the Query and all Mutations for a particular type.
+
+#### Examples
+
+To disable Query generation:
+
+```graphql
+type User @exclude(operations: ["read"]) {
+    name: String
+}
+```
+
+To disable single Mutation generation:
+
+```graphql
+type User @exclude(operations: ["create"]) {
+    name: String
+}
+```
+
+To disable multiple Mutation generation:
+
+```graphql
+type User @exclude(operations: ["create", "delete"]) {
+    name: String
+}
+```
+
+To disable all automatic Query and Mutation generation:
+
+```graphql
+type User @exclude(operations: "*") {
+    name: String
+}
+```
+
+### @autogenerate
+
+If the directive is specified and not provided on create will use the [database to generate a uuid](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-randomuuid).
+
+```graphql
+type User {
+    id: ID! @autogenerate
+    username: String!
 }
 ```
 
@@ -717,3 +788,7 @@ Some tips, pointers and gotchas pointed out
 There is no lie that nested mutations are very powerful. We have to generate complex cypher to provide the abstractions such as `connect` and `disconnect`. Due to the complexity and size of the cypher we generate its not advised to abuse it. Using the Generated GraphQL schema, If you were to attempt the creation of say one hundred nodes and relations at once Neo4j may throw memory errors. This is simply because of the size of the cypher we generate. If you need to do large edits to the graph you may be better using cypher directly, that being said the abstraction's provided should be fine for most use cases.
 
 > If memory issues are a regular occurrence. You can edit the `dbms.memory.heap.max_size` in the DBMS settings
+
+### Precision Loss
+
+We currently wrap the Int and Float scalars and pass them through to the database accordingly. One caveat here is that Neo4j Integers are 64-bit and JS numbers are only 53-bit, so there's potential precision loss here, not to mention that GraphQL Int's are only 32-bit: http://spec.graphql.org/June2018/#sec-Int. **We only support 32-bit integers because of the GraphQL limit.**
