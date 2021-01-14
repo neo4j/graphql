@@ -4,7 +4,6 @@ import {
     DirectiveNode,
     EnumTypeDefinitionNode,
     InputObjectTypeDefinitionNode,
-    InputValueDefinitionNode,
     InterfaceTypeDefinitionNode,
     ListValueNode,
     NamedTypeNode,
@@ -309,18 +308,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             relationshipsDeleted: "Int!",
         },
     });
-
-    const dateTime = composer.createScalarTC(DateTime);
-
-    const [createdAt, updatedAt] = ["createdAt", "updatedAt"].map(
-        (fieldName) =>
-            ({
-                typeMeta: { name: DateTime.name, required: true, pretty: `${DateTime.name}!`, array: false },
-                fieldName,
-                arguments: [] as InputValueDefinitionNode[],
-                otherDirectives: [] as DirectiveNode[],
-            } as DateTimeField)
-    );
 
     const queryOptions = composer.createInputTC({
         name: "QueryOptions",
