@@ -1,4 +1,4 @@
-import { DirectiveNode, NamedTypeNode, ObjectFieldNode } from "graphql";
+import { DirectiveNode, NamedTypeNode } from "graphql";
 import {
     RelationField,
     CypherField,
@@ -11,6 +11,7 @@ import {
     DateTimeField,
 } from "../types";
 import Auth from "./Auth";
+import Exclude from "./Exclude";
 
 export interface NodeConstructor {
     name: string;
@@ -27,6 +28,7 @@ export interface NodeConstructor {
     dateTimeFields: DateTimeField[];
     auth?: Auth;
     timestamps?: boolean;
+    exclude?: Exclude;
 }
 
 class Node {
@@ -58,6 +60,8 @@ class Node {
 
     public timestamps?: boolean;
 
+    public exclude?: Exclude;
+
     constructor(input: NodeConstructor) {
         this.name = input.name;
         this.relationFields = input.relationFields;
@@ -73,6 +77,7 @@ class Node {
         this.dateTimeFields = input.dateTimeFields;
         this.auth = input.auth;
         this.timestamps = input.timestamps;
+        this.exclude = input.exclude;
     }
 }
 
