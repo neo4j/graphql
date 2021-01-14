@@ -42,7 +42,9 @@ export interface CypherField extends BaseField {
  * a cypher directive or relationship directive
  * String, Int, Float, ID, Boolean... (custom scalars).
  */
-export type PrimitiveField = BaseField;
+export interface PrimitiveField extends BaseField {
+    autogenerate?: boolean;
+}
 
 export type CustomScalarField = BaseField;
 
