@@ -5,9 +5,11 @@ Tests TimeStamps operations. ⚠ The string in params is actually an object but 
 Schema:
 
 ```schema
-type Movie @timestamps {
+type Movie {
     id: ID
     name: String
+    createdAt: DateTime @autogenerate(operations: ["create"])
+    updatedAt: DateTime @autogenerate(operations: ["update"])
 }
 ```
 
@@ -31,7 +33,6 @@ mutation {
 CALL {
     CREATE (this0:Movie)
     SET this0.createdAt = datetime()
-    SET this0.updatedAt = this0.createdAt
     SET this0.id = $this0_id
     RETURN this0
 }

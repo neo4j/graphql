@@ -9,8 +9,10 @@ Tests that the provided typeDefs return the correct schema.
 **TypeDefs**
 
 ```typedefs-input
-type Movie @timestamps {
+type Movie {
     id: ID
+    createdAt: DateTime! @autogenerate(operations: ["create"])
+    updatedAt: DateTime! @autogenerate(operations: ["update"])
 }
 ```
 

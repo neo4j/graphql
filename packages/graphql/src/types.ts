@@ -58,7 +58,9 @@ export type InterfaceField = BaseField;
 
 export type ObjectField = BaseField;
 
-export type DateTimeField = BaseField;
+export interface DateTimeField extends BaseField {
+    timestamps?: TimeStampOperations[];
+}
 
 /**
  * Representation of the options arg
@@ -81,3 +83,5 @@ export interface GraphQLWhereArg {
 }
 
 export type AuthOperations = "create" | "read" | "update" | "delete";
+
+export type TimeStampOperations = "create" | "update";
