@@ -21,8 +21,9 @@ describe("TimeStamps", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type Movie @timestamps {
+                type Movie {
                   id: ID
+                  createdAt: DateTime @autogenerate(operations: ["create"])
                 }
             `;
 
@@ -53,19 +54,16 @@ describe("TimeStamps", () => {
 
                 const result = await session.run(`
                     MATCH (m:Movie {id: "${id}"})
-                    RETURN m {.id, .createdAt, .updatedAt} as m
+                    RETURN m {.id, .createdAt} as m
                 `);
 
                 const movie: {
                     id: string;
                     createdAt: DateTime;
-                    updatedAt: DateTime;
                 } = (result.records[0].toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
-                expect(new Date(movie.createdAt.toString()).toISOString()).toEqual(
-                    new Date(movie.updatedAt.toString()).toISOString()
-                );
+                expect(new Date(movie.createdAt.toString())).toBeInstanceOf(Date);
             } finally {
                 await session.close();
             }
@@ -77,8 +75,9 @@ describe("TimeStamps", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type Movie @timestamps {
+                type Movie {
                   id: ID
+                  updatedAt: DateTime @autogenerate(operations: ["update"])
                 }
             `;
 
@@ -101,7 +100,6 @@ describe("TimeStamps", () => {
             try {
                 await session.run(`
                     CREATE (m:Movie {id: "${id}"})
-                    SET m.createdAt = datetime()
                 `);
 
                 const gqlResult = await graphql({
@@ -114,19 +112,16 @@ describe("TimeStamps", () => {
 
                 const result = await session.run(`
                     MATCH (m:Movie {id: "${id}"})
-                    RETURN m {.id, .createdAt, .updatedAt} as m
+                    RETURN m {.id, .updatedAt} as m
                 `);
 
                 const movie: {
                     id: string;
-                    createdAt: DateTime;
                     updatedAt: DateTime;
                 } = (result.records[0].toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
-                expect(new Date(movie.createdAt.toString()).getTime()).toBeLessThan(
-                    new Date(movie.updatedAt.toString()).getTime()
-                );
+                expect(new Date(movie.updatedAt.toString())).toBeInstanceOf(Date);
             } finally {
                 await session.close();
             }
