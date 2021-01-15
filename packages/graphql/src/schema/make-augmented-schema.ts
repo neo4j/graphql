@@ -495,81 +495,57 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...node.dateTimeFields,
         ].reduce(
             (res, f) => {
-                if (f.typeMeta.name === DateTime.name) {
-                    // equality
-                    if (f.typeMeta.array) {
-                        res[f.fieldName] = `[${DateTime.name}]`;
-                    } else {
-                        res[f.fieldName] = DateTime.name;
-                    }
+                let typeName: string;
 
-                    res[`${f.fieldName}_LT`] = DateTime.name;
-                    res[`${f.fieldName}_LTE`] = DateTime.name;
-                    res[`${f.fieldName}_GT`] = DateTime.name;
-                    res[`${f.fieldName}_GTE`] = DateTime.name;
+                if (enums.find((x) => x.name.value === f.typeMeta.name)) {
+                    typeName = "String";
+                } else {
+                    typeName = f.typeMeta.name;
                 }
 
-                if (["ID", "String"].includes(f.typeMeta.name) || enums.find((x) => x.name.value === f.typeMeta.name)) {
-                    const type = f.typeMeta.name === "ID" ? "ID" : "String";
+                if (f.typeMeta.array) {
+                    res[f.fieldName] = `[${typeName}]`;
+                } else {
+                    res[f.fieldName] = typeName;
+                }
 
-                    // equality
-                    if (f.typeMeta.array) {
-                        res[f.fieldName] = `[${type}]`;
-                    } else {
-                        res[f.fieldName] = type;
-                    }
+                if (typeName === DateTime.name) {
+                    ["_LT", "_LTE", "_GT", "_GTE"].forEach((t) => {
+                        res[`${f.fieldName}${t}`] = DateTime.name;
+                    });
+                }
+
+                if (["ID", "String"].includes(typeName) || enums.find((x) => x.name.value === typeName)) {
+                    const type = typeName === "ID" ? "ID" : "String";
 
                     res[`${f.fieldName}_IN`] = `[${type}]`;
-                    res[`${f.fieldName}_NOT`] = type;
                     res[`${f.fieldName}_NOT_IN`] = `[${type}]`;
-                    res[`${f.fieldName}_CONTAINS`] = type;
-                    res[`${f.fieldName}_NOT_CONTAINS`] = type;
-                    res[`${f.fieldName}_STARTS_WITH`] = type;
-                    res[`${f.fieldName}_NOT_STARTS_WITH`] = type;
-                    res[`${f.fieldName}_ENDS_WITH`] = type;
-                    res[`${f.fieldName}_NOT_ENDS_WITH`] = type;
                     res[`${f.fieldName}_REGEX`] = "String";
 
-                    return res;
+                    [
+                        "_NOT",
+                        "_CONTAINS",
+                        "_NOT_CONTAINS",
+                        "_STARTS_WITH",
+                        "_NOT_STARTS_WITH",
+                        "_ENDS_WITH",
+                        "_NOT_ENDS_WITH",
+                    ].forEach((t) => {
+                        res[`${f.fieldName}${t}`] = type;
+                    });
                 }
 
-                if (["Boolean"].includes(f.typeMeta.name)) {
-                    // equality
-                    if (f.typeMeta.array) {
-                        res[f.fieldName] = `[Boolean]`;
-                    } else {
-                        res[f.fieldName] = "Boolean";
-                    }
-
+                if (["Boolean"].includes(typeName)) {
                     res[`${f.fieldName}_NOT`] = "Boolean";
-
-                    return res;
                 }
 
-                if (["Float", "Int"].includes(f.typeMeta.name)) {
-                    if (f.typeMeta.array) {
-                        res[f.fieldName] = `[${f.typeMeta.name}]`;
-                    } else {
-                        // equality
-                        res[f.fieldName] = f.typeMeta.name;
-                    }
+                if (["Float", "Int"].includes(typeName)) {
+                    res[`${f.fieldName}_IN`] = `[${typeName}]`;
+                    res[`${f.fieldName}_NOT_IN`] = `[${typeName}]`;
 
-                    res[`${f.fieldName}_IN`] = `[${f.typeMeta.name}]`;
-                    res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.name}]`;
-                    res[`${f.fieldName}_NOT`] = f.typeMeta.name;
-                    res[`${f.fieldName}_LT`] = f.typeMeta.name;
-                    res[`${f.fieldName}_LTE`] = f.typeMeta.name;
-                    res[`${f.fieldName}_GT`] = f.typeMeta.name;
-                    res[`${f.fieldName}_GTE`] = f.typeMeta.name;
-
-                    return res;
-                }
-
-                // equality
-                if (f.typeMeta.array) {
-                    res[f.fieldName] = `[${f.typeMeta.name}]`;
-                } else {
-                    res[f.fieldName] = f.typeMeta.name;
+                    ["_NOT", "_LT", "_LTE", "_GT", "_GTE"].forEach((t) => {
+                        res[`${f.fieldName}${t}`] = typeName;
+                    });
                 }
 
                 return res;
