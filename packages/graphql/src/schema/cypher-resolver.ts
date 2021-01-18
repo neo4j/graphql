@@ -1,5 +1,4 @@
 import { isInt, Driver } from "neo4j-driver";
-
 import { execute } from "../utils";
 import { BaseField } from "../types";
 import getFieldTypeMeta from "./get-field-type-meta";
