@@ -2,6 +2,7 @@ import { Context, Node } from "../classes";
 import { RelationField } from "../types";
 import createWhereAndParams from "./create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
+import { checkRoles } from "../auth";
 
 interface Res {
     disconnects: string[];
@@ -54,6 +55,8 @@ function createDisconnectAndParams({
         }
 
         if (refNode.auth) {
+            checkRoles({ node: refNode, context, operation: "disconnect" });
+
             const allowAndParams = createAuthAndParams({
                 context,
                 node: refNode,
@@ -122,6 +125,8 @@ function createDisconnectAndParams({
 
     const initialStrs: string[] = [];
     let initialParams = {};
+
+    checkRoles({ node: parentNode, context, operation: "disconnect" });
 
     if (parentNode.auth) {
         const allowAndParams = createAuthAndParams({

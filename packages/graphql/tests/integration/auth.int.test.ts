@@ -63,16 +63,21 @@ describe("auth", () => {
 
     test("should throw Forbidden if JWT is missing a role", async () => {
         await Promise.all(
-            ["create", "read", "delete", "update"].map(async (type) => {
+            ["create", "read", "delete", "update", "disconnect", "connect"].map(async (type) => {
                 const session = driver.session();
 
                 const typeDefs = `
+                    type Color {
+                        name: String
+                    }
+
                     type Product @auth(rules: [{
                         roles: ["admin"],
                         operations: ["${type}"]
                     }]) {
                         id: ID
                         name: String
+                        colors: [Color] @relationship(type: "HAS_COLOR", direction: "OUT")
                     }
                 `;
 
@@ -116,6 +121,26 @@ describe("auth", () => {
                     query = `
                         mutation {
                             updateProducts(update: {name: "test"}){
+                                id
+                            }
+                        }
+                    `;
+                }
+
+                if (type === "disconnect") {
+                    query = `
+                        mutation {
+                            updateProducts(disconnect: {colors: {where: {name: "red"}}}){
+                                id
+                            }
+                        }
+                    `;
+                }
+
+                if (type === "connect") {
+                    query = `
+                        mutation {
+                            updateProducts(connect: {colors: {where: {name: "red"}}}){
                                 id
                             }
                         }
