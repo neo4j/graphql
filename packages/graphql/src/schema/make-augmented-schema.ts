@@ -7,7 +7,6 @@ import {
     InterfaceTypeDefinitionNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
-    parse,
     print,
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode,
@@ -48,7 +47,7 @@ import mergeExtensionsIntoAST from "./merge-extensions-into-ast";
 import parseValueNode from "./parse-value-node";
 import mergeTypeDefs from "./merge-typedefs";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
-import { Float, Int } from "./scalars";
+import { Float, Int, ID } from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
 
 export interface MakeAugmentedSchemaOptions {
@@ -844,12 +843,14 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
     composer.addTypeDefs("scalar Int"); // removed if not used
     composer.addTypeDefs("scalar Float"); // removed if not used
+    composer.addTypeDefs("scalar ID"); // removed if not used
 
     const generatedTypeDefs = composer.toSDL();
     let generatedResolvers: any = {
         ...composer.getResolveMethods(),
         ...(generatedTypeDefs.includes("scalar Int") ? { Int } : {}),
         ...(generatedTypeDefs.includes("scalar Float") ? { Float } : {}),
+        ...(generatedTypeDefs.includes("scalar ID") ? { ID } : {}),
     };
     unions.forEach((union) => {
         generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
