@@ -417,62 +417,110 @@ describe("Custom Resolvers", () => {
             }
         });
 
-        describe("should inject the jwt into cypher directive on queries and mutations", () => {
-            test("query", async () => {
-                const session = driver.session();
+        describe("jwt", () => {
+            describe("should inject the jwt into cypher directive on queries and mutations", () => {
+                test("query", async () => {
+                    const session = driver.session();
 
-                const typeDefs = `
-                    type Query {
-                        userId: ID @cypher(statement: """
-                            RETURN $jwt.sub
-                        """)
-                    }
-                `;
+                    const typeDefs = `
+                        type Query {
+                            userId: ID @cypher(statement: """
+                                RETURN $jwt.sub
+                            """)
+                        }
+                    `;
 
-                const userId = generate({
-                    charset: "alphabetic",
-                });
-
-                const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
-
-                const neoSchema = makeAugmentedSchema({ typeDefs });
-
-                const query = `
-                    {
-                        userId
-                    }
-                `;
-
-                try {
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
-
-                    const gqlResult = await graphql({
-                        schema: neoSchema.schema,
-                        source: query as string,
-                        contextValue: { driver, req },
+                    const userId = generate({
+                        charset: "alphabetic",
                     });
 
-                    expect(gqlResult.errors).toEqual(undefined);
+                    const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
-                    expect((gqlResult.data as any).userId).toEqual(userId);
-                } finally {
-                    await session.close();
-                }
+                    const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                    const query = `
+                        {
+                            userId
+                        }
+                    `;
+
+                    try {
+                        const socket = new Socket({ readable: true });
+                        const req = new IncomingMessage(socket);
+                        req.headers.authorization = `Bearer ${token}`;
+
+                        const gqlResult = await graphql({
+                            schema: neoSchema.schema,
+                            source: query as string,
+                            contextValue: { driver, req },
+                        });
+
+                        expect(gqlResult.errors).toEqual(undefined);
+
+                        expect((gqlResult.data as any).userId).toEqual(userId);
+                    } finally {
+                        await session.close();
+                    }
+                });
+
+                test("mutation", async () => {
+                    const session = driver.session();
+
+                    const typeDefs = `
+                        type User {
+                            id: ID
+                        }
+    
+                        type Mutation {
+                            userId: ID @cypher(statement: """
+                                RETURN $jwt.sub
+                            """)
+                        }
+                    `;
+
+                    const userId = generate({
+                        charset: "alphabetic",
+                    });
+
+                    const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
+
+                    const neoSchema = makeAugmentedSchema({ typeDefs });
+
+                    const query = `
+                        mutation {
+                            userId
+                        }
+                    `;
+
+                    try {
+                        const socket = new Socket({ readable: true });
+                        const req = new IncomingMessage(socket);
+                        req.headers.authorization = `Bearer ${token}`;
+
+                        const gqlResult = await graphql({
+                            schema: neoSchema.schema,
+                            source: query as string,
+                            contextValue: { driver, req },
+                        });
+
+                        expect(gqlResult.errors).toEqual(undefined);
+
+                        expect((gqlResult.data as any).userId).toEqual(userId);
+                    } finally {
+                        await session.close();
+                    }
+                });
             });
 
-            test("mutation", async () => {
+            test("should inject the jwt into cypher directive on fields", async () => {
                 const session = driver.session();
 
                 const typeDefs = `
                     type User {
                         id: ID
-                    }
-
-                    type Mutation {
                         userId: ID @cypher(statement: """
-                            RETURN $jwt.sub
+                            WITH $jwt.sub as a
+                            RETURN a
                         """)
                     }
                 `;
@@ -486,12 +534,18 @@ describe("Custom Resolvers", () => {
                 const neoSchema = makeAugmentedSchema({ typeDefs });
 
                 const query = `
-                    mutation {
+                {
+                     Users(where: {id: "${userId}"}){
                         userId
                     }
+                }
                 `;
 
                 try {
+                    await session.run(`
+                        CREATE (:User {id: "${userId}"})
+                    `);
+
                     const socket = new Socket({ readable: true });
                     const req = new IncomingMessage(socket);
                     req.headers.authorization = `Bearer ${token}`;
@@ -504,63 +558,11 @@ describe("Custom Resolvers", () => {
 
                     expect(gqlResult.errors).toEqual(undefined);
 
-                    expect((gqlResult.data as any).userId).toEqual(userId);
+                    expect((gqlResult.data as any).Users[0].userId).toEqual(userId);
                 } finally {
                     await session.close();
                 }
             });
-        });
-
-        test("should inject the jwt into cypher directive on fields", async () => {
-            const session = driver.session();
-
-            const typeDefs = `
-                type User {
-                    id: ID
-                    userId: ID @cypher(statement: """
-                        WITH $jwt.sub as a
-                        RETURN a
-                    """)
-                }
-            `;
-
-            const userId = generate({
-                charset: "alphabetic",
-            });
-
-            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
-
-            const neoSchema = makeAugmentedSchema({ typeDefs });
-
-            const query = `
-            {
-                 Users(where: {id: "${userId}"}){
-                    userId
-                }
-            }
-            `;
-
-            try {
-                await session.run(`
-                    CREATE (:User {id: "${userId}"})
-                `);
-
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
-
-                const gqlResult = await graphql({
-                    schema: neoSchema.schema,
-                    source: query as string,
-                    contextValue: { driver, req },
-                });
-
-                expect(gqlResult.errors).toEqual(undefined);
-
-                expect((gqlResult.data as any).Users[0].userId).toEqual(userId);
-            } finally {
-                await session.close();
-            }
         });
     });
 });

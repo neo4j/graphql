@@ -18,7 +18,6 @@ import { beforeAll, afterAll, describe, expect } from "@jest/globals";
 import { SchemaDirectiveVisitor, printSchemaWithDirectives } from "@graphql-tools/utils";
 import { translate } from "../../src/translate";
 import { makeAugmentedSchema } from "../../src";
-import serialize from "../../src/utils/serialize";
 import { noGraphQLErrors } from "../../../../scripts/tests/utils";
 import { generateTestCasesFromMd, Test, TestCase } from "./utils/generate-test-cases-from-md.utils";
 import { trimmer } from "../../src/utils";
@@ -71,7 +70,7 @@ describe("TCK Generated tests", () => {
                     const compare = (context: any, resolveInfo: any) => {
                         const [cQuery, cQueryParams] = translate({ context, resolveInfo });
                         expect(trimmer(cQuery)).toEqual(trimmer(cypherQuery));
-                        expect(serialize(cQueryParams)).toEqual(cypherParams);
+                        expect(cQueryParams).toEqual(cypherParams);
                     };
 
                     let context = {};
