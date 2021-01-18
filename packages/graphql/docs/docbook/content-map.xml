@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<d:toc xmlns:d="http://docbook.org/ns/docbook" xmlns="http://www.w3.org/1999/xhtml" role="chunk-toc">
+  <d:tocentry linkend="graphql"><?dbhtml filename="index.html"?>
+    <d:tocentry linkend="introduction"><?dbhtml filename="introduction/index.html"?>
+    </d:tocentry>
+    <d:tocentry linkend="reference"><?dbhtml filename="reference/index.html"?>
+    </d:tocentry>
+    <d:tocentry linkend="contributing"><?dbhtml filename="contributing/index.html"?>
+    </d:tocentry>
+  </d:tocentry>
+</d:toc>
