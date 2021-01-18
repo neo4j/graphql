@@ -357,7 +357,7 @@ The only, required, parameter as part of the directive. Each rule allows you to 
 
 ```ts
 rules: {
-    operations: ("create" | "read" | "update" | "delete")[];
+    operations: ("create" | "read" | "update" | "delete" | "connect" | "disconnect")[];
     roles?: string[];
     isAuthenticated?: boolean
     allow?: any | "*";
@@ -367,7 +367,7 @@ rules: {
 
 #### operations
 
-Array of either `"create" | "read" | "update" | "delete"` the corresponding `allow` and `roles` will be checked on each subsequent operation.
+Array of either `"create" | "read" | "update" | "delete" | "connect" | "disconnect"` the corresponding `allow` and `roles` will be checked on each subsequent operation.
 
 #### roles
 
@@ -435,6 +435,27 @@ type Post
     moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
 }
 ```
+
+#### bind
+
+`bind` is a map used to enforce a value on a node vs property on the incoming JTW. If the value is not bound then error is thrown. Bind is called just after a operation on a node, inside a transaction. Bind only is called when you `update`, `connect` or `disconnect` nodes.
+
+```graphql
+type User
+    @auth(
+        rules: [
+            {
+                operations: ["update"]
+                bind: { id: "sub" } ## sub being 'jwt.sub'
+            }
+        ]
+    ) {
+    id: ID
+    username: String
+}
+```
+
+Above we are enforcing that users cannot change there ID. You can traverse relationships with bind see [allow](#allow).
 
 ### @exclude
 
