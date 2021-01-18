@@ -25,6 +25,9 @@ describe("createUpdateAndParams", () => {
                     arguments: [],
                 },
             ],
+            dateTimeFields: [],
+            interfaceFields: [],
+            objectFields: [],
         };
 
         // @ts-ignore
