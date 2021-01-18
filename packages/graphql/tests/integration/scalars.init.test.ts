@@ -98,7 +98,6 @@ describe("scalars", () => {
 
         const neoSchema = makeAugmentedSchema({
             typeDefs,
-            debug: true,
         });
 
         const id = Math.floor(Math.random() * 1000);
