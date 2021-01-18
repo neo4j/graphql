@@ -39,3 +39,29 @@ export const Int = new GraphQLScalarType({
         return value;
     },
 });
+
+/* 
+    https://spec.graphql.org/June2018/#sec-ID 
+    The ID type is serialized in the same way as a String
+*/
+export const ID = new GraphQLScalarType({
+    name: "ID",
+    parseValue(value: string | number) {
+        // value from the client
+
+        if (typeof value === "string") {
+            return value;
+        }
+
+        return value.toString(10);
+    },
+    serialize(value: Integer | string | number) {
+        // value sent to the client
+
+        if (typeof value === "string") {
+            return value;
+        }
+
+        return value.toString(10);
+    },
+});
