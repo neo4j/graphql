@@ -46,32 +46,21 @@ export interface PrimitiveField extends BaseField {
     autogenerate?: boolean;
 }
 
-/**
- * custom scalars.
- */
 export type CustomScalarField = BaseField;
 
-/**
- * custom Enum.
- */
 export type CustomEnumField = BaseField;
 
-/**
- * custom Union.
- */
 export interface UnionField extends BaseField {
     nodes?: string[];
 }
 
-/**
- * custom Interface.
- */
 export type InterfaceField = BaseField;
 
-/**
- * custom Object Node.
- */
 export type ObjectField = BaseField;
+
+export interface DateTimeField extends BaseField {
+    timestamps?: TimeStampOperations[];
+}
 
 /**
  * Representation of the options arg
@@ -94,3 +83,5 @@ export interface GraphQLWhereArg {
 }
 
 export type AuthOperations = "create" | "read" | "update" | "delete" | "connect" | "disconnect";
+
+export type TimeStampOperations = "create" | "update";

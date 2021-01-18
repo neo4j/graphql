@@ -30,6 +30,8 @@ function createUpdateAndParams({
     insideDoWhen?: boolean;
     context: Context;
 }): [string, any] {
+    let hasAppliedTimeStamps = false;
+
     function reducer(res: Res, [key, value]: [string, any]) {
         let param;
 
@@ -202,6 +204,15 @@ function createUpdateAndParams({
         }
 
         checkRoles({ node, context, operation: "update" });
+
+        if (!hasAppliedTimeStamps) {
+            const timestamps = node.dateTimeFields.filter((x) => x.timestamps && x.timestamps.includes("update"));
+            timestamps.forEach((ts) => {
+                res.strs.push(`SET ${varName}.${ts.fieldName} = datetime()`);
+            });
+
+            hasAppliedTimeStamps = true;
+        }
 
         res.strs.push(`SET ${varName}.${key} = $${param}`);
         res.params[param] = value;
