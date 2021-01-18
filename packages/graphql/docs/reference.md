@@ -438,7 +438,7 @@ type Post
 
 #### bind
 
-`bind` is a map used to enforce a value on a node vs property on the incoming JTW. If the value is not bound then error is thrown. Bind is called just after a operation on a node, inside a transaction. Bind only is called when you `update`, `connect` or `disconnect` nodes.
+`bind` is a map used to enforce a value on a node vs property on the incoming JTW. If the value is not bound then an error is thrown. Bind is called just after an operation on a node, inside a transaction. Bind only is called when you `update`, `connect`, or `disconnect` nodes.
 
 ```graphql
 type User
