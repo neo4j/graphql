@@ -27,6 +27,9 @@ describe("createConnectAndParams", () => {
                 },
             ],
             cypherFields: [],
+            dateTimeFields: [],
+            interfaceFields: [],
+            objectFields: [],
         };
 
         // @ts-ignore

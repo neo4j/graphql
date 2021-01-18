@@ -29,6 +29,9 @@ describe("createAuthAndParams", () => {
             ],
             relationFields: [],
             auth,
+            dateTimeFields: [],
+            interfaceFields: [],
+            objectFields: [],
         };
 
         // @ts-ignore
