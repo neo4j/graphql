@@ -167,4 +167,68 @@ describe("makeAugmentedSchema", () => {
             expect(error.message).toEqual("cannot auto-generate an array");
         }
     });
+
+    test("should throw cannot autogenerate am array of DateTime", () => {
+        try {
+            const typeDefs = `
+                type Movie  {
+                    name: [DateTime] @autogenerate
+                }
+            `;
+
+            makeAugmentedSchema({ typeDefs });
+
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("cannot auto-generate an array");
+        }
+    });
+
+    test("should throw autogenerate operations required", () => {
+        try {
+            const typeDefs = `
+                type Movie  {
+                    name: DateTime @autogenerate
+                }
+            `;
+
+            makeAugmentedSchema({ typeDefs });
+
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("@autogenerate operations required");
+        }
+    });
+
+    test("should throw autogenerate operations must be an array", () => {
+        try {
+            const typeDefs = `
+                type Movie  {
+                    name: DateTime @autogenerate(operations: "read")
+                }
+            `;
+
+            makeAugmentedSchema({ typeDefs });
+
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("@autogenerate operations must be an array");
+        }
+    });
+
+    test("should throw autogenerate operations[0] invalid", () => {
+        try {
+            const typeDefs = `
+                type Movie  {
+                    name: DateTime @autogenerate(operations: ["read"])
+                }
+            `;
+
+            makeAugmentedSchema({ typeDefs });
+
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("@autogenerate operations[0] invalid");
+        }
+    });
 });
