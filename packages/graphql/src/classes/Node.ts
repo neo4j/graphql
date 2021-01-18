@@ -10,6 +10,7 @@ import {
     ObjectField,
 } from "../types";
 import Auth from "./Auth";
+import Exclude from "./Exclude";
 
 export interface NodeConstructor {
     name: string;
@@ -24,6 +25,7 @@ export interface NodeConstructor {
     interfaces: NamedTypeNode[];
     objectFields: ObjectField[];
     auth?: Auth;
+    exclude?: Exclude;
 }
 
 class Node {
@@ -51,6 +53,8 @@ class Node {
 
     public auth?: Auth;
 
+    public exclude?: Exclude;
+
     constructor(input: NodeConstructor) {
         this.name = input.name;
         this.relationFields = input.relationFields;
@@ -64,6 +68,7 @@ class Node {
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
         this.auth = input.auth;
+        this.exclude = input.exclude;
     }
 }
 
