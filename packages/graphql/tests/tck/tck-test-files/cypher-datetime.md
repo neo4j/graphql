@@ -50,7 +50,9 @@ RETURN this { .datetime } as this
 ```graphql
 mutation {
     createMovies(input: [{ datetime: "1970-01-01T00:00:00.000Z" }]) {
-        datetime
+        movies {
+            datetime
+        }
     }
 }
 ```
@@ -83,8 +85,10 @@ RETURN this0 { .datetime } AS this0
 ```graphql
 mutation {
     updateMovies(update: { datetime: "1970-01-01T00:00:00.000Z" }) {
-        id
-        datetime
+        movies {
+            id
+            datetime
+        }
     }
 }
 ```

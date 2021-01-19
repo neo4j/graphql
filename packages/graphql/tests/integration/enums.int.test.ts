@@ -43,7 +43,9 @@ describe("enums", () => {
         const create = `
             mutation {
                 createMovies(input:[{id: "${id}", status: ACTIVE}]) {
-                    id
+                    movies {
+                        id
+                    }
                 }
             }
         `;
