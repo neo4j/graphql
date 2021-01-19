@@ -7,7 +7,7 @@ If you are already familiar with @neo4j/graphql, feel free to jump directly to <
 
 == Requirements
 
-@neo4j/graphql 0.0.x at minimum, requires:
+@neo4j/graphql 1.0.x at minimum, requires:
 
 -   [Neo4j](https://neo4j.com/) Database 4.1.0 and above.
 
@@ -90,13 +90,51 @@ type Post @auth(rules: [
 }
 ----
 
+==== OGM
+
+We created an OGM(Object Graph Model) on top of the pre-existing GraphQL work and abstractions. Generate your normal GraphQL schema & use the exposed .model method to receive an instance of a model.
+
+[source, javascript]
+----
+const typeDefs = `
+   type Genre {
+      name: String
+   }
+
+   type Movie {
+      id: String
+      name: String
+      genres: [Genre] @relationship(type: "HAS_GENRE", direction: "OUT")
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("admin", "password")
+);
+
+const neoSchema = makeAugmentedSchema({
+    typeDefs,
+    context: { driver },
+});
+
+const Movie = neoSchema.model("Movie"); // Hi I am your model
+
+await Movie.find({ where: { id: "123" } });
+// Nested Mutations
+await Movie.create({
+    input: [
+        {
+            title: "Saw",
+            genres: { create: [{ name: "Horror" }] },
+        },
+    ],
+});
+----
 
 === Excluded features
 
 Features we have chosen to exclude for the first version of @neo4j/graphql:
-
-Spatial types::
-Although the power Spatial types expose... We have chosen to exclude support for them in the first version.
 
 Relationship Properties::
 We found the existing implementation [here](https://grandstack.io/docs/graphql-relationship-types/), where you have to use the 'top-level' relation directive;
@@ -137,10 +175,8 @@ Interface querying::
 Similar to the reasons states in the Top Level Unions... we found that adding multiple labels onto a node can sometimes cause more problems it's trying to solve plus if you take into consideration the complexity. In the version, **users cannot query top-level Interfaces Nor use them as a `@relationship`.** In this implementation interfaces give you no real database support therefor no; query, update, delete, filter support. But instead used as a language feature to safeguard your schema. Great for When dealing with repetitive or large schemas you can essentially put "The side railings up".
 
 Further Excluded Features::
-1. Multiple Databases
-2. additionalLabels
-3. GraphQL Architect
-4. Excluding Types and Relationships
-5. Indexes and Constraints
-6. Inferring a Schema
-7. Federation Support - We found federation very specific to Apollo users & not beneficial for our greater audience
+1. Additional Labels
+1. GraphQL Architect
+1. Indexes and Constraints
+1. Inferring a Schema
+1. Federation Support - We found federation very specific to Apollo users & not beneficial for our greater audience
