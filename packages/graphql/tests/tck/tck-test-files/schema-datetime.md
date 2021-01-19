@@ -1,30 +1,29 @@
-## Schema Scalars
+## Schema DateTime
 
-Tests that the provided typeDefs return the correct schema(with scalars).
+Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### Scalars
+### DateTime
 
 **TypeDefs**
 
 ```typedefs-input
-scalar CustomScalar
-
 type Movie {
-  id: ID
-  myCustomScalar: CustomScalar
+    id: ID
+    datetime: DateTime
 }
 ```
 
 **Output**
 
 ```schema-output
-scalar CustomScalar
+"""A date and time, represented as an ISO-8601 string"""
+scalar DateTime
 
 type Movie {
   id: ID
-  myCustomScalar: CustomScalar
+  datetime: DateTime
 }
 
 type DeleteInfo {
@@ -44,14 +43,18 @@ input MovieAND {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  myCustomScalar: CustomScalar
+  datetime: DateTime
+  datetime_LT: DateTime
+  datetime_LTE: DateTime
+  datetime_GT: DateTime
+  datetime_GTE: DateTime
   OR: [MovieOR]
   AND: [MovieAND]
 }
 
 input MovieCreateInput {
   id: ID
-  myCustomScalar: CustomScalar
+  datetime: DateTime
 }
 
 input MovieOptions {
@@ -72,7 +75,11 @@ input MovieOR {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  myCustomScalar: CustomScalar
+  datetime: DateTime
+  datetime_LT: DateTime
+  datetime_LTE: DateTime
+  datetime_GT: DateTime
+  datetime_GTE: DateTime
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -80,8 +87,8 @@ input MovieOR {
 enum MovieSort {
   id_DESC
   id_ASC
-  myCustomScalar_DESC
-  myCustomScalar_ASC
+  datetime_DESC
+  datetime_ASC
 }
 
 input MovieWhere {
@@ -96,14 +103,18 @@ input MovieWhere {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  myCustomScalar: CustomScalar
+  datetime: DateTime
+  datetime_LT: DateTime
+  datetime_LTE: DateTime
+  datetime_GT: DateTime
+  datetime_GTE: DateTime
   OR: [MovieOR]
   AND: [MovieAND]
 }
 
 input MovieUpdateInput {
   id: ID
-  myCustomScalar: CustomScalar
+  datetime: DateTime
 }
 
 type CreateMoviesMutationResponse {

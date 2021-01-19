@@ -62,7 +62,9 @@ describe("scalars", () => {
         const create = `
             mutation {
                 createMovies(input:[{id: "${id}", name: "${initialName}"}]) {
-                    id
+                    movies {
+                        id
+                    }
                 }
             }
         `;

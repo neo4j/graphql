@@ -1,8 +1,11 @@
 import { isInt, Driver } from "neo4j-driver";
+import { ValueNode } from "graphql";
 import { execute } from "../utils";
 import { BaseField } from "../types";
 import getFieldTypeMeta from "./get-field-type-meta";
 import { NeoSchema, Context } from "../classes";
+import parseValueNode from "./parse-value-node";
+import graphqlArgsToCompose from "./graphql-arg-to-compose";
 
 /**
  * Called on custom (Queries & Mutations "TOP LEVEL") with a @cypher directive. Not to mistaken for @cypher type fields.
@@ -75,18 +78,7 @@ function cypherResolver({
     return {
         type: field.typeMeta.pretty,
         resolve,
-        args: field.arguments.reduce((args, arg) => {
-            const meta = getFieldTypeMeta(arg);
-
-            return {
-                ...args,
-                [arg.name.value]: {
-                    type: meta.pretty,
-                    description: arg.description,
-                    defaultValue: arg.defaultValue,
-                },
-            };
-        }, {}),
+        args: graphqlArgsToCompose(field.arguments),
     };
 }
 

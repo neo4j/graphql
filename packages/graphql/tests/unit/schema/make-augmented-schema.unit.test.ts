@@ -1,3 +1,4 @@
+import camelCase from "camelcase";
 import { printSchema, parse, ObjectTypeDefinitionNode, NamedTypeNode, ListTypeNode, NonNullTypeNode } from "graphql";
 import { pluralize } from "graphql-compose";
 import { describe, test, expect } from "@jest/globals";
@@ -37,7 +38,7 @@ describe("makeAugmentedSchema", () => {
             expect(nodeObject).toBeTruthy();
 
             // Find
-            const nodeFindQuery = queryObject.fields?.find((x) => x.name.value === pluralize(type));
+            const nodeFindQuery = queryObject.fields?.find((x) => x.name.value === pluralize(camelCase(type)));
             const nodeFindQueryType = ((nodeFindQuery?.type as NonNullTypeNode).type as ListTypeNode)
                 .type as NamedTypeNode;
             expect(nodeFindQueryType.name.value === type);
@@ -165,6 +166,70 @@ describe("makeAugmentedSchema", () => {
             throw new Error("something went wrong if i throw");
         } catch (error) {
             expect(error.message).toEqual("cannot auto-generate an array");
+        }
+    });
+
+    test("should throw cannot autogenerate am array of DateTime", () => {
+        try {
+            const typeDefs = `
+                type Movie  {
+                    name: [DateTime] @autogenerate
+                }
+            `;
+
+            makeAugmentedSchema({ typeDefs });
+
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("cannot auto-generate an array");
+        }
+    });
+
+    test("should throw autogenerate operations required", () => {
+        try {
+            const typeDefs = `
+                type Movie  {
+                    name: DateTime @autogenerate
+                }
+            `;
+
+            makeAugmentedSchema({ typeDefs });
+
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("@autogenerate operations required");
+        }
+    });
+
+    test("should throw autogenerate operations must be an array", () => {
+        try {
+            const typeDefs = `
+                type Movie  {
+                    name: DateTime @autogenerate(operations: "read")
+                }
+            `;
+
+            makeAugmentedSchema({ typeDefs });
+
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("@autogenerate operations must be an array");
+        }
+    });
+
+    test("should throw autogenerate operations[0] invalid", () => {
+        try {
+            const typeDefs = `
+                type Movie  {
+                    name: DateTime @autogenerate(operations: ["read"])
+                }
+            `;
+
+            makeAugmentedSchema({ typeDefs });
+
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("@autogenerate operations[0] invalid");
         }
     });
 });

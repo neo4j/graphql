@@ -1,30 +1,31 @@
-## Schema Scalars
+## Schema TimeStamps
 
-Tests that the provided typeDefs return the correct schema(with scalars).
+Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### Scalars
+### TimeStamp
 
 **TypeDefs**
 
 ```typedefs-input
-scalar CustomScalar
-
 type Movie {
-  id: ID
-  myCustomScalar: CustomScalar
+    id: ID
+    createdAt: DateTime! @autogenerate(operations: ["create"])
+    updatedAt: DateTime! @autogenerate(operations: ["update"])
 }
 ```
 
 **Output**
 
 ```schema-output
-scalar CustomScalar
+"""A date and time, represented as an ISO-8601 string"""
+scalar DateTime
 
 type Movie {
   id: ID
-  myCustomScalar: CustomScalar
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type DeleteInfo {
@@ -44,14 +45,22 @@ input MovieAND {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  myCustomScalar: CustomScalar
+  createdAt: DateTime
+  createdAt_LT: DateTime
+  createdAt_LTE: DateTime
+  createdAt_GT: DateTime
+  createdAt_GTE: DateTime
+  updatedAt: DateTime
+  updatedAt_LT: DateTime
+  updatedAt_LTE: DateTime
+  updatedAt_GT: DateTime
+  updatedAt_GTE: DateTime
   OR: [MovieOR]
   AND: [MovieAND]
 }
 
 input MovieCreateInput {
   id: ID
-  myCustomScalar: CustomScalar
 }
 
 input MovieOptions {
@@ -72,7 +81,16 @@ input MovieOR {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  myCustomScalar: CustomScalar
+  createdAt: DateTime
+  createdAt_LT: DateTime
+  createdAt_LTE: DateTime
+  createdAt_GT: DateTime
+  createdAt_GTE: DateTime
+  updatedAt: DateTime
+  updatedAt_LT: DateTime
+  updatedAt_LTE: DateTime
+  updatedAt_GT: DateTime
+  updatedAt_GTE: DateTime
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -80,8 +98,10 @@ input MovieOR {
 enum MovieSort {
   id_DESC
   id_ASC
-  myCustomScalar_DESC
-  myCustomScalar_ASC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
 }
 
 input MovieWhere {
@@ -96,14 +116,22 @@ input MovieWhere {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  myCustomScalar: CustomScalar
+  createdAt: DateTime
+  createdAt_LT: DateTime
+  createdAt_LTE: DateTime
+  createdAt_GT: DateTime
+  createdAt_GTE: DateTime
+  updatedAt: DateTime
+  updatedAt_LT: DateTime
+  updatedAt_LTE: DateTime
+  updatedAt_GT: DateTime
+  updatedAt_GTE: DateTime
   OR: [MovieOR]
   AND: [MovieAND]
 }
 
 input MovieUpdateInput {
   id: ID
-  myCustomScalar: CustomScalar
 }
 
 type CreateMoviesMutationResponse {

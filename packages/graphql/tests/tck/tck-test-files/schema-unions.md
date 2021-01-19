@@ -239,11 +239,27 @@ input MovieWhere {
   id_REGEX: String
 }
 
+type CreateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type UpdateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type CreateGenresMutationResponse {
+  genres: [Genre!]!
+}
+
+type UpdateGenresMutationResponse {
+  genres: [Genre!]!
+}
+
 type Mutation {
-  createGenres(input: [GenreCreateInput]!): [Genre]!
+  createGenres(input: [GenreCreateInput]!): CreateGenresMutationResponse!
   deleteGenres(where: GenreWhere): DeleteInfo!
-  updateGenres(where: GenreWhere, update: GenreUpdateInput): [Genre]!
-  createMovies(input: [MovieCreateInput]!): [Movie]!
+  updateGenres(where: GenreWhere, update: GenreUpdateInput): UpdateGenresMutationResponse!
+  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(
     where: MovieWhere
@@ -251,12 +267,12 @@ type Mutation {
     connect: MovieConnectInput
     disconnect: MovieDisconnectInput
     create: MovieRelationInput
-  ): [Movie]!
+  ): UpdateMoviesMutationResponse!
 }
 
 type Query {
-  Genres(where: GenreWhere, options: GenreOptions): [Genre]!
-  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  genres(where: GenreWhere, options: GenreOptions): [Genre]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 
 input QueryOptions {
@@ -266,6 +282,3 @@ input QueryOptions {
 ```
 
 ---
-
-
-

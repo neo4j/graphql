@@ -12,10 +12,10 @@ describe("create", () => {
         };
 
         const result = create({ node, getSchema: () => neoSchema });
-        expect(result.type).toEqual(`[Movie]!`);
+        expect(result.type).toEqual("CreateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
-            input: `[MovieCreateInput]!`,
+            input: "[MovieCreateInput]!",
         });
     });
 });
