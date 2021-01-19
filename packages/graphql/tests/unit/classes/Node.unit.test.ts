@@ -11,6 +11,7 @@ describe("Node", () => {
             enumFields: [],
             primitiveFields: [],
             scalarFields: [],
+            dateTimeFields: [],
         };
 
         // @ts-ignore
