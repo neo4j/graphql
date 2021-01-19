@@ -47,7 +47,7 @@ type Post @auth(
 
 ```graphql
 {
-    Posts(where: { id: "123" }) {
+    posts(where: { id: "123" }) {
         id
         title
     }

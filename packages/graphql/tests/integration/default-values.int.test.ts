@@ -44,7 +44,7 @@ describe("Default values", () => {
 
         const create = `
             {
-                Movies(where: {id: "${id}"}){
+                movies(where: {id: "${id}"}){
                     id
                     field
                 }
@@ -64,7 +64,7 @@ describe("Default values", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).Movies[0] as any).toEqual({
+            expect((gqlResult.data as any).movies[0] as any).toEqual({
                 id,
                 field: 100,
             });

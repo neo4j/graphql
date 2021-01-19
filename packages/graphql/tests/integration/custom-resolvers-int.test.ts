@@ -537,7 +537,7 @@ describe("Custom Resolvers", () => {
 
                 const query = `
                 {
-                     Users(where: {id: "${userId}"}){
+                     users(where: {id: "${userId}"}){
                         userId
                     }
                 }
@@ -560,7 +560,7 @@ describe("Custom Resolvers", () => {
 
                     expect(gqlResult.errors).toEqual(undefined);
 
-                    expect((gqlResult.data as any).Users[0].userId).toEqual(userId);
+                    expect((gqlResult.data as any).users[0].userId).toEqual(userId);
                 } finally {
                     await session.close();
                 }

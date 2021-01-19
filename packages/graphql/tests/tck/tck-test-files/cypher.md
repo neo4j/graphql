@@ -19,7 +19,7 @@ type Movie {
 
 ```graphql
 {
-    Movies(where: {title: "River Runs Through It, A"}) {
+    movies(where: { title: "River Runs Through It, A" }) {
         title
     }
 }
@@ -28,7 +28,7 @@ type Movie {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 WHERE this.title = $this_title
 RETURN this { .title } as this
 ```
@@ -47,7 +47,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: {title: "River Runs Through It, A"}) {
+    movies(where: { title: "River Runs Through It, A" }) {
         id
         title
     }
@@ -57,7 +57,7 @@ RETURN this { .title } as this
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 WHERE this.title = $this_title
 RETURN this { .id, .title } as this
 ```
@@ -76,7 +76,7 @@ RETURN this { .id, .title } as this
 
 ```graphql
 query($title: String) {
-    Movies(where: {title: $title}) {
+    movies(where: { title: $title }) {
         id
         title
     }
@@ -92,7 +92,7 @@ query($title: String) {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 WHERE this.title = $this_title
 RETURN this { .id, .title } as this
 ```

@@ -1,3 +1,4 @@
+import camelCase from "camelcase";
 import { Driver, DateTime } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -136,7 +137,7 @@ describe("DateTime", () => {
                 charset: "alphabetic",
             })}Movie`;
 
-            const pluralRandomType = pluralize(randomType);
+            const pluralRandomType = pluralize(camelCase(randomType));
 
             const typeDefs = `
                 type ${randomType} {

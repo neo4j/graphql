@@ -1,3 +1,4 @@
+import camelCase from "camelcase";
 import { printSchema, parse, ObjectTypeDefinitionNode, NamedTypeNode, ListTypeNode, NonNullTypeNode } from "graphql";
 import { pluralize } from "graphql-compose";
 import { describe, test, expect } from "@jest/globals";
@@ -37,7 +38,7 @@ describe("makeAugmentedSchema", () => {
             expect(nodeObject).toBeTruthy();
 
             // Find
-            const nodeFindQuery = queryObject.fields?.find((x) => x.name.value === pluralize(type));
+            const nodeFindQuery = queryObject.fields?.find((x) => x.name.value === pluralize(camelCase(type)));
             const nodeFindQueryType = ((nodeFindQuery?.type as NonNullTypeNode).type as ListTypeNode)
                 .type as NamedTypeNode;
             expect(nodeFindQueryType.name.value === type);

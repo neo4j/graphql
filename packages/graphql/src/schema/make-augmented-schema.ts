@@ -787,7 +787,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
-                [pluralize(node.name)]: findResolver({ node, getSchema: () => neoSchema }),
+                [pluralize(camelCase(node.name))]: findResolver({ node, getSchema: () => neoSchema }),
             });
         }
 
