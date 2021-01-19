@@ -19,7 +19,7 @@ type Movie {
 
 ```graphql
 {
-    Movies(options: { sort: [id_DESC] }) {
+    movies(options: { sort: [id_DESC] }) {
         title
     }
 }
@@ -48,7 +48,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(options: { sort: [id_DESC, title_ASC] }) {
+    movies(options: { sort: [id_DESC, title_ASC] }) {
         title
     }
 }
@@ -77,7 +77,7 @@ RETURN this { .title } as this
 
 ```graphql
 query($title: String, $skip: Int, $limit: Int, $sort: [MovieSort]) {
-    Movies(
+    movies(
         options: { sort: $sort, skip: $skip, limit: $limit }
         where: { title: $title }
     ) {

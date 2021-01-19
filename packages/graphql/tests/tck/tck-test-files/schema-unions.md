@@ -271,8 +271,8 @@ type Mutation {
 }
 
 type Query {
-  Genres(where: GenreWhere, options: GenreOptions): [Genre]!
-  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  genres(where: GenreWhere, options: GenreOptions): [Genre]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 
 input QueryOptions {

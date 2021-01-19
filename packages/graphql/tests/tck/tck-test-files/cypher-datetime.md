@@ -19,7 +19,7 @@ type Movie {
 
 ```graphql
 query {
-    Movies(where: { datetime: "1970-01-01T00:00:00.000Z" }) {
+    movies(where: { datetime: "1970-01-01T00:00:00.000Z" }) {
         datetime
     }
 }

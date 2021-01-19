@@ -130,7 +130,7 @@ mutation {
 
 ```graphql
 query {
-    Movies {
+    movies {
         title
         genres {
             name

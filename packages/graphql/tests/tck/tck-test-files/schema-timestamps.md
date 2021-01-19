@@ -149,7 +149,7 @@ type Mutation {
 }
 
 type Query {
-  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
