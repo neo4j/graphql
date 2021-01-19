@@ -12,7 +12,7 @@ describe("translate", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs, resolvers: { Query: { Movies: MoviesResolver } } });
+        const neoSchema = makeAugmentedSchema({ typeDefs, resolvers: { Query: { movies: MoviesResolver } } });
 
         function MoviesResolver(_root, _args, context, resolveInfo) {
             context.neoSchema = neoSchema;
@@ -34,7 +34,7 @@ describe("translate", () => {
 
         const query = `
             query {
-                Movies {
+                movies {
                     id
                 }
             }

@@ -26,7 +26,7 @@ type Movie {
 
 ```graphql
 {
-    Movies {
+    movies {
         title
         topActor {
             name
@@ -38,7 +38,7 @@ type Movie {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor) | this_topActor { .name } ]) } as this
 ```
 
@@ -56,7 +56,7 @@ RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor
 
 ```graphql
 {
-    Movies {
+    movies {
         title
         actors {
             name
@@ -68,7 +68,7 @@ RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor) | this_actors { .name } ] } as this
 ```
 
@@ -86,7 +86,7 @@ RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor) | this_a
 
 ```graphql
 {
-    Movies {
+    movies {
         title
         topActor {
             name
@@ -101,12 +101,12 @@ RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor) | this_a
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
-RETURN this { 
+MATCH (this:Movie)
+RETURN this {
     .title,
-    topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor) | this_topActor { 
+    topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor) | this_topActor {
         .name,
-        movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie) | this_topActor_movies { 
+        movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie) | this_topActor_movies {
             .title
         } ]
     } ])
@@ -127,11 +127,11 @@ RETURN this {
 
 ```graphql
 {
-    Movies(where: {title: "some title"}) {
+    movies(where: { title: "some title" }) {
         title
-        topActor(where: {name: "top actor"}) {
+        topActor(where: { name: "top actor" }) {
             name
-            movies(where: {title: "top actor movie"}) {
+            movies(where: { title: "top actor movie" }) {
                 title
             }
         }
@@ -144,14 +144,14 @@ RETURN this {
 ```cypher
 MATCH (this:Movie)
 WHERE this.title = $this_title
-RETURN this { 
-    .title, 
+RETURN this {
+    .title,
     topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor) WHERE this_topActor.name = $this_topActor_name | this_topActor {
-        .name, 
-        movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie) WHERE this_topActor_movies.title = $this_topActor_movies_title | this_topActor_movies { 
+        .name,
+        movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie) WHERE this_topActor_movies.title = $this_topActor_movies_title | this_topActor_movies {
             .title
-        } ] 
-    } ]) 
+        } ]
+    } ])
 } as this
 ```
 

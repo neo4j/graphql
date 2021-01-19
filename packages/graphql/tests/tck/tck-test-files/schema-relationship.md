@@ -243,8 +243,8 @@ type Mutation {
 }
 
 type Query {
-  Actors(where: ActorWhere, options: ActorOptions): [Actor]!
-  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
@@ -554,8 +554,8 @@ type Mutation {
 }
 
 type Query {
-  Actors(where: ActorWhere, options: ActorOptions): [Actor]!
-  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 

@@ -38,7 +38,7 @@ describe("auth", () => {
 
         const query = `
             {
-                Products {
+                products {
                     id
                 }
             }
@@ -107,7 +107,7 @@ describe("auth", () => {
                 if (type === "read") {
                     query = `
                         {
-                            Products {
+                            products {
                                 id
                             }
                         }
@@ -196,7 +196,7 @@ describe("auth", () => {
                     if (type === "read") {
                         query = `
                             {
-                                Products(where: {id: "${id}"}) {
+                                products(where: {id: "${id}"}) {
                                     id
                                 }
                             }
@@ -279,7 +279,7 @@ describe("auth", () => {
                     if (type === "read") {
                         query = `
                                 {
-                                    Products(where: {id: "${id}"}) {
+                                    products(where: {id: "${id}"}) {
                                         id
                                     }
                                 }
@@ -311,7 +311,7 @@ describe("auth", () => {
                         }
 
                         if (type === "read") {
-                            expect((gqlResult.data as any).Products).toEqual([{ id }]);
+                            expect((gqlResult.data as any).products).toEqual([{ id }]);
                         }
                     } finally {
                         await session.close();
@@ -418,7 +418,7 @@ describe("auth", () => {
 
                         query = `
                             {
-                                Products(where: {id: "${id}"}) {
+                                products(where: {id: "${id}"}) {
                                     id
                                 }
                             }
@@ -997,7 +997,7 @@ describe("auth", () => {
 
             const query = `
                 {
-                    Users(where: {id: "${userId}"}) {
+                    users(where: {id: "${userId}"}) {
                         id
                         posts {
                             id
@@ -1070,7 +1070,7 @@ describe("auth", () => {
 
             const query = `
                 {
-                    Users(where: {id: "${userId}"}) {
+                    users(where: {id: "${userId}"}) {
                         id
                         posts {
                             id
@@ -1102,7 +1102,7 @@ describe("auth", () => {
                     contextValue: { driver, req },
                 });
 
-                expect((gqlResult.data as any).Users[0]).toMatchObject({ id: userId, posts: [{ id: postId }] });
+                expect((gqlResult.data as any).users[0]).toMatchObject({ id: userId, posts: [{ id: postId }] });
             } finally {
                 await session.close();
             }
@@ -1154,7 +1154,7 @@ describe("auth", () => {
 
                 const query = `
                     {
-                        Posts(where: {id: "${postId}"}) {
+                        posts(where: {id: "${postId}"}) {
                             id
                             title
                             creator {
@@ -1233,7 +1233,7 @@ describe("auth", () => {
 
                 const query = `
                     {
-                        Posts(where: {id: "${postId}"}) {
+                        posts(where: {id: "${postId}"}) {
                             id
                             title
                             creator {
@@ -1321,7 +1321,7 @@ describe("auth", () => {
 
                 const query = `
                     {
-                        Posts(where: {id: "${postId}"}) {
+                        posts(where: {id: "${postId}"}) {
                             id
                         }
                     }
@@ -1409,7 +1409,7 @@ describe("auth", () => {
 
                 const query = `
                 {
-                    Posts(where: {id: "${postId}"}) {
+                    posts(where: {id: "${postId}"}) {
                         id
                     }
                 }
@@ -1441,7 +1441,7 @@ describe("auth", () => {
                         contextValue: { driver, req },
                     });
 
-                    expect((gqlResult.data as any).Posts[0]).toMatchObject({ id: postId });
+                    expect((gqlResult.data as any).posts[0]).toMatchObject({ id: postId });
                 } finally {
                     await session.close();
                 }
@@ -1499,7 +1499,7 @@ describe("auth", () => {
 
                 const query = `
                     {
-                        Users(where: {id: "${userId}"}) {
+                        users(where: {id: "${userId}"}) {
                             name
                             posts {
                                 title
@@ -1588,7 +1588,7 @@ describe("auth", () => {
 
                 const query = `
                 {
-                    Users(where: {id: "${userId}"}) {
+                    users(where: {id: "${userId}"}) {
                         id
                         posts {
                             id
@@ -1626,7 +1626,7 @@ describe("auth", () => {
 
                     expect(gqlResult.errors as any[]).toEqual(undefined);
 
-                    expect((gqlResult.data as any).Users[0]).toMatchObject({ id: userId, posts: [{ id: postId }] });
+                    expect((gqlResult.data as any).users[0]).toMatchObject({ id: userId, posts: [{ id: postId }] });
                 } finally {
                     await session.close();
                 }
