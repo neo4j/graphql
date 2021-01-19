@@ -40,18 +40,20 @@ Makes that the projection is generated correctly. Usage of `projection` var name
 
 ```graphql
 mutation {
-  createProducts(input: [{ id: "1" }, { id: "2" }]) {
-    id
-    photos(where: {url: "url.com"}) {
-      url
+    createProducts(input: [{ id: "1" }, { id: "2" }]) {
+        products {
+            id
+            photos(where: { url: "url.com" }) {
+                url
+            }
+            colors(where: { id: 123 }) {
+                id
+            }
+            sizes(where: { name: "small" }) {
+                name
+            }
+        }
     }
-    colors(where: {id: 123}){
-      id
-    }
-    sizes(where: {name: "small"}){
-      name
-    }
-  }
 }
 ```
 
@@ -72,14 +74,14 @@ CALL {
   RETURN this1
 }
 
-RETURN 
-this0 { 
+RETURN
+this0 {
     .id,
     photos: [ (this0)-[:HAS_PHOTO]->(this0_photos:Photo) WHERE this0_photos.url = $projection_photos_url | this0_photos { .url } ],
     colors: [ (this0)-[:HAS_COLOR]->(this0_colors:Color) WHERE this0_colors.id = $projection_colors_id | this0_colors { .id } ],
     sizes: [ (this0)-[:HAS_SIZE]->(this0_sizes:Size) WHERE this0_sizes.name = $projection_sizes_name  | this0_sizes { .name } ]
 } AS this0,
-this1 { 
+this1 {
     .id,
     photos: [ (this1)-[:HAS_PHOTO]->(this1_photos:Photo) WHERE this1_photos.url = $projection_photos_url | this1_photos { .url } ],
     colors: [ (this1)-[:HAS_COLOR]->(this1_colors:Color) WHERE this1_colors.id = $projection_colors_id | this1_colors { .id } ],
@@ -93,7 +95,7 @@ this1 {
 {
     "this0_id": "1",
     "this1_id": "2",
-    "projection_photos_url": "url.com", 
+    "projection_photos_url": "url.com",
     "projection_colors_id": "123",
     "projection_sizes_name": "small"
 }

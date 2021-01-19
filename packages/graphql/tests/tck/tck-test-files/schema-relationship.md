@@ -12,7 +12,7 @@ Tests that the provided typeDefs return the correct schema (with relationships).
 type Actor {
     name: String
 }
-    
+
 type Movie {
     id: ID
     actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
@@ -217,23 +217,38 @@ input ActorUpdateInput {
   name: String
 }
 
+type CreateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type UpdateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type CreateActorsMutationResponse {
+  actors: [Actor!]!
+}
+
+type UpdateActorsMutationResponse {
+  actors: [Actor!]!
+}
+
 type Mutation {
-  createActors(input: [ActorCreateInput]!): [Actor]!
-  createMovies(input: [MovieCreateInput]!): [Movie]!
+  createActors(input: [ActorCreateInput]!): CreateActorsMutationResponse!
+  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   deleteActors(where: ActorWhere): DeleteInfo!
-  updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput): [Movie]!
-  updateActors(where: ActorWhere, update: ActorUpdateInput): [Actor]!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput): UpdateMoviesMutationResponse!
+  updateActors(where: ActorWhere, update: ActorUpdateInput): UpdateActorsMutationResponse!
 }
 
 type Query {
-  Actors(where: ActorWhere, options: ActorOptions): [Actor]!
-  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
 ---
-
 
 ### Multi Relationship
 
@@ -244,7 +259,7 @@ type Actor {
     name: String
     movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
 }
-    
+
 type Movie {
     id: ID
     actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
@@ -501,8 +516,24 @@ input MovieWhere {
   actors_NOT_IN: [ActorWhere]
 }
 
+type CreateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type UpdateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type CreateActorsMutationResponse {
+  actors: [Actor!]!
+}
+
+type UpdateActorsMutationResponse {
+  actors: [Actor!]!
+}
+
 type Mutation {
-  createActors(input: [ActorCreateInput]!): [Actor]!
+  createActors(input: [ActorCreateInput]!): CreateActorsMutationResponse!
   deleteActors(where: ActorWhere): DeleteInfo!
   updateActors(
     where: ActorWhere
@@ -510,8 +541,8 @@ type Mutation {
     connect: ActorConnectInput
     disconnect: ActorDisconnectInput
     create: ActorRelationInput
-  ): [Actor]!
-  createMovies(input: [MovieCreateInput]!): [Movie]!
+  ): UpdateActorsMutationResponse!
+  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(
     where: MovieWhere
@@ -519,12 +550,12 @@ type Mutation {
     connect: MovieConnectInput
     disconnect: MovieDisconnectInput
     create: MovieRelationInput
-  ): [Movie]!
+  ): UpdateMoviesMutationResponse!
 }
 
 type Query {
-  Actors(where: ActorWhere, options: ActorOptions): [Actor]!
-  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
