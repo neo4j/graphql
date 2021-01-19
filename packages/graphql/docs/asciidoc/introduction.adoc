@@ -69,7 +69,7 @@ mutation {
 ----
 
 
-==== @auth
+==== `@auth`
 
 Define complex, nested & related, authorization rules such as; “grant update access to all moderators of a post”.
 
@@ -138,7 +138,7 @@ await Movie.create({
 
 Features we have chosen to exclude for the first version of @neo4j/graphql:
 
-Relationship Properties::
+==== Relationship Properties
 We found the existing implementation [here](https://grandstack.io/docs/graphql-relationship-types/), where you have to use the 'top-level' relation directive;
 
 [source, graphql]
@@ -152,9 +152,9 @@ Tricky to reason about.
 Before adding this feature back in we want to explore some more expressive ideas and take any community feedback on board.
 **The library doesn't know the concept of relationship properties** meaning you cannot; create, read, or filter by properties on a relationship.
 
-Top level unions::
+==== Top level unions
 In `neo4j-graphql-js` users could query top-level Unions such as;
-+
+
 [source, graphql]
 ----
 union Search = Genre | Movie
@@ -173,10 +173,10 @@ query {
 In the new implementation, **you cannot do this.** We made this decision on the fact that we had to create nodes with multiple labels causing issues.
 **You can use unions on a `@relationship`.**
 
-Interface querying::
+==== Interface querying
 Similar to the reasons states in the Top Level Unions... we found that adding multiple labels onto a node can sometimes cause more problems it's trying to solve plus if you take into consideration the complexity. In the version, **users cannot query top-level Interfaces Nor use them as a `@relationship`.** In this implementation interfaces give you no real database support therefor no; query, update, delete, filter support. But instead used as a language feature to safeguard your schema. Great for When dealing with repetitive or large schemas you can essentially put "The side railings up".
 
-Further Excluded Features::
+==== Further Excluded Features
 1. Additional Labels
 1. GraphQL Architect
 1. Indexes and Constraints
