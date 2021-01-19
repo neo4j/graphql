@@ -106,7 +106,7 @@ describe("scalars", () => {
 
         const query = `
             {
-                Movies(where: {id: ${id}}) {
+                movies(where: {id: ${id}}) {
                     id
                 }
             }
@@ -126,7 +126,7 @@ describe("scalars", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).Movies[0]).toEqual({ id: id.toString() });
+            expect((gqlResult.data as any).movies[0]).toEqual({ id: id.toString() });
         } finally {
             await session.close();
         }
