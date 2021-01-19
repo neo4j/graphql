@@ -1,3 +1,4 @@
+import camelCase from "camelcase";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
@@ -559,7 +560,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             composer.createObjectTC({
                 name: `${operation}${pluralize(node.name)}MutationResponse`,
                 fields: {
-                    [pluralize(node.name.charAt(0).toLowerCase() + node.name.slice(1))]: `[${node.name}!]!`,
+                    [pluralize(camelCase(node.name))]: `[${node.name}!]!`,
                 },
             })
         );

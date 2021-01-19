@@ -1,3 +1,4 @@
+import camelCase from "camelcase";
 import { GraphQLResolveInfo } from "graphql";
 import pluralize from "pluralize";
 import { execute } from "../utils";
@@ -24,7 +25,7 @@ function update({ node, getSchema }: { node: Node; getSchema: () => NeoSchema })
             neoSchema,
         });
 
-        return { [pluralize(node.name.charAt(0).toLowerCase() + node.name.slice(1))]: result.map((x) => x.this) };
+        return { [pluralize(camelCase(node.name))]: result.map((x) => x.this) };
     }
 
     return {
