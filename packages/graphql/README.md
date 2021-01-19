@@ -139,7 +139,7 @@ query {
 }
 ```
 
-## Using OGM
+## OGM
 
 Use the GraphQL schema language to power an OGM layer.
 

@@ -391,7 +391,7 @@ type Node {
 }
 ----
 
-=== @cypher
+=== `@cypher`
 
 GraphQL schema directive that can be used to bind a GraphQL field to the results of a Cypher query.
 For example, let's add a field `similarMovies` to our Movie which is bound to a Cypher query to find other movies with an overlap of actors;
@@ -513,7 +513,7 @@ type Query {
 ----
 
 
-=== @auth
+=== `@auth`
 
 Once specified it will ‘wrap’ generated Queries & Mutations, interacting with an incoming JWT, adding predicates to the generated cypher.
 
@@ -574,7 +574,7 @@ type User @auth() @auth() { // ⚠ Only the first one will be used
 ----
 
 
-==== rules
+==== `rules`
 
 The only, required, parameter as part of the directive. Each rule allows you to specify the following properties;
 
@@ -590,11 +590,11 @@ rules: {
 ----
 
 
-==== operations
+==== `operations`
 
 Array of either `"create" | "read" | "update" | "delete" | "connect" | "disconnect"` the corresponding `allow`, `bind` and `roles` will be checked on each subsequent operation.
 
-==== roles
+==== `roles`
 
 Array of strings to be checked against the JWT roles.
 
@@ -667,12 +667,12 @@ type Post
 }
 ----
 
-=== @exclude
+=== `@exclude`
 
 This directive can be used to tell `makeAugmentedSchema` to skip the automatic generation of the Query or Mutations for a certain type.
 
 
-==== operations
+==== `operations`
 
 The only (and required) argument for this directive. Its value must either be an array containing a subset of strings from `["read", "create", "update", "delete"]`, or the string `"*"` if you wish to skip the generation of the Query and all Mutations for a particular type.
 
@@ -717,7 +717,7 @@ type User @exclude(operations: "*") {
 
 > Exclude will not effect OGM methods.
 
-=== DateTime
+=== `DateTime`
 
 ISO datetime string stored as a [`datetime`](https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime) temporal type.
 
@@ -728,7 +728,7 @@ type User {
 }
 ----
 
-=== @autogenerate
+=== `@autogenerate`
 
 ==== ID's 
 If the directive is specified and not provided on create will use the [database to generate a uuid](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-randomuuid).
