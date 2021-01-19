@@ -27,7 +27,7 @@ type Genre {
 
 ```graphql
 {
-    Movies(where: { _id_IN: ["123"] }){
+    movies(where: { _id_IN: ["123"] }) {
         _id
     }
 }
@@ -57,7 +57,7 @@ RETURN this { ._id } as this
 
 ```graphql
 {
-    Movies(where: { id_REGEX: "(?i)123.*" }){
+    movies(where: { id_REGEX: "(?i)123.*" }) {
         id
     }
 }
@@ -87,7 +87,7 @@ RETURN this { .id } as this
 
 ```graphql
 {
-    Movies(where: { id_NOT: "123" }){
+    movies(where: { id_NOT: "123" }) {
         id
     }
 }
@@ -117,7 +117,7 @@ RETURN this { .id } as this
 
 ```graphql
 {
-    Movies(where: { id_NOT_IN: ["123"] }){
+    movies(where: { id_NOT_IN: ["123"] }) {
         id
     }
 }
@@ -147,7 +147,7 @@ RETURN this { .id } as this
 
 ```graphql
 {
-    Movies(where: { id_CONTAINS: "123" }){
+    movies(where: { id_CONTAINS: "123" }) {
         id
     }
 }
@@ -177,7 +177,7 @@ RETURN this { .id } as this
 
 ```graphql
 {
-    Movies(where: { id_NOT_CONTAINS: "123" }){
+    movies(where: { id_NOT_CONTAINS: "123" }) {
         id
     }
 }
@@ -207,7 +207,7 @@ RETURN this { .id } as this
 
 ```graphql
 {
-    Movies(where: { id_STARTS_WITH: "123" }){
+    movies(where: { id_STARTS_WITH: "123" }) {
         id
     }
 }
@@ -237,7 +237,7 @@ RETURN this { .id } as this
 
 ```graphql
 {
-    Movies(where: { id_NOT_STARTS_WITH: "123" }){
+    movies(where: { id_NOT_STARTS_WITH: "123" }) {
         id
     }
 }
@@ -267,7 +267,7 @@ RETURN this { .id } as this
 
 ```graphql
 {
-    Movies(where: { id_ENDS_WITH: "123" }){
+    movies(where: { id_ENDS_WITH: "123" }) {
         id
     }
 }
@@ -297,7 +297,7 @@ RETURN this { .id } as this
 
 ```graphql
 {
-    Movies(where: { id_NOT_ENDS_WITH: "123" }){
+    movies(where: { id_NOT_ENDS_WITH: "123" }) {
         id
     }
 }
@@ -327,7 +327,7 @@ RETURN this { .id } as this
 
 ```graphql
 {
-    Movies(where: { actorCount_LT: 123 }){
+    movies(where: { actorCount_LT: 123 }) {
         actorCount
     }
 }
@@ -360,7 +360,7 @@ RETURN this { .actorCount } as this
 
 ```graphql
 {
-    Movies(where: { actorCount_LTE: 123 }){
+    movies(where: { actorCount_LTE: 123 }) {
         actorCount
     }
 }
@@ -387,14 +387,13 @@ RETURN this { .actorCount } as this
 
 ---
 
-
 ### GT
 
 **GraphQL input**
 
 ```graphql
 {
-    Movies(where: { actorCount_GT: 123 }){
+    movies(where: { actorCount_GT: 123 }) {
         actorCount
     }
 }
@@ -427,7 +426,7 @@ RETURN this { .actorCount } as this
 
 ```graphql
 {
-    Movies(where: { actorCount_GTE: 123 }){
+    movies(where: { actorCount_GTE: 123 }) {
         actorCount
     }
 }
@@ -460,7 +459,7 @@ RETURN this { .actorCount } as this
 
 ```graphql
 {
-    Movies(where: { genres: { name: "some genre" } }){
+    movies(where: { genres: { name: "some genre" } }) {
         actorCount
     }
 }
@@ -469,8 +468,8 @@ RETURN this { .actorCount } as this
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
-WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres IN [(this)-[:IN_GENRE]->(this_genres:Genre) | this_genres] WHERE this_genres.name = $this_genres_name) 
+MATCH (this:Movie)
+WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres IN [(this)-[:IN_GENRE]->(this_genres:Genre) | this_genres] WHERE this_genres.name = $this_genres_name)
 RETURN this { .actorCount } as this
 ```
 
@@ -490,7 +489,7 @@ RETURN this { .actorCount } as this
 
 ```graphql
 {
-    Movies(where: { genres_NOT: { name: "some genre" } }){
+    movies(where: { genres_NOT: { name: "some genre" } }) {
         actorCount
     }
 }
@@ -499,8 +498,8 @@ RETURN this { .actorCount } as this
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
-WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND NONE(this_genres_NOT IN [(this)-[:IN_GENRE]->(this_genres_NOT:Genre) | this_genres_NOT] WHERE this_genres_NOT.name = $this_genres_NOT_name) 
+MATCH (this:Movie)
+WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND NONE(this_genres_NOT IN [(this)-[:IN_GENRE]->(this_genres_NOT:Genre) | this_genres_NOT] WHERE this_genres_NOT.name = $this_genres_NOT_name)
 RETURN this { .actorCount } as this
 ```
 
@@ -520,7 +519,11 @@ RETURN this { .actorCount } as this
 
 ```graphql
 {
-    Movies(where: { genres_IN: [{ name: "first genre" }, { name: "second genre" }] }){
+    movies(
+        where: {
+            genres_IN: [{ name: "first genre" }, { name: "second genre" }]
+        }
+    ) {
         actorCount
     }
 }
@@ -529,7 +532,7 @@ RETURN this { .actorCount } as this
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres_IN IN [(this)-[:IN_GENRE]->(this_genres_IN:Genre) | this_genres_IN] WHERE this_genres_IN.name = $this_genres_IN0_name OR this_genres_IN.name = $this_genres_IN1_name)
 RETURN this { .actorCount } as this
 ```
@@ -551,7 +554,7 @@ RETURN this { .actorCount } as this
 
 ```graphql
 {
-    Movies(where: { genres_NOT_IN: [{ name: "some genre" }] }){
+    movies(where: { genres_NOT_IN: [{ name: "some genre" }] }) {
         actorCount
     }
 }
@@ -560,7 +563,7 @@ RETURN this { .actorCount } as this
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres_NOT_IN IN [(this)-[:IN_GENRE]->(this_genres_NOT_IN:Genre) | this_genres_NOT_IN] WHERE NOT(this_genres_NOT_IN.name = $this_genres_NOT_IN0_name))
 RETURN this { .actorCount } as this
 ```

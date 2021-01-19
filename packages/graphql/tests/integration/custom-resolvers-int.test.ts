@@ -48,8 +48,10 @@ describe("Custom Resolvers", () => {
         const create = `
             mutation {
                 createMovies(input:[{id: "${id}"}]) {
-                    id
-                    custom
+                    movies {
+                        id
+                        custom
+                    }
                 }
             }
         `;
@@ -63,7 +65,7 @@ describe("Custom Resolvers", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).createMovies[0] as any).toEqual({
+            expect((gqlResult.data as any).createMovies.movies[0] as any).toEqual({
                 id,
                 custom: (id as string).toUpperCase(),
             });
@@ -535,7 +537,7 @@ describe("Custom Resolvers", () => {
 
                 const query = `
                 {
-                     Users(where: {id: "${userId}"}){
+                     users(where: {id: "${userId}"}){
                         userId
                     }
                 }
@@ -558,7 +560,7 @@ describe("Custom Resolvers", () => {
 
                     expect(gqlResult.errors).toEqual(undefined);
 
-                    expect((gqlResult.data as any).Users[0].userId).toEqual(userId);
+                    expect((gqlResult.data as any).users[0].userId).toEqual(userId);
                 } finally {
                     await session.close();
                 }

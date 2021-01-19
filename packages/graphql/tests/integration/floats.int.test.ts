@@ -42,9 +42,11 @@ describe("floats", () => {
                     imdbRating_float: ${imdbRating_float}
                     imdbRating_int: ${imdbRating_int}
                 }]) {
-                    id
-                    imdbRating_float
-                    imdbRating_int
+                    movies {
+                        id
+                        imdbRating_float
+                        imdbRating_int
+                    }
                 }
             }
         `;
@@ -57,7 +59,7 @@ describe("floats", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).createMovies[0]).toEqual({ id, imdbRating_float, imdbRating_int });
+            expect((gqlResult.data as any).createMovies.movies[0]).toEqual({ id, imdbRating_float, imdbRating_int });
 
             const result = await session.run(`
                 MATCH (m:Movie {id: "${id}"})
@@ -98,9 +100,11 @@ describe("floats", () => {
                     imdbRating_float: $imdbRating_float,
                     imdbRating_int: $imdbRating_int
                 }]) {
-                    id
-                    imdbRating_float
-                    imdbRating_int
+                    movies {
+                        id
+                        imdbRating_float
+                        imdbRating_int
+                    }
                 }
             }
         `;
@@ -117,7 +121,7 @@ describe("floats", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).createMovies[0]).toEqual({ id, imdbRating_float, imdbRating_int });
+            expect((gqlResult.data as any).createMovies.movies[0]).toEqual({ id, imdbRating_float, imdbRating_int });
 
             const result = await session.run(`
                 MATCH (m:Movie {id: "${id}"})

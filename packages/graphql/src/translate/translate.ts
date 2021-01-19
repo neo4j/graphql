@@ -1,3 +1,4 @@
+import camelCase from "camelcase";
 import { GraphQLResolveInfo } from "graphql";
 import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import pluralize from "pluralize";
@@ -124,7 +125,9 @@ function translateCreate({
     context: Context;
     node: Node;
 }): [string, any] {
-    const fieldsByTypeName = resolveTree.fieldsByTypeName;
+    const fieldsByTypeName =
+        resolveTree.fieldsByTypeName[`Create${pluralize(node.name)}MutationResponse`][pluralize(camelCase(node.name))]
+            .fieldsByTypeName;
 
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {
@@ -194,7 +197,9 @@ function translateUpdate({
     const connectInput = resolveTree.args.connect;
     const disconnectInput = resolveTree.args.disconnect;
     const createInput = resolveTree.args.create;
-    const fieldsByTypeName = resolveTree.fieldsByTypeName;
+    const fieldsByTypeName =
+        resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][pluralize(camelCase(node.name))]
+            .fieldsByTypeName;
     const varName = "this";
 
     const matchStr = `MATCH (${varName}:${node.name})`;
@@ -448,7 +453,7 @@ function translate({
         ) as Node;
     } else {
         operation = "read";
-        node = context.neoSchema.nodes.find((x) => x.name === pluralize.singular(resolveTree.name)) as Node;
+        node = context.neoSchema.nodes.find((x) => camelCase(x.name) === pluralize.singular(resolveTree.name)) as Node;
     }
 
     if (node.auth) {

@@ -20,8 +20,10 @@ type Movie {
 ```graphql
 mutation {
     createMovies(input: [{ name: "dan" }]) {
-        id
-        name
+        movies {
+            id
+            name
+        }
     }
 }
 ```
@@ -56,8 +58,10 @@ RETURN this0 { .id, .name } AS this0
 ```graphql
 mutation {
     updateMovies(update: { name: "dan" }) {
-        id
-        name
+        movies {
+            id
+            name
+        }
     }
 }
 ```
