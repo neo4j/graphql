@@ -64,7 +64,9 @@ mutation {
             }
         ]
     ) {
-        id
+        blogs {
+            id
+        }
     }
 }
 ```
@@ -126,7 +128,9 @@ mutation {
         where: { id: "123" }
         update: { creator: { connect: { where: { id: "user_id" } } } }
     ) {
-        id
+        blogs {
+            id
+        }
     }
 }
 ```

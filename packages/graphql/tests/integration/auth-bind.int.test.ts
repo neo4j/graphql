@@ -71,7 +71,9 @@ describe("auth-bind", () => {
                             }
                         ]
                     ) {
-                        id
+                        blogs {
+                            id
+                        }
                     }
                 }
             `;
@@ -149,7 +151,9 @@ describe("auth-bind", () => {
                             }
                         ]
                     ) {
-                        id
+                        blogs {
+                            id
+                        }
                     }
                 }
             `;
@@ -331,7 +335,9 @@ describe("auth-bind", () => {
                         }
                       ]
                     ) {
-                      id
+                      posts {
+                          id
+                      }
                     }
                 }
             `;
@@ -409,7 +415,9 @@ describe("auth-bind", () => {
             const query = `
                mutation {
                    updateBlogs(where: {id: "${blogId}"}, update: {creator: {connect: {where: {id: "${invalidUserId}"}}}}) {
-                       id
+                       blogs {
+                           id
+                       }
                    }
                }
             `;
@@ -476,7 +484,9 @@ describe("auth-bind", () => {
             const query = `
                 mutation {
                     updateBlogs(where: {id: "${blogId}"}, update: {creator: {connect: {where: {id: "${userId}"}}}}) {
-                        id
+                        blogs {
+                            id
+                        }
                     }
                 }
             `;
