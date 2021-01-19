@@ -38,7 +38,7 @@ describe("auth", () => {
 
         const query = `
             {
-                Products {
+                products {
                     id
                 }
             }
@@ -86,7 +86,9 @@ describe("auth", () => {
                     query = `
                         mutation {
                             createProducts(input: [{id: 123, name: "pringles"}]) {
-                                id
+                                products {
+                                    id
+                                }
                             }
                         }
                     `;
@@ -105,7 +107,7 @@ describe("auth", () => {
                 if (type === "read") {
                     query = `
                         {
-                            Products {
+                            products {
                                 id
                             }
                         }
@@ -116,7 +118,9 @@ describe("auth", () => {
                     query = `
                         mutation {
                             updateProducts(update: {name: "test"}){
-                                id
+                                products {
+                                    id
+                                }
                             }
                         }
                     `;
@@ -181,7 +185,9 @@ describe("auth", () => {
                         query = `
                             mutation {
                                 updateProducts(where: {id: "${id}"}, update: {name: "test"}) {
-                                    name
+                                    products {
+                                        name
+                                    }
                                 }
                             }
                         `;
@@ -190,7 +196,7 @@ describe("auth", () => {
                     if (type === "read") {
                         query = `
                             {
-                                Products(where: {id: "${id}"}) {
+                                products(where: {id: "${id}"}) {
                                     id
                                 }
                             }
@@ -262,7 +268,9 @@ describe("auth", () => {
                         query = `
                                 mutation {
                                     updateProducts(where: {id: "${id}"}) {
-                                        id
+                                        products {
+                                            id
+                                        }
                                     }
                                 }
                             `;
@@ -271,7 +279,7 @@ describe("auth", () => {
                     if (type === "read") {
                         query = `
                                 {
-                                    Products(where: {id: "${id}"}) {
+                                    products(where: {id: "${id}"}) {
                                         id
                                     }
                                 }
@@ -303,7 +311,7 @@ describe("auth", () => {
                         }
 
                         if (type === "read") {
-                            expect((gqlResult.data as any).Products).toEqual([{ id }]);
+                            expect((gqlResult.data as any).products).toEqual([{ id }]);
                         }
                     } finally {
                         await session.close();
@@ -374,7 +382,9 @@ describe("auth", () => {
                                     create: [{ name: "Red" }]
                                 }
                             }]){
-                                id
+                                products {
+                                    id
+                                }
                             }
                         }
                     `;
@@ -408,7 +418,7 @@ describe("auth", () => {
 
                         query = `
                             {
-                                Products(where: {id: "${id}"}) {
+                                products(where: {id: "${id}"}) {
                                     id
                                 }
                             }
@@ -426,7 +436,9 @@ describe("auth", () => {
                         query = `
                             mutation {
                                 updateProducts(where: {id: "${id}"}, update: {colors: {where: {name: "Green"}, update: {name: "red" }}}) {
-                                    id
+                                    products {
+                                        id
+                                    }
                                 }
                             }
                         `;
@@ -485,7 +497,9 @@ describe("auth", () => {
                                     create: [{ name: "Red" }]
                                 }
                             }]){
-                                id
+                                products {
+                                    id
+                                }
                             }
                         }
                     `;
@@ -503,7 +517,9 @@ describe("auth", () => {
                                     }
                                 }
                             ){
-                                name
+                                products {
+                                    name
+                                }
                             }
                         }
                     `;
@@ -578,7 +594,9 @@ describe("auth", () => {
                                     create: [{ name: "Red" }]
                                 }
                             }]){
-                                id
+                                products {
+                                    id
+                                }
                             }
                         }
                     `;
@@ -596,7 +614,9 @@ describe("auth", () => {
                                     }
                                 }
                             ){
-                                id
+                                products {
+                                    id
+                                }
                             }
                         }
                     `;
@@ -625,11 +645,11 @@ describe("auth", () => {
                     expect(gqlResult.errors).toEqual(undefined);
 
                     if (type === "create") {
-                        expect((gqlResult.data as any).createProducts[0].id).toEqual(id);
+                        expect((gqlResult.data as any).createProducts.products[0].id).toEqual(id);
                     }
 
                     if (type === "update") {
-                        expect((gqlResult.data as any).updateProducts[0].id).toEqual(id);
+                        expect((gqlResult.data as any).updateProducts.products[0].id).toEqual(id);
                     }
                 } finally {
                     await session.close();
@@ -687,10 +707,12 @@ describe("auth", () => {
                                     create: [{ id: "${colorId1}"  }]
                                 }
                             }]){
-                                id
-                                colors {
+                                products {
                                     id
-                                }
+                                    colors {
+                                        id
+                                    }
+                                }   
                             }
                         }
                     `;
@@ -708,9 +730,11 @@ describe("auth", () => {
                                     }
                                 }
                             ){
-                                id
-                                colors {
+                                products {
                                     id
+                                    colors {
+                                        id
+                                    }
                                 }
                             }
                         }
@@ -742,14 +766,14 @@ describe("auth", () => {
                     expect(gqlResult.errors).toEqual(undefined);
 
                     if (type === "create") {
-                        expect((gqlResult.data as any).createProducts[0]).toMatchObject({
+                        expect((gqlResult.data as any).createProducts.products[0]).toMatchObject({
                             id: productId,
                             colors: [{ id: colorId1 }],
                         });
                     }
 
                     if (type === "update") {
-                        expect((gqlResult.data as any).updateProducts[0]).toMatchObject({
+                        expect((gqlResult.data as any).updateProducts.products[0]).toMatchObject({
                             id: productId,
                             colors: [{ id: colorId2 }],
                         });
@@ -807,7 +831,9 @@ describe("auth", () => {
                                 }
                             }
                        ) {
-                           id
+                           posts {
+                                id
+                           }
                        }
                    }
                 `;
@@ -891,11 +917,13 @@ describe("auth", () => {
                                 }
                             }
                        ) {
-                           id
-                           user {
-                               id
-                               name
-                           }
+                            posts {
+                                id
+                                user {
+                                    id
+                                    name
+                                }
+                            }
                        }
                    }
                 `;
@@ -920,7 +948,7 @@ describe("auth", () => {
                     contextValue: { driver, req },
                 });
 
-                expect(((gqlResult.data as any).updatePosts as any[])[0]).toMatchObject({
+                expect(((gqlResult.data as any).updatePosts.posts as any[])[0]).toMatchObject({
                     id: postId,
                     user: {
                         id: userId,
@@ -969,7 +997,7 @@ describe("auth", () => {
 
             const query = `
                 {
-                    Users(where: {id: "${userId}"}) {
+                    users(where: {id: "${userId}"}) {
                         id
                         posts {
                             id
@@ -1042,7 +1070,7 @@ describe("auth", () => {
 
             const query = `
                 {
-                    Users(where: {id: "${userId}"}) {
+                    users(where: {id: "${userId}"}) {
                         id
                         posts {
                             id
@@ -1074,7 +1102,7 @@ describe("auth", () => {
                     contextValue: { driver, req },
                 });
 
-                expect((gqlResult.data as any).Users[0]).toMatchObject({ id: userId, posts: [{ id: postId }] });
+                expect((gqlResult.data as any).users[0]).toMatchObject({ id: userId, posts: [{ id: postId }] });
             } finally {
                 await session.close();
             }
@@ -1126,7 +1154,7 @@ describe("auth", () => {
 
                 const query = `
                     {
-                        Posts(where: {id: "${postId}"}) {
+                        posts(where: {id: "${postId}"}) {
                             id
                             title
                             creator {
@@ -1205,7 +1233,7 @@ describe("auth", () => {
 
                 const query = `
                     {
-                        Posts(where: {id: "${postId}"}) {
+                        posts(where: {id: "${postId}"}) {
                             id
                             title
                             creator {
@@ -1293,7 +1321,7 @@ describe("auth", () => {
 
                 const query = `
                     {
-                        Posts(where: {id: "${postId}"}) {
+                        posts(where: {id: "${postId}"}) {
                             id
                         }
                     }
@@ -1381,7 +1409,7 @@ describe("auth", () => {
 
                 const query = `
                 {
-                    Posts(where: {id: "${postId}"}) {
+                    posts(where: {id: "${postId}"}) {
                         id
                     }
                 }
@@ -1413,7 +1441,7 @@ describe("auth", () => {
                         contextValue: { driver, req },
                     });
 
-                    expect((gqlResult.data as any).Posts[0]).toMatchObject({ id: postId });
+                    expect((gqlResult.data as any).posts[0]).toMatchObject({ id: postId });
                 } finally {
                     await session.close();
                 }
@@ -1471,7 +1499,7 @@ describe("auth", () => {
 
                 const query = `
                     {
-                        Users(where: {id: "${userId}"}) {
+                        users(where: {id: "${userId}"}) {
                             name
                             posts {
                                 title
@@ -1560,7 +1588,7 @@ describe("auth", () => {
 
                 const query = `
                 {
-                    Users(where: {id: "${userId}"}) {
+                    users(where: {id: "${userId}"}) {
                         id
                         posts {
                             id
@@ -1598,7 +1626,7 @@ describe("auth", () => {
 
                     expect(gqlResult.errors as any[]).toEqual(undefined);
 
-                    expect((gqlResult.data as any).Users[0]).toMatchObject({ id: userId, posts: [{ id: postId }] });
+                    expect((gqlResult.data as any).users[0]).toMatchObject({ id: userId, posts: [{ id: postId }] });
                 } finally {
                     await session.close();
                 }

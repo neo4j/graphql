@@ -115,16 +115,24 @@ input MovieUpdateInput {
   id: ID
 }
 
+type CreateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type UpdateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): [Movie]!
+  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
-  updateMovies(where: MovieWhere, update: MovieUpdateInput): [Movie]!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
   testMutation(input: ExampleInput): String
   testCypherMutation(input: ExampleInput): String
 }
 
 type Query {
-  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
   testQuery(input: ExampleInput): String
   testCypherQuery(input: ExampleInput): String
 }

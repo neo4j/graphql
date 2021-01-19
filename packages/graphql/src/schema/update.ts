@@ -1,4 +1,6 @@
+import camelCase from "camelcase";
 import { GraphQLResolveInfo } from "graphql";
+import pluralize from "pluralize";
 import { execute } from "../utils";
 import { translate } from "../translate";
 import { NeoSchema, Node } from "../classes";
@@ -26,11 +28,11 @@ function update({ node, getSchema }: { node: Node; getSchema: () => NeoSchema })
             neoSchema,
         });
 
-        return result.map((x) => x.this);
+        return { [pluralize(camelCase(node.name))]: result.map((x) => x.this) };
     }
 
     return {
-        type: `[${node.name}]!`,
+        type: `Update${pluralize(node.name)}MutationResponse!`,
         resolve,
         args: {
             where: `${node.name}Where`,

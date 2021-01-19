@@ -157,17 +157,33 @@ input MovieWhere {
   title_REGEX: String
 }
 
+type CreateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type UpdateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type CreateActorsMutationResponse {
+  actors: [Actor!]!
+}
+
+type UpdateActorsMutationResponse {
+  actors: [Actor!]!
+}
+
 type Mutation {
-  createActors(input: [ActorCreateInput]!): [Actor]!
+  createActors(input: [ActorCreateInput]!): CreateActorsMutationResponse!
   deleteActors(where: ActorWhere): DeleteInfo!
-  updateActors(where: ActorWhere, update: ActorUpdateInput): [Actor]!
-  createMovies(input: [MovieCreateInput]!): [Movie]!
+  updateActors(where: ActorWhere, update: ActorUpdateInput): UpdateActorsMutationResponse!
+  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
-  updateMovies(where: MovieWhere, update: MovieUpdateInput): [Movie]!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
 
 type Query {
-  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
@@ -258,13 +274,17 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+type UpdateActorsMutationResponse {
+  actors: [Actor!]!
+}
+
 type Mutation {
   deleteActors(where: ActorWhere): DeleteInfo!
-  updateActors(where: ActorWhere, update: ActorUpdateInput): [Actor]!
+  updateActors(where: ActorWhere, update: ActorUpdateInput): UpdateActorsMutationResponse!
 }
 
 type Query {
-  Actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor]!
 }
 ```
 
@@ -363,14 +383,22 @@ input MovieWhere {
   title_REGEX: String
 }
 
+type CreateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type UpdateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): [Movie]!
+  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
-  updateMovies(where: MovieWhere, update: MovieUpdateInput): [Movie]!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
 
 type Query {
-  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
@@ -477,15 +505,23 @@ input MovieWhere {
   title_REGEX: String
 }
 
+type CreateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type UpdateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): [Movie]!
+  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
-  updateMovies(where: MovieWhere, update: MovieUpdateInput): [Movie]!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
 
 type Query {
   customActorQuery: Actor
-  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
@@ -703,14 +739,22 @@ input MovieWhere {
   title_REGEX: String
 }
 
+type CreateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type UpdateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): [Movie]!
+  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
-  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): [Movie]!
+  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
 }
 
 type Query {
-  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 
@@ -805,14 +849,22 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+type CreateActorsMutationResponse {
+  actors: [Actor!]!
+}
+
+type UpdateActorsMutationResponse {
+  actors: [Actor!]!
+}
+
 type Mutation {
-  createActors(input: [ActorCreateInput]!): [Actor]!
+  createActors(input: [ActorCreateInput]!): CreateActorsMutationResponse!
   deleteActors(where: ActorWhere): DeleteInfo!
-  updateActors(where: ActorWhere, update: ActorUpdateInput): [Actor]!
+  updateActors(where: ActorWhere, update: ActorUpdateInput): UpdateActorsMutationResponse!
 }
 
 type Query {
-  Actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor]!
 }
 ```
 

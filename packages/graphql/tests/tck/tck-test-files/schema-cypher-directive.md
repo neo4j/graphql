@@ -4,7 +4,6 @@ Tests that the provided typeDefs return the correct schema (with cypher directiv
 
 ---
 
-
 ### Custom Directive Simple
 
 **TypeDefs**
@@ -175,18 +174,34 @@ input MovieWhere {
   id_REGEX: String
 }
 
+type CreateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type UpdateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type CreateActorsMutationResponse {
+  actors: [Actor!]!
+}
+
+type UpdateActorsMutationResponse {
+  actors: [Actor!]!
+}
+
 type Mutation {
-  createActors(input: [ActorCreateInput]!): [Actor]!
+  createActors(input: [ActorCreateInput]!): CreateActorsMutationResponse!
   deleteActors(where: ActorWhere): DeleteInfo!
-  updateActors(where: ActorWhere, update: ActorUpdateInput): [Actor]!
-  createMovies(input: [MovieCreateInput]!): [Movie]!
+  updateActors(where: ActorWhere, update: ActorUpdateInput): UpdateActorsMutationResponse!
+  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
-  updateMovies(where: MovieWhere, update: MovieUpdateInput): [Movie]!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
 
 type Query {
-  Actors(where: ActorWhere, options: ActorOptions): [Actor]!
-  Movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
 }
 ```
 

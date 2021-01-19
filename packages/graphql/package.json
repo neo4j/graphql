@@ -64,6 +64,7 @@
     "dependencies": {
         "@graphql-tools/merge": "^6.2.3",
         "@graphql-tools/schema": "^6.2.3",
+        "camelcase": "6.2.0",
         "deep-equal": "2.0.5",
         "graphql-compose": "7.21.4",
         "graphql-parse-resolve-info": "4.9.0",

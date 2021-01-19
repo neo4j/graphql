@@ -40,45 +40,48 @@ type Photo {
 
 ```graphql
 mutation {
-  createProducts(
-    input: [
-      {
-        id: "123"
-        name: "Nested Connect"
-        colors: {
-          connect: [
+    createProducts(
+        input: [
             {
-              where: { name: "Red" }
-              connect: {
-                photos: [
-                  {
-                    where: { id: "123" }
-                    connect: { color: { where: { id: "134" } } }
-                  }
-                ]
-              }
+                id: "123"
+                name: "Nested Connect"
+                colors: {
+                    connect: [
+                        {
+                            where: { name: "Red" }
+                            connect: {
+                                photos: [
+                                    {
+                                        where: { id: "123" }
+                                        connect: {
+                                            color: { where: { id: "134" } }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+                photos: {
+                    connect: [
+                        {
+                            where: { id: "321" }
+                            connect: { color: { where: { name: "Green" } } }
+                        }
+                        {
+                            where: { id: "33211" }
+                            connect: { color: { where: { name: "Red" } } }
+                        }
+                    ]
+                }
             }
-          ]
+        ]
+    ) {
+        products {
+            id
         }
-        photos: {
-          connect: [
-            {
-              where: { id: "321" }
-              connect: { color: { where: { name: "Green" } } }
-            }
-            {
-              where: { id: "33211" }
-              connect: { color: { where: { name: "Red" } } }
-            }
-          ]
-        }
-      }
-    ]
-  ) {
-    id
-  }
+    }
 }
-
 ```
 
 **Expected Cypher output**
@@ -137,7 +140,7 @@ CALL {
       FOREACH(_ IN CASE this0_photos_connect1_color0 WHEN NULL THEN [] ELSE [1] END |
           MERGE (this0_photos_connect1)-[:OF_COLOR]->(this0_photos_connect1_color0)
       )
-      
+
   RETURN this0
 }
 

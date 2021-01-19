@@ -1,3 +1,4 @@
+import camelCase from "camelcase";
 import { Driver, DateTime } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -41,7 +42,9 @@ describe("DateTime", () => {
             const create = `
                 mutation {
                     createMovies(input: [{ id: "${id}", datetime: "${date.toISOString()}" }]) {
-                        datetime
+                        movies {
+                            datetime
+                        }
                     }
                 }
             `;
@@ -92,7 +95,9 @@ describe("DateTime", () => {
             const create = `
                 mutation {
                     createMovies(input: [{ id: "${id}", datetimes: ["${date.toISOString()}", "${date.toISOString()}", "${date.toISOString()}"] }]) {
-                        datetimes
+                        movies {
+                            datetimes
+                        }
                     }
                 }
             `;
@@ -132,7 +137,7 @@ describe("DateTime", () => {
                 charset: "alphabetic",
             })}Movie`;
 
-            const pluralRandomType = pluralize(randomType);
+            const pluralRandomType = pluralize(camelCase(randomType));
 
             const typeDefs = `
                 type ${randomType} {
@@ -198,8 +203,10 @@ describe("DateTime", () => {
             const create = `
                 mutation {
                     updateMovies(where: {id: "${id}"}, update: {datetime: "${date.toISOString()}"}) {
-                        id
-                        datetime
+                        movies {
+                            id
+                            datetime
+                        }
                     }
                 }
             `;

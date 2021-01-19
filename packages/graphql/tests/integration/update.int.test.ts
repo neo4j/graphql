@@ -39,8 +39,10 @@ describe("update", () => {
         const query = `
         mutation($id: ID, $name: String) {
             updateMovies(where: { id: $id }, update: {name: $name}) {
-              id
-              name
+                movies {
+                    id
+                    name
+                }
             }
           }
         `;
@@ -55,7 +57,7 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.updateMovies).toEqual([]);
+            expect(gqlResult?.data?.updateMovies).toEqual({ movies: [] });
         } finally {
             await session.close();
         }
@@ -88,8 +90,10 @@ describe("update", () => {
         const query = `
         mutation($id: ID, $name: String) {
             updateMovies(where: { id: $id }, update: {name: $name}) {
-              id
-              name
+                movies {
+                    id
+                    name
+                }
             }
           }
         `;
@@ -114,7 +118,7 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.updateMovies).toEqual([{ id, name: updatedName }]);
+            expect(gqlResult?.data?.updateMovies).toEqual({ movies: [{ id, name: updatedName }] });
         } finally {
             await session.close();
         }
@@ -145,8 +149,10 @@ describe("update", () => {
         const query = `
         mutation($id1: ID, $id2: ID, $name: String) {
             updateMovies(where: { OR: [{id: $id1}, {id: $id2}] }, update: {name: $name}) {
-              id
-              name
+                movies {
+                    id
+                    name
+                }
             }
           }
         `;
@@ -172,9 +178,9 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult?.data?.updateMovies as any[]).length).toEqual(2);
+            expect((gqlResult?.data?.updateMovies.movies as any[]).length).toEqual(2);
 
-            (gqlResult?.data?.updateMovies as any[]).forEach((movie) => {
+            (gqlResult?.data?.updateMovies.movies as any[]).forEach((movie) => {
                 expect([id1, id2].includes(movie.id)).toEqual(true);
                 expect(movie.name).toEqual(updatedName);
             });
@@ -223,9 +229,11 @@ describe("update", () => {
                 }]
               }
           ) {
-              id
-              actors {
-                  name
+              movies {
+                id
+                actors {
+                    name
+                }
               }
             }
           }
@@ -253,7 +261,9 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.updateMovies).toEqual([{ id: movieId, actors: [{ name: updatedName }] }]);
+            expect(gqlResult?.data?.updateMovies).toEqual({
+                movies: [{ id: movieId, actors: [{ name: updatedName }] }],
+            });
         } finally {
             await session.close();
         }
@@ -298,11 +308,13 @@ describe("update", () => {
                 }]
               }
             ) {
-              id
-              title
-              actors {
-                name
-              }
+                movies {
+                    id
+                    title
+                    actors {
+                        name
+                    }
+                }
             }
           }          
         `;
@@ -326,9 +338,9 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.updateMovies).toEqual([
-                { id: movieId, title: "new movie title", actors: [{ name: "new actor name" }] },
-            ]);
+            expect(gqlResult?.data?.updateMovies).toEqual({
+                movies: [{ id: movieId, title: "new movie title", actors: [{ name: "new actor name" }] }],
+            });
         } finally {
             await session.close();
         }
@@ -362,10 +374,12 @@ describe("update", () => {
         const query = `
         mutation {
             updateMovies(where: { id: "${movieId}" }, connect: {actors: [{where: {id: "${actorId}"}}]}) {
-              id
-              actors {
-                  id
-              }
+                movies {
+                    id
+                    actors {
+                        id
+                    }
+                }
             }
           }
         `;
@@ -391,7 +405,7 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.updateMovies).toEqual([{ id: movieId, actors: [{ id: actorId }] }]);
+            expect(gqlResult?.data?.updateMovies).toEqual({ movies: [{ id: movieId, actors: [{ id: actorId }] }] });
         } finally {
             await session.close();
         }
@@ -425,10 +439,12 @@ describe("update", () => {
         const query = `
         mutation {
             updateMovies(where: { id: "${movieId}" }, disconnect: {actors: [{where: {id: "${actorId}"}}]}) {
-              id
-              actors {
-                  id
-              }
+                movies {
+                    id
+                    actors {
+                        id
+                    }
+                }
             }
           }
         `;
@@ -455,7 +471,7 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.updateMovies).toEqual([{ id: movieId, actors: [] }]);
+            expect(gqlResult?.data?.updateMovies).toEqual({ movies: [{ id: movieId, actors: [] }] });
         } finally {
             await session.close();
         }
@@ -507,13 +523,15 @@ describe("update", () => {
                 }]
               }
             ){
-              id
-              photos {
-                  id
-                  color {
-                      id
-                  }
-              }
+                products {
+                    id
+                    photos {
+                        id
+                        color {
+                            id
+                        }
+                    }
+                }
             }
           }          
         `;
@@ -543,9 +561,9 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.updateProducts).toEqual([
-                { id: productId, photos: [{ id: photoId, color: null }] },
-            ]);
+            expect(gqlResult?.data?.updateProducts).toEqual({
+                products: [{ id: productId, photos: [{ id: photoId, color: null }] }],
+            });
         } finally {
             await session.close();
         }
@@ -633,15 +651,17 @@ describe("update", () => {
                     ]
                   }
                 ) {
-                  id
-                  photos {
-                    id
-                    name
-                    color {
-                      id
-                      name
+                    products {
+                        id
+                        photos {
+                            id
+                            name
+                            color {
+                            id
+                            name
+                            }
+                        }
                     }
-                  }
                 }
               }             
         `;
@@ -683,9 +703,9 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult?.data?.updateProducts as any[]).length).toEqual(1);
+            expect((gqlResult?.data?.updateProducts.products as any[]).length).toEqual(1);
 
-            const photos = (gqlResult?.data?.updateProducts as any[])[0].photos;
+            const photos = (gqlResult?.data?.updateProducts.products as any[])[0].photos;
 
             const greenPhoto = photos.find((x) => x.id === photo0Id);
 
@@ -763,15 +783,17 @@ describe("update", () => {
                       }]
                   }
                 ) {
-                  id
-                  photos {
-                    id
-                    name
-                    color {
-                      id
-                      name
+                    products {
+                        id
+                        photos {
+                          id
+                          name
+                          color {
+                            id
+                            name
+                          }
+                        }
                     }
-                  }
                 }
               }             
         `;
@@ -795,7 +817,7 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult?.data?.updateProducts as any[])[0]).toMatchObject({
+            expect((gqlResult?.data?.updateProducts.products as any[])[0]).toMatchObject({
                 id: productId,
                 photos: [{ id: photoId, name: "Green Photo", color: { id: colorId, name: "Green" } }],
             });
@@ -858,15 +880,17 @@ describe("update", () => {
                     }]
                   }
                 ) {
-                  id
-                  photos {
-                    id
-                    name
-                    color {
-                      id
-                      name
+                    products {
+                        id
+                        photos {
+                            id
+                            name
+                            color {
+                            id
+                            name
+                            }
+                        }
                     }
-                  }
                 }
               }             
         `;
@@ -890,7 +914,7 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult?.data?.updateProducts as any[])[0]).toMatchObject({
+            expect((gqlResult?.data?.updateProducts.products as any[])[0]).toMatchObject({
                 id: productId,
                 photos: [{ id: photoId, name: "Green Photo", color: { id: colorId, name: "Green" } }],
             });
