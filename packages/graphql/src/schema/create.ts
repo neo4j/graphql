@@ -1,3 +1,4 @@
+import camelCase from "camelcase";
 import { GraphQLResolveInfo } from "graphql";
 import pluralize from "pluralize";
 import { execute } from "../utils";
@@ -25,9 +26,7 @@ function create({ node, getSchema }: { node: Node; getSchema: () => NeoSchema })
         });
 
         return {
-            [pluralize(node.name.charAt(0).toLowerCase() + node.name.slice(1))]: Object.values(
-                (result[0] || {}) as any
-            ),
+            [pluralize(camelCase(node.name))]: Object.values((result[0] || {}) as any),
         };
     }
 

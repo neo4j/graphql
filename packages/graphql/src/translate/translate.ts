@@ -1,3 +1,4 @@
+import camelCase from "camelcase";
 import { GraphQLResolveInfo } from "graphql";
 import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import pluralize from "pluralize";
@@ -124,9 +125,8 @@ function translateCreate({
     node: Node;
 }): [string, any] {
     const fieldsByTypeName =
-        resolveTree.fieldsByTypeName[`Create${pluralize(node.name)}MutationResponse`][
-            pluralize(node.name.charAt(0).toLowerCase() + node.name.slice(1))
-        ].fieldsByTypeName;
+        resolveTree.fieldsByTypeName[`Create${pluralize(node.name)}MutationResponse`][pluralize(camelCase(node.name))]
+            .fieldsByTypeName;
 
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {
@@ -197,9 +197,8 @@ function translateUpdate({
     const disconnectInput = resolveTree.args.disconnect;
     const createInput = resolveTree.args.create;
     const fieldsByTypeName =
-        resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][
-            pluralize(node.name.charAt(0).toLowerCase() + node.name.slice(1))
-        ].fieldsByTypeName;
+        resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][pluralize(camelCase(node.name))]
+            .fieldsByTypeName;
     const varName = "this";
 
     const matchStr = `MATCH (${varName}:${node.name})`;

@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+import camelCase from "camelcase";
 import {
     graphql,
     printSchema,
@@ -121,7 +122,7 @@ describe("TCK Generated tests", () => {
                                 compare(context, resolveInfo);
 
                                 return {
-                                    [pluralize(def.name.value.charAt(0).toLowerCase() + def.name.value.slice(1))]: [],
+                                    [pluralize(camelCase(def.name.value))]: [],
                                 };
                             },
                             [`update${pluralize(def.name.value)}`]: (
@@ -135,7 +136,7 @@ describe("TCK Generated tests", () => {
                                 compare(context, resolveInfo);
 
                                 return {
-                                    [pluralize(def.name.value.charAt(0).toLowerCase() + def.name.value.slice(1))]: [],
+                                    [pluralize(camelCase(def.name.value))]: [],
                                 };
                             },
                             [`delete${pluralize(def.name.value)}`]: (
