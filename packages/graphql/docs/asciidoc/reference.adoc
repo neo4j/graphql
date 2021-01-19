@@ -348,7 +348,7 @@ const typeDefs = `
 
 const resolvers = {
     Query: {
-        Users: (root, args, context, resolveInfo) => {
+        users: (root, args, context, resolveInfo) => {
             // pre
             const [cypher, params] = translate({
                 context,
@@ -782,7 +782,7 @@ You are highly encouraged to 'spin up' a playground and experiment will the full
 [source, graphql]
 ----
 query {
-    Users {
+    users {
         id
         name
     }
@@ -804,7 +804,7 @@ const users = await User.find();
 [source, graphql]
 ----
 query {
-    Users {
+    users {
         posts {
             content
         }
@@ -840,7 +840,7 @@ Use the `where` argument;
 [source, graphql]
 ----
 query {
-    Users(where: { id: "123" }) {
+    users(where: { id: "123" }) {
         id
         name
     }
@@ -854,7 +854,7 @@ Use the `where` argument, on the field;
 [source, graphql]
 ----
 query {
-    Users {
+    users {
         id
         name
         posts(where: { id: "123" }) {
@@ -871,7 +871,7 @@ Sort using the `options` argument;
 [source, graphql]
 ----
 query {
-    Users(options: { sort: createdAt_DESC }) {
+    users(options: { sort: createdAt_DESC }) {
         id
         name
         createdAt
@@ -886,7 +886,7 @@ Sort using the `options` argument, on the field;
 [source, graphql]
 ----
 query {
-    Users {
+    users {
         id
         name
         posts(options: { sort: createdAt_DESC }) {
@@ -903,7 +903,7 @@ Limit using the `options` argument;
 [source, graphql]
 ----
 query {
-    Users(options: { limit: 10 }) {
+    users(options: { limit: 10 }) {
         id
         name
         createdAt
@@ -918,7 +918,7 @@ Limit using the `options` argument, on the field;
 [source, graphql]
 ----
 query {
-    Users {
+    users {
         id
         name
         posts(options: { limit: 10 }) {
@@ -935,7 +935,7 @@ Limit using the `options` argument;
 [source, graphql]
 ----
 query {
-    Users(options: { skip: 10 }) {
+    users(options: { skip: 10 }) {
         id
         name
         createdAt
@@ -950,7 +950,7 @@ Limit using the `options` argument, on the field;
 [source, graphql]
 ----
 query {
-    Users {
+    users {
         id
         name
         posts(options: { skip: 10 }) {
@@ -966,8 +966,10 @@ query {
 ----
 mutation {
     createUsers(input: [{ name: "dan" }]) {
-        id
-        name
+        users {
+            id
+            name
+        }
     }
 }
 ----
@@ -994,8 +996,10 @@ mutation {
             }
         ]
     ) {
-        id
-        name
+        users {
+            id
+            name
+        }
     }
 }
 ----
@@ -1015,8 +1019,10 @@ mutation {
             }
         ]
     ) {
-        id
-        name
+        users {
+            id
+            name
+        }
     }
 }
 ----
@@ -1027,8 +1033,10 @@ mutation {
 ----
 mutation {
     updateUsers(where: { name: "dan" }, update: { name: "dan" }) {
-        id
-        name
+        users {
+            id
+            name
+        }
     }
 }
 ----
@@ -1054,8 +1062,10 @@ mutation {
         where: { name: "dan" }
         create: { posts: [{ content: "cool nested mutations" }] }
     ) {
-        id
-        name
+        users {
+            id
+            name
+        }
     }
 }
 ----
@@ -1069,8 +1079,10 @@ mutation {
         where: { name: "dan" }
         connect: { posts: { where: { content: "cool nested mutations" } } }
     ) {
-        id
-        name
+        users {
+            id
+            name
+        }
     }
 }
 ----
@@ -1084,8 +1096,10 @@ mutation {
         where: { name: "dan" }
         disconnect: { posts: { where: { content: "cool nested mutations" } } }
     ) {
-        id
-        name
+        users {
+            id
+            name
+        }
     }
 }
 ----

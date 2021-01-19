@@ -1,3 +1,4 @@
+import camelCase from "camelcase";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
@@ -599,6 +600,15 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ),
         });
 
+        ["Create", "Update"].map((operation) =>
+            composer.createObjectTC({
+                name: `${operation}${pluralize(node.name)}MutationResponse`,
+                fields: {
+                    [pluralize(camelCase(node.name))]: `[${node.name}!]!`,
+                },
+            })
+        );
+
         let nodeConnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
         let nodeDisconnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
         let nodeRelationInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
@@ -780,7 +790,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
-                [pluralize(node.name)]: findResolver({ node, getSchema: () => neoSchema }),
+                [pluralize(camelCase(node.name))]: findResolver({ node, getSchema: () => neoSchema }),
             });
         }
 
