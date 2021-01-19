@@ -83,7 +83,7 @@ class Node {
         const selectionSet = `
             {
                 ${
-                    [this.primitiveFields, this.scalarFields, this.enumFields].reduce(
+                    [this.primitiveFields, this.scalarFields, this.enumFields, this.dateTimeFields].reduce(
                         (res: string[], v: BaseField[]) => [...res, ...v.map((x) => x.fieldName)],
                         []
                     ) as string[]

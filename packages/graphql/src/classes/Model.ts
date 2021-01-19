@@ -26,7 +26,7 @@ function removeNull(data: any) {
     });
 }
 
-class Model<T = any> {
+class Model {
     public name: string;
 
     private namePluralized: string;
@@ -46,7 +46,7 @@ class Model<T = any> {
         this.selectionSet = printSelectionSet(selectionSet);
     }
 
-    async find({
+    async find<T = any[]>({
         where,
         options,
         selectionSet,
@@ -93,7 +93,7 @@ class Model<T = any> {
         return removeNull((result.data as any)[this.namePluralized]) as T;
     }
 
-    async create({
+    async create<T = any>({
         input,
         selectionSet,
         args = {},
@@ -130,7 +130,7 @@ class Model<T = any> {
         return removeNull((result.data as any)[mutationName]) as T;
     }
 
-    async update({
+    async update<T = any>({
         where,
         update,
         connect,
