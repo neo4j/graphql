@@ -41,7 +41,9 @@ describe("DateTime", () => {
             const create = `
                 mutation {
                     createMovies(input: [{ id: "${id}", datetime: "${date.toISOString()}" }]) {
-                        datetime
+                        movies {
+                            datetime
+                        }
                     }
                 }
             `;
@@ -92,7 +94,9 @@ describe("DateTime", () => {
             const create = `
                 mutation {
                     createMovies(input: [{ id: "${id}", datetimes: ["${date.toISOString()}", "${date.toISOString()}", "${date.toISOString()}"] }]) {
-                        datetimes
+                        movies {
+                            datetimes
+                        }
                     }
                 }
             `;
@@ -198,8 +202,10 @@ describe("DateTime", () => {
             const create = `
                 mutation {
                     updateMovies(where: {id: "${id}"}, update: {datetime: "${date.toISOString()}"}) {
-                        id
-                        datetime
+                        movies {
+                            id
+                            datetime
+                        }
                     }
                 }
             `;
