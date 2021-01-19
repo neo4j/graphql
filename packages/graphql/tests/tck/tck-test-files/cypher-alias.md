@@ -27,7 +27,7 @@ type Movie {
 
 ```graphql
 {
-    Movies {
+    movies {
         movieId: id
         actors {
             aliasActorsName: name
