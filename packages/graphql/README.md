@@ -4,9 +4,9 @@
 
 A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations.
 
-1. [Introduction](https://github.com/neo4j/graphql-tracker-temp/blob/master/introduction.md)
-2. [Reference](https://github.com/neo4j/graphql-tracker-temp/blob/master/reference.md)
-3. [Contributing](https://github.com/neo4j/graphql-tracker-temp/blob/master/contributing.md)
+1. [Introduction](https://github.com/neo4j/graphql-tracker-temp/blob/master/introduction.adoc)
+2. [Reference](https://github.com/neo4j/graphql-tracker-temp/blob/master/reference.adoc)
+3. [Contributing](https://github.com/neo4j/graphql-tracker-temp/blob/master/contributing.adoc)
 
 ## Installation
 
