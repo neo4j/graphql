@@ -26,7 +26,7 @@ type Movie {
 
 ```graphql
 query($title: String, $isFavorite: Boolean) {
-    Movies(where: { title: $title, isFavorite: $isFavorite }) {
+    movies(where: { title: $title, isFavorite: $isFavorite }) {
         title
     }
 }
@@ -62,7 +62,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: { AND: [{ title: "some title" }] }) {
+    movies(where: { AND: [{ title: "some title" }] }) {
         title
     }
 }
@@ -92,7 +92,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: { AND: [{ AND: [{ title: "some title" }] }] }) {
+    movies(where: { AND: [{ AND: [{ title: "some title" }] }] }) {
         title
     }
 }
@@ -122,7 +122,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: { AND: [{ AND: [{ AND: [{ title: "some title" }] }] }] }) {
+    movies(where: { AND: [{ AND: [{ AND: [{ title: "some title" }] }] }] }) {
         title
     }
 }
@@ -152,7 +152,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: { OR: [{ title: "some title" }] }) {
+    movies(where: { OR: [{ title: "some title" }] }) {
         title
     }
 }
@@ -182,7 +182,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: { OR: [{ OR: [{ title: "some title" }] }] }) {
+    movies(where: { OR: [{ OR: [{ title: "some title" }] }] }) {
         title
     }
 }
@@ -212,7 +212,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: { OR: [{ OR: [{ OR: [{ title: "some title" }] }] }] }) {
+    movies(where: { OR: [{ OR: [{ OR: [{ title: "some title" }] }] }] }) {
         title
     }
 }
@@ -242,7 +242,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    Movies(where: { title_IN: ["some title"] }) {
+    movies(where: { title_IN: ["some title"] }) {
         title
     }
 }

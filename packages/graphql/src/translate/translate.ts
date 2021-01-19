@@ -420,7 +420,7 @@ function translate({
         ) as Node;
     } else {
         operation = "read";
-        node = context.neoSchema.nodes.find((x) => x.name === pluralize.singular(resolveTree.name)) as Node;
+        node = context.neoSchema.nodes.find((x) => camelCase(x.name) === pluralize.singular(resolveTree.name)) as Node;
     }
 
     if (node.auth) {

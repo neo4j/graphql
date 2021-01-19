@@ -47,7 +47,7 @@ describe("unions", () => {
 
         const query = `
             {
-                Movies (where: {title: "${movieTitle}"}) {
+                movies (where: {title: "${movieTitle}"}) {
                     search {
                         __typename
                         ... on Movie {
@@ -76,7 +76,7 @@ describe("unions", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            const movies = (gqlResult.data as any).Movies[0] as any;
+            const movies = (gqlResult.data as any).movies[0] as any;
 
             const movieSearch = movies.search.find((x) => x.__typename === "Movie");
             expect(movieSearch.title).toEqual(movieTitle);

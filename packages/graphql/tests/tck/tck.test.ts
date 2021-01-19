@@ -94,7 +94,12 @@ describe("TCK Generated tests", () => {
 
                         return {
                             ...res,
-                            [pluralize(def.name.value)]: (_root: any, _params: any, ctx: any, resolveInfo: any) => {
+                            [pluralize(camelCase(def.name.value))]: (
+                                _root: any,
+                                _params: any,
+                                ctx: any,
+                                resolveInfo: any
+                            ) => {
                                 ctx.neoSchema = neoSchema;
 
                                 compare(context, resolveInfo);

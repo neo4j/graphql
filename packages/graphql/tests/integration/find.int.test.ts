@@ -39,7 +39,7 @@ describe("find", () => {
 
         const query = `
             query($id: ID){
-                Movies(where: {id: $id}){
+                movies(where: {id: $id}){
                     id
                 }
             }
@@ -62,7 +62,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.Movies).toEqual([{ id }, { id }, { id }]);
+            expect(result?.data?.movies).toEqual([{ id }, { id }, { id }]);
         } finally {
             await session.close();
         }
@@ -92,7 +92,7 @@ describe("find", () => {
 
         const query = `
             query($id: ID){
-                Movies(where: {id: $id}, options: {limit: 2}){
+                movies(where: {id: $id}, options: {limit: 2}){
                     id
                 }
             }
@@ -115,7 +115,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.Movies).toEqual([{ id }, { id }]);
+            expect(result?.data?.movies).toEqual([{ id }, { id }]);
         } finally {
             await session.close();
         }
@@ -151,7 +151,7 @@ describe("find", () => {
 
         const query = `
             query($ids: [ID]){
-                Movies(where: {id_IN: $ids}){
+                movies(where: {id_IN: $ids}){
                     id
                 }
             }
@@ -174,7 +174,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.Movies.forEach((e: { id: string }) => {
+            result?.data?.movies.forEach((e: { id: string }) => {
                 expect([id1, id2, id3].includes(e.id)).toBeTruthy();
             });
         } finally {
@@ -215,7 +215,7 @@ describe("find", () => {
 
         const query = `
             query($ids: [ID], $title: String){
-                Movies(where: {id_IN: $ids, title: $title}){
+                movies(where: {id_IN: $ids, title: $title}){
                     id
                     title
                 }
@@ -239,7 +239,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.Movies.forEach((e: { id: string; title: string }) => {
+            result?.data?.movies.forEach((e: { id: string; title: string }) => {
                 expect([id1, id2, id3].includes(e.id)).toBeTruthy();
                 expect(e.title).toEqual(title);
             });
@@ -287,7 +287,7 @@ describe("find", () => {
 
         const query = `
             query($movieIds: [ID], $actorIds: [ID]){
-                Movies(where: {id_IN: $movieIds}){
+                movies(where: {id_IN: $movieIds}){
                     id
                     actors(where: {id_IN: $actorIds}){
                         id
@@ -331,7 +331,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.Movies.forEach((movie: { id: string; title: string; actors: { id: string }[] }) => {
+            result?.data?.movies.forEach((movie: { id: string; title: string; actors: { id: string }[] }) => {
                 expect([movieId1, movieId2, movieId3].includes(movie.id)).toBeTruthy();
 
                 switch (movie.id) {
@@ -427,7 +427,7 @@ describe("find", () => {
 
         const query = `
             query($movieIds: [ID], $actorIds: [ID]){
-                Movies(where: {id_IN: $movieIds}){
+                movies(where: {id_IN: $movieIds}){
                     id
                     actors(actorIds: $actorIds) {
                         id
@@ -465,7 +465,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            result?.data?.Movies.forEach((movie: { id: string; actors: { id: string }[] }) => {
+            result?.data?.movies.forEach((movie: { id: string; actors: { id: string }[] }) => {
                 expect([movieId1, movieId2, movieId3].includes(movie.id)).toBeTruthy();
 
                 movie.actors.forEach((actor) => {
@@ -506,7 +506,7 @@ describe("find", () => {
 
         const query = `
             query($movieWhere: MovieWhere){
-                Movies(where: $movieWhere){
+                movies(where: $movieWhere){
                     id
                     title
                 }
@@ -530,7 +530,7 @@ describe("find", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.Movies).toEqual([{ id, title }]);
+            expect(result?.data?.movies).toEqual([{ id, title }]);
         } finally {
             await session.close();
         }

@@ -32,7 +32,7 @@ type Movie {
 
 ```graphql
 {
-    Movies(where: { title: "some title" }) {
+    movies(where: { title: "some title" }) {
         search(
             Movie: { title: "The Matrix" }
             Genre: { name: "Horror" }
