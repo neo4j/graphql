@@ -9,7 +9,7 @@ type Actor {
     name: String
     movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
 }
-    
+
 type Movie {
     id: ID
     title: String
@@ -25,9 +25,11 @@ type Movie {
 
 ```graphql
 mutation {
-  updateMovies(where: { id: "1" }, update: { id: "2" }) {
-    id
-  }
+    updateMovies(where: { id: "1" }, update: { id: "2" }) {
+        movies {
+            id
+        }
+    }
 }
 ```
 
@@ -52,23 +54,24 @@ RETURN this { .id } AS this
 
 ---
 
-### Single Nested Update 
+### Single Nested Update
 
 **GraphQL input**
 
 ```graphql
 mutation {
-  updateMovies(
-    where: { id: "1" },
-    update: { 
-      actors: [{
-        where: { name: "old name" },
-        update: { name: "new name" }
-      }]
+    updateMovies(
+        where: { id: "1" }
+        update: {
+            actors: [
+                { where: { name: "old name" }, update: { name: "new name" } }
+            ]
+        }
+    ) {
+        movies {
+            id
+        }
     }
-) {
-    id
-  }
 }
 ```
 
@@ -76,16 +79,16 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id 
-WITH this 
-OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor) 
-WHERE this_actors0.name = $this_actors0_name 
-CALL apoc.do.when(this_actors0 IS NOT NULL, 
-  " 
-    SET this_actors0.name = $this_update_actors0_name 
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
+WHERE this_actors0.name = $this_actors0_name
+CALL apoc.do.when(this_actors0 IS NOT NULL,
+  "
+    SET this_actors0.name = $this_update_actors0_name
     RETURN count(*)
   ",
-  "", 
+  "",
   {this:this, this_actors0:this_actors0, this_update_actors0_name:$this_update_actors0_name}) YIELD value as _
 
 RETURN this { .id } AS this
@@ -103,56 +106,62 @@ RETURN this { .id } AS this
 
 ---
 
-### Double Nested Update 
+### Double Nested Update
 
 **GraphQL input**
 
 ```graphql
 mutation {
-  updateMovies(
-    where: { id: "1" },
-    update: { 
-      actors: [{
-        where: { name: "old actor name" },
-        update: { 
-          name: "new actor name",
-          movies: [{
-            where: { id: "old movie title" },
-            update: { title: "new movie title" }
-          }]
+    updateMovies(
+        where: { id: "1" }
+        update: {
+            actors: [
+                {
+                    where: { name: "old actor name" }
+                    update: {
+                        name: "new actor name"
+                        movies: [
+                            {
+                                where: { id: "old movie title" }
+                                update: { title: "new movie title" }
+                            }
+                        ]
+                    }
+                }
+            ]
         }
-      }]
+    ) {
+        movies {
+            id
+        }
     }
-) {
-    id
-  }
 }
 ```
 
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
-WHERE this.id = $this_id 
-WITH this 
-OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor) 
-WHERE this_actors0.name = $this_actors0_name 
-CALL apoc.do.when(this_actors0 IS NOT NULL, " 
-    SET this_actors0.name = $this_update_actors0_name 
+MATCH (this:Movie)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
+WHERE this_actors0.name = $this_actors0_name
+CALL apoc.do.when(this_actors0 IS NOT NULL, "
+    SET this_actors0.name = $this_update_actors0_name
 
-    WITH this, this_actors0 
-    OPTIONAL MATCH (this_actors0)-[:ACTED_IN]->(this_actors0_movies0:Movie) 
-    WHERE this_actors0_movies0.id = $this_actors0_movies0_id 
-    CALL apoc.do.when(this_actors0_movies0 IS NOT NULL, \" 
-        SET this_actors0_movies0.title = $this_update_actors0_movies0_title 
-        RETURN count(*) 
-    \", 
-      \"\", 
-      {this_actors0:this_actors0, this_actors0_movies0:this_actors0_movies0, this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _ 
+    WITH this, this_actors0
+    OPTIONAL MATCH (this_actors0)-[:ACTED_IN]->(this_actors0_movies0:Movie)
+    WHERE this_actors0_movies0.id = $this_actors0_movies0_id
+    CALL apoc.do.when(this_actors0_movies0 IS NOT NULL, \"
+        SET this_actors0_movies0.title = $this_update_actors0_movies0_title
+        RETURN count(*)
+    \",
+      \"\",
+      {this_actors0:this_actors0, this_actors0_movies0:this_actors0_movies0, this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _
 
     RETURN count(*)
-  ", 
-  "", 
+  ",
+  "",
   {this:this, this_actors0:this_actors0, this_update_actors0_name:$this_update_actors0_name,this_actors0_movies0_id:$this_actors0_movies0_id,this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _
 
 RETURN this { .id } AS this
@@ -179,23 +188,28 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-  updateMovies(where: { id: "1" }, connect: {actors: [{where: {name: "Daniel"}}]}) {
-    id
-  }
+    updateMovies(
+        where: { id: "1" }
+        connect: { actors: [{ where: { name: "Daniel" } }] }
+    ) {
+        movies {
+            id
+        }
+    }
 }
 ```
 
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
-WHERE this.id = $this_id 
-WITH this 
-OPTIONAL MATCH (this_connect_actors0:Actor) 
-WHERE this_connect_actors0.name = $this_connect_actors0_name 
-FOREACH(_ IN CASE this_connect_actors0 WHEN NULL THEN [] ELSE [1] END | 
-MERGE (this)<-[:ACTED_IN]-(this_connect_actors0) 
-) 
+MATCH (this:Movie)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this_connect_actors0:Actor)
+WHERE this_connect_actors0.name = $this_connect_actors0_name
+FOREACH(_ IN CASE this_connect_actors0 WHEN NULL THEN [] ELSE [1] END |
+MERGE (this)<-[:ACTED_IN]-(this_connect_actors0)
+)
 RETURN this { .id } AS this
 ```
 
@@ -216,23 +230,28 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-  updateMovies(where: { id: "1" }, disconnect: {actors: [{where: {name: "Daniel"}}]}) {
-    id
-  }
+    updateMovies(
+        where: { id: "1" }
+        disconnect: { actors: [{ where: { name: "Daniel" } }] }
+    ) {
+        movies {
+            id
+        }
+    }
 }
 ```
 
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
-WHERE this.id = $this_id 
-WITH this 
+MATCH (this:Movie)
+WHERE this.id = $this_id
+WITH this
 OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
-WHERE this_disconnect_actors0.name = $this_disconnect_actors0_name 
-FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END | 
+WHERE this_disconnect_actors0.name = $this_disconnect_actors0_name
+FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
 DELETE this_disconnect_actors0_rel
-) 
+)
 RETURN this { .id } AS this
 ```
 
@@ -253,18 +272,22 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-  updateActors(
-    where: { name: "Dan" }
-    update: {
-      movies: { create: [{ id: "dan_movie_id", title: "The Story of Beer" }] }
+    updateActors(
+        where: { name: "Dan" }
+        update: {
+            movies: {
+                create: [{ id: "dan_movie_id", title: "The Story of Beer" }]
+            }
+        }
+    ) {
+        actors {
+            name
+            movies {
+                id
+                title
+            }
+        }
     }
-  ) {
-    name
-    movies {
-      id
-      title
-    }
-  }
 }
 ```
 
@@ -301,31 +324,31 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)  | this_m
 
 ```graphql
 mutation {
-  updateActors(
-    where: { name: "Dan" }
-    create: {
-      movies: [{ id: "dan_movie_id", title: "The Story of Beer" }]
+    updateActors(
+        where: { name: "Dan" }
+        create: { movies: [{ id: "dan_movie_id", title: "The Story of Beer" }] }
+    ) {
+        actors {
+            name
+            movies {
+                id
+                title
+            }
+        }
     }
-  ) {
-    name
-    movies {
-      id
-      title
-    }
-  }
 }
 ```
 
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Actor) 
-WHERE this.name = $this_name 
+MATCH (this:Actor)
+WHERE this.name = $this_name
 
-CREATE (this_create_movies0:Movie) 
-SET this_create_movies0.id = $this_create_movies0_id 
-SET this_create_movies0.title = $this_create_movies0_title 
-MERGE (this)-[:ACTED_IN]->(this_create_movies0) 
+CREATE (this_create_movies0:Movie)
+SET this_create_movies0.id = $this_create_movies0_id
+SET this_create_movies0.title = $this_create_movies0_title
+MERGE (this)-[:ACTED_IN]->(this_create_movies0)
 
 RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_movies { .id, .title } ] } AS this
 ```

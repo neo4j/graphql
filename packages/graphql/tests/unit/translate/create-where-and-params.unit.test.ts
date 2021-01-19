@@ -21,6 +21,12 @@ describe("createWhereAndParams", () => {
             enumFields: [],
             scalarFields: [],
             primitiveFields: [],
+            dateTimeFields: [],
+            interfaceFields: [],
+            unionFields: [],
+            objectFields: [],
+            otherDirectives: [],
+            interfaces: [],
         };
 
         // @ts-ignore

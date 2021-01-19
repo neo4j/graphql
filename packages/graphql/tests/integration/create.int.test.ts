@@ -37,7 +37,9 @@ describe("create", () => {
         const query = `
         mutation($id: ID!) {
             createMovies(input: [{ id: $id }]) {
-              id
+                movies {
+                    id
+                }
             }
           }
         `;
@@ -52,7 +54,7 @@ describe("create", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.createMovies).toEqual([{ id }]);
+            expect(gqlResult?.data?.createMovies).toEqual({ movies: [{ id }] });
 
             const reFind = await session.run(
                 `
@@ -93,7 +95,9 @@ describe("create", () => {
         const query = `
         mutation($id1: ID!, $id2: ID!) {
             createMovies(input: [{ id: $id1 }, {id: $id2}]) {
-              id
+                movies {
+                    id
+                }
             }
           }
         `;
@@ -108,7 +112,7 @@ describe("create", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult?.data?.createMovies).toEqual([{ id: id1 }, { id: id2 }]);
+            expect(gqlResult?.data?.createMovies).toEqual({ movies: [{ id: id1 }, { id: id2 }] });
 
             const reFind = await session.run(
                 `
@@ -225,7 +229,9 @@ describe("create", () => {
             createProducts(
               input: $input
             ) {
-              id
+                products {
+                    id
+                }
             }
           }
         `;
@@ -260,7 +266,7 @@ describe("create", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        const graphqlProduct = gqlResult?.data?.createProducts[0];
+        const graphqlProduct = gqlResult?.data?.createProducts.products[0];
         expect(graphqlProduct.id).toEqual(product.id);
 
         const cypher = `

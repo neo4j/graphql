@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import camelCase from "camelcase";
 import { describe, expect, test, afterAll, beforeAll } from "@jest/globals";
 import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
@@ -57,7 +58,7 @@ describe("Advanced Filtering", () => {
 
                         const query = `
                             { 
-                                Movies(where: { property_IN: ["${value}", "${randomValue1}", "${randomValue2}"] }) {
+                                movies(where: { property_IN: ["${value}", "${randomValue1}", "${randomValue2}"] }) {
                                     property
                                 }
                             }
@@ -75,9 +76,9 @@ describe("Advanced Filtering", () => {
 
                         expect(gqlResult.errors).toEqual(undefined);
 
-                        expect((gqlResult.data as any).Movies.length).toEqual(1);
+                        expect((gqlResult.data as any).movies.length).toEqual(1);
 
-                        expect((gqlResult.data as any).Movies[0].property).toEqual(value);
+                        expect((gqlResult.data as any).movies[0].property).toEqual(value);
                     } finally {
                         session.close();
                     }
@@ -94,7 +95,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -156,7 +157,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -224,7 +225,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -298,7 +299,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -364,7 +365,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -433,7 +434,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -501,7 +502,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -568,7 +569,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -637,7 +638,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -709,7 +710,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -782,7 +783,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -862,7 +863,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -944,7 +945,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -1011,7 +1012,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -1077,7 +1078,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -1144,7 +1145,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     })}Movie`;
 
-                    const pluralRandomType = pluralize(randomType);
+                    const pluralRandomType = pluralize(camelCase(randomType));
 
                     const typeDefs = `
                         type ${randomType} {
@@ -1210,7 +1211,7 @@ describe("Advanced Filtering", () => {
                 charset: "alphabetic",
             })}Movie`;
 
-            const pluralRandomType = pluralize(randomType);
+            const pluralRandomType = pluralize(camelCase(randomType));
 
             const typeDefs = `
                         type ${randomType} {
@@ -1263,7 +1264,7 @@ describe("Advanced Filtering", () => {
                 charset: "alphabetic",
             })}Movie`;
 
-            const pluralRandomType = pluralize(randomType);
+            const pluralRandomType = pluralize(camelCase(randomType));
 
             const typeDefs = `
                         type ${randomType} {
@@ -1322,8 +1323,8 @@ describe("Advanced Filtering", () => {
                 charset: "alphabetic",
             })}Genre`;
 
-            const pluralRandomType1 = pluralize(randomType1);
-            const pluralRandomType2 = pluralize(randomType2);
+            const pluralRandomType1 = pluralize(camelCase(randomType1));
+            const pluralRandomType2 = pluralize(camelCase(randomType2));
 
             const typeDefs = `
                     type ${randomType1} {
@@ -1406,8 +1407,8 @@ describe("Advanced Filtering", () => {
                 charset: "alphabetic",
             })}Genre`;
 
-            const pluralRandomType1 = pluralize(randomType1);
-            const pluralRandomType2 = pluralize(randomType2);
+            const pluralRandomType1 = pluralize(camelCase(randomType1));
+            const pluralRandomType2 = pluralize(camelCase(randomType2));
 
             const typeDefs = `
                     type ${randomType1} {
@@ -1493,8 +1494,8 @@ describe("Advanced Filtering", () => {
                 charset: "alphabetic",
             })}Genre`;
 
-            const pluralRandomType1 = pluralize(randomType1);
-            const pluralRandomType2 = pluralize(randomType2);
+            const pluralRandomType1 = pluralize(camelCase(randomType1));
+            const pluralRandomType2 = pluralize(camelCase(randomType2));
 
             const typeDefs = `
                     type ${randomType1} {
@@ -1586,8 +1587,8 @@ describe("Advanced Filtering", () => {
                 charset: "alphabetic",
             })}Genre`;
 
-            const pluralRandomType1 = pluralize(randomType1);
-            const pluralRandomType2 = pluralize(randomType2);
+            const pluralRandomType1 = pluralize(camelCase(randomType1));
+            const pluralRandomType2 = pluralize(camelCase(randomType2));
 
             const typeDefs = `
                     type ${randomType1} {
