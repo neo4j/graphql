@@ -42,39 +42,51 @@ Test the creation of the Pringles.
 
 ```graphql
 mutation {
-  createProducts(
-    input: [
-      {
-        id: 1
-        name: "Pringles"
-        sizes: {
-          create: [{ id: 103, name: "Small" }, { id: 104, name: "Large" }]
-        }
-        colors: {
-          create: [{ id: 100, name: "Red" }, { id: 102, name: "Green" }]
-        }
-        photos: {
-          create: [
-            { id: 105, description: "Outdoor photo", url: "outdoor.png" }
+    createProducts(
+        input: [
             {
-              id: 106
-              description: "Green photo"
-              url: "g.png"
-              color: { connect: { where: { id: "102" } } }
+                id: 1
+                name: "Pringles"
+                sizes: {
+                    create: [
+                        { id: 103, name: "Small" }
+                        { id: 104, name: "Large" }
+                    ]
+                }
+                colors: {
+                    create: [
+                        { id: 100, name: "Red" }
+                        { id: 102, name: "Green" }
+                    ]
+                }
+                photos: {
+                    create: [
+                        {
+                            id: 105
+                            description: "Outdoor photo"
+                            url: "outdoor.png"
+                        }
+                        {
+                            id: 106
+                            description: "Green photo"
+                            url: "g.png"
+                            color: { connect: { where: { id: "102" } } }
+                        }
+                        {
+                            id: 107
+                            description: "Red photo"
+                            url: "r.png"
+                            color: { connect: { where: { id: "100" } } }
+                        }
+                    ]
+                }
             }
-            {
-              id: 107
-              description: "Red photo"
-              url: "r.png"
-              color: { connect: { where: { id: "100" } } }
-            }
-          ]
+        ]
+    ) {
+        products {
+            id
         }
-      }
-    ]
-  ) {
-    id
-  }
+    }
 }
 ```
 
@@ -85,7 +97,7 @@ CALL {
   CREATE (this0:Product)
   SET this0.id = $this0_id
   SET this0.name = $this0_name
-    
+
     WITH this0
     CREATE (this0_sizes0:Size)
     SET this0_sizes0.id = $this0_sizes0_id
@@ -122,7 +134,7 @@ CALL {
     SET this0_photos1.id = $this0_photos1_id
     SET this0_photos1.description = $this0_photos1_description
     SET this0_photos1.url = $this0_photos1_url
-      
+
       WITH this0, this0_photos1
       OPTIONAL MATCH (this0_photos1_color_connect0:Color)
       WHERE this0_photos1_color_connect0.id = $this0_photos1_color_connect0_id
@@ -140,8 +152,8 @@ CALL {
       WITH this0, this0_photos2
       OPTIONAL MATCH (this0_photos2_color_connect0:Color)
       WHERE this0_photos2_color_connect0.id = $this0_photos2_color_connect0_id
-      FOREACH(_ IN CASE this0_photos2_color_connect0 WHEN NULL THEN [] ELSE [1] END | 
-        MERGE (this0_photos2)-[:OF_COLOR]->(this0_photos2_color_connect0)  
+      FOREACH(_ IN CASE this0_photos2_color_connect0 WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this0_photos2)-[:OF_COLOR]->(this0_photos2_color_connect0)
       )
     MERGE (this0)-[:HAS_PHOTO]->(this0_photos2)
 
@@ -181,7 +193,6 @@ RETURN this0 { .id } AS this0
 
 ---
 
-
 ### Update Pringles Color
 
 Changes the color of Pringles from Green to Light Green.
@@ -190,56 +201,60 @@ Changes the color of Pringles from Green to Light Green.
 
 ```graphql
 mutation {
-  updateProducts(
-    where: { name: "Pringles" }
-    update: {
-      photos: [{
-        where: { description: "Green Photo" }
+    updateProducts(
+        where: { name: "Pringles" }
         update: {
-          description: "Light Green Photo"
-          color: {
-            connect: { where: { name: "Light Green" } }
-            disconnect: { where: { name: "Green" } }
-          }
+            photos: [
+                {
+                    where: { description: "Green Photo" }
+                    update: {
+                        description: "Light Green Photo"
+                        color: {
+                            connect: { where: { name: "Light Green" } }
+                            disconnect: { where: { name: "Green" } }
+                        }
+                    }
+                }
+            ]
         }
-      }]
+    ) {
+        products {
+            id
+        }
     }
-  ) {
-    id
-  }
 }
 ```
 
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Product) 
-WHERE this.name = $this_name 
+MATCH (this:Product)
+WHERE this.name = $this_name
 
-WITH this 
-OPTIONAL MATCH (this)-[:HAS_PHOTO]->(this_photos0:Photo) 
-WHERE this_photos0.description = $this_photos0_description 
-CALL apoc.do.when(this_photos0 IS NOT NULL, 
-  " 
-    SET this_photos0.description = $this_update_photos0_description 
-    WITH this, this_photos0 
-    OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color) 
-    WHERE this_photos0_color0_disconnect0.name = $this_photos0_color0_disconnect0_name 
-    FOREACH(_ IN CASE this_photos0_color0_disconnect0 WHEN NULL THEN [] ELSE [1] END | 
-      DELETE this_photos0_color0_disconnect0_rel 
-    ) 
-    
-    WITH this, this_photos0 
-    OPTIONAL MATCH (this_photos0_color0_connect0:Color) 
-    WHERE this_photos0_color0_connect0.name = $this_photos0_color0_connect0_name 
-    FOREACH(_ IN CASE this_photos0_color0_connect0 WHEN NULL THEN [] ELSE [1] END | 
-      MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0) 
-    ) 
-    
-    RETURN count(*) 
-  ", 
+WITH this
+OPTIONAL MATCH (this)-[:HAS_PHOTO]->(this_photos0:Photo)
+WHERE this_photos0.description = $this_photos0_description
+CALL apoc.do.when(this_photos0 IS NOT NULL,
+  "
+    SET this_photos0.description = $this_update_photos0_description
+    WITH this, this_photos0
+    OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
+    WHERE this_photos0_color0_disconnect0.name = $this_photos0_color0_disconnect0_name
+    FOREACH(_ IN CASE this_photos0_color0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
+      DELETE this_photos0_color0_disconnect0_rel
+    )
+
+    WITH this, this_photos0
+    OPTIONAL MATCH (this_photos0_color0_connect0:Color)
+    WHERE this_photos0_color0_connect0.name = $this_photos0_color0_connect0_name
+    FOREACH(_ IN CASE this_photos0_color0_connect0 WHEN NULL THEN [] ELSE [1] END |
+      MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0)
+    )
+
+    RETURN count(*)
+  ",
   "",
-  {this:this, this_photos0:this_photos0, this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_disconnect0_name:$this_photos0_color0_disconnect0_name,this_photos0_color0_connect0_name:$this_photos0_color0_connect0_name}) YIELD value as _ 
+  {this:this, this_photos0:this_photos0, this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_disconnect0_name:$this_photos0_color0_disconnect0_name,this_photos0_color0_connect0_name:$this_photos0_color0_connect0_name}) YIELD value as _
 
 RETURN this { .id } AS this
 ```
