@@ -135,7 +135,9 @@ describe("auth", () => {
                     query = `
                         mutation {
                             updateProducts(disconnect: {colors: {where: {name: "red"}}}){
-                                id
+                                products {
+                                    id
+                                }
                             }
                         }
                     `;
@@ -145,7 +147,9 @@ describe("auth", () => {
                     query = `
                         mutation {
                             updateProducts(connect: {colors: {where: {name: "red"}}}){
-                                id
+                                products {
+                                    id
+                                }
                             }
                         }
                     `;
@@ -1717,7 +1721,9 @@ describe("auth", () => {
                                 }
                             }
                         ]) {
-                            id
+                            posts {
+                                id
+                            }
                         }
                     }
                 `;
@@ -1803,7 +1809,9 @@ describe("auth", () => {
                                 }
                             }
                         ) {
-                            id
+                            posts {
+                                id
+                            }
                         }
                     }
                 `;
