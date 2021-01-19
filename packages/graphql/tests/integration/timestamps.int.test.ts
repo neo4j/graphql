@@ -38,7 +38,9 @@ describe("TimeStamps", () => {
             const create = `
                 mutation {
                     createMovies(input: [{ id: "${id}" }]) {
-                        id
+                        movies {
+                            id
+                        }
                     }
                 }
             `;
@@ -92,7 +94,9 @@ describe("TimeStamps", () => {
             const create = `
                 mutation {
                     updateMovies(where: {id: "${id}"}, update: { id: "${id}" }) {
-                        id
+                        movies {
+                            id
+                        }
                     }
                 }
             `;
