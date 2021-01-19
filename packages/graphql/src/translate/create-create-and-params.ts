@@ -22,12 +22,12 @@ function createCreateAndParams({
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const _varName = `${varName}_${key}`;
-
         const relationField = node.relationFields.find((x) => key.startsWith(x.fieldName));
-        let unionTypeName = "";
+        const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
 
         if (relationField) {
             let refNode: Node;
+            let unionTypeName = "";
 
             if (relationField.union) {
                 [unionTypeName] = key.split(`${relationField.fieldName}_`).join("").split("_");
@@ -77,16 +77,27 @@ function createCreateAndParams({
             return res;
         }
 
-        res.creates.push(`SET ${varName}.${key} = $${_varName}`);
-        res.params[_varName] = value;
+        if (primitiveField?.autogenerate) {
+            res.creates.push(`SET ${varName}.${key} = randomUUID()`);
+        } else {
+            res.creates.push(`SET ${varName}.${key} = $${_varName}`);
+            res.params[_varName] = value;
+        }
 
         return res;
     }
 
     checkRoles({ node, context, operation: "create" });
 
+    const initial = [`CREATE (${varName}:${node.name})`];
+
+    const timestamps = node.dateTimeFields.filter((x) => x.timestamps && x.timestamps.includes("create"));
+    timestamps.forEach((ts) => {
+        initial.push(`SET ${varName}.${ts.fieldName} = datetime()`);
+    });
+
     const { creates, params } = Object.entries(input).reduce(reducer, {
-        creates: [`CREATE (${varName}:${node.name})`],
+        creates: initial,
         params: {},
     }) as Res;
 

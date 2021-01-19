@@ -1,27 +1,46 @@
 # @neo4j/graphql
 
-> Work in progress ⚠
+> Alpha 🏗
 
-## Usage
+A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations.
 
-### Installation
+1. [Introduction](https://github.com/neo4j/graphql-tracker-temp/blob/master/introduction.adoc)
+2. [Reference](https://github.com/neo4j/graphql-tracker-temp/blob/master/reference.adoc)
+3. [Contributing](https://github.com/neo4j/graphql-tracker-temp/blob/master/contributing.adoc)
+
+## Installation
 
 ```
 $ npm install @neo4j/graphql
 ```
 
-### Importing
+⚠ `graphql` is a **peerDependency**
 
-```js
-const { makeAugmentedSchema } = require("@neo4j/graphql");
+```
+$ npm install graphql
 ```
 
-### Quick Start
+## Quick Start
+
+Import libraries using either `import`:
+
+```js
+import { makeAugmentedSchema } from "@neo4j/graphql";
+import * as neo4j from "neo4j-driver";
+import { ApolloServer } from "apollo-server";
+```
+
+Or `require`:
 
 ```js
 const { makeAugmentedSchema } = require("@neo4j/graphql");
-const { v1: neo4j } = require("neo4j-driver");
+const neo4j = require("neo4j-driver");
+const { ApolloServer } = require("apollo-server");
+```
 
+Then proceed to create schema objects and serve over port 4000 using Apollo Server:
+
+```js
 const typeDefs = `
     type Movie {
         title: String
@@ -45,33 +64,96 @@ const driver = neo4j.driver(
 
 const server = new ApolloServer({
     schema: neoSchema.schema,
-    context: { driver },
+    context: ({ req }) => ({ req, driver }),
 });
+
+server.listen(4000).then(() => console.log("Online"));
 ```
 
-### Debug
+## Example Queries
 
-```js
-const neoSchema = makeAugmentedSchema({ typeDefs, debug: true });
-// or
-const neoSchema = makeAugmentedSchema({
-    typeDefs,
-    debug: (...args) => console.log(args),
-});
+### Create Movie
+
+```graphql
+mutation {
+    createMovies(
+        input: [{ title: "The Matrix", year: 1999, imdbRating: 8.7 }]
+    ) {
+        title
+    }
+}
 ```
 
-## Package tests
+### Connect to Genre
 
-To make sure the build packages expose the endpoint we expected it to, we run a few tests
-on the production package.
-
-```bash
-npm run test:package-tests
+```graphql
+mutation {
+    updateMovies(
+        where: { title: "The Matrix" }
+        connect: {
+            genres: { where: { OR: [{ name: "Sci-fi" }, { name: "Action" }] } }
+        }
+    ) {
+        title
+    }
+}
 ```
 
-This script will create a npm package, move it into `packages/package-tests` (so it doesn't have
-the devDependencies from `@neo4j/graphql` in scope), unpack it and run tests on it in different environments and setups.  
-It should cleanup after itself.
+### Create Movie and connect Genre
 
-NOTE: These tests do **not** run when `lerna run test` is executed, because these are not
-tests that needds to be run in development. They should run on PR:s and before releases though.
+```graphql
+mutation {
+    createMovies(
+        input: [
+            {
+                title: "The Matrix"
+                year: 1999
+                imdbRating: 8.7
+                genres: {
+                    connect: { where: [{ name: "Sci-fi" }, { name: "Action" }] }
+                }
+            }
+        ]
+    ) {
+        title
+    }
+}
+```
+
+### Find Movies with Genres
+
+```graphql
+query {
+    Movies {
+        title
+        genres {
+            name
+        }
+    }
+}
+```
+
+## Complex Auth
+
+Define complex, nested & related, authorization rules such as; “grant update access to all moderators of a post”;
+
+```graphql
+type User {
+    id: ID!
+    username: String!
+}
+
+type Post
+    @auth(
+        rules: [
+            {
+                allow: [{ moderator: { id: "sub" } }] # "sub" being "req.jwt.sub"
+                operations: ["update"]
+            }
+        ]
+    ) {
+    id: ID!
+    title: String!
+    moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
+}
+```

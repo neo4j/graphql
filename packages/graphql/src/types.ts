@@ -42,34 +42,25 @@ export interface CypherField extends BaseField {
  * a cypher directive or relationship directive
  * String, Int, Float, ID, Boolean... (custom scalars).
  */
-export type PrimitiveField = BaseField;
+export interface PrimitiveField extends BaseField {
+    autogenerate?: boolean;
+}
 
-/**
- * custom scalars.
- */
 export type CustomScalarField = BaseField;
 
-/**
- * custom Enum.
- */
 export type CustomEnumField = BaseField;
 
-/**
- * custom Union.
- */
 export interface UnionField extends BaseField {
     nodes?: string[];
 }
 
-/**
- * custom Interface.
- */
 export type InterfaceField = BaseField;
 
-/**
- * custom Object Node.
- */
 export type ObjectField = BaseField;
+
+export interface DateTimeField extends BaseField {
+    timestamps?: TimeStampOperations[];
+}
 
 /**
  * Representation of the options arg
@@ -100,3 +91,5 @@ export interface DeleteInfo {
     nodesDeleted: number;
     relationshipsDeleted: number;
 }
+
+export type TimeStampOperations = "create" | "update";

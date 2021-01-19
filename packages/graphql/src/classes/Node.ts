@@ -9,9 +9,11 @@ import {
     InterfaceField,
     ObjectField,
     BaseField,
+    DateTimeField,
 } from "../types";
 import Auth from "./Auth";
 import Model from "./Model";
+import Exclude from "./Exclude";
 
 export interface NodeConstructor {
     name: string;
@@ -25,8 +27,10 @@ export interface NodeConstructor {
     interfaceFields: InterfaceField[];
     interfaces: NamedTypeNode[];
     objectFields: ObjectField[];
+    dateTimeFields: DateTimeField[];
     auth?: Auth;
     getGraphQLSchema: () => GraphQLSchema;
+    exclude?: Exclude;
 }
 
 class Node {
@@ -52,9 +56,13 @@ class Node {
 
     public objectFields: ObjectField[];
 
+    public dateTimeFields: DateTimeField[];
+
     public auth?: Auth;
 
     public model: Model;
+
+    public exclude?: Exclude;
 
     constructor(input: NodeConstructor) {
         this.name = input.name;
@@ -68,7 +76,9 @@ class Node {
         this.interfaceFields = input.interfaceFields;
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
+        this.dateTimeFields = input.dateTimeFields;
         this.auth = input.auth;
+        this.exclude = input.exclude;
 
         const selectionSet = `
             {
