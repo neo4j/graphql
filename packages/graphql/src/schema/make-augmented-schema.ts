@@ -5,6 +5,7 @@ import {
     EnumTypeDefinitionNode,
     InputObjectTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
+    ListValueNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
     print,
@@ -17,11 +18,12 @@ import {
     InputTypeComposer,
     DirectiveArgs,
     ObjectTypeComposer,
+    InputTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import pluralize from "pluralize";
 import { Driver } from "neo4j-driver";
-import { Auth, NeoSchema, NeoSchemaConstructor, Node } from "../classes";
+import { Auth, NeoSchema, NeoSchemaConstructor, Node, Exclude } from "../classes";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getAuth from "./get-auth";
@@ -36,6 +38,8 @@ import {
     UnionField,
     InterfaceField,
     ObjectField,
+    DateTimeField,
+    TimeStampOperations,
 } from "../types";
 import { upperFirstLetter } from "../utils";
 import findResolver from "./find";
@@ -47,6 +51,9 @@ import mergeExtensionsIntoAST from "./merge-extensions-into-ast";
 import parseValueNode from "./parse-value-node";
 import mergeTypeDefs from "./merge-typedefs";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
+import { Float, Int, DateTime } from "./scalars";
+import parseExcludeDirective from "./parse-exclude-directive";
+import graphqlArgsToCompose from "./graphql-arg-to-compose";
 
 export interface MakeAugmentedSchemaOptions {
     typeDefs: any;
@@ -65,6 +72,7 @@ interface ObjectFields {
     unionFields: UnionField[];
     interfaceFields: InterfaceField[];
     objectFields: ObjectField[];
+    dateTimeFields: DateTimeField[];
 }
 
 interface CustomResolvers {
@@ -95,6 +103,7 @@ function getObjFieldMeta({
             const relationshipMeta = getRelationshipMeta(field);
             const cypherMeta = getCypherMeta(field);
             const typeMeta = getFieldTypeMeta(field);
+            const autogenerate = field?.directives?.find((x) => x.name.value === "autogenerate");
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
             const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
@@ -105,7 +114,7 @@ function getObjFieldMeta({
                 fieldName: field.name.value,
                 typeMeta,
                 otherDirectives: (field.directives || []).filter(
-                    (x) => !["relationship", "cypher"].includes(x.name.value)
+                    (x) => !["relationship", "cypher", "autogenerate"].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
             };
@@ -173,10 +182,61 @@ function getObjFieldMeta({
                 };
                 res.objectFields.push(objectField);
             } else {
-                const primitiveField: PrimitiveField = {
-                    ...baseField,
-                };
-                res.primitiveFields.push(primitiveField);
+                // eslint-disable-next-line no-lonely-if
+                if (typeMeta.name === "DateTime") {
+                    const dateTimeField: DateTimeField = {
+                        ...baseField,
+                    };
+
+                    if (autogenerate) {
+                        if (baseField.typeMeta.array) {
+                            throw new Error("cannot auto-generate an array");
+                        }
+
+                        const operations = autogenerate.arguments?.find((x) => x.name.value === "operations");
+
+                        if (!operations) {
+                            throw new Error(`@autogenerate operations required`);
+                        }
+
+                        if (operations.value.kind !== "ListValue") {
+                            throw new Error(`@autogenerate operations must be an array`);
+                        }
+
+                        const timestamps = (operations.value as ListValueNode).values.map((x) =>
+                            parseValueNode(x)
+                        ) as TimeStampOperations[];
+
+                        const allowedOperations: TimeStampOperations[] = ["create", "update"];
+                        timestamps.forEach((op: TimeStampOperations, i) => {
+                            if (!allowedOperations.includes(op)) {
+                                throw new Error(`@autogenerate operations[${i}] invalid`);
+                            }
+                        });
+
+                        dateTimeField.timestamps = timestamps;
+                    }
+
+                    res.dateTimeFields.push(dateTimeField);
+                } else {
+                    const primitiveField: PrimitiveField = {
+                        ...baseField,
+                    };
+
+                    if (autogenerate) {
+                        if (baseField.typeMeta.name !== "ID") {
+                            throw new Error("cannot auto-generate a non ID field");
+                        }
+
+                        if (baseField.typeMeta.array) {
+                            throw new Error("cannot auto-generate an array");
+                        }
+
+                        primitiveField.autogenerate = true;
+                    }
+
+                    res.primitiveFields.push(primitiveField);
+                }
             }
 
             return res;
@@ -190,6 +250,7 @@ function getObjFieldMeta({
             unionFields: [],
             interfaceFields: [],
             objectFields: [],
+            dateTimeFields: [],
         }
     ) as ObjectFields;
 }
@@ -216,18 +277,7 @@ function objectFieldsToComposeFields(
         }
 
         if (field.arguments) {
-            newField.args = field.arguments.reduce((args, arg) => {
-                const meta = getFieldTypeMeta(arg);
-
-                return {
-                    ...args,
-                    [arg.name.value]: {
-                        type: meta.pretty,
-                        description: arg.description,
-                        defaultValue: arg.defaultValue,
-                    },
-                };
-            }, {});
+            newField.args = graphqlArgsToCompose(field.arguments);
         }
 
         return { ...res, [field.fieldName]: newField };
@@ -346,13 +396,21 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     const nodes = objectNodes.map((definition) => {
         checkNodeImplementsInterfaces(definition, interfaces);
 
-        const otherDirectives = (definition.directives || []).filter((x) => x.name.value !== "auth") as DirectiveNode[];
+        const otherDirectives = (definition.directives || []).filter(
+            (x) => !["auth", "exclude"].includes(x.name.value)
+        ) as DirectiveNode[];
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
+        const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
         let auth: Auth;
         if (authDirective) {
             auth = getAuth(authDirective);
+        }
+
+        let exclude: Exclude;
+        if (excludeDirective) {
+            exclude = parseExcludeDirective(excludeDirective, definition.name.value);
         }
 
         const nodeFields = getObjFieldMeta({
@@ -371,6 +429,8 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...nodeFields,
             // @ts-ignore
             auth,
+            // @ts-ignore
+            exclude,
             getGraphQLSchema: () => neoSchemaInput.schema,
         });
 
@@ -389,6 +449,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...node.interfaceFields,
             ...node.objectFields,
             ...node.unionFields,
+            ...node.dateTimeFields,
         ]);
 
         const composeNode = composer.createObjectTC({
@@ -408,78 +469,76 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         const sortEnum = composer.createEnumTC({
             name: `${node.name}Sort`,
-            values: [...node.primitiveFields, ...node.enumFields, ...node.scalarFields].reduce((res, f) => {
-                return {
-                    ...res,
-                    [`${f.fieldName}_DESC`]: { value: `${f.fieldName}_DESC` },
-                    [`${f.fieldName}_ASC`]: { value: `${f.fieldName}_ASC` },
-                };
-            }, {}),
+            values: [...node.primitiveFields, ...node.enumFields, ...node.scalarFields, ...node.dateTimeFields].reduce(
+                (res, f) => {
+                    return {
+                        ...res,
+                        [`${f.fieldName}_DESC`]: { value: `${f.fieldName}_DESC` },
+                        [`${f.fieldName}_ASC`]: { value: `${f.fieldName}_ASC` },
+                    };
+                },
+                {}
+            ),
         });
 
-        const queryFields = [...node.primitiveFields, ...node.enumFields, ...node.scalarFields].reduce(
+        const queryFields = [
+            ...node.primitiveFields,
+            ...node.enumFields,
+            ...node.scalarFields,
+            ...node.dateTimeFields,
+        ].reduce(
             (res, f) => {
-                if (["ID", "String"].includes(f.typeMeta.name) || enums.find((x) => x.name.value === f.typeMeta.name)) {
-                    const type = f.typeMeta.name === "ID" ? "ID" : "String";
+                let typeName: string;
 
-                    // equality
-                    if (f.typeMeta.array) {
-                        res[f.fieldName] = `[${type}]`;
-                    } else {
-                        res[f.fieldName] = type;
-                    }
+                if (enums.find((x) => x.name.value === f.typeMeta.name)) {
+                    typeName = "String";
+                } else {
+                    typeName = f.typeMeta.name;
+                }
+
+                if (f.typeMeta.array) {
+                    res[f.fieldName] = `[${typeName}]`;
+                } else {
+                    res[f.fieldName] = typeName;
+                }
+
+                if (typeName === DateTime.name) {
+                    ["_LT", "_LTE", "_GT", "_GTE"].forEach((t) => {
+                        res[`${f.fieldName}${t}`] = DateTime.name;
+                    });
+                }
+
+                if (["ID", "String"].includes(typeName) || enums.find((x) => x.name.value === typeName)) {
+                    const type = typeName === "ID" ? "ID" : "String";
 
                     res[`${f.fieldName}_IN`] = `[${type}]`;
-                    res[`${f.fieldName}_NOT`] = type;
                     res[`${f.fieldName}_NOT_IN`] = `[${type}]`;
-                    res[`${f.fieldName}_CONTAINS`] = type;
-                    res[`${f.fieldName}_NOT_CONTAINS`] = type;
-                    res[`${f.fieldName}_STARTS_WITH`] = type;
-                    res[`${f.fieldName}_NOT_STARTS_WITH`] = type;
-                    res[`${f.fieldName}_ENDS_WITH`] = type;
-                    res[`${f.fieldName}_NOT_ENDS_WITH`] = type;
                     res[`${f.fieldName}_REGEX`] = "String";
 
-                    return res;
+                    [
+                        "_NOT",
+                        "_CONTAINS",
+                        "_NOT_CONTAINS",
+                        "_STARTS_WITH",
+                        "_NOT_STARTS_WITH",
+                        "_ENDS_WITH",
+                        "_NOT_ENDS_WITH",
+                    ].forEach((t) => {
+                        res[`${f.fieldName}${t}`] = type;
+                    });
                 }
 
-                if (["Boolean"].includes(f.typeMeta.name)) {
-                    // equality
-                    if (f.typeMeta.array) {
-                        res[f.fieldName] = `[Boolean]`;
-                    } else {
-                        res[f.fieldName] = "Boolean";
-                    }
-
+                if (["Boolean"].includes(typeName)) {
                     res[`${f.fieldName}_NOT`] = "Boolean";
-
-                    return res;
                 }
 
-                if (["Float", "Int"].includes(f.typeMeta.name)) {
-                    if (f.typeMeta.array) {
-                        res[f.fieldName] = `[${f.typeMeta.name}]`;
-                    } else {
-                        // equality
-                        res[f.fieldName] = f.typeMeta.name;
-                    }
+                if (["Float", "Int"].includes(typeName)) {
+                    res[`${f.fieldName}_IN`] = `[${typeName}]`;
+                    res[`${f.fieldName}_NOT_IN`] = `[${typeName}]`;
 
-                    res[`${f.fieldName}_IN`] = `[${f.typeMeta.name}]`;
-                    res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.name}]`;
-                    res[`${f.fieldName}_NOT`] = f.typeMeta.name;
-                    res[`${f.fieldName}_LT`] = f.typeMeta.name;
-                    res[`${f.fieldName}_LTE`] = f.typeMeta.name;
-                    res[`${f.fieldName}_GT`] = f.typeMeta.name;
-                    res[`${f.fieldName}_GTE`] = f.typeMeta.name;
-
-                    return res;
-                }
-
-                // equality
-                if (f.typeMeta.array) {
-                    res[f.fieldName] = `[${f.typeMeta.name}]`;
-                } else {
-                    res[f.fieldName] = f.typeMeta.name;
+                    ["_NOT", "_LT", "_LTE", "_GT", "_GTE"].forEach((t) => {
+                        res[`${f.fieldName}${t}`] = typeName;
+                    });
                 }
 
                 return res;
@@ -499,18 +558,46 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             fields: { sort: sortEnum.List, limit: "Int", skip: "Int" },
         });
 
-        const [nodeInput, nodeUpdateInput] = ["CreateInput", "UpdateInput"].map((type) =>
-            composer.createInputTC({
-                name: `${node.name}${type}`,
-                fields: [...node.primitiveFields, ...node.scalarFields, ...node.enumFields].reduce(
-                    (res, f) => ({
-                        ...res,
-                        [f.fieldName]: f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name,
-                    }),
-                    {}
-                ),
-            })
-        );
+        const nodeInput = composer.createInputTC({
+            name: `${node.name}CreateInput`,
+            fields: [
+                ...node.primitiveFields,
+                ...node.scalarFields,
+                ...node.enumFields,
+                ...node.dateTimeFields.filter((x) => !x.timestamps),
+            ].reduce((res, f) => {
+                if ((f as PrimitiveField)?.autogenerate) {
+                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
+                        type: f.typeMeta.name,
+                        defaultValue: "autogenerate",
+                    };
+                    res[f.fieldName] = field;
+                } else {
+                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
+                        type: f.typeMeta.pretty,
+                    };
+                    res[f.fieldName] = field;
+                }
+
+                return res;
+            }, {}),
+        });
+
+        const nodeUpdateInput = composer.createInputTC({
+            name: `${node.name}UpdateInput`,
+            fields: [
+                ...node.primitiveFields,
+                ...node.scalarFields,
+                ...node.enumFields,
+                ...node.dateTimeFields.filter((x) => !x.timestamps),
+            ].reduce(
+                (res, f) => ({
+                    ...res,
+                    [f.fieldName]: f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name,
+                }),
+                {}
+            ),
+        });
 
         let nodeConnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
         let nodeDisconnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
@@ -691,15 +778,29 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             });
         });
 
-        composer.Query.addFields({
-            [pluralize(node.name)]: findResolver({ node, getSchema: () => neoSchema }),
-        });
+        if (!node.exclude?.operations.includes("read")) {
+            composer.Query.addFields({
+                [pluralize(node.name)]: findResolver({ node, getSchema: () => neoSchema }),
+            });
+        }
 
-        composer.Mutation.addFields({
-            [`create${pluralize(node.name)}`]: createResolver({ node, getSchema: () => neoSchema }),
-            [`delete${pluralize(node.name)}`]: deleteResolver({ node, getSchema: () => neoSchema }),
-            [`update${pluralize(node.name)}`]: updateResolver({ node, getSchema: () => neoSchema }),
-        });
+        if (!node.exclude?.operations.includes("create")) {
+            composer.Mutation.addFields({
+                [`create${pluralize(node.name)}`]: createResolver({ node, getSchema: () => neoSchema }),
+            });
+        }
+
+        if (!node.exclude?.operations.includes("delete")) {
+            composer.Mutation.addFields({
+                [`delete${pluralize(node.name)}`]: deleteResolver({ node, getSchema: () => neoSchema }),
+            });
+        }
+
+        if (!node.exclude?.operations.includes("update")) {
+            composer.Mutation.addFields({
+                [`update${pluralize(node.name)}`]: updateResolver({ node, getSchema: () => neoSchema }),
+            });
+        }
     });
 
     ["Mutation", "Query"].forEach((type) => {
@@ -726,6 +827,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                 ...objectFields.scalarFields,
                 ...objectFields.unionFields,
                 ...objectFields.objectFields,
+                ...objectFields.dateTimeFields,
             ]);
 
             objectComposer.addFields(objectComposeFields);
@@ -785,8 +887,17 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
     });
 
+    composer.addTypeDefs("scalar Int"); // removed if not used
+    composer.addTypeDefs("scalar Float"); // removed if not used
+    composer.addTypeDefs("scalar DateTime"); // removed if not used
+
     const generatedTypeDefs = composer.toSDL();
-    let generatedResolvers = composer.getResolveMethods();
+    let generatedResolvers: any = {
+        ...composer.getResolveMethods(),
+        ...(generatedTypeDefs.includes("scalar Int") ? { Int } : {}),
+        ...(generatedTypeDefs.includes("scalar Float") ? { Float } : {}),
+        ...(generatedTypeDefs.includes("scalar DateTime") ? { DateTime } : {}),
+    };
     unions.forEach((union) => {
         generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
     });

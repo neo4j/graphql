@@ -19,7 +19,7 @@ type Movie {
 
 ```graphql
 {
-    Movies(options: {sort: [id_DESC]}) {
+    Movies(options: { sort: [id_DESC] }) {
         title
     }
 }
@@ -28,9 +28,10 @@ type Movie {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
-RETURN this { .title } as this
+MATCH (this:Movie)
+WITH this
 ORDER BY this.id DESC
+RETURN this { .title } as this
 ```
 
 **Expected Cypher params**
@@ -47,7 +48,7 @@ ORDER BY this.id DESC
 
 ```graphql
 {
-    Movies(options: {sort: [id_DESC, title_ASC]}) {
+    Movies(options: { sort: [id_DESC, title_ASC] }) {
         title
     }
 }
@@ -56,9 +57,10 @@ ORDER BY this.id DESC
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
-RETURN this { .title } as this
+MATCH (this:Movie)
+WITH this
 ORDER BY this.id DESC, this.title ASC
+RETURN this { .title } as this
 ```
 
 **Expected Cypher params**
@@ -74,10 +76,10 @@ ORDER BY this.id DESC, this.title ASC
 **GraphQL input**
 
 ```graphql
-query($title: String, $skip: Int, $limit: Int, $sort: [MovieSort]){
+query($title: String, $skip: Int, $limit: Int, $sort: [MovieSort]) {
     Movies(
-        options: {sort: $sort, skip: $skip, limit: $limit},
-        where: {title: $title}
+        options: { sort: $sort, skip: $skip, limit: $limit }
+        where: { title: $title }
     ) {
         title
     }
@@ -98,10 +100,11 @@ query($title: String, $skip: Int, $limit: Int, $sort: [MovieSort]){
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:Movie) 
+MATCH (this:Movie)
 WHERE this.title = $this_title
-RETURN this { .title } as this
+WITH this
 ORDER BY this.id DESC, this.title ASC
+RETURN this { .title } as this
 SKIP $this_skip
 LIMIT $this_limit
 ```
