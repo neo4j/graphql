@@ -38,7 +38,7 @@ type Movie {
 
 ```graphql
 {
-    Movies {
+    movies {
         title
         topActor {
             name
@@ -75,7 +75,7 @@ RETURN this {
 
 ```graphql
 {
-    Actors {
+    actors {
         randomNumber
     }
 }
@@ -106,7 +106,7 @@ RETURN this {
 
 ```graphql
 {
-    Movies {
+    movies {
         title
         topActor {
             name
@@ -150,7 +150,7 @@ RETURN this {
 
 ```graphql
 {
-    Movies {
+    movies {
         title
         topActor {
             name
@@ -207,7 +207,7 @@ RETURN this {
 
 ```graphql
 {
-    Movies {
+    movies {
         title
         topActor {
             name

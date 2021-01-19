@@ -9,7 +9,7 @@ type Actor {
     name: String
     movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
 }
-    
+
 type Movie {
     id: ID
     actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
@@ -24,9 +24,11 @@ type Movie {
 
 ```graphql
 mutation {
-  createMovies(input: [{ id: "1" }]) {
-    id
-  }
+    createMovies(input: [{ id: "1" }]) {
+        movies {
+            id
+        }
+    }
 }
 ```
 
@@ -58,9 +60,11 @@ RETURN this0 { .id } AS this0
 
 ```graphql
 mutation {
-  createMovies(input: [{ id: "1" }, { id: "2" }]) {
-    id
-  }
+    createMovies(input: [{ id: "1" }, { id: "2" }]) {
+        movies {
+            id
+        }
+    }
 }
 ```
 
@@ -76,7 +80,7 @@ CALL {
 CALL {
   CREATE (this1:Movie)
   SET this1.id = $this1_id
-  RETURN this1  
+  RETURN this1
 }
 
 RETURN this0 { .id } AS this0,
@@ -100,14 +104,16 @@ RETURN this0 { .id } AS this0,
 
 ```graphql
 mutation {
-  createMovies(
-    input: [
-      { id: 1, actors: { create: [{ name: "actor 1" }] } }
-      { id: 2, actors: { create: [{ name: "actor 2" }] } }
-    ]
-  ) {
-    id
-  }
+    createMovies(
+        input: [
+            { id: 1, actors: { create: [{ name: "actor 1" }] } }
+            { id: 2, actors: { create: [{ name: "actor 2" }] } }
+        ]
+    ) {
+        movies {
+            id
+        }
+    }
 }
 ```
 
@@ -134,7 +140,7 @@ CALL {
     CREATE (this1_actors0:Actor)
     SET this1_actors0.name = $this1_actors0_name
     MERGE (this1)<-[:ACTED_IN]-(this1_actors0)
-  
+
   RETURN this1
 }
 
@@ -160,26 +166,31 @@ RETURN this0 { .id } AS this0, this1 { .id } AS this1
 
 ```graphql
 mutation {
-  createMovies(
-    input: [
-      {
-        id: "1"
-        actors: {
-          create: [{ name: "actor 1", movies: { create: [{ id: "10" }] } }]
+    createMovies(
+        input: [
+            {
+                id: "1"
+                actors: {
+                    create: [
+                        { name: "actor 1", movies: { create: [{ id: "10" }] } }
+                    ]
+                }
+            }
+            {
+                id: "2"
+                actors: {
+                    create: [
+                        { name: "actor 2", movies: { create: [{ id: "20" }] } }
+                    ]
+                }
+            }
+        ]
+    ) {
+        movies {
+            id
         }
-      }
-      {
-        id: "2"
-        actors: {
-          create: [{ name: "actor 2", movies: { create: [{ id: "20" }] } }]
-        }
-      }
-    ]
-  ) {
-    id
-  }
+    }
 }
-
 ```
 
 **Expected Cypher output**
@@ -241,11 +252,13 @@ RETURN this0 { .id } AS this0, this1 { .id } AS this1
 
 ```graphql
 mutation {
-  createMovies(
-    input: [{ id: 1, actors: { connect: [{ where: { name: "Dan" } }] } }]
-  ) {
-    id
-  }
+    createMovies(
+        input: [{ id: 1, actors: { connect: [{ where: { name: "Dan" } }] } }]
+    ) {
+        movies {
+            id
+        }
+    }
 }
 ```
 
@@ -259,7 +272,7 @@ CALL {
     WITH this0
     OPTIONAL MATCH (this0_actors_connect0:Actor)
     WHERE this0_actors_connect0.name = $this0_actors_connect0_name
-    FOREACH(_ IN CASE this0_actors_connect0 WHEN NULL THEN [] ELSE [1] END | 
+    FOREACH(_ IN CASE this0_actors_connect0 WHEN NULL THEN [] ELSE [1] END |
       MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0)
     )
 

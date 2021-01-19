@@ -15,13 +15,13 @@ describe("update", () => {
         };
 
         const result = update({ node, getSchema: () => neoSchema });
-        expect(result.type).toEqual(`[Movie]!`);
+        expect(result.type).toEqual("UpdateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
-            where: `MovieWhere`,
-            update: `MovieUpdateInput`,
-            connect: `MovieConnectInput`,
-            disconnect: `MovieDisconnectInput`,
+            where: "MovieWhere",
+            update: "MovieUpdateInput",
+            connect: "MovieConnectInput",
+            disconnect: "MovieDisconnectInput",
         });
     });
 });
