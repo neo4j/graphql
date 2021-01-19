@@ -1,6 +1,8 @@
 import { DocumentNode, graphql, GraphQLSchema, parse, print } from "graphql";
 import pluralize from "pluralize";
+import camelCase from "camelcase";
 import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
+import { upperFirstLetter } from "../utils";
 
 export interface ModelConstructor {
     name: string;
@@ -31,6 +33,8 @@ class Model {
 
     private namePluralized: string;
 
+    private camelCaseName: string;
+
     private getGraphQLSchema: () => GraphQLSchema;
 
     protected selectionSet: string;
@@ -38,6 +42,7 @@ class Model {
     constructor(input: ModelConstructor) {
         this.name = input.name;
         this.namePluralized = pluralize(input.name);
+        this.camelCaseName = camelCase(this.namePluralized);
         this.getGraphQLSchema = input.getGraphQLSchema;
         this.selectionSet = input.selectionSet;
     }
@@ -75,9 +80,11 @@ class Model {
             `${where || options ? ")" : ""}`,
         ];
 
+        const selection = printSelectionSet(selectionSet || this.selectionSet);
+
         const query = `
             query ${argDefinitions.join(" ")}{
-                ${this.namePluralized}${argsApply.join(" ")} ${printSelectionSet(selectionSet || this.selectionSet)}
+                ${this.camelCaseName}${argsApply.join(" ")} ${selection}
             }
         `;
 
@@ -90,7 +97,7 @@ class Model {
             throw new Error(result.errors[0].message);
         }
 
-        return removeNull((result.data as any)[this.namePluralized]) as T;
+        return removeNull((result.data as any)[this.camelCaseName]) as T;
     }
 
     async create<T = any>({
@@ -106,15 +113,23 @@ class Model {
         context?: any;
         rootValue?: any;
     } = {}): Promise<T> {
-        let upperFirst: string | string[] = this.namePluralized.split("");
-        upperFirst[0] = upperFirst[0].toLocaleUpperCase();
-        upperFirst = upperFirst.join("");
+        const mutationName = `create${upperFirstLetter(this.namePluralized)}`;
 
-        const mutationName = `create${upperFirst}`;
+        let selection = "";
+        if (selectionSet) {
+            selection = printSelectionSet(selectionSet);
+        } else {
+            selection = `
+               {
+                   ${this.camelCaseName} 
+                   ${printSelectionSet(selectionSet || this.selectionSet)}
+               }
+           `;
+        }
 
         const mutation = `
             mutation ($input: [${this.name}CreateInput]!){
-               ${mutationName}(input: $input) ${printSelectionSet(selectionSet || this.selectionSet)}
+               ${mutationName}(input: $input) ${selection}
             }
         `;
 
@@ -151,11 +166,19 @@ class Model {
         context?: any;
         rootValue?: any;
     } = {}): Promise<T> {
-        let upperFirst: string | string[] = this.namePluralized.split("");
-        upperFirst[0] = upperFirst[0].toLocaleUpperCase();
-        upperFirst = upperFirst.join("");
+        const mutationName = `update${upperFirstLetter(this.namePluralized)}`;
 
-        const mutationName = `update${upperFirst}`;
+        let selection = "";
+        if (selectionSet) {
+            selection = printSelectionSet(selectionSet);
+        } else {
+            selection = `
+               {
+                   ${this.camelCaseName} 
+                   ${printSelectionSet(selectionSet || this.selectionSet)}
+               }
+           `;
+        }
 
         const argWorthy = where || update || connect || disconnect || create;
 
@@ -181,7 +204,8 @@ class Model {
 
         const mutation = `
             mutation ${argDefinitions.join(" ")}{
-               ${mutationName}${argsApply.join(" ")} ${printSelectionSet(selectionSet || this.selectionSet)}
+               ${mutationName}${argsApply.join(" ")}
+               ${selection}
             }
         `;
 
@@ -206,11 +230,7 @@ class Model {
         context?: any;
         rootValue?: any;
     } = {}): Promise<DeleteInfo> {
-        let upperFirst: string | string[] = this.namePluralized.split("");
-        upperFirst[0] = upperFirst[0].toLocaleUpperCase();
-        upperFirst = upperFirst.join("");
-
-        const mutationName = `delete${upperFirst}`;
+        const mutationName = `delete${upperFirstLetter(this.namePluralized)}`;
 
         const argDefinitions = [
             `${where ? "(" : ""}`,

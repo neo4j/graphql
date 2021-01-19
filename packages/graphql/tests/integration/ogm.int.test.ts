@@ -150,7 +150,7 @@ describe("OGM", () => {
             try {
                 const Movie = neoSchema.model("Movie");
 
-                const movies = await Movie.create({ input: [{ id }] });
+                const { movies } = await Movie.create({ input: [{ id }] });
 
                 expect(movies).toEqual([{ id }]);
 
@@ -189,7 +189,7 @@ describe("OGM", () => {
             try {
                 const Movie = neoSchema.model("Movie");
 
-                const movies = await Movie.create({ input: [{ id: id1 }, { id: id2 }] });
+                const { movies } = await Movie.create({ input: [{ id: id1 }, { id: id2 }] });
 
                 expect(movies).toEqual([{ id: id1 }, { id: id2 }]);
             } finally {
@@ -293,7 +293,7 @@ describe("OGM", () => {
 
             const Product = neoSchema.model("Product");
 
-            const [createdProduct] = await Product.create({
+            const { products } = await Product.create({
                 input: [
                     {
                         ...product,
@@ -315,6 +315,7 @@ describe("OGM", () => {
                     },
                 ],
             });
+            const [createdProduct] = products;
 
             expect(createdProduct.id).toEqual(product.id);
 
@@ -396,7 +397,7 @@ describe("OGM", () => {
 
                 const Movie = neoSchema.model("Movie");
 
-                const movies = await Movie.update({ where: { id }, update: { name: updatedName } });
+                const { movies } = await Movie.update({ where: { id }, update: { name: updatedName } });
 
                 expect(movies).toEqual([{ id, name: updatedName }]);
             } finally {
@@ -447,7 +448,7 @@ describe("OGM", () => {
 
                 const Movie = neoSchema.model("Movie");
 
-                const movies = await Movie.update({ where: { id_IN: [id1, id2] }, update: { name: updatedName } });
+                const { movies } = await Movie.update({ where: { id_IN: [id1, id2] }, update: { name: updatedName } });
 
                 const movie1 = movies.find((x) => x.id === id1);
                 expect(movie1.name).toEqual(updatedName);
@@ -498,17 +499,19 @@ describe("OGM", () => {
 
                 const Movie = neoSchema.model("Movie");
 
-                const movies = await Movie.update({
+                const { movies } = await Movie.update({
                     where: { id: movieId },
                     connect: { actors: [{ where: { id: actorId } }] },
                     selectionSet: `
-                        {
+                    {
+                        movies {
                             id
                             actors {
                                 id
                             }
                         }
-                    `,
+                    }
+                `,
                 });
 
                 expect(movies).toEqual([{ id: movieId, actors: [{ id: actorId }] }]);
@@ -554,14 +557,16 @@ describe("OGM", () => {
 
                 const Movie = neoSchema.model("Movie");
 
-                const movies = await Movie.update({
+                const { movies } = await Movie.update({
                     where: { id: movieId },
                     create: { actors: [{ id: actorId }] },
                     selectionSet: `
                         {
-                            id
-                            actors {
+                            movies {
                                 id
+                                actors {
+                                    id
+                                }
                             }
                         }
                     `,
@@ -613,14 +618,16 @@ describe("OGM", () => {
 
                 const Movie = neoSchema.model("Movie");
 
-                const movies = await Movie.update({
+                const { movies } = await Movie.update({
                     where: { id: movieId },
                     disconnect: { actors: [{ where: { id: actorId } }] },
                     selectionSet: `
                         {
-                            id
-                            actors {
+                            movies {
                                 id
+                                actors {
+                                    id
+                                }
                             }
                         }
                     `,
