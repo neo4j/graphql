@@ -29,6 +29,9 @@ describe("createAllowAndParams", () => {
             ],
             relationFields: [],
             auth,
+            dateTimeFields: [],
+            interfaceFields: [],
+            objectFields: [],
         };
 
         // @ts-ignore
