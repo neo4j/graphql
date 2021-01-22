@@ -25,7 +25,14 @@ function createProjectionAndParams({
     varName: string;
     chainStrOverRide?: string;
 }): [string, any] {
-    function reducer(res: Res, [key, field]: [string, FieldsByTypeName]): Res {
+    function reducer(res: Res, [k, field]: [string, any]): Res {
+        let key = k;
+        const alias: string | undefined = field.alias !== field.name ? field.alias : undefined;
+
+        if (alias) {
+            key = field.name as string;
+        }
+
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
@@ -301,6 +308,7 @@ function createProjectionAndParams({
         }
 
         res.projection.push(`.${key}`);
+
         return res;
     }
 
