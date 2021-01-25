@@ -62,6 +62,7 @@ export interface DateTimeField extends BaseField {
     timestamps?: TimeStampOperations[];
 }
 
+export type PointField = BaseField;
 /**
  * Representation of the options arg
  * passed to resolvers.

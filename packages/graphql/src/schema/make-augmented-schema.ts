@@ -39,6 +39,7 @@ import {
     InterfaceField,
     ObjectField,
     DateTimeField,
+    PointField,
     TimeStampOperations,
 } from "../types";
 import { upperFirstLetter } from "../utils";
@@ -72,6 +73,7 @@ interface ObjectFields {
     interfaceFields: InterfaceField[];
     objectFields: ObjectField[];
     dateTimeFields: DateTimeField[];
+    pointFields: PointField[];
 }
 
 interface CustomResolvers {
@@ -217,6 +219,11 @@ function getObjFieldMeta({
                     }
 
                     res.dateTimeFields.push(dateTimeField);
+                } else if (typeMeta.name === "Point") {
+                    const pointField: PointField = {
+                        ...baseField,
+                    };
+                    res.pointFields.push(pointField);
                 } else {
                     const primitiveField: PrimitiveField = {
                         ...baseField,
@@ -250,6 +257,7 @@ function getObjFieldMeta({
             interfaceFields: [],
             objectFields: [],
             dateTimeFields: [],
+            pointFields: [],
         }
     ) as ObjectFields;
 }
@@ -297,6 +305,62 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         fields: {
             nodesDeleted: "Int!",
             relationshipsDeleted: "Int!",
+        },
+    });
+
+    composer.createObjectTC({
+        name: "Point",
+        fields: {
+            longitude: "Float!",
+            latitude: "Float!",
+            height: "Float",
+            crs: "String!",
+            srid: "Int!",
+        },
+    });
+
+    composer.createObjectTC({
+        name: "CartesianPoint",
+        fields: {
+            x: "Float!",
+            y: "Float!",
+            z: "Float",
+            crs: "String!",
+            srid: "Int!",
+        },
+    });
+
+    composer.createInputTC({
+        name: "PointInput",
+        fields: {
+            longitude: "Float!",
+            latitude: "Float!",
+            height: "Float",
+        },
+    });
+
+    composer.createInputTC({
+        name: "CartesianPointInput",
+        fields: {
+            x: "Float!",
+            y: "Float!",
+            z: "Float",
+        },
+    });
+
+    composer.createInputTC({
+        name: "PointDistance",
+        fields: {
+            point: "PointInput",
+            distance: "Float",
+        },
+    });
+
+    composer.createInputTC({
+        name: "CartesianPointDistance",
+        fields: {
+            point: "CartesianPointInput",
+            distance: "Float",
         },
     });
 
@@ -484,6 +548,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...node.enumFields,
             ...node.scalarFields,
             ...node.dateTimeFields,
+            ...node.pointFields,
         ].reduce(
             (res, f) => {
                 let typeName: string;
@@ -496,6 +561,14 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
                 if (f.typeMeta.array) {
                     res[f.fieldName] = `[${typeName}]`;
+                    // TODO is the best way of dealing with this?
+                } else if (["Point", "CartesianPoint"].includes(typeName)) {
+                    res[f.fieldName] = `${typeName}Input`;
+                    res[`${f.fieldName}_NOT`] = `${typeName}Input`;
+
+                    ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((t) => {
+                        res[`${f.fieldName}${t}`] = `${typeName}Distance`;
+                    });
                 } else {
                     res[f.fieldName] = typeName;
                 }
@@ -563,6 +636,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                 ...node.scalarFields,
                 ...node.enumFields,
                 ...node.dateTimeFields.filter((x) => !x.timestamps),
+                ...node.pointFields,
             ].reduce((res, f) => {
                 if ((f as PrimitiveField)?.autogenerate) {
                     const field: InputTypeComposerFieldConfigAsObjectDefinition = {
