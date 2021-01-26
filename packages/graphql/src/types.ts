@@ -9,6 +9,7 @@ export interface TypeMeta {
     array: boolean;
     required: boolean;
     pretty: string;
+    inputType: string;
 }
 
 /**
