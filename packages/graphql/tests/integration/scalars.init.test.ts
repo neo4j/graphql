@@ -88,4 +88,47 @@ describe("scalars", () => {
             await session.close();
         }
     });
+
+    test("should serialize a id correctly", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Movie {
+              id: ID
+            }
+        `;
+
+        const neoSchema = makeAugmentedSchema({
+            typeDefs,
+        });
+
+        const id = Math.floor(Math.random() * 1000);
+
+        const query = `
+            {
+                movies(where: {id: ${id}}) {
+                    id
+                }
+            }
+        `;
+
+        try {
+            await session.run(`
+                CREATE (m:Movie {id: "${id}"})
+                RETURN m {.id} as m
+            `);
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect((gqlResult.data as any).movies[0]).toEqual({ id: id.toString() });
+        } finally {
+            await session.close();
+        }
+    });
 });

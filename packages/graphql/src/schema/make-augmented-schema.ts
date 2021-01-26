@@ -52,7 +52,7 @@ import mergeExtensionsIntoAST from "./merge-extensions-into-ast";
 import parseValueNode from "./parse-value-node";
 import mergeTypeDefs from "./merge-typedefs";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
-import { Float, Int, DateTime } from "./scalars";
+import { Float, Int, DateTime, ID } from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
 import graphqlArgsToCompose from "./graphql-arg-to-compose";
 
@@ -897,15 +897,17 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
     });
 
-    composer.addTypeDefs("scalar Int"); // removed if not used
-    composer.addTypeDefs("scalar Float"); // removed if not used
-    composer.addTypeDefs("scalar DateTime"); // removed if not used
+    composer.addTypeDefs("scalar Int");
+    composer.addTypeDefs("scalar Float");
+    composer.addTypeDefs("scalar ID");
+    composer.addTypeDefs("scalar DateTime");
 
     const generatedTypeDefs = composer.toSDL();
     let generatedResolvers: any = {
         ...composer.getResolveMethods(),
         ...(generatedTypeDefs.includes("scalar Int") ? { Int } : {}),
         ...(generatedTypeDefs.includes("scalar Float") ? { Float } : {}),
+        ...(generatedTypeDefs.includes("scalar ID") ? { ID } : {}),
         ...(generatedTypeDefs.includes("scalar DateTime") ? { DateTime } : {}),
     };
     unions.forEach((union) => {
