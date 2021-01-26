@@ -27,12 +27,16 @@ function getPrettyName(type: TypeNode): string {
 function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode): TypeMeta {
     const name = getName(field.type);
     const prettyName = getPrettyName(field.type);
+    const array = /\[.+\]/g.test(prettyName);
 
     return {
         name,
-        array: /\[.+\]/g.test(prettyName),
+        array,
         required: prettyName.includes("!"),
         pretty: prettyName,
+        inputType: `${array ? "[" : ""}${["Point", "CartesianPoint"].includes(name) ? `${name}Input` : name}${
+            array ? "]" : ""
+        }`,
     };
 }
 

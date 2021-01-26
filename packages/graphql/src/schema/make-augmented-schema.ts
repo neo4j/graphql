@@ -556,21 +556,17 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                 if (enums.find((x) => x.name.value === f.typeMeta.name)) {
                     typeName = "String";
                 } else {
-                    typeName = f.typeMeta.name;
+                    typeName = f.typeMeta.inputType;
                 }
 
-                if (f.typeMeta.array) {
-                    res[f.fieldName] = `[${typeName}]`;
-                    // TODO is the best way of dealing with this?
-                } else if (["Point", "CartesianPoint"].includes(typeName)) {
-                    res[f.fieldName] = `${typeName}Input`;
-                    res[`${f.fieldName}_NOT`] = `${typeName}Input`;
+                res[f.fieldName] = typeName;
+
+                if (["Point", "CartesianPoint"].includes(f.typeMeta.name)) {
+                    res[`${f.fieldName}_NOT`] = f.typeMeta.inputType;
 
                     ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((t) => {
-                        res[`${f.fieldName}${t}`] = `${typeName}Distance`;
+                        res[`${f.fieldName}${t}`] = `${f.typeMeta.name}Distance`;
                     });
-                } else {
-                    res[f.fieldName] = typeName;
                 }
 
                 if (typeName === DateTime.name) {
@@ -648,7 +644,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     const field: InputTypeComposerFieldConfigAsObjectDefinition = {
                         type: f.typeMeta.pretty,
                     };
-                    res[f.fieldName] = field;
+                    res[f.fieldName] = f.typeMeta.inputType;
                 }
 
                 return res;
@@ -665,7 +661,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ].reduce(
                 (res, f) => ({
                     ...res,
-                    [f.fieldName]: f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name,
+                    [f.fieldName]: f.typeMeta.inputType,
                 }),
                 {}
             ),
