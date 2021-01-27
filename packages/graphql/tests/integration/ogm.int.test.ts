@@ -673,7 +673,7 @@ describe("OGM", () => {
         });
     });
 
-    describe("delete", () => {
+    describe("private", () => {
         test("should allow the use of private fields in the OGM", async () => {
             const session = driver.session();
 
