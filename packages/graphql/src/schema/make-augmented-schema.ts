@@ -220,7 +220,7 @@ function getObjFieldMeta({
                     }
 
                     res.dateTimeFields.push(dateTimeField);
-                } else if (typeMeta.name === "Point") {
+                } else if (["Point", "CartesianPoint"].includes(typeMeta.name)) {
                     const pointField: PointField = {
                         ...baseField,
                     };

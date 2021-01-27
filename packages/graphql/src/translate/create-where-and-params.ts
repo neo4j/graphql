@@ -40,6 +40,7 @@ function createWhereAndParams({
         if (key.endsWith("_NOT")) {
             const [fieldName] = key.split("_NOT");
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
+            const pointField = node.pointFields.find((x) => fieldName === x.fieldName);
 
             if (relationField) {
                 const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
@@ -65,6 +66,9 @@ function createWhereAndParams({
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
                 res.params = { ...res.params, ...recurse[1] };
+            } else if (pointField) {
+                res.clauses.push(`(NOT ${varName}.${fieldName} = point($${param}))`);
+                res.params[param] = value;
             } else {
                 res.clauses.push(`(NOT ${varName}.${fieldName} = $${param})`);
                 res.params[param] = value;
@@ -297,7 +301,11 @@ function createWhereAndParams({
             return res;
         }
 
-        res.clauses.push(`${varName}.${key} = $${param}`);
+        res.clauses.push(
+            node.pointFields.find((x) => key === x.fieldName)
+                ? `${varName}.${key} = point($${param})`
+                : `${varName}.${key} = $${param}`
+        );
         res.params[param] = value;
 
         return res;
