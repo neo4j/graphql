@@ -249,7 +249,12 @@ function createWhereAndParams({
 
         if (key.endsWith("_LT")) {
             const [fieldName] = key.split("_LT");
-            res.clauses.push(`${varName}.${fieldName} < $${param}`);
+            const pointField = node.pointFields.find((x) => fieldName === x.fieldName);
+            res.clauses.push(
+                pointField
+                    ? `distance(${varName}.${fieldName}, point($${param}.point)) < $${param}.distance`
+                    : `${varName}.${fieldName} < $${param}`
+            );
             res.params[param] = value;
 
             return res;
@@ -257,7 +262,12 @@ function createWhereAndParams({
 
         if (key.endsWith("_LTE")) {
             const [fieldName] = key.split("_LTE");
-            res.clauses.push(`${varName}.${fieldName} <= $${param}`);
+            const pointField = node.pointFields.find((x) => fieldName === x.fieldName);
+            res.clauses.push(
+                pointField
+                    ? `distance(${varName}.${fieldName}, point($${param}.point)) <= $${param}.distance`
+                    : `${varName}.${fieldName} <= $${param}`
+            );
             res.params[param] = value;
 
             return res;
@@ -265,7 +275,12 @@ function createWhereAndParams({
 
         if (key.endsWith("_GT")) {
             const [fieldName] = key.split("_GT");
-            res.clauses.push(`${varName}.${fieldName} > $${param}`);
+            const pointField = node.pointFields.find((x) => fieldName === x.fieldName);
+            res.clauses.push(
+                pointField
+                    ? `distance(${varName}.${fieldName}, point($${param}.point)) > $${param}.distance`
+                    : `${varName}.${fieldName} > $${param}`
+            );
             res.params[param] = value;
 
             return res;
@@ -273,7 +288,20 @@ function createWhereAndParams({
 
         if (key.endsWith("_GTE")) {
             const [fieldName] = key.split("_GTE");
-            res.clauses.push(`${varName}.${fieldName} >= $${param}`);
+            const pointField = node.pointFields.find((x) => fieldName === x.fieldName);
+            res.clauses.push(
+                pointField
+                    ? `distance(${varName}.${fieldName}, point($${param}.point)) >= $${param}.distance`
+                    : `${varName}.${fieldName} >= $${param}`
+            );
+            res.params[param] = value;
+
+            return res;
+        }
+
+        if (key.endsWith("_DISTANCE")) {
+            const [fieldName] = key.split("_DISTANCE");
+            res.clauses.push(`distance(${varName}.${fieldName}, point($${param}.point)) = $${param}.distance`);
             res.params[param] = value;
 
             return res;
