@@ -46,11 +46,17 @@ input MovieAND {
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
   createdAt: DateTime
+  createdAt_NOT: DateTime
+  createdAt_IN: [DateTime]
+  createdAt_NOT_IN: [DateTime]
   createdAt_LT: DateTime
   createdAt_LTE: DateTime
   createdAt_GT: DateTime
   createdAt_GTE: DateTime
   updatedAt: DateTime
+  updatedAt_NOT: DateTime
+  updatedAt_IN: [DateTime]
+  updatedAt_NOT_IN: [DateTime]
   updatedAt_LT: DateTime
   updatedAt_LTE: DateTime
   updatedAt_GT: DateTime
@@ -82,11 +88,17 @@ input MovieOR {
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
   createdAt: DateTime
+  createdAt_NOT: DateTime
+  createdAt_IN: [DateTime]
+  createdAt_NOT_IN: [DateTime]
   createdAt_LT: DateTime
   createdAt_LTE: DateTime
   createdAt_GT: DateTime
   createdAt_GTE: DateTime
   updatedAt: DateTime
+  updatedAt_NOT: DateTime
+  updatedAt_IN: [DateTime]
+  updatedAt_NOT_IN: [DateTime]
   updatedAt_LT: DateTime
   updatedAt_LTE: DateTime
   updatedAt_GT: DateTime
@@ -117,11 +129,17 @@ input MovieWhere {
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
   createdAt: DateTime
+  createdAt_NOT: DateTime
+  createdAt_IN: [DateTime]
+  createdAt_NOT_IN: [DateTime]
   createdAt_LT: DateTime
   createdAt_LTE: DateTime
   createdAt_GT: DateTime
   createdAt_GTE: DateTime
   updatedAt: DateTime
+  updatedAt_NOT: DateTime
+  updatedAt_IN: [DateTime]
+  updatedAt_NOT_IN: [DateTime]
   updatedAt_LT: DateTime
   updatedAt_LTE: DateTime
   updatedAt_GT: DateTime
