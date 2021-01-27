@@ -173,9 +173,9 @@ The `@private` directive allows you to specify fields that should only be access
 [source, graphql]
 ----
 type User {
-	username: String!
-	email: String!
-	password: String! @private
+    username: String!
+    email: String!
+    password: String! @private
 }
 ----
 
@@ -187,16 +187,16 @@ import { makeAugmentedSchema, OGM } from "@neo4j/graphql";
 import * as neo4j from "neo4j-driver";
 
 const driver = neo4j.driver(
-	"bolt://localhost:7687",
+    "bolt://localhost:7687",
     neo4j.auth.basic("admin", "password")
 );
 
 const typeDefs = `
-	type User {
-		username: String!
-		email: String!
-		password: String! @private
-	}
+    type User {
+        username: String!
+        email: String!
+        password: String! @private
+    }
 `;
 
 // public without password 
@@ -268,17 +268,17 @@ import { OGM } from "@neo4j/graphql";
 import * as neo4j from "neo4j-driver";
 
 const driver = neo4j.driver(
-	"bolt://localhost:7687",
-  neo4j.auth.basic("admin", "password")
+    "bolt://localhost:7687",
+    neo4j.auth.basic("admin", "password")
 );
 
 const typeDefs = `
-	type Node {
-      id: ID
-      name: String
-      relation: [Node] @relationship(...)
-      customCypher: [Node] @cypher(...)
-   }
+    type Node {
+        id: ID
+        name: String
+        relation: [Node] @relationship(...)
+        customCypher: [Node] @cypher(...)
+    }
 `;
 
 const ogm = new OGM({ typeDefs, driver });
@@ -309,17 +309,17 @@ import { OGM } from "@neo4j/graphql";
 import * as neo4j from "neo4j-driver";
 
 const driver = neo4j.driver(
-	"bolt://localhost:7687",
+    "bolt://localhost:7687",
     neo4j.auth.basic("admin", "password")
 );
 
 const typeDefs = `
-	type Node {
-      id: ID
-      name: String
-      relation: [Node] @relationship(...)
-      customCypher: [Node] @cypher(...)
-   }
+    type Node {
+        id: ID
+        name: String
+        relation: [Node] @relationship(...)
+        customCypher: [Node] @cypher(...)
+    }
 `;
 
 const ogm = new OGM({ typeDefs, driver });
