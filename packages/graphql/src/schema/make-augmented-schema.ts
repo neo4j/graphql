@@ -41,6 +41,9 @@ import {
     ObjectField,
     DateTimeField,
     TimeStampOperations,
+    TypeDefs,
+    Resolvers,
+    SchemaDirectives,
 } from "../types";
 import { upperFirstLetter } from "../utils";
 import findResolver from "./find";
@@ -57,9 +60,9 @@ import parseExcludeDirective from "./parse-exclude-directive";
 import graphqlArgsToCompose from "./graphql-arg-to-compose";
 
 export interface MakeAugmentedSchemaOptions {
-    typeDefs: any;
-    resolvers?: any;
-    schemaDirectives?: any;
+    typeDefs: TypeDefs;
+    resolvers?: Resolvers;
+    schemaDirectives?: SchemaDirectives;
     debug?: boolean | ((...values: any[]) => void);
     context?: { [k: string]: any } & { driver?: Driver };
 }
@@ -101,6 +104,12 @@ function getObjFieldMeta({
 }) {
     return obj?.fields?.reduce(
         (res: ObjectFields, field) => {
+            // OGM
+            const privateField = field?.directives?.find((x) => x.name.value === "private");
+            if (privateField) {
+                return res;
+            }
+
             const relationshipMeta = getRelationshipMeta(field);
             const cypherMeta = getCypherMeta(field);
             const typeMeta = getFieldTypeMeta(field);
@@ -432,7 +441,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             auth,
             // @ts-ignore
             exclude,
-            getGraphQLSchema: () => neoSchemaInput.schema,
         });
 
         return node;
@@ -442,16 +450,18 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     neoSchemaInput.nodes = nodes;
 
     neoSchemaInput.nodes.forEach((node) => {
-        const nodeFields = objectFieldsToComposeFields([
-            ...node.primitiveFields,
-            ...node.cypherFields,
-            ...node.enumFields,
-            ...node.scalarFields,
-            ...node.interfaceFields,
-            ...node.objectFields,
-            ...node.unionFields,
-            ...node.dateTimeFields,
-        ]);
+        const nodeFields = objectFieldsToComposeFields(
+            [
+                ...node.primitiveFields,
+                ...node.cypherFields,
+                ...node.enumFields,
+                ...node.scalarFields,
+                ...node.interfaceFields,
+                ...node.objectFields,
+                ...node.unionFields,
+                ...node.dateTimeFields,
+            ].filter((x) => !x.private)
+        );
 
         const composeNode = composer.createObjectTC({
             name: node.name,
@@ -919,7 +929,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             Mutation: customMutations = {},
             Subscription: customSubscriptions = {},
             ...rest
-        } = options.resolvers;
+        } = options.resolvers as Record<string, any>;
 
         if (customQueries) {
             if (generatedResolvers.Query) {

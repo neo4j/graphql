@@ -98,6 +98,9 @@ We created an OGM(Object Graph Model) on top of the pre-existing GraphQL work an
 
 [source, javascript]
 ----
+import { OGM } from "@neo4j/graphql";
+import * as neo4j from "neo4j/driver";
+
 const typeDefs = `
    type Genre {
       name: String
@@ -115,12 +118,12 @@ const driver = neo4j.driver(
     neo4j.auth.basic("admin", "password")
 );
 
-const neoSchema = makeAugmentedSchema({
+const ogm = new OGM({
     typeDefs,
-    context: { driver },
+    driver,
 });
 
-const Movie = neoSchema.model("Movie"); // Hi I am your model
+const Movie = ogm.model("Movie"); // Hi I am your model
 
 await Movie.find({ where: { id: "123" } });
 // Nested Mutations

@@ -1,7 +1,6 @@
 import { GraphQLSchema } from "graphql";
 import Node from "./Node";
 import { MakeAugmentedSchemaOptions } from "../schema/index";
-import Model from "./Model";
 
 export interface NeoSchemaConstructor {
     schema: GraphQLSchema;
@@ -28,12 +27,6 @@ class NeoSchema {
         this.options = input.options;
         this.resolvers = input.resolvers;
         this.typeDefs = input.typeDefs;
-    }
-
-    model(name: string): Model {
-        const found = this.nodes.find((n) => n.name === name);
-
-        return found?.model as Model;
     }
 }
 

@@ -3,7 +3,7 @@ import { generate } from "randomstring";
 import { describe, beforeAll, afterAll, test, expect, it } from "@jest/globals";
 import gql from "graphql-tag";
 import neo4j from "./neo4j";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { OGM, Model } from "../../src";
 
 describe("OGM", () => {
     let driver: Driver;
@@ -27,7 +27,7 @@ describe("OGM", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+            const ogm = new OGM({ typeDefs, driver });
 
             const id = generate({
                 charset: "alphabetic",
@@ -38,7 +38,7 @@ describe("OGM", () => {
                     CREATE (:Movie {id: "${id}"})
                 `);
 
-                const Movie = neoSchema.model("Movie");
+                const Movie = ogm.model("Movie") as Model;
 
                 const movies = await Movie.find({ where: { id } });
 
@@ -58,7 +58,7 @@ describe("OGM", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+            const ogm = new OGM({ typeDefs, driver });
 
             const id = generate({
                 charset: "alphabetic",
@@ -73,7 +73,7 @@ describe("OGM", () => {
                     CREATE (:Movie {id: "${id}"})
                 `);
 
-                const Movie = neoSchema.model("Movie");
+                const Movie = ogm.model("Movie") as Model;
 
                 const movies = await Movie.find({ where: { id }, options: { limit: 2 } });
 
@@ -106,7 +106,7 @@ describe("OGM", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+            const ogm = new OGM({ typeDefs, driver });
 
             const id = generate({
                 charset: "alphabetic",
@@ -119,7 +119,7 @@ describe("OGM", () => {
                     MERGE (m)-[:HAS_GENRE]->(g)
                 `);
 
-                const Movie = neoSchema.model("Movie");
+                const Movie = ogm.model("Movie") as Model;
 
                 const movies = await Movie.find({ where: { id }, selectionSet });
 
@@ -141,14 +141,14 @@ describe("OGM", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+            const ogm = new OGM({ typeDefs, driver });
 
             const id = generate({
                 charset: "alphabetic",
             });
 
             try {
-                const Movie = neoSchema.model("Movie");
+                const Movie = ogm.model("Movie") as Model;
 
                 const { movies } = await Movie.create({ input: [{ id }] });
 
@@ -177,7 +177,7 @@ describe("OGM", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+            const ogm = new OGM({ typeDefs, driver });
 
             const id1 = generate({
                 charset: "alphabetic",
@@ -187,7 +187,7 @@ describe("OGM", () => {
             });
 
             try {
-                const Movie = neoSchema.model("Movie");
+                const Movie = ogm.model("Movie") as Model;
 
                 const { movies } = await Movie.create({ input: [{ id: id1 }, { id: id2 }] });
 
@@ -228,7 +228,7 @@ describe("OGM", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+            const ogm = new OGM({ typeDefs, driver });
 
             const product = {
                 id: generate({
@@ -291,7 +291,7 @@ describe("OGM", () => {
                 },
             ];
 
-            const Product = neoSchema.model("Product");
+            const Product = ogm.model("Product") as Model;
 
             const { products } = await Product.create({
                 input: [
@@ -370,7 +370,7 @@ describe("OGM", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+            const ogm = new OGM({ typeDefs, driver });
 
             const id = generate({
                 charset: "alphabetic",
@@ -395,7 +395,7 @@ describe("OGM", () => {
                     }
                 );
 
-                const Movie = neoSchema.model("Movie");
+                const Movie = ogm.model("Movie") as Model;
 
                 const { movies } = await Movie.update({ where: { id }, update: { name: updatedName } });
 
@@ -415,7 +415,7 @@ describe("OGM", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+            const ogm = new OGM({ typeDefs, driver });
 
             const id1 = generate({
                 charset: "alphabetic",
@@ -446,7 +446,7 @@ describe("OGM", () => {
                     }
                 );
 
-                const Movie = neoSchema.model("Movie");
+                const Movie = ogm.model("Movie") as Model;
 
                 const { movies } = await Movie.update({ where: { id_IN: [id1, id2] }, update: { name: updatedName } });
 
@@ -475,7 +475,7 @@ describe("OGM", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+            const ogm = new OGM({ typeDefs, driver });
 
             const movieId = generate({
                 charset: "alphabetic",
@@ -497,7 +497,7 @@ describe("OGM", () => {
                     }
                 );
 
-                const Movie = neoSchema.model("Movie");
+                const Movie = ogm.model("Movie") as Model;
 
                 const { movies } = await Movie.update({
                     where: { id: movieId },
@@ -535,7 +535,7 @@ describe("OGM", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+            const ogm = new OGM({ typeDefs, driver });
 
             const movieId = generate({
                 charset: "alphabetic",
@@ -555,7 +555,7 @@ describe("OGM", () => {
                     }
                 );
 
-                const Movie = neoSchema.model("Movie");
+                const Movie = ogm.model("Movie") as Model;
 
                 const { movies } = await Movie.update({
                     where: { id: movieId },
@@ -593,7 +593,7 @@ describe("OGM", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+            const ogm = new OGM({ typeDefs, driver });
 
             const movieId = generate({
                 charset: "alphabetic",
@@ -616,7 +616,7 @@ describe("OGM", () => {
                     }
                 );
 
-                const Movie = neoSchema.model("Movie");
+                const Movie = ogm.model("Movie") as Model;
 
                 const { movies } = await Movie.update({
                     where: { id: movieId },
@@ -651,7 +651,7 @@ describe("OGM", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+            const ogm = new OGM({ typeDefs, driver });
 
             const id = generate({
                 charset: "alphabetic",
@@ -662,11 +662,44 @@ describe("OGM", () => {
                     CREATE (:Movie {id: "${id}"})
                 `);
 
-                const Movie = neoSchema.model("Movie");
+                const Movie = ogm.model("Movie") as Model;
 
                 const result = await Movie.delete({ where: { id } });
 
                 expect(result).toEqual({ nodesDeleted: 1, relationshipsDeleted: 0 });
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
+    describe("delete", () => {
+        test("should allow the use of private fields in the OGM", async () => {
+            const session = driver.session();
+
+            const typeDefs = gql`
+                type User {
+                    id: ID
+                    password: String @private
+                }
+            `;
+
+            const ogm = new OGM({ typeDefs, driver });
+            const User = ogm.model("User") as Model;
+
+            const id = generate({
+                charset: "alphabetic",
+            });
+            const password = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                const { users } = await User.create<{ users: any[] }>({ input: [{ id, password }] });
+
+                const [user] = users;
+
+                expect(user).toMatchObject({ id, password });
             } finally {
                 await session.close();
             }

@@ -154,7 +154,7 @@ const neoSchema = makeAugmentedSchema({
     debug?,
 });
 
-const Model = neoSchema.model("MODEL_NAME_HERE");
+const Model = ogm.model("MODEL_NAME_HERE");
 
 // await Model.find();
 // await Model.create();
@@ -170,6 +170,9 @@ Common applications won't just expose a single API. On the same instance as the 
 
 [source, javascript]
 ----
+import { OGM } from "@neo4j/graphql";
+import * as neo4j from "neo4j/driver";
+
 const typeDefs = `
    type Genre {
       name: String
@@ -187,12 +190,12 @@ const driver = neo4j.driver(
     neo4j.auth.basic("admin", "password")
 );
 
-const neoSchema = makeAugmentedSchema({
+const ogm = new OGM({
     typeDefs,
-    context: { driver },
+    driver,
 });
 
-const Movie = neoSchema.model("Movie"); // Hi I am your model
+const Movie = ogm.model("Movie"); // Hi I am your model
 
 await Movie.find({ where: { id: "123" } });
 // Nested Mutations
@@ -277,7 +280,7 @@ const typeDefs = `
 
 const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
 
-const Node = neoSchema.model("Node");
+const Node = ogm.model("Node");
 
 const selectionSet = `
     {
@@ -312,7 +315,7 @@ const typeDefs = `
 
 const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
 
-const Node = neoSchema.model("Node");
+const Node = ogm.model("Node");
 
 const selectionSet = `
     {
@@ -793,7 +796,7 @@ query {
 
 [source, javascript]
 ----
-const User = neoSchema.model("User");
+const User = ogm.model("User");
 
 const users = await User.find();
 ----
@@ -816,7 +819,7 @@ query {
 
 [source, javascript]
 ----
-const User = neoSchema.model("User");
+const User = ogm.model("User");
 
 const selectionSet = `
     {
@@ -978,9 +981,9 @@ mutation {
 
 [source, javascript]
 ----
-const User = neoSchema.model("User");
+const User = ogm.model("User");
 
-const users = await User.create({ input: [{ name: "dan" }] });
+const { users } = await User.create({ input: [{ name: "dan" }] });
 ----
 
 === Creating a relationship (Create Mutation)
@@ -1045,9 +1048,9 @@ mutation {
 
 [source, javascript]
 ----
-const User = neoSchema.model("User");
+const User = ogm.model("User");
 
-const users = await User.update({
+const { users } = await User.update({
     where: { name: "dan" },
     update: { name: "dan" },
 });
@@ -1119,7 +1122,7 @@ mutation {
 
 [source, javascript]
 ----
-const User = neoSchema.model("User");
+const User = ogm.model("User");
 
 await User.delete({
     where: { name: "dan" },
