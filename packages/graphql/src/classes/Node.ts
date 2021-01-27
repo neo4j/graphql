@@ -1,4 +1,4 @@
-import { DirectiveNode, NamedTypeNode, GraphQLSchema } from "graphql";
+import { DirectiveNode, NamedTypeNode } from "graphql";
 import {
     RelationField,
     CypherField,
@@ -8,11 +8,9 @@ import {
     UnionField,
     InterfaceField,
     ObjectField,
-    BaseField,
     DateTimeField,
 } from "../types";
 import Auth from "./Auth";
-import Model from "./Model";
 import Exclude from "./Exclude";
 
 export interface NodeConstructor {
@@ -29,7 +27,6 @@ export interface NodeConstructor {
     objectFields: ObjectField[];
     dateTimeFields: DateTimeField[];
     auth?: Auth;
-    getGraphQLSchema: () => GraphQLSchema;
     exclude?: Exclude;
 }
 
@@ -60,8 +57,6 @@ class Node {
 
     public auth?: Auth;
 
-    public model: Model;
-
     public exclude?: Exclude;
 
     constructor(input: NodeConstructor) {
@@ -79,19 +74,6 @@ class Node {
         this.dateTimeFields = input.dateTimeFields;
         this.auth = input.auth;
         this.exclude = input.exclude;
-
-        const selectionSet = `
-            {
-                ${
-                    [this.primitiveFields, this.scalarFields, this.enumFields, this.dateTimeFields].reduce(
-                        (res: string[], v: BaseField[]) => [...res, ...v.map((x) => x.fieldName)],
-                        []
-                    ) as string[]
-                }
-            }
-        `;
-
-        this.model = new Model({ name: this.name, selectionSet, getGraphQLSchema: input.getGraphQLSchema });
     }
 }
 

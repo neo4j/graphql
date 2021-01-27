@@ -144,11 +144,33 @@ query {
 Use the GraphQL schema language to power an OGM layer.
 
 ```js
-const OGM = makeAugmentedSchema({ typeDefs });
+import { OGM } from "@neo4j/graphql";
+import * as neo4j from "neo4j/driver";
 
-const UserModel = OGM.model("User");
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("admin", "password")
+);
 
-await UserModel.create({
+const typeDefs = `
+    type Movie {
+        title: String
+        year: Int
+        imdbRating: Float
+        genres: [Genre] @relationship(type: "IN_GENRE", direction: "OUT")
+    }
+
+    type Genre {
+        name: String
+        movies: [Movie] @relationship(type: "IN_GENRE", direction: "IN")
+    }
+`;
+
+const ogm = new OGM({ typeDefs, driver });
+
+const User = ogm.model("User");
+
+await User.create({
     input: [
         {
             title: "The Matrix"

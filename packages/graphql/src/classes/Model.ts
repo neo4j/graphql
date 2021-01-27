@@ -3,11 +3,12 @@ import pluralize from "pluralize";
 import camelCase from "camelcase";
 import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
 import { upperFirstLetter } from "../utils";
+import NeoSchema from "./NeoSchema";
 
 export interface ModelConstructor {
     name: string;
     selectionSet: string;
-    getGraphQLSchema: () => GraphQLSchema;
+    neoSchema: NeoSchema;
 }
 
 function printSelectionSet(selectionSet: string | DocumentNode): string {
@@ -35,7 +36,7 @@ class Model {
 
     private camelCaseName: string;
 
-    private getGraphQLSchema: () => GraphQLSchema;
+    private neoSchema: NeoSchema;
 
     protected selectionSet: string;
 
@@ -43,11 +44,11 @@ class Model {
         this.name = input.name;
         this.namePluralized = pluralize(input.name);
         this.camelCaseName = camelCase(this.namePluralized);
-        this.getGraphQLSchema = input.getGraphQLSchema;
+        this.neoSchema = input.neoSchema;
         this.selectionSet = input.selectionSet;
     }
 
-    setSelectionSet(selectionSet: string | DocumentNode) {
+    public setSelectionSet(selectionSet: string | DocumentNode) {
         this.selectionSet = printSelectionSet(selectionSet);
     }
 
@@ -88,10 +89,9 @@ class Model {
             }
         `;
 
-        const schema = this.getGraphQLSchema();
         const variableValues = { where, options, ...args };
 
-        const result = await graphql(schema, query, rootValue, context, variableValues);
+        const result = await graphql(this.neoSchema.schema, query, rootValue, context, variableValues);
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
@@ -133,10 +133,9 @@ class Model {
             }
         `;
 
-        const schema = this.getGraphQLSchema();
         const variableValues = { ...args, input };
 
-        const result = await graphql(schema, mutation, rootValue, context, variableValues);
+        const result = await graphql(this.neoSchema.schema, mutation, rootValue, context, variableValues);
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
@@ -209,10 +208,9 @@ class Model {
             }
         `;
 
-        const schema = this.getGraphQLSchema();
         const variableValues = { ...args, where, update, connect, disconnect, create };
 
-        const result = await graphql(schema, mutation, rootValue, context, variableValues);
+        const result = await graphql(this.neoSchema.schema, mutation, rootValue, context, variableValues);
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
@@ -249,10 +247,9 @@ class Model {
             }
         `;
 
-        const schema = this.getGraphQLSchema();
         const variableValues = { where };
 
-        const result = await graphql(schema, mutation, rootValue, context, variableValues);
+        const result = await graphql(this.neoSchema.schema, mutation, rootValue, context, variableValues);
 
         if (result.errors?.length) {
             throw new Error(result.errors[0].message);
