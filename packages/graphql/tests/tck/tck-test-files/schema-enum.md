@@ -39,17 +39,10 @@ type DeleteInfo {
 }
 
 input MovieAND {
-  status: String
-  status_IN: [String]
-  status_NOT: String
-  status_NOT_IN: [String]
-  status_CONTAINS: String
-  status_NOT_CONTAINS: String
-  status_STARTS_WITH: String
-  status_NOT_STARTS_WITH: String
-  status_ENDS_WITH: String
-  status_NOT_ENDS_WITH: String
-  status_REGEX: String
+  status: Status
+  status_IN: [Status]
+  status_NOT: Status
+  status_NOT_IN: [Status]
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -65,17 +58,10 @@ input MovieOptions {
 }
 
 input MovieOR {
-  status: String
-  status_IN: [String]
-  status_NOT: String
-  status_NOT_IN: [String]
-  status_CONTAINS: String
-  status_NOT_CONTAINS: String
-  status_STARTS_WITH: String
-  status_NOT_STARTS_WITH: String
-  status_ENDS_WITH: String
-  status_NOT_ENDS_WITH: String
-  status_REGEX: String
+  status: Status
+  status_IN: [Status]
+  status_NOT: Status
+  status_NOT_IN: [Status]
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -86,17 +72,10 @@ enum MovieSort {
 }
 
 input MovieWhere {
-  status: String
-  status_IN: [String]
-  status_NOT: String
-  status_NOT_IN: [String]
-  status_CONTAINS: String
-  status_NOT_CONTAINS: String
-  status_STARTS_WITH: String
-  status_NOT_STARTS_WITH: String
-  status_ENDS_WITH: String
-  status_NOT_ENDS_WITH: String
-  status_REGEX: String
+  status: Status
+  status_IN: [Status]
+  status_NOT: Status
+  status_NOT_IN: [Status]
   OR: [MovieOR]
   AND: [MovieAND]
 }

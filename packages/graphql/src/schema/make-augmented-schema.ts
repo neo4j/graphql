@@ -1,4 +1,5 @@
 import camelCase from "camelcase";
+import util from "util";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
@@ -351,16 +352,16 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     composer.createInputTC({
         name: "PointDistance",
         fields: {
-            point: "PointInput",
-            distance: "Float",
+            point: "PointInput!",
+            distance: "Float!",
         },
     });
 
     composer.createInputTC({
         name: "CartesianPointDistance",
         fields: {
-            point: "CartesianPointInput",
-            distance: "Float",
+            point: "CartesianPointInput!",
+            distance: "Float!",
         },
     });
 
@@ -512,6 +513,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             ...node.objectFields,
             ...node.unionFields,
             ...node.dateTimeFields,
+            ...node.pointFields,
         ]);
 
         const composeNode = composer.createObjectTC({
@@ -531,87 +533,81 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
 
         const sortEnum = composer.createEnumTC({
             name: `${node.name}Sort`,
-            values: [...node.primitiveFields, ...node.enumFields, ...node.scalarFields, ...node.dateTimeFields].reduce(
+            values: [
+                ...node.primitiveFields,
+                ...node.enumFields,
+                ...node.scalarFields,
+                ...node.dateTimeFields,
+                ...node.pointFields,
+            ].reduce((res, f) => {
+                return f.typeMeta.array
+                    ? {
+                          ...res,
+                      }
+                    : {
+                          ...res,
+                          [`${f.fieldName}_DESC`]: { value: `${f.fieldName}_DESC` },
+                          [`${f.fieldName}_ASC`]: { value: `${f.fieldName}_ASC` },
+                      };
+            }, {}),
+        });
+
+        const queryFields = {
+            OR: `[${node.name}OR]`,
+            AND: `[${node.name}AND]`,
+            // Custom scalar fields only support basic equality
+            ...node.scalarFields.reduce((res, f) => {
+                res[f.fieldName] = f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name;
+                return res;
+            }, {}),
+            ...[...node.primitiveFields, ...node.dateTimeFields, ...node.enumFields, ...node.pointFields].reduce(
                 (res, f) => {
-                    return {
-                        ...res,
-                        [`${f.fieldName}_DESC`]: { value: `${f.fieldName}_DESC` },
-                        [`${f.fieldName}_ASC`]: { value: `${f.fieldName}_ASC` },
-                    };
+                    res[f.fieldName] = f.typeMeta.input.pretty;
+                    res[`${f.fieldName}_NOT`] = f.typeMeta.input.pretty;
+
+                    if (f.typeMeta.name !== "Boolean") {
+                        res[`${f.fieldName}_IN`] = f.typeMeta.array
+                            ? f.typeMeta.input.name
+                            : `[${f.typeMeta.input.name}]`;
+                        res[`${f.fieldName}_NOT_IN`] = f.typeMeta.array
+                            ? f.typeMeta.input.name
+                            : `[${f.typeMeta.input.name}]`;
+                    }
+
+                    if (!f.typeMeta.array) {
+                        if (["Float", "Int", "DateTime"].includes(f.typeMeta.name)) {
+                            ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
+                                res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
+                            });
+                        }
+
+                        if (["Point", "CartesianPoint"].includes(f.typeMeta.name)) {
+                            ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
+                                res[`${f.fieldName}${comparator}`] = `${f.typeMeta.name}Distance`;
+                            });
+                        }
+
+                        if (["String", "ID"].includes(f.typeMeta.name)) {
+                            res[`${f.fieldName}_REGEX`] = "String";
+
+                            [
+                                "_CONTAINS",
+                                "_NOT_CONTAINS",
+                                "_STARTS_WITH",
+                                "_NOT_STARTS_WITH",
+                                "_ENDS_WITH",
+                                "_NOT_ENDS_WITH",
+                            ].forEach((comparator) => {
+                                res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
+                            });
+                        }
+                    }
+
+                    return res;
                 },
                 {}
             ),
-        });
-
-        const queryFields = [
-            ...node.primitiveFields,
-            ...node.enumFields,
-            ...node.scalarFields,
-            ...node.dateTimeFields,
-            ...node.pointFields,
-        ].reduce(
-            (res, f) => {
-                let typeName: string;
-
-                if (enums.find((x) => x.name.value === f.typeMeta.name)) {
-                    typeName = "String";
-                } else {
-                    typeName = f.typeMeta.inputType;
-                }
-
-                res[f.fieldName] = typeName;
-
-                if (["Point", "CartesianPoint"].includes(f.typeMeta.name)) {
-                    res[`${f.fieldName}_NOT`] = f.typeMeta.inputType;
-
-                    ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((t) => {
-                        res[`${f.fieldName}${t}`] = `${f.typeMeta.name}Distance`;
-                    });
-                }
-
-                if (typeName === DateTime.name) {
-                    ["_LT", "_LTE", "_GT", "_GTE"].forEach((t) => {
-                        res[`${f.fieldName}${t}`] = DateTime.name;
-                    });
-                }
-
-                if (["ID", "String"].includes(typeName) || enums.find((x) => x.name.value === typeName)) {
-                    const type = typeName === "ID" ? "ID" : "String";
-
-                    res[`${f.fieldName}_IN`] = `[${type}]`;
-                    res[`${f.fieldName}_NOT_IN`] = `[${type}]`;
-                    res[`${f.fieldName}_REGEX`] = "String";
-
-                    [
-                        "_NOT",
-                        "_CONTAINS",
-                        "_NOT_CONTAINS",
-                        "_STARTS_WITH",
-                        "_NOT_STARTS_WITH",
-                        "_ENDS_WITH",
-                        "_NOT_ENDS_WITH",
-                    ].forEach((t) => {
-                        res[`${f.fieldName}${t}`] = type;
-                    });
-                }
-
-                if (["Boolean"].includes(typeName)) {
-                    res[`${f.fieldName}_NOT`] = "Boolean";
-                }
-
-                if (["Float", "Int"].includes(typeName)) {
-                    res[`${f.fieldName}_IN`] = `[${typeName}]`;
-                    res[`${f.fieldName}_NOT_IN`] = `[${typeName}]`;
-
-                    ["_NOT", "_LT", "_LTE", "_GT", "_GTE"].forEach((t) => {
-                        res[`${f.fieldName}${t}`] = typeName;
-                    });
-                }
-
-                return res;
-            },
-            { OR: `[${node.name}OR]`, AND: `[${node.name}AND]` }
-        );
+        };
 
         const [andInput, orInput, whereInput] = ["AND", "OR", "Where"].map((value) => {
             return composer.createInputTC({
@@ -644,7 +640,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     const field: InputTypeComposerFieldConfigAsObjectDefinition = {
                         type: f.typeMeta.pretty,
                     };
-                    res[f.fieldName] = f.typeMeta.inputType;
+                    res[f.fieldName] = f.typeMeta.input.pretty;
                 }
 
                 return res;
@@ -658,10 +654,11 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                 ...node.scalarFields,
                 ...node.enumFields,
                 ...node.dateTimeFields.filter((x) => !x.timestamps),
+                ...node.pointFields,
             ].reduce(
                 (res, f) => ({
                     ...res,
-                    [f.fieldName]: f.typeMeta.inputType,
+                    [f.fieldName]: f.typeMeta.input.pretty,
                 }),
                 {}
             ),
