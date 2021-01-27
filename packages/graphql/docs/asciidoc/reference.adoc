@@ -104,9 +104,6 @@ const schema = makeAugmentedSchema({
 Core class of the library.
 Holds all metadata about schema plus access to the OGM.
 
-
-==== With Apollo server
-
 [source, javascript]
 ----
 const neo4j = require("neo4j-driver");
@@ -134,79 +131,31 @@ const apolloServer = new ApolloServer({
 
 > Notice `context` driver injection
 
-==== With OGM
-
-[source, javascript]
-----
-const neo4j = require("neo4j-driver");
-const { makeAugmentedSchema } = require("@neo4j/graphql");
-
-const driver = neo4j.driver(
-    config.NEO_URL,
-    neo4j.auth.basic("admin", "password")
-);
-
-const neoSchema = makeAugmentedSchema({
-    typeDefs,
-    resolvers?,
-    context: { driver },
-    schemaDirectives?,
-    debug?,
-});
-
-const Model = ogm.model("MODEL_NAME_HERE");
-
-// await Model.find();
-// await Model.create();
-// await Model.update();
-// await Model.delete();
-----
-
-> Notice `context` driver injection
-
-
 === OGM
-Common applications won't just expose a single API. On the same instance as the GraphQL API there may be; scheduled jobs, authentication, migrations and not to forget any custom logic in the resolvers themselves. We expose a OGM(Object Graph Model) on top of the pre-existing GraphQL work and abstractions. Generate your normal GraphQL schema & use the exposed .model method to receive an instance of a model.
+Common applications won't just expose a single API. On the same instance as the GraphQL API there may be; scheduled jobs, authentication, migrations and not to forget any custom logic in the resolvers themselves. We expose a OGM(Object Graph Model) on top of the pre-existing GraphQL work and abstractions. Generate your normal GraphQL schema & use the exposed .model method to receive an instance of a model. 
 
 [source, javascript]
 ----
 import { OGM } from "@neo4j/graphql";
-import * as neo4j from "neo4j/driver";
+import * as neo4j from "neo4j-driver";
 
 const typeDefs = `
-   type Genre {
-      name: String
-   }
-
-   type Movie {
-      id: String
-      name: String
-      genres: [Genre] @relationship(type: "HAS_GENRE", direction: "OUT")
+    type Movie {
+        id: ID
+        name: String
     }
 `;
 
 const driver = neo4j.driver(
-    "bolt://localhost:7687",
+	"bolt://localhost:7687",
     neo4j.auth.basic("admin", "password")
 );
 
-const ogm = new OGM({
-    typeDefs,
-    driver,
-});
+const ogm = new OGM({ typeDefs, driver });
 
-const Movie = ogm.model("Movie"); // Hi I am your model
+const Movie = ogm.model("Movie");
 
-await Movie.find({ where: { id: "123" } });
-// Nested Mutations
-await Movie.create({
-    input: [
-        {
-            title: "Saw",
-            genres: { create: [{ name: "Horror" }] },
-        },
-    ],
-});
+const [theMatrix] = await Movie.find({ where: { name: "The Matrix" } });
 ----
 
 You can call the following on the model;
@@ -217,6 +166,52 @@ You can call the following on the model;
 . update
 
 Each method maps to the underlying generated Query or Mutation for that Model.
+
+==== `@private`
+The `@private` directive allows you to specify fields that should only be accessible through the OGM. This is very handy as you can hide fields such as user password to the outside world. Simply put the @private directive on the field you wish to be inaccessible through the exposed API;
+
+[source, graphql]
+----
+type User {
+	username: String!
+	email: String!
+	password: String! @private
+}
+----
+
+Using the password field is a great example here. In your application, you would want to hash passwords & hide them from snoopers. You could have a custom resolver, using the OGM, to update and set passwords. This is more apparent when you want to use the same type definitions to drive a public-facing schema and an OGM;
+
+[source, javascript]
+----
+import { makeAugmentedSchema, OGM } from "@neo4j/graphql";
+import * as neo4j from "neo4j-driver";
+
+const driver = neo4j.driver(
+	"bolt://localhost:7687",
+    neo4j.auth.basic("admin", "password")
+);
+
+const typeDefs = `
+	type User {
+		username: String!
+		email: String!
+		password: String! @private
+	}
+`;
+
+// public without password 
+const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
+
+// private with access to password
+const ogm = new OGM({ typeDefs, driver });
+
+const apolloServer = new ApolloServer({ schema: neoSchema.schema });
+----
+
+We also exclude the following directives from OGM generation;
+
+1. `@auth`
+2. `@exclude`
 
 ==== Selection Set 
 This is a GraphQL specific term. When you preform a query you have the operation;
@@ -269,17 +264,24 @@ This means that by default, querying for Node(s), you would only get the `.id` a
 
 [source, javascript]
 ----
+import { OGM } from "@neo4j/graphql";
+import * as neo4j from "neo4j-driver";
+
+const driver = neo4j.driver(
+	"bolt://localhost:7687",
+  neo4j.auth.basic("admin", "password")
+);
+
 const typeDefs = `
-    type Node {
-        id: ID
-        name: String
-        relation: [Node] @relationship(...)
-        customCypher: [Node] @cypher(...)
-    }
+	type Node {
+      id: ID
+      name: String
+      relation: [Node] @relationship(...)
+      customCypher: [Node] @cypher(...)
+   }
 `;
 
-const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
-
+const ogm = new OGM({ typeDefs, driver });
 const Node = ogm.model("Node");
 
 const selectionSet = `
@@ -296,25 +298,31 @@ const selectionSet = `
         }
     }
 `;
-
-const movies = await Node.find({ selectionSet });
+const nodes = await Node.find({ selectionSet });
 ----
 
 =====  Selection set as a static
 
 [source, javascript]
 ----
+import { OGM } from "@neo4j/graphql";
+import * as neo4j from "neo4j-driver";
+
+const driver = neo4j.driver(
+	"bolt://localhost:7687",
+    neo4j.auth.basic("admin", "password")
+);
+
 const typeDefs = `
-    type Node {
-        id: ID
-        name: String
-        relation: [Node] @relationship(...)
-        customCypher: [Node] @cypher(...)
-    }
+	type Node {
+      id: ID
+      name: String
+      relation: [Node] @relationship(...)
+      customCypher: [Node] @cypher(...)
+   }
 `;
 
-const neoSchema = makeAugmentedSchema({ typeDefs, context: { driver } });
-
+const ogm = new OGM({ typeDefs, driver });
 const Node = ogm.model("Node");
 
 const selectionSet = `
@@ -331,8 +339,7 @@ const selectionSet = `
         }
     }
 `;
-
-Node.setSelectionSet(selectionSet);
+Node.setSelectionSet(selectionSet)
 ----
 
 === `translate`

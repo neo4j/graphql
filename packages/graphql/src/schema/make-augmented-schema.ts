@@ -104,7 +104,6 @@ function getObjFieldMeta({
 }) {
     return obj?.fields?.reduce(
         (res: ObjectFields, field) => {
-            // OGM
             const privateField = field?.directives?.find((x) => x.name.value === "private");
             if (privateField) {
                 return res;
@@ -450,18 +449,16 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     neoSchemaInput.nodes = nodes;
 
     neoSchemaInput.nodes.forEach((node) => {
-        const nodeFields = objectFieldsToComposeFields(
-            [
-                ...node.primitiveFields,
-                ...node.cypherFields,
-                ...node.enumFields,
-                ...node.scalarFields,
-                ...node.interfaceFields,
-                ...node.objectFields,
-                ...node.unionFields,
-                ...node.dateTimeFields,
-            ].filter((x) => !x.private)
-        );
+        const nodeFields = objectFieldsToComposeFields([
+            ...node.primitiveFields,
+            ...node.cypherFields,
+            ...node.enumFields,
+            ...node.scalarFields,
+            ...node.interfaceFields,
+            ...node.objectFields,
+            ...node.unionFields,
+            ...node.dateTimeFields,
+        ]);
 
         const composeNode = composer.createObjectTC({
             name: node.name,

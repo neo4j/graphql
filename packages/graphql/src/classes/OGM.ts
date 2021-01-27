@@ -31,7 +31,7 @@ function filterTypeDefs(typeDefs: TypeDefs) {
                 ...res,
                 {
                     ...def,
-                    directives: def.directives?.filter((x) => x.name.value !== "auth"),
+                    directives: def.directives?.filter((x) => !["auth", "exclude"].includes(x.name.value)),
                     fields: def.fields?.reduce(
                         (r: FieldDefinitionNode[], f) => [
                             ...r,
