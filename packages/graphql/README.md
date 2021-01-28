@@ -168,9 +168,9 @@ const typeDefs = `
 
 const ogm = new OGM({ typeDefs, driver });
 
-const User = ogm.model("User");
+const Movie = ogm.model("Movie");
 
-await User.create({
+await Movie.create({
     input: [
         {
             title: "The Matrix"
