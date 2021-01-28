@@ -124,9 +124,9 @@ function createProjectionAndParams({
 
                 referenceNodes.forEach((refNode) => {
                     const _param = `${param}_${refNode.name}`;
-                    const innenrHeadStr: string[] = [];
-                    innenrHeadStr.push("[");
-                    innenrHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
+                    const innerHeadStr: string[] = [];
+                    innerHeadStr.push("[");
+                    innerHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
 
                     if (refNode.auth) {
                         checkRoles({ node: refNode, context, operation: "read" });
@@ -141,7 +141,7 @@ function createProjectionAndParams({
                             whereInput: thisWhere,
                             chainStrOverRide: _param,
                         });
-                        innenrHeadStr.push(`AND ${whereAndParams[0].replace("WHERE", "")}`);
+                        innerHeadStr.push(`AND ${whereAndParams[0].replace("WHERE", "")}`);
                         res.params = { ...res.params, ...whereAndParams[1] };
                     }
 
@@ -154,11 +154,11 @@ function createProjectionAndParams({
                             functionType: true,
                             operation: "read",
                         });
-                        innenrHeadStr.push(`AND ${allowAndParams[0]}`);
+                        innerHeadStr.push(`AND ${allowAndParams[0]}`);
                         res.params = { ...res.params, ...allowAndParams[1] };
                     }
 
-                    innenrHeadStr.push(`| ${param}`);
+                    innerHeadStr.push(`| ${param}`);
 
                     if (field.fieldsByTypeName[refNode.name]) {
                         const recurse = createProjectionAndParams({
@@ -169,16 +169,16 @@ function createProjectionAndParams({
                             varName: param,
                             chainStrOverRide: _param,
                         });
-                        innenrHeadStr.push(
+                        innerHeadStr.push(
                             [`{ __resolveType: "${refNode.name}", `, ...recurse[0].replace("{", "").split("")].join("")
                         );
                         res.params = { ...res.params, ...recurse[1] };
                     } else {
-                        innenrHeadStr.push(`{ __resolveType: "${refNode.name}" } `);
+                        innerHeadStr.push(`{ __resolveType: "${refNode.name}" } `);
                     }
 
-                    innenrHeadStr.push(`]`);
-                    headStrs.push(innenrHeadStr.join(" "));
+                    innerHeadStr.push(`]`);
+                    headStrs.push(innerHeadStr.join(" "));
                 });
 
                 unionStrs.push(headStrs.join(" + "));
