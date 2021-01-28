@@ -80,6 +80,14 @@ function createWhereAndParams({
         if (key.endsWith("_NOT_IN")) {
             const [fieldName] = key.split("_NOT_IN");
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
+            const pointField = node.pointFields.find((x) => fieldName === x.fieldName);
+            const array = [
+                ...node.scalarFields,
+                ...node.dateTimeFields,
+                ...node.enumFields,
+                ...node.primitiveFields,
+                ...node.pointFields,
+            ].find((x) => fieldName === x.fieldName)?.typeMeta.array;
 
             if (relationField) {
                 const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
@@ -113,7 +121,9 @@ function createWhereAndParams({
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
             } else {
-                res.clauses.push(`(NOT ${varName}.${fieldName} IN $${param})`);
+                res.clauses.push(
+                    array ? `(NOT $${param} IN ${varName}.${fieldName})` : `(NOT ${varName}.${fieldName} IN $${param})`
+                );
                 res.params[param] = value;
             }
 
@@ -123,6 +133,14 @@ function createWhereAndParams({
         if (key.endsWith("_IN")) {
             const [fieldName] = key.split("_IN");
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
+            const pointField = node.pointFields.find((x) => fieldName === x.fieldName);
+            const array = [
+                ...node.scalarFields,
+                ...node.dateTimeFields,
+                ...node.enumFields,
+                ...node.primitiveFields,
+                ...node.pointFields,
+            ].find((x) => fieldName === x.fieldName)?.typeMeta.array;
 
             if (relationField) {
                 const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
@@ -155,7 +173,9 @@ function createWhereAndParams({
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
             } else {
-                res.clauses.push(`${varName}.${fieldName} IN $${param}`);
+                res.clauses.push(
+                    array ? `$${param} IN ${varName}.${fieldName}` : `${varName}.${fieldName} IN $${param}`
+                );
                 res.params[param] = value;
             }
 
