@@ -42,6 +42,7 @@ function createUpdateAndParams({
         }
 
         const relationField = node.relationFields.find((x) => key.startsWith(x.fieldName));
+        const pointField = node.pointFields.find((x) => key.startsWith(x.fieldName));
         let unionTypeName = "";
 
         if (relationField) {
@@ -197,9 +198,17 @@ function createUpdateAndParams({
             hasAppliedTimeStamps = true;
         }
 
-        res.strs.push(`SET ${varName}.${key} = $${param}`);
-        res.params[param] = value;
+        if (pointField) {
+            if (pointField.typeMeta.array) {
+                res.strs.push(`SET ${varName}.${key} = [p in $${param} | point(p)]`);
+            } else {
+                res.strs.push(`SET ${varName}.${key} = point($${param})`);
+            }
+        } else {
+            res.strs.push(`SET ${varName}.${key} = $${param}`);
+        }
 
+        res.params[param] = value;
         return res;
     }
 

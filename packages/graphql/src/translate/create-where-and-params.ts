@@ -37,10 +37,11 @@ function createWhereAndParams({
             param = `${varName}_${key}`;
         }
 
+        const pointField = node.pointFields.find((x) => key.startsWith(x.fieldName));
+
         if (key.endsWith("_NOT")) {
             const [fieldName] = key.split("_NOT");
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
-            const pointField = node.pointFields.find((x) => fieldName === x.fieldName);
 
             if (relationField) {
                 const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
@@ -66,11 +67,17 @@ function createWhereAndParams({
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
                 res.params = { ...res.params, ...recurse[1] };
-            } else if (pointField) {
-                res.clauses.push(`(NOT ${varName}.${fieldName} = point($${param}))`);
-                res.params[param] = value;
             } else {
-                res.clauses.push(`(NOT ${varName}.${fieldName} = $${param})`);
+                if (pointField) {
+                    if (pointField.typeMeta.array) {
+                        res.clauses.push(`(NOT ${varName}.${key} = [p in $${param} | point(p)])`);
+                    } else {
+                        res.clauses.push(`(NOT ${varName}.${key} = point($${param}))`);
+                    }
+                } else {
+                    res.clauses.push(`(NOT ${varName}.${fieldName} = $${param})`);
+                }
+
                 res.params[param] = value;
             }
 
@@ -80,7 +87,6 @@ function createWhereAndParams({
         if (key.endsWith("_NOT_IN")) {
             const [fieldName] = key.split("_NOT_IN");
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
-            const pointField = node.pointFields.find((x) => fieldName === x.fieldName);
             const array = [
                 ...node.scalarFields,
                 ...node.dateTimeFields,
@@ -120,6 +126,13 @@ function createWhereAndParams({
                 resultStr += ")"; // close NOT
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
+            } else if (pointField) {
+                res.clauses.push(
+                    array
+                        ? `(NOT point($${param}) IN ${varName}.${fieldName})`
+                        : `(NOT ${varName}.${fieldName} IN point($${param}))`
+                );
+                res.params[param] = value;
             } else {
                 res.clauses.push(
                     array ? `(NOT $${param} IN ${varName}.${fieldName})` : `(NOT ${varName}.${fieldName} IN $${param})`
@@ -133,7 +146,6 @@ function createWhereAndParams({
         if (key.endsWith("_IN")) {
             const [fieldName] = key.split("_IN");
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
-            const pointField = node.pointFields.find((x) => fieldName === x.fieldName);
             const array = [
                 ...node.scalarFields,
                 ...node.dateTimeFields,
@@ -269,7 +281,6 @@ function createWhereAndParams({
 
         if (key.endsWith("_LT")) {
             const [fieldName] = key.split("_LT");
-            const pointField = node.pointFields.find((x) => fieldName === x.fieldName);
             res.clauses.push(
                 pointField
                     ? `distance(${varName}.${fieldName}, point($${param}.point)) < $${param}.distance`
@@ -282,7 +293,6 @@ function createWhereAndParams({
 
         if (key.endsWith("_LTE")) {
             const [fieldName] = key.split("_LTE");
-            const pointField = node.pointFields.find((x) => fieldName === x.fieldName);
             res.clauses.push(
                 pointField
                     ? `distance(${varName}.${fieldName}, point($${param}.point)) <= $${param}.distance`
@@ -295,7 +305,6 @@ function createWhereAndParams({
 
         if (key.endsWith("_GT")) {
             const [fieldName] = key.split("_GT");
-            const pointField = node.pointFields.find((x) => fieldName === x.fieldName);
             res.clauses.push(
                 pointField
                     ? `distance(${varName}.${fieldName}, point($${param}.point)) > $${param}.distance`
@@ -308,7 +317,6 @@ function createWhereAndParams({
 
         if (key.endsWith("_GTE")) {
             const [fieldName] = key.split("_GTE");
-            const pointField = node.pointFields.find((x) => fieldName === x.fieldName);
             res.clauses.push(
                 pointField
                     ? `distance(${varName}.${fieldName}, point($${param}.point)) >= $${param}.distance`
@@ -349,13 +357,17 @@ function createWhereAndParams({
             return res;
         }
 
-        res.clauses.push(
-            node.pointFields.find((x) => key === x.fieldName)
-                ? `${varName}.${key} = point($${param})`
-                : `${varName}.${key} = $${param}`
-        );
-        res.params[param] = value;
+        if (pointField) {
+            if (pointField.typeMeta.array) {
+                res.clauses.push(`${varName}.${key} = [p in $${param} | point(p)]`);
+            } else {
+                res.clauses.push(`${varName}.${key} = point($${param})`);
+            }
+        } else {
+            res.clauses.push(`${varName}.${key} = $${param}`);
+        }
 
+        res.params[param] = value;
         return res;
     }
 
