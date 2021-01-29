@@ -1,4 +1,5 @@
 import { FieldsByTypeName } from "graphql-parse-resolve-info";
+import util from "util";
 import { Context, Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLWhereArg } from "../types";
@@ -39,6 +40,8 @@ function createProjectionAndParams({
         const optionsInput = field.args.options as GraphQLOptionsArg;
         const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
         const cypherField = node.cypherFields.find((x) => x.fieldName === key);
+        const relationField = node.relationFields.find((x) => x.fieldName === key);
+        const pointField = node.pointFields.find((x) => x.fieldName === key);
 
         if (cypherField) {
             let projectionStr = "";
@@ -97,7 +100,6 @@ function createProjectionAndParams({
             return res;
         }
 
-        const relationField = node.relationFields.find((x) => x.fieldName === key);
         if (relationField) {
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const nodeMatchStr = `(${chainStr || varName})`;
@@ -300,7 +302,27 @@ function createProjectionAndParams({
             return res;
         }
 
-        res.projection.push(`.${key}`);
+        if (pointField) {
+            const componentMap = {
+                longitude: "x",
+                latitude: "y",
+                height: "z",
+                x: "x",
+                y: "y",
+                z: "z",
+                crs: "crs",
+                srid: "srid",
+            };
+
+            res.projection.push(
+                `${key}: { ${Object.values(fieldFields[pointField.typeMeta.name])
+                    .map((f) => `${f.name}: this.${key}.${componentMap[f.name]}`)
+                    .join(", ")} }`
+            );
+        } else {
+            res.projection.push(`.${key}`);
+        }
+
         return res;
     }
 
