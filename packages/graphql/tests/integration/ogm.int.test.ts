@@ -23,7 +23,6 @@ describe("OGM", () => {
             const typeDefs = `
                 type Movie {
                     id: ID
-                    name: String
                 }
             `;
 
@@ -54,7 +53,6 @@ describe("OGM", () => {
             const typeDefs = `
                 type Movie {
                     id: ID
-                    name: String
                 }
             `;
 
@@ -137,7 +135,6 @@ describe("OGM", () => {
             const typeDefs = gql`
                 type Movie {
                     id: ID
-                    name: String
                 }
             `;
 
