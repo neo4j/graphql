@@ -18,17 +18,6 @@ function printSelectionSet(selectionSet: string | DocumentNode): string {
 
     return print(selectionSet);
 }
-
-function removeNull(data: any) {
-    return JSON.parse(JSON.stringify(data), (_key, value) => {
-        if (value === null) {
-            return undefined;
-        }
-
-        return value;
-    });
-}
-
 class Model {
     public name: string;
 
@@ -97,7 +86,7 @@ class Model {
             throw new Error(result.errors[0].message);
         }
 
-        return removeNull((result.data as any)[this.camelCaseName]) as T;
+        return (result.data as any)[this.camelCaseName] as T;
     }
 
     async create<T = any>({
@@ -141,7 +130,7 @@ class Model {
             throw new Error(result.errors[0].message);
         }
 
-        return removeNull((result.data as any)[mutationName]) as T;
+        return (result.data as any)[mutationName] as T;
     }
 
     async update<T = any>({
@@ -216,7 +205,7 @@ class Model {
             throw new Error(result.errors[0].message);
         }
 
-        return removeNull((result.data as any)[mutationName]) as T;
+        return (result.data as any)[mutationName] as T;
     }
 
     async delete({
