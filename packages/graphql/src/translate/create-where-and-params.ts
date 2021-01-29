@@ -70,9 +70,9 @@ function createWhereAndParams({
             } else {
                 if (pointField) {
                     if (pointField.typeMeta.array) {
-                        res.clauses.push(`(NOT ${varName}.${key} = [p in $${param} | point(p)])`);
+                        res.clauses.push(`(NOT ${varName}.${fieldName} = [p in $${param} | point(p)])`);
                     } else {
-                        res.clauses.push(`(NOT ${varName}.${key} = point($${param}))`);
+                        res.clauses.push(`(NOT ${varName}.${fieldName} = point($${param}))`);
                     }
                 } else {
                     res.clauses.push(`(NOT ${varName}.${fieldName} = $${param})`);
