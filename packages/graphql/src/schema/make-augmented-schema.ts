@@ -23,6 +23,7 @@ import {
 } from "graphql-compose";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import pluralize from "pluralize";
+import { Driver } from "neo4j-driver";
 import { Auth, NeoSchema, NeoSchemaConstructor, Node, Exclude } from "../classes";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
@@ -40,6 +41,9 @@ import {
     ObjectField,
     DateTimeField,
     TimeStampOperations,
+    TypeDefs,
+    Resolvers,
+    SchemaDirectives,
 } from "../types";
 import { upperFirstLetter } from "../utils";
 import findResolver from "./find";
@@ -51,15 +55,16 @@ import mergeExtensionsIntoAST from "./merge-extensions-into-ast";
 import parseValueNode from "./parse-value-node";
 import mergeTypeDefs from "./merge-typedefs";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
-import { Float, Int, DateTime } from "./scalars";
+import { Float, Int, DateTime, ID } from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
 import graphqlArgsToCompose from "./graphql-arg-to-compose";
 
 export interface MakeAugmentedSchemaOptions {
-    typeDefs: any;
-    resolvers?: any;
-    schemaDirectives?: any;
+    typeDefs: TypeDefs;
+    resolvers?: Resolvers;
+    schemaDirectives?: SchemaDirectives;
     debug?: boolean | ((...values: any[]) => void);
+    context?: { [k: string]: any } & { driver?: Driver };
 }
 
 interface ObjectFields {
@@ -99,6 +104,11 @@ function getObjFieldMeta({
 }) {
     return obj?.fields?.reduce(
         (res: ObjectFields, field) => {
+            const privateField = field?.directives?.find((x) => x.name.value === "private");
+            if (privateField) {
+                return res;
+            }
+
             const relationshipMeta = getRelationshipMeta(field);
             const cypherMeta = getCypherMeta(field);
             const typeMeta = getFieldTypeMeta(field);
@@ -894,15 +904,17 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         });
     });
 
-    composer.addTypeDefs("scalar Int"); // removed if not used
-    composer.addTypeDefs("scalar Float"); // removed if not used
-    composer.addTypeDefs("scalar DateTime"); // removed if not used
+    composer.addTypeDefs("scalar Int");
+    composer.addTypeDefs("scalar Float");
+    composer.addTypeDefs("scalar ID");
+    composer.addTypeDefs("scalar DateTime");
 
     const generatedTypeDefs = composer.toSDL();
     let generatedResolvers: any = {
         ...composer.getResolveMethods(),
         ...(generatedTypeDefs.includes("scalar Int") ? { Int } : {}),
         ...(generatedTypeDefs.includes("scalar Float") ? { Float } : {}),
+        ...(generatedTypeDefs.includes("scalar ID") ? { ID } : {}),
         ...(generatedTypeDefs.includes("scalar DateTime") ? { DateTime } : {}),
     };
     unions.forEach((union) => {
@@ -914,7 +926,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             Mutation: customMutations = {},
             Subscription: customSubscriptions = {},
             ...rest
-        } = options.resolvers;
+        } = options.resolvers as Record<string, any>;
 
         if (customQueries) {
             if (generatedResolvers.Query) {

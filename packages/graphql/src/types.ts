@@ -1,4 +1,11 @@
-import { InputValueDefinitionNode, DirectiveNode } from "graphql";
+import { InputValueDefinitionNode, DocumentNode, DirectiveNode } from "graphql";
+import { IExecutableSchemaDefinition } from "@graphql-tools/schema";
+
+export type TypeDefs = IExecutableSchemaDefinition["typeDefs"];
+
+export type Resolvers = IExecutableSchemaDefinition["resolvers"];
+
+export type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
 
 /**
  * Metadata about a field.type on either
@@ -19,6 +26,7 @@ export interface BaseField {
     typeMeta: TypeMeta;
     otherDirectives: DirectiveNode[];
     arguments: InputValueDefinitionNode[];
+    private?: boolean;
 }
 
 /**
@@ -83,5 +91,13 @@ export interface GraphQLWhereArg {
 }
 
 export type AuthOperations = "create" | "read" | "update" | "delete" | "connect" | "disconnect";
+
+/**
+ * Whats returned when deleting nodes
+ */
+export interface DeleteInfo {
+    nodesDeleted: number;
+    relationshipsDeleted: number;
+}
 
 export type TimeStampOperations = "create" | "update";
