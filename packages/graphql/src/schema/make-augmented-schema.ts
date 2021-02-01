@@ -531,26 +531,40 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
-        const sortEnum = composer.createEnumTC({
-            name: `${node.name}Sort`,
-            values: [
-                ...node.primitiveFields,
-                ...node.enumFields,
-                ...node.scalarFields,
-                ...node.dateTimeFields,
-                ...node.pointFields,
-            ].reduce((res, f) => {
-                return f.typeMeta.array
-                    ? {
-                          ...res,
-                      }
-                    : {
-                          ...res,
-                          [`${f.fieldName}_DESC`]: { value: `${f.fieldName}_DESC` },
-                          [`${f.fieldName}_ASC`]: { value: `${f.fieldName}_ASC` },
-                      };
-            }, {}),
-        });
+        const sortValues = [
+            ...node.primitiveFields,
+            ...node.enumFields,
+            ...node.scalarFields,
+            ...node.dateTimeFields,
+            ...node.pointFields,
+        ].reduce((res, f) => {
+            return f.typeMeta.array
+                ? {
+                      ...res,
+                  }
+                : {
+                      ...res,
+                      [`${f.fieldName}_DESC`]: { value: `${f.fieldName}_DESC` },
+                      [`${f.fieldName}_ASC`]: { value: `${f.fieldName}_ASC` },
+                  };
+        }, {});
+
+        if (Object.keys(sortValues).length) {
+            const sortEnum = composer.createEnumTC({
+                name: `${node.name}Sort`,
+                values: sortValues,
+            });
+
+            composer.createInputTC({
+                name: `${node.name}Options`,
+                fields: { sort: sortEnum.List, limit: "Int", skip: "Int" },
+            });
+        } else {
+            composer.createInputTC({
+                name: `${node.name}Options`,
+                fields: { limit: "Int", skip: "Int" },
+            });
+        }
 
         const queryFields = {
             OR: `[${node.name}OR]`,
@@ -614,11 +628,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                 name: `${node.name}${value}`,
                 fields: queryFields,
             });
-        });
-
-        composer.createInputTC({
-            name: `${node.name}Options`,
-            fields: { sort: sortEnum.List, limit: "Int", skip: "Int" },
         });
 
         const nodeInput = composer.createInputTC({
