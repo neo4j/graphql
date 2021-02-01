@@ -139,6 +139,51 @@ query {
 }
 ```
 
+## OGM
+
+Use the GraphQL schema language to power an OGM layer.
+
+```js
+import { OGM } from "@neo4j/graphql";
+import * as neo4j from "neo4j/driver";
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("admin", "password")
+);
+
+const typeDefs = `
+    type Movie {
+        title: String
+        year: Int
+        imdbRating: Float
+        genres: [Genre] @relationship(type: "IN_GENRE", direction: "OUT")
+    }
+
+    type Genre {
+        name: String
+        movies: [Movie] @relationship(type: "IN_GENRE", direction: "IN")
+    }
+`;
+
+const ogm = new OGM({ typeDefs, driver });
+
+const Movie = ogm.model("Movie");
+
+await Movie.create({
+    input: [
+        {
+            title: "The Matrix"
+            year: 1999
+            imdbRating: 8.7
+            genres: {
+                connect: { where: [{ name: "Sci-fi" }, { name: "Action" }] }
+            }
+        }
+    ]
+});
+```
+
 ## Complex Auth
 
 Define complex, nested & related, authorization rules such as; “grant update access to all moderators of a post”;
