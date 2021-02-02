@@ -27,6 +27,7 @@ type Photo {
     description: String!
     url: String!
     color: Color @relationship(type: "OF_COLOR", direction: "OUT")
+    location: Point
 }
 ```
 
@@ -45,6 +46,11 @@ mutation {
             id
             photos(where: { url: "url.com" }) {
                 url
+                location {
+                    latitude
+                    longitude
+                    height
+                }
             }
             colors(where: { id: 123 }) {
                 id
@@ -77,13 +83,13 @@ CALL {
 RETURN
 this0 {
     .id,
-    photos: [ (this0)-[:HAS_PHOTO]->(this0_photos:Photo) WHERE this0_photos.url = $projection_photos_url | this0_photos { .url } ],
+    photos: [ (this0)-[:HAS_PHOTO]->(this0_photos:Photo) WHERE this0_photos.url = $projection_photos_url | this0_photos { .url, location: { point: this0_photos.location } } ],
     colors: [ (this0)-[:HAS_COLOR]->(this0_colors:Color) WHERE this0_colors.id = $projection_colors_id | this0_colors { .id } ],
     sizes: [ (this0)-[:HAS_SIZE]->(this0_sizes:Size) WHERE this0_sizes.name = $projection_sizes_name  | this0_sizes { .name } ]
 } AS this0,
 this1 {
     .id,
-    photos: [ (this1)-[:HAS_PHOTO]->(this1_photos:Photo) WHERE this1_photos.url = $projection_photos_url | this1_photos { .url } ],
+    photos: [ (this1)-[:HAS_PHOTO]->(this1_photos:Photo) WHERE this1_photos.url = $projection_photos_url | this1_photos { .url, location: { point: this1_photos.location } } ],
     colors: [ (this1)-[:HAS_COLOR]->(this1_colors:Color) WHERE this1_colors.id = $projection_colors_id | this1_colors { .id } ],
     sizes: [ (this1)-[:HAS_SIZE]->(this1_sizes:Size) WHERE this1_sizes.name = $projection_sizes_name  | this1_sizes { .name } ]
 } AS this1
