@@ -303,22 +303,20 @@ function createProjectionAndParams({
         }
 
         if (pointField) {
-            const componentMap = {
-                longitude: "x",
-                latitude: "y",
-                height: "z",
-                x: "x",
-                y: "y",
-                z: "z",
-                crs: "crs",
-                srid: "srid",
-            };
+            const { crs, ...point } = fieldFields[pointField.typeMeta.name];
+            const fields: string[] = [];
 
-            res.projection.push(
-                `${key}: { ${Object.values(fieldFields[pointField.typeMeta.name])
-                    .map((f) => `${f.name}: this.${key}.${componentMap[f.name]}`)
-                    .join(", ")} }`
-            );
+            // Sadly need to select the whole point object due to the risk of height/z
+            // being selected on a 2D point, to which the database will throw an error
+            if (point) {
+                fields.push(`point: ${varName}.${key}`);
+            }
+
+            if (crs) {
+                fields.push(`crs: ${varName}.${key}.crs`);
+            }
+
+            res.projection.push(`${key}: { ${fields.join(", ")} }`);
         } else {
             res.projection.push(`.${key}`);
         }

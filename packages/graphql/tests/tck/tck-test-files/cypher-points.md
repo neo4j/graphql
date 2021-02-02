@@ -8,6 +8,8 @@ Schema:
 type PointContainer {
     point: Point
     cartesianPoint: CartesianPoint
+    points: [Point!]!
+    cartesianPoints: [CartesianPoint!]!
 }
 ```
 
@@ -33,7 +35,7 @@ type PointContainer {
 ```cypher
 MATCH (this:PointContainer)
 WHERE this.point = point($this_point)
-RETURN this { .point } as this
+RETURN this { point: { point: this.point } } as this
 ```
 
 **Expected Cypher params**
@@ -69,7 +71,7 @@ RETURN this { .point } as this
 ```cypher
 MATCH (this:PointContainer)
 WHERE this.cartesianPoint = point($this_cartesianPoint)
-RETURN this { .cartesianPoint } as this
+RETURN this { cartesianPoint: { point: this.cartesianPoint } } as this
 ```
 
 **Expected Cypher params**
@@ -105,7 +107,7 @@ RETURN this { .cartesianPoint } as this
 ```cypher
 MATCH (this:PointContainer)
 WHERE (NOT this.point = point($this_point_NOT))
-RETURN this { .point } as this
+RETURN this { point: { point: this.point } } as this
 ```
 
 **Expected Cypher params**
@@ -141,7 +143,7 @@ RETURN this { .point } as this
 ```cypher
 MATCH (this:PointContainer)
 WHERE (NOT this.cartesianPoint = point($this_cartesianPoint_NOT))
-RETURN this { .cartesianPoint } as this
+RETURN this { cartesianPoint: { point: this.cartesianPoint } } as this
 ```
 
 **Expected Cypher params**

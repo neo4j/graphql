@@ -249,3 +249,197 @@ type Query {
 ```
 
 ---
+
+### Points
+
+**TypeDefs**
+
+```typedefs-input
+type Movie {
+    filmedAt: [Point!]!
+}
+```
+
+**Output**
+
+```schema-output
+type Point {
+  latitude: Float!
+  longitude: Float!
+  height: Float
+  crs: String!
+  srid: Int!
+}
+
+input PointInput {
+  latitude: Float!
+  longitude: Float!
+  height: Float
+}
+
+type Movie {
+  filmedAt: [Point!]!
+}
+
+type DeleteInfo {
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
+
+input MovieAND {
+  filmedAt: [PointInput]
+  filmedAt_NOT: [PointInput]
+  filmedAt_IN: PointInput
+  filmedAt_NOT_IN: PointInput
+  OR: [MovieOR]
+  AND: [MovieAND]
+}
+
+input MovieCreateInput {
+  filmedAt: [PointInput]
+}
+
+input MovieOptions {
+  limit: Int
+  skip: Int
+}
+
+input MovieOR {
+  filmedAt: [PointInput]
+  filmedAt_NOT: [PointInput]
+  filmedAt_IN: PointInput
+  filmedAt_NOT_IN: PointInput
+  OR: [MovieOR]
+  AND: [MovieAND]
+}
+
+input MovieWhere {
+  filmedAt: [PointInput]
+  filmedAt_NOT: [PointInput]
+  filmedAt_IN: PointInput
+  filmedAt_NOT_IN: PointInput
+  OR: [MovieOR]
+  AND: [MovieAND]
+}
+
+input MovieUpdateInput {
+  filmedAt: [PointInput]
+}
+
+type CreateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type UpdateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+type Mutation {
+  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  deleteMovies(where: MovieWhere): DeleteInfo!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
+}
+
+type Query {
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
+}
+```
+
+---
+
+### CartesianPoints
+
+**TypeDefs**
+
+```typedefs-input
+type Machine {
+    partLocations: [CartesianPoint!]!
+}
+```
+
+**Output**
+
+```schema-output
+type CartesianPoint {
+  x: Float!
+  y: Float!
+  z: Float
+  crs: String!
+  srid: Int!
+}
+
+input CartesianPointInput {
+  x: Float!
+  y: Float!
+  z: Float
+}
+
+type Machine {
+  partLocations: [CartesianPoint!]!
+}
+
+type DeleteInfo {
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
+
+input MachineAND {
+  partLocations: [CartesianPointInput]
+  partLocations_NOT: [CartesianPointInput]
+  partLocations_IN: CartesianPointInput
+  partLocations_NOT_IN: CartesianPointInput
+  OR: [MachineOR]
+  AND: [MachineAND]
+}
+
+input MachineCreateInput {
+  partLocations: [CartesianPointInput]
+}
+
+input MachineOptions {
+  limit: Int
+  skip: Int
+}
+
+input MachineOR {
+  partLocations: [CartesianPointInput]
+  partLocations_NOT: [CartesianPointInput]
+  partLocations_IN: CartesianPointInput
+  partLocations_NOT_IN: CartesianPointInput
+  OR: [MachineOR]
+  AND: [MachineAND]
+}
+
+input MachineWhere {
+  partLocations: [CartesianPointInput]
+  partLocations_NOT: [CartesianPointInput]
+  partLocations_IN: CartesianPointInput
+  partLocations_NOT_IN: CartesianPointInput
+  OR: [MachineOR]
+  AND: [MachineAND]
+}
+
+input MachineUpdateInput {
+  partLocations: [CartesianPointInput]
+}
+
+type CreateMachinesMutationResponse {
+  machines: [Machine!]!
+}
+
+type UpdateMachinesMutationResponse {
+  machines: [Machine!]!
+}
+
+type Mutation {
+  createMachines(input: [MachineCreateInput]!): CreateMachinesMutationResponse!
+  deleteMachines(where: MachineWhere): DeleteInfo!
+  updateMachines(where: MachineWhere, update: MachineUpdateInput): UpdateMachinesMutationResponse!
+}
+
+type Query {
+  machines(where: MachineWhere, options: MachineOptions): [Machine]!
+}
+```
+
+---

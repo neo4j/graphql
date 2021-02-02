@@ -1,5 +1,4 @@
 import camelCase from "camelcase";
-import util from "util";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
@@ -301,67 +300,18 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         options,
     };
 
+    // graphql-compose will break if the Point and CartesianPoint types are created but not used,
+    // because it will purge the unused types but leave behind orphaned field resolvers
+    //
+    // These are flags to check whether the types are used and then create them if they are
+    let pointInTypeDefs = false;
+    let cartesianPointInTypeDefs = false;
+
     composer.createObjectTC({
         name: "DeleteInfo",
         fields: {
             nodesDeleted: "Int!",
             relationshipsDeleted: "Int!",
-        },
-    });
-
-    composer.createObjectTC({
-        name: "Point",
-        fields: {
-            longitude: "Float!",
-            latitude: "Float!",
-            height: "Float",
-            crs: "String!",
-            srid: "Int!",
-        },
-    });
-
-    composer.createObjectTC({
-        name: "CartesianPoint",
-        fields: {
-            x: "Float!",
-            y: "Float!",
-            z: "Float",
-            crs: "String!",
-            srid: "Int!",
-        },
-    });
-
-    composer.createInputTC({
-        name: "PointInput",
-        fields: {
-            longitude: "Float!",
-            latitude: "Float!",
-            height: "Float",
-        },
-    });
-
-    composer.createInputTC({
-        name: "CartesianPointInput",
-        fields: {
-            x: "Float!",
-            y: "Float!",
-            z: "Float",
-        },
-    });
-
-    composer.createInputTC({
-        name: "PointDistance",
-        fields: {
-            point: "PointInput!",
-            distance: "Float!",
-        },
-    });
-
-    composer.createInputTC({
-        name: "CartesianPointDistance",
-        fields: {
-            point: "CartesianPointInput!",
-            distance: "Float!",
         },
     });
 
@@ -576,6 +526,13 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             }, {}),
             ...[...node.primitiveFields, ...node.dateTimeFields, ...node.enumFields, ...node.pointFields].reduce(
                 (res, f) => {
+                    // This is the only sensible place to flag whether Point and CartesianPoint are used
+                    if (f.typeMeta.name === "Point") {
+                        pointInTypeDefs = true;
+                    } else if (f.typeMeta.name === "CartesianPoint") {
+                        cartesianPointInTypeDefs = true;
+                    }
+
                     res[f.fieldName] = f.typeMeta.input.pretty;
                     res[`${f.fieldName}_NOT`] = f.typeMeta.input.pretty;
 
@@ -975,6 +932,110 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
     composer.addTypeDefs("scalar ID");
     composer.addTypeDefs("scalar DateTime");
 
+    if (pointInTypeDefs) {
+        // Every field (apart from CRS) in Point needs a custom resolver
+        // to deconstruct the point objects we fetch from the database
+        composer.createObjectTC({
+            name: "Point",
+            fields: {
+                longitude: {
+                    type: "Float!",
+                    resolve: (source) => {
+                        return source.point.x;
+                    },
+                },
+                latitude: {
+                    type: "Float!",
+                    resolve: (source) => {
+                        return source.point.y;
+                    },
+                },
+                height: {
+                    type: "Float",
+                    resolve: (source) => {
+                        return source.point.z;
+                    },
+                },
+                crs: "String!",
+                srid: {
+                    type: "Int!",
+                    resolve: (source) => {
+                        return source.point.srid;
+                    },
+                },
+            },
+        });
+
+        composer.createInputTC({
+            name: "PointInput",
+            fields: {
+                longitude: "Float!",
+                latitude: "Float!",
+                height: "Float",
+            },
+        });
+
+        composer.createInputTC({
+            name: "PointDistance",
+            fields: {
+                point: "PointInput!",
+                distance: "Float!",
+            },
+        });
+    }
+
+    if (cartesianPointInTypeDefs) {
+        // Every field (apart from CRS) in CartesianPoint needs a custom resolver
+        // to deconstruct the point objects we fetch from the database
+        composer.createObjectTC({
+            name: "CartesianPoint",
+            fields: {
+                x: {
+                    type: "Float!",
+                    resolve: (source) => {
+                        return source.point.x;
+                    },
+                },
+                y: {
+                    type: "Float!",
+                    resolve: (source) => {
+                        return source.point.y;
+                    },
+                },
+                z: {
+                    type: "Float",
+                    resolve: (source) => {
+                        return source.point.z;
+                    },
+                },
+                crs: "String!",
+                srid: {
+                    type: "Int!",
+                    resolve: (source) => {
+                        return source.point.srid;
+                    },
+                },
+            },
+        });
+
+        composer.createInputTC({
+            name: "CartesianPointInput",
+            fields: {
+                x: "Float!",
+                y: "Float!",
+                z: "Float",
+            },
+        });
+
+        composer.createInputTC({
+            name: "CartesianPointDistance",
+            fields: {
+                point: "CartesianPointInput!",
+                distance: "Float!",
+            },
+        });
+    }
+
     const generatedTypeDefs = composer.toSDL();
     let generatedResolvers: any = {
         ...composer.getResolveMethods(),
@@ -983,9 +1044,11 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         ...(generatedTypeDefs.includes("scalar ID") ? { ID } : {}),
         ...(generatedTypeDefs.includes("scalar DateTime") ? { DateTime } : {}),
     };
+
     unions.forEach((union) => {
         generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
     });
+
     if (options.resolvers) {
         const {
             Query: customQueries = {},
