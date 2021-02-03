@@ -1,15 +1,14 @@
 ## Cypher Points
 
-Tests TimeStamps operations. ⚠ The string in params is actually an object but the test suite turns it into a string when calling `JSON.stringify`.
+Tests Cypher generation for spatial types. Points and CartesianPoints are processed equivalently when it comes to Cypher translation, so only one needs to be extensively tested.
 
 Schema:
 
 ```schema
 type PointContainer {
+    id: String
     point: Point
     cartesianPoint: CartesianPoint
-    points: [Point!]!
-    cartesianPoints: [CartesianPoint!]!
 }
 ```
 
@@ -25,6 +24,7 @@ type PointContainer {
         point {
             longitude
             latitude
+            crs
         }
     }
 }
@@ -35,7 +35,7 @@ type PointContainer {
 ```cypher
 MATCH (this:PointContainer)
 WHERE this.point = point($this_point)
-RETURN this { point: { point: this.point } } as this
+RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 ```
 
 **Expected Cypher params**
@@ -153,6 +153,94 @@ RETURN this { cartesianPoint: { point: this.cartesianPoint } } as this
   "this_cartesianPoint_NOT": {
     "x": 1,
     "y": 2
+  }
+}
+```
+
+---
+
+### Simple Point create mutation
+
+**GraphQL input**
+
+```graphql
+mutation {
+    createPointContainers(input: { point: { longitude: 1.0, latitude: 2.0 } }) {
+        pointContainers {
+            point {
+                longitude
+                latitude
+                crs
+            }
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+CALL {
+    CREATE (this0:PointContainer)
+    SET this0.point = point($this0_point)
+    RETURN this0
+}
+
+RETURN
+this0 { point: { point: this0.point, crs: this0.point.crs } } AS this0
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+  "this0_point": {
+    "longitude": 1,
+    "latitude": 2
+  }
+}
+```
+
+---
+
+### Simple Point update mutation
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updatePointContainers(
+        where: { id: "id" }
+        update: { point: { longitude: 1.0, latitude: 2.0 } }
+    ) {
+        pointContainers {
+            point {
+                longitude
+                latitude
+                crs
+            }
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:PointContainer)
+WHERE this.id = $this_id
+SET this.point = point($this_update_point)
+RETURN this { point: { point: this.point, crs: this.point.crs } } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+  "this_id": "id",
+  "this_update_point": {
+    "longitude": 1,
+    "latitude": 2
   }
 }
 ```
