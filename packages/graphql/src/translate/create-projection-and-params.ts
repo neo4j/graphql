@@ -303,20 +303,26 @@ function createProjectionAndParams({
         }
 
         if (pointField) {
+            const isArray = pointField.typeMeta.array;
+
             const { crs, ...point } = fieldFields[pointField.typeMeta.name];
             const fields: string[] = [];
 
             // Sadly need to select the whole point object due to the risk of height/z
             // being selected on a 2D point, to which the database will throw an error
             if (point) {
-                fields.push(`point: ${varName}.${key}`);
+                fields.push(isArray ? "point:p" : `point: ${varName}.${key}`);
             }
 
             if (crs) {
-                fields.push(`crs: ${varName}.${key}.crs`);
+                fields.push(isArray ? "crs: p.crs" : `crs: ${varName}.${key}.crs`);
             }
 
-            res.projection.push(`${key}: { ${fields.join(", ")} }`);
+            res.projection.push(
+                isArray
+                    ? `${key}: [p in ${varName}.${key} | { ${fields.join(", ")} }]`
+                    : `${key}: { ${fields.join(", ")} }`
+            );
         } else {
             res.projection.push(`.${key}`);
         }
