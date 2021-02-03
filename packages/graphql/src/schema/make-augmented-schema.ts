@@ -979,7 +979,10 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             name: "PointDistance",
             fields: {
                 point: "PointInput!",
-                distance: "Float!",
+                distance: {
+                    type: "Float!",
+                    description: "The distance in metres to be used when comparing two points",
+                },
             },
         });
     }
