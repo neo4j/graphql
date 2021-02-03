@@ -33,6 +33,7 @@ input PointInput {
 
 input PointDistance {
   point: PointInput!
+  """The distance in metres to be used when comparing two points"""
   distance: Float!
 }
 
