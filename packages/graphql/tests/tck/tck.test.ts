@@ -56,7 +56,7 @@ describe("TCK Generated tests", () => {
         describe(file, () => {
             if (kind === "cypher") {
                 const document = parse(schema as string);
-                const neoSchema = makeAugmentedSchema({ typeDefs: schema });
+                const neoSchema = makeAugmentedSchema({ typeDefs: schema as string });
 
                 // @ts-ignore
                 test.each(tests.map((t) => [t.name, t as Test]))("%s", async (_, obj) => {
