@@ -130,7 +130,7 @@ function createWhereAndParams({
                 res.clauses.push(
                     array
                         ? `(NOT point($${param}) IN ${varName}.${fieldName})`
-                        : `(NOT ${varName}.${fieldName} IN point($${param}))`
+                        : `(NOT ${varName}.${fieldName} IN [p in $${param} | point(p)])`
                 );
                 res.params[param] = value;
             } else {
@@ -188,7 +188,7 @@ function createWhereAndParams({
                 res.clauses.push(
                     array
                         ? `point($${param}) IN ${varName}.${fieldName}`
-                        : `${varName}.${fieldName} IN point($${param})`
+                        : `${varName}.${fieldName} IN [p in $${param} | point(p)]`
                 );
                 res.params[param] = value;
             } else {
