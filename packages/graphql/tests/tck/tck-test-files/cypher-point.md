@@ -1,6 +1,6 @@
 ## Cypher Points
 
-Tests Cypher generation for spatial types. Points and CartesianPoints are processed equivalently when it comes to Cypher translation, so only one needs to be extensively tested.
+Tests Cypher generation for spatial types. Point and CartesianPoint are processed equivalently when it comes to Cypher translation, so only one needs to be extensively tested.
 
 Schema:
 
@@ -8,7 +8,6 @@ Schema:
 type PointContainer {
     id: String
     point: Point
-    cartesianPoint: CartesianPoint
 }
 ```
 
@@ -51,42 +50,6 @@ RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 
 ---
 
-### Simple CartesianPoint query
-
-**GraphQL input**
-
-```graphql
-{
-    pointContainers(where: { cartesianPoint: { x: 1.0, y: 2.0 } }) {
-        cartesianPoint {
-            x
-            y
-        }
-    }
-}
-```
-
-**Expected Cypher output**
-
-```cypher
-MATCH (this:PointContainer)
-WHERE this.cartesianPoint = point($this_cartesianPoint)
-RETURN this { cartesianPoint: { point: this.cartesianPoint } } as this
-```
-
-**Expected Cypher params**
-
-```cypher-params
-{
-  "this_cartesianPoint": {
-    "x": 1,
-    "y": 2
-  }
-}
-```
-
----
-
 ### Simple Point NOT query
 
 **GraphQL input**
@@ -123,16 +86,17 @@ RETURN this { point: { point: this.point } } as this
 
 ---
 
-### Simple CartesianPoint NOT query
+### Simple Point IN query
 
 **GraphQL input**
 
 ```graphql
 {
-    pointContainers(where: { cartesianPoint_NOT: { x: 1.0, y: 2.0 } }) {
-        cartesianPoint {
-            x
-            y
+    pointContainers(where: { point_IN: [{ longitude: 1.0, latitude: 2.0 }] }) {
+        point {
+            longitude
+            latitude
+            crs
         }
     }
 }
@@ -142,17 +106,286 @@ RETURN this { point: { point: this.point } } as this
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE (NOT this.cartesianPoint = point($this_cartesianPoint_NOT))
-RETURN this { cartesianPoint: { point: this.cartesianPoint } } as this
+WHERE this.point IN [p in $this_point_IN | point(p)]
+RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
 {
-  "this_cartesianPoint_NOT": {
-    "x": 1,
-    "y": 2
+  "this_point_IN": [{
+    "longitude": 1,
+    "latitude": 2
+  }]
+}
+```
+
+---
+
+### Simple Point NOT IN query
+
+**GraphQL input**
+
+```graphql
+{
+    pointContainers(
+        where: { point_NOT_IN: [{ longitude: 1.0, latitude: 2.0 }] }
+    ) {
+        point {
+            longitude
+            latitude
+            crs
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:PointContainer)
+WHERE (NOT this.point IN [p in $this_point_NOT_IN | point(p)])
+RETURN this { point: { point: this.point, crs: this.point.crs } } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+  "this_point_NOT_IN": [{
+    "longitude": 1,
+    "latitude": 2
+  }]
+}
+```
+
+---
+
+### Simple Point LT query
+
+**GraphQL input**
+
+```graphql
+{
+    pointContainers(
+        where: {
+            point_LT: {
+                point: { longitude: 1.1, latitude: 2.2 }
+                distance: 3.3
+            }
+        }
+    ) {
+        point {
+            longitude
+            latitude
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:PointContainer)
+WHERE distance(this.point, point($this_point_LT.point)) < $this_point_LT.distance
+RETURN this { point: { point: this.point } } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+  "this_point_LT": {
+    "point": {
+      "longitude": 1.1,
+      "latitude": 2.2
+    },
+    "distance": 3.3
+  }
+}
+```
+
+---
+
+### Simple Point LTE query
+
+**GraphQL input**
+
+```graphql
+{
+    pointContainers(
+        where: {
+            point_LTE: {
+                point: { longitude: 1.1, latitude: 2.2 }
+                distance: 3.3
+            }
+        }
+    ) {
+        point {
+            longitude
+            latitude
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:PointContainer)
+WHERE distance(this.point, point($this_point_LTE.point)) <= $this_point_LTE.distance
+RETURN this { point: { point: this.point } } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+  "this_point_LTE": {
+    "point": {
+      "longitude": 1.1,
+      "latitude": 2.2
+    },
+    "distance": 3.3
+  }
+}
+```
+
+---
+
+### Simple Point GT query
+
+**GraphQL input**
+
+```graphql
+{
+    pointContainers(
+        where: {
+            point_GT: {
+                point: { longitude: 1.1, latitude: 2.2 }
+                distance: 3.3
+            }
+        }
+    ) {
+        point {
+            longitude
+            latitude
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:PointContainer)
+WHERE distance(this.point, point($this_point_GT.point)) > $this_point_GT.distance
+RETURN this { point: { point: this.point } } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+  "this_point_GT": {
+    "point": {
+      "longitude": 1.1,
+      "latitude": 2.2
+    },
+    "distance": 3.3
+  }
+}
+```
+
+---
+
+### Simple Point GTE query
+
+**GraphQL input**
+
+```graphql
+{
+    pointContainers(
+        where: {
+            point_GTE: {
+                point: { longitude: 1.1, latitude: 2.2 }
+                distance: 3.3
+            }
+        }
+    ) {
+        point {
+            longitude
+            latitude
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:PointContainer)
+WHERE distance(this.point, point($this_point_GTE.point)) >= $this_point_GTE.distance
+RETURN this { point: { point: this.point } } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+  "this_point_GTE": {
+    "point": {
+      "longitude": 1.1,
+      "latitude": 2.2
+    },
+    "distance": 3.3
+  }
+}
+```
+
+---
+
+### Simple Point DISTANCE query
+
+**GraphQL input**
+
+```graphql
+{
+    pointContainers(
+        where: {
+            point_DISTANCE: {
+                point: { longitude: 1.1, latitude: 2.2 }
+                distance: 3.3
+            }
+        }
+    ) {
+        point {
+            longitude
+            latitude
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:PointContainer)
+WHERE distance(this.point, point($this_point_DISTANCE.point)) = $this_point_DISTANCE.distance
+RETURN this { point: { point: this.point } } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+  "this_point_DISTANCE": {
+    "point": {
+      "longitude": 1.1,
+      "latitude": 2.2
+    },
+    "distance": 3.3
   }
 }
 ```
