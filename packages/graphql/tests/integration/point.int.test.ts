@@ -22,7 +22,7 @@ describe("Point", () => {
                 location: Point!
             }
         `;
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = makeAugmentedSchema({ typeDefs, debug: true });
         server = constructTestServer(neoSchema, driver);
     });
 
@@ -299,6 +299,7 @@ describe("Point", () => {
     });
 
     test("enables query of a node with a wgs-84 point", async () => {
+        // Create node
         const id = faker.random.uuid();
         const size = faker.random.number({});
         const longitude = parseFloat(faker.address.longitude());
@@ -320,9 +321,12 @@ describe("Point", () => {
         expect((result.records[0].toObject() as any).p.location.x).toEqual(longitude);
         expect((result.records[0].toObject() as any).p.location.y).toEqual(latitude);
 
-        const photographsQuery = gql`
-            query Photographs($id: String!) {
-                photographs(where: { id: $id }) {
+        const { query } = createTestClient(server);
+
+        // Test equality
+        const photographsEqualsQuery = gql`
+            query Photographs($longitude: Float!, $latitude: Float!) {
+                photographs(where: { location: { longitude: $longitude, latitude: $latitude } }) {
                     id
                     size
                     location {
@@ -335,12 +339,152 @@ describe("Point", () => {
             }
         `;
 
-        const { query } = createTestClient(server);
+        const equalsResult = await query({ query: photographsEqualsQuery, variables: { longitude, latitude } });
 
-        const gqlResult = await query({ query: photographsQuery, variables: { id } });
+        expect(equalsResult.errors).toBeFalsy();
+        expect((equalsResult.data as any).photographs[0]).toEqual({
+            id,
+            size,
+            location: {
+                latitude,
+                longitude,
+                height: null,
+                crs: "wgs-84",
+            },
+        });
 
-        expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).photographs[0]).toEqual({
+        // Test IN functionality
+        const photographsInQuery = gql`
+            query Photographs($locations: [PointInput]) {
+                photographs(where: { location_IN: $locations }) {
+                    id
+                    size
+                    location {
+                        latitude
+                        longitude
+                        height
+                        crs
+                    }
+                }
+            }
+        `;
+
+        const inResult = await query({
+            query: photographsInQuery,
+            variables: [
+                { longitude, latitude },
+                { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
+            ],
+        });
+
+        expect(inResult.errors).toBeFalsy();
+        expect((inResult.data as any).photographs).toContainEqual({
+            id,
+            size,
+            location: {
+                latitude,
+                longitude,
+                height: null,
+                crs: "wgs-84",
+            },
+        });
+
+        // Test NOT IN functionality
+        const photographsNotInQuery = gql`
+            query Photographs($locations: [PointInput]) {
+                photographs(where: { location_NOT_IN: $locations }) {
+                    id
+                    size
+                    location {
+                        latitude
+                        longitude
+                        height
+                        crs
+                    }
+                }
+            }
+        `;
+
+        const notInResult = await query({
+            query: photographsInQuery,
+            variables: [
+                { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
+                { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
+            ],
+        });
+
+        expect(notInResult.errors).toBeFalsy();
+        expect((notInResult.data as any).photographs).toContainEqual({
+            id,
+            size,
+            location: {
+                latitude,
+                longitude,
+                height: null,
+                crs: "wgs-84",
+            },
+        });
+
+        // Test less than
+        const photographsLessThanQuery = gql`
+            query Photographs($longitude: Float!, $latitude: Float!) {
+                photographs(
+                    where: { location_LT: { point: { longitude: $longitude, latitude: $latitude }, distance: 1000000 } }
+                ) {
+                    id
+                    size
+                    location {
+                        latitude
+                        longitude
+                        height
+                        crs
+                    }
+                }
+            }
+        `;
+
+        const lessThanResult = await query({
+            query: photographsLessThanQuery,
+            variables: { longitude, latitude: latitude + 1 },
+        });
+
+        expect(lessThanResult.errors).toBeFalsy();
+        expect((lessThanResult.data as any).photographs).toContainEqual({
+            id,
+            size,
+            location: {
+                latitude,
+                longitude,
+                height: null,
+                crs: "wgs-84",
+            },
+        });
+
+        // Test greater than
+        const photographsGreaterThanQuery = gql`
+            query Photographs($longitude: Float!, $latitude: Float!) {
+                photographs(
+                    where: { location_GT: { point: { longitude: $longitude, latitude: $latitude }, distance: 1 } }
+                ) {
+                    id
+                    size
+                    location {
+                        latitude
+                        longitude
+                        height
+                        crs
+                    }
+                }
+            }
+        `;
+
+        const greaterThanResult = await query({
+            query: photographsGreaterThanQuery,
+            variables: { longitude, latitude: latitude + 1 },
+        });
+
+        expect(greaterThanResult.errors).toBeFalsy();
+        expect((greaterThanResult.data as any).photographs).toContainEqual({
             id,
             size,
             location: {
@@ -352,7 +496,7 @@ describe("Point", () => {
         });
     });
 
-    test("enables query of a node with a wgs-84-3d point", async () => {
+    test("enables query for equality of a node with a wgs-84-3d point", async () => {
         const id = faker.random.uuid();
         const size = faker.random.number({});
         const longitude = parseFloat(faker.address.longitude());
@@ -377,8 +521,8 @@ describe("Point", () => {
         expect((result.records[0].toObject() as any).p.location.z).toEqual(height);
 
         const photographsQuery = gql`
-            query Photographs($id: String!) {
-                photographs(where: { id: $id }) {
+            query Photographs($longitude: Float!, $latitude: Float!, $height: Float) {
+                photographs(where: { location: { longitude: $longitude, latitude: $latitude, height: $height } }) {
                     id
                     size
                     location {
@@ -393,7 +537,7 @@ describe("Point", () => {
 
         const { query } = createTestClient(server);
 
-        const gqlResult = await query({ query: photographsQuery, variables: { id } });
+        const gqlResult = await query({ query: photographsQuery, variables: { longitude, latitude, height } });
 
         expect(gqlResult.errors).toBeFalsy();
         expect((gqlResult.data as any).photographs[0]).toEqual({
