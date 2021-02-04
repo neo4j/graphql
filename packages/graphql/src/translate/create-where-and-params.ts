@@ -184,6 +184,13 @@ function createWhereAndParams({
                 resultStr += inner.join(" OR ");
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
+            } else if (pointField) {
+                res.clauses.push(
+                    array
+                        ? `point($${param}) IN ${varName}.${fieldName}`
+                        : `${varName}.${fieldName} IN point($${param})`
+                );
+                res.params[param] = value;
             } else {
                 res.clauses.push(
                     array ? `$${param} IN ${varName}.${fieldName}` : `${varName}.${fieldName} IN $${param}`
