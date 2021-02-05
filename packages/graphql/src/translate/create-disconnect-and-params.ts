@@ -2,7 +2,6 @@ import { Context, Node } from "../classes";
 import { RelationField } from "../types";
 import createWhereAndParams from "./create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
-import { checkRoles } from "../auth";
 
 interface Res {
     disconnects: string[];
@@ -34,7 +33,8 @@ function createDisconnectAndParams({
         const _varName = `${varName}${index}`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
-        const relTypeStr = `[${_varName}_rel:${relationField.type}]`;
+        const relVarName = `${_varName}_rel`;
+        const relTypeStr = `[${relVarName}:${relationField.type}]`;
 
         res.disconnects.push(`WITH ${withVars.join(", ")}`);
         res.disconnects.push(
@@ -54,19 +54,38 @@ function createDisconnectAndParams({
             res.params = { ...res.params, ...where[1] };
         }
 
-        if (refNode.auth) {
-            checkRoles({ node: refNode, context, operation: "disconnect" });
+        // TODO fromCreate ?
+        const preAuth = [parentNode, refNode].reduce(
+            (result: Res, node, i) => {
+                if (!node.auth) {
+                    return result;
+                }
 
-            const allowAndParams = createAuthAndParams({
-                context,
-                node: refNode,
-                operation: "disconnect",
-                varName: _varName,
-                chainStrOverRide: `${_varName}_allow`,
-                type: "allow",
-            });
-            res.disconnects.push(allowAndParams[0]);
-            res.params = { ...res.params, ...allowAndParams[1] };
+                const [str, params] = createAuthAndParams({
+                    entity: node,
+                    operation: "disconnect",
+                    context,
+                    allow: { parentNode, varName: _varName, chainStr: `${_varName}${i}_allow` },
+                });
+
+                if (!str) {
+                    return result;
+                }
+
+                result.disconnects.push(str);
+                result.params = { ...result.params, ...params };
+
+                return result;
+            },
+            { disconnects: [], params: {} }
+        ) as Res;
+
+        if (preAuth.disconnects.length) {
+            res.disconnects.push(`WITH ${[...withVars, _varName, relVarName].join(", ")}`);
+            res.disconnects.push(
+                `CALL apoc.util.validate(NOT(${preAuth.disconnects.join(" AND ")}), "Forbidden", [0])`
+            );
+            res.params = { ...res.params, ...preAuth[1] };
         }
 
         /* 
@@ -123,27 +142,9 @@ function createDisconnectAndParams({
         return res;
     }
 
-    const initialStrs: string[] = [];
-    let initialParams = {};
-
-    checkRoles({ node: parentNode, context, operation: "disconnect" });
-
-    if (parentNode.auth) {
-        const allowAndParams = createAuthAndParams({
-            context,
-            node: parentNode,
-            operation: "disconnect",
-            varName: parentVar,
-            chainStrOverRide: `${parentVar}_allow`,
-            type: "allow",
-        });
-        initialStrs.push(allowAndParams[0]);
-        initialParams = { ...initialParams, ...allowAndParams[1] };
-    }
-
     const { disconnects, params } = ((relationField.typeMeta.array ? value : [value]) as any[]).reduce(reducer, {
-        disconnects: initialStrs,
-        params: initialParams,
+        disconnects: [],
+        params: {},
     });
 
     return [disconnects.join("\n"), params];

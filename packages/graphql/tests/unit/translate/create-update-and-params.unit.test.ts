@@ -11,10 +11,11 @@ describe("createUpdateAndParams", () => {
             relationFields: [],
             cypherFields: [],
             enumFields: [],
+            unionFields: [],
             scalarFields: [],
             primitiveFields: [
                 {
-                    fieldName: "title",
+                    fieldName: "id",
                     typeMeta: {
                         name: "String",
                         array: false,

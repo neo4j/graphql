@@ -15,7 +15,7 @@ describe("cypherResolver", () => {
             arguments: [],
         };
 
-        const result = cypherResolver({ field, statement: "", getSchema: () => neoSchema, defaultAccessMode: "READ" });
+        const result = cypherResolver({ field, statement: "", getSchema: () => neoSchema });
         expect(result.type).toEqual(field.typeMeta.pretty);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({});

@@ -2,12 +2,16 @@ import { FieldsByTypeName } from "graphql-parse-resolve-info";
 import { Context, Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLWhereArg } from "../types";
-import { checkRoles } from "../auth";
 import createAuthAndParams from "./create-auth-and-params";
 
 interface Res {
     projection: string[];
     params: any;
+    meta?: ProjectionMeta;
+}
+
+interface ProjectionMeta {
+    authStrs: string[];
 }
 
 function createProjectionAndParams({
@@ -24,7 +28,7 @@ function createProjectionAndParams({
     chainStr?: string;
     varName: string;
     chainStrOverRide?: string;
-}): [string, any] {
+}): [string, any, ProjectionMeta?] {
     function reducer(res: Res, [k, field]: [string, any]): Res {
         let key = k;
         const alias: string | undefined = field.alias !== field.name ? field.alias : undefined;
@@ -48,6 +52,7 @@ function createProjectionAndParams({
         const cypherField = node.cypherFields.find((x) => x.fieldName === key);
 
         if (cypherField) {
+            let projectionAuthStr = "";
             let projectionStr = "";
             const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime"].includes(
                 cypherField.typeMeta.name
@@ -64,9 +69,11 @@ function createProjectionAndParams({
                 });
                 projectionStr = recurse[0];
                 res.params = { ...res.params, ...recurse[1] };
-            }
 
-            const safeJWT = context.getJWTSafe();
+                if (recurse[2]) {
+                    projectionAuthStr = recurse[2].authStrs.join(" AND ");
+                }
+            }
 
             const apocParams = Object.entries(field.args).reduce(
                 (r: { strs: string[]; params: any }, entry) => {
@@ -77,9 +84,9 @@ function createProjectionAndParams({
                         params: { ...r.params, [argName]: entry[1] },
                     };
                 },
-                { strs: [`jwt: $jwt`], params: {} }
+                { strs: [`auth: $auth`], params: {} }
             ) as { strs: string[]; params: any };
-            res.params = { ...res.params, ...apocParams.params, jwt: safeJWT };
+            res.params = { ...res.params, ...apocParams.params };
 
             const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
 
@@ -87,7 +94,11 @@ function createProjectionAndParams({
                 cypherField.statement
             }", {this: ${chainStr || varName}${
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
-            }}, ${expectMultipleValues}) ${projectionStr ? `| ${param} ${projectionStr}` : ""}`;
+            }}, ${expectMultipleValues}) ${
+                projectionAuthStr
+                    ? `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStr}), "Forbidden", [0])`
+                    : ""
+            } ${projectionStr ? `| ${param} ${projectionStr}` : ""}`;
 
             if (!cypherField.typeMeta.array) {
                 res.projection.push(`${key}: head([${apocStr}])`);
@@ -100,8 +111,6 @@ function createProjectionAndParams({
             } else {
                 res.projection.push(`${key}: [${apocStr}]`);
             }
-
-            return res;
         }
 
         const relationField = node.relationFields.find((x) => x.fieldName === key);
@@ -135,10 +144,6 @@ function createProjectionAndParams({
                     innenrHeadStr.push("[");
                     innenrHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
 
-                    if (refNode.auth) {
-                        checkRoles({ node: refNode, context, operation: "read" });
-                    }
-
                     const thisWhere = field.args[refNode.name];
                     if (thisWhere) {
                         const whereAndParams = createWhereAndParams({
@@ -152,23 +157,24 @@ function createProjectionAndParams({
                         res.params = { ...res.params, ...whereAndParams[1] };
                     }
 
-                    if (refNode.auth) {
-                        const allowAndParams = createAuthAndParams({
-                            node: refNode,
-                            context,
+                    const preAuth = createAuthAndParams({
+                        entity: refNode,
+                        operation: "read",
+                        context,
+                        allow: {
+                            parentNode: refNode,
                             varName: param,
-                            chainStrOverRide: `${_param}_auth`,
-                            functionType: true,
-                            operation: "read",
-                            type: "allow",
-                        });
-                        innenrHeadStr.push(`AND ${allowAndParams[0]}`);
-                        res.params = { ...res.params, ...allowAndParams[1] };
+                        },
+                    });
+                    if (preAuth[0]) {
+                        innenrHeadStr.push(`AND apoc.util.validatePredicate(NOT(${preAuth[0]}), "Forbidden", [0])`);
+                        res.params = { ...res.params, ...preAuth[1] };
                     }
 
                     innenrHeadStr.push(`| ${param}`);
 
                     if (field.fieldsByTypeName[refNode.name]) {
+                        // TODO META
                         const recurse = createProjectionAndParams({
                             // @ts-ignore
                             fieldsByTypeName: field.fieldsByTypeName,
@@ -220,10 +226,6 @@ function createProjectionAndParams({
                 return res;
             }
 
-            if (referenceNode.auth) {
-                checkRoles({ node: referenceNode, context, operation: "read" });
-            }
-
             let whereStr = "";
             let projectionStr = "";
             let authStr = "";
@@ -239,19 +241,21 @@ function createProjectionAndParams({
                 res.params = { ...res.params, ...where[1] };
             }
 
-            if (referenceNode.auth) {
-                const allowAndParams = createAuthAndParams({
-                    node: referenceNode,
-                    context,
+            const preAuth = createAuthAndParams({
+                entity: referenceNode,
+                operation: "read",
+                context,
+                allow: {
+                    parentNode: referenceNode,
                     varName: `${varName}_${key}`,
-                    functionType: true,
-                    operation: "read",
-                    type: "allow",
-                });
-                authStr = allowAndParams[0];
-                res.params = { ...res.params, ...allowAndParams[1] };
+                },
+            });
+            if (preAuth[0]) {
+                authStr = `apoc.util.validatePredicate(NOT(${preAuth[0]}), "Forbidden", [0])`;
+                res.params = { ...res.params, ...preAuth[1] };
             }
 
+            // TODO meta
             const recurse = createProjectionAndParams({
                 fieldsByTypeName: fieldFields,
                 node: referenceNode || node,
@@ -306,20 +310,65 @@ function createProjectionAndParams({
             }
 
             res.projection.push(nestedQuery);
-            return res;
         }
 
-        res.projection.push(`.${key}`);
+        const authableField = [
+            ...node.dateTimeFields,
+            ...node.enumFields,
+            ...node.objectFields,
+            ...node.scalarFields,
+            ...node.primitiveFields,
+            ...node.interfaceFields,
+            ...node.objectFields,
+            ...node.unionFields,
+            ...node.cypherFields,
+        ].find((x) => x.fieldName === key);
+
+        if (authableField) {
+            if (authableField.auth) {
+                const authAndParams = createAuthAndParams({
+                    entity: authableField,
+                    operation: "read",
+                    context,
+                    allow: { parentNode: node, varName },
+                });
+
+                if (!res.meta) {
+                    res.meta = { authStrs: [] };
+                }
+
+                res.meta.authStrs.push(authAndParams[0]);
+                res.params = { ...res.params, ...authAndParams[1] };
+            }
+        }
+
+        const selectableField = [
+            ...node.dateTimeFields,
+            ...node.enumFields,
+            ...node.objectFields,
+            ...node.scalarFields,
+            ...node.primitiveFields,
+            ...node.interfaceFields,
+            ...node.objectFields,
+            ...node.unionFields,
+        ].find((x) => x.fieldName === key);
+
+        if (selectableField) {
+            res.projection.push(`.${key}`);
+        }
 
         return res;
     }
 
-    const { projection, params } = Object.entries(fieldsByTypeName[node.name] as { [k: string]: any }).reduce(reducer, {
-        projection: [],
-        params: {},
-    }) as Res;
+    const { projection, params, meta } = Object.entries(fieldsByTypeName[node.name] as { [k: string]: any }).reduce(
+        reducer,
+        {
+            projection: [],
+            params: {},
+        }
+    ) as Res;
 
-    return [`{ ${projection.join(", ")} }`, params];
+    return [`{ ${projection.join(", ")} }`, params, meta];
 }
 
 export default createProjectionAndParams;
