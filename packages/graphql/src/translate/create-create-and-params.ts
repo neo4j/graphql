@@ -1,11 +1,15 @@
 import { Context, Node } from "../classes";
 import createConnectAndParams from "./create-connect-and-params";
-import { checkRoles } from "../auth";
 import createAuthAndParams from "./create-auth-and-params";
 
 interface Res {
     creates: string[];
     params: any;
+    meta?: CreateMeta;
+}
+
+interface CreateMeta {
+    authStrs: string[];
 }
 
 function createCreateAndParams({
@@ -82,15 +86,30 @@ function createCreateAndParams({
 
         if (primitiveField?.autogenerate) {
             res.creates.push(`SET ${varName}.${key} = randomUUID()`);
-        } else {
-            res.creates.push(`SET ${varName}.${key} = $${_varName}`);
-            res.params[_varName] = value;
+
+            return res;
         }
+
+        if (primitiveField?.auth) {
+            const authAndParams = createAuthAndParams({
+                entity: primitiveField,
+                operation: "create",
+                context,
+            });
+
+            if (!res.meta) {
+                res.meta = { authStrs: [] };
+            }
+
+            res.meta.authStrs.push(authAndParams[0]);
+            res.params = { ...res.params, ...authAndParams[1] };
+        }
+
+        res.creates.push(`SET ${varName}.${key} = $${_varName}`);
+        res.params[_varName] = value;
 
         return res;
     }
-
-    checkRoles({ node, context, operation: "create" });
 
     const initial = [`CREATE (${varName}:${node.name})`];
 
@@ -100,25 +119,27 @@ function createCreateAndParams({
     });
 
     // eslint-disable-next-line prefer-const
-    let { creates, params } = Object.entries(input).reduce(reducer, {
+    let { creates, params, meta } = Object.entries(input).reduce(reducer, {
         creates: initial,
         params: {},
     }) as Res;
 
     if (node.auth) {
         const bindAndParams = createAuthAndParams({
-            context,
-            node,
+            entity: node,
             operation: "create",
-            varName,
-            chainStrOverRide: `${varName}_bind`,
-            type: "bind",
+            context,
         });
         if (bindAndParams[0]) {
             creates.push(`WITH ${withVars.join(", ")}`);
         }
-        creates.push(bindAndParams[0]);
+        creates.push(`CALL apoc.util.validate(NOT(${bindAndParams[0]}), "Forbidden", [0])`);
         params = { ...params, ...bindAndParams[1] };
+    }
+
+    if (meta) {
+        creates.push(`WITH ${withVars.join(", ")}`);
+        creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), "Forbidden", [0])`);
     }
 
     return [creates.join("\n"), params];

@@ -25,6 +25,7 @@ describe("createProjectionAndParams", () => {
             relationFields: [],
             cypherFields: [],
             enumFields: [],
+            unionFields: [],
             scalarFields: [],
             primitiveFields: [
                 {

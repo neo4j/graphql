@@ -9,8 +9,8 @@ import {
     InterfaceField,
     ObjectField,
     DateTimeField,
+    Auth,
 } from "../types";
-import Auth from "./Auth";
 import Exclude from "./Exclude";
 
 export interface NodeConstructor {

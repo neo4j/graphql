@@ -2,7 +2,6 @@ import { Context, Node } from "../classes";
 import { RelationField } from "../types";
 import createWhereAndParams from "./create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
-import { checkRoles } from "../auth";
 
 interface Res {
     connects: string[];
@@ -52,19 +51,36 @@ function createConnectAndParams({
             res.params = { ...res.params, ...where[1] };
         }
 
-        if (refNode.auth) {
-            checkRoles({ node: refNode, context, operation: "connect" });
+        // TODO fromCreate ?
+        const preAuth = [...(!fromCreate ? [parentNode] : []), refNode].reduce(
+            (result: Res, node, i) => {
+                if (!node.auth) {
+                    return result;
+                }
 
-            const allowAndParams = createAuthAndParams({
-                context,
-                node: refNode,
-                operation: "connect",
-                varName: _varName,
-                chainStrOverRide: `${_varName}_allow`,
-                type: "allow",
-            });
-            res.connects.push(allowAndParams[0]);
-            res.params = { ...res.params, ...allowAndParams[1] };
+                const [str, params] = createAuthAndParams({
+                    entity: node,
+                    operation: "connect",
+                    context,
+                    allow: { parentNode: node, varName: _varName, chainStr: `${_varName}${i}_allow` },
+                });
+
+                if (!str) {
+                    return result;
+                }
+
+                result.connects.push(str);
+                result.params = { ...result.params, ...params };
+
+                return result;
+            },
+            { connects: [], params: {} }
+        ) as Res;
+
+        if (preAuth.connects.length) {
+            res.connects.push(`WITH ${[...withVars, _varName].join(", ")}`);
+            res.connects.push(`CALL apoc.util.validate(NOT(${preAuth.connects.join(" AND ")}), "Forbidden", [0])`);
+            res.params = { ...res.params, ...preAuth[1] };
         }
 
         /* 
@@ -118,33 +134,10 @@ function createConnectAndParams({
         return res;
     }
 
-    // eslint-disable-next-line prefer-const
-    let { connects, params } = ((relationField.typeMeta.array ? value : [value]) as any[]).reduce(reducer, {
+    const { connects, params } = ((relationField.typeMeta.array ? value : [value]) as any[]).reduce(reducer, {
         connects: [],
         params: {},
     });
-
-    checkRoles({ node: parentNode, context, operation: "connect" });
-
-    if (parentNode.auth && !fromCreate) {
-        const allowAndParams = createAuthAndParams({
-            context,
-            node: parentNode,
-            operation: "connect",
-            varName: parentVar,
-            chainStrOverRide: `${parentVar}_allow`,
-            type: "allow",
-        });
-        params = { ...params, ...allowAndParams[1] };
-
-        if (allowAndParams[0]) {
-            if (withVars) {
-                connects = [`WITH ${withVars.join(", ")}`, ...connects];
-            }
-
-            connects = [allowAndParams[0], ...connects];
-        }
-    }
 
     return [connects.join("\n"), params];
 }

@@ -5,8 +5,8 @@ import { IncomingMessage } from "http";
 import { Socket } from "net";
 import jsonwebtoken from "jsonwebtoken";
 import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
-import neo4j from "./neo4j";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import neo4j from "../neo4j";
+import makeAugmentedSchema from "../../../src/schema/make-augmented-schema";
 
 describe("auth", () => {
     let driver: Driver;
@@ -21,174 +21,21 @@ describe("auth", () => {
         delete process.env.JWT_SECRET;
     });
 
-    test("should throw Authenticated if no JWT in req", async () => {
-        const session = driver.session();
-
-        const typeDefs = `
-            type Product @auth(rules: [{
-                isAuthenticated: true,
-                operations: ["read"]
-            }]) {
-                id: ID
-                name: String
-            }
-        `;
-
-        const neoSchema = makeAugmentedSchema({ typeDefs });
-
-        const query = `
-            {
-                products {
-                    id
-                }
-            }
-        `;
-
-        try {
-            const socket = new Socket({ readable: true });
-
-            const req = new IncomingMessage(socket);
-
-            const gqlResult = await graphql({
-                schema: neoSchema.schema,
-                source: query,
-                contextValue: { driver, req },
-            });
-
-            expect((gqlResult.errors as any[])[0].message).toEqual("Unauthorized");
-        } finally {
-            await session.close();
-        }
-    });
-
-    test("should throw Forbidden if JWT is missing a role", async () => {
-        await Promise.all(
-            ["create", "read", "delete", "update", "disconnect", "connect"].map(async (type) => {
-                const session = driver.session();
-
-                const typeDefs = `
-                    type Color {
-                        name: String
-                    }
-
-                    type Product @auth(rules: [{
-                        roles: ["admin"],
-                        operations: ["${type}"]
-                    }]) {
-                        id: ID
-                        name: String
-                        colors: [Color] @relationship(type: "HAS_COLOR", direction: "OUT")
-                    }
-                `;
-
-                const token = jsonwebtoken.sign({ roles: ["not admin"] }, process.env.JWT_SECRET as string);
-
-                const neoSchema = makeAugmentedSchema({ typeDefs });
-
-                let query: string | undefined;
-
-                if (type === "create") {
-                    query = `
-                        mutation {
-                            createProducts(input: [{id: 123, name: "pringles"}]) {
-                                products {
-                                    id
-                                }
-                            }
-                        }
-                    `;
-                }
-
-                if (type === "delete") {
-                    query = `
-                        mutation {
-                            deleteProducts {
-                                nodesDeleted
-                            }
-                        }
-                    `;
-                }
-
-                if (type === "read") {
-                    query = `
-                        {
-                            products {
-                                id
-                            }
-                        }
-                    `;
-                }
-
-                if (type === "update") {
-                    query = `
-                        mutation {
-                            updateProducts(update: {name: "test"}){
-                                products {
-                                    id
-                                }
-                            }
-                        }
-                    `;
-                }
-
-                if (type === "disconnect") {
-                    query = `
-                        mutation {
-                            updateProducts(disconnect: {colors: {where: {name: "red"}}}){
-                                products {
-                                    id
-                                }
-                            }
-                        }
-                    `;
-                }
-
-                if (type === "connect") {
-                    query = `
-                        mutation {
-                            updateProducts(connect: {colors: {where: {name: "red"}}}){
-                                products {
-                                    id
-                                }
-                            }
-                        }
-                    `;
-                }
-
-                try {
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
-
-                    const gqlResult = await graphql({
-                        schema: neoSchema.schema,
-                        source: query as string,
-                        contextValue: { driver, req },
-                    });
-
-                    expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
-                } finally {
-                    await session.close();
-                }
-            })
-        );
-    });
-
-    describe("Pair", () => {
+    describe("read", () => {
         test("should throw Forbidden invalid equality on JWT property vs node property using allow", async () => {
             await Promise.all(
                 ["read", "delete", "update"].map(async (type) => {
                     const session = driver.session();
 
                     const typeDefs = `
-                        type Product @auth(rules: [{
-                            operations: ["${type}"],
-                            allow: { id: "sub" }
-                        }]) {
-                            id: ID
-                            name: String
-                        }
-                    `;
+                    type Product @auth(rules: [{
+                        operations: ["${type}"],
+                        allow: { id: "sub" }
+                    }]) {
+                        id: ID
+                        name: String
+                    }
+                `;
 
                     const id = generate({
                         charset: "alphabetic",
@@ -202,41 +49,41 @@ describe("auth", () => {
 
                     if (type === "delete") {
                         query = `
-                            mutation {
-                                deleteProducts(where: {id: "${id}"}) {
-                                    nodesDeleted
-                                }
+                        mutation {
+                            deleteProducts(where: {id: "${id}"}) {
+                                nodesDeleted
                             }
-                        `;
+                        }
+                    `;
                     }
 
                     if (type === "update") {
                         query = `
-                            mutation {
-                                updateProducts(where: {id: "${id}"}, update: {name: "test"}) {
-                                    products {
-                                        name
-                                    }
+                        mutation {
+                            updateProducts(where: {id: "${id}"}, update: {name: "test"}) {
+                                products {
+                                    name
                                 }
                             }
-                        `;
+                        }
+                    `;
                     }
 
                     if (type === "read") {
                         query = `
-                            {
-                                products(where: {id: "${id}"}) {
-                                    id
-                                }
+                        {
+                            products(where: {id: "${id}"}) {
+                                id
                             }
-                        `;
+                        }
+                    `;
                     }
 
                     try {
                         await session.run(
                             `
-                                CREATE (:Product {id: $id})
-                            `,
+                            CREATE (:Product {id: $id})
+                        `,
                             { id }
                         );
 
@@ -268,14 +115,14 @@ describe("auth", () => {
                     });
 
                     const typeDefs = `
-                            type Product @auth(rules: [{
-                                operations: ["${type}"],
-                                allow: { id: "sub" }
-                            }]) {
-                                id: ID
-                                name: String
-                            }
-                        `;
+                        type Product @auth(rules: [{
+                            operations: ["${type}"],
+                            allow: { id: "sub" }
+                        }]) {
+                            id: ID
+                            name: String
+                        }
+                    `;
 
                     const token = jsonwebtoken.sign({ sub: id }, process.env.JWT_SECRET as string);
 
@@ -285,41 +132,41 @@ describe("auth", () => {
 
                     if (type === "delete") {
                         query = `
-                                mutation {
-                                    deleteProducts(where: {id: "${id}"}) {
-                                        nodesDeleted
-                                    }
+                            mutation {
+                                deleteProducts(where: {id: "${id}"}) {
+                                    nodesDeleted
                                 }
-                            `;
+                            }
+                        `;
                     }
 
                     if (type === "update") {
                         query = `
-                                mutation {
-                                    updateProducts(where: {id: "${id}"}) {
-                                        products {
-                                            id
-                                        }
+                            mutation {
+                                updateProducts(where: {id: "${id}"}) {
+                                    products {
+                                        id
                                     }
                                 }
-                            `;
+                            }
+                        `;
                     }
 
                     if (type === "read") {
                         query = `
-                                {
-                                    products(where: {id: "${id}"}) {
-                                        id
-                                    }
+                            {
+                                products(where: {id: "${id}"}) {
+                                    id
                                 }
-                            `;
+                            }
+                        `;
                     }
 
                     try {
                         await session.run(
                             `
-                                CREATE (:Product {id: $id})
-                            `,
+                            CREATE (:Product {id: $id})
+                        `,
                             { id }
                         );
 
@@ -373,7 +220,6 @@ describe("auth", () => {
                         name: String
                         colors: [Color] @relationship(type: "OF_COLOR", direction: "OUT")
                     }
-
                     type Color @auth(rules: [
                         { 
                             operations: ["${type}"],
@@ -491,88 +337,6 @@ describe("auth", () => {
         );
     });
 
-    test("should throw Forbidden using nested mutations because user dose not have required role", async () => {
-        await Promise.all(
-            ["create", "update"].map(async (type) => {
-                const session = driver.session();
-
-                const typeDefs = `
-                type Product {
-                    id: ID
-                    name: String
-                    colors: [Color] @relationship(type: "OF_COLOR", direction: "OUT")
-                }
-    
-                type Color @auth(rules: [{
-                    roles: ["admin"],
-                    operations: ["${type}"]
-                }]) {
-                    name: String
-                }
-            `;
-
-                const token = jsonwebtoken.sign({}, process.env.JWT_SECRET as string);
-
-                const neoSchema = makeAugmentedSchema({ typeDefs });
-
-                let query: string | undefined;
-
-                if (type === "create") {
-                    query = `
-                        mutation {
-                            createProducts(input:[{
-                                name: "Pringles", 
-                                colors: {
-                                    create: [{ name: "Red" }]
-                                }
-                            }]){
-                                products {
-                                    id
-                                }
-                            }
-                        }
-                    `;
-                }
-
-                if (type === "update") {
-                    query = `
-                        mutation {
-                            updateProducts(
-                                where: { name: "Pringles" }
-                                update: {
-                                    colors: {
-                                        where: { name: "Red" },
-                                        update: { name: "Red_Color" }
-                                    }
-                                }
-                            ){
-                                products {
-                                    name
-                                }
-                            }
-                        }
-                    `;
-                }
-
-                try {
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
-
-                    const gqlResult = await graphql({
-                        schema: neoSchema.schema,
-                        source: query as string,
-                        contextValue: { driver, req },
-                    });
-
-                    expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
-                } finally {
-                    await session.close();
-                }
-            })
-        );
-    });
-
     test("should allow users to nest mutations because of allow *", async () => {
         await Promise.all(
             ["create", "update"].map(async (type) => {
@@ -591,7 +355,6 @@ describe("auth", () => {
                         name: String
                         colors: [Color] @relationship(type: "OF_COLOR", direction: "OUT")
                     }
-
                     type Color @auth(rules: [{
                         roles: ["admin"],
                         operations: ["${type}"]
@@ -990,31 +753,39 @@ describe("auth", () => {
         });
     });
 
-    describe("Pair", () => {
-        test("should throw forbidden when user tying to read a post (through a user) when they don't have the correct role", async () => {
+    describe("Relationship filtering", () => {
+        test("should use allow relationship filtering to throw Forbidden when user is not a creator of a post", async () => {
             const session = driver.session();
 
             const typeDefs = `
-                type User {
-                    id: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
-                }
-    
-                type Post @auth(
-                    rules: [
-                        { 
-                            roles: ["admin"],
-                            operations: ["read"]
-                        }
-                    ]
-                ) {
-                    id: String
-                }
-            `;
+                    type User {
+                        id: String
+                        name: String
+                    }
+                    
+                    type Post @auth(
+                        rules: [
+                            {
+                                allow: {
+                                    OR: [
+                                        { creator: { id: "sub" } },
+                                        { moderator: { id: "sub" } }
+                                    ]
+                                },
+                                operations: ["read"]
+                            }
+                        ]
+                    ) {
+                        id: String
+                        title: String
+                        creator: User @relationship(type: "CREATOR", direction: "OUT")
+                        moderator: User @relationship(type: "MODERATOR", direction: "IN")
+                    }
+                `;
+
+            const token = jsonwebtoken.sign({ sub: "INVALID" }, process.env.JWT_SECRET as string);
 
             const neoSchema = makeAugmentedSchema({ typeDefs });
-
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.JWT_SECRET as string);
 
             const postId = generate({
                 charset: "alphabetic",
@@ -1025,26 +796,191 @@ describe("auth", () => {
             });
 
             const query = `
-                {
-                    users(where: {id: "${userId}"}) {
-                        id
-                        posts {
+                    {
+                        posts(where: {id: "${postId}"}) {
+                            id
+                            title
+                            creator {
+                                id
+                            }
+                        }
+                    }
+                `;
+
+            try {
+                await session.run(
+                    `
+                        CREATE (p:Post {id: $postId})
+                        MERGE (p)-[:CREATOR]->(:User {id: $userId})
+                        MERGE (p)<-[:MODERATOR]-(:User {id: $userId})
+                    `,
+                    { postId, userId }
+                );
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query as string,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should use allow relationship filtering to allow the read of a post when the user is a creator", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                    type User {
+                        id: String
+                        name: String
+                    }
+                    
+                    type Post @auth(
+                        rules: [
+                            {
+                                allow: {
+                                    OR: [
+                                        { creator: { id: "sub" } },
+                                        { moderator: { id: "sub" } }
+                                    ]
+                                },
+                                operations: ["read"]
+                            }
+                        ]
+                    ) {
+                        id: String
+                        title: String
+                        creator: User @relationship(type: "CREATOR", direction: "OUT")
+                        moderator: User @relationship(type: "MODERATOR", direction: "IN")
+                    }
+                `;
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const query = `
+                    {
+                        posts(where: {id: "${postId}"}) {
+                            id
+                            title
+                            creator {
+                                id
+                            }
+                        }
+                    }
+                `;
+
+            try {
+                await session.run(
+                    `
+                        CREATE (p:Post {id: $postId})
+                        MERGE (p)-[:CREATOR]->(:User {id: $userId})
+                        MERGE (p)<-[:MODERATOR]-(:User {id: $userId})
+                    `,
+                    { postId, userId }
+                );
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query as string,
+                    contextValue: { driver, req },
+                });
+
+                expect(gqlResult.errors).toEqual(undefined);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw forbidden when user tying to read a post where they are not part of the corresponding group", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                    type User {
+                        id: ID
+                    }
+                    
+                    type Group {
+                        id: ID
+                        users: [User] @relationship(type: "OF_GROUP", direction: "IN")
+                    }
+                    
+                    type Post @auth(
+                        rules: [
+                            {
+                                allow: {
+                                    group: {
+                                        users: {
+                                            id: "sub"
+                                        }
+                                    }
+                                },
+                                operations: ["read"]
+                            }
+                        ]
+                    ) {
+                        id: String
+                        group: Group @relationship(type: "OF_GROUP", direction: "OUT")
+                    }
+                `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const token = jsonwebtoken.sign({ sub: "INVALID" }, process.env.JWT_SECRET as string);
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const groupId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                    {
+                        posts(where: {id: "${postId}"}) {
                             id
                         }
-                    }   
-                }
+                    }
                 `;
 
             try {
                 await session.run(
                     `
                         CREATE (u:User {id: $userId})
+                        CREATE (g:Group {id: $groupId})
                         CREATE (p:Post {id: $postId})
-                        MERGE (u)-[:HAS_POST]->(p)
+                        MERGE (u)-[:OF_GROUP]->(g)
+                        MERGE (p)-[:OF_GROUP]->(g)
                         `,
                     {
                         postId,
                         userId,
+                        groupId,
                     }
                 );
 
@@ -1064,30 +1000,39 @@ describe("auth", () => {
             }
         });
 
-        test("should allow user to read a post (through a user) when do have the correct role", async () => {
+        test("should allow user to read a post when they are part of the corresponding group", async () => {
             const session = driver.session();
 
             const typeDefs = `
-                type User {
-                    id: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
-                }
-    
-                type Post @auth(
-                    rules: [
-                        { 
-                            roles: ["admin"],
-                            operations: ["read"]
-                        }
-                    ]
-                ) {
-                    id: String
-                }
-            `;
+                    type User {
+                        id: ID
+                    }
+                    
+                    type Group {
+                        id: ID
+                        users: [User] @relationship(type: "OF_GROUP", direction: "IN")
+                    }
+                    
+                    type Post @auth(
+                        rules: [
+                            {
+                                allow: {
+                                    group: {
+                                        users: {
+                                            id: "sub"
+                                        }
+                                    }
+                                },
+                                operations: ["read"]
+                            }
+                        ]
+                    ) {
+                        id: String
+                        group: Group @relationship(type: "OF_GROUP", direction: "OUT")
+                    }
+                `;
 
             const neoSchema = makeAugmentedSchema({ typeDefs });
-
-            const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.JWT_SECRET as string);
 
             const postId = generate({
                 charset: "alphabetic",
@@ -1096,6 +1041,189 @@ describe("auth", () => {
             const userId = generate({
                 charset: "alphabetic",
             });
+
+            const groupId = generate({
+                charset: "alphabetic",
+            });
+
+            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
+
+            const query = `
+                {
+                    posts(where: {id: "${postId}"}) {
+                        id
+                    }
+                }
+                `;
+
+            try {
+                await session.run(
+                    `
+                        CREATE (u:User {id: $userId})
+                        CREATE (g:Group {id: $groupId})
+                        CREATE (p:Post {id: $postId})
+                        MERGE (u)-[:OF_GROUP]->(g)
+                        MERGE (p)-[:OF_GROUP]->(g)
+                        `,
+                    {
+                        postId,
+                        userId,
+                        groupId,
+                    }
+                );
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query as string,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.data as any).posts[0]).toMatchObject({ id: postId });
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw forbidden when user tying to read a post (through a user) where they are not part of the corresponding group", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                    type Group {
+                        id: ID
+                        name: String
+                        users: [User] @relationship(type: "OF_GROUP", direction: "IN")
+                    }
+    
+                    type User {
+                        id: String
+                        name: String
+                        posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                    }
+    
+                    type Post @auth(
+                        rules: [
+                            { 
+                                allow: {
+                                    group: { users: { id: "sub" } }
+                                },
+                                operations: ["read"]
+                            }
+                        ]
+                    ) {
+                        id: String
+                        title: String
+                        group: Group @relationship(type: "OF_GROUP", direction: "OUT")
+                    }
+                `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const token = jsonwebtoken.sign({ sub: "INVALID" }, process.env.JWT_SECRET as string);
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const groupId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                    {
+                        users(where: {id: "${userId}"}) {
+                            name
+                            posts {
+                                title
+                            }
+                        }   
+                    }
+                    `;
+
+            try {
+                await session.run(
+                    `
+                            CREATE (u:User {id: $userId})
+                            CREATE (g:Group {id: $groupId})
+                            CREATE (p:Post {id: $postId})
+                            MERGE (u)-[:OF_GROUP]->(g)
+                            MERGE (u)-[:HAS_POST]->(p)
+                            MERGE (p)-[:OF_GROUP]->(g)
+                            `,
+                    {
+                        postId,
+                        userId,
+                        groupId,
+                    }
+                );
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query as string,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should allow a user to read a post (through a user) where they are part of the corresponding group", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                    type Group {
+                        id: ID
+                        users: [User] @relationship(type: "OF_GROUP", direction: "IN")
+                    }
+    
+                    type User {
+                        id: String
+                        posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                    }
+    
+                    type Post @auth(
+                        rules: [
+                            { 
+                                allow: {
+                                    group: { users: { id: "sub" } }
+                                },
+                                operations: ["read"]
+                            }
+                        ]
+                    ) {
+                        id: String
+                        group: Group @relationship(type: "OF_GROUP", direction: "OUT")
+                    }
+                `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const groupId = generate({
+                charset: "alphabetic",
+            });
+
+            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
             const query = `
                 {
@@ -1112,12 +1240,16 @@ describe("auth", () => {
                 await session.run(
                     `
                         CREATE (u:User {id: $userId})
+                        CREATE (g:Group {id: $groupId})
                         CREATE (p:Post {id: $postId})
+                        MERGE (u)-[:OF_GROUP]->(g)
                         MERGE (u)-[:HAS_POST]->(p)
+                        MERGE (p)-[:OF_GROUP]->(g)
                         `,
                     {
                         postId,
                         userId,
+                        groupId,
                     }
                 );
 
@@ -1131,535 +1263,12 @@ describe("auth", () => {
                     contextValue: { driver, req },
                 });
 
+                expect(gqlResult.errors as any[]).toEqual(undefined);
+
                 expect((gqlResult.data as any).users[0]).toMatchObject({ id: userId, posts: [{ id: postId }] });
             } finally {
                 await session.close();
             }
-        });
-    });
-
-    describe("Relationship filtering", () => {
-        describe("Pair", () => {
-            test("should use allow relationship filtering to throw Forbidden when user is not a creator of a post", async () => {
-                const session = driver.session();
-
-                const typeDefs = `
-                    type User {
-                        id: String
-                        name: String
-                    }
-                    
-                    type Post @auth(
-                        rules: [
-                            {
-                                allow: {
-                                    OR: [
-                                        { creator: { id: "sub" } },
-                                        { moderator: { id: "sub" } }
-                                    ]
-                                },
-                                operations: ["read"]
-                            }
-                        ]
-                    ) {
-                        id: String
-                        title: String
-                        creator: User @relationship(type: "CREATOR", direction: "OUT")
-                        moderator: User @relationship(type: "MODERATOR", direction: "IN")
-                    }
-                `;
-
-                const token = jsonwebtoken.sign({ sub: "INVALID" }, process.env.JWT_SECRET as string);
-
-                const neoSchema = makeAugmentedSchema({ typeDefs });
-
-                const postId = generate({
-                    charset: "alphabetic",
-                });
-
-                const userId = generate({
-                    charset: "alphabetic",
-                });
-
-                const query = `
-                    {
-                        posts(where: {id: "${postId}"}) {
-                            id
-                            title
-                            creator {
-                                id
-                            }
-                        }
-                    }
-                `;
-
-                try {
-                    await session.run(
-                        `
-                        CREATE (p:Post {id: $postId})
-                        MERGE (p)-[:CREATOR]->(:User {id: $userId})
-                        MERGE (p)<-[:MODERATOR]-(:User {id: $userId})
-                    `,
-                        { postId, userId }
-                    );
-
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
-
-                    const gqlResult = await graphql({
-                        schema: neoSchema.schema,
-                        source: query as string,
-                        contextValue: { driver, req },
-                    });
-
-                    expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
-                } finally {
-                    await session.close();
-                }
-            });
-
-            test("should use allow relationship filtering to allow the read of a post when the user is a creator", async () => {
-                const session = driver.session();
-
-                const typeDefs = `
-                    type User {
-                        id: String
-                        name: String
-                    }
-                    
-                    type Post @auth(
-                        rules: [
-                            {
-                                allow: {
-                                    OR: [
-                                        { creator: { id: "sub" } },
-                                        { moderator: { id: "sub" } }
-                                    ]
-                                },
-                                operations: ["read"]
-                            }
-                        ]
-                    ) {
-                        id: String
-                        title: String
-                        creator: User @relationship(type: "CREATOR", direction: "OUT")
-                        moderator: User @relationship(type: "MODERATOR", direction: "IN")
-                    }
-                `;
-
-                const postId = generate({
-                    charset: "alphabetic",
-                });
-
-                const userId = generate({
-                    charset: "alphabetic",
-                });
-
-                const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
-
-                const neoSchema = makeAugmentedSchema({ typeDefs });
-
-                const query = `
-                    {
-                        posts(where: {id: "${postId}"}) {
-                            id
-                            title
-                            creator {
-                                id
-                            }
-                        }
-                    }
-                `;
-
-                try {
-                    await session.run(
-                        `
-                        CREATE (p:Post {id: $postId})
-                        MERGE (p)-[:CREATOR]->(:User {id: $userId})
-                        MERGE (p)<-[:MODERATOR]-(:User {id: $userId})
-                    `,
-                        { postId, userId }
-                    );
-
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
-
-                    const gqlResult = await graphql({
-                        schema: neoSchema.schema,
-                        source: query as string,
-                        contextValue: { driver, req },
-                    });
-
-                    expect(gqlResult.errors).toEqual(undefined);
-                } finally {
-                    await session.close();
-                }
-            });
-        });
-
-        describe("Pair", () => {
-            test("should throw forbidden when user tying to read a post where they are not part of the corresponding group", async () => {
-                const session = driver.session();
-
-                const typeDefs = `
-                    type User {
-                        id: ID
-                    }
-                    
-                    type Group {
-                        id: ID
-                        users: [User] @relationship(type: "OF_GROUP", direction: "IN")
-                    }
-                    
-                    type Post @auth(
-                        rules: [
-                            {
-                                allow: {
-                                    group: {
-                                        users: {
-                                            id: "sub"
-                                        }
-                                    }
-                                },
-                                operations: ["read"]
-                            }
-                        ]
-                    ) {
-                        id: String
-                        group: Group @relationship(type: "OF_GROUP", direction: "OUT")
-                    }
-                `;
-
-                const neoSchema = makeAugmentedSchema({ typeDefs });
-
-                const token = jsonwebtoken.sign({ sub: "INVALID" }, process.env.JWT_SECRET as string);
-
-                const postId = generate({
-                    charset: "alphabetic",
-                });
-
-                const userId = generate({
-                    charset: "alphabetic",
-                });
-
-                const groupId = generate({
-                    charset: "alphabetic",
-                });
-
-                const query = `
-                    {
-                        posts(where: {id: "${postId}"}) {
-                            id
-                        }
-                    }
-                `;
-
-                try {
-                    await session.run(
-                        `
-                        CREATE (u:User {id: $userId})
-                        CREATE (g:Group {id: $groupId})
-                        CREATE (p:Post {id: $postId})
-                        MERGE (u)-[:OF_GROUP]->(g)
-                        MERGE (p)-[:OF_GROUP]->(g)
-                        `,
-                        {
-                            postId,
-                            userId,
-                            groupId,
-                        }
-                    );
-
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
-
-                    const gqlResult = await graphql({
-                        schema: neoSchema.schema,
-                        source: query as string,
-                        contextValue: { driver, req },
-                    });
-
-                    expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
-                } finally {
-                    await session.close();
-                }
-            });
-
-            test("should allow user to read a post when they are part of the corresponding group", async () => {
-                const session = driver.session();
-
-                const typeDefs = `
-                    type User {
-                        id: ID
-                    }
-                    
-                    type Group {
-                        id: ID
-                        users: [User] @relationship(type: "OF_GROUP", direction: "IN")
-                    }
-                    
-                    type Post @auth(
-                        rules: [
-                            {
-                                allow: {
-                                    group: {
-                                        users: {
-                                            id: "sub"
-                                        }
-                                    }
-                                },
-                                operations: ["read"]
-                            }
-                        ]
-                    ) {
-                        id: String
-                        group: Group @relationship(type: "OF_GROUP", direction: "OUT")
-                    }
-                `;
-
-                const neoSchema = makeAugmentedSchema({ typeDefs });
-
-                const postId = generate({
-                    charset: "alphabetic",
-                });
-
-                const userId = generate({
-                    charset: "alphabetic",
-                });
-
-                const groupId = generate({
-                    charset: "alphabetic",
-                });
-
-                const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
-
-                const query = `
-                {
-                    posts(where: {id: "${postId}"}) {
-                        id
-                    }
-                }
-                `;
-
-                try {
-                    await session.run(
-                        `
-                        CREATE (u:User {id: $userId})
-                        CREATE (g:Group {id: $groupId})
-                        CREATE (p:Post {id: $postId})
-                        MERGE (u)-[:OF_GROUP]->(g)
-                        MERGE (p)-[:OF_GROUP]->(g)
-                        `,
-                        {
-                            postId,
-                            userId,
-                            groupId,
-                        }
-                    );
-
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
-
-                    const gqlResult = await graphql({
-                        schema: neoSchema.schema,
-                        source: query as string,
-                        contextValue: { driver, req },
-                    });
-
-                    expect((gqlResult.data as any).posts[0]).toMatchObject({ id: postId });
-                } finally {
-                    await session.close();
-                }
-            });
-        });
-
-        describe("Pair", () => {
-            test("should throw forbidden when user tying to read a post (through a user) where they are not part of the corresponding group", async () => {
-                const session = driver.session();
-
-                const typeDefs = `
-                    type Group {
-                        id: ID
-                        name: String
-                        users: [User] @relationship(type: "OF_GROUP", direction: "IN")
-                    }
-    
-                    type User {
-                        id: String
-                        name: String
-                        posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
-                    }
-    
-                    type Post @auth(
-                        rules: [
-                            { 
-                                allow: {
-                                    group: { users: { id: "sub" } }
-                                },
-                                operations: ["read"]
-                            }
-                        ]
-                    ) {
-                        id: String
-                        title: String
-                        group: Group @relationship(type: "OF_GROUP", direction: "OUT")
-                    }
-                `;
-
-                const neoSchema = makeAugmentedSchema({ typeDefs });
-
-                const token = jsonwebtoken.sign({ sub: "INVALID" }, process.env.JWT_SECRET as string);
-
-                const postId = generate({
-                    charset: "alphabetic",
-                });
-
-                const userId = generate({
-                    charset: "alphabetic",
-                });
-
-                const groupId = generate({
-                    charset: "alphabetic",
-                });
-
-                const query = `
-                    {
-                        users(where: {id: "${userId}"}) {
-                            name
-                            posts {
-                                title
-                            }
-                        }   
-                    }
-                    `;
-
-                try {
-                    await session.run(
-                        `
-                            CREATE (u:User {id: $userId})
-                            CREATE (g:Group {id: $groupId})
-                            CREATE (p:Post {id: $postId})
-                            MERGE (u)-[:OF_GROUP]->(g)
-                            MERGE (u)-[:HAS_POST]->(p)
-                            MERGE (p)-[:OF_GROUP]->(g)
-                            `,
-                        {
-                            postId,
-                            userId,
-                            groupId,
-                        }
-                    );
-
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
-
-                    const gqlResult = await graphql({
-                        schema: neoSchema.schema,
-                        source: query as string,
-                        contextValue: { driver, req },
-                    });
-
-                    expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
-                } finally {
-                    await session.close();
-                }
-            });
-
-            test("should allow a user to read a post (through a user) where they are part of the corresponding group", async () => {
-                const session = driver.session();
-
-                const typeDefs = `
-                    type Group {
-                        id: ID
-                        users: [User] @relationship(type: "OF_GROUP", direction: "IN")
-                    }
-    
-                    type User {
-                        id: String
-                        posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
-                    }
-    
-                    type Post @auth(
-                        rules: [
-                            { 
-                                allow: {
-                                    group: { users: { id: "sub" } }
-                                },
-                                operations: ["read"]
-                            }
-                        ]
-                    ) {
-                        id: String
-                        group: Group @relationship(type: "OF_GROUP", direction: "OUT")
-                    }
-                `;
-
-                const neoSchema = makeAugmentedSchema({ typeDefs });
-
-                const postId = generate({
-                    charset: "alphabetic",
-                });
-
-                const userId = generate({
-                    charset: "alphabetic",
-                });
-
-                const groupId = generate({
-                    charset: "alphabetic",
-                });
-
-                const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
-
-                const query = `
-                {
-                    users(where: {id: "${userId}"}) {
-                        id
-                        posts {
-                            id
-                        }
-                    }   
-                }
-                `;
-
-                try {
-                    await session.run(
-                        `
-                        CREATE (u:User {id: $userId})
-                        CREATE (g:Group {id: $groupId})
-                        CREATE (p:Post {id: $postId})
-                        MERGE (u)-[:OF_GROUP]->(g)
-                        MERGE (u)-[:HAS_POST]->(p)
-                        MERGE (p)-[:OF_GROUP]->(g)
-                        `,
-                        {
-                            postId,
-                            userId,
-                            groupId,
-                        }
-                    );
-
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
-
-                    const gqlResult = await graphql({
-                        schema: neoSchema.schema,
-                        source: query as string,
-                        contextValue: { driver, req },
-                    });
-
-                    expect(gqlResult.errors as any[]).toEqual(undefined);
-
-                    expect((gqlResult.data as any).users[0]).toMatchObject({ id: userId, posts: [{ id: postId }] });
-                } finally {
-                    await session.close();
-                }
-            });
         });
 
         test("should throw forbidden when user trying to make a post on blog they don't belong to (allow connect)", async () => {
@@ -1682,7 +1291,6 @@ describe("auth", () => {
                         creator: User @relationship(type: "HAS_BLOG", direction: "IN")
                         posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
                     }
-
                     type Post {
                         id: ID
                         blog: Blog @relationship(type: "HAS_POST", direction: "IN")
@@ -1772,7 +1380,6 @@ describe("auth", () => {
                         creator: User @relationship(type: "HAS_BLOG", direction: "IN")
                         posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
                     }
-
                     type Post {
                         id: ID
                         blog: Blog @relationship(type: "HAS_POST", direction: "IN")

@@ -514,7 +514,7 @@ describe("Custom Resolvers", () => {
                 });
             });
 
-            test("should inject the jwt into cypher directive on fields", async () => {
+            test.skip("should inject the jwt into cypher directive on fields", async () => {
                 const session = driver.session();
 
                 const typeDefs = `

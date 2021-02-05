@@ -7,6 +7,19 @@ export type Resolvers = IExecutableSchemaDefinition["resolvers"];
 
 export type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
 
+export type AuthRule = {
+    isAuthenticated?: boolean;
+    operations?: AuthOperations[];
+    allow?: { [k: string]: any } | "*";
+    bind?: { [k: string]: any } | "*";
+    roles?: string[];
+};
+
+export type Auth = {
+    rules: AuthRule[];
+    type: "JWT";
+};
+
 /**
  * Metadata about a field.type on either
  * FieldDefinitionNode or InputValueDefinitionNode.
@@ -27,6 +40,7 @@ export interface BaseField {
     otherDirectives: DirectiveNode[];
     arguments: InputValueDefinitionNode[];
     private?: boolean;
+    auth?: Auth;
 }
 
 /**
@@ -91,6 +105,8 @@ export interface GraphQLWhereArg {
 }
 
 export type AuthOperations = "create" | "read" | "update" | "delete" | "connect" | "disconnect";
+
+export type AuthOrders = "pre" | "post";
 
 /**
  * Whats returned when deleting nodes

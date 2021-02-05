@@ -8,11 +8,11 @@ import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import { GraphQLWhereArg, GraphQLOptionsArg, RelationField, AuthOperations } from "../types";
-import { checkRoles } from "../auth";
 import createAuthAndParams from "./create-auth-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
+import createAuthParam from "./create-auth-param";
 
 function translateRead({
     resolveTree,
@@ -34,6 +34,7 @@ function translateRead({
     let skipStr = "";
     let limitStr = "";
     let sortStr = "";
+    let projAuth = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
 
@@ -45,6 +46,9 @@ function translateRead({
     });
     projStr = projection[0];
     cypherParams = { ...cypherParams, ...projection[1] };
+    if (projection[2]) {
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(" AND ")}), "Forbidden", [0])`;
+    }
 
     if (whereInput) {
         const where = createWhereAndParams({
@@ -60,13 +64,15 @@ function translateRead({
     if (node.auth) {
         const allowAndParams = createAuthAndParams({
             operation: "read",
-            node,
+            entity: node,
             context,
-            varName,
-            type: "allow",
+            allow: {
+                parentNode: node,
+                varName,
+            },
         });
         cypherParams = { ...cypherParams, ...allowAndParams[1] };
-        authStr = allowAndParams[0];
+        authStr = `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "Forbidden", [0])`;
     }
 
     if (optionsInput) {
@@ -108,6 +114,7 @@ function translateRead({
         whereStr,
         authStr,
         ...(sortStr ? [`WITH ${varName}`, sortStr] : []),
+        projAuth,
         `RETURN ${varName} ${projStr} as ${varName}`,
         skipStr,
         limitStr,
@@ -197,21 +204,18 @@ function translateUpdate({
     const connectInput = resolveTree.args.connect;
     const disconnectInput = resolveTree.args.disconnect;
     const createInput = resolveTree.args.create;
-    const fieldsByTypeName =
-        resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][pluralize(camelCase(node.name))]
-            .fieldsByTypeName;
     const varName = "this";
-
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
-    let allowStr = "";
     let updateStr = "";
     let connectStr = "";
     let disconnectStr = "";
     let createStr = "";
-    let bindStr = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
+    const fieldsByTypeName =
+        resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][pluralize(camelCase(node.name))]
+            .fieldsByTypeName;
 
     if (whereInput) {
         const where = createWhereAndParams({
@@ -224,18 +228,6 @@ function translateUpdate({
         cypherParams = { ...cypherParams, ...where[1] };
     }
 
-    if (node.auth) {
-        const allowAndParams = createAuthAndParams({
-            operation: "update",
-            node,
-            context,
-            varName,
-            type: "allow",
-        });
-        cypherParams = { ...cypherParams, ...allowAndParams[1] };
-        allowStr = allowAndParams[0];
-    }
-
     if (updateInput) {
         const updateAndParams = createUpdateAndParams({
             context,
@@ -245,19 +237,6 @@ function translateUpdate({
             parentVar: varName,
             withVars: [varName],
         });
-        if (updateAndParams[0]) {
-            if (node.auth) {
-                const allowAndParams = createAuthAndParams({
-                    operation: "update",
-                    node,
-                    context,
-                    varName,
-                    type: "allow",
-                });
-                cypherParams = { ...cypherParams, ...allowAndParams[1] };
-                allowStr = allowAndParams[0];
-            }
-        }
         updateStr = updateAndParams[0];
         cypherParams = { ...cypherParams, ...updateAndParams[1] };
     }
@@ -328,19 +307,6 @@ function translateUpdate({
         });
     }
 
-    if (node.auth) {
-        const bindAndParams = createAuthAndParams({
-            operation: "update",
-            node,
-            context,
-            varName,
-            type: "bind",
-            chainStrOverRide: `${varName}_bind`,
-        });
-        cypherParams = { ...cypherParams, ...bindAndParams[1] };
-        bindStr = `WITH ${varName}\n${bindAndParams[0]}`;
-    }
-
     const projection = createProjectionAndParams({
         node,
         context,
@@ -353,12 +319,10 @@ function translateUpdate({
     const cypher = [
         matchStr,
         whereStr,
-        allowStr,
         updateStr,
         connectStr,
         disconnectStr,
         createStr,
-        bindStr,
         `RETURN ${varName} ${projStr} AS ${varName}`,
     ];
 
@@ -379,7 +343,7 @@ function translateDelete({
 
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
-    let authStr = "";
+    let preAuthStr = "";
     let cypherParams: { [k: string]: any } = {};
 
     if (whereInput) {
@@ -393,19 +357,21 @@ function translateDelete({
         cypherParams = { ...cypherParams, ...where[1] };
     }
 
-    if (node.auth) {
-        const allowAndParams = createAuthAndParams({
-            operation: "delete",
-            node,
-            context,
+    const preAuth = createAuthAndParams({
+        operation: "delete",
+        entity: node,
+        context,
+        allow: {
+            parentNode: node,
             varName,
-            type: "allow",
-        });
-        cypherParams = { ...cypherParams, ...allowAndParams[1] };
-        authStr = allowAndParams[0];
+        },
+    });
+    if (preAuth[0]) {
+        cypherParams = { ...cypherParams, ...preAuth[1] };
+        preAuthStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${preAuth[0]}), "Forbidden", [0])`;
     }
 
-    const cypher = [matchStr, whereStr, authStr, `DETACH DELETE ${varName}`];
+    const cypher = [matchStr, whereStr, preAuthStr, `DETACH DELETE ${varName}`];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
 }
@@ -456,39 +422,54 @@ function translate({
         node = context.neoSchema.nodes.find((x) => camelCase(x.name) === pluralize.singular(resolveTree.name)) as Node;
     }
 
-    if (node.auth) {
-        checkRoles({ node, context, operation });
-    }
+    let query = "";
+    let params: any = {};
 
     switch (operation) {
         case "create":
-            return translateCreate({
+            [query, params] = translateCreate({
                 resolveTree,
                 node,
                 context,
             });
+            break;
 
         case "update":
-            return translateUpdate({
+            [query, params] = translateUpdate({
                 resolveTree,
                 node,
                 context,
             });
+            break;
 
         case "delete":
-            return translateDelete({
+            [query, params] = translateDelete({
                 resolveTree,
                 node,
                 context,
             });
+            break;
 
         default:
-            return translateRead({
+            [query, params] = translateRead({
                 resolveTree,
                 node,
                 context,
             });
+            break;
     }
+
+    // TODO remove
+    if (query.includes("$jwt")) {
+        params.jwt = context.getJWTSafe();
+    }
+
+    // TODO remove
+    if (query.includes("$auth")) {
+        params.auth = createAuthParam({ context });
+    }
+
+    return [query, params];
 }
 
 export default translate;
