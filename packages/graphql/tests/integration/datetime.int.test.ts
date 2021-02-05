@@ -177,6 +177,58 @@ describe("DateTime", () => {
                 await session.close();
             }
         });
+
+        test("should find a movie (with a DateTime created with a timezone)", async () => {
+            const session = driver.session();
+
+            const randomType = `${generate({
+                charset: "alphabetic",
+            })}Movie`;
+
+            const pluralRandomType = pluralize(camelCase(randomType));
+
+            const typeDefs = `
+                type ${randomType} {
+                    name: String
+                    datetime: DateTime
+                }
+            `;
+
+            const date = new Date();
+
+            const neoSchema = makeAugmentedSchema({
+                typeDefs,
+            });
+
+            const query = `
+                query {
+                    ${pluralRandomType}(where: { name: "${randomType}" }) {
+                        datetime
+                    }
+                }
+            `;
+
+            try {
+                await session.run(`
+                   CREATE (m:${randomType})
+                   SET m.name = "${randomType}"
+                   SET m.datetime = datetime("${date.toISOString().replace("Z", "[America/Los_Angeles]")}")
+               `);
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver },
+                });
+
+                date.setHours(date.getHours() + 8);
+
+                expect(gqlResult.errors).toBeFalsy();
+                expect((gqlResult.data as any)[pluralRandomType][0]).toEqual({ datetime: date.toISOString() });
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("update", () => {

@@ -49,6 +49,7 @@ function createProjectionAndParams({
         const cypherField = node.cypherFields.find((x) => x.fieldName === key);
         const relationField = node.relationFields.find((x) => x.fieldName === key);
         const pointField = node.pointFields.find((x) => x.fieldName === key);
+        const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === key);
 
         if (cypherField) {
             let projectionStr = "";
@@ -329,6 +330,12 @@ function createProjectionAndParams({
                 isArray
                     ? `${key}: [p in ${varName}.${key} | { ${fields.join(", ")} }]`
                     : `${key}: { ${fields.join(", ")} }`
+            );
+        } else if (dateTimeField) {
+            res.projection.push(
+                dateTimeField.typeMeta.array
+                    ? `${key}: [ dt in ${varName}.${key} | apoc.date.convertFormat(toString(dt), "iso_zoned_date_time", "iso_offset_date_time") ]`
+                    : `${key}: apoc.date.convertFormat(toString(${varName}.${key}), "iso_zoned_date_time", "iso_offset_date_time")`
             );
         } else {
             res.projection.push(`.${key}`);
