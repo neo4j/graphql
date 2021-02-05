@@ -1,72 +1,45 @@
-/* eslint-disable consistent-return */
-/* eslint-disable no-fallthrough */
 /* eslint-disable default-case */
-import { FieldDefinitionNode, InputValueDefinitionNode } from "graphql";
+import { FieldDefinitionNode, InputValueDefinitionNode, TypeNode } from "graphql";
 import { TypeMeta } from "../types";
 
-function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode): TypeMeta {
-    // @ts-ignore
-    let result: TypeMeta = {};
+function getName(type: TypeNode): string {
+    return type.kind === "NamedType" ? type.name.value : getName(type.type);
+}
 
-    switch (field.type.kind) {
-        case "NonNullType":
-            switch (field.type.type.kind) {
-                case "ListType":
-                    result = {
-                        // @ts-ignore
-                        name: field.type.type.type.name.value,
-                        array: true,
-                        required: true,
-                        // @ts-ignore
-                        pretty: `[${field.type.type.type.name.value}]!`,
-                    };
-                    break;
+function getPrettyName(type: TypeNode): string {
+    let result: string;
 
-                case "NamedType":
-                    result = {
-                        name: field.type.type.name.value,
-                        array: false,
-                        required: true,
-                        pretty: `${field.type.type.name.value}!`,
-                    };
-
-                    break;
-            }
-            break;
+    switch (type.kind) {
         case "NamedType":
-            result = {
-                name: field.type.name.value,
-                array: false,
-                required: false,
-                pretty: `${field.type.name.value}`,
-            };
+            result = type.name.value;
+            break;
+        case "NonNullType":
+            result = `${getPrettyName(type.type)}!`;
             break;
         case "ListType":
-            switch (field.type.type.kind) {
-                case "NamedType":
-                    result = {
-                        // @ts-ignore
-                        name: field.type.type.name.value,
-                        array: true,
-                        required: false,
-                        pretty: `[${field.type.type.name.value}]`,
-                    };
-                    break;
-
-                case "NonNullType":
-                    result = {
-                        // @ts-ignore
-                        name: field.type.type.type.name.value,
-                        array: true,
-                        required: true,
-                        // @ts-ignore
-                        pretty: `[${field.type.type.type.name.value}!]`,
-                    };
-                    break;
-            }
+            result = `[${getPrettyName(type.type)}]`;
+            break;
     }
 
     return result;
+}
+
+function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode): TypeMeta {
+    const name = getName(field.type);
+    const prettyName = getPrettyName(field.type);
+    const array = /\[.+\]/g.test(prettyName);
+    const inputName = `${["Point", "CartesianPoint"].includes(name) ? `${name}Input` : name}`;
+
+    return {
+        name,
+        array,
+        required: prettyName.includes("!"),
+        pretty: prettyName,
+        input: {
+            name: inputName,
+            pretty: `${array ? "[" : ""}${inputName}${array ? "]" : ""}`,
+        },
+    };
 }
 
 export default getFieldTypeMeta;

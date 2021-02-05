@@ -16,6 +16,10 @@ export interface TypeMeta {
     array: boolean;
     required: boolean;
     pretty: string;
+    input: {
+        name: string;
+        pretty: string;
+    };
 }
 
 /**
@@ -70,6 +74,7 @@ export interface DateTimeField extends BaseField {
     timestamps?: TimeStampOperations[];
 }
 
+export type PointField = BaseField;
 /**
  * Representation of the options arg
  * passed to resolvers.

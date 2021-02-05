@@ -9,6 +9,7 @@ import {
     InterfaceField,
     ObjectField,
     DateTimeField,
+    PointField,
 } from "../types";
 import Auth from "./Auth";
 import Exclude from "./Exclude";
@@ -26,6 +27,7 @@ export interface NodeConstructor {
     interfaces: NamedTypeNode[];
     objectFields: ObjectField[];
     dateTimeFields: DateTimeField[];
+    pointFields: PointField[];
     auth?: Auth;
     exclude?: Exclude;
 }
@@ -55,6 +57,8 @@ class Node {
 
     public dateTimeFields: DateTimeField[];
 
+    public pointFields: PointField[];
+
     public auth?: Auth;
 
     public exclude?: Exclude;
@@ -72,6 +76,7 @@ class Node {
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
         this.dateTimeFields = input.dateTimeFields;
+        this.pointFields = input.pointFields;
         this.auth = input.auth;
         this.exclude = input.exclude;
     }
