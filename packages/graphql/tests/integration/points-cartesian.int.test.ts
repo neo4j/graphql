@@ -20,7 +20,7 @@ describe("[CartesianPoint]", () => {
                 locations: [CartesianPoint!]!
             }
         `;
-        const neoSchema = makeAugmentedSchema({ typeDefs, debug: true });
+        const neoSchema = makeAugmentedSchema({ typeDefs });
         server = constructTestServer(neoSchema, driver);
     });
 
