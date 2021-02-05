@@ -46,6 +46,7 @@ function createProjectionAndParams({
         const optionsInput = field.args.options as GraphQLOptionsArg;
         const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
         const cypherField = node.cypherFields.find((x) => x.fieldName === key);
+        const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === key);
 
         if (cypherField) {
             let projectionStr = "";
@@ -307,7 +308,15 @@ function createProjectionAndParams({
             return res;
         }
 
-        res.projection.push(`.${key}`);
+        if (dateTimeField) {
+            res.projection.push(
+                dateTimeField.typeMeta.array
+                    ? `${key}: [ dt in ${varName}.${key} | apoc.date.convertFormat(toString(dt), "iso_zoned_date_time", "iso_offset_date_time") ]`
+                    : `${key}: apoc.date.convertFormat(toString(${varName}.${key}), "iso_zoned_date_time", "iso_offset_date_time")`
+            );
+        } else {
+            res.projection.push(`.${key}`);
+        }
 
         return res;
     }
