@@ -1,4 +1,5 @@
 import { FieldsByTypeName } from "graphql-parse-resolve-info";
+import util from "util";
 import { Context, Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLWhereArg } from "../types";
@@ -46,6 +47,8 @@ function createProjectionAndParams({
         const optionsInput = field.args.options as GraphQLOptionsArg;
         const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
         const cypherField = node.cypherFields.find((x) => x.fieldName === key);
+        const relationField = node.relationFields.find((x) => x.fieldName === key);
+        const pointField = node.pointFields.find((x) => x.fieldName === key);
         const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === key);
 
         if (cypherField) {
@@ -105,7 +108,6 @@ function createProjectionAndParams({
             return res;
         }
 
-        const relationField = node.relationFields.find((x) => x.fieldName === key);
         if (relationField) {
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const nodeMatchStr = `(${chainStr || varName})`;
@@ -132,9 +134,9 @@ function createProjectionAndParams({
 
                 referenceNodes.forEach((refNode) => {
                     const _param = `${param}_${refNode.name}`;
-                    const innenrHeadStr: string[] = [];
-                    innenrHeadStr.push("[");
-                    innenrHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
+                    const innerHeadStr: string[] = [];
+                    innerHeadStr.push("[");
+                    innerHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
 
                     if (refNode.auth) {
                         checkRoles({ node: refNode, context, operation: "read" });
@@ -149,7 +151,7 @@ function createProjectionAndParams({
                             whereInput: thisWhere,
                             chainStrOverRide: _param,
                         });
-                        innenrHeadStr.push(`AND ${whereAndParams[0].replace("WHERE", "")}`);
+                        innerHeadStr.push(`AND ${whereAndParams[0].replace("WHERE", "")}`);
                         res.params = { ...res.params, ...whereAndParams[1] };
                     }
 
@@ -162,11 +164,11 @@ function createProjectionAndParams({
                             functionType: true,
                             operation: "read",
                         });
-                        innenrHeadStr.push(`AND ${allowAndParams[0]}`);
+                        innerHeadStr.push(`AND ${allowAndParams[0]}`);
                         res.params = { ...res.params, ...allowAndParams[1] };
                     }
 
-                    innenrHeadStr.push(`| ${param}`);
+                    innerHeadStr.push(`| ${param}`);
 
                     if (field.fieldsByTypeName[refNode.name]) {
                         const recurse = createProjectionAndParams({
@@ -177,16 +179,16 @@ function createProjectionAndParams({
                             varName: param,
                             chainStrOverRide: _param,
                         });
-                        innenrHeadStr.push(
+                        innerHeadStr.push(
                             [`{ __resolveType: "${refNode.name}", `, ...recurse[0].replace("{", "").split("")].join("")
                         );
                         res.params = { ...res.params, ...recurse[1] };
                     } else {
-                        innenrHeadStr.push(`{ __resolveType: "${refNode.name}" } `);
+                        innerHeadStr.push(`{ __resolveType: "${refNode.name}" } `);
                     }
 
-                    innenrHeadStr.push(`]`);
-                    headStrs.push(innenrHeadStr.join(" "));
+                    innerHeadStr.push(`]`);
+                    headStrs.push(innerHeadStr.join(" "));
                 });
 
                 unionStrs.push(headStrs.join(" + "));
@@ -308,7 +310,28 @@ function createProjectionAndParams({
             return res;
         }
 
-        if (dateTimeField) {
+        if (pointField) {
+            const isArray = pointField.typeMeta.array;
+
+            const { crs, ...point } = fieldFields[pointField.typeMeta.name];
+            const fields: string[] = [];
+
+            // Sadly need to select the whole point object due to the risk of height/z
+            // being selected on a 2D point, to which the database will throw an error
+            if (point) {
+                fields.push(isArray ? "point:p" : `point: ${varName}.${key}`);
+            }
+
+            if (crs) {
+                fields.push(isArray ? "crs: p.crs" : `crs: ${varName}.${key}.crs`);
+            }
+
+            res.projection.push(
+                isArray
+                    ? `${key}: [p in ${varName}.${key} | { ${fields.join(", ")} }]`
+                    : `${key}: { ${fields.join(", ")} }`
+            );
+        } else if (dateTimeField) {
             res.projection.push(
                 dateTimeField.typeMeta.array
                     ? `${key}: [ dt in ${varName}.${key} | apoc.date.convertFormat(toString(dt), "iso_zoned_date_time", "iso_offset_date_time") ]`

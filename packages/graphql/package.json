@@ -51,6 +51,8 @@
         "@types/jsonwebtoken": "8.5.0",
         "@types/node": "14.0.27",
         "apollo-server": "2.18.1",
+        "apollo-server-testing": "2.19.2",
+        "faker": "5.2.0",
         "graphql": "15.3.0",
         "graphql-tag": "2.11.0",
         "is-uuid": "1.0.2",

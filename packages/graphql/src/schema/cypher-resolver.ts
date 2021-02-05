@@ -2,7 +2,6 @@ import { isInt, Driver } from "neo4j-driver";
 import { ValueNode } from "graphql";
 import { execute } from "../utils";
 import { BaseField } from "../types";
-import getFieldTypeMeta from "./get-field-type-meta";
 import { NeoSchema, Context } from "../classes";
 import parseValueNode from "./parse-value-node";
 import graphqlArgsToCompose from "./graphql-arg-to-compose";

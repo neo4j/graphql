@@ -22,6 +22,10 @@ describe("createAllowAndParams", () => {
                         array: true,
                         required: false,
                         pretty: "ID!",
+                        input: {
+                            name: "ID",
+                            pretty: "ID",
+                        },
                     },
                     otherDirectives: [],
                     arguments: [],
