@@ -47,6 +47,7 @@ function createUpdateAndParams({
         }
 
         const relationField = node.relationFields.find((x) => key.startsWith(x.fieldName));
+        const pointField = node.pointFields.find((x) => key.startsWith(x.fieldName));
         let unionTypeName = "";
 
         if (relationField) {
@@ -199,6 +200,7 @@ function createUpdateAndParams({
             ...node.interfaceFields,
             ...node.objectFields,
             ...node.unionFields,
+            ...node.pointFields,
         ].find((x) => x.fieldName === key);
 
         const authableField = [
@@ -211,10 +213,20 @@ function createUpdateAndParams({
             ...node.objectFields,
             ...node.unionFields,
             ...node.cypherFields,
+            ...node.pointFields,
         ].find((x) => x.fieldName === key);
 
         if (settableField) {
-            res.strs.push(`SET ${varName}.${key} = $${param}`);
+            if (pointField) {
+                if (pointField.typeMeta.array) {
+                    res.strs.push(`SET ${varName}.${key} = [p in $${param} | point(p)]`);
+                } else {
+                    res.strs.push(`SET ${varName}.${key} = point($${param})`);
+                }
+            } else {
+                res.strs.push(`SET ${varName}.${key} = $${param}`);
+            }
+
             res.params[param] = value;
         }
 

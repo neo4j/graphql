@@ -21,6 +21,10 @@ describe("createUpdateAndParams", () => {
                         array: false,
                         required: false,
                         pretty: "String",
+                        input: {
+                            name: "String",
+                            pretty: "String",
+                        },
                     },
                     otherDirectives: [],
                     arguments: [],
@@ -29,6 +33,7 @@ describe("createUpdateAndParams", () => {
             dateTimeFields: [],
             interfaceFields: [],
             objectFields: [],
+            pointFields: [],
         };
 
         // @ts-ignore

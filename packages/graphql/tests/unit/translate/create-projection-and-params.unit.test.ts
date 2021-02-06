@@ -35,12 +35,17 @@ describe("createProjectionAndParams", () => {
                         array: false,
                         required: false,
                         pretty: "String",
+                        input: {
+                            name: "String",
+                            pretty: "String",
+                        },
                     },
                     otherDirectives: [],
                     arguments: [],
                 },
             ],
             dateTimeFields: [],
+            pointFields: [],
             interfaceFields: [],
             objectFields: [],
         };

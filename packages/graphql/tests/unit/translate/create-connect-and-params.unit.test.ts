@@ -21,6 +21,10 @@ describe("createConnectAndParams", () => {
                         array: true,
                         required: false,
                         pretty: "[Movies]",
+                        input: {
+                            name: "Movie",
+                            pretty: "[Movies]",
+                        },
                     },
                     otherDirectives: [],
                     arguments: [],
@@ -29,6 +33,7 @@ describe("createConnectAndParams", () => {
             cypherFields: [],
             dateTimeFields: [],
             interfaceFields: [],
+            pointFields: [],
             objectFields: [],
         };
 

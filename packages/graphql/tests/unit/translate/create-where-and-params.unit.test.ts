@@ -25,6 +25,7 @@ describe("createWhereAndParams", () => {
             interfaceFields: [],
             unionFields: [],
             objectFields: [],
+            pointFields: [],
             otherDirectives: [],
             interfaces: [],
         };

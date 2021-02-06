@@ -30,7 +30,7 @@ query {
 ```cypher
 MATCH (this:Movie)
 WHERE this.datetime = $this_datetime
-RETURN this { .datetime } as this
+RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time") } as this
 ```
 
 **Expected Cypher params**
@@ -65,7 +65,7 @@ CALL {
     SET this0.datetime = $this0_datetime
     RETURN this0
 }
-RETURN this0 { .datetime } AS this0
+RETURN this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), "iso_zoned_date_time", "iso_offset_date_time") } AS this0
 ```
 
 **Expected Cypher params**
@@ -98,7 +98,7 @@ mutation {
 ```cypher
 MATCH (this:Movie)
 SET this.datetime = $this_update_datetime
-RETURN this { .id, .datetime } AS this
+RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time") } AS this
 ```
 
 **Expected Cypher params**

@@ -18,6 +18,10 @@ describe("createDisconnectAndParams", () => {
                         array: true,
                         required: false,
                         pretty: "[Movies]",
+                        input: {
+                            name: "Movie",
+                            pretty: "[Movies]",
+                        },
                     },
                     otherDirectives: [],
                     arguments: [],
@@ -31,6 +35,7 @@ describe("createDisconnectAndParams", () => {
             interfaceFields: [],
             unionFields: [],
             objectFields: [],
+            pointFields: [],
             otherDirectives: [],
             interfaces: [],
         };

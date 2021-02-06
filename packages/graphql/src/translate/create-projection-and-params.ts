@@ -50,6 +50,9 @@ function createProjectionAndParams({
         const optionsInput = field.args.options as GraphQLOptionsArg;
         const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
         const cypherField = node.cypherFields.find((x) => x.fieldName === key);
+        const relationField = node.relationFields.find((x) => x.fieldName === key);
+        const pointField = node.pointFields.find((x) => x.fieldName === key);
+        const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === key);
 
         if (cypherField) {
             let projectionAuthStr = "";
@@ -112,7 +115,6 @@ function createProjectionAndParams({
             }
         }
 
-        const relationField = node.relationFields.find((x) => x.fieldName === key);
         if (relationField) {
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const nodeMatchStr = `(${chainStr || varName})`;
@@ -139,9 +141,9 @@ function createProjectionAndParams({
 
                 referenceNodes.forEach((refNode) => {
                     const varNameOverRide = `${param}_${refNode.name}`;
-                    const innenrHeadStr: string[] = [];
-                    innenrHeadStr.push("[");
-                    innenrHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
+                    const innerHeadStr: string[] = [];
+                    innerHeadStr.push("[");
+                    innerHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
 
                     const thisWhere = field.args[refNode.name];
                     if (thisWhere) {
@@ -152,7 +154,7 @@ function createProjectionAndParams({
                             whereInput: thisWhere,
                             chainStrOverRide: varNameOverRide,
                         });
-                        innenrHeadStr.push(`AND ${whereAndParams[0].replace("WHERE", "")}`);
+                        innerHeadStr.push(`AND ${whereAndParams[0].replace("WHERE", "")}`);
                         res.params = { ...res.params, ...whereAndParams[1] };
                     }
 
@@ -167,11 +169,11 @@ function createProjectionAndParams({
                         },
                     });
                     if (preAuth[0]) {
-                        innenrHeadStr.push(`AND apoc.util.validatePredicate(NOT(${preAuth[0]}), "Forbidden", [0])`);
+                        innerHeadStr.push(`AND apoc.util.validatePredicate(NOT(${preAuth[0]}), "Forbidden", [0])`);
                         res.params = { ...res.params, ...preAuth[1] };
                     }
 
-                    innenrHeadStr.push(`| ${param}`);
+                    innerHeadStr.push(`| ${param}`);
 
                     if (field.fieldsByTypeName[refNode.name]) {
                         // TODO META
@@ -183,16 +185,16 @@ function createProjectionAndParams({
                             varName: param,
                             chainStrOverRide: varNameOverRide,
                         });
-                        innenrHeadStr.push(
+                        innerHeadStr.push(
                             [`{ __resolveType: "${refNode.name}", `, ...recurse[0].replace("{", "").split("")].join("")
                         );
                         res.params = { ...res.params, ...recurse[1] };
                     } else {
-                        innenrHeadStr.push(`{ __resolveType: "${refNode.name}" } `);
+                        innerHeadStr.push(`{ __resolveType: "${refNode.name}" } `);
                     }
 
-                    innenrHeadStr.push(`]`);
-                    headStrs.push(innenrHeadStr.join(" "));
+                    innerHeadStr.push(`]`);
+                    headStrs.push(innerHeadStr.join(" "));
                 });
 
                 unionStrs.push(headStrs.join(" + "));
@@ -351,10 +353,40 @@ function createProjectionAndParams({
             ...node.interfaceFields,
             ...node.objectFields,
             ...node.unionFields,
+            ...node.pointFields,
         ].find((x) => x.fieldName === key);
 
         if (selectableField) {
-            res.projection.push(`.${key}`);
+            if (pointField) {
+                const isArray = pointField.typeMeta.array;
+
+                const { crs, ...point } = fieldFields[pointField.typeMeta.name];
+                const fields: string[] = [];
+
+                // Sadly need to select the whole point object due to the risk of height/z
+                // being selected on a 2D point, to which the database will throw an error
+                if (point) {
+                    fields.push(isArray ? "point:p" : `point: ${varName}.${key}`);
+                }
+
+                if (crs) {
+                    fields.push(isArray ? "crs: p.crs" : `crs: ${varName}.${key}.crs`);
+                }
+
+                res.projection.push(
+                    isArray
+                        ? `${key}: [p in ${varName}.${key} | { ${fields.join(", ")} }]`
+                        : `${key}: { ${fields.join(", ")} }`
+                );
+            } else if (dateTimeField) {
+                res.projection.push(
+                    dateTimeField.typeMeta.array
+                        ? `${key}: [ dt in ${varName}.${key} | apoc.date.convertFormat(toString(dt), "iso_zoned_date_time", "iso_offset_date_time") ]`
+                        : `${key}: apoc.date.convertFormat(toString(${varName}.${key}), "iso_zoned_date_time", "iso_offset_date_time")`
+                );
+            } else {
+                res.projection.push(`.${key}`);
+            }
         }
 
         return res;

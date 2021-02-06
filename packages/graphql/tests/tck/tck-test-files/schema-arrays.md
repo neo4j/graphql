@@ -1,29 +1,28 @@
-## Schema DateTime
+## Schema Arrays
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### DateTime
+### Arrays
 
 **TypeDefs**
 
 ```typedefs-input
 type Movie {
-    id: ID
-    datetime: DateTime
+    id: ID!
+    ratings: [Float!]!
+    averageRating: Float!
 }
 ```
 
 **Output**
 
 ```schema-output
-"""A date and time, represented as an ISO-8601 string"""
-scalar DateTime
-
 type Movie {
-  id: ID
-  datetime: DateTime
+  id: ID!
+  ratings: [Float!]!
+  averageRating: Float!
 }
 
 type DeleteInfo {
@@ -43,21 +42,26 @@ input MovieAND {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  datetime: DateTime
-  datetime_NOT: DateTime
-  datetime_IN: [DateTime]
-  datetime_NOT_IN: [DateTime]
-  datetime_LT: DateTime
-  datetime_LTE: DateTime
-  datetime_GT: DateTime
-  datetime_GTE: DateTime
+  ratings: [Float]
+  ratings_NOT: [Float]
+  ratings_IN: Float
+  ratings_NOT_IN: Float
+  averageRating: Float
+  averageRating_IN: [Float]
+  averageRating_NOT: Float
+  averageRating_NOT_IN: [Float]
+  averageRating_LT: Float
+  averageRating_LTE: Float
+  averageRating_GT: Float
+  averageRating_GTE: Float
   OR: [MovieOR]
   AND: [MovieAND]
 }
 
 input MovieCreateInput {
   id: ID
-  datetime: DateTime
+  ratings: [Float]
+  averageRating: Float
 }
 
 input MovieOptions {
@@ -78,14 +82,18 @@ input MovieOR {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  datetime: DateTime
-  datetime_NOT: DateTime
-  datetime_IN: [DateTime]
-  datetime_NOT_IN: [DateTime]
-  datetime_LT: DateTime
-  datetime_LTE: DateTime
-  datetime_GT: DateTime
-  datetime_GTE: DateTime
+  ratings: [Float]
+  ratings_NOT: [Float]
+  ratings_IN: Float
+  ratings_NOT_IN: Float
+  averageRating: Float
+  averageRating_IN: [Float]
+  averageRating_NOT: Float
+  averageRating_NOT_IN: [Float]
+  averageRating_LT: Float
+  averageRating_LTE: Float
+  averageRating_GT: Float
+  averageRating_GTE: Float
   OR: [MovieOR]
   AND: [MovieAND]
 }
@@ -93,8 +101,8 @@ input MovieOR {
 enum MovieSort {
   id_DESC
   id_ASC
-  datetime_DESC
-  datetime_ASC
+  averageRating_DESC
+  averageRating_ASC
 }
 
 input MovieWhere {
@@ -109,21 +117,26 @@ input MovieWhere {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  datetime: DateTime
-  datetime_NOT: DateTime
-  datetime_IN: [DateTime]
-  datetime_NOT_IN: [DateTime]
-  datetime_LT: DateTime
-  datetime_LTE: DateTime
-  datetime_GT: DateTime
-  datetime_GTE: DateTime
+  ratings: [Float]
+  ratings_NOT: [Float]
+  ratings_IN: Float
+  ratings_NOT_IN: Float
+  averageRating: Float
+  averageRating_IN: [Float]
+  averageRating_NOT: Float
+  averageRating_NOT_IN: [Float]
+  averageRating_LT: Float
+  averageRating_LTE: Float
+  averageRating_GT: Float
+  averageRating_GTE: Float
   OR: [MovieOR]
   AND: [MovieAND]
 }
 
 input MovieUpdateInput {
   id: ID
-  datetime: DateTime
+  ratings: [Float]
+  averageRating: Float
 }
 
 type CreateMoviesMutationResponse {
