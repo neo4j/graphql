@@ -29,6 +29,7 @@ function createCreateAndParams({
         const _varName = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => key.startsWith(x.fieldName));
         const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
+        const pointField = node.pointFields.find((x) => key.startsWith(x.fieldName));
 
         if (relationField) {
             let refNode: Node;
@@ -84,12 +85,6 @@ function createCreateAndParams({
             return res;
         }
 
-        if (primitiveField?.autogenerate) {
-            res.creates.push(`SET ${varName}.${key} = randomUUID()`);
-
-            return res;
-        }
-
         if (primitiveField?.auth) {
             const authAndParams = createAuthAndParams({
                 entity: primitiveField,
@@ -105,7 +100,22 @@ function createCreateAndParams({
             res.params = { ...res.params, ...authAndParams[1] };
         }
 
-        res.creates.push(`SET ${varName}.${key} = $${_varName}`);
+        if (primitiveField?.autogenerate) {
+            res.creates.push(`SET ${varName}.${key} = randomUUID()`);
+
+            return res;
+        }
+
+        if (pointField) {
+            if (pointField.typeMeta.array) {
+                res.creates.push(`SET ${varName}.${key} = [p in $${_varName} | point(p)]`);
+            } else {
+                res.creates.push(`SET ${varName}.${key} = point($${_varName})`);
+            }
+        } else {
+            res.creates.push(`SET ${varName}.${key} = $${_varName}`);
+        }
+
         res.params[_varName] = value;
 
         return res;
