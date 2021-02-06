@@ -92,12 +92,14 @@ function createCreateAndParams({
                 context,
             });
 
-            if (!res.meta) {
-                res.meta = { authStrs: [] };
-            }
+            if (authAndParams[0]) {
+                if (!res.meta) {
+                    res.meta = { authStrs: [] };
+                }
 
-            res.meta.authStrs.push(authAndParams[0]);
-            res.params = { ...res.params, ...authAndParams[1] };
+                res.meta.authStrs.push(authAndParams[0]);
+                res.params = { ...res.params, ...authAndParams[1] };
+            }
         }
 
         if (primitiveField?.autogenerate) {
@@ -147,7 +149,7 @@ function createCreateAndParams({
         }
     }
 
-    if (meta) {
+    if (meta?.authStrs.length) {
         creates.push(`WITH ${withVars.join(", ")}`);
         creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), "Forbidden", [0])`);
     }

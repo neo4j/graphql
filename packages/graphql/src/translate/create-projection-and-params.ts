@@ -173,10 +173,7 @@ function createProjectionAndParams({
                         res.params = { ...res.params, ...preAuth[1] };
                     }
 
-                    innerHeadStr.push(`| ${param}`);
-
                     if (field.fieldsByTypeName[refNode.name]) {
-                        // TODO META
                         const recurse = createProjectionAndParams({
                             // @ts-ignore
                             fieldsByTypeName: field.fieldsByTypeName,
@@ -185,11 +182,24 @@ function createProjectionAndParams({
                             varName: param,
                             chainStrOverRide: varNameOverRide,
                         });
+
+                        if (recurse[2]?.authStrs.length) {
+                            innerHeadStr.push(
+                                `AND apoc.util.validatePredicate(NOT(${recurse[2]?.authStrs.join(
+                                    " AND "
+                                )}), "Forbidden", [0])`
+                            );
+                        }
+
+                        innerHeadStr.push(`| ${param}`);
+
                         innerHeadStr.push(
                             [`{ __resolveType: "${refNode.name}", `, ...recurse[0].replace("{", "").split("")].join("")
                         );
                         res.params = { ...res.params, ...recurse[1] };
                     } else {
+                        innerHeadStr.push(`| ${param}`);
+
                         innerHeadStr.push(`{ __resolveType: "${refNode.name}" } `);
                     }
 
@@ -230,7 +240,7 @@ function createProjectionAndParams({
 
             let whereStr = "";
             let projectionStr = "";
-            let authStr = "";
+            let authStrs: string[] = [];
 
             if (whereInput) {
                 const where = createWhereAndParams({
@@ -253,11 +263,10 @@ function createProjectionAndParams({
                 },
             });
             if (preAuth[0]) {
-                authStr = `apoc.util.validatePredicate(NOT(${preAuth[0]}), "Forbidden", [0])`;
+                authStrs.push(preAuth[0]);
                 res.params = { ...res.params, ...preAuth[1] };
             }
 
-            // TODO meta
             const recurse = createProjectionAndParams({
                 fieldsByTypeName: fieldFields,
                 node: referenceNode || node,
@@ -267,10 +276,17 @@ function createProjectionAndParams({
             });
             projectionStr = recurse[0];
             res.params = { ...res.params, ...recurse[1] };
+            if (recurse[2]?.authStrs.length) {
+                authStrs = [...authStrs, ...recurse[2].authStrs];
+            }
 
             const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
             const innerStr = `${pathStr} ${whereStr} ${
-                authStr ? `${!whereStr ? "WHERE " : ""} ${whereStr ? "AND " : ""} ${authStr}` : ""
+                authStrs.length
+                    ? `${!whereStr ? "WHERE " : ""} ${
+                          whereStr ? "AND " : ""
+                      } apoc.util.validatePredicate(NOT(${authStrs.join(" AND ")}), "Forbidden", [0])`
+                    : ""
             } | ${param} ${projectionStr}`;
 
             let nestedQuery;
@@ -332,7 +348,7 @@ function createProjectionAndParams({
                     entity: authableField,
                     operation: "read",
                     context,
-                    allow: { parentNode: node, varName },
+                    allow: { parentNode: node, varName, chainStr: param },
                 });
 
                 if (!res.meta) {
