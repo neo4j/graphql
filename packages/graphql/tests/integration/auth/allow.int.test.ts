@@ -76,6 +76,129 @@ describe("auth/allow", () => {
             }
         });
 
+        test("should throw forbidden when reading a property with invalid allow", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                }
+
+                extend type User {
+                    password: String @auth(rules: [{ operations: ["read"], allow: { id: "sub" } }])
+                }
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                {
+                    users(where: {id: "${userId}"}) {
+                        password
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: "invalid",
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}", password: "letmein"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw forbidden when reading a nested property with invalid allow", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type Post {
+                    id: ID
+                    creator: User @relationship(type: "HAS_POST", direction: "IN")
+                }
+            
+                type User {
+                    id: ID
+                }
+            
+                extend type User {
+                    password: String @auth(rules: [{ operations: ["read"], allow: { id: "sub" } }])
+                }
+            `;
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                {
+                    posts(where: {id: "${postId}"}) {
+                        creator {
+                            password
+                        }
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: "invalid",
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:Post {id: "${postId}"})<-[:HAS_POST]-(:User {id: "${userId}", password: "letmein"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
         test("should throw forbidden when reading a node with invalid allow (across a single relationship)", async () => {
             const session = driver.session({ defaultAccessMode: "WRITE" });
 
