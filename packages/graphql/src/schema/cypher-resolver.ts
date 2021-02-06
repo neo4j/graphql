@@ -36,7 +36,7 @@ function cypherResolver({
         const cypherStrs: string[] = [];
         let params = { ...args, jwt: safeJWT };
 
-        const preAuth = createAuthAndParams({ entity: field });
+        const preAuth = createAuthAndParams({ entity: field, context });
         if (preAuth[0]) {
             params.auth = createAuthParam({ context });
             params = { ...params, ...preAuth[1] };

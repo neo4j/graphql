@@ -132,9 +132,9 @@ function createCreateAndParams({
         });
         if (bindAndParams[0]) {
             creates.push(`WITH ${withVars.join(", ")}`);
+            creates.push(`CALL apoc.util.validate(NOT(${bindAndParams[0]}), "Forbidden", [0])`);
+            params = { ...params, ...bindAndParams[1] };
         }
-        creates.push(`CALL apoc.util.validate(NOT(${bindAndParams[0]}), "Forbidden", [0])`);
-        params = { ...params, ...bindAndParams[1] };
     }
 
     if (meta) {

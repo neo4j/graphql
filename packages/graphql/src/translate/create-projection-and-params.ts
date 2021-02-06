@@ -69,8 +69,7 @@ function createProjectionAndParams({
                 });
                 projectionStr = recurse[0];
                 res.params = { ...res.params, ...recurse[1] };
-
-                if (recurse[2]) {
+                if (recurse[2]?.authStrs.length) {
                     projectionAuthStr = recurse[2].authStrs.join(" AND ");
                 }
             }
@@ -84,7 +83,7 @@ function createProjectionAndParams({
                         params: { ...r.params, [argName]: entry[1] },
                     };
                 },
-                { strs: [`auth: $auth`], params: {} }
+                { strs: [...(cypherField.statement.includes("$auth.") ? [`auth: $auth`] : [])], params: {} }
             ) as { strs: string[]; params: any };
             res.params = { ...res.params, ...apocParams.params };
 
@@ -139,7 +138,7 @@ function createProjectionAndParams({
                 const headStrs: string[] = [];
 
                 referenceNodes.forEach((refNode) => {
-                    const _param = `${param}_${refNode.name}`;
+                    const varNameOverRide = `${param}_${refNode.name}`;
                     const innenrHeadStr: string[] = [];
                     innenrHeadStr.push("[");
                     innenrHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
@@ -151,7 +150,7 @@ function createProjectionAndParams({
                             node: refNode,
                             varName: param,
                             whereInput: thisWhere,
-                            chainStrOverRide: _param,
+                            chainStrOverRide: varNameOverRide,
                         });
                         innenrHeadStr.push(`AND ${whereAndParams[0].replace("WHERE", "")}`);
                         res.params = { ...res.params, ...whereAndParams[1] };
@@ -164,6 +163,7 @@ function createProjectionAndParams({
                         allow: {
                             parentNode: refNode,
                             varName: param,
+                            chainStr: varNameOverRide,
                         },
                     });
                     if (preAuth[0]) {
@@ -181,7 +181,7 @@ function createProjectionAndParams({
                             node: refNode,
                             context,
                             varName: param,
-                            chainStrOverRide: _param,
+                            chainStrOverRide: varNameOverRide,
                         });
                         innenrHeadStr.push(
                             [`{ __resolveType: "${refNode.name}", `, ...recurse[0].replace("{", "").split("")].join("")
