@@ -62,7 +62,7 @@ RETURN this {
             [ this_search IN [this_search]
                 WHERE "Genre" IN labels (this_search) AND
                 this_search.name = $this_search_Genre_name AND
-                apoc.util.validatePredicate(NOT(this_search.name = $this_search_Genre_auth0_name), "Forbidden", [0])  |
+                apoc.util.validatePredicate(NOT(this_search.name = $this_search_Genre_auth_allow0_name), "Forbidden", [0])  |
                 this_search {
                     __resolveType: "Genre",
                      .name
@@ -84,7 +84,7 @@ RETURN this {
 ```cypher-params
 {
     "this_title": "some title",
-    "this_search_Genre_auth0_name": ["Horror"],
+    "this_search_Genre_auth_allow0_name": ["Horror"],
     "this_search_Genre_name": "Horror",
     "this_search_Movie_title": "The Matrix"
 }
