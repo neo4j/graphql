@@ -9,6 +9,7 @@ type Comment {
     id: ID
     content: String
     creator: User @relationship(type: "HAS_COMMENT", direction: "IN")
+    post: Post @relationship(type: "HAS_COMMENT", direction: "IN")
 }
 
 type Post {
@@ -24,18 +25,47 @@ type User {
     posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
 }
 
-extend type User @auth(rules: [{ operations: ["read", "update", "delete"], allow: { id: "sub" } }])
+extend type User
+    @auth(
+        rules: [
+            {
+                operations: ["read", "update", "delete", "disconnect", "connect"]
+                allow: { id: "sub" }
+            }
+        ]
+    )
 
 extend type User {
     password: String!
-        @auth(rules: [{ operations: ["read", "update", "delete"], allow: { id: "sub" } }])
+        @auth(
+            rules: [
+                {
+                    operations: ["read", "update", "delete"]
+                    allow: { id: "sub" }
+                }
+            ]
+        )
 }
 
 extend type Post
-    @auth(rules: [{ operations: ["read", "update", "delete"], allow: { creator: { id: "sub" } } }])
+    @auth(
+        rules: [
+            {
+                operations: ["read", "update", "delete", "disconnect", "connect"]
+                allow: { creator: { id: "sub" } }
+            }
+        ]
+    )
 
 extend type Comment
-    @auth(rules: [{ operations: ["read", "update", "delete"], allow: { creator: { id: "sub" } } }])
+    @auth(
+        rules: [
+            {
+                operations: ["read", "update", "delete", "disconnect", "connect"]
+                allow: { creator: { id: "sub" } }
+            }
+        ]
+    )
 ```
 
 ---
@@ -400,7 +430,7 @@ CALL apoc.do.when(this_creator0 IS NOT NULL, "
     SET this_creator0.id = $this_update_creator0_id
     RETURN count(*) ",
     "",
-    {this:this, this_creator0:this_creator0, this_update_creator0_id:$this_update_creator0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
+    {this:this, this_creator0:this_creator0, auth:$auth,this_update_creator0_id:$this_update_creator0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
 YIELD value as _
 
 RETURN this { .id } AS this
@@ -413,7 +443,19 @@ RETURN this { .id } AS this
     "this_id": "post-id",
     "this_auth_allow0_creator_id": "user-id",
     "this_creator0_auth_allow0_id": "user-id",
-    "this_update_creator0_id": "new-id"
+    "this_update_creator0_id": "new-id",
+    "auth": {
+      "isAuthenticated": true,
+      "jwt": {
+        "roles": [
+          "admin"
+        ],
+        "sub": "user-id"
+      },
+      "roles": [
+        "admin"
+      ]
+    }
 }
 ```
 
@@ -461,7 +503,7 @@ CALL apoc.do.when(this_creator0 IS NOT NULL, "
     RETURN count(*)
     ",
     "",
-    {this:this, this_creator0:this_creator0, this_update_creator0_password:$this_update_creator0_password,this_update_creator0_password_auth_allow0_id:$this_update_creator0_password_auth_allow0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id}) YIELD value as _
+    {this:this, this_creator0:this_creator0, auth:$auth,this_update_creator0_password:$this_update_creator0_password,this_update_creator0_password_auth_allow0_id:$this_update_creator0_password_auth_allow0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id}) YIELD value as _
     RETURN this { .id } AS this
 ```
 
@@ -473,7 +515,19 @@ CALL apoc.do.when(this_creator0 IS NOT NULL, "
     "this_auth_allow0_creator_id": "user-id",
     "this_creator0_auth_allow0_id": "user-id",
     "this_update_creator0_password": "new-password",
-    "this_update_creator0_password_auth_allow0_id": "user-id"
+    "this_update_creator0_password_auth_allow0_id": "user-id",
+    "auth": {
+      "isAuthenticated": true,
+      "jwt": {
+        "roles": [
+          "admin"
+        ],
+        "sub": "user-id"
+      },
+      "roles": [
+        "admin"
+      ]
+    }
 }
 ```
 
@@ -515,6 +569,205 @@ DETACH DELETE this
 {
     "this_id": "user-id",
     "this_auth_allow0_id": "user-id"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "user-id",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Disconnect Node
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateUsers(
+        where: { id: "user-id" }
+        disconnect: { posts: { where: { id: "post-id" } } }
+    ) {
+        users {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
+WHERE this_disconnect_posts0.id = $this_disconnect_posts0_id
+
+WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
+
+CALL apoc.util.validate(NOT(this_disconnect_posts0.id = $this_disconnect_posts0User0_allow_auth_allow0_id AND EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id = $this_disconnect_posts0Post1_allow_auth_allow0_creator_id)), "Forbidden", [0])
+
+FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
+    DELETE this_disconnect_posts0_rel
+)
+
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "user-id",
+    "this_disconnect_posts0_id": "post-id",
+    "this_disconnect_posts0User0_allow_auth_allow0_id": "user-id",
+    "this_disconnect_posts0Post1_allow_auth_allow0_creator_id": "user-id"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "user-id",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Nested Disconnect Node
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateComments(
+        where: { id: "comment-id" }
+        update: {
+            post: {
+                disconnect: {
+                    disconnect: { creator: { where: { id: "user-id" } } }
+                }
+            }
+        }
+    ) {
+        comments {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Comment)
+WHERE this.id = $this_id
+
+WITH this
+CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_COMMENT]-(:User)) AND ANY(creator IN [(this)<-[:HAS_COMMENT]-(creator:User) | creator] WHERE creator.id = $this_auth_allow0_creator_id)), "Forbidden", [0])
+
+WITH this
+OPTIONAL MATCH (this)<-[this_post0_disconnect0_rel:HAS_COMMENT]-(this_post0_disconnect0:Post)
+WITH this, this_post0_disconnect0, this_post0_disconnect0_rel
+
+CALL apoc.util.validate(NOT(EXISTS((this_post0_disconnect0)<-[:HAS_COMMENT]-(:User)) AND ANY(creator IN [(this_post0_disconnect0)<-[:HAS_COMMENT]-(creator:User) | creator] WHERE creator.id = $this_post0_disconnect0Comment0_allow_auth_allow0_creator_id) AND EXISTS((this_post0_disconnect0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_post0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id = $this_post0_disconnect0Post1_allow_auth_allow0_creator_id)), "Forbidden", [0])
+
+FOREACH(_ IN CASE this_post0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
+    DELETE this_post0_disconnect0_rel
+)
+
+WITH this, this_post0_disconnect0
+OPTIONAL MATCH (this_post0_disconnect0)<-[this_post0_disconnect0_creator0_rel:HAS_POST]-(this_post0_disconnect0_creator0:User)
+WHERE this_post0_disconnect0_creator0.id = $this_post0_disconnect0_creator0_id
+WITH this, this_post0_disconnect0, this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel
+
+CALL apoc.util.validate(NOT(EXISTS((this_post0_disconnect0_creator0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_post0_disconnect0_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id = $this_post0_disconnect0_creator0Post0_allow_auth_allow0_creator_id) AND this_post0_disconnect0_creator0.id = $this_post0_disconnect0_creator0User1_allow_auth_allow0_id), "Forbidden", [0])
+
+FOREACH(_ IN CASE this_post0_disconnect0_creator0 WHEN NULL THEN [] ELSE [1] END |
+    DELETE this_post0_disconnect0_creator0_rel
+)
+
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "user-id",
+    "this_auth_allow0_creator_id": "user-id",
+    "this_id": "comment-id",
+    "this_post0_disconnect0Comment0_allow_auth_allow0_creator_id": "user-id",
+    "this_post0_disconnect0Post1_allow_auth_allow0_creator_id": "user-id",
+    "this_post0_disconnect0_creator0Post0_allow_auth_allow0_creator_id": "user-id",
+    "this_post0_disconnect0_creator0User1_allow_auth_allow0_id": "user-id",
+    "this_post0_disconnect0_creator0_id": "user-id"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "user-id",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Connect Node
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateUsers(
+        where: { id: "user-id" }
+        connect: { posts: { where: { id: "post-id" } } }
+    ) {
+        users {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this_connect_posts0:Post)
+WHERE this_connect_posts0.id = $this_connect_posts0_id
+
+WITH this, this_connect_posts0
+CALL apoc.util.validate(NOT(this_connect_posts0.id = $this_connect_posts0User0_allow_auth_allow0_id AND EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id = $this_connect_posts0Post1_allow_auth_allow0_creator_id)), "Forbidden", [0])
+
+FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END |
+    MERGE (this)-[:HAS_POST]->(this_connect_posts0)
+)
+
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "user-id",
+    "this_connect_posts0_id": "post-id",
+    "this_connect_posts0Post1_allow_auth_allow0_creator_id": "user-id",
+    "this_connect_posts0User0_allow_auth_allow0_id": "user-id"
 }
 ```
 

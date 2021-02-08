@@ -1,15 +1,21 @@
 import { Context } from "../classes";
 
 function createAuthParam({ context }: { context: Context }) {
-    const param: { isAuthenticated: boolean; roles?: string[] } = { isAuthenticated: false, roles: [] };
+    const param: { isAuthenticated: boolean; roles?: string[]; jwt: any } = {
+        isAuthenticated: false,
+        roles: [],
+        jwt: {},
+    };
 
     try {
         // TODO more roles
-        const { roles } = context.getJWT();
+        const jwt = context.getJWT();
 
-        if (roles) {
-            param.roles = roles;
+        if (jwt.roles) {
+            param.roles = jwt.roles;
         }
+
+        param.jwt = jwt;
     } catch (error) {
         // TODO DEBUG
 

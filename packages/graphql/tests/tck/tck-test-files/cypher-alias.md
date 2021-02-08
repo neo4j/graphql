@@ -46,12 +46,18 @@ MATCH (this:Movie)
 RETURN this {
     .id,
     actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor) | this_actors { .name } ],
-    custom: [this_custom IN apoc.cypher.runFirstColumn("MATCH (m:Movie) RETURN m", {this: this}, true) | this_custom { .id }]
+    custom: [this_custom IN apoc.cypher.runFirstColumn("MATCH (m:Movie) RETURN m", {this: this, auth: $auth}, true) | this_custom { .id }]
 } as this
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
-{}
+{
+    "auth": {
+       "isAuthenticated": true,
+       "roles": [],
+       "jwt": {}
+    }
+}
 ```

@@ -53,7 +53,6 @@ function createConnectAndParams({
             res.params = { ...res.params, ...where[1] };
         }
 
-        // TODO fromCreate ?
         const preAuth = [...(!fromCreate ? [parentNode] : []), refNode].reduce(
             (result: Res, node, i) => {
                 if (!node.auth) {
@@ -64,8 +63,8 @@ function createConnectAndParams({
                     entity: node,
                     operation: "connect",
                     context,
-                    allow: { parentNode: node, varName: _varName, chainStr: `${_varName}${i}_allow` },
                     escapeQuotes: Boolean(insideDoWhen),
+                    allow: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_allow` },
                 });
 
                 if (!str) {
@@ -81,9 +80,12 @@ function createConnectAndParams({
         ) as Res;
 
         if (preAuth.connects.length) {
+            const quote = insideDoWhen ? `\\"` : `"`;
             res.connects.push(`WITH ${[...withVars, _varName].join(", ")}`);
-            res.connects.push(`CALL apoc.util.validate(NOT(${preAuth.connects.join(" AND ")}), "Forbidden", [0])`);
-            res.params = { ...res.params, ...preAuth[1] };
+            res.connects.push(
+                `CALL apoc.util.validate(NOT(${preAuth.connects.join(" AND ")}), ${quote}Forbidden${quote}, [0])`
+            );
+            res.params = { ...res.params, ...preAuth.params };
         }
 
         /* 

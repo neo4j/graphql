@@ -236,7 +236,7 @@ WHERE this.title = $this_title
 WITH this
 OPTIONAL MATCH (this)-[:SEARCH]->(this_search_Genre0:Genre)
 WHERE this_search_Genre0.name = $this_search_Genre0_name
-CALL apoc.do.when(this_search_Genre0 IS NOT NULL, " SET this_search_Genre0.name = $this_update_search_Genre0_name RETURN count(*) ", "", {this:this, this_search_Genre0:this_search_Genre0, this_update_search_Genre0_name:$this_update_search_Genre0_name}) YIELD value as _
+CALL apoc.do.when(this_search_Genre0 IS NOT NULL, " SET this_search_Genre0.name = $this_update_search_Genre0_name RETURN count(*) ", "", {this:this, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name}) YIELD value as _
 
 RETURN this { .title } AS this
 ```
@@ -247,7 +247,12 @@ RETURN this { .title } AS this
 {
    "this_title": "some movie",
    "this_search_Genre0_name": "some genre",
-   "this_update_search_Genre0_name": "some new genre"
+   "this_update_search_Genre0_name": "some new genre",
+   "auth": {
+       "isAuthenticated": true,
+       "roles": [],
+       "jwt": {}
+   }
 }
 ```
 

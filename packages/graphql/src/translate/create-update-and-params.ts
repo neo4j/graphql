@@ -4,6 +4,7 @@ import createDisconnectAndParams from "./create-disconnect-and-params";
 import createWhereAndParams from "./create-where-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createAuthAndParams from "./create-auth-and-params";
+import createAuthParam from "./create-auth-param";
 
 interface Res {
     strs: string[];
@@ -90,7 +91,8 @@ function createUpdateAndParams({
 
                     res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
 
-                    let innerApocParams = {};
+                    const auth = createAuthParam({ context });
+                    let innerApocParams = { auth };
 
                     const updateAndParams = createUpdateAndParams({
                         context,
@@ -102,7 +104,7 @@ function createUpdateAndParams({
                         chainStr: `${param}${index}`,
                         insideDoWhen: true,
                     });
-                    res.params = { ...res.params, ...updateAndParams[1] };
+                    res.params = { ...res.params, ...updateAndParams[1], auth };
                     innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
 
                     const updateStrs = [updateAndParams[0], "RETURN count(*)"];

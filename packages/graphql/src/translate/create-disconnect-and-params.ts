@@ -56,7 +56,6 @@ function createDisconnectAndParams({
             res.params = { ...res.params, ...where[1] };
         }
 
-        // TODO fromCreate ?
         const preAuth = [parentNode, refNode].reduce(
             (result: Res, node, i) => {
                 if (!node.auth) {
@@ -68,7 +67,7 @@ function createDisconnectAndParams({
                     operation: "disconnect",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode, varName: _varName, chainStr: `${_varName}${i}_allow` },
+                    allow: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_allow` },
                 });
 
                 if (!str) {
@@ -84,11 +83,12 @@ function createDisconnectAndParams({
         ) as Res;
 
         if (preAuth.disconnects.length) {
+            const quote = insideDoWhen ? `\\"` : `"`;
             res.disconnects.push(`WITH ${[...withVars, _varName, relVarName].join(", ")}`);
             res.disconnects.push(
-                `CALL apoc.util.validate(NOT(${preAuth.disconnects.join(" AND ")}), "Forbidden", [0])`
+                `CALL apoc.util.validate(NOT(${preAuth.disconnects.join(" AND ")}), ${quote}Forbidden${quote}, [0])`
             );
-            res.params = { ...res.params, ...preAuth[1] };
+            res.params = { ...res.params, ...preAuth.params };
         }
 
         /* 
