@@ -49,25 +49,31 @@ function createWhereAndParams({
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
 
-                let resultStr = [
-                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
-                    `AND NONE(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${relationField.typeMeta.name}) | ${param}] INNER_WHERE `,
-                ].join(" ");
+                if (value !== null) {
+                    let resultStr = [
+                        `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
+                        `AND NONE(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${relationField.typeMeta.name}) | ${param}] INNER_WHERE `,
+                    ].join(" ");
 
-                const recurse = createWhereAndParams({
-                    whereInput: value,
-                    varName: param,
-                    chainStr: param,
-                    node: refNode,
-                    context,
-                    recursing: true,
-                });
+                    const recurse = createWhereAndParams({
+                        whereInput: value,
+                        varName: param,
+                        chainStr: param,
+                        node: refNode,
+                        context,
+                        recursing: true,
+                    });
 
-                resultStr += recurse[0];
-                resultStr += ")"; // close ALL
-                res.clauses.push(resultStr);
-                res.params = { ...res.params, ...recurse[1] };
-            } else {
+                    resultStr += recurse[0];
+                    resultStr += ")"; // close ALL
+                    res.clauses.push(resultStr);
+                    res.params = { ...res.params, ...recurse[1] };
+                } else {
+                    res.clauses.push(
+                        `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`
+                    );
+                }
+            } else if (value !== null) {
                 if (pointField) {
                     if (pointField.typeMeta.array) {
                         res.clauses.push(`(NOT ${varName}.${fieldName} = [p in $${param} | point(p)])`);
@@ -79,6 +85,8 @@ function createWhereAndParams({
                 }
 
                 res.params[param] = value;
+            } else {
+                res.clauses.push(`${varName}.${fieldName} IS NOT NULL`);
             }
 
             return res;
@@ -208,24 +216,30 @@ function createWhereAndParams({
             const outStr = equalityRelation.direction === "OUT" ? "->" : "-";
             const relTypeStr = `[:${equalityRelation.type}]`;
 
-            let resultStr = [
-                `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${equalityRelation.typeMeta.name}))`,
-                `AND ALL(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${equalityRelation.typeMeta.name}) | ${param}] INNER_WHERE `,
-            ].join(" ");
+            if (value !== null) {
+                let resultStr = [
+                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${equalityRelation.typeMeta.name}))`,
+                    `AND ALL(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${equalityRelation.typeMeta.name}) | ${param}] INNER_WHERE `,
+                ].join(" ");
 
-            const recurse = createWhereAndParams({
-                whereInput: value,
-                varName: param,
-                chainStr: param,
-                node: refNode,
-                context,
-                recursing: true,
-            });
+                const recurse = createWhereAndParams({
+                    whereInput: value,
+                    varName: param,
+                    chainStr: param,
+                    node: refNode,
+                    context,
+                    recursing: true,
+                });
 
-            resultStr += recurse[0];
-            resultStr += ")"; // close ALL
-            res.clauses.push(resultStr);
-            res.params = { ...res.params, ...recurse[1] };
+                resultStr += recurse[0];
+                resultStr += ")"; // close ALL
+                res.clauses.push(resultStr);
+                res.params = { ...res.params, ...recurse[1] };
+            } else {
+                res.clauses.push(
+                    `NOT EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${equalityRelation.typeMeta.name}))`
+                );
+            }
 
             return res;
         }
@@ -364,17 +378,22 @@ function createWhereAndParams({
             return res;
         }
 
-        if (pointField) {
-            if (pointField.typeMeta.array) {
-                res.clauses.push(`${varName}.${key} = [p in $${param} | point(p)]`);
+        if (value !== null) {
+            if (pointField) {
+                if (pointField.typeMeta.array) {
+                    res.clauses.push(`${varName}.${key} = [p in $${param} | point(p)]`);
+                } else {
+                    res.clauses.push(`${varName}.${key} = point($${param})`);
+                }
             } else {
-                res.clauses.push(`${varName}.${key} = point($${param})`);
+                res.clauses.push(`${varName}.${key} = $${param}`);
             }
+
+            res.params[param] = value;
         } else {
-            res.clauses.push(`${varName}.${key} = $${param}`);
+            res.clauses.push(`${varName}.${key} IS NULL`);
         }
 
-        res.params[param] = value;
         return res;
     }
 
