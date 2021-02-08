@@ -18,6 +18,7 @@ function createDisconnectAndParams({
     context,
     labelOverride,
     parentNode,
+    insideDoWhen,
 }: {
     withVars: string[];
     value: any;
@@ -28,6 +29,7 @@ function createDisconnectAndParams({
     refNode: Node;
     labelOverride?: string;
     parentNode: Node;
+    insideDoWhen?: boolean;
 }): [string, any] {
     function reducer(res: Res, disconnect: any, index): Res {
         const _varName = `${varName}${index}`;
@@ -65,6 +67,7 @@ function createDisconnectAndParams({
                     entity: node,
                     operation: "disconnect",
                     context,
+                    escapeQuotes: Boolean(insideDoWhen),
                     allow: { parentNode, varName: _varName, chainStr: `${_varName}${i}_allow` },
                 });
 
