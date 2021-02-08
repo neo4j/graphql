@@ -68,6 +68,7 @@
         "@graphql-tools/schema": "^6.2.3",
         "camelcase": "6.2.0",
         "deep-equal": "2.0.5",
+        "dot-prop": "6.0.1",
         "graphql-compose": "7.21.4",
         "graphql-parse-resolve-info": "4.9.0",
         "jsonwebtoken": "8.5.1",
