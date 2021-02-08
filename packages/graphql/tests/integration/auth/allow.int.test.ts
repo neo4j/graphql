@@ -351,4 +351,330 @@ describe("auth/allow", () => {
             }
         });
     });
+
+    describe("update", () => {
+        test("should throw Forbidden when editing a node with invalid allow", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                }
+
+                extend type User
+                    @auth(rules: [{ operations: ["update"], allow: { id: "sub"  } }])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    updateUsers(where: {id: "${userId}"}, update: {id: "new-id"}) {
+                        users {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: "invalid",
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw Forbidden when editing a property with invalid allow", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                }
+
+                extend type User {
+                    password: String @auth(rules: [{ operations: ["update"], allow: { id: "sub" }}])
+                }
+                   
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    updateUsers(where: {id: "${userId}"}, update: {password: "new-password"}) {
+                        users {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: "invalid",
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw Forbidden when editing a nested node with invalid allow", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type Post {
+                    id: ID
+                    content: String
+                    creator: User @relationship(type: "HAS_POST", direction: "IN")
+                }
+
+                type User {
+                    id: ID
+                }
+
+                extend type User @auth(rules: [{ operations: ["update"], allow: { id: "sub" }}])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    updatePosts(
+                        where: { id: "${postId}" }
+                        update: { creator: { update: { id: "new-id" } } }
+                    ) {
+                        posts {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: "invalid",
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw Forbidden when editing a nested node property with invalid allow", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type Post {
+                    id: ID
+                    content: String
+                    creator: User @relationship(type: "HAS_POST", direction: "IN")
+                }
+
+                type User {
+                    id: ID
+                }
+
+                extend type User {
+                    password: String @auth(rules: [{ operations: ["update"], allow: { id: "sub" }}])
+                }
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    updatePosts(
+                        where: { id: "${postId}" }
+                        update: { creator: { update: { password: "new-password" } } }
+                    ) {
+                        posts {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: "invalid",
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
+    describe("delete", () => {
+        test("should throw Forbidden when deleting a node with invalid allow", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                }
+
+                extend type User @auth(rules: [{ operations: ["delete"], allow: { id: "sub" }}])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    deleteUsers(
+                        where: { id: "${userId}" }
+                    ) {
+                       nodesDeleted
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: "invalid",
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
+    describe("disconnect", () => {
+        test.todo("should throw Forbidden when disconnecting a node with invalid allow");
+        test.todo("should throw Forbidden when disconnecting a nested node with invalid allow");
+    });
+
+    describe("connect", () => {
+        test.todo("should throw Forbidden when connecting a node with invalid allow");
+        test.todo("should throw Forbidden when connecting a nested node with invalid allow");
+    });
 });

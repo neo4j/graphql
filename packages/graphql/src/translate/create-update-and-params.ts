@@ -236,7 +236,7 @@ function createUpdateAndParams({
                     entity: authableField,
                     operation: "update",
                     context,
-                    allow: { varName, parentNode: node },
+                    allow: { varName, parentNode: node, chainStr: param },
                 });
                 const postAuth = createAuthAndParams({
                     entity: authableField,
@@ -306,13 +306,15 @@ function createUpdateAndParams({
     let preAuthStr = "";
     let postAuthStr = "";
 
+    const forbiddenString = `${insideDoWhen ? '\\"Forbidden\\"' : '"Forbidden"'}`;
+
     if (preAuthStrs.length) {
-        const apocStr = `CALL apoc.util.validate(NOT(${preAuthStrs.join(" AND ")}), "Forbidden", [0])`;
+        const apocStr = `CALL apoc.util.validate(NOT(${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
         preAuthStr = `${withStr}\n${apocStr}`;
     }
 
     if (postAuthStrs.length) {
-        const apocStr = `CALL apoc.util.validate(NOT(${postAuthStrs.join(" AND ")}), "Forbidden", [0])`;
+        const apocStr = `CALL apoc.util.validate(NOT(${postAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
         postAuthStr = `${withStr}\n${apocStr}`;
     }
 
