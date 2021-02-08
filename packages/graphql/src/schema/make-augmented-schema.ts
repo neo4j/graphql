@@ -681,6 +681,13 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             },
         });
 
+        composer.createInputTC({
+            name: `${node.name}DeleteInput`,
+            fields: {
+                where: `${node.name}Where`,
+            },
+        });
+
         node.relationFields.forEach((rel) => {
             if (rel.union) {
                 const refNodes = neoSchemaInput.nodes.filter((x) => rel.union?.nodes?.includes(x.name)) as Node[];

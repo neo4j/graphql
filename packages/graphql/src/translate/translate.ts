@@ -343,6 +343,7 @@ function translateDelete({
     context: Context;
 }): [string, any] {
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
+    const deleteInput = resolveTree.args.delete;
     const varName = "this";
 
     const matchStr = `MATCH (${varName}:${node.name})`;
