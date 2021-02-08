@@ -31,6 +31,7 @@ export interface BaseField {
     otherDirectives: DirectiveNode[];
     arguments: InputValueDefinitionNode[];
     private?: boolean;
+    description?: string;
 }
 
 /**
