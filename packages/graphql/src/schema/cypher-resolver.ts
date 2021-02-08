@@ -32,13 +32,11 @@ function cypherResolver({
             driver: driver as Driver,
         });
 
-        const safeJWT = context.getJWTSafe();
         const cypherStrs: string[] = [];
-        let params = { ...args, jwt: safeJWT };
+        let params = { ...args, auth: createAuthParam({ context }) };
 
         const preAuth = createAuthAndParams({ entity: field, context });
         if (preAuth[0]) {
-            params.auth = createAuthParam({ context });
             params = { ...params, ...preAuth[1] };
             cypherStrs.push(`CALL apoc.util.validate(NOT(${preAuth[0]}), "Forbidden", [0])`);
         }
@@ -47,7 +45,6 @@ function cypherResolver({
 
         const result = await execute({
             cypher: cypherStrs.join("\n"),
-            // TODO jwt?
             params,
             driver,
             defaultAccessMode: "WRITE",

@@ -459,13 +459,8 @@ function translate({
             break;
     }
 
-    // TODO remove
-    if (query.includes("$jwt")) {
-        params.jwt = context.getJWTSafe();
-    }
-
-    // TODO remove
-    if (query.includes("$auth")) {
+    // Its really difficult to know when users are using the `auth` param. For Simplicity it better to do the check here
+    if (query.includes("$auth.") || query.includes("auth: $auth") || query.includes("auth:$auth")) {
         params.auth = createAuthParam({ context });
     }
 

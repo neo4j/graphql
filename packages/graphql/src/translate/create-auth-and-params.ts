@@ -146,7 +146,7 @@ function createAuthAndParams({
     let params: Record<string, unknown> = {};
 
     if (!entity.auth) {
-        return [subPredicates.join(" AND "), params];
+        return ["", params];
     }
 
     let authRules: AuthRule[] = [];

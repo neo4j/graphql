@@ -3,6 +3,7 @@ import { Context, Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLWhereArg } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
+import createAuthParam from "./create-auth-param";
 
 interface Res {
     projection: string[];
@@ -86,9 +87,9 @@ function createProjectionAndParams({
                         params: { ...r.params, [argName]: entry[1] },
                     };
                 },
-                { strs: [...(cypherField.statement.includes("$auth.") ? [`auth: $auth`] : [])], params: {} }
+                { strs: ["auth: $auth"], params: {} }
             ) as { strs: string[]; params: any };
-            res.params = { ...res.params, ...apocParams.params };
+            res.params = { ...res.params, ...apocParams.params, auth: createAuthParam({ context }) };
 
             const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
 

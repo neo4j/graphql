@@ -358,6 +358,97 @@ describe("auth/roles", () => {
                 await session.close();
             }
         });
+
+        test("should throw if missing role on nested connect", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type Comment {
+                    id: String
+                    content: String
+                    post: Post @relationship(type: "HAS_COMMENT", direction: "IN")
+                }
+
+                type Post {
+                    id: String
+                    content: String
+                    creator: User @relationship(type: "HAS_POST", direction: "OUT")
+                    comments: [Comment] @relationship(type: "HAS_COMMENT", direction: "OUT")
+                }
+
+                type User {
+                    id: ID
+                    name: String
+                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                }
+
+                extend type User
+                    @auth(
+                        rules: [
+                            {
+                                operations: ["connect"]
+                                roles: ["admin"]
+                            }
+                        ]
+                    )
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const commentId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const query = `
+                mutation {
+                    updateComments(
+                        where: { id: "${commentId}" }
+                        update: {
+                            post: {
+                                update: {
+                                    creator: { connect: { where: { id: "${userId}" } } }
+                                }
+                            }
+                        }
+                    ) {
+                        comments {
+                            content
+                        }
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign({ roles: [""] }, process.env.JWT_SECRET as string);
+
+            try {
+                await session.run(`
+                    CREATE (:Comment {id: "${commentId}"})<-[:HAS_COMMENT]-(:Post {id: "${postId}"})
+                    CREATE (:User {id: "${userId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("disconnect", () => {
@@ -417,6 +508,96 @@ describe("auth/roles", () => {
                 await session.run(`
                     CREATE (:User {id: "${userId}"})
                     CREATE (:Post {id: "${userId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw if missing role on nested disconnect", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type Comment {
+                    id: String
+                    content: String
+                    post: Post @relationship(type: "HAS_COMMENT", direction: "IN")
+                }
+
+                type Post {
+                    id: String
+                    content: String
+                    creator: User @relationship(type: "HAS_POST", direction: "OUT")
+                    comments: [Comment] @relationship(type: "HAS_COMMENT", direction: "OUT")
+                }
+
+                type User {
+                    id: ID
+                    name: String
+                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                }
+
+                extend type User
+                    @auth(
+                        rules: [
+                            {
+                                operations: ["disconnect"]
+                                roles: ["admin"]
+                            }
+                        ]
+                    )
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const commentId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const query = `
+                mutation {
+                    updateComments(
+                        where: { id: "${commentId}" }
+                        update: {
+                            post: {
+                                update: {
+                                    creator: { disconnect: { where: { id: "${userId}" } } }
+                                }
+                            }
+                        }
+                    ) {
+                        comments {
+                            content
+                        }
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign({ roles: [""] }, process.env.JWT_SECRET as string);
+
+            try {
+                await session.run(`
+                    CREATE (:Comment {id: "${commentId}"})<-[:HAS_COMMENT]-(:Post {id: "${postId}"})-[:HAS_POST]->(:User {id: "${userId}"})
                 `);
 
                 const socket = new Socket({ readable: true });
