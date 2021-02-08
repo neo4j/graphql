@@ -1,3 +1,4 @@
+import dotProp from "dot-prop";
 import { Context } from "../classes";
 
 function createAuthParam({ context }: { context: Context }) {
@@ -8,10 +9,13 @@ function createAuthParam({ context }: { context: Context }) {
     };
 
     try {
-        // TODO more roles
         const jwt = context.getJWT();
 
-        if (jwt.roles) {
+        const dotPropKey = process.env.NEO4J_AUTH_ROLES_OBJECT_PATH;
+
+        if (dotPropKey) {
+            param.roles = dotProp.get(jwt, dotPropKey);
+        } else if (jwt.roles) {
             param.roles = jwt.roles;
         }
 

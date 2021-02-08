@@ -1,3 +1,4 @@
+import dotProp from "dot-prop";
 import { Context, Node } from "../classes";
 import { AuthOperations, BaseField, AuthRule, AuthOrders } from "../types";
 
@@ -75,13 +76,9 @@ function createAllowAndParams({
                         const _param = `${param}_${key}`;
                         res.strs.push(`${varName}.${key} = $${_param}`);
 
-                        const jwt = context.getJWT();
+                        const jwt = context.getJWTSafe();
 
-                        if (!jwt) {
-                            throw new Error("Unauthorized");
-                        }
-
-                        res.params[_param] = jwt[value];
+                        res.params[_param] = dotProp.get({ value: jwt }, `value.${value}`);
                     }
 
                     const relationField = node.relationFields.find((x) => key === x.fieldName);
