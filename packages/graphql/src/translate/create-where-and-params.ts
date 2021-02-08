@@ -68,12 +68,14 @@ function createWhereAndParams({
                     resultStr += ")"; // close ALL
                     res.clauses.push(resultStr);
                     res.params = { ...res.params, ...recurse[1] };
-                } else {
-                    res.clauses.push(
-                        `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`
-                    );
+                    return res;
                 }
-            } else if (value !== null) {
+
+                res.clauses.push(`EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`);
+                return res;
+            }
+
+            if (value !== null) {
                 if (pointField) {
                     if (pointField.typeMeta.array) {
                         res.clauses.push(`(NOT ${varName}.${fieldName} = [p in $${param} | point(p)])`);
@@ -85,10 +87,10 @@ function createWhereAndParams({
                 }
 
                 res.params[param] = value;
-            } else {
-                res.clauses.push(`${varName}.${fieldName} IS NOT NULL`);
+                return res;
             }
 
+            res.clauses.push(`${varName}.${fieldName} IS NOT NULL`);
             return res;
         }
 
@@ -390,10 +392,10 @@ function createWhereAndParams({
             }
 
             res.params[param] = value;
-        } else {
-            res.clauses.push(`${varName}.${key} IS NULL`);
+            return res;
         }
 
+        res.clauses.push(`${varName}.${key} IS NULL`);
         return res;
     }
 
