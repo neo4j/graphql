@@ -12,8 +12,11 @@ interface Allow {
     chainStr?: string;
 }
 
-function createRolesStr(roles: string[]) {
-    const joined = roles.map((r) => `"${r}"`).join(", ");
+function createRolesStr({ roles, escapeQuotes }: { roles: string[]; escapeQuotes?: boolean }) {
+    const quote = escapeQuotes ? `\\"` : `"`;
+
+    const joined = roles.map((r) => `${quote}${r}${quote}`).join(", ");
+
     return `ANY(r IN [${joined}] WHERE ANY(rr IN $auth.roles WHERE r = rr))`;
 }
 
@@ -129,6 +132,7 @@ function createAuthAndParams({
     skipIsAuthenticated,
     allow,
     context,
+    escapeQuotes,
 }: {
     entity: Node | BaseField;
     operation?: AuthOperations;
@@ -136,6 +140,7 @@ function createAuthAndParams({
     skipIsAuthenticated?: boolean;
     allow?: Allow;
     context: Context;
+    escapeQuotes?: boolean;
 }): [string, any] {
     const subPredicates: string[] = [];
     let params: Record<string, unknown> = {};
@@ -152,7 +157,9 @@ function createAuthAndParams({
     }
 
     if (!skipRoles) {
-        const rules = authRules.filter((o) => Boolean(o.roles)).map((r) => createRolesStr(r.roles as string[]));
+        const rules = authRules
+            .filter((o) => Boolean(o.roles))
+            .map((r) => createRolesStr({ roles: r.roles as string[], escapeQuotes }));
 
         subPredicates.push(rules.join(" OR "));
     }

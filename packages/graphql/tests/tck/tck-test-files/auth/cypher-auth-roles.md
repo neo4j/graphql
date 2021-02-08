@@ -9,9 +9,17 @@ type History {
     url: String @auth(rules: [{ operations: ["read"], roles: ["super-admin"] }])
 }
 
+type Comment {
+    id: String
+    content: String
+    post: Post @relationship(type: "HAS_COMMENT", direction: "OUT")
+}
+
 type Post {
     id: String
     content: String
+    creator: User @relationship(type: "HAS_POST", direction: "OUT")
+    comments: [Comment] @relationship(type: "HAS_COMMENT", direction: "OUT")
 }
 
 type User {
@@ -25,13 +33,25 @@ extend type User
     @auth(
         rules: [
             {
-                operations: ["read", "create", "update", "connect", "disconnect", "delete"]
+                operations: [
+                    "read"
+                    "create"
+                    "update"
+                    "connect"
+                    "disconnect"
+                    "delete"
+                ]
                 roles: ["admin"]
             }
         ]
     )
 
-extend type Post @auth(rules: [{ operations: ["connect", "disconnect"], roles: ["super-admin"] }])
+extend type Post
+    @auth(
+        rules: [
+            { operations: ["connect", "disconnect"], roles: ["super-admin"] }
+        ]
+    )
 
 extend type User {
     password: String
@@ -489,6 +509,77 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
+    "auth": {
+        "isAuthenticated": true,
+        "roles": ["admin"]
+    }
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "super_admin",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Nested Disconnect
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateComments(
+        update: {
+            post: {
+                update: {
+                    creator: { disconnect: { where: { id: "user-id" } } }
+                }
+            }
+        }
+    ) {
+        comments {
+            content
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Comment)
+
+WITH this
+OPTIONAL MATCH (this)-[:HAS_COMMENT]->(this_post0:Post)
+CALL apoc.do.when(this_post0 IS NOT NULL, "
+    WITH this, this_post0
+    OPTIONAL MATCH (this_post0)-[this_post0_creator0_disconnect0_rel:HAS_POST]->(this_post0_creator0_disconnect0:User)
+    WHERE this_post0_creator0_disconnect0.id = $this_post0_creator0_disconnect0_id
+    WITH this, this_post0, this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel
+    CALL apoc.util.validate(NOT(ANY(r IN [\"super-admin\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND ANY(r IN [\"admin\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), "Forbidden", [0])
+
+    FOREACH(_ IN CASE this_post0_creator0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
+        DELETE this_post0_creator0_disconnect0_rel
+    )
+
+    RETURN count(*)
+",
+"",
+{this:this, this_post0:this_post0, this_post0_creator0_disconnect0_id:$this_post0_creator0_disconnect0_id}) YIELD value as _
+
+RETURN this { .content } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_post0_creator0_disconnect0_id": "user-id",
     "auth": {
         "isAuthenticated": true,
         "roles": ["admin"]

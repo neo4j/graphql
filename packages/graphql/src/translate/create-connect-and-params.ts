@@ -19,6 +19,7 @@ function createConnectAndParams({
     labelOverride,
     parentNode,
     fromCreate,
+    insideDoWhen,
 }: {
     withVars: string[];
     value: any;
@@ -30,6 +31,7 @@ function createConnectAndParams({
     labelOverride?: string;
     parentNode: Node;
     fromCreate?: boolean;
+    insideDoWhen?: boolean;
 }): [string, any] {
     function reducer(res: Res, connect: any, index): Res {
         const _varName = `${varName}${index}`;
@@ -63,6 +65,7 @@ function createConnectAndParams({
                     operation: "connect",
                     context,
                     allow: { parentNode: node, varName: _varName, chainStr: `${_varName}${i}_allow` },
+                    escapeQuotes: Boolean(insideDoWhen),
                 });
 
                 if (!str) {
