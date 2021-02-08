@@ -1664,5 +1664,214 @@ describe("Advanced Filtering", () => {
                 session.close();
             }
         });
+
+        test("should find relationship equality", async () => {
+            const session = driver.session();
+
+            const randomType1 = `${generate({
+                charset: "alphabetic",
+            })}Movie`;
+
+            const randomType2 = `${generate({
+                charset: "alphabetic",
+            })}Genre`;
+
+            const pluralRandomType1 = pluralize(camelCase(randomType1));
+            const pluralRandomType2 = pluralize(camelCase(randomType2));
+
+            const typeDefs = `
+                    type ${randomType1} {
+                        id: ID
+                        ${pluralRandomType2}: [${randomType2}] @relationship(type: "IN_GENRE", direction: "OUT")
+                    }
+
+                    type ${randomType2} {
+                        id: ID
+                    }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const rootId = generate({
+                charset: "alphabetic",
+            });
+
+            const relationId = generate({
+                charset: "alphabetic",
+            });
+
+            const randomId = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                await session.run(
+                    `
+                            CREATE (root:${randomType1} {id: $rootId})
+                            CREATE (:${randomType1} {id: $randomId})
+                            CREATE (relation:${randomType2} {id: $relationId})
+                            CREATE (:${randomType2} {id: $randomId})
+                            MERGE (root)-[:IN_GENRE]->(relation)
+                        `,
+                    { rootId, relationId, randomId }
+                );
+
+                const nullQuery = `
+                    { 
+                        ${pluralRandomType1}(where: { ${pluralRandomType2}: null }) {
+                            id
+                        }
+                    }
+                `;
+
+                // Test null checking (nodes without any related nodes on the specified field)
+
+                const nullResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: nullQuery,
+                    contextValue: { driver },
+                });
+
+                if (nullResult.errors) {
+                    console.log(JSON.stringify(nullResult.errors, null, 2));
+                }
+
+                expect(nullResult.errors).toEqual(undefined);
+
+                expect((nullResult.data as any)[pluralRandomType1].length).toEqual(1);
+                expect((nullResult.data as any)[pluralRandomType1][0]).toMatchObject({
+                    id: randomId,
+                });
+
+                // Test not null checking (nodes without any related nodes on the specified field)
+
+                const notNullQuery = `
+                    { 
+                        ${pluralRandomType1}(where: { ${pluralRandomType2}_NOT: null }) {
+                            id
+                        }
+                    }
+                `;
+
+                const notNullResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: notNullQuery,
+                    contextValue: { driver },
+                });
+
+                if (notNullResult.errors) {
+                    console.log(JSON.stringify(notNullResult.errors, null, 2));
+                }
+
+                expect(notNullResult.errors).toEqual(undefined);
+
+                expect((notNullResult.data as any)[pluralRandomType1].length).toEqual(1);
+                expect((notNullResult.data as any)[pluralRandomType1][0]).toMatchObject({
+                    id: rootId,
+                });
+            } finally {
+                session.close();
+            }
+        });
+    });
+
+    describe("NULL Filtering", () => {
+        test("should work for existence and non-existence", async () => {
+            const session = driver.session();
+
+            const randomType = `${generate({
+                readable: true,
+                charset: "alphabetic",
+            })}Movie`;
+            const pluralRandomType = pluralize(camelCase(randomType));
+
+            const typeDefs = `
+                type ${randomType} {
+                    id: String!
+                    optional: String
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const id1 = generate({
+                readable: true,
+                charset: "alphabetic",
+            });
+
+            const id2 = generate({
+                readable: true,
+                charset: "alphabetic",
+            });
+
+            const optionalValue = generate({
+                readable: true,
+                charset: "alphabetic",
+            });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (:${randomType} {id: $id1})
+                        CREATE (:${randomType} {id: $id2, optional: $optionalValue})
+                    `,
+                    { id1, id2, optionalValue }
+                );
+
+                // Test NULL checking
+
+                const nullQuery = `
+                    { 
+                        ${pluralRandomType}(where: { optional: null }) {
+                            id
+                        }
+                    }
+                `;
+
+                const nullResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: nullQuery,
+                    contextValue: { driver },
+                });
+
+                if (nullResult.errors) {
+                    console.log(JSON.stringify(nullResult.errors, null, 2));
+                }
+
+                expect(nullResult.errors).toEqual(undefined);
+
+                expect((nullResult.data as any)[pluralRandomType].length).toEqual(1);
+
+                expect((nullResult.data as any)[pluralRandomType][0].id).toEqual(id1);
+
+                // Test NOT NULL checking
+
+                const notNullQuery = `
+                    { 
+                        ${pluralRandomType}(where: { optional_NOT: null }) {
+                            id
+                        }
+                    }
+                `;
+
+                const notNullResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: notNullQuery,
+                    contextValue: { driver },
+                });
+
+                if (notNullResult.errors) {
+                    console.log(JSON.stringify(notNullResult.errors, null, 2));
+                }
+
+                expect(notNullResult.errors).toEqual(undefined);
+
+                expect((notNullResult.data as any)[pluralRandomType].length).toEqual(1);
+
+                expect((notNullResult.data as any)[pluralRandomType][0].id).toEqual(id2);
+            } finally {
+                session.close();
+            }
+        });
     });
 });
