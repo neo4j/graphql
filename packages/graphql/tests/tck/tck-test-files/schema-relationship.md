@@ -221,6 +221,14 @@ type CreateMoviesMutationResponse {
   movies: [Movie!]!
 }
 
+input MovieActorsDeleteInput {
+  where: ActorWhere
+}
+
+input MovieDeleteInput {
+  actors: [MovieActorsDeleteInput]
+}
+
 type UpdateMoviesMutationResponse {
   movies: [Movie!]!
 }
@@ -236,7 +244,10 @@ type UpdateActorsMutationResponse {
 type Mutation {
   createActors(input: [ActorCreateInput]!): CreateActorsMutationResponse!
   createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
-  deleteMovies(where: MovieWhere): DeleteInfo!
+  deleteMovies(
+    where: MovieWhere
+    delete: MovieDeleteInput
+  ): DeleteInfo!
   deleteActors(where: ActorWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput): UpdateMoviesMutationResponse!
   updateActors(where: ActorWhere, update: ActorUpdateInput): UpdateActorsMutationResponse!
@@ -491,6 +502,22 @@ enum MovieSort {
   id_ASC
 }
 
+input MovieActorsDeleteInput {
+  where: ActorWhere
+}
+
+input ActorMoviesDeleteInput {
+  where: MovieWhere
+}
+
+input MovieDeleteInput {
+  actors: [MovieActorsDeleteInput]
+}
+
+input ActorDeleteInput {
+  movies: [ActorMoviesDeleteInput]
+}
+
 input MovieUpdateInput {
   id: ID
   actors: [MovieActorsUpdateFieldInput]
@@ -534,7 +561,10 @@ type UpdateActorsMutationResponse {
 
 type Mutation {
   createActors(input: [ActorCreateInput]!): CreateActorsMutationResponse!
-  deleteActors(where: ActorWhere): DeleteInfo!
+  deleteActors(
+    where: ActorWhere
+    delete: ActorDeleteInput
+  ): DeleteInfo!
   updateActors(
     where: ActorWhere
     update: ActorUpdateInput
@@ -543,7 +573,10 @@ type Mutation {
     create: ActorRelationInput
   ): UpdateActorsMutationResponse!
   createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
-  deleteMovies(where: MovieWhere): DeleteInfo!
+  deleteMovies(
+    where: MovieWhere
+    delete: MovieDeleteInput
+  ): DeleteInfo!
   updateMovies(
     where: MovieWhere
     update: MovieUpdateInput
