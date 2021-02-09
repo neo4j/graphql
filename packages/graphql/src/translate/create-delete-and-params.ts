@@ -55,7 +55,6 @@ function createDeleteAndParams({
             deletes.forEach((d, index) => {
                 const _varName = `${varName}_${key}${index}`;
 
-                // if (d.delete) {
                 if (withVars) {
                     res.strs.push(`WITH ${withVars.join(", ")}`);
                 }
@@ -75,6 +74,20 @@ function createDeleteAndParams({
                     res.params = { ...res.params, ...whereAndParams[1] };
                 }
 
+                if (d.delete) {
+                    const deleteAndParams = createDeleteAndParams({
+                        context,
+                        node: refNode,
+                        deleteInput: d.delete,
+                        varName: _varName,
+                        withVars: [...withVars, _varName],
+                        parentVar: _varName,
+                        chainStr: `${param}${index}`,
+                    });
+                    res.strs.push(deleteAndParams[0]);
+                    res.params = { ...res.params, ...deleteAndParams[1] };
+                }
+
                 res.strs.push(`
                       FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END |
                         DETACH DELETE ${_varName}
@@ -90,18 +103,6 @@ function createDeleteAndParams({
                     res.strs.push(allowAndParams[0].replace(/"/g, '\\"'));
                     res.params = { ...res.params, ...allowAndParams[1] };
                 }
-
-                // const deleteAndParams = createDeleteAndParams({
-                //     context,
-                //     node: refNode,
-                //     deleteInput: d.delete,
-                //     varName: _varName,
-                //     withVars: [...withVars, _varName],
-                //     parentVar: _varName,
-                //     chainStr: `${param}${index}`,
-                // });
-                // res.params = { ...res.params, ...deleteAndParams[1] };
-                // }
             });
 
             return res;
