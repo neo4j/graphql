@@ -60,6 +60,7 @@ import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import { Float, Int, DateTime, ID } from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
 import graphqlArgsToCompose from "./graphql-arg-to-compose";
+import wrapCustomResolvers from "./wrap-custom-resolvers";
 
 export interface MakeAugmentedSchemaOptions {
     typeDefs: TypeDefs;
@@ -1068,75 +1069,18 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         ...(generatedTypeDefs.includes("scalar DateTime") ? { DateTime } : {}),
     };
 
+    if (options.resolvers) {
+        generatedResolvers = wrapCustomResolvers({
+            generatedResolvers,
+            getNeoSchema: () => neoSchema,
+            nodeNames,
+            resolvers: options.resolvers,
+        });
+    }
+
     unions.forEach((union) => {
         generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
     });
-
-    if (options.resolvers) {
-        const {
-            Query: customQueries = {},
-            Mutation: customMutations = {},
-            Subscription: customSubscriptions = {},
-            ...rest
-        } = options.resolvers as Record<string, any>;
-
-        if (customQueries) {
-            if (generatedResolvers.Query) {
-                generatedResolvers.Query = { ...generatedResolvers.Query, ...customQueries };
-            } else {
-                generatedResolvers.Query = customQueries;
-            }
-        }
-
-        if (customMutations) {
-            if (generatedResolvers.Mutation) {
-                generatedResolvers.Mutation = { ...generatedResolvers.Mutation, ...customMutations };
-            } else {
-                generatedResolvers.Mutation = customMutations;
-            }
-        }
-
-        if (Object.keys(customSubscriptions).length) {
-            generatedResolvers.Subscription = customSubscriptions;
-        }
-
-        const typeResolvers = Object.entries(rest).reduce((r, entry) => {
-            const [key, value] = entry;
-
-            if (!nodeNames.includes(key)) {
-                return r;
-            }
-
-            return {
-                ...r,
-                [key]: {
-                    ...generatedResolvers[key],
-                    ...(value as any),
-                },
-            };
-        }, {});
-        generatedResolvers = {
-            ...generatedResolvers,
-            ...typeResolvers,
-        };
-
-        const otherResolvers = Object.entries(rest).reduce((r, entry) => {
-            const [key, value] = entry;
-
-            if (nodeNames.includes(key)) {
-                return r;
-            }
-
-            return {
-                ...r,
-                [key]: value,
-            };
-        }, {});
-        generatedResolvers = {
-            ...generatedResolvers,
-            ...otherResolvers,
-        };
-    }
 
     neoSchemaInput.typeDefs = generatedTypeDefs;
     neoSchemaInput.resolvers = generatedResolvers;
