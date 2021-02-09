@@ -45,6 +45,7 @@ export interface BaseField {
     arguments: InputValueDefinitionNode[];
     private?: boolean;
     auth?: Auth;
+    description?: string;
 }
 
 /**

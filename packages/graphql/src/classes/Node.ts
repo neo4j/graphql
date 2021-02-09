@@ -30,6 +30,7 @@ export interface NodeConstructor {
     pointFields: PointField[];
     auth?: Auth;
     exclude?: Exclude;
+    description?: string;
 }
 
 class Node {
@@ -63,6 +64,8 @@ class Node {
 
     public auth?: Auth;
 
+    public description?: string;
+
     constructor(input: NodeConstructor) {
         this.name = input.name;
         this.relationFields = input.relationFields;
@@ -79,6 +82,7 @@ class Node {
         this.pointFields = input.pointFields;
         this.exclude = input.exclude;
         this.auth = input.auth;
+        this.description = input.description;
     }
 }
 

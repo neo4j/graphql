@@ -131,6 +131,7 @@ function getObjFieldMeta({
                 ),
                 arguments: [...(field.arguments || [])],
                 ...(authDirective ? { auth: getAuth(authDirective) } : {}),
+                description: field.description?.value,
             };
 
             if (relationshipMeta) {
@@ -286,6 +287,7 @@ function objectFieldsToComposeFields(
         const newField = {
             type: field.typeMeta.pretty,
             args: {},
+            description: field.description,
         } as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
 
         if (field.otherDirectives.length) {
@@ -462,6 +464,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             auth,
             // @ts-ignore
             exclude,
+            description: definition.description?.value,
         });
 
         return node;
@@ -486,6 +489,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
         const composeNode = composer.createObjectTC({
             name: node.name,
             fields: nodeFields,
+            description: node.description,
             extensions: {
                 directives: node.otherDirectives.map((directive) => ({
                     args: (directive.arguments || [])?.reduce(
