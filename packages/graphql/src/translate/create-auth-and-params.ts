@@ -128,11 +128,8 @@ function createAuthAndParams({
     context: Context;
     escapeQuotes?: boolean;
 }): [string, any] {
-    const subPredicates: string[] = [];
-    let params: Record<string, unknown> = {};
-
     if (!entity.auth) {
-        return ["", params];
+        return ["", {}];
     }
 
     let authRules: AuthRule[] = [];
@@ -142,45 +139,85 @@ function createAuthAndParams({
         authRules = entity?.auth.rules;
     }
 
-    if (!skipRoles) {
-        const rules = authRules
-            .filter((o) => Boolean(o.roles))
-            .map((r) => createRolesStr({ roles: r.roles as string[], escapeQuotes }));
+    function createSubPredicate({
+        authRule,
+        index,
+        chainStr,
+    }: {
+        authRule: AuthRule;
+        index: number;
+        chainStr?: string;
+    }): [string, any] {
+        const thisPredicates: string[] = [];
+        let thisParams: any = {};
 
-        subPredicates.push(rules.join(" OR "));
-    }
+        if (!skipRoles && authRule.roles) {
+            thisPredicates.push(createRolesStr({ roles: authRule.roles, escapeQuotes }));
+        }
 
-    if (!skipIsAuthenticated) {
-        const rules = authRules
-            .filter((o) => o.isAuthenticated === true || o.isAuthenticated === false)
-            .map((o) => `$auth.isAuthenticated = ${Boolean(o?.isAuthenticated)}`);
+        if (!skipIsAuthenticated && (authRule.isAuthenticated === true || authRule.isAuthenticated === false)) {
+            thisPredicates.push(`$auth.isAuthenticated = ${Boolean(authRule.isAuthenticated)}`);
+        }
 
-        subPredicates.push(rules.join(" OR "));
-    }
+        if (allow && authRule.allow) {
+            const allowAndParams = createAllowAndParams({
+                context,
+                node: allow.parentNode,
+                varName: allow.varName,
+                rule: authRule,
+                chainStr: `${allow.chainStr || allow.varName}${chainStr || ""}_auth_allow${index}`,
+            });
+            if (allowAndParams[0]) {
+                thisPredicates.push(allowAndParams[0]);
+                thisParams = { ...thisParams, ...allowAndParams[1] };
+            }
+        }
 
-    if (allow) {
-        const rules: string[] = [];
+        ["AND", "OR"].forEach((key) => {
+            const value = authRule[key] as AuthRule["AND"] | AuthRule["OR"];
 
-        authRules
-            .filter((rule) => rule.allow)
-            .forEach((rule, index) => {
-                const allowAndParams = createAllowAndParams({
-                    context,
-                    node: allow.parentNode,
-                    varName: allow.varName,
-                    rule,
-                    chainStr: `${allow.chainStr || allow.varName}_auth_allow${index}`,
+            if (!value) {
+                return;
+            }
+
+            const strs: string[] = [];
+            let _params = {};
+
+            value.forEach((v, i) => {
+                const [str, par] = createSubPredicate({
+                    authRule: v,
+                    index: i,
+                    chainStr: chainStr ? `${chainStr}${key}${i}` : `${key}${i}`,
                 });
-                if (allowAndParams[0]) {
-                    rules.push(allowAndParams[0]);
-                    params = { ...params, ...allowAndParams[1] };
+
+                if (!str) {
+                    return;
                 }
+
+                strs.push(str);
+                _params = { ..._params, ...par };
             });
 
-        subPredicates.push(rules.join(" OR "));
+            thisPredicates.push(strs.join(` ${key} `));
+            thisParams = { ...thisParams, ..._params };
+        });
+
+        return [thisPredicates.join(" AND "), thisParams];
     }
 
-    return [subPredicates.filter(Boolean).join(" AND "), params];
+    const subPredicates = authRules.reduce(
+        (res: Res, authRule: AuthRule, index): Res => {
+            const [str, par] = createSubPredicate({ authRule, index });
+
+            return {
+                strs: [...res.strs, str],
+                params: { ...res.params, ...par },
+            };
+        },
+        { strs: [], params: {} }
+    ) as Res;
+
+    return [subPredicates.strs.filter(Boolean).join(" OR "), subPredicates.params];
 }
 
 export default createAuthAndParams;
