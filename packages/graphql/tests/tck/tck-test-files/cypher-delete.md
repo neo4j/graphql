@@ -57,7 +57,7 @@ DETACH DELETE this
 mutation {
     deleteMovies(
         where: { id: 123 }
-        delete: { actors: [{ where: { name: "Actor to delete" } }] }
+        delete: { actors: { where: { name: "Actor to delete" } } }
     ) {
         nodesDeleted
     }
@@ -84,6 +84,126 @@ DETACH DELETE this
 {
     "this_id": "123",
     "this_actors0_name": "Actor to delete"
+}
+```
+
+---
+
+### Double Nested Delete
+
+**GraphQL input**
+
+```graphql
+mutation {
+    deleteMovies(
+        where: { id: 123 }
+        delete: {
+            actors: {
+                where: { name: "Actor to delete" }
+                delete: { movies: { where: { id: 321 } } }
+            }
+        }
+    ) {
+        nodesDeleted
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
+WHERE this_actors0.name = $this_actors0_name
+WITH this, this_actors0
+OPTIONAL MATCH (this_actors0)-[:ACTED_IN]->(this_actors0_movies0:Movie)
+WHERE this_actors0_movies0.id = $this_actors0_movies0_id
+FOREACH(_ IN CASE this_actors0_movies0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_actors0_movies0
+)
+FOREACH(_ IN CASE this_actors0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_actors0
+)
+DETACH DELETE this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "123",
+    "this_actors0_name": "Actor to delete",
+    "this_actors0_movies0_id": "321"
+}
+```
+
+---
+
+### Triple Nested Delete
+
+**GraphQL input**
+
+```graphql
+mutation {
+    deleteMovies(
+        where: { id: 123 }
+        delete: {
+            actors: {
+                where: { name: "Actor to delete" }
+                delete: {
+                    movies: {
+                        where: { id: 321 }
+                        delete: {
+                            actors: {
+                                where: { name: "Another actor to delete" }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ) {
+        nodesDeleted
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
+WHERE this_actors0.name = $this_actors0_name
+WITH this, this_actors0
+OPTIONAL MATCH (this_actors0)-[:ACTED_IN]->(this_actors0_movies0:Movie)
+WHERE this_actors0_movies0.id = $this_actors0_movies0_id
+WITH this, this_actors0, this_actors0_movies0
+OPTIONAL MATCH (this_actors0_movies0)<-[:ACTED_IN]-(this_actors0_movies0_actors0:Actor)
+WHERE this_actors0_movies0_actors0.name = $this_actors0_movies0_actors0_name
+FOREACH(_ IN CASE this_actors0_movies0_actors0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_actors0_movies0_actors0
+)
+FOREACH(_ IN CASE this_actors0_movies0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_actors0_movies0
+)
+FOREACH(_ IN CASE this_actors0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_actors0
+)
+DETACH DELETE this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "123",
+    "this_actors0_name": "Actor to delete",
+    "this_actors0_movies0_id": "321",
+    "this_actors0_movies0_actors0_name": "Another actor to delete"
 }
 ```
 
