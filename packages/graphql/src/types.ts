@@ -7,24 +7,18 @@ export type Resolvers = IExecutableSchemaDefinition["resolvers"];
 
 export type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
 
-type AuthRuleAndOR = {
-    operations?: AuthOperations[];
-    allow?: { [k: string]: any } | "*";
-    bind?: { [k: string]: any } | "*";
-    roles?: string[];
-    AND?: AuthRuleAndOR[];
-    OR?: AuthRuleAndOR[];
-};
-
-export type AuthRule = {
+export interface BaseAuthRule {
     isAuthenticated?: boolean;
-    operations?: AuthOperations[];
     allow?: { [k: string]: any } | "*";
     bind?: { [k: string]: any } | "*";
     roles?: string[];
-    AND?: AuthRuleAndOR[];
-    OR?: AuthRuleAndOR[];
-};
+    AND?: BaseAuthRule[];
+    OR?: BaseAuthRule[];
+}
+
+export interface AuthRule extends BaseAuthRule {
+    operations?: AuthOperations[] | "*";
+}
 
 export type Auth = {
     rules: AuthRule[];

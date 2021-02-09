@@ -1,6 +1,6 @@
 import dotProp from "dot-prop";
 import { Context, Node } from "../classes";
-import { AuthOperations, BaseField, AuthRule, AuthOrders } from "../types";
+import { AuthOperations, BaseField, AuthRule, BaseAuthRule } from "../types";
 
 interface Res {
     strs: string[];
@@ -35,9 +35,6 @@ function createAllowAndParams({
     chainStr?: string;
 }): [string, any] {
     const allow = rule.allow;
-    if (allow === "*") {
-        return [`true`, {}];
-    }
 
     let param = "";
     if (chainStr) {
@@ -134,7 +131,7 @@ function createAuthAndParams({
 
     let authRules: AuthRule[] = [];
     if (operation) {
-        authRules = entity?.auth.rules.filter((r) => r.operations?.includes(operation));
+        authRules = entity?.auth.rules.filter((r) => r.operations === "*" || r.operations?.includes(operation));
     } else {
         authRules = entity?.auth.rules;
     }
@@ -144,7 +141,7 @@ function createAuthAndParams({
         index,
         chainStr,
     }: {
-        authRule: AuthRule;
+        authRule: AuthRule | BaseAuthRule;
         index: number;
         chainStr?: string;
     }): [string, any] {

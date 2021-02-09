@@ -5,8 +5,83 @@ import { NeoSchema, Context, Node } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
 describe("createAuthAndParams", () => {
+    describe("operations", () => {
+        test("should cover all rules when using operations *", () => {
+            const idField = {
+                fieldName: "id",
+                typeMeta: {
+                    name: "ID",
+                    array: false,
+                    required: false,
+                    pretty: "String",
+                    input: {
+                        name: "String",
+                        pretty: "String",
+                    },
+                },
+                otherDirectives: [],
+                arguments: [],
+            };
+
+            // @ts-ignore
+            const node: Node = {
+                name: "Movie",
+                relationFields: [],
+                cypherFields: [],
+                enumFields: [],
+                scalarFields: [],
+                primitiveFields: [idField],
+                dateTimeFields: [],
+                interfaceFields: [],
+                objectFields: [],
+                pointFields: [],
+                authableFields: [idField],
+                auth: {
+                    rules: [
+                        { operations: "*", allow: { id: "sub" } },
+                        { operations: ["create"], roles: ["admin"] },
+                        { operations: "*", roles: ["admin"] },
+                    ],
+                    type: "JWT",
+                },
+            };
+
+            // @ts-ignore
+            const neoSchema: NeoSchema = {
+                nodes: [node],
+            };
+
+            const sub = generate({
+                charset: "alphabetic",
+            });
+
+            // @ts-ignore
+            const context = new Context({ neoSchema });
+            context.jwt = {
+                sub,
+            };
+
+            const result = createAuthAndParams({
+                context,
+                entity: node,
+                operation: "read",
+                allow: { parentNode: node, varName: "this" },
+            });
+
+            expect(trimmer(result[0])).toEqual(
+                trimmer(`
+                    this.id = $this_auth_allow0_id OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                `)
+            );
+
+            expect(result[1]).toMatchObject({
+                this_auth_allow0_id: sub,
+            });
+        });
+    });
+
     describe("rules", () => {
-        test("should showcase the default OR behavior of stacked rules", async () => {
+        test("should showcase the default OR behavior of stacked rules", () => {
             const idField = {
                 fieldName: "id",
                 typeMeta: {
