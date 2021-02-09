@@ -66,6 +66,33 @@ class Node {
 
     public description?: string;
 
+    /*
+        Fields you can apply auth allow and bind to
+    */
+    public authableFields: (
+        | PrimitiveField
+        | CustomScalarField
+        | CustomEnumField
+        | UnionField
+        | ObjectField
+        | DateTimeField
+        | PointField
+        | CypherField
+    )[];
+
+    /*
+        Fields you can set in a create or update mutation
+    */
+    public settableFields: (
+        | PrimitiveField
+        | CustomScalarField
+        | CustomEnumField
+        | UnionField
+        | ObjectField
+        | DateTimeField
+        | PointField
+    )[];
+
     constructor(input: NodeConstructor) {
         this.name = input.name;
         this.relationFields = input.relationFields;
@@ -83,6 +110,29 @@ class Node {
         this.exclude = input.exclude;
         this.auth = input.auth;
         this.description = input.description;
+
+        this.authableFields = [
+            ...input.primitiveFields,
+            ...input.scalarFields,
+            ...input.enumFields,
+            ...input.unionFields,
+            ...input.objectFields,
+            ...input.dateTimeFields,
+            ...input.pointFields,
+            ...input.cypherFields,
+        ];
+
+        this.settableFields = [
+            ...input.dateTimeFields,
+            ...input.enumFields,
+            ...input.objectFields,
+            ...input.scalarFields,
+            ...input.primitiveFields,
+            ...input.interfaceFields,
+            ...input.objectFields,
+            ...input.unionFields,
+            ...input.pointFields,
+        ];
     }
 }
 
