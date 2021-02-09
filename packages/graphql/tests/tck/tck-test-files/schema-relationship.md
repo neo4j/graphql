@@ -504,10 +504,12 @@ enum MovieSort {
 
 input MovieActorsDeleteInput {
   where: ActorWhere
+  delete: ActorDeleteInput
 }
 
 input ActorMoviesDeleteInput {
   where: MovieWhere
+  delete: MovieDeleteInput
 }
 
 input MovieDeleteInput {
