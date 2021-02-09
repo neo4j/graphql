@@ -11,6 +11,10 @@ function createAuthParam({ context }: { context: Context }) {
     try {
         const jwt = context.getJWT();
 
+        if (!jwt) {
+            throw new Error("no jwt");
+        }
+
         const dotPropKey = process.env.NEO4J_AUTH_ROLES_OBJECT_PATH;
 
         if (dotPropKey) {
@@ -21,8 +25,6 @@ function createAuthParam({ context }: { context: Context }) {
 
         param.jwt = jwt;
     } catch (error) {
-        // TODO DEBUG
-
         return param;
     }
 
