@@ -750,6 +750,11 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                         name: nodeFieldDeleteInputName,
                         fields: {
                             where: `${n.name}Where`,
+                            ...(n.relationFields.length
+                                ? {
+                                      delete: `${n.name}DeleteInput`,
+                                  }
+                                : {}),
                         },
                     });
 
@@ -839,6 +844,11 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                 name: nodeFieldDeleteInputName,
                 fields: {
                     where: `${n.name}Where`,
+                    ...(n.relationFields.length
+                        ? {
+                              delete: `${n.name}DeleteInput`,
+                          }
+                        : {}),
                 },
             });
 
