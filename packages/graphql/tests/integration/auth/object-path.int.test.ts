@@ -84,7 +84,7 @@ describe("auth/object-path", () => {
         }
     });
 
-    test("should use object path with allow", async () => {
+    test("should use object path with roles", async () => {
         process.env.NEO4J_AUTH_ROLES_OBJECT_PATH = "https://github\\.com/claims.https://github\\.com/claims/roles";
 
         const session = driver.session({ defaultAccessMode: "WRITE" });
