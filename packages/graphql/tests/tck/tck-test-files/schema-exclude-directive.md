@@ -761,7 +761,14 @@ type Mutation {
     where: MovieWhere
     delete: MovieDeleteInput
   ): DeleteInfo!
-  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+  updateMovies(
+    connect: MovieConnectInput
+    create: MovieRelationInput
+    disconnect: MovieDisconnectInput
+    update: MovieUpdateInput
+    where: MovieWhere
+    delete: MovieDeleteInput
+  ): UpdateMoviesMutationResponse!
 }
 
 type Query {

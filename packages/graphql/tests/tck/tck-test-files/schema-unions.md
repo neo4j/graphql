@@ -284,6 +284,7 @@ type Mutation {
     connect: MovieConnectInput
     disconnect: MovieDisconnectInput
     create: MovieRelationInput
+    delete: MovieDeleteInput
   ): UpdateMoviesMutationResponse!
 }
 

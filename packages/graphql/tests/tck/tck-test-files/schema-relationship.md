@@ -249,7 +249,7 @@ type Mutation {
     delete: MovieDeleteInput
   ): DeleteInfo!
   deleteActors(where: ActorWhere): DeleteInfo!
-  updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput): UpdateMoviesMutationResponse!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
   updateActors(where: ActorWhere, update: ActorUpdateInput): UpdateActorsMutationResponse!
 }
 
@@ -573,6 +573,7 @@ type Mutation {
     connect: ActorConnectInput
     disconnect: ActorDisconnectInput
     create: ActorRelationInput
+    delete: ActorDeleteInput
   ): UpdateActorsMutationResponse!
   createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
   deleteMovies(
@@ -585,6 +586,7 @@ type Mutation {
     connect: MovieConnectInput
     disconnect: MovieDisconnectInput
     create: MovieRelationInput
+    delete: MovieDeleteInput
   ): UpdateMoviesMutationResponse!
 }
 
