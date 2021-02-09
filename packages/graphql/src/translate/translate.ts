@@ -197,6 +197,7 @@ function translateUpdate({
     const connectInput = resolveTree.args.connect;
     const disconnectInput = resolveTree.args.disconnect;
     const createInput = resolveTree.args.create;
+    const deleteInput = resolveTree.args.delete;
     const fieldsByTypeName =
         resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][pluralize(camelCase(node.name))]
             .fieldsByTypeName;
@@ -209,6 +210,7 @@ function translateUpdate({
     let connectStr = "";
     let disconnectStr = "";
     let createStr = "";
+    let deleteStr = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
 
@@ -311,6 +313,19 @@ function translateUpdate({
         });
     }
 
+    if (deleteInput) {
+        const deleteAndParams = createDeleteAndParams({
+            context,
+            node,
+            deleteInput,
+            varName: `${varName}_delete`,
+            parentVar: varName,
+            withVars: [varName],
+        });
+        deleteStr = deleteAndParams[0];
+        cypherParams = { ...cypherParams, ...deleteAndParams[1] };
+    }
+
     const projection = createProjectionAndParams({
         node,
         context,
@@ -328,6 +343,7 @@ function translateUpdate({
         connectStr,
         disconnectStr,
         createStr,
+        deleteStr,
         `RETURN ${varName} ${projStr} AS ${varName}`,
     ];
 
