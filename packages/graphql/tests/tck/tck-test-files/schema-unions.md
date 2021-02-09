@@ -223,6 +223,20 @@ input MovieUpdateInput {
   search_Movie: [MovieSearchMovieUpdateFieldInput]
 }
 
+input MovieSearchGenreDeleteInput {
+  where: GenreWhere
+}
+
+input MovieSearchMovieDeleteInput {
+  where: MovieWhere
+  delete: MovieDeleteInput
+}
+
+input MovieDeleteInput {
+  search_Genre: [MovieSearchGenreDeleteInput]
+  search_Movie: [MovieSearchMovieDeleteInput]
+}
+
 input MovieWhere {
   OR: [MovieOR]
   AND: [MovieAND]
@@ -260,7 +274,10 @@ type Mutation {
   deleteGenres(where: GenreWhere): DeleteInfo!
   updateGenres(where: GenreWhere, update: GenreUpdateInput): UpdateGenresMutationResponse!
   createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
-  deleteMovies(where: MovieWhere): DeleteInfo!
+  deleteMovies(
+    where: MovieWhere
+    delete: MovieDeleteInput
+  ): DeleteInfo!
   updateMovies(
     where: MovieWhere
     update: MovieUpdateInput

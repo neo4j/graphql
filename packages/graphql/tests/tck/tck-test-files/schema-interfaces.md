@@ -166,6 +166,15 @@ input MovieUpdateInput {
   movies: [MovieMoviesUpdateFieldInput]
 }
 
+input MovieMoviesDeleteInput {
+  where: MovieWhere
+  delete: MovieDeleteInput
+}
+
+input MovieDeleteInput {
+  movies: [MovieMoviesDeleteInput]
+}
+
 type CreateMoviesMutationResponse {
   movies: [Movie!]!
 }
@@ -176,7 +185,7 @@ type UpdateMoviesMutationResponse {
 
 type Mutation {
   createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
-  deleteMovies(where: MovieWhere): DeleteInfo!
+  deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, create: MovieRelationInput, disconnect: MovieDisconnectInput): UpdateMoviesMutationResponse!
 }
 
