@@ -12,6 +12,13 @@ describe("Node", () => {
             primitiveFields: [],
             scalarFields: [],
             dateTimeFields: [],
+            unionFields: [],
+            interfaceFields: [],
+            objectFields: [],
+            interfaces: [],
+            otherDirectives: [],
+            pointFields: [],
+            relationFields: [],
         };
 
         // @ts-ignore

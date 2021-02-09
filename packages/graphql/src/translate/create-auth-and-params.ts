@@ -48,70 +48,59 @@ function createAllowAndParams({
 
     const result = Object.entries(allow as Record<string, any>).reduce(
         (res: Res, [key, value]) => {
-            switch (key) {
-                case "AND":
-                case "OR":
-                    {
-                        const inner: string[] = [];
+            if (key === "AND" || key === "OR") {
+                const inner: string[] = [];
 
-                        ((value as unknown) as any[]).forEach((v, i) => {
-                            const recurse = createAllowAndParams({
-                                rule: v as AuthRule,
-                                varName,
-                                node,
-                                chainStr: `${param}_${key}${i}`,
-                                context,
-                            });
+                ((value as unknown) as any[]).forEach((v, i) => {
+                    const recurse = createAllowAndParams({
+                        rule: { allow: v } as AuthRule,
+                        varName,
+                        node,
+                        chainStr: `${param}_${key}${i}`,
+                        context,
+                    });
 
-                            inner.push(recurse[0]);
-                            res.params = { ...res.params, ...recurse[1] };
-                        });
+                    inner.push(recurse[0]);
+                    res.params = { ...res.params, ...recurse[1] };
+                });
 
-                        res.strs.push(`(${inner.join(` ${key} `)})`);
-                    }
-                    break;
+                res.strs.push(`(${inner.join(` ${key} `)})`);
+            }
 
-                default: {
-                    if (typeof value === "string") {
-                        const _param = `${param}_${key}`;
-                        res.strs.push(`${varName}.${key} = $${_param}`);
+            const authableField = node.authableFields.find((field) => field.fieldName === key);
+            if (authableField) {
+                const jwt = context.getJWTSafe();
+                const _param = `${param}_${key}`;
+                res.params[_param] = dotProp.get({ value: jwt }, `value.${value}`);
+                res.strs.push(`${varName}.${key} = $${_param}`);
+            }
 
-                        const jwt = context.getJWTSafe();
+            const relationField = node.relationFields.find((x) => key === x.fieldName);
+            if (relationField) {
+                const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+                const inStr = relationField.direction === "IN" ? "<-" : "-";
+                const outStr = relationField.direction === "OUT" ? "->" : "-";
+                const relTypeStr = `[:${relationField.type}]`;
+                const relationVarName = relationField.fieldName;
 
-                        res.params[_param] = dotProp.get({ value: jwt }, `value.${value}`);
-                    }
+                let resultStr = [
+                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
+                    `AND ANY(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}:${relationField.typeMeta.name}) | ${relationVarName}] WHERE `,
+                ].join(" ");
 
-                    const relationField = node.relationFields.find((x) => key === x.fieldName);
-                    if (relationField) {
-                        const refNode = context.neoSchema.nodes.find(
-                            (x) => x.name === relationField.typeMeta.name
-                        ) as Node;
-
-                        const inStr = relationField.direction === "IN" ? "<-" : "-";
-                        const outStr = relationField.direction === "OUT" ? "->" : "-";
-                        const relTypeStr = `[:${relationField.type}]`;
-                        const relationVarName = relationField.fieldName;
-
-                        let resultStr = [
-                            `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
-                            `AND ANY(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}:${relationField.typeMeta.name}) | ${relationVarName}] WHERE `,
-                        ].join(" ");
-
-                        Object.entries(value as any).forEach(([k, v]: [string, any]) => {
-                            const recurse = createAllowAndParams({
-                                node: refNode,
-                                context,
-                                chainStr: `${param}_${key}`,
-                                varName: relationVarName,
-                                rule: { allow: { [k]: v } } as AuthRule,
-                            });
-                            resultStr += recurse[0];
-                            resultStr += ")"; // close ALL
-                            res.params = { ...res.params, ...recurse[1] };
-                            res.strs.push(resultStr);
-                        });
-                    }
-                }
+                Object.entries(value as any).forEach(([k, v]: [string, any]) => {
+                    const recurse = createAllowAndParams({
+                        node: refNode,
+                        context,
+                        chainStr: `${param}_${key}`,
+                        varName: relationVarName,
+                        rule: { allow: { [k]: v } } as AuthRule,
+                    });
+                    resultStr += recurse[0];
+                    resultStr += ")"; // close ALL
+                    res.params = { ...res.params, ...recurse[1] };
+                    res.strs.push(resultStr);
+                });
             }
 
             return res;

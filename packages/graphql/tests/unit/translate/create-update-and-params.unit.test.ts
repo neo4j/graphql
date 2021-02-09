@@ -5,6 +5,22 @@ import { trimmer } from "../../../src/utils";
 
 describe("createUpdateAndParams", () => {
     test("should return the correct update and params", () => {
+        const idField = {
+            fieldName: "id",
+            typeMeta: {
+                name: "String",
+                array: false,
+                required: false,
+                pretty: "String",
+                input: {
+                    name: "String",
+                    pretty: "String",
+                },
+            },
+            otherDirectives: [],
+            arguments: [],
+        };
+
         // @ts-ignore
         const node: Node = {
             name: "Movie",
@@ -13,27 +29,13 @@ describe("createUpdateAndParams", () => {
             enumFields: [],
             unionFields: [],
             scalarFields: [],
-            primitiveFields: [
-                {
-                    fieldName: "id",
-                    typeMeta: {
-                        name: "String",
-                        array: false,
-                        required: false,
-                        pretty: "String",
-                        input: {
-                            name: "String",
-                            pretty: "String",
-                        },
-                    },
-                    otherDirectives: [],
-                    arguments: [],
-                },
-            ],
+            primitiveFields: [idField],
             dateTimeFields: [],
             interfaceFields: [],
             objectFields: [],
             pointFields: [],
+            settableFields: [idField],
+            authableFields: [],
         };
 
         // @ts-ignore

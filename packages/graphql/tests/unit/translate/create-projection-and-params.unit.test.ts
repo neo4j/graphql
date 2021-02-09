@@ -48,6 +48,8 @@ describe("createProjectionAndParams", () => {
             pointFields: [],
             interfaceFields: [],
             objectFields: [],
+            authableFields: [],
+            settableFields: [],
         };
 
         // @ts-ignore

@@ -54,6 +54,25 @@ function createProjectionAndParams({
         const relationField = node.relationFields.find((x) => x.fieldName === key);
         const pointField = node.pointFields.find((x) => x.fieldName === key);
         const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === key);
+        const authableField = node.authableFields.find((x) => x.fieldName === key);
+
+        if (authableField) {
+            if (authableField.auth) {
+                const authAndParams = createAuthAndParams({
+                    entity: authableField,
+                    operation: "read",
+                    context,
+                    allow: { parentNode: node, varName, chainStr: param },
+                });
+
+                if (!res.meta) {
+                    res.meta = { authStrs: [] };
+                }
+
+                res.meta.authStrs.push(authAndParams[0]);
+                res.params = { ...res.params, ...authAndParams[1] };
+            }
+        }
 
         if (cypherField) {
             let projectionAuthStr = "";
@@ -114,6 +133,8 @@ function createProjectionAndParams({
             } else {
                 res.projection.push(`${key}: [${apocStr}]`);
             }
+
+            return res;
         }
 
         if (relationField) {
@@ -329,81 +350,39 @@ function createProjectionAndParams({
             }
 
             res.projection.push(nestedQuery);
+
+            return res;
         }
 
-        const authableField = [
-            ...node.dateTimeFields,
-            ...node.enumFields,
-            ...node.objectFields,
-            ...node.scalarFields,
-            ...node.primitiveFields,
-            ...node.interfaceFields,
-            ...node.objectFields,
-            ...node.unionFields,
-            ...node.cypherFields,
-        ].find((x) => x.fieldName === key);
+        if (pointField) {
+            const isArray = pointField.typeMeta.array;
 
-        if (authableField) {
-            if (authableField.auth) {
-                const authAndParams = createAuthAndParams({
-                    entity: authableField,
-                    operation: "read",
-                    context,
-                    allow: { parentNode: node, varName, chainStr: param },
-                });
+            const { crs, ...point } = fieldFields[pointField.typeMeta.name];
+            const fields: string[] = [];
 
-                if (!res.meta) {
-                    res.meta = { authStrs: [] };
-                }
-
-                res.meta.authStrs.push(authAndParams[0]);
-                res.params = { ...res.params, ...authAndParams[1] };
+            // Sadly need to select the whole point object due to the risk of height/z
+            // being selected on a 2D point, to which the database will throw an error
+            if (point) {
+                fields.push(isArray ? "point:p" : `point: ${varName}.${key}`);
             }
-        }
 
-        const selectableField = [
-            ...node.dateTimeFields,
-            ...node.enumFields,
-            ...node.objectFields,
-            ...node.scalarFields,
-            ...node.primitiveFields,
-            ...node.interfaceFields,
-            ...node.objectFields,
-            ...node.unionFields,
-            ...node.pointFields,
-        ].find((x) => x.fieldName === key);
-
-        if (selectableField) {
-            if (pointField) {
-                const isArray = pointField.typeMeta.array;
-
-                const { crs, ...point } = fieldFields[pointField.typeMeta.name];
-                const fields: string[] = [];
-
-                // Sadly need to select the whole point object due to the risk of height/z
-                // being selected on a 2D point, to which the database will throw an error
-                if (point) {
-                    fields.push(isArray ? "point:p" : `point: ${varName}.${key}`);
-                }
-
-                if (crs) {
-                    fields.push(isArray ? "crs: p.crs" : `crs: ${varName}.${key}.crs`);
-                }
-
-                res.projection.push(
-                    isArray
-                        ? `${key}: [p in ${varName}.${key} | { ${fields.join(", ")} }]`
-                        : `${key}: { ${fields.join(", ")} }`
-                );
-            } else if (dateTimeField) {
-                res.projection.push(
-                    dateTimeField.typeMeta.array
-                        ? `${key}: [ dt in ${varName}.${key} | apoc.date.convertFormat(toString(dt), "iso_zoned_date_time", "iso_offset_date_time") ]`
-                        : `${key}: apoc.date.convertFormat(toString(${varName}.${key}), "iso_zoned_date_time", "iso_offset_date_time")`
-                );
-            } else {
-                res.projection.push(`.${key}`);
+            if (crs) {
+                fields.push(isArray ? "crs: p.crs" : `crs: ${varName}.${key}.crs`);
             }
+
+            res.projection.push(
+                isArray
+                    ? `${key}: [p in ${varName}.${key} | { ${fields.join(", ")} }]`
+                    : `${key}: { ${fields.join(", ")} }`
+            );
+        } else if (dateTimeField) {
+            res.projection.push(
+                dateTimeField.typeMeta.array
+                    ? `${key}: [ dt in ${varName}.${key} | apoc.date.convertFormat(toString(dt), "iso_zoned_date_time", "iso_offset_date_time") ]`
+                    : `${key}: apoc.date.convertFormat(toString(${varName}.${key}), "iso_zoned_date_time", "iso_offset_date_time")`
+            );
+        } else {
+            res.projection.push(`.${key}`);
         }
 
         return res;

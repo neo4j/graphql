@@ -195,30 +195,8 @@ function createUpdateAndParams({
             hasAppliedTimeStamps = true;
         }
 
-        const settableField = [
-            ...node.dateTimeFields,
-            ...node.enumFields,
-            ...node.objectFields,
-            ...node.scalarFields,
-            ...node.primitiveFields,
-            ...node.interfaceFields,
-            ...node.objectFields,
-            ...node.unionFields,
-            ...node.pointFields,
-        ].find((x) => x.fieldName === key);
-
-        const authableField = [
-            ...node.dateTimeFields,
-            ...node.enumFields,
-            ...node.objectFields,
-            ...node.scalarFields,
-            ...node.primitiveFields,
-            ...node.interfaceFields,
-            ...node.objectFields,
-            ...node.unionFields,
-            ...node.cypherFields,
-            ...node.pointFields,
-        ].find((x) => x.fieldName === key);
+        const settableField = node.settableFields.find((x) => x.fieldName === key);
+        const authableField = node.authableFields.find((x) => x.fieldName === key);
 
         if (settableField) {
             if (pointField) {
