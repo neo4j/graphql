@@ -4,6 +4,7 @@ import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLWhereArg } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createAuthParam from "./create-auth-param";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 interface Res {
     projection: string[];
@@ -118,7 +119,7 @@ function createProjectionAndParams({
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
             }}, ${expectMultipleValues}) ${
                 projectionAuthStr
-                    ? `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStr}), "Forbidden", [0])`
+                    ? `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStr}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                     : ""
             } ${projectionStr ? `| ${param} ${projectionStr}` : ""}`;
 
@@ -191,7 +192,9 @@ function createProjectionAndParams({
                         },
                     });
                     if (preAuth[0]) {
-                        innerHeadStr.push(`AND apoc.util.validatePredicate(NOT(${preAuth[0]}), "Forbidden", [0])`);
+                        innerHeadStr.push(
+                            `AND apoc.util.validatePredicate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                        );
                         res.params = { ...res.params, ...preAuth[1] };
                     }
 
@@ -209,7 +212,7 @@ function createProjectionAndParams({
                             innerHeadStr.push(
                                 `AND apoc.util.validatePredicate(NOT(${recurse[2]?.authStrs.join(
                                     " AND "
-                                )}), "Forbidden", [0])`
+                                )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                             );
                         }
 
@@ -307,7 +310,7 @@ function createProjectionAndParams({
                 authStrs.length
                     ? `${!whereStr ? "WHERE " : ""} ${
                           whereStr ? "AND " : ""
-                      } apoc.util.validatePredicate(NOT(${authStrs.join(" AND ")}), "Forbidden", [0])`
+                      } apoc.util.validatePredicate(NOT(${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                     : ""
             } | ${param} ${projectionStr}`;
 

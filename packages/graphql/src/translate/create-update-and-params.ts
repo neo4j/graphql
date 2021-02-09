@@ -5,6 +5,7 @@ import createWhereAndParams from "./create-where-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import createAuthParam from "./create-auth-param";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 interface Res {
     strs: string[];
@@ -288,7 +289,7 @@ function createUpdateAndParams({
     let preAuthStr = "";
     let postAuthStr = "";
 
-    const forbiddenString = `${insideDoWhen ? '\\"Forbidden\\"' : '"Forbidden"'}`;
+    const forbiddenString = `${insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`}`;
 
     if (preAuthStrs.length) {
         const apocStr = `CALL apoc.util.validate(NOT(${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
