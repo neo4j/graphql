@@ -1,6 +1,7 @@
 import dotProp from "dot-prop";
 import { Context, Node } from "../classes";
 import { AuthOperations, BaseField, AuthRule, BaseAuthRule } from "../types";
+import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 
 interface Res {
     strs: string[];
@@ -153,7 +154,11 @@ function createAuthAndParams({
         }
 
         if (!skipIsAuthenticated && (authRule.isAuthenticated === true || authRule.isAuthenticated === false)) {
-            thisPredicates.push(`$auth.isAuthenticated = ${Boolean(authRule.isAuthenticated)}`);
+            thisPredicates.push(
+                `apoc.util.validatePredicate(NOT($auth.isAuthenticated = ${Boolean(
+                    authRule.isAuthenticated
+                )}), "${AUTH_UNAUTHENTICATED_ERROR}", [0])`
+            );
         }
 
         if (allow && authRule.allow) {

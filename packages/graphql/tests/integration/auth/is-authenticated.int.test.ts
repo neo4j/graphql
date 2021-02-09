@@ -57,7 +57,7 @@ describe("auth/isAuthenticated", () => {
                     contextValue: { driver, req },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -96,7 +96,7 @@ describe("auth/isAuthenticated", () => {
                     contextValue: { driver, req },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -142,7 +142,7 @@ describe("auth/isAuthenticated", () => {
                     contextValue: { driver, req },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -186,7 +186,7 @@ describe("auth/isAuthenticated", () => {
                     contextValue: { driver, req },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -232,7 +232,7 @@ describe("auth/isAuthenticated", () => {
                     contextValue: { driver, req },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -276,7 +276,7 @@ describe("auth/isAuthenticated", () => {
                     contextValue: { driver, req },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -352,7 +352,7 @@ describe("auth/isAuthenticated", () => {
                     contextValue: { driver, req },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -428,7 +428,7 @@ describe("auth/isAuthenticated", () => {
                     contextValue: { driver, req },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -472,7 +472,7 @@ describe("auth/isAuthenticated", () => {
                     contextValue: { driver, req },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -517,7 +517,7 @@ describe("auth/isAuthenticated", () => {
                     contextValue: { driver, req },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -560,7 +560,7 @@ describe("auth/isAuthenticated", () => {
                     contextValue: { driver, req },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             } finally {
                 await session.close();
             }
@@ -607,7 +607,7 @@ describe("auth/isAuthenticated", () => {
                     contextValue: { driver, req },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             } finally {
                 await session.close();
             }
