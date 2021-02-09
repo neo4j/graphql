@@ -1,5 +1,6 @@
 import { Driver } from "neo4j-driver";
 import { NeoSchema } from "../classes";
+import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHORIZED_ERROR } from "../constants";
 
 // https://stackoverflow.com/a/58632373/10687857
 const { npm_package_version, npm_package_name } = process.env;
@@ -47,8 +48,12 @@ async function execute(input: {
 
         return result.records.map((r) => r.toObject());
     } catch (error) {
-        if (error.message.includes("Caused by: java.lang.RuntimeException: Forbidden")) {
+        if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_FORBIDDEN_ERROR}`)) {
             throw new Error("Forbidden");
+        }
+
+        if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_UNAUTHORIZED_ERROR}`)) {
+            throw new Error("Unauthorized");
         }
 
         throw error;

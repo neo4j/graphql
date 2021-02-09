@@ -2,6 +2,7 @@ import { Context, Node } from "../classes";
 import { RelationField } from "../types";
 import createWhereAndParams from "./create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 interface Res {
     disconnects: string[];
@@ -86,7 +87,9 @@ function createDisconnectAndParams({
             const quote = insideDoWhen ? `\\"` : `"`;
             res.disconnects.push(`WITH ${[...withVars, _varName, relVarName].join(", ")}`);
             res.disconnects.push(
-                `CALL apoc.util.validate(NOT(${preAuth.disconnects.join(" AND ")}), ${quote}Forbidden${quote}, [0])`
+                `CALL apoc.util.validate(NOT(${preAuth.disconnects.join(
+                    " AND "
+                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
             res.params = { ...res.params, ...preAuth.params };
         }

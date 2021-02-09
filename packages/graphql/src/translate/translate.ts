@@ -13,6 +13,7 @@ import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createAuthParam from "./create-auth-param";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 function translateRead({
     resolveTree,
@@ -47,7 +48,9 @@ function translateRead({
     projStr = projection[0];
     cypherParams = { ...cypherParams, ...projection[1] };
     if (projection[2]) {
-        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(" AND ")}), "Forbidden", [0])`;
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
+            " AND "
+        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
     if (whereInput) {
@@ -72,7 +75,7 @@ function translateRead({
             },
         });
         cypherParams = { ...cypherParams, ...allowAndParams[1] };
-        authStr = `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "Forbidden", [0])`;
+        authStr = `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
     if (optionsInput) {
@@ -368,7 +371,7 @@ function translateDelete({
     });
     if (preAuth[0]) {
         cypherParams = { ...cypherParams, ...preAuth[1] };
-        preAuthStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${preAuth[0]}), "Forbidden", [0])`;
+        preAuthStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
     const cypher = [matchStr, whereStr, preAuthStr, `DETACH DELETE ${varName}`];

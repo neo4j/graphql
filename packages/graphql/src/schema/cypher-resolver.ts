@@ -5,6 +5,7 @@ import { NeoSchema, Context } from "../classes";
 import graphqlArgsToCompose from "./graphql-arg-to-compose";
 import createAuthAndParams from "../translate/create-auth-and-params";
 import createAuthParam from "../translate/create-auth-param";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 /**
  * Called on custom (Queries & Mutations "TOP LEVEL") with a @cypher directive. Not to mistaken for @cypher type fields.
@@ -38,7 +39,7 @@ function cypherResolver({
         const preAuth = createAuthAndParams({ entity: field, context });
         if (preAuth[0]) {
             params = { ...params, ...preAuth[1] };
-            cypherStrs.push(`CALL apoc.util.validate(NOT(${preAuth[0]}), "Forbidden", [0])`);
+            cypherStrs.push(`CALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
         cypherStrs.push(statement);

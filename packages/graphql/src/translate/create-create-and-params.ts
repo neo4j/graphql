@@ -1,6 +1,7 @@
 import { Context, Node } from "../classes";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 interface Res {
     creates: string[];
@@ -144,14 +145,14 @@ function createCreateAndParams({
         });
         if (bindAndParams[0]) {
             creates.push(`WITH ${withVars.join(", ")}`);
-            creates.push(`CALL apoc.util.validate(NOT(${bindAndParams[0]}), "Forbidden", [0])`);
+            creates.push(`CALL apoc.util.validate(NOT(${bindAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
             params = { ...params, ...bindAndParams[1] };
         }
     }
 
     if (meta?.authStrs.length) {
         creates.push(`WITH ${withVars.join(", ")}`);
-        creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), "Forbidden", [0])`);
+        creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
     }
 
     return [creates.join("\n"), params];
