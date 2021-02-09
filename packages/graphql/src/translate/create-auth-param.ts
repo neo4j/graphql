@@ -15,7 +15,7 @@ function createAuthParam({ context }: { context: Context }) {
             throw new Error("no jwt");
         }
 
-        const dotPropKey = process.env.NEO4J_AUTH_ROLES_OBJECT_PATH;
+        const dotPropKey = process.env.ROLES_OBJECT_PATH;
 
         if (dotPropKey) {
             param.roles = dotProp.get(jwt, dotPropKey);
