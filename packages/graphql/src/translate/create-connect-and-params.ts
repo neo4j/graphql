@@ -139,7 +139,7 @@ function createConnectAndParams({
             });
         }
 
-        const postAuth = [parentNode, refNode].reduce(
+        const postAuth = [...(!fromCreate ? [parentNode] : []), refNode].reduce(
             (result: Res, node, i) => {
                 if (!node.auth) {
                     return result;
