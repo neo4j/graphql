@@ -20,7 +20,7 @@ extend type User
     @auth(
         rules: [
             {
-                operations: ["create", "update"]
+                operations: ["create", "update", "connect", "disconnect"]
                 bind: { id: "sub" }
             }
         ]
@@ -30,7 +30,7 @@ extend type Post
     @auth(
         rules: [
             {
-                operations: ["create"]
+                operations: ["create", "connect", "disconnect"]
                 bind: { creator: { id: "sub" } }
             }
         ]
@@ -298,6 +298,124 @@ RETURN this { .id } AS this
         },
         "roles": ["admin"]
     }
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Connect Node
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updatePosts(
+        where: { id: "post-id" }
+        connect: { creator: { where: { id: "user-id" } } }
+    ) {
+        posts {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Post)
+WHERE this.id = $this_id
+
+WITH this
+OPTIONAL MATCH (this_connect_creator0:User)
+WHERE this_connect_creator0.id = $this_connect_creator0_id
+FOREACH(_ IN CASE this_connect_creator0 WHEN NULL THEN [] ELSE [1] END |
+    MERGE (this)<-[:HAS_POST]-(this_connect_creator0)
+)
+
+WITH this, this_connect_creator0
+CALL apoc.util.validate(NOT(EXISTS((this_connect_creator0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id = $this_connect_creator0Post0_bind_auth_bind0_creator_id) AND this_connect_creator0.id = $this_connect_creator0User1_bind_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "id-01",
+    "this_connect_creator0Post0_bind_auth_bind0_creator_id": "id-01",
+    "this_connect_creator0User1_bind_auth_bind0_id": "id-01",
+    "this_connect_creator0_id": "user-id",
+    "this_id": "post-id"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Disconnect Node
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updatePosts(
+        where: { id: "post-id" }
+        disconnect: { creator: { where: { id: "user-id" } } }
+    ) {
+        posts {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Post)
+WHERE this.id = $this_id
+
+WITH this
+OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
+WHERE this_disconnect_creator0.id = $this_disconnect_creator0_id
+FOREACH(_ IN CASE this_disconnect_creator0 WHEN NULL THEN [] ELSE [1] END |
+    DELETE this_disconnect_creator0_rel
+)
+
+WITH this, this_disconnect_creator0
+CALL apoc.util.validate(NOT(EXISTS((this_disconnect_creator0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id = $this_disconnect_creator0Post0_bind_auth_bind0_creator_id) AND this_disconnect_creator0.id = $this_disconnect_creator0User1_bind_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "id-01",
+    "this_disconnect_creator0Post0_bind_auth_bind0_creator_id": "id-01",
+    "this_disconnect_creator0User1_bind_auth_bind0_id": "id-01",
+    "this_disconnect_creator0_id": "user-id",
+    "this_id": "post-id"
 }
 ```
 
