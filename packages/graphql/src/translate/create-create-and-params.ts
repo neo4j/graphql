@@ -142,6 +142,7 @@ function createCreateAndParams({
             entity: node,
             operation: "create",
             context,
+            bind: { parentNode: node, varName },
         });
         if (bindAndParams[0]) {
             creates.push(`WITH ${withVars.join(", ")}`);

@@ -14,6 +14,12 @@ interface Allow {
     chainStr?: string;
 }
 
+interface Bind {
+    varName: string;
+    parentNode: Node;
+    chainStr?: string;
+}
+
 function createRolesStr({ roles, escapeQuotes }: { roles: string[]; escapeQuotes?: boolean }) {
     const quote = escapeQuotes ? `\\"` : `"`;
 
@@ -22,40 +28,39 @@ function createRolesStr({ roles, escapeQuotes }: { roles: string[]; escapeQuotes
     return `ANY(r IN [${joined}] WHERE ANY(rr IN $auth.roles WHERE r = rr))`;
 }
 
-function createAllowAndParams({
+function createAuthPredicate({
     rule,
     node,
     varName,
     context,
     chainStr,
+    kind,
 }: {
     context: Context;
     varName: string;
     node: Node;
     rule: AuthRule;
-    chainStr?: string;
+    chainStr: string;
+    kind: "allow" | "bind";
 }): [string, any] {
-    const allow = rule.allow;
+    const allowOrBind = rule[kind];
 
-    let param = "";
-    if (chainStr) {
-        param = chainStr;
-    } else {
-        param = `${varName}_auth_allow`;
+    if (!allowOrBind) {
+        return ["", {}];
     }
-
-    const result = Object.entries(allow as Record<string, any>).reduce(
+    const result = Object.entries(allowOrBind as Record<string, any>).reduce(
         (res: Res, [key, value]) => {
             if (key === "AND" || key === "OR") {
                 const inner: string[] = [];
 
                 ((value as unknown) as any[]).forEach((v, i) => {
-                    const recurse = createAllowAndParams({
-                        rule: { allow: v } as AuthRule,
+                    const recurse = createAuthPredicate({
+                        rule: { [kind]: v } as AuthRule,
                         varName,
                         node,
-                        chainStr: `${param}_${key}${i}`,
+                        chainStr: `${chainStr}_${key}${i}`,
                         context,
+                        kind,
                     });
 
                     inner.push(recurse[0]);
@@ -68,7 +73,7 @@ function createAllowAndParams({
             const authableField = node.authableFields.find((field) => field.fieldName === key);
             if (authableField) {
                 const jwt = context.getJWTSafe();
-                const _param = `${param}_${key}`;
+                const _param = `${chainStr}_${key}`;
                 res.params[_param] = dotProp.get({ value: jwt }, `value.${value}`);
                 res.strs.push(`${varName}.${key} = $${_param}`);
             }
@@ -83,16 +88,21 @@ function createAllowAndParams({
 
                 let resultStr = [
                     `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
-                    `AND ANY(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}:${relationField.typeMeta.name}) | ${relationVarName}] WHERE `,
+                    `AND ${
+                        kind === "allow" ? "ANY" : "ALL"
+                    }(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}:${
+                        relationField.typeMeta.name
+                    }) | ${relationVarName}] WHERE `,
                 ].join(" ");
 
                 Object.entries(value as any).forEach(([k, v]: [string, any]) => {
-                    const recurse = createAllowAndParams({
+                    const recurse = createAuthPredicate({
                         node: refNode,
                         context,
-                        chainStr: `${param}_${key}`,
+                        chainStr: `${chainStr}_${key}`,
                         varName: relationVarName,
-                        rule: { allow: { [k]: v } } as AuthRule,
+                        rule: { [kind]: { [k]: v } } as AuthRule,
+                        kind,
                     });
                     resultStr += recurse[0];
                     resultStr += ")"; // close ALL
@@ -117,6 +127,7 @@ function createAuthAndParams({
     allow,
     context,
     escapeQuotes,
+    bind,
 }: {
     entity: Node | BaseField;
     operation?: AuthOperations;
@@ -125,6 +136,7 @@ function createAuthAndParams({
     allow?: Allow;
     context: Context;
     escapeQuotes?: boolean;
+    bind?: Bind;
 }): [string, any] {
     if (!entity.auth) {
         return ["", {}];
@@ -162,12 +174,13 @@ function createAuthAndParams({
         }
 
         if (allow && authRule.allow) {
-            const allowAndParams = createAllowAndParams({
+            const allowAndParams = createAuthPredicate({
                 context,
                 node: allow.parentNode,
                 varName: allow.varName,
                 rule: authRule,
                 chainStr: `${allow.chainStr || allow.varName}${chainStr || ""}_auth_allow${index}`,
+                kind: "allow",
             });
             if (allowAndParams[0]) {
                 thisPredicates.push(allowAndParams[0]);
@@ -203,6 +216,21 @@ function createAuthAndParams({
             thisPredicates.push(strs.join(` ${key} `));
             thisParams = { ...thisParams, ..._params };
         });
+
+        if (bind && authRule.bind) {
+            const allowAndParams = createAuthPredicate({
+                context,
+                node: bind.parentNode,
+                varName: bind.varName,
+                rule: authRule,
+                chainStr: `${bind.chainStr || bind.varName}${chainStr || ""}_auth_bind${index}`,
+                kind: "bind",
+            });
+            if (allowAndParams[0]) {
+                thisPredicates.push(allowAndParams[0]);
+                thisParams = { ...thisParams, ...allowAndParams[1] };
+            }
+        }
 
         return [thisPredicates.join(" AND "), thisParams];
     }
