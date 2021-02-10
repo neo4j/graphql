@@ -94,6 +94,7 @@ function createCreateAndParams({
                 operation: "create",
                 context,
                 bind: { parentNode: node, varName, chainStr: _varName },
+                escapeQuotes: Boolean(insideDoWhen),
             });
             if (authAndParams[0]) {
                 if (!res.meta) {
@@ -147,6 +148,7 @@ function createCreateAndParams({
             operation: "create",
             context,
             bind: { parentNode: node, varName },
+            escapeQuotes: Boolean(insideDoWhen),
         });
         if (bindAndParams[0]) {
             creates.push(`WITH ${withVars.join(", ")}`);
