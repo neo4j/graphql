@@ -19,12 +19,14 @@ function createCreateAndParams({
     node,
     context,
     withVars,
+    insideDoWhen,
 }: {
     input: any;
     varName: string;
     node: Node;
     context: Context;
     withVars: string[];
+    insideDoWhen?: boolean;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const _varName = `${varName}_${key}`;
@@ -91,6 +93,7 @@ function createCreateAndParams({
                 entity: primitiveField,
                 operation: "create",
                 context,
+                bind: { parentNode: node, varName, chainStr: _varName },
             });
 
             if (authAndParams[0]) {
@@ -137,6 +140,8 @@ function createCreateAndParams({
         params: {},
     }) as Res;
 
+    const forbiddenString = `${insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`}`;
+
     if (node.auth) {
         const bindAndParams = createAuthAndParams({
             entity: node,
@@ -146,14 +151,14 @@ function createCreateAndParams({
         });
         if (bindAndParams[0]) {
             creates.push(`WITH ${withVars.join(", ")}`);
-            creates.push(`CALL apoc.util.validate(NOT(${bindAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+            creates.push(`CALL apoc.util.validate(NOT(${bindAndParams[0]}), ${forbiddenString}, [0])`);
             params = { ...params, ...bindAndParams[1] };
         }
     }
 
     if (meta?.authStrs.length) {
         creates.push(`WITH ${withVars.join(", ")}`);
-        creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
     }
 
     return [creates.join("\n"), params];

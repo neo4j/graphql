@@ -141,6 +141,79 @@ describe("auth/bind", () => {
                 await session.close();
             }
         });
+
+        test("should throw forbidden when creating field with invalid bind", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type Post {
+                    id: ID
+                    creator: User @relationship(type: "HAS_POST", direction: "OUT")
+                }
+
+                type User {
+                    id: ID
+                }
+
+                extend type User {
+                    id: ID @auth(rules: [{ operations: ["create"], bind: { id: "sub" } }])
+                }
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+               mutation {
+                   updatePosts(
+                       where: { id: "${postId}" }
+                       update: {
+                           creator: {
+                               create: { id: "not bound" }
+                           }
+                       }
+                    ) {
+                        posts {
+                            id
+                        }
+                    }
+               }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: userId,
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:Post {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("update", () => {
@@ -258,6 +331,67 @@ describe("auth/bind", () => {
             try {
                 await session.run(`
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw forbidden when updating a node property with invalid bind", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                }
+
+                extend type User {
+                    id: ID @auth(rules: [{ operations: ["update"], bind: { id: "sub" } }])
+                }
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    updateUsers(
+                        where: { id: "${userId}" }, 
+                        update: { id: "not bound" }
+                    ) {
+                        users {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: userId,
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}"})
                 `);
 
                 const socket = new Socket({ readable: true });
