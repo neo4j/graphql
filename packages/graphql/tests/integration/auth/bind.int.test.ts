@@ -142,4 +142,62 @@ describe("auth/bind", () => {
             }
         });
     });
+
+    describe("update", () => {
+        test("should throw forbidden when updating a node with invalid bind", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                }
+
+                extend type User @auth(rules: [{ operations: ["update"], bind: { id: "sub" } }])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    updateUsers(where: { id: "${userId}" }, update: { id: "not bound" }) {
+                        users {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: userId,
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+    });
 });

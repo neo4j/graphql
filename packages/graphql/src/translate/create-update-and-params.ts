@@ -275,6 +275,7 @@ function createUpdateAndParams({
         skipIsAuthenticated: true,
         skipRoles: true,
         operation: "update",
+        bind: { parentNode: node, varName },
     });
     if (postAuth[0]) {
         postAuthStrs.push(postAuth[0]);

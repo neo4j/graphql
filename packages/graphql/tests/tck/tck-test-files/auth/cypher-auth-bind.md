@@ -20,7 +20,7 @@ extend type User
     @auth(
         rules: [
             {
-                operations: ["create"]
+                operations: ["create", "update"]
                 bind: { id: "sub" }
             }
         ]
@@ -163,6 +163,54 @@ RETURN this0 { .id } AS this0
     "this0_posts0_auth_bind0_creator_id": "id-01",
     "this0_posts0_creator0_auth_bind0_id": "id-01",
     "this0_posts0_creator0_id": "some-user-id"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Update Node
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateUsers(where: { id: "id-01" }, update: { id: "not bound" }) {
+        users {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User)
+WHERE this.id = $this_id
+SET this.id = $this_update_id
+
+WITH this
+CALL apoc.util.validate(NOT(this.id = $this_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "id-01",
+    "this_update_id": "not bound",
+    "this_auth_bind0_id": "id-01"
 }
 ```
 
