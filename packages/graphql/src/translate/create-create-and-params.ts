@@ -95,7 +95,6 @@ function createCreateAndParams({
                 context,
                 bind: { parentNode: node, varName, chainStr: _varName },
             });
-
             if (authAndParams[0]) {
                 if (!res.meta) {
                     res.meta = { authStrs: [] };

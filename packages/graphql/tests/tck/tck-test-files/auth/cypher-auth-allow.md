@@ -126,6 +126,7 @@ RETURN this { .id } as this
 ```cypher
 MATCH (this:User)
 CALL apoc.util.validate(NOT(this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+WITH this
 CALL apoc.util.validate(NOT(this.id = $this_password_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 RETURN this { .password } as this
 ```

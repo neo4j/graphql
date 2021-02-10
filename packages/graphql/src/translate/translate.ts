@@ -47,7 +47,7 @@ function translateRead({
     });
     projStr = projection[0];
     cypherParams = { ...cypherParams, ...projection[1] };
-    if (projection[2]) {
+    if (projection[2]?.authStrs.length) {
         projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
             " AND "
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
@@ -74,8 +74,10 @@ function translateRead({
                 varName,
             },
         });
-        cypherParams = { ...cypherParams, ...allowAndParams[1] };
-        authStr = `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        if (allowAndParams[0]) {
+            cypherParams = { ...cypherParams, ...allowAndParams[1] };
+            authStr = `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        }
     }
 
     if (optionsInput) {
@@ -117,7 +119,7 @@ function translateRead({
         whereStr,
         authStr,
         ...(sortStr ? [`WITH ${varName}`, sortStr] : []),
-        projAuth,
+        ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
         `RETURN ${varName} ${projStr} as ${varName}`,
         skipStr,
         limitStr,
@@ -168,12 +170,18 @@ function translateCreate({
     };
 
     /* so projection params don't conflict with create params. We only need to call createProjectionAndParams once. */
+    let projAuth = "";
     const projection = createProjectionAndParams({
         node,
         context,
         fieldsByTypeName,
         varName: "REPLACE_ME",
     });
+    if (projection[2]?.authStrs.length) {
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
+            " AND "
+        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+    }
 
     const replacedProjectionParams = Object.entries(projection[1]).reduce((res, [key, value]) => {
         return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
@@ -188,9 +196,13 @@ function translateCreate({
         )
         .join(", ");
 
-    const cypher = [`${createStrs.join("\n")}`, `\nRETURN ${projectionStr}`];
+    const authCalls = createStrs
+        .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
+        .join("\n");
 
-    return [cypher.join("\n"), { ...params, ...replacedProjectionParams }];
+    const cypher = [`${createStrs.join("\n")}`, authCalls, `\nRETURN ${projectionStr}`];
+
+    return [cypher.filter(Boolean).join("\n"), { ...params, ...replacedProjectionParams }];
 }
 
 function translateUpdate({
@@ -214,6 +226,7 @@ function translateUpdate({
     let connectStr = "";
     let disconnectStr = "";
     let createStr = "";
+    let projAuth = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
     const fieldsByTypeName =
@@ -318,6 +331,11 @@ function translateUpdate({
     });
     projStr = projection[0];
     cypherParams = { ...cypherParams, ...projection[1] };
+    if (projection[2]?.authStrs.length) {
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
+            " AND "
+        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+    }
 
     const cypher = [
         matchStr,
@@ -326,6 +344,7 @@ function translateUpdate({
         connectStr,
         disconnectStr,
         createStr,
+        ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
         `RETURN ${varName} ${projStr} AS ${varName}`,
     ];
 
@@ -343,7 +362,6 @@ function translateDelete({
 }): [string, any] {
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const varName = "this";
-
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
     let preAuthStr = "";

@@ -65,13 +65,14 @@ function createProjectionAndParams({
                     context,
                     allow: { parentNode: node, varName, chainStr: param },
                 });
+                if (authAndParams[0]) {
+                    if (!res.meta) {
+                        res.meta = { authStrs: [] };
+                    }
 
-                if (!res.meta) {
-                    res.meta = { authStrs: [] };
+                    res.meta.authStrs.push(authAndParams[0]);
+                    res.params = { ...res.params, ...authAndParams[1] };
                 }
-
-                res.meta.authStrs.push(authAndParams[0]);
-                res.params = { ...res.params, ...authAndParams[1] };
             }
         }
 
