@@ -410,4 +410,152 @@ describe("auth/bind", () => {
             }
         });
     });
+
+    describe("connect", () => {
+        test("should throw forbidden when connecting a node property with invalid bind", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                }
+
+                type Post {
+                    id: ID
+                    creator: User @relationship(type: "HAS_POST", direction: "IN")
+                }
+
+                extend type Post @auth(rules: [{ operations: ["connect"], bind: { creator: { id: "sub" } } }])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    updatePosts(
+                        where: { id: "${postId}" }, 
+                        connect: {
+                            creator: {
+                                where: { id: "not bound" }
+                            }
+                        }
+                    ) {
+                        posts {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: userId,
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:Post {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
+    describe("disconnect", () => {
+        test("should throw forbidden when disconnecting a node property with invalid bind", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                }
+
+                type Post {
+                    id: ID
+                    creator: User @relationship(type: "HAS_POST", direction: "IN")
+                }
+
+                extend type Post @auth(rules: [{ operations: ["disconnect"], bind: { creator: { id: "sub" } } }])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    updatePosts(
+                        where: { id: "${postId}" }, 
+                        disconnect: {
+                            creator: {
+                                where: { id: "${userId}" }
+                            }
+                        }
+                    ) {
+                        posts {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: userId,
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = makeAugmentedSchema({ typeDefs, debug: true });
+
+            try {
+                await session.run(`
+                    CREATE (:Post {id: "${postId}"})<-[:HAS_POST]-(:User {id: "${userId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+    });
 });

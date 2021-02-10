@@ -139,6 +139,45 @@ function createConnectAndParams({
             });
         }
 
+        const postAuth = [parentNode, refNode].reduce(
+            (result: Res, node, i) => {
+                if (!node.auth) {
+                    return result;
+                }
+
+                const [str, params] = createAuthAndParams({
+                    entity: node,
+                    operation: "connect",
+                    context,
+                    escapeQuotes: Boolean(insideDoWhen),
+                    skipIsAuthenticated: true,
+                    skipRoles: true,
+                    bind: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_bind` },
+                });
+
+                if (!str) {
+                    return result;
+                }
+
+                result.connects.push(str);
+                result.params = { ...result.params, ...params };
+
+                return result;
+            },
+            { connects: [], params: {} }
+        ) as Res;
+
+        if (postAuth.connects.length) {
+            const quote = insideDoWhen ? `\\"` : `"`;
+            res.connects.push(`WITH ${[...withVars, _varName].join(", ")}`);
+            res.connects.push(
+                `CALL apoc.util.validate(NOT(${postAuth.connects.join(
+                    " AND "
+                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+            );
+            res.params = { ...res.params, ...postAuth.params };
+        }
+
         return res;
     }
 

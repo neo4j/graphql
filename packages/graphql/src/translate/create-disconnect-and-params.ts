@@ -145,6 +145,45 @@ function createDisconnectAndParams({
             });
         }
 
+        const postAuth = [parentNode, refNode].reduce(
+            (result: Res, node, i) => {
+                if (!node.auth) {
+                    return result;
+                }
+
+                const [str, params] = createAuthAndParams({
+                    entity: node,
+                    operation: "disconnect",
+                    context,
+                    escapeQuotes: Boolean(insideDoWhen),
+                    skipRoles: true,
+                    skipIsAuthenticated: true,
+                    bind: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_bind` },
+                });
+
+                if (!str) {
+                    return result;
+                }
+
+                result.disconnects.push(str);
+                result.params = { ...result.params, ...params };
+
+                return result;
+            },
+            { disconnects: [], params: {} }
+        ) as Res;
+
+        if (postAuth.disconnects.length) {
+            const quote = insideDoWhen ? `\\"` : `"`;
+            res.disconnects.push(`WITH ${[...withVars, _varName].join(", ")}`);
+            res.disconnects.push(
+                `CALL apoc.util.validate(NOT(${postAuth.disconnects.join(
+                    " AND "
+                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+            );
+            res.params = { ...res.params, ...postAuth.params };
+        }
+
         return res;
     }
 
