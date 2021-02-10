@@ -7,7 +7,7 @@ import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import makeAugmentedSchema from "../../../src/schema/make-augmented-schema";
 
-describe("auth/isAuthenticated", () => {
+describe("auth/is-authenticated", () => {
     let driver: Driver;
 
     beforeAll(async () => {
