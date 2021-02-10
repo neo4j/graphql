@@ -535,7 +535,7 @@ describe("auth/bind", () => {
                 process.env.JWT_SECRET as string
             );
 
-            const neoSchema = makeAugmentedSchema({ typeDefs, debug: true });
+            const neoSchema = makeAugmentedSchema({ typeDefs });
 
             try {
                 await session.run(`
