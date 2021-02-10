@@ -176,6 +176,7 @@ function createUpdateAndParams({
                             input: create,
                             varName: innerVarName,
                             withVars: [...withVars, innerVarName],
+                            insideDoWhen,
                         });
                         res.strs.push(createAndParams[0]);
                         res.params = { ...res.params, ...createAndParams[1] };
@@ -227,6 +228,7 @@ function createUpdateAndParams({
                     skipRoles: true,
                     skipIsAuthenticated: true,
                     context,
+                    bind: { parentNode: node, varName, chainStr: param },
                 });
 
                 if (!res.meta) {
@@ -239,7 +241,7 @@ function createUpdateAndParams({
                 }
 
                 if (postAuth[0]) {
-                    res.meta.preAuthStrs.push(preAuth[0]);
+                    res.meta.postAuthStrs.push(postAuth[0]);
                     res.params = { ...res.params, ...postAuth[1] };
                 }
             }
