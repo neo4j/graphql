@@ -13,7 +13,7 @@ type Post {
 type User {
     id: ID
     name: String
-    posts: [Post] @relationship(type: "HAS_POST", direction: "IN")
+    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
 }
 
 extend type User
@@ -141,7 +141,7 @@ CALL {
     WITH this0, this0_posts0
     CALL apoc.util.validate(NOT(EXISTS((this0_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id = $this0_posts0_auth_bind0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
 
-    MERGE (this0)<-[:HAS_POST]-(this0_posts0)
+    MERGE (this0)-[:HAS_POST]->(this0_posts0)
 
     WITH this0
     CALL apoc.util.validate(NOT(this0.id = $this0_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
@@ -211,6 +211,93 @@ RETURN this { .id } AS this
     "this_id": "id-01",
     "this_update_id": "not bound",
     "this_auth_bind0_id": "id-01"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Update Nested Node
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateUsers(
+        where: { id: "id-01" }
+        update: {
+            posts: {
+                where: { id: "post-id" }
+                update: { creator: { update: { id: "not bound" } } }
+            }
+        }
+    ) {
+        users {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User)
+WHERE this.id = $this_id
+
+WITH this OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
+WHERE this_posts0.id = $this_posts0_id
+CALL apoc.do.when(this_posts0 IS NOT NULL,
+"
+    WITH this, this_posts0
+    OPTIONAL MATCH (this_posts0)<-[:HAS_POST]-(this_posts0_creator0:User)
+    CALL apoc.do.when(this_posts0_creator0 IS NOT NULL,
+    \"
+        SET this_posts0_creator0.id = $this_update_posts0_creator0_id
+
+        WITH this, this_posts0, this_posts0_creator0
+        CALL apoc.util.validate(NOT(this_posts0_creator0.id = $this_posts0_creator0_auth_bind0_id), \"@neo4j/graphql/FORBIDDEN\", [0])
+
+        RETURN count(*)
+    \",
+    \"\",
+    {this_posts0:this_posts0, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id}) YIELD value as _
+    RETURN count(*)
+",
+"",
+{this:this, this_posts0:this_posts0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id}) YIELD value as _
+
+WITH this
+CALL apoc.util.validate(NOT(this.id = $this_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "id-01",
+    "this_posts0_creator0_auth_bind0_id": "id-01",
+    "this_posts0_id": "post-id",
+    "this_update_posts0_creator0_id": "not bound",
+    "this_auth_bind0_id": "id-01",
+    "auth": {
+        "isAuthenticated": true,
+        "jwt": {
+            "roles": ["admin"],
+            "sub": "id-01"
+        },
+        "roles": ["admin"]
+    }
 }
 ```
 
