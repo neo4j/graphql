@@ -124,6 +124,7 @@ RETURN this { .id, .name } as this
 ```cypher
 MATCH (this:User)
 CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
+WITH this
 CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
 RETURN this { .id, .name, .password } as this
 ```
@@ -175,6 +176,7 @@ RETURN this { .id, .name, .password } as this
 ```cypher
 MATCH (this:User)
 CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
+WITH this
 CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
 RETURN this {
     history: [this_history IN apoc.cypher.runFirstColumn("MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h", {this: this, auth: $auth}, true) WHERE apoc.util.validatePredicate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0]) | this_history { .url }]
