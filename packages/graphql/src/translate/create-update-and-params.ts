@@ -221,6 +221,7 @@ function createUpdateAndParams({
                     operation: "update",
                     context,
                     allow: { varName, parentNode: node, chainStr: param },
+                    escapeQuotes: Boolean(insideDoWhen),
                 });
                 const postAuth = createAuthAndParams({
                     entity: authableField,
@@ -229,6 +230,7 @@ function createUpdateAndParams({
                     skipIsAuthenticated: true,
                     context,
                     bind: { parentNode: node, varName, chainStr: param },
+                    escapeQuotes: Boolean(insideDoWhen),
                 });
 
                 if (!res.meta) {
@@ -265,6 +267,7 @@ function createUpdateAndParams({
         context,
         allow: { parentNode: node, varName },
         operation: "update",
+        escapeQuotes: Boolean(insideDoWhen),
     });
     if (preAuth[0]) {
         preAuthStrs.push(preAuth[0]);
@@ -278,6 +281,7 @@ function createUpdateAndParams({
         skipRoles: true,
         operation: "update",
         bind: { parentNode: node, varName },
+        escapeQuotes: Boolean(insideDoWhen),
     });
     if (postAuth[0]) {
         postAuthStrs.push(postAuth[0]);
