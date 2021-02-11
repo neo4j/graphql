@@ -638,12 +638,18 @@ input MovieActorsFieldInput {
   connect: [ActorConnectFieldInput]
   create: [ActorCreateInput]
 }
+
+input ActorDeleteFieldInput {
+  where: ActorWhere
+}
+
 input MovieActorsUpdateFieldInput {
   connect: [ActorConnectFieldInput]
   create: [ActorCreateInput]
   disconnect: [ActorDisconnectFieldInput]
   update: ActorUpdateInput
   where: ActorWhere
+  delete: [ActorDeleteFieldInput]
 }
 
 input MovieAND {

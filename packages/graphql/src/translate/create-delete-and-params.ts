@@ -29,7 +29,7 @@ function createDeleteAndParams({
         let param;
 
         if (chainStr) {
-            param = `${chainStr}_${key}`;
+            param = `${chainStr}${key}`;
         } else {
             param = `${parentVar}_delete_${key}`;
         }
@@ -89,9 +89,9 @@ function createDeleteAndParams({
                 }
 
                 res.strs.push(`
-                      FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END |
+                    FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END |
                         DETACH DELETE ${_varName}
-                      )`);
+                    )`);
 
                 if (refNode.auth) {
                     const allowAndParams = createAllowAndParams({
@@ -110,7 +110,6 @@ function createDeleteAndParams({
 
         checkRoles({ node, context, operation: "delete" });
 
-        res.params[param] = value;
         return res;
     }
 

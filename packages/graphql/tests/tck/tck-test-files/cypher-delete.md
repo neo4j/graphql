@@ -89,6 +89,58 @@ DETACH DELETE this
 
 ---
 
+### Single Nested Delete deleting multiple
+
+**GraphQL input**
+
+```graphql
+mutation {
+    deleteMovies(
+        where: { id: 123 }
+        delete: {
+            actors: [
+                { where: { name: "Actor to delete" } }
+                { where: { name: "Another actor to delete" } }
+            ]
+        }
+    ) {
+        nodesDeleted
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
+WHERE this_actors0.name = $this_actors0_name
+FOREACH(_ IN CASE this_actors0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_actors0
+)
+WITH this
+OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors1:Actor)
+WHERE this_actors1.name = $this_actors1_name
+FOREACH(_ IN CASE this_actors1 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_actors1
+)
+DETACH DELETE this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "123",
+    "this_actors0_name": "Actor to delete",
+    "this_actors1_name": "Another actor to delete"
+}
+```
+
+---
+
 ### Double Nested Delete
 
 **GraphQL input**

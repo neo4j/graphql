@@ -1,6 +1,7 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
+import { gql } from "apollo-server";
 import { describe, beforeAll, afterAll, expect, test } from "@jest/globals";
 import neo4j from "./neo4j";
 import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
@@ -263,6 +264,317 @@ describe("update", () => {
 
             expect(gqlResult?.data?.updateMovies).toEqual({
                 movies: [{ id: movieId, actors: [{ name: updatedName }] }],
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should delete a nested actor from a movie", async () => {
+        const session = driver.session();
+
+        const typeDefs = gql`
+            type Actor {
+                name: String
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+            }
+
+            type Movie {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
+            }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const name = generate({
+            charset: "alphabetic",
+        });
+
+        const mutation = `
+            mutation($id: ID, $name: String) {
+                updateMovies(where: { id: $id }, delete: { actors: { where: { name: $name } } }) {
+                    movies {
+                        id
+                        actors {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (m:Movie {id: $id})
+                CREATE (a:Actor {name: $name})
+                MERGE (a)-[:ACTED_IN]->(m)
+            `,
+                {
+                    id,
+                    name,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: mutation,
+                variableValues: { id, name },
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateMovies).toEqual({
+                movies: [{ id, actors: [] }],
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should delete a nested actor from a movie within an update block", async () => {
+        const session = driver.session();
+
+        const typeDefs = gql`
+            type Actor {
+                name: String
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+            }
+
+            type Movie {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
+            }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const name = generate({
+            charset: "alphabetic",
+        });
+
+        const mutation = `
+            mutation($id: ID, $name: String) {
+                updateMovies(where: { id: $id }, update: { actors: { delete: { where: { name: $name } } } }) {
+                    movies {
+                        id
+                        actors {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (m:Movie {id: $id})
+                CREATE (a:Actor {name: $name})
+                MERGE (a)-[:ACTED_IN]->(m)
+            `,
+                {
+                    id,
+                    name,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: mutation,
+                variableValues: { id, name },
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateMovies).toEqual({
+                movies: [{ id, actors: [] }],
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should delete a nested actor and one of their nested movies, within an update block", async () => {
+        const session = driver.session();
+
+        const typeDefs = gql`
+            type Actor {
+                name: String
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+            }
+
+            type Movie {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
+            }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const id1 = generate({
+            charset: "alphabetic",
+        });
+
+        const name = generate({
+            charset: "alphabetic",
+        });
+
+        const id2 = generate({
+            charset: "alphabetic",
+        });
+
+        const mutation = `
+            mutation($id1: ID, $name: String, $id2: ID) {
+                updateMovies(
+                    where: { id: $id1 }
+                    update: {
+                        actors: { delete: { where: { name: $name }, delete: { movies: { where: { id: $id2 } } } } }
+                    }
+                ) {
+                    movies {
+                        id
+                        actors {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (m1:Movie {id: $id1})
+                CREATE (a:Actor {name: $name})
+                CREATE (m2:Movie {id: $id2})
+                MERGE (a)-[:ACTED_IN]->(m1)
+                MERGE (a)-[:ACTED_IN]->(m2)
+            `,
+                {
+                    id1,
+                    name,
+                    id2,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: mutation,
+                variableValues: { id1, name, id2 },
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateMovies).toEqual({
+                movies: [{ id: id1, actors: [] }],
+            });
+
+            const movie2 = await session.run(
+                `
+              MATCH (m:Movie {id: $id})
+              RETURN m
+            `,
+                { id: id2 }
+            );
+
+            expect(movie2.records.length).toEqual(0);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should delete multiple nested actors from a movie", async () => {
+        const session = driver.session();
+
+        const typeDefs = gql`
+            type Actor {
+                name: String
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+            }
+
+            type Movie {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
+            }
+        `;
+
+        const neoSchema = makeAugmentedSchema({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const name1 = generate({
+            charset: "alphabetic",
+        });
+
+        const name2 = generate({
+            charset: "alphabetic",
+        });
+
+        const name3 = generate({
+            charset: "alphabetic",
+        });
+
+        const mutation = `
+            mutation($id: ID, $name1: String, $name3: String) {
+                updateMovies(
+                    where: { id: $id }
+                    delete: { actors: [{ where: { name: $name1 } }, { where: { name: $name3 } }] }
+                ) {
+                    movies {
+                        id
+                        actors {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (m:Movie {id: $id})
+                CREATE (a1:Actor {name: $name1})
+                CREATE (a2:Actor {name: $name2})
+                CREATE (a3:Actor {name: $name3})
+                MERGE (a1)-[:ACTED_IN]->(m)
+                MERGE (a2)-[:ACTED_IN]->(m)
+                MERGE (a3)-[:ACTED_IN]->(m)
+            `,
+                {
+                    id,
+                    name1,
+                    name2,
+                    name3,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: mutation,
+                variableValues: { id, name1, name3 },
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateMovies).toEqual({
+                movies: [{ id, actors: [{ name: name2 }] }],
             });
         } finally {
             await session.close();
