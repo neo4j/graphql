@@ -164,12 +164,6 @@ function createUpdateAndParams({
                 }
 
                 if (update.delete) {
-                    // console.log(util.inspect(update.delete));
-
-                    // if (withVars) {
-                    //     res.strs.push(`WITH ${withVars.join(", ")}`);
-                    // }
-
                     const innerVarName = `${_varName}_delete`;
 
                     const deleteAndParams = createDeleteAndParams({
@@ -183,40 +177,6 @@ function createUpdateAndParams({
                     });
                     res.strs.push(deleteAndParams[0]);
                     res.params = { ...res.params, ...deleteAndParams[1] };
-
-                    // const deletes = relationField.typeMeta.array ? update.delete : [update.delete];
-
-                    // deletes.forEach((d, i) => {
-                    //     const innerVarName = `${_varName}_delete${i}`;
-
-                    //     res.strs.push(
-                    //         `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${innerVarName}:${refNode.name})`
-                    //     );
-
-                    //     if (d.where) {
-                    //         console.log(d.where);
-
-                    //         const whereAndParams = createWhereAndParams({
-                    //             varName: innerVarName,
-                    //             whereInput: d.where,
-                    //             node: refNode,
-                    //             context,
-                    //         });
-                    //         res.strs.push(whereAndParams[0]);
-                    //         res.params = { ...res.params, ...whereAndParams[1] };
-                    //     }
-
-                    //     const deleteAndParams = createDeleteAndParams({
-                    //         context,
-                    //         node: refNode,
-                    //         deleteInput: { [key]: update.delete },
-                    //         varName: innerVarName,
-                    //         parentVar,
-                    //         withVars: [...withVars, innerVarName],
-                    //     });
-                    //     res.strs.push(deleteAndParams[0]);
-                    //     res.params = { ...res.params, ...deleteAndParams[1] };
-                    // });
                 }
 
                 if (update.create) {

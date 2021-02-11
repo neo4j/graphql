@@ -26,14 +26,6 @@ function createDeleteAndParams({
     context: Context;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]) {
-        let param;
-
-        if (chainStr) {
-            param = `${chainStr}${key}`;
-        } else {
-            param = `${parentVar}_delete_${key}`;
-        }
-
         const relationField = node.relationFields.find((x) => key.startsWith(x.fieldName));
         let unionTypeName = "";
 
@@ -53,7 +45,7 @@ function createDeleteAndParams({
 
             const deletes = relationField.typeMeta.array ? value : [value];
             deletes.forEach((d, index) => {
-                const _varName = `${varName}_${key}${index}`;
+                const _varName = chainStr ? `${varName}${index}` : `${varName}_${key}${index}`;
 
                 if (withVars) {
                     res.strs.push(`WITH ${withVars.join(", ")}`);
@@ -82,7 +74,6 @@ function createDeleteAndParams({
                         varName: _varName,
                         withVars: [...withVars, _varName],
                         parentVar: _varName,
-                        chainStr: `${param}${index}`,
                     });
                     res.strs.push(deleteAndParams[0]);
                     res.params = { ...res.params, ...deleteAndParams[1] };
