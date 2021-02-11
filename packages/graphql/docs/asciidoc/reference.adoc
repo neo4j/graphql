@@ -1041,6 +1041,59 @@ type User {
 }
 ----
 
+==== Auth Object Paths
+We allow the use of Object Paths for all three; plucking roles from the `JWT`, allow and bind. 
+
+===== Roles
+If you are using 3rd party Auth solutions such as Auth0 you may find your roles property being nested inside an object;
+
+[source, json]
+----
+{
+    "https://auth0.mysite.com/claims": {
+        "https://auth0.mysite.com/claims/roles": ["admin"]
+    }
+}
+----
+
+Specify the path in the environment;
+
+[source, bash]
+----
+$ AUTH_ROLES_KEY="https://auth0.mysite.com/claims\\.https://auth0.mysite.com/claims/roles" node server
+----
+
+===== Allow & Bind
+If for example your user id was nested inside a object; 
+
+[source, json]
+----
+{
+    "nested": {
+        "userId": "id-01"
+    }
+}
+----
+
+Use object path in the schema;
+
+[source, graphql]
+----
+type User {
+    id: ID!
+    name: String!
+}
+
+extend type User @auth(
+    rules: [
+        { 
+            operations: ["update"],
+            bind: { id: "nested.sub" }
+        }
+    ]
+)
+----
+
 === `@exclude`
 
 This directive can be used to tell `makeAugmentedSchema` to skip the automatic generation of the Query or Mutations for a certain type.
