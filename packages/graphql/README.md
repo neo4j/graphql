@@ -184,9 +184,9 @@ await Movie.create({
 });
 ```
 
-## Complex Auth
+## Auth
 
-Define complex, nested & related, authorization rules such as; “grant update access to all moderators of a post”;
+Define, nested & related, authorization rules such as; “grant update access to all moderators of a post”;
 
 ```graphql
 type User {
@@ -194,7 +194,13 @@ type User {
     username: String!
 }
 
-type Post
+type Post {
+    id: ID!
+    title: String!
+    moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
+}
+
+extend type Post
     @auth(
         rules: [
             {
@@ -202,9 +208,47 @@ type Post
                 operations: ["update"]
             }
         ]
-    ) {
+    )
+```
+
+Specify rules on fields;
+
+```graphql
+type User {
     id: ID!
-    title: String!
-    moderator: User @relationship(type: "MODERATES_POST", direction: "IN")
+    username: String!
+}
+
+extend type User {
+    password: String!
+        @auth(
+            rules: [
+                {
+                    OR: [{ allow: { id: "sub" } }, { roles: ["admin"] }]
+                    operations: "*"
+                }
+            ]
+        )
+}
+```
+
+Use RBAC;
+
+```graphql
+type CatalogItem @auth(rules: [{ operations: "read", roles: "read:catalog" }]) {
+    id: ID
+    title: String
+}
+
+type Customer @auth(rules: [{ operations: "read", roles: "read:customer" }]) {
+    id: ID
+    name: String
+    password: String @auth(rules: [{ operations: "read", roles: "admin" }])
+}
+
+type Invoice @auth(rules: [{ operations: "read", roles: "read:invoice" }]) {
+    id: ID
+    csv: String
+    total: Int
 }
 ```
