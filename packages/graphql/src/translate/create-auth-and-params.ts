@@ -48,6 +48,7 @@ function createAuthPredicate({
     if (!allowOrBind) {
         return ["", {}];
     }
+
     const result = Object.entries(allowOrBind as Record<string, any>).reduce(
         (res: Res, [key, value]) => {
             if (key === "AND" || key === "OR") {
@@ -195,8 +196,8 @@ function createAuthAndParams({
                 return;
             }
 
-            const strs: string[] = [];
-            let _params = {};
+            const predicates: string[] = [];
+            let predicateParams = {};
 
             value.forEach((v, i) => {
                 const [str, par] = createSubPredicate({
@@ -209,12 +210,12 @@ function createAuthAndParams({
                     return;
                 }
 
-                strs.push(str);
-                _params = { ..._params, ...par };
+                predicates.push(str);
+                predicateParams = { ...predicateParams, ...par };
             });
 
-            thisPredicates.push(strs.join(` ${key} `));
-            thisParams = { ...thisParams, ..._params };
+            thisPredicates.push(predicates.join(` ${key} `));
+            thisParams = { ...thisParams, ...predicateParams };
         });
 
         if (bind && authRule.bind) {
