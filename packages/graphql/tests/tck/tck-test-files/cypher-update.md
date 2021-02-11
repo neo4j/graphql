@@ -465,3 +465,101 @@ RETURN this { .id } AS this
 ```
 
 ---
+
+### Nested delete under a nested update
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateMovies(
+        where: { id: "1" }
+        update: { actors: { delete: { where: { name: "Actor to delete" } } } }
+    ) {
+        movies {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0_delete0:Actor)
+WHERE this_actors0_delete0.name = $this_actors0_delete0_name
+FOREACH(_ IN CASE this_actors0_delete0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_actors0_delete0
+)
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "1",
+    "this_actors0_delete0_name": "Actor to delete"
+}
+```
+
+---
+
+### Double nested delete under a nested update
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateMovies(
+        where: { id: "1" }
+        update: {
+            actors: {
+                delete: {
+                    where: { name: "Actor to delete" }
+                    delete: { movies: { where: { id: "2" } } }
+                }
+            }
+        }
+    ) {
+        movies {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0_delete0:Actor)
+WHERE this_actors0_delete0.name = $this_actors0_delete0_name
+WITH this, this_actors0_delete0
+OPTIONAL MATCH (this_actors0_delete0)-[:ACTED_IN]->(this_actors0_delete0_movie0:Movie)
+WHERE this_actors0_delete0_movie0.id = $this_actors0_delete0_movie0_id
+FOREACH(_ IN CASE this_actors0_delete0_movie0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_actors0_delete0_movie0
+)
+FOREACH(_ IN CASE this_actors0_delete0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_actors0_delete0
+)
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "1",
+    "this_actors0_delete0_name": "Actor to delete",
+    "this_actors0_delete0_movie0_id:": "2"
+}
+```
+
+---

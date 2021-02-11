@@ -140,12 +140,18 @@ input MovieMoviesFieldInput {
   create: [MovieCreateInput]
 }
 
+input MovieDeleteFieldInput {
+  delete: MovieDeleteInput
+  where: MovieWhere
+}
+
 input MovieMoviesUpdateFieldInput {
   connect: [MovieConnectFieldInput]
   create: [MovieCreateInput]
   disconnect: [MovieDisconnectFieldInput]
   update: MovieUpdateInput
   where: MovieWhere
+  delete: [MovieDeleteFieldInput]
 }
 
 input MovieRelationInput {

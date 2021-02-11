@@ -197,11 +197,21 @@ input MovieSearchGenreUpdateFieldInput {
   connect: [GenreConnectFieldInput]
   disconnect: [GenreDisconnectFieldInput]
   create: [GenreCreateInput]
+  delete: [GenreDeleteFieldInput]
 }
 
 input MovieSearchMovieFieldInput {
   create: [MovieCreateInput]
   connect: [MovieConnectFieldInput]
+}
+
+input GenreDeleteFieldInput {
+  where: GenreWhere
+}
+
+input MovieDeleteFieldInput {
+  delete: MovieDeleteInput
+  where: MovieWhere
 }
 
 input MovieSearchMovieUpdateFieldInput {
@@ -210,6 +220,7 @@ input MovieSearchMovieUpdateFieldInput {
   connect: [MovieConnectFieldInput]
   disconnect: [MovieDisconnectFieldInput]
   create: [MovieCreateInput]
+  delete: [MovieDeleteFieldInput]
 }
 
 enum MovieSort {

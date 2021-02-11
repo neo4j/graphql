@@ -690,6 +690,14 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             },
         });
 
+        composer.createInputTC({
+            name: `${node.name}DeleteFieldInput`,
+            fields: {
+                where: `${node.name}Where`,
+                ...(node.relationFields.length ? { delete: nodeDeleteInput } : {}),
+            },
+        });
+
         node.relationFields.forEach((rel) => {
             if (rel.union) {
                 const refNodes = neoSchemaInput.nodes.filter((x) => rel.union?.nodes?.includes(x.name)) as Node[];
@@ -707,7 +715,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     const concatFieldName = `${rel.fieldName}_${n.name}`;
                     const createField = rel.typeMeta.array ? `[${n.name}CreateInput]` : `${n.name}CreateInput`;
                     const updateField = `${n.name}UpdateInput`;
-                    const deleteField = `${n.name}UpdateInput`;
                     const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${n.name}FieldInput`;
                     const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${
                         n.name
@@ -722,6 +729,9 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     const disconnectField = rel.typeMeta.array
                         ? `[${n.name}DisconnectFieldInput]`
                         : `${n.name}DisconnectFieldInput`;
+                    const deleteField = rel.typeMeta.array
+                        ? `[${n.name}DeleteFieldInput]`
+                        : `${n.name}DeleteFieldInput`;
 
                     composeNode.addFieldArgs(rel.fieldName, {
                         [n.name]: `${n.name}Where`,
@@ -735,6 +745,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                             connect: connectField,
                             disconnect: disconnectField,
                             create: createField,
+                            delete: deleteField,
                         },
                     });
 
@@ -793,7 +804,6 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             const n = neoSchemaInput.nodes.find((x) => x.name === rel.typeMeta.name) as Node;
             const createField = rel.typeMeta.array ? `[${n.name}CreateInput]` : `${n.name}CreateInput`;
             const updateField = `${n.name}UpdateInput`;
-            const deleteField = `${n.name}DeleteInput`;
             const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
             const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}UpdateFieldInput`;
             const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}DeleteInput`;
@@ -801,6 +811,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
             const disconnectField = rel.typeMeta.array
                 ? `[${n.name}DisconnectFieldInput]`
                 : `${n.name}DisconnectFieldInput`;
+            const deleteField = rel.typeMeta.array ? `[${n.name}DeleteFieldInput]` : `${n.name}DeleteFieldInput`;
 
             [whereInput, andInput, orInput].forEach((inputType) => {
                 inputType.addFields({
@@ -829,6 +840,7 @@ function makeAugmentedSchema(options: MakeAugmentedSchemaOptions): NeoSchema {
                     connect: connectField,
                     disconnect: disconnectField,
                     create: createField,
+                    delete: deleteField,
                 },
             });
 

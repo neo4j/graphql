@@ -197,12 +197,17 @@ input MovieUpdateInput {
   actors: [MovieActorsUpdateFieldInput]
 }
 
+input ActorDeleteFieldInput {
+  where: ActorWhere
+}
+
 input MovieActorsUpdateFieldInput {
   connect: [ActorConnectFieldInput]
   create: [ActorCreateInput]
   disconnect: [ActorDisconnectFieldInput]
   update: ActorUpdateInput
   where: ActorWhere
+  delete: [ActorDeleteFieldInput]
 }
 
 input MovieConnectInput {
@@ -343,6 +348,7 @@ input ActorMoviesUpdateFieldInput {
   connect: [MovieConnectFieldInput]
   create: [MovieCreateInput]
   disconnect: [MovieDisconnectFieldInput]
+  delete: [MovieDeleteFieldInput]
 }
 
 input ActorOptions {
@@ -422,6 +428,7 @@ input MovieActorsUpdateFieldInput {
   create: [ActorCreateInput]
   connect: [ActorConnectFieldInput]
   disconnect: [ActorDisconnectFieldInput]
+  delete: [ActorDeleteFieldInput]
 }
 
 input MovieAND {
@@ -516,8 +523,18 @@ input MovieDeleteInput {
   actors: [MovieActorsDeleteInput]
 }
 
+input MovieDeleteFieldInput {
+  where: MovieWhere
+  delete: MovieDeleteInput
+}
+
 input ActorDeleteInput {
   movies: [ActorMoviesDeleteInput]
+}
+
+input ActorDeleteFieldInput {
+  where: ActorWhere
+  delete: ActorDeleteInput
 }
 
 input MovieUpdateInput {
