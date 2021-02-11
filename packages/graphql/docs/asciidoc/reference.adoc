@@ -639,7 +639,7 @@ Operations is an array, you can re-use the same rule for many operations.
 ])
 ----
 
-> You can use `operations: "*"`` to denote all operations
+> You can use `operations: "*" to denote all operations
 
 Many different operations can be called in one query take the below mutation;
 
