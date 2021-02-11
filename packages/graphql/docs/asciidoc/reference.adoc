@@ -1088,7 +1088,7 @@ extend type User @auth(
     rules: [
         { 
             operations: ["update"],
-            bind: { id: "nested.sub" }
+            bind: { id: "nested.userId" }
         }
     ]
 )
