@@ -621,9 +621,9 @@ You can have many rules for many operations. We fallthrough each rule, on the co
 [source, graphql]
 ----
 @auth(rules: [
-    { operations: ["create", "update"], ... } ## or
-	{ operations: ["read", "update"], ...} ## or
-	{ operations: ["delete", "update"], ... } ## or
+    { operations: ["create", "update"], ... }, ## or
+    { operations: ["read", "update"], ...}, ## or
+    { operations: ["delete", "update"], ... } ## or
 ])
 ----
 
@@ -634,8 +634,8 @@ Operations is an array, you can re-use the same rule for many operations.
 [source, graphql]
 ----
 @auth(rules: [
-    { operations: ["create", "update", "delete", "connect", "disconnect"] }
-	{ operations: ["read"] }
+    { operations: ["create", "update", "delete", "connect", "disconnect"] },
+    { operations: ["read"] }
 ])
 ----
 
@@ -665,12 +665,12 @@ In the above example; First we do a `create` operation then we do a `connect` op
 
 The full list of operations are; 
 
-1. read - `MATCH`ing
-2. create - `CREATE`ing
-3. update - `SET`ing
-4. delete - `DELETE`ing
-5. connect - `MATCH`ing & `MERGE`ing
-6. disconnect - `MATCH`ing & `DELETE`ing
+1. read - `MATCH`
+2. create - `CREATE`
+3. update - `SET`
+4. delete - `DELETE`
+5. connect - `MATCH` & `MERGE`
+6. disconnect - `MATCH` & `DELETE`
 
 ===== `isAuthenticated`
 
@@ -702,9 +702,11 @@ extend type User @auth(rules: [{ operations: ["update"], roles: ["admin"] }])
 
 Above showing an admin role is required for all operations against Users. If you have multiple roles you can add more items to the array;
 
+[source, graphql]
 ----
 extend type User @auth(rules: [{ operations: "*", roles: ["admin", "super-admin"] }])
 ----
+
 
 > Users only need one of many roles to satisfy a rule. 
 
@@ -725,7 +727,7 @@ type User {
 }
 ----
 
-Now we have two users in our database, and given the above GraphQL type definitions - How can we restrict `user1` from seeing `user2`? Great question, this is where allow comes in;
+Now we have two users in our database, and given the above GraphQL type definitions - How can we restrict `user1` from seeing `user2`? This is where allow comes in;
 
 [source, graphql]
 ----
@@ -744,9 +746,9 @@ extend type User @auth(
 )
 ----
 
-After we match the node we validate that the property on the node is equal to the JWT.sub property. This validation is done in Cypher with two functions; validatePredicate & validate. 
+After we match the node we validate that the property on the node is equal to the `JWT.sub` property. This validation is done in Cypher with two functions; validatePredicate & validate. 
 
-Given user1 has the decoded JWT; 
+Given `user1` has the decoded JWT; 
 [source, json]
 ----
 {
@@ -773,6 +775,14 @@ MATCH (u:User {id: "user2"})
 CALL apoc.util.validate(NOT(u.id = "user1"), "Forbidden")
 RETURN u
 ----
+
+Allow is used on the following operations; 
+
+1. read
+2. update
+3. connect
+4. disconnect
+5. delete
 
 ====== `allow` Across Relationships
 
@@ -832,7 +842,7 @@ Allow works the same as it does on Type Definitions although its context is the 
 type User {
     id: ID!
     name: String!
-	password: String! @auth(rules: [{ operations: "*", allow: { id: "sub" } }])
+    password: String! @auth(rules: [{ operations: "*", allow: { id: "sub" } }])
 }
 ----
 
@@ -893,13 +903,13 @@ With this JWT makes a GraphQL mutation to update there id to someone else;
 mutation {
     updateUsers(where: { id: "user1" }, update: { id: "user2" }) {
         users {
-			name
-		}
+            name
+        }
     }
 }
 ----
 
-The generated cypher for this query would look along the lines of; 
+The generated cypher for this query would look like the below, Throwing us out of the operation because the ids do not match.
 
 
 [source, cypher]
@@ -910,7 +920,15 @@ CALL apoc.util.validate(NOT(u.id = "user1"), "Forbidden")
 RETURN u
 ----
 
-Throwing us out of the operation because the ids do not match. This is just showcasing the `update` operation but bind is useful in the context of; `update`, `create`, `connect`, `disconnect`. 
+
+Bind is used on the following operations; 
+
+1. create
+2. update
+3. connect
+4. disconnect
+5. delete
+
 
 ====== `bind` Across Relationships
 
@@ -919,17 +937,17 @@ There may be a reason where you need to traverse across relationships to satisfy
 [source, graphql]
 ----
 type User {
-	id: ID
-	name: String
+    id: ID
+    name: String
 }
 
 type Post {
-	content: String
-	creator: User @relationship(type: "HAS_POST", direction: "IN")
+    content: String
+    creator: User @relationship(type: "HAS_POST", direction: "IN")
 }
 
 extend type Post @auth(rules: [
-	{ operations: ["create"], bind: { creator: { id: "sub" } } }
+    { operations: ["create"], bind: { creator: { id: "sub" } } }
 ])
 ----
 
