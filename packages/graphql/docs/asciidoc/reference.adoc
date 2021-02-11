@@ -975,19 +975,19 @@ import { makeAugmentedSchema } from "@neo4j/graphql";
 import { ApolloServer } from "apollo-server";
 
 const typeDefs = `
-	type User {
-		id: ID!
-		email: String!
-		password: String!
-	}
+    type User {
+        id: ID!
+        email: String!
+        password: String!
+    }
 
-	type Query {
-		myId: ID!
-	}
+    type Query {
+        myId: ID!
+    }
 `;
 
 const driver = neo4j.driver(
-	"bolt://localhost:7687",
+    "bolt://localhost:7687",
     neo4j.auth.basic("admin", "password")
 );
 
@@ -1015,14 +1015,12 @@ You can put the `@auth` directive on a field with the `@cypher` directive. Funct
 [source, graphql]
 ----
 type User @exclude(operations: "*") {
-	id: ID
-	name: String
+    id: ID
+    name: String
 } 
 
 type Query {
-    users: [User] 
-        @cypher(statement: "MATCH (a:User) RETURN a") 
-        @auth(rules: [{ isAuthenticated: true }])
+    users: [User] @cypher(statement: "MATCH (a:User) RETURN a") @auth(rules: [{ isAuthenticated: true }])
 }
 ----
 
@@ -1031,15 +1029,15 @@ type Query {
 [source, graphql]
 ----
 type History @exclude(operations: "*") {
-	website: String!
+    website: String!
 }
 
 type User {
-	id: ID
-	name: String
-	history: [History] 
-		@cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h") 
-		@auth(rules: [{ roles: ["admin"] }])
+    id: ID
+    name: String
+    history: [History]
+        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h") 
+        @auth(rules: [{ roles: ["admin"] }])
 }
 ----
 
