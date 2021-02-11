@@ -1,4 +1,4 @@
-import { DocumentNode, graphql, GraphQLSchema, parse, print } from "graphql";
+import { DocumentNode, graphql, parse, print } from "graphql";
 import pluralize from "pluralize";
 import camelCase from "camelcase";
 import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
