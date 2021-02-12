@@ -34,7 +34,7 @@ describe("createUpdateAndParams", () => {
             interfaceFields: [],
             objectFields: [],
             pointFields: [],
-            settableFields: [idField],
+            mutableFields: [idField],
             authableFields: [],
         };
 

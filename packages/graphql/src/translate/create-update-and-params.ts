@@ -197,7 +197,7 @@ function createUpdateAndParams({
             hasAppliedTimeStamps = true;
         }
 
-        const settableField = node.settableFields.find((x) => x.fieldName === key);
+        const settableField = node.mutableFields.find((x) => x.fieldName === key);
         const authableField = node.authableFields.find((x) => x.fieldName === key);
 
         if (settableField) {
