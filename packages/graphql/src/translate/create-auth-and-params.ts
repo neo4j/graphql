@@ -75,8 +75,12 @@ function createAuthPredicate({
             if (authableField) {
                 const jwt = context.getJWTSafe();
                 const _param = `${chainStr}_${key}`;
-                res.params[_param] = dotProp.get({ value: jwt }, `value.${value}`);
-                res.strs.push(`${varName}.${key} = $${_param}`);
+                const [, propertyPath] = (value as string).split("$jwt.");
+
+                if (propertyPath) {
+                    res.params[_param] = dotProp.get({ value: jwt }, `value.${propertyPath}`);
+                    res.strs.push(`${varName}.${key} = $${_param}`);
+                }
             }
 
             const relationField = node.relationFields.find((x) => key === x.fieldName);
