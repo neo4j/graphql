@@ -92,6 +92,7 @@ function createConnectAndParams({
         }
 
         /* 
+           TODO
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100 
         */
