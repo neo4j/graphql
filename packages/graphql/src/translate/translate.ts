@@ -14,6 +14,7 @@ import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createAuthParam from "./create-auth-param";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import createDeleteAndParams from "./create-delete-and-params";
 
 function translateRead({
     resolveTree,
@@ -219,6 +220,10 @@ function translateUpdate({
     const connectInput = resolveTree.args.connect;
     const disconnectInput = resolveTree.args.disconnect;
     const createInput = resolveTree.args.create;
+    const deleteInput = resolveTree.args.delete;
+    const fieldsByTypeName =
+        resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][pluralize(camelCase(node.name))]
+            .fieldsByTypeName;
     const varName = "this";
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
@@ -226,12 +231,10 @@ function translateUpdate({
     let connectStr = "";
     let disconnectStr = "";
     let createStr = "";
+    let deleteStr = "";
     let projAuth = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
-    const fieldsByTypeName =
-        resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][pluralize(camelCase(node.name))]
-            .fieldsByTypeName;
 
     if (whereInput) {
         const where = createWhereAndParams({
@@ -323,6 +326,19 @@ function translateUpdate({
         });
     }
 
+    if (deleteInput) {
+        const deleteAndParams = createDeleteAndParams({
+            context,
+            node,
+            deleteInput,
+            varName: `${varName}_delete`,
+            parentVar: varName,
+            withVars: [varName],
+        });
+        deleteStr = deleteAndParams[0];
+        cypherParams = { ...cypherParams, ...deleteAndParams[1] };
+    }
+
     const projection = createProjectionAndParams({
         node,
         context,
@@ -344,6 +360,7 @@ function translateUpdate({
         connectStr,
         disconnectStr,
         createStr,
+        deleteStr,
         ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
         `RETURN ${varName} ${projStr} AS ${varName}`,
     ];
@@ -361,10 +378,13 @@ function translateDelete({
     context: Context;
 }): [string, any] {
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
+    const deleteInput = resolveTree.args.delete;
     const varName = "this";
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
     let preAuthStr = "";
+    let deleteStr = "";
+    const authStr = "";
     let cypherParams: { [k: string]: any } = {};
 
     if (whereInput) {
@@ -392,7 +412,20 @@ function translateDelete({
         preAuthStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
-    const cypher = [matchStr, whereStr, preAuthStr, `DETACH DELETE ${varName}`];
+    if (deleteInput) {
+        const deleteAndParams = createDeleteAndParams({
+            context,
+            node,
+            deleteInput,
+            varName,
+            parentVar: varName,
+            withVars: [varName],
+        });
+        deleteStr = deleteAndParams[0];
+        cypherParams = { ...cypherParams, ...deleteAndParams[1] };
+    }
+
+    const cypher = [matchStr, whereStr, deleteStr, preAuthStr, authStr, `DETACH DELETE ${varName}`];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
 }
