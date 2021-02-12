@@ -83,7 +83,7 @@ class Node {
     /*
         Fields you can set in a create or update mutation
     */
-    public settableFields: (
+    public mutableFields: (
         | PrimitiveField
         | CustomScalarField
         | CustomEnumField
@@ -122,7 +122,7 @@ class Node {
             ...input.cypherFields,
         ];
 
-        this.settableFields = [
+        this.mutableFields = [
             ...input.dateTimeFields,
             ...input.enumFields,
             ...input.objectFields,

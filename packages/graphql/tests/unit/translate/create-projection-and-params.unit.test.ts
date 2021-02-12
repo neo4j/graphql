@@ -49,7 +49,7 @@ describe("createProjectionAndParams", () => {
             interfaceFields: [],
             objectFields: [],
             authableFields: [],
-            settableFields: [],
+            mutableFields: [],
         };
 
         // @ts-ignore
