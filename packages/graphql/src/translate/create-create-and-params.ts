@@ -140,7 +140,7 @@ function createCreateAndParams({
         params: {},
     }) as Res;
 
-    const forbiddenString = `${insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`}`;
+    const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
 
     if (node.auth) {
         const bindAndParams = createAuthAndParams({

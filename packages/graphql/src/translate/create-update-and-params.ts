@@ -296,7 +296,7 @@ function createUpdateAndParams({
     let preAuthStr = "";
     let postAuthStr = "";
 
-    const forbiddenString = `${insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`}`;
+    const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
 
     if (preAuthStrs.length) {
         const apocStr = `CALL apoc.util.validate(NOT(${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
