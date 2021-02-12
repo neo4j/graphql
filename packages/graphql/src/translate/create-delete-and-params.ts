@@ -1,5 +1,7 @@
 import { Node, Context } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
+import createAuthAndParams from "./create-auth-and-params";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 interface Res {
     strs: string[];
@@ -14,6 +16,7 @@ function createDeleteAndParams({
     chainStr,
     withVars,
     context,
+    insideDoWhen,
 }: {
     parentVar: string;
     deleteInput: any;
@@ -22,6 +25,7 @@ function createDeleteAndParams({
     node: Node;
     withVars: string[];
     context: Context;
+    insideDoWhen?: boolean;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]) {
         const relationField = node.relationFields.find((x) => key.startsWith(x.fieldName));
@@ -62,6 +66,24 @@ function createDeleteAndParams({
                     });
                     res.strs.push(whereAndParams[0]);
                     res.params = { ...res.params, ...whereAndParams[1] };
+                }
+
+                if (refNode.auth) {
+                    const authAndParams = createAuthAndParams({
+                        entity: refNode,
+                        operation: "delete",
+                        context,
+                        escapeQuotes: Boolean(insideDoWhen),
+                        allow: { parentNode: refNode, varName: _varName },
+                    });
+                    if (authAndParams[0]) {
+                        const quote = insideDoWhen ? `\\"` : `"`;
+                        res.strs.push(`WITH ${[...withVars, _varName].join(", ")}`);
+                        res.strs.push(
+                            `CALL apoc.util.validate(NOT(${authAndParams[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                        );
+                        res.params = { ...res.params, ...authAndParams[1] };
+                    }
                 }
 
                 if (d.delete) {
