@@ -1601,6 +1601,18 @@ mutation {
 }
 ----
 
+==== Nested deletes
+
+[source, graphql]
+----
+mutation {
+    deleteUsers(where: { name: "dan" }, delete: { friends: { where: { name: "darrell" } } }) {
+        nodesDeleted
+        relationshipsDeleted
+    }
+}
+----
+
 ==== Deleting with OGM
 
 [source, javascript]

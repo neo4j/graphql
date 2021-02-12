@@ -42,6 +42,7 @@ function update({ node, getSchema }: { node: Node; getSchema: () => NeoSchema })
                       connect: `${node.name}ConnectInput`,
                       disconnect: `${node.name}DisconnectInput`,
                       create: `${node.name}RelationInput`,
+                      delete: `${node.name}DeleteInput`,
                   }
                 : {}),
         },

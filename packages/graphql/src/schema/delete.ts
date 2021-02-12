@@ -33,7 +33,14 @@ function deleteResolver({ node, getSchema }: { node: Node; getSchema: () => NeoS
     return {
         type: `DeleteInfo!`,
         resolve,
-        args: { where: `${node.name}Where` },
+        args: {
+            where: `${node.name}Where`,
+            ...(node.relationFields.length
+                ? {
+                      delete: `${node.name}DeleteInput`,
+                  }
+                : {}),
+        },
     };
 }
 

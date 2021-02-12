@@ -638,12 +638,18 @@ input MovieActorsFieldInput {
   connect: [ActorConnectFieldInput]
   create: [ActorCreateInput]
 }
+
+input ActorDeleteFieldInput {
+  where: ActorWhere
+}
+
 input MovieActorsUpdateFieldInput {
   connect: [ActorConnectFieldInput]
   create: [ActorCreateInput]
   disconnect: [ActorDisconnectFieldInput]
   update: ActorUpdateInput
   where: ActorWhere
+  delete: [ActorDeleteFieldInput]
 }
 
 input MovieAND {
@@ -687,6 +693,14 @@ input MovieOptions {
 
 input MovieRelationInput {
   actors: [ActorCreateInput]
+}
+
+input MovieActorsDeleteInput {
+  where: ActorWhere
+}
+
+input MovieDeleteInput {
+  actors: [MovieActorsDeleteInput]
 }
 
 input MovieOR {
@@ -749,8 +763,18 @@ type UpdateMoviesMutationResponse {
 
 type Mutation {
   createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
-  deleteMovies(where: MovieWhere): DeleteInfo!
-  updateMovies(connect: MovieConnectInput, create: MovieRelationInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+  deleteMovies(
+    where: MovieWhere
+    delete: MovieDeleteInput
+  ): DeleteInfo!
+  updateMovies(
+    connect: MovieConnectInput
+    create: MovieRelationInput
+    disconnect: MovieDisconnectInput
+    update: MovieUpdateInput
+    where: MovieWhere
+    delete: MovieDeleteInput
+  ): UpdateMoviesMutationResponse!
 }
 
 type Query {
