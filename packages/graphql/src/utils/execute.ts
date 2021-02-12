@@ -1,5 +1,5 @@
 import { Driver } from "neo4j-driver";
-import { NeoSchema } from "../classes";
+import { NeoSchema, Neo4jGraphQLForbiddenError, Neo4jGraphQLAuthenticationError } from "../classes";
 import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 
 // https://stackoverflow.com/a/58632373/10687857
@@ -49,11 +49,11 @@ async function execute(input: {
         return result.records.map((r) => r.toObject());
     } catch (error) {
         if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_FORBIDDEN_ERROR}`)) {
-            throw new Error("Forbidden");
+            throw new Neo4jGraphQLForbiddenError("Forbidden");
         }
 
         if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_UNAUTHENTICATED_ERROR}`)) {
-            throw new Error("Unauthenticated");
+            throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
         }
 
         throw error;

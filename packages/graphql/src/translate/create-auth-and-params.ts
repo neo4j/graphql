@@ -55,7 +55,7 @@ function createAuthPredicate({
                 const inner: string[] = [];
 
                 ((value as unknown) as any[]).forEach((v, i) => {
-                    const recurse = createAuthPredicate({
+                    const authPredicate = createAuthPredicate({
                         rule: { [kind]: v } as AuthRule,
                         varName,
                         node,
@@ -64,8 +64,8 @@ function createAuthPredicate({
                         kind,
                     });
 
-                    inner.push(recurse[0]);
-                    res.params = { ...res.params, ...recurse[1] };
+                    inner.push(authPredicate[0]);
+                    res.params = { ...res.params, ...authPredicate[1] };
                 });
 
                 res.strs.push(`(${inner.join(` ${key} `)})`);
@@ -97,7 +97,7 @@ function createAuthPredicate({
                 ].join(" ");
 
                 Object.entries(value as any).forEach(([k, v]: [string, any]) => {
-                    const recurse = createAuthPredicate({
+                    const authPredicate = createAuthPredicate({
                         node: refNode,
                         context,
                         chainStr: `${chainStr}_${key}`,
@@ -105,9 +105,9 @@ function createAuthPredicate({
                         rule: { [kind]: { [k]: v } } as AuthRule,
                         kind,
                     });
-                    resultStr += recurse[0];
+                    resultStr += authPredicate[0];
                     resultStr += ")"; // close ALL
-                    res.params = { ...res.params, ...recurse[1] };
+                    res.params = { ...res.params, ...authPredicate[1] };
                     res.strs.push(resultStr);
                 });
             }
