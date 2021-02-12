@@ -364,3 +364,202 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_mo
 ```
 
 ---
+
+### Delete related node as update
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateMovies(
+        where: { id: "1" }
+        delete: { actors: { where: { name: "Actor to delete" } } }
+    ) {
+        movies {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_delete_actors0:Actor)
+WHERE this_delete_actors0.name = $this_delete_actors0_name
+FOREACH(_ IN CASE this_delete_actors0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_delete_actors0
+)
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "1",
+    "this_delete_actors0_name": "Actor to delete"
+}
+```
+
+---
+
+### Delete and update nested operations under same mutation
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateMovies(
+        where: { id: "1" }
+        update: {
+            actors: {
+                where: { name: "Actor to update" }
+                update: { name: "Updated name" }
+            }
+        }
+        delete: { actors: { where: { name: "Actor to delete" } } }
+    ) {
+        movies {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
+WHERE this_actors0.name = $this_actors0_name
+CALL apoc.do.when(this_actors0 IS NOT NULL, "
+    SET this_actors0.name = $this_update_actors0_name
+    RETURN count(*)
+",
+"",
+{this:this, this_actors0:this_actors0, this_update_actors0_name:$this_update_actors0_name}) YIELD value as _
+WITH this
+OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_delete_actors0:Actor)
+WHERE this_delete_actors0.name = $this_delete_actors0_name
+FOREACH(_ IN CASE this_delete_actors0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_delete_actors0
+)
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "1",
+    "this_actors0_name": "Actor to update",
+    "this_update_actors0_name": "Updated name",
+    "this_delete_actors0_name": "Actor to delete"
+}
+```
+
+---
+
+### Nested delete under a nested update
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateMovies(
+        where: { id: "1" }
+        update: { actors: { delete: { where: { name: "Actor to delete" } } } }
+    ) {
+        movies {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0_delete0:Actor)
+WHERE this_actors0_delete0.name = $this_actors0_delete0_name
+FOREACH(_ IN CASE this_actors0_delete0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_actors0_delete0
+)
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "1",
+    "this_actors0_delete0_name": "Actor to delete"
+}
+```
+
+---
+
+### Double nested delete under a nested update
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateMovies(
+        where: { id: "1" }
+        update: {
+            actors: {
+                delete: {
+                    where: { name: "Actor to delete" }
+                    delete: { movies: { where: { id: "2" } } }
+                }
+            }
+        }
+    ) {
+        movies {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0_delete0:Actor)
+WHERE this_actors0_delete0.name = $this_actors0_delete0_name
+WITH this, this_actors0_delete0
+OPTIONAL MATCH (this_actors0_delete0)-[:ACTED_IN]->(this_actors0_delete0_movies0:Movie)
+WHERE this_actors0_delete0_movies0.id = $this_actors0_delete0_movies0_id
+FOREACH(_ IN CASE this_actors0_delete0_movies0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_actors0_delete0_movies0
+)
+FOREACH(_ IN CASE this_actors0_delete0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_actors0_delete0
+)
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "1",
+    "this_actors0_delete0_name": "Actor to delete",
+    "this_actors0_delete0_movies0_id": "2"
+}
+```
+
+---
