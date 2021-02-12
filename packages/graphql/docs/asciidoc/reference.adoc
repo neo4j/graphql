@@ -578,7 +578,7 @@ extend type User {
 ----
 
 ==== Authentication
-This implementation will just expect there to be an authorization header in the request object, you can authenticate users however you like. One you could; Have a custom sign-in mutation, integrate with Auth0, or roll your own SSO server. The point here is that it's just a JWT, in the library, we will decode it to make sure it's valid... but it's down to you to issue tokens.
+This implementation will just expect there to be an authorization header in the request object, you can authenticate users however you like. One could; Have a custom sign-in mutation, integrate with Auth0, or roll your own SSO server. The point here is that it's just a JWT, in the library, we will decode it to make sure it's valid... but it's down to you to issue tokens.
 
 ==== Setup
 The auth implementation uses JWT tokens. You are expected to pass a JWT into the request. The accepted token type should be Bearer where the header should be authorization;
