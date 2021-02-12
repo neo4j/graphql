@@ -10,6 +10,7 @@ describe("delete", () => {
         const node: Node = {
             // @ts-ignore
             name: "Movie",
+            relationFields: [],
         };
 
         const result = deleteResolver({ node, getSchema: () => neoSchema });

@@ -1,9 +1,11 @@
+import util from "util";
 import { Node, Context } from "../classes";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createWhereAndParams from "./create-where-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createAllowAndParams from "./create-allow-and-params";
+import createDeleteAndParams from "./create-delete-and-params";
 import { checkRoles } from "../auth";
 
 interface Res {
@@ -159,6 +161,22 @@ function createUpdateAndParams({
                     });
                     res.strs.push(connectAndParams[0]);
                     res.params = { ...res.params, ...connectAndParams[1] };
+                }
+
+                if (update.delete) {
+                    const innerVarName = `${_varName}_delete`;
+
+                    const deleteAndParams = createDeleteAndParams({
+                        context,
+                        node,
+                        deleteInput: { [key]: update.delete },
+                        varName: innerVarName,
+                        chainStr: innerVarName,
+                        parentVar,
+                        withVars,
+                    });
+                    res.strs.push(deleteAndParams[0]);
+                    res.params = { ...res.params, ...deleteAndParams[1] };
                 }
 
                 if (update.create) {

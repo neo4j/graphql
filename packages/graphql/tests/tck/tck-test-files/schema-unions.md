@@ -197,11 +197,21 @@ input MovieSearchGenreUpdateFieldInput {
   connect: [GenreConnectFieldInput]
   disconnect: [GenreDisconnectFieldInput]
   create: [GenreCreateInput]
+  delete: [GenreDeleteFieldInput]
 }
 
 input MovieSearchMovieFieldInput {
   create: [MovieCreateInput]
   connect: [MovieConnectFieldInput]
+}
+
+input GenreDeleteFieldInput {
+  where: GenreWhere
+}
+
+input MovieDeleteFieldInput {
+  delete: MovieDeleteInput
+  where: MovieWhere
 }
 
 input MovieSearchMovieUpdateFieldInput {
@@ -210,6 +220,7 @@ input MovieSearchMovieUpdateFieldInput {
   connect: [MovieConnectFieldInput]
   disconnect: [MovieDisconnectFieldInput]
   create: [MovieCreateInput]
+  delete: [MovieDeleteFieldInput]
 }
 
 enum MovieSort {
@@ -221,6 +232,20 @@ input MovieUpdateInput {
   id: ID
   search_Genre: [MovieSearchGenreUpdateFieldInput]
   search_Movie: [MovieSearchMovieUpdateFieldInput]
+}
+
+input MovieSearchGenreDeleteInput {
+  where: GenreWhere
+}
+
+input MovieSearchMovieDeleteInput {
+  where: MovieWhere
+  delete: MovieDeleteInput
+}
+
+input MovieDeleteInput {
+  search_Genre: [MovieSearchGenreDeleteInput]
+  search_Movie: [MovieSearchMovieDeleteInput]
 }
 
 input MovieWhere {
@@ -260,13 +285,17 @@ type Mutation {
   deleteGenres(where: GenreWhere): DeleteInfo!
   updateGenres(where: GenreWhere, update: GenreUpdateInput): UpdateGenresMutationResponse!
   createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
-  deleteMovies(where: MovieWhere): DeleteInfo!
+  deleteMovies(
+    where: MovieWhere
+    delete: MovieDeleteInput
+  ): DeleteInfo!
   updateMovies(
     where: MovieWhere
     update: MovieUpdateInput
     connect: MovieConnectInput
     disconnect: MovieDisconnectInput
     create: MovieRelationInput
+    delete: MovieDeleteInput
   ): UpdateMoviesMutationResponse!
 }
 
