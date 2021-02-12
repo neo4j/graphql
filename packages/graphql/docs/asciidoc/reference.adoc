@@ -594,7 +594,7 @@ content-type: application/json
 
 1. `JWT_SECRET` to specificity the JWT secret
 2. `JWT_NO_VERIFY` to disable the verification of the JWT.
-2. `ROLES_OBJECT_PATH` to specify a object path for JWT roles otherwise defaults to `jwt.roles`
+2. `JWT_ROLES_OBJECT_PATH` to specify a object path for JWT roles otherwise defaults to `jwt.roles`
 
 
 ===== Server Construction
@@ -688,7 +688,7 @@ extend type Todo @auth(rules: [{ operations: "*", isAuthenticated: true }])
 
 ===== `roles`
 
-Use the roles property to specify the allowed roles for an operation. Use ENV `ROLES_OBJECT_PATH` to specify a object path for JWT roles otherwise defaults to `jwt.roles
+Use the roles property to specify the allowed roles for an operation. Use ENV `JWT_ROLES_OBJECT_PATH` to specify a object path for JWT roles otherwise defaults to `jwt.roles`
 
 [source, graphql]
 ----
