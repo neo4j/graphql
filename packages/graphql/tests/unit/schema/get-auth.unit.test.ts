@@ -58,11 +58,11 @@ describe("getAuth", () => {
                 { roles: ["admin", "publisher"], operations: ["update", "delete"] },
                 { roles: ["editors"], operations: ["update"] },
                 { 
-                    allow: { author_id: "sub", moderator_id: "sub" }, 
+                    allow: { author_id: "$jwt.sub", moderator_id: "$jwt.sub" }, 
                     operations: ["update", "delete"] 
                 },
                 { allow: "*", operations: ["update"] },
-                { allow: {OR: [{director_id: "sub"}, {actor_id: "sub"}]}, operations: ["update"] },
+                { allow: {OR: [{director_id: "$jwt.sub"}, {actor_id: "$jwt.sub"}]}, operations: ["update"] },
             ]) {
                 id: ID
                 title: String
@@ -84,9 +84,9 @@ describe("getAuth", () => {
                 { isAuthenticated: true, operations: ["create"] },
                 { roles: ["admin", "publisher"], operations: ["update", "delete"] },
                 { roles: ["editors"], operations: ["update"] },
-                { allow: { author_id: "sub", moderator_id: "sub" }, operations: ["update", "delete"] },
+                { allow: { author_id: "$jwt.sub", moderator_id: "$jwt.sub" }, operations: ["update", "delete"] },
                 { allow: "*", operations: ["update"] },
-                { allow: { OR: [{ director_id: "sub" }, { actor_id: "sub" }] }, operations: ["update"] },
+                { allow: { OR: [{ director_id: "$jwt.sub" }, { actor_id: "$jwt.sub" }] }, operations: ["update"] },
             ],
             type: "JWT",
         });

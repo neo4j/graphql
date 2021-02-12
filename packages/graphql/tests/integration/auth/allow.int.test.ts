@@ -30,7 +30,7 @@ describe("auth/allow", () => {
                     id: ID
                 }
 
-                extend type User @auth(rules: [{ operations: ["read"], allow: { id: "sub" } }])
+                extend type User @auth(rules: [{ operations: ["read"], allow: { id: "$jwt.sub" } }])
             `;
 
             const userId = generate({
@@ -85,7 +85,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type User {
-                    password: String @auth(rules: [{ operations: ["read"], allow: { id: "sub" } }])
+                    password: String @auth(rules: [{ operations: ["read"], allow: { id: "$jwt.sub" } }])
                 }
             `;
 
@@ -146,7 +146,7 @@ describe("auth/allow", () => {
                 }
             
                 extend type User {
-                    password: String @auth(rules: [{ operations: ["read"], allow: { id: "sub" } }])
+                    password: String @auth(rules: [{ operations: ["read"], allow: { id: "$jwt.sub" } }])
                 }
             `;
 
@@ -215,7 +215,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type Post
-                    @auth(rules: [{ operations: ["read"], allow: { creator: { id: "sub" } } }])
+                    @auth(rules: [{ operations: ["read"], allow: { creator: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -292,7 +292,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type Comment
-                    @auth(rules: [{ operations: ["read"], allow: { creator: { id: "sub" } } }])
+                    @auth(rules: [{ operations: ["read"], allow: { creator: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -362,7 +362,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type User
-                    @auth(rules: [{ operations: ["update"], allow: { id: "sub"  } }])
+                    @auth(rules: [{ operations: ["update"], allow: { id: "$jwt.sub"  } }])
             `;
 
             const userId = generate({
@@ -419,7 +419,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type User {
-                    password: String @auth(rules: [{ operations: ["update"], allow: { id: "sub" }}])
+                    password: String @auth(rules: [{ operations: ["update"], allow: { id: "$jwt.sub" }}])
                 }
                    
             `;
@@ -483,7 +483,7 @@ describe("auth/allow", () => {
                     id: ID
                 }
 
-                extend type User @auth(rules: [{ operations: ["update"], allow: { id: "sub" }}])
+                extend type User @auth(rules: [{ operations: ["update"], allow: { id: "$jwt.sub" }}])
             `;
 
             const userId = generate({
@@ -553,7 +553,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type User {
-                    password: String @auth(rules: [{ operations: ["update"], allow: { id: "sub" }}])
+                    password: String @auth(rules: [{ operations: ["update"], allow: { id: "$jwt.sub" }}])
                 }
             `;
 
@@ -619,7 +619,7 @@ describe("auth/allow", () => {
                     id: ID
                 }
 
-                extend type User @auth(rules: [{ operations: ["delete"], allow: { id: "sub" }}])
+                extend type User @auth(rules: [{ operations: ["delete"], allow: { id: "$jwt.sub" }}])
             `;
 
             const userId = generate({
@@ -682,7 +682,7 @@ describe("auth/allow", () => {
                     creator: User @relationship(type: "HAS_POST", direction: "IN")
                 }
 
-                extend type Post @auth(rules: [{ operations: ["delete"], allow: { creator: { id: "sub" } }}])
+                extend type Post @auth(rules: [{ operations: ["delete"], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({
@@ -757,7 +757,7 @@ describe("auth/allow", () => {
                     posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
                 }
 
-                extend type Post @auth(rules: [{ operations: ["disconnect"], allow: { creator: { id: "sub" } }}])
+                extend type Post @auth(rules: [{ operations: ["disconnect"], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({
@@ -833,7 +833,7 @@ describe("auth/allow", () => {
                     posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
                 }
 
-                extend type Post @auth(rules: [{ operations: ["disconnect"], allow: { creator: { id: "sub" } }}])
+                extend type Post @auth(rules: [{ operations: ["disconnect"], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({
@@ -920,7 +920,7 @@ describe("auth/allow", () => {
                     posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
                 }
 
-                extend type Post @auth(rules: [{ operations: ["connect"], allow: { creator: { id: "sub" } }}])
+                extend type Post @auth(rules: [{ operations: ["connect"], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({
@@ -997,7 +997,7 @@ describe("auth/allow", () => {
                     posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
                 }
 
-                extend type Post @auth(rules: [{ operations: ["connect"], allow: { creator: { id: "sub" } }}])
+                extend type Post @auth(rules: [{ operations: ["connect"], allow: { creator: { id: "$jwt.sub" } }}])
             `;
 
             const userId = generate({

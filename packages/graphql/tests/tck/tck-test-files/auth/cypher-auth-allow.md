@@ -30,7 +30,7 @@ extend type User
         rules: [
             {
                 operations: ["read", "update", "delete", "disconnect", "connect"]
-                allow: { id: "sub" }
+                allow: { id: "$jwt.sub" }
             }
         ]
     )
@@ -41,7 +41,7 @@ extend type User {
             rules: [
                 {
                     operations: ["read", "update", "delete"]
-                    allow: { id: "sub" }
+                    allow: { id: "$jwt.sub" }
                 }
             ]
         )
@@ -52,7 +52,7 @@ extend type Post
         rules: [
             {
                 operations: ["read", "update", "delete", "disconnect", "connect"]
-                allow: { creator: { id: "sub" } }
+                allow: { creator: { id: "$jwt.sub" } }
             }
         ]
     )
@@ -62,7 +62,7 @@ extend type Comment
         rules: [
             {
                 operations: ["read", "update", "delete", "disconnect", "connect"]
-                allow: { creator: { id: "sub" } }
+                allow: { creator: { id: "$jwt.sub" } }
             }
         ]
     )

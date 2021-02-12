@@ -11,7 +11,7 @@ type Genre @auth(rules: [
     {
         operations: ["read"],
         allow: {
-            name: "jwtAllowedNamesExample"
+            name: "$jwt.jwtAllowedNamesExample"
         }
     }
 ]) {

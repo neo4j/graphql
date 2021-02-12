@@ -21,7 +21,7 @@ extend type User
         rules: [
             {
                 operations: ["create", "update", "connect", "disconnect"]
-                bind: { id: "sub" }
+                bind: { id: "$jwt.sub" }
             }
         ]
     )
@@ -31,7 +31,7 @@ extend type Post
         rules: [
             {
                 operations: ["create", "connect", "disconnect"]
-                bind: { creator: { id: "sub" } }
+                bind: { creator: { id: "$jwt.sub" } }
             }
         ]
     )

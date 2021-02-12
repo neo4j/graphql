@@ -11,7 +11,7 @@ type User {
 }
 
 extend type User {
-    id: ID @auth(rules: [{ operations: "*", allow: { id: "sub" } }])
+    id: ID @auth(rules: [{ operations: "*", allow: { id: "$jwt.sub" } }])
 }
 ```
 

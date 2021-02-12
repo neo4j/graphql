@@ -204,7 +204,7 @@ extend type Post
     @auth(
         rules: [
             {
-                allow: [{ moderator: { id: "sub" } }] # "sub" being "req.jwt.sub"
+                allow: [{ moderator: { id: "$jwt.sub" } }]
                 operations: ["update"]
             }
         ]
@@ -224,7 +224,7 @@ extend type User {
         @auth(
             rules: [
                 {
-                    OR: [{ allow: { id: "sub" } }, { roles: ["admin"] }]
+                    OR: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }]
                     operations: "*"
                 }
             ]

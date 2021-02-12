@@ -38,7 +38,7 @@ describe("createAuthAndParams", () => {
                 authableFields: [idField],
                 auth: {
                     rules: [
-                        { operations: "*", allow: { id: "sub" } },
+                        { operations: "*", allow: { id: "$jwt.sub" } },
                         { operations: ["create"], roles: ["admin"] },
                         { operations: "*", roles: ["admin"] },
                     ],
@@ -112,7 +112,7 @@ describe("createAuthAndParams", () => {
                 pointFields: [],
                 authableFields: [idField],
                 auth: {
-                    rules: [{ allow: { id: "sub" } }, { roles: ["admin"] }],
+                    rules: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }],
                     type: "JWT",
                 },
             };
@@ -180,7 +180,7 @@ describe("createAuthAndParams", () => {
                 pointFields: [],
                 authableFields: [idField],
                 auth: {
-                    rules: [{ allow: { id: "sub" }, roles: ["admin"] }],
+                    rules: [{ allow: { id: "$jwt.sub" }, roles: ["admin"] }],
                     type: "JWT",
                 },
             };
@@ -251,7 +251,7 @@ describe("createAuthAndParams", () => {
                     pointFields: [],
                     authableFields: [idField],
                     auth: {
-                        rules: [{ [key]: [{ allow: { id: "sub" } }, { roles: ["admin"] }] }],
+                        rules: [{ [key]: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }] }],
                         type: "JWT",
                     },
                 };
@@ -323,9 +323,9 @@ describe("createAuthAndParams", () => {
                     rules: [
                         {
                             roles: ["admin"],
-                            allow: { id: "sub" },
-                            AND: [{ allow: { id: "sub" } }, { roles: ["admin"] }],
-                            OR: [{ allow: { id: "sub" } }, { roles: ["admin"] }],
+                            allow: { id: "$jwt.sub" },
+                            AND: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }],
+                            OR: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }],
                         },
                     ],
                     type: "JWT",
@@ -423,7 +423,7 @@ describe("createAuthAndParams", () => {
                     pointFields: [],
                     authableFields: [idField],
                     auth: {
-                        rules: [{ allow: { [key]: [{ id: "sub" }, { id: "sub" }, { id: "sub" }] } }],
+                        rules: [{ allow: { [key]: [{ id: "$jwt.sub" }, { id: "$jwt.sub" }, { id: "$jwt.sub" }] } }],
                         type: "JWT",
                     },
                 };
