@@ -85,7 +85,7 @@ describe("auth/object-path", () => {
     });
 
     test("should use object path with roles", async () => {
-        process.env.ROLES_OBJECT_PATH = "https://github\\.com/claims.https://github\\.com/claims/roles";
+        process.env.JWT_ROLES_OBJECT_PATH = "https://github\\.com/claims.https://github\\.com/claims/roles";
 
         const session = driver.session({ defaultAccessMode: "WRITE" });
 
@@ -137,7 +137,7 @@ describe("auth/object-path", () => {
             expect(user).toEqual({ id: userId });
         } finally {
             await session.close();
-            delete process.env.ROLES_OBJECT_PATH;
+            delete process.env.JWT_ROLES_OBJECT_PATH;
         }
     });
 });
