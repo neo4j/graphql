@@ -477,6 +477,66 @@ describe("auth/is-authenticated", () => {
                 await session.close();
             }
         });
+
+        test("should throw if not authenticated on type definition (with nested delete)", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                    name: String
+                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                }
+
+                type Post @auth(rules: [{
+                    operations: ["delete"],
+                    isAuthenticated: true
+                }]) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    deleteUsers(where: {id: "${userId}"}, delete:{posts: {where:{id: "${postId}"}}}) {
+                        nodesDeleted
+                    }
+                }
+            `;
+
+            const token = "not valid token";
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("custom-resolvers", () => {

@@ -584,6 +584,62 @@ DETACH DELETE this
 
 ---
 
+### Nested Delete Node
+
+**GraphQL input**
+
+```graphql
+mutation {
+    deleteUsers(
+        where: { id: "user-id" }
+        delete: { posts: { where: { id: "post-id" } } }
+    ) {
+        nodesDeleted
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
+WHERE this_posts0.id = $this_posts0_id
+WITH this, this_posts0
+CALL apoc.util.validate(NOT(EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id = $this_posts0_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+
+FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_posts0
+)
+WITH this
+CALL apoc.util.validate(NOT(this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+DETACH DELETE this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "user-id",
+    "this_auth_allow0_id": "user-id",
+    "this_posts0_auth_allow0_creator_id": "user-id",
+    "this_posts0_id": "post-id"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "user-id",
+    "roles": ["admin"]
+}
+```
+
+---
+
 ### Disconnect Node
 
 **GraphQL input**

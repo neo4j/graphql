@@ -659,6 +659,66 @@ describe("auth/roles", () => {
                 await session.close();
             }
         });
+
+        test("should throw if missing role on type definition (with nested delete)", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                    name: String
+                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                }
+
+                type Post @auth(rules: [{
+                    operations: ["delete"],
+                    roles: ["admin"]
+                }]) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    deleteUsers(where: {id: "${userId}"}, delete:{posts: {where:{id: "${postId}"}}}) {
+                        nodesDeleted
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign({ roles: [] }, process.env.JWT_SECRET as string);
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("custom-resolvers", () => {

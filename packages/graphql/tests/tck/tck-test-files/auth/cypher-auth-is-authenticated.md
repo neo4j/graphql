@@ -31,7 +31,7 @@ extend type User
         ]
     )
 
-extend type Post @auth(rules: [{ operations: ["connect", "disconnect"], isAuthenticated: true }])
+extend type Post @auth(rules: [{ operations: ["connect", "disconnect", "delete"], isAuthenticated: true }])
 
 extend type User {
     password: String
@@ -579,6 +579,66 @@ mutation {
 
 ```cypher
 MATCH (this:User)
+
+WITH this
+CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
+
+DETACH DELETE this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "auth": {
+        "isAuthenticated": true,
+        "roles": ["admin"],
+        "jwt": {
+            "roles": [
+                "admin"
+            ],
+            "sub": "super_admin"
+        }
+    }
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "super_admin",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Nested Delete
+
+**GraphQL input**
+
+```graphql
+mutation {
+    deleteUsers(delete: { posts: { where: {} } }) {
+        nodesDeleted
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User)
+
+WITH this
+OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
+WITH this, this_posts0
+CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
+
+FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_posts0
+)
 
 WITH this
 CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])

@@ -173,6 +173,7 @@ function createUpdateAndParams({
                         chainStr: innerVarName,
                         parentVar,
                         withVars,
+                        insideDoWhen,
                     });
                     res.strs.push(deleteAndParams[0]);
                     res.params = { ...res.params, ...deleteAndParams[1] };
