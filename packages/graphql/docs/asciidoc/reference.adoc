@@ -1060,7 +1060,7 @@ Specify the path in the environment;
 
 [source, bash]
 ----
-$ AUTH_ROLES_KEY="https://auth0.mysite.com/claims\\.https://auth0.mysite.com/claims/roles" node server
+$ JWT_ROLES_OBJECT_PATH="https://auth0.mysite.com/claims\\.https://auth0.mysite.com/claims/roles" node server
 ----
 
 ===== Allow & Bind
@@ -1088,7 +1088,7 @@ extend type User @auth(
     rules: [
         { 
             operations: ["update"],
-            bind: { id: "nested.userId" }
+            bind: { id: "$jwt.nested.userId" }
         }
     ]
 )
