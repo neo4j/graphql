@@ -232,4 +232,20 @@ describe("makeAugmentedSchema", () => {
             expect(error.message).toEqual("@autogenerate operations[0] invalid");
         }
     });
+
+    test("should throw cannot have auth directive on a relationship", () => {
+        try {
+            const typeDefs = `
+                type Node {
+                    node: Node @relationship(type: "NODE", direction: "OUT") @auth(rules: [{operations: ["create"], roles: ["admin"]}])
+                }
+            `;
+
+            makeAugmentedSchema({ typeDefs });
+
+            throw new Error("something went wrong if i throw");
+        } catch (error) {
+            expect(error.message).toEqual("cannot have auth directive on a relationship");
+        }
+    });
 });

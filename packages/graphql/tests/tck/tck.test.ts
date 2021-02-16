@@ -79,7 +79,7 @@ describe("TCK Generated tests", () => {
                     if (!cypherParams.jwt) {
                         const socket = new Socket({ readable: true });
                         const req = new IncomingMessage(socket);
-                        const token = jsonwebtoken.sign(jwt, process.env.JWT_SECRET as string);
+                        const token = jsonwebtoken.sign(jwt, process.env.JWT_SECRET as string, { noTimestamp: true });
                         req.headers.authorization = `Bearer ${token}`;
 
                         context = {

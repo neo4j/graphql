@@ -1,21 +1,20 @@
 import { isInt, Driver } from "neo4j-driver";
-import { ValueNode } from "graphql";
 import { execute } from "../utils";
 import { BaseField } from "../types";
 import { NeoSchema, Context } from "../classes";
-import parseValueNode from "./parse-value-node";
 import graphqlArgsToCompose from "./graphql-arg-to-compose";
+import createAuthAndParams from "../translate/create-auth-and-params";
+import createAuthParam from "../translate/create-auth-param";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 /**
  * Called on custom (Queries & Mutations "TOP LEVEL") with a @cypher directive. Not to mistaken for @cypher type fields.
  */
 function cypherResolver({
-    defaultAccessMode,
     field,
     statement,
     getSchema,
 }: {
-    defaultAccessMode: "READ" | "WRITE";
     field: BaseField;
     statement: string;
     getSchema: () => NeoSchema;
@@ -34,13 +33,22 @@ function cypherResolver({
             driver: driver as Driver,
         });
 
-        const safeJWT = context.getJWTSafe();
+        const cypherStrs: string[] = [];
+        let params = { ...args, auth: createAuthParam({ context }) };
+
+        const preAuth = createAuthAndParams({ entity: field, context });
+        if (preAuth[0]) {
+            params = { ...params, ...preAuth[1] };
+            cypherStrs.push(`CALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        }
+
+        cypherStrs.push(statement);
 
         const result = await execute({
-            cypher: statement,
-            params: { ...args, jwt: safeJWT },
+            cypher: cypherStrs.join("\n"),
+            params,
             driver,
-            defaultAccessMode,
+            defaultAccessMode: "WRITE",
             neoSchema,
             raw: true,
         });

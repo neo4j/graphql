@@ -82,7 +82,7 @@ type User {
 
 type Post @auth(rules: [
   {
-    allow: [{ moderator: { "id": "sub" }}], # "sub" being "req.jwt.sub"
+    allow: [{ moderator: { "id": "$jwt.sub" }}],
     operations: ["update"]
   }
 ]) {

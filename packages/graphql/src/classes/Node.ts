@@ -10,8 +10,8 @@ import {
     ObjectField,
     DateTimeField,
     PointField,
+    Auth,
 } from "../types";
-import Auth from "./Auth";
 import Exclude from "./Exclude";
 
 export interface NodeConstructor {
@@ -60,11 +60,38 @@ class Node {
 
     public pointFields: PointField[];
 
-    public auth?: Auth;
-
     public exclude?: Exclude;
 
+    public auth?: Auth;
+
     public description?: string;
+
+    /*
+        Fields you can apply auth allow and bind to
+    */
+    public authableFields: (
+        | PrimitiveField
+        | CustomScalarField
+        | CustomEnumField
+        | UnionField
+        | ObjectField
+        | DateTimeField
+        | PointField
+        | CypherField
+    )[];
+
+    /*
+        Fields you can set in a create or update mutation
+    */
+    public mutableFields: (
+        | PrimitiveField
+        | CustomScalarField
+        | CustomEnumField
+        | UnionField
+        | ObjectField
+        | DateTimeField
+        | PointField
+    )[];
 
     constructor(input: NodeConstructor) {
         this.name = input.name;
@@ -80,9 +107,32 @@ class Node {
         this.objectFields = input.objectFields;
         this.dateTimeFields = input.dateTimeFields;
         this.pointFields = input.pointFields;
-        this.auth = input.auth;
         this.exclude = input.exclude;
+        this.auth = input.auth;
         this.description = input.description;
+
+        this.authableFields = [
+            ...input.primitiveFields,
+            ...input.scalarFields,
+            ...input.enumFields,
+            ...input.unionFields,
+            ...input.objectFields,
+            ...input.dateTimeFields,
+            ...input.pointFields,
+            ...input.cypherFields,
+        ];
+
+        this.mutableFields = [
+            ...input.dateTimeFields,
+            ...input.enumFields,
+            ...input.objectFields,
+            ...input.scalarFields,
+            ...input.primitiveFields,
+            ...input.interfaceFields,
+            ...input.objectFields,
+            ...input.unionFields,
+            ...input.pointFields,
+        ];
     }
 }
 

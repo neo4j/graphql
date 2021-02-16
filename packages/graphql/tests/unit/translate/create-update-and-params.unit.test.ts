@@ -5,34 +5,37 @@ import { trimmer } from "../../../src/utils";
 
 describe("createUpdateAndParams", () => {
     test("should return the correct update and params", () => {
+        const idField = {
+            fieldName: "id",
+            typeMeta: {
+                name: "String",
+                array: false,
+                required: false,
+                pretty: "String",
+                input: {
+                    name: "String",
+                    pretty: "String",
+                },
+            },
+            otherDirectives: [],
+            arguments: [],
+        };
+
         // @ts-ignore
         const node: Node = {
             name: "Movie",
             relationFields: [],
             cypherFields: [],
             enumFields: [],
+            unionFields: [],
             scalarFields: [],
-            primitiveFields: [
-                {
-                    fieldName: "title",
-                    typeMeta: {
-                        name: "String",
-                        array: false,
-                        required: false,
-                        pretty: "String",
-                        input: {
-                            name: "String",
-                            pretty: "String",
-                        },
-                    },
-                    otherDirectives: [],
-                    arguments: [],
-                },
-            ],
+            primitiveFields: [idField],
             dateTimeFields: [],
             interfaceFields: [],
             objectFields: [],
             pointFields: [],
+            mutableFields: [idField],
+            authableFields: [],
         };
 
         // @ts-ignore
