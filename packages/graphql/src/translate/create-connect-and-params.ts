@@ -1,6 +1,8 @@
 import { Context, Node } from "../classes";
 import { RelationField } from "../types";
 import createWhereAndParams from "./create-where-and-params";
+import createAuthAndParams from "./create-auth-and-params";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 interface Res {
     connects: string[];
@@ -16,6 +18,9 @@ function createConnectAndParams({
     refNode,
     context,
     labelOverride,
+    parentNode,
+    fromCreate,
+    insideDoWhen,
 }: {
     withVars: string[];
     value: any;
@@ -25,6 +30,9 @@ function createConnectAndParams({
     context: Context;
     refNode: Node;
     labelOverride?: string;
+    parentNode: Node;
+    fromCreate?: boolean;
+    insideDoWhen?: boolean;
 }): [string, any] {
     function reducer(res: Res, connect: any, index): Res {
         const _varName = `${varName}${index}`;
@@ -46,7 +54,45 @@ function createConnectAndParams({
             res.params = { ...res.params, ...where[1] };
         }
 
+        const preAuth = [...(!fromCreate ? [parentNode] : []), refNode].reduce(
+            (result: Res, node, i) => {
+                if (!node.auth) {
+                    return result;
+                }
+
+                const [str, params] = createAuthAndParams({
+                    entity: node,
+                    operation: "connect",
+                    context,
+                    escapeQuotes: Boolean(insideDoWhen),
+                    allow: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_allow` },
+                });
+
+                if (!str) {
+                    return result;
+                }
+
+                result.connects.push(str);
+                result.params = { ...result.params, ...params };
+
+                return result;
+            },
+            { connects: [], params: {} }
+        ) as Res;
+
+        if (preAuth.connects.length) {
+            const quote = insideDoWhen ? `\\"` : `"`;
+            res.connects.push(`WITH ${[...withVars, _varName].join(", ")}`);
+            res.connects.push(
+                `CALL apoc.util.validate(NOT(${preAuth.connects.join(
+                    " AND "
+                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+            );
+            res.params = { ...res.params, ...preAuth.params };
+        }
+
         /* 
+           TODO
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100 
         */
@@ -79,6 +125,7 @@ function createConnectAndParams({
                             parentVar: _varName,
                             context,
                             refNode: newRefNode as Node,
+                            parentNode: refNode,
                         });
                         r.connects.push(recurse[0]);
                         r.params = { ...r.params, ...recurse[1] };
@@ -91,6 +138,45 @@ function createConnectAndParams({
                 res.connects.push(reduced.connects.join("\n"));
                 res.params = { ...res.params, ...reduced.params };
             });
+        }
+
+        const postAuth = [...(!fromCreate ? [parentNode] : []), refNode].reduce(
+            (result: Res, node, i) => {
+                if (!node.auth) {
+                    return result;
+                }
+
+                const [str, params] = createAuthAndParams({
+                    entity: node,
+                    operation: "connect",
+                    context,
+                    escapeQuotes: Boolean(insideDoWhen),
+                    skipIsAuthenticated: true,
+                    skipRoles: true,
+                    bind: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_bind` },
+                });
+
+                if (!str) {
+                    return result;
+                }
+
+                result.connects.push(str);
+                result.params = { ...result.params, ...params };
+
+                return result;
+            },
+            { connects: [], params: {} }
+        ) as Res;
+
+        if (postAuth.connects.length) {
+            const quote = insideDoWhen ? `\\"` : `"`;
+            res.connects.push(`WITH ${[...withVars, _varName].join(", ")}`);
+            res.connects.push(
+                `CALL apoc.util.validate(NOT(${postAuth.connects.join(
+                    " AND "
+                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+            );
+            res.params = { ...res.params, ...postAuth.params };
         }
 
         return res;

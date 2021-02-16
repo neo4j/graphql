@@ -1,10 +1,16 @@
 import { Context, Node } from "../classes";
 import createConnectAndParams from "./create-connect-and-params";
-import { checkRoles } from "../auth";
+import createAuthAndParams from "./create-auth-and-params";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 interface Res {
     creates: string[];
     params: any;
+    meta?: CreateMeta;
+}
+
+interface CreateMeta {
+    authStrs: string[];
 }
 
 function createCreateAndParams({
@@ -13,12 +19,14 @@ function createCreateAndParams({
     node,
     context,
     withVars,
+    insideDoWhen,
 }: {
     input: any;
     varName: string;
     node: Node;
     context: Context;
     withVars: string[];
+    insideDoWhen?: boolean;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const _varName = `${varName}_${key}`;
@@ -70,6 +78,8 @@ function createCreateAndParams({
                     context,
                     refNode,
                     labelOverride: unionTypeName,
+                    parentNode: node,
+                    fromCreate: true,
                 });
                 res.creates.push(connectAndParams[0]);
                 res.params = { ...res.params, ...connectAndParams[1] };
@@ -78,8 +88,27 @@ function createCreateAndParams({
             return res;
         }
 
+        if (primitiveField?.auth) {
+            const authAndParams = createAuthAndParams({
+                entity: primitiveField,
+                operation: "create",
+                context,
+                bind: { parentNode: node, varName, chainStr: _varName },
+                escapeQuotes: Boolean(insideDoWhen),
+            });
+            if (authAndParams[0]) {
+                if (!res.meta) {
+                    res.meta = { authStrs: [] };
+                }
+
+                res.meta.authStrs.push(authAndParams[0]);
+                res.params = { ...res.params, ...authAndParams[1] };
+            }
+        }
+
         if (primitiveField?.autogenerate) {
             res.creates.push(`SET ${varName}.${key} = randomUUID()`);
+
             return res;
         }
 
@@ -94,10 +123,9 @@ function createCreateAndParams({
         }
 
         res.params[_varName] = value;
+
         return res;
     }
-
-    checkRoles({ node, context, operation: "create" });
 
     const initial = [`CREATE (${varName}:${node.name})`];
 
@@ -106,10 +134,33 @@ function createCreateAndParams({
         initial.push(`SET ${varName}.${ts.fieldName} = datetime()`);
     });
 
-    const { creates, params } = Object.entries(input).reduce(reducer, {
+    // eslint-disable-next-line prefer-const
+    let { creates, params, meta } = Object.entries(input).reduce(reducer, {
         creates: initial,
         params: {},
     }) as Res;
+
+    const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
+
+    if (node.auth) {
+        const bindAndParams = createAuthAndParams({
+            entity: node,
+            operation: "create",
+            context,
+            bind: { parentNode: node, varName },
+            escapeQuotes: Boolean(insideDoWhen),
+        });
+        if (bindAndParams[0]) {
+            creates.push(`WITH ${withVars.join(", ")}`);
+            creates.push(`CALL apoc.util.validate(NOT(${bindAndParams[0]}), ${forbiddenString}, [0])`);
+            params = { ...params, ...bindAndParams[1] };
+        }
+    }
+
+    if (meta?.authStrs.length) {
+        creates.push(`WITH ${withVars.join(", ")}`);
+        creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
+    }
 
     return [creates.join("\n"), params];
 }

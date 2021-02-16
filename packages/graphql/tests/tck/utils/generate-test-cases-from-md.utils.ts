@@ -26,11 +26,19 @@ export type TestCase = {
 };
 
 export function generateTestCasesFromMd(dir: string): TestCase[] {
-    const files = fs
-        .readdirSync(dir, { withFileTypes: true })
-        .filter((dirent) => dirent.isFile())
-        .map((dirent) => path.join(dir, dirent.name));
-    return files.map(generateTests);
+    const files = fs.readdirSync(dir, { withFileTypes: true }).reduce((res: TestCase[], item) => {
+        if (item.isFile()) {
+            return [...res, generateTests(path.join(dir, item.name))];
+        }
+
+        if (item.isDirectory()) {
+            return [...res, ...generateTestCasesFromMd(path.join(dir, item.name))];
+        }
+
+        return res;
+    }, []) as TestCase[];
+
+    return files;
 }
 
 const nameRe = /###(?<capture>([^\n]+))/;

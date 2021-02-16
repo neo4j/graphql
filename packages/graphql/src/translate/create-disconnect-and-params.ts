@@ -1,6 +1,8 @@
 import { Context, Node } from "../classes";
 import { RelationField } from "../types";
 import createWhereAndParams from "./create-where-and-params";
+import createAuthAndParams from "./create-auth-and-params";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 interface Res {
     disconnects: string[];
@@ -16,6 +18,8 @@ function createDisconnectAndParams({
     refNode,
     context,
     labelOverride,
+    parentNode,
+    insideDoWhen,
 }: {
     withVars: string[];
     value: any;
@@ -25,12 +29,15 @@ function createDisconnectAndParams({
     context: Context;
     refNode: Node;
     labelOverride?: string;
+    parentNode: Node;
+    insideDoWhen?: boolean;
 }): [string, any] {
     function reducer(res: Res, disconnect: any, index): Res {
         const _varName = `${varName}${index}`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
-        const relTypeStr = `[${_varName}_rel:${relationField.type}]`;
+        const relVarName = `${_varName}_rel`;
+        const relTypeStr = `[${relVarName}:${relationField.type}]`;
 
         res.disconnects.push(`WITH ${withVars.join(", ")}`);
         res.disconnects.push(
@@ -48,6 +55,43 @@ function createDisconnectAndParams({
             });
             res.disconnects.push(where[0]);
             res.params = { ...res.params, ...where[1] };
+        }
+
+        const preAuth = [parentNode, refNode].reduce(
+            (result: Res, node, i) => {
+                if (!node.auth) {
+                    return result;
+                }
+
+                const [str, params] = createAuthAndParams({
+                    entity: node,
+                    operation: "disconnect",
+                    context,
+                    escapeQuotes: Boolean(insideDoWhen),
+                    allow: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_allow` },
+                });
+
+                if (!str) {
+                    return result;
+                }
+
+                result.disconnects.push(str);
+                result.params = { ...result.params, ...params };
+
+                return result;
+            },
+            { disconnects: [], params: {} }
+        ) as Res;
+
+        if (preAuth.disconnects.length) {
+            const quote = insideDoWhen ? `\\"` : `"`;
+            res.disconnects.push(`WITH ${[...withVars, _varName, relVarName].join(", ")}`);
+            res.disconnects.push(
+                `CALL apoc.util.validate(NOT(${preAuth.disconnects.join(
+                    " AND "
+                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+            );
+            res.params = { ...res.params, ...preAuth.params };
         }
 
         /* 
@@ -86,6 +130,7 @@ function createDisconnectAndParams({
                             parentVar: _varName,
                             context,
                             refNode: newRefNode as Node,
+                            parentNode: refNode,
                         });
                         r.disconnects.push(recurse[0]);
                         r.params = { ...r.params, ...recurse[1] };
@@ -98,6 +143,45 @@ function createDisconnectAndParams({
                 res.disconnects.push(reduced.disconnects.join("\n"));
                 res.params = { ...res.params, ...reduced.params };
             });
+        }
+
+        const postAuth = [parentNode, refNode].reduce(
+            (result: Res, node, i) => {
+                if (!node.auth) {
+                    return result;
+                }
+
+                const [str, params] = createAuthAndParams({
+                    entity: node,
+                    operation: "disconnect",
+                    context,
+                    escapeQuotes: Boolean(insideDoWhen),
+                    skipRoles: true,
+                    skipIsAuthenticated: true,
+                    bind: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_bind` },
+                });
+
+                if (!str) {
+                    return result;
+                }
+
+                result.disconnects.push(str);
+                result.params = { ...result.params, ...params };
+
+                return result;
+            },
+            { disconnects: [], params: {} }
+        ) as Res;
+
+        if (postAuth.disconnects.length) {
+            const quote = insideDoWhen ? `\\"` : `"`;
+            res.disconnects.push(`WITH ${[...withVars, _varName].join(", ")}`);
+            res.disconnects.push(
+                `CALL apoc.util.validate(NOT(${postAuth.disconnects.join(
+                    " AND "
+                )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+            );
+            res.params = { ...res.params, ...postAuth.params };
         }
 
         return res;

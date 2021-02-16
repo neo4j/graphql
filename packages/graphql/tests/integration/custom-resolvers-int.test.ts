@@ -419,15 +419,15 @@ describe("Custom Resolvers", () => {
             }
         });
 
-        describe("jwt", () => {
-            describe("should inject the jwt into cypher directive on queries and mutations", () => {
+        describe("auth", () => {
+            describe("should inject the auth into cypher directive on queries and mutations", () => {
                 test("query", async () => {
                     const session = driver.session();
 
                     const typeDefs = `
                         type Query {
                             userId: ID @cypher(statement: """
-                                RETURN $jwt.sub
+                                RETURN $auth.jwt.sub
                             """)
                         }
                     `;
@@ -475,7 +475,7 @@ describe("Custom Resolvers", () => {
     
                         type Mutation {
                             userId: ID @cypher(statement: """
-                                RETURN $jwt.sub
+                                RETURN $auth.jwt.sub
                             """)
                         }
                     `;
@@ -514,14 +514,14 @@ describe("Custom Resolvers", () => {
                 });
             });
 
-            test("should inject the jwt into cypher directive on fields", async () => {
+            test("should inject the auth into cypher directive on fields", async () => {
                 const session = driver.session();
 
                 const typeDefs = `
                     type User {
                         id: ID
                         userId: ID @cypher(statement: """
-                            WITH $jwt.sub as a
+                            WITH $auth.jwt.sub as a
                             RETURN a
                         """)
                     }

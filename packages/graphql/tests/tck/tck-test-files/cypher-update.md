@@ -89,7 +89,7 @@ CALL apoc.do.when(this_actors0 IS NOT NULL,
     RETURN count(*)
   ",
   "",
-  {this:this, this_actors0:this_actors0, this_update_actors0_name:$this_update_actors0_name}) YIELD value as _
+  {this:this, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name}) YIELD value as _
 
 RETURN this { .id } AS this
 ```
@@ -100,7 +100,12 @@ RETURN this { .id } AS this
 {
     "this_id": "1",
     "this_actors0_name": "old name",
-    "this_update_actors0_name": "new name"
+    "this_update_actors0_name": "new name",
+    "auth": {
+       "isAuthenticated": true,
+       "roles": [],
+       "jwt": {}
+    }
 }
 ```
 
@@ -157,12 +162,12 @@ CALL apoc.do.when(this_actors0 IS NOT NULL, "
         RETURN count(*)
     \",
       \"\",
-      {this_actors0:this_actors0, this_actors0_movies0:this_actors0_movies0, this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _
+      {this_actors0:this_actors0, this_actors0_movies0:this_actors0_movies0, auth:$auth,this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _
 
     RETURN count(*)
   ",
   "",
-  {this:this, this_actors0:this_actors0, this_update_actors0_name:$this_update_actors0_name,this_actors0_movies0_id:$this_actors0_movies0_id,this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _
+  {this:this, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name,this_actors0_movies0_id:$this_actors0_movies0_id,this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _
 
 RETURN this { .id } AS this
 ```
@@ -176,7 +181,12 @@ RETURN this { .id } AS this
     "this_actors0_movies0_id": "old movie title",
     "this_actors0_name": "old actor name",
     "this_update_actors0_movies0_title": "new movie title",
-    "this_update_actors0_name": "new actor name"
+    "this_update_actors0_name": "new actor name",
+    "auth": {
+       "isAuthenticated": true,
+       "roles": [],
+       "jwt": {}
+    }
 }
 ```
 
@@ -443,7 +453,7 @@ CALL apoc.do.when(this_actors0 IS NOT NULL, "
     RETURN count(*)
 ",
 "",
-{this:this, this_actors0:this_actors0, this_update_actors0_name:$this_update_actors0_name}) YIELD value as _
+{this:this, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name}) YIELD value as _
 WITH this
 OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_delete_actors0:Actor)
 WHERE this_delete_actors0.name = $this_delete_actors0_name
@@ -460,7 +470,12 @@ RETURN this { .id } AS this
     "this_id": "1",
     "this_actors0_name": "Actor to update",
     "this_update_actors0_name": "Updated name",
-    "this_delete_actors0_name": "Actor to delete"
+    "this_delete_actors0_name": "Actor to delete",
+    "auth": {
+        "isAuthenticated": true,
+        "jwt": {},
+        "roles": []
+    }
 }
 ```
 

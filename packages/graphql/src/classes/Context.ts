@@ -69,10 +69,6 @@ class Context {
 
         return jwt;
     }
-
-    getCypherParams(): any {
-        return this.graphQLContext.cypherParams || {};
-    }
 }
 
 export default Context;

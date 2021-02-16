@@ -8,11 +8,12 @@ import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import { GraphQLWhereArg, GraphQLOptionsArg, RelationField, AuthOperations } from "../types";
-import { checkRoles } from "../auth";
-import createAllowAndParams from "./create-allow-and-params";
+import createAuthAndParams from "./create-auth-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
+import createAuthParam from "./create-auth-param";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 
 function translateRead({
@@ -35,6 +36,7 @@ function translateRead({
     let skipStr = "";
     let limitStr = "";
     let sortStr = "";
+    let projAuth = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
 
@@ -46,6 +48,11 @@ function translateRead({
     });
     projStr = projection[0];
     cypherParams = { ...cypherParams, ...projection[1] };
+    if (projection[2]?.authStrs.length) {
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
+            " AND "
+        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+    }
 
     if (whereInput) {
         const where = createWhereAndParams({
@@ -59,14 +66,19 @@ function translateRead({
     }
 
     if (node.auth) {
-        const allowAndParams = createAllowAndParams({
+        const allowAndParams = createAuthAndParams({
             operation: "read",
-            node,
+            entity: node,
             context,
-            varName,
+            allow: {
+                parentNode: node,
+                varName,
+            },
         });
-        cypherParams = { ...cypherParams, ...allowAndParams[1] };
-        authStr = allowAndParams[0];
+        if (allowAndParams[0]) {
+            cypherParams = { ...cypherParams, ...allowAndParams[1] };
+            authStr = `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        }
     }
 
     if (optionsInput) {
@@ -108,6 +120,7 @@ function translateRead({
         whereStr,
         authStr,
         ...(sortStr ? [`WITH ${varName}`, sortStr] : []),
+        ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
         `RETURN ${varName} ${projStr} as ${varName}`,
         skipStr,
         limitStr,
@@ -158,12 +171,18 @@ function translateCreate({
     };
 
     /* so projection params don't conflict with create params. We only need to call createProjectionAndParams once. */
+    let projAuth = "";
     const projection = createProjectionAndParams({
         node,
         context,
         fieldsByTypeName,
         varName: "REPLACE_ME",
     });
+    if (projection[2]?.authStrs.length) {
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
+            " AND "
+        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+    }
 
     const replacedProjectionParams = Object.entries(projection[1]).reduce((res, [key, value]) => {
         return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
@@ -178,9 +197,13 @@ function translateCreate({
         )
         .join(", ");
 
-    const cypher = [`${createStrs.join("\n")}`, `\nRETURN ${projectionStr}`];
+    const authCalls = createStrs
+        .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
+        .join("\n");
 
-    return [cypher.join("\n"), { ...params, ...replacedProjectionParams }];
+    const cypher = [`${createStrs.join("\n")}`, authCalls, `\nRETURN ${projectionStr}`];
+
+    return [cypher.filter(Boolean).join("\n"), { ...params, ...replacedProjectionParams }];
 }
 
 function translateUpdate({
@@ -202,15 +225,14 @@ function translateUpdate({
         resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][pluralize(camelCase(node.name))]
             .fieldsByTypeName;
     const varName = "this";
-
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
-    let authStr = "";
     let updateStr = "";
     let connectStr = "";
     let disconnectStr = "";
     let createStr = "";
     let deleteStr = "";
+    let projAuth = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
 
@@ -223,17 +245,6 @@ function translateUpdate({
         });
         whereStr = where[0];
         cypherParams = { ...cypherParams, ...where[1] };
-    }
-
-    if (node.auth) {
-        const allowAndParams = createAllowAndParams({
-            operation: "update",
-            node,
-            context,
-            varName,
-        });
-        cypherParams = { ...cypherParams, ...allowAndParams[1] };
-        authStr = allowAndParams[0];
     }
 
     if (updateInput) {
@@ -262,6 +273,7 @@ function translateUpdate({
                 value: entry[1],
                 varName: `${varName}_disconnect_${entry[0]}`,
                 withVars: [varName],
+                parentNode: node,
             });
             disconnectStr = disconnectAndParams[0];
             cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
@@ -281,6 +293,7 @@ function translateUpdate({
                 value: entry[1],
                 varName: `${varName}_connect_${entry[0]}`,
                 withVars: [varName],
+                parentNode: node,
             });
             connectStr = connectAndParams[0];
             cypherParams = { ...cypherParams, ...connectAndParams[1] };
@@ -334,16 +347,21 @@ function translateUpdate({
     });
     projStr = projection[0];
     cypherParams = { ...cypherParams, ...projection[1] };
+    if (projection[2]?.authStrs.length) {
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
+            " AND "
+        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+    }
 
     const cypher = [
         matchStr,
         whereStr,
-        authStr,
         updateStr,
         connectStr,
         disconnectStr,
         createStr,
         deleteStr,
+        ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
         `RETURN ${varName} ${projStr} AS ${varName}`,
     ];
 
@@ -362,11 +380,11 @@ function translateDelete({
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
-
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
+    let preAuthStr = "";
     let deleteStr = "";
-    let authStr = "";
+    const authStr = "";
     let cypherParams: { [k: string]: any } = {};
 
     if (whereInput) {
@@ -380,15 +398,18 @@ function translateDelete({
         cypherParams = { ...cypherParams, ...where[1] };
     }
 
-    if (node.auth) {
-        const allowAndParams = createAllowAndParams({
-            operation: "delete",
-            node,
-            context,
+    const preAuth = createAuthAndParams({
+        operation: "delete",
+        entity: node,
+        context,
+        allow: {
+            parentNode: node,
             varName,
-        });
-        cypherParams = { ...cypherParams, ...allowAndParams[1] };
-        authStr = allowAndParams[0];
+        },
+    });
+    if (preAuth[0]) {
+        cypherParams = { ...cypherParams, ...preAuth[1] };
+        preAuthStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
     if (deleteInput) {
@@ -404,7 +425,7 @@ function translateDelete({
         cypherParams = { ...cypherParams, ...deleteAndParams[1] };
     }
 
-    const cypher = [matchStr, whereStr, deleteStr, authStr, `DETACH DELETE ${varName}`];
+    const cypher = [matchStr, whereStr, deleteStr, preAuthStr, authStr, `DETACH DELETE ${varName}`];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
 }
@@ -455,39 +476,49 @@ function translate({
         node = context.neoSchema.nodes.find((x) => camelCase(x.name) === pluralize.singular(resolveTree.name)) as Node;
     }
 
-    if (node.auth) {
-        checkRoles({ node, context, operation });
-    }
+    let query = "";
+    let params: any = {};
 
     switch (operation) {
         case "create":
-            return translateCreate({
+            [query, params] = translateCreate({
                 resolveTree,
                 node,
                 context,
             });
+            break;
 
         case "update":
-            return translateUpdate({
+            [query, params] = translateUpdate({
                 resolveTree,
                 node,
                 context,
             });
+            break;
 
         case "delete":
-            return translateDelete({
+            [query, params] = translateDelete({
                 resolveTree,
                 node,
                 context,
             });
+            break;
 
         default:
-            return translateRead({
+            [query, params] = translateRead({
                 resolveTree,
                 node,
                 context,
             });
+            break;
     }
+
+    // Its really difficult to know when users are using the `auth` param. For Simplicity it better to do the check here
+    if (query.includes("$auth.") || query.includes("auth: $auth") || query.includes("auth:$auth")) {
+        params.auth = createAuthParam({ context });
+    }
+
+    return [query, params];
 }
 
 export default translate;

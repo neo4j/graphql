@@ -25,6 +25,7 @@ describe("createProjectionAndParams", () => {
             relationFields: [],
             cypherFields: [],
             enumFields: [],
+            unionFields: [],
             scalarFields: [],
             primitiveFields: [
                 {
@@ -47,6 +48,8 @@ describe("createProjectionAndParams", () => {
             pointFields: [],
             interfaceFields: [],
             objectFields: [],
+            authableFields: [],
+            mutableFields: [],
         };
 
         // @ts-ignore
