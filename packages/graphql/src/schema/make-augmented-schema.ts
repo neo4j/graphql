@@ -26,8 +26,7 @@ import getAuth from "./get-auth";
 import { PrimitiveField, Resolvers, Auth } from "../types";
 import { upperFirstLetter } from "../utils";
 import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
-import mergeExtensionsIntoAST from "./merge-extensions-into-ast";
-import mergeTypeDefs from "./merge-typedefs";
+import mergeTypeDefs from "./merge-type-defs";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import { Float, Int, DateTime, ID } from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
@@ -41,7 +40,7 @@ import objectFieldsToComposeFields from "./object-fields-to-compose";
 function makeAugmentedSchema(
     neoSchema: Neo4jGraphQL
 ): { typeDefs: string; resolvers: Resolvers; schema: GraphQLSchema; nodes: Node[] } {
-    const document = mergeExtensionsIntoAST(mergeTypeDefs(neoSchema.input.typeDefs));
+    const document = mergeTypeDefs(neoSchema.input.typeDefs);
     const composer = new SchemaComposer();
 
     // graphql-compose will break if the Point and CartesianPoint types are created but not used,

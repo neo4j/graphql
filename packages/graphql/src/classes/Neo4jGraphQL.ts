@@ -1,8 +1,7 @@
 import { Driver } from "neo4j-driver";
-import { DocumentNode, GraphQLSchema } from "graphql";
-import { SchemaComposer } from "graphql-compose";
+import { GraphQLSchema } from "graphql";
 import { TypeDefs, Resolvers, SchemaDirectives } from "../types";
-import { makeAugmentedSchema, mergeExtensionsIntoAST, mergeTypeDefs } from "../schema";
+import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 
 export interface Neo4jGraphQLConstructor {
@@ -28,7 +27,6 @@ class Neo4jGraphQL {
         this.input = input;
 
         const { nodes, resolvers, schema, typeDefs } = makeAugmentedSchema(this);
-
         this.nodes = nodes;
         this.resolvers = resolvers;
         this.schema = schema;
