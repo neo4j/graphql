@@ -3,7 +3,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import neo4j from "./neo4j";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../src/classes";
 
 describe("enums", () => {
     let driver: Driver;
@@ -34,7 +34,7 @@ describe("enums", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs, resolvers: { Status: statusResolver } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers: { Status: statusResolver } });
 
         const id = generate({
             charset: "alphabetic",

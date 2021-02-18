@@ -1,6 +1,6 @@
 import { graphql } from "graphql";
 import { describe, test, expect } from "@jest/globals";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../src/classes";
 import translate from "../../src/translate/translate";
 import { trimmer } from "../../src/utils";
 
@@ -12,7 +12,7 @@ describe("translate", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs, resolvers: { Query: { movies: MoviesResolver } } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers: { Query: { movies: MoviesResolver } } });
 
         function MoviesResolver(_root, _args, context, resolveInfo) {
             context.neoSchema = neoSchema;

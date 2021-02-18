@@ -1,6 +1,6 @@
 import { describe, test, expect } from "@jest/globals";
 import createDisconnectAndParams from "../../../src/translate/create-disconnect-and-params";
-import { NeoSchema, Node, Context } from "../../../src/classes";
+import { Neo4jGraphQL, Node, Context } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
 describe("createDisconnectAndParams", () => {
@@ -41,7 +41,7 @@ describe("createDisconnectAndParams", () => {
         };
 
         // @ts-ignore
-        const neoSchema: NeoSchema = {
+        const neoSchema: Neo4jGraphQL = {
             nodes: [node],
         };
 

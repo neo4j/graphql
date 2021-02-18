@@ -3,7 +3,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { gql } from "apollo-server";
 import neo4j from "./neo4j";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../src/classes";
 
 describe("delete", () => {
     let driver: Driver;
@@ -25,7 +25,7 @@ describe("delete", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -82,7 +82,7 @@ describe("delete", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -145,7 +145,7 @@ describe("delete", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -227,7 +227,7 @@ describe("delete", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id1 = generate({
             charset: "alphabetic",

@@ -6,7 +6,7 @@ import { ApolloServer, gql } from "apollo-server";
 import { createTestClient } from "apollo-server-testing";
 import neo4j from "./neo4j";
 import { constructTestServer } from "./utils";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../src/classes";
 
 describe("CartesianPoint", () => {
     let driver: Driver;
@@ -21,7 +21,7 @@ describe("CartesianPoint", () => {
                 location: CartesianPoint!
             }
         `;
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
         server = constructTestServer(neoSchema, driver);
     });
 

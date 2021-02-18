@@ -5,7 +5,7 @@ import { generate } from "randomstring";
 import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import pluralize from "pluralize";
 import neo4j from "./neo4j";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../src/classes";
 
 describe("DateTime", () => {
     let driver: Driver;
@@ -31,7 +31,7 @@ describe("DateTime", () => {
 
             const date = new Date();
 
-            const neoSchema = makeAugmentedSchema({
+            const neoSchema = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -84,7 +84,7 @@ describe("DateTime", () => {
 
             const date = new Date();
 
-            const neoSchema = makeAugmentedSchema({
+            const neoSchema = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -147,7 +147,7 @@ describe("DateTime", () => {
 
             const date = new Date();
 
-            const neoSchema = makeAugmentedSchema({
+            const neoSchema = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -196,7 +196,7 @@ describe("DateTime", () => {
 
             const date = new Date();
 
-            const neoSchema = makeAugmentedSchema({
+            const neoSchema = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -244,7 +244,7 @@ describe("DateTime", () => {
 
             const date = new Date();
 
-            const neoSchema = makeAugmentedSchema({
+            const neoSchema = new Neo4jGraphQL({
                 typeDefs,
             });
 

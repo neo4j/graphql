@@ -1,8 +1,8 @@
-import { makeAugmentedSchema } from "@neo4j/graphql";
+import { Neo4jGraphQL } from "@neo4j/graphql";
 
 // Augment schema with simple typeDefs input
 const typeDefs = `type Movie{ id: ID!}`;
-const neoSchema = makeAugmentedSchema({ typeDefs });
+const neoSchema = new Neo4jGraphQL({ typeDefs });
 
 // A "Movies" query should have been generated
 const generatedTypeDefsMatch = /Movies/;

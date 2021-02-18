@@ -1,3 +1,2 @@
-export { MakeAugmentedSchemaOptions, makeAugmentedSchema } from "./schema";
 export { translate } from "./translate";
-export { OGM, Model } from "./classes";
+export { OGM, Model, Neo4jGraphQL } from "./classes";

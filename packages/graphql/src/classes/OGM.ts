@@ -1,8 +1,8 @@
 import { DefinitionNode, FieldDefinitionNode } from "graphql";
 import { Driver } from "neo4j-driver";
 import { TypeDefs, Resolvers, BaseField, SchemaDirectives } from "../types";
-import { makeAugmentedSchema, mergeTypeDefs, mergeExtensionsIntoAST } from "../schema";
-import NeoSchema from "./NeoSchema";
+import { mergeTypeDefs, mergeExtensionsIntoAST } from "../schema";
+import Neo4jGraphQL from "./Neo4jGraphQL";
 import Model from "./Model";
 
 export interface OGMConstructor {
@@ -47,14 +47,14 @@ function filterTypeDefs(typeDefs: TypeDefs) {
 }
 
 class OGM {
-    public neoSchema: NeoSchema;
+    public neoSchema: Neo4jGraphQL;
 
     public models: Model[];
 
     constructor(input: OGMConstructor) {
         const typeDefs = filterTypeDefs(input.typeDefs);
 
-        this.neoSchema = makeAugmentedSchema({
+        this.neoSchema = new Neo4jGraphQL({
             typeDefs,
             ...(input.driver ? { context: { driver: input.driver } } : {}),
             resolvers: input.resolvers,

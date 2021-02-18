@@ -1,6 +1,6 @@
 import { describe, test, expect } from "@jest/globals";
 import createUpdateAndParams from "../../../src/translate/create-update-and-params";
-import { NeoSchema, Context, Node } from "../../../src/classes";
+import { Neo4jGraphQL, Context, Node } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
 describe("createUpdateAndParams", () => {
@@ -39,7 +39,7 @@ describe("createUpdateAndParams", () => {
         };
 
         // @ts-ignore
-        const neoSchema: NeoSchema = {
+        const neoSchema: Neo4jGraphQL = {
             nodes: [node],
         };
 

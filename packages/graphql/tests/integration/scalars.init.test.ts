@@ -4,7 +4,7 @@ import { Kind } from "graphql/language";
 import { generate } from "randomstring";
 import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import neo4j from "./neo4j";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../src/classes";
 
 const GraphQLUpperCaseString = new GraphQLScalarType({
     name: "UpperCaseString",
@@ -47,7 +47,7 @@ describe("scalars", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({
+        const neoSchema = new Neo4jGraphQL({
             typeDefs,
             resolvers: { UpperCaseString: GraphQLUpperCaseString },
         });
@@ -98,7 +98,7 @@ describe("scalars", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({
+        const neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
 
