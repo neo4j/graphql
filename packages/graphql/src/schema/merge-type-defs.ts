@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-syntax */
-import { DefinitionNode, DocumentNode, FieldDefinitionNode, Kind } from "graphql";
+import { DefinitionNode, DocumentNode, FieldDefinitionNode, Kind, parse, print } from "graphql";
+import { TypeDefs } from "../types";
 
 function getKindInfo(def: DefinitionNode): { isExtension: boolean; typeName: string } {
     switch (def.kind) {
@@ -248,4 +249,25 @@ function mergeExtensionsIntoAST(document: DocumentNode): DocumentNode {
     };
 }
 
-export default mergeExtensionsIntoAST;
+function mergeTypeDefs(typeDefs: TypeDefs) {
+    const arrayOfTypeDefs = Array.isArray(typeDefs) ? typeDefs : [typeDefs];
+
+    const merged = {
+        kind: "Document",
+        definitions: arrayOfTypeDefs.reduce((acc: DefinitionNode[], type) => {
+            if (typeof type === "string") {
+                return [...acc, ...parse(type).definitions];
+            }
+
+            if (typeof type === "function") {
+                return [...acc, ...mergeTypeDefs(type()).definitions];
+            }
+
+            return [...acc, ...parse(print(type)).definitions];
+        }, []),
+    };
+
+    return mergeExtensionsIntoAST(merged);
+}
+
+export default mergeTypeDefs;
