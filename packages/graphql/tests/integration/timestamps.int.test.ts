@@ -3,7 +3,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import neo4j from "./neo4j";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../src/classes";
 
 describe("TimeStamps", () => {
     let driver: Driver;
@@ -27,7 +27,7 @@ describe("TimeStamps", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({
+            const neoSchema = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -83,7 +83,7 @@ describe("TimeStamps", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({
+            const neoSchema = new Neo4jGraphQL({
                 typeDefs,
             });
 

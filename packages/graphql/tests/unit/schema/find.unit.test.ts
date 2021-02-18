@@ -1,10 +1,10 @@
-import { NeoSchema, Node } from "../../../src/classes";
-import find from "../../../src/schema/find";
+import { Neo4jGraphQL, Node } from "../../../src/classes";
+import { findResolver } from "../../../src/schema/resolvers";
 
 describe("find", () => {
     test("should return the correct; type, args and resolve", () => {
         // @ts-ignore
-        const neoSchema: NeoSchema = {};
+        const neoSchema: Neo4jGraphQL = {};
 
         // @ts-ignore
         const node: Node = {
@@ -12,7 +12,7 @@ describe("find", () => {
             name: "Movie",
         };
 
-        const result = find({ node, getSchema: () => neoSchema });
+        const result = findResolver({ node, getSchema: () => neoSchema });
         expect(result.type).toEqual(`[Movie]!`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({

@@ -6,7 +6,7 @@ import jsonwebtoken from "jsonwebtoken";
 import { describe, beforeAll, afterAll, test, expect, it } from "@jest/globals";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
-import makeAugmentedSchema from "../../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("auth/roles", () => {
     let driver: Driver;
@@ -35,7 +35,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 {
@@ -74,7 +74,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 {
@@ -118,7 +118,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -162,7 +162,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -208,7 +208,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -252,7 +252,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -322,7 +322,7 @@ describe("auth/roles", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -405,7 +405,7 @@ describe("auth/roles", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -489,7 +489,7 @@ describe("auth/roles", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -572,7 +572,7 @@ describe("auth/roles", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -631,7 +631,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -679,7 +679,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const userId = generate({
                 charset: "alphabetic",
@@ -736,7 +736,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 query {
@@ -779,7 +779,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -824,7 +824,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 {

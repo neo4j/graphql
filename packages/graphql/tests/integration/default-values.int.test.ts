@@ -3,7 +3,7 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../src/classes";
 import neo4j from "./neo4j";
 
 describe("Default values", () => {
@@ -34,7 +34,7 @@ describe("Default values", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({
+        const neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
 
@@ -91,7 +91,7 @@ describe("Default values", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({
+        const neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
 

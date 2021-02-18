@@ -1,12 +1,12 @@
 import { describe, test, expect } from "@jest/globals";
-import { NeoSchema, Node } from "../../../src/classes";
-import cypherResolver from "../../../src/schema/cypher-resolver";
+import { Neo4jGraphQL } from "../../../src/classes";
+import { cypherResolver } from "../../../src/schema/resolvers";
 import { BaseField } from "../../../src/types";
 
 describe("cypherResolver", () => {
     test("should return the correct; type, args and resolve", () => {
         // @ts-ignore
-        const neoSchema: NeoSchema = {};
+        const neoSchema: Neo4jGraphQL = {};
 
         // @ts-ignore
         const field: BaseField = {

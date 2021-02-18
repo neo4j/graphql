@@ -1,10 +1,10 @@
-import { NeoSchema, Node } from "../../../src/classes";
-import deleteResolver from "../../../src/schema/delete";
+import { Neo4jGraphQL, Node } from "../../../src/classes";
+import { deleteResolver } from "../../../src/schema/resolvers";
 
 describe("delete", () => {
     test("should return the correct; type, args and resolve", () => {
         // @ts-ignore
-        const neoSchema: NeoSchema = {};
+        const neoSchema: Neo4jGraphQL = {};
 
         // @ts-ignore
         const node: Node = {

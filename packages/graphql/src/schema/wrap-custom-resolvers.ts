@@ -1,4 +1,4 @@
-import { Context, NeoSchema } from "../classes";
+import { Context, Neo4jGraphQL } from "../classes";
 import createAuthParam from "../translate/create-auth-param";
 import { Resolvers } from "../types";
 
@@ -9,7 +9,7 @@ function wrapCustomResolvers({
     getNeoSchema,
 }: {
     resolvers: Resolvers;
-    getNeoSchema: () => NeoSchema;
+    getNeoSchema: () => Neo4jGraphQL;
     nodeNames: string[];
     generatedResolvers: any;
 }): Resolvers {

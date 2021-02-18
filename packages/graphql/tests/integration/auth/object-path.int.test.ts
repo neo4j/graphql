@@ -6,7 +6,7 @@ import { Socket } from "net";
 import jsonwebtoken from "jsonwebtoken";
 import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import neo4j from "../neo4j";
-import makeAugmentedSchema from "../../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("auth/object-path", () => {
     let driver: Driver;
@@ -58,7 +58,7 @@ describe("auth/object-path", () => {
             process.env.JWT_SECRET as string
         );
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(`
@@ -114,7 +114,7 @@ describe("auth/object-path", () => {
             process.env.JWT_SECRET as string
         );
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(`

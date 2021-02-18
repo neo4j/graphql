@@ -3,7 +3,7 @@ import { graphql } from "graphql";
 import isUUID from "is-uuid";
 import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import neo4j from "./neo4j";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../src/classes";
 
 describe("autogenerate", () => {
     let driver: Driver;
@@ -26,7 +26,7 @@ describe("autogenerate", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const create = `
             mutation {
@@ -72,7 +72,7 @@ describe("autogenerate", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const create = `
             mutation {

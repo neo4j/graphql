@@ -3,12 +3,12 @@ import pluralize from "pluralize";
 import camelCase from "camelcase";
 import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
 import { upperFirstLetter } from "../utils";
-import NeoSchema from "./NeoSchema";
+import Neo4jGraphQL from "./Neo4jGraphQL";
 
 export interface ModelConstructor {
     name: string;
     selectionSet: string;
-    neoSchema: NeoSchema;
+    neoSchema: Neo4jGraphQL;
 }
 
 function printSelectionSet(selectionSet: string | DocumentNode): string {
@@ -25,7 +25,7 @@ class Model {
 
     private camelCaseName: string;
 
-    private neoSchema: NeoSchema;
+    private neoSchema: Neo4jGraphQL;
 
     protected selectionSet: string;
 
