@@ -6,14 +6,13 @@ import { execute } from "../utils";
 import { translate } from "../translate";
 import { Neo4jGraphQL, Node, Context } from "../classes";
 import { BaseField } from "../types";
-import graphqlArgsToCompose from "./graphql-arg-to-compose";
+import { graphqlArgsToCompose } from "./to-compose";
 import createAuthAndParams from "../translate/create-auth-and-params";
 import createAuthParam from "../translate/create-auth-param";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
-export function updateResolver({ node, getSchema }: { node: Node; getSchema: () => Neo4jGraphQL }) {
+export function updateResolver({ node, neoSchema }: { node: Node; neoSchema: Neo4jGraphQL }) {
     async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
-        const neoSchema = getSchema();
         context.neoSchema = neoSchema;
         if (neoSchema.input.context) {
             context = { ...context, ...neoSchema.input.context };
@@ -55,9 +54,8 @@ export function updateResolver({ node, getSchema }: { node: Node; getSchema: () 
     };
 }
 
-export function deleteResolver({ node, getSchema }: { node: Node; getSchema: () => Neo4jGraphQL }) {
+export function deleteResolver({ node, neoSchema }: { node: Node; neoSchema: Neo4jGraphQL }) {
     async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
-        const neoSchema = getSchema();
         context.neoSchema = neoSchema;
         if (neoSchema.input.context) {
             context = { ...context, ...neoSchema.input.context };
@@ -96,9 +94,8 @@ export function deleteResolver({ node, getSchema }: { node: Node; getSchema: () 
     };
 }
 
-export function createResolver({ node, getSchema }: { node: Node; getSchema: () => Neo4jGraphQL }) {
+export function createResolver({ node, neoSchema }: { node: Node; neoSchema: Neo4jGraphQL }) {
     async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
-        const neoSchema = getSchema();
         context.neoSchema = neoSchema;
         if (neoSchema.input.context) {
             context = { ...context, ...neoSchema.input.context };
@@ -131,9 +128,8 @@ export function createResolver({ node, getSchema }: { node: Node; getSchema: () 
     };
 }
 
-export function findResolver({ node, getSchema }: { node: Node; getSchema: () => Neo4jGraphQL }) {
+export function findResolver({ node, neoSchema }: { node: Node; neoSchema: Neo4jGraphQL }) {
     async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
-        const neoSchema = getSchema();
         context.neoSchema = neoSchema;
         if (neoSchema.input.context) {
             context = { ...context, ...neoSchema.input.context };
@@ -170,15 +166,13 @@ export function findResolver({ node, getSchema }: { node: Node; getSchema: () =>
 export function cypherResolver({
     field,
     statement,
-    getSchema,
+    neoSchema,
 }: {
     field: BaseField;
     statement: string;
-    getSchema: () => Neo4jGraphQL;
+    neoSchema: Neo4jGraphQL;
 }) {
     async function resolve(_root: any, args: any, graphQLContext: any) {
-        const neoSchema = getSchema();
-
         const { driver } = graphQLContext;
         if (!driver) {
             throw new Error("context.driver missing");

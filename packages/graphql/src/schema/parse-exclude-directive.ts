@@ -1,5 +1,5 @@
 import { DirectiveNode, valueFromASTUntyped } from "graphql";
-import { Node, Exclude } from "../classes";
+import { Exclude } from "../classes";
 
 function parseExcludeDirective(excludeDirective: DirectiveNode, type: string) {
     if (!excludeDirective || excludeDirective.name.value !== "exclude") {
