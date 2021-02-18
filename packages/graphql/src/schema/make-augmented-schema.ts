@@ -34,8 +34,7 @@ import wrapCustomResolvers from "./wrap-custom-resolvers";
 import getCustomResolvers from "./get-custom-resolvers";
 import getObjFieldMeta from "./get-obj-field-meta";
 import * as point from "./point";
-import graphqlDirectivesToCompose from "./graphql-directives-to-compose";
-import objectFieldsToComposeFields from "./object-fields-to-compose";
+import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
 
 function makeAugmentedSchema(
     neoSchema: Neo4jGraphQL
@@ -553,25 +552,25 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
-                [pluralize(camelCase(node.name))]: findResolver({ node, getSchema: () => neoSchema }),
+                [pluralize(camelCase(node.name))]: findResolver({ node, neoSchema }),
             });
         }
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
-                [`create${pluralize(node.name)}`]: createResolver({ node, getSchema: () => neoSchema }),
+                [`create${pluralize(node.name)}`]: createResolver({ node, neoSchema }),
             });
         }
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
-                [`delete${pluralize(node.name)}`]: deleteResolver({ node, getSchema: () => neoSchema }),
+                [`delete${pluralize(node.name)}`]: deleteResolver({ node, neoSchema }),
             });
         }
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${pluralize(node.name)}`]: updateResolver({ node, getSchema: () => neoSchema }),
+                [`update${pluralize(node.name)}`]: updateResolver({ node, neoSchema }),
             });
         }
     });
@@ -607,7 +606,7 @@ function makeAugmentedSchema(
                 const customResolver = cypherResolver({
                     field,
                     statement: field.statement,
-                    getSchema: () => neoSchema,
+                    neoSchema,
                 });
 
                 const composedField = objectFieldsToComposeFields([field])[field.fieldName];
