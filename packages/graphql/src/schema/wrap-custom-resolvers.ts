@@ -1,4 +1,4 @@
-import { Context, Neo4jGraphQL } from "../classes";
+import { Context } from "../classes";
 import createAuthParam from "../translate/create-auth-param";
 import { Resolvers } from "../types";
 
@@ -6,10 +6,10 @@ function wrapCustomResolvers({
     resolvers,
     generatedResolvers,
     nodeNames,
-    getNeoSchema,
+    neoSchema,
 }: {
     resolvers: Resolvers;
-    getNeoSchema: () => Neo4jGraphQL;
+    neoSchema;
     nodeNames: string[];
     generatedResolvers: any;
 }): Resolvers {
@@ -71,7 +71,6 @@ function wrapCustomResolvers({
                         throw new Error("context.diver missing");
                     }
 
-                    const neoSchema = getNeoSchema();
                     const context = new Context({ neoSchema, driver, graphQLContext: args[2] });
                     const auth = createAuthParam({ context });
 
