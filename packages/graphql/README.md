@@ -25,7 +25,7 @@ $ npm install graphql
 Import libraries using either `import`:
 
 ```js
-import { makeAugmentedSchema } from "@neo4j/graphql";
+import { Neo4jGraphQL } from "@neo4j/graphql";
 import * as neo4j from "neo4j-driver";
 import { ApolloServer } from "apollo-server";
 ```
@@ -33,7 +33,7 @@ import { ApolloServer } from "apollo-server";
 Or `require`:
 
 ```js
-const { makeAugmentedSchema } = require("@neo4j/graphql");
+const { Neo4jGraphQL } = require("@neo4j/graphql");
 const neo4j = require("neo4j-driver");
 const { ApolloServer } = require("apollo-server");
 ```
@@ -55,7 +55,7 @@ const typeDefs = `
     }
 `;
 
-const neoSchema = makeAugmentedSchema({ typeDefs });
+const neoSchema = new Neo4jGraphQL({ typeDefs });
 
 const driver = neo4j.driver(
     "bolt://localhost:7687",
