@@ -681,7 +681,7 @@ function makeAugmentedSchema(
     if (neoSchema.input.resolvers) {
         generatedResolvers = wrapCustomResolvers({
             generatedResolvers,
-            getNeoSchema: () => neoSchema,
+            neoSchema,
             nodeNames,
             resolvers: neoSchema.input.resolvers,
         });
