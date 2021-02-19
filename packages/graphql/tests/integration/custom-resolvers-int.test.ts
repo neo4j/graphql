@@ -6,7 +6,7 @@ import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import jsonwebtoken from "jsonwebtoken";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../src/classes";
 import neo4j from "./neo4j";
 
 describe("Custom Resolvers", () => {
@@ -36,7 +36,7 @@ describe("Custom Resolvers", () => {
             return (root.id as string).toUpperCase();
         }
 
-        const neoSchema = makeAugmentedSchema({
+        const neoSchema = new Neo4jGraphQL({
             typeDefs,
             resolvers: { Movie: { custom: customResolver } },
         });
@@ -94,7 +94,7 @@ describe("Custom Resolvers", () => {
             return id;
         }
 
-        const neoSchema = makeAugmentedSchema({
+        const neoSchema = new Neo4jGraphQL({
             typeDefs,
             resolvers: { Query: { id: customResolver } },
         });
@@ -136,7 +136,7 @@ describe("Custom Resolvers", () => {
             return id;
         }
 
-        const neoSchema = makeAugmentedSchema({
+        const neoSchema = new Neo4jGraphQL({
             typeDefs,
             resolvers: { Mutation: { id: customResolver } },
         });
@@ -174,7 +174,7 @@ describe("Custom Resolvers", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = makeAugmentedSchema({
+        const neoSchema = new Neo4jGraphQL({
             typeDefs,
             resolvers: {
                 Subscription: {
@@ -326,7 +326,7 @@ describe("Custom Resolvers", () => {
 
                     const session = driver.session();
 
-                    const neoSchema = makeAugmentedSchema({
+                    const neoSchema = new Neo4jGraphQL({
                         typeDefs,
                     });
 
@@ -400,7 +400,7 @@ describe("Custom Resolvers", () => {
 
             const session = driver.session();
 
-            const neoSchema = makeAugmentedSchema({
+            const neoSchema = new Neo4jGraphQL({
                 typeDefs,
             });
 
@@ -438,7 +438,7 @@ describe("Custom Resolvers", () => {
 
                     const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const query = `
                         {
@@ -486,7 +486,7 @@ describe("Custom Resolvers", () => {
 
                     const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const query = `
                         mutation {
@@ -533,7 +533,7 @@ describe("Custom Resolvers", () => {
 
                 const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
-                const neoSchema = makeAugmentedSchema({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                 const query = `
                 {

@@ -1,8 +1,40 @@
 import { parse, print } from "graphql";
 import { describe, test, expect } from "@jest/globals";
-import mergeExtensionsIntoAST from "../../../src/schema/merge-extensions-into-ast";
+import mergeTypeDefs from "../../../src/schema/merge-type-defs";
 
-describe("mergeExtensionsIntoAST", () => {
+describe("mergeTypeDefs", () => {
+    test("should return merged typeDefs", () => {
+        const a = `
+            type A {
+                id: ID
+            }
+       `;
+
+        const b = parse(`
+            type B {
+                id: ID
+            }
+       `);
+
+        const merged = mergeTypeDefs([a, b]);
+
+        const printMerge = print(merged);
+
+        expect(printMerge).toEqual(
+            print(
+                parse(`
+            type A {
+                id: ID
+            }
+
+            type B {
+                id: ID
+            }
+       `)
+            )
+        );
+    });
+
     test("should merge OBJECT_TYPE_DEFINITION", () => {
         const typeDefs = `
             type Query {
@@ -17,7 +49,7 @@ describe("mergeExtensionsIntoAST", () => {
 
         const document = parse(typeDefs);
 
-        const mergedDocument = mergeExtensionsIntoAST(document);
+        const mergedDocument = mergeTypeDefs(document);
 
         const expected = print(
             parse(`
@@ -40,7 +72,7 @@ describe("mergeExtensionsIntoAST", () => {
 
         const document = parse(typeDefs);
 
-        const mergedDocument = mergeExtensionsIntoAST(document);
+        const mergedDocument = mergeTypeDefs(document);
 
         const expected = print(
             parse(`
@@ -66,7 +98,7 @@ describe("mergeExtensionsIntoAST", () => {
 
         const document = parse(typeDefs);
 
-        const mergedDocument = mergeExtensionsIntoAST(document);
+        const mergedDocument = mergeTypeDefs(document);
 
         const expected = print(
             parse(`
@@ -91,7 +123,7 @@ describe("mergeExtensionsIntoAST", () => {
 
         const document = parse(typeDefs);
 
-        const mergedDocument = mergeExtensionsIntoAST(document);
+        const mergedDocument = mergeTypeDefs(document);
 
         const expected = print(
             parse(`
@@ -115,7 +147,7 @@ describe("mergeExtensionsIntoAST", () => {
 
         const document = parse(typeDefs);
 
-        const mergedDocument = mergeExtensionsIntoAST(document);
+        const mergedDocument = mergeTypeDefs(document);
 
         const expected = print(
             parse(`
@@ -142,7 +174,7 @@ describe("mergeExtensionsIntoAST", () => {
 
         const document = parse(typeDefs);
 
-        const mergedDocument = mergeExtensionsIntoAST(document);
+        const mergedDocument = mergeTypeDefs(document);
 
         const expected = print(
             parse(`
@@ -169,7 +201,7 @@ describe("mergeExtensionsIntoAST", () => {
 
         const document = parse(typeDefs);
 
-        const mergedDocument = mergeExtensionsIntoAST(document);
+        const mergedDocument = mergeTypeDefs(document);
 
         const expected = print(
             parse(`

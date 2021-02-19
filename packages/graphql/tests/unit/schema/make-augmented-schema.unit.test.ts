@@ -23,7 +23,8 @@ describe("makeAugmentedSchema", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        // @ts-ignore
+        const neoSchema = makeAugmentedSchema({ input: { typeDefs } });
         const document = parse(printSchema(neoSchema.schema));
         const queryObject = document.definitions.find(
             (x) => x.kind === "ObjectTypeDefinition" && x.name.value === "Query"
@@ -88,7 +89,8 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            makeAugmentedSchema({ typeDefs });
+            // @ts-ignore
+            makeAugmentedSchema({ input: { typeDefs } });
 
             throw new Error("something went wrong if i throw");
         } catch (error) {
@@ -110,7 +112,8 @@ describe("makeAugmentedSchema", () => {
             }
             `;
 
-            makeAugmentedSchema({ typeDefs });
+            // @ts-ignore
+            makeAugmentedSchema({ input: { typeDefs } });
 
             throw new Error("something went wrong if i throw");
         } catch (error) {
@@ -129,7 +132,8 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            makeAugmentedSchema({ typeDefs });
+            // @ts-ignore
+            makeAugmentedSchema({ input: { typeDefs } });
 
             throw new Error("something went wrong if i throw");
         } catch (error) {
@@ -145,7 +149,8 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            makeAugmentedSchema({ typeDefs });
+            // @ts-ignore
+            makeAugmentedSchema({ input: { typeDefs } });
 
             throw new Error("something went wrong if i throw");
         } catch (error) {
@@ -161,7 +166,8 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            makeAugmentedSchema({ typeDefs });
+            // @ts-ignore
+            makeAugmentedSchema({ input: { typeDefs } });
 
             throw new Error("something went wrong if i throw");
         } catch (error) {
@@ -177,7 +183,8 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            makeAugmentedSchema({ typeDefs });
+            // @ts-ignore
+            makeAugmentedSchema({ input: { typeDefs } });
 
             throw new Error("something went wrong if i throw");
         } catch (error) {
@@ -193,7 +200,8 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            makeAugmentedSchema({ typeDefs });
+            // @ts-ignore
+            makeAugmentedSchema({ input: { typeDefs } });
 
             throw new Error("something went wrong if i throw");
         } catch (error) {
@@ -209,7 +217,8 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            makeAugmentedSchema({ typeDefs });
+            // @ts-ignore
+            makeAugmentedSchema({ input: { typeDefs } });
 
             throw new Error("something went wrong if i throw");
         } catch (error) {
@@ -225,7 +234,8 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            makeAugmentedSchema({ typeDefs });
+            // @ts-ignore
+            makeAugmentedSchema({ input: { typeDefs } });
 
             throw new Error("something went wrong if i throw");
         } catch (error) {
@@ -241,7 +251,8 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-            makeAugmentedSchema({ typeDefs });
+            // @ts-ignore
+            makeAugmentedSchema({ input: { typeDefs } });
 
             throw new Error("something went wrong if i throw");
         } catch (error) {

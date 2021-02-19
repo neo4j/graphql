@@ -18,7 +18,7 @@ import { Socket } from "net";
 import { beforeAll, afterAll, describe, expect } from "@jest/globals";
 import { SchemaDirectiveVisitor, printSchemaWithDirectives } from "@graphql-tools/utils";
 import { translate } from "../../src/translate";
-import { makeAugmentedSchema } from "../../src";
+import { Neo4jGraphQL } from "../../src";
 import { noGraphQLErrors } from "../../../../scripts/tests/utils";
 import { generateTestCasesFromMd, Test, TestCase } from "./utils/generate-test-cases-from-md.utils";
 import { trimmer } from "../../src/utils";
@@ -56,7 +56,7 @@ describe("TCK Generated tests", () => {
         describe(file, () => {
             if (kind === "cypher") {
                 const document = parse(schema as string);
-                const neoSchema = makeAugmentedSchema({ typeDefs: schema as string });
+                const neoSchema = new Neo4jGraphQL({ typeDefs: schema as string });
 
                 // @ts-ignore
                 test.each(tests.map((t) => [t.name, t as Test]))("%s", async (_, obj) => {
@@ -199,7 +199,7 @@ describe("TCK Generated tests", () => {
                     const test = obj as Test;
 
                     const typeDefs = test.typeDefs as string;
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const schemaOutPut = test.schemaOutPut as string;
                     const resolvers = neoSchema.resolvers;

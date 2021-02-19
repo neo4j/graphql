@@ -1,6 +1,6 @@
 import { describe, test, expect } from "@jest/globals";
 import createProjectionAndParams from "../../../src/translate/create-projection-and-params";
-import { NeoSchema, Context, Node } from "../../../src/classes";
+import { Neo4jGraphQL, Context, Node } from "../../../src/classes";
 
 describe("createProjectionAndParams", () => {
     test("should be a function", () => {
@@ -53,7 +53,7 @@ describe("createProjectionAndParams", () => {
         };
 
         // @ts-ignore
-        const neoSchema: NeoSchema = {
+        const neoSchema: Neo4jGraphQL = {
             nodes: [node],
         };
 

@@ -1,18 +1,18 @@
 import { IncomingMessage } from "http";
 import { Driver } from "neo4j-driver";
 import { verifyAndDecodeToken } from "../auth";
-import NeoSchema from "./NeoSchema";
+import Neo4jGraphQL from "./Neo4jGraphQL";
 
 export interface ContextConstructor {
     graphQLContext: any;
-    neoSchema: NeoSchema;
+    neoSchema: Neo4jGraphQL;
     driver: Driver;
 }
 
 class Context {
     readonly graphQLContext: any;
 
-    readonly neoSchema: NeoSchema;
+    readonly neoSchema: Neo4jGraphQL;
 
     readonly driver: Driver;
 

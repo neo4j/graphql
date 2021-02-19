@@ -6,7 +6,7 @@ import { Socket } from "net";
 import jsonwebtoken from "jsonwebtoken";
 import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import neo4j from "../neo4j";
-import makeAugmentedSchema from "../../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("auth/custom-resolvers", () => {
     let driver: Driver;
@@ -53,7 +53,7 @@ describe("auth/custom-resolvers", () => {
                 process.env.JWT_SECRET as string
             );
 
-            const neoSchema = makeAugmentedSchema({
+            const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 resolvers: {
                     Query: {
@@ -107,7 +107,7 @@ describe("auth/custom-resolvers", () => {
                 process.env.JWT_SECRET as string
             );
 
-            const neoSchema = makeAugmentedSchema({
+            const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 resolvers: { Mutation: { me: (_, __, ctx) => ({ id: ctx.auth.jwt.sub }) } },
             });
@@ -157,7 +157,7 @@ describe("auth/custom-resolvers", () => {
                 process.env.JWT_SECRET as string
             );
 
-            const neoSchema = makeAugmentedSchema({
+            const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 resolvers: {
                     Query: { me: (_, __) => ({}) },

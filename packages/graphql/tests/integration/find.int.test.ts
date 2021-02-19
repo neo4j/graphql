@@ -2,7 +2,7 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../src/classes";
 
 describe("find", () => {
     let driver: Driver;
@@ -31,7 +31,7 @@ describe("find", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -84,7 +84,7 @@ describe("find", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -147,7 +147,7 @@ describe("find", () => {
             charset: "alphabetic",
         });
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const query = `
             query($ids: [ID]){
@@ -198,7 +198,7 @@ describe("find", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id1 = generate({
             charset: "alphabetic",
@@ -263,7 +263,7 @@ describe("find", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const movieId1 = generate({
             charset: "alphabetic",
@@ -403,7 +403,7 @@ describe("find", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const movieId1 = generate({
             charset: "alphabetic",
@@ -494,7 +494,7 @@ describe("find", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",

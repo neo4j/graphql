@@ -1,10 +1,10 @@
 // Import using commonJS
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { makeAugmentedSchema } = require("@neo4j/graphql");
+const { Neo4jGraphQL } = require("@neo4j/graphql");
 
 // Augment schema with simple typeDefs input
 const typeDefs = `type Movie{ id: ID!}`;
-const neoSchema = makeAugmentedSchema({ typeDefs });
+const neoSchema = new Neo4jGraphQL({ typeDefs });
 
 // A "Movies" query should have been generated
 const generatedTypeDefsMatch = /Movies/;
