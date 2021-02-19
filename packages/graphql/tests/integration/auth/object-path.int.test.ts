@@ -123,7 +123,7 @@ describe("auth/object-path", () => {
             process.env.JWT_SECRET as string
         );
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(`
