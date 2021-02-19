@@ -1,5 +1,5 @@
 import { Driver } from "neo4j-driver";
-import { NeoSchema, Neo4jGraphQLForbiddenError, Neo4jGraphQLAuthenticationError } from "../classes";
+import { Neo4jGraphQL, Neo4jGraphQLForbiddenError, Neo4jGraphQLAuthenticationError } from "../classes";
 import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 
 // https://stackoverflow.com/a/58632373/10687857
@@ -10,7 +10,7 @@ async function execute(input: {
     cypher: string;
     params: any;
     defaultAccessMode: "READ" | "WRITE";
-    neoSchema: NeoSchema;
+    neoSchema: Neo4jGraphQL;
     statistics?: boolean;
     raw?: boolean;
 }): Promise<any> {
@@ -20,19 +20,7 @@ async function execute(input: {
     input.driver._userAgent = `${npm_package_version}/${npm_package_name}`;
 
     try {
-        if (input.neoSchema.options.debug) {
-            // eslint-disable-next-line no-console
-            let debug = console.log;
-
-            if (typeof input.neoSchema.options.debug === "function") {
-                debug = input.neoSchema.options.debug;
-            }
-
-            debug("=======Cypher=======");
-            debug(input.cypher);
-            debug("=======Params=======");
-            debug(JSON.stringify(input.params, null, 2));
-        }
+        input.neoSchema.debug(`Cypher: ${input.cypher}\nParams: ${JSON.stringify(input.params, null, 2)}`);
 
         const result = await session[`${input.defaultAccessMode.toLowerCase()}Transaction`]((tx) =>
             tx.run(input.cypher, input.params)

@@ -6,7 +6,7 @@ import { generate } from "randomstring";
 import { graphql } from "graphql";
 import pluralize from "pluralize";
 import neo4j from "./neo4j";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../src/classes";
 
 describe("Advanced Filtering", () => {
     let driver: Driver;
@@ -31,7 +31,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const value = generate({
                         readable: true,
@@ -103,7 +103,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const value = generate({
                         readable: true,
@@ -165,7 +165,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const value = generate({
                         readable: true,
@@ -233,7 +233,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const value = generate({
                         readable: true,
@@ -307,7 +307,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const value = generate({
                         readable: true,
@@ -373,7 +373,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const value = generate({
                         readable: true,
@@ -442,7 +442,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const value = generate({
                         readable: true,
@@ -510,7 +510,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const value = generate({
                         readable: true,
@@ -577,7 +577,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const value = generate({
                         readable: true,
@@ -646,7 +646,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const value = generate({
                         readable: true,
@@ -718,7 +718,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     let property: number;
 
@@ -791,7 +791,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     let value: number;
 
@@ -871,7 +871,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     let value: number;
 
@@ -953,7 +953,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     let value: number;
 
@@ -1020,7 +1020,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     let value: number;
 
@@ -1086,7 +1086,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     let value: number;
 
@@ -1153,7 +1153,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = makeAugmentedSchema({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     let value: number;
 
@@ -1219,7 +1219,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const value = false;
 
@@ -1272,7 +1272,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const value = false;
 
@@ -1337,7 +1337,7 @@ describe("Advanced Filtering", () => {
                     }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const rootId = generate({
                 charset: "alphabetic",
@@ -1421,7 +1421,7 @@ describe("Advanced Filtering", () => {
                     }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const rootId1 = generate({
                 charset: "alphabetic",
@@ -1508,7 +1508,7 @@ describe("Advanced Filtering", () => {
                     }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const rootId1 = generate({
                 charset: "alphabetic",
@@ -1601,7 +1601,7 @@ describe("Advanced Filtering", () => {
                     }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const rootId1 = generate({
                 charset: "alphabetic",
@@ -1690,7 +1690,7 @@ describe("Advanced Filtering", () => {
                     }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const rootId = generate({
                 charset: "alphabetic",
@@ -1792,7 +1792,7 @@ describe("Advanced Filtering", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const id1 = generate({
                 readable: true,

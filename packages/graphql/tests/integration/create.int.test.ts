@@ -2,7 +2,7 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../src/classes";
 
 describe("create", () => {
     let driver: Driver;
@@ -28,7 +28,7 @@ describe("create", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -83,7 +83,7 @@ describe("create", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id1 = generate({
             charset: "alphabetic",
@@ -161,7 +161,7 @@ describe("create", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const product = {
             id: generate({

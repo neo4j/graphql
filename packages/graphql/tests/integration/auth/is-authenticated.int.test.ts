@@ -5,7 +5,7 @@ import { Socket } from "net";
 import { describe, beforeAll, afterAll, test, expect, it } from "@jest/globals";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
-import makeAugmentedSchema from "../../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("auth/is-authenticated", () => {
     let driver: Driver;
@@ -34,7 +34,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 {
@@ -73,7 +73,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 {
@@ -117,7 +117,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -161,7 +161,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -207,7 +207,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -251,7 +251,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -321,7 +321,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -397,7 +397,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -449,7 +449,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -497,7 +497,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const userId = generate({
                 charset: "alphabetic",
@@ -554,7 +554,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 query {
@@ -597,7 +597,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 mutation {
@@ -642,7 +642,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const query = `
                 {

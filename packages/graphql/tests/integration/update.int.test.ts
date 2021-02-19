@@ -4,7 +4,7 @@ import { generate } from "randomstring";
 import { gql } from "apollo-server";
 import { describe, beforeAll, afterAll, expect, test } from "@jest/globals";
 import neo4j from "./neo4j";
-import makeAugmentedSchema from "../../src/schema/make-augmented-schema";
+import { Neo4jGraphQL } from "../../src/classes";
 
 describe("update", () => {
     let driver: Driver;
@@ -27,7 +27,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -74,7 +74,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -135,7 +135,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id1 = generate({
             charset: "alphabetic",
@@ -205,7 +205,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const movieId = generate({
             charset: "alphabetic",
@@ -285,7 +285,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -353,7 +353,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -421,7 +421,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id1 = generate({
             charset: "alphabetic",
@@ -511,7 +511,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const id = generate({
             charset: "alphabetic",
@@ -597,7 +597,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const movieId = generate({
             charset: "alphabetic",
@@ -673,7 +673,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const movieId = generate({
             charset: "alphabetic",
@@ -738,7 +738,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const movieId = generate({
             charset: "alphabetic",
@@ -808,7 +808,7 @@ describe("update", () => {
             }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const productId = generate({
             charset: "alphabetic",
@@ -904,7 +904,7 @@ describe("update", () => {
            }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const productId = generate({
             charset: "alphabetic",
@@ -1062,7 +1062,7 @@ describe("update", () => {
            }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const productId = generate({
             charset: "alphabetic",
@@ -1161,7 +1161,7 @@ describe("update", () => {
            }
         `;
 
-        const neoSchema = makeAugmentedSchema({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         const productId = generate({
             charset: "alphabetic",

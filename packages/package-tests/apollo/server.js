@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { ApolloServer } = require("apollo-server");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { makeAugmentedSchema } = require("@neo4j/graphql");
+const { Neo4jGraphQL } = require("@neo4j/graphql");
 
 const defaultTypeDefs = `
 type Movie {
@@ -18,7 +18,7 @@ type Genre {
 `;
 
 async function start(typeDefs = defaultTypeDefs, driver = {}) {
-    const neoSchema = makeAugmentedSchema({ typeDefs });
+    const neoSchema = new Neo4jGraphQL({ typeDefs });
     const server = new ApolloServer({
         schema: neoSchema.schema,
         context: ({ req }) => ({ driver, req }),

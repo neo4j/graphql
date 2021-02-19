@@ -1,9 +1,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { ApolloServer } from "apollo-server";
 import { Driver } from "neo4j-driver";
-import { NeoSchema } from "../../src/classes";
+import { Neo4jGraphQL } from "../../src/classes";
 
-const constructTestServer = (neoSchema: NeoSchema, driver: Driver, context = {}) => {
+const constructTestServer = (neoSchema: Neo4jGraphQL, driver: Driver, context = {}) => {
     const server = new ApolloServer({
         schema: neoSchema.schema,
         context: ({ req }) => ({ driver, req, ...context }),

@@ -1,7 +1,7 @@
-import { describe, test, expect, it } from "@jest/globals";
+import { describe, test, expect } from "@jest/globals";
 import { generate } from "randomstring";
 import createAuthAndParams from "../../../src/translate/create-auth-and-params";
-import { NeoSchema, Context, Node } from "../../../src/classes";
+import { Neo4jGraphQL, Context, Node } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
 
 describe("createAuthAndParams", () => {
@@ -47,7 +47,7 @@ describe("createAuthAndParams", () => {
             };
 
             // @ts-ignore
-            const neoSchema: NeoSchema = {
+            const neoSchema: Neo4jGraphQL = {
                 nodes: [node],
             };
 
@@ -118,7 +118,7 @@ describe("createAuthAndParams", () => {
             };
 
             // @ts-ignore
-            const neoSchema: NeoSchema = {
+            const neoSchema: Neo4jGraphQL = {
                 nodes: [node],
             };
 
@@ -186,7 +186,7 @@ describe("createAuthAndParams", () => {
             };
 
             // @ts-ignore
-            const neoSchema: NeoSchema = {
+            const neoSchema: Neo4jGraphQL = {
                 nodes: [node],
             };
 
@@ -257,7 +257,7 @@ describe("createAuthAndParams", () => {
                 };
 
                 // @ts-ignore
-                const neoSchema: NeoSchema = {
+                const neoSchema: Neo4jGraphQL = {
                     nodes: [node],
                 };
 
@@ -333,7 +333,7 @@ describe("createAuthAndParams", () => {
             };
 
             // @ts-ignore
-            const neoSchema: NeoSchema = {
+            const neoSchema: Neo4jGraphQL = {
                 nodes: [node],
             };
 
@@ -429,7 +429,7 @@ describe("createAuthAndParams", () => {
                 };
 
                 // @ts-ignore
-                const neoSchema: NeoSchema = {
+                const neoSchema: Neo4jGraphQL = {
                     nodes: [node],
                 };
 

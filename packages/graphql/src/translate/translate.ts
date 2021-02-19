@@ -3,7 +3,7 @@ import { GraphQLResolveInfo } from "graphql";
 import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import pluralize from "pluralize";
 import { Driver } from "neo4j-driver";
-import { NeoSchema, Node, Context } from "../classes";
+import { Neo4jGraphQL, Node, Context } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
@@ -437,8 +437,8 @@ function translate({
     context: { [k: string]: any } & { driver?: Driver };
     resolveInfo: GraphQLResolveInfo;
 }): [string, any] {
-    const neoSchema: NeoSchema = graphQLContext.neoSchema;
-    if (!neoSchema || !(neoSchema instanceof NeoSchema)) {
+    const neoSchema: Neo4jGraphQL = graphQLContext.neoSchema;
+    if (!neoSchema || !(neoSchema instanceof Neo4jGraphQL)) {
         throw new Error("invalid schema");
     }
 
