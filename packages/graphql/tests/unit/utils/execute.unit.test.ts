@@ -1,3 +1,4 @@
+import { expect, describe, test } from "@jest/globals";
 import { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import execute from "../../../src/utils/execute";
@@ -47,7 +48,14 @@ describe("execute", () => {
                 };
 
                 // @ts-ignore
-                const neoSchema: Neo4jGraphQL = { options: {}, debug: () => undefined };
+                const neoSchema: Neo4jGraphQL = {
+                    // @ts-ignore
+                    options: {},
+                    debug: (message) => {
+                        expect(message).toEqual(`Cypher: ${cypher}\nParams: ${JSON.stringify(params, null, 2)}`);
+                    },
+                };
+
                 const result = await execute({ driver, cypher, params, defaultAccessMode, neoSchema });
 
                 expect(result).toEqual([{ title }]);
