@@ -84,7 +84,7 @@ describe("auth/object-path", () => {
         }
     });
 
-    test("abba", async () => {
+    test("should use $context value plucking on auth", async () => {
         const session = driver.session({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
