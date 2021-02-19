@@ -75,10 +75,16 @@ function createAuthPredicate({
             if (authableField) {
                 const jwt = context.getJWTSafe();
                 const _param = `${chainStr}_${key}`;
-                const [, propertyPath] = (value as string).split("$jwt.");
+                const [, jwtPath] = (value as string).split("$jwt.");
+                const [, ctxPath] = (value as string).split("$context.");
 
-                if (propertyPath) {
-                    res.params[_param] = dotProp.get({ value: jwt }, `value.${propertyPath}`);
+                if (jwtPath) {
+                    res.params[_param] = dotProp.get({ value: jwt }, `value.${jwtPath}`);
+                    res.strs.push(`${varName}.${key} = $${_param}`);
+                }
+
+                if (ctxPath) {
+                    res.params[_param] = dotProp.get({ value: context.graphQLContext }, `value.${ctxPath}`);
                     res.strs.push(`${varName}.${key} = $${_param}`);
                 }
             }
