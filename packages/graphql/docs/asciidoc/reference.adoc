@@ -1094,6 +1094,13 @@ extend type User @auth(
 )
 ----
 
+==== Auth Value Plucking
+You may have noticed, in the examples above, the usage of `$jwt.xyz` in the directive. This is going and grabbing the jsonwebtoken and using the `xyz` property. You can use both;
+
+1. `$jwt.` - Pulls value from jsonwebtoken
+2. `$context.` - Pulls value from context
+
+
 === `@exclude`
 
 This directive can be used to tell `Neo4jGraphQL` to skip the automatic generation of the Query or Mutations for a certain type.
