@@ -31,6 +31,7 @@ export function updateResolver({ node, neoSchema }: { node: Node; neoSchema: Neo
             driver,
             defaultAccessMode: "WRITE",
             neoSchema,
+            graphQLContext: context,
         });
 
         return { [pluralize(camelCase(node.name))]: result.map((x) => x.this) };
@@ -75,6 +76,7 @@ export function deleteResolver({ node, neoSchema }: { node: Node; neoSchema: Neo
             defaultAccessMode: "WRITE",
             neoSchema,
             statistics: true,
+            graphQLContext: context,
         });
 
         return result;
@@ -114,6 +116,7 @@ export function createResolver({ node, neoSchema }: { node: Node; neoSchema: Neo
             driver,
             defaultAccessMode: "WRITE",
             neoSchema,
+            graphQLContext: context,
         });
 
         return {
@@ -148,6 +151,7 @@ export function findResolver({ node, neoSchema }: { node: Node; neoSchema: Neo4j
             driver,
             defaultAccessMode: "READ",
             neoSchema,
+            graphQLContext: context,
         });
 
         return result.map((x) => x.this);
@@ -202,6 +206,7 @@ export function cypherResolver({
             defaultAccessMode: "WRITE",
             neoSchema,
             raw: true,
+            graphQLContext: context,
         });
 
         const values = result.records.map((record) => {
