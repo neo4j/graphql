@@ -1,20 +1,25 @@
 import { GraphQLScalarType } from "graphql";
-import { int, Integer } from "neo4j-driver";
+import { int, Integer, isInt } from "neo4j-driver";
 import { DateTime as Neo4jDateTime } from "neo4j-driver/lib/temporal-types";
 
 export const Float = new GraphQLScalarType({
     name: "Float",
     parseValue(value) {
-        // value from the client
-
         if (typeof value !== "number") {
             throw new Error("Cannot represent non number as Float");
         }
 
         return value;
     },
-    serialize(value) {
-        // value sent to the client
+    serialize(value: number | Integer) {
+        if (typeof value === "number") {
+            return value;
+        }
+
+        if (isInt(value)) {
+            return value.toNumber();
+        }
+
         return value;
     },
 });
@@ -22,8 +27,6 @@ export const Float = new GraphQLScalarType({
 export const Int = new GraphQLScalarType({
     name: "Int",
     parseValue(value) {
-        // value from the client
-
         if (typeof value !== "number") {
             throw new Error("Cannot represent non number as Int");
         }
@@ -31,8 +34,6 @@ export const Int = new GraphQLScalarType({
         return int(value);
     },
     serialize(value: Integer) {
-        // value sent to the client
-
         if (value.toNumber) {
             return value.toNumber();
         }
@@ -48,8 +49,6 @@ export const Int = new GraphQLScalarType({
 export const ID = new GraphQLScalarType({
     name: "ID",
     parseValue(value: string | number) {
-        // value from the client
-
         if (typeof value === "string") {
             return value;
         }
@@ -57,8 +56,6 @@ export const ID = new GraphQLScalarType({
         return value.toString(10);
     },
     serialize(value: Integer | string | number) {
-        // value sent to the client
-
         if (typeof value === "string") {
             return value;
         }
@@ -71,13 +68,9 @@ export const DateTime = new GraphQLScalarType({
     name: "DateTime",
     description: "A date and time, represented as an ISO-8601 string",
     serialize: (value: Neo4jDateTime) => {
-        // value sent to the client
-
         return new Date(value.toString()).toISOString();
     },
     parseValue: (value: string) => {
-        // value from the client
-
         return Neo4jDateTime.fromStandardDate(new Date(value));
     },
 });
