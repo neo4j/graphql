@@ -42,7 +42,8 @@
     },
     "author": "Neo4j Inc.",
     "peerDependencies": {
-        "graphql": "^15.0.0"
+        "graphql": "^15.0.0",
+        "neo4j-driver": "^4.2.0"
     },
     "devDependencies": {
         "@graphql-tools/utils": "7.1.4",
@@ -54,6 +55,7 @@
         "apollo-server-testing": "2.19.2",
         "faker": "5.2.0",
         "graphql": "15.3.0",
+        "neo4j-driver": "4.2.0",
         "graphql-tag": "2.11.0",
         "is-uuid": "1.0.2",
         "jest": "26.2.2",
@@ -72,7 +74,6 @@
         "graphql-compose": "7.21.4",
         "graphql-parse-resolve-info": "4.9.0",
         "jsonwebtoken": "8.5.1",
-        "neo4j-driver": "4.2.0",
         "pluralize": "8.0.0"
     }
 }
