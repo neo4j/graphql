@@ -14,10 +14,10 @@ A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL imple
 $ npm install @neo4j/graphql
 ```
 
-⚠ `graphql` is a **peerDependency**
+⚠ `graphql` & `neo4j-driver` are **peerDependency**(s)
 
 ```
-$ npm install graphql
+$ npm install graphql neo4j-driver
 ```
 
 ## Quick Start
