@@ -56,18 +56,6 @@ describe("makeAugmentedSchema", () => {
             );
             expect(where).toBeTruthy();
 
-            // OR
-            const or = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}OR`
-            );
-            expect(or).toBeTruthy();
-
-            // AND
-            const and = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}AND`
-            );
-            expect(and).toBeTruthy();
-
             // SORT
             const sort = document.definitions.find(
                 (x) => x.kind === "EnumTypeDefinition" && x.name.value === `${type}Sort`

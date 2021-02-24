@@ -194,8 +194,8 @@ function makeAugmentedSchema(
         }
 
         const queryFields = {
-            OR: `[${node.name}OR]`,
-            AND: `[${node.name}AND]`,
+            OR: `[${node.name}Where]`,
+            AND: `[${node.name}Where]`,
             // Custom scalar fields only support basic equality
             ...node.scalarFields.reduce((res, f) => {
                 res[f.fieldName] = f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name;
@@ -258,11 +258,9 @@ function makeAugmentedSchema(
             ),
         };
 
-        const [andInput, orInput, whereInput] = ["AND", "OR", "Where"].map((value) => {
-            return composer.createInputTC({
-                name: `${node.name}${value}`,
-                fields: queryFields,
-            });
+        const whereInput = composer.createInputTC({
+            name: `${node.name}Where`,
+            fields: queryFields,
         });
 
         const nodeInput = composer.createInputTC({
@@ -474,13 +472,11 @@ function makeAugmentedSchema(
                 : `${n.name}DisconnectFieldInput`;
             const deleteField = rel.typeMeta.array ? `[${n.name}DeleteFieldInput]` : `${n.name}DeleteFieldInput`;
 
-            [whereInput, andInput, orInput].forEach((inputType) => {
-                inputType.addFields({
-                    [rel.fieldName]: `${n.name}Where`,
-                    [`${rel.fieldName}_NOT`]: `${n.name}Where`,
-                    [`${rel.fieldName}_IN`]: `[${n.name}Where]`,
-                    [`${rel.fieldName}_NOT_IN`]: `[${n.name}Where]`,
-                });
+            whereInput.addFields({
+                [rel.fieldName]: `${n.name}Where`,
+                [`${rel.fieldName}_NOT`]: `${n.name}Where`,
+                [`${rel.fieldName}_IN`]: `[${n.name}Where]`,
+                [`${rel.fieldName}_NOT_IN`]: `[${n.name}Where]`,
             });
 
             composeNode.addFields({
