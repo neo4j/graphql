@@ -9,7 +9,8 @@
     "author": "Neo4j Inc.",
     "dependencies": {
         "@neo4j/graphql": "file:./package",
-        "graphql": "^15.4.0"
+        "graphql": "^15.4.0",
+        "neo4j-driver": "^4.2.0"
     },
     "devDependencies": {
         "typescript": "3.9.7"
