@@ -7,6 +7,11 @@ export type Resolvers = IExecutableSchemaDefinition["resolvers"];
 
 export type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
 
+export type DriverConfig = {
+    database: string;
+    bookmarks: string | string[];
+};
+
 export interface BaseAuthRule {
     isAuthenticated?: boolean;
     allow?: { [k: string]: any } | "*";

@@ -39,14 +39,14 @@ describe("multi-database", () => {
         `;
 
         try {
-            const movieGQLSecondResult = await graphql({
+            const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id },
-                contextValue: { driver, neo4jDatabase: "another-random-db" },
+                contextValue: { driver, driverConfig: { database: "another-random-db" } },
             });
             expect(
-                (movieGQLSecondResult.errors as any)[0].message.includes(
+                (result.errors as any)[0].message.includes(
                     "Unable to get a routing table for database 'another-random-db'"
                 )
             ).toEqual(true);
