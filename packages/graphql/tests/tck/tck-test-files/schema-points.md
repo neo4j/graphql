@@ -46,19 +46,6 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
-input MovieAND {
-  filmedAt: PointInput
-  filmedAt_NOT: PointInput
-  filmedAt_IN: [PointInput]
-  filmedAt_NOT_IN: [PointInput]
-  filmedAt_LT: PointDistance
-  filmedAt_LTE: PointDistance
-  filmedAt_GT: PointDistance
-  filmedAt_GTE: PointDistance
-  filmedAt_DISTANCE: PointDistance
-  OR: [MovieOR]
-  AND: [MovieAND]
-}
 
 input MovieCreateInput {
   filmedAt: PointInput
@@ -68,20 +55,6 @@ input MovieOptions {
   sort: [MovieSort]
   limit: Int
   skip: Int
-}
-
-input MovieOR {
-  filmedAt: PointInput
-  filmedAt_NOT: PointInput
-  filmedAt_IN: [PointInput]
-  filmedAt_NOT_IN: [PointInput]
-  filmedAt_LT: PointDistance
-  filmedAt_LTE: PointDistance
-  filmedAt_GT: PointDistance
-  filmedAt_GTE: PointDistance
-  filmedAt_DISTANCE: PointDistance
-  OR: [MovieOR]
-  AND: [MovieAND]
 }
 
 enum MovieSort {
@@ -99,8 +72,8 @@ input MovieWhere {
   filmedAt_GT: PointDistance
   filmedAt_GTE: PointDistance
   filmedAt_DISTANCE: PointDistance
-  OR: [MovieOR]
-  AND: [MovieAND]
+  OR: [MovieWhere]
+  AND: [MovieWhere]
 }
 
 input MovieUpdateInput {
@@ -169,20 +142,6 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
-input MachineAND {
-  partLocation: CartesianPointInput
-  partLocation_NOT: CartesianPointInput
-  partLocation_IN: [CartesianPointInput]
-  partLocation_NOT_IN: [CartesianPointInput]
-  partLocation_LT: CartesianPointDistance
-  partLocation_LTE: CartesianPointDistance
-  partLocation_GT: CartesianPointDistance
-  partLocation_GTE: CartesianPointDistance
-  partLocation_DISTANCE: CartesianPointDistance
-  OR: [MachineOR]
-  AND: [MachineAND]
-}
-
 input MachineCreateInput {
   partLocation: CartesianPointInput
 }
@@ -191,20 +150,6 @@ input MachineOptions {
   sort: [MachineSort]
   limit: Int
   skip: Int
-}
-
-input MachineOR {
-  partLocation: CartesianPointInput
-  partLocation_NOT: CartesianPointInput
-  partLocation_IN: [CartesianPointInput]
-  partLocation_NOT_IN: [CartesianPointInput]
-  partLocation_LT: CartesianPointDistance
-  partLocation_LTE: CartesianPointDistance
-  partLocation_GT: CartesianPointDistance
-  partLocation_GTE: CartesianPointDistance
-  partLocation_DISTANCE: CartesianPointDistance
-  OR: [MachineOR]
-  AND: [MachineAND]
 }
 
 enum MachineSort {
@@ -222,8 +167,8 @@ input MachineWhere {
   partLocation_GT: CartesianPointDistance
   partLocation_GTE: CartesianPointDistance
   partLocation_DISTANCE: CartesianPointDistance
-  OR: [MachineOR]
-  AND: [MachineAND]
+  OR: [MachineWhere]
+  AND: [MachineWhere]
 }
 
 input MachineUpdateInput {
@@ -287,15 +232,6 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
-input MovieAND {
-  filmedAt: [PointInput]
-  filmedAt_NOT: [PointInput]
-  filmedAt_IN: PointInput
-  filmedAt_NOT_IN: PointInput
-  OR: [MovieOR]
-  AND: [MovieAND]
-}
-
 input MovieCreateInput {
   filmedAt: [PointInput]
 }
@@ -305,22 +241,13 @@ input MovieOptions {
   skip: Int
 }
 
-input MovieOR {
-  filmedAt: [PointInput]
-  filmedAt_NOT: [PointInput]
-  filmedAt_IN: PointInput
-  filmedAt_NOT_IN: PointInput
-  OR: [MovieOR]
-  AND: [MovieAND]
-}
-
 input MovieWhere {
   filmedAt: [PointInput]
   filmedAt_NOT: [PointInput]
   filmedAt_IN: PointInput
   filmedAt_NOT_IN: PointInput
-  OR: [MovieOR]
-  AND: [MovieAND]
+  OR: [MovieWhere]
+  AND: [MovieWhere]
 }
 
 input MovieUpdateInput {
@@ -384,15 +311,6 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
-input MachineAND {
-  partLocations: [CartesianPointInput]
-  partLocations_NOT: [CartesianPointInput]
-  partLocations_IN: CartesianPointInput
-  partLocations_NOT_IN: CartesianPointInput
-  OR: [MachineOR]
-  AND: [MachineAND]
-}
-
 input MachineCreateInput {
   partLocations: [CartesianPointInput]
 }
@@ -402,22 +320,13 @@ input MachineOptions {
   skip: Int
 }
 
-input MachineOR {
-  partLocations: [CartesianPointInput]
-  partLocations_NOT: [CartesianPointInput]
-  partLocations_IN: CartesianPointInput
-  partLocations_NOT_IN: CartesianPointInput
-  OR: [MachineOR]
-  AND: [MachineAND]
-}
-
 input MachineWhere {
   partLocations: [CartesianPointInput]
   partLocations_NOT: [CartesianPointInput]
   partLocations_IN: CartesianPointInput
   partLocations_NOT_IN: CartesianPointInput
-  OR: [MachineOR]
-  AND: [MachineAND]
+  OR: [MachineWhere]
+  AND: [MachineWhere]
 }
 
 input MachineUpdateInput {
