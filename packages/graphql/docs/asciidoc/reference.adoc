@@ -20,20 +20,33 @@ Importable functions and classes.
 === `Neo4jGraphQL`
 
 Main Entry to the library.
-Use to construct an instance of `NeoSchema`.
 
 [source, javascript]
 ----
+const neo4j = require("neo4j-driver");
 const { Neo4jGraphQL } = require("@neo4j/graphql");
+const { ApolloServer } = require("apollo-server");
+
+const driver = neo4j.driver(
+    config.NEO_URL,
+    neo4j.auth.basic("admin", "password")
+);
 
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     resolvers?,
+    context?,
     schemaDirectives?,
     debug?,
 });
+
+const apolloServer = new ApolloServer({
+    schema: neoSchema.schema,
+    context: ({ req }) => ({ req, driver })
+});
 ----
 
+> Notice `context` driver injection
 
 === Implementing Custom Resolvers
 
@@ -98,38 +111,6 @@ const neoSchema = new Neo4jGraphQL({
 });
 ----
 
-
-=== `NeoSchema`
-
-Core class of the library.
-Holds all metadata about schema plus access to the OGM.
-
-[source, javascript]
-----
-const neo4j = require("neo4j-driver");
-const { Neo4jGraphQL } = require("@neo4j/graphql");
-const { ApolloServer } = require("apollo-server");
-
-const driver = neo4j.driver(
-    config.NEO_URL,
-    neo4j.auth.basic("admin", "password")
-);
-
-const neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    resolvers?,
-    context?,
-    schemaDirectives?,
-    debug?,
-});
-
-const apolloServer = new ApolloServer({
-    schema: neoSchema.schema,
-    context: ({ req }) => ({ req, driver })
-});
-----
-
-> Notice `context` driver injection
 
 === OGM
 Common applications won't just expose a single API. On the same instance as the GraphQL API there may be; scheduled jobs, authentication, migrations and not to forget any custom logic in the resolvers themselves. We expose a OGM(Object Graph Model) on top of the pre-existing GraphQL work and abstractions. Generate your normal GraphQL schema & use the exposed .model method to receive an instance of a model. 
