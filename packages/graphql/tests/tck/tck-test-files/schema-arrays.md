@@ -30,34 +30,6 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
-input MovieAND {
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-  ratings: [Float]
-  ratings_NOT: [Float]
-  ratings_IN: Float
-  ratings_NOT_IN: Float
-  averageRating: Float
-  averageRating_IN: [Float]
-  averageRating_NOT: Float
-  averageRating_NOT_IN: [Float]
-  averageRating_LT: Float
-  averageRating_LTE: Float
-  averageRating_GT: Float
-  averageRating_GTE: Float
-  OR: [MovieOR]
-  AND: [MovieAND]
-}
-
 input MovieCreateInput {
   id: ID
   ratings: [Float]
@@ -68,34 +40,6 @@ input MovieOptions {
   sort: [MovieSort]
   limit: Int
   skip: Int
-}
-
-input MovieOR {
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-  ratings: [Float]
-  ratings_NOT: [Float]
-  ratings_IN: Float
-  ratings_NOT_IN: Float
-  averageRating: Float
-  averageRating_IN: [Float]
-  averageRating_NOT: Float
-  averageRating_NOT_IN: [Float]
-  averageRating_LT: Float
-  averageRating_LTE: Float
-  averageRating_GT: Float
-  averageRating_GTE: Float
-  OR: [MovieOR]
-  AND: [MovieAND]
 }
 
 enum MovieSort {
@@ -129,8 +73,8 @@ input MovieWhere {
   averageRating_LTE: Float
   averageRating_GT: Float
   averageRating_GTE: Float
-  OR: [MovieOR]
-  AND: [MovieAND]
+  OR: [MovieWhere]
+  AND: [MovieWhere]
 }
 
 input MovieUpdateInput {

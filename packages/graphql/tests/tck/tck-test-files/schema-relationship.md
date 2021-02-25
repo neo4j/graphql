@@ -31,22 +31,6 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
-input ActorAND {
-  name: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  name_REGEX: String
-  OR: [ActorOR]
-  AND: [ActorAND]
-}
-
 input ActorCreateInput {
   name: String
 }
@@ -55,22 +39,6 @@ input ActorOptions {
   sort: [ActorSort]
   limit: Int
   skip: Int
-}
-
-input ActorOR {
-  name: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  name_REGEX: String
-  OR: [ActorOR]
-  AND: [ActorAND]
 }
 
 enum ActorSort {
@@ -90,8 +58,8 @@ input ActorWhere {
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
   name_REGEX: String
-  OR: [ActorOR]
-  AND: [ActorAND]
+  OR: [ActorWhere]
+  AND: [ActorWhere]
 }
 
 input ActorConnectFieldInput {
@@ -116,26 +84,6 @@ input MovieRelationInput {
   actors: [ActorCreateInput]
 }
 
-input MovieAND {
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-  OR: [MovieOR]
-  AND: [MovieAND]
-  actors: ActorWhere
-  actors_NOT: ActorWhere
-  actors_IN: [ActorWhere]
-  actors_NOT_IN: [ActorWhere]
-}
-
 input MovieCreateInput {
   id: ID
   actors: MovieActorsFieldInput
@@ -145,26 +93,6 @@ input MovieOptions {
   sort: [MovieSort]
   limit: Int
   skip: Int
-}
-
-input MovieOR {
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-  OR: [MovieOR]
-  AND: [MovieAND]
-  actors: ActorWhere
-  actors_NOT: ActorWhere
-  actors_IN: [ActorWhere]
-  actors_NOT_IN: [ActorWhere]
 }
 
 enum MovieSort {
@@ -184,8 +112,8 @@ input MovieWhere {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  OR: [MovieOR]
-  AND: [MovieAND]
+  OR: [MovieWhere]
+  AND: [MovieWhere]
   actors: ActorWhere
   actors_NOT: ActorWhere
   actors_IN: [ActorWhere]
@@ -290,26 +218,6 @@ type Actor {
   movies(where: MovieWhere, options: MovieOptions): [Movie]
 }
 
-input ActorAND {
-  OR: [ActorOR]
-  AND: [ActorAND]
-  name: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  name_REGEX: String
-  movies: MovieWhere
-  movies_NOT: MovieWhere
-  movies_IN: [MovieWhere]
-  movies_NOT_IN: [MovieWhere]
-}
-
 input ActorConnectFieldInput {
   where: ActorWhere
   connect: ActorConnectInput
@@ -357,26 +265,6 @@ input ActorOptions {
   skip: Int
 }
 
-input ActorOR {
-  OR: [ActorOR]
-  AND: [ActorAND]
-  name: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  name_REGEX: String
-  movies: MovieWhere
-  movies_NOT: MovieWhere
-  movies_IN: [MovieWhere]
-  movies_NOT_IN: [MovieWhere]
-}
-
 enum ActorSort {
   name_DESC
   name_ASC
@@ -388,8 +276,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorOR]
-  AND: [ActorAND]
+  OR: [ActorWhere]
+  AND: [ActorWhere]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -431,26 +319,6 @@ input MovieActorsUpdateFieldInput {
   delete: [ActorDeleteFieldInput]
 }
 
-input MovieAND {
-  OR: [MovieOR]
-  AND: [MovieAND]
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-  actors: ActorWhere
-  actors_NOT: ActorWhere
-  actors_IN: [ActorWhere]
-  actors_NOT_IN: [ActorWhere]
-}
-
 input MovieConnectFieldInput {
   where: MovieWhere
   connect: MovieConnectInput
@@ -478,26 +346,6 @@ input MovieOptions {
   sort: [MovieSort]
   limit: Int
   skip: Int
-}
-
-input MovieOR {
-  OR: [MovieOR]
-  AND: [MovieAND]
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-  actors: ActorWhere
-  actors_NOT: ActorWhere
-  actors_IN: [ActorWhere]
-  actors_NOT_IN: [ActorWhere]
 }
 
 input MovieRelationInput {
@@ -543,8 +391,8 @@ input MovieUpdateInput {
 }
 
 input MovieWhere {
-  OR: [MovieOR]
-  AND: [MovieAND]
+  OR: [MovieWhere]
+  AND: [MovieWhere]
   id: ID
   id_IN: [ID]
   id_NOT: ID
