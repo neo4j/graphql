@@ -31,29 +31,6 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
-input MovieAND {
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-  datetime: DateTime
-  datetime_NOT: DateTime
-  datetime_IN: [DateTime]
-  datetime_NOT_IN: [DateTime]
-  datetime_LT: DateTime
-  datetime_LTE: DateTime
-  datetime_GT: DateTime
-  datetime_GTE: DateTime
-  OR: [MovieOR]
-  AND: [MovieAND]
-}
 
 input MovieCreateInput {
   id: ID
@@ -64,30 +41,6 @@ input MovieOptions {
   sort: [MovieSort]
   limit: Int
   skip: Int
-}
-
-input MovieOR {
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-  datetime: DateTime
-  datetime_NOT: DateTime
-  datetime_IN: [DateTime]
-  datetime_NOT_IN: [DateTime]
-  datetime_LT: DateTime
-  datetime_LTE: DateTime
-  datetime_GT: DateTime
-  datetime_GTE: DateTime
-  OR: [MovieOR]
-  AND: [MovieAND]
 }
 
 enum MovieSort {
@@ -117,8 +70,8 @@ input MovieWhere {
   datetime_LTE: DateTime
   datetime_GT: DateTime
   datetime_GTE: DateTime
-  OR: [MovieOR]
-  AND: [MovieAND]
+  OR: [MovieWhere]
+  AND: [MovieWhere]
 }
 
 input MovieUpdateInput {

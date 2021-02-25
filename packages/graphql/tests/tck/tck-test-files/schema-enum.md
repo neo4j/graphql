@@ -38,15 +38,6 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
-input MovieAND {
-  status: Status
-  status_IN: [Status]
-  status_NOT: Status
-  status_NOT_IN: [Status]
-  OR: [MovieOR]
-  AND: [MovieAND]
-}
-
 input MovieCreateInput {
   status: Status
 }
@@ -55,15 +46,6 @@ input MovieOptions {
   sort: [MovieSort]
   limit: Int
   skip: Int
-}
-
-input MovieOR {
-  status: Status
-  status_IN: [Status]
-  status_NOT: Status
-  status_NOT_IN: [Status]
-  OR: [MovieOR]
-  AND: [MovieAND]
 }
 
 enum MovieSort {
@@ -76,8 +58,8 @@ input MovieWhere {
   status_IN: [Status]
   status_NOT: Status
   status_NOT_IN: [Status]
-  OR: [MovieOR]
-  AND: [MovieAND]
+  OR: [MovieWhere]
+  AND: [MovieWhere]
 }
 
 input MovieUpdateInput {

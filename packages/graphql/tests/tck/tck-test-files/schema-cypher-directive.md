@@ -30,22 +30,6 @@ type Actor {
   name: String
 }
 
-input ActorAND {
-  OR: [ActorOR]
-  AND: [ActorAND]
-  name: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  name_REGEX: String
-}
-
 input ActorCreateInput {
   name: String
 }
@@ -54,22 +38,6 @@ input ActorOptions {
   sort: [ActorSort]
   limit: Int
   skip: Int
-}
-
-input ActorOR {
-  OR: [ActorOR]
-  AND: [ActorAND]
-  name: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  name_REGEX: String
 }
 
 enum ActorSort {
@@ -82,8 +50,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorOR]
-  AND: [ActorAND]
+  OR: [ActorWhere]
+  AND: [ActorWhere]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -107,22 +75,6 @@ type Movie {
   actors(title: String): [Actor]
 }
 
-input MovieAND {
-  OR: [MovieOR]
-  AND: [MovieAND]
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-}
-
 input MovieCreateInput {
   id: ID
 }
@@ -133,21 +85,6 @@ input MovieOptions {
   skip: Int
 }
 
-input MovieOR {
-  OR: [MovieOR]
-  AND: [MovieAND]
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-}
 
 enum MovieSort {
   id_DESC
@@ -159,8 +96,8 @@ input MovieUpdateInput {
 }
 
 input MovieWhere {
-  OR: [MovieOR]
-  AND: [MovieAND]
+  OR: [MovieWhere]
+  AND: [MovieWhere]
   id: ID
   id_IN: [ID]
   id_NOT: ID

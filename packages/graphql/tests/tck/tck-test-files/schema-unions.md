@@ -36,22 +36,6 @@ type Genre {
   id: ID
 }
 
-input GenreAND {
-  OR: [GenreOR]
-  AND: [GenreAND]
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-}
-
 input GenreConnectFieldInput {
   where: GenreWhere
 }
@@ -70,22 +54,6 @@ input GenreOptions {
   skip: Int
 }
 
-input GenreOR {
-  OR: [GenreOR]
-  AND: [GenreAND]
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-}
-
 enum GenreSort {
   id_DESC
   id_ASC
@@ -96,8 +64,8 @@ input GenreUpdateInput {
 }
 
 input GenreWhere {
-  OR: [GenreOR]
-  AND: [GenreAND]
+  OR: [GenreWhere]
+  AND: [GenreWhere]
   id: ID
   id_IN: [ID]
   id_NOT: ID
@@ -115,22 +83,6 @@ type Movie {
   id: ID
   search(options: QueryOptions, Genre: GenreWhere, Movie: MovieWhere): [Search]
   searchNoDirective: Search
-}
-
-input MovieAND {
-  OR: [MovieOR]
-  AND: [MovieAND]
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
 }
 
 input MovieConnectFieldInput {
@@ -163,22 +115,6 @@ input MovieOptions {
   sort: [MovieSort]
   limit: Int
   skip: Int
-}
-
-input MovieOR {
-  OR: [MovieOR]
-  AND: [MovieAND]
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
 }
 
 input MovieRelationInput {
@@ -249,8 +185,8 @@ input MovieDeleteInput {
 }
 
 input MovieWhere {
-  OR: [MovieOR]
-  AND: [MovieAND]
+  OR: [MovieWhere]
+  AND: [MovieWhere]
   id: ID
   id_IN: [ID]
   id_NOT: ID
