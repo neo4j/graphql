@@ -1,6 +1,7 @@
 import { Driver, SessionMode } from "neo4j-driver";
 import { Neo4jGraphQL, Neo4jGraphQLForbiddenError, Neo4jGraphQLAuthenticationError } from "../classes";
 import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR } from "../constants";
+import { DriverConfig } from "../types";
 
 // https://stackoverflow.com/a/58632373/10687857
 const { npm_package_version, npm_package_name } = process.env;
@@ -9,7 +10,7 @@ async function execute(input: {
     driver: Driver;
     cypher: string;
     params: any;
-    defaultAccessMode: "READ" | "WRITE";
+    defaultAccessMode: SessionMode;
     neoSchema: Neo4jGraphQL;
     statistics?: boolean;
     raw?: boolean;
@@ -21,12 +22,15 @@ async function execute(input: {
         database?: string;
     } = { defaultAccessMode: input.defaultAccessMode };
 
-    if (input.graphQLContext.neo4jDatabase) {
-        sessionParams.database = input.graphQLContext.neo4jDatabase;
-    }
+    const driverConfig = input.graphQLContext.driverConfig as DriverConfig;
+    if (driverConfig) {
+        if (driverConfig.database) {
+            sessionParams.database = driverConfig.database;
+        }
 
-    if (input.graphQLContext.neo4jBookmarks) {
-        sessionParams.bookmarks = input.graphQLContext.neo4jBookmarks;
+        if (driverConfig.bookmarks) {
+            sessionParams.bookmarks = driverConfig.bookmarks;
+        }
     }
 
     const session = input.driver.session(sessionParams);

@@ -17,12 +17,14 @@ describe("execute", () => {
                 const title = "some title";
                 const params = { title };
                 const records = [{ toObject: () => ({ title }) }];
+                const database = "neo4j";
+                const bookmarks = ["test"];
 
                 // @ts-ignore
                 const driver: Driver = {
                     // @ts-ignore
                     session: (options) => {
-                        expect(options).toMatchObject({ defaultAccessMode });
+                        expect(options).toMatchObject({ defaultAccessMode, database, bookmarks });
 
                         const tx = {
                             run: async (paramCypher, paramParams) => {
@@ -62,7 +64,7 @@ describe("execute", () => {
                     params,
                     defaultAccessMode,
                     neoSchema,
-                    graphQLContext: {},
+                    graphQLContext: { driverConfig: { database, bookmarks } },
                 });
 
                 expect(result).toEqual([{ title }]);

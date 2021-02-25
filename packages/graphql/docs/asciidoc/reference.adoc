@@ -377,18 +377,19 @@ The Neo4j database may be added to the GraphQL context object;
 ----
 const server = new ApolloServer({
   schema,
-  context: { driver, neo4jDatabase: "sanmateo" }
+  context: { driver, driverConfig: { database: "sanmateo" } }
 });
 ----
 
 
 === Passing A Neo4j Driver Bookmark
 A Neo4j driver bookmark may be added to the GraphQL context object;
+
 [source, javascript]
 ----
 const server = new ApolloServer({
   schema,
-  context: { driver, neo4jBookmarks: "my-bookmark" }
+  context: { driver, driverConfig: { bookmarks: ["sanmateo"] } }
 });
 ----
 
