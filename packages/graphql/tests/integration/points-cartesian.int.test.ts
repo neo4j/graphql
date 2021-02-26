@@ -314,7 +314,7 @@ describe("[CartesianPoint]", () => {
             y: faker.random.float(),
         }));
 
-        const result = await session.run(
+        await session.run(
             `
             CALL {
                 CREATE (r:Part)
@@ -362,7 +362,7 @@ describe("[CartesianPoint]", () => {
             z: faker.random.float(),
         }));
 
-        const result = await session.run(
+        await session.run(
             `
             CALL {
                 CREATE (r:Part)

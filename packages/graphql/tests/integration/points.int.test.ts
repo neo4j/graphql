@@ -315,7 +315,7 @@ describe("[Point]", () => {
             latitude: parseFloat(faker.address.latitude()),
         }));
 
-        const result = await session.run(
+        await session.run(
             `
             CALL {
                 CREATE (r:Route)
@@ -418,7 +418,7 @@ describe("[Point]", () => {
             height: faker.random.float(),
         }));
 
-        const result = await session.run(
+        await session.run(
             `
             CALL {
                 CREATE (r:Route)

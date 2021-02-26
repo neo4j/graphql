@@ -11,7 +11,6 @@
         "target": "es6",
         // TODO Refactor so that the options below are no longer needed
         "allowUnusedLabels": true,
-        "noImplicitAny": false,
-        "noUnusedLocals": false
+        "noImplicitAny": false
     }
 }
