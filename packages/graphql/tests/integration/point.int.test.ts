@@ -1,7 +1,6 @@
-import { Driver, int, Point, Session } from "neo4j-driver";
-import { graphql } from "graphql";
+import { Driver, int, Session } from "neo4j-driver";
 import faker from "faker";
-import { ApolloServer, gql } from "apollo-server";
+import { gql } from "apollo-server";
 import { createTestClient } from "apollo-server-testing";
 import neo4j from "./neo4j";
 import { constructTestServer } from "./utils";
@@ -405,7 +404,7 @@ describe("Point", () => {
         `;
 
         const notInResult = await query({
-            query: photographsInQuery,
+            query: photographsNotInQuery,
             variables: [
                 { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
                 { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
