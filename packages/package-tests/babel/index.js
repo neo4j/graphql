@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved
 import { Neo4jGraphQL } from "@neo4j/graphql";
 
 // Augment schema with simple typeDefs input

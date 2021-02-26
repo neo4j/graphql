@@ -1,4 +1,2 @@
-node_modules/**
-packages/**/dist/**
-packages/**/node_modules/**
-!.eslintrc.js
+**/dist
+**/node_modules
