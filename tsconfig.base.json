@@ -9,8 +9,7 @@
         "sourceMap": true,
         "strict": true,
         "target": "es6",
-        // TODO Refactor so that the options below are no longer needed
-        "allowUnusedLabels": true,
+        // TODO Refactor so that noImplicitAny is no longer needed
         "noImplicitAny": false
     }
 }
