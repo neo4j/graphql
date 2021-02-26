@@ -3,7 +3,6 @@ import { graphql } from "graphql";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import jsonwebtoken from "jsonwebtoken";
-import { describe, beforeAll, afterAll, test, expect, it } from "@jest/globals";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
@@ -310,7 +309,7 @@ describe("auth/roles", () => {
                             }
                         ]
                     )
-                    
+
                 extend type Post @auth(rules: [{ operations: ["connect"], roles: ["super-admin"] }])
             `;
 
@@ -477,7 +476,7 @@ describe("auth/roles", () => {
                             }
                         ]
                     )
-                    
+
                 extend type Post @auth(rules: [{ operations: ["disconnect"], roles: ["super-admin"] }])
             `;
 
@@ -815,7 +814,7 @@ describe("auth/roles", () => {
                 type History {
                     url: String
                 }
-    
+
                 type User {
                     id: ID
                     history: [History]

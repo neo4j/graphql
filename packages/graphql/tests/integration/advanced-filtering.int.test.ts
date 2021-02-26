@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import camelCase from "camelcase";
-import { describe, expect, test, afterAll, beforeAll } from "@jest/globals";
 import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
@@ -57,7 +56,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 movies(where: { property_IN: ["${value}", "${randomValue1}", "${randomValue2}"] }) {
                                     property
                                 }
@@ -119,7 +118,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_REGEX: "(?i)${value}.*" }) {
                                     property
                                 }
@@ -187,7 +186,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT: "${randomValue1}" }) {
                                     property
                                 }
@@ -261,7 +260,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT_IN: ["${randomValue1}", "${randomValue2}"] }) {
                                     property
                                 }
@@ -327,7 +326,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_CONTAINS: "${value}" }) {
                                     property
                                 }
@@ -396,7 +395,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT_CONTAINS: "${notValue}" }) {
                                     property
                                 }
@@ -462,7 +461,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_STARTS_WITH: "${value}" }) {
                                     property
                                 }
@@ -533,7 +532,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT_STARTS_WITH: "${notValue}" }) {
                                     property
                                 }
@@ -602,7 +601,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_ENDS_WITH: "${value}" }) {
                                     property
                                 }
@@ -671,7 +670,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT_ENDS_WITH: "${value}" }) {
                                     property
                                 }
@@ -746,7 +745,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT: ${notProperty} }) {
                                     property
                                 }
@@ -826,7 +825,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_IN: [${value}, ${randomValue1}, ${randomValue2}] }) {
                                     property
                                 }
@@ -908,7 +907,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT_IN: [${randomValue1}, ${randomValue2}] }) {
                                     property
                                 }
@@ -975,7 +974,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_LT: ${lessThanValue + 1} }) {
                                     property
                                 }
@@ -1042,7 +1041,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_LTE: ${value} }) {
                                     property
                                 }
@@ -1108,7 +1107,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_GT: ${graterThanValue - 1} }) {
                                     property
                                 }
@@ -1175,7 +1174,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_GTE: ${value} }) {
                                     property
                                 }
@@ -1232,7 +1231,7 @@ describe("Advanced Filtering", () => {
                 );
 
                 const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property: false }) {
                                     property
                                 }
@@ -1285,7 +1284,7 @@ describe("Advanced Filtering", () => {
                 );
 
                 const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT: false }) {
                                     property
                                 }
@@ -1364,7 +1363,7 @@ describe("Advanced Filtering", () => {
                 );
 
                 const query = `
-                    { 
+                    {
                         ${pluralRandomType1}(where: { ${pluralRandomType2}: { id: "${relationId}" } }) {
                             id
                             ${pluralRandomType2} {
@@ -1451,7 +1450,7 @@ describe("Advanced Filtering", () => {
                 );
 
                 const query = `
-                    { 
+                    {
                         ${pluralRandomType1}(where: { ${pluralRandomType2}_NOT: { id: "${relationId2}" } }) {
                             id
                             ${pluralRandomType2} {
@@ -1538,7 +1537,7 @@ describe("Advanced Filtering", () => {
                 );
 
                 const query = `
-                    { 
+                    {
                         ${pluralRandomType1}(where: { ${pluralRandomType2}_IN: [{ id: "${relationId1}" }, { id: "${relationId2}" }] }) {
                             id
                             ${pluralRandomType2} {
@@ -1631,7 +1630,7 @@ describe("Advanced Filtering", () => {
                 );
 
                 const query = `
-                    { 
+                    {
                         ${pluralRandomType1}(where: { ${pluralRandomType2}_NOT_IN: [{ id: "${relationId2}" }] }) {
                             id
                             ${pluralRandomType2} {
@@ -1717,7 +1716,7 @@ describe("Advanced Filtering", () => {
                 );
 
                 const nullQuery = `
-                    { 
+                    {
                         ${pluralRandomType1}(where: { ${pluralRandomType2}: null }) {
                             id
                         }
@@ -1746,7 +1745,7 @@ describe("Advanced Filtering", () => {
                 // Test not null checking (nodes without any related nodes on the specified field)
 
                 const notNullQuery = `
-                    { 
+                    {
                         ${pluralRandomType1}(where: { ${pluralRandomType2}_NOT: null }) {
                             id
                         }
@@ -1821,7 +1820,7 @@ describe("Advanced Filtering", () => {
                 // Test NULL checking
 
                 const nullQuery = `
-                    { 
+                    {
                         ${pluralRandomType}(where: { optional: null }) {
                             id
                         }
@@ -1847,7 +1846,7 @@ describe("Advanced Filtering", () => {
                 // Test NOT NULL checking
 
                 const notNullQuery = `
-                    { 
+                    {
                         ${pluralRandomType}(where: { optional_NOT: null }) {
                             id
                         }

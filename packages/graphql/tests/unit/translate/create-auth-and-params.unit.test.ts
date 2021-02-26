@@ -1,4 +1,3 @@
-import { describe, test, expect } from "@jest/globals";
 import { generate } from "randomstring";
 import createAuthAndParams from "../../../src/translate/create-auth-and-params";
 import { Neo4jGraphQL, Context, Node } from "../../../src/classes";
@@ -355,12 +354,12 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                    ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) 
-                AND 
-                    EXISTS(this.id) AND this.id = $this_auth_allow0_id 
-                AND 
-                    EXISTS(this.id) AND this.id = $thisAND0_auth_allow0_id AND ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) 
-                AND 
+                    ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                AND
+                    EXISTS(this.id) AND this.id = $this_auth_allow0_id
+                AND
+                    EXISTS(this.id) AND this.id = $thisAND0_auth_allow0_id AND ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                AND
                     EXISTS(this.id) AND this.id = $thisOR0_auth_allow0_id OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
                 `)
             );
