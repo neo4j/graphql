@@ -25,40 +25,8 @@ type Actor {
   name: String
 }
 
-input ActorAND {
-  OR: [ActorOR]
-  AND: [ActorAND]
-  name: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  name_REGEX: String
-}
-
 input ActorCreateInput {
   name: String
-}
-
-input ActorOR {
-  OR: [ActorOR]
-  AND: [ActorAND]
-  name: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  name_REGEX: String
 }
 
 input ActorUpdateInput {
@@ -66,8 +34,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorOR]
-  AND: [ActorAND]
+  OR: [ActorWhere]
+  AND: [ActorWhere]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -90,22 +58,6 @@ type Movie {
   title: String
 }
 
-input MovieAND {
-  OR: [MovieOR]
-  AND: [MovieAND]
-  title: String
-  title_IN: [String]
-  title_NOT: String
-  title_NOT_IN: [String]
-  title_CONTAINS: String
-  title_NOT_CONTAINS: String
-  title_STARTS_WITH: String
-  title_NOT_STARTS_WITH: String
-  title_ENDS_WITH: String
-  title_NOT_ENDS_WITH: String
-  title_REGEX: String
-}
-
 input MovieCreateInput {
   title: String
 }
@@ -114,22 +66,6 @@ input MovieOptions {
   sort: [MovieSort]
   limit: Int
   skip: Int
-}
-
-input MovieOR {
-  OR: [MovieOR]
-  AND: [MovieAND]
-  title: String
-  title_IN: [String]
-  title_NOT: String
-  title_NOT_IN: [String]
-  title_CONTAINS: String
-  title_NOT_CONTAINS: String
-  title_STARTS_WITH: String
-  title_NOT_STARTS_WITH: String
-  title_ENDS_WITH: String
-  title_NOT_ENDS_WITH: String
-  title_REGEX: String
 }
 
 enum MovieSort {
@@ -142,8 +78,8 @@ input MovieUpdateInput {
 }
 
 input MovieWhere {
-  OR: [MovieOR]
-  AND: [MovieAND]
+  OR: [MovieWhere]
+  AND: [MovieWhere]
   title: String
   title_IN: [String]
   title_NOT: String
@@ -206,42 +142,10 @@ type Actor {
   name: String
 }
 
-input ActorAND {
-  OR: [ActorOR]
-  AND: [ActorAND]
-  name: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  name_REGEX: String
-}
-
 input ActorOptions {
   sort: [ActorSort]
   limit: Int
   skip: Int
-}
-
-input ActorOR {
-  OR: [ActorOR]
-  AND: [ActorAND]
-  name: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  name_REGEX: String
 }
 
 enum ActorSort {
@@ -254,8 +158,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorOR]
-  AND: [ActorAND]
+  OR: [ActorWhere]
+  AND: [ActorWhere]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -316,22 +220,6 @@ type Movie {
   title: String
 }
 
-input MovieAND {
-  OR: [MovieOR]
-  AND: [MovieAND]
-  title: String
-  title_IN: [String]
-  title_NOT: String
-  title_NOT_IN: [String]
-  title_CONTAINS: String
-  title_NOT_CONTAINS: String
-  title_STARTS_WITH: String
-  title_NOT_STARTS_WITH: String
-  title_ENDS_WITH: String
-  title_NOT_ENDS_WITH: String
-  title_REGEX: String
-}
-
 input MovieCreateInput {
   title: String
 }
@@ -340,22 +228,6 @@ input MovieOptions {
   sort: [MovieSort]
   limit: Int
   skip: Int
-}
-
-input MovieOR {
-  OR: [MovieOR]
-  AND: [MovieAND]
-  title: String
-  title_IN: [String]
-  title_NOT: String
-  title_NOT_IN: [String]
-  title_CONTAINS: String
-  title_NOT_CONTAINS: String
-  title_STARTS_WITH: String
-  title_NOT_STARTS_WITH: String
-  title_ENDS_WITH: String
-  title_NOT_ENDS_WITH: String
-  title_REGEX: String
 }
 
 enum MovieSort {
@@ -368,8 +240,8 @@ input MovieUpdateInput {
 }
 
 input MovieWhere {
-  OR: [MovieOR]
-  AND: [MovieAND]
+  OR: [MovieWhere]
+  AND: [MovieWhere]
   title: String
   title_IN: [String]
   title_NOT: String
@@ -438,22 +310,6 @@ type Movie {
   title: String
 }
 
-input MovieAND {
-  OR: [MovieOR]
-  AND: [MovieAND]
-  title: String
-  title_IN: [String]
-  title_NOT: String
-  title_NOT_IN: [String]
-  title_CONTAINS: String
-  title_NOT_CONTAINS: String
-  title_STARTS_WITH: String
-  title_NOT_STARTS_WITH: String
-  title_ENDS_WITH: String
-  title_NOT_ENDS_WITH: String
-  title_REGEX: String
-}
-
 input MovieCreateInput {
   title: String
 }
@@ -462,22 +318,6 @@ input MovieOptions {
   sort: [MovieSort]
   limit: Int
   skip: Int
-}
-
-input MovieOR {
-  OR: [MovieOR]
-  AND: [MovieAND]
-  title: String
-  title_IN: [String]
-  title_NOT: String
-  title_NOT_IN: [String]
-  title_CONTAINS: String
-  title_NOT_CONTAINS: String
-  title_STARTS_WITH: String
-  title_NOT_STARTS_WITH: String
-  title_ENDS_WITH: String
-  title_NOT_ENDS_WITH: String
-  title_REGEX: String
 }
 
 enum MovieSort {
@@ -490,8 +330,8 @@ input MovieUpdateInput {
 }
 
 input MovieWhere {
-  OR: [MovieOR]
-  AND: [MovieAND]
+  OR: [MovieWhere]
+  AND: [MovieWhere]
   title: String
   title_IN: [String]
   title_NOT: String
@@ -549,22 +389,6 @@ type Actor {
   name: String
 }
 
-input ActorAND {
-  OR: [ActorOR]
-  AND: [ActorAND]
-  name: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  name_REGEX: String
-}
-
 input ActorConnectFieldInput {
   where: ActorWhere
 }
@@ -583,22 +407,6 @@ input ActorOptions {
   skip: Int
 }
 
-input ActorOR {
-  OR: [ActorOR]
-  AND: [ActorAND]
-  name: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  name_REGEX: String
-}
-
 enum ActorSort {
   name_DESC
   name_ASC
@@ -609,8 +417,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorOR]
-  AND: [ActorAND]
+  OR: [ActorWhere]
+  AND: [ActorWhere]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -652,26 +460,6 @@ input MovieActorsUpdateFieldInput {
   delete: [ActorDeleteFieldInput]
 }
 
-input MovieAND {
-  actors: ActorWhere
-  actors_IN: [ActorWhere]
-  actors_NOT: ActorWhere
-  actors_NOT_IN: [ActorWhere]
-  OR: [MovieOR]
-  AND: [MovieAND]
-  title: String
-  title_IN: [String]
-  title_NOT: String
-  title_NOT_IN: [String]
-  title_CONTAINS: String
-  title_NOT_CONTAINS: String
-  title_STARTS_WITH: String
-  title_NOT_STARTS_WITH: String
-  title_ENDS_WITH: String
-  title_NOT_ENDS_WITH: String
-  title_REGEX: String
-}
-
 input MovieConnectInput {
   actors: [ActorConnectFieldInput]
 }
@@ -703,26 +491,6 @@ input MovieDeleteInput {
   actors: [MovieActorsDeleteInput]
 }
 
-input MovieOR {
-  actors: ActorWhere
-  actors_IN: [ActorWhere]
-  actors_NOT: ActorWhere
-  actors_NOT_IN: [ActorWhere]
-  OR: [MovieOR]
-  AND: [MovieAND]
-  title: String
-  title_IN: [String]
-  title_NOT: String
-  title_NOT_IN: [String]
-  title_CONTAINS: String
-  title_NOT_CONTAINS: String
-  title_STARTS_WITH: String
-  title_NOT_STARTS_WITH: String
-  title_ENDS_WITH: String
-  title_NOT_ENDS_WITH: String
-  title_REGEX: String
-}
-
 enum MovieSort {
   title_DESC
   title_ASC
@@ -738,8 +506,8 @@ input MovieWhere {
   actors_IN: [ActorWhere]
   actors_NOT: ActorWhere
   actors_NOT_IN: [ActorWhere]
-  OR: [MovieOR]
-  AND: [MovieAND]
+  OR: [MovieWhere]
+  AND: [MovieWhere]
   title: String
   title_IN: [String]
   title_NOT: String
@@ -801,22 +569,6 @@ type Actor {
   name: String
 }
 
-input ActorAND {
-  OR: [ActorOR]
-  AND: [ActorAND]
-  name: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  name_REGEX: String
-}
-
 input ActorCreateInput {
   name: String
 }
@@ -825,22 +577,6 @@ input ActorOptions {
   sort: [ActorSort]
   limit: Int
   skip: Int
-}
-
-input ActorOR {
-  OR: [ActorOR]
-  AND: [ActorAND]
-  name: String
-  name_IN: [String]
-  name_NOT: String
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  name_REGEX: String
 }
 
 enum ActorSort {
@@ -853,8 +589,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorOR]
-  AND: [ActorAND]
+  OR: [ActorWhere]
+  AND: [ActorWhere]
   name: String
   name_IN: [String]
   name_NOT: String

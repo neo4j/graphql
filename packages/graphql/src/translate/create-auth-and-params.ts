@@ -77,15 +77,16 @@ function createAuthPredicate({
                 const _param = `${chainStr}_${key}`;
                 const [, jwtPath] = (value as string).split("$jwt.");
                 const [, ctxPath] = (value as string).split("$context.");
+                const existsStr = `EXISTS(${varName}.${key})`;
 
                 if (jwtPath) {
                     res.params[_param] = dotProp.get({ value: jwt }, `value.${jwtPath}`);
-                    res.strs.push(`${varName}.${key} = $${_param}`);
+                    res.strs.push(`${existsStr} AND ${varName}.${key} = $${_param}`);
                 }
 
                 if (ctxPath) {
                     res.params[_param] = dotProp.get({ value: context.graphQLContext }, `value.${ctxPath}`);
-                    res.strs.push(`${varName}.${key} = $${_param}`);
+                    res.strs.push(`${existsStr} AND ${varName}.${key} = $${_param}`);
                 }
             }
 
