@@ -33,38 +33,6 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
-input MovieAND {
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-  createdAt: DateTime
-  createdAt_NOT: DateTime
-  createdAt_IN: [DateTime]
-  createdAt_NOT_IN: [DateTime]
-  createdAt_LT: DateTime
-  createdAt_LTE: DateTime
-  createdAt_GT: DateTime
-  createdAt_GTE: DateTime
-  updatedAt: DateTime
-  updatedAt_NOT: DateTime
-  updatedAt_IN: [DateTime]
-  updatedAt_NOT_IN: [DateTime]
-  updatedAt_LT: DateTime
-  updatedAt_LTE: DateTime
-  updatedAt_GT: DateTime
-  updatedAt_GTE: DateTime
-  OR: [MovieOR]
-  AND: [MovieAND]
-}
-
 input MovieCreateInput {
   id: ID
 }
@@ -73,38 +41,6 @@ input MovieOptions {
   sort: [MovieSort]
   limit: Int
   skip: Int
-}
-
-input MovieOR {
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-  createdAt: DateTime
-  createdAt_NOT: DateTime
-  createdAt_IN: [DateTime]
-  createdAt_NOT_IN: [DateTime]
-  createdAt_LT: DateTime
-  createdAt_LTE: DateTime
-  createdAt_GT: DateTime
-  createdAt_GTE: DateTime
-  updatedAt: DateTime
-  updatedAt_NOT: DateTime
-  updatedAt_IN: [DateTime]
-  updatedAt_NOT_IN: [DateTime]
-  updatedAt_LT: DateTime
-  updatedAt_LTE: DateTime
-  updatedAt_GT: DateTime
-  updatedAt_GTE: DateTime
-  OR: [MovieOR]
-  AND: [MovieAND]
 }
 
 enum MovieSort {
@@ -144,8 +80,8 @@ input MovieWhere {
   updatedAt_LTE: DateTime
   updatedAt_GT: DateTime
   updatedAt_GTE: DateTime
-  OR: [MovieOR]
-  AND: [MovieAND]
+  OR: [MovieWhere]
+  AND: [MovieWhere]
 }
 
 input MovieUpdateInput {

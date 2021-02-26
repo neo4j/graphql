@@ -204,4 +204,52 @@ describe("floats", () => {
             await session.close();
         }
     });
+
+    test("should return normal JS number if the value isInt", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Movie {
+                id: String
+                fakeFloat: Float! @cypher(statement: """
+                    RETURN 12345
+                """)
+            }
+        
+           
+        `;
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const query = `
+            query {
+                movies(where: { id: "${id}" }){
+                    fakeFloat
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (m:Movie { id: "${id}" })
+            `,
+                {}
+            );
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect((gqlResult.data as any).movies[0].fakeFloat).toEqual(12345);
+        } finally {
+            await session.close();
+        }
+    });
 });
