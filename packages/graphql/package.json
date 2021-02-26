@@ -12,15 +12,14 @@
     },
     "homepage": "https://github.com/neo4j/graphql-tracker-temp/blob/master/README.md",
     "exports": {
-        "require": "./dist/cjs/index.js"
+        "require": "./dist/index.js"
     },
-    "main": "./dist/cjs/index.js",
-    "types": "./dist/cjs/index.d.ts",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "files": [
         "dist/"
     ],
     "scripts": {
-        "prepare": "npm run build:clean",
         "clean": "rimraf dist",
         "test": "run-s test:unit test:int test:tck",
         "test:unit": "jest unit",
