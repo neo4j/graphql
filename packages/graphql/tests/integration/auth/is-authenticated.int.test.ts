@@ -2,7 +2,6 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
-import { describe, beforeAll, afterAll, test, expect, it } from "@jest/globals";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
@@ -309,7 +308,7 @@ describe("auth/is-authenticated", () => {
                             }
                         ]
                     )
-                    
+
                 extend type Post @auth(rules: [{ operations: ["connect"], isAuthenticated: true }])
             `;
 
@@ -385,7 +384,7 @@ describe("auth/is-authenticated", () => {
                             }
                         ]
                     )
-                    
+
                 extend type Post @auth(rules: [{ operations: ["disconnect"], isAuthenticated: true }])
             `;
 
@@ -633,7 +632,7 @@ describe("auth/is-authenticated", () => {
                 type History {
                     url: String
                 }
-    
+
                 type User {
                     id: ID
                     history: [History]

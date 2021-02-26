@@ -46,7 +46,6 @@
     },
     "devDependencies": {
         "@graphql-tools/utils": "7.1.4",
-        "@jest/globals": "26.6.2",
         "@types/deep-equal": "1.0.1",
         "@types/faker": "5.1.7",
         "@types/is-uuid": "1.0.0",

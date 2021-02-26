@@ -1,6 +1,5 @@
 import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { describe, beforeAll, afterAll, test, expect, it } from "@jest/globals";
 import gql from "graphql-tag";
 import neo4j from "./neo4j";
 import { OGM, Model } from "../../src";
@@ -525,7 +524,7 @@ describe("OGM", () => {
                     id: ID
                     movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
                 }
-                
+
                 type Movie {
                     id: ID
                     actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
@@ -583,7 +582,7 @@ describe("OGM", () => {
                     id: ID
                     movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
                 }
-                
+
                 type Movie {
                     id: ID
                     actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")

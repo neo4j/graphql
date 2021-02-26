@@ -2,7 +2,6 @@ import { Driver } from "neo4j-driver";
 import { graphql, GraphQLScalarType } from "graphql";
 import { Kind } from "graphql/language";
 import { generate } from "randomstring";
-import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
@@ -40,7 +39,7 @@ describe("scalars", () => {
 
         const typeDefs = `
             scalar UpperCaseString
-          
+
             type Movie {
               id: ID
               name: UpperCaseString

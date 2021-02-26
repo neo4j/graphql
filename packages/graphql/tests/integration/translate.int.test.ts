@@ -1,5 +1,4 @@
 import { graphql } from "graphql";
-import { describe, test, expect } from "@jest/globals";
 import { Neo4jGraphQL } from "../../src/classes";
 import translate from "../../src/translate/translate";
 import { trimmer } from "../../src/utils";

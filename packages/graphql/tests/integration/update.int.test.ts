@@ -2,7 +2,6 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { gql } from "apollo-server";
-import { describe, beforeAll, afterAll, expect, test } from "@jest/globals";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
@@ -198,7 +197,7 @@ describe("update", () => {
                 name: String
                 movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
             }
-                
+
             type Movie {
                 id: ID
                 actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
@@ -223,7 +222,7 @@ describe("update", () => {
         mutation($movieId: ID, $initialName: String, $updatedName: String) {
             updateMovies(
               where: { id: $movieId },
-              update: { 
+              update: {
                 actors: [{
                   where: { name: $initialName },
                   update: { name: $updatedName }
@@ -589,7 +588,7 @@ describe("update", () => {
               name: String
               movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
             }
-              
+
             type Movie {
               id: ID
               title: String
@@ -628,7 +627,7 @@ describe("update", () => {
                     }
                 }
             }
-          }          
+          }
         `;
 
         try {
@@ -666,7 +665,7 @@ describe("update", () => {
                 id: ID
                 movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
             }
-            
+
             type Movie {
                 id: ID
                 actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
@@ -731,7 +730,7 @@ describe("update", () => {
                 id: ID
                 movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
             }
-            
+
             type Movie {
                 id: ID
                 actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
@@ -796,12 +795,12 @@ describe("update", () => {
             type Product {
                 id: ID
                 photos: [Photo] @relationship(type: "HAS_PHOTO", direction: "OUT")
-            }     
-            
+            }
+
             type Color {
                 id: ID
             }
-            
+
             type Photo {
                 id: ID
                 color: Color @relationship(type: "OF_COLOR", direction: "OUT")
@@ -845,7 +844,7 @@ describe("update", () => {
                     }
                 }
             }
-          }          
+          }
         `;
 
         try {
@@ -855,7 +854,7 @@ describe("update", () => {
                 CREATE (photo:Photo {id: $photoId})
                 CREATE (color:Color {id: $colorId})
                 MERGE (p)-[:HAS_PHOTO]->(photo)-[:OF_COLOR]->(color)
-                
+
             `,
                 {
                     productId,
@@ -975,7 +974,7 @@ describe("update", () => {
                         }
                     }
                 }
-              }             
+              }
         `;
 
         try {
@@ -993,7 +992,7 @@ describe("update", () => {
                     MERGE (product)-[:HAS_PHOTO]->(photo1)
                     MERGE (photo1)-[:OF_COLOR]->(photo1_color0)
 
-                
+
             `,
                 {
                     productId,
@@ -1082,8 +1081,8 @@ describe("update", () => {
                   where: { id: "${productId}" }
                   update: {
                       photos: [{
-                          create: [{ 
-                            id: "${photoId}", 
+                          create: [{
+                            id: "${photoId}",
                             name: "Green Photo",
                             color: {
                                 create: {
@@ -1107,7 +1106,7 @@ describe("update", () => {
                         }
                     }
                 }
-              }             
+              }
         `;
 
         try {
@@ -1181,7 +1180,7 @@ describe("update", () => {
                   where: { id: "${productId}" }
                   create: {
                     photos: [{
-                      id: "${photoId}", 
+                      id: "${photoId}",
                       name: "Green Photo",
                       color: {
                           create: {
@@ -1204,7 +1203,7 @@ describe("update", () => {
                         }
                     }
                 }
-              }             
+              }
         `;
 
         try {
