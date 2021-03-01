@@ -20,6 +20,7 @@
         "dist/"
     ],
     "scripts": {
+        "prepare": "npm run build:clean",
         "clean": "rimraf dist",
         "test": "run-s test:unit test:int test:tck",
         "test:unit": "jest unit",
@@ -32,7 +33,7 @@
         "posttest:package-tests": "npm run cleanup:package-tests",
         "test:package-tests": "npm run setup:package-tests && cd ../package-tests/ && npm run test:all",
         "cleanup:package-tests": "cd ../package-tests/ && npm run cleanup && rimraf ./package/ && rimraf *.tgz",
-        "build": "tsc -b src",
+        "build": "cd src/ && tsc && cd ../",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
         "start": "run-s build:clean watch",
