@@ -1,5 +1,4 @@
-import { describe, test, expect } from "@jest/globals";
-import { InterfaceTypeDefinitionNode, ObjectTypeDefinitionNode, parse, ValueNode } from "graphql";
+import { InterfaceTypeDefinitionNode, ObjectTypeDefinitionNode, parse } from "graphql";
 import checkNodeImplementsInterfaces from "../../../src/schema/check-node-implements-interfaces";
 
 describe("checkNodeImplementsInterfaces", () => {

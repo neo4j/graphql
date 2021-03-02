@@ -1,6 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-var-requires,import/no-unresolved
 const { ApolloServer } = require("apollo-server");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-var-requires,import/no-unresolved
 const { Neo4jGraphQL } = require("@neo4j/graphql");
 
 const defaultTypeDefs = `

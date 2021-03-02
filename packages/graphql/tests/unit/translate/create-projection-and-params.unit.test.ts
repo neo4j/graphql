@@ -1,4 +1,3 @@
-import { describe, test, expect } from "@jest/globals";
 import createProjectionAndParams from "../../../src/translate/create-projection-and-params";
 import { Neo4jGraphQL, Context, Node } from "../../../src/classes";
 

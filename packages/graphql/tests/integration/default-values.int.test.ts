@@ -2,7 +2,6 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import { Neo4jGraphQL } from "../../src/classes";
 import neo4j from "./neo4j";
 
@@ -22,7 +21,7 @@ describe("Default values", () => {
     test("should allow default value on custom @cypher node field", async () => {
         const session = driver.session();
 
-        const typeDefs = `          
+        const typeDefs = `
             type Movie {
               id: ID
               field(skip: Int = 100): Int
@@ -76,7 +75,7 @@ describe("Default values", () => {
     test("should allow default value on custom @cypher custom resolver field", async () => {
         const session = driver.session();
 
-        const typeDefs = `          
+        const typeDefs = `
             type Movie {
                 id: ID
             }
