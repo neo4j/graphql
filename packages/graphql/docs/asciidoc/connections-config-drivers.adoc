@@ -62,20 +62,3 @@ const server = new ApolloServer({
   context: { driver, driverConfig: { bookmarks: ["my-bookmark"] } }
 });
 ----
-
-
-== Environment Variables
-
-.Environment Variables Matrix
-|===
-|Variable | Usage
-
-|`JWT_SECRET`
-| Specify JWT secret for <<auth>>
-
-|`JWT_NO_VERIFY`
-| Disable the verification of the JWT for <<auth>>
-
-|`JWT_ROLES_OBJECT_PATH`
-| Specify where the roles key is, on the JWT, for <<auth>>
-|===
