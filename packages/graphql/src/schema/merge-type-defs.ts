@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 import { DefinitionNode, DocumentNode, FieldDefinitionNode, Kind, parse, print } from "graphql";
 import { TypeDefs } from "../types";
 
@@ -238,10 +237,10 @@ function mergeExtensionsIntoAST(document: DocumentNode): DocumentNode {
         }
     });
 
-    for (const [key, extDefs] of extensions) {
+    extensions.forEach((value, key) => {
         const def = definitions.get(key);
-        definitions.set(key, extDefs.reduce(extendDefinition, def));
-    }
+        definitions.set(key, value.reduce(extendDefinition, def));
+    });
 
     return {
         ...document,

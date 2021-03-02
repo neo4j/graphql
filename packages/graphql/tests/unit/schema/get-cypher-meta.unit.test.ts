@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { FieldDefinitionNode } from "graphql";
 import getCypherMeta from "../../../src/schema/get-cypher-meta";
 

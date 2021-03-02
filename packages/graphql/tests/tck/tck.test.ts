@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import camelCase from "camelcase";
 import {
     graphql,

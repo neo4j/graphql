@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import camelCase from "camelcase";
 import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";

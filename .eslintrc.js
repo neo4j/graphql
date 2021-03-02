@@ -3,6 +3,7 @@ module.exports = {
     plugins: ["prettier"],
     extends: [
         "airbnb/base",
+        "plugin:eslint-comments/recommended",
         "plugin:jest/recommended",
         "plugin:jest/style",
         "plugin:import/errors",
@@ -15,6 +16,8 @@ module.exports = {
     rules: {
         "no-underscore-dangle": "off",
         "no-param-reassign": "off",
+        "max-classes-per-file": "off", // We can judge whether there are too many classes in one file during code review
+        "eslint-comments/no-unused-disable": "error", // Turn on optional rule to report eslint-disable comments having no effect
     },
     overrides: [
         {
@@ -29,6 +32,7 @@ module.exports = {
                 "airbnb-typescript/base",
                 "plugin:@typescript-eslint/recommended",
                 "plugin:@typescript-eslint/recommended-requiring-type-checking",
+                "plugin:eslint-comments/recommended",
                 "plugin:jest/recommended",
                 "plugin:jest/style",
                 "plugin:import/errors",
@@ -43,7 +47,7 @@ module.exports = {
                 "no-param-reassign": "off",
                 "@typescript-eslint/no-explicit-any": "off",
                 "@typescript-eslint/no-use-before-define": "warn",
-                "@typescript-eslint/ban-ts-comment": "off",
+                "@typescript-eslint/ban-ts-comment": "warn",
                 "@typescript-eslint/explicit-module-boundary-types": "off",
                 "@typescript-eslint/no-unused-vars": [0],
                 // @typescript-eslint/recommended-requiring-type-checking rules which require large refactor
@@ -55,6 +59,8 @@ module.exports = {
                 "@typescript-eslint/no-unsafe-return": "off", // Approximately 70 instances
                 "@typescript-eslint/unbound-method": "off", // Apollo createTestClient unhappy with this switched on
                 // END BLOCK
+                "eslint-comments/no-unused-disable": "error",
+                "max-classes-per-file": "off",
             },
         },
     ],

@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 export class Neo4jGraphQLError extends Error {
     readonly name;
 
