@@ -4,7 +4,7 @@ import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import { DriverConfig } from "../types";
 
 // https://stackoverflow.com/a/58632373/10687857
-const { npm_package_version, npm_package_name } = process.env;
+const { npm_package_version: npmPackageVersion, npm_package_name: npmPackageName } = process.env;
 
 async function execute(input: {
     driver: Driver;
@@ -36,7 +36,7 @@ async function execute(input: {
     const session = input.driver.session(sessionParams);
 
     // @ts-ignore
-    input.driver._userAgent = `${npm_package_version}/${npm_package_name}`;
+    input.driver._userAgent = `${npmPackageVersion}/${npmPackageName}`;
 
     try {
         input.neoSchema.debug(`Cypher: ${input.cypher}\nParams: ${JSON.stringify(input.params, null, 2)}`);
