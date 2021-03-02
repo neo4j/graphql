@@ -64,7 +64,7 @@ describe("TCK Generated tests", () => {
                     const graphQlParams = test.graphQlParams as any;
                     const cypherQuery = test.cypherQuery as string;
                     const cypherParams = test.cypherParams as any;
-                    const jwt = test.jwt;
+                    const { jwt } = test;
 
                     const compare = (context: any, resolveInfo: any) => {
                         const [cQuery, cQueryParams] = translate({ context, resolveInfo });
@@ -207,7 +207,7 @@ describe("TCK Generated tests", () => {
                     const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const schemaOutPut = test.schemaOutPut as string;
-                    const resolvers = neoSchema.resolvers;
+                    const { resolvers } = neoSchema;
                     const outPutSchema = makeExecutableSchema({ typeDefs: schemaOutPut, resolvers });
 
                     expect(printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema))).toEqual(

@@ -23,7 +23,6 @@ module.exports = {
             },
         ],
         "import/prefer-default-export": [0],
-        "prefer-destructuring": "off",
     },
     overrides: [
         {
@@ -64,7 +63,6 @@ module.exports = {
                     },
                 ],
                 "import/prefer-default-export": [0],
-                "prefer-destructuring": "off",
                 // @typescript-eslint/recommended-requiring-type-checking rules which require large refactor
                 // START BLOCK
                 "@typescript-eslint/no-unsafe-assignment": "off", // Approximately 1100 instances

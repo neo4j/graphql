@@ -21,12 +21,12 @@ async function main() {
 
         const json = await result.json();
 
-        const errors = json.errors;
+        const { errors } = json;
         if (errors) {
             throw new Error(errors[0].message);
         }
 
-        const data = json.data;
+        const { data } = json;
 
         const schema = buildClientSchema(data);
 

@@ -66,7 +66,7 @@ function wrapCustomResolvers({
         Object.entries(obj).forEach(([key, value]) => {
             if (typeof value === "function") {
                 obj[key] = (...args) => {
-                    const driver = args[2].driver;
+                    const { driver } = args[2];
                     if (!driver) {
                         throw new Error("context.diver missing");
                     }
