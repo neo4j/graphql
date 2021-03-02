@@ -42,7 +42,7 @@ module.exports = {
             ],
             rules: {
                 "no-underscore-dangle": "off",
-                "@typescript-eslint/naming-convention": "off",
+                "@typescript-eslint/naming-convention": "warn",
                 "no-param-reassign": "off",
                 "@typescript-eslint/no-explicit-any": "off",
                 "@typescript-eslint/no-use-before-define": "warn",

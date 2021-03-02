@@ -913,11 +913,11 @@ describe("update", () => {
             charset: "alphabetic",
         });
 
-        const photo0_color0Id = generate({
+        const photo0Color0Id = generate({
             charset: "alphabetic",
         });
 
-        const photo0_color1Id = generate({
+        const photo0Color1Id = generate({
             charset: "alphabetic",
         });
 
@@ -925,11 +925,11 @@ describe("update", () => {
             charset: "alphabetic",
         });
 
-        const photo1_color0Id = generate({
+        const photo1Color0Id = generate({
             charset: "alphabetic",
         });
 
-        const photo1_color1Id = generate({
+        const photo1Color1Id = generate({
             charset: "alphabetic",
         });
 
@@ -944,8 +944,8 @@ describe("update", () => {
                         update: {
                           name: "Light Green Photo"
                           color: {
-                            connect: { where: { name: "Light Green", id: "${photo0_color1Id}" } }
-                            disconnect: { where: { name: "Green", id: "${photo0_color0Id}" } }
+                            connect: { where: { name: "Light Green", id: "${photo0Color1Id}" } }
+                            disconnect: { where: { name: "Green", id: "${photo0Color0Id}" } }
                           }
                         }
                       }
@@ -954,8 +954,8 @@ describe("update", () => {
                         update: {
                           name: "Light Yellow Photo"
                           color: {
-                            connect: { where: { name: "Light Yellow", id: "${photo1_color1Id}" } }
-                            disconnect: { where: { name: "Yellow", id: "${photo1_color0Id}" } }
+                            connect: { where: { name: "Light Yellow", id: "${photo1Color1Id}" } }
+                            disconnect: { where: { name: "Yellow", id: "${photo1Color0Id}" } }
                           }
                         }
                       }
@@ -997,11 +997,11 @@ describe("update", () => {
                 {
                     productId,
                     photo0Id,
-                    photo0_color0Id,
-                    photo0_color1Id,
+                    photo0_color0Id: photo0Color0Id,
+                    photo0_color1Id: photo0Color1Id,
                     photo1Id,
-                    photo1_color0Id,
-                    photo1_color1Id,
+                    photo1_color0Id: photo1Color0Id,
+                    photo1_color1Id: photo1Color1Id,
                 }
             );
 
@@ -1023,7 +1023,7 @@ describe("update", () => {
             expect(greenPhoto).toMatchObject({
                 id: photo0Id,
                 name: "Light Green Photo",
-                color: { id: photo0_color1Id, name: "Light Green" },
+                color: { id: photo0Color1Id, name: "Light Green" },
             });
 
             const yellowPhoto = photos.find((x) => x.id === photo1Id);
@@ -1031,7 +1031,7 @@ describe("update", () => {
             expect(yellowPhoto).toMatchObject({
                 id: photo1Id,
                 name: "Light Yellow Photo",
-                color: { id: photo1_color1Id, name: "Light Yellow" },
+                color: { id: photo1Color1Id, name: "Light Yellow" },
             });
         } finally {
             await session.close();
