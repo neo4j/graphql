@@ -66,7 +66,7 @@ describe("Custom Resolvers", () => {
 
             expect((gqlResult.data as any).createMovies.movies[0]).toEqual({
                 id,
-                custom: (id as string).toUpperCase(),
+                custom: id.toUpperCase(),
             });
         } finally {
             await session.close();
@@ -178,6 +178,7 @@ describe("Custom Resolvers", () => {
             resolvers: {
                 Subscription: {
                     id: {
+                        // eslint-disable-next-line @typescript-eslint/require-await
                         async *subscribe() {
                             yield { id };
                         },
@@ -412,7 +413,7 @@ describe("Custom Resolvers", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult.data as any).test).toEqual(id + id);
+                expect((gqlResult.data as any).test).toEqual(`${id}${id}`);
             } finally {
                 await session.close();
             }

@@ -79,7 +79,7 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any).movies[0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -114,7 +114,7 @@ describe("Advanced Filtering", () => {
                             `
                             CREATE (:${randomType} {property: $value})
                         `,
-                            { value: value + value }
+                            { value: `${value}${value}` }
                         );
 
                         const query = `
@@ -139,9 +139,9 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
 
-                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value + value);
+                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(`${value}${value}`);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -209,7 +209,7 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -283,7 +283,7 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -313,7 +313,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     });
 
-                    const superValue = value + value;
+                    const superValue = `${value}${value}`;
 
                     try {
                         await session.run(
@@ -349,7 +349,7 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(superValue);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -418,7 +418,7 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -448,7 +448,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     });
 
-                    const superValue = value + value;
+                    const superValue = `${value}${value}`;
 
                     try {
                         await session.run(
@@ -486,7 +486,7 @@ describe("Advanced Filtering", () => {
                             expect(x.property).toEqual(superValue);
                         });
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -553,7 +553,7 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -588,7 +588,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     });
 
-                    const superValue = value + value;
+                    const superValue = `${value}${value}`;
 
                     try {
                         await session.run(
@@ -622,7 +622,7 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any)[pluralRandomType].length).toEqual(2);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -657,7 +657,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     });
 
-                    const superValue = value + value;
+                    const superValue = `${value}${value}`;
 
                     try {
                         await session.run(
@@ -692,7 +692,7 @@ describe("Advanced Filtering", () => {
                         expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(notValue);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -767,7 +767,7 @@ describe("Advanced Filtering", () => {
                         expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(property);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -847,7 +847,7 @@ describe("Advanced Filtering", () => {
                         expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -929,7 +929,7 @@ describe("Advanced Filtering", () => {
                         expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -996,7 +996,7 @@ describe("Advanced Filtering", () => {
                         expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(lessThanValue);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -1062,7 +1062,7 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any)[pluralRandomType].length).toEqual(2);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -1129,7 +1129,7 @@ describe("Advanced Filtering", () => {
                         expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(graterThanValue);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -1195,7 +1195,7 @@ describe("Advanced Filtering", () => {
 
                         expect((gqlResult.data as any)[pluralRandomType].length).toEqual(2);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -1252,7 +1252,7 @@ describe("Advanced Filtering", () => {
 
                 expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
             } finally {
-                session.close();
+                await session.close();
             }
         });
 
@@ -1305,7 +1305,7 @@ describe("Advanced Filtering", () => {
 
                 expect((gqlResult.data as any)[pluralRandomType].length).toEqual(0);
             } finally {
-                session.close();
+                await session.close();
             }
         });
     });
@@ -1391,7 +1391,7 @@ describe("Advanced Filtering", () => {
                     [pluralRandomType2]: [{ id: relationId }],
                 });
             } finally {
-                session.close();
+                await session.close();
             }
         });
 
@@ -1478,7 +1478,7 @@ describe("Advanced Filtering", () => {
                     [pluralRandomType2]: [{ id: relationId1 }],
                 });
             } finally {
-                session.close();
+                await session.close();
             }
         });
 
@@ -1571,7 +1571,7 @@ describe("Advanced Filtering", () => {
                     },
                 ]);
             } finally {
-                session.close();
+                await session.close();
             }
         });
 
@@ -1660,7 +1660,7 @@ describe("Advanced Filtering", () => {
                     },
                 ]);
             } finally {
-                session.close();
+                await session.close();
             }
         });
 
@@ -1769,7 +1769,7 @@ describe("Advanced Filtering", () => {
                     id: rootId,
                 });
             } finally {
-                session.close();
+                await session.close();
             }
         });
     });
@@ -1869,7 +1869,7 @@ describe("Advanced Filtering", () => {
 
                 expect((notNullResult.data as any)[pluralRandomType][0].id).toEqual(id2);
             } finally {
-                session.close();
+                await session.close();
             }
         });
     });
