@@ -1016,7 +1016,7 @@ describe("update", () => {
 
             expect((gqlResult?.data?.updateProducts.products as any[]).length).toEqual(1);
 
-            const photos = (gqlResult?.data?.updateProducts.products as any[])[0].photos;
+            const { photos } = (gqlResult?.data?.updateProducts.products as any[])[0];
 
             const greenPhoto = photos.find((x) => x.id === photo0Id);
 
