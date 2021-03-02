@@ -120,7 +120,7 @@ export function createResolver({ node, neoSchema }: { node: Node; neoSchema: Neo
         });
 
         return {
-            [pluralize(camelCase(node.name))]: Object.values((result[0] || {}) as any),
+            [pluralize(camelCase(node.name))]: Object.values(result[0] || {}),
         };
     }
 

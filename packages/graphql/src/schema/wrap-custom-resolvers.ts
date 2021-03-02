@@ -53,7 +53,7 @@ function wrapCustomResolvers({
             ...r,
             [key]: {
                 ...generatedResolvers[key],
-                ...(value as any),
+                ...value,
             },
         };
     }, {});

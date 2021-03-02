@@ -107,7 +107,7 @@ function createAuthPredicate({
                     }) | ${relationVarName}] WHERE `,
                 ].join(" ");
 
-                Object.entries(value as any).forEach(([k, v]: [string, any]) => {
+                Object.entries(value).forEach(([k, v]: [string, any]) => {
                     const authPredicate = createAuthPredicate({
                         node: refNode,
                         context,
@@ -126,7 +126,7 @@ function createAuthPredicate({
             return res;
         },
         { params: {}, strs: [] }
-    ) as Res;
+    );
 
     return [result.strs.join(" AND "), result.params];
 }
@@ -257,7 +257,7 @@ function createAuthAndParams({
             };
         },
         { strs: [], params: {} }
-    ) as Res;
+    );
 
     return [subPredicates.strs.filter(Boolean).join(" OR "), subPredicates.params];
 }

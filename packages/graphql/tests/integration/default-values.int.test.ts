@@ -63,7 +63,7 @@ describe("Default values", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).movies[0] as any).toEqual({
+            expect((gqlResult.data as any).movies[0]).toEqual({
                 id,
                 field: 100,
             });
@@ -109,7 +109,7 @@ describe("Default values", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).field as any).toEqual(100);
+            expect((gqlResult.data as any).field).toEqual(100);
         } finally {
             await session.close();
         }

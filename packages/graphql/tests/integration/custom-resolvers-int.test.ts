@@ -64,7 +64,7 @@ describe("Custom Resolvers", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).createMovies.movies[0] as any).toEqual({
+            expect((gqlResult.data as any).createMovies.movies[0]).toEqual({
                 id,
                 custom: (id as string).toUpperCase(),
             });
@@ -345,27 +345,27 @@ describe("Custom Resolvers", () => {
                         expect(gqlResult.errors).toBeFalsy();
 
                         if (type === "ID") {
-                            expect((gqlResult.data as any).test as any).toEqual(id);
+                            expect((gqlResult.data as any).test).toEqual(id);
                         }
 
                         if (type === "Int") {
-                            expect((gqlResult.data as any).test as any).toEqual(int);
+                            expect((gqlResult.data as any).test).toEqual(int);
                         }
 
                         if (type === "Float") {
-                            expect((gqlResult.data as any).test as any).toEqual(float);
+                            expect((gqlResult.data as any).test).toEqual(float);
                         }
 
                         if (type === "Boolean") {
-                            expect((gqlResult.data as any).test as any).toEqual(bool);
+                            expect((gqlResult.data as any).test).toEqual(bool);
                         }
 
                         if (type === "Object") {
-                            expect((gqlResult.data as any).test.id as any).toEqual(id);
+                            expect((gqlResult.data as any).test.id).toEqual(id);
                         }
 
                         if (type === "Node") {
-                            expect((gqlResult.data as any).test.id as any).toEqual(id);
+                            expect((gqlResult.data as any).test.id).toEqual(id);
                         }
                     } finally {
                         await session.close();
@@ -412,7 +412,7 @@ describe("Custom Resolvers", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult.data as any).test as any).toEqual(id + id);
+                expect((gqlResult.data as any).test).toEqual(id + id);
             } finally {
                 await session.close();
             }
@@ -553,7 +553,7 @@ describe("Custom Resolvers", () => {
 
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
-                        source: query as string,
+                        source: query,
                         contextValue: { driver, req },
                     });
 

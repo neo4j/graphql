@@ -61,7 +61,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await mutate({ mutation: create, variables: { serial, x, y } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).createParts.parts[0]).toEqual({
+        expect(gqlResult.data.createParts.parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -108,7 +108,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await mutate({ mutation: create, variables: { serial, x, y, z } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).createParts.parts[0]).toEqual({
+        expect(gqlResult.data.createParts.parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -171,7 +171,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await mutate({ mutation: update, variables: { serial, x, y: newY } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).updateParts.parts[0]).toEqual({
+        expect(gqlResult.data.updateParts.parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -235,7 +235,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await mutate({ mutation: update, variables: { serial, x, y: newY, z } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).updateParts.parts[0]).toEqual({
+        expect(gqlResult.data.updateParts.parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -295,7 +295,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await query({ query: partsQuery, variables: { serial } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).parts[0]).toEqual({
+        expect(gqlResult.data.parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -347,7 +347,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await query({ query: partsQuery, variables: { serial } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).parts[0]).toEqual({
+        expect(gqlResult.data.parts[0]).toEqual({
             serial,
             location: {
                 x,

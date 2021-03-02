@@ -13,7 +13,7 @@ describe("getAuth", () => {
         const parsed = parse(typeDefs);
 
         // @ts-ignore
-        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0] as DirectiveNode;
+        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
 
         try {
             getAuth(directive);
@@ -34,7 +34,7 @@ describe("getAuth", () => {
         const parsed = parse(typeDefs);
 
         // @ts-ignore
-        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0] as DirectiveNode;
+        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
 
         try {
             getAuth(directive);
@@ -74,7 +74,7 @@ describe("getAuth", () => {
 
         // @ts-ignore
         const directive = (parsed.definitions.find((x) => x.name.value === "Movie") as ObjectTypeDefinitionNode)
-            .directives[0] as DirectiveNode;
+            .directives[0];
 
         const auth = getAuth(directive);
 

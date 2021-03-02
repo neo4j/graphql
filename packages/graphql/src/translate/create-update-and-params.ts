@@ -119,10 +119,9 @@ function createUpdateAndParams({
                     }
                     updateStrs.push("YIELD value as _");
 
-                    const paramsString = (Object.keys(innerApocParams).reduce(
-                        (r: string[], k) => [...r, `${k}:$${k}`],
-                        []
-                    ) as string[]).join(",");
+                    const paramsString = Object.keys(innerApocParams)
+                        .reduce((r: string[], k) => [...r, `${k}:$${k}`], [])
+                        .join(",");
 
                     const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
                     res.strs.push(updateStr);
@@ -274,7 +273,7 @@ function createUpdateAndParams({
     let { strs, params, meta = { preAuthStrs: [], postAuthStrs: [] } } = Object.entries(updateInput).reduce(reducer, {
         strs: [],
         params: {},
-    }) as Res;
+    });
 
     let preAuthStrs: string[] = [];
     let postAuthStrs: string[] = [];

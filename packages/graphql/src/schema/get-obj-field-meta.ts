@@ -171,7 +171,7 @@ function getObjFieldMeta({
                             throw new Error(`@autogenerate operations must be an array`);
                         }
 
-                        const timestamps = (operations.value as ListValueNode).values.map((x) =>
+                        const timestamps = operations.value.values.map((x) =>
                             parseValueNode(x)
                         ) as TimeStampOperations[];
 

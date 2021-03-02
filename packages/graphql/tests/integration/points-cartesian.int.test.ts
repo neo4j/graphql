@@ -63,7 +63,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await mutate({ mutation: create, variables: { id, locations } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).createParts.parts[0]).toEqual({
+        expect(gqlResult.data.createParts.parts[0]).toEqual({
             id,
             locations: locations.map((location) => ({ ...location, z: null, crs: "cartesian" })),
         });
@@ -115,7 +115,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await mutate({ mutation: create, variables: { id, locations } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).createParts.parts[0]).toEqual({
+        expect(gqlResult.data.createParts.parts[0]).toEqual({
             id,
             locations: locations.map((location) => ({ ...location, crs: "cartesian-3d" })),
         });
@@ -198,7 +198,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await mutate({ mutation: update, variables: { id, locations: newLocations } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).updateParts.parts[0]).toEqual({
+        expect(gqlResult.data.updateParts.parts[0]).toEqual({
             id,
             locations: newLocations.map((location) => ({ ...location, z: null, crs: "cartesian" })),
         });
@@ -283,7 +283,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await mutate({ mutation: update, variables: { id, locations: newLocations } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).updateParts.parts[0]).toEqual({
+        expect(gqlResult.data.updateParts.parts[0]).toEqual({
             id,
             locations: newLocations.map((location) => ({ ...location, crs: "cartesian-3d" })),
         });
@@ -348,7 +348,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await query({ query: partsQuery, variables: { id } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).parts[0]).toEqual({
+        expect(gqlResult.data.parts[0]).toEqual({
             id,
             locations: locations.map((location) => ({ ...location, z: null, crs: "cartesian" })),
         });
@@ -396,7 +396,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await query({ query: partsQuery, variables: { id } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).parts[0]).toEqual({
+        expect(gqlResult.data.parts[0]).toEqual({
             id,
             locations: locations.map((location) => ({ ...location, crs: "cartesian-3d" })),
         });
