@@ -45,7 +45,7 @@ module.exports = {
                 "@typescript-eslint/naming-convention": "off",
                 "no-param-reassign": "off",
                 "@typescript-eslint/no-explicit-any": "off",
-                "@typescript-eslint/no-use-before-define": "off",
+                "@typescript-eslint/no-use-before-define": "warn",
                 "@typescript-eslint/ban-ts-comment": "off",
                 "@typescript-eslint/explicit-module-boundary-types": "off",
                 "@typescript-eslint/no-unused-vars": [0],
