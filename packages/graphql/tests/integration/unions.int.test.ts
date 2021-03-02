@@ -77,9 +77,9 @@ describe("unions", () => {
 
             const movies = (gqlResult.data as any).movies[0];
 
-            const movieSearch = movies.search.find((x) => x.__typename === "Movie");
+            const movieSearch = movies.search.find((x) => x.__typename === "Movie"); // eslint-disable-line no-underscore-dangle
             expect(movieSearch.title).toEqual(movieTitle);
-            const genreSearch = movies.search.find((x) => x.__typename === "Genre");
+            const genreSearch = movies.search.find((x) => x.__typename === "Genre"); // eslint-disable-line no-underscore-dangle
             expect(genreSearch.name).toEqual(genreName);
         } finally {
             await session.close();

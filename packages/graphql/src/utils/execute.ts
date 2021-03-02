@@ -35,8 +35,8 @@ async function execute(input: {
 
     const session = input.driver.session(sessionParams);
 
-    // @ts-ignore
-    input.driver._userAgent = `${npmPackageVersion}/${npmPackageName}`;
+    // @ts-ignore: Required to set connection user agent
+    input.driver._userAgent = `${npmPackageVersion}/${npmPackageName}`; // eslint-disable-line no-underscore-dangle
 
     try {
         input.neoSchema.debug(`Cypher: ${input.cypher}\nParams: ${JSON.stringify(input.params, null, 2)}`);
@@ -46,7 +46,7 @@ async function execute(input: {
         );
 
         if (input.statistics) {
-            return result.summary.updateStatistics._stats;
+            return result.summary.updateStatistics._stats; // eslint-disable-line no-underscore-dangle
         }
 
         if (input.raw) {
