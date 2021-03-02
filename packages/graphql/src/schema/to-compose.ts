@@ -13,7 +13,7 @@ export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
             [arg.name.value]: {
                 type: meta.pretty,
                 description: arg.description,
-                ...(arg.defaultValue ? { defaultValue: parseValueNode(arg.defaultValue as ValueNode) } : {}),
+                ...(arg.defaultValue ? { defaultValue: parseValueNode(arg.defaultValue) } : {}),
             },
         };
     }, {});

@@ -57,7 +57,7 @@ describe("TCK Generated tests", () => {
                 const neoSchema = new Neo4jGraphQL({ typeDefs: schema as string });
 
                 // @ts-ignore
-                test.each(tests.map((t) => [t.name, t as Test]))("%s", async (_, obj) => {
+                test.each(tests.map((t) => [t.name, t]))("%s", async (_, obj) => {
                     const test = obj as Test;
 
                     const graphQlQuery = test.graphQlQuery as string;
@@ -200,7 +200,7 @@ describe("TCK Generated tests", () => {
 
             if (kind === "schema") {
                 // @ts-ignore
-                test.each(tests.map((t) => [t.name, t as Test]))("%s", (_, obj) => {
+                test.each(tests.map((t) => [t.name, t]))("%s", (_, obj) => {
                     const test = obj as Test;
 
                     const typeDefs = test.typeDefs as string;

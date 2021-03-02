@@ -151,7 +151,7 @@ function createProjectionAndParams({
             if (relationField.union) {
                 const referenceNodes = context.neoSchema.nodes.filter((x) =>
                     relationField.union?.nodes?.includes(x.name)
-                ) as Node[];
+                );
 
                 const unionStrs: string[] = [
                     `${key}: ${!isArray ? "head(" : ""} [(${
@@ -398,7 +398,7 @@ function createProjectionAndParams({
             projection: [],
             params: {},
         }
-    ) as Res;
+    );
 
     return [`{ ${projection.join(", ")} }`, params, meta];
 }

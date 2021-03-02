@@ -36,7 +36,7 @@ export function generateTestCasesFromMd(dir: string): TestCase[] {
         }
 
         return res;
-    }, []) as TestCase[];
+    }, []);
 
     return files;
 }

@@ -8,7 +8,7 @@
     "private": true,
     "scripts": {
         "prettify": "prettier --write \"packages/**/*.ts\"",
-        "lint": "eslint . --ext .ts",
+        "lint": "eslint .",
         "lerna:test": "lerna run test --concurrency 1",
         "test": "run-s --continue-on-error lerna:test",
         "test:pr": "run-s lint test",
