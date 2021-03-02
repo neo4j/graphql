@@ -1,5 +1,7 @@
 # @neo4j/graphql
 
+[![npm version](https://badge.fury.io/js/%40neo4j%2Fgraphql.svg)](https://badge.fury.io/js/%40neo4j%2Fgraphql)
+
 > Alpha 🏗
 
 A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations.
