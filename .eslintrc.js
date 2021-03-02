@@ -80,7 +80,7 @@ module.exports = {
                 "@typescript-eslint/ban-ts-comment": ["warn", { "ts-ignore": "allow-with-description" }], // TODO Refactor and set severity to "error" - If @ts-ignore is genuinely required it justify with a reason: "@ts-ignore: Required for a reason"
             },
         },
-        // More leniant ESLint configuration for test files
+        // More lenient ESLint configuration for test files
         {
             files: ["**/*.test.ts"],
             ...typeScriptParser,
