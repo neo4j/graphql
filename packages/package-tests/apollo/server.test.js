@@ -1,8 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const fetch = require("node-fetch");
-// eslint-disable-next-line @typescript-eslint/no-var-requires,import/no-unresolved
+// eslint-disable-next-line import/no-unresolved
 const { getIntrospectionQuery, buildClientSchema, printSchema } = require("graphql");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const server = require("./server");
 
 const { GRAPHQL_URL = "http://localhost:4000/graphql" } = process.env;

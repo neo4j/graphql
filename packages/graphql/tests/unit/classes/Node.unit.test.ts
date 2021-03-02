@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import Node, { NodeConstructor } from "../../../src/classes/Node";
 
 describe("Node", () => {

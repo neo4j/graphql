@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-escape */
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";

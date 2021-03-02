@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { DirectiveNode, ObjectTypeDefinitionNode, parse } from "graphql";
 import getAuth from "../../../src/schema/get-auth";
 

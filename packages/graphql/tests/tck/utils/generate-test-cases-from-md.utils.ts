@@ -93,7 +93,6 @@ function extractTests(contents: string, kind: Kind): Test[] {
 }
 
 function extractSchema(contents: string): string {
-    // eslint-disable-next-line
     const re = /```schema(?<capture>(.|\s)*?)```/;
     return captureOrEmptyString(contents, re);
 }
