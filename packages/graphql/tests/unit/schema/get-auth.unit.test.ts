@@ -15,13 +15,7 @@ describe("getAuth", () => {
         // @ts-ignore
         const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
 
-        try {
-            getAuth(directive);
-
-            throw new Error();
-        } catch (error) {
-            expect(error.message).toEqual("auth rules required");
-        }
+        expect(() => getAuth(directive)).toThrow("auth rules required");
     });
 
     test("should throw rules must be a ListValue", () => {
@@ -36,13 +30,7 @@ describe("getAuth", () => {
         // @ts-ignore
         const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
 
-        try {
-            getAuth(directive);
-
-            throw new Error();
-        } catch (error) {
-            expect(error.message).toEqual("auth rules must be a ListValue");
-        }
+        expect(() => getAuth(directive)).toThrow("auth rules must be a ListValue");
     });
 
     test("should return AuthRule", () => {

@@ -345,29 +345,29 @@ describe("Custom Resolvers", () => {
 
                         expect(gqlResult.errors).toBeFalsy();
 
+                        let expected: any;
+
                         if (type === "ID") {
-                            expect((gqlResult.data as any).test).toEqual(id);
+                            expected = id;
+                        }
+
+                        if (type === "Object" || type === "Node") {
+                            expected = { id };
                         }
 
                         if (type === "Int") {
-                            expect((gqlResult.data as any).test).toEqual(int);
+                            expected = int;
                         }
 
                         if (type === "Float") {
-                            expect((gqlResult.data as any).test).toEqual(float);
+                            expected = float;
                         }
 
                         if (type === "Boolean") {
-                            expect((gqlResult.data as any).test).toEqual(bool);
+                            expected = bool;
                         }
 
-                        if (type === "Object") {
-                            expect((gqlResult.data as any).test.id).toEqual(id);
-                        }
-
-                        if (type === "Node") {
-                            expect((gqlResult.data as any).test.id).toEqual(id);
-                        }
+                        expect((gqlResult.data as any).test).toEqual(expected);
                     } finally {
                         await session.close();
                     }
@@ -457,7 +457,7 @@ describe("Custom Resolvers", () => {
                             contextValue: { driver, req },
                         });
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any).userId).toEqual(userId);
                     } finally {
@@ -505,7 +505,7 @@ describe("Custom Resolvers", () => {
                             contextValue: { driver, req },
                         });
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any).userId).toEqual(userId);
                     } finally {
@@ -558,7 +558,7 @@ describe("Custom Resolvers", () => {
                         contextValue: { driver, req },
                     });
 
-                    expect(gqlResult.errors).toEqual(undefined);
+                    expect(gqlResult.errors).toBeUndefined();
 
                     expect((gqlResult.data as any).users[0].userId).toEqual(userId);
                 } finally {
