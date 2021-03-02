@@ -1,4 +1,4 @@
-import { DirectiveNode, ObjectTypeDefinitionNode, parse } from "graphql";
+import { ObjectTypeDefinitionNode, parse } from "graphql";
 import getAuth from "../../../src/schema/get-auth";
 
 describe("getAuth", () => {

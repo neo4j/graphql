@@ -2,7 +2,6 @@ import camelCase from "camelcase";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
-    DirectiveNode,
     EnumTypeDefinitionNode,
     GraphQLSchema,
     InputObjectTypeDefinitionNode,

@@ -159,7 +159,7 @@ describe("auth/custom-resolvers", () => {
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 resolvers: {
-                    Query: { me: (_, __) => ({}) },
+                    Query: { me: () => ({}) },
                     User: { customId: (_, __, ctx) => ctx.auth.jwt.sub },
                 },
             });

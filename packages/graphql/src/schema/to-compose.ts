@@ -1,4 +1,4 @@
-import { InputValueDefinitionNode, ValueNode, DirectiveNode } from "graphql";
+import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 import { ExtensionsDirective, DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
 import getFieldTypeMeta from "./get-field-type-meta";
 import parseValueNode from "./parse-value-node";
