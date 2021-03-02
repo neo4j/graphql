@@ -1,19 +1,21 @@
-## Monorepo for Neo4j GraphQL
+# Neo4j GraphQL
 
-### Installation
+[![npm version](https://badge.fury.io/js/%40neo4j%2Fgraphql.svg)](https://badge.fury.io/js/%40neo4j%2Fgraphql)
 
-```
+## Installation
+
+```sh
 npm ci
 ```
 
-### Testing
+## Testing
 
-```
+```sh
 npm test
 ```
 
-### Linting
+## Linting
 
-```
+```sh
 npm run lint
 ```
