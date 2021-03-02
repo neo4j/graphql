@@ -76,13 +76,8 @@ module.exports = {
                 "@typescript-eslint/restrict-template-expressions": "off",
                 // Approximately 70 instances
                 "@typescript-eslint/no-unsafe-return": "off",
-                // Below to be refactored in next commit
-                "@typescript-eslint/no-floating-promises": "warn",
-                "@typescript-eslint/unbound-method": "warn",
-                "@typescript-eslint/restrict-plus-operands": "warn",
-                "@typescript-eslint/require-await": "warn",
-                "@typescript-eslint/await-thenable": "warn",
-                "@typescript-eslint/prefer-regexp-exec": "warn",
+                // Apollo createTestClient unhappy with this switched on
+                "@typescript-eslint/unbound-method": "off",
             },
             settings: {
                 "import/resolver": {

@@ -125,7 +125,7 @@ function extractTests(contents: string, kind: Kind): Test[] {
 }
 
 function captureOrEmptyString(contents: string, re: RegExp): string {
-    const m = contents.match(re);
+    const m = re.exec(contents);
     if (m?.groups?.capture) {
         return m.groups.capture.trim();
     }
