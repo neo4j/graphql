@@ -32,12 +32,13 @@ const baseTypeScriptExtends = [
 
 const baseTypeScriptRules = {
     ...baseRules,
+    "no-unused-vars": "off", // Must be disabled to allow @typescript-eslint/no-unused-vars to work
     "@typescript-eslint/naming-convention": "warn",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-use-before-define": "warn",
     "@typescript-eslint/ban-ts-comment": "warn", // TODO Refactor needed so this can be changed to "error"
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/no-unused-vars": [0],
+    "@typescript-eslint/no-unused-vars": ["error"], // Additional rule enabled because we don't want unused variables hanging about!
     /* start of @typescript-eslint/recommended-requiring-type-checking rules */
     "@typescript-eslint/no-unsafe-assignment": "off", // Approximately 1100 instances
     "@typescript-eslint/no-unsafe-member-access": "off", // Approximately 700 instances

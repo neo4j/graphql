@@ -1,7 +1,6 @@
 import {
     EnumTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
-    ListValueNode,
     ObjectTypeDefinitionNode,
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode,
