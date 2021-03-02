@@ -1,4 +1,4 @@
-import { InputValueDefinitionNode, DocumentNode, DirectiveNode } from "graphql";
+import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 import { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 
 export type TypeDefs = IExecutableSchemaDefinition["typeDefs"];

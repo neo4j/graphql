@@ -1,6 +1,5 @@
 import { Driver, int, Session } from "neo4j-driver";
 import faker from "faker";
-import { describe, beforeAll, afterAll, test, expect, beforeEach, afterEach } from "@jest/globals";
 import { gql } from "apollo-server";
 import { createTestClient } from "apollo-server-testing";
 import neo4j from "./neo4j";
@@ -316,7 +315,7 @@ describe("[Point]", () => {
             latitude: parseFloat(faker.address.latitude()),
         }));
 
-        const result = await session.run(
+        await session.run(
             `
             CALL {
                 CREATE (r:Route)
@@ -419,7 +418,7 @@ describe("[Point]", () => {
             height: faker.random.float(),
         }));
 
-        const result = await session.run(
+        await session.run(
             `
             CALL {
                 CREATE (r:Route)

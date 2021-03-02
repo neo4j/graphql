@@ -1,7 +1,6 @@
 import { Driver, int } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
@@ -148,11 +147,11 @@ describe("floats", () => {
             type Movie {
                 id: String
             }
-        
+
             input Nested {
                 floats: [Float]
             }
-        
+
             type Mutation {
                 float(id: ID, float: Float, nested: Nested): Float
                     @cypher(
@@ -215,8 +214,8 @@ describe("floats", () => {
                     RETURN 12345
                 """)
             }
-        
-           
+
+
         `;
 
         const id = generate({

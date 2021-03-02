@@ -15,11 +15,9 @@ import pluralize from "pluralize";
 import jsonwebtoken from "jsonwebtoken";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
-import { beforeAll, afterAll, describe, expect } from "@jest/globals";
 import { SchemaDirectiveVisitor, printSchemaWithDirectives } from "@graphql-tools/utils";
 import { translate } from "../../src/translate";
 import { Neo4jGraphQL } from "../../src";
-import { noGraphQLErrors } from "../../../../scripts/tests/utils";
 import { generateTestCasesFromMd, Test, TestCase } from "./utils/generate-test-cases-from-md.utils";
 import { trimmer } from "../../src/utils";
 
@@ -189,7 +187,14 @@ describe("TCK Generated tests", () => {
                         schemaDirectives: directives,
                     });
 
-                    noGraphQLErrors(await graphql(executableSchema, graphQlQuery, null, context, graphQlParams));
+                    const result = await graphql(executableSchema, graphQlQuery, null, context, graphQlParams);
+
+                    if (result.errors) {
+                        console.log(result.errors);
+                    }
+
+                    // @ts-ignore
+                    expect(result.errors).toBeFalsy();
                 });
             }
 

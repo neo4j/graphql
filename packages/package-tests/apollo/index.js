@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-var-requires,import/no-unresolved
 const neo4j = require("neo4j-driver");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const server = require("./server");

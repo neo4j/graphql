@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { describe, test, expect } from "@jest/globals";
 import Model, { ModelConstructor } from "../../../src/classes/Model";
 
 describe("Model", () => {

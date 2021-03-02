@@ -45,7 +45,7 @@ class Context {
 
         const authorization = req.headers.authorization || req.headers.Authorization || req.cookies.token || "";
 
-        const [_, token] = authorization.split("Bearer ");
+        const token = authorization.split("Bearer ")[1];
 
         if (!token) {
             return false;

@@ -1,6 +1,5 @@
 import { Driver, int, Session } from "neo4j-driver";
 import faker from "faker";
-import { describe, beforeAll, afterAll, test, expect, beforeEach, afterEach } from "@jest/globals";
 import { gql } from "apollo-server";
 import { createTestClient } from "apollo-server-testing";
 import neo4j from "./neo4j";
@@ -315,7 +314,7 @@ describe("[CartesianPoint]", () => {
             y: faker.random.float(),
         }));
 
-        const result = await session.run(
+        await session.run(
             `
             CALL {
                 CREATE (r:Part)
@@ -363,7 +362,7 @@ describe("[CartesianPoint]", () => {
             z: faker.random.float(),
         }));
 
-        const result = await session.run(
+        await session.run(
             `
             CALL {
                 CREATE (r:Part)
