@@ -28,7 +28,7 @@ describe("getRelationshipMeta", () => {
 
         const result = getRelationshipMeta(field);
 
-        expect(result).toEqual(undefined);
+        expect(result).toBeUndefined();
     });
 
     test("should throw direction required", () => {
@@ -53,13 +53,7 @@ describe("getRelationshipMeta", () => {
             ],
         };
 
-        try {
-            getRelationshipMeta(field);
-
-            throw new Error("I should not throw");
-        } catch (error) {
-            expect(error.message).toEqual("@relationship direction required");
-        }
+        expect(() => getRelationshipMeta(field)).toThrow("@relationship direction required");
     });
 
     test("should throw direction not a string", () => {
@@ -94,13 +88,7 @@ describe("getRelationshipMeta", () => {
             ],
         };
 
-        try {
-            getRelationshipMeta(field);
-
-            throw new Error("I should not throw");
-        } catch (error) {
-            expect(error.message).toEqual("@relationship direction not a string");
-        }
+        expect(() => getRelationshipMeta(field)).toThrow("@relationship direction not a string");
     });
 
     test("should throw direction invalid", () => {
@@ -135,13 +123,7 @@ describe("getRelationshipMeta", () => {
             ],
         };
 
-        try {
-            getRelationshipMeta(field);
-
-            throw new Error("I should not throw");
-        } catch (error) {
-            expect(error.message).toEqual("@relationship direction invalid");
-        }
+        expect(() => getRelationshipMeta(field)).toThrow("@relationship direction invalid");
     });
 
     test("should throw type required", () => {
@@ -176,13 +158,7 @@ describe("getRelationshipMeta", () => {
             ],
         };
 
-        try {
-            getRelationshipMeta(field);
-
-            throw new Error("I should not throw");
-        } catch (error) {
-            expect(error.message).toEqual("@relationship type required");
-        }
+        expect(() => getRelationshipMeta(field)).toThrow("@relationship type required");
     });
 
     test("should throw type not a string", () => {
@@ -223,13 +199,7 @@ describe("getRelationshipMeta", () => {
             ],
         };
 
-        try {
-            getRelationshipMeta(field);
-
-            throw new Error("I should not throw");
-        } catch (error) {
-            expect(error.message).toEqual("@relationship type not a string");
-        }
+        expect(() => getRelationshipMeta(field)).toThrow("@relationship type not a string");
     });
 
     test("should return the correct meta", () => {

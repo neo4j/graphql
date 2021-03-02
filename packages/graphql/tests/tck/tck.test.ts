@@ -51,7 +51,7 @@ describe("TCK Generated tests", () => {
     const testCases: TestCase[] = generateTestCasesFromMd(TCK_DIR);
 
     testCases.forEach(({ schema, tests, file, kind }) => {
-        describe(file, () => {
+        describe(`${file}`, () => {
             if (kind === "cypher") {
                 const document = parse(schema as string);
                 const neoSchema = new Neo4jGraphQL({ typeDefs: schema as string });

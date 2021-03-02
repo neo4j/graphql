@@ -21,7 +21,7 @@ describe("auth/custom-resolvers", () => {
     });
 
     describe("auth-injection", () => {
-        test("should inject auth in context of custom Mutation", async () => {
+        test("should inject auth in context of custom Query", async () => {
             const typeDefs = `
                 type User {
                     id: ID
@@ -71,7 +71,7 @@ describe("auth/custom-resolvers", () => {
                 contextValue: { driver, req },
             });
 
-            expect(gqlResult.errors).toEqual(undefined);
+            expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any).me.id).toEqual(userId);
         });
 
@@ -121,7 +121,7 @@ describe("auth/custom-resolvers", () => {
                 contextValue: { driver, req },
             });
 
-            expect(gqlResult.errors).toEqual(undefined);
+            expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any).me.id).toEqual(userId);
         });
 
@@ -174,7 +174,7 @@ describe("auth/custom-resolvers", () => {
                 contextValue: { driver, req },
             });
 
-            expect(gqlResult.errors).toEqual(undefined);
+            expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any).me.customId).toEqual(userId);
         });
     });

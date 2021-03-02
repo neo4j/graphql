@@ -1,10 +1,16 @@
 module.exports = {
     root: true,
     plugins: ["prettier"],
-    extends: ["airbnb/base", "plugin:import/errors", "plugin:import/warnings", "plugin:prettier/recommended"],
+    extends: [
+        "airbnb/base",
+        "plugin:jest/recommended",
+        "plugin:jest/style",
+        "plugin:import/errors",
+        "plugin:import/warnings",
+        "plugin:prettier/recommended",
+    ],
     env: {
         node: true,
-        jest: true,
     },
     rules: {
         "no-underscore-dangle": "off",
@@ -23,6 +29,8 @@ module.exports = {
                 "airbnb-typescript/base",
                 "plugin:@typescript-eslint/recommended",
                 "plugin:@typescript-eslint/recommended-requiring-type-checking",
+                "plugin:jest/recommended",
+                "plugin:jest/style",
                 "plugin:import/errors",
                 "plugin:import/warnings",
                 "plugin:import/typescript",

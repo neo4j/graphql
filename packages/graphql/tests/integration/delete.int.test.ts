@@ -67,7 +67,7 @@ describe("delete", () => {
                 { id }
             );
 
-            expect(reFind.records.length).toEqual(0);
+            expect(reFind.records).toHaveLength(0);
         } finally {
             await session.close();
         }
@@ -124,7 +124,7 @@ describe("delete", () => {
                 { id }
             );
 
-            expect(reFind.records.length).toEqual(1);
+            expect(reFind.records).toHaveLength(1);
         } finally {
             await session.close();
         }
@@ -196,7 +196,7 @@ describe("delete", () => {
                 { id }
             );
 
-            expect(movie.records.length).toEqual(0);
+            expect(movie.records).toHaveLength(0);
 
             const actor = await session.run(
                 `
@@ -206,7 +206,7 @@ describe("delete", () => {
                 { name }
             );
 
-            expect(actor.records.length).toEqual(0);
+            expect(actor.records).toHaveLength(0);
         } finally {
             await session.close();
         }
@@ -288,7 +288,7 @@ describe("delete", () => {
                 { id: id1 }
             );
 
-            expect(movie1.records.length).toEqual(0);
+            expect(movie1.records).toHaveLength(0);
 
             const actor = await session.run(
                 `
@@ -298,7 +298,7 @@ describe("delete", () => {
                 { name }
             );
 
-            expect(actor.records.length).toEqual(0);
+            expect(actor.records).toHaveLength(0);
 
             const movie2 = await session.run(
                 `
@@ -308,7 +308,7 @@ describe("delete", () => {
                 { id: id2 }
             );
 
-            expect(movie2.records.length).toEqual(0);
+            expect(movie2.records).toHaveLength(0);
         } finally {
             await session.close();
         }

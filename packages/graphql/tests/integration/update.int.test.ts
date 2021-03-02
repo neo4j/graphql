@@ -178,10 +178,10 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult?.data?.updateMovies.movies as any[]).length).toEqual(2);
+            expect(gqlResult?.data?.updateMovies.movies as any[]).toHaveLength(2);
 
             (gqlResult?.data?.updateMovies.movies as any[]).forEach((movie) => {
-                expect([id1, id2].includes(movie.id)).toEqual(true);
+                expect([id1, id2]).toContain(movie.id);
                 expect(movie.name).toEqual(updatedName);
             });
         } finally {
@@ -489,7 +489,7 @@ describe("update", () => {
                 { id: id2 }
             );
 
-            expect(movie2.records.length).toEqual(0);
+            expect(movie2.records).toHaveLength(0);
         } finally {
             await session.close();
         }
@@ -1014,7 +1014,7 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult?.data?.updateProducts.products as any[]).length).toEqual(1);
+            expect(gqlResult?.data?.updateProducts.products as any[]).toHaveLength(1);
 
             const { photos } = (gqlResult?.data?.updateProducts.products as any[])[0];
 
