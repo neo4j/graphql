@@ -1,0 +1,44 @@
+[[schema]]
+= Schema
+
+
+== Basics
+
+=== Nodes
+
+
+=== Relationships
+
+
+
+== Directives
+
+
+=== `@relationship`
+
+
+=== `@cypher`
+
+
+=== `@exclude`
+
+
+=== `@auth`
+
+
+=== `@autogenerate`
+
+
+=== `@private`
+
+
+== Types
+
+
+=== `DateTime`
+
+
+=== `Point`
+
+
+=== `CartesianPoint`

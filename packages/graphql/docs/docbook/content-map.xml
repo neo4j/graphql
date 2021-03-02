@@ -3,9 +3,27 @@
   <d:tocentry linkend="graphql"><?dbhtml filename="index.html"?>
     <d:tocentry linkend="introduction"><?dbhtml filename="introduction/index.html"?>
     </d:tocentry>
-    <d:tocentry linkend="reference"><?dbhtml filename="reference/index.html"?>
+
+    <d:tocentry linkend="getting-started"><?dbhtml filename="getting-started/index.html"?>
     </d:tocentry>
-    <d:tocentry linkend="contributing"><?dbhtml filename="contributing/index.html"?>
+
+    <d:tocentry linkend="api-reference"><?dbhtml filename="api-reference/index.html"?>
+    </d:tocentry>
+
+    <d:tocentry linkend="schema"><?dbhtml filename="schema/index.html"?>
+    </d:tocentry>
+
+    <d:tocentry linkend="operations"><?dbhtml filename="operations/index.html"?>
+    </d:tocentry>
+
+    <d:tocentry linkend="auth"><?dbhtml filename="auth/index.html"?>
+    </d:tocentry>
+
+    <d:tocentry linkend="ogm"><?dbhtml filename="ogm/index.html"?>
+    </d:tocentry>
+
+
+     <d:tocentry linkend="connections-config-drivers"><?dbhtml filename="connections-config-drivers/index.html"?>
     </d:tocentry>
   </d:tocentry>
 </d:toc>
