@@ -18,17 +18,14 @@ ifdef::backend-pdf[]
 License: <<license, Creative Commons 4.0>>
 endif::[]
 
-{nbsp} +
 
-[.lead]
-*Neo4j GraphQL*
+Welcome to the official documentation for the Neo4j GraphQL Engine. 
 
 * <<introduction>>
-* <<reference>>
-* <<contributing>>
-
-include::introduction.adoc[leveloffset=+1]
-
-include::reference.adoc[leveloffset=+1]
-
-include::contributing.adoc[leveloffset=+1]
+* <<getting-started>>
+* <<api-reference>>
+* <<schema>>
+* <<operations>>
+* <<auth>>
+* <<ogm>>
+* <<connections-config-drivers>>

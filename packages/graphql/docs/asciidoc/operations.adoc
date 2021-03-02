@@ -1,0 +1,19 @@
+[[operations]]
+= Operations
+
+== Read
+
+
+== Create
+
+
+== Update
+
+
+== Delete
+
+
+== Connect
+
+
+== Disconnect
