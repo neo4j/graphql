@@ -114,12 +114,12 @@ function createCreateAndParams({
 
         if (pointField) {
             if (pointField.typeMeta.array) {
-                res.creates.push(`SET ${varName}.${key} = [p in $${_varName} | point(p)]`);
+                res.creates.push(`SET ${varName}.${key} = [p in $params.${_varName} | point(p)]`);
             } else {
-                res.creates.push(`SET ${varName}.${key} = point($${_varName})`);
+                res.creates.push(`SET ${varName}.${key} = point($params.${_varName})`);
             }
         } else {
-            res.creates.push(`SET ${varName}.${key} = $${_varName}`);
+            res.creates.push(`SET ${varName}.${key} = $params.${_varName}`);
         }
 
         res.params[_varName] = value;

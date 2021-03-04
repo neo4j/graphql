@@ -194,7 +194,9 @@ export function cypherResolver({
         const preAuth = createAuthAndParams({ entity: field, context });
         if (preAuth[0]) {
             params = { ...params, ...preAuth[1] };
-            cypherStrs.push(`CALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+            cypherStrs.push(
+                `CALL apoc.util.validate(NOT(${preAuth[0].replace("$params.", "$")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+            );
         }
 
         cypherStrs.push(statement);

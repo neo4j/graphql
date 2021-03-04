@@ -37,7 +37,7 @@ type Genre {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this._id IN $this__id_IN
+WHERE this._id IN $params.this__id_IN
 RETURN this { ._id } as this
 ```
 
@@ -45,7 +45,9 @@ RETURN this { ._id } as this
 
 ```cypher-params
 {
-    "this__id_IN": ["123"]
+    "params": {
+        "this__id_IN": ["123"]
+    }
 }
 ```
 
@@ -67,7 +69,7 @@ RETURN this { ._id } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id =~ $this_id_REGEX
+WHERE this.id =~ $params.this_id_REGEX
 RETURN this { .id } as this
 ```
 
@@ -75,7 +77,9 @@ RETURN this { .id } as this
 
 ```cypher-params
 {
-    "this_id_REGEX": "(?i)123.*"
+    "params": {
+        "this_id_REGEX": "(?i)123.*"
+    }
 }
 ```
 
@@ -97,7 +101,7 @@ RETURN this { .id } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE (NOT this.id = $this_id_NOT)
+WHERE (NOT this.id = $params.this_id_NOT)
 RETURN this { .id } as this
 ```
 
@@ -105,7 +109,9 @@ RETURN this { .id } as this
 
 ```cypher-params
 {
-    "this_id_NOT": "123"
+    "params": {
+        "this_id_NOT": "123"
+    }
 }
 ```
 
@@ -127,7 +133,7 @@ RETURN this { .id } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE (NOT this.id IN $this_id_NOT_IN)
+WHERE (NOT this.id IN $params.this_id_NOT_IN)
 RETURN this { .id } as this
 ```
 
@@ -135,7 +141,9 @@ RETURN this { .id } as this
 
 ```cypher-params
 {
-    "this_id_NOT_IN": ["123"]
+    "params": {
+        "this_id_NOT_IN": ["123"]
+    }
 }
 ```
 
@@ -157,7 +165,7 @@ RETURN this { .id } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id CONTAINS $this_id_CONTAINS
+WHERE this.id CONTAINS $params.this_id_CONTAINS
 RETURN this { .id } as this
 ```
 
@@ -165,7 +173,9 @@ RETURN this { .id } as this
 
 ```cypher-params
 {
-    "this_id_CONTAINS": "123"
+    "params": {
+        "this_id_CONTAINS": "123"
+    }
 }
 ```
 
@@ -187,7 +197,7 @@ RETURN this { .id } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE (NOT this.id CONTAINS $this_id_NOT_CONTAINS)
+WHERE (NOT this.id CONTAINS $params.this_id_NOT_CONTAINS)
 RETURN this { .id } as this
 ```
 
@@ -195,7 +205,9 @@ RETURN this { .id } as this
 
 ```cypher-params
 {
-    "this_id_NOT_CONTAINS": "123"
+    "params": {
+        "this_id_NOT_CONTAINS": "123"
+    }
 }
 ```
 
@@ -217,7 +229,7 @@ RETURN this { .id } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id STARTS WITH $this_id_STARTS_WITH
+WHERE this.id STARTS WITH $params.this_id_STARTS_WITH
 RETURN this { .id } as this
 ```
 
@@ -225,7 +237,9 @@ RETURN this { .id } as this
 
 ```cypher-params
 {
-    "this_id_STARTS_WITH": "123"
+    "params": {
+        "this_id_STARTS_WITH": "123"
+    }
 }
 ```
 
@@ -247,7 +261,7 @@ RETURN this { .id } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE (NOT this.id STARTS WITH $this_id_NOT_STARTS_WITH)
+WHERE (NOT this.id STARTS WITH $params.this_id_NOT_STARTS_WITH)
 RETURN this { .id } as this
 ```
 
@@ -255,7 +269,9 @@ RETURN this { .id } as this
 
 ```cypher-params
 {
-    "this_id_NOT_STARTS_WITH": "123"
+    "params": {
+        "this_id_NOT_STARTS_WITH": "123"
+    }
 }
 ```
 
@@ -277,7 +293,7 @@ RETURN this { .id } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id ENDS WITH $this_id_ENDS_WITH
+WHERE this.id ENDS WITH $params.this_id_ENDS_WITH
 RETURN this { .id } as this
 ```
 
@@ -285,7 +301,9 @@ RETURN this { .id } as this
 
 ```cypher-params
 {
-    "this_id_ENDS_WITH": "123"
+    "params": {
+        "this_id_ENDS_WITH": "123"
+    }
 }
 ```
 
@@ -307,7 +325,7 @@ RETURN this { .id } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE (NOT this.id ENDS WITH $this_id_NOT_ENDS_WITH)
+WHERE (NOT this.id ENDS WITH $params.this_id_NOT_ENDS_WITH)
 RETURN this { .id } as this
 ```
 
@@ -315,7 +333,9 @@ RETURN this { .id } as this
 
 ```cypher-params
 {
-    "this_id_NOT_ENDS_WITH": "123"
+    "params": {
+        "this_id_NOT_ENDS_WITH": "123"
+    }
 }
 ```
 
@@ -337,7 +357,7 @@ RETURN this { .id } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.actorCount < $this_actorCount_LT
+WHERE this.actorCount < $params.this_actorCount_LT
 RETURN this { .actorCount } as this
 ```
 
@@ -345,9 +365,11 @@ RETURN this { .actorCount } as this
 
 ```cypher-params
 {
-    "this_actorCount_LT": {
-        "high": 0,
-        "low": 123
+    "params": {
+        "this_actorCount_LT": {
+            "high": 0,
+            "low": 123
+        }
     }
 }
 ```
@@ -370,7 +392,7 @@ RETURN this { .actorCount } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.actorCount <= $this_actorCount_LTE
+WHERE this.actorCount <= $params.this_actorCount_LTE
 RETURN this { .actorCount } as this
 ```
 
@@ -378,9 +400,11 @@ RETURN this { .actorCount } as this
 
 ```cypher-params
 {
-    "this_actorCount_LTE": {
-        "high": 0,
-        "low": 123
+    "params": {
+        "this_actorCount_LTE": {
+            "high": 0,
+            "low": 123
+        }
     }
 }
 ```
@@ -403,7 +427,7 @@ RETURN this { .actorCount } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.actorCount > $this_actorCount_GT
+WHERE this.actorCount > $params.this_actorCount_GT
 RETURN this { .actorCount } as this
 ```
 
@@ -411,9 +435,11 @@ RETURN this { .actorCount } as this
 
 ```cypher-params
 {
-    "this_actorCount_GT": {
-        "high": 0,
-        "low": 123
+    "params": {
+        "this_actorCount_GT": {
+            "high": 0,
+            "low": 123
+        }
     }
 }
 ```
@@ -436,7 +462,7 @@ RETURN this { .actorCount } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.actorCount >= $this_actorCount_GTE
+WHERE this.actorCount >= $params.this_actorCount_GTE
 RETURN this { .actorCount } as this
 ```
 
@@ -444,9 +470,11 @@ RETURN this { .actorCount } as this
 
 ```cypher-params
 {
-    "this_actorCount_GTE": {
-        "high": 0,
-        "low": 123
+    "params": {
+        "this_actorCount_GTE": {
+            "high": 0,
+            "low": 123
+        }
     }
 }
 ```
@@ -469,7 +497,7 @@ RETURN this { .actorCount } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres IN [(this)-[:IN_GENRE]->(this_genres:Genre) | this_genres] WHERE this_genres.name = $this_genres_name)
+WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres IN [(this)-[:IN_GENRE]->(this_genres:Genre) | this_genres] WHERE this_genres.name = $params.this_genres_name)
 RETURN this { .actorCount } as this
 ```
 
@@ -477,7 +505,9 @@ RETURN this { .actorCount } as this
 
 ```cypher-params
 {
-    "this_genres_name": "some genre"
+    "params": {
+        "this_genres_name": "some genre"
+    }
 }
 ```
 
@@ -499,7 +529,7 @@ RETURN this { .actorCount } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND NONE(this_genres_NOT IN [(this)-[:IN_GENRE]->(this_genres_NOT:Genre) | this_genres_NOT] WHERE this_genres_NOT.name = $this_genres_NOT_name)
+WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND NONE(this_genres_NOT IN [(this)-[:IN_GENRE]->(this_genres_NOT:Genre) | this_genres_NOT] WHERE this_genres_NOT.name = $params.this_genres_NOT_name)
 RETURN this { .actorCount } as this
 ```
 
@@ -507,7 +537,9 @@ RETURN this { .actorCount } as this
 
 ```cypher-params
 {
-    "this_genres_NOT_name": "some genre"
+    "params": {
+        "this_genres_NOT_name": "some genre"
+    }
 }
 ```
 
@@ -533,7 +565,7 @@ RETURN this { .actorCount } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres_IN IN [(this)-[:IN_GENRE]->(this_genres_IN:Genre) | this_genres_IN] WHERE this_genres_IN.name = $this_genres_IN0_name OR this_genres_IN.name = $this_genres_IN1_name)
+WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres_IN IN [(this)-[:IN_GENRE]->(this_genres_IN:Genre) | this_genres_IN] WHERE this_genres_IN.name = $params.this_genres_IN0_name OR this_genres_IN.name = $params.this_genres_IN1_name)
 RETURN this { .actorCount } as this
 ```
 
@@ -541,8 +573,10 @@ RETURN this { .actorCount } as this
 
 ```cypher-params
 {
-    "this_genres_IN0_name": "first genre",
-    "this_genres_IN1_name": "second genre"
+    "params": {
+        "this_genres_IN0_name": "first genre",
+        "this_genres_IN1_name": "second genre"
+    }
 }
 ```
 
@@ -564,7 +598,7 @@ RETURN this { .actorCount } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres_NOT_IN IN [(this)-[:IN_GENRE]->(this_genres_NOT_IN:Genre) | this_genres_NOT_IN] WHERE NOT(this_genres_NOT_IN.name = $this_genres_NOT_IN0_name))
+WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres_NOT_IN IN [(this)-[:IN_GENRE]->(this_genres_NOT_IN:Genre) | this_genres_NOT_IN] WHERE NOT(this_genres_NOT_IN.name = $params.this_genres_NOT_IN0_name))
 RETURN this { .actorCount } as this
 ```
 
@@ -572,7 +606,9 @@ RETURN this { .actorCount } as this
 
 ```cypher-params
 {
-    "this_genres_NOT_IN0_name": "some genre"
+    "params": {
+        "this_genres_NOT_IN0_name": "some genre"
+    }
 }
 ```
 

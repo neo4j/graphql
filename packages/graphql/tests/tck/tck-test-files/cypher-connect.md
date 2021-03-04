@@ -89,54 +89,54 @@ mutation {
 ```cypher
 CALL {
   CREATE (this0:Product)
-  SET this0.id = $this0_id
-  SET this0.name = $this0_name
+  SET this0.id = $params.this0_id
+  SET this0.name = $params.this0_name
 
   WITH this0
   OPTIONAL MATCH (this0_colors_connect0:Color)
-  WHERE this0_colors_connect0.name = $this0_colors_connect0_name
+  WHERE this0_colors_connect0.name = $params.this0_colors_connect0_name
   FOREACH(_ IN CASE this0_colors_connect0 WHEN NULL THEN [] ELSE [1] END |
       MERGE (this0)-[:HAS_COLOR]->(this0_colors_connect0)
   )
 
       WITH this0, this0_colors_connect0
       OPTIONAL MATCH (this0_colors_connect0_photos0:Photo)
-      WHERE this0_colors_connect0_photos0.id = $this0_colors_connect0_photos0_id
+      WHERE this0_colors_connect0_photos0.id = $params.this0_colors_connect0_photos0_id
       FOREACH(_ IN CASE this0_colors_connect0_photos0 WHEN NULL THEN [] ELSE [1] END |
           MERGE (this0_colors_connect0)<-[:OF_COLOR]-(this0_colors_connect0_photos0)
       )
 
           WITH this0, this0_colors_connect0, this0_colors_connect0_photos0
           OPTIONAL MATCH (this0_colors_connect0_photos0_color0:Color)
-          WHERE this0_colors_connect0_photos0_color0.id = $this0_colors_connect0_photos0_color0_id
+          WHERE this0_colors_connect0_photos0_color0.id = $params.this0_colors_connect0_photos0_color0_id
           FOREACH(_ IN CASE this0_colors_connect0_photos0_color0 WHEN NULL THEN [] ELSE [1] END |
               MERGE (this0_colors_connect0_photos0)-[:OF_COLOR]->(this0_colors_connect0_photos0_color0)
           )
 
   WITH this0
   OPTIONAL MATCH (this0_photos_connect0:Photo)
-  WHERE this0_photos_connect0.id = $this0_photos_connect0_id
+  WHERE this0_photos_connect0.id = $params.this0_photos_connect0_id
   FOREACH(_ IN CASE this0_photos_connect0 WHEN NULL THEN [] ELSE [1] END |
       MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect0)
   )
 
       WITH this0, this0_photos_connect0
       OPTIONAL MATCH (this0_photos_connect0_color0:Color)
-      WHERE this0_photos_connect0_color0.name = $this0_photos_connect0_color0_name
+      WHERE this0_photos_connect0_color0.name = $params.this0_photos_connect0_color0_name
       FOREACH(_ IN CASE this0_photos_connect0_color0 WHEN NULL THEN [] ELSE [1] END |
           MERGE (this0_photos_connect0)-[:OF_COLOR]->(this0_photos_connect0_color0)
       )
 
   WITH this0
   OPTIONAL MATCH (this0_photos_connect1:Photo)
-  WHERE this0_photos_connect1.id = $this0_photos_connect1_id
+  WHERE this0_photos_connect1.id = $params.this0_photos_connect1_id
   FOREACH(_ IN CASE this0_photos_connect1 WHEN NULL THEN [] ELSE [1] END |
       MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect1)
   )
 
       WITH this0, this0_photos_connect1
       OPTIONAL MATCH (this0_photos_connect1_color0:Color)
-      WHERE this0_photos_connect1_color0.name = $this0_photos_connect1_color0_name
+      WHERE this0_photos_connect1_color0.name = $params.this0_photos_connect1_color0_name
       FOREACH(_ IN CASE this0_photos_connect1_color0 WHEN NULL THEN [] ELSE [1] END |
           MERGE (this0_photos_connect1)-[:OF_COLOR]->(this0_photos_connect1_color0)
       )
@@ -152,15 +152,17 @@ this0 { .id } AS this0
 
 ```cypher-params
 {
-  "this0_id": "123",
-  "this0_name": "Nested Connect",
-  "this0_colors_connect0_name": "Red",
-  "this0_colors_connect0_photos0_id": "123",
-  "this0_colors_connect0_photos0_color0_id": "134",
-  "this0_photos_connect0_id": "321",
-  "this0_photos_connect0_color0_name": "Green",
-  "this0_photos_connect1_id": "33211",
-  "this0_photos_connect1_color0_name": "Red"
+  "params": {
+    "this0_id": "123",
+    "this0_name": "Nested Connect",
+    "this0_colors_connect0_name": "Red",
+    "this0_colors_connect0_photos0_id": "123",
+    "this0_colors_connect0_photos0_color0_id": "134",
+    "this0_photos_connect0_id": "321",
+    "this0_photos_connect0_color0_name": "Green",
+    "this0_photos_connect1_id": "33211",
+    "this0_photos_connect1_color0_name": "Red"
+  }
 }
 ```
 

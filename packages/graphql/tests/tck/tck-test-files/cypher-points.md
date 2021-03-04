@@ -33,7 +33,7 @@ type PointContainer {
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE this.points = [p in $this_points | point(p)]
+WHERE this.points = [p in $params.this_points | point(p)]
 RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 ```
 
@@ -41,10 +41,12 @@ RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 
 ```cypher-params
 {
-  "this_points": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+  "params": {
+      "this_points": [{
+        "longitude": 1,
+        "latitude": 2
+    }]
+  }
 }
 ```
 
@@ -71,7 +73,7 @@ RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE (NOT this.points = [p in $this_points_NOT | point(p)])
+WHERE (NOT this.points = [p in $params.this_points_NOT | point(p)])
 RETURN this { points: [p in this.points | { point:p }] } as this
 ```
 
@@ -79,10 +81,12 @@ RETURN this { points: [p in this.points | { point:p }] } as this
 
 ```cypher-params
 {
-  "this_points_NOT": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+  "params": {
+    "this_points_NOT": [{
+        "longitude": 1,
+        "latitude": 2
+    }]
+  }
 }
 ```
 
@@ -108,7 +112,7 @@ RETURN this { points: [p in this.points | { point:p }] } as this
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE point($this_points_IN) IN this.points
+WHERE point($params.this_points_IN) IN this.points
 RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 ```
 
@@ -116,9 +120,11 @@ RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 
 ```cypher-params
 {
-  "this_points_IN": {
-    "longitude": 1,
-    "latitude": 2
+  "params": {
+    "this_points_IN": {
+        "longitude": 1,
+        "latitude": 2
+    }
   }
 }
 ```
@@ -147,7 +153,7 @@ RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE (NOT point($this_points_NOT_IN) IN this.points)
+WHERE (NOT point($params.this_points_NOT_IN) IN this.points)
 RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 ```
 
@@ -155,9 +161,11 @@ RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 
 ```cypher-params
 {
-  "this_points_NOT_IN": {
-    "longitude": 1,
-    "latitude": 2
+  "params": {
+    "this_points_NOT_IN": {
+        "longitude": 1,
+        "latitude": 2
+    }
   }
 }
 ```
@@ -189,7 +197,7 @@ mutation {
 ```cypher
 CALL {
     CREATE (this0:PointContainer)
-    SET this0.points = [p in $this0_points | point(p)]
+    SET this0.points = [p in $params.this0_points | point(p)]
     RETURN this0
 }
 
@@ -200,10 +208,12 @@ RETURN this0 { points: [p in this0.points | { point:p, crs: p.crs }] } AS this0
 
 ```cypher-params
 {
-  "this0_points": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+  "params": {
+    "this0_points": [{
+        "longitude": 1,
+        "latitude": 2
+    }]
+  }
 }
 ```
 
@@ -234,8 +244,8 @@ mutation {
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE this.id = $this_id
-SET this.points = [p in $this_update_points | point(p)]
+WHERE this.id = $params.this_id
+SET this.points = [p in $params.this_update_points | point(p)]
 RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } AS this
 ```
 
@@ -243,10 +253,12 @@ RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } AS this
 
 ```cypher-params
 {
-  "this_id": "id",
-  "this_update_points": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+  "params": {
+    "this_id": "id",
+    "this_update_points": [{
+        "longitude": 1,
+        "latitude": 2
+    }]
+  }
 }
 ```

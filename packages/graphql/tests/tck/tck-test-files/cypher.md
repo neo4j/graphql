@@ -29,14 +29,18 @@ type Movie {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.title = $this_title
+WHERE this.title = $params.this_title
 RETURN this { .title } as this
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
-{ "this_title": "River Runs Through It, A" }
+{
+    "params": {
+        "this_title": "River Runs Through It, A"
+    }
+}
 ```
 
 ---
@@ -58,14 +62,18 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.title = $this_title
+WHERE this.title = $params.this_title
 RETURN this { .id, .title } as this
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
-{ "this_title": "River Runs Through It, A" }
+{
+    "params": {
+        "this_title": "River Runs Through It, A"
+    }
+}
 ```
 
 ---
@@ -86,19 +94,27 @@ query($title: String) {
 **GraphQL params input**
 
 ```graphql-params
-{ "title": "some title" }
+{
+    "params": {
+        "title": "some title"
+    }
+}
 ```
 
 **Expected Cypher output**
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.title = $this_title
+WHERE this.title = $params.this_title
 RETURN this { .id, .title } as this
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
-{ "this_title": "some title" }
+{
+    "params": {
+        "this_title": "some title"
+    }
+}
 ```

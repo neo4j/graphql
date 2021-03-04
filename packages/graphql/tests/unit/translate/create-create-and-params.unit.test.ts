@@ -57,7 +57,7 @@ describe("createCreateAndParams", () => {
         expect(trimmer(result[0])).toEqual(
             trimmer(`
                 CREATE (this0:Movie)
-                SET this0.title = $this0_title
+                SET this0.title = $params.this0_title
             `)
         );
 

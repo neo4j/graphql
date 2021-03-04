@@ -35,7 +35,7 @@ mutation {
 CALL {
     CREATE (this0:Movie)
     SET this0.createdAt = datetime()
-    SET this0.id = $this0_id
+    SET this0.id = $params.this0_id
     RETURN this0
 }
 RETURN this0 { .id } AS this0
@@ -45,7 +45,9 @@ RETURN this0 { .id } AS this0
 
 ```cypher-params
 {
-    "this0_id": "123"
+    "params": {
+        "this0_id": "123"
+    }
 }
 ```
 
@@ -70,8 +72,8 @@ mutation {
 ```cypher
 MATCH (this:Movie)
 SET this.updatedAt = datetime()
-SET this.id = $this_update_id
-SET this.name = $this_update_name
+SET this.id = $params.this_update_id
+SET this.name = $params.this_update_name
 RETURN this { .id } AS this
 ```
 
@@ -79,8 +81,10 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_update_id": "123",
-    "this_update_name": "dan"
+    "params": {
+        "this_update_id": "123",
+        "this_update_name": "dan"
+    }
 }
 ```
 

@@ -84,12 +84,12 @@ function createWhereAndParams({
 
             if (pointField) {
                 if (pointField.typeMeta.array) {
-                    res.clauses.push(`(NOT ${varName}.${fieldName} = [p in $${param} | point(p)])`);
+                    res.clauses.push(`(NOT ${varName}.${fieldName} = [p in $params.${param} | point(p)])`);
                 } else {
-                    res.clauses.push(`(NOT ${varName}.${fieldName} = point($${param}))`);
+                    res.clauses.push(`(NOT ${varName}.${fieldName} = point($params.${param}))`);
                 }
             } else {
-                res.clauses.push(`(NOT ${varName}.${fieldName} = $${param})`);
+                res.clauses.push(`(NOT ${varName}.${fieldName} = $params.${param})`);
             }
 
             res.params[param] = value;
@@ -141,13 +141,15 @@ function createWhereAndParams({
             } else if (pointField) {
                 res.clauses.push(
                     array
-                        ? `(NOT point($${param}) IN ${varName}.${fieldName})`
-                        : `(NOT ${varName}.${fieldName} IN [p in $${param} | point(p)])`
+                        ? `(NOT point($params.${param}) IN ${varName}.${fieldName})`
+                        : `(NOT ${varName}.${fieldName} IN [p in $params.${param} | point(p)])`
                 );
                 res.params[param] = value;
             } else {
                 res.clauses.push(
-                    array ? `(NOT $${param} IN ${varName}.${fieldName})` : `(NOT ${varName}.${fieldName} IN $${param})`
+                    array
+                        ? `(NOT $params.${param} IN ${varName}.${fieldName})`
+                        : `(NOT ${varName}.${fieldName} IN $params.${param})`
                 );
                 res.params[param] = value;
             }
@@ -199,13 +201,15 @@ function createWhereAndParams({
             } else if (pointField) {
                 res.clauses.push(
                     array
-                        ? `point($${param}) IN ${varName}.${fieldName}`
-                        : `${varName}.${fieldName} IN [p in $${param} | point(p)]`
+                        ? `point($params.${param}) IN ${varName}.${fieldName}`
+                        : `${varName}.${fieldName} IN [p in $params.${param} | point(p)]`
                 );
                 res.params[param] = value;
             } else {
                 res.clauses.push(
-                    array ? `$${param} IN ${varName}.${fieldName}` : `${varName}.${fieldName} IN $${param}`
+                    array
+                        ? `$params.${param} IN ${varName}.${fieldName}`
+                        : `${varName}.${fieldName} IN $params.${param}`
                 );
                 res.params[param] = value;
             }
@@ -250,7 +254,7 @@ function createWhereAndParams({
 
         if (key.endsWith("_REGEX")) {
             const [fieldName] = key.split("_REGEX");
-            res.clauses.push(`${varName}.${fieldName} =~ $${param}`);
+            res.clauses.push(`${varName}.${fieldName} =~ $params.${param}`);
             res.params[param] = value;
 
             return res;
@@ -258,7 +262,7 @@ function createWhereAndParams({
 
         if (key.endsWith("_NOT_CONTAINS")) {
             const [fieldName] = key.split("_NOT_CONTAINS");
-            res.clauses.push(`(NOT ${varName}.${fieldName} CONTAINS $${param})`);
+            res.clauses.push(`(NOT ${varName}.${fieldName} CONTAINS $params.${param})`);
             res.params[param] = value;
 
             return res;
@@ -266,7 +270,7 @@ function createWhereAndParams({
 
         if (key.endsWith("_CONTAINS")) {
             const [fieldName] = key.split("_CONTAINS");
-            res.clauses.push(`${varName}.${fieldName} CONTAINS $${param}`);
+            res.clauses.push(`${varName}.${fieldName} CONTAINS $params.${param}`);
             res.params[param] = value;
 
             return res;
@@ -274,7 +278,7 @@ function createWhereAndParams({
 
         if (key.endsWith("_NOT_STARTS_WITH")) {
             const [fieldName] = key.split("_NOT_STARTS_WITH");
-            res.clauses.push(`(NOT ${varName}.${fieldName} STARTS WITH $${param})`);
+            res.clauses.push(`(NOT ${varName}.${fieldName} STARTS WITH $params.${param})`);
             res.params[param] = value;
 
             return res;
@@ -282,7 +286,7 @@ function createWhereAndParams({
 
         if (key.endsWith("_STARTS_WITH")) {
             const [fieldName] = key.split("_STARTS_WITH");
-            res.clauses.push(`${varName}.${fieldName} STARTS WITH $${param}`);
+            res.clauses.push(`${varName}.${fieldName} STARTS WITH $params.${param}`);
             res.params[param] = value;
 
             return res;
@@ -290,7 +294,7 @@ function createWhereAndParams({
 
         if (key.endsWith("_NOT_ENDS_WITH")) {
             const [fieldName] = key.split("_NOT_ENDS_WITH");
-            res.clauses.push(`(NOT ${varName}.${fieldName} ENDS WITH $${param})`);
+            res.clauses.push(`(NOT ${varName}.${fieldName} ENDS WITH $params.${param})`);
             res.params[param] = value;
 
             return res;
@@ -298,7 +302,7 @@ function createWhereAndParams({
 
         if (key.endsWith("_ENDS_WITH")) {
             const [fieldName] = key.split("_ENDS_WITH");
-            res.clauses.push(`${varName}.${fieldName} ENDS WITH $${param}`);
+            res.clauses.push(`${varName}.${fieldName} ENDS WITH $params.${param}`);
             res.params[param] = value;
 
             return res;
@@ -308,8 +312,8 @@ function createWhereAndParams({
             const [fieldName] = key.split("_LT");
             res.clauses.push(
                 pointField
-                    ? `distance(${varName}.${fieldName}, point($${param}.point)) < $${param}.distance`
-                    : `${varName}.${fieldName} < $${param}`
+                    ? `distance(${varName}.${fieldName}, point($params.${param}.point)) < $params.${param}.distance`
+                    : `${varName}.${fieldName} < $params.${param}`
             );
             res.params[param] = value;
 
@@ -320,8 +324,8 @@ function createWhereAndParams({
             const [fieldName] = key.split("_LTE");
             res.clauses.push(
                 pointField
-                    ? `distance(${varName}.${fieldName}, point($${param}.point)) <= $${param}.distance`
-                    : `${varName}.${fieldName} <= $${param}`
+                    ? `distance(${varName}.${fieldName}, point($params.${param}.point)) <= $params.${param}.distance`
+                    : `${varName}.${fieldName} <= $params.${param}`
             );
             res.params[param] = value;
 
@@ -332,8 +336,8 @@ function createWhereAndParams({
             const [fieldName] = key.split("_GT");
             res.clauses.push(
                 pointField
-                    ? `distance(${varName}.${fieldName}, point($${param}.point)) > $${param}.distance`
-                    : `${varName}.${fieldName} > $${param}`
+                    ? `distance(${varName}.${fieldName}, point($params.${param}.point)) > $params.${param}.distance`
+                    : `${varName}.${fieldName} > $params.${param}`
             );
             res.params[param] = value;
 
@@ -344,8 +348,8 @@ function createWhereAndParams({
             const [fieldName] = key.split("_GTE");
             res.clauses.push(
                 pointField
-                    ? `distance(${varName}.${fieldName}, point($${param}.point)) >= $${param}.distance`
-                    : `${varName}.${fieldName} >= $${param}`
+                    ? `distance(${varName}.${fieldName}, point($params.${param}.point)) >= $params.${param}.distance`
+                    : `${varName}.${fieldName} >= $params.${param}`
             );
             res.params[param] = value;
 
@@ -354,7 +358,9 @@ function createWhereAndParams({
 
         if (key.endsWith("_DISTANCE")) {
             const [fieldName] = key.split("_DISTANCE");
-            res.clauses.push(`distance(${varName}.${fieldName}, point($${param}.point)) = $${param}.distance`);
+            res.clauses.push(
+                `distance(${varName}.${fieldName}, point($params.${param}.point)) = $params.${param}.distance`
+            );
             res.params[param] = value;
 
             return res;
@@ -389,12 +395,12 @@ function createWhereAndParams({
 
         if (pointField) {
             if (pointField.typeMeta.array) {
-                res.clauses.push(`${varName}.${key} = [p in $${param} | point(p)]`);
+                res.clauses.push(`${varName}.${key} = [p in $params.${param} | point(p)]`);
             } else {
-                res.clauses.push(`${varName}.${key} = point($${param})`);
+                res.clauses.push(`${varName}.${key} = point($params.${param})`);
             }
         } else {
-            res.clauses.push(`${varName}.${key} = $${param}`);
+            res.clauses.push(`${varName}.${key} = $params.${param}`);
         }
 
         res.params[param] = value;

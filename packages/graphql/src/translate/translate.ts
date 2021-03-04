@@ -86,12 +86,12 @@ function translateRead({
         const hasLimit = Boolean(optionsInput.limit) || optionsInput.limit === 0;
 
         if (hasSkip) {
-            skipStr = `SKIP $${varName}_skip`;
+            skipStr = `SKIP $params.${varName}_skip`;
             cypherParams[`${varName}_skip`] = optionsInput.skip;
         }
 
         if (hasLimit) {
-            limitStr = `LIMIT $${varName}_limit`;
+            limitStr = `LIMIT $params.${varName}_limit`;
             cypherParams[`${varName}_limit`] = optionsInput.limit;
         }
 
@@ -192,13 +192,15 @@ function translateCreate({
         .map(
             (_, i) =>
                 `\nthis${i} ${projection[0]
-                    .replace(/\$REPLACE_ME/g, "$projection")
+                    .replace(/\$params.REPLACE_ME/g, "$params.projection")
                     .replace(/REPLACE_ME/g, `this${i}`)} AS this${i}`
         )
         .join(", ");
 
     const authCalls = createStrs
-        .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
+        .map((_, i) =>
+            projAuth.replace(/\$params.REPLACE_ME/g, "$params.projection").replace(/REPLACE_ME/g, `this${i}`)
+        )
         .join("\n");
 
     const cypher = [`${createStrs.join("\n")}`, authCalls, `\nRETURN ${projectionStr}`];
@@ -514,11 +516,11 @@ function translate({
     }
 
     // Its really difficult to know when users are using the `auth` param. For Simplicity it better to do the check here
-    if (query.includes("$auth.") || query.includes("auth: $auth") || query.includes("auth:$auth")) {
+    if (query.includes("$params.auth")) {
         params.auth = createAuthParam({ context });
     }
 
-    return [query, params];
+    return [query, { params }];
 }
 
 export default translate;

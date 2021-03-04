@@ -37,8 +37,8 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id
-SET this.id = $this_update_id
+WHERE this.id = $params.this_id
+SET this.id = $params.this_update_id
 
 RETURN this { .id } AS this
 ```
@@ -47,8 +47,10 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id": "1",
-    "this_update_id": "2"
+   "params": {
+        "this_id": "1",
+        "this_update_id": "2"
+   }
 }
 ```
 
@@ -79,17 +81,17 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 WITH this
 OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
-WHERE this_actors0.name = $this_actors0_name
+WHERE this_actors0.name = $params.this_actors0_name
 CALL apoc.do.when(this_actors0 IS NOT NULL,
   "
-    SET this_actors0.name = $this_update_actors0_name
+    SET this_actors0.name = $params.this_update_actors0_name
     RETURN count(*)
   ",
   "",
-  {this:this, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name}) YIELD value as _
+  {this:this, this_actors0:this_actors0, params:$params}) YIELD value as _
 
 RETURN this { .id } AS this
 ```
@@ -98,13 +100,10 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id": "1",
-    "this_actors0_name": "old name",
-    "this_update_actors0_name": "new name",
-    "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+    "params": {
+        "this_id": "1",
+        "this_actors0_name": "old name",
+        "this_update_actors0_name": "new name"
     }
 }
 ```
@@ -147,27 +146,27 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 WITH this
 OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
-WHERE this_actors0.name = $this_actors0_name
+WHERE this_actors0.name = $params.this_actors0_name
 CALL apoc.do.when(this_actors0 IS NOT NULL, "
-    SET this_actors0.name = $this_update_actors0_name
+    SET this_actors0.name = $params.this_update_actors0_name
 
     WITH this, this_actors0
     OPTIONAL MATCH (this_actors0)-[:ACTED_IN]->(this_actors0_movies0:Movie)
-    WHERE this_actors0_movies0.id = $this_actors0_movies0_id
+    WHERE this_actors0_movies0.id = $params.this_actors0_movies0_id
     CALL apoc.do.when(this_actors0_movies0 IS NOT NULL, \"
-        SET this_actors0_movies0.title = $this_update_actors0_movies0_title
+        SET this_actors0_movies0.title = $params.this_update_actors0_movies0_title
         RETURN count(*)
     \",
       \"\",
-      {this_actors0:this_actors0, this_actors0_movies0:this_actors0_movies0, auth:$auth,this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _
+      {this_actors0:this_actors0, this_actors0_movies0:this_actors0_movies0, params:$params}) YIELD value as _
 
     RETURN count(*)
   ",
   "",
-  {this:this, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name,this_actors0_movies0_id:$this_actors0_movies0_id,this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _
+  {this:this, this_actors0:this_actors0, params:$params}) YIELD value as _
 
 RETURN this { .id } AS this
 ```
@@ -176,16 +175,13 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id": "1",
-    "this_actors0_name": "old name",
-    "this_actors0_movies0_id": "old movie title",
-    "this_actors0_name": "old actor name",
-    "this_update_actors0_movies0_title": "new movie title",
-    "this_update_actors0_name": "new actor name",
-    "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+    "params": {
+        "this_id": "1",
+        "this_actors0_name": "old name",
+        "this_actors0_movies0_id": "old movie title",
+        "this_actors0_name": "old actor name",
+        "this_update_actors0_movies0_title": "new movie title",
+        "this_update_actors0_name": "new actor name"
     }
 }
 ```
@@ -213,10 +209,10 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 WITH this
 OPTIONAL MATCH (this_connect_actors0:Actor)
-WHERE this_connect_actors0.name = $this_connect_actors0_name
+WHERE this_connect_actors0.name = $params.this_connect_actors0_name
 FOREACH(_ IN CASE this_connect_actors0 WHEN NULL THEN [] ELSE [1] END |
 MERGE (this)<-[:ACTED_IN]-(this_connect_actors0)
 )
@@ -227,8 +223,10 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id": "1",
-    "this_connect_actors0_name": "Daniel"
+    "params": {
+        "this_id": "1",
+        "this_connect_actors0_name": "Daniel"
+    }
 }
 ```
 
@@ -255,10 +253,10 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 WITH this
 OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
-WHERE this_disconnect_actors0.name = $this_disconnect_actors0_name
+WHERE this_disconnect_actors0.name = $params.this_disconnect_actors0_name
 FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
 DELETE this_disconnect_actors0_rel
 )
@@ -269,8 +267,10 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id": "1",
-    "this_disconnect_actors0_name": "Daniel"
+    "params": {
+        "this_id": "1",
+        "this_disconnect_actors0_name": "Daniel"
+    }
 }
 ```
 
@@ -305,12 +305,12 @@ mutation {
 
 ```cypher
 MATCH (this:Actor)
-WHERE this.name = $this_name
+WHERE this.name = $params.this_name
 
 WITH this
 CREATE (this_movies0_create0:Movie)
-SET this_movies0_create0.id = $this_movies0_create0_id
-SET this_movies0_create0.title = $this_movies0_create0_title
+SET this_movies0_create0.id = $params.this_movies0_create0_id
+SET this_movies0_create0.title = $params.this_movies0_create0_title
 MERGE (this)-[:ACTED_IN]->(this_movies0_create0)
 
 RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)  | this_movies { .id, .title } ] } AS this
@@ -320,9 +320,11 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)  | this_m
 
 ```cypher-params
 {
-  "this_name": "Dan",
-  "this_movies0_create0_id": "dan_movie_id",
-  "this_movies0_create0_title": "The Story of Beer"
+  "params": {
+    "this_name": "Dan",
+    "this_movies0_create0_id": "dan_movie_id",
+    "this_movies0_create0_title": "The Story of Beer"
+  }
 }
 ```
 
@@ -353,11 +355,11 @@ mutation {
 
 ```cypher
 MATCH (this:Actor)
-WHERE this.name = $this_name
+WHERE this.name = $params.this_name
 
 CREATE (this_create_movies0:Movie)
-SET this_create_movies0.id = $this_create_movies0_id
-SET this_create_movies0.title = $this_create_movies0_title
+SET this_create_movies0.id = $params.this_create_movies0_id
+SET this_create_movies0.title = $params.this_create_movies0_title
 MERGE (this)-[:ACTED_IN]->(this_create_movies0)
 
 RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_movies { .id, .title } ] } AS this
@@ -367,9 +369,11 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_mo
 
 ```cypher-params
 {
-  "this_name": "Dan",
-  "this_create_movies0_id": "dan_movie_id",
-  "this_create_movies0_title": "The Story of Beer"
+  "params": {
+    "this_name": "Dan",
+    "this_create_movies0_id": "dan_movie_id",
+    "this_create_movies0_title": "The Story of Beer"
+  }
 }
 ```
 
@@ -396,10 +400,10 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 WITH this
 OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_delete_actors0:Actor)
-WHERE this_delete_actors0.name = $this_delete_actors0_name
+WHERE this_delete_actors0.name = $params.this_delete_actors0_name
 FOREACH(_ IN CASE this_delete_actors0 WHEN NULL THEN [] ELSE [1] END |
     DETACH DELETE this_delete_actors0
 )
@@ -410,8 +414,10 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id": "1",
-    "this_delete_actors0_name": "Actor to delete"
+    "params": {
+        "this_id": "1",
+        "this_delete_actors0_name": "Actor to delete"
+    }
 }
 ```
 
@@ -444,19 +450,19 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 WITH this
 OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
-WHERE this_actors0.name = $this_actors0_name
+WHERE this_actors0.name = $params.this_actors0_name
 CALL apoc.do.when(this_actors0 IS NOT NULL, "
-    SET this_actors0.name = $this_update_actors0_name
+    SET this_actors0.name = $params.this_update_actors0_name
     RETURN count(*)
 ",
 "",
-{this:this, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name}) YIELD value as _
+{this:this, this_actors0:this_actors0,  params:$params}) YIELD value as _
 WITH this
 OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_delete_actors0:Actor)
-WHERE this_delete_actors0.name = $this_delete_actors0_name
+WHERE this_delete_actors0.name = $params.this_delete_actors0_name
 FOREACH(_ IN CASE this_delete_actors0 WHEN NULL THEN [] ELSE [1] END |
     DETACH DELETE this_delete_actors0
 )
@@ -467,14 +473,11 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id": "1",
-    "this_actors0_name": "Actor to update",
-    "this_update_actors0_name": "Updated name",
-    "this_delete_actors0_name": "Actor to delete",
-    "auth": {
-        "isAuthenticated": true,
-        "jwt": {},
-        "roles": []
+    "params": {
+        "this_id": "1",
+        "this_actors0_name": "Actor to update",
+        "this_update_actors0_name": "Updated name",
+        "this_delete_actors0_name": "Actor to delete"
     }
 }
 ```
@@ -502,10 +505,10 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 WITH this
 OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0_delete0:Actor)
-WHERE this_actors0_delete0.name = $this_actors0_delete0_name
+WHERE this_actors0_delete0.name = $params.this_actors0_delete0_name
 FOREACH(_ IN CASE this_actors0_delete0 WHEN NULL THEN [] ELSE [1] END |
     DETACH DELETE this_actors0_delete0
 )
@@ -516,8 +519,10 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id": "1",
-    "this_actors0_delete0_name": "Actor to delete"
+    "params": {
+        "this_id": "1",
+        "this_actors0_delete0_name": "Actor to delete"
+    }
 }
 ```
 
@@ -551,13 +556,13 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 WITH this
 OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0_delete0:Actor)
-WHERE this_actors0_delete0.name = $this_actors0_delete0_name
+WHERE this_actors0_delete0.name = $params.this_actors0_delete0_name
 WITH this, this_actors0_delete0
 OPTIONAL MATCH (this_actors0_delete0)-[:ACTED_IN]->(this_actors0_delete0_movies0:Movie)
-WHERE this_actors0_delete0_movies0.id = $this_actors0_delete0_movies0_id
+WHERE this_actors0_delete0_movies0.id = $params.this_actors0_delete0_movies0_id
 FOREACH(_ IN CASE this_actors0_delete0_movies0 WHEN NULL THEN [] ELSE [1] END |
     DETACH DELETE this_actors0_delete0_movies0
 )
@@ -571,9 +576,11 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id": "1",
-    "this_actors0_delete0_name": "Actor to delete",
-    "this_actors0_delete0_movies0_id": "2"
+    "params": {
+        "this_id": "1",
+        "this_actors0_delete0_name": "Actor to delete",
+        "this_actors0_delete0_movies0_id": "2"
+    }
 }
 ```
 

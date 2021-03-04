@@ -53,7 +53,7 @@ type Movie {
 MATCH (this:Movie)
 RETURN this {
     .title,
-    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this, auth: $auth}, false) | this_topActor {
+    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this, params: $params, auth: $params.auth}, false) | this_topActor {
         .name
     }])
 } as this
@@ -63,10 +63,12 @@ RETURN this {
 
 ```cypher-params
 {
-    "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+    "params": {
+        "auth": {
+            "isAuthenticated": true,
+            "roles": [],
+            "jwt": {}
+        }
     }
 }
 ```
@@ -90,7 +92,7 @@ RETURN this {
 ```cypher
 MATCH (this:Actor)
 RETURN this {
-    randomNumber: head([ apoc.cypher.runFirstColumn("RETURN rand()", {this: this, auth: $auth}, false) ])
+    randomNumber: head([ apoc.cypher.runFirstColumn("RETURN rand()", {this: this, params: $params, auth: $params.auth}, false) ])
 } as this
 ```
 
@@ -98,10 +100,12 @@ RETURN this {
 
 ```cypher-params
 {
-    "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+    "params": {
+        "auth": {
+            "isAuthenticated": true,
+            "roles": [],
+            "jwt": {}
+        }
     }
 }
 ```
@@ -132,9 +136,9 @@ RETURN this {
 MATCH (this:Movie)
 RETURN this {
     .title,
-    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this, auth: $auth}, false) | this_topActor {
+    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this, params: $params, auth: $params.auth}, false) | this_topActor {
         .name,
-        movies: [this_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor, auth: $auth, title: $this_topActor_movies_title}, true) | this_topActor_movies {
+        movies: [this_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor, params: $params, auth: $params.auth, title: $params.this_topActor_movies_title}, true) | this_topActor_movies {
             .title
         }]
     }])
@@ -145,11 +149,13 @@ RETURN this {
 
 ```cypher-params
 {
-    "this_topActor_movies_title": "some title",
-    "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+    "params": {
+        "this_topActor_movies_title": "some title",
+        "auth": {
+           "isAuthenticated": true,
+           "roles": [],
+           "jwt": {}
+        }
     }
 }
 ```
@@ -186,13 +192,13 @@ RETURN this {
 MATCH (this:Movie)
 RETURN this {
     .title,
-    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this, auth: $auth}, false) | this_topActor {
+    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this, params: $params, auth: $params.auth}, false) | this_topActor {
         .name,
-        movies: [this_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor, auth: $auth, title: $this_topActor_movies_title}, true) | this_topActor_movies {
+        movies: [this_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor, params: $params, auth: $params.auth, title: $params.this_topActor_movies_title}, true) | this_topActor_movies {
             .title,
-            topActor: head([this_topActor_movies_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this_topActor_movies, auth: $auth}, false) | this_topActor_movies_topActor {
+            topActor: head([this_topActor_movies_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this_topActor_movies, params: $params, auth: $params.auth}, false) | this_topActor_movies_topActor {
                 .name,
-                movies: [this_topActor_movies_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor_movies_topActor, auth: $auth, title: $this_topActor_movies_topActor_movies_title}, true) | this_topActor_movies_topActor_movies {
+                movies: [this_topActor_movies_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor_movies_topActor, params: $params, auth: $params.auth, title: $params.this_topActor_movies_topActor_movies_title}, true) | this_topActor_movies_topActor_movies {
                      .title
                 }]
             }])
@@ -205,12 +211,14 @@ RETURN this {
 
 ```cypher-params
 {
-    "this_topActor_movies_title": "some title",
-    "this_topActor_movies_topActor_movies_title": "another title",
-    "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+    "params": {
+        "this_topActor_movies_title": "some title",
+        "this_topActor_movies_topActor_movies_title": "another title",
+        "auth": {
+           "isAuthenticated": true,
+           "roles": [],
+           "jwt": {}
+        }
     }
 }
 ```
@@ -241,9 +249,9 @@ RETURN this {
 MATCH (this:Movie)
 RETURN this {
     .title,
-    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this, auth: $auth}, false) | this_topActor {
+    topActor: head([this_topActor IN apoc.cypher.runFirstColumn("MATCH (a:Actor) RETURN a", {this: this, params: $params, auth: $params.auth}, false) | this_topActor {
         .name,
-        movies: [this_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor, auth: $auth, title: $this_topActor_movies_title}, true) | this_topActor_movies {
+        movies: [this_topActor_movies IN apoc.cypher.runFirstColumn("MATCH (m:Movie {title: $title}) RETURN m", {this: this_topActor, params: $params, auth: $params.auth, title: $params.this_topActor_movies_title}, true) | this_topActor_movies {
             .title
         }]
     }])
@@ -254,11 +262,13 @@ RETURN this {
 
 ```cypher-params
 {
-    "this_topActor_movies_title": "some title",
-    "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+    "params": {
+        "this_topActor_movies_title": "some title",
+        "auth": {
+           "isAuthenticated": true,
+           "roles": [],
+           "jwt": {}
+        }
     }
 }
 ```

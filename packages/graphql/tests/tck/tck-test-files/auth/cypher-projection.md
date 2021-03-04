@@ -36,10 +36,10 @@ mutation {
 ```cypher
 MATCH (this:User)
 WITH this
-CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_update_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-SET this.id = $this_update_id
+CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $params.this_update_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+SET this.id = $params.this_update_id
 WITH this
-CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $params.this_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 RETURN this { .id } AS this
 ```
 
@@ -47,9 +47,11 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id_auth_allow0_id": "super_admin",
-    "this_update_id": "new-id",
-    "this_update_id_auth_allow0_id": "super_admin"
+    "params": {
+        "this_id_auth_allow0_id": "super_admin",
+        "this_update_id": "new-id",
+        "this_update_id_auth_allow0_id": "super_admin"
+    }
 }
 ```
 
@@ -83,18 +85,18 @@ mutation {
 ```cypher
 CALL {
     CREATE (this0:User)
-    SET this0.id = $this0_id
+    SET this0.id = $params.this0_id
     RETURN this0
 }
 
 CALL {
     CREATE (this1:User)
-    SET this1.id = $this1_id
+    SET this1.id = $params.this1_id
     RETURN this1
 }
 
-CALL apoc.util.validate(NOT(EXISTS(this0.id) AND this0.id = $projection_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-CALL apoc.util.validate(NOT(EXISTS(this1.id) AND this1.id = $projection_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(EXISTS(this0.id) AND this0.id = $params.projection_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(EXISTS(this1.id) AND this1.id = $params.projection_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 
 RETURN this0 { .id } AS this0, this1 { .id } AS this1
 ```
@@ -103,9 +105,11 @@ RETURN this0 { .id } AS this0, this1 { .id } AS this1
 
 ```cypher-params
 {
-    "this0_id": "id-1",
-    "this1_id": "id-2",
-    "projection_id_auth_allow0_id": "super_admin"
+    "params": {
+        "this0_id": "id-1",
+        "this1_id": "id-2",
+        "projection_id_auth_allow0_id": "super_admin"
+    }
 }
 ```
 

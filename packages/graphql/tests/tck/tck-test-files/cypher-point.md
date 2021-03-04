@@ -33,7 +33,7 @@ type PointContainer {
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE this.point = point($this_point)
+WHERE this.point = point($params.this_point)
 RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 ```
 
@@ -41,9 +41,11 @@ RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 
 ```cypher-params
 {
-  "this_point": {
-    "longitude": 1,
-    "latitude": 2
+  "params": {
+      "this_point": {
+        "longitude": 1,
+        "latitude": 2
+      }
   }
 }
 ```
@@ -69,7 +71,7 @@ RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE (NOT this.point = point($this_point_NOT))
+WHERE (NOT this.point = point($params.this_point_NOT))
 RETURN this { point: { point: this.point } } as this
 ```
 
@@ -77,9 +79,11 @@ RETURN this { point: { point: this.point } } as this
 
 ```cypher-params
 {
-  "this_point_NOT": {
-    "longitude": 1,
-    "latitude": 2
+  "params": {
+    "this_point_NOT": {
+      "longitude": 1,
+      "latitude": 2
+    }
   }
 }
 ```
@@ -106,7 +110,7 @@ RETURN this { point: { point: this.point } } as this
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE this.point IN [p in $this_point_IN | point(p)]
+WHERE this.point IN [p in $params.this_point_IN | point(p)]
 RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 ```
 
@@ -114,10 +118,12 @@ RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 
 ```cypher-params
 {
-  "this_point_IN": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+  "params": {
+    "this_point_IN": [{
+      "longitude": 1,
+      "latitude": 2
+    }]
+  }
 }
 ```
 
@@ -145,7 +151,7 @@ RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE (NOT this.point IN [p in $this_point_NOT_IN | point(p)])
+WHERE (NOT this.point IN [p in $params.this_point_NOT_IN | point(p)])
 RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 ```
 
@@ -153,10 +159,12 @@ RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 
 ```cypher-params
 {
-  "this_point_NOT_IN": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+  "params": {
+    "this_point_NOT_IN": [{
+      "longitude": 1,
+      "latitude": 2
+    }]
+  }
 }
 ```
 
@@ -188,7 +196,7 @@ RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE distance(this.point, point($this_point_LT.point)) < $this_point_LT.distance
+WHERE distance(this.point, point($params.this_point_LT.point)) < $params.this_point_LT.distance
 RETURN this { point: { point: this.point } } as this
 ```
 
@@ -196,12 +204,14 @@ RETURN this { point: { point: this.point } } as this
 
 ```cypher-params
 {
-  "this_point_LT": {
-    "point": {
-      "longitude": 1.1,
-      "latitude": 2.2
-    },
-    "distance": 3.3
+  "params": {
+    "this_point_LT": {
+      "point": {
+        "longitude": 1.1,
+        "latitude": 2.2
+      },
+      "distance": 3.3
+    }
   }
 }
 ```
@@ -234,7 +244,7 @@ RETURN this { point: { point: this.point } } as this
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE distance(this.point, point($this_point_LTE.point)) <= $this_point_LTE.distance
+WHERE distance(this.point, point($params.this_point_LTE.point)) <= $params.this_point_LTE.distance
 RETURN this { point: { point: this.point } } as this
 ```
 
@@ -242,12 +252,14 @@ RETURN this { point: { point: this.point } } as this
 
 ```cypher-params
 {
-  "this_point_LTE": {
-    "point": {
-      "longitude": 1.1,
-      "latitude": 2.2
-    },
-    "distance": 3.3
+  "params": {
+    "this_point_LTE": {
+      "point": {
+        "longitude": 1.1,
+        "latitude": 2.2
+      },
+      "distance": 3.3
+    }
   }
 }
 ```
@@ -280,7 +292,7 @@ RETURN this { point: { point: this.point } } as this
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE distance(this.point, point($this_point_GT.point)) > $this_point_GT.distance
+WHERE distance(this.point, point($params.this_point_GT.point)) > $params.this_point_GT.distance
 RETURN this { point: { point: this.point } } as this
 ```
 
@@ -288,12 +300,14 @@ RETURN this { point: { point: this.point } } as this
 
 ```cypher-params
 {
-  "this_point_GT": {
-    "point": {
-      "longitude": 1.1,
-      "latitude": 2.2
-    },
-    "distance": 3.3
+  "params": {
+    "this_point_GT": {
+      "point": {
+        "longitude": 1.1,
+        "latitude": 2.2
+      },
+      "distance": 3.3
+    }
   }
 }
 ```
@@ -326,7 +340,7 @@ RETURN this { point: { point: this.point } } as this
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE distance(this.point, point($this_point_GTE.point)) >= $this_point_GTE.distance
+WHERE distance(this.point, point($params.this_point_GTE.point)) >= $params.this_point_GTE.distance
 RETURN this { point: { point: this.point } } as this
 ```
 
@@ -334,12 +348,14 @@ RETURN this { point: { point: this.point } } as this
 
 ```cypher-params
 {
-  "this_point_GTE": {
-    "point": {
-      "longitude": 1.1,
-      "latitude": 2.2
-    },
-    "distance": 3.3
+  "params": {
+    "this_point_GTE": {
+      "point": {
+        "longitude": 1.1,
+        "latitude": 2.2
+      },
+      "distance": 3.3
+    }
   }
 }
 ```
@@ -372,7 +388,7 @@ RETURN this { point: { point: this.point } } as this
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE distance(this.point, point($this_point_DISTANCE.point)) = $this_point_DISTANCE.distance
+WHERE distance(this.point, point($params.this_point_DISTANCE.point)) = $params.this_point_DISTANCE.distance
 RETURN this { point: { point: this.point } } as this
 ```
 
@@ -380,12 +396,14 @@ RETURN this { point: { point: this.point } } as this
 
 ```cypher-params
 {
-  "this_point_DISTANCE": {
-    "point": {
-      "longitude": 1.1,
-      "latitude": 2.2
-    },
-    "distance": 3.3
+  "params": {
+    "this_point_DISTANCE": {
+      "point": {
+        "longitude": 1.1,
+        "latitude": 2.2
+      },
+      "distance": 3.3
+    }
   }
 }
 ```
@@ -415,7 +433,7 @@ mutation {
 ```cypher
 CALL {
     CREATE (this0:PointContainer)
-    SET this0.point = point($this0_point)
+    SET this0.point = point($params.this0_point)
     RETURN this0
 }
 
@@ -427,9 +445,11 @@ this0 { point: { point: this0.point, crs: this0.point.crs } } AS this0
 
 ```cypher-params
 {
-  "this0_point": {
-    "longitude": 1,
-    "latitude": 2
+  "params": {
+    "this0_point": {
+      "longitude": 1,
+      "latitude": 2
+    }
   }
 }
 ```
@@ -461,8 +481,8 @@ mutation {
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE this.id = $this_id
-SET this.point = point($this_update_point)
+WHERE this.id = $params.this_id
+SET this.point = point($params.this_update_point)
 RETURN this { point: { point: this.point, crs: this.point.crs } } AS this
 ```
 
@@ -470,10 +490,12 @@ RETURN this { point: { point: this.point, crs: this.point.crs } } AS this
 
 ```cypher-params
 {
-  "this_id": "id",
-  "this_update_point": {
-    "longitude": 1,
-    "latitude": 2
+  "params": {
+    "this_id": "id",
+    "this_update_point": {
+      "longitude": 1,
+      "latitude": 2
+    }
   }
 }
 ```

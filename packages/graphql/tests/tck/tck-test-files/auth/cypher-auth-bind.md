@@ -58,10 +58,10 @@ mutation {
 ```cypher
 CALL {
     CREATE (this0:User)
-    SET this0.id = $this0_id
-    SET this0.name = $this0_name
+    SET this0.id = $params.this0_id
+    SET this0.name = $params.this0_name
     WITH this0
-    CALL apoc.util.validate(NOT(EXISTS(this0.id) AND this0.id = $this0_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+    CALL apoc.util.validate(NOT(EXISTS(this0.id) AND this0.id = $params.this0_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
     RETURN this0
 }
 RETURN this0 { .id } AS this0
@@ -71,9 +71,11 @@ RETURN this0 { .id } AS this0
 
 ```cypher-params
 {
-    "this0_id": "user-id",
-    "this0_name": "bob",
-    "this0_auth_bind0_id": "id-01"
+    "params": {
+        "this0_id": "user-id",
+        "this0_name": "bob",
+        "this0_auth_bind0_id": "id-01"
+    }
 }
 ```
 
@@ -122,29 +124,29 @@ mutation {
 ```cypher
 CALL {
     CREATE (this0:User)
-    SET this0.id = $this0_id SET
-    this0.name = $this0_name
+    SET this0.id = $params.this0_id SET
+    this0.name = $params.this0_name
 
     WITH this0
     CREATE (this0_posts0:Post)
-    SET this0_posts0.id = $this0_posts0_id
+    SET this0_posts0.id = $params.this0_posts0_id
 
     WITH this0, this0_posts0
     CREATE (this0_posts0_creator0:User)
-    SET this0_posts0_creator0.id = $this0_posts0_creator0_id
+    SET this0_posts0_creator0.id = $params.this0_posts0_creator0_id
 
     WITH this0, this0_posts0, this0_posts0_creator0
-    CALL apoc.util.validate(NOT(EXISTS(this0_posts0_creator0.id) AND this0_posts0_creator0.id = $this0_posts0_creator0_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+    CALL apoc.util.validate(NOT(EXISTS(this0_posts0_creator0.id) AND this0_posts0_creator0.id = $params.this0_posts0_creator0_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
 
     MERGE (this0_posts0)<-[:HAS_POST]-(this0_posts0_creator0)
 
     WITH this0, this0_posts0
-    CALL apoc.util.validate(NOT(EXISTS((this0_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts0_auth_bind0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+    CALL apoc.util.validate(NOT(EXISTS((this0_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $params.this0_posts0_auth_bind0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
 
     MERGE (this0)-[:HAS_POST]->(this0_posts0)
 
     WITH this0
-    CALL apoc.util.validate(NOT(EXISTS(this0.id) AND this0.id = $this0_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+    CALL apoc.util.validate(NOT(EXISTS(this0.id) AND this0.id = $params.this0_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
 
     RETURN this0
 }
@@ -156,13 +158,15 @@ RETURN this0 { .id } AS this0
 
 ```cypher-params
 {
-    "this0_id": "user-id",
-    "this0_name": "bob",
-    "this0_posts0_id": "post-id-1",
-    "this0_auth_bind0_id": "id-01",
-    "this0_posts0_auth_bind0_creator_id": "id-01",
-    "this0_posts0_creator0_auth_bind0_id": "id-01",
-    "this0_posts0_creator0_id": "some-user-id"
+    "params": {
+        "this0_id": "user-id",
+        "this0_name": "bob",
+        "this0_posts0_id": "post-id-1",
+        "this0_auth_bind0_id": "id-01",
+        "this0_posts0_auth_bind0_creator_id": "id-01",
+        "this0_posts0_creator0_auth_bind0_id": "id-01",
+        "this0_posts0_creator0_id": "some-user-id"
+    }
 }
 ```
 
@@ -195,11 +199,11 @@ mutation {
 
 ```cypher
 MATCH (this:User)
-WHERE this.id = $this_id
-SET this.id = $this_update_id
+WHERE this.id = $params.this_id
+SET this.id = $params.this_update_id
 
 WITH this
-CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $params.this_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
 
 RETURN this { .id } AS this
 ```
@@ -208,9 +212,11 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id": "id-01",
-    "this_update_id": "not bound",
-    "this_auth_bind0_id": "id-01"
+    "params": {
+        "this_id": "id-01",
+        "this_update_id": "not bound",
+        "this_auth_bind0_id": "id-01"
+    }
 }
 ```
 
@@ -251,32 +257,32 @@ mutation {
 
 ```cypher
 MATCH (this:User)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 
 WITH this OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
-WHERE this_posts0.id = $this_posts0_id
+WHERE this_posts0.id = $params.this_posts0_id
 CALL apoc.do.when(this_posts0 IS NOT NULL,
 "
     WITH this, this_posts0
     OPTIONAL MATCH (this_posts0)<-[:HAS_POST]-(this_posts0_creator0:User)
     CALL apoc.do.when(this_posts0_creator0 IS NOT NULL,
     \"
-        SET this_posts0_creator0.id = $this_update_posts0_creator0_id
+        SET this_posts0_creator0.id = $params.this_update_posts0_creator0_id
 
         WITH this, this_posts0, this_posts0_creator0
-        CALL apoc.util.validate(NOT(EXISTS(this_posts0_creator0.id) AND this_posts0_creator0.id = $this_posts0_creator0_auth_bind0_id), \"@neo4j/graphql/FORBIDDEN\", [0])
+        CALL apoc.util.validate(NOT(EXISTS(this_posts0_creator0.id) AND this_posts0_creator0.id = $params.this_posts0_creator0_auth_bind0_id), \"@neo4j/graphql/FORBIDDEN\", [0])
 
         RETURN count(*)
     \",
     \"\",
-    {this_posts0:this_posts0, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id}) YIELD value as _
+    {this_posts0:this_posts0, this_posts0_creator0:this_posts0_creator0, params:$params}) YIELD value as _
     RETURN count(*)
 ",
 "",
-{this:this, this_posts0:this_posts0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id}) YIELD value as _
+{this:this, this_posts0:this_posts0, params:$params}) YIELD value as _
 
 WITH this
-CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $params.this_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
 
 RETURN this { .id } AS this
 ```
@@ -285,18 +291,12 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id": "id-01",
-    "this_posts0_creator0_auth_bind0_id": "id-01",
-    "this_posts0_id": "post-id",
-    "this_update_posts0_creator0_id": "not bound",
-    "this_auth_bind0_id": "id-01",
-    "auth": {
-        "isAuthenticated": true,
-        "jwt": {
-            "roles": ["admin"],
-            "sub": "id-01"
-        },
-        "roles": ["admin"]
+    "params": {
+        "this_id": "id-01",
+        "this_posts0_creator0_auth_bind0_id": "id-01",
+        "this_posts0_id": "post-id",
+        "this_update_posts0_creator0_id": "not bound",
+        "this_auth_bind0_id": "id-01"
     }
 }
 ```
@@ -333,17 +333,17 @@ mutation {
 
 ```cypher
 MATCH (this:Post)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 
 WITH this
 OPTIONAL MATCH (this_connect_creator0:User)
-WHERE this_connect_creator0.id = $this_connect_creator0_id
+WHERE this_connect_creator0.id = $params.this_connect_creator0_id
 FOREACH(_ IN CASE this_connect_creator0 WHEN NULL THEN [] ELSE [1] END |
     MERGE (this)<-[:HAS_POST]-(this_connect_creator0)
 )
 
 WITH this, this_connect_creator0
-CALL apoc.util.validate(NOT(EXISTS((this_connect_creator0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_creator0Post0_bind_auth_bind0_creator_id) AND EXISTS(this_connect_creator0.id) AND this_connect_creator0.id = $this_connect_creator0User1_bind_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(EXISTS((this_connect_creator0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $params.this_connect_creator0Post0_bind_auth_bind0_creator_id) AND EXISTS(this_connect_creator0.id) AND this_connect_creator0.id = $params.this_connect_creator0User1_bind_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
 
 RETURN this { .id } AS this
 ```
@@ -352,11 +352,13 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id": "id-01",
-    "this_connect_creator0Post0_bind_auth_bind0_creator_id": "id-01",
-    "this_connect_creator0User1_bind_auth_bind0_id": "id-01",
-    "this_connect_creator0_id": "user-id",
-    "this_id": "post-id"
+    "params": {
+        "this_id": "id-01",
+        "this_connect_creator0Post0_bind_auth_bind0_creator_id": "id-01",
+        "this_connect_creator0User1_bind_auth_bind0_id": "id-01",
+        "this_connect_creator0_id": "user-id",
+        "this_id": "post-id"
+    }
 }
 ```
 
@@ -392,17 +394,17 @@ mutation {
 
 ```cypher
 MATCH (this:Post)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 
 WITH this
 OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
-WHERE this_disconnect_creator0.id = $this_disconnect_creator0_id
+WHERE this_disconnect_creator0.id = $params.this_disconnect_creator0_id
 FOREACH(_ IN CASE this_disconnect_creator0 WHEN NULL THEN [] ELSE [1] END |
     DELETE this_disconnect_creator0_rel
 )
 
 WITH this, this_disconnect_creator0
-CALL apoc.util.validate(NOT(EXISTS((this_disconnect_creator0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_disconnect_creator0Post0_bind_auth_bind0_creator_id) AND EXISTS(this_disconnect_creator0.id) AND this_disconnect_creator0.id = $this_disconnect_creator0User1_bind_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(EXISTS((this_disconnect_creator0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $params.this_disconnect_creator0Post0_bind_auth_bind0_creator_id) AND EXISTS(this_disconnect_creator0.id) AND this_disconnect_creator0.id = $params.this_disconnect_creator0User1_bind_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
 
 RETURN this { .id } AS this
 ```
@@ -411,11 +413,13 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id": "id-01",
-    "this_disconnect_creator0Post0_bind_auth_bind0_creator_id": "id-01",
-    "this_disconnect_creator0User1_bind_auth_bind0_id": "id-01",
-    "this_disconnect_creator0_id": "user-id",
-    "this_id": "post-id"
+    "params": {
+        "this_id": "id-01",
+        "this_disconnect_creator0Post0_bind_auth_bind0_creator_id": "id-01",
+        "this_disconnect_creator0User1_bind_auth_bind0_id": "id-01",
+        "this_disconnect_creator0_id": "user-id",
+        "this_id": "post-id"
+    }
 }
 ```
 

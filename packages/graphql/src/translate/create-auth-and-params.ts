@@ -25,7 +25,7 @@ function createRolesStr({ roles, escapeQuotes }: { roles: string[]; escapeQuotes
 
     const joined = roles.map((r) => `${quote}${r}${quote}`).join(", ");
 
-    return `ANY(r IN [${joined}] WHERE ANY(rr IN $auth.roles WHERE r = rr))`;
+    return `ANY(r IN [${joined}] WHERE ANY(rr IN $params.auth.roles WHERE r = rr))`;
 }
 
 function createAuthPredicate({
@@ -81,12 +81,12 @@ function createAuthPredicate({
 
                 if (jwtPath) {
                     res.params[_param] = dotProp.get({ value: jwt }, `value.${jwtPath}`);
-                    res.strs.push(`${existsStr} AND ${varName}.${key} = $${_param}`);
+                    res.strs.push(`${existsStr} AND ${varName}.${key} = $params.${_param}`);
                 }
 
                 if (ctxPath) {
                     res.params[_param] = dotProp.get({ value: context.graphQLContext }, `value.${ctxPath}`);
-                    res.strs.push(`${existsStr} AND ${varName}.${key} = $${_param}`);
+                    res.strs.push(`${existsStr} AND ${varName}.${key} = $params.${_param}`);
                 }
             }
 
@@ -179,7 +179,7 @@ function createAuthAndParams({
 
         if (!skipIsAuthenticated && (authRule.isAuthenticated === true || authRule.isAuthenticated === false)) {
             thisPredicates.push(
-                `apoc.util.validatePredicate(NOT($auth.isAuthenticated = ${Boolean(
+                `apoc.util.validatePredicate(NOT($params.auth.isAuthenticated = ${Boolean(
                     authRule.isAuthenticated
                 )}), "${AUTH_UNAUTHENTICATED_ERROR}", [0])`
             );

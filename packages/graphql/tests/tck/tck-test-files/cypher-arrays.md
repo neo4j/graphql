@@ -30,7 +30,7 @@ type Movie {
 
 ```cypher
 MATCH (this:Movie)
-WHERE $this_ratings_IN IN this.ratings
+WHERE $params.this_ratings_IN IN this.ratings
 RETURN this { .title, .ratings } as this
 ```
 
@@ -38,7 +38,9 @@ RETURN this { .title, .ratings } as this
 
 ```cypher-params
 {
-    "this_ratings_IN": 4.0
+    "params": {
+        "this_ratings_IN": 4.0
+    }
 }
 ```
 
@@ -61,7 +63,7 @@ RETURN this { .title, .ratings } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE (NOT $this_ratings_NOT_IN IN this.ratings)
+WHERE (NOT $params.this_ratings_NOT_IN IN this.ratings)
 RETURN this { .title, .ratings } as this
 ```
 
@@ -69,7 +71,9 @@ RETURN this { .title, .ratings } as this
 
 ```cypher-params
 {
-    "this_ratings_NOT_IN": 4.0
+    "params": {
+        "this_ratings_NOT_IN": 4.0
+    }
 }
 ```
 

@@ -53,7 +53,7 @@ type Movie {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.title = $this_title
+WHERE this.title = $params.this_title
 
 RETURN this {
     search: [(this)-[:SEARCH]->(this_search)
@@ -61,15 +61,15 @@ RETURN this {
         head(
             [ this_search IN [this_search]
                 WHERE "Genre" IN labels (this_search) AND
-                this_search.name = $this_search_Genre_name AND
-                apoc.util.validatePredicate(NOT(EXISTS(this_search.name) AND this_search.name = $this_search_Genre_auth_allow0_name), "@neo4j/graphql/FORBIDDEN", [0])  |
+                this_search.name = $params.this_search_Genre_name AND
+                apoc.util.validatePredicate(NOT(EXISTS(this_search.name) AND this_search.name = $params.this_search_Genre_auth_allow0_name), "@neo4j/graphql/FORBIDDEN", [0])  |
                 this_search {
                     __resolveType: "Genre",
                      .name
                 } ] +
             [ this_search IN [this_search]
                 WHERE "Movie" IN labels (this_search) AND
-                this_search.title = $this_search_Movie_title |
+                this_search.title = $params.this_search_Movie_title |
                 this_search {
                     __resolveType: "Movie",
                     .title
@@ -83,10 +83,12 @@ RETURN this {
 
 ```cypher-params
 {
-    "this_title": "some title",
-    "this_search_Genre_auth_allow0_name": ["Horror"],
-    "this_search_Genre_name": "Horror",
-    "this_search_Movie_title": "The Matrix"
+    "params": {
+        "this_title": "some title",
+        "this_search_Genre_auth_allow0_name": ["Horror"],
+        "this_search_Genre_name": "Horror",
+        "this_search_Movie_title": "The Matrix"
+    }
 }
 ```
 
@@ -126,11 +128,11 @@ mutation {
 ```cypher
 CALL {
     CREATE (this0:Movie)
-    SET this0.title = $this0_title
+    SET this0.title = $params.this0_title
 
     WITH this0
     CREATE (this0_search_Genre0:Genre)
-    SET this0_search_Genre0.name = $this0_search_Genre0_name
+    SET this0_search_Genre0.name = $params.this0_search_Genre0_name
     MERGE (this0)-[:SEARCH]->(this0_search_Genre0)
 
     RETURN this0
@@ -145,8 +147,10 @@ RETURN this0 {
 
 ```cypher-params
 {
-   "this0_title": "some movie",
-   "this0_search_Genre0_name": "some genre"
+   "params": {
+        "this0_title": "some movie",
+        "this0_search_Genre0_name": "some genre"
+   }
 }
 ```
 
@@ -178,11 +182,11 @@ mutation {
 ```cypher
 CALL {
     CREATE (this0:Movie)
-    SET this0.title = $this0_title
+    SET this0.title = $params.this0_title
 
     WITH this0
     OPTIONAL MATCH (this0_search_Genre_connect0:Genre)
-    WHERE this0_search_Genre_connect0.name = $this0_search_Genre_connect0_name
+    WHERE this0_search_Genre_connect0.name = $params.this0_search_Genre_connect0_name
     FOREACH(_ IN CASE this0_search_Genre_connect0 WHEN NULL THEN [] ELSE [1] END |
         MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0)
     )
@@ -197,8 +201,10 @@ RETURN this0 { .title } AS this0
 
 ```cypher-params
 {
-   "this0_title": "some movie",
-   "this0_search_Genre_connect0_name": "some genre"
+   "params": {
+        "this0_title": "some movie",
+        "this0_search_Genre_connect0_name": "some genre"
+   }
 }
 
 ```
@@ -231,12 +237,12 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.title = $this_title
+WHERE this.title = $params.this_title
 
 WITH this
 OPTIONAL MATCH (this)-[:SEARCH]->(this_search_Genre0:Genre)
-WHERE this_search_Genre0.name = $this_search_Genre0_name
-CALL apoc.do.when(this_search_Genre0 IS NOT NULL, " SET this_search_Genre0.name = $this_update_search_Genre0_name RETURN count(*) ", "", {this:this, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name}) YIELD value as _
+WHERE this_search_Genre0.name = $params.this_search_Genre0_name
+CALL apoc.do.when(this_search_Genre0 IS NOT NULL, " SET this_search_Genre0.name = $params.this_update_search_Genre0_name RETURN count(*) ", "", {this:this, this_search_Genre0:this_search_Genre0, params:$params}) YIELD value as _
 
 RETURN this { .title } AS this
 ```
@@ -245,13 +251,10 @@ RETURN this { .title } AS this
 
 ```cypher-params
 {
-   "this_title": "some movie",
-   "this_search_Genre0_name": "some genre",
-   "this_update_search_Genre0_name": "some new genre",
-   "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+   "params": {
+        "this_title": "some movie",
+        "this_search_Genre0_name": "some genre",
+        "this_update_search_Genre0_name": "some new genre"
    }
 }
 ```
@@ -281,11 +284,11 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.title = $this_title
+WHERE this.title = $params.this_title
 
 WITH this
 OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre)
-WHERE this_search_Genre0_disconnect0.name = $this_search_Genre0_disconnect0_name
+WHERE this_search_Genre0_disconnect0.name = $params.this_search_Genre0_disconnect0_name
 FOREACH(_ IN CASE this_search_Genre0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
     DELETE this_search_Genre0_disconnect0_rel
 )
@@ -297,7 +300,9 @@ RETURN this { .title } AS this
 
 ```cypher-params
 {
-   "this_title": "some movie",
-   "this_search_Genre0_disconnect0_name": "some genre"
+   "params": {
+        "this_title": "some movie",
+        "this_search_Genre0_disconnect0_name": "some genre"
+   }
 }
 ```

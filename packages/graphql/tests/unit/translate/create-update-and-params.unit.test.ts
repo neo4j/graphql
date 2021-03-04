@@ -56,7 +56,7 @@ describe("createUpdateAndParams", () => {
 
         expect(trimmer(result[0])).toEqual(
             trimmer(`
-                SET this.id = $this_update_id
+                SET this.id = $params.this_update_id
             `)
         );
 

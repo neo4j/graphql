@@ -93,9 +93,6 @@ function createUpdateAndParams({
 
                     res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
 
-                    const auth = createAuthParam({ context });
-                    let innerApocParams = { auth };
-
                     const updateAndParams = createUpdateAndParams({
                         context,
                         node: refNode,
@@ -106,8 +103,7 @@ function createUpdateAndParams({
                         chainStr: `${param}${index}`,
                         insideDoWhen: true,
                     });
-                    res.params = { ...res.params, ...updateAndParams[1], auth };
-                    innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
+                    res.params = { ...res.params, ...updateAndParams[1] };
 
                     const updateStrs = [updateAndParams[0], "RETURN count(*)"];
                     const apocArgs = `{${parentVar}:${parentVar}, ${_varName}:${_varName}REPLACE_ME}`;
@@ -119,12 +115,7 @@ function createUpdateAndParams({
                     }
                     updateStrs.push("YIELD value as _");
 
-                    const paramsString = (Object.keys(innerApocParams).reduce(
-                        (r: string[], k) => [...r, `${k}:$${k}`],
-                        []
-                    ) as string[]).join(",");
-
-                    const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
+                    const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, params:$params`);
                     res.strs.push(updateStr);
                 }
 
@@ -221,12 +212,12 @@ function createUpdateAndParams({
         if (settableField) {
             if (pointField) {
                 if (pointField.typeMeta.array) {
-                    res.strs.push(`SET ${varName}.${key} = [p in $${param} | point(p)]`);
+                    res.strs.push(`SET ${varName}.${key} = [p in $params.${param} | point(p)]`);
                 } else {
-                    res.strs.push(`SET ${varName}.${key} = point($${param})`);
+                    res.strs.push(`SET ${varName}.${key} = point($params.${param})`);
                 }
             } else {
-                res.strs.push(`SET ${varName}.${key} = $${param}`);
+                res.strs.push(`SET ${varName}.${key} = $params.${param}`);
             }
 
             res.params[param] = value;

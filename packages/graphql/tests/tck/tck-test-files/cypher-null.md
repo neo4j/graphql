@@ -43,7 +43,11 @@ RETURN this { .title } as this
 **Expected Cypher params**
 
 ```cypher-params
-{}
+{
+    "params": {
+
+    }
+}
 ```
 
 ---
@@ -71,7 +75,11 @@ RETURN this { .title } as this
 **Expected Cypher params**
 
 ```cypher-params
-{}
+{
+    "params": {
+
+    }
+}
 ```
 
 ---
@@ -99,7 +107,11 @@ RETURN this { .title } as this
 **Expected Cypher params**
 
 ```cypher-params
-{}
+{
+    "params": {
+
+    }
+}
 ```
 
 ---
@@ -127,7 +139,11 @@ RETURN this { .title } as this
 **Expected Cypher params**
 
 ```cypher-params
-{}
+{
+    "params": {
+
+    }
+}
 ```
 
 ---

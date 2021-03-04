@@ -296,7 +296,7 @@ describe("Point", () => {
         expect((result.records[0].toObject() as any).p.location.srid).toEqual(int(4979));
     });
 
-    test("enables query of a node with a wgs-84 point", async () => {
+    test.skip("enables query of a node with a wgs-84 point", async () => {
         // Create node
         const id = faker.random.uuid();
         const size = faker.random.number({});

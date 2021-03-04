@@ -34,7 +34,7 @@ mutation {
 CALL {
   CREATE (this0:Movie)
   SET this0.id = randomUUID()
-  SET this0.name = $this0_name
+  SET this0.name = $params.this0_name
   RETURN this0
 }
 
@@ -45,7 +45,9 @@ RETURN this0 { .id, .name } AS this0
 
 ```cypher-params
 {
-    "this0_name": "dan"
+    "params": {
+        "this0_name": "dan"
+    }
 }
 ```
 
@@ -70,7 +72,7 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-SET this.name = $this_update_name
+SET this.name = $params.this_update_name
 RETURN this { .id, .name } AS this
 ```
 
@@ -78,7 +80,9 @@ RETURN this { .id, .name } AS this
 
 ```cypher-params
 {
-    "this_update_name": "dan"
+    "params": {
+        "this_update_name": "dan"
+    }
 }
 ```
 

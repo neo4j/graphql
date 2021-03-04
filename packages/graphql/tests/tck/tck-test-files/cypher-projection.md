@@ -68,14 +68,14 @@ mutation {
 ```cypher
 CALL {
   CREATE (this0:Product)
-  SET this0.id = $this0_id
+  SET this0.id = $params.this0_id
 
   RETURN this0
 }
 
 CALL {
   CREATE (this1:Product)
-  SET this1.id = $this1_id
+  SET this1.id = $params.this1_id
 
   RETURN this1
 }
@@ -83,15 +83,15 @@ CALL {
 RETURN
 this0 {
     .id,
-    photos: [ (this0)-[:HAS_PHOTO]->(this0_photos:Photo) WHERE this0_photos.url = $projection_photos_url | this0_photos { .url, location: { point: this0_photos.location } } ],
-    colors: [ (this0)-[:HAS_COLOR]->(this0_colors:Color) WHERE this0_colors.id = $projection_colors_id | this0_colors { .id } ],
-    sizes: [ (this0)-[:HAS_SIZE]->(this0_sizes:Size) WHERE this0_sizes.name = $projection_sizes_name  | this0_sizes { .name } ]
+    photos: [ (this0)-[:HAS_PHOTO]->(this0_photos:Photo) WHERE this0_photos.url = $params.projection_photos_url | this0_photos { .url, location: { point: this0_photos.location } } ],
+    colors: [ (this0)-[:HAS_COLOR]->(this0_colors:Color) WHERE this0_colors.id = $params.projection_colors_id | this0_colors { .id } ],
+    sizes: [ (this0)-[:HAS_SIZE]->(this0_sizes:Size) WHERE this0_sizes.name = $params.projection_sizes_name  | this0_sizes { .name } ]
 } AS this0,
 this1 {
     .id,
-    photos: [ (this1)-[:HAS_PHOTO]->(this1_photos:Photo) WHERE this1_photos.url = $projection_photos_url | this1_photos { .url, location: { point: this1_photos.location } } ],
-    colors: [ (this1)-[:HAS_COLOR]->(this1_colors:Color) WHERE this1_colors.id = $projection_colors_id | this1_colors { .id } ],
-    sizes: [ (this1)-[:HAS_SIZE]->(this1_sizes:Size) WHERE this1_sizes.name = $projection_sizes_name  | this1_sizes { .name } ]
+    photos: [ (this1)-[:HAS_PHOTO]->(this1_photos:Photo) WHERE this1_photos.url = $params.projection_photos_url | this1_photos { .url, location: { point: this1_photos.location } } ],
+    colors: [ (this1)-[:HAS_COLOR]->(this1_colors:Color) WHERE this1_colors.id = $params.projection_colors_id | this1_colors { .id } ],
+    sizes: [ (this1)-[:HAS_SIZE]->(this1_sizes:Size) WHERE this1_sizes.name = $params.projection_sizes_name  | this1_sizes { .name } ]
 } AS this1
 ```
 
@@ -99,11 +99,13 @@ this1 {
 
 ```cypher-params
 {
-    "this0_id": "1",
-    "this1_id": "2",
-    "projection_photos_url": "url.com",
-    "projection_colors_id": "123",
-    "projection_sizes_name": "small"
+    "params": {
+        "this0_id": "1",
+        "this1_id": "2",
+        "projection_photos_url": "url.com",
+        "projection_colors_id": "123",
+        "projection_sizes_name": "small"
+    }
 }
 ```
 

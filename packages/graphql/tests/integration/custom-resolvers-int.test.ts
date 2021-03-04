@@ -513,7 +513,7 @@ describe("Custom Resolvers", () => {
                 });
             });
 
-            test("should inject the auth into cypher directive on fields", async () => {
+            test("abba", async () => {
                 const session = driver.session();
 
                 const typeDefs = `
@@ -532,7 +532,7 @@ describe("Custom Resolvers", () => {
 
                 const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const neoSchema = new Neo4jGraphQL({ typeDefs, debug: true });
 
                 const query = `
                 {

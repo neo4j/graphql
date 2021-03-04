@@ -35,7 +35,7 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 DETACH DELETE this
 ```
 
@@ -43,7 +43,9 @@ DETACH DELETE this
 
 ```cypher-params
 {
-    "this_id": "123"
+    "params": {
+        "this_id": "123"
+    }
 }
 ```
 
@@ -68,10 +70,10 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 WITH this
 OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
-WHERE this_actors0.name = $this_actors0_name
+WHERE this_actors0.name = $params.this_actors0_name
 FOREACH(_ IN CASE this_actors0 WHEN NULL THEN [] ELSE [1] END |
     DETACH DELETE this_actors0
 )
@@ -82,8 +84,10 @@ DETACH DELETE this
 
 ```cypher-params
 {
-    "this_id": "123",
-    "this_actors0_name": "Actor to delete"
+    "params": {
+        "this_id": "123",
+        "this_actors0_name": "Actor to delete"
+    }
 }
 ```
 
@@ -113,16 +117,16 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 WITH this
 OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
-WHERE this_actors0.name = $this_actors0_name
+WHERE this_actors0.name = $params.this_actors0_name
 FOREACH(_ IN CASE this_actors0 WHEN NULL THEN [] ELSE [1] END |
     DETACH DELETE this_actors0
 )
 WITH this
 OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors1:Actor)
-WHERE this_actors1.name = $this_actors1_name
+WHERE this_actors1.name = $params.this_actors1_name
 FOREACH(_ IN CASE this_actors1 WHEN NULL THEN [] ELSE [1] END |
     DETACH DELETE this_actors1
 )
@@ -133,9 +137,11 @@ DETACH DELETE this
 
 ```cypher-params
 {
-    "this_id": "123",
-    "this_actors0_name": "Actor to delete",
-    "this_actors1_name": "Another actor to delete"
+    "params": {
+        "this_id": "123",
+        "this_actors0_name": "Actor to delete",
+        "this_actors1_name": "Another actor to delete"
+    }
 }
 ```
 
@@ -165,13 +171,13 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 WITH this
 OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
-WHERE this_actors0.name = $this_actors0_name
+WHERE this_actors0.name = $params.this_actors0_name
 WITH this, this_actors0
 OPTIONAL MATCH (this_actors0)-[:ACTED_IN]->(this_actors0_movies0:Movie)
-WHERE this_actors0_movies0.id = $this_actors0_movies0_id
+WHERE this_actors0_movies0.id = $params.this_actors0_movies0_id
 FOREACH(_ IN CASE this_actors0_movies0 WHEN NULL THEN [] ELSE [1] END |
     DETACH DELETE this_actors0_movies0
 )
@@ -185,9 +191,11 @@ DETACH DELETE this
 
 ```cypher-params
 {
-    "this_id": "123",
-    "this_actors0_name": "Actor to delete",
-    "this_actors0_movies0_id": "321"
+    "params": {
+        "this_id": "123",
+        "this_actors0_name": "Actor to delete",
+        "this_actors0_movies0_id": "321"
+    }
 }
 ```
 
@@ -226,16 +234,16 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id = $this_id
+WHERE this.id = $params.this_id
 WITH this
 OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
-WHERE this_actors0.name = $this_actors0_name
+WHERE this_actors0.name = $params.this_actors0_name
 WITH this, this_actors0
 OPTIONAL MATCH (this_actors0)-[:ACTED_IN]->(this_actors0_movies0:Movie)
-WHERE this_actors0_movies0.id = $this_actors0_movies0_id
+WHERE this_actors0_movies0.id = $params.this_actors0_movies0_id
 WITH this, this_actors0, this_actors0_movies0
 OPTIONAL MATCH (this_actors0_movies0)<-[:ACTED_IN]-(this_actors0_movies0_actors0:Actor)
-WHERE this_actors0_movies0_actors0.name = $this_actors0_movies0_actors0_name
+WHERE this_actors0_movies0_actors0.name = $params.this_actors0_movies0_actors0_name
 FOREACH(_ IN CASE this_actors0_movies0_actors0 WHEN NULL THEN [] ELSE [1] END |
     DETACH DELETE this_actors0_movies0_actors0
 )
@@ -252,10 +260,12 @@ DETACH DELETE this
 
 ```cypher-params
 {
-    "this_id": "123",
-    "this_actors0_name": "Actor to delete",
-    "this_actors0_movies0_id": "321",
-    "this_actors0_movies0_actors0_name": "Another actor to delete"
+    "params": {
+        "this_id": "123",
+        "this_actors0_name": "Actor to delete",
+        "this_actors0_movies0_id": "321",
+        "this_actors0_movies0_actors0_name": "Another actor to delete"
+    }
 }
 ```
 

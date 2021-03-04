@@ -396,7 +396,7 @@ describe("find", () => {
                 actors(actorIds: [ID]): [Actor] @cypher(
                    statement:  """
                    MATCH (a:Actor)
-                   WHERE a.id IN $actorIds
+                   WHERE a.id IN $params.actorIds
                    RETURN a
                    """
                 )

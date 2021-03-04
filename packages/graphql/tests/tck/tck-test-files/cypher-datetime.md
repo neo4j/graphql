@@ -29,7 +29,7 @@ query {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.datetime = $this_datetime
+WHERE this.datetime = $params.this_datetime
 RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time") } as this
 ```
 
@@ -37,7 +37,9 @@ RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zo
 
 ```cypher-params
 {
-    "this_datetime": "1970-01-01T00:00:00.000Z"
+    "params": {
+        "this_datetime": "1970-01-01T00:00:00.000Z"
+    }
 }
 ```
 
@@ -62,7 +64,7 @@ mutation {
 ```cypher
 CALL {
     CREATE (this0:Movie)
-    SET this0.datetime = $this0_datetime
+    SET this0.datetime = $params.this0_datetime
     RETURN this0
 }
 RETURN this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), "iso_zoned_date_time", "iso_offset_date_time") } AS this0
@@ -72,7 +74,9 @@ RETURN this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), "iso_
 
 ```cypher-params
 {
-    "this0_datetime": "1970-01-01T00:00:00.000Z"
+    "params": {
+        "this0_datetime": "1970-01-01T00:00:00.000Z"
+    }
 }
 ```
 
@@ -97,7 +101,7 @@ mutation {
 
 ```cypher
 MATCH (this:Movie)
-SET this.datetime = $this_update_datetime
+SET this.datetime = $params.this_update_datetime
 RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time") } AS this
 ```
 
@@ -105,7 +109,9 @@ RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), "i
 
 ```cypher-params
 {
-    "this_update_datetime": "1970-01-01T00:00:00.000Z"
+    "params": {
+        "this_update_datetime": "1970-01-01T00:00:00.000Z"
+    }
 }
 ```
 

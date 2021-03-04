@@ -104,13 +104,13 @@ function createProjectionAndParams({
                     const argName = `${param}_${entry[0]}`;
 
                     return {
-                        strs: [...r.strs, `${entry[0]}: $${argName}`],
+                        strs: [...r.strs, `${entry[0]}: $params.${argName}`],
                         params: { ...r.params, [argName]: entry[1] },
                     };
                 },
-                { strs: ["auth: $auth"], params: {} }
+                { strs: ["params: $params", "auth: $params.auth"], params: {} }
             ) as { strs: string[]; params: any };
-            res.params = { ...res.params, ...apocParams.params, auth: createAuthParam({ context }) };
+            res.params = { ...res.params, ...apocParams.params };
 
             const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
 

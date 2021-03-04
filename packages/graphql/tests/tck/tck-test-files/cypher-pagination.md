@@ -30,16 +30,18 @@ type Movie {
 ```cypher
 MATCH (this:Movie)
 RETURN this { .title } as this
-SKIP $this_skip
+SKIP $params.this_skip
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
 {
-    "this_skip": {
-        "high": 0,
-        "low": 1
+    "params": {
+        "this_skip": {
+            "high": 0,
+            "low": 1
+        }
     }
 }
 ```
@@ -63,16 +65,18 @@ SKIP $this_skip
 ```cypher
 MATCH (this:Movie)
 RETURN this { .title } as this
-LIMIT $this_limit
+LIMIT $params.this_limit
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
 {
-    "this_limit": {
-        "high": 0,
-        "low": 1
+    "params": {
+        "this_limit": {
+            "high": 0,
+            "low": 1
+        }
     }
 }
 ```
@@ -96,21 +100,23 @@ LIMIT $this_limit
 ```cypher
 MATCH (this:Movie)
 RETURN this { .title } as this
-SKIP $this_skip
-LIMIT $this_limit
+SKIP $params.this_skip
+LIMIT $params.this_limit
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
 {
-    "this_limit": {
-        "high": 0,
-        "low": 1
-    },
-    "this_skip": {
-        "high": 0,
-        "low": 2
+    "params": {
+        "this_limit": {
+            "high": 0,
+            "low": 1
+        },
+        "this_skip": {
+            "high": 0,
+            "low": 2
+        }
     }
 }
 ```
@@ -143,21 +149,23 @@ query($skip: Int, $limit: Int) {
 ```cypher
 MATCH (this:Movie)
 RETURN this { .title } as this
-SKIP $this_skip
-LIMIT $this_limit
+SKIP $params.this_skip
+LIMIT $params.this_limit
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
 {
-    "this_skip": {
-        "high": 0,
-        "low": 0
-    },
-    "this_limit": {
-        "high": 0,
-        "low": 0
+    "params": {
+        "this_skip": {
+            "high": 0,
+            "low": 0
+        },
+        "this_limit": {
+            "high": 0,
+            "low": 0
+        }
     }
 }
 ```
@@ -190,24 +198,26 @@ query($skip: Int, $limit: Int, $title: String) {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.title = $this_title
+WHERE this.title = $params.this_title
 RETURN this { .title } as this
-SKIP $this_skip
-LIMIT $this_limit
+SKIP $params.this_skip
+LIMIT $params.this_limit
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
 {
-    "this_limit": {
-        "high": 0,
-        "low": 1
-    },
-    "this_skip": {
-        "high": 0,
-        "low": 2
-    },
-    "this_title": "some title"
+    "params": {
+        "this_limit": {
+            "high": 0,
+            "low": 1
+        },
+        "this_skip": {
+            "high": 0,
+            "low": 2
+        },
+        "this_title": "some title"
+    }
 }
 ```

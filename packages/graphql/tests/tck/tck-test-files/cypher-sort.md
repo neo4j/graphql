@@ -37,7 +37,11 @@ RETURN this { .title } as this
 **Expected Cypher params**
 
 ```cypher-params
-{}
+{
+    "params": {
+
+    }
+}
 ```
 
 ---
@@ -66,7 +70,11 @@ RETURN this { .title } as this
 **Expected Cypher params**
 
 ```cypher-params
-{}
+{
+    "params": {
+
+    }
+}
 ```
 
 ---
@@ -101,26 +109,28 @@ query($title: String, $skip: Int, $limit: Int, $sort: [MovieSort]) {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.title = $this_title
+WHERE this.title = $params.this_title
 WITH this
 ORDER BY this.id DESC, this.title ASC
 RETURN this { .title } as this
-SKIP $this_skip
-LIMIT $this_limit
+SKIP $params.this_skip
+LIMIT $params.this_limit
 ```
 
 **Expected Cypher params**
 
 ```cypher-params
 {
-    "this_limit": {
-        "high": 0,
-        "low": 2
-    },
-    "this_skip": {
-        "high": 0,
-        "low": 1
-    },
-    "this_title": "some title"
+    "params": {
+        "this_limit": {
+            "high": 0,
+            "low": 2
+        },
+        "this_skip": {
+            "high": 0,
+            "low": 1
+        },
+        "this_title": "some title"
+    }
 }
 ```

@@ -40,8 +40,8 @@ query($title: String, $isFavorite: Boolean) {
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.title = $this_title
-AND this.isFavorite = $this_isFavorite
+WHERE this.title = $params.this_title
+AND this.isFavorite = $params.this_isFavorite
 RETURN this { .title } as this
 ```
 
@@ -49,8 +49,10 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this_title": "some title",
-    "this_isFavorite": true
+    "params": {
+        "this_title": "some title",
+        "this_isFavorite": true
+    }
 }
 ```
 
@@ -72,7 +74,7 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE (this.title = $this_AND_title)
+WHERE (this.title = $params.this_AND_title)
 RETURN this { .title } as this
 ```
 
@@ -80,7 +82,9 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this_AND_title": "some title"
+    "params": {
+        "this_AND_title": "some title"
+    }
 }
 ```
 
@@ -102,7 +106,7 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE ((this.title = $this_AND_AND_title))
+WHERE ((this.title = $params.this_AND_AND_title))
 RETURN this { .title } as this
 ```
 
@@ -110,7 +114,9 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this_AND_AND_title": "some title"
+    "params": {
+        "this_AND_AND_title": "some title"
+    }
 }
 ```
 
@@ -132,7 +138,7 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE (((this.title = $this_AND_AND_AND_title)))
+WHERE (((this.title = $params.this_AND_AND_AND_title)))
 RETURN this { .title } as this
 ```
 
@@ -140,7 +146,9 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this_AND_AND_AND_title": "some title"
+    "params": {
+        "this_AND_AND_AND_title": "some title"
+    }
 }
 ```
 
@@ -162,7 +170,7 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE (this.title = $this_OR_title)
+WHERE (this.title = $params.this_OR_title)
 RETURN this { .title } as this
 ```
 
@@ -170,7 +178,9 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this_OR_title": "some title"
+    "params": {
+        "this_OR_title": "some title"
+    }
 }
 ```
 
@@ -192,7 +202,7 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE ((this.title = $this_OR_OR_title))
+WHERE ((this.title = $params.this_OR_OR_title))
 RETURN this { .title } as this
 ```
 
@@ -200,7 +210,9 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this_OR_OR_title": "some title"
+    "params": {
+        "this_OR_OR_title": "some title"
+    }
 }
 ```
 
@@ -222,7 +234,7 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE (((this.title = $this_OR_OR_OR_title)))
+WHERE (((this.title = $params.this_OR_OR_OR_title)))
 RETURN this { .title } as this
 ```
 
@@ -230,7 +242,9 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this_OR_OR_OR_title": "some title"
+    "params": {
+        "this_OR_OR_OR_title": "some title"
+    }
 }
 ```
 
@@ -252,7 +266,7 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.title IN $this_title_IN
+WHERE this.title IN $params.this_title_IN
 RETURN this { .title } as this
 ```
 
@@ -260,7 +274,9 @@ RETURN this { .title } as this
 
 ```cypher-params
 {
-    "this_title_IN": ["some title"]
+    "params": {
+        "this_title_IN": ["some title"]
+    }
 }
 ```
 
