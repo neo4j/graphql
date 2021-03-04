@@ -133,7 +133,7 @@ LIMIT $this_limit
 
 ---
 
-### Nested Sort
+### Nested Sort DESC
 
 **GraphQL input**
 
@@ -153,6 +153,37 @@ LIMIT $this_limit
 MATCH (this:Movie)
 RETURN this {
     genres: apoc.coll.sortMulti([ (this)-[:HAS_GENRE]->(this_genres:Genre) | this_genres { .name } ], ['name'])
+} as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{}
+```
+
+---
+
+### Nested Sort ASC
+
+**GraphQL input**
+
+```graphql
+{
+    movies {
+        genres(options: { sort: [name_ASC] }) {
+            name
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+RETURN this {
+    genres: apoc.coll.sortMulti([ (this)-[:HAS_GENRE]->(this_genres:Genre) | this_genres { .name } ], ['^name'])
 } as this
 ```
 
