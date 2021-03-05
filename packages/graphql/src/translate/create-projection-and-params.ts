@@ -92,7 +92,7 @@ function createProjectionAndParams({
                     varName: `${varName}_${key}`,
                     chainStr: param,
                 });
-                projectionStr = recurse[0];
+                [projectionStr] = recurse;
                 res.params = { ...res.params, ...recurse[1] };
                 if (recurse[2]?.authStrs.length) {
                     projectionAuthStr = recurse[2].authStrs.join(" AND ");
@@ -151,7 +151,7 @@ function createProjectionAndParams({
             if (relationField.union) {
                 const referenceNodes = context.neoSchema.nodes.filter((x) =>
                     relationField.union?.nodes?.includes(x.name)
-                ) as Node[];
+                );
 
                 const unionStrs: string[] = [
                     `${key}: ${!isArray ? "head(" : ""} [(${
@@ -275,7 +275,7 @@ function createProjectionAndParams({
                     node,
                     context,
                 });
-                whereStr = where[0];
+                [whereStr] = where;
                 res.params = { ...res.params, ...where[1] };
             }
 
@@ -300,7 +300,7 @@ function createProjectionAndParams({
                 varName: `${varName}_${key}`,
                 chainStr: param,
             });
-            projectionStr = recurse[0];
+            [projectionStr] = recurse;
             res.params = { ...res.params, ...recurse[1] };
             if (recurse[2]?.authStrs.length) {
                 authStrs = [...authStrs, ...recurse[2].authStrs];
@@ -398,7 +398,7 @@ function createProjectionAndParams({
             projection: [],
             params: {},
         }
-    ) as Res;
+    );
 
     return [`{ ${projection.join(", ")} }`, params, meta];
 }

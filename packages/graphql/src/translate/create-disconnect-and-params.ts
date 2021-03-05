@@ -81,7 +81,7 @@ function createDisconnectAndParams({
                 return result;
             },
             { disconnects: [], params: {} }
-        ) as Res;
+        );
 
         if (preAuth.disconnects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
@@ -129,7 +129,7 @@ function createDisconnectAndParams({
                             relationField: relField as RelationField,
                             parentVar: _varName,
                             context,
-                            refNode: newRefNode as Node,
+                            refNode: newRefNode,
                             parentNode: refNode,
                         });
                         r.disconnects.push(recurse[0]);
@@ -138,7 +138,7 @@ function createDisconnectAndParams({
                         return r;
                     },
                     { disconnects: [], params: {} }
-                ) as Res;
+                );
 
                 res.disconnects.push(reduced.disconnects.join("\n"));
                 res.params = { ...res.params, ...reduced.params };
@@ -171,7 +171,7 @@ function createDisconnectAndParams({
                 return result;
             },
             { disconnects: [], params: {} }
-        ) as Res;
+        );
 
         if (postAuth.disconnects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;

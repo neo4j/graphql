@@ -148,7 +148,7 @@ describe("createAuthAndParams", () => {
             });
         });
 
-        test("should showcase the default AND default behavior of the keys in the rule", async () => {
+        test("should showcase the default AND default behavior of the keys in the rule", () => {
             const idField = {
                 fieldName: "id",
                 typeMeta: {

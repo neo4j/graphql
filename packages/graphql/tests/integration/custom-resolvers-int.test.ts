@@ -64,9 +64,9 @@ describe("Custom Resolvers", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).createMovies.movies[0] as any).toEqual({
+            expect((gqlResult.data as any).createMovies.movies[0]).toEqual({
                 id,
-                custom: (id as string).toUpperCase(),
+                custom: id.toUpperCase(),
             });
         } finally {
             await session.close();
@@ -178,6 +178,7 @@ describe("Custom Resolvers", () => {
             resolvers: {
                 Subscription: {
                     id: {
+                        // eslint-disable-next-line @typescript-eslint/require-await
                         async *subscribe() {
                             yield { id };
                         },
@@ -344,29 +345,29 @@ describe("Custom Resolvers", () => {
 
                         expect(gqlResult.errors).toBeFalsy();
 
+                        let expected: any;
+
                         if (type === "ID") {
-                            expect((gqlResult.data as any).test as any).toEqual(id);
+                            expected = id;
+                        }
+
+                        if (type === "Object" || type === "Node") {
+                            expected = { id };
                         }
 
                         if (type === "Int") {
-                            expect((gqlResult.data as any).test as any).toEqual(int);
+                            expected = int;
                         }
 
                         if (type === "Float") {
-                            expect((gqlResult.data as any).test as any).toEqual(float);
+                            expected = float;
                         }
 
                         if (type === "Boolean") {
-                            expect((gqlResult.data as any).test as any).toEqual(bool);
+                            expected = bool;
                         }
 
-                        if (type === "Object") {
-                            expect((gqlResult.data as any).test.id as any).toEqual(id);
-                        }
-
-                        if (type === "Node") {
-                            expect((gqlResult.data as any).test.id as any).toEqual(id);
-                        }
+                        expect((gqlResult.data as any).test).toEqual(expected);
                     } finally {
                         await session.close();
                     }
@@ -412,7 +413,7 @@ describe("Custom Resolvers", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult.data as any).test as any).toEqual(id + id);
+                expect((gqlResult.data as any).test).toEqual(`${id}${id}`);
             } finally {
                 await session.close();
             }
@@ -456,7 +457,7 @@ describe("Custom Resolvers", () => {
                             contextValue: { driver, req },
                         });
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any).userId).toEqual(userId);
                     } finally {
@@ -504,7 +505,7 @@ describe("Custom Resolvers", () => {
                             contextValue: { driver, req },
                         });
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any).userId).toEqual(userId);
                     } finally {
@@ -553,11 +554,11 @@ describe("Custom Resolvers", () => {
 
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
-                        source: query as string,
+                        source: query,
                         contextValue: { driver, req },
                     });
 
-                    expect(gqlResult.errors).toEqual(undefined);
+                    expect(gqlResult.errors).toBeUndefined();
 
                     expect((gqlResult.data as any).users[0].userId).toEqual(userId);
                 } finally {
@@ -567,3 +568,4 @@ describe("Custom Resolvers", () => {
         });
     });
 });
+/* eslint-enable */

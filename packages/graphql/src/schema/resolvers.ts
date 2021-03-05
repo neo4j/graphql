@@ -120,7 +120,7 @@ export function createResolver({ node, neoSchema }: { node: Node; neoSchema: Neo
         });
 
         return {
-            [pluralize(camelCase(node.name))]: Object.values((result[0] || {}) as any),
+            [pluralize(camelCase(node.name))]: Object.values(result[0] || {}),
         };
     }
 
@@ -210,6 +210,7 @@ export function cypherResolver({
         });
 
         const values = result.records.map((record) => {
+            // eslint-disable-next-line no-underscore-dangle
             const value = record._fields[0];
 
             if (["number", "string", "boolean"].includes(typeof value)) {

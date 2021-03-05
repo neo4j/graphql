@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import Model, { ModelConstructor } from "../../../src/classes/Model";
 
 describe("Model", () => {

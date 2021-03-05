@@ -1,4 +1,3 @@
-/* eslint-disable default-case */
 import { FieldDefinitionNode, InputValueDefinitionNode, TypeNode } from "graphql";
 import { TypeMeta } from "../types";
 
@@ -9,6 +8,7 @@ function getName(type: TypeNode): string {
 function getPrettyName(type: TypeNode): string {
     let result: string;
 
+    // eslint-disable-next-line default-case
     switch (type.kind) {
         case "NamedType":
             result = type.name.value;

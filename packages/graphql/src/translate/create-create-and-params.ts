@@ -138,7 +138,7 @@ function createCreateAndParams({
     let { creates, params, meta } = Object.entries(input).reduce(reducer, {
         creates: initial,
         params: {},
-    }) as Res;
+    });
 
     const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
 

@@ -1,4 +1,5 @@
-import { Neo4jGraphQL } from "@neo4j/graphql";
+// @ts-ignore
+import { Neo4jGraphQL } from "@neo4j/graphql"; // eslint-disable-line import/no-unresolved
 
 // Augment schema with simple typeDefs input
 const typeDefs = `type Movie{ id: ID!}`;

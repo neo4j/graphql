@@ -25,20 +25,12 @@ export type TestCase = {
     file: string;
 };
 
-export function generateTestCasesFromMd(dir: string): TestCase[] {
-    const files = fs.readdirSync(dir, { withFileTypes: true }).reduce((res: TestCase[], item) => {
-        if (item.isFile()) {
-            return [...res, generateTests(path.join(dir, item.name))];
-        }
-
-        if (item.isDirectory()) {
-            return [...res, ...generateTestCasesFromMd(path.join(dir, item.name))];
-        }
-
-        return res;
-    }, []) as TestCase[];
-
-    return files;
+function captureOrEmptyString(contents: string, re: RegExp): string {
+    const m = re.exec(contents);
+    if (m?.groups?.capture) {
+        return m.groups.capture.trim();
+    }
+    return "";
 }
 
 const nameRe = /###(?<capture>([^\n]+))/;
@@ -49,30 +41,6 @@ const cypherParamsRe = /```cypher-params(?<capture>(.|\s)*?)```/;
 const typeDefsInputRe = /```typedefs-input(?<capture>(.|\s)*?)```/;
 const schemaOutputRe = /```schema-output(?<capture>(.|\s)*?)```/;
 const jwtRe = /```jwt(?<capture>(.|\s)*?)```/;
-
-function generateTests(filePath): TestCase {
-    const data = fs.readFileSync(filePath, { encoding: "utf8" });
-    const file = path.basename(filePath);
-    const [kind] = file.split("-") as [Kind];
-
-    const out: TestCase = {
-        kind,
-        tests: extractTests(data.toString(), kind),
-        file,
-    };
-
-    if (kind === "cypher") {
-        out.schema = extractSchema(data.toString());
-    }
-
-    return out;
-}
-
-function extractSchema(contents: string): string {
-    // eslint-disable-next-line
-    const re = /```schema(?<capture>(.|\s)*?)```/;
-    return captureOrEmptyString(contents, re);
-}
 
 function extractTests(contents: string, kind: Kind): Test[] {
     // Strip head of file
@@ -124,10 +92,41 @@ function extractTests(contents: string, kind: Kind): Test[] {
         .filter((t) => t.name);
 }
 
-function captureOrEmptyString(contents: string, re: RegExp): string {
-    const m = contents.match(re);
-    if (m?.groups?.capture) {
-        return m.groups.capture.trim();
+function extractSchema(contents: string): string {
+    const re = /```schema(?<capture>(.|\s)*?)```/;
+    return captureOrEmptyString(contents, re);
+}
+
+function generateTests(filePath): TestCase {
+    const data = fs.readFileSync(filePath, { encoding: "utf8" });
+    const file = path.basename(filePath);
+    const [kind] = file.split("-") as [Kind];
+
+    const out: TestCase = {
+        kind,
+        tests: extractTests(data.toString(), kind),
+        file,
+    };
+
+    if (kind === "cypher") {
+        out.schema = extractSchema(data.toString());
     }
-    return "";
+
+    return out;
+}
+
+export function generateTestCasesFromMd(dir: string): TestCase[] {
+    const files = fs.readdirSync(dir, { withFileTypes: true }).reduce((res: TestCase[], item) => {
+        if (item.isFile()) {
+            return [...res, generateTests(path.join(dir, item.name))];
+        }
+
+        if (item.isDirectory()) {
+            return [...res, ...generateTestCasesFromMd(path.join(dir, item.name))];
+        }
+
+        return res;
+    }, []);
+
+    return files;
 }

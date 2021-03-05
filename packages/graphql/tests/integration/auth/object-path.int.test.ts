@@ -74,7 +74,7 @@ describe("auth/object-path", () => {
                 contextValue: { driver, req },
             });
 
-            expect(gqlResult.errors).toEqual(undefined);
+            expect(gqlResult.errors).toBeUndefined();
 
             const [user] = (gqlResult.data as any).users;
             expect(user).toEqual({ id: userId });
@@ -139,7 +139,7 @@ describe("auth/object-path", () => {
                 contextValue: { driver, req, userId },
             });
 
-            expect(gqlResult.errors).toEqual(undefined);
+            expect(gqlResult.errors).toBeUndefined();
 
             const [post] = (gqlResult.data as any).posts;
             expect(post).toEqual({ id: postId });
@@ -195,7 +195,7 @@ describe("auth/object-path", () => {
                 contextValue: { driver, req },
             });
 
-            expect(gqlResult.errors).toEqual(undefined);
+            expect(gqlResult.errors).toBeUndefined();
             const [user] = (gqlResult.data as any).users;
 
             expect(user).toEqual({ id: userId });

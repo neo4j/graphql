@@ -2,7 +2,6 @@ import camelCase from "camelcase";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
-    DirectiveNode,
     EnumTypeDefinitionNode,
     GraphQLSchema,
     InputObjectTypeDefinitionNode,
@@ -94,7 +93,7 @@ function makeAugmentedSchema(
 
         const otherDirectives = (definition.directives || []).filter(
             (x) => !["auth", "exclude"].includes(x.name.value)
-        ) as DirectiveNode[];
+        );
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
@@ -359,7 +358,7 @@ function makeAugmentedSchema(
 
         node.relationFields.forEach((rel) => {
             if (rel.union) {
-                const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name)) as Node[];
+                const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
 
                 composeNode.addFields({
                     [rel.fieldName]: {
@@ -684,6 +683,7 @@ function makeAugmentedSchema(
     }
 
     unions.forEach((union) => {
+        // eslint-disable-next-line no-underscore-dangle
         generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
     });
 
