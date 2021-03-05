@@ -8,6 +8,12 @@ Schema:
 type Movie {
     id: ID
     title: String
+    genres: [Genre] @relationship(type: "HAS_GENRE", direction: "OUT")
+}
+
+type Genre {
+    id: ID
+    name: String
 }
 ```
 
@@ -124,3 +130,67 @@ LIMIT $this_limit
     "this_title": "some title"
 }
 ```
+
+---
+
+### Nested Sort DESC
+
+**GraphQL input**
+
+```graphql
+{
+    movies {
+        genres(options: { sort: [name_DESC] }) {
+            name
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+RETURN this {
+    genres: apoc.coll.sortMulti([ (this)-[:HAS_GENRE]->(this_genres:Genre) | this_genres { .name } ], ['name'])
+} as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{}
+```
+
+---
+
+### Nested Sort ASC
+
+**GraphQL input**
+
+```graphql
+{
+    movies {
+        genres(options: { sort: [name_ASC] }) {
+            name
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+RETURN this {
+    genres: apoc.coll.sortMulti([ (this)-[:HAS_GENRE]->(this_genres:Genre) | this_genres { .name } ], ['^name'])
+} as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{}
+```
+
+---
