@@ -16,6 +16,15 @@
 
     <d:tocentry linkend="schema">
       <?dbhtml filename="schema/index.html"?>
+      <d:tocentry linkend="schema-basics">
+        <?dbhtml filename="schema/basics/index.html"?>
+      </d:tocentry>
+      <d:tocentry linkend="schema-directives">
+        <?dbhtml filename="schema/directives/index.html"?>
+      </d:tocentry>
+      <d:tocentry linkend="schema-types">
+        <?dbhtml filename="schema/types/index.html"?>
+      </d:tocentry>
     </d:tocentry>
 
     <d:tocentry linkend="operations">
