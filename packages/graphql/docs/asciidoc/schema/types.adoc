@@ -1,0 +1,10 @@
+[[schema-types]]
+= Types
+
+== `DateTime`
+
+
+== `Point`
+
+
+== `CartesianPoint`
