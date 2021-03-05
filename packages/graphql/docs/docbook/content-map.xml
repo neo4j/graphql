@@ -1,29 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <d:toc xmlns:d="http://docbook.org/ns/docbook" xmlns="http://www.w3.org/1999/xhtml" role="chunk-toc">
-  <d:tocentry linkend="graphql"><?dbhtml filename="index.html"?>
-    <d:tocentry linkend="introduction"><?dbhtml filename="introduction/index.html"?>
+  <d:tocentry linkend="graphql">
+    <?dbhtml filename="index.html"?>
+    <d:tocentry linkend="introduction">
+      <?dbhtml filename="introduction/index.html"?>
     </d:tocentry>
 
-    <d:tocentry linkend="getting-started"><?dbhtml filename="getting-started/index.html"?>
+    <d:tocentry linkend="getting-started">
+      <?dbhtml filename="getting-started/index.html"?>
     </d:tocentry>
 
-    <d:tocentry linkend="api-reference"><?dbhtml filename="api-reference/index.html"?>
+    <d:tocentry linkend="api-reference">
+      <?dbhtml filename="api-reference/index.html"?>
     </d:tocentry>
 
-    <d:tocentry linkend="schema"><?dbhtml filename="schema/index.html"?>
+    <d:tocentry linkend="schema">
+      <?dbhtml filename="schema/index.html"?>
     </d:tocentry>
 
-    <d:tocentry linkend="operations"><?dbhtml filename="operations/index.html"?>
+    <d:tocentry linkend="operations">
+      <?dbhtml filename="operations/index.html"?>
+      <d:tocentry linkend="operations-read">
+        <?dbhtml filename="operations/read/index.html"?>
+      </d:tocentry>
+      <d:tocentry linkend="operations-create">
+        <?dbhtml filename="operations/create/index.html"?>
+      </d:tocentry>
+      <d:tocentry linkend="operations-update">
+        <?dbhtml filename="operations/update/index.html"?>
+      </d:tocentry>
+      <d:tocentry linkend="operations-delete">
+        <?dbhtml filename="operations/delete/index.html"?>
+      </d:tocentry>
+      <d:tocentry linkend="operations-connect">
+        <?dbhtml filename="operations/connect/index.html"?>
+      </d:tocentry>
+      <d:tocentry linkend="operations-disconnect">
+        <?dbhtml filename="operations/disconnect/index.html"?>
+      </d:tocentry>
     </d:tocentry>
 
-    <d:tocentry linkend="auth"><?dbhtml filename="auth/index.html"?>
+    <d:tocentry linkend="auth">
+      <?dbhtml filename="auth/index.html"?>
     </d:tocentry>
 
-    <d:tocentry linkend="ogm"><?dbhtml filename="ogm/index.html"?>
+    <d:tocentry linkend="ogm">
+      <?dbhtml filename="ogm/index.html"?>
     </d:tocentry>
 
-
-     <d:tocentry linkend="connections-config-drivers"><?dbhtml filename="connections-config-drivers/index.html"?>
+    <d:tocentry linkend="connections-config-drivers">
+      <?dbhtml filename="connections-config-drivers/index.html"?>
     </d:tocentry>
   </d:tocentry>
 </d:toc>
