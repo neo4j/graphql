@@ -1,19 +1,19 @@
-## Monorepo for Neo4j GraphQL
+# Neo4j GraphQL
 
-### Installation
+## Installation
 
-```
+```sh
 npm ci
 ```
 
-### Testing
+## Testing
 
-```
+```sh
 npm test
 ```
 
-### Linting
+## Linting
 
-```
+```sh
 npm run lint
 ```

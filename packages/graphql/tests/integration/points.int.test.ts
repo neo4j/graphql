@@ -23,8 +23,8 @@ describe("[Point]", () => {
         server = constructTestServer(neoSchema, driver);
     });
 
-    beforeEach(async () => {
-        session = await driver.session();
+    beforeEach(() => {
+        session = driver.session();
     });
 
     afterEach(async () => {
@@ -63,7 +63,7 @@ describe("[Point]", () => {
         const gqlResult = await mutate({ mutation: create, variables: { id, waypoints } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).createRoutes.routes[0]).toEqual({
+        expect(gqlResult.data.createRoutes.routes[0]).toEqual({
             id,
             waypoints: waypoints.map((waypoint) => ({ ...waypoint, height: null, crs: "wgs-84" })),
         });
@@ -115,7 +115,7 @@ describe("[Point]", () => {
         const gqlResult = await mutate({ mutation: create, variables: { id, waypoints } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).createRoutes.routes[0]).toEqual({
+        expect(gqlResult.data.createRoutes.routes[0]).toEqual({
             id,
             waypoints: waypoints.map((waypoint) => ({ ...waypoint, crs: "wgs-84-3d" })),
         });
@@ -198,7 +198,7 @@ describe("[Point]", () => {
         const gqlResult = await mutate({ mutation: update, variables: { id, waypoints: newWaypoints } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).updateRoutes.routes[0]).toEqual({
+        expect(gqlResult.data.updateRoutes.routes[0]).toEqual({
             id,
             waypoints: newWaypoints.map((waypoint) => ({ ...waypoint, height: null, crs: "wgs-84" })),
         });
@@ -283,7 +283,7 @@ describe("[Point]", () => {
         const gqlResult = await mutate({ mutation: update, variables: { id, waypoints: newWaypoints } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).updateRoutes.routes[0]).toEqual({
+        expect(gqlResult.data.updateRoutes.routes[0]).toEqual({
             id,
             waypoints: newWaypoints.map((waypoint) => ({ ...waypoint, crs: "wgs-84-3d" })),
         });
@@ -350,7 +350,7 @@ describe("[Point]", () => {
         const routesResult = await query({ query: routesQuery, variables: { waypoints } });
 
         expect(routesResult.errors).toBeFalsy();
-        expect((routesResult.data as any).routes[0]).toEqual({
+        expect(routesResult.data.routes[0]).toEqual({
             id,
             waypoints: waypoints.map((waypoint) => ({ ...waypoint, height: null, crs: "wgs-84" })),
         });
@@ -373,7 +373,7 @@ describe("[Point]", () => {
         const routesInResult = await query({ query: routesInQuery, variables: { waypoint: waypoints[0] } });
 
         expect(routesInResult.errors).toBeFalsy();
-        expect((routesInResult.data as any).routes[0]).toEqual({
+        expect(routesInResult.data.routes[0]).toEqual({
             id,
             waypoints: waypoints.map((waypoint) => ({ ...waypoint, height: null, crs: "wgs-84" })),
         });
@@ -404,7 +404,7 @@ describe("[Point]", () => {
         });
 
         expect(routesNotInResult.errors).toBeFalsy();
-        expect((routesNotInResult.data as any).routes).toContainEqual({
+        expect(routesNotInResult.data.routes).toContainEqual({
             id,
             waypoints: waypoints.map((waypoint) => ({ ...waypoint, height: null, crs: "wgs-84" })),
         });
@@ -452,7 +452,7 @@ describe("[Point]", () => {
         const gqlResult = await query({ query: routesQuery, variables: { id } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).routes[0]).toEqual({
+        expect(gqlResult.data.routes[0]).toEqual({
             id,
             waypoints: waypoints.map((waypoint) => ({ ...waypoint, crs: "wgs-84-3d" })),
         });

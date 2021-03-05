@@ -74,19 +74,19 @@ function createAuthPredicate({
             const authableField = node.authableFields.find((field) => field.fieldName === key);
             if (authableField) {
                 const jwt = context.getJWTSafe();
-                const _param = `${chainStr}_${key}`;
+                const param = `${chainStr}_${key}`;
                 const [, jwtPath] = (value as string).split("$jwt.");
                 const [, ctxPath] = (value as string).split("$context.");
                 const existsStr = `EXISTS(${varName}.${key})`;
 
                 if (jwtPath) {
-                    res.params[_param] = dotProp.get({ value: jwt }, `value.${jwtPath}`);
-                    res.strs.push(`${existsStr} AND ${varName}.${key} = $${_param}`);
+                    res.params[param] = dotProp.get({ value: jwt }, `value.${jwtPath}`);
+                    res.strs.push(`${existsStr} AND ${varName}.${key} = $${param}`);
                 }
 
                 if (ctxPath) {
-                    res.params[_param] = dotProp.get({ value: context.graphQLContext }, `value.${ctxPath}`);
-                    res.strs.push(`${existsStr} AND ${varName}.${key} = $${_param}`);
+                    res.params[param] = dotProp.get({ value: context.graphQLContext }, `value.${ctxPath}`);
+                    res.strs.push(`${existsStr} AND ${varName}.${key} = $${param}`);
                 }
             }
 
@@ -107,7 +107,7 @@ function createAuthPredicate({
                     }) | ${relationVarName}] WHERE `,
                 ].join(" ");
 
-                Object.entries(value as any).forEach(([k, v]: [string, any]) => {
+                Object.entries(value).forEach(([k, v]: [string, any]) => {
                     const authPredicate = createAuthPredicate({
                         node: refNode,
                         context,
@@ -126,7 +126,7 @@ function createAuthPredicate({
             return res;
         },
         { params: {}, strs: [] }
-    ) as Res;
+    );
 
     return [result.strs.join(" AND "), result.params];
 }
@@ -257,7 +257,7 @@ function createAuthAndParams({
             };
         },
         { strs: [], params: {} }
-    ) as Res;
+    );
 
     return [subPredicates.strs.filter(Boolean).join(" OR "), subPredicates.params];
 }

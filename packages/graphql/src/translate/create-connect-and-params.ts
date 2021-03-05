@@ -78,7 +78,7 @@ function createConnectAndParams({
                 return result;
             },
             { connects: [], params: {} }
-        ) as Res;
+        );
 
         if (preAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
@@ -124,7 +124,7 @@ function createConnectAndParams({
                             relationField: relField as RelationField,
                             parentVar: _varName,
                             context,
-                            refNode: newRefNode as Node,
+                            refNode: newRefNode,
                             parentNode: refNode,
                         });
                         r.connects.push(recurse[0]);
@@ -133,7 +133,7 @@ function createConnectAndParams({
                         return r;
                     },
                     { connects: [], params: {} }
-                ) as Res;
+                );
 
                 res.connects.push(reduced.connects.join("\n"));
                 res.params = { ...res.params, ...reduced.params };
@@ -166,7 +166,7 @@ function createConnectAndParams({
                 return result;
             },
             { connects: [], params: {} }
-        ) as Res;
+        );
 
         if (postAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;

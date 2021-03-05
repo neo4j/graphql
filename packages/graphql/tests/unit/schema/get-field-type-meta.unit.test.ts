@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { parse, ObjectTypeDefinitionNode } from "graphql";
 import getFieldTypeMeta from "../../../src/schema/get-field-type-meta";
 

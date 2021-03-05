@@ -111,7 +111,7 @@ function createDeleteAndParams({
         return res;
     }
 
-    const { strs, params } = Object.entries(deleteInput).reduce(reducer, { strs: [], params: {} }) as Res;
+    const { strs, params } = Object.entries(deleteInput).reduce(reducer, { strs: [], params: {} });
 
     return [strs.join("\n"), params];
 }

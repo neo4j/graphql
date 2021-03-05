@@ -75,11 +75,11 @@ describe("unions", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            const movies = (gqlResult.data as any).movies[0] as any;
+            const movies = (gqlResult.data as any).movies[0];
 
-            const movieSearch = movies.search.find((x) => x.__typename === "Movie");
+            const movieSearch = movies.search.find((x) => x.__typename === "Movie"); // eslint-disable-line no-underscore-dangle
             expect(movieSearch.title).toEqual(movieTitle);
-            const genreSearch = movies.search.find((x) => x.__typename === "Genre");
+            const genreSearch = movies.search.find((x) => x.__typename === "Genre"); // eslint-disable-line no-underscore-dangle
             expect(genreSearch.name).toEqual(genreName);
         } finally {
             await session.close();
@@ -146,7 +146,7 @@ describe("unions", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).createMovies.movies[0] as any).toMatchObject({
+            expect((gqlResult.data as any).createMovies.movies[0]).toMatchObject({
                 title: movieTitle,
                 search: [{ __typename: "Genre", name: genreName }],
             });
@@ -219,7 +219,7 @@ describe("unions", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).createMovies.movies[0] as any).toMatchObject({
+            expect((gqlResult.data as any).createMovies.movies[0]).toMatchObject({
                 title: movieTitle,
                 search: [{ __typename: "Genre", name: genreName }],
             });
@@ -299,7 +299,7 @@ describe("unions", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).updateMovies.movies[0] as any).toMatchObject({
+            expect((gqlResult.data as any).updateMovies.movies[0]).toMatchObject({
                 title: movieTitle,
                 search: [{ __typename: "Genre", name: newGenreName }],
             });
@@ -374,7 +374,7 @@ describe("unions", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).updateMovies.movies[0] as any).toMatchObject({
+            expect((gqlResult.data as any).updateMovies.movies[0]).toMatchObject({
                 title: movieTitle,
                 search: [],
             });

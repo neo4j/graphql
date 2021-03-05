@@ -1,5 +1,5 @@
 // Import using commonJS
-// eslint-disable-next-line @typescript-eslint/no-var-requires,import/no-unresolved
+// eslint-disable-next-line import/no-unresolved
 const { Neo4jGraphQL } = require("@neo4j/graphql");
 
 // Augment schema with simple typeDefs input

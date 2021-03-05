@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import camelCase from "camelcase";
 import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
@@ -73,13 +72,13 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any).movies.length).toEqual(1);
+                        expect((gqlResult.data as any).movies).toHaveLength(1);
 
                         expect((gqlResult.data as any).movies[0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -114,7 +113,7 @@ describe("Advanced Filtering", () => {
                             `
                             CREATE (:${randomType} {property: $value})
                         `,
-                            { value: value + value }
+                            { value: `${value}${value}` }
                         );
 
                         const query = `
@@ -135,13 +134,13 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
 
-                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value + value);
+                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(`${value}${value}`);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -203,13 +202,13 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
 
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -277,13 +276,13 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
 
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -313,7 +312,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     });
 
-                    const superValue = value + value;
+                    const superValue = `${value}${value}`;
 
                     try {
                         await session.run(
@@ -343,13 +342,13 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(3);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(3);
 
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(superValue);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -412,13 +411,13 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
 
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -448,7 +447,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     });
 
-                    const superValue = value + value;
+                    const superValue = `${value}${value}`;
 
                     try {
                         await session.run(
@@ -478,15 +477,15 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(3);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(3);
 
                         ((gqlResult.data as any)[pluralRandomType] as any[]).forEach((x) => {
                             expect(x.property).toEqual(superValue);
                         });
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -549,11 +548,11 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -588,7 +587,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     });
 
-                    const superValue = value + value;
+                    const superValue = `${value}${value}`;
 
                     try {
                         await session.run(
@@ -618,11 +617,11 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(2);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(2);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -657,7 +656,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     });
 
-                    const superValue = value + value;
+                    const superValue = `${value}${value}`;
 
                     try {
                         await session.run(
@@ -687,12 +686,12 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(notValue);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -762,12 +761,12 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(property);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -842,12 +841,12 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -924,12 +923,12 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -991,12 +990,12 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(lessThanValue);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -1058,11 +1057,11 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(2);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(2);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -1124,12 +1123,12 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(graterThanValue);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -1191,11 +1190,11 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(2);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(2);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -1248,11 +1247,11 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
                 }
 
-                expect(gqlResult.errors).toEqual(undefined);
+                expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
             } finally {
-                session.close();
+                await session.close();
             }
         });
 
@@ -1301,11 +1300,11 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
                 }
 
-                expect(gqlResult.errors).toEqual(undefined);
+                expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[pluralRandomType].length).toEqual(0);
+                expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(0);
             } finally {
-                session.close();
+                await session.close();
             }
         });
     });
@@ -1383,15 +1382,15 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
                 }
 
-                expect(gqlResult.errors).toEqual(undefined);
+                expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[pluralRandomType1].length).toEqual(1);
+                expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
                 expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
                     id: rootId,
                     [pluralRandomType2]: [{ id: relationId }],
                 });
             } finally {
-                session.close();
+                await session.close();
             }
         });
 
@@ -1470,15 +1469,15 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
                 }
 
-                expect(gqlResult.errors).toEqual(undefined);
+                expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[pluralRandomType1].length).toEqual(1);
+                expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
                 expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
                     id: rootId1,
                     [pluralRandomType2]: [{ id: relationId1 }],
                 });
             } finally {
-                session.close();
+                await session.close();
             }
         });
 
@@ -1557,9 +1556,9 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
                 }
 
-                expect(gqlResult.errors).toEqual(undefined);
+                expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[pluralRandomType1].length).toEqual(2);
+                expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(2);
                 expect((gqlResult.data as any)[pluralRandomType1]).toMatchObject([
                     {
                         id: rootId1,
@@ -1571,7 +1570,7 @@ describe("Advanced Filtering", () => {
                     },
                 ]);
             } finally {
-                session.close();
+                await session.close();
             }
         });
 
@@ -1650,9 +1649,9 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
                 }
 
-                expect(gqlResult.errors).toEqual(undefined);
+                expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[pluralRandomType1].length).toEqual(1);
+                expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
                 expect((gqlResult.data as any)[pluralRandomType1]).toMatchObject([
                     {
                         id: rootId1,
@@ -1660,11 +1659,11 @@ describe("Advanced Filtering", () => {
                     },
                 ]);
             } finally {
-                session.close();
+                await session.close();
             }
         });
 
-        test("should find relationship equality", async () => {
+        test("should test for not null", async () => {
             const session = driver.session();
 
             const randomType1 = `${generate({
@@ -1735,9 +1734,9 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(nullResult.errors, null, 2));
                 }
 
-                expect(nullResult.errors).toEqual(undefined);
+                expect(nullResult.errors).toBeUndefined();
 
-                expect((nullResult.data as any)[pluralRandomType1].length).toEqual(1);
+                expect((nullResult.data as any)[pluralRandomType1]).toHaveLength(1);
                 expect((nullResult.data as any)[pluralRandomType1][0]).toMatchObject({
                     id: randomId,
                 });
@@ -1762,14 +1761,14 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(notNullResult.errors, null, 2));
                 }
 
-                expect(notNullResult.errors).toEqual(undefined);
+                expect(notNullResult.errors).toBeUndefined();
 
-                expect((notNullResult.data as any)[pluralRandomType1].length).toEqual(1);
+                expect((notNullResult.data as any)[pluralRandomType1]).toHaveLength(1);
                 expect((notNullResult.data as any)[pluralRandomType1][0]).toMatchObject({
                     id: rootId,
                 });
             } finally {
-                session.close();
+                await session.close();
             }
         });
     });
@@ -1837,9 +1836,9 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(nullResult.errors, null, 2));
                 }
 
-                expect(nullResult.errors).toEqual(undefined);
+                expect(nullResult.errors).toBeUndefined();
 
-                expect((nullResult.data as any)[pluralRandomType].length).toEqual(1);
+                expect((nullResult.data as any)[pluralRandomType]).toHaveLength(1);
 
                 expect((nullResult.data as any)[pluralRandomType][0].id).toEqual(id1);
 
@@ -1863,13 +1862,13 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(notNullResult.errors, null, 2));
                 }
 
-                expect(notNullResult.errors).toEqual(undefined);
+                expect(notNullResult.errors).toBeUndefined();
 
-                expect((notNullResult.data as any)[pluralRandomType].length).toEqual(1);
+                expect((notNullResult.data as any)[pluralRandomType]).toHaveLength(1);
 
                 expect((notNullResult.data as any)[pluralRandomType][0].id).toEqual(id2);
             } finally {
-                session.close();
+                await session.close();
             }
         });
     });

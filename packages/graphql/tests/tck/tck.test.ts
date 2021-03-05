@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import camelCase from "camelcase";
 import {
     graphql,
@@ -51,20 +50,20 @@ describe("TCK Generated tests", () => {
     const testCases: TestCase[] = generateTestCasesFromMd(TCK_DIR);
 
     testCases.forEach(({ schema, tests, file, kind }) => {
-        describe(file, () => {
+        describe(`${file}`, () => {
             if (kind === "cypher") {
                 const document = parse(schema as string);
                 const neoSchema = new Neo4jGraphQL({ typeDefs: schema as string });
 
                 // @ts-ignore
-                test.each(tests.map((t) => [t.name, t as Test]))("%s", async (_, obj) => {
+                test.each(tests.map((t) => [t.name, t]))("%s", async (_, obj) => {
                     const test = obj as Test;
 
                     const graphQlQuery = test.graphQlQuery as string;
                     const graphQlParams = test.graphQlParams as any;
                     const cypherQuery = test.cypherQuery as string;
                     const cypherParams = test.cypherParams as any;
-                    const jwt = test.jwt;
+                    const { jwt } = test;
 
                     const compare = (context: any, resolveInfo: any) => {
                         const [cQuery, cQueryParams] = translate({ context, resolveInfo });
@@ -200,14 +199,14 @@ describe("TCK Generated tests", () => {
 
             if (kind === "schema") {
                 // @ts-ignore
-                test.each(tests.map((t) => [t.name, t as Test]))("%s", (_, obj) => {
+                test.each(tests.map((t) => [t.name, t]))("%s", (_, obj) => {
                     const test = obj as Test;
 
                     const typeDefs = test.typeDefs as string;
                     const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const schemaOutPut = test.schemaOutPut as string;
-                    const resolvers = neoSchema.resolvers;
+                    const { resolvers } = neoSchema;
                     const outPutSchema = makeExecutableSchema({ typeDefs: schemaOutPut, resolvers });
 
                     expect(printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema))).toEqual(

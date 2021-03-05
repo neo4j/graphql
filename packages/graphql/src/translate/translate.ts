@@ -27,7 +27,7 @@ function translateRead({
 }): [string, any] {
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
-    const fieldsByTypeName = resolveTree.fieldsByTypeName;
+    const { fieldsByTypeName } = resolveTree;
     const varName = "this";
 
     const matchStr = `MATCH (${varName}:${node.name})`;
@@ -46,7 +46,7 @@ function translateRead({
         fieldsByTypeName,
         varName,
     });
-    projStr = projection[0];
+    [projStr] = projection;
     cypherParams = { ...cypherParams, ...projection[1] };
     if (projection[2]?.authStrs.length) {
         projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
@@ -61,7 +61,7 @@ function translateRead({
             node,
             context,
         });
-        whereStr = where[0];
+        [whereStr] = where;
         cypherParams = { ...cypherParams, ...where[1] };
     }
 
@@ -138,10 +138,9 @@ function translateCreate({
     context: Context;
     node: Node;
 }): [string, any] {
-    const fieldsByTypeName =
-        resolveTree.fieldsByTypeName[`Create${pluralize(node.name)}MutationResponse`][pluralize(camelCase(node.name))]
-            .fieldsByTypeName;
-
+    const { fieldsByTypeName } = resolveTree.fieldsByTypeName[`Create${pluralize(node.name)}MutationResponse`][
+        pluralize(camelCase(node.name))
+    ];
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {
             const varName = `this${index}`;
@@ -221,9 +220,9 @@ function translateUpdate({
     const disconnectInput = resolveTree.args.disconnect;
     const createInput = resolveTree.args.create;
     const deleteInput = resolveTree.args.delete;
-    const fieldsByTypeName =
-        resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][pluralize(camelCase(node.name))]
-            .fieldsByTypeName;
+    const { fieldsByTypeName } = resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][
+        pluralize(camelCase(node.name))
+    ];
     const varName = "this";
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
@@ -243,7 +242,7 @@ function translateUpdate({
             node,
             context,
         });
-        whereStr = where[0];
+        [whereStr] = where;
         cypherParams = { ...cypherParams, ...where[1] };
     }
 
@@ -256,7 +255,7 @@ function translateUpdate({
             parentVar: varName,
             withVars: [varName],
         });
-        updateStr = updateAndParams[0];
+        [updateStr] = updateAndParams;
         cypherParams = { ...cypherParams, ...updateAndParams[1] };
     }
 
@@ -275,7 +274,7 @@ function translateUpdate({
                 withVars: [varName],
                 parentNode: node,
             });
-            disconnectStr = disconnectAndParams[0];
+            [disconnectStr] = disconnectAndParams;
             cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
         });
     }
@@ -295,7 +294,7 @@ function translateUpdate({
                 withVars: [varName],
                 parentNode: node,
             });
-            connectStr = connectAndParams[0];
+            [connectStr] = connectAndParams;
             cypherParams = { ...cypherParams, ...connectAndParams[1] };
         });
     }
@@ -319,7 +318,7 @@ function translateUpdate({
                     varName: innerVarName,
                     withVars: [varName, innerVarName],
                 });
-                createStr = createAndParams[0];
+                [createStr] = createAndParams;
                 cypherParams = { ...cypherParams, ...createAndParams[1] };
                 createStr += `\nMERGE (${varName})${inStr}${relTypeStr}${outStr}(${innerVarName})`;
             });
@@ -335,7 +334,7 @@ function translateUpdate({
             parentVar: varName,
             withVars: [varName],
         });
-        deleteStr = deleteAndParams[0];
+        [deleteStr] = deleteAndParams;
         cypherParams = { ...cypherParams, ...deleteAndParams[1] };
     }
 
@@ -345,7 +344,7 @@ function translateUpdate({
         fieldsByTypeName,
         varName,
     });
-    projStr = projection[0];
+    [projStr] = projection;
     cypherParams = { ...cypherParams, ...projection[1] };
     if (projection[2]?.authStrs.length) {
         projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
@@ -394,7 +393,7 @@ function translateDelete({
             node,
             context,
         });
-        whereStr = where[0];
+        [whereStr] = where;
         cypherParams = { ...cypherParams, ...where[1] };
     }
 
@@ -421,7 +420,7 @@ function translateDelete({
             parentVar: varName,
             withVars: [varName],
         });
-        deleteStr = deleteAndParams[0];
+        [deleteStr] = deleteAndParams;
         cypherParams = { ...cypherParams, ...deleteAndParams[1] };
     }
 
@@ -437,7 +436,7 @@ function translate({
     context: { [k: string]: any } & { driver?: Driver };
     resolveInfo: GraphQLResolveInfo;
 }): [string, any] {
-    const neoSchema: Neo4jGraphQL = graphQLContext.neoSchema;
+    const { neoSchema } = graphQLContext;
     if (!neoSchema || !(neoSchema instanceof Neo4jGraphQL)) {
         throw new Error("invalid schema");
     }
