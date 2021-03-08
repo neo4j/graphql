@@ -236,7 +236,7 @@ function makeAugmentedSchema(
                         }
 
                         if (["String", "ID"].includes(f.typeMeta.name)) {
-                            res[`${f.fieldName}_REGEX`] = "String";
+                            res[`${f.fieldName}_MATCHES`] = "String";
 
                             [
                                 "_CONTAINS",

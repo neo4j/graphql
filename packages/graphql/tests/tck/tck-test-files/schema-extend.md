@@ -60,7 +60,7 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
-  id_REGEX: String
+  id_MATCHES: String
   name: String
   name_IN: [String]
   name_NOT: String
@@ -71,7 +71,7 @@ input MovieWhere {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
-  name_REGEX: String
+  name_MATCHES: String
   OR: [MovieWhere]
   AND: [MovieWhere]
 }
