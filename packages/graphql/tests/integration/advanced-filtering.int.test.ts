@@ -118,7 +118,7 @@ describe("Advanced Filtering", () => {
 
                         const query = `
                             {
-                                ${pluralRandomType}(where: { property_REGEX: "(?i)${value}.*" }) {
+                                ${pluralRandomType}(where: { property_MATCHES: "(?i)${value}.*" }) {
                                     property
                                 }
                             }

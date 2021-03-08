@@ -57,7 +57,7 @@ RETURN this { ._id } as this
 
 ```graphql
 {
-    movies(where: { id_REGEX: "(?i)123.*" }) {
+    movies(where: { id_MATCHES: "(?i)123.*" }) {
         id
     }
 }
@@ -67,7 +67,7 @@ RETURN this { ._id } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id =~ $this_id_REGEX
+WHERE this.id =~ $this_id_MATCHES
 RETURN this { .id } as this
 ```
 
@@ -75,7 +75,7 @@ RETURN this { .id } as this
 
 ```cypher-params
 {
-    "this_id_REGEX": "(?i)123.*"
+    "this_id_MATCHES": "(?i)123.*"
 }
 ```
 
