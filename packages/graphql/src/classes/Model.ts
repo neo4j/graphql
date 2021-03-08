@@ -110,14 +110,14 @@ class Model {
         } else {
             selection = `
                {
-                   ${this.camelCaseName} 
+                   ${this.camelCaseName}
                    ${printSelectionSet(selectionSet || this.selectionSet)}
                }
            `;
         }
 
         const mutation = `
-            mutation ($input: [${this.name}CreateInput]!){
+            mutation ($input: [${this.name}CreateInput!]!){
                ${mutationName}(input: $input) ${selection}
             }
         `;
@@ -162,7 +162,7 @@ class Model {
         } else {
             selection = `
                {
-                   ${this.camelCaseName} 
+                   ${this.camelCaseName}
                    ${printSelectionSet(selectionSet || this.selectionSet)}
                }
            `;

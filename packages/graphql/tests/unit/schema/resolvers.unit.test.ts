@@ -89,7 +89,7 @@ describe("resolvers", () => {
             expect(result.type).toEqual("CreateMoviesMutationResponse!");
             expect(result.resolve).toBeInstanceOf(Function);
             expect(result.args).toMatchObject({
-                input: "[MovieCreateInput]!",
+                input: "[MovieCreateInput!]!",
             });
         });
     });

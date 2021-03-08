@@ -71,7 +71,7 @@ type UpdateUsersMutationResponse {
 }
 
 type Mutation {
-  createUsers(input: [UserCreateInput]!): CreateUsersMutationResponse!
+  createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
   deleteUsers(where: UserWhere): DeleteInfo!
   updateUsers(where: UserWhere, update: UserUpdateInput): UpdateUsersMutationResponse!
 }

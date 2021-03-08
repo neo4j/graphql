@@ -79,9 +79,9 @@ input MovieWhere {
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
   movies: MovieWhere
-  movies_IN: [MovieWhere]
+  movies_IN: [MovieWhere!]
   movies_NOT: MovieWhere
-  movies_NOT_IN: [MovieWhere]
+  movies_NOT_IN: [MovieWhere!]
   OR: [MovieWhere!]
   AND: [MovieWhere!]
 }
@@ -92,12 +92,12 @@ input MovieDisconnectFieldInput {
 }
 
 input MovieDisconnectInput {
-  movies: [MovieDisconnectFieldInput]
+  movies: [MovieDisconnectFieldInput!]
 }
 
 input MovieMoviesFieldInput {
-  connect: [MovieConnectFieldInput]
-  create: [MovieCreateInput]
+  connect: [MovieConnectFieldInput!]
+  create: [MovieCreateInput!]
 }
 
 input MovieDeleteFieldInput {
@@ -106,16 +106,16 @@ input MovieDeleteFieldInput {
 }
 
 input MovieMoviesUpdateFieldInput {
-  connect: [MovieConnectFieldInput]
-  create: [MovieCreateInput]
-  disconnect: [MovieDisconnectFieldInput]
+  connect: [MovieConnectFieldInput!]
+  create: [MovieCreateInput!]
+  disconnect: [MovieDisconnectFieldInput!]
   update: MovieUpdateInput
   where: MovieWhere
-  delete: [MovieDeleteFieldInput]
+  delete: [MovieDeleteFieldInput!]
 }
 
 input MovieRelationInput {
-  movies: [MovieCreateInput]
+  movies: [MovieCreateInput!]
 }
 
 input MovieConnectFieldInput {
@@ -124,12 +124,12 @@ input MovieConnectFieldInput {
 }
 
 input MovieConnectInput {
-  movies: [MovieConnectFieldInput]
+  movies: [MovieConnectFieldInput!]
 }
 
 input MovieUpdateInput {
   id: ID
-  movies: [MovieMoviesUpdateFieldInput]
+  movies: [MovieMoviesUpdateFieldInput!]
 }
 
 input MovieMoviesDeleteInput {
@@ -138,7 +138,7 @@ input MovieMoviesDeleteInput {
 }
 
 input MovieDeleteInput {
-  movies: [MovieMoviesDeleteInput]
+  movies: [MovieMoviesDeleteInput!]
 }
 
 type CreateMoviesMutationResponse {
@@ -150,7 +150,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
   updateMovies(
     where: MovieWhere

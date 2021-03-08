@@ -141,18 +141,18 @@ describe("create", () => {
                 colors: [Color] @relationship(type: "HAS_COLOR", direction: "OUT")
                 photos: [Photo] @relationship(type: "HAS_PHOTO", direction: "OUT")
             }
-            
+
             type Size {
                 id: ID!
                 name: String!
             }
-            
+
             type Color {
                 id: ID!
                 name: String!
                 photos: [Photo] @relationship(type: "OF_COLOR", direction: "IN")
             }
-            
+
             type Photo {
                 id: ID!
                 description: String!
@@ -225,7 +225,7 @@ describe("create", () => {
         ];
 
         const mutation = `
-        mutation($input: [ProductCreateInput]!) {
+        mutation($input: [ProductCreateInput!]!) {
             createProducts(
               input: $input
             ) {

@@ -89,7 +89,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
@@ -184,7 +184,7 @@ type UpdateMachinesMutationResponse {
 }
 
 type Mutation {
-  createMachines(input: [MachineCreateInput]!): CreateMachinesMutationResponse!
+  createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
   deleteMachines(where: MachineWhere): DeleteInfo!
   updateMachines(where: MachineWhere, update: MachineUpdateInput): UpdateMachinesMutationResponse!
 }
@@ -263,7 +263,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
@@ -342,7 +342,7 @@ type UpdateMachinesMutationResponse {
 }
 
 type Mutation {
-  createMachines(input: [MachineCreateInput]!): CreateMachinesMutationResponse!
+  createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
   deleteMachines(where: MachineWhere): DeleteInfo!
   updateMachines(where: MachineWhere, update: MachineUpdateInput): UpdateMachinesMutationResponse!
 }
