@@ -50,8 +50,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorWhere]
-  AND: [ActorWhere]
+  OR: [ActorWhere!]
+  AND: [ActorWhere!]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -96,8 +96,8 @@ input MovieUpdateInput {
 }
 
 input MovieWhere {
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
   id: ID
   id_IN: [ID]
   id_NOT: ID

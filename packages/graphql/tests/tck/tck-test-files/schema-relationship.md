@@ -58,8 +58,8 @@ input ActorWhere {
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
   name_REGEX: String
-  OR: [ActorWhere]
-  AND: [ActorWhere]
+  OR: [ActorWhere!]
+  AND: [ActorWhere!]
 }
 
 input ActorConnectFieldInput {
@@ -112,8 +112,8 @@ input MovieWhere {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
   actors: ActorWhere
   actors_NOT: ActorWhere
   actors_IN: [ActorWhere]
@@ -276,8 +276,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorWhere]
-  AND: [ActorWhere]
+  OR: [ActorWhere!]
+  AND: [ActorWhere!]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -391,8 +391,8 @@ input MovieUpdateInput {
 }
 
 input MovieWhere {
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
   id: ID
   id_IN: [ID]
   id_NOT: ID
