@@ -248,8 +248,8 @@ function createWhereAndParams({
             return res;
         }
 
-        if (key.endsWith("_REGEX")) {
-            const [fieldName] = key.split("_REGEX");
+        if (key.endsWith("_MATCHES")) {
+            const [fieldName] = key.split("_MATCHES");
             res.clauses.push(`${varName}.${fieldName} =~ $${param}`);
             res.params[param] = value;
 
