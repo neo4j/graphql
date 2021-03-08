@@ -58,8 +58,8 @@ input MovieWhere {
   status_IN: [Status]
   status_NOT: Status
   status_NOT_IN: [Status]
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {

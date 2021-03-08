@@ -64,8 +64,8 @@ input GenreUpdateInput {
 }
 
 input GenreWhere {
-  OR: [GenreWhere]
-  AND: [GenreWhere]
+  OR: [GenreWhere!]
+  AND: [GenreWhere!]
   id: ID
   id_IN: [ID]
   id_NOT: ID
@@ -185,8 +185,8 @@ input MovieDeleteInput {
 }
 
 input MovieWhere {
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
   id: ID
   id_IN: [ID]
   id_NOT: ID

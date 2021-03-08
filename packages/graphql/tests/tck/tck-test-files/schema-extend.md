@@ -72,8 +72,8 @@ input MovieWhere {
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
   name_REGEX: String
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {

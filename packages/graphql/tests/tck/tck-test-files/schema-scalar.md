@@ -63,8 +63,8 @@ input MovieWhere {
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
   myCustomScalar: CustomScalar
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {

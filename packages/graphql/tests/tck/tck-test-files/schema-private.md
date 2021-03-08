@@ -54,8 +54,8 @@ input UserWhere {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_REGEX: String
-  OR: [UserWhere]
-  AND: [UserWhere]
+  OR: [UserWhere!]
+  AND: [UserWhere!]
 }
 
 input UserUpdateInput {

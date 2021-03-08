@@ -193,8 +193,8 @@ function makeAugmentedSchema(
         }
 
         const queryFields = {
-            OR: `[${node.name}Where]`,
-            AND: `[${node.name}Where]`,
+            OR: `[${node.name}Where!]`,
+            AND: `[${node.name}Where!]`,
             // Custom scalar fields only support basic equality
             ...node.scalarFields.reduce((res, f) => {
                 res[f.fieldName] = f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name;

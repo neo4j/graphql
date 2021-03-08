@@ -73,8 +73,8 @@ input MovieWhere {
   averageRating_LTE: Float
   averageRating_GT: Float
   averageRating_GTE: Float
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {

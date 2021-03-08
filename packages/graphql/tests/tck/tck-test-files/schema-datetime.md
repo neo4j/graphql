@@ -70,8 +70,8 @@ input MovieWhere {
   datetime_LTE: DateTime
   datetime_GT: DateTime
   datetime_GTE: DateTime
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {

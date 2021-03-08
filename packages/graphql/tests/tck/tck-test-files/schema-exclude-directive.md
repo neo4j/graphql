@@ -34,8 +34,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorWhere]
-  AND: [ActorWhere]
+  OR: [ActorWhere!]
+  AND: [ActorWhere!]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -78,8 +78,8 @@ input MovieUpdateInput {
 }
 
 input MovieWhere {
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
   title: String
   title_IN: [String]
   title_NOT: String
@@ -158,8 +158,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorWhere]
-  AND: [ActorWhere]
+  OR: [ActorWhere!]
+  AND: [ActorWhere!]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -240,8 +240,8 @@ input MovieUpdateInput {
 }
 
 input MovieWhere {
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
   title: String
   title_IN: [String]
   title_NOT: String
@@ -330,8 +330,8 @@ input MovieUpdateInput {
 }
 
 input MovieWhere {
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
   title: String
   title_IN: [String]
   title_NOT: String
@@ -417,8 +417,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorWhere]
-  AND: [ActorWhere]
+  OR: [ActorWhere!]
+  AND: [ActorWhere!]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -506,8 +506,8 @@ input MovieWhere {
   actors_IN: [ActorWhere]
   actors_NOT: ActorWhere
   actors_NOT_IN: [ActorWhere]
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
   title: String
   title_IN: [String]
   title_NOT: String
@@ -589,8 +589,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorWhere]
-  AND: [ActorWhere]
+  OR: [ActorWhere!]
+  AND: [ActorWhere!]
   name: String
   name_IN: [String]
   name_NOT: String
