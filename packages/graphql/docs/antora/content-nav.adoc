@@ -1,5 +1,4 @@
 * xref:index.adoc[]
-** xref:introduction/index.adoc[]
 ** xref:getting-started/index.adoc[]
 ** xref:api-reference/index.adoc[]
 ** xref:schema/index.adoc[]
