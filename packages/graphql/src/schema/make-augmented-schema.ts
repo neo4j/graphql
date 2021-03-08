@@ -371,7 +371,7 @@ function makeAugmentedSchema(
 
                 refNodes.forEach((n) => {
                     const concatFieldName = `${rel.fieldName}_${n.name}`;
-                    const createField = rel.typeMeta.array ? `[${n.name}CreateInput]` : `${n.name}CreateInput`;
+                    const createField = rel.typeMeta.array ? `[${n.name}CreateInput!]` : `${n.name}CreateInput`;
                     const updateField = `${n.name}UpdateInput`;
                     const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${n.name}FieldInput`;
                     const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${
@@ -382,13 +382,13 @@ function makeAugmentedSchema(
                     }DeleteInput`;
 
                     const connectField = rel.typeMeta.array
-                        ? `[${n.name}ConnectFieldInput]`
+                        ? `[${n.name}ConnectFieldInput!]`
                         : `${n.name}ConnectFieldInput`;
                     const disconnectField = rel.typeMeta.array
-                        ? `[${n.name}DisconnectFieldInput]`
+                        ? `[${n.name}DisconnectFieldInput!]`
                         : `${n.name}DisconnectFieldInput`;
                     const deleteField = rel.typeMeta.array
-                        ? `[${n.name}DeleteFieldInput]`
+                        ? `[${n.name}DeleteFieldInput!]`
                         : `${n.name}DeleteFieldInput`;
 
                     composeNode.addFieldArgs(rel.fieldName, {
@@ -437,13 +437,13 @@ function makeAugmentedSchema(
 
                     nodeUpdateInput.addFields({
                         [concatFieldName]: rel.typeMeta.array
-                            ? `[${nodeFieldUpdateInputName}]`
+                            ? `[${nodeFieldUpdateInputName}!]`
                             : nodeFieldUpdateInputName,
                     });
 
                     nodeDeleteInput.addFields({
                         [concatFieldName]: rel.typeMeta.array
-                            ? `[${nodeFieldDeleteInputName}]`
+                            ? `[${nodeFieldDeleteInputName}!]`
                             : nodeFieldDeleteInputName,
                     });
 
@@ -460,22 +460,22 @@ function makeAugmentedSchema(
             }
 
             const n = nodes.find((x) => x.name === rel.typeMeta.name) as Node;
-            const createField = rel.typeMeta.array ? `[${n.name}CreateInput]` : `${n.name}CreateInput`;
+            const createField = rel.typeMeta.array ? `[${n.name}CreateInput!]` : `${n.name}CreateInput`;
             const updateField = `${n.name}UpdateInput`;
             const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
             const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}UpdateFieldInput`;
             const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}DeleteInput`;
-            const connectField = rel.typeMeta.array ? `[${n.name}ConnectFieldInput]` : `${n.name}ConnectFieldInput`;
+            const connectField = rel.typeMeta.array ? `[${n.name}ConnectFieldInput!]` : `${n.name}ConnectFieldInput`;
             const disconnectField = rel.typeMeta.array
-                ? `[${n.name}DisconnectFieldInput]`
+                ? `[${n.name}DisconnectFieldInput!]`
                 : `${n.name}DisconnectFieldInput`;
-            const deleteField = rel.typeMeta.array ? `[${n.name}DeleteFieldInput]` : `${n.name}DeleteFieldInput`;
+            const deleteField = rel.typeMeta.array ? `[${n.name}DeleteFieldInput!]` : `${n.name}DeleteFieldInput`;
 
             whereInput.addFields({
                 [rel.fieldName]: `${n.name}Where`,
                 [`${rel.fieldName}_NOT`]: `${n.name}Where`,
-                [`${rel.fieldName}_IN`]: `[${n.name}Where]`,
-                [`${rel.fieldName}_NOT_IN`]: `[${n.name}Where]`,
+                [`${rel.fieldName}_IN`]: `[${n.name}Where!]`,
+                [`${rel.fieldName}_NOT_IN`]: `[${n.name}Where!]`,
             });
 
             composeNode.addFields({
@@ -529,11 +529,11 @@ function makeAugmentedSchema(
             });
 
             nodeUpdateInput.addFields({
-                [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldUpdateInputName}]` : nodeFieldUpdateInputName,
+                [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldUpdateInputName}!]` : nodeFieldUpdateInputName,
             });
 
             nodeDeleteInput.addFields({
-                [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}]` : nodeFieldDeleteInputName,
+                [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
             });
 
             nodeConnectInput.addFields({
