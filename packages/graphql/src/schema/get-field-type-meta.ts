@@ -1,4 +1,4 @@
-import { FieldDefinitionNode, InputValueDefinitionNode, TypeNode } from "graphql";
+import { FieldDefinitionNode, InputValueDefinitionNode, ListTypeNode, TypeNode } from "graphql";
 import { TypeMeta } from "../types";
 
 function getName(type: TypeNode): string {
@@ -26,18 +26,75 @@ function getPrettyName(type: TypeNode): string {
 
 function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode): TypeMeta {
     const name = getName(field.type);
-    const prettyName = getPrettyName(field.type);
-    const array = /\[.+\]/g.test(prettyName);
-    const inputName = `${["Point", "CartesianPoint"].includes(name) ? `${name}Input` : name}`;
+    const pretty = getPrettyName(field.type);
+    const array = /\[.+\]/g.test(pretty);
+    const required = pretty.includes("!");
 
-    return {
+    // Things to do with the T inside the Array [T]
+    let arrayTypePretty = "";
+    let arrayTypeRequiredPretty = false;
+    if (array) {
+        const listNode = field.type as ListTypeNode;
+
+        arrayTypePretty = getPrettyName(listNode.type);
+        arrayTypeRequiredPretty = arrayTypePretty.includes("!");
+
+        const isMatrix = listNode.type.kind === "ListType" && listNode.type.type.kind === "ListType";
+        if (isMatrix) {
+            throw new Error("Matrix arrays not supported");
+        }
+    }
+
+    const baseMeta = {
         name,
         array,
-        required: prettyName.includes("!"),
-        pretty: prettyName,
+        required,
+        pretty,
+        arrayTypePretty,
+    };
+
+    const isPoint = ["Point", "CartesianPoint"].includes(name);
+    if (isPoint) {
+        const type = name === "Point" ? "PointInput" : "CartesianPointInput";
+
+        let inputPretty = type;
+        if (array) {
+            inputPretty = `[${type}${arrayTypeRequiredPretty ? "!" : ""}]`;
+        }
+
+        return {
+            ...baseMeta,
+            input: {
+                where: { type, pretty: inputPretty },
+                create: {
+                    type,
+                    pretty: `${inputPretty}${required ? "!" : ""}`,
+                },
+                update: {
+                    type,
+                    pretty: inputPretty,
+                },
+            },
+        };
+    }
+
+    let inputPretty = name;
+    if (array) {
+        inputPretty = `[${name}${arrayTypeRequiredPretty ? "!" : ""}]`;
+    }
+
+    return {
+        ...baseMeta,
         input: {
-            name: inputName,
-            pretty: `${array ? "[" : ""}${inputName}${array ? "]" : ""}`,
+            where: { type: name, pretty: inputPretty },
+            create: {
+                type: name,
+                pretty: `${inputPretty}${required ? "!" : ""}`,
+            },
+            update: {
+                type: name,
+                pretty: inputPretty,
+            },
         },
     };
 }

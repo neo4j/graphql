@@ -43,7 +43,7 @@ describe("[Point]", () => {
         }));
 
         const create = gql`
-            mutation CreateRoutes($id: String!, $waypoints: [PointInput]) {
+            mutation CreateRoutes($id: String!, $waypoints: [PointInput!]!) {
                 createRoutes(input: [{ id: $id, waypoints: $waypoints }]) {
                     routes {
                         id
@@ -95,7 +95,7 @@ describe("[Point]", () => {
         }));
 
         const create = gql`
-            mutation CreateRoutes($id: String!, $waypoints: [PointInput]) {
+            mutation CreateRoutes($id: String!, $waypoints: [PointInput!]!) {
                 createRoutes(input: [{ id: $id, waypoints: $waypoints }]) {
                     routes {
                         id
@@ -178,7 +178,7 @@ describe("[Point]", () => {
         ).toEqual(waypoints.sort());
 
         const update = gql`
-            mutation UpdateRoutes($id: String!, $waypoints: [PointInput]) {
+            mutation UpdateRoutes($id: String!, $waypoints: [PointInput!]!) {
                 updateRoutes(where: { id: $id }, update: { waypoints: $waypoints }) {
                     routes {
                         id
@@ -263,7 +263,7 @@ describe("[Point]", () => {
         ).toEqual(waypoints.sort());
 
         const update = gql`
-            mutation UpdateRoutes($id: String!, $waypoints: [PointInput]) {
+            mutation UpdateRoutes($id: String!, $waypoints: [PointInput!]!) {
                 updateRoutes(where: { id: $id }, update: { waypoints: $waypoints }) {
                     routes {
                         id
@@ -305,109 +305,6 @@ describe("[Point]", () => {
                 })
                 .sort()
         ).toEqual(newWaypoints.sort());
-    });
-
-    test("enables query of a node with multiple wgs-84 points", async () => {
-        // Create test data and prepare for testing
-        const id = faker.random.uuid();
-        const waypoints = [...new Array(faker.random.number({ min: 2, max: 10 }))].map(() => ({
-            longitude: parseFloat(faker.address.longitude()),
-            latitude: parseFloat(faker.address.latitude()),
-        }));
-
-        await session.run(
-            `
-            CALL {
-                CREATE (r:Route)
-                SET r.id = $id
-                SET r.waypoints = [p in $waypoints | point(p)]
-                RETURN r
-            }
-
-            RETURN
-            r { .id, .waypoints } AS r
-        `,
-            { id, waypoints }
-        );
-
-        const { query } = createTestClient(server);
-
-        // Test for equality
-        const routesQuery = gql`
-            query Routes($waypoints: [PointInput]) {
-                routes(where: { waypoints: $waypoints }) {
-                    id
-                    waypoints {
-                        latitude
-                        longitude
-                        height
-                        crs
-                    }
-                }
-            }
-        `;
-
-        const routesResult = await query({ query: routesQuery, variables: { waypoints } });
-
-        expect(routesResult.errors).toBeFalsy();
-        expect(routesResult.data.routes[0]).toEqual({
-            id,
-            waypoints: waypoints.map((waypoint) => ({ ...waypoint, height: null, crs: "wgs-84" })),
-        });
-
-        // Test IN functionality
-        const routesInQuery = gql`
-            query RoutesIn($waypoint: PointInput) {
-                routes(where: { waypoints_IN: $waypoint }) {
-                    id
-                    waypoints {
-                        latitude
-                        longitude
-                        height
-                        crs
-                    }
-                }
-            }
-        `;
-
-        const routesInResult = await query({ query: routesInQuery, variables: { waypoint: waypoints[0] } });
-
-        expect(routesInResult.errors).toBeFalsy();
-        expect(routesInResult.data.routes[0]).toEqual({
-            id,
-            waypoints: waypoints.map((waypoint) => ({ ...waypoint, height: null, crs: "wgs-84" })),
-        });
-
-        // Test NOT IN functionality
-        const routesNotInQuery = gql`
-            query RoutesNotIn($waypoint: PointInput) {
-                routes(where: { waypoints_NOT_IN: $waypoint }) {
-                    id
-                    waypoints {
-                        latitude
-                        longitude
-                        height
-                        crs
-                    }
-                }
-            }
-        `;
-
-        const routesNotInResult = await query({
-            query: routesNotInQuery,
-            variables: {
-                waypoint: {
-                    longitude: parseFloat(faker.address.longitude()),
-                    latitude: parseFloat(faker.address.latitude()),
-                },
-            },
-        });
-
-        expect(routesNotInResult.errors).toBeFalsy();
-        expect(routesNotInResult.data.routes).toContainEqual({
-            id,
-            waypoints: waypoints.map((waypoint) => ({ ...waypoint, height: null, crs: "wgs-84" })),
-        });
     });
 
     test("enables query of a node with multiple wgs-84-3d points", async () => {

@@ -209,46 +209,42 @@ function makeAugmentedSchema(
                         cartesianPointInTypeDefs = true;
                     }
 
-                    res[f.fieldName] = f.typeMeta.input.pretty;
-                    res[`${f.fieldName}_NOT`] = f.typeMeta.input.pretty;
+                    res[f.fieldName] = f.typeMeta.input.where.pretty;
+                    res[`${f.fieldName}_NOT`] = f.typeMeta.input.where.pretty;
 
-                    if (f.typeMeta.name !== "Boolean") {
-                        res[`${f.fieldName}_IN`] = f.typeMeta.array
-                            ? f.typeMeta.input.name
-                            : `[${f.typeMeta.input.name}]`;
-
-                        res[`${f.fieldName}_NOT_IN`] = f.typeMeta.array
-                            ? f.typeMeta.input.name
-                            : `[${f.typeMeta.input.name}]`;
+                    if (f.typeMeta.name === "Boolean" || f.typeMeta.array) {
+                        // No other operators on arrays or booleans
+                        return res;
                     }
 
-                    if (!f.typeMeta.array) {
-                        if (["Float", "Int", "DateTime"].includes(f.typeMeta.name)) {
-                            ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                                res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
-                            });
-                        }
+                    res[`${f.fieldName}_IN`] = `[${f.typeMeta.input.where.pretty}]`;
+                    res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}]`;
 
-                        if (["Point", "CartesianPoint"].includes(f.typeMeta.name)) {
-                            ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                                res[`${f.fieldName}${comparator}`] = `${f.typeMeta.name}Distance`;
-                            });
-                        }
+                    if (["Float", "Int", "DateTime"].includes(f.typeMeta.name)) {
+                        ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
+                            res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
+                        });
+                    }
 
-                        if (["String", "ID"].includes(f.typeMeta.name)) {
-                            res[`${f.fieldName}_MATCHES`] = "String";
+                    if (["Point", "CartesianPoint"].includes(f.typeMeta.name)) {
+                        ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
+                            res[`${f.fieldName}${comparator}`] = `${f.typeMeta.name}Distance`;
+                        });
+                    }
 
-                            [
-                                "_CONTAINS",
-                                "_NOT_CONTAINS",
-                                "_STARTS_WITH",
-                                "_NOT_STARTS_WITH",
-                                "_ENDS_WITH",
-                                "_NOT_ENDS_WITH",
-                            ].forEach((comparator) => {
-                                res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
-                            });
-                        }
+                    if (["String", "ID"].includes(f.typeMeta.name)) {
+                        res[`${f.fieldName}_MATCHES`] = "String";
+
+                        [
+                            "_CONTAINS",
+                            "_NOT_CONTAINS",
+                            "_STARTS_WITH",
+                            "_NOT_STARTS_WITH",
+                            "_ENDS_WITH",
+                            "_NOT_ENDS_WITH",
+                        ].forEach((comparator) => {
+                            res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
+                        });
                     }
 
                     return res;
@@ -278,7 +274,7 @@ function makeAugmentedSchema(
                     };
                     res[f.fieldName] = field;
                 } else {
-                    res[f.fieldName] = f.typeMeta.input.pretty;
+                    res[f.fieldName] = f.typeMeta.input.create.pretty;
                 }
 
                 return res;
@@ -296,7 +292,7 @@ function makeAugmentedSchema(
             ].reduce(
                 (res, f) => ({
                     ...res,
-                    [f.fieldName]: f.typeMeta.input.pretty,
+                    [f.fieldName]: f.typeMeta.input.update.pretty,
                 }),
                 {}
             ),

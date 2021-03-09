@@ -1,0 +1,225 @@
+## Schema Null
+
+Tests that the not null of types are preserved
+
+---
+
+### Simple
+
+**TypeDefs**
+
+```typedefs-input
+type Movie {
+    id: ID!
+    ids: [ID!]!
+    name: String!
+    names: [String!]!
+    actorCount: Int!
+    actorCounts: [Int!]!
+    averageRating: Float!
+    averageRatings: [Float!]!
+    isActives: [Boolean!]!
+    filmedAt: Point!
+    filmedAts: [Point!]!
+    createdAt: DateTime!
+    createdAts: [DateTime!]!
+}
+```
+
+**Output**
+
+```schema-output
+type CreateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+scalar DateTime
+
+type DeleteInfo {
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
+}
+
+type Movie {
+  id: ID!
+  ids: [ID!]!
+  name: String!
+  names: [String!]!
+  actorCount: Int!
+  actorCounts: [Int!]!
+  averageRating: Float!
+  averageRatings: [Float!]!
+  isActives: [Boolean!]!
+  createdAt: DateTime!
+  createdAts: [DateTime!]!
+  filmedAt: Point!
+  filmedAts: [Point!]!
+}
+
+input MovieCreateInput {
+  id: ID!
+  ids: [ID!]!
+  name: String!
+  names: [String!]!
+  actorCount: Int!
+  actorCounts: [Int!]!
+  averageRating: Float!
+  averageRatings: [Float!]!
+  isActives: [Boolean!]!
+  createdAt: DateTime!
+  createdAts: [DateTime!]!
+  filmedAt: PointInput!
+  filmedAts: [PointInput!]!
+}
+
+input MovieOptions {
+  sort: [MovieSort]
+  limit: Int
+  skip: Int
+}
+
+enum MovieSort {
+  id_DESC
+  id_ASC
+  name_ASC
+  name_DESC
+  actorCount_DESC
+  actorCount_ASC
+  averageRating_DESC
+  averageRating_ASC
+  createdAt_DESC
+  createdAt_ASC
+  filmedAt_DESC
+  filmedAt_ASC
+}
+
+input MovieUpdateInput {
+  id: ID
+  ids: [ID!]
+  name: String
+  names: [String!]
+  actorCount: Int
+  actorCounts: [Int!]
+  averageRating: Float
+  averageRatings: [Float!]
+  isActives: [Boolean!]
+  createdAt: DateTime
+  createdAts: [DateTime!]
+  filmedAt: PointInput
+  filmedAts: [PointInput!]
+}
+
+input MovieWhere {
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
+  id: ID
+  id_NOT: ID
+  id_IN: [ID]
+  id_NOT_IN: [ID]
+  id_MATCHES: String
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  ids: [ID!]
+  ids_NOT: [ID!]
+  name: String
+  name_CONTAINS: String
+  name_ENDS_WITH: String
+  name_IN: [String]
+  name_MATCHES: String
+  name_NOT: String
+  name_NOT_CONTAINS: String
+  name_NOT_ENDS_WITH: String
+  name_NOT_IN: [String]
+  name_NOT_STARTS_WITH: String
+  name_STARTS_WITH: String
+  names: [String!]
+  names_NOT: [String!]
+  actorCount: Int
+  actorCount_NOT: Int
+  actorCount_IN: [Int]
+  actorCount_NOT_IN: [Int]
+  actorCount_LT: Int
+  actorCount_LTE: Int
+  actorCount_GT: Int
+  actorCount_GTE: Int
+  actorCounts: [Int!]
+  actorCounts_NOT: [Int!]
+  averageRating: Float
+  averageRating_NOT: Float
+  averageRating_IN: [Float]
+  averageRating_NOT_IN: [Float]
+  averageRating_LT: Float
+  averageRating_LTE: Float
+  averageRating_GT: Float
+  averageRating_GTE: Float
+  averageRatings: [Float!]
+  averageRatings_NOT: [Float!]
+  isActives: [Boolean!]
+  isActives_NOT: [Boolean!]
+  createdAt: DateTime
+  createdAt_NOT: DateTime
+  createdAt_IN: [DateTime]
+  createdAt_NOT_IN: [DateTime]
+  createdAt_LT: DateTime
+  createdAt_LTE: DateTime
+  createdAt_GT: DateTime
+  createdAt_GTE: DateTime
+  createdAts: [DateTime!]
+  createdAts_NOT: [DateTime!]
+  filmedAt: PointInput
+  filmedAt_NOT: PointInput
+  filmedAt_IN: [PointInput]
+  filmedAt_NOT_IN: [PointInput]
+  filmedAt_DISTANCE: PointDistance
+  filmedAt_LT: PointDistance
+  filmedAt_LTE: PointDistance
+  filmedAt_GT: PointDistance
+  filmedAt_GTE: PointDistance
+  filmedAts: [PointInput!]
+  filmedAts_NOT: [PointInput!]
+}
+
+type Mutation {
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+  deleteMovies(where: MovieWhere): DeleteInfo!
+  updateMovies(
+    where: MovieWhere
+    update: MovieUpdateInput
+  ): UpdateMoviesMutationResponse!
+}
+
+type Point {
+  longitude: Float!
+  latitude: Float!
+  height: Float
+  crs: String!
+  srid: Int!
+}
+
+input PointDistance {
+  point: PointInput!
+  """The distance in metres to be used when comparing two points"""
+  distance: Float!
+}
+
+input PointInput {
+  longitude: Float!
+  latitude: Float!
+  height: Float
+}
+
+type Query {
+  movies(where: MovieWhere, options: MovieOptions): [Movie]!
+}
+
+type UpdateMoviesMutationResponse {
+  movies: [Movie!]!
+}
+
+```
+
+---
