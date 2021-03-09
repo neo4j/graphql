@@ -32,17 +32,17 @@ function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode)
 
     // Things to do with the T inside the Array [T]
     let arrayTypePretty = "";
-    let arrayTypeRequiredPretty = false;
+    let arrayTypeRequired = false;
     if (array) {
         const listNode = field.type as ListTypeNode;
-
-        arrayTypePretty = getPrettyName(listNode.type);
-        arrayTypeRequiredPretty = arrayTypePretty.includes("!");
-
         const isMatrix = listNode.type.kind === "ListType" && listNode.type.type.kind === "ListType";
+
         if (isMatrix) {
             throw new Error("Matrix arrays not supported");
         }
+
+        arrayTypePretty = getPrettyName(listNode.type);
+        arrayTypeRequired = arrayTypePretty.includes("!");
     }
 
     const baseMeta = {
@@ -54,33 +54,14 @@ function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode)
     };
 
     const isPoint = ["Point", "CartesianPoint"].includes(name);
+    let type = name;
     if (isPoint) {
-        const type = name === "Point" ? "PointInput" : "CartesianPointInput";
-
-        let inputPretty = type;
-        if (array) {
-            inputPretty = `[${type}${arrayTypeRequiredPretty ? "!" : ""}]`;
-        }
-
-        return {
-            ...baseMeta,
-            input: {
-                where: { type, pretty: inputPretty },
-                create: {
-                    type,
-                    pretty: `${inputPretty}${required ? "!" : ""}`,
-                },
-                update: {
-                    type,
-                    pretty: inputPretty,
-                },
-            },
-        };
+        type = name === "Point" ? "PointInput" : "CartesianPointInput";
     }
 
-    let inputPretty = name;
+    let inputPretty = type;
     if (array) {
-        inputPretty = `[${name}${arrayTypeRequiredPretty ? "!" : ""}]`;
+        inputPretty = `[${type}${arrayTypeRequired ? "!" : ""}]`;
     }
 
     return {
