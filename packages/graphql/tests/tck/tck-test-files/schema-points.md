@@ -72,8 +72,8 @@ input MovieWhere {
   filmedAt_GT: PointDistance
   filmedAt_GTE: PointDistance
   filmedAt_DISTANCE: PointDistance
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {
@@ -89,7 +89,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
@@ -167,8 +167,8 @@ input MachineWhere {
   partLocation_GT: CartesianPointDistance
   partLocation_GTE: CartesianPointDistance
   partLocation_DISTANCE: CartesianPointDistance
-  OR: [MachineWhere]
-  AND: [MachineWhere]
+  OR: [MachineWhere!]
+  AND: [MachineWhere!]
 }
 
 input MachineUpdateInput {
@@ -184,7 +184,7 @@ type UpdateMachinesMutationResponse {
 }
 
 type Mutation {
-  createMachines(input: [MachineCreateInput]!): CreateMachinesMutationResponse!
+  createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
   deleteMachines(where: MachineWhere): DeleteInfo!
   updateMachines(where: MachineWhere, update: MachineUpdateInput): UpdateMachinesMutationResponse!
 }
@@ -246,8 +246,8 @@ input MovieWhere {
   filmedAt_NOT: [PointInput]
   filmedAt_IN: PointInput
   filmedAt_NOT_IN: PointInput
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {
@@ -263,7 +263,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
@@ -325,8 +325,8 @@ input MachineWhere {
   partLocations_NOT: [CartesianPointInput]
   partLocations_IN: CartesianPointInput
   partLocations_NOT_IN: CartesianPointInput
-  OR: [MachineWhere]
-  AND: [MachineWhere]
+  OR: [MachineWhere!]
+  AND: [MachineWhere!]
 }
 
 input MachineUpdateInput {
@@ -342,7 +342,7 @@ type UpdateMachinesMutationResponse {
 }
 
 type Mutation {
-  createMachines(input: [MachineCreateInput]!): CreateMachinesMutationResponse!
+  createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
   deleteMachines(where: MachineWhere): DeleteInfo!
   updateMachines(where: MachineWhere, update: MachineUpdateInput): UpdateMachinesMutationResponse!
 }
