@@ -127,7 +127,7 @@ export function createResolver({ node, neoSchema }: { node: Node; neoSchema: Neo
     return {
         type: `Create${pluralize(node.name)}MutationResponse!`,
         resolve,
-        args: { input: `[${node.name}CreateInput]!` },
+        args: { input: `[${node.name}CreateInput!]!` },
     };
 }
 

@@ -50,8 +50,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorWhere]
-  AND: [ActorWhere]
+  OR: [ActorWhere!]
+  AND: [ActorWhere!]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -96,8 +96,8 @@ input MovieUpdateInput {
 }
 
 input MovieWhere {
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
   id: ID
   id_IN: [ID]
   id_NOT: ID
@@ -128,10 +128,10 @@ type UpdateActorsMutationResponse {
 }
 
 type Mutation {
-  createActors(input: [ActorCreateInput]!): CreateActorsMutationResponse!
+  createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
   deleteActors(where: ActorWhere): DeleteInfo!
   updateActors(where: ActorWhere, update: ActorUpdateInput): UpdateActorsMutationResponse!
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }

@@ -53,8 +53,8 @@ input MovieWhere {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_MATCHES: String
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {
@@ -70,7 +70,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }

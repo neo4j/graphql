@@ -54,8 +54,8 @@ input UserWhere {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_MATCHES: String
-  OR: [UserWhere]
-  AND: [UserWhere]
+  OR: [UserWhere!]
+  AND: [UserWhere!]
 }
 
 input UserUpdateInput {
@@ -71,7 +71,7 @@ type UpdateUsersMutationResponse {
 }
 
 type Mutation {
-  createUsers(input: [UserCreateInput]!): CreateUsersMutationResponse!
+  createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
   deleteUsers(where: UserWhere): DeleteInfo!
   updateUsers(where: UserWhere, update: UserUpdateInput): UpdateUsersMutationResponse!
 }

@@ -73,8 +73,8 @@ input MovieWhere {
   averageRating_LTE: Float
   averageRating_GT: Float
   averageRating_GTE: Float
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {
@@ -92,7 +92,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
