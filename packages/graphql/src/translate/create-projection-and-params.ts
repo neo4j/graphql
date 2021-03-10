@@ -166,9 +166,11 @@ function createProjectionAndParams({
                 referenceNodes.forEach((refNode) => {
                     const varNameOverRide = `${param}_${refNode.name}`;
                     const innerHeadStr: string[] = [];
+
                     innerHeadStr.push("[");
                     innerHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
 
+                    const whereStrs: string[] = [];
                     const thisWhere = field.args[refNode.name];
                     if (thisWhere) {
                         const whereAndParams = createWhereAndParams({
@@ -177,9 +179,28 @@ function createProjectionAndParams({
                             varName: param,
                             whereInput: thisWhere,
                             chainStrOverRide: varNameOverRide,
+                            recursing: true,
                         });
-                        innerHeadStr.push(`AND ${whereAndParams[0].replace("WHERE", "")}`);
-                        res.params = { ...res.params, ...whereAndParams[1] };
+                        if (whereAndParams[0]) {
+                            whereStrs.push(whereAndParams[0]);
+                            res.params = { ...res.params, ...whereAndParams[1] };
+                        }
+                    }
+                    const whereAuth = createAuthAndParams({
+                        entity: refNode,
+                        operation: "read",
+                        context,
+                        where: {
+                            varName: param,
+                            chainStr: varNameOverRide,
+                        },
+                    });
+                    if (whereAuth[0]) {
+                        whereStrs.push(whereAuth[0]);
+                        res.params = { ...res.params, ...whereAuth[1] };
+                    }
+                    if (whereStrs.length) {
+                        innerHeadStr.push(`AND ${whereStrs.join(" AND ")}`);
                     }
 
                     const preAuth = createAuthAndParams({
@@ -272,11 +293,28 @@ function createProjectionAndParams({
                 const where = createWhereAndParams({
                     whereInput,
                     varName: `${varName}_${key}`,
-                    node,
+                    node: referenceNode,
                     context,
                 });
                 [whereStr] = where;
                 res.params = { ...res.params, ...where[1] };
+            }
+
+            const whereAuth = createAuthAndParams({
+                entity: referenceNode,
+                operation: "read",
+                context,
+                where: {
+                    varName: `${varName}_${key}`,
+                },
+            });
+            if (whereAuth[0]) {
+                if (whereStr) {
+                    whereStr = `${whereStr} AND ${whereAuth[0]}`;
+                } else {
+                    whereStr = `WHERE ${whereAuth[0]}`;
+                }
+                res.params = { ...res.params, ...whereAuth[1] };
             }
 
             const preAuth = createAuthAndParams({

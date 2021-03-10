@@ -66,6 +66,21 @@ function translateRead({
     }
 
     if (node.auth) {
+        const whereAuth = createAuthAndParams({
+            operation: "read",
+            entity: node,
+            context,
+            where: { varName },
+        });
+        if (whereAuth[0]) {
+            if (whereStr) {
+                whereStr = `${whereStr} AND ${whereAuth[0]}`;
+            } else {
+                whereStr = `WHERE ${whereAuth[0]}`;
+            }
+            cypherParams = { ...cypherParams, ...whereAuth[1] };
+        }
+
         const allowAndParams = createAuthAndParams({
             operation: "read",
             entity: node,

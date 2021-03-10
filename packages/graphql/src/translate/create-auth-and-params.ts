@@ -1,7 +1,8 @@
-import dotProp from "dot-prop";
 import { Context, Node } from "../classes";
-import { AuthOperations, BaseField, AuthRule, BaseAuthRule } from "../types";
+import { AuthOperations, BaseField, AuthRule, BaseAuthRule, GraphQLWhereArg } from "../types";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
+import { dotPathPopulate } from "../utils";
+import createWhereAndParams from "./create-where-and-params";
 
 interface Res {
     strs: string[];
@@ -43,11 +44,14 @@ function createAuthPredicate({
     chainStr: string;
     kind: "allow" | "bind";
 }): [string, any] {
-    const allowOrBind = rule[kind];
-
-    if (!allowOrBind) {
+    if (!rule[kind]) {
         return ["", {}];
     }
+
+    const allowOrBind = dotPathPopulate({
+        obj: rule[kind] as { [k: string]: any },
+        context,
+    });
 
     const result = Object.entries(allowOrBind as Record<string, any>).reduce(
         (res: Res, [key, value]) => {
@@ -73,21 +77,9 @@ function createAuthPredicate({
 
             const authableField = node.authableFields.find((field) => field.fieldName === key);
             if (authableField) {
-                const jwt = context.getJWTSafe();
                 const param = `${chainStr}_${key}`;
-                const [, jwtPath] = (value as string).split("$jwt.");
-                const [, ctxPath] = (value as string).split("$context.");
-                const existsStr = `EXISTS(${varName}.${key})`;
-
-                if (jwtPath) {
-                    res.params[param] = dotProp.get({ value: jwt }, `value.${jwtPath}`);
-                    res.strs.push(`${existsStr} AND ${varName}.${key} = $${param}`);
-                }
-
-                if (ctxPath) {
-                    res.params[param] = dotProp.get({ value: context.graphQLContext }, `value.${ctxPath}`);
-                    res.strs.push(`${existsStr} AND ${varName}.${key} = $${param}`);
-                }
+                res.params[param] = value;
+                res.strs.push(`EXISTS(${varName}.${key}) AND ${varName}.${key} = $${param}`);
             }
 
             const relationField = node.relationFields.find((x) => key === x.fieldName);
@@ -140,6 +132,7 @@ function createAuthAndParams({
     context,
     escapeQuotes,
     bind,
+    where,
 }: {
     entity: Node | BaseField;
     operation?: AuthOperations;
@@ -149,6 +142,7 @@ function createAuthAndParams({
     context: Context;
     escapeQuotes?: boolean;
     bind?: Bind;
+    where?: { varName: string; chainStr?: string };
 }): [string, any] {
     if (!entity.auth) {
         return ["", {}];
@@ -159,6 +153,38 @@ function createAuthAndParams({
         authRules = entity?.auth.rules.filter((r) => r.operations === "*" || r.operations?.includes(operation));
     } else {
         authRules = entity?.auth.rules;
+    }
+
+    if (where) {
+        const subPredicates = authRules.reduce(
+            (res: Res, authRule: AuthRule, index): Res => {
+                if (!authRule.where) {
+                    return res;
+                }
+
+                const authWhere = createWhereAndParams({
+                    whereInput: dotPathPopulate({
+                        obj: authRule.where as GraphQLWhereArg,
+                        context,
+                    }),
+                    context,
+                    node: entity as Node,
+                    varName: where.varName,
+                    chainStr: `${where.chainStr || where.varName}_auth_where${index}`,
+                    recursing: true,
+                });
+
+                return {
+                    strs: [...res.strs, authWhere[0]],
+                    params: { ...res.params, ...authWhere[1] },
+                };
+            },
+            { strs: [], params: {} }
+        );
+
+        const joined = subPredicates.strs.filter(Boolean).join(" AND ");
+
+        return [joined, subPredicates.params];
     }
 
     function createSubPredicate({
