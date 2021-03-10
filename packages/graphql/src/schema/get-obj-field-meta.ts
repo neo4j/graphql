@@ -75,11 +75,16 @@ function getObjFieldMeta({
                 fieldName: field.name.value,
                 typeMeta,
                 otherDirectives: (field.directives || []).filter(
-                    (x) => !["relationship", "cypher", "autogenerate", "auth"].includes(x.name.value)
+                    (x) =>
+                        !["relationship", "cypher", "autogenerate", "auth", "readonly", "writeonly"].includes(
+                            x.name.value
+                        )
                 ),
                 arguments: [...(field.arguments || [])],
                 ...(authDirective ? { auth: getAuth(authDirective) } : {}),
                 description: field.description?.value,
+                readonly: field?.directives?.some((d) => d.name.value === "readonly"),
+                writeonly: field?.directives?.some((d) => d.name.value === "writeonly"),
             };
 
             if (relationshipMeta) {
