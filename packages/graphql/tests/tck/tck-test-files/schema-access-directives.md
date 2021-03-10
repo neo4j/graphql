@@ -1,6 +1,6 @@
 ## Schema Access Directives
 
-Tests that the access directives @ignore, @readonly and @writeonly work as expected.
+Tests that the access directives @readonly and @writeonly work as expected.
 
 ---
 
