@@ -38,8 +38,8 @@ enum SortDirection {
 }
 
 input UserCreateInput {
-  username: String
-  password: String
+  username: String!
+  password: String!
 }
 
 input UserOptions {
