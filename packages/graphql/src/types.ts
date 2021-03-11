@@ -102,6 +102,13 @@ export interface DateTimeField extends BaseField {
 }
 
 export type PointField = BaseField;
+
+export type SortDirection = "ASC" | "DESC";
+
+export interface GraphQLSortArg {
+    [field: string]: SortDirection;
+}
+
 /**
  * Representation of the options arg
  * passed to resolvers.
@@ -109,7 +116,7 @@ export type PointField = BaseField;
 export interface GraphQLOptionsArg {
     limit?: number;
     skip?: number;
-    sort?: string[];
+    sort?: GraphQLSortArg[];
 }
 
 /**

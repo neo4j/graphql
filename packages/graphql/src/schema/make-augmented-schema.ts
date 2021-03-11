@@ -64,6 +64,20 @@ function makeAugmentedSchema(
         },
     });
 
+    const sortDirection = composer.createEnumTC({
+        name: "SortDirection",
+        values: {
+            ASC: {
+                value: "ASC",
+                description: "Sort by field values in ascending order.",
+            },
+            DESC: {
+                value: "DESC",
+                description: "Sort by field values in descending order.",
+            },
+        },
+    });
+
     const customResolvers = getCustomResolvers(document);
 
     const scalars = document.definitions.filter((x) => x.kind === "ScalarTypeDefinition") as ScalarTypeDefinitionNode[];
@@ -158,7 +172,7 @@ function makeAugmentedSchema(
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
-        const sortValues = [
+        const sortFields = [
             ...node.primitiveFields,
             ...node.enumFields,
             ...node.scalarFields,
@@ -171,20 +185,31 @@ function makeAugmentedSchema(
                   }
                 : {
                       ...res,
-                      [`${f.fieldName}_DESC`]: { value: `${f.fieldName}_DESC` },
-                      [`${f.fieldName}_ASC`]: { value: `${f.fieldName}_ASC` },
+                      [f.fieldName]: sortDirection.getTypeName(),
                   };
         }, {});
 
-        if (Object.keys(sortValues).length) {
-            const sortEnum = composer.createEnumTC({
+        if (Object.keys(sortFields).length) {
+            const sortInput = composer.createInputTC({
                 name: `${node.name}Sort`,
-                values: sortValues,
+                fields: sortFields,
+                description: `Fields to sort ${pluralize(
+                    node.name
+                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${node.name}Sort`} object.`,
             });
 
             composer.createInputTC({
                 name: `${node.name}Options`,
-                fields: { sort: sortEnum.List, limit: "Int", skip: "Int" },
+                fields: {
+                    sort: {
+                        description: `Specify one or more ${`${node.name}Sort`} objects to sort ${pluralize(
+                            node.name
+                        )} by. The sorts will be applied in the order in which they are arranged in the array.`,
+                        type: sortInput.List,
+                    },
+                    limit: "Int",
+                    skip: "Int",
+                },
             });
         } else {
             composer.createInputTC({

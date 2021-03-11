@@ -32,6 +32,13 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 type Genre {
   id: ID
 }
@@ -49,14 +56,15 @@ input GenreDisconnectFieldInput {
 }
 
 input GenreOptions {
-  sort: [GenreSort]
+  """Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [GenreSort]
   limit: Int
   skip: Int
 }
 
-enum GenreSort {
-  id_DESC
-  id_ASC
+"""Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object."""
+input GenreSort {
+  id: SortDirection
 }
 
 input GenreUpdateInput {
@@ -112,7 +120,8 @@ input MovieDisconnectInput {
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
@@ -159,9 +168,9 @@ input MovieSearchMovieUpdateFieldInput {
   delete: [MovieDeleteFieldInput!]
 }
 
-enum MovieSort {
-  id_DESC
-  id_ASC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  id: SortDirection
 }
 
 input MovieUpdateInput {

@@ -46,20 +46,27 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
 
 input MovieCreateInput {
   filmedAt: PointInput
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-enum MovieSort {
-  filmedAt_ASC
-  filmedAt_DESC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  filmedAt: SortDirection
 }
 
 input MovieWhere {
@@ -142,19 +149,27 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 input MachineCreateInput {
   partLocation: CartesianPointInput
 }
 
 input MachineOptions {
-  sort: [MachineSort]
+  """Specify one or more MachineSort objects to sort Machines by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MachineSort]
   limit: Int
   skip: Int
 }
 
-enum MachineSort {
-  partLocation_ASC
-  partLocation_DESC
+"""Fields to sort Machines by. The order in which sorts are applied is not guaranteed when specifying many fields in one MachineSort object."""
+input MachineSort {
+  partLocation: SortDirection
 }
 
 input MachineWhere {
