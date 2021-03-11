@@ -34,25 +34,12 @@ import getCustomResolvers from "./get-custom-resolvers";
 import getObjFieldMeta from "./get-obj-field-meta";
 import * as point from "./point";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
-import {
-    cypherDirective,
-    ignoreDirective,
-    privateDirective,
-    readonlyDirective,
-    writeonlyDirective,
-} from "./directives";
 
 function makeAugmentedSchema(
     neoSchema: Neo4jGraphQL
 ): { typeDefs: string; resolvers: Resolvers; schema: GraphQLSchema; nodes: Node[] } {
     const document = mergeTypeDefs(neoSchema.input.typeDefs);
     const composer = new SchemaComposer();
-
-    composer.addDirective(cypherDirective);
-    composer.addDirective(ignoreDirective);
-    composer.addDirective(privateDirective);
-    composer.addDirective(readonlyDirective);
-    composer.addDirective(writeonlyDirective);
 
     // graphql-compose will break if the Point and CartesianPoint types are created but not used,
     // because it will purge the unused types but leave behind orphaned field resolvers
