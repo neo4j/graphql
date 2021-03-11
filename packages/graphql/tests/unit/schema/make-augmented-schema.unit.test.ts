@@ -57,7 +57,7 @@ describe("makeAugmentedSchema", () => {
 
             // SORT
             const sort = document.definitions.find(
-                (x) => x.kind === "EnumTypeDefinition" && x.name.value === `${type}Sort`
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === `${type}Sort`
             );
             expect(sort).toBeTruthy();
         });

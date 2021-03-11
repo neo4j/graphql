@@ -31,19 +31,27 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 input ActorCreateInput {
   name: String
 }
 
 input ActorOptions {
-  sort: [ActorSort]
+  """Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [ActorSort]
   limit: Int
   skip: Int
 }
 
-enum ActorSort {
-  name_DESC
-  name_ASC
+"""Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object."""
+input ActorSort {
+  name: SortDirection
 }
 
 input ActorWhere {
@@ -90,14 +98,15 @@ input MovieCreateInput {
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-enum MovieSort {
-  id_DESC
-  id_ASC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  id: SortDirection
 }
 
 input MovieWhere {
@@ -213,6 +222,13 @@ type Movie {
 **Output**
 
 ```schema-output
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 type Actor {
   name: String
   movies(where: MovieWhere, options: MovieOptions): [Movie]
@@ -260,14 +276,15 @@ input ActorMoviesUpdateFieldInput {
 }
 
 input ActorOptions {
-  sort: [ActorSort]
+  """Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [ActorSort]
   limit: Int
   skip: Int
 }
 
-enum ActorSort {
-  name_DESC
-  name_ASC
+"""Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object."""
+input ActorSort {
+  name: SortDirection
 }
 
 input ActorUpdateInput {
@@ -343,7 +360,8 @@ input MovieDisconnectInput {
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
@@ -352,9 +370,9 @@ input MovieRelationInput {
   actors: [ActorCreateInput!]
 }
 
-enum MovieSort {
-  id_DESC
-  id_ASC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  id: SortDirection
 }
 
 input MovieActorsDeleteInput {

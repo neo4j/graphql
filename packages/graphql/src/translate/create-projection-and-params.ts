@@ -1,7 +1,7 @@
 import { FieldsByTypeName } from "graphql-parse-resolve-info";
 import { Context, Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
-import { GraphQLOptionsArg, GraphQLWhereArg } from "../types";
+import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createAuthParam from "./create-auth-param";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
@@ -376,15 +376,18 @@ function createProjectionAndParams({
                 const skipLimit = createSkipLimitStr({ skip: optionsInput.skip, limit: optionsInput.limit });
 
                 if (optionsInput.sort) {
-                    const sorts = optionsInput.sort.map((x) => {
-                        const [fieldName, op] = x.split("_");
+                    const sorts = optionsInput.sort.reduce((s: string[], sort: GraphQLSortArg) => {
+                        return [
+                            ...s,
+                            ...Object.entries(sort).map(([fieldName, direction]) => {
+                                if (direction === "DESC") {
+                                    return `'${fieldName}'`;
+                                }
 
-                        if (op === "DESC") {
-                            return `'${fieldName}'`;
-                        }
-
-                        return `'^${fieldName}'`;
-                    });
+                                return `'^${fieldName}'`;
+                            }),
+                        ];
+                    }, []);
 
                     nestedQuery = `${key}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${skipLimit}`;
                 } else {
