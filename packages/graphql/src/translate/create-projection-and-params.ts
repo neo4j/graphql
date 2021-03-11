@@ -16,6 +16,97 @@ interface ProjectionMeta {
     authStrs: string[];
 }
 
+function createSkipLimitStr({ skip, limit }: { skip?: number; limit?: number }): string {
+    const hasSkip = typeof skip !== "undefined";
+    const hasLimit = typeof limit !== "undefined";
+    let skipLimitStr = "";
+
+    if (hasSkip && !hasLimit) {
+        skipLimitStr = `[${skip}..]`;
+    }
+
+    if (hasLimit && !hasSkip) {
+        skipLimitStr = `[..${limit}]`;
+    }
+
+    if (hasLimit && hasSkip) {
+        skipLimitStr = `[${skip}..${limit}]`;
+    }
+
+    return skipLimitStr;
+}
+
+function createNodeWhereAndParams({
+    whereInput,
+    varName,
+    context,
+    node,
+    varNameOverRide,
+    authStrs,
+}: {
+    whereInput?: any;
+    context: Context;
+    node: Node;
+    varName: string;
+    varNameOverRide?: string;
+    authStrs?: string[];
+}): [string, any] {
+    const whereStrs: string[] = [];
+    let params = {};
+
+    if (whereInput) {
+        const whereAndParams = createWhereAndParams({
+            context,
+            node,
+            varName,
+            whereInput,
+            chainStrOverRide: varNameOverRide,
+            recursing: true,
+        });
+        if (whereAndParams[0]) {
+            whereStrs.push(whereAndParams[0]);
+            params = { ...params, ...whereAndParams[1] };
+        }
+    }
+
+    if (node.auth) {
+        const whereAuth = createAuthAndParams({
+            entity: node,
+            operation: "read",
+            context,
+            where: {
+                varName,
+                chainStr: varNameOverRide,
+            },
+        });
+        if (whereAuth[0]) {
+            whereStrs.push(whereAuth[0]);
+            params = { ...params, ...whereAuth[1] };
+        }
+
+        const preAuth = createAuthAndParams({
+            entity: node,
+            operation: "read",
+            context,
+            allow: {
+                parentNode: node,
+                varName,
+                chainStr: varNameOverRide,
+            },
+        });
+        if (preAuth[0]) {
+            whereStrs.push(`apoc.util.validatePredicate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+            params = { ...params, ...preAuth[1] };
+        }
+    }
+
+    if (authStrs?.length) {
+        whereStrs.push(`apoc.util.validatePredicate(NOT(${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+    }
+
+    return [whereStrs.join(" AND "), params];
+}
+
 function createProjectionAndParams({
     fieldsByTypeName,
     node,
@@ -170,54 +261,16 @@ function createProjectionAndParams({
                     innerHeadStr.push("[");
                     innerHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
 
-                    const whereStrs: string[] = [];
-                    const thisWhere = field.args[refNode.name];
-                    if (thisWhere) {
-                        const whereAndParams = createWhereAndParams({
-                            context,
-                            node: refNode,
-                            varName: param,
-                            whereInput: thisWhere,
-                            chainStrOverRide: varNameOverRide,
-                            recursing: true,
-                        });
-                        if (whereAndParams[0]) {
-                            whereStrs.push(whereAndParams[0]);
-                            res.params = { ...res.params, ...whereAndParams[1] };
-                        }
-                    }
-                    const whereAuth = createAuthAndParams({
-                        entity: refNode,
-                        operation: "read",
+                    const nodeWhereAndParams = createNodeWhereAndParams({
+                        whereInput: field.args[refNode.name],
                         context,
-                        where: {
-                            varName: param,
-                            chainStr: varNameOverRide,
-                        },
+                        node: refNode,
+                        varName: param,
+                        varNameOverRide,
                     });
-                    if (whereAuth[0]) {
-                        whereStrs.push(whereAuth[0]);
-                        res.params = { ...res.params, ...whereAuth[1] };
-                    }
-                    if (whereStrs.length) {
-                        innerHeadStr.push(`AND ${whereStrs.join(" AND ")}`);
-                    }
-
-                    const preAuth = createAuthAndParams({
-                        entity: refNode,
-                        operation: "read",
-                        context,
-                        allow: {
-                            parentNode: refNode,
-                            varName: param,
-                            chainStr: varNameOverRide,
-                        },
-                    });
-                    if (preAuth[0]) {
-                        innerHeadStr.push(
-                            `AND apoc.util.validatePredicate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-                        );
-                        res.params = { ...res.params, ...preAuth[1] };
+                    if (nodeWhereAndParams[0]) {
+                        innerHeadStr.push(`AND ${nodeWhereAndParams[0]}`);
+                        res.params = { ...res.params, ...nodeWhereAndParams[1] };
                     }
 
                     if (field.fieldsByTypeName[refNode.name]) {
@@ -259,24 +312,10 @@ function createProjectionAndParams({
                 unionStrs.push("]");
 
                 if (optionsInput) {
-                    const hasSkip = Boolean(optionsInput.skip) || optionsInput.skip === 0;
-                    const hasLimit = Boolean(optionsInput.limit) || optionsInput.limit === 0;
-
-                    let sortLimitStr = "";
-
-                    if (hasSkip && !hasLimit) {
-                        sortLimitStr = `[${optionsInput.skip}..]`;
+                    const skipLimit = createSkipLimitStr({ skip: optionsInput.skip, limit: optionsInput.limit });
+                    if (skipLimit) {
+                        unionStrs.push(skipLimit);
                     }
-
-                    if (hasLimit && !hasSkip) {
-                        sortLimitStr = `[..${optionsInput.limit}]`;
-                    }
-
-                    if (hasLimit && hasSkip) {
-                        sortLimitStr = `[${optionsInput.skip}..${optionsInput.limit}]`;
-                    }
-
-                    unionStrs.push(sortLimitStr);
                 }
 
                 unionStrs.push(`${!isArray ? ")" : ""}`);
@@ -285,52 +324,7 @@ function createProjectionAndParams({
                 return res;
             }
 
-            let whereStr = "";
             let projectionStr = "";
-            let authStrs: string[] = [];
-
-            if (whereInput) {
-                const where = createWhereAndParams({
-                    whereInput,
-                    varName: `${varName}_${key}`,
-                    node: referenceNode,
-                    context,
-                });
-                [whereStr] = where;
-                res.params = { ...res.params, ...where[1] };
-            }
-
-            const whereAuth = createAuthAndParams({
-                entity: referenceNode,
-                operation: "read",
-                context,
-                where: {
-                    varName: `${varName}_${key}`,
-                },
-            });
-            if (whereAuth[0]) {
-                if (whereStr) {
-                    whereStr = `${whereStr} AND ${whereAuth[0]}`;
-                } else {
-                    whereStr = `WHERE ${whereAuth[0]}`;
-                }
-                res.params = { ...res.params, ...whereAuth[1] };
-            }
-
-            const preAuth = createAuthAndParams({
-                entity: referenceNode,
-                operation: "read",
-                context,
-                allow: {
-                    parentNode: referenceNode,
-                    varName: `${varName}_${key}`,
-                },
-            });
-            if (preAuth[0]) {
-                authStrs.push(preAuth[0]);
-                res.params = { ...res.params, ...preAuth[1] };
-            }
-
             const recurse = createProjectionAndParams({
                 fieldsByTypeName: fieldFields,
                 node: referenceNode || node,
@@ -340,35 +334,28 @@ function createProjectionAndParams({
             });
             [projectionStr] = recurse;
             res.params = { ...res.params, ...recurse[1] };
-            if (recurse[2]?.authStrs.length) {
-                authStrs = [...authStrs, ...recurse[2].authStrs];
+
+            let whereStr = "";
+            const nodeWhereAndParams = createNodeWhereAndParams({
+                whereInput,
+                varName: `${varName}_${key}`,
+                node: referenceNode,
+                context,
+                authStrs: recurse[2]?.authStrs,
+            });
+            if (nodeWhereAndParams[0]) {
+                [whereStr] = nodeWhereAndParams;
+                res.params = { ...res.params, ...nodeWhereAndParams[1] };
             }
+            whereStr = whereStr ? `WHERE ${whereStr}` : whereStr;
 
             const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
-            const innerStr = `${pathStr} ${whereStr} ${
-                authStrs.length
-                    ? `${!whereStr ? "WHERE " : ""} ${
-                          whereStr ? "AND " : ""
-                      } apoc.util.validatePredicate(NOT(${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-                    : ""
-            } | ${param} ${projectionStr}`;
+            const innerStr = `${pathStr}  ${whereStr} | ${param} ${projectionStr}`;
 
             let nestedQuery;
 
             if (optionsInput) {
-                let sortLimitStr = "";
-
-                if (optionsInput.skip && !optionsInput.limit) {
-                    sortLimitStr = `[${optionsInput.skip}..]`;
-                }
-
-                if (optionsInput.limit && !optionsInput.skip) {
-                    sortLimitStr = `[..${optionsInput.limit}]`;
-                }
-
-                if (optionsInput.limit && optionsInput.skip) {
-                    sortLimitStr = `[${optionsInput.skip}..${optionsInput.limit}]`;
-                }
+                const skipLimit = createSkipLimitStr({ skip: optionsInput.skip, limit: optionsInput.limit });
 
                 if (optionsInput.sort) {
                     const sorts = optionsInput.sort.map((x) => {
@@ -381,11 +368,9 @@ function createProjectionAndParams({
                         return `'^${fieldName}'`;
                     });
 
-                    nestedQuery = `${key}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${sortLimitStr}`;
+                    nestedQuery = `${key}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${skipLimit}`;
                 } else {
-                    nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${sortLimitStr}${
-                        !isArray ? ")" : ""
-                    }`;
+                    nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${skipLimit}${!isArray ? ")" : ""}`;
                 }
             } else {
                 nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
