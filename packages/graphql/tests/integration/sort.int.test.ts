@@ -45,7 +45,7 @@ describe("sort", () => {
                     query {
                         movies(
                             where: { id_IN: [${movieIds.join(",")}] },
-                            options: { sort: [number_${type}] }
+                            options: { sort: [{ number: ${type} }] }
                         ) {
                            number
                         }
@@ -65,10 +65,11 @@ describe("sort", () => {
                         contextValue: { driver },
                     });
 
-                    expect(gqlResult.errors).toEqual(undefined);
+                    expect(gqlResult.errors).toBeUndefined();
 
-                    const movies = (gqlResult.data as any).movies;
+                    const { movies } = gqlResult.data as any;
 
+                    /* eslint-disable jest/no-conditional-expect */
                     if (type === "ASC") {
                         expect(movies[0].number).toEqual(1);
                         expect(movies[1].number).toEqual(2);
@@ -80,6 +81,7 @@ describe("sort", () => {
                         expect(movies[1].number).toEqual(2);
                         expect(movies[2].number).toEqual(1);
                     }
+                    /* eslint-enable jest/no-conditional-expect */
                 } finally {
                     await session.close();
                 }
@@ -112,7 +114,7 @@ describe("sort", () => {
                 const query = `
                     query {
                         movies(where: { id: "${movieId}" }) {
-                            genres(options: { sort: [id_${type}] }) {
+                            genres(options: { sort: [{ id: ${type} }] }) {
                                 id
                             }
                         }
@@ -134,10 +136,11 @@ describe("sort", () => {
                         contextValue: { driver },
                     });
 
-                    expect(gqlResult.errors).toEqual(undefined);
+                    expect(gqlResult.errors).toBeUndefined();
 
-                    const genres = (gqlResult.data as any).movies[0].genres;
+                    const { genres } = (gqlResult.data as any).movies[0];
 
+                    /* eslint-disable jest/no-conditional-expect */
                     if (type === "ASC") {
                         expect(genres[0].id).toEqual("1");
                         expect(genres[1].id).toEqual("2");
@@ -147,6 +150,7 @@ describe("sort", () => {
                         expect(genres[0].id).toEqual("2");
                         expect(genres[1].id).toEqual("1");
                     }
+                    /* eslint-enable jest/no-conditional-expect */
                 } finally {
                     await session.close();
                 }
