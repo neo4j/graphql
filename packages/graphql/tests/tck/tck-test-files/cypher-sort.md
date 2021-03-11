@@ -82,7 +82,8 @@ RETURN this { .title } as this
 **GraphQL input**
 
 ```graphql
-query($title: String, $skip: Int, $limit: Int, $sort: [MovieSort]) {
+query($title: String, $skip: Int, $limit: Int, $"""Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]) {
     movies(
         options: { sort: $sort, skip: $skip, limit: $limit }
         where: { title: $title }
