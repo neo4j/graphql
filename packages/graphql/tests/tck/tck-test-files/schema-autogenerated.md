@@ -17,6 +17,7 @@ type Movie {
 **Output**
 
 ```schema-output
+
 type Movie {
   id: ID!
 }

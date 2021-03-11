@@ -56,6 +56,8 @@ export interface BaseField {
     private?: boolean;
     auth?: Auth;
     description?: string;
+    readonly?: boolean;
+    writeonly?: boolean;
 }
 
 /**

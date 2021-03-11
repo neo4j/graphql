@@ -35,6 +35,7 @@ type Subscription {
 **Output**
 
 ```schema-output
+
 input ExampleInput {
     id: ID
 }

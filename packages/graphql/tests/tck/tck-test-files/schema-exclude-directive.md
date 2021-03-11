@@ -21,6 +21,7 @@ type Movie {
 **Output**
 
 ```schema-output
+
 type Actor {
   name: String
 }

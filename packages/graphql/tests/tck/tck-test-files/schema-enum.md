@@ -23,6 +23,7 @@ type Movie {
 **Output**
 
 ```schema-output
+
 enum Status {
   ACTIVE
   INACTIVE

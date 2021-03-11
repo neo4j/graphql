@@ -20,6 +20,7 @@ type Movie @preservedTopLevel {
 **Output**
 
 ```schema-output
+
 directive @preservedTopLevel(string: String, int: Int, float: Float, boolean: Boolean) on OBJECT
 directive @preservedFieldLevel(string: String, int: Int, float: Float, boolean: Boolean) on FIELD_DEFINITION
 

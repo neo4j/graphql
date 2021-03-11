@@ -35,7 +35,10 @@ function filterTypeDefs(typeDefs: TypeDefs) {
                     fields: def.fields?.reduce(
                         (r: FieldDefinitionNode[], f) => [
                             ...r,
-                            { ...f, directives: f.directives?.filter((x) => x.name.value !== "private") },
+                            {
+                                ...f,
+                                directives: f.directives?.filter((x) => !["private", "ignore"].includes(x.name.value)),
+                            },
                         ],
                         []
                     ),
