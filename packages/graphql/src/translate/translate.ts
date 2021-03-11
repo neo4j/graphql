@@ -7,7 +7,7 @@ import { Neo4jGraphQL, Node, Context } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { GraphQLWhereArg, GraphQLOptionsArg, RelationField, AuthOperations } from "../types";
+import { GraphQLWhereArg, GraphQLOptionsArg, RelationField, AuthOperations, GraphQLSortArg } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
@@ -119,20 +119,14 @@ function translateRead({
         }
 
         if (optionsInput.sort && optionsInput.sort.length) {
-            const sortArr = optionsInput.sort.map((s) => {
-                let key;
-                let direc;
-
-                if (s.includes("_DESC")) {
-                    direc = "DESC";
-                    [key] = s.split("_DESC");
-                } else {
-                    direc = "ASC";
-                    [key] = s.split("_ASC");
-                }
-
-                return `${varName}.${key} ${direc}`;
-            });
+            const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {
+                return [
+                    ...res,
+                    ...Object.entries(sort).map(([field, direction]) => {
+                        return `${varName}.${field} ${direction}`;
+                    }),
+                ];
+            }, []);
 
             sortStr = `ORDER BY ${sortArr.join(", ")}`;
         }

@@ -42,8 +42,8 @@ export const Int = new GraphQLScalarType({
     },
 });
 
-/* 
-    https://spec.graphql.org/June2018/#sec-ID 
+/*
+    https://spec.graphql.org/June2018/#sec-ID
     The ID type is serialized in the same way as a String
 */
 export const ID = new GraphQLScalarType({
@@ -73,4 +73,8 @@ export const DateTime = new GraphQLScalarType({
     parseValue: (value: string) => {
         return Neo4jDateTime.fromStandardDate(new Date(value));
     },
+});
+
+export const BigInt = new GraphQLScalarType({
+    name: "BigInt",
 });

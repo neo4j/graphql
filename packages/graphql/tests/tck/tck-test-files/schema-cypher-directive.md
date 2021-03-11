@@ -26,6 +26,7 @@ type Movie {
 **Output**
 
 ```schema-output
+
 type Actor {
   name: String
 }
@@ -35,14 +36,15 @@ input ActorCreateInput {
 }
 
 input ActorOptions {
-  sort: [ActorSort]
+  """Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [ActorSort]
   limit: Int
   skip: Int
 }
 
-enum ActorSort {
-  name_DESC
-  name_ASC
+"""Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object."""
+input ActorSort {
+  name: SortDirection
 }
 
 input ActorUpdateInput {
@@ -70,6 +72,13 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 type Movie {
   id: ID
   actors(title: String): [Actor]
@@ -80,15 +89,15 @@ input MovieCreateInput {
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-
-enum MovieSort {
-  id_DESC
-  id_ASC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  id: SortDirection
 }
 
 input MovieUpdateInput {
