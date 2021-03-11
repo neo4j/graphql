@@ -25,7 +25,7 @@ type Genre {
 
 ```graphql
 {
-    movies(options: { sort: [id_DESC] }) {
+    movies(options: { sort: [{ id: DESC }] }) {
         title
     }
 }
@@ -54,7 +54,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    movies(options: { sort: [id_DESC, title_ASC] }) {
+    movies(options: { sort: [{ id: DESC }, { title: ASC }] }) {
         title
     }
 }
@@ -82,10 +82,13 @@ RETURN this { .title } as this
 **GraphQL input**
 
 ```graphql
-query($title: String, $skip: Int, $limit: Int, $"""Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
-sort: [MovieSort]) {
+query($title: String, $skip: Int, $limit: Int) {
     movies(
-        options: { sort: $sort, skip: $skip, limit: $limit }
+        options: {
+            sort: [{ id: DESC }, { title: ASC }]
+            skip: $skip
+            limit: $limit
+        }
         where: { title: $title }
     ) {
         title
@@ -99,8 +102,7 @@ sort: [MovieSort]) {
 {
     "limit": 2,
     "skip": 1,
-    "title": "some title",
-    "sort": ["id_DESC", "title_ASC"]
+    "title": "some title"
 }
 ```
 
@@ -141,7 +143,7 @@ LIMIT $this_limit
 ```graphql
 {
     movies {
-        genres(options: { sort: [name_DESC] }) {
+        genres(options: { sort: [{ name: DESC }] }) {
             name
         }
     }
@@ -172,7 +174,7 @@ RETURN this {
 ```graphql
 {
     movies {
-        genres(options: { sort: [name_ASC] }) {
+        genres(options: { sort: [{ name: ASC }] }) {
             name
         }
     }
