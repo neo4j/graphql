@@ -43,7 +43,7 @@ describe("[CartesianPoint]", () => {
         }));
 
         const create = gql`
-            mutation CreateParts($id: String!, $locations: [CartesianPointInput]) {
+            mutation CreateParts($id: String!, $locations: [CartesianPointInput!]!) {
                 createParts(input: [{ id: $id, locations: $locations }]) {
                     parts {
                         id
@@ -95,7 +95,7 @@ describe("[CartesianPoint]", () => {
         }));
 
         const create = gql`
-            mutation CreateParts($id: String!, $locations: [CartesianPointInput]) {
+            mutation CreateParts($id: String!, $locations: [CartesianPointInput!]!) {
                 createParts(input: [{ id: $id, locations: $locations }]) {
                     parts {
                         id
@@ -178,7 +178,7 @@ describe("[CartesianPoint]", () => {
         ).toEqual(locations.sort());
 
         const update = gql`
-            mutation UpdateParts($id: String!, $locations: [CartesianPointInput]) {
+            mutation UpdateParts($id: String!, $locations: [CartesianPointInput!]) {
                 updateParts(where: { id: $id }, update: { locations: $locations }) {
                     parts {
                         id
@@ -263,7 +263,7 @@ describe("[CartesianPoint]", () => {
         ).toEqual(locations.sort());
 
         const update = gql`
-            mutation UpdateParts($id: String!, $locations: [CartesianPointInput]) {
+            mutation UpdateParts($id: String!, $locations: [CartesianPointInput!]) {
                 updateParts(where: { id: $id }, update: { locations: $locations }) {
                     parts {
                         id
