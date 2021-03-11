@@ -127,7 +127,9 @@ input MovieWhere {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   ids: [ID!]
+  ids_INCLUDES: ID
   ids_NOT: [ID!]
+  ids_NOT_INCLUDES: ID
   name: String
   name_CONTAINS: String
   name_ENDS_WITH: String
@@ -140,7 +142,9 @@ input MovieWhere {
   name_NOT_STARTS_WITH: String
   name_STARTS_WITH: String
   names: [String!]
+  names_INCLUDES: String
   names_NOT: [String!]
+  names_NOT_INCLUDES: String
   actorCount: Int
   actorCount_NOT: Int
   actorCount_IN: [Int]
@@ -150,7 +154,9 @@ input MovieWhere {
   actorCount_GT: Int
   actorCount_GTE: Int
   actorCounts: [Int!]
+  actorCounts_INCLUDES: Int
   actorCounts_NOT: [Int!]
+  actorCounts_NOT_INCLUDES: Int
   averageRating: Float
   averageRating_NOT: Float
   averageRating_IN: [Float]
@@ -160,7 +166,9 @@ input MovieWhere {
   averageRating_GT: Float
   averageRating_GTE: Float
   averageRatings: [Float!]
+  averageRatings_INCLUDES: Float
   averageRatings_NOT: [Float!]
+  averageRatings_NOT_INCLUDES: Float
   isActives: [Boolean!]
   isActives_NOT: [Boolean!]
   createdAt: DateTime
@@ -172,7 +180,9 @@ input MovieWhere {
   createdAt_GT: DateTime
   createdAt_GTE: DateTime
   createdAts: [DateTime!]
+  createdAts_INCLUDES: DateTime
   createdAts_NOT: [DateTime!]
+  createdAts_NOT_INCLUDES: DateTime
   filmedAt: PointInput
   filmedAt_NOT: PointInput
   filmedAt_IN: [PointInput]
@@ -183,7 +193,9 @@ input MovieWhere {
   filmedAt_GT: PointDistance
   filmedAt_GTE: PointDistance
   filmedAts: [PointInput!]
+  filmedAts_INCLUDES: PointInput
   filmedAts_NOT: [PointInput!]
+  filmedAts_NOT_INCLUDES: PointInput
 }
 
 type Mutation {

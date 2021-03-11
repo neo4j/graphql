@@ -67,7 +67,7 @@ function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode)
     return {
         ...baseMeta,
         input: {
-            where: { type: name, pretty: inputPretty },
+            where: { type, pretty: inputPretty },
             create: {
                 type: name,
                 pretty: `${inputPretty}${required ? "!" : ""}`,

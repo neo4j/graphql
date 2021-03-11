@@ -238,30 +238,31 @@ function makeAugmentedSchema(
                     res[f.fieldName] = f.typeMeta.input.where.pretty;
                     res[`${f.fieldName}_NOT`] = f.typeMeta.input.where.pretty;
 
-                    if (f.typeMeta.array) {
+                    if (f.typeMeta.name === "Boolean") {
                         return res;
                     }
 
-                    if (f.typeMeta.name !== "Boolean") {
-                        res[`${f.fieldName}_IN`] = f.typeMeta.array
-                            ? f.typeMeta.input.where.pretty
-                            : `[${f.typeMeta.input.where.pretty}]`;
-
-                        res[`${f.fieldName}_NOT_IN`] = f.typeMeta.array
-                            ? f.typeMeta.input.where.pretty
-                            : `[${f.typeMeta.input.where.pretty}]`;
+                    if (f.typeMeta.array) {
+                        res[`${f.fieldName}_INCLUDES`] = f.typeMeta.input.where.type;
+                        res[`${f.fieldName}_NOT_INCLUDES`] = f.typeMeta.input.where.type;
+                        return res;
                     }
+
+                    res[`${f.fieldName}_IN`] = `[${f.typeMeta.input.where.pretty}]`;
+                    res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}]`;
 
                     if (["Float", "Int", "DateTime"].includes(f.typeMeta.name)) {
                         ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
                             res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
                         });
+                        return res;
                     }
 
                     if (["Point", "CartesianPoint"].includes(f.typeMeta.name)) {
                         ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
                             res[`${f.fieldName}${comparator}`] = `${f.typeMeta.name}Distance`;
                         });
+                        return res;
                     }
 
                     if (["String", "ID"].includes(f.typeMeta.name)) {
@@ -277,6 +278,7 @@ function makeAugmentedSchema(
                         ].forEach((comparator) => {
                             res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
                         });
+                        return res;
                     }
 
                     return res;

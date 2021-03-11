@@ -70,7 +70,9 @@ input MovieWhere {
   id_NOT_ENDS_WITH: ID
   id_MATCHES: String
   ratings: [Float!]
+  ratings_INCLUDES: Float
   ratings_NOT: [Float!]
+  ratings_NOT_INCLUDES: Float
   averageRating: Float
   averageRating_IN: [Float]
   averageRating_NOT: Float
