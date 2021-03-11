@@ -258,7 +258,9 @@ input MovieOptions {
 
 input MovieWhere {
   filmedAt: [PointInput!]
+  filmedAt_INCLUDES: PointInput
   filmedAt_NOT: [PointInput!]
+  filmedAt_NOT_INCLUDES: PointInput
   OR: [MovieWhere!]
   AND: [MovieWhere!]
 }
@@ -335,7 +337,9 @@ input MachineOptions {
 
 input MachineWhere {
   partLocations: [CartesianPointInput!]
+  partLocations_INCLUDES: CartesianPointInput
   partLocations_NOT: [CartesianPointInput!]
+  partLocations_NOT_INCLUDES: CartesianPointInput
   OR: [MachineWhere!]
   AND: [MachineWhere!]
 }
