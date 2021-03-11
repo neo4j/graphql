@@ -44,6 +44,7 @@ type Movie {
 **Output**
 
 ```schema-output
+
 """A custom scalar."""
 scalar CustomScalar
 

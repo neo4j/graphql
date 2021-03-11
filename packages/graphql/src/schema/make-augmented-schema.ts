@@ -145,6 +145,7 @@ function makeAugmentedSchema(
             ...node.unionFields,
             ...node.dateTimeFields,
             ...node.pointFields,
+            ...node.ignoredFields,
         ]);
 
         const composeNode = composer.createObjectTC({
@@ -271,6 +272,10 @@ function makeAugmentedSchema(
                 ...node.dateTimeFields.filter((x) => !x.timestamps),
                 ...node.pointFields,
             ].reduce((res, f) => {
+                if (f.readonly) {
+                    return res;
+                }
+
                 if ((f as PrimitiveField)?.autogenerate) {
                     const field: InputTypeComposerFieldConfigAsObjectDefinition = {
                         type: f.typeMeta.name,
@@ -294,10 +299,13 @@ function makeAugmentedSchema(
                 ...node.dateTimeFields.filter((x) => !x.timestamps),
                 ...node.pointFields,
             ].reduce(
-                (res, f) => ({
-                    ...res,
-                    [f.fieldName]: f.typeMeta.input.pretty,
-                }),
+                (res, f) =>
+                    f.readonly
+                        ? res
+                        : {
+                              ...res,
+                              [f.fieldName]: f.typeMeta.input.pretty,
+                          },
                 {}
             ),
         });

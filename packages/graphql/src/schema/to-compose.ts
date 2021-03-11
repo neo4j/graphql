@@ -33,6 +33,10 @@ export function objectFieldsToComposeFields(
     fields: BaseField[]
 ): { [k: string]: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> } {
     return fields.reduce((res, field) => {
+        if (field.writeonly) {
+            return res;
+        }
+
         const newField = {
             type: field.typeMeta.pretty,
             args: {},
