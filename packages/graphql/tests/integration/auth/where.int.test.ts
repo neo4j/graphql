@@ -69,6 +69,8 @@ describe("auth/where", () => {
                     contextValue: { driver, req },
                 });
 
+                expect(gqlResult.errors).toBeUndefined();
+
                 const users = (gqlResult.data as any).users as any[];
                 expect(users).toEqual([{ id: userId }]);
             } finally {
@@ -140,6 +142,84 @@ describe("auth/where", () => {
                     source: query,
                     contextValue: { driver, req },
                 });
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const posts = (gqlResult.data as any).posts as any[];
+                expect(posts).toHaveLength(2);
+                const post1 = posts.find((x) => x.id === postId1);
+                expect(post1).toBeTruthy();
+                const post2 = posts.find((x) => x.id === postId2);
+                expect(post2).toBeTruthy();
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should add $jwt.id to where(from a field) and return users posts", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                }
+
+                type Post {
+                    id: ID @auth(rules: [{ operations: ["read"], where: { creator: { id: "$jwt.sub" } } }])
+                    creator: User @relationship(type: "HAS_POST", direction: "IN")
+                }
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId1 = generate({
+                charset: "alphabetic",
+            });
+            const postId2 = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                {
+                    posts {
+                        id
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: userId,
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (u:User {id: "${userId}"})
+                    CREATE (p1:Post {id: "${postId1}"})
+                    CREATE (p2:Post {id: "${postId2}"})
+                    MERGE (u)-[:HAS_POST]->(p1)
+                    MERGE (u)-[:HAS_POST]->(p2)
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
 
                 const posts = (gqlResult.data as any).posts as any[];
                 expect(posts).toHaveLength(2);
@@ -224,7 +304,7 @@ describe("auth/where", () => {
                         source: query,
                         contextValue: { driver, req },
                     });
-
+                    expect(gqlResult.errors).toBeUndefined();
                     const posts = (gqlResult.data as any).users[0].content as any[];
                     expect(posts).toHaveLength(2);
                     const post1 = posts.find((x) => x.id === postId1);

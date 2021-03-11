@@ -142,7 +142,7 @@ function createAuthAndParams({
     context: Context;
     escapeQuotes?: boolean;
     bind?: Bind;
-    where?: { varName: string; chainStr?: string };
+    where?: { varName: string; chainStr?: string; node: Node };
 }): [string, any] {
     if (!entity.auth) {
         return ["", {}];
@@ -168,7 +168,7 @@ function createAuthAndParams({
                         context,
                     }),
                     context,
-                    node: entity as Node,
+                    node: where.node,
                     varName: where.varName,
                     chainStr: `${where.chainStr || where.varName}_auth_where${index}`,
                     recursing: true,
@@ -182,7 +182,7 @@ function createAuthAndParams({
             { strs: [], params: {} }
         );
 
-        const joined = subPredicates.strs.filter(Boolean).join(" AND ");
+        const joined = subPredicates.strs.filter(Boolean).join(" OR ");
 
         return [joined, subPredicates.params];
     }

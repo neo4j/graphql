@@ -40,20 +40,6 @@ function translateRead({
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
 
-    const projection = createProjectionAndParams({
-        node,
-        context,
-        fieldsByTypeName,
-        varName,
-    });
-    [projStr] = projection;
-    cypherParams = { ...cypherParams, ...projection[1] };
-    if (projection[2]?.authStrs.length) {
-        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
-            " AND "
-        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-    }
-
     if (whereInput) {
         const where = createWhereAndParams({
             whereInput,
@@ -65,12 +51,34 @@ function translateRead({
         cypherParams = { ...cypherParams, ...where[1] };
     }
 
+    const projection = createProjectionAndParams({
+        node,
+        context,
+        fieldsByTypeName,
+        varName,
+    });
+    [projStr] = projection;
+    cypherParams = { ...cypherParams, ...projection[1] };
+    if (projection[2]?.authValidateStrs?.length) {
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
+            " AND "
+        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+    }
+    if (projection[2]?.authWhereStrs?.length) {
+        const joined = projection[2]?.authWhereStrs.join(" AND ");
+        if (whereStr) {
+            whereStr = `${whereStr} AND ${joined}`;
+        } else {
+            whereStr = `WHERE ${joined}`;
+        }
+    }
+
     if (node.auth) {
         const whereAuth = createAuthAndParams({
             operation: "read",
             entity: node,
             context,
-            where: { varName },
+            where: { varName, node },
         });
         if (whereAuth[0]) {
             if (whereStr) {
@@ -192,8 +200,8 @@ function translateCreate({
         fieldsByTypeName,
         varName: "REPLACE_ME",
     });
-    if (projection[2]?.authStrs.length) {
-        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
+    if (projection[2]?.authValidateStrs?.length) {
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
             " AND "
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
@@ -361,10 +369,18 @@ function translateUpdate({
     });
     [projStr] = projection;
     cypherParams = { ...cypherParams, ...projection[1] };
-    if (projection[2]?.authStrs.length) {
-        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
+    if (projection[2]?.authValidateStrs?.length) {
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
             " AND "
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+    }
+    if (projection[2]?.authWhereStrs?.length) {
+        const joined = projection[2]?.authWhereStrs.join(" AND ");
+        if (whereStr) {
+            whereStr = `${whereStr} AND ${joined}`;
+        } else {
+            whereStr = `WHERE ${joined}`;
+        }
     }
 
     const cypher = [
