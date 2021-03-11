@@ -21,19 +21,6 @@ type Movie {
 **Output**
 
 ```schema-output
-"""Instructs @neo4j/graphql to run the specified Cypher statement in order to resolve the value of the field to which the directive is applied."""
-directive @cypher(
-  """The Cypher statement to run which returns a value of the same type composition as the field definition on which the directive is applied."""
-  statement: String!
-) on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to completely ignore a field definition, assuming that it will be fully accounted for by custom resolvers."""
-directive @ignore on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to only expose a field through the Neo4j GraphQL OGM."""
-directive @private on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to exclude a field from the generated input types for the object type within which the directive is applied."""
-directive @readonly on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself."""
-directive @writeonly on FIELD_DEFINITION
 
 type Actor {
   name: String
@@ -152,20 +139,6 @@ type Actor @exclude(operations: ["create"]) {
 **Output**
 
 ```schema-output
-"""Instructs @neo4j/graphql to run the specified Cypher statement in order to resolve the value of the field to which the directive is applied."""
-directive @cypher(
-  """The Cypher statement to run which returns a value of the same type composition as the field definition on which the directive is applied."""
-  statement: String!
-) on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to completely ignore a field definition, assuming that it will be fully accounted for by custom resolvers."""
-directive @ignore on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to only expose a field through the Neo4j GraphQL OGM."""
-directive @private on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to exclude a field from the generated input types for the object type within which the directive is applied."""
-directive @readonly on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself."""
-directive @writeonly on FIELD_DEFINITION
-
 type Actor {
   name: String
 }
@@ -239,20 +212,6 @@ type Movie {
 **Output**
 
 ```schema-output
-"""Instructs @neo4j/graphql to run the specified Cypher statement in order to resolve the value of the field to which the directive is applied."""
-directive @cypher(
-  """The Cypher statement to run which returns a value of the same type composition as the field definition on which the directive is applied."""
-  statement: String!
-) on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to completely ignore a field definition, assuming that it will be fully accounted for by custom resolvers."""
-directive @ignore on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to only expose a field through the Neo4j GraphQL OGM."""
-directive @private on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to exclude a field from the generated input types for the object type within which the directive is applied."""
-directive @readonly on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself."""
-directive @writeonly on FIELD_DEFINITION
-
 type DeleteInfo {
   nodesDeleted: Int!
   relationshipsDeleted: Int!
@@ -339,20 +298,6 @@ type Query {
 **Output**
 
 ```schema-output
-"""Instructs @neo4j/graphql to run the specified Cypher statement in order to resolve the value of the field to which the directive is applied."""
-directive @cypher(
-  """The Cypher statement to run which returns a value of the same type composition as the field definition on which the directive is applied."""
-  statement: String!
-) on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to completely ignore a field definition, assuming that it will be fully accounted for by custom resolvers."""
-directive @ignore on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to only expose a field through the Neo4j GraphQL OGM."""
-directive @private on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to exclude a field from the generated input types for the object type within which the directive is applied."""
-directive @readonly on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself."""
-directive @writeonly on FIELD_DEFINITION
-
 type Actor {
   name: String
 }
@@ -441,20 +386,6 @@ type Movie {
 **Output**
 
 ```schema-output
-"""Instructs @neo4j/graphql to run the specified Cypher statement in order to resolve the value of the field to which the directive is applied."""
-directive @cypher(
-  """The Cypher statement to run which returns a value of the same type composition as the field definition on which the directive is applied."""
-  statement: String!
-) on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to completely ignore a field definition, assuming that it will be fully accounted for by custom resolvers."""
-directive @ignore on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to only expose a field through the Neo4j GraphQL OGM."""
-directive @private on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to exclude a field from the generated input types for the object type within which the directive is applied."""
-directive @readonly on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself."""
-directive @writeonly on FIELD_DEFINITION
-
 type Actor {
   name: String
 }
@@ -635,20 +566,6 @@ type Actor @exclude(operations: []) {
 **Output**
 
 ```schema-output
-"""Instructs @neo4j/graphql to run the specified Cypher statement in order to resolve the value of the field to which the directive is applied."""
-directive @cypher(
-  """The Cypher statement to run which returns a value of the same type composition as the field definition on which the directive is applied."""
-  statement: String!
-) on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to completely ignore a field definition, assuming that it will be fully accounted for by custom resolvers."""
-directive @ignore on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to only expose a field through the Neo4j GraphQL OGM."""
-directive @private on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to exclude a field from the generated input types for the object type within which the directive is applied."""
-directive @readonly on FIELD_DEFINITION
-"""Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself."""
-directive @writeonly on FIELD_DEFINITION
-
 type Actor {
   name: String
 }
