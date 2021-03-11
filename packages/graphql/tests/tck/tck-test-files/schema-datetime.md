@@ -31,6 +31,12 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
 
 input MovieCreateInput {
   id: ID
@@ -38,16 +44,16 @@ input MovieCreateInput {
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-enum MovieSort {
-  id_DESC
-  id_ASC
-  datetime_DESC
-  datetime_ASC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  id: SortDirection
+  datetime: SortDirection
 }
 
 input MovieWhere {
