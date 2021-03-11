@@ -44,6 +44,7 @@ type Movie {
 **Output**
 
 ```schema-output
+
 """A custom scalar."""
 scalar CustomScalar
 
@@ -76,6 +77,13 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 input MovieCreateInput {
   id: ID
   actorCount: Int
@@ -86,24 +94,20 @@ input MovieCreateInput {
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-enum MovieSort {
-  id_DESC
-  id_ASC
-  actorCount_DESC
-  actorCount_ASC
-  averageRating_DESC
-  averageRating_ASC
-  customScalar_ASC
-  customScalar_DESC
-  genre_ASC
-  genre_DESC
-  isActive_DESC
-  isActive_ASC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  id: SortDirection
+  actorCount: SortDirection
+  averageRating: SortDirection
+  customScalar: SortDirection
+  genre: SortDirection
+  isActive: SortDirection
 }
 
 input MovieWhere {

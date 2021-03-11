@@ -36,6 +36,7 @@ interface ObjectFields {
     objectFields: ObjectField[];
     dateTimeFields: DateTimeField[];
     pointFields: PointField[];
+    ignoredFields: BaseField[];
 }
 
 function getObjFieldMeta({
@@ -55,8 +56,7 @@ function getObjFieldMeta({
 }) {
     return obj?.fields?.reduce(
         (res: ObjectFields, field) => {
-            const privateField = field?.directives?.find((x) => x.name.value === "private");
-            if (privateField) {
+            if (field?.directives?.some((x) => x.name.value === "private")) {
                 return res;
             }
 
@@ -75,11 +75,16 @@ function getObjFieldMeta({
                 fieldName: field.name.value,
                 typeMeta,
                 otherDirectives: (field.directives || []).filter(
-                    (x) => !["relationship", "cypher", "autogenerate", "auth"].includes(x.name.value)
+                    (x) =>
+                        !["relationship", "cypher", "autogenerate", "auth", "readonly", "writeonly", "ignore"].includes(
+                            x.name.value
+                        )
                 ),
                 arguments: [...(field.arguments || [])],
                 ...(authDirective ? { auth: getAuth(authDirective) } : {}),
                 description: field.description?.value,
+                readonly: field?.directives?.some((d) => d.name.value === "readonly"),
+                writeonly: field?.directives?.some((d) => d.name.value === "writeonly"),
             };
 
             if (relationshipMeta) {
@@ -148,6 +153,8 @@ function getObjFieldMeta({
                     ...baseField,
                 };
                 res.objectFields.push(objectField);
+            } else if (field.directives?.some((d) => d.name.value === "ignore")) {
+                res.ignoredFields.push(baseField);
             } else {
                 // eslint-disable-next-line no-lonely-if
                 if (typeMeta.name === "DateTime") {
@@ -224,6 +231,7 @@ function getObjFieldMeta({
             objectFields: [],
             dateTimeFields: [],
             pointFields: [],
+            ignoredFields: [],
         }
     ) as ObjectFields;
 }

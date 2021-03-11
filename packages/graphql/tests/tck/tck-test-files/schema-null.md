@@ -73,24 +73,27 @@ input MovieCreateInput {
 }
 
 input MovieOptions {
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
   sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-enum MovieSort {
-  id_DESC
-  id_ASC
-  name_ASC
-  name_DESC
-  actorCount_DESC
-  actorCount_ASC
-  averageRating_DESC
-  averageRating_ASC
-  createdAt_DESC
-  createdAt_ASC
-  filmedAt_DESC
-  filmedAt_ASC
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  actorCount: SortDirection
+  averageRating: SortDirection
+  createdAt: SortDirection
+  filmedAt: SortDirection
+  id: SortDirection
+  name: SortDirection
 }
 
 input MovieUpdateInput {

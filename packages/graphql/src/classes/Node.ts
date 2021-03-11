@@ -11,6 +11,7 @@ import {
     DateTimeField,
     PointField,
     Auth,
+    BaseField,
 } from "../types";
 import Exclude from "./Exclude";
 
@@ -28,6 +29,7 @@ export interface NodeConstructor {
     objectFields: ObjectField[];
     dateTimeFields: DateTimeField[];
     pointFields: PointField[];
+    ignoredFields: BaseField[];
     auth?: Auth;
     exclude?: Exclude;
     description?: string;
@@ -59,6 +61,8 @@ class Node {
     public dateTimeFields: DateTimeField[];
 
     public pointFields: PointField[];
+
+    public ignoredFields: BaseField[];
 
     public exclude?: Exclude;
 
@@ -107,6 +111,7 @@ class Node {
         this.objectFields = input.objectFields;
         this.dateTimeFields = input.dateTimeFields;
         this.pointFields = input.pointFields;
+        this.ignoredFields = input.ignoredFields;
         this.exclude = input.exclude;
         this.auth = input.auth;
         this.description = input.description;
