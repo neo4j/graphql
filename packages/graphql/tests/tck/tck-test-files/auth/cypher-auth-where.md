@@ -58,7 +58,7 @@ extend type Post
     @auth(
         rules: [
             {
-                operations: ["read", "update"]
+                operations: ["read", "update", "delete"]
                 where: { creator: { id: "$jwt.sub" } }
             }
         ]
@@ -604,6 +604,93 @@ DETACH DELETE this
 ```cypher-params
 {
     "this_auth_where0_id": "id-01"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Delete Node + User Defined Where
+
+**GraphQL input**
+
+```graphql
+mutation {
+    deleteUsers(where: { name: "Bob" }) {
+        nodesDeleted
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User)
+WHERE this.name = $this_name AND this.id = $this_auth_where0_id
+DETACH DELETE this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_auth_where0_id": "id-01",
+    "this_name": "Bob"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Delete Nested Node
+
+**GraphQL input**
+
+```graphql
+mutation {
+    deleteUsers(delete: { posts: { where: {} } }) {
+        nodesDeleted
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User)
+WHERE this.id = $this_auth_where0_id
+
+WITH this
+OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
+WHERE EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ALL(this_posts0_auth_where0_creator IN [(this_posts0)<-[:HAS_POST]-(this_posts0_auth_where0_creator:User) | this_posts0_auth_where0_creator] WHERE this_posts0_auth_where0_creator.id = $this_posts0_auth_where0_creator_id)
+
+FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_posts0 )
+
+DETACH DELETE this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_auth_where0_id": "id-01",
+    "this_posts0_auth_where0_creator_id": "id-01"
 }
 ```
 

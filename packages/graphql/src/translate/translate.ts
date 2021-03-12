@@ -440,7 +440,7 @@ function translateDelete({
 
     if (node.auth) {
         const whereAuth = createAuthAndParams({
-            operation: "read",
+            operation: "delete",
             entity: node,
             context,
             where: { varName, node },
@@ -454,7 +454,7 @@ function translateDelete({
             cypherParams = { ...cypherParams, ...whereAuth[1] };
         }
 
-        const allowAndParams = createAuthAndParams({
+        const allowAuth = createAuthAndParams({
             operation: "delete",
             entity: node,
             context,
@@ -463,9 +463,9 @@ function translateDelete({
                 varName,
             },
         });
-        if (allowAndParams[0]) {
-            cypherParams = { ...cypherParams, ...allowAndParams[1] };
-            allowStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        if (allowAuth[0]) {
+            cypherParams = { ...cypherParams, ...allowAuth[1] };
+            allowStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
         }
     }
 
