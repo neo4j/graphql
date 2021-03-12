@@ -21,8 +21,18 @@ describe("createConnectAndParams", () => {
                         required: false,
                         pretty: "[Movies]",
                         input: {
-                            name: "Movie",
-                            pretty: "[Movies]",
+                            where: {
+                                type: "Movie",
+                                pretty: "[Movie]",
+                            },
+                            create: {
+                                type: "Movie",
+                                pretty: "[Movie]",
+                            },
+                            update: {
+                                type: "Movie",
+                                pretty: "[Movie]",
+                            },
                         },
                     },
                     otherDirectives: [],
