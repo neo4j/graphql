@@ -35,8 +35,12 @@ describe("createProjectionAndParams", () => {
                         required: false,
                         pretty: "String",
                         input: {
-                            name: "String",
-                            pretty: "String",
+                            where: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            create: { type: "String", pretty: "String" },
+                            update: { type: "String", pretty: "String" },
                         },
                     },
                     otherDirectives: [],

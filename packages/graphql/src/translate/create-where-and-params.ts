@@ -99,13 +99,6 @@ function createWhereAndParams({
         if (key.endsWith("_NOT_IN")) {
             const [fieldName] = key.split("_NOT_IN");
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
-            const array = [
-                ...node.scalarFields,
-                ...node.dateTimeFields,
-                ...node.enumFields,
-                ...node.primitiveFields,
-                ...node.pointFields,
-            ].find((x) => fieldName === x.fieldName)?.typeMeta.array;
 
             if (relationField) {
                 const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
@@ -139,16 +132,10 @@ function createWhereAndParams({
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
             } else if (pointField) {
-                res.clauses.push(
-                    array
-                        ? `(NOT point($${param}) IN ${varName}.${fieldName})`
-                        : `(NOT ${varName}.${fieldName} IN [p in $${param} | point(p)])`
-                );
+                res.clauses.push(`(NOT ${varName}.${fieldName} IN [p in $${param} | point(p)])`);
                 res.params[param] = value;
             } else {
-                res.clauses.push(
-                    array ? `(NOT $${param} IN ${varName}.${fieldName})` : `(NOT ${varName}.${fieldName} IN $${param})`
-                );
+                res.clauses.push(`(NOT ${varName}.${fieldName} IN $${param})`);
                 res.params[param] = value;
             }
 
@@ -158,13 +145,6 @@ function createWhereAndParams({
         if (key.endsWith("_IN")) {
             const [fieldName] = key.split("_IN");
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
-            const array = [
-                ...node.scalarFields,
-                ...node.dateTimeFields,
-                ...node.enumFields,
-                ...node.primitiveFields,
-                ...node.pointFields,
-            ].find((x) => fieldName === x.fieldName)?.typeMeta.array;
 
             if (relationField) {
                 const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
@@ -197,16 +177,38 @@ function createWhereAndParams({
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
             } else if (pointField) {
-                res.clauses.push(
-                    array
-                        ? `point($${param}) IN ${varName}.${fieldName}`
-                        : `${varName}.${fieldName} IN [p in $${param} | point(p)]`
-                );
+                res.clauses.push(`${varName}.${fieldName} IN [p in $${param} | point(p)]`);
                 res.params[param] = value;
             } else {
-                res.clauses.push(
-                    array ? `$${param} IN ${varName}.${fieldName}` : `${varName}.${fieldName} IN $${param}`
-                );
+                res.clauses.push(`${varName}.${fieldName} IN $${param}`);
+                res.params[param] = value;
+            }
+
+            return res;
+        }
+
+        if (key.endsWith("_NOT_INCLUDES")) {
+            const [fieldName] = key.split("_NOT_INCLUDES");
+
+            if (pointField) {
+                res.clauses.push(`(NOT point($${param}) IN ${varName}.${fieldName})`);
+                res.params[param] = value;
+            } else {
+                res.clauses.push(`(NOT $${param} IN ${varName}.${fieldName})`);
+                res.params[param] = value;
+            }
+
+            return res;
+        }
+
+        if (key.endsWith("_INCLUDES")) {
+            const [fieldName] = key.split("_INCLUDES");
+
+            if (pointField) {
+                res.clauses.push(`point($${param}) IN ${varName}.${fieldName}`);
+                res.params[param] = value;
+            } else {
+                res.clauses.push(`$${param} IN ${varName}.${fieldName}`);
                 res.params[param] = value;
             }
 

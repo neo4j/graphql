@@ -87,9 +87,7 @@ input MovieWhere {
   id_NOT_ENDS_WITH: ID
   id_MATCHES: String
   movies: MovieWhere
-  movies_IN: [MovieWhere!]
   movies_NOT: MovieWhere
-  movies_NOT_IN: [MovieWhere!]
   OR: [MovieWhere!]
   AND: [MovieWhere!]
 }
