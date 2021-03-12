@@ -381,4 +381,68 @@ describe("auth/where", () => {
             }
         });
     });
+
+    describe("delete", () => {
+        test("should add $jwt.id to where", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                }
+
+                extend type User @auth(rules: [{ operations: ["delete"], where: { id: "$jwt.sub" } }])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    deleteUsers(where: { id: "${userId}" }){
+                        nodesDeleted
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: userId,
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+                const nodesDeleted = (gqlResult.data as any).deleteUsers.nodesDeleted as number;
+                expect(nodesDeleted).toEqual(1);
+
+                const reQuery = await session.run(`
+                    MATCH (u:User {id: "${userId}"})
+                    RETURN u
+                `);
+                expect(reQuery.records).toHaveLength(0);
+            } finally {
+                await session.close();
+            }
+        });
+    });
 });

@@ -423,9 +423,8 @@ function translateDelete({
     const varName = "this";
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
-    let preAuthStr = "";
+    let allowStr = "";
     let deleteStr = "";
-    const authStr = "";
     let cypherParams: { [k: string]: any } = {};
 
     if (whereInput) {
@@ -439,18 +438,35 @@ function translateDelete({
         cypherParams = { ...cypherParams, ...where[1] };
     }
 
-    const preAuth = createAuthAndParams({
-        operation: "delete",
-        entity: node,
-        context,
-        allow: {
-            parentNode: node,
-            varName,
-        },
-    });
-    if (preAuth[0]) {
-        cypherParams = { ...cypherParams, ...preAuth[1] };
-        preAuthStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+    if (node.auth) {
+        const whereAuth = createAuthAndParams({
+            operation: "read",
+            entity: node,
+            context,
+            where: { varName, node },
+        });
+        if (whereAuth[0]) {
+            if (whereStr) {
+                whereStr = `${whereStr} AND ${whereAuth[0]}`;
+            } else {
+                whereStr = `WHERE ${whereAuth[0]}`;
+            }
+            cypherParams = { ...cypherParams, ...whereAuth[1] };
+        }
+
+        const allowAndParams = createAuthAndParams({
+            operation: "delete",
+            entity: node,
+            context,
+            allow: {
+                parentNode: node,
+                varName,
+            },
+        });
+        if (allowAndParams[0]) {
+            cypherParams = { ...cypherParams, ...allowAndParams[1] };
+            allowStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        }
     }
 
     if (deleteInput) {
@@ -466,7 +482,7 @@ function translateDelete({
         cypherParams = { ...cypherParams, ...deleteAndParams[1] };
     }
 
-    const cypher = [matchStr, whereStr, deleteStr, preAuthStr, authStr, `DETACH DELETE ${varName}`];
+    const cypher = [matchStr, whereStr, deleteStr, allowStr, `DETACH DELETE ${varName}`];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
 }

@@ -24,7 +24,7 @@ extend type User
     @auth(
         rules: [
             {
-                operations: ["read", "update"]
+                operations: ["read", "update", "delete"]
                 where: { id: "$jwt.sub" }
             }
         ]
@@ -565,6 +565,45 @@ RETURN this {
         "admin"
       ]
     }
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Delete Node
+
+**GraphQL input**
+
+```graphql
+mutation {
+    deleteUsers {
+        nodesDeleted
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User)
+WHERE this.id = $this_auth_where0_id
+DETACH DELETE this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_auth_where0_id": "id-01"
 }
 ```
 
