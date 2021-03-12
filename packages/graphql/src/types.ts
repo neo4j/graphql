@@ -37,12 +37,22 @@ export type Auth = {
  */
 export interface TypeMeta {
     name: string;
-    array: boolean;
+    array?: boolean;
     required: boolean;
     pretty: string;
     input: {
-        name: string;
-        pretty: string;
+        where: {
+            type: string;
+            pretty: string;
+        };
+        create: {
+            type: string;
+            pretty: string;
+        };
+        update: {
+            type: string;
+            pretty: string;
+        };
     };
 }
 

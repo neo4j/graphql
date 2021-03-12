@@ -39,9 +39,9 @@ enum SortDirection {
 }
 
 input MovieCreateInput {
-  id: ID
-  ratings: [Float]
-  averageRating: Float
+  id: ID!
+  ratings: [Float!]!
+  averageRating: Float!
 }
 
 input MovieOptions {
@@ -69,10 +69,10 @@ input MovieWhere {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_MATCHES: String
-  ratings: [Float]
-  ratings_NOT: [Float]
-  ratings_IN: Float
-  ratings_NOT_IN: Float
+  ratings: [Float!]
+  ratings_INCLUDES: Float
+  ratings_NOT: [Float!]
+  ratings_NOT_INCLUDES: Float
   averageRating: Float
   averageRating_IN: [Float]
   averageRating_NOT: Float
@@ -87,7 +87,7 @@ input MovieWhere {
 
 input MovieUpdateInput {
   id: ID
-  ratings: [Float]
+  ratings: [Float!]
   averageRating: Float
 }
 

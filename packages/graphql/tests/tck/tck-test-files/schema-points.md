@@ -54,7 +54,7 @@ enum SortDirection {
 }
 
 input MovieCreateInput {
-  filmedAt: PointInput
+  filmedAt: PointInput!
 }
 
 input MovieOptions {
@@ -157,7 +157,7 @@ enum SortDirection {
 }
 
 input MachineCreateInput {
-  partLocation: CartesianPointInput
+  partLocation: CartesianPointInput!
 }
 
 input MachineOptions {
@@ -248,7 +248,7 @@ type DeleteInfo {
 }
 
 input MovieCreateInput {
-  filmedAt: [PointInput]
+  filmedAt: [PointInput!]!
 }
 
 input MovieOptions {
@@ -257,16 +257,16 @@ input MovieOptions {
 }
 
 input MovieWhere {
-  filmedAt: [PointInput]
-  filmedAt_NOT: [PointInput]
-  filmedAt_IN: PointInput
-  filmedAt_NOT_IN: PointInput
+  filmedAt: [PointInput!]
+  filmedAt_INCLUDES: PointInput
+  filmedAt_NOT: [PointInput!]
+  filmedAt_NOT_INCLUDES: PointInput
   OR: [MovieWhere!]
   AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {
-  filmedAt: [PointInput]
+  filmedAt: [PointInput!]
 }
 
 type CreateMoviesMutationResponse {
@@ -327,7 +327,7 @@ type DeleteInfo {
 }
 
 input MachineCreateInput {
-  partLocations: [CartesianPointInput]
+  partLocations: [CartesianPointInput!]!
 }
 
 input MachineOptions {
@@ -336,16 +336,16 @@ input MachineOptions {
 }
 
 input MachineWhere {
-  partLocations: [CartesianPointInput]
-  partLocations_NOT: [CartesianPointInput]
-  partLocations_IN: CartesianPointInput
-  partLocations_NOT_IN: CartesianPointInput
+  partLocations: [CartesianPointInput!]
+  partLocations_INCLUDES: CartesianPointInput
+  partLocations_NOT: [CartesianPointInput!]
+  partLocations_NOT_INCLUDES: CartesianPointInput
   OR: [MachineWhere!]
   AND: [MachineWhere!]
 }
 
 input MachineUpdateInput {
-  partLocations: [CartesianPointInput]
+  partLocations: [CartesianPointInput!]
 }
 
 type CreateMachinesMutationResponse {
