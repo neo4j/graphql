@@ -1,4 +1,37 @@
-import { GraphQLDirective, DirectiveLocation, GraphQLString, GraphQLNonNull } from "graphql";
+import { GraphQLDirective, DirectiveLocation, GraphQLString, GraphQLNonNull, GraphQLScalarType, Kind } from "graphql";
+
+export const ScalarType = new GraphQLScalarType({
+    name: "Scalar",
+    description: "Int | Float | String | Boolean | ID",
+    serialize(value) {
+        if (!["string", "number", "boolean"].includes(typeof value)) {
+            throw new Error("Value must be one of types: Int | Float | String | Boolean | ID");
+        }
+
+        return value;
+    },
+    parseValue(value) {
+        if (!["string", "number", "boolean"].includes(typeof value)) {
+            throw new Error("Value must be one of types: Int | Float | String | Boolean | ID");
+        }
+
+        return value;
+    },
+    parseLiteral(ast) {
+        switch (ast.kind) {
+            case Kind.INT:
+                return parseInt(ast.value, 10);
+            case Kind.FLOAT:
+                return parseFloat(ast.value);
+            case Kind.STRING:
+                return ast.value;
+            case Kind.BOOLEAN:
+                return ast.value;
+            default:
+                throw new Error("Value must be one of types: Int | Float | String | Boolean | ID");
+        }
+    },
+});
 
 export const cypherDirective = new GraphQLDirective({
     name: "cypher",
@@ -10,6 +43,19 @@ export const cypherDirective = new GraphQLDirective({
             description:
                 "The Cypher statement to run which returns a value of the same type composition as the field definition on which the directive is applied.",
             type: new GraphQLNonNull(GraphQLString),
+        },
+    },
+});
+
+export const defaultDirective = new GraphQLDirective({
+    name: "default",
+    description:
+        "Instructs @neo4j/graphql to set the specified value as the default value in the CreateInput type for the object type in which this directive is used.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        value: {
+            description: "The default value to use. Must be a scalar type.",
+            type: new GraphQLNonNull(ScalarType),
         },
     },
 });

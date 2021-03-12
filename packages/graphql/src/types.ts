@@ -93,6 +93,7 @@ export interface CypherField extends BaseField {
  */
 export interface PrimitiveField extends BaseField {
     autogenerate?: boolean;
+    defaultValue?: any;
 }
 
 export type CustomScalarField = BaseField;
