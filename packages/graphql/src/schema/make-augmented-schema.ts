@@ -311,6 +311,12 @@ function makeAugmentedSchema(
                         defaultValue: "autogenerate",
                     };
                     res[f.fieldName] = field;
+                } else if ((f as PrimitiveField)?.defaultValue !== undefined) {
+                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
+                        type: f.typeMeta.input.create.pretty,
+                        defaultValue: (f as PrimitiveField)?.defaultValue,
+                    };
+                    res[f.fieldName] = field;
                 } else {
                     res[f.fieldName] = f.typeMeta.input.create.pretty;
                 }
