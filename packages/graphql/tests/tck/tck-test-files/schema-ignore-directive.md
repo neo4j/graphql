@@ -32,25 +32,31 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 input UserCreateInput {
-  id: ID
-  username: String
-  password: String
+  id: ID!
+  username: String!
+  password: String!
 }
 
 input UserOptions {
+  """Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array."""
   sort: [UserSort]
   limit: Int
   skip: Int
 }
 
-enum UserSort {
-  id_DESC
-  id_ASC
-  username_DESC
-  username_ASC
-  password_DESC
-  password_ASC
+"""Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object."""
+input UserSort {
+  id: SortDirection
+  username: SortDirection
+  password: SortDirection
 }
 
 input UserWhere {
