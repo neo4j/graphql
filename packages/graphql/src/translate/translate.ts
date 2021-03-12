@@ -263,6 +263,23 @@ function translateUpdate({
         cypherParams = { ...cypherParams, ...where[1] };
     }
 
+    if (node.auth) {
+        const whereAuth = createAuthAndParams({
+            operation: "update",
+            entity: node,
+            context,
+            where: { varName, node },
+        });
+        if (whereAuth[0]) {
+            if (whereStr) {
+                whereStr = `${whereStr} AND ${whereAuth[0]}`;
+            } else {
+                whereStr = `WHERE ${whereAuth[0]}`;
+            }
+            cypherParams = { ...cypherParams, ...whereAuth[1] };
+        }
+    }
+
     if (updateInput) {
         const updateAndParams = createUpdateAndParams({
             context,

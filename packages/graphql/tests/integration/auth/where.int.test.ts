@@ -78,7 +78,7 @@ describe("auth/where", () => {
             }
         });
 
-        test("should add $jwt.id to where and return users posts", async () => {
+        test("should add $jwt.id to where on a relationship", async () => {
             const session = driver.session({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
@@ -315,6 +315,70 @@ describe("auth/where", () => {
                     await session.close();
                 }
             });
+        });
+    });
+
+    describe("update", () => {
+        test("should add $jwt.id to where", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                }
+
+                extend type User @auth(rules: [{ operations: ["update"], where: { id: "$jwt.sub" } }])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+            const newUserId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    updateUsers(update: { id: "${newUserId}" }){
+                        users {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: userId,
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const users = (gqlResult.data as any).updateUsers.users as any[];
+                expect(users).toEqual([{ id: newUserId }]);
+            } finally {
+                await session.close();
+            }
         });
     });
 });

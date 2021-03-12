@@ -24,7 +24,7 @@ extend type User
     @auth(
         rules: [
             {
-                operations: ["read"]
+                operations: ["read", "update"]
                 where: { id: "$jwt.sub" }
             }
         ]
@@ -58,7 +58,7 @@ extend type Post
     @auth(
         rules: [
             {
-                operations: ["read"]
+                operations: ["read", "update"]
                 where: { creator: { id: "$jwt.sub" } }
             }
         ]
@@ -409,6 +409,162 @@ RETURN this {
     "this_auth_where0_id": "id-01",
     "this_posts_auth_where0_creator_id": "id-01",
     "this_posts_secretKey_auth_where0_creator_id": "id-01"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Update Node
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateUsers(update: { name: "Bob" }) {
+        users {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User)
+WHERE this.id = $this_auth_where0_id
+SET this.name = $this_update_name
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_update_name": "Bob",
+    "this_auth_where0_id": "id-01"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Update Node + User Defined Where
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateUsers(where: { name: "bob" }, update: { name: "Bob" }) {
+        users {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User)
+WHERE this.name = $this_name AND this.id = $this_auth_where0_id
+SET this.name = $this_update_name
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_update_name": "Bob",
+    "this_auth_where0_id": "id-01",
+    "this_name": "bob"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Update Nested Node
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateUsers(update: { posts: { update: { id: "new-id" } } }) {
+        users {
+            id
+            posts {
+                id
+            }
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User)
+WHERE this.id = $this_auth_where0_id
+
+WITH this
+OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
+WHERE EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ALL(this_posts0_auth_where0_creator IN [(this_posts0)<-[:HAS_POST]-(this_posts0_auth_where0_creator:User) | this_posts0_auth_where0_creator] WHERE this_posts0_auth_where0_creator.id = $this_posts0_auth_where0_creator_id)
+
+CALL apoc.do.when(this_posts0 IS NOT NULL, " SET this_posts0.id = $this_update_posts0_id RETURN count(*) ", "", {this:this, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id}) YIELD value as _
+
+RETURN this {
+    .id,
+    posts: [ (this)-[:HAS_POST]->(this_posts:Post) WHERE EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(this_posts_auth_where0_creator IN [(this_posts)<-[:HAS_POST]-(this_posts_auth_where0_creator:User) | this_posts_auth_where0_creator] WHERE this_posts_auth_where0_creator.id = $this_posts_auth_where0_creator_id) | this_posts { .id } ]
+} AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_posts_auth_where0_creator_id": "id-01",
+    "this_posts0_auth_where0_creator_id": "id-01",
+    "this_update_posts0_id": "new-id",
+    "this_auth_where0_id": "id-01",
+    "auth": {
+      "isAuthenticated": true,
+      "jwt": {
+        "roles": [
+          "admin"
+        ],
+        "sub": "id-01"
+      },
+      "roles": [
+        "admin"
+      ]
+    }
 }
 ```
 
