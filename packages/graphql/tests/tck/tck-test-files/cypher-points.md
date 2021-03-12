@@ -88,51 +88,14 @@ RETURN this { points: [p in this.points | { point:p }] } as this
 
 ---
 
-### Simple Points IN query
-
-**GraphQL input**
-
-```graphql
-{
-    pointContainers(where: { points_IN: { longitude: 1.0, latitude: 2.0 } }) {
-        points {
-            longitude
-            latitude
-            crs
-        }
-    }
-}
-```
-
-**Expected Cypher output**
-
-```cypher
-MATCH (this:PointContainer)
-WHERE point($this_points_IN) IN this.points
-RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
-```
-
-**Expected Cypher params**
-
-```cypher-params
-{
-  "this_points_IN": {
-    "longitude": 1,
-    "latitude": 2
-  }
-}
-```
-
----
-
-### Simple Points NOT IN query
+### Simple Points INCLUDES query
 
 **GraphQL input**
 
 ```graphql
 {
     pointContainers(
-        where: { points_NOT_IN: { longitude: 1.0, latitude: 2.0 } }
+        where: { points_INCLUDES: { longitude: 1.0, latitude: 2.0 } }
     ) {
         points {
             longitude
@@ -147,7 +110,7 @@ RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 
 ```cypher
 MATCH (this:PointContainer)
-WHERE (NOT point($this_points_NOT_IN) IN this.points)
+WHERE point($this_points_INCLUDES) IN this.points
 RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 ```
 
@@ -155,7 +118,46 @@ RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 
 ```cypher-params
 {
-  "this_points_NOT_IN": {
+  "this_points_INCLUDES": {
+    "longitude": 1,
+    "latitude": 2
+  }
+}
+```
+
+---
+
+### Simple Points NOT INCLUDES query
+
+**GraphQL input**
+
+```graphql
+{
+    pointContainers(
+        where: { points_NOT_INCLUDES: { longitude: 1.0, latitude: 2.0 } }
+    ) {
+        points {
+            longitude
+            latitude
+            crs
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:PointContainer)
+WHERE (NOT point($this_points_NOT_INCLUDES) IN this.points)
+RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+  "this_points_NOT_INCLUDES": {
     "longitude": 1,
     "latitude": 2
   }

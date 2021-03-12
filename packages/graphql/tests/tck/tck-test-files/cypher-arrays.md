@@ -13,13 +13,13 @@ type Movie {
 
 ---
 
-### WHERE IN
+### WHERE INCLUDES
 
 **GraphQL input**
 
 ```graphql
 {
-    movies(where: { ratings_IN: 4.0 }) {
+    movies(where: { ratings_INCLUDES: 4.0 }) {
         title
         ratings
     }
@@ -30,7 +30,7 @@ type Movie {
 
 ```cypher
 MATCH (this:Movie)
-WHERE $this_ratings_IN IN this.ratings
+WHERE $this_ratings_INCLUDES IN this.ratings
 RETURN this { .title, .ratings } as this
 ```
 
@@ -38,19 +38,19 @@ RETURN this { .title, .ratings } as this
 
 ```cypher-params
 {
-    "this_ratings_IN": 4.0
+    "this_ratings_INCLUDES": 4.0
 }
 ```
 
 ---
 
-### WHERE NOT IN
+### WHERE NOT INCLUDES
 
 **GraphQL input**
 
 ```graphql
 {
-    movies(where: { ratings_NOT_IN: 4.0 }) {
+    movies(where: { ratings_NOT_INCLUDES: 4.0 }) {
         title
         ratings
     }
@@ -61,7 +61,7 @@ RETURN this { .title, .ratings } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE (NOT $this_ratings_NOT_IN IN this.ratings)
+WHERE (NOT $this_ratings_NOT_INCLUDES IN this.ratings)
 RETURN this { .title, .ratings } as this
 ```
 
@@ -69,7 +69,7 @@ RETURN this { .title, .ratings } as this
 
 ```cypher-params
 {
-    "this_ratings_NOT_IN": 4.0
+    "this_ratings_NOT_INCLUDES": 4.0
 }
 ```
 
