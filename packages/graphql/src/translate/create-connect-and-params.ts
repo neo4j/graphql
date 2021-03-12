@@ -40,18 +40,52 @@ function createConnectAndParams({
         const outStr = relationField.direction === "OUT" ? "->" : "-";
         const relTypeStr = `[:${relationField.type}]`;
 
+        if (parentNode.auth && !fromCreate) {
+            const whereAuth = createAuthAndParams({
+                operation: "connect",
+                entity: parentNode,
+                context,
+                where: { varName: parentVar, node: parentNode },
+            });
+            if (whereAuth[0]) {
+                res.connects.push(`WITH ${withVars.join(", ")}`);
+                res.connects.push(`WHERE ${whereAuth[0]}`);
+                res.params = { ...res.params, ...whereAuth[1] };
+            }
+        }
+
         res.connects.push(`WITH ${withVars.join(", ")}`);
         res.connects.push(`OPTIONAL MATCH (${_varName}:${labelOverride || relationField.typeMeta.name})`);
 
+        const whereStrs: string[] = [];
         if (connect.where) {
             const where = createWhereAndParams({
                 varName: _varName,
                 whereInput: connect.where,
                 node: refNode,
                 context,
+                recursing: true,
             });
-            res.connects.push(where[0]);
-            res.params = { ...res.params, ...where[1] };
+            if (where[0]) {
+                whereStrs.push(where[0]);
+                res.params = { ...res.params, ...where[1] };
+            }
+        }
+        if (refNode.auth) {
+            const whereAuth = createAuthAndParams({
+                operation: "connect",
+                entity: refNode,
+                context,
+                where: { varName: _varName, node: refNode },
+            });
+            if (whereAuth[0]) {
+                whereStrs.push(whereAuth[0]);
+                res.params = { ...res.params, ...whereAuth[1] };
+            }
+        }
+
+        if (whereStrs.length) {
+            res.connects.push(`WHERE ${whereStrs.join(" AND ")}`);
         }
 
         const preAuth = [...(!fromCreate ? [parentNode] : []), refNode].reduce(
