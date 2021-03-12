@@ -509,10 +509,13 @@ function makeAugmentedSchema(
             const deleteField = rel.typeMeta.array ? `[${n.name}DeleteFieldInput!]` : `${n.name}DeleteFieldInput`;
 
             whereInput.addFields({
-                [rel.fieldName]: `${n.name}Where`,
-                [`${rel.fieldName}_NOT`]: `${n.name}Where`,
-                [`${rel.fieldName}_IN`]: `[${n.name}Where!]`,
-                [`${rel.fieldName}_NOT_IN`]: `[${n.name}Where!]`,
+                ...{ [rel.fieldName]: `${n.name}Where`, [`${rel.fieldName}_NOT`]: `${n.name}Where` },
+                ...(rel.typeMeta.array
+                    ? {}
+                    : {
+                          [`${rel.fieldName}_IN`]: `[${n.name}Where!]`,
+                          [`${rel.fieldName}_NOT_IN`]: `[${n.name}Where!]`,
+                      }),
             });
 
             composeNode.addFields({

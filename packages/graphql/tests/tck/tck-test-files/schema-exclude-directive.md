@@ -545,9 +545,7 @@ input MovieUpdateInput {
 
 input MovieWhere {
   actors: ActorWhere
-  actors_IN: [ActorWhere!]
   actors_NOT: ActorWhere
-  actors_NOT_IN: [ActorWhere!]
   OR: [MovieWhere!]
   AND: [MovieWhere!]
   title: String

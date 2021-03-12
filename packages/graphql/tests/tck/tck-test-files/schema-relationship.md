@@ -125,8 +125,6 @@ input MovieWhere {
   AND: [MovieWhere!]
   actors: ActorWhere
   actors_NOT: ActorWhere
-  actors_IN: [ActorWhere!]
-  actors_NOT_IN: [ActorWhere!]
 }
 
 input MovieUpdateInput {
@@ -308,8 +306,6 @@ input ActorWhere {
   name_MATCHES: String
   movies: MovieWhere
   movies_NOT: MovieWhere
-  movies_IN: [MovieWhere!]
-  movies_NOT_IN: [MovieWhere!]
 }
 
 type DeleteInfo {
@@ -424,8 +420,6 @@ input MovieWhere {
   id_MATCHES: String
   actors: ActorWhere
   actors_NOT: ActorWhere
-  actors_IN: [ActorWhere!]
-  actors_NOT_IN: [ActorWhere!]
 }
 
 type CreateMoviesMutationResponse {
