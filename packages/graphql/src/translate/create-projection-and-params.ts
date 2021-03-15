@@ -68,36 +68,34 @@ function createNodeWhereAndParams({
         }
     }
 
-    if (node.auth) {
-        const whereAuth = createAuthAndParams({
-            entity: node,
-            operation: "read",
-            context,
-            where: {
-                varName,
-                chainStr,
-                node,
-            },
-        });
-        if (whereAuth[0]) {
-            whereStrs.push(whereAuth[0]);
-            params = { ...params, ...whereAuth[1] };
-        }
+    const whereAuth = createAuthAndParams({
+        entity: node,
+        operation: "read",
+        context,
+        where: {
+            varName,
+            chainStr,
+            node,
+        },
+    });
+    if (whereAuth[0]) {
+        whereStrs.push(whereAuth[0]);
+        params = { ...params, ...whereAuth[1] };
+    }
 
-        const preAuth = createAuthAndParams({
-            entity: node,
-            operation: "read",
-            context,
-            allow: {
-                parentNode: node,
-                varName,
-                chainStr,
-            },
-        });
-        if (preAuth[0]) {
-            whereStrs.push(`apoc.util.validatePredicate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-            params = { ...params, ...preAuth[1] };
-        }
+    const preAuth = createAuthAndParams({
+        entity: node,
+        operation: "read",
+        context,
+        allow: {
+            parentNode: node,
+            varName,
+            chainStr,
+        },
+    });
+    if (preAuth[0]) {
+        whereStrs.push(`apoc.util.validatePredicate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        params = { ...params, ...preAuth[1] };
     }
 
     if (authValidateStrs?.length) {
