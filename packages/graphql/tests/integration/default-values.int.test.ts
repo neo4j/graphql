@@ -113,4 +113,35 @@ describe("Default values", () => {
             await session.close();
         }
     });
+
+    test("using @default directive on non-primitive field should throw an error", () => {
+        const typeDefs = `
+            type User {
+                name: String!
+                location: Point! @default(value: "default")
+            }
+        `;
+
+        expect(
+            () =>
+                new Neo4jGraphQL({
+                    typeDefs,
+                })
+        ).toThrow("@default directive can only be used on primitive type fields");
+    });
+
+    test("using @default with an argument with a type which doesn't match the field should throw an error", () => {
+        const typeDefs = `
+            type User {
+                name: String! @default(value: 2)
+            }
+        `;
+
+        expect(
+            () =>
+                new Neo4jGraphQL({
+                    typeDefs,
+                })
+        ).toThrow("Default value for User.name does not have matching type String");
+    });
 });

@@ -109,6 +109,10 @@ function getObjFieldMeta({
                     throw new Error("cannot have auth directive on a relationship");
                 }
 
+                if (defaultDirective) {
+                    throw new Error("@default directive can only be used on primitive type fields");
+                }
+
                 const relationField: RelationField = {
                     ...baseField,
                     ...relationshipMeta,
@@ -136,32 +140,50 @@ function getObjFieldMeta({
 
                 res.relationFields.push(relationField);
             } else if (cypherMeta) {
+                if (defaultDirective) {
+                    throw new Error("@default directive can only be used on primitive type fields");
+                }
                 const cypherField: CypherField = {
                     ...baseField,
                     ...cypherMeta,
                 };
                 res.cypherFields.push(cypherField);
             } else if (fieldScalar) {
+                if (defaultDirective) {
+                    throw new Error("@default directive can only be used on primitive type fields");
+                }
                 const scalarField: CustomScalarField = {
                     ...baseField,
                 };
                 res.scalarFields.push(scalarField);
             } else if (fieldEnum) {
+                if (defaultDirective) {
+                    throw new Error("@default directive can only be used on primitive type fields");
+                }
                 const enumField: CustomEnumField = {
                     ...baseField,
                 };
                 res.enumFields.push(enumField);
             } else if (fieldUnion) {
+                if (defaultDirective) {
+                    throw new Error("@default directive can only be used on primitive type fields");
+                }
                 const unionField: UnionField = {
                     ...baseField,
                 };
                 res.unionFields.push(unionField);
             } else if (fieldInterface) {
+                if (defaultDirective) {
+                    throw new Error("@default directive can only be used on primitive type fields");
+                }
                 const interfaceField: InterfaceField = {
                     ...baseField,
                 };
                 res.interfaceFields.push(interfaceField);
             } else if (fieldObject) {
+                if (defaultDirective) {
+                    throw new Error("@default directive can only be used on primitive type fields");
+                }
                 const objectField: ObjectField = {
                     ...baseField,
                 };
@@ -206,6 +228,9 @@ function getObjFieldMeta({
 
                     res.dateTimeFields.push(dateTimeField);
                 } else if (["Point", "CartesianPoint"].includes(typeMeta.name)) {
+                    if (defaultDirective) {
+                        throw new Error("@default directive can only be used on primitive type fields");
+                    }
                     const pointField: PointField = {
                         ...baseField,
                     };
