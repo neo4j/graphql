@@ -1,8 +1,7 @@
 import { Context, Node } from "../classes";
-import { AuthOperations, BaseField, AuthRule, BaseAuthRule, GraphQLWhereArg } from "../types";
+import { AuthOperations, BaseField, AuthRule, BaseAuthRule } from "../types";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import { dotPathPopulate } from "../utils";
-import createWhereAndParams from "./create-where-and-params";
 
 interface Res {
     strs: string[];
@@ -162,16 +161,13 @@ function createAuthAndParams({
                     return res;
                 }
 
-                const authWhere = createWhereAndParams({
-                    whereInput: dotPathPopulate({
-                        obj: authRule.where as GraphQLWhereArg,
-                        context,
-                    }),
+                const authWhere = createAuthPredicate({
+                    rule: { bind: authRule.where },
                     context,
                     node: where.node,
                     varName: where.varName,
                     chainStr: `${where.chainStr || where.varName}_auth_where${index}`,
-                    recursing: true,
+                    kind: "bind",
                 });
 
                 return {
