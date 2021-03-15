@@ -92,6 +92,7 @@ function getObjFieldMeta({
                             "writeonly",
                             "ignore",
                             "default",
+                            "coalesce",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
@@ -277,7 +278,7 @@ function getObjFieldMeta({
                             );
                         }
 
-                        dateTimeField.coalesceValue = (value as StringValueNode).value;
+                        dateTimeField.coalesceValue = `"${(value as StringValueNode).value}"`;
                     }
 
                     res.dateTimeFields.push(dateTimeField);
@@ -362,7 +363,7 @@ function getObjFieldMeta({
                             case "ID":
                             case "String":
                                 checkKind(Kind.STRING);
-                                primitiveField.coalesceValue = (value as StringValueNode).value;
+                                primitiveField.coalesceValue = `"${(value as StringValueNode).value}"`;
                                 break;
                             case "Boolean":
                                 checkKind(Kind.BOOLEAN);
