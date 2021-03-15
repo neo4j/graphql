@@ -64,14 +64,6 @@ function translateRead({
             " AND "
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
-    if (projection[2]?.authWhereStrs?.length) {
-        const joined = projection[2]?.authWhereStrs.join(" AND ");
-        if (whereStr) {
-            whereStr = `${whereStr} AND ${joined}`;
-        } else {
-            whereStr = `WHERE ${joined}`;
-        }
-    }
 
     if (node.auth) {
         const whereAuth = createAuthAndParams({
@@ -384,14 +376,6 @@ function translateUpdate({
         projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
             " AND "
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-    }
-    if (projection[2]?.authWhereStrs?.length) {
-        const joined = projection[2]?.authWhereStrs.join(" AND ");
-        if (whereStr) {
-            whereStr = `${whereStr} AND ${joined}`;
-        } else {
-            whereStr = `WHERE ${joined}`;
-        }
     }
 
     const cypher = [

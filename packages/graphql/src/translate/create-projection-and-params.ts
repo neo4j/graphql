@@ -3,7 +3,6 @@ import { Context, Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
-import createAuthParam from "./create-auth-param";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 interface Res {
@@ -14,7 +13,6 @@ interface Res {
 
 interface ProjectionMeta {
     authValidateStrs?: string[];
-    authWhereStrs?: string[];
 }
 
 function createSkipLimitStr({ skip, limit }: { skip?: number; limit?: number }): string {
@@ -42,17 +40,15 @@ function createNodeWhereAndParams({
     varName,
     context,
     node,
-    varNameOverRide,
-    authWhereStrs,
     authValidateStrs,
+    chainStr,
 }: {
     whereInput?: any;
     context: Context;
     node: Node;
     varName: string;
-    varNameOverRide?: string;
-    authWhereStrs?: string[];
     authValidateStrs?: string[];
+    chainStr?: string;
 }): [string, any] {
     const whereStrs: string[] = [];
     let params = {};
@@ -63,7 +59,7 @@ function createNodeWhereAndParams({
             node,
             varName,
             whereInput,
-            chainStrOverRide: varNameOverRide,
+            chainStr,
             recursing: true,
         });
         if (whereAndParams[0]) {
@@ -79,7 +75,7 @@ function createNodeWhereAndParams({
             context,
             where: {
                 varName,
-                chainStr: varNameOverRide,
+                chainStr,
                 node,
             },
         });
@@ -95,17 +91,13 @@ function createNodeWhereAndParams({
             allow: {
                 parentNode: node,
                 varName,
-                chainStr: varNameOverRide,
+                chainStr,
             },
         });
         if (preAuth[0]) {
             whereStrs.push(`apoc.util.validatePredicate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
             params = { ...params, ...preAuth[1] };
         }
-    }
-
-    if (authWhereStrs?.length) {
-        whereStrs.push(authWhereStrs.join(" AND "));
     }
 
     if (authValidateStrs?.length) {
@@ -123,14 +115,12 @@ function createProjectionAndParams({
     context,
     chainStr,
     varName,
-    chainStrOverRide,
 }: {
     fieldsByTypeName: FieldsByTypeName;
     node: Node;
     context: Context;
     chainStr?: string;
     varName: string;
-    chainStrOverRide?: string;
 }): [string, any, ProjectionMeta?] {
     function reducer(res: Res, [k, field]: [string, any]): Res {
         let key = k;
@@ -143,8 +133,6 @@ function createProjectionAndParams({
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
-        } else if (chainStrOverRide) {
-            param = `${chainStrOverRide}_${key}`;
         } else {
             param = `${varName}_${key}`;
         }
@@ -172,20 +160,6 @@ function createProjectionAndParams({
                     }
                     res.meta?.authValidateStrs?.push(allowAndParams[0]);
                     res.params = { ...res.params, ...allowAndParams[1] };
-                }
-
-                const whereAuthAndParams = createAuthAndParams({
-                    entity: authableField,
-                    operation: "read",
-                    context,
-                    where: { varName, chainStr: param, node },
-                });
-                if (whereAuthAndParams[0]) {
-                    if (!res.meta) {
-                        res.meta = { authWhereStrs: [] };
-                    }
-                    res.meta?.authWhereStrs?.push(whereAuthAndParams[0]);
-                    res.params = { ...res.params, ...whereAuthAndParams[1] };
                 }
             }
         }
@@ -224,7 +198,7 @@ function createProjectionAndParams({
                 },
                 { strs: ["auth: $auth"], params: {} }
             ) as { strs: string[]; params: any };
-            res.params = { ...res.params, ...apocParams.params, auth: createAuthParam({ context }) };
+            res.params = { ...res.params, ...apocParams.params };
 
             const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
             const apocWhere = `${
@@ -278,11 +252,9 @@ function createProjectionAndParams({
                 const headStrs: string[] = [];
 
                 referenceNodes.forEach((refNode) => {
-                    const varNameOverRide = `${param}_${refNode.name}`;
-                    const innerHeadStr: string[] = [];
-
-                    innerHeadStr.push("[");
-                    innerHeadStr.push(`${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`);
+                    const innerHeadStr: string[] = [
+                        `[ ${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`,
+                    ];
 
                     if (field.fieldsByTypeName[refNode.name]) {
                         const recurse = createProjectionAndParams({
@@ -291,7 +263,6 @@ function createProjectionAndParams({
                             node: refNode,
                             context,
                             varName: param,
-                            chainStrOverRide: varNameOverRide,
                         });
 
                         const nodeWhereAndParams = createNodeWhereAndParams({
@@ -299,25 +270,23 @@ function createProjectionAndParams({
                             context,
                             node: refNode,
                             varName: param,
-                            varNameOverRide,
+                            chainStr: `${param}_${refNode.name}`,
                             authValidateStrs: recurse[2]?.authValidateStrs,
-                            authWhereStrs: recurse[2]?.authWhereStrs,
                         });
                         if (nodeWhereAndParams[0]) {
                             innerHeadStr.push(`AND ${nodeWhereAndParams[0]}`);
                             res.params = { ...res.params, ...nodeWhereAndParams[1] };
                         }
 
-                        innerHeadStr.push(`| ${param}`);
-
                         innerHeadStr.push(
-                            [`{ __resolveType: "${refNode.name}", `, ...recurse[0].replace("{", "").split("")].join("")
+                            [
+                                `| ${param} { __resolveType: "${refNode.name}", `,
+                                ...recurse[0].replace("{", "").split(""),
+                            ].join("")
                         );
                         res.params = { ...res.params, ...recurse[1] };
                     } else {
-                        innerHeadStr.push(`| ${param}`);
-
-                        innerHeadStr.push(`{ __resolveType: "${refNode.name}" } `);
+                        innerHeadStr.push(`| ${param} { __resolveType: "${refNode.name}" } `);
                     }
 
                     innerHeadStr.push(`]`);
@@ -325,8 +294,7 @@ function createProjectionAndParams({
                 });
 
                 unionStrs.push(headStrs.join(" + "));
-                unionStrs.push(")");
-                unionStrs.push("]");
+                unionStrs.push(") ]");
 
                 if (optionsInput) {
                     const skipLimit = createSkipLimitStr({ skip: optionsInput.skip, limit: optionsInput.limit });
@@ -358,7 +326,6 @@ function createProjectionAndParams({
                 varName: `${varName}_${key}`,
                 node: referenceNode,
                 context,
-                authWhereStrs: recurse[2]?.authWhereStrs,
                 authValidateStrs: recurse[2]?.authValidateStrs,
             });
             if (nodeWhereAndParams[0]) {
