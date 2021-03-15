@@ -872,10 +872,10 @@ Then issues a GraphQL query for users;
 [source, graphql]
 ----
 query {
-	users {
-		id
-		name
-	}
+    users {
+        id
+        name
+    }
 }
 ----
 
@@ -884,10 +884,10 @@ Behind the scenes the user's ID is *conceptually* prepended to the query;
 [source, graphql]
 ----
 query {
-	users(where: { id: "123" }){
-		id
-		name
-	}
+    users(where: { id: "123" }){
+        id
+        name
+    }
 }
 ----
 
