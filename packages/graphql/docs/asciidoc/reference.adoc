@@ -1256,6 +1256,10 @@ type User {
 
 ===== @readonly
 
+====== Description
+
+The field will only feature in object types for querying, and will not be mutable.
+
 ====== Definition
 
 [source, graphql]
@@ -1265,6 +1269,10 @@ directive @readonly on FIELD_DEFINITION
 ----
 
 ===== @writeonly
+
+====== Description
+
+This field will only feature in input types, and will not be available for querying the object type through a Query or through a Mutation response.
 
 ====== Definition
 
@@ -1276,6 +1284,10 @@ directive @writeonly on FIELD_DEFINITION
 
 ===== @ignore
 
+====== Description
+
+This field will essentially be completely ignored, and will require another way to resolve the field, such as through the use of a custom resolver.
+
 ====== Definition
 
 [source, graphql]
@@ -1285,6 +1297,10 @@ directive @ignore on FIELD_DEFINITION
 ----
 
 ===== @default
+
+====== Description
+
+When generating the input type for the create mutation, the value specified in this directive will be used as the default value for this field.
 
 ====== Definition
 
@@ -1301,6 +1317,10 @@ directive @default(
 ----
 
 ===== @coalesce
+
+====== Description
+
+When translating from GraphQL to Cypher, any instances of fields to which this directive is applied will be wrapped in a `coalesce()` function in the `WHERE` clause (see https://neo4j.com/developer/kb/understanding-non-existent-properties-and-null-values/#_use_coalesce_to_use_a_default_for_a_null_value). This helps to query against non-existent properties in a database, however it is encouraged to populate these properties with meaningful values if this is becoming the norm. This is a very primitive implementation of the function which only takes a static default value as opposed to using another property in a node or a Cypher expression.
 
 ====== Definition
 
