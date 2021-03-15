@@ -2,17 +2,17 @@ import { GraphQLDirective, DirectiveLocation, GraphQLString, GraphQLNonNull, Gra
 
 export const ScalarType = new GraphQLScalarType({
     name: "Scalar",
-    description: "Int | Float | String | Boolean | ID",
+    description: "Int | Float | String | Boolean | ID | DateTime",
     serialize(value) {
         if (!["string", "number", "boolean"].includes(typeof value)) {
-            throw new Error("Value must be one of types: Int | Float | String | Boolean | ID");
+            throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime");
         }
 
         return value;
     },
     parseValue(value) {
         if (!["string", "number", "boolean"].includes(typeof value)) {
-            throw new Error("Value must be one of types: Int | Float | String | Boolean | ID");
+            throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime");
         }
 
         return value;
@@ -28,8 +28,21 @@ export const ScalarType = new GraphQLScalarType({
             case Kind.BOOLEAN:
                 return ast.value;
             default:
-                throw new Error("Value must be one of types: Int | Float | String | Boolean | ID");
+                throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime");
         }
+    },
+});
+
+export const coalesceDirective = new GraphQLDirective({
+    name: "coalesce",
+    description:
+        "Instructs @neo4j/graphql to wrap the property in a coalesce() function during queries, using the single value specified.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        value: {
+            description: "The value to use in the coalesce() function. Must be a scalar type.",
+            type: new GraphQLNonNull(ScalarType),
+        },
     },
 });
 
