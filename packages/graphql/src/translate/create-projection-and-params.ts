@@ -206,11 +206,14 @@ function createProjectionAndParams({
                     ? `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStr}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                     : ""
             }`;
+            const apocParamsStr = `{this: ${chainStr || varName}${
+                apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
+            }}`;
             const apocStr = `${!isPrimitive ? `${param} IN` : ""} apoc.cypher.runFirstColumn("${
                 cypherField.statement
-            }", {this: ${chainStr || varName}${
-                apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
-            }}, ${expectMultipleValues}) ${apocWhere} ${projectionStr ? `| ${param} ${projectionStr}` : ""}`;
+            }", ${apocParamsStr}, ${expectMultipleValues}) ${apocWhere} ${
+                projectionStr ? `| ${param} ${projectionStr}` : ""
+            }`;
 
             if (!cypherField.typeMeta.array) {
                 res.projection.push(`${key}: head([${apocStr}])`);
@@ -249,9 +252,7 @@ function createProjectionAndParams({
                     `| head(`,
                 ];
 
-                const headStrs: string[] = [];
-
-                referenceNodes.forEach((refNode) => {
+                const headStrs: string[] = referenceNodes.map((refNode) => {
                     const innerHeadStr: string[] = [
                         `[ ${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`,
                     ];
@@ -290,9 +291,9 @@ function createProjectionAndParams({
                     }
 
                     innerHeadStr.push(`]`);
-                    headStrs.push(innerHeadStr.join(" "));
-                });
 
+                    return innerHeadStr.join(" ");
+                });
                 unionStrs.push(headStrs.join(" + "));
                 unionStrs.push(") ]");
 
@@ -329,14 +330,12 @@ function createProjectionAndParams({
                 authValidateStrs: recurse[2]?.authValidateStrs,
             });
             if (nodeWhereAndParams[0]) {
-                [whereStr] = nodeWhereAndParams;
+                whereStr = `WHERE ${nodeWhereAndParams[0]}`;
                 res.params = { ...res.params, ...nodeWhereAndParams[1] };
             }
-            whereStr = whereStr ? `WHERE ${whereStr}` : whereStr;
 
             const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
             const innerStr = `${pathStr}  ${whereStr} | ${param} ${projectionStr}`;
-
             let nestedQuery;
 
             if (optionsInput) {
