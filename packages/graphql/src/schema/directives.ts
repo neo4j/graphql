@@ -40,7 +40,8 @@ export const coalesceDirective = new GraphQLDirective({
     locations: [DirectiveLocation.FIELD_DEFINITION],
     args: {
         value: {
-            description: "The value to use in the coalesce() function. Must be a scalar type.",
+            description:
+                "The value to use in the coalesce() function. Must be a scalar type and must match the type of the field with which this directive decorates.",
             type: new GraphQLNonNull(ScalarType),
         },
     },
@@ -67,7 +68,8 @@ export const defaultDirective = new GraphQLDirective({
     locations: [DirectiveLocation.FIELD_DEFINITION],
     args: {
         value: {
-            description: "The default value to use. Must be a scalar type.",
+            description:
+                "The default value to use. Must be a scalar type and must match the type of the field with which this directive decorates.",
             type: new GraphQLNonNull(ScalarType),
         },
     },
