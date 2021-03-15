@@ -15,18 +15,22 @@ type User {
     verified: Boolean! @default(value: false)
     numberOfFriends: Int! @default(value: 0)
     rating: Float! @default(value: 0.0)
+    verifiedDate: DateTime! @default(value: "1970-01-01T00:00:00.000Z")
 }
 ```
 
 **Output**
 
 ```schema-output
+scalar DateTime
+
 type User {
   id: ID!
   name: String!
   verified: Boolean!
   numberOfFriends: Int!
   rating: Float!
+  verifiedDate: DateTime!
 }
 
 type DeleteInfo {
@@ -47,6 +51,7 @@ input UserCreateInput {
   verified: Boolean! = false
   numberOfFriends: Int! = 0
   rating: Float! = 0.0
+  verifiedDate: DateTime! = "1970-01-01T00:00:00.000Z"
 }
 
 input UserOptions {
@@ -63,6 +68,7 @@ input UserSort {
   verified: SortDirection
   numberOfFriends: SortDirection
   rating: SortDirection
+  verifiedDate: SortDirection
 }
 
 input UserWhere {
@@ -106,6 +112,14 @@ input UserWhere {
   rating_NOT_IN: [Float]
   verified: Boolean
   verified_NOT: Boolean
+  verifiedDate: DateTime
+  verifiedDate_GT: DateTime
+  verifiedDate_GTE: DateTime
+  verifiedDate_IN: [DateTime]
+  verifiedDate_LT: DateTime
+  verifiedDate_LTE: DateTime
+  verifiedDate_NOT: DateTime
+  verifiedDate_NOT_IN: [DateTime]
   OR: [UserWhere!]
   AND: [UserWhere!]
 }
@@ -116,6 +130,7 @@ input UserUpdateInput {
   verified: Boolean
   numberOfFriends: Int
   rating: Float
+  verifiedDate: DateTime
 }
 
 type CreateUsersMutationResponse {

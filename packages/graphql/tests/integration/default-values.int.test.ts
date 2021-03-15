@@ -144,4 +144,19 @@ describe("Default values", () => {
                 })
         ).toThrow("Default value for User.name does not have matching type String");
     });
+
+    test("using @default on a DateTime with an invalid value should throw an error", () => {
+        const typeDefs = `
+            type User {
+                verifiedAt: DateTime! @default(value: "Not a date")
+            }
+        `;
+
+        expect(
+            () =>
+                new Neo4jGraphQL({
+                    typeDefs,
+                })
+        ).toThrow("Default value for User.verifiedAt is not a valid DateTime");
+    });
 });
