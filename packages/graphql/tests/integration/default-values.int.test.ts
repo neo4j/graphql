@@ -224,7 +224,6 @@ describe("Default values", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            debug: true,
         });
 
         const query = `
