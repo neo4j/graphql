@@ -270,15 +270,17 @@ function getObjFieldMeta({
                     }
 
                     if (coalesceDirective) {
-                        const value = coalesceDirective.arguments?.find((a) => a.name.value === "value")?.value;
+                        throw new Error("@coalesce is not supported by DateTime fields at this time");
 
-                        if (Number.isNaN(Date.parse((value as StringValueNode).value))) {
-                            throw new Error(
-                                `coalesce() value for ${obj.name.value}.${dateTimeField.fieldName} is not a valid DateTime`
-                            );
-                        }
+                        // const value = coalesceDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
-                        dateTimeField.coalesceValue = `"${(value as StringValueNode).value}"`;
+                        // if (Number.isNaN(Date.parse((value as StringValueNode).value))) {
+                        //     throw new Error(
+                        //         `coalesce() value for ${obj.name.value}.${dateTimeField.fieldName} is not a valid DateTime`
+                        //     );
+                        // }
+
+                        // dateTimeField.coalesceValue = `"${(value as StringValueNode).value}"`;
                     }
 
                     res.dateTimeFields.push(dateTimeField);
