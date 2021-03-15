@@ -29,7 +29,6 @@ function translateRead({
     const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
     const { fieldsByTypeName } = resolveTree;
     const varName = "this";
-
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
     let authStr = "";
@@ -39,17 +38,7 @@ function translateRead({
     let projAuth = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
-
-    if (whereInput) {
-        const where = createWhereAndParams({
-            whereInput,
-            varName,
-            node,
-            context,
-        });
-        [whereStr] = where;
-        cypherParams = { ...cypherParams, ...where[1] };
-    }
+    const whereStrs: string[] = [];
 
     const projection = createProjectionAndParams({
         node,
@@ -65,35 +54,47 @@ function translateRead({
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
-    if (node.auth) {
-        const whereAuth = createAuthAndParams({
-            operation: "read",
-            entity: node,
+    if (whereInput) {
+        const where = createWhereAndParams({
+            whereInput,
+            varName,
+            node,
             context,
-            where: { varName, node },
+            recursing: true,
         });
-        if (whereAuth[0]) {
-            if (whereStr) {
-                whereStr = `${whereStr} AND ${whereAuth[0]}`;
-            } else {
-                whereStr = `WHERE ${whereAuth[0]}`;
-            }
-            cypherParams = { ...cypherParams, ...whereAuth[1] };
+        if (where[0]) {
+            whereStrs.push(where[0]);
+            cypherParams = { ...cypherParams, ...where[1] };
         }
+    }
 
-        const allowAndParams = createAuthAndParams({
-            operation: "read",
-            entity: node,
-            context,
-            allow: {
-                parentNode: node,
-                varName,
-            },
-        });
-        if (allowAndParams[0]) {
-            cypherParams = { ...cypherParams, ...allowAndParams[1] };
-            authStr = `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-        }
+    const whereAuth = createAuthAndParams({
+        operation: "read",
+        entity: node,
+        context,
+        where: { varName, node },
+    });
+    if (whereAuth[0]) {
+        whereStrs.push(whereAuth[0]);
+        cypherParams = { ...cypherParams, ...whereAuth[1] };
+    }
+
+    if (whereStrs.length) {
+        whereStr = `WHERE ${whereStrs.join(" AND ")}`;
+    }
+
+    const allowAndParams = createAuthAndParams({
+        operation: "read",
+        entity: node,
+        context,
+        allow: {
+            parentNode: node,
+            varName,
+        },
+    });
+    if (allowAndParams[0]) {
+        cypherParams = { ...cypherParams, ...allowAndParams[1] };
+        authStr = `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
     if (optionsInput) {
@@ -243,6 +244,7 @@ function translateUpdate({
     let projAuth = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
+    const whereStrs: string[] = [];
 
     if (whereInput) {
         const where = createWhereAndParams({
@@ -250,26 +252,27 @@ function translateUpdate({
             varName,
             node,
             context,
+            recursing: true,
         });
-        [whereStr] = where;
-        cypherParams = { ...cypherParams, ...where[1] };
+        if (where[0]) {
+            whereStrs.push(where[0]);
+            cypherParams = { ...cypherParams, ...where[1] };
+        }
     }
 
-    if (node.auth) {
-        const whereAuth = createAuthAndParams({
-            operation: "update",
-            entity: node,
-            context,
-            where: { varName, node },
-        });
-        if (whereAuth[0]) {
-            if (whereStr) {
-                whereStr = `${whereStr} AND ${whereAuth[0]}`;
-            } else {
-                whereStr = `WHERE ${whereAuth[0]}`;
-            }
-            cypherParams = { ...cypherParams, ...whereAuth[1] };
-        }
+    const whereAuth = createAuthAndParams({
+        operation: "update",
+        entity: node,
+        context,
+        where: { varName, node },
+    });
+    if (whereAuth[0]) {
+        whereStrs.push(whereAuth[0]);
+        cypherParams = { ...cypherParams, ...whereAuth[1] };
+    }
+
+    if (whereStrs.length) {
+        whereStr = `WHERE ${whereStrs.join(" AND ")}`;
     }
 
     if (updateInput) {
@@ -410,6 +413,7 @@ function translateDelete({
     let allowStr = "";
     let deleteStr = "";
     let cypherParams: { [k: string]: any } = {};
+    const whereStrs: string[] = [];
 
     if (whereInput) {
         const where = createWhereAndParams({
@@ -417,40 +421,41 @@ function translateDelete({
             varName,
             node,
             context,
+            recursing: true,
         });
-        [whereStr] = where;
-        cypherParams = { ...cypherParams, ...where[1] };
+        if (where[0]) {
+            whereStrs.push(where[0]);
+            cypherParams = { ...cypherParams, ...where[1] };
+        }
     }
 
-    if (node.auth) {
-        const whereAuth = createAuthAndParams({
-            operation: "delete",
-            entity: node,
-            context,
-            where: { varName, node },
-        });
-        if (whereAuth[0]) {
-            if (whereStr) {
-                whereStr = `${whereStr} AND ${whereAuth[0]}`;
-            } else {
-                whereStr = `WHERE ${whereAuth[0]}`;
-            }
-            cypherParams = { ...cypherParams, ...whereAuth[1] };
-        }
+    const whereAuth = createAuthAndParams({
+        operation: "delete",
+        entity: node,
+        context,
+        where: { varName, node },
+    });
+    if (whereAuth[0]) {
+        whereStrs.push(whereAuth[0]);
+        cypherParams = { ...cypherParams, ...whereAuth[1] };
+    }
 
-        const allowAuth = createAuthAndParams({
-            operation: "delete",
-            entity: node,
-            context,
-            allow: {
-                parentNode: node,
-                varName,
-            },
-        });
-        if (allowAuth[0]) {
-            cypherParams = { ...cypherParams, ...allowAuth[1] };
-            allowStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-        }
+    if (whereStrs.length) {
+        whereStr = `WHERE ${whereStrs.join(" AND ")}`;
+    }
+
+    const allowAuth = createAuthAndParams({
+        operation: "delete",
+        entity: node,
+        context,
+        allow: {
+            parentNode: node,
+            varName,
+        },
+    });
+    if (allowAuth[0]) {
+        cypherParams = { ...cypherParams, ...allowAuth[1] };
+        allowStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
     if (deleteInput) {
