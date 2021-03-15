@@ -1252,6 +1252,70 @@ type User {
 }
 ----
 
+==== Directive index
+
+===== @readonly
+
+====== Definition
+
+[source, graphql]
+----
+"""Instructs @neo4j/graphql to exclude a field from the generated input types for the object type within which the directive is applied."""
+directive @readonly on FIELD_DEFINITION
+----
+
+===== @writeonly
+
+====== Definition
+
+[source, graphql]
+----
+"""Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself."""
+directive @writeonly on FIELD_DEFINITION
+----
+
+===== @ignore
+
+====== Definition
+
+[source, graphql]
+----
+"""Instructs @neo4j/graphql to completely ignore a field definition, assuming that it will be fully accounted for by custom resolvers."""
+directive @ignore on FIELD_DEFINITION
+----
+
+===== @default
+
+====== Definition
+
+[source, graphql]
+----
+"""Int | Float | String | Boolean | ID | DateTime"""
+scalar Scalar
+
+"""Instructs @neo4j/graphql to set the specified value as the default value in the CreateInput type for the object type in which this directive is used."""
+directive @default(
+    """The default value to use. Must be a scalar type and must match the type of the field with which this directive decorates."""
+    value: Scalar!,
+) on FIELD_DEFINITION
+----
+
+===== @coalesce
+
+====== Definition
+
+[source, graphql]
+----
+"""Int | Float | String | Boolean | ID | DateTime"""
+scalar Scalar
+
+"""Instructs @neo4j/graphql to wrap the property in a coalesce() function during queries, using the single value specified."""
+directive @coalesce(
+    """The value to use in the coalesce() function. Must be a scalar type and must match the type of the field with which this directive decorates."""
+    value: Scalar!,
+) on FIELD_DEFINITION
+----
+
 == Querying
 
 Interacting with the generated schema. For the purposes of this section we will use the following schema;
