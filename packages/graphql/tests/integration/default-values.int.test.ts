@@ -252,8 +252,6 @@ describe("Default values", () => {
                 contextValue: { driver },
             });
 
-            console.log(gqlResult);
-
             expect(gqlResult.errors).toBeFalsy();
 
             expect((gqlResult.data as any)[pluralType][0]).toEqual({
