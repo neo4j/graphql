@@ -11,7 +11,6 @@ type User {
     verified: Boolean! @coalesce(value: false)
     numberOfFriends: Int! @coalesce(value: 0)
     rating: Float! @coalesce(value: 2.5)
-    verifiedDate: DateTime! @coalesce(value: "1970-01-01T00:00:00.000Z")
 }
 ```
 
@@ -28,7 +27,6 @@ query(
     $verified: Boolean
     $numberOfFriends: Int
     $rating: Float
-    $verifiedDate: DateTime
 ) {
     users(
         where: {
@@ -37,7 +35,6 @@ query(
             verified_NOT: $verified
             numberOfFriends_GT: $numberOfFriends
             rating_LT: $rating
-            verifiedDate: $verifiedDate
         }
     ) {
         name
@@ -46,7 +43,7 @@ query(
 ```
 
 ```graphql-params
-{ "id": "Some ID", "name": "Some name", "verified": true, "numberOfFriends": 10, "rating": 3.5, "verifiedDate": "1970-01-01T00:00:00.000Z" }
+{ "id": "Some ID", "name": "Some name", "verified": true, "numberOfFriends": 10, "rating": 3.5 }
 ```
 
 **Expected Cypher output**
@@ -58,7 +55,6 @@ AND coalesce(this.name, "Jane Smith") =~ $this_name_MATCHES
 AND (NOT coalesce(this.verified, false) = $this_verified_NOT)
 AND coalesce(this.numberOfFriends, 0) > $this_numberOfFriends_GT
 AND coalesce(this.rating, 2.5) < $this_rating_LT
-AND coalesce(this.verifiedDate, "1970-01-01T00:00:00.000Z") = $this_verifiedDate
 RETURN this { .name } as this
 ```
 
@@ -73,8 +69,7 @@ RETURN this { .name } as this
         "high": 0,
         "low": 10
     },
-    "this_rating_LT": 3.5,
-    "this_verifiedDate": "1970-01-01T00:00:00.000Z"
+    "this_rating_LT": 3.5
 }
 ```
 
