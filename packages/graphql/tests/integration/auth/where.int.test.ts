@@ -589,4 +589,146 @@ describe("auth/where", () => {
             }
         });
     });
+
+    describe("disconnect", () => {
+        test("should add $jwt.id to where (update update)", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                }
+
+                type Post {
+                    id: ID
+                    creator: User @relationship(type: "HAS_POST", direction: "OUT")
+                }
+
+                extend type User @auth(rules: [{ operations: ["disconnect"], where: { id: "$jwt.sub" } }])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    updateUsers(update: { posts: { disconnect: { where: { id: "${postId}" } } } }) {
+                        users {
+                            id
+                            posts {
+                                id
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: userId,
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+                const users = (gqlResult.data as any).updateUsers.users as any[];
+                expect(users).toEqual([{ id: userId, posts: [] }]);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should add $jwt.id to where (update disconnect)", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type User {
+                    id: ID
+                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                }
+
+                type Post {
+                    id: ID
+                    creator: User @relationship(type: "HAS_POST", direction: "OUT")
+                }
+
+                extend type User @auth(rules: [{ operations: ["disconnect"], where: { id: "$jwt.sub" } }])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    updateUsers(disconnect:{posts:{where:{id: "${postId}"}}}) {
+                        users {
+                            id 
+                            posts {
+                                id
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: userId,
+                },
+                process.env.JWT_SECRET as string
+            );
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+                const users = (gqlResult.data as any).updateUsers.users as any[];
+                expect(users).toEqual([{ id: userId, posts: [] }]);
+            } finally {
+                await session.close();
+            }
+        });
+    });
 });

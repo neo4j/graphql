@@ -24,7 +24,7 @@ extend type User
     @auth(
         rules: [
             {
-                operations: ["read", "update", "delete", "connect"]
+                operations: ["read", "update", "delete", "connect", "disconnect"]
                 where: { id: "$jwt.sub" }
             }
         ]
@@ -58,7 +58,7 @@ extend type Post
     @auth(
         rules: [
             {
-                operations: ["read", "update", "delete", "connect"]
+                operations: ["read", "update", "delete", "connect", "disconnect"]
                 where: { creator: { id: "$jwt.sub" } }
             }
         ]
@@ -1022,6 +1022,221 @@ RETURN this { .id } AS this
     "this_auth_where0_id": "id-01",
     "this_connect_posts0_auth_where0_creator_id": "id-01",
     "this_connect_posts0_id": "some-id"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Disconnect Node (from update update)
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateUsers(update: { posts: { disconnect: { where: {} } } }) {
+        users {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User) 
+WHERE this.id = $this_auth_where0_id 
+
+WITH this 
+WHERE this.id = $this_auth_where0_id 
+
+WITH this 
+OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post) WHERE EXISTS((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND ALL(this_posts0_disconnect0_auth_where0_creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(this_posts0_disconnect0_auth_where0_creator:User) | this_posts0_disconnect0_auth_where0_creator] WHERE this_posts0_disconnect0_auth_where0_creator.id = $this_posts0_disconnect0_auth_where0_creator_id) 
+
+FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | 
+    DELETE this_posts0_disconnect0_rel 
+) 
+
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_auth_where0_id": "id-01",
+    "this_posts0_disconnect0_auth_where0_creator_id": "id-01"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Disconnect Node + User Defined Where (from update update)
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateUsers(update: { posts: { disconnect: { where: { id: "new-id" } } } }) {
+        users {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User) 
+WHERE this.id = $this_auth_where0_id 
+
+WITH this 
+WHERE this.id = $this_auth_where0_id 
+
+WITH this 
+OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post) 
+WHERE this_posts0_disconnect0.id = $this_posts0_disconnect0_id AND EXISTS((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND ALL(this_posts0_disconnect0_auth_where0_creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(this_posts0_disconnect0_auth_where0_creator:User) | this_posts0_disconnect0_auth_where0_creator] WHERE this_posts0_disconnect0_auth_where0_creator.id = $this_posts0_disconnect0_auth_where0_creator_id) 
+
+FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | 
+    DELETE this_posts0_disconnect0_rel 
+) 
+
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_auth_where0_id": "id-01",
+    "this_posts0_disconnect0_auth_where0_creator_id": "id-01",
+    "this_posts0_disconnect0_id": "new-id"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Disconnect Node (from update disconnect)
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateUsers(disconnect: { posts: { where: {} } }) {
+        users {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User) 
+WHERE this.id = $this_auth_where0_id 
+
+WITH this 
+WHERE this.id = $this_auth_where0_id 
+
+WITH this 
+OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post) WHERE EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ALL(this_disconnect_posts0_auth_where0_creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(this_disconnect_posts0_auth_where0_creator:User) | this_disconnect_posts0_auth_where0_creator] WHERE this_disconnect_posts0_auth_where0_creator.id = $this_disconnect_posts0_auth_where0_creator_id) 
+FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END | 
+    DELETE this_disconnect_posts0_rel 
+) 
+
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_auth_where0_id": "id-01",
+    "this_disconnect_posts0_auth_where0_creator_id": "id-01"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Disconnect Node + User Defined Where (from update disconnect)
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateUsers(disconnect: { posts: { where: { id: "some-id" } } }) {
+        users {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User) 
+WHERE this.id = $this_auth_where0_id 
+
+WITH this 
+WHERE this.id = $this_auth_where0_id 
+
+WITH this 
+OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post) 
+WHERE this_disconnect_posts0.id = $this_disconnect_posts0_id AND EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ALL(this_disconnect_posts0_auth_where0_creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(this_disconnect_posts0_auth_where0_creator:User) | this_disconnect_posts0_auth_where0_creator] WHERE this_disconnect_posts0_auth_where0_creator.id = $this_disconnect_posts0_auth_where0_creator_id) 
+
+FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END | 
+    DELETE this_disconnect_posts0_rel 
+) 
+
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_auth_where0_id": "id-01",
+    "this_disconnect_posts0_auth_where0_creator_id": "id-01",
+    "this_disconnect_posts0_id": "some-id"
 }
 ```
 
