@@ -1,0 +1,4 @@
+[[operations-delete]]
+= Delete
+
+hi
