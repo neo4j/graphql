@@ -15,3 +15,4 @@
 ** xref:drivers-and-config/index.adoc[]
 ** xref:knowledgebase/index.adoc[]
 *** xref:knowledgebase/developer-notes/index.adoc[]
+*** xref:knowledgebase/custom-resolvers/index.adoc[]
