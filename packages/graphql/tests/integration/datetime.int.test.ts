@@ -2,7 +2,6 @@ import camelCase from "camelcase";
 import { Driver, DateTime } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import pluralize from "pluralize";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
@@ -212,7 +211,7 @@ describe("DateTime", () => {
                 await session.run(`
                    CREATE (m:${randomType})
                    SET m.name = "${randomType}"
-                   SET m.datetime = datetime("${date.toISOString().replace("Z", "[America/Los_Angeles]")}")
+                   SET m.datetime = datetime("${date.toISOString().replace("Z", "[Europe/London]")}")
                `);
 
                 const gqlResult = await graphql({
@@ -220,8 +219,6 @@ describe("DateTime", () => {
                     source: query,
                     contextValue: { driver },
                 });
-
-                date.setHours(date.getHours() + 8);
 
                 expect(gqlResult.errors).toBeFalsy();
                 expect((gqlResult.data as any)[pluralRandomType][0]).toEqual({ datetime: date.toISOString() });

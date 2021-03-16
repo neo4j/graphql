@@ -2,7 +2,6 @@ import camelCase from "camelcase";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
-    DirectiveNode,
     EnumTypeDefinitionNode,
     GraphQLSchema,
     InputObjectTypeDefinitionNode,
@@ -65,6 +64,20 @@ function makeAugmentedSchema(
         },
     });
 
+    const sortDirection = composer.createEnumTC({
+        name: "SortDirection",
+        values: {
+            ASC: {
+                value: "ASC",
+                description: "Sort by field values in ascending order.",
+            },
+            DESC: {
+                value: "DESC",
+                description: "Sort by field values in descending order.",
+            },
+        },
+    });
+
     const customResolvers = getCustomResolvers(document);
 
     const scalars = document.definitions.filter((x) => x.kind === "ScalarTypeDefinition") as ScalarTypeDefinitionNode[];
@@ -94,7 +107,7 @@ function makeAugmentedSchema(
 
         const otherDirectives = (definition.directives || []).filter(
             (x) => !["auth", "exclude"].includes(x.name.value)
-        ) as DirectiveNode[];
+        );
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
@@ -146,6 +159,7 @@ function makeAugmentedSchema(
             ...node.unionFields,
             ...node.dateTimeFields,
             ...node.pointFields,
+            ...node.ignoredFields,
         ]);
 
         const composeNode = composer.createObjectTC({
@@ -158,7 +172,7 @@ function makeAugmentedSchema(
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
-        const sortValues = [
+        const sortFields = [
             ...node.primitiveFields,
             ...node.enumFields,
             ...node.scalarFields,
@@ -171,20 +185,31 @@ function makeAugmentedSchema(
                   }
                 : {
                       ...res,
-                      [`${f.fieldName}_DESC`]: { value: `${f.fieldName}_DESC` },
-                      [`${f.fieldName}_ASC`]: { value: `${f.fieldName}_ASC` },
+                      [f.fieldName]: sortDirection.getTypeName(),
                   };
         }, {});
 
-        if (Object.keys(sortValues).length) {
-            const sortEnum = composer.createEnumTC({
+        if (Object.keys(sortFields).length) {
+            const sortInput = composer.createInputTC({
                 name: `${node.name}Sort`,
-                values: sortValues,
+                fields: sortFields,
+                description: `Fields to sort ${pluralize(
+                    node.name
+                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${node.name}Sort`} object.`,
             });
 
             composer.createInputTC({
                 name: `${node.name}Options`,
-                fields: { sort: sortEnum.List, limit: "Int", skip: "Int" },
+                fields: {
+                    sort: {
+                        description: `Specify one or more ${`${node.name}Sort`} objects to sort ${pluralize(
+                            node.name
+                        )} by. The sorts will be applied in the order in which they are arranged in the array.`,
+                        type: sortInput.List,
+                    },
+                    limit: "Int",
+                    skip: "Int",
+                },
             });
         } else {
             composer.createInputTC({
@@ -194,8 +219,8 @@ function makeAugmentedSchema(
         }
 
         const queryFields = {
-            OR: `[${node.name}Where]`,
-            AND: `[${node.name}Where]`,
+            OR: `[${node.name}Where!]`,
+            AND: `[${node.name}Where!]`,
             // Custom scalar fields only support basic equality
             ...node.scalarFields.reduce((res, f) => {
                 res[f.fieldName] = f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name;
@@ -210,46 +235,50 @@ function makeAugmentedSchema(
                         cartesianPointInTypeDefs = true;
                     }
 
-                    res[f.fieldName] = f.typeMeta.input.pretty;
-                    res[`${f.fieldName}_NOT`] = f.typeMeta.input.pretty;
+                    res[f.fieldName] = f.typeMeta.input.where.pretty;
+                    res[`${f.fieldName}_NOT`] = f.typeMeta.input.where.pretty;
 
-                    if (f.typeMeta.name !== "Boolean") {
-                        res[`${f.fieldName}_IN`] = f.typeMeta.array
-                            ? f.typeMeta.input.name
-                            : `[${f.typeMeta.input.name}]`;
-
-                        res[`${f.fieldName}_NOT_IN`] = f.typeMeta.array
-                            ? f.typeMeta.input.name
-                            : `[${f.typeMeta.input.name}]`;
+                    if (f.typeMeta.name === "Boolean") {
+                        return res;
                     }
 
-                    if (!f.typeMeta.array) {
-                        if (["Float", "Int", "DateTime"].includes(f.typeMeta.name)) {
-                            ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                                res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
-                            });
-                        }
+                    if (f.typeMeta.array) {
+                        res[`${f.fieldName}_INCLUDES`] = f.typeMeta.input.where.type;
+                        res[`${f.fieldName}_NOT_INCLUDES`] = f.typeMeta.input.where.type;
+                        return res;
+                    }
 
-                        if (["Point", "CartesianPoint"].includes(f.typeMeta.name)) {
-                            ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                                res[`${f.fieldName}${comparator}`] = `${f.typeMeta.name}Distance`;
-                            });
-                        }
+                    res[`${f.fieldName}_IN`] = `[${f.typeMeta.input.where.pretty}]`;
+                    res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}]`;
 
-                        if (["String", "ID"].includes(f.typeMeta.name)) {
-                            res[`${f.fieldName}_REGEX`] = "String";
+                    if (["Float", "Int", "DateTime"].includes(f.typeMeta.name)) {
+                        ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
+                            res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
+                        });
+                        return res;
+                    }
 
-                            [
-                                "_CONTAINS",
-                                "_NOT_CONTAINS",
-                                "_STARTS_WITH",
-                                "_NOT_STARTS_WITH",
-                                "_ENDS_WITH",
-                                "_NOT_ENDS_WITH",
-                            ].forEach((comparator) => {
-                                res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
-                            });
-                        }
+                    if (["Point", "CartesianPoint"].includes(f.typeMeta.name)) {
+                        ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
+                            res[`${f.fieldName}${comparator}`] = `${f.typeMeta.name}Distance`;
+                        });
+                        return res;
+                    }
+
+                    if (["String", "ID"].includes(f.typeMeta.name)) {
+                        res[`${f.fieldName}_MATCHES`] = "String";
+
+                        [
+                            "_CONTAINS",
+                            "_NOT_CONTAINS",
+                            "_STARTS_WITH",
+                            "_NOT_STARTS_WITH",
+                            "_ENDS_WITH",
+                            "_NOT_ENDS_WITH",
+                        ].forEach((comparator) => {
+                            res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
+                        });
+                        return res;
                     }
 
                     return res;
@@ -278,8 +307,14 @@ function makeAugmentedSchema(
                         defaultValue: "autogenerate",
                     };
                     res[f.fieldName] = field;
+                } else if ((f as PrimitiveField)?.defaultValue !== undefined) {
+                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
+                        type: f.typeMeta.input.create.pretty,
+                        defaultValue: (f as PrimitiveField)?.defaultValue,
+                    };
+                    res[f.fieldName] = field;
                 } else {
-                    res[f.fieldName] = f.typeMeta.input.pretty;
+                    res[f.fieldName] = f.typeMeta.input.create.pretty;
                 }
 
                 return res;
@@ -295,10 +330,13 @@ function makeAugmentedSchema(
                 ...node.dateTimeFields.filter((x) => !x.timestamps),
                 ...node.pointFields,
             ].reduce(
-                (res, f) => ({
-                    ...res,
-                    [f.fieldName]: f.typeMeta.input.pretty,
-                }),
+                (res, f) =>
+                    f.readonly
+                        ? res
+                        : {
+                              ...res,
+                              [f.fieldName]: f.typeMeta.input.update.pretty,
+                          },
                 {}
             ),
         });
@@ -359,7 +397,7 @@ function makeAugmentedSchema(
 
         node.relationFields.forEach((rel) => {
             if (rel.union) {
-                const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name)) as Node[];
+                const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
 
                 composeNode.addFields({
                     [rel.fieldName]: {
@@ -372,7 +410,7 @@ function makeAugmentedSchema(
 
                 refNodes.forEach((n) => {
                     const concatFieldName = `${rel.fieldName}_${n.name}`;
-                    const createField = rel.typeMeta.array ? `[${n.name}CreateInput]` : `${n.name}CreateInput`;
+                    const createField = rel.typeMeta.array ? `[${n.name}CreateInput!]` : `${n.name}CreateInput`;
                     const updateField = `${n.name}UpdateInput`;
                     const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${n.name}FieldInput`;
                     const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${
@@ -383,13 +421,13 @@ function makeAugmentedSchema(
                     }DeleteInput`;
 
                     const connectField = rel.typeMeta.array
-                        ? `[${n.name}ConnectFieldInput]`
+                        ? `[${n.name}ConnectFieldInput!]`
                         : `${n.name}ConnectFieldInput`;
                     const disconnectField = rel.typeMeta.array
-                        ? `[${n.name}DisconnectFieldInput]`
+                        ? `[${n.name}DisconnectFieldInput!]`
                         : `${n.name}DisconnectFieldInput`;
                     const deleteField = rel.typeMeta.array
-                        ? `[${n.name}DeleteFieldInput]`
+                        ? `[${n.name}DeleteFieldInput!]`
                         : `${n.name}DeleteFieldInput`;
 
                     composeNode.addFieldArgs(rel.fieldName, {
@@ -438,13 +476,13 @@ function makeAugmentedSchema(
 
                     nodeUpdateInput.addFields({
                         [concatFieldName]: rel.typeMeta.array
-                            ? `[${nodeFieldUpdateInputName}]`
+                            ? `[${nodeFieldUpdateInputName}!]`
                             : nodeFieldUpdateInputName,
                     });
 
                     nodeDeleteInput.addFields({
                         [concatFieldName]: rel.typeMeta.array
-                            ? `[${nodeFieldDeleteInputName}]`
+                            ? `[${nodeFieldDeleteInputName}!]`
                             : nodeFieldDeleteInputName,
                     });
 
@@ -461,22 +499,25 @@ function makeAugmentedSchema(
             }
 
             const n = nodes.find((x) => x.name === rel.typeMeta.name) as Node;
-            const createField = rel.typeMeta.array ? `[${n.name}CreateInput]` : `${n.name}CreateInput`;
+            const createField = rel.typeMeta.array ? `[${n.name}CreateInput!]` : `${n.name}CreateInput`;
             const updateField = `${n.name}UpdateInput`;
             const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
             const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}UpdateFieldInput`;
             const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}DeleteInput`;
-            const connectField = rel.typeMeta.array ? `[${n.name}ConnectFieldInput]` : `${n.name}ConnectFieldInput`;
+            const connectField = rel.typeMeta.array ? `[${n.name}ConnectFieldInput!]` : `${n.name}ConnectFieldInput`;
             const disconnectField = rel.typeMeta.array
-                ? `[${n.name}DisconnectFieldInput]`
+                ? `[${n.name}DisconnectFieldInput!]`
                 : `${n.name}DisconnectFieldInput`;
-            const deleteField = rel.typeMeta.array ? `[${n.name}DeleteFieldInput]` : `${n.name}DeleteFieldInput`;
+            const deleteField = rel.typeMeta.array ? `[${n.name}DeleteFieldInput!]` : `${n.name}DeleteFieldInput`;
 
             whereInput.addFields({
-                [rel.fieldName]: `${n.name}Where`,
-                [`${rel.fieldName}_NOT`]: `${n.name}Where`,
-                [`${rel.fieldName}_IN`]: `[${n.name}Where]`,
-                [`${rel.fieldName}_NOT_IN`]: `[${n.name}Where]`,
+                ...{ [rel.fieldName]: `${n.name}Where`, [`${rel.fieldName}_NOT`]: `${n.name}Where` },
+                ...(rel.typeMeta.array
+                    ? {}
+                    : {
+                          [`${rel.fieldName}_IN`]: `[${n.name}Where!]`,
+                          [`${rel.fieldName}_NOT_IN`]: `[${n.name}Where!]`,
+                      }),
             });
 
             composeNode.addFields({
@@ -530,11 +571,11 @@ function makeAugmentedSchema(
             });
 
             nodeUpdateInput.addFields({
-                [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldUpdateInputName}]` : nodeFieldUpdateInputName,
+                [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldUpdateInputName}!]` : nodeFieldUpdateInputName,
             });
 
             nodeDeleteInput.addFields({
-                [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}]` : nodeFieldDeleteInputName,
+                [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
             });
 
             nodeConnectInput.addFields({
@@ -684,6 +725,7 @@ function makeAugmentedSchema(
     }
 
     unions.forEach((union) => {
+        // eslint-disable-next-line no-underscore-dangle
         generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
     });
 

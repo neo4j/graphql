@@ -46,20 +46,27 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
 
 input MovieCreateInput {
-  filmedAt: PointInput
+  filmedAt: PointInput!
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-enum MovieSort {
-  filmedAt_ASC
-  filmedAt_DESC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  filmedAt: SortDirection
 }
 
 input MovieWhere {
@@ -72,8 +79,8 @@ input MovieWhere {
   filmedAt_GT: PointDistance
   filmedAt_GTE: PointDistance
   filmedAt_DISTANCE: PointDistance
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {
@@ -89,7 +96,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
@@ -142,19 +149,27 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 input MachineCreateInput {
-  partLocation: CartesianPointInput
+  partLocation: CartesianPointInput!
 }
 
 input MachineOptions {
-  sort: [MachineSort]
+  """Specify one or more MachineSort objects to sort Machines by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MachineSort]
   limit: Int
   skip: Int
 }
 
-enum MachineSort {
-  partLocation_ASC
-  partLocation_DESC
+"""Fields to sort Machines by. The order in which sorts are applied is not guaranteed when specifying many fields in one MachineSort object."""
+input MachineSort {
+  partLocation: SortDirection
 }
 
 input MachineWhere {
@@ -167,8 +182,8 @@ input MachineWhere {
   partLocation_GT: CartesianPointDistance
   partLocation_GTE: CartesianPointDistance
   partLocation_DISTANCE: CartesianPointDistance
-  OR: [MachineWhere]
-  AND: [MachineWhere]
+  OR: [MachineWhere!]
+  AND: [MachineWhere!]
 }
 
 input MachineUpdateInput {
@@ -184,7 +199,7 @@ type UpdateMachinesMutationResponse {
 }
 
 type Mutation {
-  createMachines(input: [MachineCreateInput]!): CreateMachinesMutationResponse!
+  createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
   deleteMachines(where: MachineWhere): DeleteInfo!
   updateMachines(where: MachineWhere, update: MachineUpdateInput): UpdateMachinesMutationResponse!
 }
@@ -233,7 +248,7 @@ type DeleteInfo {
 }
 
 input MovieCreateInput {
-  filmedAt: [PointInput]
+  filmedAt: [PointInput!]!
 }
 
 input MovieOptions {
@@ -242,16 +257,16 @@ input MovieOptions {
 }
 
 input MovieWhere {
-  filmedAt: [PointInput]
-  filmedAt_NOT: [PointInput]
-  filmedAt_IN: PointInput
-  filmedAt_NOT_IN: PointInput
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  filmedAt: [PointInput!]
+  filmedAt_INCLUDES: PointInput
+  filmedAt_NOT: [PointInput!]
+  filmedAt_NOT_INCLUDES: PointInput
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {
-  filmedAt: [PointInput]
+  filmedAt: [PointInput!]
 }
 
 type CreateMoviesMutationResponse {
@@ -263,7 +278,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
@@ -312,7 +327,7 @@ type DeleteInfo {
 }
 
 input MachineCreateInput {
-  partLocations: [CartesianPointInput]
+  partLocations: [CartesianPointInput!]!
 }
 
 input MachineOptions {
@@ -321,16 +336,16 @@ input MachineOptions {
 }
 
 input MachineWhere {
-  partLocations: [CartesianPointInput]
-  partLocations_NOT: [CartesianPointInput]
-  partLocations_IN: CartesianPointInput
-  partLocations_NOT_IN: CartesianPointInput
-  OR: [MachineWhere]
-  AND: [MachineWhere]
+  partLocations: [CartesianPointInput!]
+  partLocations_INCLUDES: CartesianPointInput
+  partLocations_NOT: [CartesianPointInput!]
+  partLocations_NOT_INCLUDES: CartesianPointInput
+  OR: [MachineWhere!]
+  AND: [MachineWhere!]
 }
 
 input MachineUpdateInput {
-  partLocations: [CartesianPointInput]
+  partLocations: [CartesianPointInput!]
 }
 
 type CreateMachinesMutationResponse {
@@ -342,7 +357,7 @@ type UpdateMachinesMutationResponse {
 }
 
 type Mutation {
-  createMachines(input: [MachineCreateInput]!): CreateMachinesMutationResponse!
+  createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
   deleteMachines(where: MachineWhere): DeleteInfo!
   updateMachines(where: MachineWhere, update: MachineUpdateInput): UpdateMachinesMutationResponse!
 }

@@ -69,7 +69,7 @@ function getCustomResolvers(document: DocumentNode): CustomResolvers {
         }
 
         return res;
-    }, {}) as CustomResolvers;
+    }, {});
 
     return customResolvers;
 }

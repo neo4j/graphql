@@ -4,7 +4,6 @@ import { generate } from "randomstring";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import jsonwebtoken from "jsonwebtoken";
-import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
@@ -140,11 +139,11 @@ describe("auth/allow", () => {
                     id: ID
                     creator: User @relationship(type: "HAS_POST", direction: "IN")
                 }
-            
+
                 type User {
                     id: ID
                 }
-            
+
                 extend type User {
                     password: String @auth(rules: [{ operations: ["read"], allow: { id: "$jwt.sub" } }])
                 }
@@ -421,7 +420,7 @@ describe("auth/allow", () => {
                 extend type User {
                     password: String @auth(rules: [{ operations: ["update"], allow: { id: "$jwt.sub" }}])
                 }
-                   
+
             `;
 
             const userId = generate({
@@ -675,7 +674,7 @@ describe("auth/allow", () => {
                     id: ID
                     posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
                 }
-                
+
                 type Post {
                     id: ID
                     name: String

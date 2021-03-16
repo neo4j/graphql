@@ -216,10 +216,13 @@ RETURN this {
 ```cypher
 MATCH (this:Post)
 CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+
 RETURN this {
-    creator: head([ (this)<-[:HAS_POST]-(this_creator:User) WHERE apoc.util.validatePredicate(NOT(EXISTS(this_creator.id) AND this_creator.id = $this_creator_auth_allow0_id AND EXISTS(this_creator.id) AND this_creator.id = $this_creator_password_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0]) | this_creator {
-        .password
-    } ])
+    creator: head([
+        (this)<-[:HAS_POST]-(this_creator:User)
+        WHERE apoc.util.validatePredicate(NOT(EXISTS(this_creator.id) AND this_creator.id = $this_creator_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0]) AND apoc.util.validatePredicate(NOT(EXISTS(this_creator.id) AND this_creator.id = $this_creator_password_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0]) | this_creator {
+            .password
+        } ])
 } as this
 ```
 

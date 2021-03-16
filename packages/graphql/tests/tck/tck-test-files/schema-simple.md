@@ -32,6 +32,13 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 input MovieCreateInput {
   id: ID
   actorCount: Int
@@ -40,20 +47,18 @@ input MovieCreateInput {
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-enum MovieSort {
-  id_DESC
-  id_ASC
-  actorCount_DESC
-  actorCount_ASC
-  averageRating_DESC
-  averageRating_ASC
-  isActive_DESC
-  isActive_ASC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  id: SortDirection
+  actorCount: SortDirection
+  averageRating: SortDirection
+  isActive: SortDirection
 }
 
 input MovieWhere {
@@ -67,7 +72,7 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
-  id_REGEX: String
+  id_MATCHES: String
   actorCount: Int
   actorCount_IN: [Int]
   actorCount_NOT: Int
@@ -86,8 +91,8 @@ input MovieWhere {
   averageRating_GTE: Float
   isActive: Boolean
   isActive_NOT: Boolean
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {
@@ -106,7 +111,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }

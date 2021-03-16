@@ -1,4 +1,3 @@
-import { describe, test, expect } from "@jest/globals";
 import { Neo4jGraphQL, Node } from "../../../src/classes";
 import {
     createResolver,
@@ -90,7 +89,7 @@ describe("resolvers", () => {
             expect(result.type).toEqual("CreateMoviesMutationResponse!");
             expect(result.resolve).toBeInstanceOf(Function);
             expect(result.args).toMatchObject({
-                input: "[MovieCreateInput]!",
+                input: "[MovieCreateInput!]!",
             });
         });
     });

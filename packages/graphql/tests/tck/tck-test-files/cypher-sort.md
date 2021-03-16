@@ -8,6 +8,12 @@ Schema:
 type Movie {
     id: ID
     title: String
+    genres: [Genre] @relationship(type: "HAS_GENRE", direction: "OUT")
+}
+
+type Genre {
+    id: ID
+    name: String
 }
 ```
 
@@ -19,7 +25,7 @@ type Movie {
 
 ```graphql
 {
-    movies(options: { sort: [id_DESC] }) {
+    movies(options: { sort: [{ id: DESC }] }) {
         title
     }
 }
@@ -48,7 +54,7 @@ RETURN this { .title } as this
 
 ```graphql
 {
-    movies(options: { sort: [id_DESC, title_ASC] }) {
+    movies(options: { sort: [{ id: DESC }, { title: ASC }] }) {
         title
     }
 }
@@ -76,9 +82,13 @@ RETURN this { .title } as this
 **GraphQL input**
 
 ```graphql
-query($title: String, $skip: Int, $limit: Int, $sort: [MovieSort]) {
+query($title: String, $skip: Int, $limit: Int) {
     movies(
-        options: { sort: $sort, skip: $skip, limit: $limit }
+        options: {
+            sort: [{ id: DESC }, { title: ASC }]
+            skip: $skip
+            limit: $limit
+        }
         where: { title: $title }
     ) {
         title
@@ -92,8 +102,7 @@ query($title: String, $skip: Int, $limit: Int, $sort: [MovieSort]) {
 {
     "limit": 2,
     "skip": 1,
-    "title": "some title",
-    "sort": ["id_DESC", "title_ASC"]
+    "title": "some title"
 }
 ```
 
@@ -124,3 +133,67 @@ LIMIT $this_limit
     "this_title": "some title"
 }
 ```
+
+---
+
+### Nested Sort DESC
+
+**GraphQL input**
+
+```graphql
+{
+    movies {
+        genres(options: { sort: [{ name: DESC }] }) {
+            name
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+RETURN this {
+    genres: apoc.coll.sortMulti([ (this)-[:HAS_GENRE]->(this_genres:Genre) | this_genres { .name } ], ['name'])
+} as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{}
+```
+
+---
+
+### Nested Sort ASC
+
+**GraphQL input**
+
+```graphql
+{
+    movies {
+        genres(options: { sort: [{ name: ASC }] }) {
+            name
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+RETURN this {
+    genres: apoc.coll.sortMulti([ (this)-[:HAS_GENRE]->(this_genres:Genre) | this_genres { .name } ], ['^name'])
+} as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{}
+```
+
+---

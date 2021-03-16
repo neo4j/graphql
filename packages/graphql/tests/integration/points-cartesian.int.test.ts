@@ -1,6 +1,5 @@
 import { Driver, int, Session } from "neo4j-driver";
 import faker from "faker";
-import { describe, beforeAll, afterAll, test, expect, beforeEach, afterEach } from "@jest/globals";
 import { gql } from "apollo-server";
 import { createTestClient } from "apollo-server-testing";
 import neo4j from "./neo4j";
@@ -24,8 +23,8 @@ describe("[CartesianPoint]", () => {
         server = constructTestServer(neoSchema, driver);
     });
 
-    beforeEach(async () => {
-        session = await driver.session();
+    beforeEach(() => {
+        session = driver.session();
     });
 
     afterEach(async () => {
@@ -44,7 +43,7 @@ describe("[CartesianPoint]", () => {
         }));
 
         const create = gql`
-            mutation CreateParts($id: String!, $locations: [CartesianPointInput]) {
+            mutation CreateParts($id: String!, $locations: [CartesianPointInput!]!) {
                 createParts(input: [{ id: $id, locations: $locations }]) {
                     parts {
                         id
@@ -64,7 +63,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await mutate({ mutation: create, variables: { id, locations } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).createParts.parts[0]).toEqual({
+        expect(gqlResult.data.createParts.parts[0]).toEqual({
             id,
             locations: locations.map((location) => ({ ...location, z: null, crs: "cartesian" })),
         });
@@ -96,7 +95,7 @@ describe("[CartesianPoint]", () => {
         }));
 
         const create = gql`
-            mutation CreateParts($id: String!, $locations: [CartesianPointInput]) {
+            mutation CreateParts($id: String!, $locations: [CartesianPointInput!]!) {
                 createParts(input: [{ id: $id, locations: $locations }]) {
                     parts {
                         id
@@ -116,7 +115,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await mutate({ mutation: create, variables: { id, locations } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).createParts.parts[0]).toEqual({
+        expect(gqlResult.data.createParts.parts[0]).toEqual({
             id,
             locations: locations.map((location) => ({ ...location, crs: "cartesian-3d" })),
         });
@@ -179,7 +178,7 @@ describe("[CartesianPoint]", () => {
         ).toEqual(locations.sort());
 
         const update = gql`
-            mutation UpdateParts($id: String!, $locations: [CartesianPointInput]) {
+            mutation UpdateParts($id: String!, $locations: [CartesianPointInput!]) {
                 updateParts(where: { id: $id }, update: { locations: $locations }) {
                     parts {
                         id
@@ -199,7 +198,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await mutate({ mutation: update, variables: { id, locations: newLocations } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).updateParts.parts[0]).toEqual({
+        expect(gqlResult.data.updateParts.parts[0]).toEqual({
             id,
             locations: newLocations.map((location) => ({ ...location, z: null, crs: "cartesian" })),
         });
@@ -264,7 +263,7 @@ describe("[CartesianPoint]", () => {
         ).toEqual(locations.sort());
 
         const update = gql`
-            mutation UpdateParts($id: String!, $locations: [CartesianPointInput]) {
+            mutation UpdateParts($id: String!, $locations: [CartesianPointInput!]) {
                 updateParts(where: { id: $id }, update: { locations: $locations }) {
                     parts {
                         id
@@ -284,7 +283,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await mutate({ mutation: update, variables: { id, locations: newLocations } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).updateParts.parts[0]).toEqual({
+        expect(gqlResult.data.updateParts.parts[0]).toEqual({
             id,
             locations: newLocations.map((location) => ({ ...location, crs: "cartesian-3d" })),
         });
@@ -315,7 +314,7 @@ describe("[CartesianPoint]", () => {
             y: faker.random.float(),
         }));
 
-        const result = await session.run(
+        await session.run(
             `
             CALL {
                 CREATE (r:Part)
@@ -349,7 +348,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await query({ query: partsQuery, variables: { id } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).parts[0]).toEqual({
+        expect(gqlResult.data.parts[0]).toEqual({
             id,
             locations: locations.map((location) => ({ ...location, z: null, crs: "cartesian" })),
         });
@@ -363,7 +362,7 @@ describe("[CartesianPoint]", () => {
             z: faker.random.float(),
         }));
 
-        const result = await session.run(
+        await session.run(
             `
             CALL {
                 CREATE (r:Part)
@@ -397,7 +396,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await query({ query: partsQuery, variables: { id } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).parts[0]).toEqual({
+        expect(gqlResult.data.parts[0]).toEqual({
             id,
             locations: locations.map((location) => ({ ...location, crs: "cartesian-3d" })),
         });

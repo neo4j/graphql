@@ -1,4 +1,3 @@
-import { describe, test, expect } from "@jest/globals";
 import createConnectAndParams from "../../../src/translate/create-connect-and-params";
 import { Neo4jGraphQL, Node, Context } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
@@ -22,8 +21,18 @@ describe("createConnectAndParams", () => {
                         required: false,
                         pretty: "[Movies]",
                         input: {
-                            name: "Movie",
-                            pretty: "[Movies]",
+                            where: {
+                                type: "Movie",
+                                pretty: "[Movie]",
+                            },
+                            create: {
+                                type: "Movie",
+                                pretty: "[Movie]",
+                            },
+                            update: {
+                                type: "Movie",
+                                pretty: "[Movie]",
+                            },
                         },
                     },
                     otherDirectives: [],
@@ -60,12 +69,12 @@ describe("createConnectAndParams", () => {
             trimmer(`
                 WITH this
                 OPTIONAL MATCH (this0:Movie)
-                WHERE this0.title = $this0_title 
+                WHERE this0.title = $this0_title
                 FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:SIMILAR]->(this0) )
 
-                WITH this, this0 
-                OPTIONAL MATCH (this0_similarMovies0:Movie) 
-                WHERE this0_similarMovies0.title = $this0_similarMovies0_title 
+                WITH this, this0
+                OPTIONAL MATCH (this0_similarMovies0:Movie)
+                WHERE this0_similarMovies0.title = $this0_similarMovies0_title
                 FOREACH(_ IN CASE this0_similarMovies0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:SIMILAR]->(this0_similarMovies0) )
             `)
         );

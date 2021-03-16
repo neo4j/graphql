@@ -41,20 +41,19 @@ function createAuthPredicate({
     node: Node;
     rule: AuthRule;
     chainStr: string;
-    kind: "allow" | "bind";
+    kind: "allow" | "bind" | "where";
 }): [string, any] {
-    const allowOrBind = rule[kind];
-
-    if (!allowOrBind) {
+    if (!rule[kind]) {
         return ["", {}];
     }
+    const jwt = context.getJWT();
 
-    const result = Object.entries(allowOrBind as Record<string, any>).reduce(
+    const result = Object.entries(rule[kind] as any).reduce(
         (res: Res, [key, value]) => {
             if (key === "AND" || key === "OR") {
                 const inner: string[] = [];
 
-                ((value as unknown) as any[]).forEach((v, i) => {
+                (value as any[]).forEach((v, i) => {
                     const authPredicate = createAuthPredicate({
                         rule: { [kind]: v } as AuthRule,
                         varName,
@@ -73,21 +72,19 @@ function createAuthPredicate({
 
             const authableField = node.authableFields.find((field) => field.fieldName === key);
             if (authableField) {
-                const jwt = context.getJWTSafe();
-                const _param = `${chainStr}_${key}`;
                 const [, jwtPath] = (value as string).split("$jwt.");
                 const [, ctxPath] = (value as string).split("$context.");
-                const existsStr = `EXISTS(${varName}.${key})`;
+                let paramValue: string = value as string;
 
                 if (jwtPath) {
-                    res.params[_param] = dotProp.get({ value: jwt }, `value.${jwtPath}`);
-                    res.strs.push(`${existsStr} AND ${varName}.${key} = $${_param}`);
+                    paramValue = dotProp.get({ value: jwt }, `value.${jwtPath}`) as string;
+                } else if (ctxPath) {
+                    paramValue = dotProp.get({ value: context.graphQLContext }, `value.${ctxPath}`) as string;
                 }
 
-                if (ctxPath) {
-                    res.params[_param] = dotProp.get({ value: context.graphQLContext }, `value.${ctxPath}`);
-                    res.strs.push(`${existsStr} AND ${varName}.${key} = $${_param}`);
-                }
+                const param = `${chainStr}_${key}`;
+                res.params[param] = paramValue;
+                res.strs.push(`EXISTS(${varName}.${key}) AND ${varName}.${key} = $${param}`);
             }
 
             const relationField = node.relationFields.find((x) => key === x.fieldName);
@@ -126,7 +123,7 @@ function createAuthPredicate({
             return res;
         },
         { params: {}, strs: [] }
-    ) as Res;
+    );
 
     return [result.strs.join(" AND "), result.params];
 }
@@ -140,6 +137,7 @@ function createAuthAndParams({
     context,
     escapeQuotes,
     bind,
+    where,
 }: {
     entity: Node | BaseField;
     operation?: AuthOperations;
@@ -149,6 +147,7 @@ function createAuthAndParams({
     context: Context;
     escapeQuotes?: boolean;
     bind?: Bind;
+    where?: { varName: string; chainStr?: string; node: Node };
 }): [string, any] {
     if (!entity.auth) {
         return ["", {}];
@@ -159,6 +158,35 @@ function createAuthAndParams({
         authRules = entity?.auth.rules.filter((r) => r.operations === "*" || r.operations?.includes(operation));
     } else {
         authRules = entity?.auth.rules;
+    }
+
+    if (where) {
+        const subPredicates = authRules.reduce(
+            (res: Res, authRule: AuthRule, index): Res => {
+                if (!authRule.where) {
+                    return res;
+                }
+
+                const authWhere = createAuthPredicate({
+                    rule: { where: authRule.where },
+                    context,
+                    node: where.node,
+                    varName: where.varName,
+                    chainStr: `${where.chainStr || where.varName}_auth_where${index}`,
+                    kind: "where",
+                });
+
+                return {
+                    strs: [...res.strs, authWhere[0]],
+                    params: { ...res.params, ...authWhere[1] },
+                };
+            },
+            { strs: [], params: {} }
+        );
+
+        const joined = subPredicates.strs.filter(Boolean).join(" OR ");
+
+        return [joined, subPredicates.params];
     }
 
     function createSubPredicate({
@@ -257,7 +285,7 @@ function createAuthAndParams({
             };
         },
         { strs: [], params: {} }
-    ) as Res;
+    );
 
     return [subPredicates.strs.filter(Boolean).join(" OR "), subPredicates.params];
 }

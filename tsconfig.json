@@ -1,20 +1,4 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "esModuleInterop": true,
-        "emitDecoratorMetadata": true,
-        "allowSyntheticDefaultImports": true,
-        "target": "es6",
-        "strict": true,
-        "sourceMap": true,
-        "noImplicitAny": false,
-        "noUnusedLocals": false,
-        "allowUnusedLabels": true,
-        "noUnusedParameters": true,
-        "moduleResolution": "node",
-        "experimentalDecorators": true,
-        "skipLibCheck": true,
-        "declaration": true,
-        "downlevelIteration": true
-    }
+    "files": [],
+    "references": [{ "path": "./packages/graphql/src/tsconfig.json" }, { "path": "./packages/graphql/tests" }]
 }

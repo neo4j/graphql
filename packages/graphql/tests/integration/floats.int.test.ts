@@ -1,14 +1,13 @@
 import { Driver, int } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
 describe("floats", () => {
     let driver: Driver;
-    const imdbRating_float = 4.0;
-    const imdbRating_int = 4;
+    const imdbRatingFloat = 4.0;
+    const imdbRatingInt = 4;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -39,8 +38,8 @@ describe("floats", () => {
             mutation {
                 createMovies(input:[{
                     id: "${id}",
-                    imdbRating_float: ${imdbRating_float}
-                    imdbRating_int: ${imdbRating_int}
+                    imdbRating_float: ${imdbRatingFloat}
+                    imdbRating_int: ${imdbRatingInt}
                 }]) {
                     movies {
                         id
@@ -59,7 +58,11 @@ describe("floats", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).createMovies.movies[0]).toEqual({ id, imdbRating_float, imdbRating_int });
+            expect((gqlResult.data as any).createMovies.movies[0]).toEqual({
+                id,
+                imdbRating_float: imdbRatingFloat,
+                imdbRating_int: imdbRatingInt,
+            });
 
             const result = await session.run(`
                 MATCH (m:Movie {id: "${id}"})
@@ -68,8 +71,8 @@ describe("floats", () => {
 
             expect((result.records[0].toObject() as any).m).toEqual({
                 id,
-                imdbRating_float,
-                imdbRating_int: int(imdbRating_int),
+                imdbRating_float: imdbRatingFloat,
+                imdbRating_int: int(imdbRatingInt),
             });
         } finally {
             await session.close();
@@ -115,13 +118,17 @@ describe("floats", () => {
                 source: create,
                 contextValue: { driver },
                 variableValues: {
-                    imdbRating_float,
-                    imdbRating_int,
+                    imdbRating_float: imdbRatingFloat,
+                    imdbRating_int: imdbRatingInt,
                 },
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).createMovies.movies[0]).toEqual({ id, imdbRating_float, imdbRating_int });
+            expect((gqlResult.data as any).createMovies.movies[0]).toEqual({
+                id,
+                imdbRating_float: imdbRatingFloat,
+                imdbRating_int: imdbRatingInt,
+            });
 
             const result = await session.run(`
                 MATCH (m:Movie {id: "${id}"})
@@ -130,8 +137,8 @@ describe("floats", () => {
 
             expect((result.records[0].toObject() as any).m).toEqual({
                 id,
-                imdbRating_float,
-                imdbRating_int: int(imdbRating_int),
+                imdbRating_float: imdbRatingFloat,
+                imdbRating_int: int(imdbRatingInt),
             });
         } finally {
             await session.close();
@@ -148,11 +155,11 @@ describe("floats", () => {
             type Movie {
                 id: String
             }
-        
+
             input Nested {
                 floats: [Float]
             }
-        
+
             type Mutation {
                 float(id: ID, float: Float, nested: Nested): Float
                     @cypher(
@@ -215,8 +222,8 @@ describe("floats", () => {
                     RETURN 12345
                 """)
             }
-        
-           
+
+
         `;
 
         const id = generate({

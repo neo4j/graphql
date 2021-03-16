@@ -1,5 +1,4 @@
 import { parse, print } from "graphql";
-import { describe, test, expect } from "@jest/globals";
 import mergeTypeDefs from "../../../src/schema/merge-type-defs";
 
 describe("mergeTypeDefs", () => {
@@ -139,7 +138,7 @@ describe("mergeTypeDefs", () => {
             enum Test {
                 abc
             }
-          
+
             extend enum Test @test {
                 bca
             }
@@ -152,7 +151,7 @@ describe("mergeTypeDefs", () => {
         const expected = print(
             parse(`
                 enum Test @test {
-                    abc 
+                    abc
                     bca
                 }
             `)
@@ -166,7 +165,7 @@ describe("mergeTypeDefs", () => {
             input Test {
                 abc: String
             }
-          
+
             extend input Test @test {
                 bca: String
             }
@@ -179,7 +178,7 @@ describe("mergeTypeDefs", () => {
         const expected = print(
             parse(`
                 input Test @test {
-                    abc: String 
+                    abc: String
                     bca: String
                 }
             `)
@@ -193,7 +192,7 @@ describe("mergeTypeDefs", () => {
         type User {
             password: String
         }
-      
+
         extend type User {
             password: String @readonly
         }

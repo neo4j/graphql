@@ -31,7 +31,7 @@ function getRelationshipMeta(field: FieldDefinitionNode): RelationshipMeta | und
     }
 
     const direction = directionArg.value.value as "IN" | "OUT";
-    const type = typeArg.value.value as string;
+    const type = typeArg.value.value;
 
     return {
         direction,

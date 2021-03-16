@@ -1,7 +1,6 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import isUUID from "is-uuid";
-import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
@@ -78,7 +77,7 @@ describe("autogenerate", () => {
             mutation {
                 createMovies(input:
                     [
-                        { 
+                        {
                             name: "dan",
                             genres: {
                                 create: [{}]

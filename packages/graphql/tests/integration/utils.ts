@@ -12,4 +12,4 @@ const constructTestServer = (neoSchema: Neo4jGraphQL, driver: Driver, context = 
     return server;
 };
 
-export { constructTestServer };
+export { constructTestServer }; // eslint-disable-line import/prefer-default-export

@@ -1,6 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line import/no-unresolved
 const neo4j = require("neo4j-driver");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const server = require("./server");
 
 const driver = neo4j.driver("neo4j://localhost:7687", neo4j.auth.basic("admin", "password"));

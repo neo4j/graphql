@@ -2,7 +2,6 @@
 import { Driver } from "neo4j-driver";
 import { graphql, createSourceEventStream, parse } from "graphql";
 import { generate } from "randomstring";
-import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import jsonwebtoken from "jsonwebtoken";
@@ -25,7 +24,7 @@ describe("Custom Resolvers", () => {
     test("should define a custom field resolver and resolve it", async () => {
         const session = driver.session();
 
-        const typeDefs = `          
+        const typeDefs = `
             type Movie {
               id: ID
               custom: String
@@ -65,9 +64,9 @@ describe("Custom Resolvers", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any).createMovies.movies[0] as any).toEqual({
+            expect((gqlResult.data as any).createMovies.movies[0]).toEqual({
                 id,
-                custom: (id as string).toUpperCase(),
+                custom: id.toUpperCase(),
             });
         } finally {
             await session.close();
@@ -75,7 +74,7 @@ describe("Custom Resolvers", () => {
     });
 
     test("should define a custom Query resolver and resolve it", async () => {
-        const typeDefs = `          
+        const typeDefs = `
             type Movie {
               id: ID
               custom: String
@@ -117,7 +116,7 @@ describe("Custom Resolvers", () => {
     });
 
     test("should define a custom Mutation resolver and resolve it", async () => {
-        const typeDefs = `          
+        const typeDefs = `
             type Movie {
               id: ID
               custom: String
@@ -159,7 +158,7 @@ describe("Custom Resolvers", () => {
     });
 
     test("should define a custom Subscription resolver and resolve it", async () => {
-        const typeDefs = `          
+        const typeDefs = `
             type Movie {
               id: ID
               custom: String
@@ -179,6 +178,7 @@ describe("Custom Resolvers", () => {
             resolvers: {
                 Subscription: {
                     id: {
+                        // eslint-disable-next-line @typescript-eslint/require-await
                         async *subscribe() {
                             yield { id };
                         },
@@ -284,7 +284,7 @@ describe("Custom Resolvers", () => {
                             type Test {
                                 id: ID
                             }
-    
+
                             type Query {
                                 test: Test! @cypher(statement: """
                                 RETURN {id: \"${id}\"}
@@ -306,7 +306,7 @@ describe("Custom Resolvers", () => {
                             type Test {
                                 id: ID
                             }
-    
+
                             type Query {
                                 test(id: ID!): Test! @cypher(statement: """
                                 MATCH (n:Test {id: $id})
@@ -345,29 +345,29 @@ describe("Custom Resolvers", () => {
 
                         expect(gqlResult.errors).toBeFalsy();
 
+                        let expected: any;
+
                         if (type === "ID") {
-                            expect((gqlResult.data as any).test as any).toEqual(id);
+                            expected = id;
+                        }
+
+                        if (type === "Object" || type === "Node") {
+                            expected = { id };
                         }
 
                         if (type === "Int") {
-                            expect((gqlResult.data as any).test as any).toEqual(int);
+                            expected = int;
                         }
 
                         if (type === "Float") {
-                            expect((gqlResult.data as any).test as any).toEqual(float);
+                            expected = float;
                         }
 
                         if (type === "Boolean") {
-                            expect((gqlResult.data as any).test as any).toEqual(bool);
+                            expected = bool;
                         }
 
-                        if (type === "Object") {
-                            expect((gqlResult.data as any).test.id as any).toEqual(id);
-                        }
-
-                        if (type === "Node") {
-                            expect((gqlResult.data as any).test.id as any).toEqual(id);
-                        }
+                        expect((gqlResult.data as any).test).toEqual(expected);
                     } finally {
                         await session.close();
                     }
@@ -384,7 +384,7 @@ describe("Custom Resolvers", () => {
                 type Query {
                     ignore: String ## Query root type must be provided
                 }
-    
+
                 type Mutation {
                     test(id: ID!): ID! @cypher(statement: """
                         RETURN \"${id}\" + $id
@@ -413,7 +413,7 @@ describe("Custom Resolvers", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult.data as any).test as any).toEqual(id + id);
+                expect((gqlResult.data as any).test).toEqual(`${id}${id}`);
             } finally {
                 await session.close();
             }
@@ -457,7 +457,7 @@ describe("Custom Resolvers", () => {
                             contextValue: { driver, req },
                         });
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any).userId).toEqual(userId);
                     } finally {
@@ -472,7 +472,7 @@ describe("Custom Resolvers", () => {
                         type User {
                             id: ID
                         }
-    
+
                         type Mutation {
                             userId: ID @cypher(statement: """
                                 RETURN $auth.jwt.sub
@@ -505,7 +505,7 @@ describe("Custom Resolvers", () => {
                             contextValue: { driver, req },
                         });
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any).userId).toEqual(userId);
                     } finally {
@@ -554,11 +554,11 @@ describe("Custom Resolvers", () => {
 
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
-                        source: query as string,
+                        source: query,
                         contextValue: { driver, req },
                     });
 
-                    expect(gqlResult.errors).toEqual(undefined);
+                    expect(gqlResult.errors).toBeUndefined();
 
                     expect((gqlResult.data as any).users[0].userId).toEqual(userId);
                 } finally {
@@ -568,3 +568,4 @@ describe("Custom Resolvers", () => {
         });
     });
 });
+/* eslint-enable */

@@ -27,19 +27,27 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 input UserCreateInput {
   id: ID
 }
 
 input UserOptions {
+  """Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array."""
   sort: [UserSort]
   limit: Int
   skip: Int
 }
 
-enum UserSort {
-  id_DESC
-  id_ASC
+"""Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object."""
+input UserSort {
+  id: SortDirection
 }
 
 input UserWhere {
@@ -53,9 +61,9 @@ input UserWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-  OR: [UserWhere]
-  AND: [UserWhere]
+  id_MATCHES: String
+  OR: [UserWhere!]
+  AND: [UserWhere!]
 }
 
 input UserUpdateInput {
@@ -71,7 +79,7 @@ type UpdateUsersMutationResponse {
 }
 
 type Mutation {
-  createUsers(input: [UserCreateInput]!): CreateUsersMutationResponse!
+  createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
   deleteUsers(where: UserWhere): DeleteInfo!
   updateUsers(where: UserWhere, update: UserUpdateInput): UpdateUsersMutationResponse!
 }

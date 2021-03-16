@@ -32,6 +32,13 @@ type Movie implements Node @auth(rules: [{allow: "*", operations: ["read"]}]) {
 **Output**
 
 ```schema-output
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 interface Node {
     id: ID
     movies: [Movie]
@@ -56,14 +63,15 @@ input MovieCreateInput {
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-enum MovieSort {
-  id_DESC
-  id_ASC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  id: SortDirection
 }
 
 input MovieWhere {
@@ -77,13 +85,11 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
-  id_REGEX: String
+  id_MATCHES: String
   movies: MovieWhere
-  movies_IN: [MovieWhere]
   movies_NOT: MovieWhere
-  movies_NOT_IN: [MovieWhere]
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
 input MovieDisconnectFieldInput {
@@ -92,12 +98,12 @@ input MovieDisconnectFieldInput {
 }
 
 input MovieDisconnectInput {
-  movies: [MovieDisconnectFieldInput]
+  movies: [MovieDisconnectFieldInput!]
 }
 
 input MovieMoviesFieldInput {
-  connect: [MovieConnectFieldInput]
-  create: [MovieCreateInput]
+  connect: [MovieConnectFieldInput!]
+  create: [MovieCreateInput!]
 }
 
 input MovieDeleteFieldInput {
@@ -106,16 +112,16 @@ input MovieDeleteFieldInput {
 }
 
 input MovieMoviesUpdateFieldInput {
-  connect: [MovieConnectFieldInput]
-  create: [MovieCreateInput]
-  disconnect: [MovieDisconnectFieldInput]
+  connect: [MovieConnectFieldInput!]
+  create: [MovieCreateInput!]
+  disconnect: [MovieDisconnectFieldInput!]
   update: MovieUpdateInput
   where: MovieWhere
-  delete: [MovieDeleteFieldInput]
+  delete: [MovieDeleteFieldInput!]
 }
 
 input MovieRelationInput {
-  movies: [MovieCreateInput]
+  movies: [MovieCreateInput!]
 }
 
 input MovieConnectFieldInput {
@@ -124,12 +130,12 @@ input MovieConnectFieldInput {
 }
 
 input MovieConnectInput {
-  movies: [MovieConnectFieldInput]
+  movies: [MovieConnectFieldInput!]
 }
 
 input MovieUpdateInput {
   id: ID
-  movies: [MovieMoviesUpdateFieldInput]
+  movies: [MovieMoviesUpdateFieldInput!]
 }
 
 input MovieMoviesDeleteInput {
@@ -138,7 +144,7 @@ input MovieMoviesDeleteInput {
 }
 
 input MovieDeleteInput {
-  movies: [MovieMoviesDeleteInput]
+  movies: [MovieMoviesDeleteInput!]
 }
 
 type CreateMoviesMutationResponse {
@@ -150,7 +156,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
   updateMovies(
     where: MovieWhere

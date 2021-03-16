@@ -1,6 +1,5 @@
-import { expect, describe, test } from "@jest/globals";
 import { Driver } from "neo4j-driver";
-import { Context, Neo4jGraphQL } from "../../../src/classes";
+import { Neo4jGraphQL } from "../../../src/classes";
 import execute from "../../../src/utils/execute";
 
 describe("execute", () => {
@@ -27,7 +26,7 @@ describe("execute", () => {
                         expect(options).toMatchObject({ defaultAccessMode, database, bookmarks });
 
                         const tx = {
-                            run: async (paramCypher, paramParams) => {
+                            run: (paramCypher, paramParams) => {
                                 expect(paramCypher).toEqual(cypher);
                                 expect(paramParams).toEqual(params);
 
@@ -44,7 +43,7 @@ describe("execute", () => {
                                 // @ts-ignore
                                 return fn(tx);
                             },
-                            close: async () => true,
+                            close: () => true,
                         };
                     },
                 };

@@ -35,7 +35,10 @@ function filterTypeDefs(typeDefs: TypeDefs) {
                     fields: def.fields?.reduce(
                         (r: FieldDefinitionNode[], f) => [
                             ...r,
-                            { ...f, directives: f.directives?.filter((x) => x.name.value !== "private") },
+                            {
+                                ...f,
+                                directives: f.directives?.filter((x) => !["private", "ignore"].includes(x.name.value)),
+                            },
                         ],
                         []
                     ),
@@ -64,12 +67,10 @@ class OGM {
         this.models = this.neoSchema.nodes.map((n) => {
             const selectionSet = `
                 {
-                    ${
-                        [n.primitiveFields, n.scalarFields, n.enumFields, n.dateTimeFields].reduce(
-                            (res: string[], v: BaseField[]) => [...res, ...v.map((x) => x.fieldName)],
-                            []
-                        ) as string[]
-                    }
+                    ${[n.primitiveFields, n.scalarFields, n.enumFields, n.dateTimeFields].reduce(
+                        (res: string[], v: BaseField[]) => [...res, ...v.map((x) => x.fieldName)],
+                        []
+                    )}
                 }
             `;
 
