@@ -43,6 +43,14 @@ function createWhereAndParams({
             const [fieldName] = key.split("_NOT");
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
 
+            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+                (f) => fieldName === f.fieldName
+            )?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
+
             if (relationField) {
                 const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
                 const inStr = relationField.direction === "IN" ? "<-" : "-";
@@ -89,7 +97,7 @@ function createWhereAndParams({
                     res.clauses.push(`(NOT ${varName}.${fieldName} = point($${param}))`);
                 }
             } else {
-                res.clauses.push(`(NOT ${varName}.${fieldName} = $${param})`);
+                res.clauses.push(`(NOT ${property} = $${param})`);
             }
 
             res.params[param] = value;
@@ -99,6 +107,14 @@ function createWhereAndParams({
         if (key.endsWith("_NOT_IN")) {
             const [fieldName] = key.split("_NOT_IN");
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
+
+            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+                (f) => fieldName === f.fieldName
+            )?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
 
             if (relationField) {
                 const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
@@ -135,7 +151,7 @@ function createWhereAndParams({
                 res.clauses.push(`(NOT ${varName}.${fieldName} IN [p in $${param} | point(p)])`);
                 res.params[param] = value;
             } else {
-                res.clauses.push(`(NOT ${varName}.${fieldName} IN $${param})`);
+                res.clauses.push(`(NOT ${property} IN $${param})`);
                 res.params[param] = value;
             }
 
@@ -145,6 +161,14 @@ function createWhereAndParams({
         if (key.endsWith("_IN")) {
             const [fieldName] = key.split("_IN");
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
+
+            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+                (f) => fieldName === f.fieldName
+            )?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
 
             if (relationField) {
                 const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
@@ -180,7 +204,7 @@ function createWhereAndParams({
                 res.clauses.push(`${varName}.${fieldName} IN [p in $${param} | point(p)]`);
                 res.params[param] = value;
             } else {
-                res.clauses.push(`${varName}.${fieldName} IN $${param}`);
+                res.clauses.push(`${property} IN $${param}`);
                 res.params[param] = value;
             }
 
@@ -190,11 +214,19 @@ function createWhereAndParams({
         if (key.endsWith("_NOT_INCLUDES")) {
             const [fieldName] = key.split("_NOT_INCLUDES");
 
+            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+                (f) => fieldName === f.fieldName
+            )?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
+
             if (pointField) {
                 res.clauses.push(`(NOT point($${param}) IN ${varName}.${fieldName})`);
                 res.params[param] = value;
             } else {
-                res.clauses.push(`(NOT $${param} IN ${varName}.${fieldName})`);
+                res.clauses.push(`(NOT $${param} IN ${property})`);
                 res.params[param] = value;
             }
 
@@ -204,11 +236,19 @@ function createWhereAndParams({
         if (key.endsWith("_INCLUDES")) {
             const [fieldName] = key.split("_INCLUDES");
 
+            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+                (f) => fieldName === f.fieldName
+            )?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
+
             if (pointField) {
                 res.clauses.push(`point($${param}) IN ${varName}.${fieldName}`);
                 res.params[param] = value;
             } else {
-                res.clauses.push(`$${param} IN ${varName}.${fieldName}`);
+                res.clauses.push(`$${param} IN ${property}`);
                 res.params[param] = value;
             }
 
@@ -252,7 +292,14 @@ function createWhereAndParams({
 
         if (key.endsWith("_MATCHES")) {
             const [fieldName] = key.split("_MATCHES");
-            res.clauses.push(`${varName}.${fieldName} =~ $${param}`);
+
+            const coalesceValue = node.primitiveFields.find((f) => fieldName === f.fieldName)?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
+
+            res.clauses.push(`${property} =~ $${param}`);
             res.params[param] = value;
 
             return res;
@@ -260,7 +307,14 @@ function createWhereAndParams({
 
         if (key.endsWith("_NOT_CONTAINS")) {
             const [fieldName] = key.split("_NOT_CONTAINS");
-            res.clauses.push(`(NOT ${varName}.${fieldName} CONTAINS $${param})`);
+
+            const coalesceValue = node.primitiveFields.find((f) => fieldName === f.fieldName)?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
+
+            res.clauses.push(`(NOT ${property} CONTAINS $${param})`);
             res.params[param] = value;
 
             return res;
@@ -268,7 +322,14 @@ function createWhereAndParams({
 
         if (key.endsWith("_CONTAINS")) {
             const [fieldName] = key.split("_CONTAINS");
-            res.clauses.push(`${varName}.${fieldName} CONTAINS $${param}`);
+
+            const coalesceValue = node.primitiveFields.find((f) => fieldName === f.fieldName)?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
+
+            res.clauses.push(`${property} CONTAINS $${param}`);
             res.params[param] = value;
 
             return res;
@@ -276,7 +337,14 @@ function createWhereAndParams({
 
         if (key.endsWith("_NOT_STARTS_WITH")) {
             const [fieldName] = key.split("_NOT_STARTS_WITH");
-            res.clauses.push(`(NOT ${varName}.${fieldName} STARTS WITH $${param})`);
+
+            const coalesceValue = node.primitiveFields.find((f) => fieldName === f.fieldName)?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
+
+            res.clauses.push(`(NOT ${property} STARTS WITH $${param})`);
             res.params[param] = value;
 
             return res;
@@ -284,7 +352,14 @@ function createWhereAndParams({
 
         if (key.endsWith("_STARTS_WITH")) {
             const [fieldName] = key.split("_STARTS_WITH");
-            res.clauses.push(`${varName}.${fieldName} STARTS WITH $${param}`);
+
+            const coalesceValue = node.primitiveFields.find((f) => fieldName === f.fieldName)?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
+
+            res.clauses.push(`${property} STARTS WITH $${param}`);
             res.params[param] = value;
 
             return res;
@@ -292,7 +367,14 @@ function createWhereAndParams({
 
         if (key.endsWith("_NOT_ENDS_WITH")) {
             const [fieldName] = key.split("_NOT_ENDS_WITH");
-            res.clauses.push(`(NOT ${varName}.${fieldName} ENDS WITH $${param})`);
+
+            const coalesceValue = node.primitiveFields.find((f) => fieldName === f.fieldName)?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
+
+            res.clauses.push(`(NOT ${property} ENDS WITH $${param})`);
             res.params[param] = value;
 
             return res;
@@ -300,7 +382,14 @@ function createWhereAndParams({
 
         if (key.endsWith("_ENDS_WITH")) {
             const [fieldName] = key.split("_ENDS_WITH");
-            res.clauses.push(`${varName}.${fieldName} ENDS WITH $${param}`);
+
+            const coalesceValue = node.primitiveFields.find((f) => fieldName === f.fieldName)?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
+
+            res.clauses.push(`${property} ENDS WITH $${param}`);
             res.params[param] = value;
 
             return res;
@@ -308,10 +397,19 @@ function createWhereAndParams({
 
         if (key.endsWith("_LT")) {
             const [fieldName] = key.split("_LT");
+
+            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+                (f) => fieldName === f.fieldName
+            )?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
+
             res.clauses.push(
                 pointField
                     ? `distance(${varName}.${fieldName}, point($${param}.point)) < $${param}.distance`
-                    : `${varName}.${fieldName} < $${param}`
+                    : `${property} < $${param}`
             );
             res.params[param] = value;
 
@@ -320,10 +418,19 @@ function createWhereAndParams({
 
         if (key.endsWith("_LTE")) {
             const [fieldName] = key.split("_LTE");
+
+            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+                (f) => fieldName === f.fieldName
+            )?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
+
             res.clauses.push(
                 pointField
                     ? `distance(${varName}.${fieldName}, point($${param}.point)) <= $${param}.distance`
-                    : `${varName}.${fieldName} <= $${param}`
+                    : `${property} <= $${param}`
             );
             res.params[param] = value;
 
@@ -332,10 +439,19 @@ function createWhereAndParams({
 
         if (key.endsWith("_GT")) {
             const [fieldName] = key.split("_GT");
+
+            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+                (f) => fieldName === f.fieldName
+            )?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
+
             res.clauses.push(
                 pointField
                     ? `distance(${varName}.${fieldName}, point($${param}.point)) > $${param}.distance`
-                    : `${varName}.${fieldName} > $${param}`
+                    : `${property} > $${param}`
             );
             res.params[param] = value;
 
@@ -344,10 +460,19 @@ function createWhereAndParams({
 
         if (key.endsWith("_GTE")) {
             const [fieldName] = key.split("_GTE");
+
+            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+                (f) => fieldName === f.fieldName
+            )?.coalesceValue;
+            const property =
+                coalesceValue !== undefined
+                    ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
+                    : `${varName}.${fieldName}`;
+
             res.clauses.push(
                 pointField
                     ? `distance(${varName}.${fieldName}, point($${param}.point)) >= $${param}.distance`
-                    : `${varName}.${fieldName} >= $${param}`
+                    : `${property} >= $${param}`
             );
             res.params[param] = value;
 
@@ -396,7 +521,13 @@ function createWhereAndParams({
                 res.clauses.push(`${varName}.${key} = point($${param})`);
             }
         } else {
-            res.clauses.push(`${varName}.${key} = $${param}`);
+            const field = [...node.primitiveFields, ...node.dateTimeFields].find((f) => key === f.fieldName);
+            const property =
+                field?.coalesceValue !== undefined
+                    ? `coalesce(${varName}.${field.fieldName}, ${field.coalesceValue})`
+                    : `${varName}.${key}`;
+
+            res.clauses.push(`${property} = $${param}`);
         }
 
         res.params[param] = value;
