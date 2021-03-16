@@ -1,4 +1,51 @@
-import { GraphQLDirective, DirectiveLocation, GraphQLString, GraphQLNonNull } from "graphql";
+import { GraphQLDirective, DirectiveLocation, GraphQLString, GraphQLNonNull, GraphQLScalarType, Kind } from "graphql";
+
+export const ScalarType = new GraphQLScalarType({
+    name: "Scalar",
+    description: "Int | Float | String | Boolean | ID | DateTime",
+    serialize(value) {
+        if (!["string", "number", "boolean"].includes(typeof value)) {
+            throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime");
+        }
+
+        return value;
+    },
+    parseValue(value) {
+        if (!["string", "number", "boolean"].includes(typeof value)) {
+            throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime");
+        }
+
+        return value;
+    },
+    parseLiteral(ast) {
+        switch (ast.kind) {
+            case Kind.INT:
+                return parseInt(ast.value, 10);
+            case Kind.FLOAT:
+                return parseFloat(ast.value);
+            case Kind.STRING:
+                return ast.value;
+            case Kind.BOOLEAN:
+                return ast.value;
+            default:
+                throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime");
+        }
+    },
+});
+
+export const coalesceDirective = new GraphQLDirective({
+    name: "coalesce",
+    description:
+        "Instructs @neo4j/graphql to wrap the property in a coalesce() function during queries, using the single value specified.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        value: {
+            description:
+                "The value to use in the coalesce() function. Must be a scalar type and must match the type of the field with which this directive decorates.",
+            type: new GraphQLNonNull(ScalarType),
+        },
+    },
+});
 
 export const cypherDirective = new GraphQLDirective({
     name: "cypher",
@@ -10,6 +57,20 @@ export const cypherDirective = new GraphQLDirective({
             description:
                 "The Cypher statement to run which returns a value of the same type composition as the field definition on which the directive is applied.",
             type: new GraphQLNonNull(GraphQLString),
+        },
+    },
+});
+
+export const defaultDirective = new GraphQLDirective({
+    name: "default",
+    description:
+        "Instructs @neo4j/graphql to set the specified value as the default value in the CreateInput type for the object type in which this directive is used.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        value: {
+            description:
+                "The default value to use. Must be a scalar type and must match the type of the field with which this directive decorates.",
+            type: new GraphQLNonNull(ScalarType),
         },
     },
 });
@@ -30,7 +91,7 @@ export const privateDirective = new GraphQLDirective({
 export const readonlyDirective = new GraphQLDirective({
     name: "readonly",
     description:
-        "Instructs @neo4j/graphql to exclude a field from the generated input types for the object type within which the directive is applied.",
+        "Instructs @neo4j/graphql to only include a field in generated input type for creating, and in the object type within which the directive is applied.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
 });
 
