@@ -1,4 +1,49 @@
 [[operations-delete]]
 = Delete
 
-hi
+== Schema
+
+[source, graphql]
+----
+type User {
+    id: ID! @autogenerate
+    name: String
+    friends: [User] @relationship(type: "HAS_FRIEND", direction: "OUT")
+}
+----
+
+== Deleting a user
+
+[source, graphql]
+----
+mutation {
+    deleteUsers(where: { name: "bob" }) {
+        nodesDeleted
+    }
+}
+----
+
+== Deleting with OGM
+
+See <<ogm>>.
+
+[source, javascript]
+----
+const User = ogm.model("User");
+
+await User.delete({
+    where: { name: "dan" },
+});
+----
+
+== Deleting a user and there friends
+
+[source, graphql]
+----
+mutation {
+    deleteUsers(where: { name: "dan" }, delete: { friends: { where: { name: "darrell" } } }) {
+        nodesDeleted
+        relationshipsDeleted
+    }
+}
+----

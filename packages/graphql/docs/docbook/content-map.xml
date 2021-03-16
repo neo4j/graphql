@@ -38,12 +38,6 @@
       <d:tocentry linkend="operations-delete">
         <?dbhtml filename="operations/delete/index.html"?>
       </d:tocentry>
-      <d:tocentry linkend="operations-connect">
-        <?dbhtml filename="operations/connect/index.html"?>
-      </d:tocentry>
-      <d:tocentry linkend="operations-disconnect">
-        <?dbhtml filename="operations/disconnect/index.html"?>
-      </d:tocentry>
     </d:tocentry>
 
     <d:tocentry linkend="auth">

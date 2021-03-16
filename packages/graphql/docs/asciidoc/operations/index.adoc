@@ -7,8 +7,6 @@ This section outlines how to query your Generated GraphQl schema.
 * <<operations-create>>
 * <<operations-update>>
 * <<operations-delete>>
-* <<operations-disconnect>>
-* <<operations-connect>>
 
 
 
