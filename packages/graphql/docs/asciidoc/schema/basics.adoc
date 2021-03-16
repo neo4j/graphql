@@ -3,6 +3,25 @@
 
 == Nodes
 
+To represent a node in the GraphQL schema use the type definition;
+
+[source, graphql]
+----
+type Node {
+    id: ID
+}
+----
+
 
 == Relationships
+
+To represent a relationship between two nodes use the `@relationship` directive;
+
+[source, graphql]
+----
+type Node {
+    id: ID
+    related: [Node] @relationship(type: "RELATED", direction: "OUT")
+}
+----
 
