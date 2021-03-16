@@ -1,7 +1,7 @@
+import dotProp from "dot-prop";
 import { Context, Node } from "../classes";
 import { AuthOperations, BaseField, AuthRule, BaseAuthRule } from "../types";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
-import { dotPathPopulate } from "../utils";
 
 interface Res {
     strs: string[];
@@ -46,18 +46,14 @@ function createAuthPredicate({
     if (!rule[kind]) {
         return ["", {}];
     }
+    const jwt = context.getJWT();
 
-    const populated = dotPathPopulate({
-        obj: rule[kind] as { [k: string]: any },
-        context,
-    });
-
-    const result = Object.entries(populated).reduce(
+    const result = Object.entries(rule[kind] as any).reduce(
         (res: Res, [key, value]) => {
             if (key === "AND" || key === "OR") {
                 const inner: string[] = [];
 
-                ((value as unknown) as any[]).forEach((v, i) => {
+                (value as any[]).forEach((v, i) => {
                     const authPredicate = createAuthPredicate({
                         rule: { [kind]: v } as AuthRule,
                         varName,
@@ -76,8 +72,18 @@ function createAuthPredicate({
 
             const authableField = node.authableFields.find((field) => field.fieldName === key);
             if (authableField) {
+                const [, jwtPath] = (value as string).split("$jwt.");
+                const [, ctxPath] = (value as string).split("$context.");
+                let paramValue: string = value as string;
+
+                if (jwtPath) {
+                    paramValue = dotProp.get({ value: jwt }, `value.${jwtPath}`) as string;
+                } else if (ctxPath) {
+                    paramValue = dotProp.get({ value: context.graphQLContext }, `value.${ctxPath}`) as string;
+                }
+
                 const param = `${chainStr}_${key}`;
-                res.params[param] = value;
+                res.params[param] = paramValue;
                 res.strs.push(`EXISTS(${varName}.${key}) AND ${varName}.${key} = $${param}`);
             }
 
@@ -98,7 +104,7 @@ function createAuthPredicate({
                     }) | ${relationVarName}] WHERE `,
                 ].join(" ");
 
-                Object.entries(value).forEach(([k, v]: [string, any]) => {
+                Object.entries(value as any).forEach(([k, v]: [string, any]) => {
                     const authPredicate = createAuthPredicate({
                         node: refNode,
                         context,
