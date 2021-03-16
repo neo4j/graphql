@@ -47,12 +47,12 @@ function createAuthPredicate({
         return ["", {}];
     }
 
-    const allowOrBind = dotPathPopulate({
+    const populated = dotPathPopulate({
         obj: rule[kind] as { [k: string]: any },
         context,
     });
 
-    const result = Object.entries(allowOrBind as Record<string, any>).reduce(
+    const result = Object.entries(populated).reduce(
         (res: Res, [key, value]) => {
             if (key === "AND" || key === "OR") {
                 const inner: string[] = [];
