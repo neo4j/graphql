@@ -5,7 +5,7 @@ type Params = {
     [key: string]: unknown;
 };
 
-type Kind = "cypher" | "schema";
+type Kind = "cypher" | "schema" | "";
 
 export type Test = {
     name: string;
@@ -19,7 +19,7 @@ export type Test = {
 };
 
 export type TestCase = {
-    kind: Kind;
+    kind: string;
     schema?: string;
     tests: Test[];
     file: string;
@@ -42,7 +42,7 @@ const typeDefsInputRe = /```typedefs-input(?<capture>(.|\s)*?)```/;
 const schemaOutputRe = /```schema-output(?<capture>(.|\s)*?)```/;
 const jwtRe = /```jwt(?<capture>(.|\s)*?)```/;
 
-function extractTests(contents: string, kind: Kind): Test[] {
+function extractTests(contents: string, kind: string): Test[] {
     // Strip head of file
     const testParts = contents.split("---").slice(1);
     const generatedTests = testParts.map((t) => t.trim());
@@ -97,15 +97,14 @@ function extractSchema(contents: string): string {
     return captureOrEmptyString(contents, re);
 }
 
-function generateTests(filePath): TestCase {
+function generateTests(filePath, kind: string): TestCase {
     const data = fs.readFileSync(filePath, { encoding: "utf8" });
     const file = path.basename(filePath);
-    const [kind] = file.split("-") as [Kind];
 
     const out: TestCase = {
         kind,
         tests: extractTests(data.toString(), kind),
-        file,
+        file: `${file} (${kind})`,
     };
 
     if (kind === "cypher") {
@@ -115,14 +114,14 @@ function generateTests(filePath): TestCase {
     return out;
 }
 
-export function generateTestCasesFromMd(dir: string): TestCase[] {
+export function generateTestCasesFromMd(dir: string, kind = ""): TestCase[] {
     const files = fs.readdirSync(dir, { withFileTypes: true }).reduce((res: TestCase[], item) => {
         if (item.isFile()) {
-            return [...res, generateTests(path.join(dir, item.name))];
+            return [...res, generateTests(path.join(dir, item.name), kind)];
         }
 
         if (item.isDirectory()) {
-            return [...res, ...generateTestCasesFromMd(path.join(dir, item.name))];
+            return [...res, ...generateTestCasesFromMd(path.join(dir, item.name), kind === "" ? item.name : kind)];
         }
 
         return res;
