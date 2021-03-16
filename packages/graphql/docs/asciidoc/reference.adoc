@@ -1319,6 +1319,90 @@ type User {
 }
 ----
 
+==== Directive index
+
+===== @readonly
+
+====== Description
+
+The field will only feature in object types for querying, and will not be mutable.
+
+====== Definition
+
+[source, graphql]
+----
+"""Instructs @neo4j/graphql to only include a field in generated input type for creating, and in the object type within which the directive is applied."""
+directive @readonly on FIELD_DEFINITION
+----
+
+===== @writeonly
+
+====== Description
+
+This field will only feature in input types, and will not be available for querying the object type through a Query or through a Mutation response.
+
+====== Definition
+
+[source, graphql]
+----
+"""Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself."""
+directive @writeonly on FIELD_DEFINITION
+----
+
+===== @ignore
+
+====== Description
+
+This field will essentially be completely ignored, and will require another way to resolve the field, such as through the use of a custom resolver.
+
+====== Definition
+
+[source, graphql]
+----
+"""Instructs @neo4j/graphql to completely ignore a field definition, assuming that it will be fully accounted for by custom resolvers."""
+directive @ignore on FIELD_DEFINITION
+----
+
+===== @default
+
+====== Description
+
+When generating the input type for the create mutation, the value specified in this directive will be used as the default value for this field.
+
+====== Definition
+
+[source, graphql]
+----
+"""Int | Float | String | Boolean | ID | DateTime"""
+scalar Scalar
+
+"""Instructs @neo4j/graphql to set the specified value as the default value in the CreateInput type for the object type in which this directive is used."""
+directive @default(
+    """The default value to use. Must be a scalar type and must match the type of the field with which this directive decorates."""
+    value: Scalar!,
+) on FIELD_DEFINITION
+----
+
+===== @coalesce
+
+====== Description
+
+When translating from GraphQL to Cypher, any instances of fields to which this directive is applied will be wrapped in a `coalesce()` function in the `WHERE` clause (see https://neo4j.com/developer/kb/understanding-non-existent-properties-and-null-values/#_use_coalesce_to_use_a_default_for_a_null_value). This helps to query against non-existent properties in a database, however it is encouraged to populate these properties with meaningful values if this is becoming the norm. This is a very primitive implementation of the function which only takes a static default value as opposed to using another property in a node or a Cypher expression.
+
+====== Definition
+
+[source, graphql]
+----
+"""Int | Float | String | Boolean | ID | DateTime"""
+scalar Scalar
+
+"""Instructs @neo4j/graphql to wrap the property in a coalesce() function during queries, using the single value specified."""
+directive @coalesce(
+    """The value to use in the coalesce() function. Must be a scalar type and must match the type of the field with which this directive decorates."""
+    value: Scalar!,
+) on FIELD_DEFINITION
+----
+
 == Querying
 
 Interacting with the generated schema. For the purposes of this section we will use the following schema;
