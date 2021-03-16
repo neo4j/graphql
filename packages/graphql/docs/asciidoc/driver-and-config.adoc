@@ -1,5 +1,5 @@
-[[connections-config-drivers]]
-= Connections, Config and Drivers
+[[drivers-and-config]]
+= Drivers & Config
 
 
 == Neo4j Driver

@@ -28,7 +28,7 @@ Welcome to the official documentation for the Neo4j GraphQL Engine.
 * <<operations>>
 * <<auth>>
 * <<ogm>>
-* <<connections-config-drivers>>
+* <<drivers-and-config>>
 
 == Introduction
 

@@ -54,8 +54,8 @@
       <?dbhtml filename="ogm/index.html"?>
     </d:tocentry>
 
-    <d:tocentry linkend="connections-config-drivers">
-      <?dbhtml filename="connections-config-drivers/index.html"?>
+    <d:tocentry linkend="drivers-and-config">
+      <?dbhtml filename="drivers-and-config/index.html"?>
     </d:tocentry>
   </d:tocentry>
 </d:toc>
