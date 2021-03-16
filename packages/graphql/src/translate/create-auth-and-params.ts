@@ -41,7 +41,7 @@ function createAuthPredicate({
     node: Node;
     rule: AuthRule;
     chainStr: string;
-    kind: "allow" | "bind";
+    kind: "allow" | "bind" | "where";
 }): [string, any] {
     if (!rule[kind]) {
         return ["", {}];
@@ -162,12 +162,12 @@ function createAuthAndParams({
                 }
 
                 const authWhere = createAuthPredicate({
-                    rule: { bind: authRule.where },
+                    rule: { where: authRule.where },
                     context,
                     node: where.node,
                     varName: where.varName,
                     chainStr: `${where.chainStr || where.varName}_auth_where${index}`,
-                    kind: "bind",
+                    kind: "where",
                 });
 
                 return {
