@@ -57,5 +57,13 @@
     <d:tocentry linkend="drivers-and-config">
       <?dbhtml filename="drivers-and-config/index.html"?>
     </d:tocentry>
+
+   <d:tocentry linkend="knowledgebase">
+      <?dbhtml filename="knowledgebase/index.html"?>
+      <d:tocentry linkend="knowledgebase-developer-notes">
+        <?dbhtml filename="knowledgebase/developer-notes/index.html"?>
+      </d:tocentry>
+    </d:tocentry>
+
   </d:tocentry>
 </d:toc>
