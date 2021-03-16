@@ -1,0 +1,8 @@
+[[schema]]
+= Schema
+
+In this section you will learn how to use our exposed; directives, types and patterns in your GraphQL Schema. 
+
+* <<schema-basics>>
+* <<schema-directives>>
+* <<schema-types>>

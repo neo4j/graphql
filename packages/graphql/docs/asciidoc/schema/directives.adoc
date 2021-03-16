@@ -1,0 +1,19 @@
+[[schema-directives]]
+= Directives
+
+== `@relationship`
+
+
+== `@cypher`
+
+
+== `@exclude`
+
+
+== `@auth`
+
+
+== `@autogenerate`
+
+
+== `@private`
