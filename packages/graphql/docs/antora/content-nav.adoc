@@ -14,4 +14,4 @@
 *** xref:operations/disconnect/index.adoc[]
 ** xref:auth/index.adoc[]
 ** xref:ogm/index.adoc[]
-** xref:connections-config-drivers/index.adoc[]
+** xref:drivers-and-config/index.adoc[]
