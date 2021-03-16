@@ -2,7 +2,11 @@
 = Directives
 
 == `@cypher`
-GraphQL schema directive that can be used to bind a GraphQL field to the results of a Cypher query. For example, let’s add a field `similarMovies` to our Movie, which is bound to a Cypher query, to find other movies with an overlap of actors;
+GraphQL schema directive that can be used to bind a GraphQL field to the results of a Cypher query. 
+
+=== `@cypher` directive on Field
+
+Below we add a field `similarMovies` to our Movie, which is bound to a Cypher query, to find other movies with an overlap of actors;
 
 [source, graphql]
 ----
@@ -33,8 +37,8 @@ type Movie {
 === `@cypher` statement globals
 Global variables available inside the @cypher statement.
 
-1. this - bound to the currently resolved node
-2. auth - See below
+1. `this` - bound to the currently resolved node
+2. `auth` - See below
 
 
 ==== Auth global
@@ -90,7 +94,7 @@ type Mutation {
 
 
 === Returning from the `@cypher` statement
-You should return a single value representing corresponding type;
+You should return a single value representing corresponding type.
 
 ==== Primitives
 
