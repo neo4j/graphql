@@ -38,6 +38,7 @@ enum SortDirection {
 }
 
 input UserCreateInput {
+  id: ID!
   username: String!
   password: String!
 }

@@ -93,6 +93,8 @@ export interface CypherField extends BaseField {
  */
 export interface PrimitiveField extends BaseField {
     autogenerate?: boolean;
+    defaultValue?: any;
+    coalesceValue?: any;
 }
 
 export type CustomScalarField = BaseField;
@@ -107,7 +109,7 @@ export type InterfaceField = BaseField;
 
 export type ObjectField = BaseField;
 
-export interface DateTimeField extends BaseField {
+export interface DateTimeField extends PrimitiveField {
     timestamps?: TimeStampOperations[];
 }
 
