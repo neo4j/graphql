@@ -10,8 +10,6 @@
 *** xref:operations/create/index.adoc[]
 *** xref:operations/update/index.adoc[]
 *** xref:operations/delete/index.adoc[]
-*** xref:operations/connect/index.adoc[]
-*** xref:operations/disconnect/index.adoc[]
 ** xref:auth/index.adoc[]
 ** xref:ogm/index.adoc[]
 ** xref:drivers-and-config/index.adoc[]
