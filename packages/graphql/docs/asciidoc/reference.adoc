@@ -1112,10 +1112,8 @@ type User {
 }
 ----
 
-==== Auth Object Paths
-We allow the use of Object Paths for all three; plucking roles from the `JWT`, allow and bind.
+==== JWT Role Path
 
-===== Roles
 If you are using 3rd party Auth solutions such as Auth0 you may find your roles property being nested inside an object;
 
 [source, json]
@@ -1132,37 +1130,6 @@ Specify the path in the environment;
 [source, bash]
 ----
 $ JWT_ROLES_OBJECT_PATH="https://auth0.mysite.com/claims\\.https://auth0.mysite.com/claims/roles" node server
-----
-
-===== Allow & Bind
-If for example your user id was nested inside a object;
-
-[source, json]
-----
-{
-    "nested": {
-        "userId": "id-01"
-    }
-}
-----
-
-Use object path in the schema;
-
-[source, graphql]
-----
-type User {
-    id: ID!
-    name: String!
-}
-
-extend type User @auth(
-    rules: [
-        {
-            operations: ["update"],
-            bind: { id: "$jwt.nested.userId" }
-        }
-    ]
-)
 ----
 
 ==== Auth Value Plucking
