@@ -16,6 +16,7 @@ export interface BaseAuthRule {
     isAuthenticated?: boolean;
     allow?: { [k: string]: any } | "*";
     bind?: { [k: string]: any } | "*";
+    where?: { [k: string]: any } | "*";
     roles?: string[];
     AND?: BaseAuthRule[];
     OR?: BaseAuthRule[];

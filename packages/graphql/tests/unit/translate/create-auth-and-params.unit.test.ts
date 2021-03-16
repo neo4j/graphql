@@ -66,9 +66,10 @@ describe("createAuthAndParams", () => {
 
             // @ts-ignore
             const context = new Context({ neoSchema });
-            context.jwt = {
+            // @ts-ignore
+            context.getJWT = () => ({
                 sub,
-            };
+            });
 
             const result = createAuthAndParams({
                 context,
