@@ -1,4 +1,0 @@
-[[operations-connect]]
-= Connect
-
-hi

@@ -1,4 +1,0 @@
-[[operations-disconnect]]
-= Disconnect
-
-hi
