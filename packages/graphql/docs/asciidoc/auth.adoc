@@ -323,6 +323,52 @@ type User {
 }
 ----
 
+=== `where`
+Use the `where` argument, on Node definitions, to conceptually append predicates to the Cypher `WHERE` clause. Given the current user ID is "123" and the following the schema;
+
+[source, graphql]
+----
+type User {
+    id: ID
+    name: String
+}
+
+extend type User @auth(rules: [{ operations: "*", where: { id: "$jwt.id" } }])
+----
+
+Then issues a GraphQL query for users;
+
+[source, graphql]
+----
+query {
+    users {
+        id
+        name
+    }
+}
+----
+
+Behind the scenes the user’s ID is **conceptually** prepended to the query;
+
+[source, graphql]
+----
+query {
+    users(where: { id: "123" }){
+        id
+        name
+    }
+}
+----
+
+Where is used on the following operations;
+
+1. read
+2. update
+3. connect
+4. disconnect
+5. delete
+
+
 === `bind`
 
 Use bind to ensure, on creating or updating nodes, a connection exists between a value on the JWT vs a property on a matched node. This validation is done after the operation but inside a transaction. Taking a closer, look let's put a user in our database;
@@ -518,10 +564,7 @@ type User {
 }
 ----
 
-== Auth Object Paths
-We allow the use of Object Paths for all three; plucking roles from the `JWT`, allow and bind. 
-
-===== Roles
+== Auth Roles Object Paths
 If you are using 3rd party Auth solutions such as Auth0 you may find your roles property being nested inside an object;
 
 [source, json]
@@ -538,37 +581,6 @@ Specify the path in the environment;
 [source, bash]
 ----
 $ JWT_ROLES_OBJECT_PATH="https://auth0.mysite.com/claims\\.https://auth0.mysite.com/claims/roles" node server
-----
-
-===== Allow & Bind
-If for example your user id was nested inside a object; 
-
-[source, json]
-----
-{
-    "nested": {
-        "userId": "id-01"
-    }
-}
-----
-
-Use object path in the schema;
-
-[source, graphql]
-----
-type User {
-    id: ID!
-    name: String!
-}
-
-extend type User @auth(
-    rules: [
-        { 
-            operations: ["update"],
-            bind: { id: "$jwt.nested.userId" }
-        }
-    ]
-)
 ----
 
 == Auth Value Plucking
