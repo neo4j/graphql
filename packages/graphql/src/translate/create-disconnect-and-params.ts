@@ -39,6 +39,20 @@ function createDisconnectAndParams({
         const relVarName = `${_varName}_rel`;
         const relTypeStr = `[${relVarName}:${relationField.type}]`;
 
+        if (parentNode.auth) {
+            const whereAuth = createAuthAndParams({
+                operation: "disconnect",
+                entity: parentNode,
+                context,
+                where: { varName: parentVar, node: parentNode },
+            });
+            if (whereAuth[0]) {
+                res.disconnects.push(`WITH ${withVars.join(", ")}`);
+                res.disconnects.push(`WHERE ${whereAuth[0]}`);
+                res.params = { ...res.params, ...whereAuth[1] };
+            }
+        }
+
         res.disconnects.push(`WITH ${withVars.join(", ")}`);
         res.disconnects.push(
             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${
@@ -46,15 +60,36 @@ function createDisconnectAndParams({
             })`
         );
 
+        const whereStrs: string[] = [];
+
         if (disconnect.where) {
             const where = createWhereAndParams({
                 varName: _varName,
                 whereInput: disconnect.where,
                 node: refNode,
                 context,
+                recursing: true,
             });
-            res.disconnects.push(where[0]);
-            res.params = { ...res.params, ...where[1] };
+            if (where[0]) {
+                whereStrs.push(where[0]);
+                res.params = { ...res.params, ...where[1] };
+            }
+        }
+        if (refNode.auth) {
+            const whereAuth = createAuthAndParams({
+                operation: "connect",
+                entity: refNode,
+                context,
+                where: { varName: _varName, node: refNode },
+            });
+            if (whereAuth[0]) {
+                whereStrs.push(whereAuth[0]);
+                res.params = { ...res.params, ...whereAuth[1] };
+            }
+        }
+
+        if (whereStrs.length) {
+            res.disconnects.push(`WHERE ${whereStrs.join(" AND ")}`);
         }
 
         const preAuth = [parentNode, refNode].reduce(

@@ -80,15 +80,34 @@ function createUpdateAndParams({
                         `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${refNode.name})`
                     );
 
+                    const whereStrs: string[] = [];
                     if (update.where) {
                         const whereAndParams = createWhereAndParams({
                             varName: _varName,
                             whereInput: update.where,
                             node: refNode,
                             context,
+                            recursing: true,
                         });
-                        res.strs.push(whereAndParams[0]);
-                        res.params = { ...res.params, ...whereAndParams[1] };
+                        if (whereAndParams[0]) {
+                            whereStrs.push(whereAndParams[0]);
+                            res.params = { ...res.params, ...whereAndParams[1] };
+                        }
+                    }
+                    if (node.auth) {
+                        const whereAuth = createAuthAndParams({
+                            operation: "update",
+                            entity: refNode,
+                            context,
+                            where: { varName: _varName, node: refNode },
+                        });
+                        if (whereAuth[0]) {
+                            whereStrs.push(whereAuth[0]);
+                            res.params = { ...res.params, ...whereAuth[1] };
+                        }
+                    }
+                    if (whereStrs.length) {
+                        res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
                     }
 
                     res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
