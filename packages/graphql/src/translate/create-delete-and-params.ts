@@ -57,33 +57,48 @@ function createDeleteAndParams({
                     `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${refNode.name})`
                 );
 
+                const whereStrs: string[] = [];
                 if (d.where) {
                     const whereAndParams = createWhereAndParams({
                         varName: _varName,
                         whereInput: d.where,
                         node: refNode,
                         context,
+                        recursing: true,
                     });
-                    res.strs.push(whereAndParams[0]);
-                    res.params = { ...res.params, ...whereAndParams[1] };
+                    if (whereAndParams[0]) {
+                        whereStrs.push(whereAndParams[0]);
+                        res.params = { ...res.params, ...whereAndParams[1] };
+                    }
+                }
+                const whereAuth = createAuthAndParams({
+                    operation: "delete",
+                    entity: refNode,
+                    context,
+                    where: { varName: _varName, node: refNode },
+                });
+                if (whereAuth[0]) {
+                    whereStrs.push(whereAuth[0]);
+                    res.params = { ...res.params, ...whereAuth[1] };
+                }
+                if (whereStrs.length) {
+                    res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
                 }
 
-                if (refNode.auth) {
-                    const authAndParams = createAuthAndParams({
-                        entity: refNode,
-                        operation: "delete",
-                        context,
-                        escapeQuotes: Boolean(insideDoWhen),
-                        allow: { parentNode: refNode, varName: _varName },
-                    });
-                    if (authAndParams[0]) {
-                        const quote = insideDoWhen ? `\\"` : `"`;
-                        res.strs.push(`WITH ${[...withVars, _varName].join(", ")}`);
-                        res.strs.push(
-                            `CALL apoc.util.validate(NOT(${authAndParams[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
-                        );
-                        res.params = { ...res.params, ...authAndParams[1] };
-                    }
+                const allowAuth = createAuthAndParams({
+                    entity: refNode,
+                    operation: "delete",
+                    context,
+                    escapeQuotes: Boolean(insideDoWhen),
+                    allow: { parentNode: refNode, varName: _varName },
+                });
+                if (allowAuth[0]) {
+                    const quote = insideDoWhen ? `\\"` : `"`;
+                    res.strs.push(`WITH ${[...withVars, _varName].join(", ")}`);
+                    res.strs.push(
+                        `CALL apoc.util.validate(NOT(${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                    );
+                    res.params = { ...res.params, ...allowAuth[1] };
                 }
 
                 if (d.delete) {
@@ -111,7 +126,7 @@ function createDeleteAndParams({
         return res;
     }
 
-    const { strs, params } = Object.entries(deleteInput).reduce(reducer, { strs: [], params: {} }) as Res;
+    const { strs, params } = Object.entries(deleteInput).reduce(reducer, { strs: [], params: {} });
 
     return [strs.join("\n"), params];
 }

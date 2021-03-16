@@ -1,8 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const fetch = require("node-fetch");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line import/no-unresolved
 const { getIntrospectionQuery, buildClientSchema, printSchema } = require("graphql");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const server = require("./server");
 
 const { GRAPHQL_URL = "http://localhost:4000/graphql" } = process.env;
@@ -21,12 +19,12 @@ async function main() {
 
         const json = await result.json();
 
-        const errors = json.errors;
+        const { errors } = json;
         if (errors) {
             throw new Error(errors[0].message);
         }
 
-        const data = json.data;
+        const { data } = json;
 
         const schema = buildClientSchema(data);
 

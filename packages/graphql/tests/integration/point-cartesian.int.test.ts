@@ -1,8 +1,6 @@
-import { Driver, int, Point, Session } from "neo4j-driver";
-import { graphql } from "graphql";
+import { Driver, int, Session } from "neo4j-driver";
 import faker from "faker";
-import { describe, beforeAll, afterAll, test, expect, beforeEach, afterEach } from "@jest/globals";
-import { ApolloServer, gql } from "apollo-server";
+import { gql } from "apollo-server";
 import { createTestClient } from "apollo-server-testing";
 import neo4j from "./neo4j";
 import { constructTestServer } from "./utils";
@@ -25,8 +23,8 @@ describe("CartesianPoint", () => {
         server = constructTestServer(neoSchema, driver);
     });
 
-    beforeEach(async () => {
-        session = await driver.session();
+    beforeEach(() => {
+        session = driver.session();
     });
 
     afterEach(async () => {
@@ -63,7 +61,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await mutate({ mutation: create, variables: { serial, x, y } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).createParts.parts[0]).toEqual({
+        expect(gqlResult.data.createParts.parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -110,7 +108,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await mutate({ mutation: create, variables: { serial, x, y, z } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).createParts.parts[0]).toEqual({
+        expect(gqlResult.data.createParts.parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -144,8 +142,8 @@ describe("CartesianPoint", () => {
                 SET p.location = point({x: ${x}, y: ${y}})
                 RETURN p
             }
-                
-            RETURN 
+
+            RETURN
             p { .serial, .location } AS p
         `);
 
@@ -173,7 +171,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await mutate({ mutation: update, variables: { serial, x, y: newY } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).updateParts.parts[0]).toEqual({
+        expect(gqlResult.data.updateParts.parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -207,8 +205,8 @@ describe("CartesianPoint", () => {
                 SET p.location = point({x: ${x}, y: ${y}, z: ${z}})
                 RETURN p
             }
-                
-            RETURN 
+
+            RETURN
             p { .serial, .location } AS p
         `);
 
@@ -237,7 +235,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await mutate({ mutation: update, variables: { serial, x, y: newY, z } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).updateParts.parts[0]).toEqual({
+        expect(gqlResult.data.updateParts.parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -270,8 +268,8 @@ describe("CartesianPoint", () => {
                 SET p.location = point({x: ${x}, y: ${y}})
                 RETURN p
             }
-                
-            RETURN 
+
+            RETURN
             p { .id, .location } AS p
         `);
 
@@ -297,7 +295,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await query({ query: partsQuery, variables: { serial } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).parts[0]).toEqual({
+        expect(gqlResult.data.parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -321,8 +319,8 @@ describe("CartesianPoint", () => {
                 SET p.location = point({x: ${x}, y: ${y}, z: ${z}})
                 RETURN p
             }
-                
-            RETURN 
+
+            RETURN
             p { .id, .location } AS p
         `);
 
@@ -349,7 +347,7 @@ describe("CartesianPoint", () => {
         const gqlResult = await query({ query: partsQuery, variables: { serial } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).parts[0]).toEqual({
+        expect(gqlResult.data.parts[0]).toEqual({
             serial,
             location: {
                 x,

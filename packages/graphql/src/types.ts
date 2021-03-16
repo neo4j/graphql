@@ -1,4 +1,4 @@
-import { InputValueDefinitionNode, DocumentNode, DirectiveNode } from "graphql";
+import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 import { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 
 export type TypeDefs = IExecutableSchemaDefinition["typeDefs"];
@@ -16,6 +16,7 @@ export interface BaseAuthRule {
     isAuthenticated?: boolean;
     allow?: { [k: string]: any } | "*";
     bind?: { [k: string]: any } | "*";
+    where?: { [k: string]: any } | "*";
     roles?: string[];
     AND?: BaseAuthRule[];
     OR?: BaseAuthRule[];
@@ -36,12 +37,22 @@ export type Auth = {
  */
 export interface TypeMeta {
     name: string;
-    array: boolean;
+    array?: boolean;
     required: boolean;
     pretty: string;
     input: {
-        name: string;
-        pretty: string;
+        where: {
+            type: string;
+            pretty: string;
+        };
+        create: {
+            type: string;
+            pretty: string;
+        };
+        update: {
+            type: string;
+            pretty: string;
+        };
     };
 }
 
@@ -56,6 +67,8 @@ export interface BaseField {
     private?: boolean;
     auth?: Auth;
     description?: string;
+    readonly?: boolean;
+    writeonly?: boolean;
 }
 
 /**
@@ -81,6 +94,8 @@ export interface CypherField extends BaseField {
  */
 export interface PrimitiveField extends BaseField {
     autogenerate?: boolean;
+    defaultValue?: any;
+    coalesceValue?: any;
 }
 
 export type CustomScalarField = BaseField;
@@ -95,11 +110,18 @@ export type InterfaceField = BaseField;
 
 export type ObjectField = BaseField;
 
-export interface DateTimeField extends BaseField {
+export interface DateTimeField extends PrimitiveField {
     timestamps?: TimeStampOperations[];
 }
 
 export type PointField = BaseField;
+
+export type SortDirection = "ASC" | "DESC";
+
+export interface GraphQLSortArg {
+    [field: string]: SortDirection;
+}
+
 /**
  * Representation of the options arg
  * passed to resolvers.
@@ -107,7 +129,7 @@ export type PointField = BaseField;
 export interface GraphQLOptionsArg {
     limit?: number;
     skip?: number;
-    sort?: string[];
+    sort?: GraphQLSortArg[];
 }
 
 /**

@@ -1,4 +1,4 @@
-import { InputValueDefinitionNode, ValueNode, DirectiveNode } from "graphql";
+import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 import { ExtensionsDirective, DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
 import getFieldTypeMeta from "./get-field-type-meta";
 import parseValueNode from "./parse-value-node";
@@ -13,7 +13,7 @@ export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
             [arg.name.value]: {
                 type: meta.pretty,
                 description: arg.description,
-                ...(arg.defaultValue ? { defaultValue: parseValueNode(arg.defaultValue as ValueNode) } : {}),
+                ...(arg.defaultValue ? { defaultValue: parseValueNode(arg.defaultValue) } : {}),
             },
         };
     }, {});
@@ -33,6 +33,10 @@ export function objectFieldsToComposeFields(
     fields: BaseField[]
 ): { [k: string]: ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> } {
     return fields.reduce((res, field) => {
+        if (field.writeonly) {
+            return res;
+        }
+
         const newField = {
             type: field.typeMeta.pretty,
             args: {},

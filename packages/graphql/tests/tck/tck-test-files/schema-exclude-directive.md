@@ -21,6 +21,7 @@ type Movie {
 **Output**
 
 ```schema-output
+
 type Actor {
   name: String
 }
@@ -34,8 +35,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorWhere]
-  AND: [ActorWhere]
+  OR: [ActorWhere!]
+  AND: [ActorWhere!]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -46,12 +47,19 @@ input ActorWhere {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
-  name_REGEX: String
+  name_MATCHES: String
 }
 
 type DeleteInfo {
   nodesDeleted: Int!
   relationshipsDeleted: Int!
+}
+
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
 }
 
 type Movie {
@@ -63,14 +71,15 @@ input MovieCreateInput {
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-enum MovieSort {
-  title_DESC
-  title_ASC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  title: SortDirection
 }
 
 input MovieUpdateInput {
@@ -78,8 +87,8 @@ input MovieUpdateInput {
 }
 
 input MovieWhere {
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
   title: String
   title_IN: [String]
   title_NOT: String
@@ -90,7 +99,7 @@ input MovieWhere {
   title_NOT_STARTS_WITH: String
   title_ENDS_WITH: String
   title_NOT_ENDS_WITH: String
-  title_REGEX: String
+  title_MATCHES: String
 }
 
 type CreateMoviesMutationResponse {
@@ -110,10 +119,10 @@ type UpdateActorsMutationResponse {
 }
 
 type Mutation {
-  createActors(input: [ActorCreateInput]!): CreateActorsMutationResponse!
+  createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
   deleteActors(where: ActorWhere): DeleteInfo!
   updateActors(where: ActorWhere, update: ActorUpdateInput): UpdateActorsMutationResponse!
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
@@ -143,14 +152,15 @@ type Actor {
 }
 
 input ActorOptions {
-  sort: [ActorSort]
+  """Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [ActorSort]
   limit: Int
   skip: Int
 }
 
-enum ActorSort {
-  name_DESC
-  name_ASC
+"""Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object."""
+input ActorSort {
+  name: SortDirection
 }
 
 input ActorUpdateInput {
@@ -158,8 +168,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorWhere]
-  AND: [ActorWhere]
+  OR: [ActorWhere!]
+  AND: [ActorWhere!]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -170,12 +180,19 @@ input ActorWhere {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
-  name_REGEX: String
+  name_MATCHES: String
 }
 
 type DeleteInfo {
   nodesDeleted: Int!
   relationshipsDeleted: Int!
+}
+
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
 }
 
 type UpdateActorsMutationResponse {
@@ -216,6 +233,13 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 type Movie {
   title: String
 }
@@ -225,14 +249,15 @@ input MovieCreateInput {
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-enum MovieSort {
-  title_DESC
-  title_ASC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  title: SortDirection
 }
 
 input MovieUpdateInput {
@@ -240,8 +265,8 @@ input MovieUpdateInput {
 }
 
 input MovieWhere {
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
   title: String
   title_IN: [String]
   title_NOT: String
@@ -252,7 +277,7 @@ input MovieWhere {
   title_NOT_STARTS_WITH: String
   title_ENDS_WITH: String
   title_NOT_ENDS_WITH: String
-  title_REGEX: String
+  title_MATCHES: String
 }
 
 type CreateMoviesMutationResponse {
@@ -264,7 +289,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
@@ -306,6 +331,13 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 type Movie {
   title: String
 }
@@ -315,14 +347,15 @@ input MovieCreateInput {
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-enum MovieSort {
-  title_DESC
-  title_ASC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  title: SortDirection
 }
 
 input MovieUpdateInput {
@@ -330,8 +363,8 @@ input MovieUpdateInput {
 }
 
 input MovieWhere {
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
   title: String
   title_IN: [String]
   title_NOT: String
@@ -342,7 +375,7 @@ input MovieWhere {
   title_NOT_STARTS_WITH: String
   title_ENDS_WITH: String
   title_NOT_ENDS_WITH: String
-  title_REGEX: String
+  title_MATCHES: String
 }
 
 type CreateMoviesMutationResponse {
@@ -354,7 +387,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
@@ -385,6 +418,13 @@ type Movie {
 **Output**
 
 ```schema-output
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 type Actor {
   name: String
 }
@@ -402,14 +442,15 @@ input ActorDisconnectFieldInput {
 }
 
 input ActorOptions {
-  sort: [ActorSort]
+  """Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [ActorSort]
   limit: Int
   skip: Int
 }
 
-enum ActorSort {
-  name_DESC
-  name_ASC
+"""Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object."""
+input ActorSort {
+  name: SortDirection
 }
 
 input ActorUpdateInput {
@@ -417,8 +458,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorWhere]
-  AND: [ActorWhere]
+  OR: [ActorWhere!]
+  AND: [ActorWhere!]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -429,7 +470,7 @@ input ActorWhere {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
-  name_REGEX: String
+  name_MATCHES: String
 }
 
 type DeleteInfo {
@@ -443,8 +484,8 @@ type Movie {
 }
 
 input MovieActorsFieldInput {
-  connect: [ActorConnectFieldInput]
-  create: [ActorCreateInput]
+  connect: [ActorConnectFieldInput!]
+  create: [ActorCreateInput!]
 }
 
 input ActorDeleteFieldInput {
@@ -452,16 +493,16 @@ input ActorDeleteFieldInput {
 }
 
 input MovieActorsUpdateFieldInput {
-  connect: [ActorConnectFieldInput]
-  create: [ActorCreateInput]
-  disconnect: [ActorDisconnectFieldInput]
+  connect: [ActorConnectFieldInput!]
+  create: [ActorCreateInput!]
+  disconnect: [ActorDisconnectFieldInput!]
   update: ActorUpdateInput
   where: ActorWhere
-  delete: [ActorDeleteFieldInput]
+  delete: [ActorDeleteFieldInput!]
 }
 
 input MovieConnectInput {
-  actors: [ActorConnectFieldInput]
+  actors: [ActorConnectFieldInput!]
 }
 
 input MovieCreateInput {
@@ -470,17 +511,18 @@ input MovieCreateInput {
 }
 
 input MovieDisconnectInput {
-  actors: [ActorDisconnectFieldInput]
+  actors: [ActorDisconnectFieldInput!]
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
 input MovieRelationInput {
-  actors: [ActorCreateInput]
+  actors: [ActorCreateInput!]
 }
 
 input MovieActorsDeleteInput {
@@ -488,26 +530,24 @@ input MovieActorsDeleteInput {
 }
 
 input MovieDeleteInput {
-  actors: [MovieActorsDeleteInput]
+  actors: [MovieActorsDeleteInput!]
 }
 
-enum MovieSort {
-  title_DESC
-  title_ASC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  title: SortDirection
 }
 
 input MovieUpdateInput {
-  actors: [MovieActorsUpdateFieldInput]
+  actors: [MovieActorsUpdateFieldInput!]
   title: String
 }
 
 input MovieWhere {
   actors: ActorWhere
-  actors_IN: [ActorWhere]
   actors_NOT: ActorWhere
-  actors_NOT_IN: [ActorWhere]
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
   title: String
   title_IN: [String]
   title_NOT: String
@@ -518,7 +558,7 @@ input MovieWhere {
   title_NOT_STARTS_WITH: String
   title_ENDS_WITH: String
   title_NOT_ENDS_WITH: String
-  title_REGEX: String
+  title_MATCHES: String
 }
 
 type CreateMoviesMutationResponse {
@@ -530,7 +570,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(
     where: MovieWhere
     delete: MovieDeleteInput
@@ -565,6 +605,13 @@ type Actor @exclude(operations: []) {
 **Output**
 
 ```schema-output
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 type Actor {
   name: String
 }
@@ -574,14 +621,15 @@ input ActorCreateInput {
 }
 
 input ActorOptions {
-  sort: [ActorSort]
+  """Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [ActorSort]
   limit: Int
   skip: Int
 }
 
-enum ActorSort {
-  name_DESC
-  name_ASC
+"""Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object."""
+input ActorSort {
+  name: SortDirection
 }
 
 input ActorUpdateInput {
@@ -589,8 +637,8 @@ input ActorUpdateInput {
 }
 
 input ActorWhere {
-  OR: [ActorWhere]
-  AND: [ActorWhere]
+  OR: [ActorWhere!]
+  AND: [ActorWhere!]
   name: String
   name_IN: [String]
   name_NOT: String
@@ -601,7 +649,7 @@ input ActorWhere {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
-  name_REGEX: String
+  name_MATCHES: String
 }
 
 type DeleteInfo {
@@ -618,7 +666,7 @@ type UpdateActorsMutationResponse {
 }
 
 type Mutation {
-  createActors(input: [ActorCreateInput]!): CreateActorsMutationResponse!
+  createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
   deleteActors(where: ActorWhere): DeleteInfo!
   updateActors(where: ActorWhere, update: ActorUpdateInput): UpdateActorsMutationResponse!
 }

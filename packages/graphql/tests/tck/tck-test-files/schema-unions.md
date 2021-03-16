@@ -32,6 +32,13 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 type Genre {
   id: ID
 }
@@ -49,14 +56,15 @@ input GenreDisconnectFieldInput {
 }
 
 input GenreOptions {
-  sort: [GenreSort]
+  """Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [GenreSort]
   limit: Int
   skip: Int
 }
 
-enum GenreSort {
-  id_DESC
-  id_ASC
+"""Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object."""
+input GenreSort {
+  id: SortDirection
 }
 
 input GenreUpdateInput {
@@ -64,8 +72,8 @@ input GenreUpdateInput {
 }
 
 input GenreWhere {
-  OR: [GenreWhere]
-  AND: [GenreWhere]
+  OR: [GenreWhere!]
+  AND: [GenreWhere!]
   id: ID
   id_IN: [ID]
   id_NOT: ID
@@ -76,7 +84,7 @@ input GenreWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
-  id_REGEX: String
+  id_MATCHES: String
 }
 
 type Movie {
@@ -91,8 +99,8 @@ input MovieConnectFieldInput {
 }
 
 input MovieConnectInput {
-  search_Genre: [GenreConnectFieldInput]
-  search_Movie: [MovieConnectFieldInput]
+  search_Genre: [GenreConnectFieldInput!]
+  search_Movie: [MovieConnectFieldInput!]
 }
 
 input MovieCreateInput {
@@ -107,38 +115,39 @@ input MovieDisconnectFieldInput {
 }
 
 input MovieDisconnectInput {
-  search_Genre: [GenreDisconnectFieldInput]
-  search_Movie: [MovieDisconnectFieldInput]
+  search_Genre: [GenreDisconnectFieldInput!]
+  search_Movie: [MovieDisconnectFieldInput!]
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
 input MovieRelationInput {
-  search_Genre: [GenreCreateInput]
-  search_Movie: [MovieCreateInput]
+  search_Genre: [GenreCreateInput!]
+  search_Movie: [MovieCreateInput!]
 }
 
 input MovieSearchGenreFieldInput {
-  create: [GenreCreateInput]
-  connect: [GenreConnectFieldInput]
+  create: [GenreCreateInput!]
+  connect: [GenreConnectFieldInput!]
 }
 
 input MovieSearchGenreUpdateFieldInput {
   where: GenreWhere
   update: GenreUpdateInput
-  connect: [GenreConnectFieldInput]
-  disconnect: [GenreDisconnectFieldInput]
-  create: [GenreCreateInput]
-  delete: [GenreDeleteFieldInput]
+  connect: [GenreConnectFieldInput!]
+  disconnect: [GenreDisconnectFieldInput!]
+  create: [GenreCreateInput!]
+  delete: [GenreDeleteFieldInput!]
 }
 
 input MovieSearchMovieFieldInput {
-  create: [MovieCreateInput]
-  connect: [MovieConnectFieldInput]
+  create: [MovieCreateInput!]
+  connect: [MovieConnectFieldInput!]
 }
 
 input GenreDeleteFieldInput {
@@ -153,21 +162,21 @@ input MovieDeleteFieldInput {
 input MovieSearchMovieUpdateFieldInput {
   where: MovieWhere
   update: MovieUpdateInput
-  connect: [MovieConnectFieldInput]
-  disconnect: [MovieDisconnectFieldInput]
-  create: [MovieCreateInput]
-  delete: [MovieDeleteFieldInput]
+  connect: [MovieConnectFieldInput!]
+  disconnect: [MovieDisconnectFieldInput!]
+  create: [MovieCreateInput!]
+  delete: [MovieDeleteFieldInput!]
 }
 
-enum MovieSort {
-  id_DESC
-  id_ASC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  id: SortDirection
 }
 
 input MovieUpdateInput {
   id: ID
-  search_Genre: [MovieSearchGenreUpdateFieldInput]
-  search_Movie: [MovieSearchMovieUpdateFieldInput]
+  search_Genre: [MovieSearchGenreUpdateFieldInput!]
+  search_Movie: [MovieSearchMovieUpdateFieldInput!]
 }
 
 input MovieSearchGenreDeleteInput {
@@ -180,13 +189,13 @@ input MovieSearchMovieDeleteInput {
 }
 
 input MovieDeleteInput {
-  search_Genre: [MovieSearchGenreDeleteInput]
-  search_Movie: [MovieSearchMovieDeleteInput]
+  search_Genre: [MovieSearchGenreDeleteInput!]
+  search_Movie: [MovieSearchMovieDeleteInput!]
 }
 
 input MovieWhere {
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
   id: ID
   id_IN: [ID]
   id_NOT: ID
@@ -197,7 +206,7 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
-  id_REGEX: String
+  id_MATCHES: String
 }
 
 type CreateMoviesMutationResponse {
@@ -217,10 +226,10 @@ type UpdateGenresMutationResponse {
 }
 
 type Mutation {
-  createGenres(input: [GenreCreateInput]!): CreateGenresMutationResponse!
+  createGenres(input: [GenreCreateInput!]!): CreateGenresMutationResponse!
   deleteGenres(where: GenreWhere): DeleteInfo!
   updateGenres(where: GenreWhere, update: GenreUpdateInput): UpdateGenresMutationResponse!
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(
     where: MovieWhere
     delete: MovieDeleteInput

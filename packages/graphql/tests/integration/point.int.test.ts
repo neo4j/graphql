@@ -1,8 +1,6 @@
-import { Driver, int, Point, Session } from "neo4j-driver";
-import { graphql } from "graphql";
+import { Driver, int, Session } from "neo4j-driver";
 import faker from "faker";
-import { describe, beforeAll, afterAll, test, expect, beforeEach, afterEach } from "@jest/globals";
-import { ApolloServer, gql } from "apollo-server";
+import { gql } from "apollo-server";
 import { createTestClient } from "apollo-server-testing";
 import neo4j from "./neo4j";
 import { constructTestServer } from "./utils";
@@ -26,8 +24,8 @@ describe("Point", () => {
         server = constructTestServer(neoSchema, driver);
     });
 
-    beforeEach(async () => {
-        session = await driver.session();
+    beforeEach(() => {
+        session = driver.session();
     });
 
     afterEach(async () => {
@@ -68,7 +66,7 @@ describe("Point", () => {
         const gqlResult = await mutate({ mutation: create, variables: { id, size, longitude, latitude } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).createPhotographs.photographs[0]).toEqual({
+        expect(gqlResult.data.createPhotographs.photographs[0]).toEqual({
             id,
             size,
             location: {
@@ -132,7 +130,7 @@ describe("Point", () => {
         const gqlResult = await mutate({ mutation: create, variables: { id, size, longitude, latitude, height } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).createPhotographs.photographs[0]).toEqual({
+        expect(gqlResult.data.createPhotographs.photographs[0]).toEqual({
             id,
             size,
             location: {
@@ -202,7 +200,7 @@ describe("Point", () => {
         const gqlResult = await mutate({ mutation: update, variables: { id, longitude, latitude: newLatitude } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).updatePhotographs.photographs[0]).toEqual({
+        expect(gqlResult.data.updatePhotographs.photographs[0]).toEqual({
             id,
             size,
             location: {
@@ -276,7 +274,7 @@ describe("Point", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).updatePhotographs.photographs[0]).toEqual({
+        expect(gqlResult.data.updatePhotographs.photographs[0]).toEqual({
             id,
             size,
             location: {
@@ -342,7 +340,7 @@ describe("Point", () => {
         const equalsResult = await query({ query: photographsEqualsQuery, variables: { longitude, latitude } });
 
         expect(equalsResult.errors).toBeFalsy();
-        expect((equalsResult.data as any).photographs[0]).toEqual({
+        expect(equalsResult.data.photographs[0]).toEqual({
             id,
             size,
             location: {
@@ -378,7 +376,7 @@ describe("Point", () => {
         });
 
         expect(inResult.errors).toBeFalsy();
-        expect((inResult.data as any).photographs).toContainEqual({
+        expect(inResult.data.photographs).toContainEqual({
             id,
             size,
             location: {
@@ -406,7 +404,7 @@ describe("Point", () => {
         `;
 
         const notInResult = await query({
-            query: photographsInQuery,
+            query: photographsNotInQuery,
             variables: [
                 { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
                 { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
@@ -414,7 +412,7 @@ describe("Point", () => {
         });
 
         expect(notInResult.errors).toBeFalsy();
-        expect((notInResult.data as any).photographs).toContainEqual({
+        expect(notInResult.data.photographs).toContainEqual({
             id,
             size,
             location: {
@@ -449,7 +447,7 @@ describe("Point", () => {
         });
 
         expect(lessThanResult.errors).toBeFalsy();
-        expect((lessThanResult.data as any).photographs).toContainEqual({
+        expect(lessThanResult.data.photographs).toContainEqual({
             id,
             size,
             location: {
@@ -484,7 +482,7 @@ describe("Point", () => {
         });
 
         expect(greaterThanResult.errors).toBeFalsy();
-        expect((greaterThanResult.data as any).photographs).toContainEqual({
+        expect(greaterThanResult.data.photographs).toContainEqual({
             id,
             size,
             location: {
@@ -540,7 +538,7 @@ describe("Point", () => {
         const gqlResult = await query({ query: photographsQuery, variables: { longitude, latitude, height } });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any).photographs[0]).toEqual({
+        expect(gqlResult.data.photographs[0]).toEqual({
             id,
             size,
             location: {

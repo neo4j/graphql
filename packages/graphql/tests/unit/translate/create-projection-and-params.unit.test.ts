@@ -1,4 +1,3 @@
-import { describe, test, expect } from "@jest/globals";
 import createProjectionAndParams from "../../../src/translate/create-projection-and-params";
 import { Neo4jGraphQL, Context, Node } from "../../../src/classes";
 
@@ -36,8 +35,12 @@ describe("createProjectionAndParams", () => {
                         required: false,
                         pretty: "String",
                         input: {
-                            name: "String",
-                            pretty: "String",
+                            where: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            create: { type: "String", pretty: "String" },
+                            update: { type: "String", pretty: "String" },
                         },
                     },
                     otherDirectives: [],

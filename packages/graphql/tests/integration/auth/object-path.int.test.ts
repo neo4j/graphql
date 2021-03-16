@@ -4,7 +4,6 @@ import { generate } from "randomstring";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import jsonwebtoken from "jsonwebtoken";
-import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
@@ -75,7 +74,7 @@ describe("auth/object-path", () => {
                 contextValue: { driver, req },
             });
 
-            expect(gqlResult.errors).toEqual(undefined);
+            expect(gqlResult.errors).toBeUndefined();
 
             const [user] = (gqlResult.data as any).users;
             expect(user).toEqual({ id: userId });
@@ -140,7 +139,7 @@ describe("auth/object-path", () => {
                 contextValue: { driver, req, userId },
             });
 
-            expect(gqlResult.errors).toEqual(undefined);
+            expect(gqlResult.errors).toBeUndefined();
 
             const [post] = (gqlResult.data as any).posts;
             expect(post).toEqual({ id: postId });
@@ -196,7 +195,7 @@ describe("auth/object-path", () => {
                 contextValue: { driver, req },
             });
 
-            expect(gqlResult.errors).toEqual(undefined);
+            expect(gqlResult.errors).toBeUndefined();
             const [user] = (gqlResult.data as any).users;
 
             expect(user).toEqual({ id: userId });

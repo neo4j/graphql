@@ -2,7 +2,6 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { gql } from "apollo-server";
-import { describe, beforeAll, afterAll, expect, test } from "@jest/globals";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
@@ -179,10 +178,10 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult?.data?.updateMovies.movies as any[]).length).toEqual(2);
+            expect(gqlResult?.data?.updateMovies.movies as any[]).toHaveLength(2);
 
             (gqlResult?.data?.updateMovies.movies as any[]).forEach((movie) => {
-                expect([id1, id2].includes(movie.id)).toEqual(true);
+                expect([id1, id2]).toContain(movie.id);
                 expect(movie.name).toEqual(updatedName);
             });
         } finally {
@@ -198,7 +197,7 @@ describe("update", () => {
                 name: String
                 movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
             }
-                
+
             type Movie {
                 id: ID
                 actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
@@ -223,7 +222,7 @@ describe("update", () => {
         mutation($movieId: ID, $initialName: String, $updatedName: String) {
             updateMovies(
               where: { id: $movieId },
-              update: { 
+              update: {
                 actors: [{
                   where: { name: $initialName },
                   update: { name: $updatedName }
@@ -490,7 +489,7 @@ describe("update", () => {
                 { id: id2 }
             );
 
-            expect(movie2.records.length).toEqual(0);
+            expect(movie2.records).toHaveLength(0);
         } finally {
             await session.close();
         }
@@ -589,7 +588,7 @@ describe("update", () => {
               name: String
               movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
             }
-              
+
             type Movie {
               id: ID
               title: String
@@ -628,7 +627,7 @@ describe("update", () => {
                     }
                 }
             }
-          }          
+          }
         `;
 
         try {
@@ -666,7 +665,7 @@ describe("update", () => {
                 id: ID
                 movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
             }
-            
+
             type Movie {
                 id: ID
                 actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
@@ -731,7 +730,7 @@ describe("update", () => {
                 id: ID
                 movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
             }
-            
+
             type Movie {
                 id: ID
                 actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
@@ -796,12 +795,12 @@ describe("update", () => {
             type Product {
                 id: ID
                 photos: [Photo] @relationship(type: "HAS_PHOTO", direction: "OUT")
-            }     
-            
+            }
+
             type Color {
                 id: ID
             }
-            
+
             type Photo {
                 id: ID
                 color: Color @relationship(type: "OF_COLOR", direction: "OUT")
@@ -845,7 +844,7 @@ describe("update", () => {
                     }
                 }
             }
-          }          
+          }
         `;
 
         try {
@@ -855,7 +854,7 @@ describe("update", () => {
                 CREATE (photo:Photo {id: $photoId})
                 CREATE (color:Color {id: $colorId})
                 MERGE (p)-[:HAS_PHOTO]->(photo)-[:OF_COLOR]->(color)
-                
+
             `,
                 {
                     productId,
@@ -914,11 +913,11 @@ describe("update", () => {
             charset: "alphabetic",
         });
 
-        const photo0_color0Id = generate({
+        const photo0Color0Id = generate({
             charset: "alphabetic",
         });
 
-        const photo0_color1Id = generate({
+        const photo0Color1Id = generate({
             charset: "alphabetic",
         });
 
@@ -926,11 +925,11 @@ describe("update", () => {
             charset: "alphabetic",
         });
 
-        const photo1_color0Id = generate({
+        const photo1Color0Id = generate({
             charset: "alphabetic",
         });
 
-        const photo1_color1Id = generate({
+        const photo1Color1Id = generate({
             charset: "alphabetic",
         });
 
@@ -945,8 +944,8 @@ describe("update", () => {
                         update: {
                           name: "Light Green Photo"
                           color: {
-                            connect: { where: { name: "Light Green", id: "${photo0_color1Id}" } }
-                            disconnect: { where: { name: "Green", id: "${photo0_color0Id}" } }
+                            connect: { where: { name: "Light Green", id: "${photo0Color1Id}" } }
+                            disconnect: { where: { name: "Green", id: "${photo0Color0Id}" } }
                           }
                         }
                       }
@@ -955,8 +954,8 @@ describe("update", () => {
                         update: {
                           name: "Light Yellow Photo"
                           color: {
-                            connect: { where: { name: "Light Yellow", id: "${photo1_color1Id}" } }
-                            disconnect: { where: { name: "Yellow", id: "${photo1_color0Id}" } }
+                            connect: { where: { name: "Light Yellow", id: "${photo1Color1Id}" } }
+                            disconnect: { where: { name: "Yellow", id: "${photo1Color0Id}" } }
                           }
                         }
                       }
@@ -975,7 +974,7 @@ describe("update", () => {
                         }
                     }
                 }
-              }             
+              }
         `;
 
         try {
@@ -993,16 +992,16 @@ describe("update", () => {
                     MERGE (product)-[:HAS_PHOTO]->(photo1)
                     MERGE (photo1)-[:OF_COLOR]->(photo1_color0)
 
-                
+
             `,
                 {
                     productId,
                     photo0Id,
-                    photo0_color0Id,
-                    photo0_color1Id,
+                    photo0_color0Id: photo0Color0Id,
+                    photo0_color1Id: photo0Color1Id,
                     photo1Id,
-                    photo1_color0Id,
-                    photo1_color1Id,
+                    photo1_color0Id: photo1Color0Id,
+                    photo1_color1Id: photo1Color1Id,
                 }
             );
 
@@ -1015,16 +1014,16 @@ describe("update", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult?.data?.updateProducts.products as any[]).length).toEqual(1);
+            expect(gqlResult?.data?.updateProducts.products as any[]).toHaveLength(1);
 
-            const photos = (gqlResult?.data?.updateProducts.products as any[])[0].photos;
+            const { photos } = (gqlResult?.data?.updateProducts.products as any[])[0];
 
             const greenPhoto = photos.find((x) => x.id === photo0Id);
 
             expect(greenPhoto).toMatchObject({
                 id: photo0Id,
                 name: "Light Green Photo",
-                color: { id: photo0_color1Id, name: "Light Green" },
+                color: { id: photo0Color1Id, name: "Light Green" },
             });
 
             const yellowPhoto = photos.find((x) => x.id === photo1Id);
@@ -1032,7 +1031,7 @@ describe("update", () => {
             expect(yellowPhoto).toMatchObject({
                 id: photo1Id,
                 name: "Light Yellow Photo",
-                color: { id: photo1_color1Id, name: "Light Yellow" },
+                color: { id: photo1Color1Id, name: "Light Yellow" },
             });
         } finally {
             await session.close();
@@ -1082,8 +1081,8 @@ describe("update", () => {
                   where: { id: "${productId}" }
                   update: {
                       photos: [{
-                          create: [{ 
-                            id: "${photoId}", 
+                          create: [{
+                            id: "${photoId}",
                             name: "Green Photo",
                             color: {
                                 create: {
@@ -1107,7 +1106,7 @@ describe("update", () => {
                         }
                     }
                 }
-              }             
+              }
         `;
 
         try {
@@ -1181,7 +1180,7 @@ describe("update", () => {
                   where: { id: "${productId}" }
                   create: {
                     photos: [{
-                      id: "${photoId}", 
+                      id: "${photoId}",
                       name: "Green Photo",
                       color: {
                           create: {
@@ -1204,7 +1203,7 @@ describe("update", () => {
                         }
                     }
                 }
-              }             
+              }
         `;
 
         try {

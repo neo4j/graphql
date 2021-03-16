@@ -19,6 +19,7 @@ type Movie {
 **Output**
 
 ```schema-output
+
 type Movie {
   id: ID!
   ratings: [Float!]!
@@ -30,23 +31,30 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
 input MovieCreateInput {
-  id: ID
-  ratings: [Float]
-  averageRating: Float
+  id: ID!
+  ratings: [Float!]!
+  averageRating: Float!
 }
 
 input MovieOptions {
-  sort: [MovieSort]
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
   limit: Int
   skip: Int
 }
 
-enum MovieSort {
-  id_DESC
-  id_ASC
-  averageRating_DESC
-  averageRating_ASC
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+input MovieSort {
+  id: SortDirection
+  averageRating: SortDirection
 }
 
 input MovieWhere {
@@ -60,11 +68,11 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
-  id_REGEX: String
-  ratings: [Float]
-  ratings_NOT: [Float]
-  ratings_IN: Float
-  ratings_NOT_IN: Float
+  id_MATCHES: String
+  ratings: [Float!]
+  ratings_INCLUDES: Float
+  ratings_NOT: [Float!]
+  ratings_NOT_INCLUDES: Float
   averageRating: Float
   averageRating_IN: [Float]
   averageRating_NOT: Float
@@ -73,13 +81,13 @@ input MovieWhere {
   averageRating_LTE: Float
   averageRating_GT: Float
   averageRating_GTE: Float
-  OR: [MovieWhere]
-  AND: [MovieWhere]
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {
   id: ID
-  ratings: [Float]
+  ratings: [Float!]
   averageRating: Float
 }
 
@@ -92,7 +100,7 @@ type UpdateMoviesMutationResponse {
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput]!): CreateMoviesMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }

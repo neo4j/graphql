@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
 import camelCase from "camelcase";
-import { describe, expect, test, afterAll, beforeAll } from "@jest/globals";
 import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
@@ -57,7 +55,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 movies(where: { property_IN: ["${value}", "${randomValue1}", "${randomValue2}"] }) {
                                     property
                                 }
@@ -74,13 +72,13 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any).movies.length).toEqual(1);
+                        expect((gqlResult.data as any).movies).toHaveLength(1);
 
                         expect((gqlResult.data as any).movies[0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -115,12 +113,12 @@ describe("Advanced Filtering", () => {
                             `
                             CREATE (:${randomType} {property: $value})
                         `,
-                            { value: value + value }
+                            { value: `${value}${value}` }
                         );
 
                         const query = `
-                            { 
-                                ${pluralRandomType}(where: { property_REGEX: "(?i)${value}.*" }) {
+                            {
+                                ${pluralRandomType}(where: { property_MATCHES: "(?i)${value}.*" }) {
                                     property
                                 }
                             }
@@ -136,13 +134,13 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
 
-                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value + value);
+                        expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(`${value}${value}`);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -187,7 +185,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT: "${randomValue1}" }) {
                                     property
                                 }
@@ -204,13 +202,13 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
 
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -261,7 +259,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT_IN: ["${randomValue1}", "${randomValue2}"] }) {
                                     property
                                 }
@@ -278,13 +276,13 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
 
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -314,7 +312,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     });
 
-                    const superValue = value + value;
+                    const superValue = `${value}${value}`;
 
                     try {
                         await session.run(
@@ -327,7 +325,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_CONTAINS: "${value}" }) {
                                     property
                                 }
@@ -344,13 +342,13 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(3);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(3);
 
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(superValue);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -396,7 +394,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT_CONTAINS: "${notValue}" }) {
                                     property
                                 }
@@ -413,13 +411,13 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
 
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -449,7 +447,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     });
 
-                    const superValue = value + value;
+                    const superValue = `${value}${value}`;
 
                     try {
                         await session.run(
@@ -462,7 +460,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_STARTS_WITH: "${value}" }) {
                                     property
                                 }
@@ -479,15 +477,15 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(3);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(3);
 
                         ((gqlResult.data as any)[pluralRandomType] as any[]).forEach((x) => {
                             expect(x.property).toEqual(superValue);
                         });
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -533,7 +531,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT_STARTS_WITH: "${notValue}" }) {
                                     property
                                 }
@@ -550,11 +548,11 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -589,7 +587,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     });
 
-                    const superValue = value + value;
+                    const superValue = `${value}${value}`;
 
                     try {
                         await session.run(
@@ -602,7 +600,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_ENDS_WITH: "${value}" }) {
                                     property
                                 }
@@ -619,11 +617,11 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(2);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(2);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -658,7 +656,7 @@ describe("Advanced Filtering", () => {
                         charset: "alphabetic",
                     });
 
-                    const superValue = value + value;
+                    const superValue = `${value}${value}`;
 
                     try {
                         await session.run(
@@ -671,7 +669,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT_ENDS_WITH: "${value}" }) {
                                     property
                                 }
@@ -688,12 +686,12 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(notValue);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -746,7 +744,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT: ${notProperty} }) {
                                     property
                                 }
@@ -763,12 +761,12 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(property);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -826,7 +824,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_IN: [${value}, ${randomValue1}, ${randomValue2}] }) {
                                     property
                                 }
@@ -843,12 +841,12 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -908,7 +906,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT_IN: [${randomValue1}, ${randomValue2}] }) {
                                     property
                                 }
@@ -925,12 +923,12 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(value);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -975,7 +973,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_LT: ${lessThanValue + 1} }) {
                                     property
                                 }
@@ -992,12 +990,12 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(lessThanValue);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -1042,7 +1040,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_LTE: ${value} }) {
                                     property
                                 }
@@ -1059,11 +1057,11 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(2);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(2);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -1108,7 +1106,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_GT: ${graterThanValue - 1} }) {
                                     property
                                 }
@@ -1125,12 +1123,12 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
                         expect((gqlResult.data as any)[pluralRandomType][0].property).toEqual(graterThanValue);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -1175,7 +1173,7 @@ describe("Advanced Filtering", () => {
                         );
 
                         const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_GTE: ${value} }) {
                                     property
                                 }
@@ -1192,11 +1190,11 @@ describe("Advanced Filtering", () => {
                             console.log(JSON.stringify(gqlResult.errors, null, 2));
                         }
 
-                        expect(gqlResult.errors).toEqual(undefined);
+                        expect(gqlResult.errors).toBeUndefined();
 
-                        expect((gqlResult.data as any)[pluralRandomType].length).toEqual(2);
+                        expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(2);
                     } finally {
-                        session.close();
+                        await session.close();
                     }
                 })
             );
@@ -1232,7 +1230,7 @@ describe("Advanced Filtering", () => {
                 );
 
                 const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property: false }) {
                                     property
                                 }
@@ -1249,11 +1247,11 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
                 }
 
-                expect(gqlResult.errors).toEqual(undefined);
+                expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[pluralRandomType].length).toEqual(1);
+                expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(1);
             } finally {
-                session.close();
+                await session.close();
             }
         });
 
@@ -1285,7 +1283,7 @@ describe("Advanced Filtering", () => {
                 );
 
                 const query = `
-                            { 
+                            {
                                 ${pluralRandomType}(where: { property_NOT: false }) {
                                     property
                                 }
@@ -1302,11 +1300,11 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
                 }
 
-                expect(gqlResult.errors).toEqual(undefined);
+                expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[pluralRandomType].length).toEqual(0);
+                expect((gqlResult.data as any)[pluralRandomType]).toHaveLength(0);
             } finally {
-                session.close();
+                await session.close();
             }
         });
     });
@@ -1364,7 +1362,7 @@ describe("Advanced Filtering", () => {
                 );
 
                 const query = `
-                    { 
+                    {
                         ${pluralRandomType1}(where: { ${pluralRandomType2}: { id: "${relationId}" } }) {
                             id
                             ${pluralRandomType2} {
@@ -1384,15 +1382,15 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
                 }
 
-                expect(gqlResult.errors).toEqual(undefined);
+                expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[pluralRandomType1].length).toEqual(1);
+                expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
                 expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
                     id: rootId,
                     [pluralRandomType2]: [{ id: relationId }],
                 });
             } finally {
-                session.close();
+                await session.close();
             }
         });
 
@@ -1451,7 +1449,7 @@ describe("Advanced Filtering", () => {
                 );
 
                 const query = `
-                    { 
+                    {
                         ${pluralRandomType1}(where: { ${pluralRandomType2}_NOT: { id: "${relationId2}" } }) {
                             id
                             ${pluralRandomType2} {
@@ -1471,201 +1469,19 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(gqlResult.errors, null, 2));
                 }
 
-                expect(gqlResult.errors).toEqual(undefined);
+                expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[pluralRandomType1].length).toEqual(1);
+                expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
                 expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
                     id: rootId1,
                     [pluralRandomType2]: [{ id: relationId1 }],
                 });
             } finally {
-                session.close();
+                await session.close();
             }
         });
 
-        test("should find Movies genres_IN", async () => {
-            const session = driver.session();
-
-            const randomType1 = `${generate({
-                charset: "alphabetic",
-            })}Movie`;
-
-            const randomType2 = `${generate({
-                charset: "alphabetic",
-            })}Genre`;
-
-            const pluralRandomType1 = pluralize(camelCase(randomType1));
-            const pluralRandomType2 = pluralize(camelCase(randomType2));
-
-            const typeDefs = `
-                    type ${randomType1} {
-                        id: ID
-                        ${pluralRandomType2}: [${randomType2}] @relationship(type: "IN_GENRE", direction: "OUT")
-                    }
-
-                    type ${randomType2} {
-                        id: ID
-                    }
-            `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-            const rootId1 = generate({
-                charset: "alphabetic",
-            });
-            const rootId2 = generate({
-                charset: "alphabetic",
-            });
-
-            const relationId1 = generate({
-                charset: "alphabetic",
-            });
-            const relationId2 = generate({
-                charset: "alphabetic",
-            });
-
-            try {
-                await session.run(
-                    `
-                            CREATE (root1:${randomType1} {id: $rootId1})
-                            CREATE (root2:${randomType1} {id: $rootId2})
-                            CREATE (relation1:${randomType2} {id: $relationId1})
-                            CREATE (relation2:${randomType2} {id: $relationId2})
-                            MERGE (root1)-[:IN_GENRE]->(relation1)
-                            MERGE (root2)-[:IN_GENRE]->(relation2)
-                        `,
-                    { rootId1, rootId2, relationId1, relationId2 }
-                );
-
-                const query = `
-                    { 
-                        ${pluralRandomType1}(where: { ${pluralRandomType2}_IN: [{ id: "${relationId1}" }, { id: "${relationId2}" }] }) {
-                            id
-                            ${pluralRandomType2} {
-                                id
-                            }
-                        }
-                    }
-                `;
-
-                const gqlResult = await graphql({
-                    schema: neoSchema.schema,
-                    source: query,
-                    contextValue: { driver },
-                });
-
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
-                expect(gqlResult.errors).toEqual(undefined);
-
-                expect((gqlResult.data as any)[pluralRandomType1].length).toEqual(2);
-                expect((gqlResult.data as any)[pluralRandomType1]).toMatchObject([
-                    {
-                        id: rootId1,
-                        [pluralRandomType2]: [{ id: relationId1 }],
-                    },
-                    {
-                        id: rootId2,
-                        [pluralRandomType2]: [{ id: relationId2 }],
-                    },
-                ]);
-            } finally {
-                session.close();
-            }
-        });
-
-        test("should find Movies genres_NOT_IN", async () => {
-            const session = driver.session();
-
-            const randomType1 = `${generate({
-                charset: "alphabetic",
-            })}Movie`;
-
-            const randomType2 = `${generate({
-                charset: "alphabetic",
-            })}Genre`;
-
-            const pluralRandomType1 = pluralize(camelCase(randomType1));
-            const pluralRandomType2 = pluralize(camelCase(randomType2));
-
-            const typeDefs = `
-                    type ${randomType1} {
-                        id: ID
-                        ${pluralRandomType2}: [${randomType2}] @relationship(type: "IN_GENRE", direction: "OUT")
-                    }
-
-                    type ${randomType2} {
-                        id: ID
-                    }
-            `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-            const rootId1 = generate({
-                charset: "alphabetic",
-            });
-            const rootId2 = generate({
-                charset: "alphabetic",
-            });
-
-            const relationId1 = generate({
-                charset: "alphabetic",
-            });
-            const relationId2 = generate({
-                charset: "alphabetic",
-            });
-
-            try {
-                await session.run(
-                    `
-                            CREATE (root1:${randomType1} {id: $rootId1})
-                            CREATE (root2:${randomType1} {id: $rootId2})
-                            CREATE (relation1:${randomType2} {id: $relationId1})
-                            CREATE (relation2:${randomType2} {id: $relationId2})
-                            MERGE (root1)-[:IN_GENRE]->(relation1)
-                            MERGE (root2)-[:IN_GENRE]->(relation2)
-                        `,
-                    { rootId1, rootId2, relationId1, relationId2 }
-                );
-
-                const query = `
-                    { 
-                        ${pluralRandomType1}(where: { ${pluralRandomType2}_NOT_IN: [{ id: "${relationId2}" }] }) {
-                            id
-                            ${pluralRandomType2} {
-                                id
-                            }
-                        }
-                    }
-                `;
-
-                const gqlResult = await graphql({
-                    schema: neoSchema.schema,
-                    source: query,
-                    contextValue: { driver },
-                });
-
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
-                expect(gqlResult.errors).toEqual(undefined);
-
-                expect((gqlResult.data as any)[pluralRandomType1].length).toEqual(1);
-                expect((gqlResult.data as any)[pluralRandomType1]).toMatchObject([
-                    {
-                        id: rootId1,
-                        [pluralRandomType2]: [{ id: relationId1 }],
-                    },
-                ]);
-            } finally {
-                session.close();
-            }
-        });
-
-        test("should find relationship equality", async () => {
+        test("should test for not null", async () => {
             const session = driver.session();
 
             const randomType1 = `${generate({
@@ -1717,7 +1533,7 @@ describe("Advanced Filtering", () => {
                 );
 
                 const nullQuery = `
-                    { 
+                    {
                         ${pluralRandomType1}(where: { ${pluralRandomType2}: null }) {
                             id
                         }
@@ -1736,9 +1552,9 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(nullResult.errors, null, 2));
                 }
 
-                expect(nullResult.errors).toEqual(undefined);
+                expect(nullResult.errors).toBeUndefined();
 
-                expect((nullResult.data as any)[pluralRandomType1].length).toEqual(1);
+                expect((nullResult.data as any)[pluralRandomType1]).toHaveLength(1);
                 expect((nullResult.data as any)[pluralRandomType1][0]).toMatchObject({
                     id: randomId,
                 });
@@ -1746,7 +1562,7 @@ describe("Advanced Filtering", () => {
                 // Test not null checking (nodes without any related nodes on the specified field)
 
                 const notNullQuery = `
-                    { 
+                    {
                         ${pluralRandomType1}(where: { ${pluralRandomType2}_NOT: null }) {
                             id
                         }
@@ -1763,14 +1579,14 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(notNullResult.errors, null, 2));
                 }
 
-                expect(notNullResult.errors).toEqual(undefined);
+                expect(notNullResult.errors).toBeUndefined();
 
-                expect((notNullResult.data as any)[pluralRandomType1].length).toEqual(1);
+                expect((notNullResult.data as any)[pluralRandomType1]).toHaveLength(1);
                 expect((notNullResult.data as any)[pluralRandomType1][0]).toMatchObject({
                     id: rootId,
                 });
             } finally {
-                session.close();
+                await session.close();
             }
         });
     });
@@ -1821,7 +1637,7 @@ describe("Advanced Filtering", () => {
                 // Test NULL checking
 
                 const nullQuery = `
-                    { 
+                    {
                         ${pluralRandomType}(where: { optional: null }) {
                             id
                         }
@@ -1838,16 +1654,16 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(nullResult.errors, null, 2));
                 }
 
-                expect(nullResult.errors).toEqual(undefined);
+                expect(nullResult.errors).toBeUndefined();
 
-                expect((nullResult.data as any)[pluralRandomType].length).toEqual(1);
+                expect((nullResult.data as any)[pluralRandomType]).toHaveLength(1);
 
                 expect((nullResult.data as any)[pluralRandomType][0].id).toEqual(id1);
 
                 // Test NOT NULL checking
 
                 const notNullQuery = `
-                    { 
+                    {
                         ${pluralRandomType}(where: { optional_NOT: null }) {
                             id
                         }
@@ -1864,13 +1680,13 @@ describe("Advanced Filtering", () => {
                     console.log(JSON.stringify(notNullResult.errors, null, 2));
                 }
 
-                expect(notNullResult.errors).toEqual(undefined);
+                expect(notNullResult.errors).toBeUndefined();
 
-                expect((notNullResult.data as any)[pluralRandomType].length).toEqual(1);
+                expect((notNullResult.data as any)[pluralRandomType]).toHaveLength(1);
 
                 expect((notNullResult.data as any)[pluralRandomType][0].id).toEqual(id2);
             } finally {
-                session.close();
+                await session.close();
             }
         });
     });

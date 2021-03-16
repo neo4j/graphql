@@ -334,9 +334,11 @@ describe("find", () => {
             result?.data?.movies.forEach((movie: { id: string; title: string; actors: { id: string }[] }) => {
                 expect([movieId1, movieId2, movieId3].includes(movie.id)).toBeTruthy();
 
+                let expected: any;
+
                 switch (movie.id) {
                     case movieId1:
-                        expect(movie.actors).toEqual([
+                        expected = [
                             {
                                 id: actorId1,
                                 movies: [
@@ -346,10 +348,10 @@ describe("find", () => {
                                     },
                                 ],
                             },
-                        ]);
+                        ];
                         break;
                     case movieId2:
-                        expect(movie.actors).toEqual([
+                        expected = [
                             {
                                 id: actorId2,
                                 movies: [
@@ -359,10 +361,10 @@ describe("find", () => {
                                     },
                                 ],
                             },
-                        ]);
+                        ];
                         break;
                     case movieId3:
-                        expect(movie.actors).toEqual([
+                        expected = [
                             {
                                 id: actorId3,
                                 movies: [
@@ -372,11 +374,13 @@ describe("find", () => {
                                     },
                                 ],
                             },
-                        ]);
+                        ];
                         break;
                     default:
                         throw new Error("Fail");
                 }
+
+                expect(movie.actors).toEqual(expected);
             });
         } finally {
             await session.close();
@@ -469,7 +473,7 @@ describe("find", () => {
                 expect([movieId1, movieId2, movieId3].includes(movie.id)).toBeTruthy();
 
                 movie.actors.forEach((actor) => {
-                    expect([actorId1, actorId2, actorId3].includes(actor.id));
+                    expect([actorId1, actorId2, actorId3].includes(actor.id)).toBeTruthy();
                 });
             });
         } finally {

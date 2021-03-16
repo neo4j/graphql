@@ -57,7 +57,7 @@ RETURN this { ._id } as this
 
 ```graphql
 {
-    movies(where: { id_REGEX: "(?i)123.*" }) {
+    movies(where: { id_MATCHES: "(?i)123.*" }) {
         id
     }
 }
@@ -67,7 +67,7 @@ RETURN this { ._id } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE this.id =~ $this_id_REGEX
+WHERE this.id =~ $this_id_MATCHES
 RETURN this { .id } as this
 ```
 
@@ -75,7 +75,7 @@ RETURN this { .id } as this
 
 ```cypher-params
 {
-    "this_id_REGEX": "(?i)123.*"
+    "this_id_MATCHES": "(?i)123.*"
 }
 ```
 
@@ -508,71 +508,6 @@ RETURN this { .actorCount } as this
 ```cypher-params
 {
     "this_genres_NOT_name": "some genre"
-}
-```
-
----
-
-### Relationship IN
-
-**GraphQL input**
-
-```graphql
-{
-    movies(
-        where: {
-            genres_IN: [{ name: "first genre" }, { name: "second genre" }]
-        }
-    ) {
-        actorCount
-    }
-}
-```
-
-**Expected Cypher output**
-
-```cypher
-MATCH (this:Movie)
-WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres_IN IN [(this)-[:IN_GENRE]->(this_genres_IN:Genre) | this_genres_IN] WHERE this_genres_IN.name = $this_genres_IN0_name OR this_genres_IN.name = $this_genres_IN1_name)
-RETURN this { .actorCount } as this
-```
-
-**Expected Cypher params**
-
-```cypher-params
-{
-    "this_genres_IN0_name": "first genre",
-    "this_genres_IN1_name": "second genre"
-}
-```
-
----
-
-## Relationship NOT_IN
-
-**GraphQL input**
-
-```graphql
-{
-    movies(where: { genres_NOT_IN: [{ name: "some genre" }] }) {
-        actorCount
-    }
-}
-```
-
-**Expected Cypher output**
-
-```cypher
-MATCH (this:Movie)
-WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres_NOT_IN IN [(this)-[:IN_GENRE]->(this_genres_NOT_IN:Genre) | this_genres_NOT_IN] WHERE NOT(this_genres_NOT_IN.name = $this_genres_NOT_IN0_name))
-RETURN this { .actorCount } as this
-```
-
-**Expected Cypher params**
-
-```cypher-params
-{
-    "this_genres_NOT_IN0_name": "some genre"
 }
 ```
 

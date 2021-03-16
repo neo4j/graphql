@@ -1,4 +1,3 @@
-import { describe, test, expect } from "@jest/globals";
 import createUpdateAndParams from "../../../src/translate/create-update-and-params";
 import { Neo4jGraphQL, Context, Node } from "../../../src/classes";
 import { trimmer } from "../../../src/utils";
@@ -13,8 +12,18 @@ describe("createUpdateAndParams", () => {
                 required: false,
                 pretty: "String",
                 input: {
-                    name: "String",
-                    pretty: "String",
+                    where: {
+                        type: "String",
+                        pretty: "String",
+                    },
+                    create: {
+                        type: "String",
+                        pretty: "String",
+                    },
+                    update: {
+                        type: "String",
+                        pretty: "String",
+                    },
                 },
             },
             otherDirectives: [],

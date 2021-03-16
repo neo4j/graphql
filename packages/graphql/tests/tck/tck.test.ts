@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import camelCase from "camelcase";
 import {
     graphql,
@@ -15,11 +14,9 @@ import pluralize from "pluralize";
 import jsonwebtoken from "jsonwebtoken";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
-import { beforeAll, afterAll, describe, expect } from "@jest/globals";
 import { SchemaDirectiveVisitor, printSchemaWithDirectives } from "@graphql-tools/utils";
 import { translate } from "../../src/translate";
 import { Neo4jGraphQL } from "../../src";
-import { noGraphQLErrors } from "../../../../scripts/tests/utils";
 import { generateTestCasesFromMd, Test, TestCase } from "./utils/generate-test-cases-from-md.utils";
 import { trimmer } from "../../src/utils";
 
@@ -53,20 +50,20 @@ describe("TCK Generated tests", () => {
     const testCases: TestCase[] = generateTestCasesFromMd(TCK_DIR);
 
     testCases.forEach(({ schema, tests, file, kind }) => {
-        describe(file, () => {
+        describe(`${file}`, () => {
             if (kind === "cypher") {
                 const document = parse(schema as string);
                 const neoSchema = new Neo4jGraphQL({ typeDefs: schema as string });
 
                 // @ts-ignore
-                test.each(tests.map((t) => [t.name, t as Test]))("%s", async (_, obj) => {
+                test.each(tests.map((t) => [t.name, t]))("%s", async (_, obj) => {
                     const test = obj as Test;
 
                     const graphQlQuery = test.graphQlQuery as string;
                     const graphQlParams = test.graphQlParams as any;
                     const cypherQuery = test.cypherQuery as string;
                     const cypherParams = test.cypherParams as any;
-                    const jwt = test.jwt;
+                    const { jwt } = test;
 
                     const compare = (context: any, resolveInfo: any) => {
                         const [cQuery, cQueryParams] = translate({ context, resolveInfo });
@@ -189,20 +186,27 @@ describe("TCK Generated tests", () => {
                         schemaDirectives: directives,
                     });
 
-                    noGraphQLErrors(await graphql(executableSchema, graphQlQuery, null, context, graphQlParams));
+                    const result = await graphql(executableSchema, graphQlQuery, null, context, graphQlParams);
+
+                    if (result.errors) {
+                        console.log(result.errors);
+                    }
+
+                    // @ts-ignore
+                    expect(result.errors).toBeFalsy();
                 });
             }
 
             if (kind === "schema") {
                 // @ts-ignore
-                test.each(tests.map((t) => [t.name, t as Test]))("%s", (_, obj) => {
+                test.each(tests.map((t) => [t.name, t]))("%s", (_, obj) => {
                     const test = obj as Test;
 
                     const typeDefs = test.typeDefs as string;
                     const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const schemaOutPut = test.schemaOutPut as string;
-                    const resolvers = neoSchema.resolvers;
+                    const { resolvers } = neoSchema;
                     const outPutSchema = makeExecutableSchema({ typeDefs: schemaOutPut, resolvers });
 
                     expect(printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema))).toEqual(

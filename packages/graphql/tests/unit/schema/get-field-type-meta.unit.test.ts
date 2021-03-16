@@ -1,8 +1,22 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { parse, ObjectTypeDefinitionNode } from "graphql";
 import getFieldTypeMeta from "../../../src/schema/get-field-type-meta";
 
 describe("getFieldTypeMeta", () => {
+    test("should throw Matrix arrays not supported", () => {
+        const typeDefs = `
+            type User {
+                name: [[String]]!
+            }
+          `;
+
+        const node = parse(typeDefs).definitions[0] as ObjectTypeDefinitionNode;
+
+        // @ts-ignore
+        const field = node.fields[0];
+
+        expect(() => getFieldTypeMeta(field)).toThrow("Matrix arrays not supported");
+    });
+
     test("should return NonNullType ListType type name", () => {
         const typeDefs = `
             type User {

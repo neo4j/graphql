@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { FieldDefinitionNode } from "graphql";
 import getCypherMeta from "../../../src/schema/get-cypher-meta";
 
@@ -28,7 +27,7 @@ describe("getCypherMeta", () => {
 
         const result = getCypherMeta(field);
 
-        expect(result).toEqual(undefined);
+        expect(result).toBeUndefined();
     });
 
     test("should throw statement required", () => {
@@ -53,13 +52,7 @@ describe("getCypherMeta", () => {
             ],
         };
 
-        try {
-            getCypherMeta(field);
-
-            throw new Error("I should not throw");
-        } catch (error) {
-            expect(error.message).toEqual("@cypher statement required");
-        }
+        expect(() => getCypherMeta(field)).toThrow("@cypher statement required");
     });
 
     test("should throw statement not a string", () => {
@@ -95,13 +88,7 @@ describe("getCypherMeta", () => {
             ],
         };
 
-        try {
-            getCypherMeta(field);
-
-            throw new Error("I should not throw");
-        } catch (error) {
-            expect(error.message).toEqual("@cypher statement not a string");
-        }
+        expect(() => getCypherMeta(field)).toThrow("@cypher statement not a string");
     });
 
     test("should return the correct meta", () => {

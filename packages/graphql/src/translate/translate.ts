@@ -7,7 +7,7 @@ import { Neo4jGraphQL, Node, Context } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { GraphQLWhereArg, GraphQLOptionsArg, RelationField, AuthOperations } from "../types";
+import { GraphQLWhereArg, GraphQLOptionsArg, RelationField, AuthOperations, GraphQLSortArg } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
@@ -27,9 +27,8 @@ function translateRead({
 }): [string, any] {
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
-    const fieldsByTypeName = resolveTree.fieldsByTypeName;
+    const { fieldsByTypeName } = resolveTree;
     const varName = "this";
-
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
     let authStr = "";
@@ -39,6 +38,7 @@ function translateRead({
     let projAuth = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
+    const whereStrs: string[] = [];
 
     const projection = createProjectionAndParams({
         node,
@@ -46,10 +46,10 @@ function translateRead({
         fieldsByTypeName,
         varName,
     });
-    projStr = projection[0];
+    [projStr] = projection;
     cypherParams = { ...cypherParams, ...projection[1] };
-    if (projection[2]?.authStrs.length) {
-        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
+    if (projection[2]?.authValidateStrs?.length) {
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
             " AND "
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
@@ -60,25 +60,41 @@ function translateRead({
             varName,
             node,
             context,
+            recursing: true,
         });
-        whereStr = where[0];
-        cypherParams = { ...cypherParams, ...where[1] };
+        if (where[0]) {
+            whereStrs.push(where[0]);
+            cypherParams = { ...cypherParams, ...where[1] };
+        }
     }
 
-    if (node.auth) {
-        const allowAndParams = createAuthAndParams({
-            operation: "read",
-            entity: node,
-            context,
-            allow: {
-                parentNode: node,
-                varName,
-            },
-        });
-        if (allowAndParams[0]) {
-            cypherParams = { ...cypherParams, ...allowAndParams[1] };
-            authStr = `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-        }
+    const whereAuth = createAuthAndParams({
+        operation: "read",
+        entity: node,
+        context,
+        where: { varName, node },
+    });
+    if (whereAuth[0]) {
+        whereStrs.push(whereAuth[0]);
+        cypherParams = { ...cypherParams, ...whereAuth[1] };
+    }
+
+    if (whereStrs.length) {
+        whereStr = `WHERE ${whereStrs.join(" AND ")}`;
+    }
+
+    const allowAndParams = createAuthAndParams({
+        operation: "read",
+        entity: node,
+        context,
+        allow: {
+            parentNode: node,
+            varName,
+        },
+    });
+    if (allowAndParams[0]) {
+        cypherParams = { ...cypherParams, ...allowAndParams[1] };
+        authStr = `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
     if (optionsInput) {
@@ -96,20 +112,14 @@ function translateRead({
         }
 
         if (optionsInput.sort && optionsInput.sort.length) {
-            const sortArr = optionsInput.sort.map((s) => {
-                let key;
-                let direc;
-
-                if (s.includes("_DESC")) {
-                    direc = "DESC";
-                    [key] = s.split("_DESC");
-                } else {
-                    direc = "ASC";
-                    [key] = s.split("_ASC");
-                }
-
-                return `${varName}.${key} ${direc}`;
-            });
+            const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {
+                return [
+                    ...res,
+                    ...Object.entries(sort).map(([field, direction]) => {
+                        return `${varName}.${field} ${direction}`;
+                    }),
+                ];
+            }, []);
 
             sortStr = `ORDER BY ${sortArr.join(", ")}`;
         }
@@ -138,10 +148,9 @@ function translateCreate({
     context: Context;
     node: Node;
 }): [string, any] {
-    const fieldsByTypeName =
-        resolveTree.fieldsByTypeName[`Create${pluralize(node.name)}MutationResponse`][pluralize(camelCase(node.name))]
-            .fieldsByTypeName;
-
+    const { fieldsByTypeName } = resolveTree.fieldsByTypeName[`Create${pluralize(node.name)}MutationResponse`][
+        pluralize(camelCase(node.name))
+    ];
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {
             const varName = `this${index}`;
@@ -178,8 +187,8 @@ function translateCreate({
         fieldsByTypeName,
         varName: "REPLACE_ME",
     });
-    if (projection[2]?.authStrs.length) {
-        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
+    if (projection[2]?.authValidateStrs?.length) {
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
             " AND "
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
@@ -221,9 +230,9 @@ function translateUpdate({
     const disconnectInput = resolveTree.args.disconnect;
     const createInput = resolveTree.args.create;
     const deleteInput = resolveTree.args.delete;
-    const fieldsByTypeName =
-        resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][pluralize(camelCase(node.name))]
-            .fieldsByTypeName;
+    const { fieldsByTypeName } = resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][
+        pluralize(camelCase(node.name))
+    ];
     const varName = "this";
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
@@ -235,6 +244,7 @@ function translateUpdate({
     let projAuth = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
+    const whereStrs: string[] = [];
 
     if (whereInput) {
         const where = createWhereAndParams({
@@ -242,9 +252,27 @@ function translateUpdate({
             varName,
             node,
             context,
+            recursing: true,
         });
-        whereStr = where[0];
-        cypherParams = { ...cypherParams, ...where[1] };
+        if (where[0]) {
+            whereStrs.push(where[0]);
+            cypherParams = { ...cypherParams, ...where[1] };
+        }
+    }
+
+    const whereAuth = createAuthAndParams({
+        operation: "update",
+        entity: node,
+        context,
+        where: { varName, node },
+    });
+    if (whereAuth[0]) {
+        whereStrs.push(whereAuth[0]);
+        cypherParams = { ...cypherParams, ...whereAuth[1] };
+    }
+
+    if (whereStrs.length) {
+        whereStr = `WHERE ${whereStrs.join(" AND ")}`;
     }
 
     if (updateInput) {
@@ -256,7 +284,7 @@ function translateUpdate({
             parentVar: varName,
             withVars: [varName],
         });
-        updateStr = updateAndParams[0];
+        [updateStr] = updateAndParams;
         cypherParams = { ...cypherParams, ...updateAndParams[1] };
     }
 
@@ -275,7 +303,7 @@ function translateUpdate({
                 withVars: [varName],
                 parentNode: node,
             });
-            disconnectStr = disconnectAndParams[0];
+            [disconnectStr] = disconnectAndParams;
             cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
         });
     }
@@ -295,7 +323,7 @@ function translateUpdate({
                 withVars: [varName],
                 parentNode: node,
             });
-            connectStr = connectAndParams[0];
+            [connectStr] = connectAndParams;
             cypherParams = { ...cypherParams, ...connectAndParams[1] };
         });
     }
@@ -319,7 +347,7 @@ function translateUpdate({
                     varName: innerVarName,
                     withVars: [varName, innerVarName],
                 });
-                createStr = createAndParams[0];
+                [createStr] = createAndParams;
                 cypherParams = { ...cypherParams, ...createAndParams[1] };
                 createStr += `\nMERGE (${varName})${inStr}${relTypeStr}${outStr}(${innerVarName})`;
             });
@@ -335,7 +363,7 @@ function translateUpdate({
             parentVar: varName,
             withVars: [varName],
         });
-        deleteStr = deleteAndParams[0];
+        [deleteStr] = deleteAndParams;
         cypherParams = { ...cypherParams, ...deleteAndParams[1] };
     }
 
@@ -345,10 +373,10 @@ function translateUpdate({
         fieldsByTypeName,
         varName,
     });
-    projStr = projection[0];
+    [projStr] = projection;
     cypherParams = { ...cypherParams, ...projection[1] };
-    if (projection[2]?.authStrs.length) {
-        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authStrs.join(
+    if (projection[2]?.authValidateStrs?.length) {
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
             " AND "
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
@@ -382,10 +410,10 @@ function translateDelete({
     const varName = "this";
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
-    let preAuthStr = "";
+    let allowStr = "";
     let deleteStr = "";
-    const authStr = "";
     let cypherParams: { [k: string]: any } = {};
+    const whereStrs: string[] = [];
 
     if (whereInput) {
         const where = createWhereAndParams({
@@ -393,12 +421,30 @@ function translateDelete({
             varName,
             node,
             context,
+            recursing: true,
         });
-        whereStr = where[0];
-        cypherParams = { ...cypherParams, ...where[1] };
+        if (where[0]) {
+            whereStrs.push(where[0]);
+            cypherParams = { ...cypherParams, ...where[1] };
+        }
     }
 
-    const preAuth = createAuthAndParams({
+    const whereAuth = createAuthAndParams({
+        operation: "delete",
+        entity: node,
+        context,
+        where: { varName, node },
+    });
+    if (whereAuth[0]) {
+        whereStrs.push(whereAuth[0]);
+        cypherParams = { ...cypherParams, ...whereAuth[1] };
+    }
+
+    if (whereStrs.length) {
+        whereStr = `WHERE ${whereStrs.join(" AND ")}`;
+    }
+
+    const allowAuth = createAuthAndParams({
         operation: "delete",
         entity: node,
         context,
@@ -407,9 +453,9 @@ function translateDelete({
             varName,
         },
     });
-    if (preAuth[0]) {
-        cypherParams = { ...cypherParams, ...preAuth[1] };
-        preAuthStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+    if (allowAuth[0]) {
+        cypherParams = { ...cypherParams, ...allowAuth[1] };
+        allowStr = `WITH ${varName}\nCALL apoc.util.validate(NOT(${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
     if (deleteInput) {
@@ -421,11 +467,11 @@ function translateDelete({
             parentVar: varName,
             withVars: [varName],
         });
-        deleteStr = deleteAndParams[0];
+        [deleteStr] = deleteAndParams;
         cypherParams = { ...cypherParams, ...deleteAndParams[1] };
     }
 
-    const cypher = [matchStr, whereStr, deleteStr, preAuthStr, authStr, `DETACH DELETE ${varName}`];
+    const cypher = [matchStr, whereStr, deleteStr, allowStr, `DETACH DELETE ${varName}`];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
 }
@@ -437,7 +483,7 @@ function translate({
     context: { [k: string]: any } & { driver?: Driver };
     resolveInfo: GraphQLResolveInfo;
 }): [string, any] {
-    const neoSchema: Neo4jGraphQL = graphQLContext.neoSchema;
+    const { neoSchema } = graphQLContext;
     if (!neoSchema || !(neoSchema instanceof Neo4jGraphQL)) {
         throw new Error("invalid schema");
     }

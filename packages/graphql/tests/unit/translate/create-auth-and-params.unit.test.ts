@@ -1,4 +1,3 @@
-import { describe, test, expect } from "@jest/globals";
 import { generate } from "randomstring";
 import createAuthAndParams from "../../../src/translate/create-auth-and-params";
 import { Neo4jGraphQL, Context, Node } from "../../../src/classes";
@@ -15,8 +14,18 @@ describe("createAuthAndParams", () => {
                     required: false,
                     pretty: "String",
                     input: {
-                        name: "String",
-                        pretty: "String",
+                        where: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        create: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        update: {
+                            type: "String",
+                            pretty: "String",
+                        },
                     },
                 },
                 otherDirectives: [],
@@ -57,9 +66,10 @@ describe("createAuthAndParams", () => {
 
             // @ts-ignore
             const context = new Context({ neoSchema });
-            context.jwt = {
+            // @ts-ignore
+            context.getJWT = () => ({
                 sub,
-            };
+            });
 
             const result = createAuthAndParams({
                 context,
@@ -90,8 +100,18 @@ describe("createAuthAndParams", () => {
                     required: false,
                     pretty: "String",
                     input: {
-                        name: "String",
-                        pretty: "String",
+                        where: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        create: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        update: {
+                            type: "String",
+                            pretty: "String",
+                        },
                     },
                 },
                 otherDirectives: [],
@@ -149,7 +169,7 @@ describe("createAuthAndParams", () => {
             });
         });
 
-        test("should showcase the default AND default behavior of the keys in the rule", async () => {
+        test("should showcase the default AND default behavior of the keys in the rule", () => {
             const idField = {
                 fieldName: "id",
                 typeMeta: {
@@ -158,8 +178,18 @@ describe("createAuthAndParams", () => {
                     required: false,
                     pretty: "String",
                     input: {
-                        name: "String",
-                        pretty: "String",
+                        where: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        create: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        update: {
+                            type: "String",
+                            pretty: "String",
+                        },
                     },
                 },
                 otherDirectives: [],
@@ -229,8 +259,18 @@ describe("createAuthAndParams", () => {
                         required: false,
                         pretty: "String",
                         input: {
-                            name: "String",
-                            pretty: "String",
+                            where: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            create: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            update: {
+                                type: "String",
+                                pretty: "String",
+                            },
                         },
                     },
                     otherDirectives: [],
@@ -298,8 +338,18 @@ describe("createAuthAndParams", () => {
                     required: false,
                     pretty: "String",
                     input: {
-                        name: "String",
-                        pretty: "String",
+                        where: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        create: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        update: {
+                            type: "String",
+                            pretty: "String",
+                        },
                     },
                 },
                 otherDirectives: [],
@@ -355,12 +405,12 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                    ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) 
-                AND 
-                    EXISTS(this.id) AND this.id = $this_auth_allow0_id 
-                AND 
-                    EXISTS(this.id) AND this.id = $thisAND0_auth_allow0_id AND ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) 
-                AND 
+                    ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                AND
+                    EXISTS(this.id) AND this.id = $this_auth_allow0_id
+                AND
+                    EXISTS(this.id) AND this.id = $thisAND0_auth_allow0_id AND ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                AND
                     EXISTS(this.id) AND this.id = $thisOR0_auth_allow0_id OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
                 `)
             );
@@ -384,8 +434,18 @@ describe("createAuthAndParams", () => {
                         required: false,
                         pretty: "String",
                         input: {
-                            name: "String",
-                            pretty: "String",
+                            where: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            create: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            update: {
+                                type: "String",
+                                pretty: "String",
+                            },
                         },
                     },
                     otherDirectives: [],
@@ -409,8 +469,18 @@ describe("createAuthAndParams", () => {
                                 required: false,
                                 pretty: "String",
                                 input: {
-                                    name: "String",
-                                    pretty: "String",
+                                    where: {
+                                        type: "String",
+                                        pretty: "String",
+                                    },
+                                    create: {
+                                        type: "String",
+                                        pretty: "String",
+                                    },
+                                    update: {
+                                        type: "String",
+                                        pretty: "String",
+                                    },
                                 },
                             },
                             otherDirectives: [],
