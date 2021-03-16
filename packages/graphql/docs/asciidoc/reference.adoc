@@ -1264,7 +1264,7 @@ The field will only feature in object types for querying, and will not be mutabl
 
 [source, graphql]
 ----
-"""Instructs @neo4j/graphql to exclude a field from the generated input types for the object type within which the directive is applied."""
+"""Instructs @neo4j/graphql to only include a field in generated input type for creating, and in the object type within which the directive is applied."""
 directive @readonly on FIELD_DEFINITION
 ----
 
