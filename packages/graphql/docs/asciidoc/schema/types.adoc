@@ -1,10 +1,74 @@
 [[schema-types]]
 = Types
 
+Neo4j GraphQL supports all default GraphQL types and additional mentioned in this document. 
+
 == `DateTime`
+ISO datetime string stored as a [datetime](https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime) temporal type.
+
+[source, graphql]
+----
+type User {
+    createdAt: DateTime
+}
+----
+
+== Spatial Types
+
+1. `Point`
+2. `CartesianPoint`
+
+Neo4j GraphQL spatial types translate to spatial values stored using [point](https://neo4j.com/docs/cypher-manual/current/syntax/spatial) in the database. The use of either of these types in a GraphQL schema will automatically introduce the types needed to run queries and mutations relevant to these spatial types.
+
+=== Querying using spatial values
+Queries can be run to find nodes containing a point containing the exact values specified.
+
+[source, graphql]
+----
+query Users($longitude: Float!, $latitude: Float!) {
+    users(where: { location: { longitude: $longitude, latitude: $latitude } }) {
+        name
+        location {
+            longitude
+            latitude
+        }
+    }
+}
+----
+
+=== Mutating using spatial values
+
+Similarly, spatial values can be used in mutations to create nodes with spatial values.
+
+[source, graphql]
+----
+mutation CreateUsers($name: String!, $longitude: Float!, $latitude: Float!) {
+    createUsers(input: [{ name: $name, location: { longitude: $longitude, latitude: $latitude } }]) {
+        users {
+            name
+            location {
+                longitude
+                latitude
+            }
+        }
+    }
+}
+----
+
+=== Advanced filtering using spatial values
+Queries can be run to find nodes relative to a distance from the specified point. For example, the following query will find users whose location is greater than 5000m (5km) away from the specified point.
+
+[source, graphql]
+----
+query UsersOver5kmAway($longitude: Float!, $latitude: Float!) {
+    users(where: { location_GT: { point: { longitude: $longitude, latitude: $latitude }, distance: 5000 } }) {
+        name
+        location {
+            longitude
+            latitude
+        }
+    }
+}
+----
 
 
-== `Point`
-
-
-== `CartesianPoint`
