@@ -1,8 +1,9 @@
 import { Driver } from "neo4j-driver";
 import { GraphQLSchema } from "graphql";
-import { TypeDefs, Resolvers, SchemaDirectives } from "../types";
+import { TypeDefs, Resolvers, SchemaDirectives, DriverConfig } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
+import { verify } from "../utils";
 
 export interface Neo4jGraphQLConstructor {
     typeDefs: TypeDefs;
@@ -10,6 +11,8 @@ export interface Neo4jGraphQLConstructor {
     schemaDirectives?: SchemaDirectives;
     debug?: boolean | ((...values: any[]) => void);
     context?: { [k: string]: any } & { driver?: Driver };
+    driver?: Driver;
+    driverConfig?: DriverConfig;
 }
 
 class Neo4jGraphQL {
@@ -46,6 +49,16 @@ class Neo4jGraphQL {
         }
 
         debug(message);
+    }
+
+    async verify(input: { driver?: Driver } = {}): Promise<void> {
+        const driver = input.driver || this.input.driver;
+
+        if (!driver) {
+            throw new Error("neo4j-driver Driver missing");
+        }
+
+        return verify({ driver });
     }
 }
 

@@ -22,7 +22,7 @@ async function execute(input: {
         database?: string;
     } = { defaultAccessMode: input.defaultAccessMode };
 
-    const driverConfig = input.graphQLContext.driverConfig as DriverConfig;
+    const driverConfig = (input.graphQLContext.driverConfig || input.neoSchema.input.driverConfig) as DriverConfig;
     if (driverConfig) {
         if (driverConfig.database) {
             sessionParams.database = driverConfig.database;
