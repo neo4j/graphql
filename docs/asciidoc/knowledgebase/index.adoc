@@ -1,0 +1,7 @@
+[[knowledgebase]]
+= Knowledge Base
+
+Parts of the documentation that didn't quite fit elsewhere. 
+
+* <<knowledgebase-developer-notes>>
+* <<knowledgebase-custom-resolvers>>

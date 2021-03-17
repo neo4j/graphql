@@ -1,0 +1,58 @@
+[[knowledgebase-custom-resolvers]]
+= Custom Resolvers
+
+This library will auto-generate resolvers for queries and mutations, you don’t need to implement resolvers yourself, however if you have some custom code you can specify custom resolvers.
+
+
+== Custom Field Resolver
+
+[source, javascript]
+----
+const typeDefs = `
+    type User {
+        userId: ID!
+        firstName: String
+        lastName: String
+        fullName: String
+    }
+`;
+
+const resolvers = {
+    User: {
+        fullName(root, params, ctx, resolveInfo) {
+            return `${root.firstName} ${root.lastName}`;
+        },
+    },
+};
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    resolvers,
+});
+----
+
+== Custom Query Resolver
+
+[source, javascript]
+----
+const typeDefs = `
+    type User {
+        userId: ID!
+    }
+
+    type Query {
+        users: [User]
+    }
+`;
+
+const resolvers = {
+    Query: {
+        users: () => // do some logic
+    }
+};
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    resolvers,
+});
+----

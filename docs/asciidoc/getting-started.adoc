@@ -1,0 +1,111 @@
+[[getting-started]]
+= Getting Started
+
+This section will help users get started with the Neo4j GraphQL Engine. Before starting we recommend readers have an understanding of the following **prerequisites;**
+
+1. https://developer.mozilla.org/en-US/docs/Web/JavaScript[Javascript]
+2. https://nodejs.org/en/[Node.js]
+3. https://graphql.org/[GraphQL]
+4. https://neo4j.com/[Neo4j]
+
+== Installation
+
+[source, bash]
+----
+$ npm install @neo4j/graphql
+----
+
+`graphql` and `neo4j-driver` are are **peerDependency(s)**. 
+
+== Importing
+
+The Library is transpiled, from our TypeScript source, into https://nodejs.org/docs/latest/api/modules.html#modules_modules_commonjs_modules[Common JS] - This means you can use the `require` syntax to access the library's exported members; 
+
+[source, javascript]
+----
+const { Neo4jGraphQL, OGM, translate } = require("@neo4j/graphql");
+----
+
+== GraphQL API Quick Start
+
+This section demonstrates using https://www.apollographql.com/docs/apollo-server/[Apollo Server] alongside Neo4jGraphQL to spin up a GraphQL API. 
+
+[source, javascript]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const neo4j = require("neo4j-driver");
+const { ApolloServer } = require("apollo-server");
+
+const typeDefs = `
+    type Movie {
+        title: String
+        year: Int
+        imdbRating: Float
+        genres: [Genre] @relationship(type: "IN_GENRE", direction: "OUT")
+    }
+
+    type Genre {
+        name: String
+        movies: [Movie] @relationship(type: "IN_GENRE", direction: "IN")
+    }
+`;
+
+const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "letmein")
+);
+
+const server = new ApolloServer({
+    schema: neoSchema.schema,
+    context: ({ req }) => ({ req, driver }),
+});
+
+server.listen(4000).then(() => console.log("Online"));
+----
+
+== OGM Quick Start
+
+This section demonstrates using https://expressjs.com/[Express JS] alongside the `OGM` to spin up a REST endpoint. 
+
+[source, javascript]
+----
+const express = require("express");
+const { OGM } = require("@neo4j/graphql");
+const neo4j = require("neo4j-driver");
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "letmein")
+);
+
+const typeDefs = `
+    type User {
+        id: ID
+        name: String
+    }
+`;
+
+const ogm = new OGM({ typeDefs, driver });
+const User = ogm.model("User");
+
+const app = express();
+app.get("/users", async (req, res) => {
+    const { search, skip, limit, sort } = req.query;
+
+    const regex = search ? `(?i).*${search}.*` : null;
+
+    const users = await User.find({
+        where: { name_REGEX: regex },
+        skip,
+        limit,
+        sort,
+    });
+
+    return res.json(users).end();
+});
+app.listen(4000, () => console.log("started"));
+----
+
+For more information on the OGM checkout the <<ogm>> section. 

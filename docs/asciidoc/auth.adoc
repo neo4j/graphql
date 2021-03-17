@@ -1,0 +1,590 @@
+[[auth]]
+= Auth
+
+== About
+Solution exposes built-in GraphQL Directive `@auth`; 
+
+[source, graphql]
+----
+type Post @auth(rules: [
+    { operations: ["create"], isAuthenticated: true }
+]) {
+    title: String!
+}
+----
+
+> When you have production-style Auth the directive can get large and complicated. Use Extend to tackle this.
+
+[source, graphql]
+----
+type Post {
+    title: String!
+}
+
+extend type Post @auth(rules: [
+    { operations: ["create"], isAuthenticated: true }
+])
+----
+
+You can use the directive on 'Type Definitions', as seen in the example above, you can also apply the directive on any field so as long as it's not a `@relationship`;
+
+[source, graphql]
+----
+type User {
+    id: ID!
+    name: String!
+}
+
+extend type User {
+    password: String! @auth(rules: [
+        { 
+            operations: "*", 
+            OR: [{ roles: ["admin"] }, { allow: { id: "$jwt.sub" } }] 
+        }
+    ])
+}
+----
+
+== Authentication
+This implementation will just expect there to be an authorization header in the request object, you can authenticate users however you like. One could; Have a custom sign-in mutation, integrate with Auth0, or roll your own SSO server. The point here is that it's just a JWT, in the library, we will decode it to make sure it's valid... but it's down to you to issue tokens.
+
+== Setup
+The auth implementation uses JWT tokens. You are expected to pass a JWT into the request. The accepted token type should be Bearer where the header should be authorization;
+
+[source]
+----
+POST / HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlcyI6WyJ1c2VyX2FkbWluIiwicG9zdF9hZG1pbiIsImdyb3VwX2FkbWluIl19.IY0LWqgHcjEtOsOw60mqKazhuRFKroSXFQkpCtWpgQI
+content-type: application/json
+----
+
+=== Environment Variables
+
+.Auth Environment Variables Matrix
+|===
+|Variable | Usage
+
+|`JWT_SECRET`
+| Specify JWT secret 
+
+|`JWT_NO_VERIFY`
+| Disable the verification of the JW
+
+|`JWT_ROLES_OBJECT_PATH`
+| Specify where on the JWT the roles key is 
+|===
+
+=== Server Construction
+Request object needs to be injected into the context before you can use auth. Here is an example using Apollo Sever;
+
+[source, javascript]
+----
+const neoSchema = new Neo4jGraphQL({});
+
+const server = new ApolloServer({
+    schema: neoSchema.schema,
+    context: ({ req }) => ({ req }),
+});
+----
+
+== Authorization
+
+You specify authorization rules inside the `@auth` directive, this section looks at each argument & explains how to use to secure your GraphQL API.
+
+=== `rules`
+
+You can have many rules for many operations. We fallthrough each rule, on the corresponding operation, until a match. On no match, an error is thrown. You can think of rules as a big OR.
+
+[source, graphql]
+----
+@auth(rules: [
+    { operations: ["create", "update"], ... }, ## or
+    { operations: ["read", "update"], ...}, ## or
+    { operations: ["delete", "update"], ... } ## or
+])
+----
+
+=== `operations`
+
+Operations is an array, you can re-use the same rule for many operations. 
+
+[source, graphql]
+----
+@auth(rules: [
+    { operations: ["create", "update", "delete", "connect", "disconnect"] },
+    { operations: ["read"] }
+])
+----
+
+> You can use `operations: "*" to denote all operations
+
+Many different operations can be called in one query take the below mutation;
+
+[source, graphql]
+----
+mutation {
+    createPosts(
+        input: [
+            { 
+                content: "I like GraphQL",
+                creator: { connect: { where: { id: "user-01" } } } 
+            }
+        ]
+    ) {
+        posts {
+            content
+        }
+    }
+}
+----
+
+In the above example; First we do a `create` operation then we do a `connect` operation. 
+
+The full list of operations are; 
+
+1. read - `MATCH`
+2. create - `CREATE`
+3. update - `SET`
+4. delete - `DELETE`
+5. connect - `MATCH` & `MERGE`
+6. disconnect - `MATCH` & `DELETE`
+
+=== `isAuthenticated`
+
+This is the most basic of auth. Used to ensure that there is a valid decoded JWT in the request. The most basic of applications could look something like this; 
+
+[source, graphql]
+----
+type Todo {
+    id: ID
+    title: String
+}
+
+extend type Todo @auth(rules: [{ operations: "*", isAuthenticated: true }])
+----
+
+=== `roles`
+
+Use the roles property to specify the allowed roles for an operation. Use ENV `JWT_ROLES_OBJECT_PATH` to specify a object path for JWT roles otherwise defaults to `jwt.roles`
+
+[source, graphql]
+----
+type User {
+    id: ID
+    name: String
+}
+
+extend type User @auth(rules: [{ operations: ["update"], roles: ["admin"] }])
+----
+
+Above showing an admin role is required for all operations against Users. If you have multiple roles you can add more items to the array;
+
+[source, graphql]
+----
+extend type User @auth(rules: [{ operations: "*", roles: ["admin", "super-admin"] }])
+----
+
+
+> Users only need one of many roles to satisfy a rule. 
+
+=== `allow`
+
+Use allow to ensure, on matched nodes, a connection exists between a value on the JWT vs a property on each matched node. Taking a closer, look let's put two users in a hypothetical empty database;
+
+[source, cypher]
+----
+CREATE (:User {id:"user1", name: "one"}), (:User {id:"user2", name: "two"})
+----
+
+[source, graphql]
+----
+type User {
+    id: ID!
+    name: String!
+}
+----
+
+Now we have two users in our database, and given the above GraphQL type definitions - How can we restrict `user1` from seeing `user2`? This is where allow comes in;
+
+[source, graphql]
+----
+type User {
+    id: ID!
+    name: String!
+}
+
+extend type User @auth(
+    rules: [
+        { 
+            operations: ["read"],
+            allow: { id: "$jwt.sub" }
+        }
+    ]
+)
+----
+
+After we match the node we validate that the property on the node is equal to the `jwt.sub` property. This validation is done in Cypher with two functions; validatePredicate & validate. 
+
+Given `user1` has the decoded JWT; 
+[source, json]
+----
+{
+  "sub": "user1",
+  "iat": 1516239022
+}
+----
+
+With this JWT makes a GraphQL query to get `user2`;
+[source, graphql]
+----
+query {
+    users(where: { id: "user2" }) {
+        name
+    }
+}
+----
+
+The generated cypher for this query would look like the below and throw you out the operation. 
+
+[source, cypher]
+----
+MATCH (u:User {id: "user2"})
+CALL apoc.util.validate(NOT(u.id = "user1"), "Forbidden")
+RETURN u
+----
+
+Allow is used on the following operations; 
+
+1. read
+2. update
+3. connect
+4. disconnect
+5. delete
+
+==== `allow` Across Relationships
+
+There may be a reason where you need to traverse across relationships to satisfy your Auth implementation. One example of this could be "Grant update access to all Moderators of a Post"; 
+
+[source, graphql]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: "IN")
+}
+
+extend type Post @auth(rules: [
+    { operations: ["update"], allow: { moderators: { id: "$jwt.sub" } } }
+])
+----
+
+When you specify allow on a relationship you can select fields on the referenced node. It's worth pointing out that allow on a relationship will perform an `ANY` on the matched nodes; to see if there is a match. 
+
+Given the above example - There may be a time when you need to give update access to either the creator of a post or a moderator, you can use `OR` and `AND` inside allow;
+
+[source, graphql]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: "IN")
+    creator: User @relationship(type: "HAS_POST", direction: "IN")
+}
+
+extend type Post
+    @auth(
+        rules: [
+            { 
+                operations: ["update"],
+                allow: { OR: [{ moderators: { id: "$jwt.sub" } }, { creator: { id: "$jwt.sub" } }] } 
+            }
+        ]
+    )
+----
+
+==== Field Level `allow`
+
+Allow works the same as it does on Type Definitions although its context is the Field. So instead of enforcing auth rules when the node is matched and or upserted, it would instead; be called when the Field is selected or upserted. Given the following, it is hiding the password to only the user themselves;
+
+[source, graphql]
+----
+type User {
+    id: ID!
+    name: String!
+    password: String! @auth(rules: [{ operations: "*", allow: { id: "$jwt.sub" } }])
+}
+----
+
+=== `where`
+Use the `where` argument, on Node definitions, to conceptually append predicates to the Cypher `WHERE` clause. Given the current user ID is "123" and the following the schema;
+
+[source, graphql]
+----
+type User {
+    id: ID
+    name: String
+}
+
+extend type User @auth(rules: [{ operations: "*", where: { id: "$jwt.id" } }])
+----
+
+Then issues a GraphQL query for users;
+
+[source, graphql]
+----
+query {
+    users {
+        id
+        name
+    }
+}
+----
+
+Behind the scenes the user’s ID is **conceptually** prepended to the query;
+
+[source, graphql]
+----
+query {
+    users(where: { id: "123" }){
+        id
+        name
+    }
+}
+----
+
+Where is used on the following operations;
+
+1. read
+2. update
+3. connect
+4. disconnect
+5. delete
+
+
+=== `bind`
+
+Use bind to ensure, on creating or updating nodes, a connection exists between a value on the JWT vs a property on a matched node. This validation is done after the operation but inside a transaction. Taking a closer, look let's put a user in our database;
+
+[source, cypher]
+----
+CREATE (:User {id:"user1", name: "one"})
+----
+
+[source, graphql]
+----
+type User {
+    id: ID!
+    name: String!
+}
+----
+
+
+Given the above GraphQL type definitions - How can we restrict `user1` from changing there id ? 
+
+[source, graphql]
+----
+type User {
+    id: ID!
+    name: String!
+}
+
+extend type User @auth(
+    rules: [
+        { 
+            operations: ["update"],
+            bind: { id: "$jwt.sub" }
+        }
+    ]
+)
+----
+
+After we update or create the node we validate that the property on the node is equal to the `JWT.sub` property. This validation is done in Cypher with function `apoc.util.validate`
+
+Given `user1` has the decoded JWT; 
+
+[source, json]
+----
+{
+  "sub": "user1",
+  "iat": 1516239022
+}
+----
+
+With this JWT makes a GraphQL mutation to update there id to someone else; 
+
+
+[source, graphql]
+----
+mutation {
+    updateUsers(where: { id: "user1" }, update: { id: "user2" }) {
+        users {
+            name
+        }
+    }
+}
+----
+
+The generated cypher for this query would look like the below, Throwing us out of the operation because the ids do not match.
+
+
+[source, cypher]
+----
+MATCH (u:User {id: "user1"})
+SET u.id = "user2"
+CALL apoc.util.validate(NOT(u.id = "user1"), "Forbidden")
+RETURN u
+----
+
+
+Bind is used on the following operations; 
+
+1. create
+2. update
+3. connect
+4. disconnect
+5. delete
+
+
+==== `bind` Across Relationships
+
+There may be a reason where you need to traverse across relationships to satisfy your Auth implementation. One example of this could be "Ensure that users only create Posts related to themselves";
+
+[source, graphql]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    creator: User @relationship(type: "HAS_POST", direction: "IN")
+}
+
+extend type Post @auth(rules: [
+    { operations: ["create"], bind: { creator: { id: "$jwt.sub" } } }
+])
+----
+
+When you specify `bind` on a relationship you can select fields on the referenced node. It's worth pointing out that allow on a relationship will perform an `ALL` on the matched nodes; to see if there is a match. This means you can only use `bind` to enforce a single relationship to a single node.
+
+==== Field Level `bind`
+
+You can use bind on a field. The root is still considered the node. Taking the example at the start of this `bind` section; you could do the following;
+
+[source, graphql]
+----
+type User {
+    id: ID! @auth(rules: [{ operations: ["update"], bind: { id: "$jwt.sub" } }])
+    name: String!
+}
+----
+
+== Auth Custom Resolvers
+
+You cant put the auth directive on a custom resolver. We do make life easier by injecting the auth param into it. It will be available under the `context.auth` property;
+
+[source, javascript]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { ApolloServer } from "apollo-server";
+
+const typeDefs = `
+    type User {
+        id: ID!
+        email: String!
+        password: String!
+    }
+
+    type Query {
+        myId: ID!
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("admin", "password")
+);
+
+const resolvers = {
+    Query: {
+        myId(root, args, context) {
+            return context.auth.jwt.sub
+        }
+    }
+};
+
+const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
+
+const server = new ApolloServer({
+    schema: neo4jGraphQL.schema,
+    context: ({ req }) => ({ req, driver }),
+});
+server.listen(4000).then(() => console.log("online"));
+----
+
+== Auth on `@cypher`
+
+You can put the `@auth` directive on a field with the `@cypher` directive. Functionality like allow and bind will not work but you can still utilize `isAuthenticated` and `roles`.
+
+[source, graphql]
+----
+type User @exclude(operations: "*") {
+    id: ID
+    name: String
+} 
+
+type Query {
+    users: [User] @cypher(statement: "MATCH (a:User) RETURN a") @auth(rules: [{ isAuthenticated: true }])
+}
+----
+
+>  Notice you don't need to specify operations for `@auth` directives on `@cypher` fields. 
+
+[source, graphql]
+----
+type History @exclude(operations: "*") {
+    website: String!
+}
+
+type User {
+    id: ID
+    name: String
+    history: [History]
+        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h") 
+        @auth(rules: [{ roles: ["admin"] }])
+}
+----
+
+== Auth Roles Object Paths
+If you are using 3rd party Auth solutions such as Auth0 you may find your roles property being nested inside an object;
+
+[source, json]
+----
+{
+    "https://auth0.mysite.com/claims": {
+        "https://auth0.mysite.com/claims/roles": ["admin"]
+    }
+}
+----
+
+Specify the path in the environment;
+
+[source, bash]
+----
+$ JWT_ROLES_OBJECT_PATH="https://auth0.mysite.com/claims\\.https://auth0.mysite.com/claims/roles" node server
+----
+
+== Auth Value Plucking
+You may have noticed, in the examples above, the usage of `$jwt.xyz` in the directive. This is going and grabbing the jsonwebtoken and using the `xyz` property. You can use both;
+
+1. `$jwt.` - Pulls value from jsonwebtoken
+2. `$context.` - Pulls value from context
