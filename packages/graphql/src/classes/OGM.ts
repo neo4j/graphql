@@ -1,6 +1,6 @@
 import { DefinitionNode, FieldDefinitionNode } from "graphql";
 import { Driver } from "neo4j-driver";
-import { TypeDefs, Resolvers, BaseField, SchemaDirectives } from "../types";
+import { TypeDefs, Resolvers, BaseField, SchemaDirectives, DriverConfig } from "../types";
 import { mergeTypeDefs } from "../schema";
 import Neo4jGraphQL from "./Neo4jGraphQL";
 import Model from "./Model";
@@ -11,6 +11,7 @@ export interface OGMConstructor {
     resolvers?: Resolvers;
     schemaDirectives?: SchemaDirectives;
     debug?: boolean | ((...values: any[]) => void);
+    driverConfig?: DriverConfig;
 }
 
 function filterTypeDefs(typeDefs: TypeDefs) {
@@ -53,15 +54,20 @@ class OGM {
 
     public models: Model[];
 
+    public input: OGMConstructor;
+
     constructor(input: OGMConstructor) {
+        this.input = input;
+
         const typeDefs = filterTypeDefs(input.typeDefs);
 
         this.neoSchema = new Neo4jGraphQL({
             typeDefs,
-            ...(input.driver ? { context: { driver: input.driver } } : {}),
+            driver: input.driver,
             resolvers: input.resolvers,
             schemaDirectives: input.schemaDirectives,
             debug: input.debug,
+            driverConfig: input.driverConfig,
         });
 
         this.models = this.neoSchema.nodes.map((n) => {
@@ -86,6 +92,12 @@ class OGM {
         const found = this.models.find((n) => n.name === name);
 
         return found;
+    }
+
+    async verifyDatabase(input: { driver?: Driver } = {}): Promise<void> {
+        const driver = input.driver || this.input.driver;
+
+        return this.neoSchema.verifyDatabase({ driver });
     }
 }
 
