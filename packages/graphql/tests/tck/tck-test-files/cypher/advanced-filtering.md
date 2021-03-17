@@ -10,6 +10,7 @@ type Movie {
     id: ID
     title: String
     actorCount: Int
+    budget: BigInt
     genres: [Genre] @relationship(type: "IN_GENRE", direction: "OUT")
 }
 
@@ -354,6 +355,39 @@ RETURN this { .actorCount } as this
 
 ---
 
+### LT BigInt
+
+**GraphQL input**
+
+```graphql
+{
+    movies(where: { budget_LT: 9223372036854775807 }) {
+        budget
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.budget < $this_budget_LT
+RETURN this { .budget } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_budget_LT": {
+        "low": -1,
+        "high": 2147483647
+    }
+}
+```
+
+---
+
 ### LTE
 
 **GraphQL input**
@@ -381,6 +415,39 @@ RETURN this { .actorCount } as this
     "this_actorCount_LTE": {
         "high": 0,
         "low": 123
+    }
+}
+```
+
+---
+
+### LTE BigInt
+
+**GraphQL input**
+
+```graphql
+{
+    movies(where: { budget_LTE: 9223372036854775807 }) {
+        budget
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.budget <= $this_budget_LTE
+RETURN this { .budget } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_budget_LTE": {
+        "low": -1,
+        "high": 2147483647
     }
 }
 ```
@@ -420,6 +487,39 @@ RETURN this { .actorCount } as this
 
 ---
 
+### GT BigInt
+
+**GraphQL input**
+
+```graphql
+{
+    movies(where: { budget_GT: 9223372036854775000 }) {
+        budget
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.budget > $this_budget_GT
+RETURN this { .budget } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_budget_GT": {
+        "low": -808,
+        "high": 2147483647
+    }
+}
+```
+
+---
+
 ### GTE
 
 **GraphQL input**
@@ -447,6 +547,39 @@ RETURN this { .actorCount } as this
     "this_actorCount_GTE": {
         "high": 0,
         "low": 123
+    }
+}
+```
+
+---
+
+### GTE BigInt
+
+**GraphQL input**
+
+```graphql
+{
+    movies(where: { budget_GTE: 9223372036854775000 }) {
+        budget
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.budget >= $this_budget_GTE
+RETURN this { .budget } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_budget_GTE": {
+        "low": -808,
+        "high": 2147483647
     }
 }
 ```
