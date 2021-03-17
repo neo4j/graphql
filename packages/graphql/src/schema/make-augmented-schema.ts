@@ -27,7 +27,7 @@ import { upperFirstLetter } from "../utils";
 import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
 import mergeTypeDefs from "./merge-type-defs";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
-import { Float, Int, DateTime, ID } from "./scalars";
+import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
 import wrapCustomResolvers from "./wrap-custom-resolvers";
 import getCustomResolvers from "./get-custom-resolvers";
@@ -251,7 +251,7 @@ function makeAugmentedSchema(
                     res[`${f.fieldName}_IN`] = `[${f.typeMeta.input.where.pretty}]`;
                     res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}]`;
 
-                    if (["Float", "Int", "DateTime"].includes(f.typeMeta.name)) {
+                    if (["Float", "Int", "BigInt", "DateTime"].includes(f.typeMeta.name)) {
                         ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
                             res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
                         });
@@ -685,10 +685,7 @@ function makeAugmentedSchema(
         });
     });
 
-    composer.addTypeDefs("scalar Int");
-    composer.addTypeDefs("scalar Float");
-    composer.addTypeDefs("scalar ID");
-    composer.addTypeDefs("scalar DateTime");
+    Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
 
     if (pointInTypeDefs) {
         // Every field (apart from CRS) in Point needs a custom resolver
@@ -709,10 +706,12 @@ function makeAugmentedSchema(
     const generatedTypeDefs = composer.toSDL();
     let generatedResolvers: any = {
         ...composer.getResolveMethods(),
-        ...(generatedTypeDefs.includes("scalar Int") ? { Int } : {}),
-        ...(generatedTypeDefs.includes("scalar Float") ? { Float } : {}),
-        ...(generatedTypeDefs.includes("scalar ID") ? { ID } : {}),
-        ...(generatedTypeDefs.includes("scalar DateTime") ? { DateTime } : {}),
+        ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
+            if (generatedTypeDefs.includes(`scalar ${name}`)) {
+                res[name] = scalar;
+            }
+            return res;
+        }, {}),
     };
 
     if (neoSchema.input.resolvers) {
