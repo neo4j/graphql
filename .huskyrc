@@ -3,4 +3,4 @@
       "pre-commit": "lint-staged",
       "pre-push": "npm test"
   }
-}
+} 

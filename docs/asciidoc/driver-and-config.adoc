@@ -1,0 +1,64 @@
+[[drivers-and-config]]
+= Drivers & Config
+
+
+== Neo4j Driver
+The https://github.com/neo4j/neo4j-javascript-driver[Neo4j javascript driver] must be present in either the context of your `Neo4jGraphQL` API or at the construction of your `OGM`. 
+
+=== `Neo4jGraphQL`
+[source, javascript]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const neo4j = require("neo4j-driver");
+
+const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "letmein")
+);
+
+const server = new ApolloServer({
+    schema: neoSchema.schema,
+    context: ({ req }) => ({ req, driver }),
+});
+----
+
+=== `OGM`
+
+[source, javascript]
+----
+const express = require("express");
+const { OGM } = require("@neo4j/graphql");
+const neo4j = require("neo4j-driver");
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "letmein")
+);
+
+const ogm = new OGM({ typeDefs, driver });
+----
+
+
+== Specifying Neo4j Database
+The Neo4j database may be added to the GraphQL context object;
+
+[source, javascript]
+----
+const server = new ApolloServer({
+  schema,
+  context: { driver, driverConfig: { database: "sanmateo" } }
+});
+----
+
+== Specifying Neo4j Bookmarks
+A Neo4j driver bookmark may be added to the GraphQL context object;
+
+[source, javascript]
+----
+const server = new ApolloServer({
+  schema,
+  context: { driver, driverConfig: { bookmarks: ["my-bookmark"] } }
+});
+----
