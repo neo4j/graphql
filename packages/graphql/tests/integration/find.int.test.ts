@@ -46,7 +46,7 @@ describe("find", () => {
         `;
 
         try {
-            await neoSchema.verify();
+            await neoSchema.verifyDatabase();
 
             await session.run(
                 `

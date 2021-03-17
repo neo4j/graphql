@@ -8,7 +8,9 @@ interface DBInfo {
     procedures: string[];
 }
 
-async function verify({ driver }: { driver: Driver }) {
+async function verifyDatabase({ driver }: { driver: Driver }) {
+    await driver.verifyConnectivity();
+
     const session = driver.session();
     const cypher = `
         CALL dbms.components() yield versions
@@ -52,4 +54,4 @@ async function verify({ driver }: { driver: Driver }) {
     }
 }
 
-export default verify;
+export default verifyDatabase;

@@ -11,20 +11,26 @@ import createAuthAndParams from "../translate/create-auth-and-params";
 import createAuthParam from "../translate/create-auth-param";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
+// This function will modify the context obj!
+function prepareContextAndGetDriver({ context, neoSchema }: { context: any; neoSchema: Neo4jGraphQL }): Driver {
+    context.neoSchema = neoSchema;
+    if (neoSchema.input.context) {
+        context = { ...context, ...neoSchema.input.context };
+    }
+
+    const driver = (context.driver || neoSchema.input.driver) as undefined | Driver;
+
+    if (!driver) {
+        throw new Error("neo4j-driver Driver missing");
+    }
+
+    return driver;
+}
+
 export function updateResolver({ node, neoSchema }: { node: Node; neoSchema: Neo4jGraphQL }) {
     async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
-        context.neoSchema = neoSchema;
-        if (neoSchema.input.context) {
-            context = { ...context, ...neoSchema.input.context };
-        }
-
-        const driver = (context.driver || neoSchema.input.driver) as undefined | Driver;
-        if (!driver) {
-            throw new Error("neo4j-driver-missing");
-        }
-
+        const driver = prepareContextAndGetDriver({ context, neoSchema });
         const [cypher, params] = translate({ context, resolveInfo });
-
         const result = await execute({
             cypher,
             params,
@@ -57,18 +63,8 @@ export function updateResolver({ node, neoSchema }: { node: Node; neoSchema: Neo
 
 export function deleteResolver({ node, neoSchema }: { node: Node; neoSchema: Neo4jGraphQL }) {
     async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
-        context.neoSchema = neoSchema;
-        if (neoSchema.input.context) {
-            context = { ...context, ...neoSchema.input.context };
-        }
-
-        const driver = (context.driver || neoSchema.input.driver) as undefined | Driver;
-        if (!driver) {
-            throw new Error("neo4j-driver-missing");
-        }
-
+        const driver = prepareContextAndGetDriver({ context, neoSchema });
         const [cypher, params] = translate({ context, resolveInfo });
-
         const result = await execute({
             cypher,
             params,
@@ -98,18 +94,8 @@ export function deleteResolver({ node, neoSchema }: { node: Node; neoSchema: Neo
 
 export function createResolver({ node, neoSchema }: { node: Node; neoSchema: Neo4jGraphQL }) {
     async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
-        context.neoSchema = neoSchema;
-        if (neoSchema.input.context) {
-            context = { ...context, ...neoSchema.input.context };
-        }
-
-        const driver = (context.driver || neoSchema.input.driver) as undefined | Driver;
-        if (!driver) {
-            throw new Error("neo4j-driver-missing");
-        }
-
+        const driver = prepareContextAndGetDriver({ context, neoSchema });
         const [cypher, params] = translate({ context, resolveInfo });
-
         const result = await execute({
             cypher,
             params,
@@ -133,18 +119,8 @@ export function createResolver({ node, neoSchema }: { node: Node; neoSchema: Neo
 
 export function findResolver({ node, neoSchema }: { node: Node; neoSchema: Neo4jGraphQL }) {
     async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
-        context.neoSchema = neoSchema;
-        if (neoSchema.input.context) {
-            context = { ...context, ...neoSchema.input.context };
-        }
-
-        const driver = (context.driver || neoSchema.input.driver) as undefined | Driver;
-        if (!driver) {
-            throw new Error("neo4j-driver-missing");
-        }
-
+        const driver = prepareContextAndGetDriver({ context, neoSchema });
         const [cypher, params] = translate({ context, resolveInfo });
-
         const result = await execute({
             cypher,
             params,
@@ -177,11 +153,7 @@ export function cypherResolver({
     neoSchema: Neo4jGraphQL;
 }) {
     async function resolve(_root: any, args: any, graphQLContext: any) {
-        const driver = (graphQLContext.driver || neoSchema.input.driver) as undefined | Driver;
-
-        if (!driver) {
-            throw new Error("neo4j-driver-missing");
-        }
+        const driver = prepareContextAndGetDriver({ context: graphQLContext, neoSchema });
 
         const context = new Context({
             graphQLContext,
