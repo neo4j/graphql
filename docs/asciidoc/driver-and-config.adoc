@@ -51,15 +51,15 @@ const ogm = new OGM({ typeDefs, driver });
 ----
 
 
-== `verify`
-Use the verify method available on either `Neo4jGraphQL` or the `OGM` to ensure the specified DBMS has the required; versions, functions and procedures.
+== `verifyDatabase`
+Use the `verifyDatabase` method available on either `Neo4jGraphQL` or the `OGM` to ensure the specified DBMS has the required; versions, functions and procedures.
 
 ==== `Neo4jGraphQL`
 
 [source, javascript]
 ----
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-await neoSchema.verify();
+await neoSchema.verifyDatabase();
 ----
 
 ==== `OGM`
@@ -67,7 +67,7 @@ await neoSchema.verify();
 [source, javascript]
 ----
 const ogm = new OGM({ typeDefs, driver });
-await ogm.verify();
+await ogm.verifyDatabase();
 ----
 
 == Specifying Neo4j Database

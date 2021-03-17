@@ -94,10 +94,10 @@ class OGM {
         return found;
     }
 
-    async verify(input: { driver?: Driver } = {}): Promise<void> {
+    async verifyDatabase(input: { driver?: Driver } = {}): Promise<void> {
         const driver = input.driver || this.input.driver;
 
-        return this.neoSchema.verify({ driver });
+        return this.neoSchema.verifyDatabase({ driver });
     }
 }
 

@@ -3,7 +3,7 @@ import { GraphQLSchema } from "graphql";
 import { TypeDefs, Resolvers, SchemaDirectives, DriverConfig } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
-import { verify } from "../utils";
+import { verifyDatabase } from "../utils";
 
 export interface Neo4jGraphQLConstructor {
     typeDefs: TypeDefs;
@@ -51,14 +51,14 @@ class Neo4jGraphQL {
         debug(message);
     }
 
-    async verify(input: { driver?: Driver } = {}): Promise<void> {
+    async verifyDatabase(input: { driver?: Driver } = {}): Promise<void> {
         const driver = input.driver || this.input.driver;
 
         if (!driver) {
             throw new Error("neo4j-driver Driver missing");
         }
 
-        return verify({ driver });
+        return verifyDatabase({ driver });
     }
 }
 

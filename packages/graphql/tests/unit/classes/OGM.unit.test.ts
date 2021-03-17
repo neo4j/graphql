@@ -7,12 +7,12 @@ describe("OGM", () => {
     });
 
     describe("methods", () => {
-        describe("verify", () => {
+        describe("verifyDatabase", () => {
             test("should neo4j-driver Driver missing", async () => {
                 // @ts-ignore
                 const ogm = new OGM({ typeDefs: "type User {id: ID}" });
 
-                await expect(ogm.verify()).rejects.toThrow(`neo4j-driver Driver missing`);
+                await expect(ogm.verifyDatabase()).rejects.toThrow(`neo4j-driver Driver missing`);
             });
         });
     });

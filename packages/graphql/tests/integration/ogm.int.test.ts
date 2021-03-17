@@ -32,7 +32,7 @@ describe("OGM", () => {
             });
 
             try {
-                await ogm.verify();
+                await ogm.verifyDatabase();
 
                 await session.run(`
                     CREATE (:Movie {id: "${id}"})
