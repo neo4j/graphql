@@ -31,7 +31,7 @@ describe("find", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         const id = generate({
             charset: "alphabetic",
@@ -46,6 +46,8 @@ describe("find", () => {
         `;
 
         try {
+            await neoSchema.verifyDatabase();
+
             await session.run(
                 `
               CREATE (:Movie {id: $id}), (:Movie {id: $id}), (:Movie {id: $id})
