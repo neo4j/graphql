@@ -12,7 +12,7 @@
     "scripts": {
         "prettify": "prettier --write \"packages/**/*.ts\"",
         "lint": "eslint .",
-        "lerna:test": "lerna run test --concurrency 1",
+        "lerna:test": "lerna run test --concurrency 1 --stream",
         "test": "run-s --continue-on-error lerna:test",
         "test:pr": "run-s lint test",
         "prepare": "run-s lerna clean -y lerna bootstrap -y",
