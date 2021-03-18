@@ -1,2 +1,3 @@
 export { translate } from "./translate";
-export { OGM, Model, Neo4jGraphQL, Neo4jGraphQLConstructor } from "./classes";
+export { Neo4jGraphQL, Neo4jGraphQLConstructor } from "./classes";
+export * from "./types";

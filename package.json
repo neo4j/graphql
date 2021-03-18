@@ -6,15 +6,16 @@
         "url": "git+https://github.com/neo4j/graphql.git"
     },
     "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
     "scripts": {
         "prettify": "prettier --write \"packages/**/*.ts\"",
         "lint": "eslint .",
         "lerna:test": "lerna run test --concurrency 1",
         "test": "run-s --continue-on-error lerna:test",
         "test:pr": "run-s lint test",
-        "lerna:clean": "lerna clean -y",
-        "lerna:bootstrap": "lerna bootstrap",
-        "prepare": "run-s lerna:clean lerna:bootstrap",
+        "prepare": "run-s lerna clean -y lerna bootstrap -y",
         "generate:docs": "lerna run generate:doc",
         "watch": "lerna run watch --stream --parallel"
     },
