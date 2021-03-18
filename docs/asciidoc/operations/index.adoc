@@ -1,0 +1,12 @@
+[[operations]]
+= Operations
+
+This section outlines how to query your Generated GraphQl schema. 
+
+* <<operations-read>>
+* <<operations-create>>
+* <<operations-update>>
+* <<operations-delete>>
+
+
+
