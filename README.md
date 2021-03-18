@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-npm ci
+yarn
 ```
 
 ## Testing

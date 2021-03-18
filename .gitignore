@@ -77,3 +77,11 @@ e2e/fixtures/cache/
 
 test-api.ts
 packages/package-tests/**/package-lock.json
+
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*

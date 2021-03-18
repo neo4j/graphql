@@ -1,11 +1,7 @@
 import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 import { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 
-export type TypeDefs = IExecutableSchemaDefinition["typeDefs"];
-
 export type Resolvers = IExecutableSchemaDefinition["resolvers"];
-
-export type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
 
 export type DriverConfig = {
     database?: string;

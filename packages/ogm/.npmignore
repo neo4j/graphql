@@ -1,0 +1,6 @@
+src/
+tests/
+.npmrc
+.npmignore
+jest.config.js
+tsconfig.json
