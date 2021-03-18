@@ -1,5 +1,5 @@
 import { Driver } from "neo4j-driver";
-import { GraphQLSchema } from "graphql";
+import { DocumentNode, GraphQLSchema, parse } from "graphql";
 import { TypeDefs, Resolvers, SchemaDirectives, DriverConfig } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
@@ -26,6 +26,8 @@ class Neo4jGraphQL {
 
     public typeDefs: string;
 
+    public document: DocumentNode;
+
     constructor(input: Neo4jGraphQLConstructor) {
         this.input = input;
 
@@ -34,6 +36,7 @@ class Neo4jGraphQL {
         this.resolvers = resolvers;
         this.schema = schema;
         this.typeDefs = typeDefs;
+        this.document = parse(typeDefs);
     }
 
     debug(message: string) {
