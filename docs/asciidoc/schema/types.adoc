@@ -1,7 +1,7 @@
 [[schema-types]]
 = Types
 
-Neo4j GraphQL supports all default GraphQL types and additional mentioned in this document. 
+Neo4j GraphQL supports all default GraphQL types and additional mentioned in this document.
 
 == `DateTime`
 ISO datetime string stored as a [datetime](https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime) temporal type.
@@ -10,6 +10,27 @@ ISO datetime string stored as a [datetime](https://neo4j.com/docs/cypher-manual/
 ----
 type User {
     createdAt: DateTime
+}
+----
+
+== `BigInt`
+Supports up to 64 bit integers, serialized as strings in variables and in data responses. Shares the same operators as the other numeric types.
+
+[source, graphql]
+----
+type File {
+    size: BigInt
+}
+----
+
+Can be passed as a number (does not need quotes) when used directly in a query or mutation:
+
+[source, graphql]
+----
+query {
+    files(where: { size: 9223372036854775807 }) {
+        size
+    }
 }
 ----
 
