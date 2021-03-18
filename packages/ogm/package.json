@@ -4,6 +4,7 @@
     "description": "",
     "main": "dist/index.js",
     "scripts": {
+        "build": "cd src/ && tsc && cd ../",
         "test": "run-s test:unit test:int",
         "test:unit": "jest src/**/*.test.ts",
         "test:unit:watch": "test:unit -- --watchAll",
