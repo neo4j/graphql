@@ -90,7 +90,7 @@ RETURN this {
 ```cypher
 MATCH (this:Actor)
 RETURN this {
-    randomNumber: head([ apoc.cypher.runFirstColumn("RETURN rand()", {this: this, auth: $auth}, false) ])
+    randomNumber: apoc.cypher.runFirstColumn("RETURN rand()", {this: this, auth: $auth}, false)
 } as this
 ```
 
