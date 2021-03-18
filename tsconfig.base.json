@@ -5,9 +5,6 @@
         "declarationMap": true,
         "esModuleInterop": true,
         "module": "commonjs",
-        "paths": {
-            "@neo4j/graphql": ["packages/graphql/src"]
-        },
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": true,

@@ -10,6 +10,7 @@
         "packages/*"
     ],
     "scripts": {
+        "build": "lerna run build --stream",
         "prettify": "prettier --write \"packages/**/*.ts\"",
         "lint": "eslint .",
         "lerna:test": "lerna run test --concurrency 1 --stream",
