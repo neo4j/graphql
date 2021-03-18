@@ -4,16 +4,17 @@
 
 ```sh
 yarn
+yarn run build
 ```
 
 ## Testing
 
 ```sh
-npm test
+yarn test
 ```
 
 ## Linting
 
 ```sh
-npm run lint
+yarn run lint
 ```
