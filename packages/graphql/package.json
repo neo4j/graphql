@@ -33,7 +33,7 @@
         "posttest:package-tests": "npm run cleanup:package-tests",
         "test:package-tests": "npm run setup:package-tests && cd ../package-tests/ && npm run test:all",
         "cleanup:package-tests": "cd ../package-tests/ && npm run cleanup && rimraf ./package/ && rimraf *.tgz",
-        "build": "cd src/ && tsc && cd ../",
+        "build": "tsc --project src/",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
         "start": "run-s build:clean watch",
