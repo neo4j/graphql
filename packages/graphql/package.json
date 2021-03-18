@@ -20,7 +20,7 @@
         "dist/"
     ],
     "scripts": {
-        "prepare": "build:clean",
+        "prepare": "yarn run build:clean",
         "clean": "rimraf dist",
         "test": "run-s test:unit test:int test:tck",
         "test:unit": "jest unit",
@@ -29,15 +29,15 @@
         "test:tck:watch": "jest tck --watchAll",
         "test:int": "jest int",
         "test:int:watch": "jest int --watch",
-        "setup:package-tests": "npm pack && mv *.tgz ../package-tests/ && cd ../package-tests/ && rimraf package && tar -xvzf *.tgz && npm install && npm run setup",
-        "posttest:package-tests": "npm run cleanup:package-tests",
-        "test:package-tests": "npm run setup:package-tests && cd ../package-tests/ && npm run test:all",
-        "cleanup:package-tests": "cd ../package-tests/ && npm run cleanup && rimraf ./package/ && rimraf *.tgz",
+        "setup:package-tests": "yarn pack && mv *.tgz ../package-tests/ && cd ../package-tests/ && rimraf package && tar -xvzf *.tgz && yarn install && yarn run setup",
+        "posttest:package-tests": "yarn run cleanup:package-tests",
+        "test:package-tests": "yarn run setup:package-tests && cd ../package-tests/ && yarn run test:all",
+        "cleanup:package-tests": "cd ../package-tests/ && yarn run cleanup && rimraf ./package/ && rimraf *.tgz",
         "build": "tsc --project src/",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
         "start": "run-s build:clean watch",
-        "pack": "npm pack"
+        "pack": "yarn pack"
     },
     "author": "Neo4j Inc.",
     "peerDependencies": {
