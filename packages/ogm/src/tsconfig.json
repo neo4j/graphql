@@ -1,8 +1,7 @@
 {
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": {
-        "outDir": "../dist",
-        "paths": { "@neo4j/graphql": ["../../graphql/src"] }
+        "outDir": "../dist"
     },
     "references": [{ "path": "../../graphql/src/tsconfig.json" }]
 }
