@@ -53,7 +53,8 @@ describe("TCK Generated tests", () => {
         describe(`${file}`, () => {
             if (kind === "cypher") {
                 const document = parse(schema as string);
-                const neoSchema = new Neo4jGraphQL({ typeDefs: schema as string });
+                // @ts-ignore
+                const neoSchema = new Neo4jGraphQL({ typeDefs: schema as string, driver: {} });
 
                 // @ts-ignore
                 test.each(tests.map((t) => [t.name, t]))("%s", async (_, obj) => {

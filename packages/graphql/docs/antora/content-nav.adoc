@@ -1,4 +1,0 @@
-* xref:index.adoc[]
-** xref:introduction/index.adoc[]
-** xref:reference/index.adoc[]
-** xref:contributing/index.adoc[]

@@ -488,10 +488,16 @@ function translate({
         throw new Error("invalid schema");
     }
 
+    const driver = graphQLContext.driver || neoSchema.input.driver;
+
+    if (!driver) {
+        throw new Error("neo4j-driver Driver missing");
+    }
+
     const context = new Context({
         graphQLContext,
         neoSchema,
-        driver: graphQLContext.driver as Driver,
+        driver,
     });
 
     const resolveTree = parseResolveInfo(resolveInfo) as ResolveTree;
