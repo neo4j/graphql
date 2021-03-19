@@ -13,8 +13,7 @@ describe("parseExcludeDirective", () => {
         // @ts-ignore
         const directive = parse(typeDefs).definitions[0].directives[0];
 
-        // @ts-ignore
-        expect(() => parseExcludeDirective(directive, "TestType")).toThrow(
+        expect(() => parseExcludeDirective(directive)).toThrow(
             "Undefined or incorrect directive passed into parseExcludeDirective function"
         );
     });
@@ -31,8 +30,7 @@ describe("parseExcludeDirective", () => {
 
         const expected = new Exclude({ operations: ["create", "delete"] });
 
-        // @ts-ignore
-        expect(parseExcludeDirective(directive, "TestType")).toMatchObject(expected);
+        expect(parseExcludeDirective(directive)).toMatchObject(expected);
     });
 
     test("should return array of all operations to ignore given valid input of '*'", () => {
@@ -47,7 +45,6 @@ describe("parseExcludeDirective", () => {
 
         const expected = new Exclude({ operations: ["create", "read", "update", "delete"] });
 
-        // @ts-ignore
-        expect(parseExcludeDirective(directive, "TestType")).toMatchObject(expected);
+        expect(parseExcludeDirective(directive)).toMatchObject(expected);
     });
 });

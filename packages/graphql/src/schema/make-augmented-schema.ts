@@ -128,7 +128,7 @@ function makeAugmentedSchema(
 
         let exclude: Exclude;
         if (excludeDirective) {
-            exclude = parseExcludeDirective(excludeDirective, definition.name.value);
+            exclude = parseExcludeDirective(excludeDirective);
         }
 
         const nodeFields = getObjFieldMeta({
