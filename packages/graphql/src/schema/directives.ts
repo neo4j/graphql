@@ -1,4 +1,12 @@
-import { GraphQLDirective, DirectiveLocation, GraphQLString, GraphQLNonNull, GraphQLScalarType, Kind } from "graphql";
+import {
+    GraphQLDirective,
+    DirectiveLocation,
+    GraphQLString,
+    GraphQLNonNull,
+    GraphQLScalarType,
+    Kind,
+    GraphQLEnumType,
+} from "graphql";
 
 export const ScalarType = new GraphQLScalarType({
     name: "Scalar",
@@ -30,6 +38,18 @@ export const ScalarType = new GraphQLScalarType({
             default:
                 throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime");
         }
+    },
+});
+
+export const RelationshipDirectionEnum = new GraphQLEnumType({
+    name: "RelationshipDirection",
+    values: {
+        IN: {
+            value: "IN",
+        },
+        OUT: {
+            value: "OUT",
+        },
     },
 });
 
@@ -93,6 +113,21 @@ export const readonlyDirective = new GraphQLDirective({
     description:
         "Instructs @neo4j/graphql to only include a field in generated input type for creating, and in the object type within which the directive is applied.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
+});
+
+export const relationshipDirective = new GraphQLDirective({
+    name: "relationship",
+    description:
+        "Instructs @neo4j/graphql to treat this field as a relationship. Opens up the ability to create and connect on this field.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        type: {
+            type: new GraphQLNonNull(GraphQLString),
+        },
+        direction: {
+            type: new GraphQLNonNull(RelationshipDirectionEnum),
+        },
+    },
 });
 
 export const writeonlyDirective = new GraphQLDirective({

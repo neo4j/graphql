@@ -10,12 +10,12 @@ type Movie {
     id: ID
     title: String
     actorCount: Int
-    genres: [Genre] @relationship(type: "IN_GENRE", direction: "OUT")
+    genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
 }
 
 type Genre {
   name: String
-  movies: [Movie] @relationship(type: "IN_GENRE", direction: "IN")
+  movies: [Movie] @relationship(type: "IN_GENRE", direction: IN)
 }
 ```
 

@@ -15,7 +15,7 @@ type Actor {
 
 type Movie {
     id: ID
-    actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
+    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
 }
 ```
 
@@ -208,12 +208,12 @@ type Query {
 ```typedefs-input
 type Actor {
     name: String
-    movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
 }
 
 type Movie {
     id: ID
-    actors: [Actor]! @relationship(type: "ACTED_IN", direction: "IN")
+    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
 }
 ```
 

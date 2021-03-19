@@ -15,8 +15,8 @@ function getRelationshipMeta(field: FieldDefinitionNode): RelationshipMeta | und
     if (!directionArg) {
         throw new Error("@relationship direction required");
     }
-    if (directionArg.value.kind !== "StringValue") {
-        throw new Error("@relationship direction not a string");
+    if (directionArg.value.kind !== "EnumValue") {
+        throw new Error("@relationship direction not a enum");
     }
     if (!["IN", "OUT"].includes(directionArg.value.value)) {
         throw new Error("@relationship direction invalid");

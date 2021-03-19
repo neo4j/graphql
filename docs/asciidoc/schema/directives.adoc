@@ -2,7 +2,7 @@
 = Directives
 
 == `@cypher`
-GraphQL schema directive that can be used to bind a GraphQL field to the results of a Cypher query. 
+GraphQL schema directive that can be used to bind a GraphQL field to the results of a Cypher query.
 
 === `@cypher` directive on Field
 
@@ -13,7 +13,7 @@ Below we add a field `similarMovies` to our Movie, which is bound to a Cypher qu
 type Actor {
     actorId: ID!
     name: String
-    movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
 }
 
 type Movie {
@@ -22,7 +22,7 @@ type Movie {
     description: String
     year: Int
     actors(limit: Int = 10): [Actor]
-        @relationship(type: "ACTED_IN", direction: "IN")
+        @relationship(type: "ACTED_IN", direction: IN)
     similarMovies(limit: Int = 10): [Movie]
         @cypher(
             statement: """

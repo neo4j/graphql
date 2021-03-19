@@ -21,13 +21,13 @@ describe("find", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: "IN")
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: "OUT")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -76,13 +76,13 @@ describe("find", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: "IN")
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: "OUT")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -129,13 +129,13 @@ describe("find", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: "IN")
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: "OUT")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -190,13 +190,13 @@ describe("find", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: "IN")
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: "OUT")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -256,12 +256,12 @@ describe("find", () => {
         const typeDefs = `
             type Actor {
                 id: ID!
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: "IN")
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Movie {
                 id: ID!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: "OUT")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
@@ -489,14 +489,14 @@ describe("find", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: "IN")
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Movie {
                 id: ID!
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: "OUT")
-                mainActor: Actor @relationship(type: "MAIN_ACTOR", direction: "OUT")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT)
+                mainActor: Actor @relationship(type: "MAIN_ACTOR", direction: OUT)
             }
         `;
 
