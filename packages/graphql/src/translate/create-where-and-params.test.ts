@@ -1,5 +1,5 @@
-import { Context, Node } from "../../../src/classes";
-import createWhereAndParams from "../../../src/translate/create-where-and-params";
+import { Context, Node } from "../classes";
+import createWhereAndParams from "./create-where-and-params";
 
 describe("createWhereAndParams", () => {
     test("should be a function", () => {

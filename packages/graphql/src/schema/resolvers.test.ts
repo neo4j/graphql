@@ -1,12 +1,6 @@
-import { Neo4jGraphQL, Node } from "../../../src/classes";
-import {
-    createResolver,
-    cypherResolver,
-    deleteResolver,
-    findResolver,
-    updateResolver,
-} from "../../../src/schema/resolvers";
-import { BaseField } from "../../../src/types";
+import { Neo4jGraphQL, Node } from "../classes";
+import { createResolver, cypherResolver, deleteResolver, findResolver, updateResolver } from "./resolvers";
+import { BaseField } from "../types";
 
 describe("resolvers", () => {
     describe("find", () => {

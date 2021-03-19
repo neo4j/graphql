@@ -1,4 +1,4 @@
-import Node, { NodeConstructor } from "../../../src/classes/Node";
+import Node, { NodeConstructor } from "./Node";
 
 describe("Node", () => {
     test("should construct", () => {

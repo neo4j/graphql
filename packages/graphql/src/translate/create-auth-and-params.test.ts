@@ -1,7 +1,7 @@
 import { generate } from "randomstring";
-import createAuthAndParams from "../../../src/translate/create-auth-and-params";
-import { Neo4jGraphQL, Context, Node } from "../../../src/classes";
-import { trimmer } from "../../../src/utils";
+import createAuthAndParams from "./create-auth-and-params";
+import { Neo4jGraphQL, Context, Node } from "../classes";
+import { trimmer } from "../utils";
 
 describe("createAuthAndParams", () => {
     describe("operations", () => {

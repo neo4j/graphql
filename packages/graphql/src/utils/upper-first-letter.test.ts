@@ -1,4 +1,4 @@
-import upperFirstLetter from "../../../src/utils/upper-first-letter";
+import upperFirstLetter from "./upper-first-letter";
 
 describe("upperFirstLetter", () => {
     test("should uppercase the first letter and return the word", () => {

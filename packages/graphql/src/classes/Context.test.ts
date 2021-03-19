@@ -1,4 +1,4 @@
-import Context from "../../../src/classes/Context";
+import Context from "./Context";
 
 describe("Context", () => {
     test("should construct", () => {

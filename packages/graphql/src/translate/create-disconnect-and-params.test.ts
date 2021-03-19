@@ -1,15 +1,12 @@
-import createConnectAndParams from "../../../src/translate/create-connect-and-params";
-import { Neo4jGraphQL, Node, Context } from "../../../src/classes";
-import { trimmer } from "../../../src/utils";
+import createDisconnectAndParams from "./create-disconnect-and-params";
+import { Neo4jGraphQL, Node, Context } from "../classes";
+import { trimmer } from "../utils";
 
-describe("createConnectAndParams", () => {
-    test("should return the correct connection", () => {
+describe("createDisconnectAndParams", () => {
+    test("should return the correct disconnect", () => {
         // @ts-ignore
         const node: Node = {
             name: "Movie",
-            enumFields: [],
-            scalarFields: [],
-            primitiveFields: [],
             relationFields: [
                 {
                     direction: "OUT",
@@ -40,10 +37,16 @@ describe("createConnectAndParams", () => {
                 },
             ],
             cypherFields: [],
+            enumFields: [],
+            scalarFields: [],
+            primitiveFields: [],
             dateTimeFields: [],
             interfaceFields: [],
-            pointFields: [],
+            unionFields: [],
             objectFields: [],
+            pointFields: [],
+            otherDirectives: [],
+            interfaces: [],
         };
 
         // @ts-ignore
@@ -54,9 +57,9 @@ describe("createConnectAndParams", () => {
         // @ts-ignore
         const context = new Context({ neoSchema });
 
-        const result = createConnectAndParams({
+        const result = createDisconnectAndParams({
             withVars: ["this"],
-            value: [{ where: { title: "abc" }, connect: { similarMovies: [{ where: { title: "cba" } }] } }],
+            value: [{ where: { title: "abc" }, disconnect: { similarMovies: [{ where: { title: "cba" } }] } }],
             varName: "this",
             relationField: node.relationFields[0],
             parentVar: "this",
@@ -67,15 +70,18 @@ describe("createConnectAndParams", () => {
 
         expect(trimmer(result[0])).toEqual(
             trimmer(`
-                WITH this
-                OPTIONAL MATCH (this0:Movie)
-                WHERE this0.title = $this0_title
-                FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:SIMILAR]->(this0) )
-
-                WITH this, this0
-                OPTIONAL MATCH (this0_similarMovies0:Movie)
-                WHERE this0_similarMovies0.title = $this0_similarMovies0_title
-                FOREACH(_ IN CASE this0_similarMovies0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:SIMILAR]->(this0_similarMovies0) )
+            WITH this
+            OPTIONAL MATCH (this)-[this0_rel:SIMILAR]->(this0:Movie)
+            WHERE this0.title = $this0_title
+            FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+                DELETE this0_rel
+            )
+            WITH this, this0
+            OPTIONAL MATCH (this0)-[this0_similarMovies0_rel:SIMILAR]->(this0_similarMovies0:Movie)
+            WHERE this0_similarMovies0.title = $this0_similarMovies0_title
+            FOREACH(_ IN CASE this0_similarMovies0 WHEN NULL THEN [] ELSE [1] END |
+                DELETE this0_similarMovies0_rel
+            )
             `)
         );
 

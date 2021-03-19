@@ -1,4 +1,4 @@
-import trimmer from "../../../src/utils/trimmer";
+import trimmer from "./trimmer";
 
 describe("trimmer", () => {
     test("should replace newlines with a space", () => {

@@ -1,8 +1,8 @@
 import camelCase from "camelcase";
 import { printSchema, parse, ObjectTypeDefinitionNode, NamedTypeNode, ListTypeNode, NonNullTypeNode } from "graphql";
 import { pluralize } from "graphql-compose";
-import makeAugmentedSchema from "../../../src/schema/make-augmented-schema";
-import { Node } from "../../../src/classes";
+import makeAugmentedSchema from "./make-augmented-schema";
+import { Node } from "../classes";
 
 describe("makeAugmentedSchema", () => {
     test("should be a function", () => {
