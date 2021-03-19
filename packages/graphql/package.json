@@ -20,7 +20,7 @@
         "dist/"
     ],
     "scripts": {
-        "prepare": "npm run build:clean",
+        "prepare": "yarn run build:clean",
         "clean": "rimraf dist",
         "test": "run-s test:unit test:int test:tck",
         "test:unit": "jest unit",
@@ -29,15 +29,15 @@
         "test:tck:watch": "jest tck --watchAll",
         "test:int": "jest int",
         "test:int:watch": "jest int --watch",
-        "setup:package-tests": "npm pack && mv *.tgz ../package-tests/ && cd ../package-tests/ && rimraf package && tar -xvzf *.tgz && npm install && npm run setup",
-        "posttest:package-tests": "npm run cleanup:package-tests",
-        "test:package-tests": "npm run setup:package-tests && cd ../package-tests/ && npm run test:all",
-        "cleanup:package-tests": "cd ../package-tests/ && npm run cleanup && rimraf ./package/ && rimraf *.tgz",
-        "build": "cd src/ && tsc && cd ../",
+        "setup:package-tests": "yarn pack && mv *.tgz ../package-tests/ && cd ../package-tests/ && rimraf package && tar -xvzf *.tgz && yarn install && yarn run setup",
+        "posttest:package-tests": "yarn run cleanup:package-tests",
+        "test:package-tests": "yarn run setup:package-tests && cd ../package-tests/ && yarn run test:all",
+        "cleanup:package-tests": "cd ../package-tests/ && yarn run cleanup && rimraf ./package/ && rimraf *.tgz",
+        "build": "tsc --project src/",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
         "start": "run-s build:clean watch",
-        "pack": "npm pack"
+        "pack": "yarn pack"
     },
     "author": "Neo4j Inc.",
     "peerDependencies": {
@@ -71,12 +71,14 @@
     "dependencies": {
         "@graphql-tools/merge": "^6.2.3",
         "@graphql-tools/schema": "^6.2.3",
+        "@graphql-tools/utils": "7.6.0",
         "camelcase": "6.2.0",
         "deep-equal": "2.0.5",
         "dot-prop": "6.0.1",
         "graphql-compose": "7.21.4",
         "graphql-parse-resolve-info": "4.9.0",
         "jsonwebtoken": "8.5.1",
-        "pluralize": "8.0.0"
+        "pluralize": "8.0.0",
+        "upper-case-first": "^2.0.2"
     }
 }

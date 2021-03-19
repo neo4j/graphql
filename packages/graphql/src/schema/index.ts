@@ -1,2 +1,1 @@
-export { default as makeAugmentedSchema } from "./make-augmented-schema";
-export { default as mergeTypeDefs } from "./merge-type-defs";
+export { default as makeAugmentedSchema } from "./make-augmented-schema"; // eslint-disable-line import/prefer-default-export
