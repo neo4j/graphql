@@ -27,7 +27,7 @@ describe("unions", () => {
 
             type Movie {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: "OUT")
+                search: [Search] @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
@@ -98,7 +98,7 @@ describe("unions", () => {
 
             type Movie {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: "OUT")
+                search: [Search] @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
@@ -167,7 +167,7 @@ describe("unions", () => {
 
             type Movie {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: "OUT")
+                search: [Search] @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
@@ -240,7 +240,7 @@ describe("unions", () => {
 
             type Movie {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: "OUT")
+                search: [Search] @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
@@ -320,7 +320,7 @@ describe("unions", () => {
 
             type Movie {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: "OUT")
+                search: [Search] @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 

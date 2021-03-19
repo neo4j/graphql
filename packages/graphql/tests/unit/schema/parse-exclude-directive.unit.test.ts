@@ -21,7 +21,7 @@ describe("parseExcludeDirective", () => {
 
     test("should return array of operations to ignore given valid array input", () => {
         const typeDefs = `
-            type TestType @exclude(operations: ["create", "delete"]) {
+            type TestType @exclude(operations: [CREATE, DELETE]) {
                 name: String
             }
         `;
@@ -37,7 +37,7 @@ describe("parseExcludeDirective", () => {
 
     test("should return array of all operations to ignore given valid input of '*'", () => {
         const typeDefs = `
-            type TestType @exclude(operations: "*") {
+            type TestType @exclude {
                 name: String
             }
         `;
@@ -53,7 +53,7 @@ describe("parseExcludeDirective", () => {
 
     test("should throw an error if an argument other than 'operations' is given in the directive", () => {
         const typeDefs = `
-            type TestType @exclude(queries: ["read"]) {
+            type TestType @exclude(queries: [READ]) {
                 name: String
             }
         `;
@@ -69,7 +69,7 @@ describe("parseExcludeDirective", () => {
 
     test("should throw an error if an unknown operations is specified within the 'operations' argument", () => {
         const typeDefs = `
-            type TestType @exclude(operations: ["unknown"]) {
+            type TestType @exclude(operations: [UNKNOWN]) {
                 name: String
             }
         `;

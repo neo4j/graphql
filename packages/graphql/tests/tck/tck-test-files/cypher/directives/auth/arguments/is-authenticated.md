@@ -18,7 +18,7 @@ type User {
     id: ID
     name: String
     password: String
-    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
 }
 
 extend type User

@@ -2,7 +2,7 @@
 = Directives
 
 == `@cypher`
-GraphQL schema directive that can be used to bind a GraphQL field to the results of a Cypher query. 
+GraphQL schema directive that can be used to bind a GraphQL field to the results of a Cypher query.
 
 === `@cypher` directive on Field
 
@@ -13,7 +13,7 @@ Below we add a field `similarMovies` to our Movie, which is bound to a Cypher qu
 type Actor {
     actorId: ID!
     name: String
-    movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
 }
 
 type Movie {
@@ -22,7 +22,7 @@ type Movie {
     description: String
     year: Int
     actors(limit: Int = 10): [Actor]
-        @relationship(type: "ACTED_IN", direction: "IN")
+        @relationship(type: "ACTED_IN", direction: IN)
     similarMovies(limit: Int = 10): [Movie]
         @cypher(
             statement: """
@@ -147,10 +147,10 @@ See <<schema-basics>>
 This directive can be used to tell `Neo4jGraphQL` to skip the automatic generation of the Query or Mutations for a certain type.
 
 === `operations`
-1. `create`
-2. `delete`
-3. `update`
-4. `delete`
+1. CREATE
+2. READ
+3. UPDATE
+4. DELETE
 
 
 === Usage
@@ -159,7 +159,7 @@ This directive can be used to tell `Neo4jGraphQL` to skip the automatic generati
 
 [source, graphql]
 ----
-type User @exclude(operations: ["read"]) {
+type User @exclude(operations: [READ]) {
     name: String
 }
 ----
@@ -168,7 +168,7 @@ type User @exclude(operations: ["read"]) {
 
 [source, graphql]
 ----
-type User @exclude(operations: ["create"]) {
+type User @exclude(operations: [CREATE]) {
     name: String
 }
 ----
@@ -177,7 +177,7 @@ type User @exclude(operations: ["create"]) {
 
 [source, graphql]
 ----
-type User @exclude(operations: ["create", "delete"]) {
+type User @exclude(operations: [CREATE, DELETE]) {
     name: String
 }
 ----
@@ -185,7 +185,7 @@ type User @exclude(operations: ["create", "delete"]) {
 ==== Disable All Queries And Mutations
 [source, graphql]
 ----
-type User @exclude(operations: "*") {
+type User @exclude {
     name: String
 }
 ----

@@ -93,7 +93,7 @@ describe("auth/object-path", () => {
 
             type Post {
                 id: ID
-                creator: User @relationship(type: "HAS_POST", direction: "IN")
+                creator: User @relationship(type: "HAS_POST", direction: IN)
             }
 
             extend type Post @auth(rules: [{ operations: ["read"], allow: { creator: { id: "$context.userId" } } }])

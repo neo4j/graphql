@@ -13,12 +13,12 @@ describe("makeAugmentedSchema", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: "IN")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -71,7 +71,7 @@ describe("makeAugmentedSchema", () => {
 
                 type Movie {
                     title: String!
-                    nodes: [Node] @relationship(type: "NODE", direction: "IN")
+                    nodes: [Node] @relationship(type: "NODE", direction: IN)
                 }
             `;
 
@@ -83,7 +83,7 @@ describe("makeAugmentedSchema", () => {
         const typeDefs = `
             interface Node @auth(rules: [{operations: ["read"], allow: "*"}]) {
                 id: ID
-                relation: [Movie] @relationship(type: "SOME_TYPE", direction: "OUT")
+                relation: [Movie] @relationship(type: "SOME_TYPE", direction: OUT)
                 cypher: [Movie] @cypher(statement: "MATCH (a) RETURN a")
             }
 
@@ -104,7 +104,7 @@ describe("makeAugmentedSchema", () => {
 
                 type Movie  {
                     title: String!
-                    relation: [Test] @relationship(type: "SOME_TYPE", direction: "OUT")
+                    relation: [Test] @relationship(type: "SOME_TYPE", direction: OUT)
                 }
             `;
 
@@ -183,7 +183,7 @@ describe("makeAugmentedSchema", () => {
     test("should throw cannot have auth directive on a relationship", () => {
         const typeDefs = `
                 type Node {
-                    node: Node @relationship(type: "NODE", direction: "OUT") @auth(rules: [{operations: ["create"], roles: ["admin"]}])
+                    node: Node @relationship(type: "NODE", direction: OUT) @auth(rules: [{operations: ["create"], roles: ["admin"]}])
                 }
             `;
 

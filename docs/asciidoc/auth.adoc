@@ -2,7 +2,7 @@
 = Auth
 
 == About
-Solution exposes built-in GraphQL Directive `@auth`; 
+Solution exposes built-in GraphQL Directive `@auth`;
 
 [source, graphql]
 ----
@@ -37,9 +37,9 @@ type User {
 
 extend type User {
     password: String! @auth(rules: [
-        { 
-            operations: "*", 
-            OR: [{ roles: ["admin"] }, { allow: { id: "$jwt.sub" } }] 
+        {
+            operations: "*",
+            OR: [{ roles: ["admin"] }, { allow: { id: "$jwt.sub" } }]
         }
     ])
 }
@@ -65,13 +65,13 @@ content-type: application/json
 |Variable | Usage
 
 |`JWT_SECRET`
-| Specify JWT secret 
+| Specify JWT secret
 
 |`JWT_NO_VERIFY`
 | Disable the verification of the JW
 
 |`JWT_ROLES_OBJECT_PATH`
-| Specify where on the JWT the roles key is 
+| Specify where on the JWT the roles key is
 |===
 
 === Server Construction
@@ -106,7 +106,7 @@ You can have many rules for many operations. We fallthrough each rule, on the co
 
 === `operations`
 
-Operations is an array, you can re-use the same rule for many operations. 
+Operations is an array, you can re-use the same rule for many operations.
 
 [source, graphql]
 ----
@@ -125,9 +125,9 @@ Many different operations can be called in one query take the below mutation;
 mutation {
     createPosts(
         input: [
-            { 
+            {
                 content: "I like GraphQL",
-                creator: { connect: { where: { id: "user-01" } } } 
+                creator: { connect: { where: { id: "user-01" } } }
             }
         ]
     ) {
@@ -138,9 +138,9 @@ mutation {
 }
 ----
 
-In the above example; First we do a `create` operation then we do a `connect` operation. 
+In the above example; First we do a `create` operation then we do a `connect` operation.
 
-The full list of operations are; 
+The full list of operations are;
 
 1. read - `MATCH`
 2. create - `CREATE`
@@ -151,7 +151,7 @@ The full list of operations are;
 
 === `isAuthenticated`
 
-This is the most basic of auth. Used to ensure that there is a valid decoded JWT in the request. The most basic of applications could look something like this; 
+This is the most basic of auth. Used to ensure that there is a valid decoded JWT in the request. The most basic of applications could look something like this;
 
 [source, graphql]
 ----
@@ -185,7 +185,7 @@ extend type User @auth(rules: [{ operations: "*", roles: ["admin", "super-admin"
 ----
 
 
-> Users only need one of many roles to satisfy a rule. 
+> Users only need one of many roles to satisfy a rule.
 
 === `allow`
 
@@ -215,7 +215,7 @@ type User {
 
 extend type User @auth(
     rules: [
-        { 
+        {
             operations: ["read"],
             allow: { id: "$jwt.sub" }
         }
@@ -223,9 +223,9 @@ extend type User @auth(
 )
 ----
 
-After we match the node we validate that the property on the node is equal to the `jwt.sub` property. This validation is done in Cypher with two functions; validatePredicate & validate. 
+After we match the node we validate that the property on the node is equal to the `jwt.sub` property. This validation is done in Cypher with two functions; validatePredicate & validate.
 
-Given `user1` has the decoded JWT; 
+Given `user1` has the decoded JWT;
 [source, json]
 ----
 {
@@ -244,7 +244,7 @@ query {
 }
 ----
 
-The generated cypher for this query would look like the below and throw you out the operation. 
+The generated cypher for this query would look like the below and throw you out the operation.
 
 [source, cypher]
 ----
@@ -253,7 +253,7 @@ CALL apoc.util.validate(NOT(u.id = "user1"), "Forbidden")
 RETURN u
 ----
 
-Allow is used on the following operations; 
+Allow is used on the following operations;
 
 1. read
 2. update
@@ -263,7 +263,7 @@ Allow is used on the following operations;
 
 ==== `allow` Across Relationships
 
-There may be a reason where you need to traverse across relationships to satisfy your Auth implementation. One example of this could be "Grant update access to all Moderators of a Post"; 
+There may be a reason where you need to traverse across relationships to satisfy your Auth implementation. One example of this could be "Grant update access to all Moderators of a Post";
 
 [source, graphql]
 ----
@@ -274,7 +274,7 @@ type User {
 
 type Post {
     content: String
-    moderators: [User] @relationship(type: "MODERATES_POST", direction: "IN")
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
 }
 
 extend type Post @auth(rules: [
@@ -282,7 +282,7 @@ extend type Post @auth(rules: [
 ])
 ----
 
-When you specify allow on a relationship you can select fields on the referenced node. It's worth pointing out that allow on a relationship will perform an `ANY` on the matched nodes; to see if there is a match. 
+When you specify allow on a relationship you can select fields on the referenced node. It's worth pointing out that allow on a relationship will perform an `ANY` on the matched nodes; to see if there is a match.
 
 Given the above example - There may be a time when you need to give update access to either the creator of a post or a moderator, you can use `OR` and `AND` inside allow;
 
@@ -295,16 +295,16 @@ type User {
 
 type Post {
     content: String
-    moderators: [User] @relationship(type: "MODERATES_POST", direction: "IN")
-    creator: User @relationship(type: "HAS_POST", direction: "IN")
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+    creator: User @relationship(type: "HAS_POST", direction: IN)
 }
 
 extend type Post
     @auth(
         rules: [
-            { 
+            {
                 operations: ["update"],
-                allow: { OR: [{ moderators: { id: "$jwt.sub" } }, { creator: { id: "$jwt.sub" } }] } 
+                allow: { OR: [{ moderators: { id: "$jwt.sub" } }, { creator: { id: "$jwt.sub" } }] }
             }
         ]
     )
@@ -387,7 +387,7 @@ type User {
 ----
 
 
-Given the above GraphQL type definitions - How can we restrict `user1` from changing there id ? 
+Given the above GraphQL type definitions - How can we restrict `user1` from changing there id ?
 
 [source, graphql]
 ----
@@ -398,7 +398,7 @@ type User {
 
 extend type User @auth(
     rules: [
-        { 
+        {
             operations: ["update"],
             bind: { id: "$jwt.sub" }
         }
@@ -408,7 +408,7 @@ extend type User @auth(
 
 After we update or create the node we validate that the property on the node is equal to the `JWT.sub` property. This validation is done in Cypher with function `apoc.util.validate`
 
-Given `user1` has the decoded JWT; 
+Given `user1` has the decoded JWT;
 
 [source, json]
 ----
@@ -418,7 +418,7 @@ Given `user1` has the decoded JWT;
 }
 ----
 
-With this JWT makes a GraphQL mutation to update there id to someone else; 
+With this JWT makes a GraphQL mutation to update there id to someone else;
 
 
 [source, graphql]
@@ -444,7 +444,7 @@ RETURN u
 ----
 
 
-Bind is used on the following operations; 
+Bind is used on the following operations;
 
 1. create
 2. update
@@ -466,7 +466,7 @@ type User {
 
 type Post {
     content: String
-    creator: User @relationship(type: "HAS_POST", direction: "IN")
+    creator: User @relationship(type: "HAS_POST", direction: IN)
 }
 
 extend type Post @auth(rules: [
@@ -537,21 +537,21 @@ You can put the `@auth` directive on a field with the `@cypher` directive. Funct
 
 [source, graphql]
 ----
-type User @exclude(operations: "*") {
+type User @exclude {
     id: ID
     name: String
-} 
+}
 
 type Query {
     users: [User] @cypher(statement: "MATCH (a:User) RETURN a") @auth(rules: [{ isAuthenticated: true }])
 }
 ----
 
->  Notice you don't need to specify operations for `@auth` directives on `@cypher` fields. 
+>  Notice you don't need to specify operations for `@auth` directives on `@cypher` fields.
 
 [source, graphql]
 ----
-type History @exclude(operations: "*") {
+type History @exclude {
     website: String!
 }
 
@@ -559,7 +559,7 @@ type User {
     id: ID
     name: String
     history: [History]
-        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h") 
+        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
         @auth(rules: [{ roles: ["admin"] }])
 }
 ----

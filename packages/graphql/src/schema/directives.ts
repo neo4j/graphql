@@ -1,4 +1,13 @@
-import { GraphQLDirective, DirectiveLocation, GraphQLString, GraphQLNonNull, GraphQLScalarType, Kind } from "graphql";
+import {
+    GraphQLDirective,
+    DirectiveLocation,
+    GraphQLString,
+    GraphQLNonNull,
+    GraphQLScalarType,
+    Kind,
+    GraphQLEnumType,
+    GraphQLList,
+} from "graphql";
 
 export const ScalarType = new GraphQLScalarType({
     name: "Scalar",
@@ -30,6 +39,36 @@ export const ScalarType = new GraphQLScalarType({
             default:
                 throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime");
         }
+    },
+});
+
+export const ExcludeOperationEnum = new GraphQLEnumType({
+    name: "ExcludeOperation",
+    values: {
+        CREATE: {
+            value: "CREATE",
+        },
+        READ: {
+            value: "READ",
+        },
+        UPDATE: {
+            value: "UPDATE",
+        },
+        DELETE: {
+            value: "DELETE",
+        },
+    },
+});
+
+export const RelationshipDirectionEnum = new GraphQLEnumType({
+    name: "RelationshipDirection",
+    values: {
+        IN: {
+            value: "IN",
+        },
+        OUT: {
+            value: "OUT",
+        },
     },
 });
 
@@ -75,6 +114,18 @@ export const defaultDirective = new GraphQLDirective({
     },
 });
 
+export const excludeDirective = new GraphQLDirective({
+    name: "exclude",
+    description:
+        "Instructs @neo4j/graphql to exclude the specified operations from query and mutation generation. If used without an argument, no queries or mutations will be generated for this type.",
+    locations: [DirectiveLocation.OBJECT],
+    args: {
+        operations: {
+            type: new GraphQLList(new GraphQLNonNull(ExcludeOperationEnum)),
+        },
+    },
+});
+
 export const ignoreDirective = new GraphQLDirective({
     name: "ignore",
     description:
@@ -93,6 +144,21 @@ export const readonlyDirective = new GraphQLDirective({
     description:
         "Instructs @neo4j/graphql to only include a field in generated input type for creating, and in the object type within which the directive is applied.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
+});
+
+export const relationshipDirective = new GraphQLDirective({
+    name: "relationship",
+    description:
+        "Instructs @neo4j/graphql to treat this field as a relationship. Opens up the ability to create and connect on this field.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        type: {
+            type: new GraphQLNonNull(GraphQLString),
+        },
+        direction: {
+            type: new GraphQLNonNull(RelationshipDirectionEnum),
+        },
+    },
 });
 
 export const writeonlyDirective = new GraphQLDirective({

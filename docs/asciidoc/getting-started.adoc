@@ -15,11 +15,11 @@ This section will help users get started with the Neo4j GraphQL Engine. Before s
 $ npm install @neo4j/graphql
 ----
 
-`graphql` and `neo4j-driver` are are **peerDependency(s)**. 
+`graphql` and `neo4j-driver` are are **peerDependency(s)**.
 
 == Importing
 
-The Library is transpiled, from our TypeScript source, into https://nodejs.org/docs/latest/api/modules.html#modules_modules_commonjs_modules[Common JS] - This means you can use the `require` syntax to access the library's exported members; 
+The Library is transpiled, from our TypeScript source, into https://nodejs.org/docs/latest/api/modules.html#modules_modules_commonjs_modules[Common JS] - This means you can use the `require` syntax to access the library's exported members;
 
 [source, javascript]
 ----
@@ -28,7 +28,7 @@ const { Neo4jGraphQL, OGM, translate } = require("@neo4j/graphql");
 
 == GraphQL API Quick Start
 
-This section demonstrates using https://www.apollographql.com/docs/apollo-server/[Apollo Server] alongside Neo4jGraphQL to spin up a GraphQL API. 
+This section demonstrates using https://www.apollographql.com/docs/apollo-server/[Apollo Server] alongside Neo4jGraphQL to spin up a GraphQL API.
 
 [source, javascript]
 ----
@@ -41,12 +41,12 @@ const typeDefs = `
         title: String
         year: Int
         imdbRating: Float
-        genres: [Genre] @relationship(type: "IN_GENRE", direction: "OUT")
+        genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
     }
 
     type Genre {
         name: String
-        movies: [Movie] @relationship(type: "IN_GENRE", direction: "IN")
+        movies: [Movie] @relationship(type: "IN_GENRE", direction: IN)
     }
 `;
 
@@ -67,7 +67,7 @@ server.listen(4000).then(() => console.log("Online"));
 
 == OGM Quick Start
 
-This section demonstrates using https://expressjs.com/[Express JS] alongside the `OGM` to spin up a REST endpoint. 
+This section demonstrates using https://expressjs.com/[Express JS] alongside the `OGM` to spin up a REST endpoint.
 
 [source, javascript]
 ----
@@ -108,4 +108,4 @@ app.get("/users", async (req, res) => {
 app.listen(4000, () => console.log("started"));
 ----
 
-For more information on the OGM checkout the <<ogm>> section. 
+For more information on the OGM checkout the <<ogm>> section.

@@ -17,7 +17,7 @@ type Genre {
 
 type Movie {
     id: ID
-    search: [Search] @relationship(type: "SEARCH", direction: "OUT")
+    search: [Search] @relationship(type: "SEARCH", direction: OUT)
     searchNoDirective: Search
 }
 ```

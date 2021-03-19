@@ -20,7 +20,7 @@ type Genre @auth(rules: [
 
 type Movie {
     title: String
-    search: [Search] @relationship(type: "SEARCH", direction: "OUT")
+    search: [Search] @relationship(type: "SEARCH", direction: OUT)
 }
 ```
 
