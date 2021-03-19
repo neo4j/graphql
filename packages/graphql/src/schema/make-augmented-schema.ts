@@ -1,3 +1,6 @@
+import { mergeTypeDefs } from "@graphql-tools/merge";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { IResolvers } from "@graphql-tools/utils";
 import camelCase from "camelcase";
 import {
     DefinitionNode,
@@ -18,14 +21,12 @@ import {
     ObjectTypeComposer,
     InputTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
-import { makeExecutableSchema } from "@graphql-tools/schema";
 import pluralize from "pluralize";
 import { Node, Exclude, Neo4jGraphQL } from "../classes";
 import getAuth from "./get-auth";
-import { PrimitiveField, Resolvers, Auth } from "../types";
+import { PrimitiveField, Auth } from "../types";
 import { upperFirstLetter } from "../utils";
 import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
-import mergeTypeDefs from "./merge-type-defs";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
@@ -37,8 +38,12 @@ import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-co
 
 function makeAugmentedSchema(
     neoSchema: Neo4jGraphQL
-): { typeDefs: string; resolvers: Resolvers; schema: GraphQLSchema; nodes: Node[] } {
-    const document = mergeTypeDefs(neoSchema.input.typeDefs);
+): { typeDefs: string; resolvers: IResolvers; schema: GraphQLSchema; nodes: Node[] } {
+    const document = mergeTypeDefs(
+        Array.isArray(neoSchema.input.typeDefs)
+            ? (neoSchema.input.typeDefs as string[])
+            : [neoSchema.input.typeDefs as string]
+    );
     const composer = new SchemaComposer();
 
     // graphql-compose will break if the Point and CartesianPoint types are created but not used,

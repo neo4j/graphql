@@ -566,6 +566,99 @@ describe("Custom Resolvers", () => {
                 }
             });
         });
+
+        test("should return an enum from a cypher directive (top level)", async () => {
+            const typeDefs = `
+                enum Status {
+                    COMPLETED
+                }
+
+
+                type Query {
+                    status: Status @cypher(statement: """
+                        RETURN 'COMPLETED'
+                    """)
+                }
+            `;
+
+            const query = `
+                query {
+                    status
+                }
+            `;
+
+            const session = driver.session();
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            try {
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver },
+                });
+
+                expect(gqlResult.errors).toBeFalsy();
+
+                expect((gqlResult.data as any).status).toEqual("COMPLETED");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should return an enum from a cypher directive (field level)", async () => {
+            const id = generate({
+                charset: "alphabetic",
+            });
+
+            const typeDefs = `
+                enum Status {
+                    COMPLETED
+                }
+
+                type Trade {
+                    id: ID
+                    status: Status @cypher(statement: """
+                        RETURN 'COMPLETED'
+                    """)
+                }
+            `;
+
+            const query = `
+                query {
+                    trades(where: { id: "${id}" }) {
+                        id
+                        status
+                    }
+                }
+            `;
+
+            const session = driver.session();
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            try {
+                await session.run(`
+                    CREATE (:Trade {id: "${id}"})
+                `);
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver },
+                });
+
+                expect(gqlResult.errors).toBeFalsy();
+
+                expect((gqlResult.data as any).trades[0]).toEqual({ id, status: "COMPLETED" });
+            } finally {
+                await session.close();
+            }
+        });
     });
 });
 /* eslint-enable */

@@ -1,20 +1,11 @@
 import { DefinitionNode, FieldDefinitionNode } from "graphql";
 import { Driver } from "neo4j-driver";
-import { TypeDefs, Resolvers, BaseField, SchemaDirectives } from "../types";
-import { mergeTypeDefs } from "../schema";
-import Neo4jGraphQL from "./Neo4jGraphQL";
+import { mergeTypeDefs } from "@graphql-tools/merge";
+import { Neo4jGraphQL, BaseField, Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import Model from "./Model";
 
-export interface OGMConstructor {
-    typeDefs: TypeDefs;
-    driver: Driver;
-    resolvers?: Resolvers;
-    schemaDirectives?: SchemaDirectives;
-    debug?: boolean | ((...values: any[]) => void);
-}
-
-function filterTypeDefs(typeDefs: TypeDefs) {
-    const merged = mergeTypeDefs(typeDefs);
+function filterTypeDefs(typeDefs: Neo4jGraphQLConstructor["typeDefs"]) {
+    const merged = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
     return {
         ...merged,
@@ -53,15 +44,20 @@ class OGM {
 
     public models: Model[];
 
-    constructor(input: OGMConstructor) {
+    public input: Neo4jGraphQLConstructor;
+
+    constructor(input: Neo4jGraphQLConstructor) {
+        this.input = input;
+
         const typeDefs = filterTypeDefs(input.typeDefs);
 
         this.neoSchema = new Neo4jGraphQL({
             typeDefs,
-            ...(input.driver ? { context: { driver: input.driver } } : {}),
+            driver: input.driver,
             resolvers: input.resolvers,
             schemaDirectives: input.schemaDirectives,
             debug: input.debug,
+            driverConfig: input.driverConfig,
         });
 
         this.models = this.neoSchema.nodes.map((n) => {
@@ -82,10 +78,20 @@ class OGM {
         });
     }
 
-    model(name: string): Model | undefined {
+    model(name: string): Model {
         const found = this.models.find((n) => n.name === name);
 
+        if (!found) {
+            throw new Error(`Could not find model ${name}`);
+        }
+
         return found;
+    }
+
+    async verifyDatabase(input: { driver?: Driver } = {}): Promise<void> {
+        const driver = input.driver || this.input.driver;
+
+        return this.neoSchema.verifyDatabase({ driver });
     }
 }
 

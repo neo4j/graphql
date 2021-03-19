@@ -168,6 +168,9 @@ function createProjectionAndParams({
             const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime"].includes(
                 cypherField.typeMeta.name
             );
+            const isEnum = context.neoSchema.document.definitions.find(
+                (x) => x.kind === "EnumTypeDefinition" && x.name.value === cypherField.typeMeta.name
+            );
 
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
             if (referenceNode) {
@@ -207,23 +210,25 @@ function createProjectionAndParams({
             const apocParamsStr = `{this: ${chainStr || varName}${
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
             }}`;
-            const apocStr = `${!isPrimitive ? `${param} IN` : ""} apoc.cypher.runFirstColumn("${
+            const apocStr = `${!isPrimitive && !isEnum ? `${param} IN` : ""} apoc.cypher.runFirstColumn("${
                 cypherField.statement
             }", ${apocParamsStr}, ${expectMultipleValues}) ${apocWhere} ${
                 projectionStr ? `| ${param} ${projectionStr}` : ""
             }`;
 
-            if (!cypherField.typeMeta.array) {
-                res.projection.push(`${key}: head([${apocStr}])`);
+            if (cypherField.typeMeta.array) {
+                res.projection.push(`${key}: [${apocStr}]`);
 
                 return res;
             }
 
-            if (isPrimitive) {
+            if (isPrimitive || isEnum) {
                 res.projection.push(`${key}: ${apocStr}`);
-            } else {
-                res.projection.push(`${key}: [${apocStr}]`);
+
+                return res;
             }
+
+            res.projection.push(`${key}: head([${apocStr}])`);
 
             return res;
         }

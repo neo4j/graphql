@@ -1,0 +1,37 @@
+{
+    "name": "@neo4j/graphql-ogm",
+    "version": "1.0.0-alpha.1",
+    "description": "",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --project src/",
+        "test": "run-s test:unit test:int",
+        "test:unit": "jest src/**/*.test.ts",
+        "test:unit:watch": "test:unit -- --watchAll",
+        "test:int": "jest int",
+        "test:int:watch": "test:int -- --watch"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@graphql-tools/merge": "6.2.10",
+        "@neo4j/graphql": "1.0.0-alpha.6",
+        "camelcase": "6.2.0",
+        "pluralize": "8.0.0",
+        "upper-case-first": "^2.0.2"
+    },
+    "peerDependencies": {
+        "graphql": "^15.0.0",
+        "neo4j-driver": "^4.2.0"
+    },
+    "devDependencies": {
+        "@types/jest": "26.0.8",
+        "@types/node": "14.0.27",
+        "graphql-tag": "2.11.0",
+        "jest": "26.2.2",
+        "npm-run-all": "^4.1.5",
+        "randomstring": "1.1.5",
+        "ts-jest": "26.1.4",
+        "typescript": "3.9.7"
+    }
+}

@@ -50,4 +50,39 @@ describe("multi-database", () => {
             await session.close();
         }
     });
+
+    test("should specify the database via neo4j construction", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Movie {
+                id: ID!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, driverConfig: { database: "another-random-db" } });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            query {
+                movies(where: { id: "${id}" }) {
+                    id
+                }
+            }
+        `;
+
+        try {
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: { id },
+            });
+            expect((result.errors as any)[0].message).toBeTruthy();
+        } finally {
+            await session.close();
+        }
+    });
 });

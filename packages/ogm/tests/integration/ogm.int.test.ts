@@ -15,6 +15,22 @@ describe("OGM", () => {
         await driver.close();
     });
 
+    test("should specify the database via OGM construction", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Movie {
+                id: ID!
+            }
+        `;
+
+        const ogm = new OGM({ typeDefs, driver, driverConfig: { database: "another-random-db" } });
+
+        await expect(ogm.model("Movie")?.find()).rejects.toThrow();
+
+        await session.close();
+    });
+
     describe("find", () => {
         test("find a single node", async () => {
             const session = driver.session();
@@ -32,13 +48,15 @@ describe("OGM", () => {
             });
 
             try {
+                await ogm.verifyDatabase();
+
                 await session.run(`
                     CREATE (:Movie {id: "${id}"})
                 `);
 
-                const Movie = ogm.model("Movie") as Model;
+                const Movie = ogm.model("Movie");
 
-                const movies = await Movie.find({ where: { id } });
+                const movies = await Movie?.find({ where: { id } });
 
                 expect(movies).toEqual([{ id }]);
             } finally {
@@ -70,9 +88,9 @@ describe("OGM", () => {
                     CREATE (:Movie {id: "${id}"})
                 `);
 
-                const Movie = ogm.model("Movie") as Model;
+                const Movie = ogm.model("Movie");
 
-                const movies = await Movie.find({ where: { id }, options: { limit: 2 } });
+                const movies = await Movie?.find({ where: { id }, options: { limit: 2 } });
 
                 expect(movies).toEqual([{ id }, { id }]);
             } finally {
@@ -116,9 +134,9 @@ describe("OGM", () => {
                     MERGE (m)-[:HAS_GENRE]->(g)
                 `);
 
-                const Movie = ogm.model("Movie") as Model;
+                const Movie = ogm.model("Movie");
 
-                const movies = await Movie.find({ where: { id }, selectionSet });
+                const movies = await Movie?.find({ where: { id }, selectionSet });
 
                 expect(movies).toEqual([{ id, genres: [{ id }] }]);
             } finally {
@@ -144,9 +162,9 @@ describe("OGM", () => {
             });
 
             try {
-                const Movie = ogm.model("Movie") as Model;
+                const Movie = ogm.model("Movie");
 
-                const { movies } = await Movie.create({ input: [{ id }] });
+                const { movies } = await Movie?.create({ input: [{ id }] });
 
                 expect(movies).toEqual([{ id }]);
 
@@ -183,9 +201,9 @@ describe("OGM", () => {
             });
 
             try {
-                const Movie = ogm.model("Movie") as Model;
+                const Movie = ogm.model("Movie");
 
-                const { movies } = await Movie.create({ input: [{ id: id1 }, { id: id2 }] });
+                const { movies } = await Movie?.create({ input: [{ id: id1 }, { id: id2 }] });
 
                 expect(movies).toEqual([{ id: id1 }, { id: id2 }]);
             } finally {
@@ -287,9 +305,9 @@ describe("OGM", () => {
                 },
             ];
 
-            const Product = ogm.model("Product") as Model;
+            const Product = ogm.model("Product");
 
-            const { products } = await Product.create({
+            const { products } = await Product?.create({
                 input: [
                     {
                         ...product,
@@ -391,9 +409,9 @@ describe("OGM", () => {
                     }
                 );
 
-                const Movie = ogm.model("Movie") as Model;
+                const Movie = ogm.model("Movie");
 
-                const { movies } = await Movie.update({ where: { id }, update: { name: updatedName } });
+                const { movies } = await Movie?.update({ where: { id }, update: { name: updatedName } });
 
                 expect(movies).toEqual([{ id, name: updatedName }]);
             } finally {
@@ -442,9 +460,9 @@ describe("OGM", () => {
                     }
                 );
 
-                const Movie = ogm.model("Movie") as Model;
+                const Movie = ogm.model("Movie");
 
-                const { movies } = await Movie.update({ where: { id_IN: [id1, id2] }, update: { name: updatedName } });
+                const { movies } = await Movie?.update({ where: { id_IN: [id1, id2] }, update: { name: updatedName } });
 
                 const movie1 = movies.find((x) => x.id === id1);
                 expect(movie1.name).toEqual(updatedName);
@@ -493,9 +511,9 @@ describe("OGM", () => {
                     }
                 );
 
-                const Movie = ogm.model("Movie") as Model;
+                const Movie = ogm.model("Movie");
 
-                const { movies } = await Movie.update({
+                const { movies } = await Movie?.update({
                     where: { id: movieId },
                     connect: { actors: [{ where: { id: actorId } }] },
                     selectionSet: `
@@ -551,9 +569,9 @@ describe("OGM", () => {
                     }
                 );
 
-                const Movie = ogm.model("Movie") as Model;
+                const Movie = ogm.model("Movie");
 
-                const { movies } = await Movie.update({
+                const { movies } = await Movie?.update({
                     where: { id: movieId },
                     create: { actors: [{ id: actorId }] },
                     selectionSet: `
@@ -612,9 +630,9 @@ describe("OGM", () => {
                     }
                 );
 
-                const Movie = ogm.model("Movie") as Model;
+                const Movie = ogm.model("Movie");
 
-                const { movies } = await Movie.update({
+                const { movies } = await Movie?.update({
                     where: { id: movieId },
                     disconnect: { actors: [{ where: { id: actorId } }] },
                     selectionSet: `
@@ -658,9 +676,9 @@ describe("OGM", () => {
                     CREATE (:Movie {id: "${id}"})
                 `);
 
-                const Movie = ogm.model("Movie") as Model;
+                const Movie = ogm.model("Movie");
 
-                const result = await Movie.delete({ where: { id } });
+                const result = await Movie?.delete({ where: { id } });
 
                 expect(result).toEqual({ nodesDeleted: 1, relationshipsDeleted: 0 });
             } finally {
@@ -681,7 +699,7 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
-            const User = ogm.model("User") as Model;
+            const User = (ogm.model("User") as unknown) as Model;
 
             const id = generate({
                 charset: "alphabetic",
