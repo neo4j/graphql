@@ -1,6 +1,6 @@
 import { parse } from "graphql";
-import parseExcludeDirective from "../../../src/schema/parse-exclude-directive";
-import { Exclude } from "../../../src/classes";
+import parseExcludeDirective from "./parse-exclude-directive";
+import { Exclude } from "../classes";
 
 describe("parseExcludeDirective", () => {
     test("should throw an error if incorrect directive is passed in", () => {

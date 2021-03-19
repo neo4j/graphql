@@ -1,5 +1,5 @@
-import translate from "../../../src/translate/translate";
-import Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
+import translate from "./translate";
+import Neo4jGraphQL from "../classes/Neo4jGraphQL";
 
 describe("translate", () => {
     test("should throw neo4j-driver Driver missing", () => {

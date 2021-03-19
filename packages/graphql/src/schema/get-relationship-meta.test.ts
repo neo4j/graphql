@@ -1,5 +1,5 @@
 import { FieldDefinitionNode } from "graphql";
-import getRelationshipMeta from "../../../src/schema/get-relationship-meta";
+import getRelationshipMeta from "./get-relationship-meta";
 
 describe("getRelationshipMeta", () => {
     test("should return undefined if no directive found", () => {
