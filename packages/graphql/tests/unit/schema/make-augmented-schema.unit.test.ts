@@ -98,28 +98,12 @@ describe("makeAugmentedSchema", () => {
         );
     });
 
-    test("should throw relationship union type String must be an object type", () => {
-        const typeDefs = `
-                union Test = String | Movie
-
-                type Movie  {
-                    title: String!
-                    relation: [Test] @relationship(type: "SOME_TYPE", direction: OUT)
-                }
-            `;
-
-        // @ts-ignore
-        expect(() => makeAugmentedSchema({ input: { typeDefs } })).toThrow(
-            "relationship union type String must be an object type"
-        );
-    });
-
     test("should throw cannot auto-generate a non ID field", () => {
         const typeDefs = `
-                type Movie  {
-                    name: String! @autogenerate
-                }
-            `;
+            type Movie  {
+                name: String! @autogenerate
+            }
+        `;
 
         // @ts-ignore
         expect(() => makeAugmentedSchema({ input: { typeDefs } })).toThrow("cannot auto-generate a non ID field");
