@@ -543,7 +543,7 @@ describe("auth/is-authenticated", () => {
             const session = driver.session({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User @exclude(operations: "*") {
+                type User @exclude {
                     id: ID
                     name: String
                 }

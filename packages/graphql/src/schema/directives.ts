@@ -6,6 +6,7 @@ import {
     GraphQLScalarType,
     Kind,
     GraphQLEnumType,
+    GraphQLList,
 } from "graphql";
 
 export const ScalarType = new GraphQLScalarType({
@@ -38,6 +39,24 @@ export const ScalarType = new GraphQLScalarType({
             default:
                 throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime");
         }
+    },
+});
+
+export const ExcludeOperationEnum = new GraphQLEnumType({
+    name: "ExcludeOperation",
+    values: {
+        CREATE: {
+            value: "CREATE",
+        },
+        READ: {
+            value: "READ",
+        },
+        UPDATE: {
+            value: "UPDATE",
+        },
+        DELETE: {
+            value: "DELETE",
+        },
     },
 });
 
@@ -91,6 +110,18 @@ export const defaultDirective = new GraphQLDirective({
             description:
                 "The default value to use. Must be a scalar type and must match the type of the field with which this directive decorates.",
             type: new GraphQLNonNull(ScalarType),
+        },
+    },
+});
+
+export const excludeDirective = new GraphQLDirective({
+    name: "exclude",
+    description:
+        "Instructs @neo4j/graphql to exclude the specified operations from query and mutation generation. If used without an argument, no queries or mutations will be generated for this type.",
+    locations: [DirectiveLocation.OBJECT],
+    args: {
+        operations: {
+            type: new GraphQLList(new GraphQLNonNull(ExcludeOperationEnum)),
         },
     },
 });

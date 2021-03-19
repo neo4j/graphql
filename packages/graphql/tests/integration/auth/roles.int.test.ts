@@ -725,7 +725,7 @@ describe("auth/roles", () => {
             const session = driver.session();
 
             const typeDefs = `
-                type User @exclude(operations: "*") {
+                type User @exclude {
                     id: ID
                     name: String
                 }

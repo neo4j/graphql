@@ -9,7 +9,7 @@ Tests that the provided typeDefs return the correct schema (with `@exclude` dire
 **TypeDefs**
 
 ```typedefs-input
-type Actor @exclude(operations: ["read"]) {
+type Actor @exclude(operations: [READ]) {
   name: String
 }
 
@@ -139,7 +139,7 @@ type Query {
 **TypeDefs**
 
 ```typedefs-input
-type Actor @exclude(operations: ["create"]) {
+type Actor @exclude(operations: [CREATE]) {
   name: String
 }
 ```
@@ -216,7 +216,7 @@ type Query {
 **TypeDefs**
 
 ```typedefs-input
-type Actor @exclude(operations: "*") {
+type Actor @exclude {
   name: String
 }
 
@@ -306,7 +306,7 @@ type Query {
 **TypeDefs**
 
 ```typedefs-input
-type Actor @exclude(operations: "*") {
+type Actor @exclude {
   name: String
 }
 
@@ -405,7 +405,7 @@ type Query {
 **TypeDefs**
 
 ```typedefs-input
-type Actor @exclude(operations: "*") {
+type Actor @exclude {
   name: String
 }
 

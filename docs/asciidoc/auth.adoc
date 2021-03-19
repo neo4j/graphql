@@ -537,7 +537,7 @@ You can put the `@auth` directive on a field with the `@cypher` directive. Funct
 
 [source, graphql]
 ----
-type User @exclude(operations: "*") {
+type User @exclude {
     id: ID
     name: String
 }
@@ -551,7 +551,7 @@ type Query {
 
 [source, graphql]
 ----
-type History @exclude(operations: "*") {
+type History @exclude {
     website: String!
 }
 
