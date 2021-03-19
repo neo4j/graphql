@@ -1,8 +1,8 @@
 {
-    "packages": [
-        "packages/graphql"
-    ],
+    "packages": ["packages/graphql", "packages/ogm"],
     "version": "independent",
+    "useWorkspaces": true,
+    "npmClient": "yarn",
     "command": {
         "bootstrap": {
             "ci": true

@@ -1,4 +1,4 @@
-import Model, { ModelConstructor } from "../../../src/classes/Model";
+import Model, { ModelConstructor } from "./Model";
 
 describe("Model", () => {
     test("should construct", () => {

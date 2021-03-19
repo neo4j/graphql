@@ -1,9 +1,8 @@
 import { DocumentNode, graphql, parse, print } from "graphql";
 import pluralize from "pluralize";
 import camelCase from "camelcase";
-import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
-import { upperFirstLetter } from "../utils";
-import Neo4jGraphQL from "./Neo4jGraphQL";
+import { Neo4jGraphQL, GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "@neo4j/graphql";
+import { upperCaseFirst } from "upper-case-first";
 
 export interface ModelConstructor {
     name: string;
@@ -18,6 +17,7 @@ function printSelectionSet(selectionSet: string | DocumentNode): string {
 
     return print(selectionSet);
 }
+
 class Model {
     public name: string;
 
@@ -102,7 +102,7 @@ class Model {
         context?: any;
         rootValue?: any;
     } = {}): Promise<T> {
-        const mutationName = `create${upperFirstLetter(this.namePluralized)}`;
+        const mutationName = `create${upperCaseFirst(this.namePluralized)}`;
 
         let selection = "";
         if (selectionSet) {
@@ -154,7 +154,7 @@ class Model {
         context?: any;
         rootValue?: any;
     } = {}): Promise<T> {
-        const mutationName = `update${upperFirstLetter(this.namePluralized)}`;
+        const mutationName = `update${upperCaseFirst(this.namePluralized)}`;
 
         let selection = "";
         if (selectionSet) {
@@ -217,7 +217,7 @@ class Model {
         context?: any;
         rootValue?: any;
     } = {}): Promise<DeleteInfo> {
-        const mutationName = `delete${upperFirstLetter(this.namePluralized)}`;
+        const mutationName = `delete${upperCaseFirst(this.namePluralized)}`;
 
         const argDefinitions = [
             `${where ? "(" : ""}`,

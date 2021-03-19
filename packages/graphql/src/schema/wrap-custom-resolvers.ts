@@ -1,6 +1,6 @@
+import { IResolvers } from "@graphql-tools/utils";
 import { Context } from "../classes";
 import createAuthParam from "../translate/create-auth-param";
-import { Resolvers } from "../types";
 
 function wrapCustomResolvers({
     resolvers,
@@ -8,11 +8,11 @@ function wrapCustomResolvers({
     nodeNames,
     neoSchema,
 }: {
-    resolvers: Resolvers;
+    resolvers: IResolvers;
     neoSchema;
     nodeNames: string[];
     generatedResolvers: any;
-}): Resolvers {
+}): IResolvers {
     let newResolvers: any = {};
 
     const {
