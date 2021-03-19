@@ -128,11 +128,6 @@ function getObjFieldMeta({
                     const nodes: string[] = [];
 
                     fieldUnion.types?.forEach((type) => {
-                        const node = objects.find((x) => x.name.value === type.name.value);
-                        if (!node) {
-                            throw new Error(`relationship union type ${type.name.value} must be an object type`);
-                        }
-
                         nodes.push(type.name.value);
                     });
 

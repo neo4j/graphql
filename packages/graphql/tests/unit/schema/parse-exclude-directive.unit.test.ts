@@ -50,36 +50,4 @@ describe("parseExcludeDirective", () => {
         // @ts-ignore
         expect(parseExcludeDirective(directive, "TestType")).toMatchObject(expected);
     });
-
-    test("should throw an error if an argument other than 'operations' is given in the directive", () => {
-        const typeDefs = `
-            type TestType @exclude(queries: [READ]) {
-                name: String
-            }
-        `;
-
-        // @ts-ignore
-        const directive = parse(typeDefs).definitions[0].directives[0];
-
-        // @ts-ignore
-        expect(() => parseExcludeDirective(directive, "TestType")).toThrow(
-            "type TestType does not implement directive exclude correctly"
-        );
-    });
-
-    test("should throw an error if an unknown operations is specified within the 'operations' argument", () => {
-        const typeDefs = `
-            type TestType @exclude(operations: [UNKNOWN]) {
-                name: String
-            }
-        `;
-
-        // @ts-ignore
-        const directive = parse(typeDefs).definitions[0].directives[0];
-
-        // @ts-ignore
-        expect(() => parseExcludeDirective(directive, "TestType")).toThrow(
-            "type TestType does not implement directive exclude correctly"
-        );
-    });
 });
