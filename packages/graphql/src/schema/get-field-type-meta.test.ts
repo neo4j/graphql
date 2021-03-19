@@ -1,5 +1,5 @@
 import { parse, ObjectTypeDefinitionNode } from "graphql";
-import getFieldTypeMeta from "../../../src/schema/get-field-type-meta";
+import getFieldTypeMeta from "./get-field-type-meta";
 
 describe("getFieldTypeMeta", () => {
     test("should throw Matrix arrays not supported", () => {

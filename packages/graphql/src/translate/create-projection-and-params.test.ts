@@ -1,11 +1,21 @@
-import createCreateAndParams from "../../../src/translate/create-create-and-params";
-import { Neo4jGraphQL, Context, Node } from "../../../src/classes";
-import { trimmer } from "../../../src/utils";
+import createProjectionAndParams from "./create-projection-and-params";
+import { Neo4jGraphQL, Context, Node } from "../classes";
 
-describe("createCreateAndParams", () => {
+describe("createProjectionAndParams", () => {
+    test("should be a function", () => {
+        expect(createProjectionAndParams).toBeInstanceOf(Function);
+    });
+
     test("should return the correct projection with 1 selection", () => {
-        const input = {
-            title: "some title",
+        const fieldsByTypeName = {
+            Movie: {
+                title: {
+                    name: "title",
+                    alias: "title",
+                    args: {},
+                    fieldsByTypeName: {},
+                },
+            },
         };
 
         // @ts-ignore
@@ -14,6 +24,7 @@ describe("createCreateAndParams", () => {
             relationFields: [],
             cypherFields: [],
             enumFields: [],
+            unionFields: [],
             scalarFields: [],
             primitiveFields: [
                 {
@@ -28,14 +39,8 @@ describe("createCreateAndParams", () => {
                                 type: "String",
                                 pretty: "String",
                             },
-                            create: {
-                                type: "String",
-                                pretty: "String",
-                            },
-                            update: {
-                                type: "String",
-                                pretty: "String",
-                            },
+                            create: { type: "String", pretty: "String" },
+                            update: { type: "String", pretty: "String" },
                         },
                     },
                     otherDirectives: [],
@@ -43,9 +48,11 @@ describe("createCreateAndParams", () => {
                 },
             ],
             dateTimeFields: [],
+            pointFields: [],
             interfaceFields: [],
             objectFields: [],
-            pointFields: [],
+            authableFields: [],
+            mutableFields: [],
         };
 
         // @ts-ignore
@@ -56,23 +63,9 @@ describe("createCreateAndParams", () => {
         // @ts-ignore
         const context = new Context({ neoSchema });
 
-        const result = createCreateAndParams({
-            input,
-            node,
-            context,
-            varName: "this0",
-            withVars: ["this0"],
-        });
+        const result = createProjectionAndParams({ fieldsByTypeName, node, context, varName: "this" });
 
-        expect(trimmer(result[0])).toEqual(
-            trimmer(`
-                CREATE (this0:Movie)
-                SET this0.title = $this0_title
-            `)
-        );
-
-        expect(result[1]).toMatchObject({
-            this0_title: "some title",
-        });
+        expect(result[0]).toEqual(`{ .title }`);
+        expect(result[1]).toMatchObject({});
     });
 });

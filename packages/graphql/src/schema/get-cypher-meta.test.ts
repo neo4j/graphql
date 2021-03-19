@@ -1,5 +1,5 @@
 import { FieldDefinitionNode } from "graphql";
-import getCypherMeta from "../../../src/schema/get-cypher-meta";
+import getCypherMeta from "./get-cypher-meta";
 
 describe("getCypherMeta", () => {
     test("should return undefined if no directive found", () => {

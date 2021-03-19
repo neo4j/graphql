@@ -1,6 +1,6 @@
 import { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
-import execute from "../../../src/utils/execute";
+import { Neo4jGraphQL } from "../classes";
+import execute from "./execute";
 
 describe("execute", () => {
     test("should execute return records.toObject", async () => {

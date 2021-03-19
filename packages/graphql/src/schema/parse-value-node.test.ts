@@ -1,5 +1,5 @@
 import { parse, ValueNode } from "graphql";
-import parseValueNode from "../../../src/schema/parse-value-node";
+import parseValueNode from "./parse-value-node";
 
 describe("parseValueNode", () => {
     test("should return a correct nested object", () => {

@@ -1,11 +1,6 @@
 import { Driver, Session } from "neo4j-driver";
-import verifyDatabase from "../../../src/utils/verify-database";
-import {
-    MIN_NEO4J_VERSION,
-    MIN_APOC_VERSION,
-    REQUIRED_APOC_FUNCTIONS,
-    REQUIRED_APOC_PROCEDURES,
-} from "../../../src/constants";
+import verifyDatabase from "./verify-database";
+import { MIN_NEO4J_VERSION, MIN_APOC_VERSION, REQUIRED_APOC_FUNCTIONS, REQUIRED_APOC_PROCEDURES } from "../constants";
 
 describe("verifyDatabase", () => {
     test("should throw expected Neo4j version", async () => {

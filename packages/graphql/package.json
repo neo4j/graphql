@@ -23,7 +23,7 @@
         "prepare": "yarn run build:clean",
         "clean": "rimraf dist",
         "test": "run-s test:unit test:int test:tck",
-        "test:unit": "jest unit",
+        "test:unit": "jest src/ --coverage=true",
         "test:unit:watch": "jest unit --watchAll",
         "test:tck": "jest tck",
         "test:tck:watch": "jest tck --watchAll",

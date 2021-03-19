@@ -1,6 +1,6 @@
-import createUpdateAndParams from "../../../src/translate/create-update-and-params";
-import { Neo4jGraphQL, Context, Node } from "../../../src/classes";
-import { trimmer } from "../../../src/utils";
+import createUpdateAndParams from "./create-update-and-params";
+import { Neo4jGraphQL, Context, Node } from "../classes";
+import { trimmer } from "../utils";
 
 describe("createUpdateAndParams", () => {
     test("should return the correct update and params", () => {
