@@ -8,7 +8,7 @@
 type User {
     id: ID! @autogenerate
     name: String
-    friends: [User] @relationship(type: "HAS_FRIEND", direction: "OUT")
+    friends: [User] @relationship(type: "HAS_FRIEND", direction: OUT)
 }
 ----
 

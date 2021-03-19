@@ -21,7 +21,7 @@ To represent a relationship between two nodes use the `@relationship` directive;
 ----
 type Node {
     id: ID
-    related: [Node] @relationship(type: "RELATED", direction: "OUT")
+    related: [Node] @relationship(type: "RELATED", direction: OUT)
 }
 ----
 

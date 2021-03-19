@@ -10,24 +10,26 @@ function parseExcludeDirective(excludeDirective: DirectiveNode, type: string) {
     const result: string[] = [];
     const allResolvers = ["create", "read", "update", "delete"];
 
+    if (!excludeDirective.arguments?.length) {
+        return new Exclude({ operations: allResolvers });
+    }
+
     excludeDirective.arguments?.forEach((argument) => {
         if (argument.name.value !== "operations") {
             throw error;
-        } else {
-            const argumentValue = valueFromASTUntyped(argument.value);
-
-            if (argument.value.kind === "ListValue") {
-                argumentValue.forEach((val) => {
-                    if (allResolvers.includes(val)) {
-                        result.push(val);
-                    } else {
-                        throw error;
-                    }
-                });
-            } else if (argumentValue === "*") {
-                result.push(...allResolvers);
-            }
         }
+
+        const argumentValue = valueFromASTUntyped(argument.value);
+
+        argumentValue.forEach((val: string) => {
+            const lower = val.toLowerCase();
+
+            if (allResolvers.includes(lower)) {
+                result.push(lower);
+            } else {
+                throw error;
+            }
+        });
     });
 
     return new Exclude({ operations: result });
