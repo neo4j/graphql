@@ -4,7 +4,7 @@
 
 GraphQL powered OGM for Neo4j and Javascript applications.
 
-1. [Documentation](https://github.com/neo4j/graphql)
+1. [Documentation](https://github.com/neo4j/graphql-tracker-temp/tree/master/docs/ogm.adoc)
 
 ## Installation
 
