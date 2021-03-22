@@ -1,22 +1,36 @@
 # @neo4j/graphql-ogm
 
-[![npm version](https://badge.fury.io/js/%40neo4j%2Fgraphql.svg)](https://badge.fury.io/js/%40neo4j%2Fgraphql)
+[![npm version](https://badge.fury.io/js/%40neo4j%2Fgraphql-ogm.svg)](https://badge.fury.io/js/%40neo4j%2Fgraphql-ogm)
 
-GraphQL powerd OGM for Neo4j and Javascript applications.
+GraphQL powered OGM for Neo4j and Javascript applications.
 
-## Getting Started
+1. [Documentation](https://github.com/neo4j/graphql)
 
-### Installation
+## Installation
 
 ```
 $ npm install @neo4j/graphql-ogm
 ```
 
+⚠ `graphql` & `neo4j-driver` are **peerDependency**(s)
+
+```
+$ npm install graphql neo4j-driver
+```
+
+## Importing
+
+Our TypeScript source is transpiled into Common JS, this means you can use the `require` syntax;
+
+```js
+const { OGM, Model } = require("@neo4j/graphql-ogm");
+```
+
 ### Quick Start
 
 ```js
-import { OGM } from "@neo4j/graphql-ogm";
-import * as neo4j from "neo4j-driver";
+const { OGM } = require("@neo4j/graphql");
+const neo4j = require("neo4j-driver");
 
 const typeDefs = `
     type Movie {
@@ -36,7 +50,3 @@ const Movie = ogm.model("Movie");
 
 const [theMatrix] = await Movie.find({ where: { name: "The Matrix" } });
 ```
-
-### Documentation
-
-[Here](./docs/index.adoc)
