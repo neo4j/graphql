@@ -1,8 +1,25 @@
 {
     "name": "@neo4j/graphql-ogm",
-    "version": "1.0.0-alpha.1",
-    "description": "",
-    "main": "dist/index.js",
+    "version": "1.0.0-beta.1",
+    "description": "GraphQL powered OGM for Neo4j and Javascript applications",
+    "keywords": [
+        "neo4j",
+        "graphql",
+        "ogm"
+    ],
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/neo4j/graphql-tracker-temp/issues"
+    },
+    "homepage": "https://github.com/neo4j/graphql-tracker-temp/blob/master/README.md",
+    "exports": {
+        "require": "./dist/index.js"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist/"
+    ],
     "scripts": {
         "build": "tsc --project src/",
         "test": "run-s test:unit test:int",
@@ -11,8 +28,7 @@
         "test:int": "jest int",
         "test:int:watch": "test:int -- --watch"
     },
-    "author": "",
-    "license": "ISC",
+    "author": "Neo4j Inc.",
     "dependencies": {
         "@graphql-tools/merge": "6.2.10",
         "@neo4j/graphql": "1.0.0-alpha.6",
