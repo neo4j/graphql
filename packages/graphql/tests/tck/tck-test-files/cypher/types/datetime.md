@@ -19,7 +19,7 @@ type Movie {
 
 ```graphql
 query {
-    movies(where: { datetime: "1970-01-01T00:00:00.000Z" }) {
+    movies(where: { datetime: "1970-01-01T00:00:00.000" }) {
         datetime
     }
 }
@@ -39,7 +39,7 @@ RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zo
 {
     "this_datetime": {
         "day": 1,
-        "hour": 1,
+        "hour": 0,
         "minute": 0,
         "month": 1,
         "nanosecond": 0,
@@ -59,7 +59,7 @@ RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zo
 
 ```graphql
 mutation {
-    createMovies(input: [{ datetime: "1970-01-01T00:00:00.000Z" }]) {
+    createMovies(input: [{ datetime: "1970-01-01T00:00:00.000" }]) {
         movies {
             datetime
         }
@@ -84,7 +84,7 @@ RETURN this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), "iso_
 {
     "this0_datetime": {
         "day": 1,
-        "hour": 1,
+        "hour": 0,
         "minute": 0,
         "month": 1,
         "nanosecond": 0,
@@ -104,7 +104,7 @@ RETURN this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), "iso_
 
 ```graphql
 mutation {
-    updateMovies(update: { datetime: "1970-01-01T00:00:00.000Z" }) {
+    updateMovies(update: { datetime: "1970-01-01T00:00:00.000" }) {
         movies {
             id
             datetime
@@ -127,7 +127,7 @@ RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), "i
 {
     "this_update_datetime": {
         "day": 1,
-        "hour": 1,
+        "hour": 0,
         "minute": 0,
         "month": 1,
         "nanosecond": 0,
