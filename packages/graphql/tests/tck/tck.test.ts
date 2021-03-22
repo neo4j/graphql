@@ -19,11 +19,13 @@ import { translate } from "../../src/translate";
 import { Neo4jGraphQL } from "../../src";
 import { generateTestCasesFromMd, Test, TestCase } from "./utils/generate-test-cases-from-md.utils";
 import { trimmer } from "../../src/utils";
+import * as Scalars from "../../src/schema/scalars";
 
 const TCK_DIR = path.join(__dirname, "tck-test-files");
 
 beforeAll(() => {
     process.env.JWT_SECRET = "secret";
+    process.env.TZ = "Etc/UTC";
 });
 
 afterAll(() => {
@@ -157,7 +159,16 @@ describe("TCK Generated tests", () => {
                         };
                     }, {});
 
-                    const resolvers = { Query: queries, Mutation: mutations };
+                    const resolvers = {
+                        Query: queries,
+                        Mutation: mutations,
+                        ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
+                            if (printSchema(neoSchema.schema).includes(name)) {
+                                res[name] = scalar;
+                            }
+                            return res;
+                        }, {}),
+                    };
 
                     const customScalars = document.definitions.reduce((r, def) => {
                         if (def.kind !== "ScalarTypeDefinition") {
