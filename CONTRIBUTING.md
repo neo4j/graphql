@@ -7,8 +7,6 @@ We also provide areas specifically for community contributions, in particular th
 There's an active [Neo4j Online Community](https://community.neo4j.com/) where we work directly with the community.
 If you're not already a member, sign up!
 
-> This is a TypeScript Monorepo managed with [lerna](https://github.com/lerna/lerna) & [Yarn Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
-
 ## Need to raise an issue?
 
 Where you raise an issue depends largely on the nature of the problem.
@@ -29,7 +27,30 @@ Include as much information as you can in any request you make:
 -   What errors are you seeing?
 -   What solutions have you tried already?
 
+## Submitting your contribution
+
+If you want to contribute a pull request, we have a little bit of process you'll need to follow:
+
+-   Do all your work in a personal fork of the original repository
+-   Create a branch (with a useful name) for your contribution
+-   Make sure you're familiar with the appropriate coding style (this varies by language so ask if you're in doubt)
+-   Include tests if appropriate (obviously not necessary for documentation changes)
+-   Take a moment to read and sign our [CLA](http://neo4j.com/developer/cla)
+-   Include a detailed PR description answering the; what, why, and how of your contribution
+
+We can't guarantee that we'll accept pull requests and may ask you to make some changes before they go in.
+Occasionally, we might also have logistical, commercial, or legal reasons why we can't accept your work but we'll try to find an alternative way for you to contribute in that case.
+
+## Got an idea for a new project?
+
+If you have an idea for a new tool or library, start by talking to other people in the community.
+Chances are that someone has a similar idea or may have already started working on it.
+The best software comes from getting like minds together to solve a problem.
+And we'll do our best to help you promote and co-ordinate your Neo ecosystem projects.
+
 ## Getting started locally
+
+> This is a TypeScript Monorepo managed with [lerna](https://github.com/lerna/lerna) & [Yarn Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
 
 ### Forking
 
@@ -54,27 +75,6 @@ $ yarn
 ### Linting
 
 This library uses eslint with AirBnb style. Please use either use a IDE or format your code before submitting a PR. The recommend setup would be VSCode and Prettier.
-
-## Submitting your contribution
-
-If you want to contribute a pull request, we have a little bit of process you'll need to follow:
-
--   Do all your work in a personal fork of the original repository
--   Create a branch (with a useful name) for your contribution
--   Make sure you're familiar with the appropriate coding style (this varies by language so ask if you're in doubt)
--   Include tests if appropriate (obviously not necessary for documentation changes)
--   Take a moment to read and sign our [CLA](http://neo4j.com/developer/cla)
--   Include a detailed PR description answering the; what, why, and how of your contribution
-
-We can't guarantee that we'll accept pull requests and may ask you to make some changes before they go in.
-Occasionally, we might also have logistical, commercial, or legal reasons why we can't accept your work but we'll try to find an alternative way for you to contribute in that case.
-
-## Got an idea for a new project?
-
-If you have an idea for a new tool or library, start by talking to other people in the community.
-Chances are that someone has a similar idea or may have already started working on it.
-The best software comes from getting like minds together to solve a problem.
-And we'll do our best to help you promote and co-ordinate your Neo ecosystem projects.
 
 ## Further reading
 
