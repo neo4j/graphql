@@ -4,7 +4,8 @@
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
-        "graphql"
+        "graphql",
+        "server"
     ],
     "license": "Apache-2.0",
     "bugs": {
