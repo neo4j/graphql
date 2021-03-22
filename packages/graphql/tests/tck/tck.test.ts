@@ -25,6 +25,7 @@ const TCK_DIR = path.join(__dirname, "tck-test-files");
 
 beforeAll(() => {
     process.env.JWT_SECRET = "secret";
+    process.env.TZ = "Etc/UTC";
 });
 
 afterAll(() => {
