@@ -296,7 +296,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     name: String
                     password: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -324,7 +324,7 @@ describe("auth/is-authenticated", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { id: "${userId}" }, connect: { posts: { where: { id: "${postId}" } } }) {
+                    updateUsers(where: { id: "${userId}" }, connect: { posts: { where: { id: "${postId}" } } }) {
                         users {
                             id
                         }
@@ -372,7 +372,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     name: String
                     password: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User
@@ -400,7 +400,7 @@ describe("auth/is-authenticated", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { id: "${userId}" }, disconnect: { posts: { where: { id: "${postId}" } } }) {
+                    updateUsers(where: { id: "${userId}" }, disconnect: { posts: { where: { id: "${postId}" } } }) {
                         users {
                             id
                         }
@@ -484,7 +484,7 @@ describe("auth/is-authenticated", () => {
                 type User {
                     id: ID
                     name: String
-                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post @auth(rules: [{
@@ -543,7 +543,7 @@ describe("auth/is-authenticated", () => {
             const session = driver.session({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
-                type User @exclude(operations: "*") {
+                type User @exclude {
                     id: ID
                     name: String
                 }

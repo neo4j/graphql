@@ -35,6 +35,7 @@ import getCustomResolvers from "./get-custom-resolvers";
 import getObjFieldMeta from "./get-obj-field-meta";
 import * as point from "./point";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
+import validateTypeDefs from "./validation";
 
 function makeAugmentedSchema(
     neoSchema: Neo4jGraphQL
@@ -44,6 +45,9 @@ function makeAugmentedSchema(
             ? (neoSchema.input.typeDefs as string[])
             : [neoSchema.input.typeDefs as string]
     );
+
+    validateTypeDefs(document);
+
     const composer = new SchemaComposer();
 
     // graphql-compose will break if the Point and CartesianPoint types are created but not used,
@@ -124,7 +128,7 @@ function makeAugmentedSchema(
 
         let exclude: Exclude;
         if (excludeDirective) {
-            exclude = parseExcludeDirective(excludeDirective, definition.name.value);
+            exclude = parseExcludeDirective(excludeDirective);
         }
 
         const nodeFields = getObjFieldMeta({

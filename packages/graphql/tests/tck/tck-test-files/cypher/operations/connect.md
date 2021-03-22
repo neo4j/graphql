@@ -8,9 +8,9 @@ Schema:
 type Product {
     id: ID!
     name: String
-    sizes: [Size] @relationship(type: "HAS_SIZE", direction: "OUT")
-    colors: [Color] @relationship(type: "HAS_COLOR", direction: "OUT")
-    photos: [Photo] @relationship(type: "HAS_PHOTO", direction: "OUT")
+    sizes: [Size] @relationship(type: "HAS_SIZE", direction: OUT)
+    colors: [Color] @relationship(type: "HAS_COLOR", direction: OUT)
+    photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
 }
 
 type Size {
@@ -21,14 +21,14 @@ type Size {
 type Color {
     id: ID!
     name: String!
-    photos: [Photo] @relationship(type: "OF_COLOR", direction: "IN")
+    photos: [Photo] @relationship(type: "OF_COLOR", direction: IN)
 }
 
 type Photo {
     id: ID!
     description: String!
     url: String!
-    color: Color @relationship(type: "OF_COLOR", direction: "OUT")
+    color: Color @relationship(type: "OF_COLOR", direction: OUT)
 }
 ```
 

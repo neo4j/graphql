@@ -1,5 +1,5 @@
 import { FieldDefinitionNode } from "graphql";
-import getRelationshipMeta from "../../../src/schema/get-relationship-meta";
+import getRelationshipMeta from "./get-relationship-meta";
 
 describe("getRelationshipMeta", () => {
     test("should return undefined if no directive found", () => {
@@ -87,7 +87,7 @@ describe("getRelationshipMeta", () => {
             ],
         };
 
-        expect(() => getRelationshipMeta(field)).toThrow("@relationship direction not a string");
+        expect(() => getRelationshipMeta(field)).toThrow("@relationship direction not a enum");
     });
 
     test("should throw direction invalid", () => {
@@ -103,7 +103,7 @@ describe("getRelationshipMeta", () => {
                             // @ts-ignore
                             name: { value: "direction" },
                             // @ts-ignore
-                            value: { kind: "StringValue", value: "INVALID!" },
+                            value: { kind: "EnumValue", value: "INVALID!" },
                         },
                     ],
                 },
@@ -138,7 +138,7 @@ describe("getRelationshipMeta", () => {
                             // @ts-ignore
                             name: { value: "direction" },
                             // @ts-ignore
-                            value: { kind: "StringValue", value: "IN" },
+                            value: { kind: "EnumValue", value: "IN" },
                         },
                     ],
                 },
@@ -173,7 +173,7 @@ describe("getRelationshipMeta", () => {
                             // @ts-ignore
                             name: { value: "direction" },
                             // @ts-ignore
-                            value: { kind: "StringValue", value: "IN" },
+                            value: { kind: "EnumValue", value: "IN" },
                         },
                         {
                             // @ts-ignore
@@ -214,7 +214,7 @@ describe("getRelationshipMeta", () => {
                             // @ts-ignore
                             name: { value: "direction" },
                             // @ts-ignore
-                            value: { kind: "StringValue", value: "IN" },
+                            value: { kind: "EnumValue", value: "IN" },
                         },
                         {
                             // @ts-ignore

@@ -84,12 +84,12 @@ describe("auth/where", () => {
             const typeDefs = `
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: "IN")
+                    creator: User @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 extend type Post @auth(rules: [{ operations: ["read"], where: { creator: { id: "$jwt.sub" } } }])
@@ -165,14 +165,14 @@ describe("auth/where", () => {
 
                     type User {
                         id: ID
-                        content: [Content] @relationship(type: "HAS_CONTENT", direction: "OUT")
+                        content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
                     }
-    
+
                     type Post {
                         id: ID
-                        creator: User @relationship(type: "HAS_CONTENT", direction: "IN")
+                        creator: User @relationship(type: "HAS_CONTENT", direction: IN)
                     }
-    
+
                     extend type Post @auth(rules: [{ operations: ["read"], where: { creator: { id: "$jwt.sub" } } }])
                     extend type User @auth(rules: [{ operations: ["read"], where: { id: "$jwt.sub" } }])
                 `;
@@ -377,12 +377,12 @@ describe("auth/where", () => {
             const typeDefs = `
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: "OUT")
+                    creator: User @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User @auth(rules: [{ operations: ["connect"], where: { id: "$jwt.sub" } }])
@@ -448,12 +448,12 @@ describe("auth/where", () => {
             const typeDefs = `
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: "OUT")
+                    creator: User @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User @auth(rules: [{ operations: ["connect"], where: { id: "$jwt.sub" } }])
@@ -470,7 +470,7 @@ describe("auth/where", () => {
                 mutation {
                     updateUsers(connect:{posts:{where:{id: "${postId}"}}}) {
                         users {
-                            id 
+                            id
                             posts {
                                 id
                             }
@@ -521,12 +521,12 @@ describe("auth/where", () => {
             const typeDefs = `
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: "OUT")
+                    creator: User @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User @auth(rules: [{ operations: ["disconnect"], where: { id: "$jwt.sub" } }])
@@ -591,12 +591,12 @@ describe("auth/where", () => {
             const typeDefs = `
                 type User {
                     id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
+                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type Post {
                     id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: "OUT")
+                    creator: User @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 extend type User @auth(rules: [{ operations: ["disconnect"], where: { id: "$jwt.sub" } }])
@@ -613,7 +613,7 @@ describe("auth/where", () => {
                 mutation {
                     updateUsers(disconnect:{posts:{where:{id: "${postId}"}}}) {
                         users {
-                            id 
+                            id
                             posts {
                                 id
                             }

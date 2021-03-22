@@ -10,14 +10,14 @@ union Search = Post
 type User {
     id: ID
     name: String
-    posts: [Post] @relationship(type: "HAS_POST", direction: "OUT")
-    content: [Search] @relationship(type: "HAS_POST", direction: "OUT") # something to test unions
+    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+    content: [Search] @relationship(type: "HAS_POST", direction: OUT) # something to test unions
 }
 
 type Post {
     id: ID
     content: String
-    creator: User @relationship(type: "HAS_POST", direction: "IN")
+    creator: User @relationship(type: "HAS_POST", direction: IN)
 }
 
 extend type User
@@ -164,11 +164,11 @@ RETURN this { .id } as this
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
-RETURN this { 
-    .id, 
-    posts: [ (this)-[:HAS_POST]->(this_posts:Post) WHERE EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts_auth_where0_creator_id) | this_posts { .content } ] 
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
+RETURN this {
+    .id,
+    posts: [ (this)-[:HAS_POST]->(this_posts:Post) WHERE EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts_auth_where0_creator_id) | this_posts { .content } ]
 } as this
 ```
 
@@ -210,12 +210,12 @@ RETURN this {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-RETURN this { 
-    .id, 
-    posts: [ (this)-[:HAS_POST]->(this_posts:Post) WHERE this_posts.content = $this_posts_content AND EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts_auth_where0_creator_id) | this_posts { .content } ] 
+RETURN this {
+    .id,
+    posts: [ (this)-[:HAS_POST]->(this_posts:Post) WHERE this_posts.content = $this_posts_content AND EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts_auth_where0_creator_id) | this_posts { .content } ]
 } as this
 ```
 
@@ -260,11 +260,11 @@ RETURN this {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
-RETURN this { 
-    .id, 
-    content: [(this)-[:HAS_POST]->(this_content) WHERE "Post" IN labels(this_content) | head( [ this_content IN [this_content] WHERE "Post" IN labels (this_content) AND EXISTS((this_content)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_content)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_content_Post_auth_where0_creator_id) | this_content { __resolveType: "Post", .id } ] ) ] 
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
+RETURN this {
+    .id,
+    content: [(this)-[:HAS_POST]->(this_content) WHERE "Post" IN labels(this_content) | head( [ this_content IN [this_content] WHERE "Post" IN labels (this_content) AND EXISTS((this_content)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_content)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_content_Post_auth_where0_creator_id) | this_content { __resolveType: "Post", .id } ] ) ]
 } as this
 ```
 
@@ -305,9 +305,9 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
-SET this.name = $this_update_name 
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
+SET this.name = $this_update_name
 RETURN this { .id } AS this
 ```
 
@@ -348,9 +348,9 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE this.name = $this_name AND EXISTS(this.id) AND this.id = $this_auth_where0_id 
-SET this.name = $this_update_name 
+MATCH (this:User)
+WHERE this.name = $this_name AND EXISTS(this.id) AND this.id = $this_auth_where0_id
+SET this.name = $this_update_name
 RETURN this { .id } AS this
 ```
 
@@ -395,17 +395,17 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post) 
-WHERE EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_auth_where0_creator_id) 
+WITH this OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
+WHERE EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_auth_where0_creator_id)
 
-CALL apoc.do.when(this_posts0 IS NOT NULL, " SET this_posts0.id = $this_update_posts0_id RETURN count(*) ", "", {this:this, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id}) YIELD value as _ 
+CALL apoc.do.when(this_posts0 IS NOT NULL, " SET this_posts0.id = $this_update_posts0_id RETURN count(*) ", "", {this:this, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id}) YIELD value as _
 
-RETURN this { 
-    .id, 
-    posts: [ (this)-[:HAS_POST]->(this_posts:Post) WHERE EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts_auth_where0_creator_id) | this_posts { .id } ] 
+RETURN this {
+    .id,
+    posts: [ (this)-[:HAS_POST]->(this_posts:Post) WHERE EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts_auth_where0_creator_id) | this_posts { .id } ]
 } AS this
 ```
 
@@ -458,8 +458,8 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 DETACH DELETE this
 ```
 
@@ -497,8 +497,8 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE this.name = $this_name AND EXISTS(this.id) AND this.id = $this_auth_where0_id 
+MATCH (this:User)
+WHERE this.name = $this_name AND EXISTS(this.id) AND this.id = $this_auth_where0_id
 DETACH DELETE this
 ```
 
@@ -537,14 +537,14 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this 
-OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post) 
-WHERE EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_auth_where0_creator_id) 
+WITH this
+OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
+WHERE EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_posts0 ) 
+FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_posts0 )
 
 DETACH DELETE this
 ```
@@ -595,20 +595,20 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-CALL { 
-    CREATE (this0:User) 
-    SET this0.id = $this0_id 
-    SET this0.name = $this0_name 
-    SET this0.password = $this0_password 
+CALL {
+    CREATE (this0:User)
+    SET this0.id = $this0_id
+    SET this0.name = $this0_name
+    SET this0.password = $this0_password
 
-    WITH this0 
-    OPTIONAL MATCH (this0_posts_connect0:Post) 
-    WHERE EXISTS((this0_posts_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts_connect0_auth_where0_creator_id) 
-    
-    FOREACH(_ IN CASE this0_posts_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0) ) 
-    
-    RETURN this0 
-} 
+    WITH this0
+    OPTIONAL MATCH (this0_posts_connect0:Post)
+    WHERE EXISTS((this0_posts_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts_connect0_auth_where0_creator_id)
+
+    FOREACH(_ IN CASE this0_posts_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0) )
+
+    RETURN this0
+}
 
 RETURN this0 { .id } AS this0
 ```
@@ -661,19 +661,19 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-CALL { 
-    CREATE (this0:User) 
-    SET this0.id = $this0_id 
-    SET this0.name = $this0_name 
-    SET this0.password = $this0_password 
-    
-    WITH this0 
-    OPTIONAL MATCH (this0_posts_connect0:Post) 
-    WHERE this0_posts_connect0.id = $this0_posts_connect0_id AND EXISTS((this0_posts_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts_connect0_auth_where0_creator_id) 
-    
-    FOREACH(_ IN CASE this0_posts_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0) ) 
-    RETURN this0 
-} 
+CALL {
+    CREATE (this0:User)
+    SET this0.id = $this0_id
+    SET this0.name = $this0_name
+    SET this0.password = $this0_password
+
+    WITH this0
+    OPTIONAL MATCH (this0_posts_connect0:Post)
+    WHERE this0_posts_connect0.id = $this0_posts_connect0_id AND EXISTS((this0_posts_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts_connect0_auth_where0_creator_id)
+
+    FOREACH(_ IN CASE this0_posts_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0) )
+    RETURN this0
+}
 
 RETURN this0 { .id } AS this0
 ```
@@ -718,18 +718,18 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
+MATCH (this:User)
 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+WITH this
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this 
-OPTIONAL MATCH (this_posts0_connect0:Post) 
-WHERE EXISTS((this_posts0_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_connect0_auth_where0_creator_id) 
+WITH this
+OPTIONAL MATCH (this_posts0_connect0:Post)
+WHERE EXISTS((this_posts0_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_connect0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_posts0_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0) ) 
+FOREACH(_ IN CASE this_posts0_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0) )
 
 RETURN this { .id } AS this
 ```
@@ -771,17 +771,17 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+WITH this
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this 
-OPTIONAL MATCH (this_posts0_connect0:Post) 
-WHERE this_posts0_connect0.id = $this_posts0_connect0_id AND EXISTS((this_posts0_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_connect0_auth_where0_creator_id) 
+WITH this
+OPTIONAL MATCH (this_posts0_connect0:Post)
+WHERE this_posts0_connect0.id = $this_posts0_connect0_id AND EXISTS((this_posts0_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_connect0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_posts0_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0) ) 
+FOREACH(_ IN CASE this_posts0_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0) )
 
 RETURN this { .id } AS this
 ```
@@ -824,17 +824,17 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+WITH this
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this 
-OPTIONAL MATCH (this_connect_posts0:Post) 
-WHERE EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_posts0_auth_where0_creator_id) 
+WITH this
+OPTIONAL MATCH (this_connect_posts0:Post)
+WHERE EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_posts0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0) ) 
+FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0) )
 
 RETURN this { .id } AS this
 ```
@@ -876,17 +876,17 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+WITH this
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this 
-OPTIONAL MATCH (this_connect_posts0:Post) 
-WHERE this_connect_posts0.id = $this_connect_posts0_id AND EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_posts0_auth_where0_creator_id) 
+WITH this
+OPTIONAL MATCH (this_connect_posts0:Post)
+WHERE this_connect_posts0.id = $this_connect_posts0_id AND EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_posts0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0) ) 
+FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0) )
 
 RETURN this { .id } AS this
 ```
@@ -929,17 +929,17 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+WITH this
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this 
-OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post) 
-WHERE EXISTS((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id) 
+WITH this
+OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
+WHERE EXISTS((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | DELETE this_posts0_disconnect0_rel ) 
+FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | DELETE this_posts0_disconnect0_rel )
 
 RETURN this { .id } AS this
 ```
@@ -970,7 +970,9 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateUsers(update: { posts: { disconnect: { where: { id: "new-id" } } } }) {
+    updateUsers(
+        update: { posts: { disconnect: { where: { id: "new-id" } } } }
+    ) {
         users {
             id
         }
@@ -981,16 +983,16 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+WITH this
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this 
-OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post) WHERE this_posts0_disconnect0.id = $this_posts0_disconnect0_id AND EXISTS((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id) 
+WITH this
+OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post) WHERE this_posts0_disconnect0.id = $this_posts0_disconnect0_id AND EXISTS((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | DELETE this_posts0_disconnect0_rel ) 
+FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | DELETE this_posts0_disconnect0_rel )
 
 RETURN this { .id } AS this
 ```
@@ -1033,15 +1035,15 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id WITH this OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post) WHERE EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_disconnect_posts0_auth_where0_creator_id) 
+WITH this
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id WITH this OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post) WHERE EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_disconnect_posts0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END | 
-    DELETE this_disconnect_posts0_rel 
-) 
+FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
+    DELETE this_disconnect_posts0_rel
+)
 
 RETURN this { .id } AS this
 ```
@@ -1083,14 +1085,14 @@ mutation {
 **Expected Cypher output**
 
 ```cypher
-MATCH (this:User) 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id 
-WITH this 
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id WITH this OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post) WHERE this_disconnect_posts0.id = $this_disconnect_posts0_id AND EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_disconnect_posts0_auth_where0_creator_id) 
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
+WITH this
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id WITH this OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post) WHERE this_disconnect_posts0.id = $this_disconnect_posts0_id AND EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_disconnect_posts0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END | 
+FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
     DELETE this_disconnect_posts0_rel
-) 
+)
 
 RETURN this { .id } AS this
 ```

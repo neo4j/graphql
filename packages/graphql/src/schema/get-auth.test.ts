@@ -1,5 +1,5 @@
 import { ObjectTypeDefinitionNode, parse } from "graphql";
-import getAuth from "../../../src/schema/get-auth";
+import getAuth from "./get-auth";
 
 describe("getAuth", () => {
     test("should throw rules required", () => {

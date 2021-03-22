@@ -67,7 +67,7 @@ describe("autogenerate", () => {
             type Movie {
                 id: ID! @autogenerate
                 name: String
-                genres: [Genre] @relationship(type: "HAS_GENRE", direction: "OUT")
+                genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
             }
         `;
 

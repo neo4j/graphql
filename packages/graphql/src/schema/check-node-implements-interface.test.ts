@@ -1,5 +1,5 @@
 import { InterfaceTypeDefinitionNode, ObjectTypeDefinitionNode, parse } from "graphql";
-import checkNodeImplementsInterfaces from "../../../src/schema/check-node-implements-interfaces";
+import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 
 describe("checkNodeImplementsInterfaces", () => {
     test("should throw incorrect with field", () => {

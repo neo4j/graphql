@@ -1,37 +1,6 @@
-import { GraphQLDirective, DirectiveLocation, GraphQLString, GraphQLNonNull, GraphQLScalarType, Kind } from "graphql";
-
-export const ScalarType = new GraphQLScalarType({
-    name: "Scalar",
-    description: "Int | Float | String | Boolean | ID | DateTime",
-    serialize(value) {
-        if (!["string", "number", "boolean"].includes(typeof value)) {
-            throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime");
-        }
-
-        return value;
-    },
-    parseValue(value) {
-        if (!["string", "number", "boolean"].includes(typeof value)) {
-            throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime");
-        }
-
-        return value;
-    },
-    parseLiteral(ast) {
-        switch (ast.kind) {
-            case Kind.INT:
-                return parseInt(ast.value, 10);
-            case Kind.FLOAT:
-                return parseFloat(ast.value);
-            case Kind.STRING:
-                return ast.value;
-            case Kind.BOOLEAN:
-                return ast.value;
-            default:
-                throw new Error("Value must be one of types: Int | Float | String | Boolean | ID | DateTime");
-        }
-    },
-});
+import { GraphQLDirective, DirectiveLocation, GraphQLString, GraphQLNonNull, GraphQLList } from "graphql";
+import { ExcludeOperationEnum, RelationshipDirectionEnum } from "./enums";
+import { ScalarType } from "./scalars";
 
 export const coalesceDirective = new GraphQLDirective({
     name: "coalesce",
@@ -75,6 +44,18 @@ export const defaultDirective = new GraphQLDirective({
     },
 });
 
+export const excludeDirective = new GraphQLDirective({
+    name: "exclude",
+    description:
+        "Instructs @neo4j/graphql to exclude the specified operations from query and mutation generation. If used without an argument, no queries or mutations will be generated for this type.",
+    locations: [DirectiveLocation.OBJECT],
+    args: {
+        operations: {
+            type: new GraphQLList(new GraphQLNonNull(ExcludeOperationEnum)),
+        },
+    },
+});
+
 export const ignoreDirective = new GraphQLDirective({
     name: "ignore",
     description:
@@ -93,6 +74,21 @@ export const readonlyDirective = new GraphQLDirective({
     description:
         "Instructs @neo4j/graphql to only include a field in generated input type for creating, and in the object type within which the directive is applied.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
+});
+
+export const relationshipDirective = new GraphQLDirective({
+    name: "relationship",
+    description:
+        "Instructs @neo4j/graphql to treat this field as a relationship. Opens up the ability to create and connect on this field.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        type: {
+            type: new GraphQLNonNull(GraphQLString),
+        },
+        direction: {
+            type: new GraphQLNonNull(RelationshipDirectionEnum),
+        },
+    },
 });
 
 export const writeonlyDirective = new GraphQLDirective({

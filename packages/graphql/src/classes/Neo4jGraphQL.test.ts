@@ -1,4 +1,4 @@
-import Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
+import Neo4jGraphQL from "./Neo4jGraphQL";
 
 describe("Neo4jGraphQL", () => {
     test("should construct", () => {

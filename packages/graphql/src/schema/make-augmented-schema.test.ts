@@ -1,8 +1,8 @@
 import camelCase from "camelcase";
 import { printSchema, parse, ObjectTypeDefinitionNode, NamedTypeNode, ListTypeNode, NonNullTypeNode } from "graphql";
 import { pluralize } from "graphql-compose";
-import makeAugmentedSchema from "../../../src/schema/make-augmented-schema";
-import { Node } from "../../../src/classes";
+import makeAugmentedSchema from "./make-augmented-schema";
+import { Node } from "../classes";
 
 describe("makeAugmentedSchema", () => {
     test("should be a function", () => {
@@ -13,12 +13,12 @@ describe("makeAugmentedSchema", () => {
         const typeDefs = `
             type Actor {
                 name: String
-                movies: [Movie] @relationship(type: "ACTED_IN", direction: "OUT")
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie {
                 title: String!
-                actors: [Actor] @relationship(type: "ACTED_IN", direction: "IN")
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
@@ -71,7 +71,7 @@ describe("makeAugmentedSchema", () => {
 
                 type Movie {
                     title: String!
-                    nodes: [Node] @relationship(type: "NODE", direction: "IN")
+                    nodes: [Node] @relationship(type: "NODE", direction: IN)
                 }
             `;
 
@@ -83,7 +83,7 @@ describe("makeAugmentedSchema", () => {
         const typeDefs = `
             interface Node @auth(rules: [{operations: ["read"], allow: "*"}]) {
                 id: ID
-                relation: [Movie] @relationship(type: "SOME_TYPE", direction: "OUT")
+                relation: [Movie] @relationship(type: "SOME_TYPE", direction: OUT)
                 cypher: [Movie] @cypher(statement: "MATCH (a) RETURN a")
             }
 
@@ -98,28 +98,12 @@ describe("makeAugmentedSchema", () => {
         );
     });
 
-    test("should throw relationship union type String must be an object type", () => {
-        const typeDefs = `
-                union Test = String | Movie
-
-                type Movie  {
-                    title: String!
-                    relation: [Test] @relationship(type: "SOME_TYPE", direction: "OUT")
-                }
-            `;
-
-        // @ts-ignore
-        expect(() => makeAugmentedSchema({ input: { typeDefs } })).toThrow(
-            "relationship union type String must be an object type"
-        );
-    });
-
     test("should throw cannot auto-generate a non ID field", () => {
         const typeDefs = `
-                type Movie  {
-                    name: String! @autogenerate
-                }
-            `;
+            type Movie  {
+                name: String! @autogenerate
+            }
+        `;
 
         // @ts-ignore
         expect(() => makeAugmentedSchema({ input: { typeDefs } })).toThrow("cannot auto-generate a non ID field");
@@ -183,7 +167,7 @@ describe("makeAugmentedSchema", () => {
     test("should throw cannot have auth directive on a relationship", () => {
         const typeDefs = `
                 type Node {
-                    node: Node @relationship(type: "NODE", direction: "OUT") @auth(rules: [{operations: ["create"], roles: ["admin"]}])
+                    node: Node @relationship(type: "NODE", direction: OUT) @auth(rules: [{operations: ["create"], roles: ["admin"]}])
                 }
             `;
 
