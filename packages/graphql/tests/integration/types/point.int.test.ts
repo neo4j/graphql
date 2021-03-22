@@ -2,9 +2,9 @@ import { Driver, int, Session } from "neo4j-driver";
 import faker from "faker";
 import { gql } from "apollo-server";
 import { createTestClient } from "apollo-server-testing";
-import neo4j from "./neo4j";
-import { constructTestServer } from "./utils";
-import { Neo4jGraphQL } from "../../src/classes";
+import neo4j from "../neo4j";
+import { constructTestServer } from "../utils";
+import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("Point", () => {
     let driver: Driver;
