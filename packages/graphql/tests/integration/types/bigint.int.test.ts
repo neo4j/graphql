@@ -124,4 +124,58 @@ describe("BigInt", () => {
             }
         });
     });
+
+    describe("@cypher directive", () => {
+        test("should work returning a BigInt property", async () => {
+            const session = driver.session();
+
+            const name = generate({
+                charset: "alphabetic",
+            });
+
+            const typeDefs = `
+                type File {
+                  name: String!
+                  size: BigInt! @cypher(statement: """
+                      RETURN 9223372036854775807
+                  """)
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            const query = `
+                query {
+                    files(where: { name: "${name}" }) {
+                        name
+                        size
+                    }
+                }
+            `;
+
+            try {
+                await session.run(`
+                   CREATE (f:File)
+                   SET f.name = "${name}"
+               `);
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver },
+                });
+
+                expect(gqlResult.errors).toBeFalsy();
+
+                expect(gqlResult?.data?.files[0]).toEqual({
+                    name,
+                    size: "9223372036854775807",
+                });
+            } finally {
+                await session.close();
+            }
+        });
+    });
 });
