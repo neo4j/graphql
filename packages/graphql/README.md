@@ -2,13 +2,9 @@
 
 [![npm version](https://badge.fury.io/js/%40neo4j%2Fgraphql.svg)](https://badge.fury.io/js/%40neo4j%2Fgraphql)
 
-> Alpha 🏗
-
 A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations.
 
-1. [Introduction](https://github.com/neo4j/graphql-tracker-temp/blob/master/introduction.adoc)
-2. [Reference](https://github.com/neo4j/graphql-tracker-temp/blob/master/reference.adoc)
-3. [Contributing](https://github.com/neo4j/graphql-tracker-temp/blob/master/contributing.adoc)
+1. [Documentation](https://github.com/neo4j/graphql)
 
 ## Installation
 
@@ -22,27 +18,23 @@ $ npm install @neo4j/graphql
 $ npm install graphql neo4j-driver
 ```
 
-## Quick Start
+## Importing
 
-Import libraries using either `import`:
+Our TypeScript source is transpiled into Common JS, this means you can use the `require` syntax;
 
 ```js
-import { Neo4jGraphQL } from "@neo4j/graphql";
-import * as neo4j from "neo4j-driver";
-import { ApolloServer } from "apollo-server";
+const { Neo4jGraphQL } = require("@neo4j/graphql");
 ```
 
-Or `require`:
+## Quick Start
+
+Create schema and serve over port 4000 using Apollo Server:
 
 ```js
 const { Neo4jGraphQL } = require("@neo4j/graphql");
 const neo4j = require("neo4j-driver");
 const { ApolloServer } = require("apollo-server");
-```
 
-Then proceed to create schema objects and serve over port 4000 using Apollo Server:
-
-```js
 const typeDefs = `
     type Movie {
         title: String
@@ -116,7 +108,9 @@ mutation {
                 year: 1999
                 imdbRating: 8.7
                 genres: {
-                    connect: { where: [{ name: "Sci-fi" }, { name: "Action" }] }
+                    connect: {
+                        where: { AND: [{ name: "Sci-fi" }, { name: "Action" }] }
+                    }
                 }
             }
         ]
@@ -139,51 +133,6 @@ query {
         }
     }
 }
-```
-
-## OGM
-
-Use the GraphQL schema language to power an OGM layer.
-
-```js
-import { OGM } from "@neo4j/graphql";
-import * as neo4j from "neo4j/driver";
-
-const driver = neo4j.driver(
-    "bolt://localhost:7687",
-    neo4j.auth.basic("admin", "password")
-);
-
-const typeDefs = `
-    type Movie {
-        title: String
-        year: Int
-        imdbRating: Float
-        genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
-    }
-
-    type Genre {
-        name: String
-        movies: [Movie] @relationship(type: "IN_GENRE", direction: IN)
-    }
-`;
-
-const ogm = new OGM({ typeDefs, driver });
-
-const Movie = ogm.model("Movie");
-
-await Movie.create({
-    input: [
-        {
-            title: "The Matrix"
-            year: 1999
-            imdbRating: 8.7
-            genres: {
-                connect: { where: [{ name: "Sci-fi" }, { name: "Action" }] }
-            }
-        }
-    ]
-});
 ```
 
 ## Auth
@@ -237,18 +186,13 @@ extend type User {
 Use RBAC;
 
 ```graphql
-type CatalogItem @auth(rules: [{ operations: "read", roles: "read:catalog" }]) {
-    id: ID
-    title: String
-}
-
-type Customer @auth(rules: [{ operations: "read", roles: "read:customer" }]) {
+type Customer @auth(rules: [{ operations: "read", roles: ["read:customer"] }]) {
     id: ID
     name: String
-    password: String @auth(rules: [{ operations: "read", roles: "admin" }])
+    password: String @auth(rules: [{ operations: "read", roles: ["admin"] }])
 }
 
-type Invoice @auth(rules: [{ operations: "read", roles: "read:invoice" }]) {
+type Invoice @auth(rules: [{ operations: "read", roles: ["read:invoice"] }]) {
     id: ID
     csv: String
     total: Int
