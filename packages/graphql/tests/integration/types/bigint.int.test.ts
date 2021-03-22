@@ -71,4 +71,57 @@ describe("BigInt", () => {
             }
         });
     });
+
+    describe("read", () => {
+        test("should successfully query an node with a BigInt property", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type File {
+                  name: String!
+                  size: BigInt!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            const name = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                query {
+                    files(where: { name: "${name}" }) {
+                        name
+                        size
+                    }
+                }
+            `;
+
+            try {
+                await session.run(`
+                   CREATE (f:File)
+                   SET f.name = "${name}"
+                   SET f.size = 9223372036854775807
+               `);
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver },
+                });
+
+                expect(gqlResult.errors).toBeFalsy();
+
+                expect(gqlResult?.data?.files[0]).toEqual({
+                    name,
+                    size: "9223372036854775807",
+                });
+            } finally {
+                await session.close();
+            }
+        });
+    });
 });
