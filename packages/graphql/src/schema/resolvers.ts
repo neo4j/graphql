@@ -29,12 +29,12 @@ function prepareContextAndGetDriver({ context, neoSchema }: { context: any; neoS
 
 export function updateResolver({ node, neoSchema }: { node: Node; neoSchema: Neo4jGraphQL }) {
     async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
-        const driver = prepareContextAndGetDriver({ context, neoSchema });
+        prepareContextAndGetDriver({ context, neoSchema });
         const [cypher, params] = translate({ context, resolveInfo });
         const result = await execute({
             cypher,
             params,
-            driver,
+            driver: context.driver,
             defaultAccessMode: "WRITE",
             neoSchema,
             graphQLContext: context,
@@ -63,12 +63,12 @@ export function updateResolver({ node, neoSchema }: { node: Node; neoSchema: Neo
 
 export function deleteResolver({ node, neoSchema }: { node: Node; neoSchema: Neo4jGraphQL }) {
     async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
-        const driver = prepareContextAndGetDriver({ context, neoSchema });
+        prepareContextAndGetDriver({ context, neoSchema });
         const [cypher, params] = translate({ context, resolveInfo });
         const result = await execute({
             cypher,
             params,
-            driver,
+            driver: context.driver,
             defaultAccessMode: "WRITE",
             neoSchema,
             statistics: true,
@@ -94,12 +94,12 @@ export function deleteResolver({ node, neoSchema }: { node: Node; neoSchema: Neo
 
 export function createResolver({ node, neoSchema }: { node: Node; neoSchema: Neo4jGraphQL }) {
     async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
-        const driver = prepareContextAndGetDriver({ context, neoSchema });
+        prepareContextAndGetDriver({ context, neoSchema });
         const [cypher, params] = translate({ context, resolveInfo });
         const result = await execute({
             cypher,
             params,
-            driver,
+            driver: context.driver,
             defaultAccessMode: "WRITE",
             neoSchema,
             graphQLContext: context,
@@ -119,12 +119,12 @@ export function createResolver({ node, neoSchema }: { node: Node; neoSchema: Neo
 
 export function findResolver({ node, neoSchema }: { node: Node; neoSchema: Neo4jGraphQL }) {
     async function resolve(_root: any, _args: any, context: any, resolveInfo: GraphQLResolveInfo) {
-        const driver = prepareContextAndGetDriver({ context, neoSchema });
+        prepareContextAndGetDriver({ context, neoSchema });
         const [cypher, params] = translate({ context, resolveInfo });
         const result = await execute({
             cypher,
             params,
-            driver,
+            driver: context.driver,
             defaultAccessMode: "READ",
             neoSchema,
             graphQLContext: context,
@@ -153,12 +153,12 @@ export function cypherResolver({
     neoSchema: Neo4jGraphQL;
 }) {
     async function resolve(_root: any, args: any, graphQLContext: any) {
-        const driver = prepareContextAndGetDriver({ context: graphQLContext, neoSchema });
+        prepareContextAndGetDriver({ context: graphQLContext, neoSchema });
 
         const context = new Context({
             graphQLContext,
             neoSchema,
-            driver,
+            driver: graphQLContext.driver,
         });
 
         const cypherStrs: string[] = [];
@@ -175,7 +175,7 @@ export function cypherResolver({
         const result = await execute({
             cypher: cypherStrs.join("\n"),
             params,
-            driver,
+            driver: graphQLContext.driver,
             defaultAccessMode: "WRITE",
             neoSchema,
             raw: true,
