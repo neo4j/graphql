@@ -29,7 +29,7 @@ const { OGM, Model } = require("@neo4j/graphql-ogm");
 ### Quick Start
 
 ```js
-const { OGM } = require("@neo4j/graphql");
+const { OGM } = require("@neo4j/graphql-ogm");
 const neo4j = require("neo4j-driver");
 
 const typeDefs = `

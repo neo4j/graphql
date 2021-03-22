@@ -10,7 +10,7 @@ Generate your normal GraphQL schema & use the exposed ``.model` method to receiv
 
 [source, javascript]
 ----
-import { OGM } from "@neo4j/graphql";
+import { OGM } from "@neo4j/graphql-ogm";
 import * as neo4j from "neo4j-driver";
 
 const typeDefs = `
@@ -56,7 +56,8 @@ Using the password field is a great example here. In your application, you would
 
 [source, javascript]
 ----
-import { Neo4jGraphQL, OGM } from "@neo4j/graphql";
+import { Neo4jGraphQL  } from "@neo4j/graphql";
+import { Neo4jGraphQL, OGM } from "@neo4j/graphql-ogm";
 import * as neo4j from "neo4j-driver";
 
 const driver = neo4j.driver(
@@ -137,7 +138,7 @@ This means that by default, querying for Node(s), you would only get the `.id` a
 
 [source, javascript]
 ----
-import { OGM } from "@neo4j/graphql";
+import { OGM } from "@neo4j/graphql-ogm";
 import * as neo4j from "neo4j-driver";
 
 const driver = neo4j.driver(
@@ -178,7 +179,7 @@ const nodes = await Node.find({ selectionSet });
 
 [source, javascript]
 ----
-import { OGM } from "@neo4j/graphql";
+import { OGM } from "@neo4j/graphql-ogm";
 import * as neo4j from "neo4j-driver";
 
 const driver = neo4j.driver(
