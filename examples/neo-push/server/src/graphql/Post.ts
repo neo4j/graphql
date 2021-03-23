@@ -54,6 +54,10 @@ export const typeDefs = gql`
                     }
                 }
                 { operations: ["connect"], isAuthenticated: true }
+                {
+                    operations: ["delete", "disconnect"]
+                    allow: { OR: [{ author: { id: "$jwt.sub" } }, { blog: { creator: { id: "$jwt.sub" } } }] }
+                }
             ]
         )
 `;
