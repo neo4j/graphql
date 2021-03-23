@@ -65,7 +65,7 @@ If you want to run this Blog locally follow the steps below. When it comes to [C
 
 ### How to configure environment variables ?
 
-Each package contains a `./env.example` file. Copy this file, to the same directory, at `./.env` and adjust configuration to suit your local machine although the defaults may be fine.
+Each client and server folders contains a `./env.example` file. Copy this file, to the same directory, at `./.env` and adjust configuration to suit your local machine although the defaults may be fine.
 
 ### How to start Neo4j ?
 
@@ -82,7 +82,7 @@ $ git clone https://github.com/neo4j/graphql
 Install
 
 ```
-$ cd graphql && yarn
+$ cd graphql && yarn install
 ```
 
 => [Configure environment variables](#how-to-configure-environment-variables-) <=
