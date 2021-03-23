@@ -1,0 +1,65 @@
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+  
+
+/* Markdown */
+.hljs {
+    font-size: 1.0rem !important;
+    line-height: 1.4rem;
+    padding: 0.3rem;
+}
+code {
+    font-weight: 100;
+}
+.CodeMirror-lines {
+    overflow-wrap: break-word !important;
+}
+.markdown-component > p > img {
+    max-width: 100% !important;
+}
+.markdown-component > h1, h2, h3, h4, h5 {
+    margin-top: 0.1rem;
+    margin-bottom: 0.1rem;
+} 
+.markdown-component > h1 {
+    font-size: 1.3rem;
+}
+.markdown-component > h2 {
+    font-size: 1.2rem;
+}
+.markdown-component > h3 {
+    font-size: 1.1rem;
+}
+.markdown-component > h4 {
+    font-size: 1.0rem;
+}
+.markdown-component > h5 {
+    font-size: 0.9rem;
+}
+.markdown-component > h6 {
+    font-size: 0.8rem;
+}
+blockquote {
+    color: #666;
+    margin: 0;
+    padding-left: 3em;
+    border-left: 0.5em #eee solid;
+}
+tr {
+  border-top: 1px solid #c6cbd1;
+  background: #fff;
+}
+th,
+td {
+  padding: 6px 13px;
+  border: 1px solid #dfe2e5;
+}
+table tr:nth-child(2n) {
+  background: #f6f8fa;
+}
+  
+  
