@@ -1738,7 +1738,6 @@ __metadata:
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.6
     apollo-server: 2.21.0
-    apollo-server-testing: 2.21.0
     camelcase: 6.2.0
     deep-equal: 2.0.5
     dot-prop: 6.0.1
@@ -3132,17 +3131,6 @@ __metadata:
   peerDependencies:
     graphql: ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
   checksum: eff9ec5f0cc36a4635c3324e98cdf3c4746ad5f2d04c1799ce15d6173743f8e6ec80c22825c2d51841083219a82cc2c9686ac84979999cb74140e9329a087394
-  languageName: node
-  linkType: hard
-
-"apollo-server-testing@npm:2.21.0":
-  version: 2.21.0
-  resolution: "apollo-server-testing@npm:2.21.0"
-  dependencies:
-    apollo-server-core: ^2.21.0
-  peerDependencies:
-    graphql: ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
-  checksum: 19754f75abf76f4cc21b11de87fe52c131fadddebfbdf7631a6b02272a962a883f17d605aa15ad090e8448e69631fb567e4910353649a58ca583e7a970d4a8df
   languageName: node
   linkType: hard
 
