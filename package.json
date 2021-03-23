@@ -7,7 +7,8 @@
     },
     "private": true,
     "workspaces": [
-        "packages/*"
+        "packages/*",
+        "examples/neo-push/*"
     ],
     "scripts": {
         "build": "lerna run build --stream",
@@ -18,11 +19,14 @@
         "test:pr": "run-s lint test",
         "prepare": "run-s lerna clean -y lerna bootstrap -y",
         "generate:docs": "lerna run generate:doc",
-        "watch": "lerna run watch --stream --parallel"
+        "watch": "lerna run watch --stream --parallel",
+        "neo-push": "cd examples/neo-push && concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
+        "neo-push-seed": "cd examples/neo-push && npm run seed"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "4.1.1",
         "@typescript-eslint/parser": "4.15.1",
+        "concurrently": "6.0.0",
         "eslint": "7.9.0",
         "eslint-config-airbnb-typescript": "10.0.0",
         "eslint-config-prettier": "6.11.0",
