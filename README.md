@@ -8,6 +8,7 @@
 
 1. [Documentation](./docs/asciidoc/index.adoc)
 2. [Discord](https://discord.gg/neo4j)
+3. [Examples](./examples)
 
 ## Navigating
 

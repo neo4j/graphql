@@ -7,22 +7,26 @@
     },
     "private": true,
     "workspaces": [
-        "packages/*"
+        "packages/*",
+        "examples/neo-push/*"
     ],
     "scripts": {
         "build": "lerna run build --stream",
         "prettify": "prettier --write \"packages/**/*.ts\"",
         "lint": "eslint .",
         "lerna:test": "lerna run test --concurrency 1 --stream",
-        "test": "run-s --continue-on-error lerna:test",
+        "test": "yarn build && run-s --continue-on-error lerna:test",
         "test:pr": "run-s lint test",
         "prepare": "run-s lerna clean -y lerna bootstrap -y",
         "generate:docs": "lerna run generate:doc",
-        "watch": "lerna run watch --stream --parallel"
+        "watch": "lerna run watch --stream --parallel",
+        "neo-push": "yarn build && cd examples/neo-push && concurrently \"cd server && yarn run dev\" \"cd client && yarn run dev\"",
+        "neo-push-seed": "yarn build && cd examples/neo-push/server && yarn run seed"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "4.1.1",
         "@typescript-eslint/parser": "4.15.1",
+        "concurrently": "6.0.0",
         "eslint": "7.9.0",
         "eslint-config-airbnb-typescript": "10.0.0",
         "eslint-config-prettier": "6.11.0",
