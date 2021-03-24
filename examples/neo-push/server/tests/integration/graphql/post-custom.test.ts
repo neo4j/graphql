@@ -3,7 +3,7 @@ import { generate } from "randomstring";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import jsonwebtoken from "jsonwebtoken";
-import gql from "graphql-tag";
+import { gql } from "apollo-server-express";
 import * as neo4j from "../neo4j";
 import server from "../server";
 

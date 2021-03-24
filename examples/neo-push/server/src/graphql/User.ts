@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import { gql } from "apollo-server-express";
 import { Context } from "../types";
 import { comparePassword, createJWT, hashPassword } from "../utils";
 
