@@ -55,7 +55,7 @@ describe("signUp", () => {
                 },
             });
 
-            expect(response.errors[0].message).toEqual("user with that email already exists");
+            expect((response?.errors as any[])[0].message).toEqual("user with that email already exists");
         } finally {
             await session.close();
         }

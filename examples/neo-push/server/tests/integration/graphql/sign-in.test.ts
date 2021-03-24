@@ -42,7 +42,7 @@ describe("signIn", () => {
             },
         });
 
-        expect(response.errors[0].message).toEqual("user not found");
+        expect((response?.errors as any[])[0].message).toEqual("user not found");
     });
 
     test("should throw Unauthorized on invalid password", async () => {
@@ -83,7 +83,7 @@ describe("signIn", () => {
                 },
             });
 
-            expect(response.errors[0].message).toEqual("Unauthorized");
+            expect((response?.errors as any[])[0].message).toEqual("Unauthorized");
         } finally {
             await session.close();
         }

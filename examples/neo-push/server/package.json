@@ -5,22 +5,22 @@
     "main": "./dist/src/index.js",
     "scripts": {
         "start": "node ./dist/src/index.js",
-        "dev": "nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts",
+        "dev": "nodemon --watch './src/**/*.ts' --exec ts-node --project ./src/tsconfig.json ./src/index.ts",
         "build": "tsc --module commonjs --target ES2019 --outDir ./dist",
-        "seed": "ts-node ./src/seeder.ts",
+        "seed": "ts-node --project ./src/tsconfig.json ./src/seeder.ts",
         "test": "jest --forceExit"
-    },
-    "installConfig": {
-        "hoistingLimits": "workspaces"
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@neo4j/graphql": "1.0.0-alpha.6",
+        "@neo4j/graphql-ogm": "1.0.0-beta.1",
         "apollo-server-express": "2.19.0",
         "bcrypt": "5.0.1",
         "debug": "4.3.1",
         "dotenv": "8.2.0",
         "express": "4.17.1",
+        "graphql": "15.3.0",
         "graphql-tag": "2.11.0",
         "jsonwebtoken": "8.5.1",
         "neo4j-driver": "4.2.0"
@@ -32,6 +32,7 @@
         "@types/express": "4.17.9",
         "@types/faker": "5.1.5",
         "@types/jest": "26.0.19",
+        "@types/jsonwebtoken": "8.5.1",
         "@types/node": "14.14.14",
         "@types/uuid": "8.3.0",
         "apollo-server-testing": "2.19.0",
