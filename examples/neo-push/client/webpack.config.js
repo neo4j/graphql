@@ -52,6 +52,7 @@ module.exports = {
         new Dotenv({
             silent: true,
             systemvars: true,
+            defaults: "./.env.example",
         }),
     ],
     devServer: {
