@@ -37,7 +37,17 @@ RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zo
 
 ```cypher-params
 {
-    "this_datetime": "1970-01-01T00:00:00.000Z"
+    "this_datetime": {
+        "day": 1,
+        "hour": 1,
+        "minute": 0,
+        "month": 1,
+        "nanosecond": 0,
+        "second": 0,
+        "timeZoneId": null,
+        "timeZoneOffsetSeconds": 3600,
+        "year": 1970
+    }
 }
 ```
 
@@ -72,7 +82,17 @@ RETURN this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), "iso_
 
 ```cypher-params
 {
-    "this0_datetime": "1970-01-01T00:00:00.000Z"
+    "this0_datetime": {
+        "day": 1,
+        "hour": 1,
+        "minute": 0,
+        "month": 1,
+        "nanosecond": 0,
+        "second": 0,
+        "timeZoneId": null,
+        "timeZoneOffsetSeconds": 3600,
+        "year": 1970
+    }
 }
 ```
 
@@ -105,7 +125,17 @@ RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), "i
 
 ```cypher-params
 {
-    "this_update_datetime": "1970-01-01T00:00:00.000Z"
+    "this_update_datetime": {
+        "day": 1,
+        "hour": 1,
+        "minute": 0,
+        "month": 1,
+        "nanosecond": 0,
+        "second": 0,
+        "timeZoneId": null,
+        "timeZoneOffsetSeconds": 3600,
+        "year": 1970
+    }
 }
 ```
 

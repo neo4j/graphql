@@ -1,15 +1,13 @@
 import { Driver, int, Session } from "neo4j-driver";
 import faker from "faker";
-import { gql } from "apollo-server";
-import { createTestClient } from "apollo-server-testing";
-import neo4j from "./neo4j";
-import { constructTestServer } from "./utils";
-import { Neo4jGraphQL } from "../../src/classes";
+import { graphql } from "graphql";
+import neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("CartesianPoint", () => {
     let driver: Driver;
     let session: Session;
-    let server;
+    let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -19,8 +17,7 @@ describe("CartesianPoint", () => {
                 location: CartesianPoint!
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        server = constructTestServer(neoSchema, driver);
+        neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
     beforeEach(() => {
@@ -40,7 +37,7 @@ describe("CartesianPoint", () => {
         const x = faker.random.float();
         const y = faker.random.float();
 
-        const create = gql`
+        const create = `
             mutation CreateParts($serial: String!, $x: Float!, $y: Float!) {
                 createParts(input: [{ serial: $serial, location: { x: $x, y: $y } }]) {
                     parts {
@@ -56,12 +53,15 @@ describe("CartesianPoint", () => {
             }
         `;
 
-        const { mutate } = createTestClient(server);
-
-        const gqlResult = await mutate({ mutation: create, variables: { serial, x, y } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: create,
+            contextValue: { driver },
+            variableValues: { serial, x, y },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.createParts.parts[0]).toEqual({
+        expect((gqlResult.data as any).createParts.parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -87,7 +87,7 @@ describe("CartesianPoint", () => {
         const y = faker.random.float();
         const z = faker.random.float();
 
-        const create = gql`
+        const create = `
             mutation CreateParts($serial: String!, $x: Float!, $y: Float!, $z: Float!) {
                 createParts(input: [{ serial: $serial, location: { x: $x, y: $y, z: $z } }]) {
                     parts {
@@ -103,12 +103,15 @@ describe("CartesianPoint", () => {
             }
         `;
 
-        const { mutate } = createTestClient(server);
-
-        const gqlResult = await mutate({ mutation: create, variables: { serial, x, y, z } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: create,
+            contextValue: { driver },
+            variableValues: { serial, x, y, z },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.createParts.parts[0]).toEqual({
+        expect((gqlResult.data as any).createParts.parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -150,7 +153,7 @@ describe("CartesianPoint", () => {
         expect((beforeResult.records[0].toObject() as any).p.location.x).toEqual(x);
         expect((beforeResult.records[0].toObject() as any).p.location.y).toEqual(y);
 
-        const update = gql`
+        const update = `
             mutation UpdateParts($serial: String!, $x: Float!, $y: Float!) {
                 updateParts(where: { serial: $serial }, update: { location: { x: $x, y: $y } }) {
                     parts {
@@ -166,12 +169,15 @@ describe("CartesianPoint", () => {
             }
         `;
 
-        const { mutate } = createTestClient(server);
-
-        const gqlResult = await mutate({ mutation: update, variables: { serial, x, y: newY } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: update,
+            contextValue: { driver },
+            variableValues: { serial, x, y: newY },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.updateParts.parts[0]).toEqual({
+        expect((gqlResult.data as any).updateParts.parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -214,7 +220,7 @@ describe("CartesianPoint", () => {
         expect((beforeResult.records[0].toObject() as any).p.location.y).toEqual(y);
         expect((beforeResult.records[0].toObject() as any).p.location.z).toEqual(z);
 
-        const update = gql`
+        const update = `
             mutation UpdateParts($serial: String!, $x: Float!, $y: Float!, $z: Float!) {
                 updateParts(where: { serial: $serial }, update: { location: { x: $x, y: $y, z: $z } }) {
                     parts {
@@ -230,12 +236,15 @@ describe("CartesianPoint", () => {
             }
         `;
 
-        const { mutate } = createTestClient(server);
-
-        const gqlResult = await mutate({ mutation: update, variables: { serial, x, y: newY, z } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: update,
+            contextValue: { driver },
+            variableValues: { serial, x, y: newY, z },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.updateParts.parts[0]).toEqual({
+        expect((gqlResult.data as any).updateParts.parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -276,7 +285,7 @@ describe("CartesianPoint", () => {
         expect((result.records[0].toObject() as any).p.location.x).toEqual(x);
         expect((result.records[0].toObject() as any).p.location.y).toEqual(y);
 
-        const partsQuery = gql`
+        const partsQuery = `
             query Parts($serial: String!) {
                 parts(where: { serial: $serial }) {
                     serial
@@ -290,12 +299,15 @@ describe("CartesianPoint", () => {
             }
         `;
 
-        const { query } = createTestClient(server);
-
-        const gqlResult = await query({ query: partsQuery, variables: { serial } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: partsQuery,
+            contextValue: { driver },
+            variableValues: { serial },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.parts[0]).toEqual({
+        expect((gqlResult.data as any).parts[0]).toEqual({
             serial,
             location: {
                 x,
@@ -328,7 +340,7 @@ describe("CartesianPoint", () => {
         expect((result.records[0].toObject() as any).p.location.y).toEqual(y);
         expect((result.records[0].toObject() as any).p.location.z).toEqual(z);
 
-        const partsQuery = gql`
+        const partsQuery = `
             query Parts($serial: String!) {
                 parts(where: { serial: $serial }) {
                     serial
@@ -342,12 +354,15 @@ describe("CartesianPoint", () => {
             }
         `;
 
-        const { query } = createTestClient(server);
-
-        const gqlResult = await query({ query: partsQuery, variables: { serial } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: partsQuery,
+            contextValue: { driver },
+            variableValues: { serial },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.parts[0]).toEqual({
+        expect((gqlResult.data as any).parts[0]).toEqual({
             serial,
             location: {
                 x,

@@ -165,7 +165,7 @@ function createProjectionAndParams({
         if (cypherField) {
             let projectionAuthStr = "";
             let projectionStr = "";
-            const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime"].includes(
+            const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
                 cypherField.typeMeta.name
             );
             const isEnum = context.neoSchema.document.definitions.find(
