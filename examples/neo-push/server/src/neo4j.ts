@@ -1,5 +1,4 @@
 import * as neo4j from "neo4j-driver";
-import * as util from "util";
 import * as config from "./config";
 import createDebug from "./debug";
 
@@ -8,12 +7,6 @@ const debug = createDebug("Neo4j");
 
 export async function connect() {
     debug("Connecting");
-
-    if (config.NEO_WAIT) {
-        debug(`Waiting $NEO_WAIT seconds '${config.NEO_WAIT}'`);
-
-        await util.promisify(setTimeout)(config.NEO_WAIT);
-    }
 
     await driver.verifyConnectivity();
 
