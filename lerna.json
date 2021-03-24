@@ -1,5 +1,5 @@
 {
-    "packages": ["packages/graphql", "packages/ogm"],
+    "packages": ["packages/graphql", "packages/ogm", "examples/neo-push/server", "examples/neo-push/client"],
     "version": "independent",
     "useWorkspaces": true,
     "npmClient": "yarn",

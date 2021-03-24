@@ -28,7 +28,7 @@ const typeScriptParser = {
     parser: "@typescript-eslint/parser",
     parserOptions: {
         tsconfigRootDir: __dirname,
-        project: "./packages/**/tsconfig.json",
+        project: "./**/tsconfig.json",
     },
 };
 
@@ -83,6 +83,26 @@ module.exports = {
             rules: {
                 ...baseTypeScriptRules,
                 "@typescript-eslint/ban-ts-comment": ["warn", { "ts-ignore": "allow-with-description" }], // TODO Refactor and set severity to "error" - If @ts-ignore is genuinely required it justify with a reason: "@ts-ignore: Required for a reason"
+            },
+        },
+        {
+            files: ["examples/neo-push/client/**/*.tsx"],
+            extends: ["airbnb-typescript"],
+            rules: {
+                "import/prefer-default-export": "off",
+                "@typescript-eslint/no-unnecessary-type-assertion": ["off"],
+            },
+        },
+        {
+            files: ["examples/neo-push/server/**/*.ts"],
+            extends: baseTypeScriptExtends,
+            rules: {
+                ...baseTypeScriptRules,
+                "@typescript-eslint/no-floating-promises": ["off"],
+                "import/prefer-default-export": "off",
+                "import/no-extraneous-dependencies": "off",
+                "@typescript-eslint/no-unnecessary-type-assertion": ["off"],
+                "@typescript-eslint/no-use-before-define": ["off"],
             },
         },
         // More lenient ESLint configuration for test files
