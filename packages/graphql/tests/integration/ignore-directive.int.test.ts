@@ -1,15 +1,13 @@
 import { Driver, Session } from "neo4j-driver";
 import faker from "faker";
-import { gql } from "apollo-server";
-import { createTestClient } from "apollo-server-testing";
+import { graphql } from "graphql";
 import neo4j from "./neo4j";
-import { constructTestServer } from "./utils";
 import { Neo4jGraphQL } from "../../src/classes";
 
 describe("@ignore directive", () => {
     let driver: Driver;
     let session: Session;
-    let server;
+    let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -20,8 +18,7 @@ describe("@ignore directive", () => {
             }
         `;
         const resolvers = { User: { customField: () => "Some custom value" } };
-        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
-        server = constructTestServer(neoSchema, driver);
+        neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
     });
 
     beforeEach(() => {
@@ -49,7 +46,7 @@ describe("@ignore directive", () => {
             RETURN u
         `);
 
-        const usersQuery = gql`
+        const usersQuery = `
             query Users($username: String!) {
                 users(where: { username: $username }) {
                     username
@@ -58,12 +55,15 @@ describe("@ignore directive", () => {
             }
         `;
 
-        const { query } = createTestClient(server);
-
-        const gqlResult = await query({ query: usersQuery, variables: { username } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: usersQuery,
+            contextValue: { driver },
+            variableValues: { username },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.users[0]).toEqual({
+        expect((gqlResult.data as any).users[0]).toEqual({
             username,
             customField: "Some custom value",
         });

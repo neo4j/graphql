@@ -1,15 +1,13 @@
 import { Driver, int, Session } from "neo4j-driver";
 import faker from "faker";
-import { gql } from "apollo-server";
-import { createTestClient } from "apollo-server-testing";
+import { graphql } from "graphql";
 import neo4j from "../neo4j";
-import { constructTestServer } from "../utils";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("[Point]", () => {
     let driver: Driver;
     let session: Session;
-    let server;
+    let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -19,8 +17,7 @@ describe("[Point]", () => {
                 waypoints: [Point!]!
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        server = constructTestServer(neoSchema, driver);
+        neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
     beforeEach(() => {
@@ -42,7 +39,7 @@ describe("[Point]", () => {
             latitude: parseFloat(faker.address.latitude()),
         }));
 
-        const create = gql`
+        const create = `
             mutation CreateRoutes($id: String!, $waypoints: [PointInput!]!) {
                 createRoutes(input: [{ id: $id, waypoints: $waypoints }]) {
                     routes {
@@ -58,12 +55,15 @@ describe("[Point]", () => {
             }
         `;
 
-        const { mutate } = createTestClient(server);
-
-        const gqlResult = await mutate({ mutation: create, variables: { id, waypoints } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: create,
+            contextValue: { driver },
+            variableValues: { id, waypoints },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.createRoutes.routes[0]).toEqual({
+        expect((gqlResult.data as any).createRoutes.routes[0]).toEqual({
             id,
             waypoints: waypoints.map((waypoint) => ({ ...waypoint, height: null, crs: "wgs-84" })),
         });
@@ -94,7 +94,7 @@ describe("[Point]", () => {
             height: faker.random.float(),
         }));
 
-        const create = gql`
+        const create = `
             mutation CreateRoutes($id: String!, $waypoints: [PointInput!]!) {
                 createRoutes(input: [{ id: $id, waypoints: $waypoints }]) {
                     routes {
@@ -110,12 +110,15 @@ describe("[Point]", () => {
             }
         `;
 
-        const { mutate } = createTestClient(server);
-
-        const gqlResult = await mutate({ mutation: create, variables: { id, waypoints } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: create,
+            contextValue: { driver },
+            variableValues: { id, waypoints },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.createRoutes.routes[0]).toEqual({
+        expect((gqlResult.data as any).createRoutes.routes[0]).toEqual({
             id,
             waypoints: waypoints.map((waypoint) => ({ ...waypoint, crs: "wgs-84-3d" })),
         });
@@ -177,7 +180,7 @@ describe("[Point]", () => {
                 .sort()
         ).toEqual(waypoints.sort());
 
-        const update = gql`
+        const update = `
             mutation UpdateRoutes($id: String!, $waypoints: [PointInput!]) {
                 updateRoutes(where: { id: $id }, update: { waypoints: $waypoints }) {
                     routes {
@@ -193,12 +196,15 @@ describe("[Point]", () => {
             }
         `;
 
-        const { mutate } = createTestClient(server);
-
-        const gqlResult = await mutate({ mutation: update, variables: { id, waypoints: newWaypoints } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: update,
+            contextValue: { driver },
+            variableValues: { id, waypoints: newWaypoints },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.updateRoutes.routes[0]).toEqual({
+        expect((gqlResult.data as any).updateRoutes.routes[0]).toEqual({
             id,
             waypoints: newWaypoints.map((waypoint) => ({ ...waypoint, height: null, crs: "wgs-84" })),
         });
@@ -262,7 +268,7 @@ describe("[Point]", () => {
                 .sort()
         ).toEqual(waypoints.sort());
 
-        const update = gql`
+        const update = `
             mutation UpdateRoutes($id: String!, $waypoints: [PointInput!]) {
                 updateRoutes(where: { id: $id }, update: { waypoints: $waypoints }) {
                     routes {
@@ -278,12 +284,15 @@ describe("[Point]", () => {
             }
         `;
 
-        const { mutate } = createTestClient(server);
-
-        const gqlResult = await mutate({ mutation: update, variables: { id, waypoints: newWaypoints } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: update,
+            contextValue: { driver },
+            variableValues: { id, waypoints: newWaypoints },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.updateRoutes.routes[0]).toEqual({
+        expect((gqlResult.data as any).updateRoutes.routes[0]).toEqual({
             id,
             waypoints: newWaypoints.map((waypoint) => ({ ...waypoint, crs: "wgs-84-3d" })),
         });
@@ -330,10 +339,8 @@ describe("[Point]", () => {
             { id, waypoints }
         );
 
-        const { query } = createTestClient(server);
-
         // Test for equality
-        const routesQuery = gql`
+        const routesQuery = `
             query Routes($waypoints: [PointInput!]) {
                 routes(where: { waypoints: $waypoints }) {
                     id
@@ -347,16 +354,21 @@ describe("[Point]", () => {
             }
         `;
 
-        const routesResult = await query({ query: routesQuery, variables: { waypoints } });
+        const routesResult = await graphql({
+            schema: neoSchema.schema,
+            source: routesQuery,
+            contextValue: { driver },
+            variableValues: { waypoints },
+        });
 
         expect(routesResult.errors).toBeFalsy();
-        expect(routesResult.data.routes[0]).toEqual({
+        expect((routesResult.data as any).routes[0]).toEqual({
             id,
             waypoints: waypoints.map((waypoint) => ({ ...waypoint, height: null, crs: "wgs-84" })),
         });
 
         // Test INCLUDES functionality
-        const routesIncludesQuery = gql`
+        const routesIncludesQuery = `
             query RoutesIncludes($waypoint: PointInput) {
                 routes(where: { waypoints_INCLUDES: $waypoint }) {
                     id
@@ -370,16 +382,21 @@ describe("[Point]", () => {
             }
         `;
 
-        const routesIncludesResult = await query({ query: routesIncludesQuery, variables: { waypoint: waypoints[0] } });
+        const routesIncludesResult = await graphql({
+            schema: neoSchema.schema,
+            source: routesIncludesQuery,
+            contextValue: { driver },
+            variableValues: { waypoint: waypoints[0] },
+        });
 
         expect(routesIncludesResult.errors).toBeFalsy();
-        expect(routesIncludesResult.data.routes[0]).toEqual({
+        expect((routesIncludesResult.data as any).routes[0]).toEqual({
             id,
             waypoints: waypoints.map((waypoint) => ({ ...waypoint, height: null, crs: "wgs-84" })),
         });
 
         // Test NOT INCLUDES functionality
-        const routesNotIncludesQuery = gql`
+        const routesNotIncludesQuery = `
             query RoutesNotIncludes($waypoint: PointInput) {
                 routes(where: { waypoints_NOT_INCLUDES: $waypoint }) {
                     id
@@ -393,9 +410,11 @@ describe("[Point]", () => {
             }
         `;
 
-        const routesNotIncludesResult = await query({
-            query: routesNotIncludesQuery,
-            variables: {
+        const routesNotIncludesResult = await graphql({
+            schema: neoSchema.schema,
+            source: routesNotIncludesQuery,
+            contextValue: { driver },
+            variableValues: {
                 waypoint: {
                     longitude: parseFloat(faker.address.longitude()),
                     latitude: parseFloat(faker.address.latitude()),
@@ -404,7 +423,7 @@ describe("[Point]", () => {
         });
 
         expect(routesNotIncludesResult.errors).toBeFalsy();
-        expect(routesNotIncludesResult.data.routes).toContainEqual({
+        expect((routesNotIncludesResult.data as any).routes).toContainEqual({
             id,
             waypoints: waypoints.map((waypoint) => ({ ...waypoint, height: null, crs: "wgs-84" })),
         });
@@ -433,7 +452,7 @@ describe("[Point]", () => {
             { id, waypoints }
         );
 
-        const routesQuery = gql`
+        const routesQuery = `
             query Routes($id: String!) {
                 routes(where: { id: $id }) {
                     id
@@ -447,12 +466,15 @@ describe("[Point]", () => {
             }
         `;
 
-        const { query } = createTestClient(server);
-
-        const gqlResult = await query({ query: routesQuery, variables: { id } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: routesQuery,
+            contextValue: { driver },
+            variableValues: { id },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.routes[0]).toEqual({
+        expect((gqlResult.data as any).routes[0]).toEqual({
             id,
             waypoints: waypoints.map((waypoint) => ({ ...waypoint, crs: "wgs-84-3d" })),
         });

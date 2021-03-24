@@ -1,5 +1,5 @@
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { makeExecutableSchema } from "@graphql-tools/schema";
+import { makeExecutableSchema, addSchemaLevelResolver } from "@graphql-tools/schema";
 import { IResolvers } from "@graphql-tools/utils";
 import camelCase from "camelcase";
 import {
@@ -598,25 +598,25 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
-                [pluralize(camelCase(node.name))]: findResolver({ node, neoSchema }),
+                [pluralize(camelCase(node.name))]: findResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
-                [`create${pluralize(node.name)}`]: createResolver({ node, neoSchema }),
+                [`create${pluralize(node.name)}`]: createResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
-                [`delete${pluralize(node.name)}`]: deleteResolver({ node, neoSchema }),
+                [`delete${pluralize(node.name)}`]: deleteResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${pluralize(node.name)}`]: updateResolver({ node, neoSchema }),
+                [`update${pluralize(node.name)}`]: updateResolver({ node }),
             });
         }
     });
@@ -652,7 +652,6 @@ function makeAugmentedSchema(
                 const customResolver = cypherResolver({
                     field,
                     statement: field.statement,
-                    neoSchema,
                 });
 
                 const composedField = objectFieldsToComposeFields([field])[field.fieldName];
@@ -743,11 +742,28 @@ function makeAugmentedSchema(
         schemaDirectives: neoSchema.input.schemaDirectives,
     });
 
+    const newSchema = addSchemaLevelResolver(schema, (_obj, _args, context: any) => {
+        if (neoSchema.input.context) {
+            context = { ...context, ...neoSchema.input.context };
+        }
+
+        if (!context?.driver) {
+            if (!neoSchema.input.driver) {
+                throw new Error(
+                    "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
+                );
+            }
+            context.driver = neoSchema.input.driver;
+        }
+
+        context.neoSchema = neoSchema;
+    });
+
     return {
         nodes,
         typeDefs: generatedTypeDefs,
         resolvers: generatedResolvers,
-        schema,
+        schema: newSchema,
     };
 }
 
