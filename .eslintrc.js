@@ -64,7 +64,6 @@ const baseTypeScriptRules = {
     "@typescript-eslint/no-unsafe-call": "off", // Approximately 500 instances
     "@typescript-eslint/restrict-template-expressions": "off", // TODO Make sure variables are properly cast when using in template expressions (approximately 350 instances)
     "@typescript-eslint/no-unsafe-return": "off", // Approximately 70 instances
-    "@typescript-eslint/unbound-method": "off", // TODO Find out why apollo-server-testing is unhappy with this switched on
     /* end of @typescript-eslint/recommended-requiring-type-checking rules */
 };
 

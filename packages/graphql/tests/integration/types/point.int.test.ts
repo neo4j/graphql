@@ -1,15 +1,13 @@
 import { Driver, int, Session } from "neo4j-driver";
 import faker from "faker";
-import { gql } from "apollo-server";
-import { createTestClient } from "apollo-server-testing";
+import { graphql } from "graphql";
 import neo4j from "../neo4j";
-import { constructTestServer } from "../utils";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("Point", () => {
     let driver: Driver;
     let session: Session;
-    let server;
+    let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -20,8 +18,7 @@ describe("Point", () => {
                 location: Point!
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        server = constructTestServer(neoSchema, driver);
+        neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
     beforeEach(() => {
@@ -42,7 +39,7 @@ describe("Point", () => {
         const longitude = parseFloat(faker.address.longitude());
         const latitude = parseFloat(faker.address.latitude());
 
-        const create = gql`
+        const create = `
             mutation CreatePhotographs($id: String!, $size: Int!, $longitude: Float!, $latitude: Float!) {
                 createPhotographs(
                     input: [{ id: $id, size: $size, location: { longitude: $longitude, latitude: $latitude } }]
@@ -61,12 +58,15 @@ describe("Point", () => {
             }
         `;
 
-        const { mutate } = createTestClient(server);
-
-        const gqlResult = await mutate({ mutation: create, variables: { id, size, longitude, latitude } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: create,
+            contextValue: { driver },
+            variableValues: { id, size, longitude, latitude },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.createPhotographs.photographs[0]).toEqual({
+        expect((gqlResult.data as any).createPhotographs.photographs[0]).toEqual({
             id,
             size,
             location: {
@@ -94,7 +94,7 @@ describe("Point", () => {
         const latitude = parseFloat(faker.address.latitude());
         const height = faker.random.float();
 
-        const create = gql`
+        const create = `
             mutation CreatePhotographs(
                 $id: String!
                 $size: Int!
@@ -125,12 +125,15 @@ describe("Point", () => {
             }
         `;
 
-        const { mutate } = createTestClient(server);
-
-        const gqlResult = await mutate({ mutation: create, variables: { id, size, longitude, latitude, height } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: create,
+            contextValue: { driver },
+            variableValues: { id, size, longitude, latitude, height },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.createPhotographs.photographs[0]).toEqual({
+        expect((gqlResult.data as any).createPhotographs.photographs[0]).toEqual({
             id,
             size,
             location: {
@@ -175,7 +178,7 @@ describe("Point", () => {
         expect((beforeResult.records[0].toObject() as any).p.location.x).toEqual(longitude);
         expect((beforeResult.records[0].toObject() as any).p.location.y).toEqual(latitude);
 
-        const update = gql`
+        const update = `
             mutation UpdatePhotographs($id: String!, $longitude: Float!, $latitude: Float!) {
                 updatePhotographs(
                     where: { id: $id }
@@ -195,12 +198,15 @@ describe("Point", () => {
             }
         `;
 
-        const { mutate } = createTestClient(server);
-
-        const gqlResult = await mutate({ mutation: update, variables: { id, longitude, latitude: newLatitude } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: update,
+            contextValue: { driver },
+            variableValues: { id, longitude, latitude: newLatitude },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.updatePhotographs.photographs[0]).toEqual({
+        expect((gqlResult.data as any).updatePhotographs.photographs[0]).toEqual({
             id,
             size,
             location: {
@@ -246,7 +252,7 @@ describe("Point", () => {
         expect((beforeResult.records[0].toObject() as any).p.location.y).toEqual(latitude);
         expect((beforeResult.records[0].toObject() as any).p.location.z).toEqual(height);
 
-        const update = gql`
+        const update = `
             mutation UpdatePhotographs($id: String!, $longitude: Float!, $latitude: Float!, $height: Float!) {
                 updatePhotographs(
                     where: { id: $id }
@@ -266,15 +272,15 @@ describe("Point", () => {
             }
         `;
 
-        const { mutate } = createTestClient(server);
-
-        const gqlResult = await mutate({
-            mutation: update,
-            variables: { id, longitude, latitude: newLatitude, height },
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: update,
+            contextValue: { driver },
+            variableValues: { id, longitude, latitude: newLatitude, height },
         });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.updatePhotographs.photographs[0]).toEqual({
+        expect((gqlResult.data as any).updatePhotographs.photographs[0]).toEqual({
             id,
             size,
             location: {
@@ -319,10 +325,8 @@ describe("Point", () => {
         expect((result.records[0].toObject() as any).p.location.x).toEqual(longitude);
         expect((result.records[0].toObject() as any).p.location.y).toEqual(latitude);
 
-        const { query } = createTestClient(server);
-
         // Test equality
-        const photographsEqualsQuery = gql`
+        const photographsEqualsQuery = `
             query Photographs($longitude: Float!, $latitude: Float!) {
                 photographs(where: { location: { longitude: $longitude, latitude: $latitude } }) {
                     id
@@ -337,10 +341,15 @@ describe("Point", () => {
             }
         `;
 
-        const equalsResult = await query({ query: photographsEqualsQuery, variables: { longitude, latitude } });
+        const equalsResult = await graphql({
+            schema: neoSchema.schema,
+            source: photographsEqualsQuery,
+            contextValue: { driver },
+            variableValues: { longitude, latitude },
+        });
 
         expect(equalsResult.errors).toBeFalsy();
-        expect(equalsResult.data.photographs[0]).toEqual({
+        expect((equalsResult.data as any).photographs[0]).toEqual({
             id,
             size,
             location: {
@@ -352,7 +361,7 @@ describe("Point", () => {
         });
 
         // Test IN functionality
-        const photographsInQuery = gql`
+        const photographsInQuery = `
             query Photographs($locations: [PointInput]) {
                 photographs(where: { location_IN: $locations }) {
                     id
@@ -367,16 +376,18 @@ describe("Point", () => {
             }
         `;
 
-        const inResult = await query({
-            query: photographsInQuery,
-            variables: [
+        const inResult = await graphql({
+            schema: neoSchema.schema,
+            source: photographsInQuery,
+            contextValue: { driver },
+            variableValues: [
                 { longitude, latitude },
                 { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
             ],
         });
 
         expect(inResult.errors).toBeFalsy();
-        expect(inResult.data.photographs).toContainEqual({
+        expect((inResult.data as any).photographs).toContainEqual({
             id,
             size,
             location: {
@@ -388,7 +399,7 @@ describe("Point", () => {
         });
 
         // Test NOT IN functionality
-        const photographsNotInQuery = gql`
+        const photographsNotInQuery = `
             query Photographs($locations: [PointInput]) {
                 photographs(where: { location_NOT_IN: $locations }) {
                     id
@@ -403,16 +414,18 @@ describe("Point", () => {
             }
         `;
 
-        const notInResult = await query({
-            query: photographsNotInQuery,
-            variables: [
+        const notInResult = await graphql({
+            schema: neoSchema.schema,
+            source: photographsNotInQuery,
+            contextValue: { driver },
+            variableValues: [
                 { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
                 { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
             ],
         });
 
         expect(notInResult.errors).toBeFalsy();
-        expect(notInResult.data.photographs).toContainEqual({
+        expect((notInResult.data as any).photographs).toContainEqual({
             id,
             size,
             location: {
@@ -424,7 +437,7 @@ describe("Point", () => {
         });
 
         // Test less than
-        const photographsLessThanQuery = gql`
+        const photographsLessThanQuery = `
             query Photographs($longitude: Float!, $latitude: Float!) {
                 photographs(
                     where: { location_LT: { point: { longitude: $longitude, latitude: $latitude }, distance: 1000000 } }
@@ -441,13 +454,15 @@ describe("Point", () => {
             }
         `;
 
-        const lessThanResult = await query({
-            query: photographsLessThanQuery,
-            variables: { longitude, latitude: latitude + 1 },
+        const lessThanResult = await graphql({
+            schema: neoSchema.schema,
+            source: photographsLessThanQuery,
+            contextValue: { driver },
+            variableValues: { longitude, latitude: latitude + 1 },
         });
 
         expect(lessThanResult.errors).toBeFalsy();
-        expect(lessThanResult.data.photographs).toContainEqual({
+        expect((lessThanResult.data as any).photographs).toContainEqual({
             id,
             size,
             location: {
@@ -459,7 +474,7 @@ describe("Point", () => {
         });
 
         // Test greater than
-        const photographsGreaterThanQuery = gql`
+        const photographsGreaterThanQuery = `
             query Photographs($longitude: Float!, $latitude: Float!) {
                 photographs(
                     where: { location_GT: { point: { longitude: $longitude, latitude: $latitude }, distance: 1 } }
@@ -476,13 +491,15 @@ describe("Point", () => {
             }
         `;
 
-        const greaterThanResult = await query({
-            query: photographsGreaterThanQuery,
-            variables: { longitude, latitude: latitude + 1 },
+        const greaterThanResult = await graphql({
+            schema: neoSchema.schema,
+            source: photographsGreaterThanQuery,
+            contextValue: { driver },
+            variableValues: { longitude, latitude: latitude + 1 },
         });
 
         expect(greaterThanResult.errors).toBeFalsy();
-        expect(greaterThanResult.data.photographs).toContainEqual({
+        expect((greaterThanResult.data as any).photographs).toContainEqual({
             id,
             size,
             location: {
@@ -518,7 +535,7 @@ describe("Point", () => {
         expect((result.records[0].toObject() as any).p.location.y).toEqual(latitude);
         expect((result.records[0].toObject() as any).p.location.z).toEqual(height);
 
-        const photographsQuery = gql`
+        const photographsQuery = `
             query Photographs($longitude: Float!, $latitude: Float!, $height: Float) {
                 photographs(where: { location: { longitude: $longitude, latitude: $latitude, height: $height } }) {
                     id
@@ -533,12 +550,15 @@ describe("Point", () => {
             }
         `;
 
-        const { query } = createTestClient(server);
-
-        const gqlResult = await query({ query: photographsQuery, variables: { longitude, latitude, height } });
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: photographsQuery,
+            contextValue: { driver },
+            variableValues: { longitude, latitude, height },
+        });
 
         expect(gqlResult.errors).toBeFalsy();
-        expect(gqlResult.data.photographs[0]).toEqual({
+        expect((gqlResult.data as any).photographs[0]).toEqual({
             id,
             size,
             location: {
