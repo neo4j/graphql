@@ -1,5 +1,5 @@
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { makeExecutableSchema } from "@graphql-tools/schema";
+import { makeExecutableSchema, addSchemaLevelResolver } from "@graphql-tools/schema";
 import { IResolvers } from "@graphql-tools/utils";
 import camelCase from "camelcase";
 import {
@@ -28,7 +28,7 @@ import { PrimitiveField, Auth } from "../types";
 import { upperFirstLetter } from "../utils";
 import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
-import { Float, Int, DateTime, ID } from "./scalars";
+import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
 import wrapCustomResolvers from "./wrap-custom-resolvers";
 import getCustomResolvers from "./get-custom-resolvers";
@@ -260,7 +260,7 @@ function makeAugmentedSchema(
                     res[`${f.fieldName}_IN`] = `[${f.typeMeta.input.where.pretty}]`;
                     res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}]`;
 
-                    if (["Float", "Int", "DateTime"].includes(f.typeMeta.name)) {
+                    if (["Float", "Int", "BigInt", "DateTime"].includes(f.typeMeta.name)) {
                         ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
                             res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
                         });
@@ -598,25 +598,25 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
-                [pluralize(camelCase(node.name))]: findResolver({ node, neoSchema }),
+                [pluralize(camelCase(node.name))]: findResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
-                [`create${pluralize(node.name)}`]: createResolver({ node, neoSchema }),
+                [`create${pluralize(node.name)}`]: createResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
-                [`delete${pluralize(node.name)}`]: deleteResolver({ node, neoSchema }),
+                [`delete${pluralize(node.name)}`]: deleteResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${pluralize(node.name)}`]: updateResolver({ node, neoSchema }),
+                [`update${pluralize(node.name)}`]: updateResolver({ node }),
             });
         }
     });
@@ -652,7 +652,6 @@ function makeAugmentedSchema(
                 const customResolver = cypherResolver({
                     field,
                     statement: field.statement,
-                    neoSchema,
                 });
 
                 const composedField = objectFieldsToComposeFields([field])[field.fieldName];
@@ -694,10 +693,7 @@ function makeAugmentedSchema(
         });
     });
 
-    composer.addTypeDefs("scalar Int");
-    composer.addTypeDefs("scalar Float");
-    composer.addTypeDefs("scalar ID");
-    composer.addTypeDefs("scalar DateTime");
+    Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
 
     if (pointInTypeDefs) {
         // Every field (apart from CRS) in Point needs a custom resolver
@@ -718,10 +714,12 @@ function makeAugmentedSchema(
     const generatedTypeDefs = composer.toSDL();
     let generatedResolvers: any = {
         ...composer.getResolveMethods(),
-        ...(generatedTypeDefs.includes("scalar Int") ? { Int } : {}),
-        ...(generatedTypeDefs.includes("scalar Float") ? { Float } : {}),
-        ...(generatedTypeDefs.includes("scalar ID") ? { ID } : {}),
-        ...(generatedTypeDefs.includes("scalar DateTime") ? { DateTime } : {}),
+        ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
+            if (generatedTypeDefs.includes(`scalar ${name}`)) {
+                res[name] = scalar;
+            }
+            return res;
+        }, {}),
     };
 
     if (neoSchema.input.resolvers) {
@@ -744,11 +742,28 @@ function makeAugmentedSchema(
         schemaDirectives: neoSchema.input.schemaDirectives,
     });
 
+    const newSchema = addSchemaLevelResolver(schema, (_obj, _args, context: any) => {
+        if (neoSchema.input.context) {
+            context = { ...context, ...neoSchema.input.context };
+        }
+
+        if (!context?.driver) {
+            if (!neoSchema.input.driver) {
+                throw new Error(
+                    "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
+                );
+            }
+            context.driver = neoSchema.input.driver;
+        }
+
+        context.neoSchema = neoSchema;
+    });
+
     return {
         nodes,
         typeDefs: generatedTypeDefs,
         resolvers: generatedResolvers,
-        schema,
+        schema: newSchema,
     };
 }
 

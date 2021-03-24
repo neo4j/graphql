@@ -56,7 +56,6 @@
         "@types/pluralize": "0.0.29",
         "@types/randomstring": "1.1.6",
         "apollo-server": "2.21.0",
-        "apollo-server-testing": "2.21.0",
         "faker": "5.2.0",
         "graphql": "15.3.0",
         "graphql-tag": "2.11.0",

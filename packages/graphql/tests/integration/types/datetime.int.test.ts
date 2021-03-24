@@ -3,8 +3,8 @@ import { Driver, DateTime } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import pluralize from "pluralize";
-import neo4j from "./neo4j";
-import { Neo4jGraphQL } from "../../src/classes";
+import neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("DateTime", () => {
     let driver: Driver;
