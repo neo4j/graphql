@@ -85,5 +85,3 @@ packages/package-tests/**/package-lock.json
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
-
-.env
