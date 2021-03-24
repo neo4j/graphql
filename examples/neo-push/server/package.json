@@ -21,7 +21,6 @@
         "dotenv": "8.2.0",
         "express": "4.17.1",
         "graphql": "15.3.0",
-        "graphql-tag": "2.11.0",
         "jsonwebtoken": "8.5.1",
         "neo4j-driver": "4.2.0"
     },

@@ -11840,7 +11840,6 @@ fsevents@^1.2.7:
     express: 4.17.1
     faker: 5.1.0
     graphql: 15.3.0
-    graphql-tag: 2.11.0
     jest: 26.6.3
     jsonwebtoken: 8.5.1
     neo4j-driver: 4.2.0
