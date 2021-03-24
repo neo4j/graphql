@@ -63,7 +63,7 @@ describe("workflow", () => {
             }),
         };
 
-        const token = jsonwebtoken.sign({ sub: user.id }, process.env.JWT_SECRET);
+        const token = jsonwebtoken.sign({ sub: user.id }, process.env.JWT_SECRET as string);
 
         const socket = new Socket({ readable: true });
         const req = new IncomingMessage(socket);

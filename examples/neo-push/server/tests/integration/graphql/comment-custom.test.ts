@@ -49,7 +49,7 @@ describe("comment-custom", () => {
     
             `;
 
-            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET);
+            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
@@ -104,7 +104,7 @@ describe("comment-custom", () => {
     
             `;
 
-            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET);
+            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
@@ -159,7 +159,7 @@ describe("comment-custom", () => {
     
             `;
 
-            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET);
+            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
@@ -217,7 +217,7 @@ describe("comment-custom", () => {
     
             `;
 
-            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET);
+            const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);

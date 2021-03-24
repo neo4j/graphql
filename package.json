@@ -15,13 +15,13 @@
         "prettify": "prettier --write \"packages/**/*.ts\"",
         "lint": "eslint .",
         "lerna:test": "lerna run test --concurrency 1 --stream",
-        "test": "run-s --continue-on-error lerna:test",
+        "test": "yarn build && run-s --continue-on-error lerna:test",
         "test:pr": "run-s lint test",
         "prepare": "run-s lerna clean -y lerna bootstrap -y",
         "generate:docs": "lerna run generate:doc",
         "watch": "lerna run watch --stream --parallel",
-        "neo-push": "cd examples/neo-push && concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
-        "neo-push-seed": "cd examples/neo-push/server && npm run seed"
+        "neo-push": "yarn build && cd examples/neo-push && concurrently \"cd server && yarn run dev\" \"cd client && yarn run dev\"",
+        "neo-push-seed": "yarn build && cd examples/neo-push/server && yarn run seed"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "4.1.1",

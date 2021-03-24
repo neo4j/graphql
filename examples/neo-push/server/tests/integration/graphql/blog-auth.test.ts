@@ -42,7 +42,7 @@ describe("blog-auth", () => {
 
         `;
 
-        const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET);
+        const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
         const socket = new Socket({ readable: true });
         const req = new IncomingMessage(socket);
@@ -55,7 +55,7 @@ describe("blog-auth", () => {
                 mutation,
             });
 
-            expect(response.errors[0].message).toEqual("Forbidden");
+            expect((response?.errors as any[])[0].message).toEqual("Forbidden");
         } finally {
             await session.close();
         }
@@ -81,7 +81,7 @@ describe("blog-auth", () => {
 
         `;
 
-        const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET);
+        const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 
         const socket = new Socket({ readable: true });
         const req = new IncomingMessage(socket);
@@ -98,7 +98,7 @@ describe("blog-auth", () => {
                 mutation,
             });
 
-            expect(response.errors[0].message).toEqual("Forbidden");
+            expect((response?.errors as any[])[0].message).toEqual("Forbidden");
         } finally {
             await session.close();
         }

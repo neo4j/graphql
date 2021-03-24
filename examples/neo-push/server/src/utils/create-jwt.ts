@@ -8,7 +8,7 @@ function createJWT(data: { sub: string }): Promise<string> {
                 return reject(err);
             }
 
-            return resolve(token);
+            return resolve(token as string);
         });
     });
 }
