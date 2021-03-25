@@ -1,0 +1,41 @@
+[[type-definitions-default-values]]
+= Default Values
+
+[[type-definitions-default-values-default]]
+== `@default`
+
+When generating the input type for the create mutation, the value specified in this directive will be used as the default value for this field.
+
+
+=== Definition
+
+[source, graphql]
+----
+"""Int | Float | String | Boolean | ID | DateTime"""
+scalar Scalar
+
+"""Instructs @neo4j/graphql to set the specified value as the default value in the CreateInput type for the object type in which this directive is used."""
+directive @default(
+    """The default value to use. Must be a scalar type and must match the type of the field with which this directive decorates."""
+    value: Scalar!,
+) on FIELD_DEFINITION
+----
+
+[[type-definitions-default-values-coalesce]]
+== `@coalesce`
+
+When translating from GraphQL to Cypher, any instances of fields to which this directive is applied will be wrapped in a `coalesce()` function in the WHERE clause (see https://neo4j.com/developer/kb/understanding-non-existent-properties-and-null-values/#_use_coalesce_to_use_a_default_for_a_null_value). This helps to query against non-existent properties in a database, however it is encouraged to populate these properties with meaningful values if this is becoming the norm. This is a very primitive implementation of the function which only takes a static default value as opposed to using another property in a node or a Cypher expression.
+
+=== Definition
+
+[source, graphql]
+----
+"""Int | Float | String | Boolean | ID | DateTime"""
+scalar Scalar
+
+"""Instructs @neo4j/graphql to wrap the property in a coalesce() function during queries, using the single value specified."""
+directive @coalesce(
+    """The value to use in the coalesce() function. Must be a scalar type and must match the type of the field with which this directive decorates."""
+    value: Scalar!,
+) on FIELD_DEFINITION
+----

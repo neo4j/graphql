@@ -1,9 +1,9 @@
 [[drivers-and-config]]
-= Drivers & Config
+= Driver Configuration
 
 
 == Neo4j Driver
-The https://github.com/neo4j/neo4j-javascript-driver[Neo4j javascript driver] must be present in either the context or construction of your `Neo4jGraphQL` API or at the construction of your `OGM`. 
+The https://github.com/neo4j/neo4j-javascript-driver[Neo4j javascript driver] must be present in either the context or construction of your `Neo4jGraphQL` API or at the construction of your `OGM`.
 
 === `Neo4jGraphQL`
 [source, javascript]

@@ -1,4 +1,4 @@
-[[operations-update]]
+[[schema-mutations-update]]
 = Update
 
 == Schema

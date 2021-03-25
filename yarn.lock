@@ -4121,7 +4121,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server-types@npm:^0.6.3":
+"apollo-server-testing@npm:2.19.0":
+  version: 2.19.0
+  resolution: "apollo-server-testing@npm:2.19.0"
+  dependencies:
+    apollo-server-core: ^2.19.0
+  peerDependencies:
+    graphql: ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
+  checksum: ca420da9367b162c70b7c3ccf3c3763d575c5ecc2d2b659d8768121b44f6dbae8314ca623b3c96f16355b9ec42901b012a0ac6c437623588a7a5425bdd383052
+  languageName: node
+  linkType: hard
+
+"apollo-server-types@npm:^0.6.1, apollo-server-types@npm:^0.6.3":
   version: 0.6.3
   resolution: "apollo-server-types@npm:0.6.3"
   dependencies:

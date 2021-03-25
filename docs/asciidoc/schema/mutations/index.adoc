@@ -1,15 +1,12 @@
-[[knowledgebase-developer-notes]]
-= Developer Notes
+[[schema-mutations]]
+= Mutations
 
-Some tips, pointers and gotchas pointed out
-
+* <<schema-mutations-create>>
+* <<schema-mutations-update>>
+* <<schema-mutations-delete>>
 
 == Large Mutations
 
 There is no lie that nested mutations are very powerful. We have to generate complex cypher to provide the abstractions such as `connect` and `disconnect`. Due to the complexity and size of the cypher we generate its not advised to abuse it. Using the Generated GraphQL schema, If you were to attempt the creation of say one hundred nodes and relations at once Neo4j may throw memory errors. This is simply because of the size of the cypher we generate. If you need to do large edits to the graph you may be better using cypher directly, that being said the abstraction’s provided should be fine for most use cases.
 
 > If memory issues are a regular occurrence. You can edit the dbms.memory.heap.max_size in the DBMS settings
-
-== Precision Loss
-
-We currently wrap the Int and Float scalars and pass them through to the database accordingly. One caveat here is that Neo4j Integers are 64-bit and JS numbers are only 53-bit, so there’s potential precision loss here, not to mention that GraphQL Int’s are only 32-bit: http://spec.graphql.org/June2018/#sec-Int. **We only support 32-bit integers because of the GraphQL limit.**

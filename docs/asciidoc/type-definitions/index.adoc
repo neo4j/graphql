@@ -1,7 +1,15 @@
-[[schema-basics]]
-= Basics
+[[type-definitions]]
+= Type Definitions
 
-== Nodes
+* <<type-definitions-relationships>>
+* <<type-definitions-default-values>>
+* <<type-definitions-autogeneration>>
+* <<type-definitions-access-control>>
+* <<type-definitions-unions-and-interfaces>>
+
+== Basics
+
+=== Nodes
 
 To represent a node in the GraphQL schema use the type definition;
 
@@ -13,7 +21,7 @@ type Node {
 ----
 
 
-== Relationships
+=== Relationships
 
 To represent a relationship between two nodes use the `@relationship` directive;
 
@@ -24,4 +32,5 @@ type Node {
     related: [Node] @relationship(type: "RELATED", direction: OUT)
 }
 ----
+
 
