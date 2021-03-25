@@ -742,7 +742,14 @@ function makeAugmentedSchema(
         schemaDirectives: neoSchema.input.schemaDirectives,
     });
 
-    const newSchema = addSchemaLevelResolver(schema, (_obj, _args, context: any) => {
+    const newSchema = addSchemaLevelResolver(schema, (_obj, _args, context: any, info: any) => {
+        /* 
+            Deleting this property ensures that we call this function more than once,
+            See https://github.com/ardatan/graphql-tools/issues/353#issuecomment-499569711
+        */
+        // eslint-disable-next-line no-param-reassign,no-underscore-dangle
+        delete info.operation.__runAtMostOnce;
+
         if (neoSchema.input.context) {
             context = { ...context, ...neoSchema.input.context };
         }
