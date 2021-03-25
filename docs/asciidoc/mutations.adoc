@@ -1,0 +1,4 @@
+[[mutations]]
+= Mutations
+
+See <<schema-mutations>>.
