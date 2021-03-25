@@ -1,4 +1,4 @@
-[[operations-create]]
+[[schema-mutations-create]]
 = Create
 
 == Schema

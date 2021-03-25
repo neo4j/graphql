@@ -1,0 +1,11 @@
+[[ogm-methods]]
+= Methods
+
+You can call the following on the model;
+
+. find
+. create
+. delete
+. update
+
+Each method maps to the underlying generated Query or Mutation for that Model.
