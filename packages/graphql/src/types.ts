@@ -1,4 +1,16 @@
 import { InputValueDefinitionNode, DirectiveNode } from "graphql";
+import { ResolveTree } from "graphql-parse-resolve-info";
+import { Driver } from "neo4j-driver";
+import { Neo4jGraphQL } from "./index";
+
+export interface Context {
+    driver: Driver;
+    driverConfig?: DriverConfig;
+    resolveTree: ResolveTree;
+    neoSchema: Neo4jGraphQL;
+    jwt?: any;
+    [k: string]: any;
+}
 
 export type DriverConfig = {
     database?: string;

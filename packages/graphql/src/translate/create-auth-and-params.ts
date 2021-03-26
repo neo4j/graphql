@@ -1,6 +1,6 @@
 import dotProp from "dot-prop";
-import { Context, Node } from "../classes";
-import { AuthOperations, BaseField, AuthRule, BaseAuthRule } from "../types";
+import { Node } from "../classes";
+import { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context } from "../types";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 
 interface Res {
@@ -46,7 +46,7 @@ function createAuthPredicate({
     if (!rule[kind]) {
         return ["", {}];
     }
-    const jwt = context.getJWT();
+    const { jwt } = context;
 
     const result = Object.entries(rule[kind] as any).reduce(
         (res: Res, [key, value]) => {
@@ -79,7 +79,7 @@ function createAuthPredicate({
                 if (jwtPath) {
                     paramValue = dotProp.get({ value: jwt }, `value.${jwtPath}`) as string;
                 } else if (ctxPath) {
-                    paramValue = dotProp.get({ value: context.graphQLContext }, `value.${ctxPath}`) as string;
+                    paramValue = dotProp.get({ value: context }, `value.${ctxPath}`) as string;
                 }
 
                 const param = `${chainStr}_${key}`;

@@ -1,4 +1,5 @@
-import { Node, Context } from "../classes";
+import { Node } from "../classes";
+import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createWhereAndParams from "./create-where-and-params";

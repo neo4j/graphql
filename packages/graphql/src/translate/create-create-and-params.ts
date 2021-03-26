@@ -1,4 +1,5 @@
-import { Context, Node } from "../classes";
+import { Node } from "../classes";
+import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";

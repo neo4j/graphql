@@ -1,1 +1,1 @@
-export { default as verifyAndDecodeToken } from "./verify-and-decode-token"; // eslint-disable-line import/prefer-default-export
+export { default as getJWT } from "./get-jwt"; // eslint-disable-line import/prefer-default-export

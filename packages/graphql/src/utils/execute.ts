@@ -1,7 +1,8 @@
 import { Driver, SessionMode } from "neo4j-driver";
 import { Neo4jGraphQL, Neo4jGraphQLForbiddenError, Neo4jGraphQLAuthenticationError } from "../classes";
 import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR } from "../constants";
-import { DriverConfig } from "../types";
+import createAuthParam from "../translate/create-auth-param";
+import { Context, DriverConfig } from "../types";
 
 // https://stackoverflow.com/a/58632373/10687857
 const { npm_package_version: npmPackageVersion, npm_package_name: npmPackageName } = process.env;
@@ -14,7 +15,7 @@ async function execute(input: {
     neoSchema: Neo4jGraphQL;
     statistics?: boolean;
     raw?: boolean;
-    graphQLContext: any;
+    context: Context;
 }): Promise<any> {
     const sessionParams: {
         defaultAccessMode?: SessionMode;
@@ -22,7 +23,7 @@ async function execute(input: {
         database?: string;
     } = { defaultAccessMode: input.defaultAccessMode };
 
-    const driverConfig = input.graphQLContext.driverConfig as DriverConfig;
+    const driverConfig = input.context.driverConfig as DriverConfig;
     if (driverConfig) {
         if (driverConfig.database) {
             sessionParams.database = driverConfig.database;
@@ -37,6 +38,15 @@ async function execute(input: {
 
     // @ts-ignore: Required to set connection user agent
     input.driver._userAgent = `${npmPackageVersion}/${npmPackageName}`; // eslint-disable-line no-underscore-dangle
+
+    // Its really difficult to know when users are using the `auth` param. For Simplicity it better to do the check here
+    if (
+        input.cypher.includes("$auth.") ||
+        input.cypher.includes("auth: $auth") ||
+        input.cypher.includes("auth:$auth")
+    ) {
+        input.params.auth = createAuthParam({ context: input.context });
+    }
 
     try {
         input.neoSchema.debug(`Cypher: ${input.cypher}\nParams: ${JSON.stringify(input.params, null, 2)}`);

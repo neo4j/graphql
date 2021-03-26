@@ -1,5 +1,4 @@
 import { IResolvers } from "@graphql-tools/utils";
-import { Context, Neo4jGraphQL } from "../classes";
 import createAuthParam from "../translate/create-auth-param";
 
 function wrapCustomResolvers({
@@ -65,14 +64,11 @@ function wrapCustomResolvers({
             if (typeof value === "function") {
                 obj[key] = (...args) => {
                     const { driver } = args[2];
-                    const neoSchema = args[3].neoSchema as Neo4jGraphQL;
-
                     if (!driver) {
                         throw new Error("context.diver missing");
                     }
 
-                    const context = new Context({ neoSchema, driver, graphQLContext: args[2] });
-                    const auth = createAuthParam({ context });
+                    const auth = createAuthParam({ context: args[2] });
 
                     args[2] = { ...args[2], auth };
 

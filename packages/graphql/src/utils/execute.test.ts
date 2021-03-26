@@ -1,5 +1,6 @@
 import { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../classes";
+import { Context } from "../types";
 import execute from "./execute";
 
 describe("execute", () => {
@@ -63,7 +64,7 @@ describe("execute", () => {
                     params,
                     defaultAccessMode,
                     neoSchema,
-                    graphQLContext: { driverConfig: { database, bookmarks } },
+                    context: { driverConfig: { database, bookmarks }, neoSchema, driver } as Context,
                 });
 
                 expect(result).toEqual([{ title }]);

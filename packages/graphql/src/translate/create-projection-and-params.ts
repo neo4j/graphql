@@ -1,7 +1,7 @@
 import { FieldsByTypeName } from "graphql-parse-resolve-info";
-import { Context, Node } from "../classes";
+import { Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
-import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg } from "../types";
+import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 

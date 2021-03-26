@@ -1,5 +1,6 @@
 import createConnectAndParams from "./create-connect-and-params";
-import { Neo4jGraphQL, Node, Context } from "../classes";
+import { Neo4jGraphQL, Node } from "../classes";
+import { Context } from "../types";
 import { trimmer } from "../utils";
 
 describe("createConnectAndParams", () => {
@@ -52,7 +53,7 @@ describe("createConnectAndParams", () => {
         };
 
         // @ts-ignore
-        const context = new Context({ neoSchema });
+        const context: Context = { neoSchema };
 
         const result = createConnectAndParams({
             withVars: ["this"],

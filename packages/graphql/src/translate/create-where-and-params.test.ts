@@ -1,5 +1,6 @@
-import { Context, Node } from "../classes";
+import { Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
+import { Context } from "../types";
 
 describe("createWhereAndParams", () => {
     test("should be a function", () => {
