@@ -1,21 +1,19 @@
 import { Driver } from "neo4j-driver";
-import { DocumentNode, GraphQLSchema, parse } from "graphql";
+import { DocumentNode, GraphQLSchema, parse, printSchema } from "graphql";
 import { ITypeDefinitions, IResolvers } from "@graphql-tools/utils";
-import { IExecutableSchemaDefinition } from "@graphql-tools/schema";
+import { addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { DriverConfig } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import { verifyDatabase } from "../utils";
 
-// export type SchemaDirectives = Record<string, typeof SchemaDirectiveVisitor> | undefined;
 export type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
 
 export interface Neo4jGraphQLConstructor {
     typeDefs: ITypeDefinitions;
     resolvers?: IResolvers;
     schemaDirectives?: SchemaDirectives;
-    debug?: boolean | ((...values: any[]) => void);
-    context?: { [k: string]: any } & { driver?: Driver };
+    debug?: boolean | ((message: string) => void);
     driver?: Driver;
     driverConfig?: DriverConfig;
 }
@@ -25,48 +23,85 @@ class Neo4jGraphQL {
 
     public nodes: Node[];
 
-    public input: Neo4jGraphQLConstructor;
-
-    public resolvers: any;
-
-    public typeDefs: string;
-
     public document: DocumentNode;
 
+    private driver?: Driver;
+
+    private driverConfig?: DriverConfig;
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars,class-methods-use-this
+    debug(message: string): void {
+        return undefined;
+    }
+
     constructor(input: Neo4jGraphQLConstructor) {
-        this.input = input;
+        this.driver = input.driver;
+        this.driverConfig = input.driverConfig;
 
-        const { nodes, resolvers, schema, typeDefs } = makeAugmentedSchema(this);
+        const { nodes, schema } = makeAugmentedSchema({
+            typeDefs: input.typeDefs,
+            resolvers: input.resolvers,
+            schemaDirectives: input.schemaDirectives,
+        });
+
+        if (input.debug) {
+            let logger = console.log;
+
+            if (typeof input.debug === "function") {
+                logger = input.debug;
+            }
+
+            this.debug = (message: string) => logger(message);
+        }
+
         this.nodes = nodes;
-        this.resolvers = resolvers;
-        this.schema = schema;
-        this.typeDefs = typeDefs;
-        this.document = parse(typeDefs);
+        this.schema = this.createWrappedSchema({ schema, driver: input.driver, driverConfig: input.driverConfig });
+        this.document = parse(printSchema(schema));
     }
 
-    debug(message: string) {
-        if (!this.input.debug) {
-            return;
-        }
+    private createWrappedSchema({
+        schema,
+        driver,
+        driverConfig,
+    }: {
+        schema: GraphQLSchema;
+        driver?: Driver;
+        driverConfig?: DriverConfig;
+    }): GraphQLSchema {
+        return addSchemaLevelResolver(schema, (_obj, _args, context: any, info: any) => {
+            /*
+                Deleting this property ensures that we call this function more than once,
+                See https://github.com/ardatan/graphql-tools/issues/353#issuecomment-499569711
+            */
+            // eslint-disable-next-line no-param-reassign,no-underscore-dangle
+            delete info.operation.__runAtMostOnce;
 
-        // eslint-disable-next-line no-console
-        let debug = console.log;
+            if (!context?.driver) {
+                if (!driver) {
+                    throw new Error(
+                        "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
+                    );
+                }
+                context.driver = driver;
+            }
 
-        if (typeof this.input.debug === "function") {
-            debug = this.input.debug;
-        }
+            if (!context?.driverConfig) {
+                context.driverConfig = driverConfig;
+            }
 
-        debug(message);
+            context.neoSchema = this;
+        });
     }
 
-    async verifyDatabase(input: { driver?: Driver } = {}): Promise<void> {
-        const driver = input.driver || this.input.driver;
+    async verifyDatabase(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
+        const driver = input.driver || this.driver;
+        const driverConfig = input.driverConfig || this.driverConfig;
 
         if (!driver) {
             throw new Error("neo4j-driver Driver missing");
         }
 
-        return verifyDatabase({ driver });
+        return verifyDatabase({ driver, driverConfig });
     }
 }
 
