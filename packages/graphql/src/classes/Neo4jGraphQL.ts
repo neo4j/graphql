@@ -30,7 +30,11 @@ class Neo4jGraphQL {
     constructor(input: Neo4jGraphQLConstructor) {
         this.input = input;
 
-        const { nodes, schema } = makeAugmentedSchema(this);
+        const { nodes, schema } = makeAugmentedSchema({
+            typeDefs: input.typeDefs,
+            resolvers: input.resolvers,
+            schemaDirectives: input.schemaDirectives,
+        });
 
         this.nodes = nodes;
         this.schema = this.createWrappedSchema(schema, input.driver, input.driverConfig);
