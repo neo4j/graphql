@@ -13,7 +13,7 @@ export interface Neo4jGraphQLConstructor {
     typeDefs: ITypeDefinitions;
     resolvers?: IResolvers;
     schemaDirectives?: SchemaDirectives;
-    debug?: boolean | ((...values: any[]) => void);
+    debug?: boolean | ((message: string) => void);
     driver?: Driver;
     driverConfig?: DriverConfig;
 }
@@ -23,18 +23,37 @@ class Neo4jGraphQL {
 
     public nodes: Node[];
 
-    public input: Neo4jGraphQLConstructor;
-
     public document: DocumentNode;
 
+    private driver?: Driver;
+
+    private driverConfig?: DriverConfig;
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars,class-methods-use-this
+    debug(message: string): void {
+        return undefined;
+    }
+
     constructor(input: Neo4jGraphQLConstructor) {
-        this.input = input;
+        this.driver = input.driver;
+        this.driverConfig = input.driverConfig;
 
         const { nodes, schema } = makeAugmentedSchema({
             typeDefs: input.typeDefs,
             resolvers: input.resolvers,
             schemaDirectives: input.schemaDirectives,
         });
+
+        if (input.debug) {
+            // eslint-disable-next-line no-console
+            let logger = console.log;
+
+            if (typeof input.debug === "function") {
+                logger = input.debug;
+            }
+
+            this.debug = (message: string) => logger(message);
+        }
 
         this.nodes = nodes;
         this.schema = this.createWrappedSchema(schema, input.driver, input.driverConfig);
@@ -67,23 +86,8 @@ class Neo4jGraphQL {
         });
     }
 
-    debug(message: string) {
-        if (!this.input.debug) {
-            return;
-        }
-
-        // eslint-disable-next-line no-console
-        let debug = console.log;
-
-        if (typeof this.input.debug === "function") {
-            debug = this.input.debug;
-        }
-
-        debug(message);
-    }
-
     async verifyDatabase(input: { driver?: Driver } = {}): Promise<void> {
-        const driver = input.driver || this.input.driver;
+        const driver = input.driver || this.driver;
 
         if (!driver) {
             throw new Error("neo4j-driver Driver missing");
