@@ -22,6 +22,7 @@ type User {
 **Output**
 
 ```schema-output
+"""A date and time, represented as an ISO-8601 string"""
 scalar DateTime
 
 type User {
