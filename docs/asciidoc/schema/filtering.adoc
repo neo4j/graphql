@@ -1,2 +1,25 @@
 [[schema-filtering]]
 = Filtering
+
+[cols="h,d,d,d,d,d,d,d,d,d",options=header]
+|===
+|                  | Int | Float | String | Boolean | ID | BigInt | DateTime | Point | CartesianPoint
+|                  | ✓   | ✓     | ✓      | ✓       | ✓  | ✓      | ✓        | ✓     | ✓
+| _NOT             | ✓   | ✓     | ✓      | ✓       | ✓  | ✓      | ✓        | ✓     | ✓
+| _LT              | ✓   | ✓     |        |         |    | ✓      | ✓        | ✓     | ✓
+| _LTE             | ✓   | ✓     |        |         |    | ✓      | ✓        | ✓     | ✓
+| _GTE             | ✓   | ✓     |        |         |    | ✓      | ✓        | ✓     | ✓
+| _GT              | ✓   | ✓     |        |         |    | ✓      | ✓        | ✓     | ✓
+| _CONTAINS        |     |       | ✓      |         | ✓  |        |          |       |
+| _NOT_CONTAINS    |     |       | ✓      |         | ✓  |        |          |       |
+| _STARTS_WITH     |     |       | ✓      |         | ✓  |        |          |       |
+| _NOT_STARTS_WITH |     |       | ✓      |         | ✓  |        |          |       |
+| _ENDS_WITH       |     |       | ✓      |         | ✓  |        |          |       |
+| _NOT_ENDS_WITH   |     |       | ✓      |         | ✓  |        |          |       |
+| _MATCHES*        |     |       | ✓      |         | ✓  |        |          |       |
+| _DISTANCE        |     |       |        |         |    |        |          | ✓     | ✓
+| _IN              | ✓   | ✓     | ✓      |         | ✓  | ✓      | ✓        | ✓     | ✓
+| _NOT_IN          | ✓   | ✓     | ✓      |         | ✓  | ✓      | ✓        | ✓     | ✓
+| _INCLUDES        | ✓   | ✓     | ✓      |         | ✓  | ✓      | ✓        | ✓     | ✓
+| _NOT_INCLUDES    | ✓   | ✓     | ✓      |         | ✓  | ✓      | ✓        | ✓     | ✓
+|===

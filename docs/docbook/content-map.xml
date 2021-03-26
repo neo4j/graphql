@@ -29,6 +29,9 @@
             <d:tocentry linkend="type-definitions-autogeneration">
                 <?dbhtml filename="type-definitions/autogeneration/index.html"?>
             </d:tocentry>
+            <d:tocentry linkend="type-definitions-cypher">
+                <?dbhtml filename="type-definitions/cypher/index.html"?>
+            </d:tocentry>
             <d:tocentry linkend="type-definitions-default-values">
                 <?dbhtml filename="type-definitions/default-values/index.html"?>
             </d:tocentry>

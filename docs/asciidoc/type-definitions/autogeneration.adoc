@@ -1,4 +1,31 @@
 [[type-definitions-autogeneration]]
 = Autogeneration
 
-== `@autogenerate` Directive
+[[type-definitions-autogeneration-autogenerate]]
+== `@autogenerate`
+
+=== ID's
+
+If the directive is specified and not provided on create will use the [database to generate a uuid](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-randomuuid).
+
+[source, graphql]
+----
+type User {
+    id: ID! @autogenerate
+    username: String!
+}
+----
+
+
+=== Timestamps
+
+If you place the directive on a `DateTime` it will, on specified operations, append a [datetime](https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime) property to the node.
+
+[source, graphql]
+----
+type User {
+    id: ID! @autogenerate
+    createdAt: DateTime! @autogenerate(operations: ["create"])
+    updatedAt: DateTime! @autogenerate(operations: ["update"])
+}
+----

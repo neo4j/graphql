@@ -1,2 +1,112 @@
 [[type-definitions-access-control]]
 = Access Control
+
+This page addresses controlling schema generation output through the inclusion/exclusion of fields.
+
+For fine-grained and role-based access control, see <<auth>>.
+
+[[type-definitions-access-control-private]]
+== `@private`
+The `@private` directive allows you to specify fields that should only be accessible through the <<ogm>>. This is very handy as you can hide fields such as user password to the outside world. Simply put the @private directive on the field you wish to be inaccessible through the exposed API.
+
+
+=== Definition
+[source, graphql]
+----
+directive @private on FIELD_DEFINITION
+----
+
+=== Usage
+
+[source, graphql]
+----
+type User {
+    password: String! @private
+}
+----
+
+[[type-definitions-access-control-readonly]]
+== `@readonly`
+The field will only feature in object types for querying, and will not be mutable.
+
+=== Definition
+
+[source, graphql]
+----
+"""Instructs @neo4j/graphql to only include a field in generated input type for creating, and in the object type within which the directive is applied."""
+directive @readonly on FIELD_DEFINITION
+----
+
+[[type-definitions-access-control-writeonly]]
+== `@writeonly`
+This field will only feature in input types, and will not be available for querying the object type through a Query or through a Mutation response.
+
+=== Definition
+
+[source, graphql]
+----
+"""Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself."""
+directive @writeonly on FIELD_DEFINITION
+----
+
+[[type-definitions-access-control-ignore]]
+== `@ignore`
+This field will essentially be completely ignored, and will require another way to resolve the field, such as through the use of a custom resolver.
+
+=== Definition
+
+[source, graphql]
+----
+"""Instructs @neo4j/graphql to completely ignore a field definition, assuming that it will be fully accounted for by custom resolvers."""
+directive @ignore on FIELD_DEFINITION
+----
+
+[[type-definitions-access-control-exclude]]
+== `@exclude`
+This directive can be used to tell `Neo4jGraphQL` to skip the automatic generation of the Query or Mutations for a certain type.
+
+=== `operations`
+1. CREATE
+2. READ
+3. UPDATE
+4. DELETE
+
+
+=== Usage
+
+==== Disable Query Generation
+
+[source, graphql]
+----
+type User @exclude(operations: [READ]) {
+    name: String
+}
+----
+
+==== Disable Mutation Generation
+
+[source, graphql]
+----
+type User @exclude(operations: [CREATE]) {
+    name: String
+}
+----
+
+==== Disable Multiple Mutation Generation
+
+[source, graphql]
+----
+type User @exclude(operations: [CREATE, DELETE]) {
+    name: String
+}
+----
+
+==== Disable All Queries And Mutations
+[source, graphql]
+----
+type User @exclude {
+    name: String
+}
+----
+
+> Exclude will not effect OGM methods.
