@@ -45,7 +45,6 @@ class Neo4jGraphQL {
         });
 
         if (input.debug) {
-            // eslint-disable-next-line no-console
             let logger = console.log;
 
             if (typeof input.debug === "function") {
@@ -56,11 +55,19 @@ class Neo4jGraphQL {
         }
 
         this.nodes = nodes;
-        this.schema = this.createWrappedSchema(schema, input.driver, input.driverConfig);
+        this.schema = this.createWrappedSchema({ schema, driver: input.driver, driverConfig: input.driverConfig });
         this.document = parse(printSchema(schema));
     }
 
-    private createWrappedSchema(schema: GraphQLSchema, driver?: Driver, driverConfig?: DriverConfig): GraphQLSchema {
+    private createWrappedSchema({
+        schema,
+        driver,
+        driverConfig,
+    }: {
+        schema: GraphQLSchema;
+        driver?: Driver;
+        driverConfig?: DriverConfig;
+    }): GraphQLSchema {
         return addSchemaLevelResolver(schema, (_obj, _args, context: any, info: any) => {
             /*
                 Deleting this property ensures that we call this function more than once,
@@ -86,14 +93,15 @@ class Neo4jGraphQL {
         });
     }
 
-    async verifyDatabase(input: { driver?: Driver } = {}): Promise<void> {
+    async verifyDatabase(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
         const driver = input.driver || this.driver;
+        const driverConfig = input.driverConfig || this.driverConfig;
 
         if (!driver) {
             throw new Error("neo4j-driver Driver missing");
         }
 
-        return verifyDatabase({ driver });
+        return verifyDatabase({ driver, driverConfig });
     }
 }
 
