@@ -18,6 +18,7 @@ type File {
 **Output**
 
 ```schema-output
+"""A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string."""
 scalar BigInt
 
 type File {

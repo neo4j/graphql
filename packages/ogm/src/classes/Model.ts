@@ -1,8 +1,9 @@
 import { DocumentNode, graphql, parse, print } from "graphql";
 import pluralize from "pluralize";
 import camelCase from "camelcase";
-import { Neo4jGraphQL, GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "@neo4j/graphql";
+import { Neo4jGraphQL } from "@neo4j/graphql";
 import { upperCaseFirst } from "upper-case-first";
+import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
 
 export interface ModelConstructor {
     name: string;
