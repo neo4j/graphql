@@ -218,8 +218,7 @@ describe("TCK Generated tests", () => {
                     const neoSchema = new Neo4jGraphQL({ typeDefs });
 
                     const schemaOutPut = test.schemaOutPut as string;
-                    const { resolvers } = neoSchema;
-                    const outPutSchema = makeExecutableSchema({ typeDefs: schemaOutPut, resolvers });
+                    const outPutSchema = makeExecutableSchema({ typeDefs: schemaOutPut });
 
                     expect(printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema))).toEqual(
                         printSchemaWithDirectives(lexicographicSortSchema(outPutSchema))

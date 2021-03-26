@@ -1,5 +1,5 @@
 import { Driver } from "neo4j-driver";
-import { DocumentNode, GraphQLSchema, parse } from "graphql";
+import { DocumentNode, GraphQLSchema, parse, printSchema } from "graphql";
 import { ITypeDefinitions, IResolvers } from "@graphql-tools/utils";
 import { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { DriverConfig } from "../types";
@@ -7,7 +7,6 @@ import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import { verifyDatabase } from "../utils";
 
-// export type SchemaDirectives = Record<string, typeof SchemaDirectiveVisitor> | undefined;
 export type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
 
 export interface Neo4jGraphQLConstructor {
@@ -27,21 +26,15 @@ class Neo4jGraphQL {
 
     public input: Neo4jGraphQLConstructor;
 
-    public resolvers: any;
-
-    public typeDefs: string;
-
     public document: DocumentNode;
 
     constructor(input: Neo4jGraphQLConstructor) {
         this.input = input;
 
-        const { nodes, resolvers, schema, typeDefs } = makeAugmentedSchema(this);
+        const { nodes, schema } = makeAugmentedSchema(this);
         this.nodes = nodes;
-        this.resolvers = resolvers;
         this.schema = schema;
-        this.typeDefs = typeDefs;
-        this.document = parse(typeDefs);
+        this.document = parse(printSchema(schema));
     }
 
     debug(message: string) {
