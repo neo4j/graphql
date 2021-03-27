@@ -58,7 +58,8 @@ export const excludeDirective = new GraphQLDirective({
     locations: [DirectiveLocation.OBJECT],
     args: {
         operations: {
-            type: new GraphQLList(new GraphQLNonNull(ExcludeOperationEnum)),
+            defaultValue: ExcludeOperationEnum.getValues().map((v) => v.value),
+            type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(ExcludeOperationEnum))),
         },
     },
 });
