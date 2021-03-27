@@ -98,7 +98,7 @@ describe("makeAugmentedSchema", () => {
     test("should throw cannot auto-generate a non ID field", () => {
         const typeDefs = `
             type Movie  {
-                name: String! @autogenerate
+                name: String! @id(autogenerate: true)
             }
         `;
 
@@ -108,51 +108,41 @@ describe("makeAugmentedSchema", () => {
     test("should throw cannot auto-generate an array", () => {
         const typeDefs = `
                 type Movie  {
-                    name: [ID] @autogenerate
+                    name: [ID] @id(autogenerate: true)
                 }
             `;
 
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate an array");
     });
 
-    test("should throw cannot autogenerate am array of DateTime", () => {
+    test("should throw cannot timestamp on array of DateTime", () => {
         const typeDefs = `
                 type Movie  {
-                    name: [DateTime] @autogenerate
+                    name: [DateTime] @timestamp(operations: [CREATE])
                 }
             `;
 
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate an array");
     });
 
-    test("should throw autogenerate operations required", () => {
+    test("should throw timestamp operations must be an array", () => {
         const typeDefs = `
                 type Movie  {
-                    name: DateTime @autogenerate
+                    name: DateTime @timestamp(operations: "read")
                 }
             `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("@autogenerate operations required");
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow('Argument "operations" has invalid value "read".');
     });
 
-    test("should throw autogenerate operations must be an array", () => {
+    test("should throw timestamp operations[0] invalid", () => {
         const typeDefs = `
                 type Movie  {
-                    name: DateTime @autogenerate(operations: "read")
+                    name: DateTime @timestamp(operations: ["read"])
                 }
             `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("@autogenerate operations must be an array");
-    });
-
-    test("should throw autogenerate operations[0] invalid", () => {
-        const typeDefs = `
-                type Movie  {
-                    name: DateTime @autogenerate(operations: ["read"])
-                }
-            `;
-
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("@autogenerate operations[0] invalid");
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow('Argument "operations" has invalid value ["read"].');
     });
 
     test("should throw cannot have auth directive on a relationship", () => {

@@ -147,4 +147,4 @@ export interface DeleteInfo {
     relationshipsDeleted: number;
 }
 
-export type TimeStampOperations = "create" | "update";
+export type TimeStampOperations = "CREATE" | "UPDATE";

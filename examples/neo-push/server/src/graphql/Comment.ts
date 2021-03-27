@@ -2,7 +2,7 @@ import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
     type Comment {
-        id: ID! @autogenerate
+        id: ID! @id(autogenerate: true)
         author: User @relationship(type: "COMMENTED", direction: IN)
         content: String!
         post: Post @relationship(type: "HAS_COMMENT", direction: IN)
@@ -22,8 +22,8 @@ export const typeDefs = gql`
                 RETURN canDelete
                 """
             )
-        createdAt: DateTime @autogenerate(operations: ["create"])
-        updatedAt: DateTime @autogenerate(operations: ["update"])
+        createdAt: DateTime @timestamp(operations: [CREATE])
+        updatedAt: DateTime @timestamp(operations: [UPDATE])
     }
 
     extend type Comment

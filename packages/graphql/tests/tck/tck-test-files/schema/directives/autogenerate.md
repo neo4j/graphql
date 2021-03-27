@@ -10,7 +10,7 @@ Tests that the autogenerate directive produces the correct schema.
 
 ```typedefs-input
 type Movie {
-    id: ID! @autogenerate
+    id: ID! @id(autogenerate: true)
 }
 ```
 

@@ -2,7 +2,7 @@ import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
     type Blog {
-        id: ID! @autogenerate
+        id: ID! @id(autogenerate: true)
         name: String!
         creator: User @relationship(type: "HAS_BLOG", direction: IN)
         authors: [User] @relationship(type: "CAN_POST", direction: IN)
@@ -23,8 +23,8 @@ export const typeDefs = gql`
                 RETURN isAuthor
                 """
             )
-        createdAt: DateTime @autogenerate(operations: ["create"])
-        updatedAt: DateTime @autogenerate(operations: ["update"])
+        createdAt: DateTime @timestamp(operations: [CREATE])
+        updatedAt: DateTime @timestamp(operations: [UPDATE])
     }
 
     extend type Blog

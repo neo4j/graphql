@@ -16,44 +16,44 @@ There are only two custom resolvers in the server; sign up plus sign in. The lac
 
 ```graphql
 type User {
-    id: ID! @autogenerate
+    id: ID! @id(autogenerate: true)
     email: String!
     password: String!
     createdBlogs: [Blog] @relationship(type: "HAS_BLOG", direction: OUT)
     authorsBlogs: [Blog] @relationship(type: "CAN_POST", direction: OUT)
     password: String! @private
-    createdAt: DateTime @autogenerate(operations: ["create"])
-    updatedAt: DateTime @autogenerate(operations: ["update"])
+    createdAt: DateTime @timestamp(operations: [CREATE])
+    updatedAt: DateTime @timestamp(operations: [UPDATE])
 }
 
 type Blog {
-    id: ID! @autogenerate
+    id: ID! @id(autogenerate: true)
     name: String!
     creator: User @relationship(type: "HAS_BLOG", direction: IN)
     authors: [User] @relationship(type: "CAN_POST", direction: IN)
     posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
-    createdAt: DateTime @autogenerate(operations: ["create"])
-    updatedAt: DateTime @autogenerate(operations: ["update"])
+    createdAt: DateTime @timestamp(operations: [CREATE])
+    updatedAt: DateTime @timestamp(operations: [UPDATE])
 }
 
 type Post {
-    id: ID! @autogenerate
+    id: ID! @id(autogenerate: true)
     title: String!
     content: String!
     blog: Blog @relationship(type: "HAS_POST", direction: IN)
     comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
     author: User @relationship(type: "WROTE", direction: IN)
-    createdAt: DateTime @autogenerate(operations: ["create"])
-    updatedAt: DateTime @autogenerate(operations: ["update"])
+    createdAt: DateTime @timestamp(operations: [CREATE])
+    updatedAt: DateTime @timestamp(operations: [UPDATE])
 }
 
 type Comment {
-    id: ID! @autogenerate
+    id: ID! @id(autogenerate: true)
     author: User @relationship(type: "COMMENTED", direction: IN)
     content: String!
     post: Post @relationship(type: "HAS_COMMENT", direction: IN)
-    createdAt: DateTime @autogenerate(operations: ["create"])
-    updatedAt: DateTime @autogenerate(operations: ["update"])
+    createdAt: DateTime @timestamp(operations: [CREATE])
+    updatedAt: DateTime @timestamp(operations: [UPDATE])
 }
 ```
 

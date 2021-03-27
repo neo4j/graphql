@@ -129,7 +129,7 @@ function createCreateAndParams({
 
     const initial = [`CREATE (${varName}:${node.name})`];
 
-    const timestamps = node.dateTimeFields.filter((x) => x.timestamps && x.timestamps.includes("create"));
+    const timestamps = node.dateTimeFields.filter((x) => x.timestamps && x.timestamps.includes("CREATE"));
     timestamps.forEach((ts) => {
         initial.push(`SET ${varName}.${ts.fieldName} = datetime()`);
     });

@@ -20,7 +20,7 @@ describe("autogenerate", () => {
 
         const typeDefs = `
             type Movie {
-              id: ID! @autogenerate
+              id: ID! @id(autogenerate: true)
               name: String
             }
         `;
@@ -61,11 +61,11 @@ describe("autogenerate", () => {
 
         const typeDefs = `
             type Genre {
-                id: ID! @autogenerate
+                id: ID! @id(autogenerate: true)
             }
 
             type Movie {
-                id: ID! @autogenerate
+                id: ID! @id(autogenerate: true)
                 name: String
                 genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
             }

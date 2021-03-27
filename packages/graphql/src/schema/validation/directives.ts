@@ -1,5 +1,12 @@
-import { GraphQLDirective, DirectiveLocation, GraphQLString, GraphQLNonNull, GraphQLList } from "graphql";
-import { ExcludeOperationEnum, RelationshipDirectionEnum } from "./enums";
+import {
+    GraphQLDirective,
+    DirectiveLocation,
+    GraphQLString,
+    GraphQLNonNull,
+    GraphQLList,
+    GraphQLBoolean,
+} from "graphql";
+import { ExcludeOperationEnum, RelationshipDirectionEnum, TimestampOperationEnum } from "./enums";
 import { ScalarType } from "./scalars";
 
 export const coalesceDirective = new GraphQLDirective({
@@ -56,6 +63,19 @@ export const excludeDirective = new GraphQLDirective({
     },
 });
 
+export const idDirective = new GraphQLDirective({
+    name: "id",
+    description:
+        "Indicates that the field is the unique identifier for the object type, and additionally enables the autogeneration of IDs.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        autogenerate: {
+            defaultValue: false,
+            type: new GraphQLNonNull(GraphQLBoolean),
+        },
+    },
+});
+
 export const ignoreDirective = new GraphQLDirective({
     name: "ignore",
     description:
@@ -87,6 +107,20 @@ export const relationshipDirective = new GraphQLDirective({
         },
         direction: {
             type: new GraphQLNonNull(RelationshipDirectionEnum),
+        },
+    },
+});
+
+export const timestampDirective = new GraphQLDirective({
+    name: "timestamp",
+    description:
+        "Instructs @neo4j/graphql to generate timestamps on particular events, which will be available as the value of the specified field.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        operations: {
+            description: "Which events to generate timestamps on. Defaults to both create and update.",
+            defaultValue: TimestampOperationEnum.getValues().map((v) => v.value),
+            type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(TimestampOperationEnum))),
         },
     },
 });

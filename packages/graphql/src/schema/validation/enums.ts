@@ -29,3 +29,11 @@ export const RelationshipDirectionEnum = new GraphQLEnumType({
         },
     },
 });
+
+export const TimestampOperationEnum = new GraphQLEnumType({
+    name: "TimestampOperation",
+    values: {
+        CREATE: {},
+        UPDATE: {},
+    },
+});

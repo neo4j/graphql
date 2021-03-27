@@ -22,7 +22,7 @@ describe("TimeStamps", () => {
             const typeDefs = `
                 type Movie {
                   id: ID
-                  createdAt: DateTime @autogenerate(operations: ["create"])
+                  createdAt: DateTime @timestamp(operations: [CREATE])
                 }
             `;
 
@@ -78,7 +78,7 @@ describe("TimeStamps", () => {
             const typeDefs = `
                 type Movie {
                   id: ID
-                  updatedAt: DateTime @autogenerate(operations: ["update"])
+                  updatedAt: DateTime @timestamp(operations: [UPDATE])
                 }
             `;
 
