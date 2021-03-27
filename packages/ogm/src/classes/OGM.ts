@@ -20,7 +20,7 @@
 import { DefinitionNode, FieldDefinitionNode } from "graphql";
 import { Driver } from "neo4j-driver";
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { Neo4jGraphQL, BaseField, Neo4jGraphQLConstructor } from "@neo4j/graphql";
+import { Neo4jGraphQL, Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import Model from "./Model";
 
 function filterTypeDefs(typeDefs: Neo4jGraphQLConstructor["typeDefs"]) {
@@ -83,7 +83,7 @@ class OGM {
             const selectionSet = `
                 {
                     ${[n.primitiveFields, n.scalarFields, n.enumFields, n.dateTimeFields].reduce(
-                        (res: string[], v: BaseField[]) => [...res, ...v.map((x) => x.fieldName)],
+                        (res: string[], v) => [...res, ...v.map((x) => x.fieldName)],
                         []
                     )}
                 }

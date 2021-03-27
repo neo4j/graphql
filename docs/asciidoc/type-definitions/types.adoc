@@ -1,4 +1,4 @@
-[[schema-types]]
+[[type-definitions-types]]
 = Types
 
 Neo4j GraphQL supports all default GraphQL types and additional mentioned in this document.
@@ -91,5 +91,3 @@ query UsersOver5kmAway($longitude: Float!, $latitude: Float!) {
     }
 }
 ----
-
-

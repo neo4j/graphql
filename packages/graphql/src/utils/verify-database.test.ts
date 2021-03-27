@@ -20,8 +20,49 @@
 import { Driver, Session } from "neo4j-driver";
 import verifyDatabase from "./verify-database";
 import { MIN_NEO4J_VERSION, MIN_APOC_VERSION, REQUIRED_APOC_FUNCTIONS, REQUIRED_APOC_PROCEDURES } from "../constants";
+import { DriverConfig } from "../types";
 
 describe("verifyDatabase", () => {
+    test("should add driver config to session", async () => {
+        // @ts-ignore
+        const fakeSession: Session = {
+            // @ts-ignore
+            run: () => ({
+                // @ts-ignore
+                records: [
+                    {
+                        toObject: () => ({
+                            version: MIN_NEO4J_VERSION,
+                            apocVersion: MIN_APOC_VERSION,
+                            functions: REQUIRED_APOC_FUNCTIONS,
+                            procedures: REQUIRED_APOC_PROCEDURES,
+                        }),
+                    },
+                ],
+            }),
+            // @ts-ignore
+            close: () => undefined,
+        };
+
+        const driverConfig: DriverConfig = {
+            database: "darrellanddan",
+            bookmarks: ["darrell", "dan"],
+        };
+
+        // @ts-ignore
+        const fakeDriver: Driver = {
+            // @ts-ignore
+            session: (config) => {
+                expect(config).toEqual(driverConfig);
+                return fakeSession;
+            },
+            // @ts-ignore
+            verifyConnectivity: () => undefined,
+        };
+
+        await verifyDatabase({ driver: fakeDriver, driverConfig });
+    });
+
     test("should throw expected Neo4j version", async () => {
         const invalidVersion = "2.3.1";
 

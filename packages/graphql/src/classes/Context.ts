@@ -20,12 +20,14 @@
 import { IncomingMessage } from "http";
 import { Driver } from "neo4j-driver";
 import { verifyAndDecodeToken } from "../auth";
+import { DriverConfig } from "../types";
 import Neo4jGraphQL from "./Neo4jGraphQL";
 
 export interface ContextConstructor {
-    graphQLContext: any;
     neoSchema: Neo4jGraphQL;
     driver: Driver;
+    driverConfig?: DriverConfig;
+    [k: string]: any;
 }
 
 class Context {

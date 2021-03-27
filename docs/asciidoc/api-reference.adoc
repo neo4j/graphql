@@ -3,7 +3,7 @@
 
 
 == `Neo4jGraphQL`
-Main Entry to the library. Holds metadata about the GraphQL schema. 
+Main Entry to the library. Holds metadata about the GraphQL schema.
 
 === Importing
 [source, javascript]
@@ -22,28 +22,6 @@ const neo4jGraphQL = new Neo4jGraphQL({
     debug?,
 });
 ----
-
-== `OGM`
-Holds an internal `Neo4jGraphQL` instance & exposes CRUD methods to interact with the underlying GraphQL Schema - See <<ogm>>. 
-
-=== Importing
-[source, javascript]
-----
-const { OGM } = require("@neo4j/graphql");
-----
-
-=== Constructing
-
-[source, javascript]
-----
-const ogm = new OGM({
-    typeDefs,
-    resolvers?,
-    debug?,
-});
-----
-
-
 
 == `translate`
 Used to translate the resolveInfo object of a custom resolver into cypher and params. Only to be used on custom/overridden resolvers. Using this function can act as both a pre and post mechanism for your resolvers.

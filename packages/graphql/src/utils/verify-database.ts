@@ -19,6 +19,7 @@
 
 import { Driver } from "neo4j-driver";
 import { MIN_NEO4J_VERSION, MIN_APOC_VERSION, REQUIRED_APOC_FUNCTIONS, REQUIRED_APOC_PROCEDURES } from "../constants";
+import { DriverConfig } from "../types";
 
 interface DBInfo {
     version: string;
@@ -27,10 +28,25 @@ interface DBInfo {
     procedures: string[];
 }
 
-async function verifyDatabase({ driver }: { driver: Driver }) {
+async function verifyDatabase({ driver, driverConfig }: { driver: Driver; driverConfig?: DriverConfig }) {
     await driver.verifyConnectivity();
 
-    const session = driver.session();
+    const sessionParams: {
+        bookmarks?: string | string[];
+        database?: string;
+    } = {};
+
+    if (driverConfig) {
+        if (driverConfig.database) {
+            sessionParams.database = driverConfig.database;
+        }
+
+        if (driverConfig.bookmarks) {
+            sessionParams.bookmarks = driverConfig.bookmarks;
+        }
+    }
+
+    const session = driver.session(sessionParams);
     const cypher = `
         CALL dbms.components() yield versions
         WITH head(versions) AS version

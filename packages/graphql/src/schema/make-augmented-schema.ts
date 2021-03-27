@@ -18,8 +18,8 @@
  */
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { makeExecutableSchema, addSchemaLevelResolver } from "@graphql-tools/schema";
-import { IResolvers } from "@graphql-tools/utils";
+import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
+import { ITypeDefinitions, IResolvers } from "@graphql-tools/utils";
 import camelCase from "camelcase";
 import {
     DefinitionNode,
@@ -41,7 +41,7 @@ import {
     InputTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
 import pluralize from "pluralize";
-import { Node, Exclude, Neo4jGraphQL } from "../classes";
+import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
 import { PrimitiveField, Auth } from "../types";
 import { upperFirstLetter } from "../utils";
@@ -56,14 +56,18 @@ import * as point from "./point";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
 import validateTypeDefs from "./validation";
 
-function makeAugmentedSchema(
-    neoSchema: Neo4jGraphQL
-): { typeDefs: string; resolvers: IResolvers; schema: GraphQLSchema; nodes: Node[] } {
-    const document = mergeTypeDefs(
-        Array.isArray(neoSchema.input.typeDefs)
-            ? (neoSchema.input.typeDefs as string[])
-            : [neoSchema.input.typeDefs as string]
-    );
+type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
+
+function makeAugmentedSchema({
+    typeDefs,
+    resolvers,
+    schemaDirectives,
+}: {
+    typeDefs: ITypeDefinitions;
+    resolvers?: IResolvers;
+    schemaDirectives?: SchemaDirectives;
+}): { schema: GraphQLSchema; nodes: Node[] } {
+    const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
     validateTypeDefs(document);
 
@@ -741,12 +745,11 @@ function makeAugmentedSchema(
         }, {}),
     };
 
-    if (neoSchema.input.resolvers) {
+    if (resolvers) {
         generatedResolvers = wrapCustomResolvers({
             generatedResolvers,
-            neoSchema,
             nodeNames,
-            resolvers: neoSchema.input.resolvers,
+            resolvers,
         });
     }
 
@@ -758,31 +761,12 @@ function makeAugmentedSchema(
     const schema = makeExecutableSchema({
         typeDefs: generatedTypeDefs,
         resolvers: generatedResolvers,
-        schemaDirectives: neoSchema.input.schemaDirectives,
-    });
-
-    const newSchema = addSchemaLevelResolver(schema, (_obj, _args, context: any) => {
-        if (neoSchema.input.context) {
-            context = { ...context, ...neoSchema.input.context };
-        }
-
-        if (!context?.driver) {
-            if (!neoSchema.input.driver) {
-                throw new Error(
-                    "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
-                );
-            }
-            context.driver = neoSchema.input.driver;
-        }
-
-        context.neoSchema = neoSchema;
+        schemaDirectives,
     });
 
     return {
         nodes,
-        typeDefs: generatedTypeDefs,
-        resolvers: generatedResolvers,
-        schema: newSchema,
+        schema,
     };
 }
 

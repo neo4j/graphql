@@ -1,0 +1,10 @@
+[[ogm]]
+= OGM
+
+Common applications won't just expose a single API. On the same instance as the GraphQL API there may be; scheduled jobs, authentication, migrations and not to forget any custom logic in the resolvers themselves. We expose a OGM(Object Graph Model) on top of the pre-existing GraphQL work and abstractions.
+
+* <<ogm-getting-started>>
+* <<ogm-api-reference>>
+* <<ogm-methods>>
+* <<ogm-private>>
+* <<ogm-selection-set>>

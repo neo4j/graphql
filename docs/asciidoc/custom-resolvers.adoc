@@ -1,4 +1,4 @@
-[[knowledgebase-custom-resolvers]]
+[[custom-resolvers]]
 = Custom Resolvers
 
 This library will auto-generate resolvers for queries and mutations, you don’t need to implement resolvers yourself, however if you have some custom code you can specify custom resolvers.

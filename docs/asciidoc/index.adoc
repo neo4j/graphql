@@ -19,39 +19,29 @@ License: <<license, Creative Commons 4.0>>
 endif::[]
 
 
-Welcome to the official documentation for the Neo4j GraphQL Engine. 
-
-
-* <<getting-started>>
-* <<api-reference>>
-* <<schema>>
-* <<operations>>
-* <<auth>>
-* <<ogm>>
-* <<drivers-and-config>>
-* <<knowledgebase>>
+Welcome to the official documentation for the Neo4j GraphQL Engine.
 
 == Introduction
 
 In this section you will find; notes on background information, links and resources, dependencies and requirements, plus pointers on where to get support. If you are already familiar with Neo4j GraphQL, or just want to get started, then jump directly to <<getting-started>>.
 
 
-== Why Neo4j + GraphQL ? 
+== Why Neo4j + GraphQL ?
 
 Both Neo4j and GraphQL concern themselves with the topic of Graphs, with this in consideration, we can make a fairly good assumption "right off the bat" that the two technologies could coexist peacefully.
 
-== What is The Neo4j GraphQl Engine ? 
+== What is The Neo4j GraphQl Engine ?
 
-It is a GraphQL to Cypher query execution layer for Neo4j and **JavaScript** GraphQL implementations. Such an engine makes it easier, for developers, to use Neo4j and GraphQL together. 
+It is a GraphQL to Cypher query execution layer for Neo4j and **JavaScript** GraphQL implementations. Such an engine makes it easier, for developers, to use Neo4j and GraphQL together.
 
 Taking a set of Type Definitions; the engine produces an executable GraphQL Schema, where a given GraphQL query is transformed into a single Cypher query. This translation means users can let the engine handle all the database talking, and thus enabling users to focus on building great applications.
 
-Our GraphQL Engine exposes two products; 
+Our GraphQL Engine exposes two products;
 
 1. `Neo4jGraphQL` - Used for GraphQL API's such as Apollo Server
 2. <<ogm>> - A Handy tool, to use in application code, driven by GraphQL Type Definitions.
 
-With an extensive feature set including; 
+With an extensive feature set including;
 
 1. <<auth>>
 2. Nested Mutations

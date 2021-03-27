@@ -41,8 +41,7 @@ describe("makeAugmentedSchema", () => {
             }
         `;
 
-        // @ts-ignore
-        const neoSchema = makeAugmentedSchema({ input: { typeDefs } });
+        const neoSchema = makeAugmentedSchema({ typeDefs });
         const document = parse(printSchema(neoSchema.schema));
         const queryObject = document.definitions.find(
             (x) => x.kind === "ObjectTypeDefinition" && x.name.value === "Query"
@@ -94,8 +93,7 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-        // @ts-ignore
-        expect(() => makeAugmentedSchema({ input: { typeDefs } })).toThrow("cannot have interface on relationship");
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot have interface on relationship");
     });
 
     test("should throw type X does not implement interface X correctly", () => {
@@ -111,8 +109,7 @@ describe("makeAugmentedSchema", () => {
             }
             `;
 
-        // @ts-ignore
-        expect(() => makeAugmentedSchema({ input: { typeDefs } })).toThrow(
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
             "type Movie does not implement interface Node correctly"
         );
     });
@@ -124,8 +121,7 @@ describe("makeAugmentedSchema", () => {
             }
         `;
 
-        // @ts-ignore
-        expect(() => makeAugmentedSchema({ input: { typeDefs } })).toThrow("cannot auto-generate a non ID field");
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate a non ID field");
     });
 
     test("should throw cannot auto-generate an array", () => {
@@ -135,8 +131,7 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-        // @ts-ignore
-        expect(() => makeAugmentedSchema({ input: { typeDefs } })).toThrow("cannot auto-generate an array");
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate an array");
     });
 
     test("should throw cannot autogenerate am array of DateTime", () => {
@@ -146,8 +141,7 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-        // @ts-ignore
-        expect(() => makeAugmentedSchema({ input: { typeDefs } })).toThrow("cannot auto-generate an array");
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate an array");
     });
 
     test("should throw autogenerate operations required", () => {
@@ -157,8 +151,7 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-        // @ts-ignore
-        expect(() => makeAugmentedSchema({ input: { typeDefs } })).toThrow("@autogenerate operations required");
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("@autogenerate operations required");
     });
 
     test("should throw autogenerate operations must be an array", () => {
@@ -168,8 +161,7 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-        // @ts-ignore
-        expect(() => makeAugmentedSchema({ input: { typeDefs } })).toThrow("@autogenerate operations must be an array");
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("@autogenerate operations must be an array");
     });
 
     test("should throw autogenerate operations[0] invalid", () => {
@@ -179,8 +171,7 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-        // @ts-ignore
-        expect(() => makeAugmentedSchema({ input: { typeDefs } })).toThrow("@autogenerate operations[0] invalid");
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("@autogenerate operations[0] invalid");
     });
 
     test("should throw cannot have auth directive on a relationship", () => {
@@ -190,9 +181,6 @@ describe("makeAugmentedSchema", () => {
                 }
             `;
 
-        // @ts-ignore
-        expect(() => makeAugmentedSchema({ input: { typeDefs } })).toThrow(
-            "cannot have auth directive on a relationship"
-        );
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot have auth directive on a relationship");
     });
 });

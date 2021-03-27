@@ -1,0 +1,4 @@
+[[queries]]
+= Queries
+
+See <<schema-queries>>.

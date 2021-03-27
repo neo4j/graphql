@@ -33,6 +33,7 @@ type CreateMoviesMutationResponse {
   movies: [Movie!]!
 }
 
+"""A date and time, represented as an ISO-8601 string"""
 scalar DateTime
 
 type DeleteInfo {

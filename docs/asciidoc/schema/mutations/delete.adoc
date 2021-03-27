@@ -1,4 +1,4 @@
-[[operations-delete]]
+[[schema-mutations-delete]]
 = Delete
 
 == Schema

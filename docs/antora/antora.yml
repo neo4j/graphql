@@ -1,6 +1,7 @@
 name: graphql-manual
 title: Neo4j GraphQL
-version: '1.0'
+version: '1.0-preview'
+prerelease: true
 start_page: ROOT:index.adoc
 nav:
 - modules/ROOT/content-nav.adoc

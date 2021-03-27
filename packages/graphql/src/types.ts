@@ -18,9 +18,6 @@
  */
 
 import { InputValueDefinitionNode, DirectiveNode } from "graphql";
-import { IExecutableSchemaDefinition } from "@graphql-tools/schema";
-
-export type Resolvers = IExecutableSchemaDefinition["resolvers"];
 
 export type DriverConfig = {
     database?: string;
@@ -152,9 +149,9 @@ export interface GraphQLOptionsArg {
  * passed to resolvers.
  */
 export interface GraphQLWhereArg {
-    [k: string]: any | GraphQLOptionsArg | GraphQLOptionsArg[];
-    AND?: GraphQLOptionsArg[];
-    OR?: GraphQLOptionsArg[];
+    [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
+    AND?: GraphQLWhereArg[];
+    OR?: GraphQLWhereArg[];
 }
 
 export type AuthOperations = "create" | "read" | "update" | "delete" | "connect" | "disconnect";
