@@ -234,7 +234,9 @@ function getObjFieldMeta({
                         const operations = timestampDirective?.arguments?.find((x) => x.name.value === "operations")
                             ?.value as ListValueNode;
 
-                        const timestamps = operations?.values.map((x) => parseValueNode(x)) as TimeStampOperations[];
+                        const timestamps = operations
+                            ? (operations?.values.map((x) => parseValueNode(x)) as TimeStampOperations[])
+                            : (["CREATE", "UPDATE"] as TimeStampOperations[]);
 
                         dateTimeField.timestamps = timestamps;
                     }
