@@ -27,19 +27,18 @@ describe("post-auth", () => {
             charset: "alphabetic",
         });
 
-        const postId = generate({
-            charset: "alphabetic",
-        });
-
         const mutation = gql`
             mutation {
-                createPosts(input: [{id: "${postId}", title: "some post", content: "content" author: {connect: {where: {id: "invalid"}}}}]){
+                createPosts(
+                    input: [
+                        { title: "some post", content: "content", author: { connect: { where: { id: "invalid" } } } }
+                    ]
+                ) {
                     posts {
                         id
                     }
                 }
             }
-
         `;
 
         const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
