@@ -17,9 +17,7 @@
  * limitations under the License.
  */
 
-// eslint-disable-next-line import/no-cycle
 export { default as Node, NodeConstructor } from "./Node";
 export { default as Exclude, ExcludeConstructor } from "./Exclude";
-// eslint-disable-next-line import/no-cycle
 export { default as Neo4jGraphQL, Neo4jGraphQLConstructor } from "./Neo4jGraphQL";
 export * from "./Error";

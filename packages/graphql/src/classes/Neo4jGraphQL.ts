@@ -22,7 +22,7 @@ import { DocumentNode, GraphQLSchema, parse, printSchema } from "graphql";
 import { ITypeDefinitions, IResolvers } from "@graphql-tools/utils";
 import { addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
-import { DriverConfig } from "../types";
+import type { DriverConfig } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import { verifyDatabase } from "../utils";
