@@ -149,7 +149,7 @@ describe("DateTime", () => {
     });
 
     describe("find", () => {
-        test.skip("should find a movie (with a DateTime)", async () => {
+        test("should find a movie (with a DateTime)", async () => {
             const session = driver.session();
 
             const randomType = `${generate({
@@ -204,7 +204,7 @@ describe("DateTime", () => {
             }
         });
 
-        test.skip("should find a movie (with a DateTime created with a timezone)", async () => {
+        test("should find a movie (with a DateTime created with a timezone)", async () => {
             const session = driver.session();
 
             const randomType = `${generate({
