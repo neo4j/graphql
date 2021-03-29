@@ -1,6 +1,25 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import dotProp from "dot-prop";
-import { Context, Node } from "../classes";
-import { AuthOperations, BaseField, AuthRule, BaseAuthRule } from "../types";
+import { Node } from "../classes";
+import { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context } from "../types";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 
 interface Res {
@@ -46,7 +65,7 @@ function createAuthPredicate({
     if (!rule[kind]) {
         return ["", {}];
     }
-    const jwt = context.getJWT();
+    const { jwt } = context;
 
     const result = Object.entries(rule[kind] as any).reduce(
         (res: Res, [key, value]) => {
@@ -79,7 +98,7 @@ function createAuthPredicate({
                 if (jwtPath) {
                     paramValue = dotProp.get({ value: jwt }, `value.${jwtPath}`) as string;
                 } else if (ctxPath) {
-                    paramValue = dotProp.get({ value: context.graphQLContext }, `value.${ctxPath}`) as string;
+                    paramValue = dotProp.get({ value: context }, `value.${ctxPath}`) as string;
                 }
 
                 const param = `${chainStr}_${key}`;

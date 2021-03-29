@@ -10,7 +10,8 @@ Tests that the autogenerate directive produces the correct schema.
 
 ```typedefs-input
 type Movie {
-    id: ID! @autogenerate
+    id: ID! @id
+    name: String!
 }
 ```
 
@@ -20,6 +21,7 @@ type Movie {
 
 type Movie {
   id: ID!
+  name: String!
 }
 
 type DeleteInfo {
@@ -35,12 +37,12 @@ enum SortDirection {
 }
 
 input MovieCreateInput {
-  id: ID = "autogenerate"
+  name: String!
 }
 
 input MovieOptions {
   """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
-sort: [MovieSort]
+  sort: [MovieSort]
   limit: Int
   skip: Int
 }
@@ -48,6 +50,7 @@ sort: [MovieSort]
 """Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
 input MovieSort {
   id: SortDirection
+  name: SortDirection
 }
 
 input MovieWhere {
@@ -62,12 +65,23 @@ input MovieWhere {
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
   id_MATCHES: String
+  name: String
+  name_IN: [String]
+  name_NOT: String
+  name_NOT_IN: [String]
+  name_CONTAINS: String
+  name_NOT_CONTAINS: String
+  name_STARTS_WITH: String
+  name_NOT_STARTS_WITH: String
+  name_ENDS_WITH: String
+  name_NOT_ENDS_WITH: String
+  name_MATCHES: String
   OR: [MovieWhere!]
   AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {
-  id: ID
+  name: String
 }
 
 type CreateMoviesMutationResponse {

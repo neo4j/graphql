@@ -4,13 +4,13 @@ import { comparePassword, createJWT, hashPassword } from "../utils";
 
 export const typeDefs = gql`
     type User {
-        id: ID! @autogenerate
+        id: ID! @id
         email: String!
         createdBlogs: [Blog] @relationship(type: "HAS_BLOG", direction: OUT)
         authorsBlogs: [Blog] @relationship(type: "CAN_POST", direction: OUT)
         password: String! @private
-        createdAt: DateTime @autogenerate(operations: ["create"])
-        updatedAt: DateTime @autogenerate(operations: ["update"])
+        createdAt: DateTime @timestamp(operations: [CREATE])
+        updatedAt: DateTime @timestamp(operations: [UPDATE])
     }
 
     extend type User

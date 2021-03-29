@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import camelCase from "camelcase";
 import {
     graphql,
@@ -6,6 +25,7 @@ import {
     GraphQLScalarType,
     ScalarTypeExtensionNode,
     DirectiveDefinitionNode,
+    GraphQLResolveInfo,
 } from "graphql";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { makeExecutableSchema } from "@graphql-tools/schema";
@@ -14,12 +34,16 @@ import pluralize from "pluralize";
 import jsonwebtoken from "jsonwebtoken";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
+import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import { SchemaDirectiveVisitor, printSchemaWithDirectives } from "@graphql-tools/utils";
-import { translate } from "../../src/translate";
+import { translateCreate, translateDelete, translateRead, translateUpdate } from "../../src/translate";
+import { Context } from "../../src/types";
 import { Neo4jGraphQL } from "../../src";
 import { generateTestCasesFromMd, Test, TestCase } from "./utils/generate-test-cases-from-md.utils";
 import { trimmer } from "../../src/utils";
 import * as Scalars from "../../src/schema/scalars";
+import { Node } from "../../src/classes";
+import createAuthParam from "../../src/translate/create-auth-param";
 
 const TCK_DIR = path.join(__dirname, "tck-test-files");
 
@@ -61,21 +85,12 @@ describe("TCK Generated tests", () => {
                 // @ts-ignore
                 test.each(tests.map((t) => [t.name, t]))("%s", async (_, obj) => {
                     const test = obj as Test;
-
                     const graphQlQuery = test.graphQlQuery as string;
                     const graphQlParams = test.graphQlParams as any;
                     const cypherQuery = test.cypherQuery as string;
                     const cypherParams = test.cypherParams as any;
                     const { jwt } = test;
-
-                    const compare = (context: any, resolveInfo: any) => {
-                        context.driver = {};
-                        const [cQuery, cQueryParams] = translate({ context, resolveInfo });
-                        expect(trimmer(cQuery)).toEqual(trimmer(cypherQuery));
-                        expect(cQueryParams).toEqual(cypherParams);
-                    };
-
-                    let context = {};
+                    let defaultContext = {};
 
                     if (!cypherParams.jwt) {
                         const socket = new Socket({ readable: true });
@@ -83,9 +98,26 @@ describe("TCK Generated tests", () => {
                         const token = jsonwebtoken.sign(jwt, process.env.JWT_SECRET as string, { noTimestamp: true });
                         req.headers.authorization = `Bearer ${token}`;
 
-                        context = {
+                        defaultContext = {
                             req,
                         };
+                    }
+
+                    function compare(
+                        cypher: { expected: string; recived: string },
+                        params: { expected: any; recived: any },
+                        context: any
+                    ) {
+                        if (
+                            cypher.recived.includes("$auth.") ||
+                            cypher.recived.includes("auth: $auth") ||
+                            cypher.recived.includes("auth:$auth")
+                        ) {
+                            params.expected.auth = createAuthParam({ context });
+                        }
+
+                        expect(trimmer(cypher.expected)).toEqual(trimmer(cypher.recived));
+                        expect(params.expected).toEqual(params.recived);
                     }
 
                     const queries = document.definitions.reduce((res, def) => {
@@ -98,12 +130,28 @@ describe("TCK Generated tests", () => {
                             [pluralize(camelCase(def.name.value))]: (
                                 _root: any,
                                 _params: any,
-                                ctx: any,
-                                resolveInfo: any
+                                context: Context,
+                                info: GraphQLResolveInfo
                             ) => {
-                                ctx.neoSchema = neoSchema;
+                                const resolveTree = parseResolveInfo(info) as ResolveTree;
 
-                                compare(context, resolveInfo);
+                                context.neoSchema = neoSchema;
+                                context.resolveTree = resolveTree;
+                                // @ts-ignore
+                                context.driver = {};
+
+                                const mergedContext = { ...context, ...defaultContext };
+
+                                const [cQuery, cQueryParams] = translateRead({
+                                    context: mergedContext,
+                                    node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                });
+
+                                compare(
+                                    { expected: cQuery, recived: cypherQuery },
+                                    { expected: cQueryParams, recived: cypherParams },
+                                    mergedContext
+                                );
 
                                 return [];
                             },
@@ -120,12 +168,28 @@ describe("TCK Generated tests", () => {
                             [`create${pluralize(def.name.value)}`]: (
                                 _root: any,
                                 _params: any,
-                                ctx: any,
-                                resolveInfo: any
+                                context: any,
+                                info: GraphQLResolveInfo
                             ) => {
-                                ctx.neoSchema = neoSchema;
+                                const resolveTree = parseResolveInfo(info) as ResolveTree;
 
-                                compare(context, resolveInfo);
+                                context.neoSchema = neoSchema;
+                                context.resolveTree = resolveTree;
+                                // @ts-ignore
+                                context.driver = {};
+
+                                const mergedContext = { ...context, ...defaultContext };
+
+                                const [cQuery, cQueryParams] = translateCreate({
+                                    context: mergedContext,
+                                    node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                });
+
+                                compare(
+                                    { expected: cQuery, recived: cypherQuery },
+                                    { expected: cQueryParams, recived: cypherParams },
+                                    mergedContext
+                                );
 
                                 return {
                                     [pluralize(camelCase(def.name.value))]: [],
@@ -134,26 +198,53 @@ describe("TCK Generated tests", () => {
                             [`update${pluralize(def.name.value)}`]: (
                                 _root: any,
                                 _params: any,
-                                ctx: any,
-                                resolveInfo: any
+                                context: any,
+                                info: GraphQLResolveInfo
                             ) => {
-                                ctx.neoSchema = neoSchema;
+                                const resolveTree = parseResolveInfo(info) as ResolveTree;
 
-                                compare(context, resolveInfo);
+                                context.neoSchema = neoSchema;
+                                context.resolveTree = resolveTree;
+                                // @ts-ignore
+                                context.driver = {};
+
+                                const mergedContext = { ...context, ...defaultContext };
+
+                                const [cQuery, cQueryParams] = translateUpdate({
+                                    context: mergedContext,
+                                    node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                });
+
+                                compare(
+                                    { expected: cQuery, recived: cypherQuery },
+                                    { expected: cQueryParams, recived: cypherParams },
+                                    mergedContext
+                                );
 
                                 return {
                                     [pluralize(camelCase(def.name.value))]: [],
                                 };
                             },
-                            [`delete${pluralize(def.name.value)}`]: (
-                                _root: any,
-                                _params: any,
-                                ctx: any,
-                                resolveInfo: any
-                            ) => {
-                                ctx.neoSchema = neoSchema;
+                            [`delete${pluralize(def.name.value)}`]: (_root: any, _params: any, context: any, info) => {
+                                const resolveTree = parseResolveInfo(info) as ResolveTree;
 
-                                compare(context, resolveInfo);
+                                context.neoSchema = neoSchema;
+                                context.resolveTree = resolveTree;
+                                // @ts-ignore
+                                context.driver = {};
+
+                                const mergedContext = { ...context, ...defaultContext };
+
+                                const [cQuery, cQueryParams] = translateDelete({
+                                    context: mergedContext,
+                                    node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                });
+
+                                compare(
+                                    { expected: cQuery, recived: cypherQuery },
+                                    { expected: cQueryParams, recived: cypherParams },
+                                    mergedContext
+                                );
 
                                 return { nodesDeleted: 1, relationshipsDeleted: 1 };
                             },
@@ -192,14 +283,21 @@ describe("TCK Generated tests", () => {
                         return { ...r, [name.value]: new CustomDirective() };
                     }, {});
 
-                    const executableSchema = makeExecutableSchema({
-                        typeDefs: printSchema(neoSchema.schema),
-                        resolvers,
-                        ...customScalars,
-                        schemaDirectives: directives,
+                    // @ts-ignore
+                    const executableSchema = neoSchema.createWrappedSchema({
+                        schema: makeExecutableSchema({
+                            typeDefs: printSchema(neoSchema.schema),
+                            resolvers,
+                            ...customScalars,
+                            schemaDirectives: directives,
+                        }),
+                        // @ts-ignore
+                        driver: {},
+                        // @ts-ignore
+                        driverConfig: {},
                     });
 
-                    const result = await graphql(executableSchema, graphQlQuery, null, context, graphQlParams);
+                    const result = await graphql(executableSchema, graphQlQuery, null, defaultContext, graphQlParams);
 
                     if (result.errors) {
                         console.log(result.errors);

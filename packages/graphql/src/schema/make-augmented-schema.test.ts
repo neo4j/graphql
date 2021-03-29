@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import camelCase from "camelcase";
 import { printSchema, parse, ObjectTypeDefinitionNode, NamedTypeNode, ListTypeNode, NonNullTypeNode } from "graphql";
 import { pluralize } from "graphql-compose";
@@ -98,7 +117,7 @@ describe("makeAugmentedSchema", () => {
     test("should throw cannot auto-generate a non ID field", () => {
         const typeDefs = `
             type Movie  {
-                name: String! @autogenerate
+                name: String! @id
             }
         `;
 
@@ -108,51 +127,41 @@ describe("makeAugmentedSchema", () => {
     test("should throw cannot auto-generate an array", () => {
         const typeDefs = `
                 type Movie  {
-                    name: [ID] @autogenerate
+                    name: [ID] @id
                 }
             `;
 
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate an array");
     });
 
-    test("should throw cannot autogenerate am array of DateTime", () => {
+    test("should throw cannot timestamp on array of DateTime", () => {
         const typeDefs = `
                 type Movie  {
-                    name: [DateTime] @autogenerate
+                    name: [DateTime] @timestamp(operations: [CREATE])
                 }
             `;
 
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate an array");
     });
 
-    test("should throw autogenerate operations required", () => {
+    test("should throw timestamp operations must be an array", () => {
         const typeDefs = `
                 type Movie  {
-                    name: DateTime @autogenerate
+                    name: DateTime @timestamp(operations: "read")
                 }
             `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("@autogenerate operations required");
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow('Argument "operations" has invalid value "read".');
     });
 
-    test("should throw autogenerate operations must be an array", () => {
+    test("should throw timestamp operations[0] invalid", () => {
         const typeDefs = `
                 type Movie  {
-                    name: DateTime @autogenerate(operations: "read")
+                    name: DateTime @timestamp(operations: ["read"])
                 }
             `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("@autogenerate operations must be an array");
-    });
-
-    test("should throw autogenerate operations[0] invalid", () => {
-        const typeDefs = `
-                type Movie  {
-                    name: DateTime @autogenerate(operations: ["read"])
-                }
-            `;
-
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("@autogenerate operations[0] invalid");
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow('Argument "operations" has invalid value ["read"].');
     });
 
     test("should throw cannot have auth directive on a relationship", () => {

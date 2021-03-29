@@ -1,5 +1,23 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { IResolvers } from "@graphql-tools/utils";
-import { Context, Neo4jGraphQL } from "../classes";
 import createAuthParam from "../translate/create-auth-param";
 
 function wrapCustomResolvers({
@@ -65,14 +83,11 @@ function wrapCustomResolvers({
             if (typeof value === "function") {
                 obj[key] = (...args) => {
                     const { driver } = args[2];
-                    const neoSchema = args[3].neoSchema as Neo4jGraphQL;
-
                     if (!driver) {
                         throw new Error("context.diver missing");
                     }
 
-                    const context = new Context({ neoSchema, driver, graphQLContext: args[2] });
-                    const auth = createAuthParam({ context });
+                    const auth = createAuthParam({ context: args[2] });
 
                     args[2] = { ...args[2], auth };
 

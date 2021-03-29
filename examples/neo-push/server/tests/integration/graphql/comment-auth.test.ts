@@ -27,20 +27,15 @@ describe("comment-auth", () => {
             charset: "alphabetic",
         });
 
-        const commentId = generate({
-            charset: "alphabetic",
-        });
-
         const mutation = gql`
-                mutation {
-                    createComments(input: [{ id: "${commentId}", content: "test", author: { connect: { where: { id: "invalid" } } } }]) {
-                        comments {
-                            id
-                        }
+            mutation {
+                createComments(input: [{ content: "test", author: { connect: { where: { id: "invalid" } } } }]) {
+                    comments {
+                        id
                     }
                 }
-    
-            `;
+            }
+        `;
 
         const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
 

@@ -8,8 +8,8 @@ Schema:
 type Movie {
     id: ID
     name: String
-    createdAt: DateTime @autogenerate(operations: ["create"])
-    updatedAt: DateTime @autogenerate(operations: ["update"])
+    createdAt: DateTime @timestamp(operations: [CREATE])
+    updatedAt: DateTime @timestamp(operations: [UPDATE])
 }
 ```
 

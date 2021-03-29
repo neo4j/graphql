@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
 import { ITypeDefinitions, IResolvers } from "@graphql-tools/utils";
@@ -149,9 +168,9 @@ function makeAugmentedSchema({
             interfaces: nodeInterfaces,
             otherDirectives,
             ...nodeFields,
-            // @ts-ignore
+            // @ts-ignore we can be sure its defined
             auth,
-            // @ts-ignore
+            // @ts-ignore we can be sure its defined
             exclude,
             description: definition.description?.value,
         });
@@ -315,12 +334,10 @@ function makeAugmentedSchema({
                 ...node.pointFields,
             ].reduce((res, f) => {
                 if ((f as PrimitiveField)?.autogenerate) {
-                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
-                        type: f.typeMeta.name,
-                        defaultValue: "autogenerate",
-                    };
-                    res[f.fieldName] = field;
-                } else if ((f as PrimitiveField)?.defaultValue !== undefined) {
+                    return res;
+                }
+
+                if ((f as PrimitiveField)?.defaultValue !== undefined) {
                     const field: InputTypeComposerFieldConfigAsObjectDefinition = {
                         type: f.typeMeta.input.create.pretty,
                         defaultValue: (f as PrimitiveField)?.defaultValue,
@@ -344,7 +361,7 @@ function makeAugmentedSchema({
                 ...node.pointFields,
             ].reduce(
                 (res, f) =>
-                    f.readonly
+                    f.readonly || (f as PrimitiveField)?.autogenerate
                         ? res
                         : {
                               ...res,

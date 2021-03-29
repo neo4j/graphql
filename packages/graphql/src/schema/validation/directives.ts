@@ -1,5 +1,31 @@
-import { GraphQLDirective, DirectiveLocation, GraphQLString, GraphQLNonNull, GraphQLList } from "graphql";
-import { ExcludeOperationEnum, RelationshipDirectionEnum } from "./enums";
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import {
+    GraphQLDirective,
+    DirectiveLocation,
+    GraphQLString,
+    GraphQLNonNull,
+    GraphQLList,
+    GraphQLBoolean,
+} from "graphql";
+import { ExcludeOperationEnum, RelationshipDirectionEnum, TimestampOperationEnum } from "./enums";
 import { ScalarType } from "./scalars";
 
 export const coalesceDirective = new GraphQLDirective({
@@ -51,7 +77,21 @@ export const excludeDirective = new GraphQLDirective({
     locations: [DirectiveLocation.OBJECT],
     args: {
         operations: {
-            type: new GraphQLList(new GraphQLNonNull(ExcludeOperationEnum)),
+            defaultValue: ExcludeOperationEnum.getValues().map((v) => v.value),
+            type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(ExcludeOperationEnum))),
+        },
+    },
+});
+
+export const idDirective = new GraphQLDirective({
+    name: "id",
+    description:
+        "Indicates that the field is the unique identifier for the object type, and additionally enables the autogeneration of IDs.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        autogenerate: {
+            defaultValue: false,
+            type: new GraphQLNonNull(GraphQLBoolean),
         },
     },
 });
@@ -87,6 +127,20 @@ export const relationshipDirective = new GraphQLDirective({
         },
         direction: {
             type: new GraphQLNonNull(RelationshipDirectionEnum),
+        },
+    },
+});
+
+export const timestampDirective = new GraphQLDirective({
+    name: "timestamp",
+    description:
+        "Instructs @neo4j/graphql to generate timestamps on particular events, which will be available as the value of the specified field.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        operations: {
+            description: "Which events to generate timestamps on. Defaults to both create and update.",
+            defaultValue: TimestampOperationEnum.getValues().map((v) => v.value),
+            type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(TimestampOperationEnum))),
         },
     },
 });

@@ -29,3 +29,5 @@ type User {
     updatedAt: DateTime! @autogenerate(operations: ["update"])
 }
 ----
+
+== `@id` Directive

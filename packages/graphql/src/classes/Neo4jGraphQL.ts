@@ -1,11 +1,32 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Driver } from "neo4j-driver";
 import { DocumentNode, GraphQLSchema, parse, printSchema } from "graphql";
 import { ITypeDefinitions, IResolvers } from "@graphql-tools/utils";
 import { addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
-import { DriverConfig } from "../types";
+import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
+import type { DriverConfig } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import { verifyDatabase } from "../utils";
+import { getJWT } from "../auth/index";
 
 export type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
 
@@ -45,6 +66,7 @@ class Neo4jGraphQL {
         });
 
         if (input.debug) {
+            // eslint-disable-next-line no-console
             let logger = console.log;
 
             if (typeof input.debug === "function") {
@@ -68,13 +90,13 @@ class Neo4jGraphQL {
         driver?: Driver;
         driverConfig?: DriverConfig;
     }): GraphQLSchema {
-        return addSchemaLevelResolver(schema, (_obj, _args, context: any, info: any) => {
+        return addSchemaLevelResolver(schema, (_obj, _args, context: any, resolveInfo: any) => {
             /*
                 Deleting this property ensures that we call this function more than once,
                 See https://github.com/ardatan/graphql-tools/issues/353#issuecomment-499569711
             */
             // eslint-disable-next-line no-param-reassign,no-underscore-dangle
-            delete info.operation.__runAtMostOnce;
+            delete resolveInfo.operation.__runAtMostOnce;
 
             if (!context?.driver) {
                 if (!driver) {
@@ -90,6 +112,8 @@ class Neo4jGraphQL {
             }
 
             context.neoSchema = this;
+            context.resolveTree = parseResolveInfo(resolveInfo) as ResolveTree;
+            context.jwt = getJWT(context);
         });
     }
 
