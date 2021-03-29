@@ -18,7 +18,8 @@
  */
 
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { Neo4jGraphQL, Node, Context } from "../classes";
+import { Neo4jGraphQL, Node } from "../classes";
+import { Context } from "../types";
 import { trimmer } from "../utils";
 
 describe("createDisconnectAndParams", () => {
@@ -74,7 +75,7 @@ describe("createDisconnectAndParams", () => {
         };
 
         // @ts-ignore
-        const context = new Context({ neoSchema });
+        const context: Context = { neoSchema };
 
         const result = createDisconnectAndParams({
             withVars: ["this"],

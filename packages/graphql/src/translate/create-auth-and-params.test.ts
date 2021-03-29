@@ -19,7 +19,7 @@
 
 import { generate } from "randomstring";
 import createAuthAndParams from "./create-auth-and-params";
-import { Neo4jGraphQL, Context, Node } from "../classes";
+import { Neo4jGraphQL, Node } from "../classes";
 import { trimmer } from "../utils";
 
 describe("createAuthAndParams", () => {
@@ -84,11 +84,7 @@ describe("createAuthAndParams", () => {
             });
 
             // @ts-ignore
-            const context = new Context({ neoSchema });
-            // @ts-ignore
-            context.getJWT = () => ({
-                sub,
-            });
+            const context: Context = { neoSchema, jwt: { sub } };
 
             const result = createAuthAndParams({
                 context,
@@ -166,7 +162,7 @@ describe("createAuthAndParams", () => {
             });
 
             // @ts-ignore
-            const context = new Context({ neoSchema });
+            const context: Context = { neoSchema };
             context.jwt = {
                 sub,
             };
@@ -244,7 +240,7 @@ describe("createAuthAndParams", () => {
             });
 
             // @ts-ignore
-            const context = new Context({ neoSchema });
+            const context: Context = { neoSchema };
             context.jwt = {
                 sub,
             };
@@ -325,7 +321,7 @@ describe("createAuthAndParams", () => {
                 });
 
                 // @ts-ignore
-                const context = new Context({ neoSchema });
+                const context: Context = { neoSchema };
                 context.jwt = {
                     sub,
                 };
@@ -411,7 +407,7 @@ describe("createAuthAndParams", () => {
             });
 
             // @ts-ignore
-            const context = new Context({ neoSchema });
+            const context: Context = { neoSchema };
             context.jwt = {
                 sub,
             };
@@ -527,7 +523,7 @@ describe("createAuthAndParams", () => {
                 });
 
                 // @ts-ignore
-                const context = new Context({ neoSchema });
+                const context: Context = { neoSchema };
                 context.jwt = {
                     sub,
                 };

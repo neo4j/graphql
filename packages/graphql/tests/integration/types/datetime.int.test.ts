@@ -181,15 +181,13 @@ describe("DateTime", () => {
             const nDateTime = DateTime.fromStandardDate(date);
 
             try {
-                const result = await session.run(
+                await session.run(
                     `
                    CREATE (m:${randomType})
                    SET m.datetime = $nDateTime
                `,
                     { nDateTime }
                 );
-
-                console.log(result);
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,

@@ -18,7 +18,8 @@
  */
 
 import createUpdateAndParams from "./create-update-and-params";
-import { Neo4jGraphQL, Context, Node } from "../classes";
+import { Neo4jGraphQL, Node } from "../classes";
+import { Context } from "../types";
 import { trimmer } from "../utils";
 
 describe("createUpdateAndParams", () => {
@@ -72,7 +73,7 @@ describe("createUpdateAndParams", () => {
         };
 
         // @ts-ignore
-        const context = new Context({ neoSchema });
+        const context: Context = { neoSchema };
 
         const result = createUpdateAndParams({
             updateInput: { id: "new" },

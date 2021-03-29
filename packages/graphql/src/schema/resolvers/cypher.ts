@@ -19,21 +19,15 @@
 
 import { isInt } from "neo4j-driver";
 import { execute } from "../../utils";
-import { Context } from "../../classes";
-import { BaseField } from "../../types";
+import { BaseField, Context } from "../../types";
 import { graphqlArgsToCompose } from "../to-compose";
 import createAuthAndParams from "../../translate/create-auth-and-params";
 import createAuthParam from "../../translate/create-auth-param";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 
 export default function cypherResolver({ field, statement }: { field: BaseField; statement: string }) {
-    async function resolve(_root: any, args: any, graphQLContext: any) {
-        const context = new Context({
-            graphQLContext,
-            neoSchema: graphQLContext.neoSchema,
-            driver: graphQLContext.driver,
-        });
-
+    async function resolve(_root: any, args: any, _context: unknown) {
+        const context = _context as Context;
         const cypherStrs: string[] = [];
         let params = { ...args, auth: createAuthParam({ context }) };
 
@@ -48,11 +42,9 @@ export default function cypherResolver({ field, statement }: { field: BaseField;
         const result = await execute({
             cypher: cypherStrs.join("\n"),
             params,
-            driver: graphQLContext.driver,
             defaultAccessMode: "WRITE",
-            neoSchema: context.neoSchema,
             raw: true,
-            graphQLContext: context,
+            context,
         });
 
         const values = result.records.map((record) => {

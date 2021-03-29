@@ -168,9 +168,9 @@ function makeAugmentedSchema({
             interfaces: nodeInterfaces,
             otherDirectives,
             ...nodeFields,
-            // @ts-ignore
+            // @ts-ignore we can be sure its defined
             auth,
-            // @ts-ignore
+            // @ts-ignore we can be sure its defined
             exclude,
             description: definition.description?.value,
         });
