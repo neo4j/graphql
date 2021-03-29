@@ -11,8 +11,8 @@ Tests that the provided typeDefs return the correct schema.
 ```typedefs-input
 type Movie {
     id: ID
-    createdAt: DateTime! @autogenerate(operations: ["create"])
-    updatedAt: DateTime! @autogenerate(operations: ["update"])
+    createdAt: DateTime! @timestamp(operations: [CREATE])
+    updatedAt: DateTime! @timestamp(operations: [UPDATE])
 }
 ```
 

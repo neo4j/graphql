@@ -334,12 +334,10 @@ function makeAugmentedSchema({
                 ...node.pointFields,
             ].reduce((res, f) => {
                 if ((f as PrimitiveField)?.autogenerate) {
-                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
-                        type: f.typeMeta.name,
-                        defaultValue: "autogenerate",
-                    };
-                    res[f.fieldName] = field;
-                } else if ((f as PrimitiveField)?.defaultValue !== undefined) {
+                    return res;
+                }
+
+                if ((f as PrimitiveField)?.defaultValue !== undefined) {
                     const field: InputTypeComposerFieldConfigAsObjectDefinition = {
                         type: f.typeMeta.input.create.pretty,
                         defaultValue: (f as PrimitiveField)?.defaultValue,
@@ -363,7 +361,7 @@ function makeAugmentedSchema({
                 ...node.pointFields,
             ].reduce(
                 (res, f) =>
-                    f.readonly
+                    f.readonly || (f as PrimitiveField)?.autogenerate
                         ? res
                         : {
                               ...res,

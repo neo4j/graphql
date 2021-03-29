@@ -18,7 +18,8 @@
  */
 
 import camelCase from "camelcase";
-import { Driver, DateTime } from "neo4j-driver";
+import { Driver } from "neo4j-driver";
+import { DateTime } from "neo4j-driver/lib/temporal-types";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import pluralize from "pluralize";
@@ -177,11 +178,18 @@ describe("DateTime", () => {
                 }
             `;
 
+            const nDateTime = DateTime.fromStandardDate(date);
+
             try {
-                await session.run(`
+                const result = await session.run(
+                    `
                    CREATE (m:${randomType})
-                   SET m.datetime = datetime("${date.toISOString()}")
-               `);
+                   SET m.datetime = $nDateTime
+               `,
+                    { nDateTime }
+                );
+
+                console.log(result);
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -230,7 +238,7 @@ describe("DateTime", () => {
                 await session.run(`
                    CREATE (m:${randomType})
                    SET m.name = "${randomType}"
-                   SET m.datetime = datetime("${date.toISOString().replace("Z", "[Europe/London]")}")
+                   SET m.datetime = datetime("${date.toISOString().replace("Z", "[Etc/UTC]")}")
                `);
 
                 const gqlResult = await graphql({
