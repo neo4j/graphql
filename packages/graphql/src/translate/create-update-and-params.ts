@@ -245,7 +245,7 @@ function createUpdateAndParams({
         }
 
         if (!hasAppliedTimeStamps) {
-            const timestamps = node.dateTimeFields.filter((x) => x.timestamps && x.timestamps.includes("update"));
+            const timestamps = node.dateTimeFields.filter((x) => x.timestamps && x.timestamps.includes("UPDATE"));
             timestamps.forEach((ts) => {
                 res.strs.push(`SET ${varName}.${ts.fieldName} = datetime()`);
             });
