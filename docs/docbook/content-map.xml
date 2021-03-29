@@ -74,8 +74,35 @@
             </d:tocentry>
         </d:tocentry>
 
-        <d:tocentry linkend="auth">
+         <d:tocentry linkend="auth">
             <?dbhtml filename="auth/index.html"?>
+            <d:tocentry linkend="auth-setup">
+                <?dbhtml filename="auth/setup/index.html"?>
+            </d:tocentry>
+            <d:tocentry linkend="auth-authentication">
+                <?dbhtml filename="auth/authentication/index.html"?>
+            </d:tocentry>
+
+            <d:tocentry linkend="auth-authorization">
+                <?dbhtml filename="auth/authorization/index.html"?>
+            </d:tocentry>
+
+            <d:tocentry linkend="auth-authorization">
+                <?dbhtml filename="auth/authorization/index.html"?>
+                <d:tocentry linkend="auth-authorization-roles">
+                    <?dbhtml filename="auth/authorization/roles/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="auth-authorization-allow">
+                    <?dbhtml filename="auth/authorization/allow/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="auth-authorization-where">
+                    <?dbhtml filename="auth/authorization/where/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="auth-authorization-bind">
+                    <?dbhtml filename="auth/authorization/bind/index.html"?>
+                </d:tocentry>
+            </d:tocentry>
+
         </d:tocentry>
 
         <d:tocentry linkend="ogm">

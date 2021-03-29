@@ -1,0 +1,49 @@
+[[auth]]
+= Auth
+
+In this section you will learn more about how to secure your GraphQL API using Neo4j GraphQL's inbuilt auth mechanics. 
+
+
+== Preview
+
+
+[source, graphql]
+----
+type Post @auth(rules: [
+    { operations: ["create"], isAuthenticated: true }
+]) {
+    title: String!
+}
+----
+
+When you have production-style Auth the directive can get large and complicated. Use Extend to tackle this;
+
+[source, graphql]
+----
+type Post {
+    title: String!
+}
+
+extend type Post @auth(rules: [
+    { operations: ["create"], isAuthenticated: true }
+])
+----
+
+You can use the directive on 'Type Definitions', as seen in the example above, you can also apply the directive on any field so as long as it's not a `@relationship`;
+
+[source, graphql]
+----
+type User {
+    id: ID!
+    name: String!
+}
+
+extend type User {
+    password: String! @auth(rules: [
+        {
+            operations: "*",
+            OR: [{ roles: ["admin"] }, { allow: { id: "$jwt.sub" } }]
+        }
+    ])
+}
+----
