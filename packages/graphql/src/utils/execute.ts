@@ -1,5 +1,24 @@
-import { Driver, SessionMode } from "neo4j-driver";
-import { Neo4jGraphQL, Neo4jGraphQLForbiddenError, Neo4jGraphQLAuthenticationError } from "../classes";
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { SessionMode } from "neo4j-driver";
+import { Neo4jGraphQLForbiddenError, Neo4jGraphQLAuthenticationError } from "../classes";
 import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import createAuthParam from "../translate/create-auth-param";
 import { Context, DriverConfig } from "../types";
@@ -8,11 +27,9 @@ import { Context, DriverConfig } from "../types";
 const { npm_package_version: npmPackageVersion, npm_package_name: npmPackageName } = process.env;
 
 async function execute(input: {
-    driver: Driver;
     cypher: string;
     params: any;
     defaultAccessMode: SessionMode;
-    neoSchema: Neo4jGraphQL;
     statistics?: boolean;
     raw?: boolean;
     context: Context;
@@ -34,10 +51,10 @@ async function execute(input: {
         }
     }
 
-    const session = input.driver.session(sessionParams);
+    const session = input.context.driver.session(sessionParams);
 
     // @ts-ignore: Required to set connection user agent
-    input.driver._userAgent = `${npmPackageVersion}/${npmPackageName}`; // eslint-disable-line no-underscore-dangle
+    input.context.driver._userAgent = `${npmPackageVersion}/${npmPackageName}`; // eslint-disable-line no-underscore-dangle
 
     // Its really difficult to know when users are using the `auth` param. For Simplicity it better to do the check here
     if (
@@ -49,7 +66,7 @@ async function execute(input: {
     }
 
     try {
-        input.neoSchema.debug(`Cypher: ${input.cypher}\nParams: ${JSON.stringify(input.params, null, 2)}`);
+        input.context.neoSchema.debug(`Cypher: ${input.cypher}\nParams: ${JSON.stringify(input.params, null, 2)}`);
 
         const result = await session[`${input.defaultAccessMode.toLowerCase()}Transaction`]((tx) =>
             tx.run(input.cypher, input.params)

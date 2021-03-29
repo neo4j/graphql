@@ -63,7 +63,10 @@ tmp/
 
 # IDEA
 .idea
-.vscode
+
+# VS Code
+.vscode/*
+!.vscode/graphql.code-snippets
 
 # OSX
 .DS_Store

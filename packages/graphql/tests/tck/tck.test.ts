@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import camelCase from "camelcase";
 import {
     graphql,
@@ -84,6 +103,23 @@ describe("TCK Generated tests", () => {
                         };
                     }
 
+                    function compare(
+                        cypher: { expected: string; recived: string },
+                        params: { expected: any; recived: any },
+                        context: any
+                    ) {
+                        if (
+                            cypher.recived.includes("$auth.") ||
+                            cypher.recived.includes("auth: $auth") ||
+                            cypher.recived.includes("auth:$auth")
+                        ) {
+                            params.expected.auth = createAuthParam({ context });
+                        }
+
+                        expect(trimmer(cypher.expected)).toEqual(trimmer(cypher.recived));
+                        expect(params.expected).toEqual(params.recived);
+                    }
+
                     const queries = document.definitions.reduce((res, def) => {
                         if (def.kind !== "ObjectTypeDefinition") {
                             return res;
@@ -111,16 +147,11 @@ describe("TCK Generated tests", () => {
                                     node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
                                 });
 
-                                if (
-                                    cQuery.includes("$auth.") ||
-                                    cQuery.includes("auth: $auth") ||
-                                    cQuery.includes("auth:$auth")
-                                ) {
-                                    cQueryParams.auth = createAuthParam({ context: mergedContext });
-                                }
-
-                                expect(trimmer(cQuery)).toEqual(trimmer(cypherQuery));
-                                expect(cQueryParams).toEqual(cypherParams);
+                                compare(
+                                    { expected: cQuery, recived: cypherQuery },
+                                    { expected: cQueryParams, recived: cypherParams },
+                                    mergedContext
+                                );
 
                                 return [];
                             },
@@ -154,16 +185,11 @@ describe("TCK Generated tests", () => {
                                     node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
                                 });
 
-                                if (
-                                    cQuery.includes("$auth.") ||
-                                    cQuery.includes("auth: $auth") ||
-                                    cQuery.includes("auth:$auth")
-                                ) {
-                                    cQueryParams.auth = createAuthParam({ context: mergedContext });
-                                }
-
-                                expect(trimmer(cQuery)).toEqual(trimmer(cypherQuery));
-                                expect(cQueryParams).toEqual(cypherParams);
+                                compare(
+                                    { expected: cQuery, recived: cypherQuery },
+                                    { expected: cQueryParams, recived: cypherParams },
+                                    mergedContext
+                                );
 
                                 return {
                                     [pluralize(camelCase(def.name.value))]: [],
@@ -189,16 +215,11 @@ describe("TCK Generated tests", () => {
                                     node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
                                 });
 
-                                if (
-                                    cQuery.includes("$auth.") ||
-                                    cQuery.includes("auth: $auth") ||
-                                    cQuery.includes("auth:$auth")
-                                ) {
-                                    cQueryParams.auth = createAuthParam({ context: mergedContext });
-                                }
-
-                                expect(trimmer(cQuery)).toEqual(trimmer(cypherQuery));
-                                expect(cQueryParams).toEqual(cypherParams);
+                                compare(
+                                    { expected: cQuery, recived: cypherQuery },
+                                    { expected: cQueryParams, recived: cypherParams },
+                                    mergedContext
+                                );
 
                                 return {
                                     [pluralize(camelCase(def.name.value))]: [],
@@ -219,16 +240,11 @@ describe("TCK Generated tests", () => {
                                     node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
                                 });
 
-                                if (
-                                    cQuery.includes("$auth.") ||
-                                    cQuery.includes("auth: $auth") ||
-                                    cQuery.includes("auth:$auth")
-                                ) {
-                                    cQueryParams.auth = createAuthParam({ context: mergedContext });
-                                }
-
-                                expect(trimmer(cQuery)).toEqual(trimmer(cypherQuery));
-                                expect(cQueryParams).toEqual(cypherParams);
+                                compare(
+                                    { expected: cQuery, recived: cypherQuery },
+                                    { expected: cQueryParams, recived: cypherParams },
+                                    mergedContext
+                                );
 
                                 return { nodesDeleted: 1, relationshipsDeleted: 1 };
                             },
