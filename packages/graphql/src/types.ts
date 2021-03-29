@@ -18,11 +18,23 @@
  */
 
 import { InputValueDefinitionNode, DirectiveNode } from "graphql";
+import { ResolveTree } from "graphql-parse-resolve-info";
+import { Driver } from "neo4j-driver";
+import { Neo4jGraphQL } from "./classes";
 
 export type DriverConfig = {
     database?: string;
     bookmarks?: string | string[];
 };
+
+export interface Context {
+    driver: Driver;
+    driverConfig?: DriverConfig;
+    resolveTree: ResolveTree;
+    neoSchema: Neo4jGraphQL;
+    jwt?: any;
+    [k: string]: any;
+}
 
 export interface BaseAuthRule {
     isAuthenticated?: boolean;

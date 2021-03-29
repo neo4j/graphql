@@ -18,7 +18,8 @@
  */
 
 import createProjectionAndParams from "./create-projection-and-params";
-import { Neo4jGraphQL, Context, Node } from "../classes";
+import { Neo4jGraphQL, Node } from "../classes";
+import { Context } from "../types";
 
 describe("createProjectionAndParams", () => {
     test("should be a function", () => {
@@ -80,7 +81,7 @@ describe("createProjectionAndParams", () => {
         };
 
         // @ts-ignore
-        const context = new Context({ neoSchema });
+        const context: Context = { neoSchema };
 
         const result = createProjectionAndParams({ fieldsByTypeName, node, context, varName: "this" });
 
