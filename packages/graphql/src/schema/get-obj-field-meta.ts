@@ -276,19 +276,19 @@ function getObjFieldMeta({
                         ...baseField,
                     };
 
-                    if (
-                        (idDirective?.arguments?.find((a) => a.name.value === "autogenerate")
-                            ?.value as BooleanValueNode)?.value
-                    ) {
-                        if (baseField.typeMeta.name !== "ID") {
-                            throw new Error("cannot auto-generate a non ID field");
-                        }
+                    if (idDirective) {
+                        const autogenerate = idDirective.arguments?.find((a) => a.name.value === "autogenerate");
+                        if (!autogenerate || (autogenerate.value as BooleanValueNode).value) {
+                            if (baseField.typeMeta.name !== "ID") {
+                                throw new Error("cannot auto-generate a non ID field");
+                            }
 
-                        if (baseField.typeMeta.array) {
-                            throw new Error("cannot auto-generate an array");
-                        }
+                            if (baseField.typeMeta.array) {
+                                throw new Error("cannot auto-generate an array");
+                            }
 
-                        primitiveField.autogenerate = true;
+                            primitiveField.autogenerate = true;
+                        }
                     }
 
                     if (defaultDirective) {

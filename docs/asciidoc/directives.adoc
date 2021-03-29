@@ -203,7 +203,7 @@ If the directive is specified and not provided on create will use the [database 
 [source, graphql]
 ----
 type User {
-    id: ID! @id(autogenerate: true)
+    id: ID! @id
     username: String!
 }
 ----

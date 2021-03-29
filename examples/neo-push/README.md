@@ -16,7 +16,7 @@ There are only two custom resolvers in the server; sign up plus sign in. The lac
 
 ```graphql
 type User {
-    id: ID! @id(autogenerate: true)
+    id: ID! @id
     email: String!
     password: String!
     createdBlogs: [Blog] @relationship(type: "HAS_BLOG", direction: OUT)
@@ -27,7 +27,7 @@ type User {
 }
 
 type Blog {
-    id: ID! @id(autogenerate: true)
+    id: ID! @id
     name: String!
     creator: User @relationship(type: "HAS_BLOG", direction: IN)
     authors: [User] @relationship(type: "CAN_POST", direction: IN)
@@ -37,7 +37,7 @@ type Blog {
 }
 
 type Post {
-    id: ID! @id(autogenerate: true)
+    id: ID! @id
     title: String!
     content: String!
     blog: Blog @relationship(type: "HAS_POST", direction: IN)
@@ -48,7 +48,7 @@ type Post {
 }
 
 type Comment {
-    id: ID! @id(autogenerate: true)
+    id: ID! @id
     author: User @relationship(type: "COMMENTED", direction: IN)
     content: String!
     post: Post @relationship(type: "HAS_COMMENT", direction: IN)

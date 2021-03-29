@@ -1,4 +1,4 @@
 [[type-definitions-autogeneration]]
 = Autogeneration
 
-== `@id(autogenerate: true)` Directive
+== `@id` Directive

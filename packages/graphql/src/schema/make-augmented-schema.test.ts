@@ -98,7 +98,7 @@ describe("makeAugmentedSchema", () => {
     test("should throw cannot auto-generate a non ID field", () => {
         const typeDefs = `
             type Movie  {
-                name: String! @id(autogenerate: true)
+                name: String! @id
             }
         `;
 
@@ -108,7 +108,7 @@ describe("makeAugmentedSchema", () => {
     test("should throw cannot auto-generate an array", () => {
         const typeDefs = `
                 type Movie  {
-                    name: [ID] @id(autogenerate: true)
+                    name: [ID] @id
                 }
             `;
 

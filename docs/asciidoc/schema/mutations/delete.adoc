@@ -6,7 +6,7 @@
 [source, graphql]
 ----
 type User {
-    id: ID! @id(autogenerate: true)
+    id: ID! @id
     name: String
     friends: [User] @relationship(type: "HAS_FRIEND", direction: OUT)
 }

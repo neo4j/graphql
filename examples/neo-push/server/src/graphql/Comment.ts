@@ -2,7 +2,7 @@ import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
     type Comment {
-        id: ID! @id(autogenerate: true)
+        id: ID! @id
         author: User @relationship(type: "COMMENTED", direction: IN)
         content: String!
         post: Post @relationship(type: "HAS_COMMENT", direction: IN)

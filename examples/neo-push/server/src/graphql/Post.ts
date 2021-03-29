@@ -2,7 +2,7 @@ import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
     type Post {
-        id: ID! @id(autogenerate: true)
+        id: ID! @id
         title: String!
         content: String!
         blog: Blog @relationship(type: "HAS_POST", direction: IN)

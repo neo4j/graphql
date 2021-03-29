@@ -6,7 +6,7 @@ Schema:
 
 ```schema
 type Movie {
-    id: ID! @id(autogenerate: true)
+    id: ID! @id
     name: String!
 }
 ```
