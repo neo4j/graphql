@@ -18,7 +18,7 @@
  */
 
 import { DirectiveNode, NamedTypeNode } from "graphql";
-import {
+import type {
     RelationField,
     CypherField,
     PrimitiveField,

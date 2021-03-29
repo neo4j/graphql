@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { Node, Context } from "../classes";
+import { Node } from "../classes";
+import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createWhereAndParams from "./create-where-and-params";
@@ -244,7 +245,7 @@ function createUpdateAndParams({
         }
 
         if (!hasAppliedTimeStamps) {
-            const timestamps = node.dateTimeFields.filter((x) => x.timestamps && x.timestamps.includes("update"));
+            const timestamps = node.dateTimeFields.filter((x) => x.timestamps && x.timestamps.includes("UPDATE"));
             timestamps.forEach((ts) => {
                 res.strs.push(`SET ${varName}.${ts.fieldName} = datetime()`);
             });

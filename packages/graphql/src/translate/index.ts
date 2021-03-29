@@ -17,4 +17,7 @@
  * limitations under the License.
  */
 
-export { default as translate } from "./translate"; // eslint-disable-line import/prefer-default-export
+export { default as translateCreate } from "./translate-create";
+export { default as translateRead } from "./translate-read";
+export { default as translateUpdate } from "./translate-update";
+export { default as translateDelete } from "./translate-delete";

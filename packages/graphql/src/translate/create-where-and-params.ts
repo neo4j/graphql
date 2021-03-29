@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { GraphQLWhereArg } from "../types";
-import { Context, Node } from "../classes";
+import { GraphQLWhereArg, Context } from "../types";
+import { Node } from "../classes";
 
 interface Res {
     clauses: string[];

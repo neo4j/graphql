@@ -32,6 +32,7 @@ Request object needs to be injected into the context before you can use auth. He
 [source, javascript]
 ----
 const neoSchema = new Neo4jGraphQL({});
+
 const server = new ApolloServer({
     schema: neoSchema.schema,
     context: ({ req }) => ({ req }),
@@ -194,4 +195,3 @@ type User {
         @auth(rules: [{ roles: ["admin"] }])
 }
 ----
-

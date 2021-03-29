@@ -27,19 +27,14 @@ describe("blog-auth", () => {
             charset: "alphabetic",
         });
 
-        const blogId = generate({
-            charset: "alphabetic",
-        });
-
         const mutation = gql`
             mutation {
-                createBlogs(input: [{ id: "${blogId}", name: "test", creator: { connect: { where: { id: "invalid" } } } }]) {
+                createBlogs(input: [{ name: "test", creator: { connect: { where: { id: "invalid" } } } }]) {
                     blogs {
                         id
                     }
                 }
             }
-
         `;
 
         const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);

@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { Node, Context } from "../classes";
+import { Node } from "../classes";
+import { Context } from "../types";
 import createWhereAndParams from "./create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";

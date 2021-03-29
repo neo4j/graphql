@@ -105,6 +105,20 @@
 
         </d:tocentry>
 
+        <d:tocentry linkend="auth">
+            <?dbhtml filename="auth/index.html"?>
+            <d:tocentry linkend="auth-setup">
+                <?dbhtml filename="auth/setup/index.html"?>
+            </d:tocentry>
+            <d:tocentry linkend="auth-authentication">
+                <?dbhtml filename="auth/authentication/index.html"?>
+            </d:tocentry>
+
+            <d:tocentry linkend="auth-authorization">
+                <?dbhtml filename="auth/authorization/index.html"?>
+            </d:tocentry>
+        </d:tocentry>
+
         <d:tocentry linkend="ogm">
             <?dbhtml filename="ogm/index.html"?>
             <d:tocentry linkend="ogm-getting-started">
