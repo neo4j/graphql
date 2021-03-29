@@ -1,0 +1,48 @@
+[[auth-authorization-roles]]
+= Roles
+
+Use the roles property to specify the allowed roles for an operation. Use ENV `JWT_ROLES_OBJECT_PATH` to specify a object path for JWT roles otherwise defaults to `jwt.roles`
+
+[source, graphql]
+----
+type User {
+    id: ID
+    name: String
+}
+
+extend type User @auth(rules: [{ operations: ["update"], roles: ["admin"] }])
+----
+
+Above showing an admin role is required for all operations against Users. If you have multiple roles you can add more items to the array;
+
+[source, graphql]
+----
+extend type User @auth(rules: [{ operations: "*", roles: ["admin", "super-admin"] }])
+----
+
+
+> Users only need one of many roles to satisfy a rule.
+
+== RBAC
+
+Here is a RBAC example using `roles`;
+
+[source, graphql]
+----
+type CatalogItem @auth(rules: [{ operations: "read", roles: ["read:catalog"] }]) {
+    id: ID
+    title: String
+}
+
+type Customer @auth(rules: [{ operations: "read", roles: ["read:customer"] }]) {
+    id: ID
+    name: String
+    password: String @auth(rules: [{ operations: "read", roles: ["admin"] }])
+}
+
+type Invoice @auth(rules: [{ operations: "read", roles: ["read:invoice"] }]) {
+    id: ID
+    csv: String
+    total: Int
+}
+----

@@ -1,8 +1,10 @@
 [[auth]]
 = Auth
 
-== About
-Solution exposes built-in GraphQL Directive `@auth`;
+In this section you will learn more about how to secure your GraphQL API using Neo4j GraphQL's inbuilt auth mechanics. 
+
+== Preview
+
 
 [source, graphql]
 ----
@@ -13,7 +15,7 @@ type Post @auth(rules: [
 }
 ----
 
-> When you have production-style Auth the directive can get large and complicated. Use Extend to tackle this.
+When you have production-style Auth the directive can get large and complicated. Use Extend to tackle this;
 
 [source, graphql]
 ----
@@ -44,105 +46,3 @@ extend type User {
     ])
 }
 ----
-
-
-== Auth Custom Resolvers
-
-You cant put the auth directive on a custom resolver. We do make life easier by injecting the auth param into it. It will be available under the `context.auth` property;
-
-[source, javascript]
-----
-import { Neo4jGraphQL } from "@neo4j/graphql";
-import { ApolloServer } from "apollo-server";
-
-const typeDefs = `
-    type User {
-        id: ID!
-        email: String!
-        password: String!
-    }
-
-    type Query {
-        myId: ID!
-    }
-`;
-
-const driver = neo4j.driver(
-    "bolt://localhost:7687",
-    neo4j.auth.basic("admin", "password")
-);
-
-const resolvers = {
-    Query: {
-        myId(root, args, context) {
-            return context.auth.jwt.sub
-        }
-    }
-};
-
-const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
-
-const server = new ApolloServer({
-    schema: neo4jGraphQL.schema,
-    context: ({ req }) => ({ req, driver }),
-});
-server.listen(4000).then(() => console.log("online"));
-----
-
-== Auth on `@cypher`
-
-You can put the `@auth` directive on a field with the `@cypher` directive. Functionality like allow and bind will not work but you can still utilize `isAuthenticated` and `roles`.
-
-[source, graphql]
-----
-type User @exclude {
-    id: ID
-    name: String
-}
-
-type Query {
-    users: [User] @cypher(statement: "MATCH (a:User) RETURN a") @auth(rules: [{ isAuthenticated: true }])
-}
-----
-
->  Notice you don't need to specify operations for `@auth` directives on `@cypher` fields.
-
-[source, graphql]
-----
-type History @exclude {
-    website: String!
-}
-
-type User {
-    id: ID
-    name: String
-    history: [History]
-        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
-        @auth(rules: [{ roles: ["admin"] }])
-}
-----
-
-== Auth Roles Object Paths
-If you are using 3rd party Auth solutions such as Auth0 you may find your roles property being nested inside an object;
-
-[source, json]
-----
-{
-    "https://auth0.mysite.com/claims": {
-        "https://auth0.mysite.com/claims/roles": ["admin"]
-    }
-}
-----
-
-Specify the path in the environment;
-
-[source, bash]
-----
-$ JWT_ROLES_OBJECT_PATH="https://auth0.mysite.com/claims\\.https://auth0.mysite.com/claims/roles" node server
-----
-
-== Auth Value Plucking
-You may have noticed, in the examples above, the usage of `$jwt.xyz` in the directive. This is going and grabbing the jsonwebtoken and using the `xyz` property. You can use both;
-
-1. `$jwt.` - Pulls value from jsonwebtoken
-2. `$context.` - Pulls value from context
