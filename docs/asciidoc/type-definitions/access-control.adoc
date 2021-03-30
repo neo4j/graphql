@@ -1,2 +1,114 @@
 [[type-definitions-access-control]]
 = Access Control
+
+This page addresses controlling schema generation output through the inclusion/exclusion of fields.
+
+For fine-grained and role-based access control, see <<auth>>.
+
+[[type-definitions-access-control-exclude]]
+== `@exclude`
+
+This directive skips the generation of queries and/or particular/all mutations for the specified type.
+
+=== Definition
+
+[source, graphql]
+----
+enum ExcludeOperation {
+    CREATE
+    READ
+    UPDATE
+    DELETE
+}
+
+"""Instructs @neo4j/graphql to exclude the specified operations from query and mutation generation. If used without an argument, no queries or mutations will be generated for this type."""
+directive @exclude(
+    operations: [ExcludeOperation!]! = [CREATE, READ, UPDATE, DELETE]
+) on OBJECT
+----
+
+=== Usage
+
+==== Disable Query field generation
+
+[source, graphql]
+----
+type User @exclude(operations: [READ]) {
+    name: String
+}
+----
+
+==== Disable single Mutation field generation
+
+[source, graphql]
+----
+type User @exclude(operations: [CREATE]) {
+    name: String
+}
+----
+
+==== Disable multiple Mutation field generation
+
+[source, graphql]
+----
+type User @exclude(operations: [CREATE, DELETE]) {
+    name: String
+}
+----
+
+==== Disable all Query and Mutation field generation
+
+The following two type definitions are equivalent in the fact that no queries or mutations will be generated for either of them:
+
+[source, graphql]
+----
+type User @exclude {
+    name: String
+}
+----
+
+[source, graphql]
+----
+type User @exclude(operation: [CREATE, READ, UPDATE, DELETE]) {
+    name: String
+}
+----
+
+[[type-definitions-access-control-ignore]]
+== `@ignore`
+
+This field will essentially be completely ignored during the generation of Query and Mutation fields, and will require another way to resolve the field, such as through the use of a custom resolver.
+
+=== Definition
+
+[source, graphql]
+----
+"""Instructs @neo4j/graphql to completely ignore a field definition, assuming that it will be fully accounted for by custom resolvers."""
+directive @ignore on FIELD_DEFINITION
+----
+
+[[type-definitions-access-control-readonly]]
+== `@readonly`
+
+The field will only feature in mutations for creating, and object types for querying, and will not be mutable after creation.
+
+=== Definition
+
+[source, graphql]
+----
+"""Instructs @neo4j/graphql to only include a field in generated input type for creating, and in the object type within which the directive is applied."""
+directive @readonly on FIELD_DEFINITION
+----
+
+[[type-definitions-access-control-writeonly]]
+== `@writeonly`
+
+This field will only feature in input types, and will not be available for querying the object type through a Query or through a Mutation response.
+
+=== Definition
+
+[source, graphql]
+----
+"""Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself."""
+directive @writeonly on FIELD_DEFINITION
+----
