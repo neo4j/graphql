@@ -1,10 +1,11 @@
 [[type-definitions-types]]
 = Types
 
-Neo4j GraphQL supports all default GraphQL types and additional mentioned in this document.
+Neo4j GraphQL supports all of the default GraphQL https://graphql.org/learn/schema/#scalar-types[scalar types] as well as the additional scalar and object types specified in this document.
 
+[[type-definitions-types-datetime]]
 == `DateTime`
-ISO datetime string stored as a [datetime](https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime) temporal type.
+ISO datetime string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime[datetime] temporal type.
 
 [source, graphql]
 ----
@@ -13,8 +14,9 @@ type User {
 }
 ----
 
+[[type-definitions-types-bigint]]
 == `BigInt`
-Supports up to 64 bit integers, serialized as strings in variables and in data responses. Shares the same operators as the other numeric types.
+Supports up to 64 bit integers, serialized as strings in variables and in data responses. Shares the same <<schema-filtering-numerical-operators>> as the other numeric types.
 
 [source, graphql]
 ----
@@ -34,15 +36,43 @@ query {
 }
 ----
 
+[[type-definitions-types-spatial-types]]
 == Spatial Types
 
-1. `Point`
-2. `CartesianPoint`
+Neo4j GraphQL spatial types translate to spatial values stored using https://neo4j.com/docs/cypher-manual/current/syntax/spatial[point] in the database. The use of either of these types in a GraphQL schema will automatically introduce the types needed to run queries and mutations relevant to these spatial types.
 
-Neo4j GraphQL spatial types translate to spatial values stored using [point](https://neo4j.com/docs/cypher-manual/current/syntax/spatial) in the database. The use of either of these types in a GraphQL schema will automatically introduce the types needed to run queries and mutations relevant to these spatial types.
+[[type-definitions-types-point]]
+=== `Point`
 
-=== Querying using spatial values
-Queries can be run to find nodes containing a point containing the exact values specified.
+The `Point` type is used to describe the two https://neo4j.com/docs/cypher-manual/current/syntax/spatial/#cypher-spatial-crs-geographic[Geographic coordinate reference systems] supported by Neo4j.
+
+==== Type definition
+
+[source, graphql]
+----
+type Point {
+    latitude: Float!
+    longitude: Float!
+    height: Float
+}
+----
+
+==== Queries and Mutations
+
+Due to the fact that `Point` is an object type, it has an additional type for input in queries and mutations. However, this input type has the same shape as the object type:
+
+[source, graphql]
+----
+input PointInput {
+    latitude: Float!
+    longitude: Float!
+    height: Float
+}
+----
+
+===== Query
+
+For example, you can query for a `User` with an exact location:
 
 [source, graphql]
 ----
@@ -57,9 +87,9 @@ query Users($longitude: Float!, $latitude: Float!) {
 }
 ----
 
-=== Mutating using spatial values
+===== Mutation
 
-Similarly, spatial values can be used in mutations to create nodes with spatial values.
+An example of creating a `User` with a location is as follows:
 
 [source, graphql]
 ----
@@ -76,13 +106,32 @@ mutation CreateUsers($name: String!, $longitude: Float!, $latitude: Float!) {
 }
 ----
 
-=== Advanced filtering using spatial values
-Queries can be run to find nodes relative to a distance from the specified point. For example, the following query will find users whose location is greater than 5000m (5km) away from the specified point.
+==== Filtering
+
+In addition to the <<schema-filtering-numerical-operators>>, the `Point` type has an additional `_DISTANCE` filter. All of the filters take the following type as an argument:
 
 [source, graphql]
 ----
-query UsersOver5kmAway($longitude: Float!, $latitude: Float!) {
-    users(where: { location_GT: { point: { longitude: $longitude, latitude: $latitude }, distance: 5000 } }) {
+input PointDistance {
+    point: Point!
+    distance: Float!
+}
+----
+
+In essence, each of the filters mean the following:
+
+* `_LT`: Checks that the specified `point` field is less than the `distance` away in meters from the `Point` being compared against.
+* `_LTE`: Checks that the specified `point` field is less than or equal to the `distance` away in meters from the `Point` being compared against.
+* `_DISTANCE`: Checks that the specified `point` field is the exact `distance` away in meters from the `Point` being compared against.
+* `_GTE`: Checks that the specified `point` field is greater than the `distance` away in meters from the `Point` being compared against.
+* `_GT`: Checks that the specified `point` field is greater than or equal to the `distance` away in meters from the `Point` being compared against.
+
+In practice, you can construct queries such as the following which will find all users within a 5km (5000m) radius of a `Point`:
+
+[source, graphql]
+----
+query CloseByUsers($longitude: Float!, $latitude: Float!) {
+    users(where: { location_LTE: { point: { longitude: $longitude, latitude: $latitude }, distance: 5000 } }) {
         name
         location {
             longitude
@@ -91,3 +140,52 @@ query UsersOver5kmAway($longitude: Float!, $latitude: Float!) {
     }
 }
 ----
+
+[[type-definitions-types-cartesian-point]]
+=== `CartesianPoint`
+
+The `CartesianPoint` type is used to describe the two https://neo4j.com/docs/cypher-manual/current/syntax/spatial/#cypher-spatial-crs-cartesian[Cartesian coordinate reference systems] supported by Neo4j.
+
+==== Type definition
+
+[source, graphql]
+----
+type CartesianPoint {
+    x: Float!
+    y: Float!
+    z: Float
+}
+----
+
+==== Queries and Mutations
+
+Due to the fact that `CartesianPoint` is an object type, it has an additional type for input in queries and mutations. However, this input type has the same shape as the object type:
+
+[source, graphql]
+----
+input CartesianPointInput {
+    x: Float!
+    y: Float!
+    z: Float
+}
+----
+
+==== Filtering
+
+In addition to the <<schema-filtering-numerical-operators>>, the `CartesianPoint` type has an additional `_DISTANCE` filter. All of the filters take the following type as an argument:
+
+[source, graphql]
+----
+input CartesianPointDistance {
+    point: CartesianPoint!
+    distance: Float!
+}
+----
+
+In essence, each of the filters mean the following:
+
+* `_LT`: Checks that the specified `point` field is less than the `distance` away from the `CartesianPoint` being compared against, in the units used to specify the points.
+* `_LTE`: Checks that the specified `point` field is less than or equal to the `distance` away from the `CartesianPoint` being compared against, in the units used to specify the points.
+* `_DISTANCE`: Checks that the specified `point` field is the exact `distance` away from the `CartesianPoint` being compared against, in the units used to specify the points.
+* `_GTE`: Checks that the specified `point` field is greater than the `distance` away from the `CartesianPoint` being compared against, in the units used to specify the points.
+* `_GT`: Checks that the specified `point` field is greater than or equal to the `distance` away from the `CartesianPoint` being compared against, in the units used to specify the points.
