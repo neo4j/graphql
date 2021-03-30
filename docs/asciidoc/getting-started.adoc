@@ -23,7 +23,7 @@ The Library is transpiled, from our TypeScript source, into https://nodejs.org/d
 
 [source, javascript]
 ----
-const { Neo4jGraphQL, OGM, translate } = require("@neo4j/graphql");
+const { Neo4jGraphQL } = require("@neo4j/graphql");
 ----
 
 == GraphQL API Quick Start
