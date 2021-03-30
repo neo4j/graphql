@@ -17,7 +17,7 @@ $ npm install @neo4j/graphql
 
 `graphql` and `neo4j-driver` are are **peerDependency(s)**.
 
-== Importing
+== Requiring
 
 The Library is transpiled, from our TypeScript source, into https://nodejs.org/docs/latest/api/modules.html#modules_modules_commonjs_modules[Common JS] - This means you can use the `require` syntax to access the library's exported members;
 
