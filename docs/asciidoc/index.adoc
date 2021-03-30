@@ -32,9 +32,9 @@ Both Neo4j and GraphQL concern themselves with the topic of Graphs, with this in
 
 == What is Neo4j GraphQl ?
 
-It is a GraphQL to Cypher query execution layer for Neo4j and **JavaScript** GraphQL implementations. Such an engine makes it easier, for developers, to use Neo4j and GraphQL together.
+It is a GraphQL to Cypher query execution layer for Neo4j and **JavaScript** GraphQL implementations. Such an imeplemtation makes it easier, for developers, to use Neo4j and GraphQL together.
 
-Taking a set of Type Definitions; we produce an executable GraphQL Schema, where a given GraphQL query is transformed into a single Cypher query. This translation means users can let the engine handle all the database talking, and thus enabling users to focus on building great applications.
+Taking a set of Type Definitions; we produce an executable GraphQL Schema, where a given GraphQL query is transformed into a single Cypher query. This translation means users can let the libary handle all the database talking, and thus enabling users to focus on building great applications.
 
 Our GraphQL implementation exposes two products;
 
