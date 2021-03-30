@@ -5,7 +5,7 @@
 == `Neo4jGraphQL`
 Main Entry to the library. Holds metadata about the GraphQL schema.
 
-=== Importing
+=== Requiring 
 [source, javascript]
 ----
 const { Neo4jGraphQL } = require("@neo4j/graphql");

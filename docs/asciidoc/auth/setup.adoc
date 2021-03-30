@@ -128,8 +128,9 @@ You cant put the auth directive on a custom resolver. We do make life easier by 
 
 [source, javascript]
 ----
-import { Neo4jGraphQL } from "@neo4j/graphql";
-import { ApolloServer } from "apollo-server";
+const { Neo4jGraphQL } = require("@neo4j/graphql")
+const neo4j = require("neo4j-driver");
+const { ApolloServer } = require("apollo-server")
 
 const typeDefs = `
     type User {

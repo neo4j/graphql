@@ -27,9 +27,9 @@ Using the password field is a great example here. In your application, you would
 
 [source, javascript]
 ----
-import { Neo4jGraphQL  } from "@neo4j/graphql";
-import { Neo4jGraphQL, OGM } from "@neo4j/graphql-ogm";
-import * as neo4j from "neo4j-driver";
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const { OGM } = require("@neo4j/graphql-ogm");
+const neo4j = require("neo4j-driver");
 
 const driver = neo4j.driver(
     "bolt://localhost:7687",
