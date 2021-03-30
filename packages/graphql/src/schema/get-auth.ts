@@ -18,7 +18,9 @@
  */
 
 import { DirectiveNode, valueFromASTUntyped } from "graphql";
-import { Auth, AuthRule } from "../types";
+import { Auth, AuthRule, AuthOperations } from "../types";
+
+const validOperations: AuthOperations[] = ["CREATE", "READ", "UPDATE", "DELETE", "CONNECT", "DISCONNECT"];
 
 function getAuth(directive: DirectiveNode): Auth {
     const auth: Auth = { rules: [], type: "JWT" };
@@ -32,6 +34,32 @@ function getAuth(directive: DirectiveNode): Auth {
     if (rules.value.kind !== "ListValue") {
         throw new Error("auth rules must be a ListValue");
     }
+
+    rules.value.values.forEach((rule) => {
+        if (rule.kind !== "ObjectValue") {
+            throw new Error("auth rules rule should be a Object Value");
+        }
+
+        rule.fields.forEach((field) => {
+            if (field.name.value !== "operations") {
+                return;
+            }
+
+            if (field.value.kind !== "ListValue") {
+                throw new Error("auth rules rule operations should be a ListValue");
+            }
+
+            field.value.values.forEach((value) => {
+                if (value.kind !== "EnumValue") {
+                    throw new Error("auth rules rule operations operation should be a EnumValue");
+                }
+
+                if (!validOperations.includes(value.value as AuthOperations)) {
+                    throw new Error(`auth rules rule operations operation invalid ${value.value}`);
+                }
+            });
+        });
+    });
 
     auth.rules = valueFromASTUntyped(rules.value) as AuthRule[];
 

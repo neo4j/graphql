@@ -51,6 +51,36 @@ describe("getAuth", () => {
         expect(() => getAuth(directive)).toThrow("auth rules must be a ListValue");
     });
 
+    test("should throw operation should be a EnumValue", () => {
+        const typeDefs = `
+            type Movie @auth(rules: [{operations: ["string"]}]) {
+                id: ID!
+            }
+        `;
+
+        const parsed = parse(typeDefs);
+
+        // @ts-ignore
+        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
+
+        expect(() => getAuth(directive)).toThrow("auth rules rule operations operation should be a EnumValue");
+    });
+
+    test("should throw invalid operation", () => {
+        const typeDefs = `
+            type Movie @auth(rules: [{operations: [INVALID]}]) {
+                id: ID!
+            }
+        `;
+
+        const parsed = parse(typeDefs);
+
+        // @ts-ignore
+        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
+
+        expect(() => getAuth(directive)).toThrow("auth rules rule operations operation invalid INVALID");
+    });
+
     test("should return AuthRule", () => {
         const typeDefs = `
             type Person {
