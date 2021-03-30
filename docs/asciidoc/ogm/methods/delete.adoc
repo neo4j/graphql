@@ -1,0 +1,2 @@
+[[ogm-methods-delete]]
+= Delete

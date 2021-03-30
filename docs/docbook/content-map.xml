@@ -74,7 +74,7 @@
             </d:tocentry>
         </d:tocentry>
 
-         <d:tocentry linkend="auth">
+        <d:tocentry linkend="auth">
             <?dbhtml filename="auth/index.html"?>
             <d:tocentry linkend="auth-setup">
                 <?dbhtml filename="auth/setup/index.html"?>
@@ -126,6 +126,18 @@
             </d:tocentry>
             <d:tocentry linkend="ogm-methods">
                 <?dbhtml filename="ogm/methods/index.html"?>
+                <d:tocentry linkend="ogm-methods-create">
+                    <?dbhtml filename="ogm/methods/create/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="ogm-methods-find">
+                    <?dbhtml filename="ogm/methods/find/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="ogm-methods-update">
+                    <?dbhtml filename="ogm/methods/update/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="ogm-methods-delete">
+                    <?dbhtml filename="ogm/methods/delete/index.html"?>
+                </d:tocentry>
             </d:tocentry>
             <d:tocentry linkend="ogm-private">
                 <?dbhtml filename="ogm/private/index.html"?>
