@@ -1,97 +1,74 @@
 [[directives]]
 = Directives
 
-== `@cypher`
-
-Reference: <<type-definitions-cypher>>
-
-== `@relationship`
-
-Reference: <<type-definitions-relationships>>
-
-== `@exclude`
-This directive can be used to tell `Neo4jGraphQL` to skip the automatic generation of the Query or Mutations for a certain type.
-
-Reference: <<type-definitions-access-control-exclude>>
-
 == `@auth`
 
-See <<auth>>
+The `@auth` directive is used to define complex fine-grained and role-based access control for object types and fields.
 
-== `@id`
-If the directive is specified and not provided on create will use the [database to generate a uuid](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-randomuuid).
-
-[source, graphql]
-----
-type User {
-    id: ID! @id
-    username: String!
-}
-----
-
-=== Definition
-
-[source, graphql]
-----
-"""Indicates that the field is the unique identifier for the object type, and additionally enables the autogeneration of IDs."""
-directive @id(autogenerate: Boolean! = false) on FIELD_DEFINITION
-----
-
-== `@timestamp`
-If you place this directive on a `DateTime` it will, on specified operations, append a [datetime](https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime) property to the node.
-
-[source, graphql]
-----
-type User {
-    createdAt: DateTime! @timestamp(operations: [CREATE])
-    updatedAt: DateTime! @timestamp(operations: [UPDATE])
-}
-----
-
-=== Definition
-
-[source, graphql]
-----
-enum TimestampOperation {
-    CREATE
-    UPDATE
-}
-
-"""Instructs @neo4j/graphql to generate timestamps on particular events, which will be available as the value of the specified field."""
-directive @timestamp(
-    """Which events to generate timestamps on. Defaults to both create and update."""
-    operations: [TimestampOperation]! = [CREATE, UPDATE]
-) on FIELD_DEFINITION
-----
-
-== `@private`
-The `@private` directive allows you to specify fields that should only be accessible through the <<ogm>>. This is very handy as you can hide fields such as user password to the outside world. Simply put the @private directive on the field you wish to be inaccessible through the exposed API.
-
-Reference: <<type-definitions-access-control-private>>
-
-== `@readonly`
-The field will only feature in object types for querying, and will not be mutable.
-
-Reference: <<type-definitions-access-control-readonly>>
-
-== `@writeonly`
-This field will only feature in input types, and will not be available for querying the object type through a Query or through a Mutation response.
-
-Reference: <<type-definitions-access-control-writeonly>>
-
-== `@ignore`
-This field will essentially be completely ignored, and will require another way to resolve the field, such as through the use of a custom resolver.
-
-Reference: <<type-definitions-access-control-ignore>>
-
-== `@default`
-
-When generating the input type for the create mutation, the value specified in this directive will be used as the default value for this field.
-
-Reference: <<type-definitions-default-values-default>>
+Reference: <<auth>>
 
 == `@coalesce`
 
-When translating from GraphQL to Cypher, any instances of fields to which this directive is applied will be wrapped in a `coalesce()` function in the WHERE clause (see https://neo4j.com/developer/kb/understanding-non-existent-properties-and-null-values/#_use_coalesce_to_use_a_default_for_a_null_value). This helps to query against non-existent properties in a database, however it is encouraged to populate these properties with meaningful values if this is becoming the norm. This is a very primitive implementation of the function which only takes a static default value as opposed to using another property in a node or a Cypher expression.
+The `@coalesce` directive exposes a mechanism for querying against non-existent, `null` values on a node.
 
 Reference: <<type-definitions-default-values-coalesce>>
+
+== `@cypher`
+
+The `@cypher` directive overrides field resolution (including `Query` and `Mutation` fields), instead resolving with the specified Cypher.
+
+Reference: <<type-definitions-cypher>>
+
+== `@default`
+
+The `@default` directive allows for the setting of a default value for a field on object creation.
+
+Reference: <<type-definitions-default-values-default>>
+
+== `@exclude`
+
+The `@exclude` directive is used on object types to instruct them to be skipped during Query and Mutation generation.
+
+Reference: <<type-definitions-access-control-exclude>>
+
+== `@id`
+
+The `@id` directive marks a field as the unique ID for an object type, and allows for autogeneration of IDs.
+
+Reference: <<type-definitions-autogeneration-id>>
+
+== `@ignore`
+
+The `@ignore` directive ignores a field, and it will need an alternative mechanism for resolution.
+
+Reference: <<type-definitions-access-control-ignore>>
+
+== `@private`
+
+The `@private` directive protects fields which should only be available through the <<ogm>>.
+
+Reference: <<ogm-private>>
+
+== `@readonly`
+
+The `@readonly` directive marks fields as read-only.
+
+Reference: <<type-definitions-access-control-readonly>>
+
+== `@relationship`
+
+The `@relationship` directive is used to configure relationships between object types.
+
+Reference: <<type-definitions-relationships>>
+
+== `@timestamp`
+
+The `@timestamp` directive flags fields to be used to store timestamps on create/update events.
+
+Reference: <<type-definitions-autogeneration-timestamp>>
+
+== `@writeonly`
+
+The `@writeonly` directive marks fields as write-only.
+
+Reference: <<type-definitions-access-control-writeonly>>

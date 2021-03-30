@@ -1,39 +1,21 @@
 [[schema-filtering]]
 = Filtering
 
-[cols="h,d,d,d,d,d,d,d,d,d",options=header]
-|===
-|                  | Int | Float | String | Boolean | ID | BigInt | DateTime | Point | CartesianPoint
-|                  | ✓   | ✓     | ✓      | ✓       | ✓  | ✓      | ✓        | ✓     | ✓
-| _NOT             | ✓   | ✓     | ✓      | ✓       | ✓  | ✓      | ✓        | ✓     | ✓
-| _LT              | ✓   | ✓     |        |         |    | ✓      | ✓        | ✓     | ✓
-| _LTE             | ✓   | ✓     |        |         |    | ✓      | ✓        | ✓     | ✓
-| _GTE             | ✓   | ✓     |        |         |    | ✓      | ✓        | ✓     | ✓
-| _GT              | ✓   | ✓     |        |         |    | ✓      | ✓        | ✓     | ✓
-| _CONTAINS        |     |       | ✓      |         | ✓  |        |          |       |
-| _NOT_CONTAINS    |     |       | ✓      |         | ✓  |        |          |       |
-| _STARTS_WITH     |     |       | ✓      |         | ✓  |        |          |       |
-| _NOT_STARTS_WITH |     |       | ✓      |         | ✓  |        |          |       |
-| _ENDS_WITH       |     |       | ✓      |         | ✓  |        |          |       |
-| _NOT_ENDS_WITH   |     |       | ✓      |         | ✓  |        |          |       |
-| _MATCHES*        |     |       | ✓      |         | ✓  |        |          |       |
-| _DISTANCE        |     |       |        |         |    |        |          | ✓     | ✓
-|===
-
 == Equality operators
 
 All types can be tested for either equality or non-equality. These are only two comparison operators available for the `Boolean` type.
 
+[[schema-filtering-numerical-operators]]
 == Numerical operators
 
-The following comparison operators are available for numeric types (`Int`, `Float`, `BigInt`), temporal types (`DateTime`) and spatial types (`Point`, `CartesianPoint`):
+The following comparison operators are available for numeric types (`Int`, `Float`, <<type-definitions-types-bigint>>), temporal types (<<type-definitions-types-datetime>>) and spatial types (<<type-definitions-types-point>>, <<type-definitions-types-cartesian-point>>):
 
 * `_LT_`
 * `_LTE_`
 * `_GTE_`
 * `_GT_`
 
-Filtering of spatial types is different to filtering of numerical types - see <<schema-filtering-spatial>>.
+Filtering of spatial types is different to filtering of numerical types and offers an additional filter - see <<type-definitions-types-spatial-types>>.
 
 == String comparison
 
@@ -50,7 +32,7 @@ The following case-sensitive comparison operators are only available for use on 
 
 The filter `_MATCHES` is also available for comparison of `String` and `ID` types, which accepts a RegEx string as an argument and returns any matches.
 
-The nature of RegEx matching means that on an unprotected API, this could potentially be used to execute a ReDoS attack (https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) against the backing Neo4j database. If this is a concern, we have added the ability to disable the inclusion of this filter by setting the environment variable `NEO4J_GRAPHQL_DISABLE_REGEX` to either `true` or `1`.
+> The nature of RegEx matching means that on an unprotected API, this could potentially be used to execute a ReDoS attack (https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) against the backing Neo4j database. If this is a concern, we have added the ability to disable the inclusion of this filter by setting the environment variable `NEO4J_GRAPHQL_DISABLE_REGEX` to either `true` or `1`.
 
 == Array comparison
 
@@ -65,8 +47,3 @@ Conversely, the following operators are available on array fields, and accept a 
 * `_NOT_INCLUDES`
 
 These four operators are available for all types apart from `Boolean`.
-
-[[schema-filtering-spatial]]
-== Filtering of spatial types
-
-
