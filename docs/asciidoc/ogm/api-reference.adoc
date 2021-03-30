@@ -1,7 +1,7 @@
 [[ogm-api-reference]]
 = API Reference
 
-== Importing
+== Requiring
 [source, javascript]
 ----
 const { OGM } = require("@neo4j/graphql-ogm");
