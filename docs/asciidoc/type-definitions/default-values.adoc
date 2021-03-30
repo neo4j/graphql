@@ -6,7 +6,6 @@
 
 When generating the input type for the create mutation, the value specified in this directive will be used as the default value for this field.
 
-
 === Definition
 
 [source, graphql]

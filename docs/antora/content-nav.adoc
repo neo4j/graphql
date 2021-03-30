@@ -6,6 +6,7 @@
 *** xref:type-definitions/relationships/index.adoc[]
 *** xref:type-definitions/access-control/index.adoc[]
 *** xref:type-definitions/autogeneration/index.adoc[]
+*** xref:type-definitions/cypher/index.adoc[]
 *** xref:type-definitions/default-values/index.adoc[]
 ** xref:custom-resolvers/index.adoc[]
 ** xref:schema/index.adoc[]

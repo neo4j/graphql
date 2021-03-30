@@ -1,16 +1,13 @@
 [[ogm-api-reference]]
 = API Reference
 
-== `OGM`
-Holds an internal `Neo4jGraphQL` instance & exposes CRUD methods to interact with the underlying GraphQL Schema - See <<ogm>>.
-
-=== Importing
+== Importing
 [source, javascript]
 ----
 const { OGM } = require("@neo4j/graphql-ogm");
 ----
 
-=== Constructing
+== Constructing
 
 [source, javascript]
 ----
