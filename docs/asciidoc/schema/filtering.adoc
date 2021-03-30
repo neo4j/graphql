@@ -10,10 +10,10 @@ All types can be tested for either equality or non-equality. These are only two 
 
 The following comparison operators are available for numeric types (`Int`, `Float`, <<type-definitions-types-bigint>>), temporal types (<<type-definitions-types-datetime>>) and spatial types (<<type-definitions-types-point>>, <<type-definitions-types-cartesian-point>>):
 
-* `_LT_`
-* `_LTE_`
-* `_GTE_`
-* `_GT_`
+* `_LT`
+* `_LTE`
+* `_GTE`
+* `_GT`
 
 Filtering of spatial types is different to filtering of numerical types and offers an additional filter - see <<type-definitions-types-spatial-types>>.
 
@@ -38,7 +38,7 @@ The filter `_MATCHES` is also available for comparison of `String` and `ID` type
 
 The following two comparison operators are available on non-array fields, and accept an array argument:
 
-* `_IN_`
+* `_IN`
 * `_NOT_IN`
 
 Conversely, the following operators are available on array fields, and accept a single argument:
