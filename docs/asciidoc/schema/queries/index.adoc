@@ -1,6 +1,7 @@
 [[schema-queries]]
 = Queries
 
+To learn how to perform the below operations, using the ogm, see <<ogm-methods-find>>.
 
 == Schema
 
@@ -31,15 +32,6 @@ query {
 }
 ----
 
-== Get all users using the OGM
-
-[source, javascript]
-----
-const User = ogm.model("User");
-
-const users = await User.find();
-----
-
 == Get all users with all there posts
 
 [source, graphql]
@@ -52,27 +44,6 @@ query {
     }
 }
 ----
-
-== Read relationships with OGM
-See <<ogm>>
-
-[source, javascript]
-----
-const User = ogm.model("User");
-
-const selectionSet = `
-    {
-        posts {
-            content
-        }
-    }
-`;
-
-const users = await User.find({
-    selectionSet,
-});
-----
-
 
 == Filtering
 

@@ -1,2 +1,45 @@
 [[ogm-methods-update]]
 = Update
+
+Use to update many nodes. The `model.update` method maps to the underlying <<schema-mutations-update>> operation.
+
+== Usage
+[source, javascript]
+----
+const User = ogm.model("User");
+
+const { users } = await User.update({
+    where: { name: "bob" },
+    update: { name: "Bob" },
+});
+----
+
+== Args
+
+=== `where`
+JavaScript object representation of the GraphQL `where` input type, used for <<schema-queries>>.
+
+=== `update`
+JavaScript object representation of the GraphQL `update` input type, used for <<schema-mutations-update>>.
+
+=== `connect`
+JavaScript object representation of the GraphQL `connect` input type, used for <<schema-mutations-update>>.
+
+=== `disconnect`
+JavaScript object representation of the GraphQL `disconnect` input type, used for <<schema-mutations-update>>.
+
+=== `create`
+JavaScript object representation of the GraphQL `create` input type, used for <<schema-mutations-update>>.
+
+=== `selectionSet`
+
+See <<ogm-selection-set>>
+
+=== `args`
+The arguments for the GraphQL Query. 
+
+=== `context`
+The `context` for the GraphQL Query. 
+
+=== `rootValue`
+The `rootValue` for the GraphQL Query. 
