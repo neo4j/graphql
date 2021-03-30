@@ -8,3 +8,15 @@ Common applications won't just expose a single API. On the same instance as the 
 * <<ogm-methods>>
 * <<ogm-private>>
 * <<ogm-selection-set>>
+
+
+== Directives
+The following directives are excluded from the OGM's schema; 
+
+* `@auth`
+* `@exclude`
+* `@private`
+* `@readonly`
+* `@writeonly`
+
+See also <<ogm-private>>
