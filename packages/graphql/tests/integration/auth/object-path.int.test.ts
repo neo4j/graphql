@@ -47,7 +47,7 @@ describe("auth/object-path", () => {
                 id: ID
             }
 
-            extend type User @auth(rules: [{ operations: ["read"], allow: { id: "$jwt.nested.object.path.sub" } }])
+            extend type User @auth(rules: [{ operations: [READ], allow: { id: "$jwt.nested.object.path.sub" } }])
         `;
 
         const userId = generate({
@@ -115,7 +115,7 @@ describe("auth/object-path", () => {
                 creator: User @relationship(type: "HAS_POST", direction: IN)
             }
 
-            extend type Post @auth(rules: [{ operations: ["read"], allow: { creator: { id: "$context.userId" } } }])
+            extend type Post @auth(rules: [{ operations: [READ], allow: { creator: { id: "$context.userId" } } }])
         `;
 
         const userId = generate({
@@ -177,7 +177,7 @@ describe("auth/object-path", () => {
                 id: ID
             }
 
-            extend type User @auth(rules: [{ operations: ["read"], roles: ["admin"] }])
+            extend type User @auth(rules: [{ operations: [READ], roles: ["admin"] }])
         `;
 
         const userId = generate({

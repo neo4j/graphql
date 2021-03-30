@@ -59,15 +59,15 @@ describe("getAuth", () => {
             }
 
             type Movie @auth(rules: [
-                { isAuthenticated: true, operations: ["create"] },
-                { roles: ["admin", "publisher"], operations: ["update", "delete"] },
-                { roles: ["editors"], operations: ["update"] },
+                { isAuthenticated: true, operations: [CREATE] },
+                { roles: ["admin", "publisher"], operations: [UPDATE, DELETE] },
+                { roles: ["editors"], operations: [UPDATE] },
                 {
                     allow: { author_id: "$jwt.sub", moderator_id: "$jwt.sub" },
-                    operations: ["update", "delete"]
+                    operations: [UPDATE, DELETE]
                 },
-                { allow: "*", operations: ["update"] },
-                { allow: {OR: [{director_id: "$jwt.sub"}, {actor_id: "$jwt.sub"}]}, operations: ["update"] },
+                { allow: "*", operations: [UPDATE] },
+                { allow: {OR: [{director_id: "$jwt.sub"}, {actor_id: "$jwt.sub"}]}, operations: [UPDATE] },
             ]) {
                 id: ID
                 title: String
@@ -86,12 +86,12 @@ describe("getAuth", () => {
 
         expect(auth).toMatchObject({
             rules: [
-                { isAuthenticated: true, operations: ["create"] },
-                { roles: ["admin", "publisher"], operations: ["update", "delete"] },
-                { roles: ["editors"], operations: ["update"] },
-                { allow: { author_id: "$jwt.sub", moderator_id: "$jwt.sub" }, operations: ["update", "delete"] },
-                { allow: "*", operations: ["update"] },
-                { allow: { OR: [{ director_id: "$jwt.sub" }, { actor_id: "$jwt.sub" }] }, operations: ["update"] },
+                { isAuthenticated: true, operations: ["CREATE"] },
+                { roles: ["admin", "publisher"], operations: ["UPDATE", "DELETE"] },
+                { roles: ["editors"], operations: ["UPDATE"] },
+                { allow: { author_id: "$jwt.sub", moderator_id: "$jwt.sub" }, operations: ["UPDATE", "DELETE"] },
+                { allow: "*", operations: ["UPDATE"] },
+                { allow: { OR: [{ director_id: "$jwt.sub" }, { actor_id: "$jwt.sub" }] }, operations: ["UPDATE"] },
             ],
             type: "JWT",
         });

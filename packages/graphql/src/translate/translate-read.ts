@@ -71,7 +71,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     }
 
     const whereAuth = createAuthAndParams({
-        operation: "read",
+        operation: "READ",
         entity: node,
         context,
         where: { varName, node },
@@ -86,7 +86,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     }
 
     const allowAndParams = createAuthAndParams({
-        operation: "read",
+        operation: "READ",
         entity: node,
         context,
         allow: {

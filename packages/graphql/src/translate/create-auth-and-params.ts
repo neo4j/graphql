@@ -174,7 +174,7 @@ function createAuthAndParams({
 
     let authRules: AuthRule[] = [];
     if (operation) {
-        authRules = entity?.auth.rules.filter((r) => r.operations === "*" || r.operations?.includes(operation));
+        authRules = entity?.auth.rules.filter((r) => !r.operations || r.operations?.includes(operation));
     } else {
         authRules = entity?.auth.rules;
     }

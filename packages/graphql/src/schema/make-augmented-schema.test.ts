@@ -98,7 +98,7 @@ describe("makeAugmentedSchema", () => {
 
     test("should throw type X does not implement interface X correctly", () => {
         const typeDefs = `
-            interface Node @auth(rules: [{operations: ["read"], allow: "*"}]) {
+            interface Node @auth(rules: [{operations: [READ]}]) {
                 id: ID
                 relation: [Movie] @relationship(type: "SOME_TYPE", direction: OUT)
                 cypher: [Movie] @cypher(statement: "MATCH (a) RETURN a")
@@ -167,7 +167,7 @@ describe("makeAugmentedSchema", () => {
     test("should throw cannot have auth directive on a relationship", () => {
         const typeDefs = `
                 type Node {
-                    node: Node @relationship(type: "NODE", direction: OUT) @auth(rules: [{operations: ["create"], roles: ["admin"]}])
+                    node: Node @relationship(type: "NODE", direction: OUT) @auth(rules: [{operations: [CREATE], roles: ["admin"]}])
                 }
             `;
 

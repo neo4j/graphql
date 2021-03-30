@@ -85,5 +85,5 @@ type Todo {
     title: String
 }
 
-extend type Todo @auth(rules: [{ operations: "*", isAuthenticated: true }])
+extend type Todo @auth(rules: [{ isAuthenticated: true }])
 ----
