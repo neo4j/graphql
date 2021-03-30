@@ -1,7 +1,12 @@
 [[auth-authentication]]
 = Authentication
 
-This implementation will just expect there to be an authorization header in the request object, you can authenticate users however you like. One could; Have a custom sign-in mutation, integrate with Auth0, or roll your own SSO server. The point here is that it’s just a JWT, in the library, we will decode it to make sure it’s valid…​ but it’s down to you to issue tokens. Here we will use the <<ogm>> to set up a hypothetical sign-in flow;
+Neo4j GraphQL will expect there to be an `authorization` header in the request object, this means you can authenticate users however you like. One could; Have a custom sign-in mutation, integrate with Auth0, or roll your own SSO server. The point here is that it’s just a JWT, in the library, we will decode it to make sure it’s valid…​ but it’s down to you to issue tokens. 
+
+== OGM
+
+Here we will use the <<ogm>> to set up a hypothetical sign-in flow;
+
 
 [source, javascript]
 ----
@@ -11,15 +16,15 @@ const { ApolloServer } = require("apollo-server");
 const { OGM } = require("@neo4j-graphql-ogm");
 
 const typeDefs = `
-	type User {
-		id: ID @autogenerate
-		email: String!
-		password: String!
-	}
+    type User {
+        id: ID @id
+        email: String!
+        password: String!
+    }
 
-	type Mutation {
-		signIn(email: String!, password: String!): String ## token
-	}
+    type Mutation {
+        signIn(email: String!, password: String!): String ## token
+    }
 `;
 
 const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("admin", "password"));
@@ -28,6 +33,7 @@ const ogm = new OGM({
     typeDefs,
     driver,
 });
+
 const User = ogm.model("User");
 
 const resolvers = {
@@ -38,6 +44,7 @@ const resolvers = {
                     email,
                 },
             });
+
             if (!existing) {
                 throw new Error("not found");
             }
@@ -64,6 +71,19 @@ const server = new ApolloServer({
     schema: neoSchema.schema,
     context: ({ req }) => ({ req }),
 });
-server.listen(4000).then(() => console.log("online"));
 
+server.listen(4000).then(() => console.log("online"));
+----
+
+== `isAuthenticated`
+This is the most basic of auth. Used to ensure that there is a valid decoded JWT in the request. The most basic of applications could look something like this;
+
+[source, graphql]
+----
+type Todo {
+    id: ID
+    title: String
+}
+
+extend type Todo @auth(rules: [{ operations: "*", isAuthenticated: true }])
 ----

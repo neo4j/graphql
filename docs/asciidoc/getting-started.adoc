@@ -1,7 +1,7 @@
 [[getting-started]]
 = Getting Started
 
-This section will help users get started with the Neo4j GraphQL Engine. Before starting we recommend readers have an understanding of the following **prerequisites;**
+This section will help users get started with Neo4j GraphQL. Before starting we recommend readers have an understanding of the following **prerequisites;**
 
 1. https://developer.mozilla.org/en-US/docs/Web/JavaScript[Javascript]
 2. https://nodejs.org/en/[Node.js]
@@ -23,7 +23,7 @@ The Library is transpiled, from our TypeScript source, into https://nodejs.org/d
 
 [source, javascript]
 ----
-const { Neo4jGraphQL, OGM, translate } = require("@neo4j/graphql");
+const { Neo4jGraphQL } = require("@neo4j/graphql");
 ----
 
 == GraphQL API Quick Start
