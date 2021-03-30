@@ -22,9 +22,7 @@ import { Neo4jGraphQLForbiddenError, Neo4jGraphQLAuthenticationError } from "../
 import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import createAuthParam from "../translate/create-auth-param";
 import { Context, DriverConfig } from "../types";
-
-// https://stackoverflow.com/a/58632373/10687857
-const { npm_package_version: npmPackageVersion, npm_package_name: npmPackageName } = process.env;
+import environment from "../environment";
 
 async function execute(input: {
     cypher: string;
@@ -51,10 +49,10 @@ async function execute(input: {
         }
     }
 
-    const session = input.context.driver.session(sessionParams);
-
     // @ts-ignore: Required to set connection user agent
-    input.context.driver._userAgent = `${npmPackageVersion}/${npmPackageName}`; // eslint-disable-line no-underscore-dangle
+    input.context.driver._userAgent = `${environment.NPM_PACKAGE_VERSION}/${environment.NPM_PACKAGE_NAME}`; // eslint-disable-line no-underscore-dangle
+
+    const session = input.context.driver.session(sessionParams);
 
     // Its really difficult to know when users are using the `auth` param. For Simplicity it better to do the check here
     if (

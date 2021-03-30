@@ -19,6 +19,7 @@
 
 import { IncomingMessage } from "http";
 import jsonwebtoken from "jsonwebtoken";
+import environment from "../environment";
 
 function getJWT(context: any): any {
     const req = context instanceof IncomingMessage ? context : context.req || context.request;
@@ -40,12 +41,10 @@ function getJWT(context: any): any {
     }
 
     try {
-        const { JWT_SECRET, JWT_NO_VERIFY } = process.env;
-
-        if (!JWT_SECRET && JWT_NO_VERIFY) {
+        if (!environment.JWT_SECRET && environment.JWT_NO_VERIFY) {
             result = jsonwebtoken.decode(token);
         } else {
-            result = jsonwebtoken.verify(token, JWT_SECRET as string, {
+            result = jsonwebtoken.verify(token, environment.JWT_SECRET as string, {
                 algorithms: ["HS256", "RS256"],
             });
         }
