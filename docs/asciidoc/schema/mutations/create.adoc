@@ -1,6 +1,8 @@
 [[schema-mutations-create]]
 = Create
 
+To learn how to perform the below operations, using the ogm, see <<ogm-methods-create>>.
+
 == Schema
 
 [source, graphql]
@@ -31,19 +33,6 @@ mutation {
     }
 }
 ----
-
-
-== Creating with OGM
-
-See <<ogm>>.
-
-[source, javascript]
-----
-const User = ogm.model("User");
-
-const { users } = await User.create({ input: [{ name: "dan" }] });
-----
-
 
 === Creating a user and a post
 
