@@ -13,33 +13,12 @@ await Movie.create({ input: [{ title: "The Matrix" }] })
 
 == Args
 
-
 === `input`
-The input to the create operation. Given the below GraphQL query;
-
-[source, graphql]
-----
-mutation {
-    createMovies(input: [{ title: "The Matrix" }]) {
-        movies {
-            title
-        }
-    }
-}
-----
-
-the `input` arg would be passed into the OGM using a JavaScript object; 
-
-[source, javascript]
-----
-const Movie = ogm.model("Movie");
-
-await Movie.create({ input: [{ title: "The Matrix" }] });
-----
+JavaScript object representation of the GraphQL `input` input type, used for <<schema-mutations-create>>.
 
 === `selectionSet`
 
-See <<ogm-selection-set>>
+Reference: <<ogm-selection-set>>
 
 === `args`
 The arguments to the GraphQL Query. 

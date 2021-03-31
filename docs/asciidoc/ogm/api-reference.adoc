@@ -1,13 +1,16 @@
 [[ogm-api-reference]]
 = API Reference
 
-== Requiring
+[[ogm-api-reference-ogm]]
+== `OGM`
+
+=== Requiring
 [source, javascript]
 ----
 const { OGM } = require("@neo4j/graphql-ogm");
 ----
 
-== Constructing
+=== Constructing
 
 [source, javascript]
 ----
@@ -17,4 +20,42 @@ const ogm = new OGM({
     debug?,
 });
 ----
+
+
+=== Methods
+
+==== `model()`
+Reference: <<ogm-api-reference-model>> 
+
+[[ogm-api-reference-model]]
+== `Model`
+
+=== Requiring
+[source, typescript]
+----
+import type { Model } from "@neo4j/graphql-ogm"
+----
+
+=== Constructing
+
+You construct a model from evoking the `.model` method on an <<ogm-api-reference-ogm>>.
+
+[source, javascript]
+----
+const model = ogm.model("name")
+----
+
+=== Methods
+
+==== `find()`
+Reference: <<ogm-methods-find>>
+
+==== `create()`
+Reference: <<ogm-methods-create>>
+
+==== `update()`
+Reference: <<ogm-methods-update>>
+
+==== `delete()`
+Reference: <<ogm-methods-delete>>
 

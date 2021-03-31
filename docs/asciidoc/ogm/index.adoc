@@ -19,4 +19,4 @@ The following directives are excluded from the OGM's schema;
 * `@readonly`
 * `@writeonly`
 
-See also <<ogm-private>>
+See also: <<ogm-private>>
