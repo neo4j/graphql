@@ -20,7 +20,7 @@ extend type User
     @auth(
         rules: [
             {
-                operations: ["create", "update", "connect", "disconnect"]
+                operations: [CREATE, UPDATE, CONNECT, DISCONNECT]
                 bind: { id: "$jwt.sub" }
             }
         ]
@@ -30,7 +30,7 @@ extend type Post
     @auth(
         rules: [
             {
-                operations: ["create", "connect", "disconnect"]
+                operations: [CREATE, CONNECT, DISCONNECT]
                 bind: { creator: { id: "$jwt.sub" } }
             }
         ]

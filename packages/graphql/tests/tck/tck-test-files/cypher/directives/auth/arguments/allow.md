@@ -29,7 +29,7 @@ extend type User
     @auth(
         rules: [
             {
-                operations: ["read", "update", "delete", "disconnect", "connect"]
+                operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT]
                 allow: { id: "$jwt.sub" }
             }
         ]
@@ -40,7 +40,7 @@ extend type User {
         @auth(
             rules: [
                 {
-                    operations: ["read", "update", "delete"]
+                    operations: [READ, UPDATE, DELETE]
                     allow: { id: "$jwt.sub" }
                 }
             ]
@@ -51,7 +51,7 @@ extend type Post
     @auth(
         rules: [
             {
-                operations: ["read", "update", "delete", "disconnect", "connect"]
+                operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT]
                 allow: { creator: { id: "$jwt.sub" } }
             }
         ]
@@ -61,7 +61,7 @@ extend type Comment
     @auth(
         rules: [
             {
-                operations: ["read", "update", "delete", "disconnect", "connect"]
+                operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT]
                 allow: { creator: { id: "$jwt.sub" } }
             }
         ]

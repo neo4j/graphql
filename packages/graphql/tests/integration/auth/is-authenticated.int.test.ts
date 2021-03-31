@@ -44,7 +44,7 @@ describe("auth/is-authenticated", () => {
 
             const typeDefs = `
                 type Product @auth(rules: [{
-                    operations: ["read"],
+                    operations: [READ],
                     isAuthenticated: true
                 }]) {
                     id: ID
@@ -87,7 +87,7 @@ describe("auth/is-authenticated", () => {
             const typeDefs = `
                 type User  {
                     id: ID
-                    password: String @auth(rules: [{ operations: ["read"], isAuthenticated: true }])
+                    password: String @auth(rules: [{ operations: [READ], isAuthenticated: true }])
                 }
             `;
 
@@ -127,7 +127,7 @@ describe("auth/is-authenticated", () => {
 
             const typeDefs = `
                 type User @auth(rules: [{
-                    operations: ["create"],
+                    operations: [CREATE],
                     isAuthenticated: true
                 }]) {
                     id: ID
@@ -173,7 +173,7 @@ describe("auth/is-authenticated", () => {
                 type User {
                     id: ID
                     password: String @auth(rules: [{
-                        operations: ["create"],
+                        operations: [CREATE],
                         isAuthenticated: true
                     }])
                 }
@@ -217,7 +217,7 @@ describe("auth/is-authenticated", () => {
 
             const typeDefs = `
                 type User @auth(rules: [{
-                    operations: ["update"],
+                    operations: [UPDATE],
                     isAuthenticated: true
                 }]) {
                     id: ID
@@ -263,7 +263,7 @@ describe("auth/is-authenticated", () => {
                 type User {
                     id: ID
                     password: String @auth(rules: [{
-                        operations: ["update"],
+                        operations: [UPDATE],
                         isAuthenticated: true
                     }])
                 }
@@ -322,13 +322,13 @@ describe("auth/is-authenticated", () => {
                     @auth(
                         rules: [
                             {
-                                operations: ["connect"]
+                                operations: [CONNECT]
                                 isAuthenticated: true
                             }
                         ]
                     )
 
-                extend type Post @auth(rules: [{ operations: ["connect"], isAuthenticated: true }])
+                extend type Post @auth(rules: [{ operations: [CONNECT], isAuthenticated: true }])
             `;
 
             const userId = generate({
@@ -398,13 +398,13 @@ describe("auth/is-authenticated", () => {
                     @auth(
                         rules: [
                             {
-                                operations: ["disconnect"]
+                                operations: [DISCONNECT]
                                 isAuthenticated: true
                             }
                         ]
                     )
 
-                extend type Post @auth(rules: [{ operations: ["disconnect"], isAuthenticated: true }])
+                extend type Post @auth(rules: [{ operations: [DISCONNECT], isAuthenticated: true }])
             `;
 
             const userId = generate({
@@ -459,7 +459,7 @@ describe("auth/is-authenticated", () => {
 
             const typeDefs = `
                 type User @auth(rules: [{
-                    operations: ["delete"],
+                    operations: [DELETE],
                     isAuthenticated: true
                 }]) {
                     id: ID
@@ -507,7 +507,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Post @auth(rules: [{
-                    operations: ["delete"],
+                    operations: [DELETE],
                     isAuthenticated: true
                 }]) {
                     id: ID
@@ -656,7 +656,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     history: [History]
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
-                        @auth(rules: [{ operations: ["read"], isAuthenticated: true }])
+                        @auth(rules: [{ operations: [READ], isAuthenticated: true }])
                 }
             `;
 

@@ -47,7 +47,7 @@ export interface BaseAuthRule {
 }
 
 export interface AuthRule extends BaseAuthRule {
-    operations?: AuthOperations[] | "*";
+    operations?: AuthOperations[];
 }
 
 export type Auth = {
@@ -166,7 +166,7 @@ export interface GraphQLWhereArg {
     OR?: GraphQLWhereArg[];
 }
 
-export type AuthOperations = "create" | "read" | "update" | "delete" | "connect" | "disconnect";
+export type AuthOperations = "CREATE" | "READ" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT";
 
 export type AuthOrders = "pre" | "post";
 
