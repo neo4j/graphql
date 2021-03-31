@@ -54,3 +54,24 @@ query {
     }
 }
 ----
+
+=== Paginating relationship fields
+
+Say that in addition to the `User` type above, there is also a `Post` type which a `User` has many of. You can also fetch a `User` and then paginate through their posts:
+
+[source, graphql]
+----
+query {
+    users(where: {
+        name: "Billy"
+    }) {
+        name
+        posts(options: {
+            skip: 20
+            limit: 10
+        }) {
+            content
+        }
+    }
+}
+----
