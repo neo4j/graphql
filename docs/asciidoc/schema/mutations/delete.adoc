@@ -1,6 +1,8 @@
 [[schema-mutations-delete]]
 = Delete
 
+To learn how to perform the below operations, using the ogm, see <<ogm-methods-delete>>.
+
 == Schema
 
 [source, graphql]
@@ -21,19 +23,6 @@ mutation {
         nodesDeleted
     }
 }
-----
-
-== Deleting with OGM
-
-See <<ogm>>.
-
-[source, javascript]
-----
-const User = ogm.model("User");
-
-await User.delete({
-    where: { name: "dan" },
-});
 ----
 
 == Deleting a user and there friends

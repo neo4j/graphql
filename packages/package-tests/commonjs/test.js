@@ -20,15 +20,15 @@
 // Import using commonJS
 // eslint-disable-next-line import/no-unresolved
 const { Neo4jGraphQL } = require("@neo4j/graphql");
-
+const { printSchema } = require("graphql");
 // Augment schema with simple typeDefs input
 const typeDefs = `type Movie{ id: ID!}`;
 const neoSchema = new Neo4jGraphQL({ typeDefs });
 
 // A "Movies" query should have been generated
-const generatedTypeDefsMatch = /Movies/;
+const generatedTypeDefsMatch = /movies/;
 
 // If not, throw to exit process with 1 and include stack trace
-if (!generatedTypeDefsMatch.test(neoSchema.typeDefs)) {
+if (!generatedTypeDefsMatch.test(printSchema(neoSchema.schema))) {
     throw new Error(`${generatedTypeDefsMatch} was not found in generated typeDefs`);
 }

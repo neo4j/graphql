@@ -704,6 +704,47 @@ describe("OGM", () => {
                 await session.close();
             }
         });
+
+        test("should delete movie and nested genre", async () => {
+            const session = driver.session();
+
+            const typeDefs = gql`
+                type Movie {
+                    id: ID
+                    genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
+                }
+
+                type Genre {
+                    id: ID
+                }
+            `;
+
+            const ogm = new OGM({ typeDefs, driver });
+
+            const movieId = generate({
+                charset: "alphabetic",
+            });
+            const genreId = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                await session.run(`
+                    CREATE (:Movie {id: "${movieId}"})-[:IN_GENRE]->(:Genre {id: "${genreId}"})
+                `);
+
+                const Movie = ogm.model("Movie");
+
+                const result = await Movie?.delete({
+                    where: { id: movieId },
+                    delete: { genres: { where: { id: genreId } } },
+                });
+
+                expect(result).toEqual({ nodesDeleted: 2, relationshipsDeleted: 1 });
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("private", () => {

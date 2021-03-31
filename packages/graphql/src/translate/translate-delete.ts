@@ -51,7 +51,7 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
     }
 
     const whereAuth = createAuthAndParams({
-        operation: "delete",
+        operation: "DELETE",
         entity: node,
         context,
         where: { varName, node },
@@ -66,7 +66,7 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
     }
 
     const allowAuth = createAuthAndParams({
-        operation: "delete",
+        operation: "DELETE",
         entity: node,
         context,
         allow: {

@@ -66,9 +66,9 @@ describe("createAuthAndParams", () => {
                 authableFields: [idField],
                 auth: {
                     rules: [
-                        { operations: "*", allow: { id: "$jwt.sub" } },
-                        { operations: ["create"], roles: ["admin"] },
-                        { operations: "*", roles: ["admin"] },
+                        { allow: { id: "$jwt.sub" } },
+                        { operations: ["CREATE"], roles: ["admin"] },
+                        { roles: ["admin"] },
                     ],
                     type: "JWT",
                 },
@@ -89,7 +89,7 @@ describe("createAuthAndParams", () => {
             const result = createAuthAndParams({
                 context,
                 entity: node,
-                operation: "read",
+                operation: "READ",
                 allow: { parentNode: node, varName: "this" },
             });
 

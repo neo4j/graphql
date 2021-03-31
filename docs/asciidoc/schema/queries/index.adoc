@@ -3,6 +3,8 @@
 
 Each object defined in type definitions will have a Query field generated for it. Each Query field accepts two arguments:
 
+To learn how to perform the below operations, using the ogm, see <<ogm-methods-find>>.
+
 * `where`: Used to specify the <<schema-filtering>> which should be applied whilst querying the data
 * `options`: Used to specify the options for <<schema-sorting>> and <<schema-pagination>>
 
@@ -47,7 +49,6 @@ query {
 }
 ----
 
-
 == Get all users with all there posts
 
 [source, graphql]
@@ -60,8 +61,6 @@ query {
     }
 }
 ----
-
-
 
 == Filtering
 

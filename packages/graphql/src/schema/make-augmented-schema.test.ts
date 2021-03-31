@@ -18,7 +18,15 @@
  */
 
 import camelCase from "camelcase";
-import { printSchema, parse, ObjectTypeDefinitionNode, NamedTypeNode, ListTypeNode, NonNullTypeNode } from "graphql";
+import {
+    printSchema,
+    parse,
+    ObjectTypeDefinitionNode,
+    NamedTypeNode,
+    ListTypeNode,
+    NonNullTypeNode,
+    InputObjectTypeDefinitionNode,
+} from "graphql";
 import { pluralize } from "graphql-compose";
 import makeAugmentedSchema from "./make-augmented-schema";
 import { Node } from "../classes";
@@ -98,7 +106,7 @@ describe("makeAugmentedSchema", () => {
 
     test("should throw type X does not implement interface X correctly", () => {
         const typeDefs = `
-            interface Node @auth(rules: [{operations: ["read"], allow: "*"}]) {
+            interface Node @auth(rules: [{operations: [READ]}]) {
                 id: ID
                 relation: [Movie] @relationship(type: "SOME_TYPE", direction: OUT)
                 cypher: [Movie] @cypher(statement: "MATCH (a) RETURN a")
@@ -167,10 +175,40 @@ describe("makeAugmentedSchema", () => {
     test("should throw cannot have auth directive on a relationship", () => {
         const typeDefs = `
                 type Node {
-                    node: Node @relationship(type: "NODE", direction: OUT) @auth(rules: [{operations: ["create"], roles: ["admin"]}])
+                    node: Node @relationship(type: "NODE", direction: OUT) @auth(rules: [{operations: [CREATE]}])
                 }
             `;
 
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot have auth directive on a relationship");
+    });
+
+    describe("REGEX", () => {
+        beforeEach(() => {
+            process.env.NEO4J_GRAPHQL_DISABLE_REGEX = "true";
+        });
+
+        test("should remove the MATCHES filter when NEO4J_GRAPHQL_DISABLE_REGEX is set", () => {
+            const typeDefs = `
+                    type Node {
+                        name: String
+                    }
+                `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const document = parse(printSchema(neoSchema.schema));
+
+            const nodeWhereInput = document.definitions.find(
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "NodeWhere"
+            ) as InputObjectTypeDefinitionNode;
+
+            const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("_MATCHES"));
+
+            expect(matchesField).toBeUndefined();
+        });
+
+        afterEach(() => {
+            delete process.env.NEO4J_GRAPHQL_DISABLE_REGEX;
+        });
     });
 });

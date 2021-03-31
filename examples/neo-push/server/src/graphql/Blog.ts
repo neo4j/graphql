@@ -30,18 +30,14 @@ export const typeDefs = gql`
     extend type Blog
         @auth(
             rules: [
-                { operations: ["create"], bind: { creator: { id: "$jwt.sub" } } }
+                { operations: [CREATE], bind: { creator: { id: "$jwt.sub" } } }
+                { operations: [UPDATE], allow: { creator: { id: "$jwt.sub" } }, bind: { creator: { id: "$jwt.sub" } } }
                 {
-                    operations: ["update"]
-                    allow: { creator: { id: "$jwt.sub" } }
-                    bind: { creator: { id: "$jwt.sub" } }
-                }
-                {
-                    operations: ["connect"]
+                    operations: [CONNECT]
                     allow: { OR: [{ creator: { id: "$jwt.sub" } }, { authors: { id: "$jwt.sub" } }] }
                 }
                 {
-                    operations: ["disconnect"]
+                    operations: [DISCONNECT]
                     allow: {
                         OR: [
                             { creator: { id: "$jwt.sub" } }
@@ -50,7 +46,7 @@ export const typeDefs = gql`
                         ]
                     }
                 }
-                { operations: ["delete"], allow: { creator: { id: "$jwt.sub" } } }
+                { operations: [DELETE], allow: { creator: { id: "$jwt.sub" } } }
             ]
         )
 `;

@@ -92,7 +92,7 @@ function createDeleteAndParams({
                     }
                 }
                 const whereAuth = createAuthAndParams({
-                    operation: "delete",
+                    operation: "DELETE",
                     entity: refNode,
                     context,
                     where: { varName: _varName, node: refNode },
@@ -107,7 +107,7 @@ function createDeleteAndParams({
 
                 const allowAuth = createAuthAndParams({
                     entity: refNode,
-                    operation: "delete",
+                    operation: "DELETE",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
                     allow: { parentNode: refNode, varName: _varName },

@@ -1,6 +1,8 @@
 [[schema-mutations-update]]
 = Update
 
+To learn how to perform the below operations, using the ogm, see <<ogm-methods-update>>.
+
 == Schema
 
 [source, graphql]
@@ -32,20 +34,6 @@ mutation {
 }
 ----
 
-
-== Updating with OGM
-
-See <<ogm>>.
-
-[source, javascript]
-----
-const User = ogm.model("User");
-
-const { users } = await User.update({
-    where: { name: "bob" },
-    update: { name: "Bob" },
-});
-----
 
 == Creating a post and connecting it to user
 

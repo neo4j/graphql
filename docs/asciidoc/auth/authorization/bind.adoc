@@ -29,7 +29,7 @@ type User {
 extend type User @auth(
     rules: [
         {
-            operations: ["update"],
+            operations: [UPDATE],
             bind: { id: "$jwt.sub" }
         }
     ]
@@ -100,7 +100,7 @@ type Post {
 }
 
 extend type Post @auth(rules: [
-    { operations: ["create"], bind: { creator: { id: "$jwt.sub" } } }
+    { operations: [CREATE], bind: { creator: { id: "$jwt.sub" } } }
 ])
 ----
 
@@ -113,7 +113,7 @@ You can use bind on a field. The root is still considered the node. Taking the e
 [source, graphql]
 ----
 type User {
-    id: ID! @auth(rules: [{ operations: ["update"], bind: { id: "$jwt.sub" } }])
+    id: ID! @auth(rules: [{ operations: [UPDATE], bind: { id: "$jwt.sub" } }])
     name: String!
 }
 ----

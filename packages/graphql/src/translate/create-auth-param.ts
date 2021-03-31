@@ -19,6 +19,7 @@
 
 import dotProp from "dot-prop";
 import { Context } from "../types";
+import environment from "../environment";
 
 function createAuthParam({ context }: { context: Context }) {
     const { jwt } = context;
@@ -32,10 +33,8 @@ function createAuthParam({ context }: { context: Context }) {
         return param;
     }
 
-    const dotPropKey = process.env.JWT_ROLES_OBJECT_PATH;
-
-    if (dotPropKey) {
-        param.roles = dotProp.get(jwt, dotPropKey);
+    if (environment.JWT_ROLES_OBJECT_PATH) {
+        param.roles = dotProp.get(jwt, environment.JWT_ROLES_OBJECT_PATH);
     } else if (jwt.roles) {
         param.roles = jwt.roles;
     }

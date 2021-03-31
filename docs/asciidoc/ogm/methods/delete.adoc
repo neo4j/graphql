@@ -1,2 +1,30 @@
 [[ogm-methods-delete]]
 = Delete
+
+Use to delete many nodes. The `model.delete` method maps to the underlying <<schema-mutations-delete>> operation.
+
+== Usage
+[source, javascript]
+----
+const User = ogm.model("User");
+
+await User.delete({ where: { name: "dan" }});
+----
+
+== Args
+
+
+=== `where`
+JavaScript object representation of the GraphQL `where` input type, used for <<schema-queries>>.
+
+=== `delete`
+JavaScript object representation of the GraphQL `delete` input type, used for <<schema-mutations-delete>>.
+
+=== `args`
+The arguments for the GraphQL Query. 
+
+=== `context`
+The `context` for the GraphQL Query. 
+
+=== `rootValue`
+The `rootValue` for the GraphQL Query. 

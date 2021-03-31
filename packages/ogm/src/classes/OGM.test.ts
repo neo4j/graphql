@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { printSchema } from "graphql";
 import OGM from "./OGM";
 
 describe("OGM", () => {
@@ -26,6 +27,16 @@ describe("OGM", () => {
     });
 
     describe("methods", () => {
+        describe("constructor", () => {
+            test("should evoke the filterDocument method", () => {
+                const ogm = new OGM({ typeDefs: `type User @auth {id:ID}` });
+
+                const printed = printSchema(ogm.neoSchema.schema);
+
+                expect(printed.includes("@auth")).toBeFalsy();
+            });
+        });
+
         describe("verifyDatabase", () => {
             test("should neo4j-driver Driver missing", async () => {
                 // @ts-ignore
@@ -34,6 +45,7 @@ describe("OGM", () => {
                 await expect(ogm.verifyDatabase()).rejects.toThrow(`neo4j-driver Driver missing`);
             });
         });
+
         describe("model", () => {
             test("should throw cannot find model", () => {
                 const ogm = new OGM({ typeDefs: `type User {id:ID}` });

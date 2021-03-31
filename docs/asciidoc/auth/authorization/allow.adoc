@@ -29,7 +29,7 @@ type User {
 extend type User @auth(
     rules: [
         {
-            operations: ["read"],
+            operations: [READ],
             allow: { id: "$jwt.sub" }
         }
     ]
@@ -91,7 +91,7 @@ type Post {
 }
 
 extend type Post @auth(rules: [
-    { operations: ["update"], allow: { moderators: { id: "$jwt.sub" } } }
+    { operations: [UPDATE], allow: { moderators: { id: "$jwt.sub" } } }
 ])
 ----
 
@@ -116,7 +116,7 @@ extend type Post
     @auth(
         rules: [
             {
-                operations: ["update"],
+                operations: [UPDATE],
                 allow: { OR: [{ moderators: { id: "$jwt.sub" } }, { creator: { id: "$jwt.sub" } }] }
             }
         ]
@@ -132,6 +132,6 @@ Allow works the same as it does on Type Definitions although its context is the 
 type User {
     id: ID!
     name: String!
-    password: String! @auth(rules: [{ operations: "*", allow: { id: "$jwt.sub" } }])
+    password: String! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
 }
 ----

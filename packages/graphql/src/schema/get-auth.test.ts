@@ -51,6 +51,51 @@ describe("getAuth", () => {
         expect(() => getAuth(directive)).toThrow("auth rules must be a ListValue");
     });
 
+    test("should throw rules rule invalid field", () => {
+        const typeDefs = `
+            type Movie @auth(rules: [{banana: "banana"}]) {
+                id: ID!
+            }
+        `;
+
+        const parsed = parse(typeDefs);
+
+        // @ts-ignore
+        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
+
+        expect(() => getAuth(directive)).toThrow("auth rules rule invalid field banana");
+    });
+
+    test("should throw operation should be a EnumValue", () => {
+        const typeDefs = `
+            type Movie @auth(rules: [{operations: ["string"]}]) {
+                id: ID!
+            }
+        `;
+
+        const parsed = parse(typeDefs);
+
+        // @ts-ignore
+        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
+
+        expect(() => getAuth(directive)).toThrow("auth rules rule operations operation should be a EnumValue");
+    });
+
+    test("should throw invalid operation", () => {
+        const typeDefs = `
+            type Movie @auth(rules: [{operations: [INVALID]}]) {
+                id: ID!
+            }
+        `;
+
+        const parsed = parse(typeDefs);
+
+        // @ts-ignore
+        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
+
+        expect(() => getAuth(directive)).toThrow("auth rules rule operations operation invalid INVALID");
+    });
+
     test("should return AuthRule", () => {
         const typeDefs = `
             type Person {
@@ -59,15 +104,15 @@ describe("getAuth", () => {
             }
 
             type Movie @auth(rules: [
-                { isAuthenticated: true, operations: ["create"] },
-                { roles: ["admin", "publisher"], operations: ["update", "delete"] },
-                { roles: ["editors"], operations: ["update"] },
+                { isAuthenticated: true, operations: [CREATE] },
+                { roles: ["admin", "publisher"], operations: [UPDATE, DELETE] },
+                { roles: ["editors"], operations: [UPDATE] },
                 {
                     allow: { author_id: "$jwt.sub", moderator_id: "$jwt.sub" },
-                    operations: ["update", "delete"]
+                    operations: [UPDATE, DELETE]
                 },
-                { allow: "*", operations: ["update"] },
-                { allow: {OR: [{director_id: "$jwt.sub"}, {actor_id: "$jwt.sub"}]}, operations: ["update"] },
+                { allow: "*", operations: [UPDATE] },
+                { allow: {OR: [{director_id: "$jwt.sub"}, {actor_id: "$jwt.sub"}]}, operations: [UPDATE] },
             ]) {
                 id: ID
                 title: String
@@ -86,12 +131,12 @@ describe("getAuth", () => {
 
         expect(auth).toMatchObject({
             rules: [
-                { isAuthenticated: true, operations: ["create"] },
-                { roles: ["admin", "publisher"], operations: ["update", "delete"] },
-                { roles: ["editors"], operations: ["update"] },
-                { allow: { author_id: "$jwt.sub", moderator_id: "$jwt.sub" }, operations: ["update", "delete"] },
-                { allow: "*", operations: ["update"] },
-                { allow: { OR: [{ director_id: "$jwt.sub" }, { actor_id: "$jwt.sub" }] }, operations: ["update"] },
+                { isAuthenticated: true, operations: ["CREATE"] },
+                { roles: ["admin", "publisher"], operations: ["UPDATE", "DELETE"] },
+                { roles: ["editors"], operations: ["UPDATE"] },
+                { allow: { author_id: "$jwt.sub", moderator_id: "$jwt.sub" }, operations: ["UPDATE", "DELETE"] },
+                { allow: "*", operations: ["UPDATE"] },
+                { allow: { OR: [{ director_id: "$jwt.sub" }, { actor_id: "$jwt.sub" }] }, operations: ["UPDATE"] },
             ],
             type: "JWT",
         });
