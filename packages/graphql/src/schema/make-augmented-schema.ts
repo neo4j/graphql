@@ -55,6 +55,7 @@ import getObjFieldMeta from "./get-obj-field-meta";
 import * as point from "./point";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
 import validateTypeDefs from "./validation";
+import environment from "../environment";
 
 type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
 
@@ -298,7 +299,9 @@ function makeAugmentedSchema({
                     }
 
                     if (["String", "ID"].includes(f.typeMeta.name)) {
-                        res[`${f.fieldName}_MATCHES`] = "String";
+                        if (!environment.NEO4J_GRAPHQL_DISABLE_REGEX) {
+                            res[`${f.fieldName}_MATCHES`] = "String";
+                        }
 
                         [
                             "_CONTAINS",
