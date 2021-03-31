@@ -1,7 +1,30 @@
 [[ogm-getting-started]]
 = Getting Started
 
-Generate your normal GraphQL schema & use the exposed `.model` method to receive an instance of a model.
+This section will help you get started with Neo4j GraphQL OGM. Before starting we recommend readers have an understanding of; 
+
+* `Neo4jGraphQL` <<getting-started>>
+* <<type-definitions>>
+* <<schema>>
+
+== Installation
+[source, bash]
+----
+npm install @neo4j/graphql-ogm
+----
+
+graphql and neo4j-driver are are peerDependency(s).
+
+
+== Requiring
+[source, javascript]
+----
+const { OGM } = require("@neo4j/graphql-ogm");
+----
+
+
+== REST API Quick Start
+This section demonstrates how to use the OGM outside of a GraphQL API. The example exposes a https://expressjs.com/[Express] server and uses the OGM, in the endpoint, to interact with Neo4j. 
 
 [source, javascript]
 ----
@@ -32,9 +55,11 @@ app.get("/users", async (req, res) => {
 
     const users = await User.find({
         where: { name_REGEX: regex },
-        skip,
-        limit,
-        sort,
+        options: {
+            skip,
+            limit,
+            sort
+        }
     });
 
     return res.json(users).end();
