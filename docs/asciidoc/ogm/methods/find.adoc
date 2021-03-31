@@ -16,7 +16,7 @@ const users = await User.find();
 
 
 == Relationships
-See <<ogm-selection-set>>
+Reference: <<ogm-selection-set>>
 
 [source, javascript]
 ----
@@ -45,7 +45,7 @@ JavaScript object representation of the GraphQL `options` input type, used for <
 
 === `selectionSet`
 
-See <<ogm-selection-set>>
+Reference: <<ogm-selection-set>>
 
 === `args`
 The arguments for the GraphQL Query. 
