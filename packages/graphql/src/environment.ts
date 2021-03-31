@@ -32,7 +32,7 @@ const environment = {
         return Boolean(process.env.JWT_NO_VERIFY || false);
     },
     get NEO4J_GRAPHQL_DISABLE_REGEX() {
-        return process.env.NEO4J_GRAPHQL_DISABLE_REGEX;
+        return Boolean(process.env.NEO4J_GRAPHQL_DISABLE_REGEX || false);
     },
     get JWT_ROLES_OBJECT_PATH() {
         return process.env.JWT_ROLES_OBJECT_PATH;
