@@ -10,7 +10,7 @@ type User {
     name: String
 }
 
-extend type User @auth(rules: [{ operations: "*", where: { id: "$jwt.id" } }])
+extend type User @auth(rules: [{ where: { id: "$jwt.id" } }])
 ----
 
 Then issues a GraphQL query for users;

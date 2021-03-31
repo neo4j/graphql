@@ -46,9 +46,9 @@ You can have many rules for many operations. We fallthrough each rule, on the co
 [source, graphql]
 ----
 @auth(rules: [
-    { operations: ["create", "update"], ... }, ## or
-    { operations: ["read", "update"], ...}, ## or
-    { operations: ["delete", "update"], ... } ## or
+    { operations: [CREATE, UPDATE], ... }, ## or
+    { operations: [READ, UPDATE], ...}, ## or
+    { operations: [DELETE, UPDATE], ... } ## or
 ])
 ----
 
@@ -59,12 +59,12 @@ Operations is an array, you can re-use the same rule for many operations.
 [source, graphql]
 ----
 @auth(rules: [
-    { operations: ["create", "update", "delete", "connect", "disconnect"] },
-    { operations: ["read"] }
+    { operations: [CREATE, UPDATE, DELETE, CONNECT, DISCONNECT] },
+    { operations: [READ] }
 ])
 ----
 
-> You can use `operations: "*" to denote all operations
+> No `operations` will imply all operations
 
 Many different operations can be called in one query take the below mutation;
 

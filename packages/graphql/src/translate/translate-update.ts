@@ -70,7 +70,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     }
 
     const whereAuth = createAuthAndParams({
-        operation: "update",
+        operation: "UPDATE",
         entity: node,
         context,
         where: { varName, node },

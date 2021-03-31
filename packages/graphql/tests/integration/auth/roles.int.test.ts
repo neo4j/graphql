@@ -45,7 +45,7 @@ describe("auth/roles", () => {
 
             const typeDefs = `
                 type Product @auth(rules: [{
-                    operations: ["read"],
+                    operations: [READ],
                     roles: ["admin"]
                 }]) {
                     id: ID
@@ -88,7 +88,7 @@ describe("auth/roles", () => {
             const typeDefs = `
                 type User  {
                     id: ID
-                    password: String @auth(rules: [{ operations: ["read"], roles: ["admin"] }])
+                    password: String @auth(rules: [{ operations: [READ], roles: ["admin"] }])
                 }
             `;
 
@@ -128,7 +128,7 @@ describe("auth/roles", () => {
 
             const typeDefs = `
                 type User @auth(rules: [{
-                    operations: ["create"],
+                    operations: [CREATE]
                     roles: ["admin"]
                 }]) {
                     id: ID
@@ -174,7 +174,7 @@ describe("auth/roles", () => {
                 type User {
                     id: ID
                     password: String @auth(rules: [{
-                        operations: ["create"],
+                        operations: [CREATE],
                         roles: ["admin"]
                     }])
                 }
@@ -218,7 +218,7 @@ describe("auth/roles", () => {
 
             const typeDefs = `
                 type User @auth(rules: [{
-                    operations: ["update"],
+                    operations: [UPDATE],
                     roles: ["admin"]
                 }]) {
                     id: ID
@@ -264,7 +264,7 @@ describe("auth/roles", () => {
                 type User {
                     id: ID
                     password: String @auth(rules: [{
-                        operations: ["update"],
+                        operations: [UPDATE],
                         roles: ["admin"]
                     }])
                 }
@@ -323,13 +323,13 @@ describe("auth/roles", () => {
                     @auth(
                         rules: [
                             {
-                                operations: ["connect"]
+                                operations: [CONNECT]
                                 roles: ["admin"]
                             }
                         ]
                     )
 
-                extend type Post @auth(rules: [{ operations: ["connect"], roles: ["super-admin"] }])
+                extend type Post @auth(rules: [{ operations: [CONNECT], roles: ["super-admin"] }])
             `;
 
             const userId = generate({
@@ -404,7 +404,7 @@ describe("auth/roles", () => {
                     @auth(
                         rules: [
                             {
-                                operations: ["connect"]
+                                operations: [CONNECT]
                                 roles: ["admin"]
                             }
                         ]
@@ -490,13 +490,13 @@ describe("auth/roles", () => {
                     @auth(
                         rules: [
                             {
-                                operations: ["disconnect"]
+                                operations: [DISCONNECT]
                                 roles: ["admin"]
                             }
                         ]
                     )
 
-                extend type Post @auth(rules: [{ operations: ["disconnect"], roles: ["super-admin"] }])
+                extend type Post @auth(rules: [{ operations: [DISCONNECT], roles: ["super-admin"] }])
             `;
 
             const userId = generate({
@@ -571,7 +571,7 @@ describe("auth/roles", () => {
                     @auth(
                         rules: [
                             {
-                                operations: ["disconnect"]
+                                operations: [DISCONNECT]
                                 roles: ["admin"]
                             }
                         ]
@@ -641,7 +641,7 @@ describe("auth/roles", () => {
 
             const typeDefs = `
                 type User @auth(rules: [{
-                    operations: ["delete"],
+                    operations: [DELETE],
                     roles: ["admin"]
                 }]) {
                     id: ID
@@ -689,7 +689,7 @@ describe("auth/roles", () => {
                 }
 
                 type Post @auth(rules: [{
-                    operations: ["delete"],
+                    operations: [DELETE],
                     roles: ["admin"]
                 }]) {
                     id: ID
@@ -838,7 +838,7 @@ describe("auth/roles", () => {
                     id: ID
                     history: [History]
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
-                        @auth(rules: [{ operations: ["read"], roles: ["admin"] }])
+                        @auth(rules: [{ operations: [READ], roles: ["admin"] }])
                 }
             `;
 

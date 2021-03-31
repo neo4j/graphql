@@ -89,7 +89,7 @@ function createNodeWhereAndParams({
 
     const whereAuth = createAuthAndParams({
         entity: node,
-        operation: "read",
+        operation: "READ",
         context,
         where: {
             varName,
@@ -104,7 +104,7 @@ function createNodeWhereAndParams({
 
     const preAuth = createAuthAndParams({
         entity: node,
-        operation: "read",
+        operation: "READ",
         context,
         allow: {
             parentNode: node,
@@ -167,7 +167,7 @@ function createProjectionAndParams({
             if (authableField.auth) {
                 const allowAndParams = createAuthAndParams({
                     entity: authableField,
-                    operation: "read",
+                    operation: "READ",
                     context,
                     allow: { parentNode: node, varName, chainStr: param },
                 });

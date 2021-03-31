@@ -29,14 +29,14 @@ export const typeDefs = gql`
     extend type Comment
         @auth(
             rules: [
-                { operations: ["create"], bind: { author: { id: "$jwt.sub" } } }
+                { operations: [CREATE], bind: { author: { id: "$jwt.sub" } } }
                 {
-                    operations: ["update", "connect"]
+                    operations: [UPDATE, CONNECT]
                     allow: { author: { id: "$jwt.sub" } }
                     bind: { author: { id: "$jwt.sub" } }
                 }
                 {
-                    operations: ["delete", "disconnect"]
+                    operations: [DELETE, DISCONNECT]
                     allow: {
                         OR: [
                             { author: { id: "$jwt.sub" } }

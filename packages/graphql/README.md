@@ -154,10 +154,7 @@ type Post {
 extend type Post
     @auth(
         rules: [
-            {
-                allow: [{ moderator: { id: "$jwt.sub" } }]
-                operations: ["update"]
-            }
+            { allow: [{ moderator: { id: "$jwt.sub" } }], operations: [UPDATE] }
         ]
     )
 ```
@@ -174,10 +171,7 @@ extend type User {
     password: String!
         @auth(
             rules: [
-                {
-                    OR: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }]
-                    operations: "*"
-                }
+                { OR: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }] }
             ]
         )
 }
@@ -186,13 +180,13 @@ extend type User {
 Use RBAC;
 
 ```graphql
-type Customer @auth(rules: [{ operations: "read", roles: ["read:customer"] }]) {
+type Customer @auth(rules: [{ operations: [READ], roles: ["read:customer"] }]) {
     id: ID
     name: String
-    password: String @auth(rules: [{ operations: "read", roles: ["admin"] }])
+    password: String @auth(rules: [{ operations: [READ], roles: ["admin"] }])
 }
 
-type Invoice @auth(rules: [{ operations: "read", roles: ["read:invoice"] }]) {
+type Invoice @auth(rules: [{ operations: [READ], roles: ["read:invoice"] }]) {
     id: ID
     csv: String
     total: Int

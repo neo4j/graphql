@@ -46,7 +46,7 @@ describe("checkNodeImplementsInterfaces", () => {
 
     test("should throw incorrect with auth directive", () => {
         const typeDefs = `
-                interface Node @auth(rules: [{operations: ["read"], allow: "*"}]) {
+                interface Node @auth(rules: [{operations: [READ], allow: "*"}]) {
                     id: ID
                 }
 
@@ -116,13 +116,13 @@ describe("checkNodeImplementsInterfaces", () => {
 
     test("should pass on correct implementation", () => {
         const typeDefs = `
-                interface Node @auth(rules: [{operations: ["read"], allow: "*"}]) {
+                interface Node @auth(rules: [{operations: [READ], allow: "*"}]) {
                     id: ID
                     relation: [Movie] @relationship(type: "SOME_TYPE", direction: "OUT")
                     cypher: [Movie] @cypher(statement: "MATCH (a) RETURN a")
                 }
 
-                type Movie implements Node @auth(rules: [{operations: ["read"], allow: "*"}]) {
+                type Movie implements Node @auth(rules: [{operations: [READ], allow: "*"}]) {
                     id: ID
                     title: String!
                     relation: [Movie] @relationship(type: "SOME_TYPE", direction: "OUT")

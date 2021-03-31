@@ -9,7 +9,7 @@ union Search = Movie | Genre
 
 type Genre @auth(rules: [
     {
-        operations: ["read"],
+        operations: [READ],
         allow: {
             name: "$jwt.jwtAllowedNamesExample"
         }

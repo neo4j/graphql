@@ -9,7 +9,7 @@ In this section you will learn more about how to secure your GraphQL API using N
 [source, graphql]
 ----
 type Post @auth(rules: [
-    { operations: ["create"], isAuthenticated: true }
+    { operations: [CREATE], isAuthenticated: true }
 ]) {
     title: String!
 }
@@ -24,7 +24,7 @@ type Post {
 }
 
 extend type Post @auth(rules: [
-    { operations: ["create"], isAuthenticated: true }
+    { operations: [CREATE], isAuthenticated: true }
 ])
 ----
 
@@ -40,7 +40,6 @@ type User {
 extend type User {
     password: String! @auth(rules: [
         {
-            operations: "*",
             OR: [{ roles: ["admin"] }, { allow: { id: "$jwt.sub" } }]
         }
     ])

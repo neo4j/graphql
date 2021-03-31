@@ -6,7 +6,7 @@ Schema:
 
 ```schema
 type History {
-    url: String @auth(rules: [{ operations: ["read"], isAuthenticated: true }])
+    url: String @auth(rules: [{ operations: [READ], isAuthenticated: true }])
 }
 
 type Post {
@@ -25,20 +25,20 @@ extend type User
     @auth(
         rules: [
             {
-                operations: ["read", "create", "update", "connect", "disconnect", "delete"]
+                operations: [READ, CREATE, UPDATE, CONNECT, DISCONNECT, DELETE]
                 isAuthenticated: true
             }
         ]
     )
 
-extend type Post @auth(rules: [{ operations: ["connect", "disconnect", "delete"], isAuthenticated: true }])
+extend type Post @auth(rules: [{ operations: [CONNECT, DISCONNECT, DELETE], isAuthenticated: true }])
 
 extend type User {
     password: String
         @auth(
             rules: [
                 {
-                    operations: ["read", "create", "update"]
+                    operations: [READ, CREATE, UPDATE]
                     isAuthenticated: true
                 }
             ]
@@ -48,7 +48,7 @@ extend type User {
 extend type User {
     history: [History]
         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
-        @auth(rules: [{ operations: ["read"], isAuthenticated: true }])
+        @auth(rules: [{ operations: [READ], isAuthenticated: true }])
 }
 ```
 

@@ -16,11 +16,11 @@ export const typeDefs = gql`
     extend type User
         @auth(
             rules: [
-                { operations: ["connect"], isAuthenticated: true }
-                { operations: ["update"], allow: { id: "$jwt.sub" }, bind: { id: "$jwt.sub" } }
-                { operations: ["delete"], allow: { id: "$jwt.sub" } }
+                { operations: [CONNECT], isAuthenticated: true }
+                { operations: [UPDATE], allow: { id: "$jwt.sub" }, bind: { id: "$jwt.sub" } }
+                { operations: [DELETE], allow: { id: "$jwt.sub" } }
                 {
-                    operations: ["disconnect"]
+                    operations: [DISCONNECT]
                     allow: {
                         OR: [
                             { id: "$jwt.sub" }

@@ -48,7 +48,7 @@ describe("auth/where", () => {
                     id: ID
                 }
 
-                extend type User @auth(rules: [{ operations: ["read"], where: { id: "$jwt.sub" } }])
+                extend type User @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
             `;
 
             const userId = generate({
@@ -111,7 +111,7 @@ describe("auth/where", () => {
                     creator: User @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type Post @auth(rules: [{ operations: ["read"], where: { creator: { id: "$jwt.sub" } } }])
+                extend type Post @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -192,8 +192,8 @@ describe("auth/where", () => {
                         creator: User @relationship(type: "HAS_CONTENT", direction: IN)
                     }
 
-                    extend type Post @auth(rules: [{ operations: ["read"], where: { creator: { id: "$jwt.sub" } } }])
-                    extend type User @auth(rules: [{ operations: ["read"], where: { id: "$jwt.sub" } }])
+                    extend type Post @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
+                    extend type User @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
                 `;
 
                 const userId = generate({
@@ -270,7 +270,7 @@ describe("auth/where", () => {
                     id: ID
                 }
 
-                extend type User @auth(rules: [{ operations: ["update"], where: { id: "$jwt.sub" } }])
+                extend type User @auth(rules: [{ operations: [UPDATE], where: { id: "$jwt.sub" } }])
             `;
 
             const userId = generate({
@@ -334,7 +334,7 @@ describe("auth/where", () => {
                     id: ID
                 }
 
-                extend type User @auth(rules: [{ operations: ["delete"], where: { id: "$jwt.sub" } }])
+                extend type User @auth(rules: [{ operations: [DELETE], where: { id: "$jwt.sub" } }])
             `;
 
             const userId = generate({
@@ -404,7 +404,7 @@ describe("auth/where", () => {
                     creator: User @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @auth(rules: [{ operations: ["connect"], where: { id: "$jwt.sub" } }])
+                extend type User @auth(rules: [{ operations: [CONNECT], where: { id: "$jwt.sub" } }])
             `;
 
             const userId = generate({
@@ -475,7 +475,7 @@ describe("auth/where", () => {
                     creator: User @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @auth(rules: [{ operations: ["connect"], where: { id: "$jwt.sub" } }])
+                extend type User @auth(rules: [{ operations: [CONNECT], where: { id: "$jwt.sub" } }])
             `;
 
             const userId = generate({
@@ -548,7 +548,7 @@ describe("auth/where", () => {
                     creator: User @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @auth(rules: [{ operations: ["disconnect"], where: { id: "$jwt.sub" } }])
+                extend type User @auth(rules: [{ operations: [DISCONNECT], where: { id: "$jwt.sub" } }])
             `;
 
             const userId = generate({
@@ -618,7 +618,7 @@ describe("auth/where", () => {
                     creator: User @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User @auth(rules: [{ operations: ["disconnect"], where: { id: "$jwt.sub" } }])
+                extend type User @auth(rules: [{ operations: [DISCONNECT], where: { id: "$jwt.sub" } }])
             `;
 
             const userId = generate({

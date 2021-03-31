@@ -9,7 +9,7 @@ Tests that the provided typeDefs return the correct schema.
 **TypeDefs**
 
 ```typedefs-input
-interface Node @auth(rules: [{allow: "*", operations: ["read"]}]) {
+interface Node @auth(rules: [{allow: "*", operations: [READ]}]) {
     id: ID
     movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
     customQuery: [Movie] @cypher(statement: """
@@ -18,7 +18,7 @@ interface Node @auth(rules: [{allow: "*", operations: ["read"]}]) {
     """)
 }
 
-type Movie implements Node @auth(rules: [{allow: "*", operations: ["read"]}]) {
+type Movie implements Node @auth(rules: [{allow: "*", operations: [READ]}]) {
     id: ID
     nodes: [Node]
     movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)

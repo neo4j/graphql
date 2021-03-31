@@ -61,7 +61,7 @@ function createConnectAndParams({
 
         if (parentNode.auth && !fromCreate) {
             const whereAuth = createAuthAndParams({
-                operation: "connect",
+                operation: "CONNECT",
                 entity: parentNode,
                 context,
                 where: { varName: parentVar, node: parentNode },
@@ -92,7 +92,7 @@ function createConnectAndParams({
         }
         if (refNode.auth) {
             const whereAuth = createAuthAndParams({
-                operation: "connect",
+                operation: "CONNECT",
                 entity: refNode,
                 context,
                 where: { varName: _varName, node: refNode },
@@ -115,7 +115,7 @@ function createConnectAndParams({
 
                 const [str, params] = createAuthAndParams({
                     entity: node,
-                    operation: "connect",
+                    operation: "CONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
                     allow: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_allow` },
@@ -201,7 +201,7 @@ function createConnectAndParams({
 
                 const [str, params] = createAuthAndParams({
                     entity: node,
-                    operation: "connect",
+                    operation: "CONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
                     skipIsAuthenticated: true,

@@ -6,7 +6,7 @@ Schema:
 
 ```schema
 type History {
-    url: String @auth(rules: [{ operations: ["read"], roles: ["super-admin"] }])
+    url: String @auth(rules: [{ operations: [READ], roles: ["super-admin"] }])
 }
 
 type Comment {
@@ -34,12 +34,12 @@ extend type User
         rules: [
             {
                 operations: [
-                    "read"
-                    "create"
-                    "update"
-                    "connect"
-                    "disconnect"
-                    "delete"
+                    READ
+                    CREATE
+                    UPDATE
+                    CONNECT
+                    DISCONNECT
+                    DELETE
                 ]
                 roles: ["admin"]
             }
@@ -49,7 +49,7 @@ extend type User
 extend type Post
     @auth(
         rules: [
-            { operations: ["connect", "disconnect", "delete"], roles: ["super-admin"] }
+            { operations: [CONNECT, DISCONNECT, DELETE], roles: ["super-admin"] }
         ]
     )
 
@@ -58,7 +58,7 @@ extend type User {
         @auth(
             rules: [
                 {
-                    operations: ["read", "create", "update"]
+                    operations: [READ, CREATE, UPDATE]
                     roles: ["super-admin"]
                 }
             ]
@@ -68,7 +68,7 @@ extend type User {
 extend type User {
     history: [History]
         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
-        @auth(rules: [{ operations: ["read"], roles: ["super-admin"] }])
+        @auth(rules: [{ operations: [READ], roles: ["super-admin"] }])
 }
 ```
 
