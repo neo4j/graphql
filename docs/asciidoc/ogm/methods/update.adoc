@@ -33,7 +33,7 @@ JavaScript object representation of the GraphQL `create` input type, used for <<
 
 === `selectionSet`
 
-See <<ogm-selection-set>>
+Reference: <<ogm-selection-set>>
 
 === `args`
 The arguments for the GraphQL Query. 

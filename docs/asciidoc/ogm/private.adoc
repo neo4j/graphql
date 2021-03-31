@@ -45,15 +45,10 @@ const typeDefs = `
 `;
 
 // public without password
-const neoSchema = new Neo4jGraphQL({ typeDefs, context: { driver } });
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
 // private with access to password
 const ogm = new OGM({ typeDefs, driver });
 
 const apolloServer = new ApolloServer({ schema: neoSchema.schema });
 ----
-
-We also exclude the following directives from OGM generation;
-
-1. `@auth`
-2. `@exclude`
