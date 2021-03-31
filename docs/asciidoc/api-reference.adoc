@@ -22,3 +22,11 @@ const neo4jGraphQL = new Neo4jGraphQL({
     debug?,
 });
 ----
+
+=== Methods
+
+==== `verifyDatabase`
+Reference: <<drivers-and-config-verifyDatabase>>
+
+== `OGM`
+Reference: <<ogm-api-reference>>
