@@ -39,13 +39,13 @@ RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zo
 {
     "this_datetime": {
         "day": 1,
-        "hour": 1,
+        "hour": 0,
         "minute": 0,
         "month": 1,
         "nanosecond": 0,
         "second": 0,
         "timeZoneId": null,
-        "timeZoneOffsetSeconds": 3600,
+        "timeZoneOffsetSeconds": 0,
         "year": 1970
     }
 }
@@ -84,13 +84,13 @@ RETURN this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), "iso_
 {
     "this0_datetime": {
         "day": 1,
-        "hour": 1,
+        "hour": 0,
         "minute": 0,
         "month": 1,
         "nanosecond": 0,
         "second": 0,
         "timeZoneId": null,
-        "timeZoneOffsetSeconds": 3600,
+        "timeZoneOffsetSeconds": 0,
         "year": 1970
     }
 }
@@ -127,13 +127,13 @@ RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), "i
 {
     "this_update_datetime": {
         "day": 1,
-        "hour": 1,
+        "hour": 0,
         "minute": 0,
         "month": 1,
         "nanosecond": 0,
         "second": 0,
         "timeZoneId": null,
-        "timeZoneOffsetSeconds": 3600,
+        "timeZoneOffsetSeconds": 0,
         "year": 1970
     }
 }
