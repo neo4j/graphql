@@ -230,22 +230,32 @@ class Model {
 
     async delete({
         where,
+        delete: deleteInput,
         context = {},
         rootValue = null,
     }: {
         where?: GraphQLWhereArg;
+        delete?: any;
         context?: any;
         rootValue?: any;
     } = {}): Promise<DeleteInfo> {
         const mutationName = `delete${upperCaseFirst(this.namePluralized)}`;
 
+        const argWorthy = where || deleteInput;
+
         const argDefinitions = [
-            `${where ? "(" : ""}`,
+            `${argWorthy ? "(" : ""}`,
             `${where ? `$where: ${this.name}Where` : ""}`,
-            `${where ? ")" : ""}`,
+            `${deleteInput ? `$delete: ${this.name}DeleteInput` : ""}`,
+            `${argWorthy ? ")" : ""}`,
         ];
 
-        const argsApply = [`${where ? "(" : ""}`, `${where ? `where: $where` : ""}`, `${where ? ")" : ""}`];
+        const argsApply = [
+            `${argWorthy ? "(" : ""}`,
+            `${where ? `where: $where` : ""}`,
+            `${deleteInput ? `delete: $delete` : ""}`,
+            `${argWorthy ? ")" : ""}`,
+        ];
 
         const mutation = `
             mutation ${argDefinitions.join(" ")}{
@@ -256,7 +266,7 @@ class Model {
             }
         `;
 
-        const variableValues = { where };
+        const variableValues = { where, delete: deleteInput };
 
         const result = await graphql(this.neoSchema.schema, mutation, rootValue, context, variableValues);
 
