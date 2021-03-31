@@ -167,7 +167,7 @@ describe("makeAugmentedSchema", () => {
     test("should throw cannot have auth directive on a relationship", () => {
         const typeDefs = `
                 type Node {
-                    node: Node @relationship(type: "NODE", direction: OUT) @auth(rules: [{operations: [CREATE], roles: ["admin"]}])
+                    node: Node @relationship(type: "NODE", direction: OUT) @auth(rules: [{operations: [CREATE]}])
                 }
             `;
 

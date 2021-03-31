@@ -51,6 +51,21 @@ describe("getAuth", () => {
         expect(() => getAuth(directive)).toThrow("auth rules must be a ListValue");
     });
 
+    test("should throw rules rule invalid field", () => {
+        const typeDefs = `
+            type Movie @auth(rules: [{banana: "banana"}]) {
+                id: ID!
+            }
+        `;
+
+        const parsed = parse(typeDefs);
+
+        // @ts-ignore
+        const directive = (parsed.definitions[0] as ObjectTypeDefinitionNode).directives[0];
+
+        expect(() => getAuth(directive)).toThrow("auth rules rule invalid field banana");
+    });
+
     test("should throw operation should be a EnumValue", () => {
         const typeDefs = `
             type Movie @auth(rules: [{operations: ["string"]}]) {

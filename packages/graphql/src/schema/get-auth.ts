@@ -21,6 +21,7 @@ import { DirectiveNode, valueFromASTUntyped } from "graphql";
 import { Auth, AuthRule, AuthOperations } from "../types";
 
 const validOperations: AuthOperations[] = ["CREATE", "READ", "UPDATE", "DELETE", "CONNECT", "DISCONNECT"];
+const validFields = ["operations", "AND", "OR", "allow", "where", "bind", "isAuthenticated", "roles"];
 
 function getAuth(directive: DirectiveNode): Auth {
     const auth: Auth = { rules: [], type: "JWT" };
@@ -42,6 +43,10 @@ function getAuth(directive: DirectiveNode): Auth {
 
         rule.fields.forEach((field) => {
             if (field.name.value !== "operations") {
+                if (!validFields.includes(field.name.value)) {
+                    throw new Error(`auth rules rule invalid field ${field.name.value}`);
+                }
+
                 return;
             }
 
