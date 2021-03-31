@@ -1,2 +1,56 @@
 [[schema-pagination]]
 = Pagination
+
+== Page-based pagination
+
+Page-based pagination can be achieved through the use of the `skip` and `limit` options available whilst querying for data.
+
+Using the following type definition:
+
+[source, graphql]
+----
+type User {
+    name: String!
+}
+----
+
+You would fetch the first "page" of 10 by executing:
+
+[source, graphql]
+----
+query {
+    users(options: {
+        limit: 10
+    }) {
+        name
+    }
+}
+----
+
+And then on subsequent calls, introduce the `skip` argument and increment it by 10 on each call.
+
+Page 2:
+[source, graphql]
+----
+query {
+    users(options: {
+        skip: 10
+        limit: 10
+    }) {
+        name
+    }
+}
+----
+
+Page 3:
+[source, graphql]
+----
+query {
+    users(options: {
+        skip: 20
+        limit: 10
+    }) {
+        name
+    }
+}
+----
