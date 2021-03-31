@@ -18,7 +18,15 @@
  */
 
 import camelCase from "camelcase";
-import { printSchema, parse, ObjectTypeDefinitionNode, NamedTypeNode, ListTypeNode, NonNullTypeNode } from "graphql";
+import {
+    printSchema,
+    parse,
+    ObjectTypeDefinitionNode,
+    NamedTypeNode,
+    ListTypeNode,
+    NonNullTypeNode,
+    InputObjectTypeDefinitionNode,
+} from "graphql";
 import { pluralize } from "graphql-compose";
 import makeAugmentedSchema from "./make-augmented-schema";
 import { Node } from "../classes";
@@ -172,5 +180,35 @@ describe("makeAugmentedSchema", () => {
             `;
 
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot have auth directive on a relationship");
+    });
+
+    describe("REGEX", () => {
+        beforeEach(() => {
+            process.env.NEO4J_GRAPHQL_DISABLE_REGEX = "true";
+        });
+
+        test("should remove the MATCHES filter when NEO4J_GRAPHQL_DISABLE_REGEX is set", () => {
+            const typeDefs = `
+                    type Node {
+                        name: String
+                    }
+                `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const document = parse(printSchema(neoSchema.schema));
+
+            const nodeWhereInput = document.definitions.find(
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "NodeWhere"
+            ) as InputObjectTypeDefinitionNode;
+
+            const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("_MATCHES"));
+
+            expect(matchesField).toBeUndefined();
+        });
+
+        afterEach(() => {
+            delete process.env.NEO4J_GRAPHQL_DISABLE_REGEX;
+        });
     });
 });
