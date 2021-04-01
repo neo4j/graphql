@@ -94,6 +94,7 @@ module.exports = {
         },
         {
             files: ["examples/neo-push/client/**/*.tsx"],
+            ...typeScriptParser,
             extends: ["airbnb-typescript"],
             rules: {
                 "import/prefer-default-export": "off",
@@ -102,6 +103,7 @@ module.exports = {
         },
         {
             files: ["examples/neo-push/server/**/*.ts"],
+            ...typeScriptParser,
             extends: baseTypeScriptExtends,
             rules: {
                 ...baseTypeScriptRules,
