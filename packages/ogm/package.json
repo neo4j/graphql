@@ -22,7 +22,7 @@
     ],
     "scripts": {
         "build": "tsc --project src/",
-        "test": "run-s test:unit test:int",
+        "test": "jest",
         "test:unit": "jest src/**/*.test.ts",
         "test:unit:watch": "test:unit -- --watchAll",
         "test:int": "jest int",

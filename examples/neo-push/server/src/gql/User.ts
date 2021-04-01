@@ -69,7 +69,7 @@ async function signUp(_root, args: { email: string; password: string }, context:
         })
     ).users;
 
-    const jwt = createJWT({ sub: user.id });
+    const jwt = await createJWT({ sub: user.id });
 
     return jwt;
 }

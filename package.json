@@ -15,7 +15,7 @@
         "prettify": "prettier --write \"packages/**/*.ts\"",
         "lint": "eslint .",
         "lerna:test": "lerna run test --concurrency 1 --stream",
-        "test": "yarn build && run-s --continue-on-error lerna:test",
+        "test": "jest",
         "test:pr": "run-s lint test",
         "prepare": "run-s lerna clean -y lerna bootstrap -y",
         "generate:docs": "lerna run generate:doc",
@@ -30,6 +30,7 @@
         "eslint": "7.9.0",
         "eslint-config-airbnb-typescript": "10.0.0",
         "eslint-config-prettier": "6.11.0",
+        "eslint-import-resolver-typescript": "^2.4.0",
         "eslint-plugin-eslint-comments": "3.2.0",
         "eslint-plugin-import": "2.22.0",
         "eslint-plugin-jest": "24.0.1",
@@ -41,6 +42,7 @@
         "npm-run-all": "4.1.5",
         "prettier": "2.1.2",
         "set-tz": "0.2.0",
+        "ts-jest": "^26.5.4",
         "typescript": "3.9.7"
     }
 }

@@ -8,5 +8,8 @@
             "@neo4j/graphql-ogm": ["../../../../packages/ogm/src"]
         }
     },
-    "references": [{ "path": "../../../../packages/ogm/src/tsconfig.json" }]
+    "references": [
+        { "path": "../../../../packages/graphql/src/tsconfig.json" },
+        { "path": "../../../../packages/ogm/src/tsconfig.json" }
+    ]
 }

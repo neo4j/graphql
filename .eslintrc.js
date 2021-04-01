@@ -84,6 +84,13 @@ module.exports = {
                 ...baseTypeScriptRules,
                 "@typescript-eslint/ban-ts-comment": ["warn", { "ts-ignore": "allow-with-description" }], // TODO Refactor and set severity to "error" - If @ts-ignore is genuinely required it justify with a reason: "@ts-ignore: Required for a reason"
             },
+            settings: {
+                "import/resolver": {
+                    typescript: {
+                        project: "./**/tsconfig.json",
+                    },
+                },
+            },
         },
         {
             files: ["examples/neo-push/client/**/*.tsx"],

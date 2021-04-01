@@ -8,7 +8,7 @@
         "dev": "nodemon --watch './src/**/*.ts' --exec ts-node --project ./src/tsconfig.json ./src/index.ts",
         "build": "tsc --module commonjs --target ES2019 --outDir ./dist",
         "seed": "ts-node --project ./src/tsconfig.json ./src/seeder.ts",
-        "test": "jest --forceExit"
+        "test": "jest"
     },
     "author": "",
     "license": "ISC",
