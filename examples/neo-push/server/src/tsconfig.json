@@ -1,10 +1,12 @@
 {
     "extends": "../../../../tsconfig.base.json",
     "compilerOptions": {
-        "outDir": "./dist",
+        "baseUrl": "./",
+        "outDir": "../dist",
         "paths": {
             "@neo4j/graphql": ["../../../../packages/graphql/src"],
             "@neo4j/graphql-ogm": ["../../../../packages/ogm/src"]
         }
-    }
+    },
+    "references": [{ "path": "../../../../packages/ogm/src/tsconfig.json" }]
 }
