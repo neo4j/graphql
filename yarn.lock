@@ -11871,6 +11871,7 @@ fsevents@^1.2.7:
     lint-staged: 10.2.11
     npm-run-all: 4.1.5
     prettier: 2.1.2
+    set-tz: 0.2.0
     typescript: 3.9.7
   languageName: unknown
   linkType: soft
@@ -14579,6 +14580,15 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"set-tz@npm:0.2.0":
+  version: 0.2.0
+  resolution: "set-tz@npm:0.2.0"
+  dependencies:
+    windows-iana: ^3.0.0
+  checksum: dc6ac8f87488c117a9d178b3dbca9499944e8f33de44b36b7dad050608e3a312adeae33d4c2a97614165475e4bdfd8114d141a7992d7f42540b5b9a3b811da14
+  languageName: node
+  linkType: hard
+
 "set-value@npm:^2.0.0, set-value@npm:^2.0.1":
   version: 2.0.1
   resolution: "set-value@npm:2.0.1"
@@ -17055,6 +17065,13 @@ typescript@4.1.3:
   version: 2.0.0
   resolution: "wildcard@npm:2.0.0"
   checksum: 207baede4d6d41fc1aefcc4727c95ca6f29eaaf4d66478665fe0ac17232709637426ae96fd79deb3b68da3564e7bde7f2be63e5c3665ac8f63ee92364c0a2dd3
+  languageName: node
+  linkType: hard
+
+"windows-iana@npm:^3.0.0":
+  version: 3.1.0
+  resolution: "windows-iana@npm:3.1.0"
+  checksum: 305bb360a082c11b791df38072fcfe41bbc06ca9d5896e14791b4be61eba357d107ebcc57131210185a9854ff4bb4c87cbefc01bd45c8fdde5a38f76cea12567
   languageName: node
   linkType: hard
 
