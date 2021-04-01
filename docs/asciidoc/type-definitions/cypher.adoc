@@ -1,9 +1,118 @@
 [[type-definitions-cypher]]
 = `@cypher` Directive
 
-GraphQL schema directive that can be used to bind a GraphQL field to the results of a Cypher query.
+The `@cypher` directive binds a GraphQL field to the result(s) of a Cypher query.
 
-== `@cypher` directive on Field
+== Definition
+
+[source, graphql]
+----
+"""Instructs @neo4j/graphql to run the specified Cypher statement in order to resolve the value of the field to which the directive is applied."""
+directive @cypher(
+    """The Cypher statement to run which returns a value of the same type composition as the field definition on which the directive is applied."""
+    statement: String!,
+) on FIELD_DEFINITION
+----
+
+== Globals
+
+Global variables are available for use within the Cypher statement.
+
+=== `this`
+
+The value `this` is a reference to the currently resolved node, and it can be used to traverse the graph.
+
+This can be seen in the usage example <<type-definitions-cypher-object-usage>> below.
+
+=== `auth`
+
+The value `auth` is represented by the following TypeScript interface definition:
+
+[source, typescript]
+----
+interface Auth {
+    isAuthenticated: boolean;
+    roles?: string[];
+    jwt: any;
+}
+----
+
+For example, you could use the JWT in the request to return the value of the currently logged in User:
+
+[source, graphql]
+----
+type User {
+    id: String
+}
+
+type Query {
+    me: User @cypher(
+        statement: """
+        MATCH (user:User {id: $auth.jwt.sub})
+        RETURN user
+        """
+    )
+}
+----
+
+== Return values
+
+The return value of the Cypher statement must be of the same type to which the directive is applied.
+
+=== Scalar values
+
+The Cypher statement must return a value which matches the scalar type to which the directive was applied.
+
+[source, graphql]
+----
+type Query {
+    randomNumber: Int @cypher(statement: "RETURN rand()")
+}
+----
+
+=== Object types
+
+When returning an object type, all fields of the type must be available in the Cypher return value. This can be achieved by either returning the entire object from the Cypher query, or returning a map of the fields which are required for the object type. Both approaches are demonstrated below:
+
+[source, graphql]
+----
+type User {
+    id
+}
+
+type Query {
+    users: [User]
+        @cypher(
+            statement: """
+            MATCH (u:User)
+            RETURN u
+            """
+        )
+}
+----
+
+[source, graphql]
+----
+type User {
+    id
+}
+
+type Query {
+    users: [User] @cypher(statement: """
+        MATCH (u:User)
+        RETURN {
+            id: u.id
+        }
+    """)
+}
+----
+
+The downside of the latter approach is that you will need to adjust the return object as you change your object type definition.
+
+== Usage examples
+
+[[type-definitions-cypher-object-usage]]
+=== On an object type field
 
 Below we add a field `similarMovies` to our Movie, which is bound to a Cypher query, to find other movies with an overlap of actors;
 
@@ -33,25 +142,9 @@ type Movie {
 }
 ----
 
-== `@cypher` statement globals
-Global variables available inside the @cypher statement.
+=== On a Query type field
 
-1. `this` - bound to the currently resolved node
-2. `auth` - See below
-
-
-=== Auth global
-
-[source, typescript]
-----
-interface Auth {
-    isAuthenticated: boolean;
-    roles?: string[];
-    jwt: any;
-}
-----
-
-== `@cypher` directive on Query
+Below we add a simple Query to return all of the actors in the database.
 
 [source, graphql]
 ----
@@ -71,7 +164,9 @@ type Query {
 }
 ----
 
-== `@cypher` directive on Mutation
+=== On a Mutation type field
+
+Below we add a simple Mutation using a Cypher query to insert a single actor with the specified name argument.
 
 [source, graphql]
 ----
@@ -88,53 +183,5 @@ type Mutation {
             RETURN a
             """
         )
-}
-----
-
-
-== Returning from the `@cypher` statement
-You should return a single value representing corresponding type.
-
-=== Primitives
-
-[source, graphql]
-----
-type Query {
-    randomNumber: Int @cypher(statement: "RETURN rand()")
-}
-----
-
-
-=== Nodes
-
-[source, graphql]
-----
-type Query {
-    users: [User]
-        @cypher(
-            statement: """
-            MATCH (u:User)
-            RETURN u
-            """
-        )
-}
-----
-
-
-=== Objects
-
-[source, graphql]
-----
-type User {
-    id
-}
-
-type Query {
-    users: [User] @cypher(statement: """
-        MATCH (u:User)
-        RETURN {
-            id: u.id
-        }
-    """)
 }
 ----
