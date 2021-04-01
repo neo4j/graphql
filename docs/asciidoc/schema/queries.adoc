@@ -3,8 +3,6 @@
 
 Each object defined in type definitions will have a Query field generated for it. Each Query field accepts two arguments:
 
-To learn how to perform the below operations, using the ogm, see <<ogm-methods-find>>.
-
 * `where`: Used to specify the <<schema-filtering>> which should be applied whilst querying the data
 * `options`: Used to specify the options for <<schema-sorting>> and <<schema-pagination>>
 
@@ -37,7 +35,9 @@ type Query {
 }
 ----
 
-== Get all users with id and name
+=== Querying for all Users
+
+The following Query will return all Users, returning their ID and name.
 
 [source, graphql]
 ----
@@ -49,7 +49,9 @@ query {
 }
 ----
 
-== Get all users with all there posts
+=== Query for all Users' Posts
+
+The following Query will return all Users, returning the content which they have posted.
 
 [source, graphql]
 ----
@@ -62,39 +64,6 @@ query {
 }
 ----
 
-== Filtering
+=== Filtering
 
-> Checkout [TCK](https://github.com/neo4j/graphql/blob/master/packages/graphql/tests/tck/tck-test-files/cypher-advanced-filtering.md) for more advanced querying.
-
-Use the `where` argument;
-
-[source, graphql]
-----
-query {
-    users(where: { id: "123" }) {
-        id
-        name
-    }
-}
-----
-
-== Filtering Relationships
-
-Use the `where` argument, on the field;
-
-[source, graphql]
-----
-query {
-    users {
-        id
-        name
-        posts(where: { id: "123" }) {
-            content
-        }
-    }
-}
-----
-
-
-
-
+See <<schema-filtering>> for details on how data can be filtered whilst querying.

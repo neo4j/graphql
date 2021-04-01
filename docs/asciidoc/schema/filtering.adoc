@@ -51,3 +51,37 @@ Conversely, the following operators are available on array fields, and accept a 
 * `_NOT_INCLUDES`
 
 These four operators are available for all types apart from `Boolean`.
+
+== Usage
+
+Using the type definitions from <<schema-queries>>, below are some example of how filtering can be applied whilst querying for data.
+
+=== At the root of a Query
+
+By using the `where` argument on the Query field in question, you can return a User with a particular ID:
+
+[source, graphql]
+----
+query {
+    users(where: { id: "7CF1D9D6-E527-4ACD-9C2A-207AE0F5CB8C" }) {
+        name
+    }
+}
+----
+
+=== Filtering relationships
+
+By using the `where` argument on a relationship field, you can filter for a Post with a particular ID across all Users:
+
+[source, graphql]
+----
+query {
+    users {
+        id
+        name
+        posts(where: { id: "2D297425-9BCF-4986-817F-F06EE0A1D9C7" }) {
+            content
+        }
+    }
+}
+----
