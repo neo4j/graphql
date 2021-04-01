@@ -1,7 +1,7 @@
 [[ogm-methods]]
 = Methods
 
-You can call the following on the model;
+You can call the following on a model;
 
 . <<ogm-methods-create>>
 . <<ogm-methods-find>>
