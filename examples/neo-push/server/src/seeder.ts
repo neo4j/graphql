@@ -1,7 +1,7 @@
 import faker from "faker";
 import { ogm } from "./gql";
 import * as neo4j from "./neo4j";
-import createDebug from "./debug";
+import createDebug from "./debugger";
 import { hashPassword } from "./utils";
 
 const debug = createDebug("Seeder");

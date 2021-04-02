@@ -1,7 +1,7 @@
 import express from "express";
 import * as path from "path";
 import * as config from "./config";
-import createDebug from "./debug";
+import createDebug from "./debugger";
 import * as graphql from "./gql";
 
 export const app = express();
