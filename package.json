@@ -15,8 +15,8 @@
         "lint": "eslint .",
         "test": "jest",
         "test:pr": "run-s lint test",
-        "neo-push": "yarn build && cd examples/neo-push && concurrently \"cd server && yarn run dev\" \"cd client && yarn run dev\"",
-        "neo-push-seed": "yarn build && cd examples/neo-push/server && yarn run seed"
+        "neo-push": "concurrently \"yarn workspace neo-push-server start\" \"yarn workspace neo-push-client start\"",
+        "neo-push:seed": "yarn workspace neo-push-server run seed"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "4.1.1",
