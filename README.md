@@ -2,6 +2,8 @@
 
 testing
 
+One more commit.
+
 💡 Welcome to the Monorepo for [Neo4j](https://neo4j.com/) + [GraphQL](https://graphql.org/).
 
 ![Neo4j + GraphQL](./docs/images/readme-banner.png)
