@@ -43,9 +43,9 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
     let updateStr = "";
-    let connectStr = "";
-    let disconnectStr = "";
-    let createStr = "";
+    const connectStrs: string[] = [];
+    const disconnectStrs: string[] = [];
+    const createStrs: string[] = [];
     let deleteStr = "";
     let projAuth = "";
     let projStr = "";
@@ -112,7 +112,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 withVars: [varName],
                 parentNode: node,
             });
-            [disconnectStr] = disconnectAndParams;
+            disconnectStrs.push(disconnectAndParams[0]);
             cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
         });
     }
@@ -132,7 +132,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 withVars: [varName],
                 parentNode: node,
             });
-            [connectStr] = connectAndParams;
+            connectStrs.push(connectAndParams[0]);
             cypherParams = { ...cypherParams, ...connectAndParams[1] };
         });
     }
@@ -156,9 +156,9 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     varName: innerVarName,
                     withVars: [varName, innerVarName],
                 });
-                [createStr] = createAndParams;
+                createStrs.push(createAndParams[0]);
                 cypherParams = { ...cypherParams, ...createAndParams[1] };
-                createStr += `\nMERGE (${varName})${inStr}${relTypeStr}${outStr}(${innerVarName})`;
+                createStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${innerVarName})`);
             });
         });
     }
@@ -194,9 +194,9 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         matchStr,
         whereStr,
         updateStr,
-        connectStr,
-        disconnectStr,
-        createStr,
+        connectStrs.join("\n"),
+        disconnectStrs.join("\n"),
+        createStrs.join("\n"),
         deleteStr,
         ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
         `RETURN ${varName} ${projStr} AS ${varName}`,

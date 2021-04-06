@@ -234,6 +234,60 @@ RETURN this { .id } AS this
 
 ---
 
+### Update as multiple Connect
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateMovies(
+        where: { id: "1" }
+        connect: {
+            actors: [
+                { where: { name: "Daniel" } }
+                { where: { name: "Darrell" } }
+            ]
+        }
+    ) {
+        movies {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this_connect_actors0:Actor)
+WHERE this_connect_actors0.name = $this_connect_actors0_name
+FOREACH(_ IN CASE this_connect_actors0 WHEN NULL THEN [] ELSE [1] END |
+MERGE (this)<-[:ACTED_IN]-(this_connect_actors0)
+)
+WITH this
+OPTIONAL MATCH (this_connect_actors1:Actor)
+WHERE this_connect_actors1.name = $this_connect_actors1_name
+FOREACH(_ IN CASE this_connect_actors1 WHEN NULL THEN [] ELSE [1] END |
+MERGE (this)<-[:ACTED_IN]-(this_connect_actors1)
+)
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "1",
+    "this_connect_actors0_name": "Daniel",
+    "this_connect_actors1_name": "Darrell"
+}
+```
+
+---
+
 ### Simple Update as Disconnect
 
 **GraphQL input**
@@ -271,6 +325,60 @@ RETURN this { .id } AS this
 {
     "this_id": "1",
     "this_disconnect_actors0_name": "Daniel"
+}
+```
+
+---
+
+### Update as multiple Disconnect
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateMovies(
+        where: { id: "1" }
+        disconnect: {
+            actors: [
+                { where: { name: "Daniel" } }
+                { where: { name: "Darrell" } }
+            ]
+        }
+    ) {
+        movies {
+            id
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
+WHERE this_disconnect_actors0.name = $this_disconnect_actors0_name
+FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
+DELETE this_disconnect_actors0_rel
+)
+WITH this
+OPTIONAL MATCH (this)<-[this_disconnect_actors1_rel:ACTED_IN]-(this_disconnect_actors1:Actor)
+WHERE this_disconnect_actors1.name = $this_disconnect_actors1_name
+FOREACH(_ IN CASE this_disconnect_actors1 WHEN NULL THEN [] ELSE [1] END |
+DELETE this_disconnect_actors1_rel
+)
+RETURN this { .id } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_id": "1",
+    "this_disconnect_actors0_name": "Daniel",
+    "this_disconnect_actors1_name": "Darrell"
 }
 ```
 
@@ -370,6 +478,65 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_mo
   "this_name": "Dan",
   "this_create_movies0_id": "dan_movie_id",
   "this_create_movies0_title": "The Story of Beer"
+}
+```
+
+---
+
+### Update an Actor while creating and connecting to multiple new Movies (via top level)
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateActors(
+        where: { name: "Dan" }
+        create: {
+            movies: [
+                { id: "dan_movie_id", title: "The Story of Beer" }
+                { id: "dan_movie2_id", title: "Forrest Gump" }
+            ]
+        }
+    ) {
+        actors {
+            name
+            movies {
+                id
+                title
+            }
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Actor)
+WHERE this.name = $this_name
+
+CREATE (this_create_movies0:Movie)
+SET this_create_movies0.id = $this_create_movies0_id
+SET this_create_movies0.title = $this_create_movies0_title
+MERGE (this)-[:ACTED_IN]->(this_create_movies0)
+
+CREATE (this_create_movies1:Movie)
+SET this_create_movies1.id = $this_create_movies1_id
+SET this_create_movies1.title = $this_create_movies1_title
+MERGE (this)-[:ACTED_IN]->(this_create_movies1)
+
+RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_movies { .id, .title } ] } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+  "this_name": "Dan",
+  "this_create_movies0_id": "dan_movie_id",
+  "this_create_movies0_title": "The Story of Beer",
+  "this_create_movies1_id": "dan_movie2_id",
+  "this_create_movies1_title": "Forrest Gump"
 }
 ```
 
