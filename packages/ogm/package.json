@@ -26,7 +26,8 @@
         "test:unit": "jest src/**/*.test.ts",
         "test:unit:watch": "test:unit -- --watch",
         "test:int": "jest tests/integration",
-        "test:int:watch": "test:int -- --watch"
+        "test:int:watch": "test:int -- --watch",
+        "conditional-publish": "(node ./scripts/check-version.js && npm publish --access=public) ; exit 0"
     },
     "author": "Neo4j Inc.",
     "dependencies": {
@@ -45,8 +46,10 @@
         "@types/node": "14.0.27",
         "graphql-tag": "2.11.0",
         "jest": "26.2.2",
+        "libnpmsearch": "3.1.0",
         "npm-run-all": "^4.1.5",
         "randomstring": "1.1.5",
+        "semver": "7.3.5",
         "ts-jest": "26.1.4",
         "typescript": "3.9.7"
     }
