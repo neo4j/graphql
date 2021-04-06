@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql-ogm",
-    "version": "1.0.0-alpha.1",
+    "version": "1.0.0-beta.1",
     "description": "GraphQL powered OGM for Neo4j and Javascript applications",
     "keywords": [
         "neo4j",
