@@ -6,10 +6,10 @@ function hashPassword(plainText: string): Promise<string> {
     return new Promise((resolve, reject) => {
         bcrypt.hash(plainText, saltRounds, (err, hash) => {
             if (err) {
-                return reject(err);
+                reject(err);
             }
 
-            return resolve(hash);
+            resolve(hash);
         });
     });
 }

@@ -22,10 +22,10 @@
     ],
     "scripts": {
         "build": "tsc --project src/",
-        "test": "run-s test:unit test:int",
+        "test": "jest",
         "test:unit": "jest src/**/*.test.ts",
-        "test:unit:watch": "test:unit -- --watchAll",
-        "test:int": "jest int",
+        "test:unit:watch": "test:unit -- --watch",
+        "test:int": "jest tests/integration",
         "test:int:watch": "test:int -- --watch"
     },
     "author": "Neo4j Inc.",

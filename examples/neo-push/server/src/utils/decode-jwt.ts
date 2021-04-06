@@ -5,12 +5,12 @@ function decodeJWT(token: string): Promise<{ sub: string }> {
     return new Promise((resolve, reject) => {
         jwt.verify(token, config.JWT_SECRET, (err, decoded) => {
             if (err) {
-                return reject(err);
+                reject(err);
             }
 
             const { sub } = decoded as { sub: string };
 
-            return resolve({ sub });
+            resolve({ sub });
         });
     });
 }
