@@ -1,14 +1,13 @@
-const globalConf = require("../../../jest-global.config");
+const globalConf = require("../../../jest.config.base");
 
 module.exports = {
     ...globalConf,
-    roots: ["<rootDir>/src/", "<rootDir>/tests/"],
-    transform: {
-        "^.+\\.ts$": "ts-jest",
-    },
+    displayName: "neo-push",
+    roots: ["<rootDir>/examples/neo-push/server/src/", "<rootDir>/examples/neo-push/server/tests/"],
+    coverageDirectory: "<rootDir>/examples/neo-push/server/coverage/",
     globals: {
         "ts-jest": {
-            tsconfig: "tests/tsconfig.json",
+            tsconfig: "<rootDir>/examples/neo-push/server/src/tsconfig.json",
         },
     },
 };

@@ -1,6 +1,6 @@
 import { ApolloServer } from "apollo-server-express";
 import { createTestClient } from "apollo-server-testing";
-import { ogm, neoSchema } from "../../src/graphql";
+import { ogm, neoSchema } from "../../src/gql";
 import * as neo4j from "./neo4j";
 import { Context } from "../../src/types";
 

@@ -1,10 +1,16 @@
 {
     "extends": "../../../../tsconfig.base.json",
     "compilerOptions": {
-        "outDir": "./dist",
+        "baseUrl": "./",
+        "outDir": "../dist",
         "paths": {
             "@neo4j/graphql": ["../../../../packages/graphql/src"],
             "@neo4j/graphql-ogm": ["../../../../packages/ogm/src"]
-        }
-    }
+        },
+        "target": "ES2019"
+    },
+    "references": [
+        { "path": "../../../../packages/graphql/src/tsconfig.json" },
+        { "path": "../../../../packages/ogm/src/tsconfig.json" }
+    ]
 }

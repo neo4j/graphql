@@ -1,14 +1,13 @@
-const globalConf = require("../../jest-global.config");
+const globalConf = require("../../jest.config.base");
 
 module.exports = {
     ...globalConf,
-    roots: ["<rootDir>/src/", "<rootDir>/tests/"],
-    transform: {
-        "^.+\\.ts$": "ts-jest",
-    },
+    displayName: "@neo4j/graphql",
+    roots: ["<rootDir>/packages/graphql/src/", "<rootDir>/packages/graphql/tests/"],
+    coverageDirectory: "<rootDir>/packages/graphql/coverage/",
     globals: {
         "ts-jest": {
-            tsConfig: "tests/tsconfig.json",
+            tsconfig: "<rootDir>/packages/graphql/src/tsconfig.json",
         },
     },
 };

@@ -17,5 +17,5 @@
  * limitations under the License.
  */
 
-export { DriverConfig } from "./types";
+export { DriverConfig, GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo, GraphQLSortArg } from "./types";
 export { Neo4jGraphQL, Neo4jGraphQLConstructor } from "./classes";

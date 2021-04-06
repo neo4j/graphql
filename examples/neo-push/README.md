@@ -90,7 +90,7 @@ $ cd graphql && yarn install
 Run Seeder on;
 
 ```
-$ yarn run neo-push-seed
+$ yarn run neo-push:seed
 ```
 
 > Checkout the seeder its using the OGM
