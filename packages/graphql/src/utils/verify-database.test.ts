@@ -18,11 +18,11 @@
  */
 
 import { Driver, Session } from "neo4j-driver";
-import verifyDatabase from "./verify-database";
+import checkNeo4jCompat from "./verify-database";
 import { MIN_NEO4J_VERSION, MIN_APOC_VERSION, REQUIRED_APOC_FUNCTIONS, REQUIRED_APOC_PROCEDURES } from "../constants";
 import { DriverConfig } from "../types";
 
-describe("verifyDatabase", () => {
+describe("checkNeo4jCompat", () => {
     test("should add driver config to session", async () => {
         // @ts-ignore
         const fakeSession: Session = {
@@ -60,7 +60,7 @@ describe("verifyDatabase", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await verifyDatabase({ driver: fakeDriver, driverConfig });
+        await checkNeo4jCompat({ driver: fakeDriver, driverConfig });
     });
 
     test("should throw expected Neo4j version", async () => {
@@ -84,7 +84,7 @@ describe("verifyDatabase", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await expect(verifyDatabase({ driver: fakeDriver })).rejects.toThrow(
+        await expect(checkNeo4jCompat({ driver: fakeDriver })).rejects.toThrow(
             `Expected minimum Neo4j version: '${MIN_NEO4J_VERSION}' received: '${invalidVersion}'`
         );
     });
@@ -110,7 +110,7 @@ describe("verifyDatabase", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await expect(verifyDatabase({ driver: fakeDriver })).rejects.toThrow(
+        await expect(checkNeo4jCompat({ driver: fakeDriver })).rejects.toThrow(
             `Expected minimum APOC version: '${MIN_APOC_VERSION}' received: '${invalidApocVersion}'`
         );
     });
@@ -142,7 +142,7 @@ describe("verifyDatabase", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await expect(verifyDatabase({ driver: fakeDriver })).rejects.toThrow(
+        await expect(checkNeo4jCompat({ driver: fakeDriver })).rejects.toThrow(
             `Missing APOC functions: [ ${REQUIRED_APOC_FUNCTIONS.join(", ")} ]`
         );
     });
@@ -175,7 +175,7 @@ describe("verifyDatabase", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await expect(verifyDatabase({ driver: fakeDriver })).rejects.toThrow(
+        await expect(checkNeo4jCompat({ driver: fakeDriver })).rejects.toThrow(
             `Missing APOC procedures: [ ${REQUIRED_APOC_PROCEDURES.join(", ")} ]`
         );
     });
@@ -208,7 +208,7 @@ describe("verifyDatabase", () => {
             verifyConnectivity: () => undefined,
         };
 
-        expect(await verifyDatabase({ driver: fakeDriver })).toBeUndefined();
+        expect(await checkNeo4jCompat({ driver: fakeDriver })).toBeUndefined();
     });
 
     test("should throw no errors with valid DB (greater versions)", async () => {
@@ -239,6 +239,6 @@ describe("verifyDatabase", () => {
             verifyConnectivity: () => undefined,
         };
 
-        expect(await verifyDatabase({ driver: fakeDriver })).toBeUndefined();
+        expect(await checkNeo4jCompat({ driver: fakeDriver })).toBeUndefined();
     });
 });

@@ -69,10 +69,10 @@ class OGM {
         return found;
     }
 
-    async verifyDatabase(input: { driver?: Driver } = {}): Promise<void> {
+    async checkNeo4jCompat(input: { driver?: Driver } = {}): Promise<void> {
         const driver = input.driver || this.input.driver;
 
-        return this.neoSchema.verifyDatabase({ driver });
+        return this.neoSchema.checkNeo4jCompat({ driver });
     }
 }
 
