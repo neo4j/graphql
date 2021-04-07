@@ -61,7 +61,7 @@ describe("signUp", () => {
         }
     });
 
-    test("should create user and return JWT", async () => {
+    test.skip("should create user and return JWT", async () => {
         const apolloServer = await server();
         const session = driver.session();
 
