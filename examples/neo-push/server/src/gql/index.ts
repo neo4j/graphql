@@ -9,7 +9,7 @@ import * as Post from "./Post";
 import * as Comment from "./Comment";
 import * as config from "../config";
 
-const typeDefs = [User.typeDefs, Blog.typeDefs, Post.typeDefs, Comment.typeDefs];
+export const typeDefs = [User.typeDefs, Blog.typeDefs, Post.typeDefs, Comment.typeDefs];
 
 const resolvers = {
     ...User.resolvers,

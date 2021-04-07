@@ -933,7 +933,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-ogm@1.0.0-beta.1, @neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@1.0.0-alpha.1, @neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
@@ -9668,7 +9668,7 @@ fsevents@^1.2.7:
   resolution: "neo-push-server@workspace:examples/neo-push/server"
   dependencies:
     "@neo4j/graphql": 1.0.0-alpha.6
-    "@neo4j/graphql-ogm": 1.0.0-beta.1
+    "@neo4j/graphql-ogm": 1.0.0-alpha.1
     "@types/bcrypt": 3.0.0
     "@types/debug": 4.1.5
     "@types/dotenv": 8.2.0

@@ -44,7 +44,7 @@ describe("blog-auth", () => {
         req.headers.authorization = `Bearer ${token}`;
 
         try {
-            const apolloServer = await server({ req });
+            const apolloServer = server(driver, { req });
 
             const response = await apolloServer.mutate({
                 mutation,
@@ -87,7 +87,7 @@ describe("blog-auth", () => {
                 CREATE (:Blog {id: "${blogId}"})
             `);
 
-            const apolloServer = await server({ req });
+            const apolloServer = server(driver, { req });
 
             const response = await apolloServer.mutate({
                 mutation,
