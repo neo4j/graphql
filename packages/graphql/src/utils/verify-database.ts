@@ -28,7 +28,7 @@ interface DBInfo {
     procedures: string[];
 }
 
-async function verifyDatabase({ driver, driverConfig }: { driver: Driver; driverConfig?: DriverConfig }) {
+async function checkNeo4jCompat({ driver, driverConfig }: { driver: Driver; driverConfig?: DriverConfig }) {
     await driver.verifyConnectivity();
 
     const sessionParams: {
@@ -89,4 +89,4 @@ async function verifyDatabase({ driver, driverConfig }: { driver: Driver; driver
     }
 }
 
-export default verifyDatabase;
+export default checkNeo4jCompat;
