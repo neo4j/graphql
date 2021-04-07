@@ -25,7 +25,7 @@ import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import type { DriverConfig } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
-import { verifyDatabase } from "../utils";
+import { checkNeo4jCompat } from "../utils";
 import { getJWT } from "../auth/index";
 
 export type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
@@ -117,7 +117,7 @@ class Neo4jGraphQL {
         });
     }
 
-    async verifyDatabase(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
+    async checkNeo4jCompat(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
         const driver = input.driver || this.driver;
         const driverConfig = input.driverConfig || this.driverConfig;
 
@@ -125,7 +125,7 @@ class Neo4jGraphQL {
             throw new Error("neo4j-driver Driver missing");
         }
 
-        return verifyDatabase({ driver, driverConfig });
+        return checkNeo4jCompat({ driver, driverConfig });
     }
 }
 
