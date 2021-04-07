@@ -46,7 +46,7 @@ describe("comment-custom", () => {
                         canDelete
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -62,7 +62,7 @@ describe("comment-custom", () => {
                     CREATE (p)-[:HAS_COMMENT]->(:Comment {id: "${commentId}"})<-[:COMMENTED]-(u)
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,
@@ -101,7 +101,7 @@ describe("comment-custom", () => {
                         canDelete
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -117,7 +117,7 @@ describe("comment-custom", () => {
                     CREATE (p)-[:HAS_COMMENT]->(:Comment {id: "${commentId}"})
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,
@@ -156,7 +156,7 @@ describe("comment-custom", () => {
                         canDelete
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -171,7 +171,7 @@ describe("comment-custom", () => {
                     CREATE (p)-[:HAS_COMMENT]->(:Comment {id: "${commentId}"})
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,
@@ -214,7 +214,7 @@ describe("comment-custom", () => {
                         canDelete
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -229,7 +229,7 @@ describe("comment-custom", () => {
                     CREATE (p)-[:HAS_COMMENT]->(:Comment {id: "${commentId}"})
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,

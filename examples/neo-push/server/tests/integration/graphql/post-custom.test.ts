@@ -42,7 +42,7 @@ describe("post-custom", () => {
                         canEdit
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -58,7 +58,7 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,
@@ -93,7 +93,7 @@ describe("post-custom", () => {
                         canEdit
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -109,7 +109,7 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,
@@ -144,7 +144,7 @@ describe("post-custom", () => {
                         canEdit
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -159,7 +159,7 @@ describe("post-custom", () => {
                            (:Post {id: "${postId}"})<-[:HAS_POST]-(:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,
@@ -198,7 +198,7 @@ describe("post-custom", () => {
                         canEdit
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -214,7 +214,7 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,
@@ -251,7 +251,7 @@ describe("post-custom", () => {
                         canDelete
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -267,7 +267,7 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,
@@ -302,7 +302,7 @@ describe("post-custom", () => {
                         canDelete
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -318,7 +318,7 @@ describe("post-custom", () => {
                     <-[:HAS_POST]-(:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,
@@ -357,7 +357,7 @@ describe("post-custom", () => {
                         canDelete
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -373,7 +373,7 @@ describe("post-custom", () => {
                     -[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,
