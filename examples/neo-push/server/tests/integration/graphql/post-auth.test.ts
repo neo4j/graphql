@@ -48,7 +48,7 @@ describe("post-auth", () => {
         req.headers.authorization = `Bearer ${token}`;
 
         try {
-            const apolloServer = await server({ req });
+            const apolloServer = server(driver, { req });
 
             const response = await apolloServer.mutate({
                 mutation,
@@ -90,7 +90,7 @@ describe("post-auth", () => {
                 CREATE (:Post {id: "${postId}"})
             `);
 
-            const apolloServer = await server({ req });
+            const apolloServer = server(driver, { req });
 
             const response = await apolloServer.mutate({
                 mutation,

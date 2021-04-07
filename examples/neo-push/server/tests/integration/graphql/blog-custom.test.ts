@@ -38,7 +38,7 @@ describe("blog-custom", () => {
                         isCreator
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -52,7 +52,7 @@ describe("blog-custom", () => {
                     CREATE (u:User {id: "${userId}"})-[:HAS_BLOG]->(:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,
@@ -83,7 +83,7 @@ describe("blog-custom", () => {
                         isCreator
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -98,7 +98,7 @@ describe("blog-custom", () => {
                     CREATE (:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,
@@ -131,7 +131,7 @@ describe("blog-custom", () => {
                         isAuthor
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -145,7 +145,7 @@ describe("blog-custom", () => {
                     CREATE (u:User {id: "${userId}"})-[:CAN_POST]->(:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,
@@ -176,7 +176,7 @@ describe("blog-custom", () => {
                         isAuthor
                     }
                 }
-    
+
             `;
 
             const token = jsonwebtoken.sign({ sub: userId }, process.env.JWT_SECRET as string);
@@ -191,7 +191,7 @@ describe("blog-custom", () => {
                     CREATE (:Blog {id: "${blogId}"})
                 `);
 
-                const apolloServer = await server({ req });
+                const apolloServer = server(driver, { req });
 
                 const response = await apolloServer.mutate({
                     mutation,
