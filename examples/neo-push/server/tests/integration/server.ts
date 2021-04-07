@@ -1,11 +1,14 @@
 import { ApolloServer } from "apollo-server-express";
 import { createTestClient } from "apollo-server-testing";
-import { ogm, neoSchema } from "../../src/gql";
-import * as neo4j from "./neo4j";
+import { OGM } from "@neo4j/graphql-ogm";
+import { neoSchema, typeDefs } from "../../src/gql";
 import { Context } from "../../src/types";
 
-async function server(context = {}) {
-    const driver = await neo4j.connect();
+function server(driver, context = {}) {
+    const ogm = new OGM({
+        typeDefs,
+        driver,
+    });
 
     const apolloServer = new ApolloServer({
         schema: neoSchema.schema,

@@ -51,7 +51,7 @@ describe("user-auth", () => {
                 CREATE (:User {id: "${anotherUserId}"})
             `);
 
-            const apolloServer = await server({ req });
+            const apolloServer = server(driver, { req });
 
             const response = await apolloServer.mutate({
                 mutation,

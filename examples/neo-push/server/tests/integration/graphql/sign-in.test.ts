@@ -18,7 +18,7 @@ describe("signIn", () => {
     });
 
     test("should throw user not found", async () => {
-        const apolloServer = await server();
+        const apolloServer = server(driver);
 
         const mutation = `
             mutation signIn($email: String! $password: String!){
@@ -46,7 +46,7 @@ describe("signIn", () => {
     });
 
     test("should throw Unauthorized on invalid password", async () => {
-        const apolloServer = await server();
+        const apolloServer = server(driver);
         const session = driver.session();
 
         const mutation = `
@@ -90,7 +90,7 @@ describe("signIn", () => {
     });
 
     test("should sign user in and return JWT", async () => {
-        const apolloServer = await server();
+        const apolloServer = server(driver);
         const session = driver.session();
 
         const mutation = `

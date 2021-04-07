@@ -74,7 +74,7 @@ describe("workflow", () => {
                 CREATE (:User {id: "${user.id}"})
             `);
 
-            const apolloServer = await server({ req });
+            const apolloServer = server(driver, { req });
 
             const mutate = async (str) => {
                 const response = await apolloServer.mutate({
@@ -94,7 +94,7 @@ describe("workflow", () => {
                     mutation {
                         createBlogs(
                             input: [
-                                { 
+                                {
                                     name: "${blog.initialName}",
                                     creator: {
                                         connect: {
@@ -134,7 +134,7 @@ describe("workflow", () => {
                     mutation {
                         createPosts(
                             input: [
-                                { 
+                                {
                                     content: "cool post"
                                     title: "${post.initialTitle}"
                                     author: {
@@ -180,7 +180,7 @@ describe("workflow", () => {
                     mutation {
                         createComments(
                             input: [
-                                { 
+                                {
                                     content: "${comment.initialContent}",
                                     author: {
                                         connect: {
@@ -222,9 +222,9 @@ describe("workflow", () => {
             const deleted = await mutate(gql`
                 mutation {
                     deleteBlogs(
-                        where: { id: "${blog.id}" }, 
-                        delete: { 
-                            posts: { 
+                        where: { id: "${blog.id}" },
+                        delete: {
+                            posts: {
                                 where: {},
                                 delete: {
                                     comments: {
