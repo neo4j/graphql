@@ -67,7 +67,7 @@ describe("OGM", () => {
             });
 
             try {
-                await ogm.verifyDatabase();
+                await ogm.checkNeo4jCompat();
 
                 await session.run(`
                     CREATE (:Movie {id: "${id}"})
