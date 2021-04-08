@@ -77,7 +77,6 @@ input UserWhere {
   id_CONTAINS: ID
   id_ENDS_WITH: ID
   id_IN: [ID]
-  id_MATCHES: String
   id_NOT: ID
   id_NOT_CONTAINS: ID
   id_NOT_ENDS_WITH: ID
@@ -88,7 +87,6 @@ input UserWhere {
   name_CONTAINS: String
   name_ENDS_WITH: String
   name_IN: [String]
-  name_MATCHES: String
   name_NOT: String
   name_NOT_CONTAINS: String
   name_NOT_ENDS_WITH: String

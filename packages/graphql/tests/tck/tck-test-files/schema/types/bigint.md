@@ -61,7 +61,6 @@ input FileWhere {
    name_CONTAINS: String
    name_ENDS_WITH: String
    name_IN: [String]
-   name_MATCHES: String
    name_NOT: String
    name_NOT_CONTAINS: String
    name_NOT_ENDS_WITH: String

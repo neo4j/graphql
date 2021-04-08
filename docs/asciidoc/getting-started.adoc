@@ -3,7 +3,7 @@
 
 This section will help users get started with Neo4j GraphQL. Before starting we recommend readers have an understanding of the following **prerequisites;**
 
-1. https://developer.mozilla.org/en-US/docs/Web/JavaScript[Javascript]
+1. https://developer.mozilla.org/en-US/docs/Web/JavaScript[JavaScript]
 2. https://nodejs.org/en/[Node.js]
 3. https://graphql.org/[GraphQL]
 4. https://neo4j.com/[Neo4j]
@@ -15,20 +15,32 @@ This section will help users get started with Neo4j GraphQL. Before starting we 
 $ npm install @neo4j/graphql
 ----
 
-`graphql` and `neo4j-driver` are are **peerDependency(s)**.
+`graphql` and `neo4j-driver` are **peerDependency(s)**, so unless the project already has them installed they need to be installed as well.
 
 == Requiring
 
-The Library is transpiled, from our TypeScript source, into https://nodejs.org/docs/latest/api/modules.html#modules_modules_commonjs_modules[Common JS] - This means you can use the `require` syntax to access the library's exported members;
+The Library is transpiled, from our TypeScript source, into https://nodejs.org/docs/latest/api/modules.html#modules_modules_commonjs_modules[Common JS] - This means you can use the `require` or the `import` syntax to access the library's exported members, depending on your environment and tooling setup;
 
 [source, javascript]
 ----
 const { Neo4jGraphQL } = require("@neo4j/graphql");
 ----
 
+or
+
+[source, javascript]
+----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+----
+
 == GraphQL API Quick Start
 
 This section demonstrates using https://www.apollographql.com/docs/apollo-server/[Apollo Server] alongside Neo4jGraphQL to spin up a GraphQL API.
+
+[source, bash]
+----
+$ npm install @neo4j/graphql graphql neo4j-driver apollo-server
+----
 
 [source, javascript]
 ----

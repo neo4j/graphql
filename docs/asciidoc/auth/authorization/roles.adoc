@@ -1,7 +1,7 @@
 [[auth-authorization-roles]]
 = Roles
 
-Use the roles property to specify the allowed roles for an operation. Use ENV `JWT_ROLES_OBJECT_PATH` to specify a object path for JWT roles otherwise defaults to `jwt.roles`
+Use the roles property to specify the allowed roles for an operation. Use ENV `NEO4J_GRAPHQL_JWT_ROLES_OBJECT_PATH` to specify a object path for JWT roles otherwise defaults to `jwt.roles`
 
 [source, graphql]
 ----
