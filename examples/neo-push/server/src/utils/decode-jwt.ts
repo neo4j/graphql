@@ -3,7 +3,7 @@ import * as config from "../config";
 
 function decodeJWT(token: string): Promise<{ sub: string }> {
     return new Promise((resolve, reject) => {
-        jwt.verify(token, config.NEO4j_GRAPHQL_JWT_SECRET, (err, decoded) => {
+        jwt.verify(token, config.NEO4J_GRAPHQL_JWT_SECRET, (err, decoded) => {
             if (err) {
                 reject(err);
             }

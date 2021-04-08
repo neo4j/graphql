@@ -11,12 +11,12 @@ describe("comment-custom", () => {
     let driver: Driver;
 
     beforeAll(async () => {
-        process.env.NEO4j_GRAPHQL_JWT_SECRET = "supersecret";
+        process.env.NEO4J_GRAPHQL_JWT_SECRET = "supersecret";
         driver = await neo4j.connect();
     });
 
     afterAll(async () => {
-        delete process.env.NEO4j_GRAPHQL_JWT_SECRET;
+        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
         await driver.close();
     });
 
@@ -49,7 +49,7 @@ describe("comment-custom", () => {
 
             `;
 
-            const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
@@ -104,7 +104,7 @@ describe("comment-custom", () => {
 
             `;
 
-            const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
@@ -159,7 +159,7 @@ describe("comment-custom", () => {
 
             `;
 
-            const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
@@ -217,7 +217,7 @@ describe("comment-custom", () => {
 
             `;
 
-            const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);

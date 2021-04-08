@@ -33,8 +33,8 @@ function createAuthParam({ context }: { context: Context }) {
         return param;
     }
 
-    if (environment.NEO4j_GRAPHQL_JWT_ROLES_OBJECT_PATH) {
-        param.roles = dotProp.get(jwt, environment.NEO4j_GRAPHQL_JWT_ROLES_OBJECT_PATH);
+    if (environment.NEO4J_GRAPHQL_JWT_ROLES_OBJECT_PATH) {
+        param.roles = dotProp.get(jwt, environment.NEO4J_GRAPHQL_JWT_ROLES_OBJECT_PATH);
     } else if (jwt.roles) {
         param.roles = jwt.roles;
     }

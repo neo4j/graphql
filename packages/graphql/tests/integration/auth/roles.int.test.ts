@@ -31,12 +31,12 @@ describe("auth/roles", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        process.env.NEO4j_GRAPHQL_JWT_SECRET = "secret";
+        process.env.NEO4J_GRAPHQL_JWT_SECRET = "secret";
     });
 
     afterAll(async () => {
         await driver.close();
-        delete process.env.NEO4j_GRAPHQL_JWT_SECRET;
+        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
     });
 
     describe("read", () => {
@@ -63,7 +63,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 const socket = new Socket({ readable: true });
@@ -102,7 +102,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 const socket = new Socket({ readable: true });
@@ -148,7 +148,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 const socket = new Socket({ readable: true });
@@ -192,7 +192,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 const socket = new Socket({ readable: true });
@@ -238,7 +238,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 const socket = new Socket({ readable: true });
@@ -282,7 +282,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 const socket = new Socket({ readable: true });
@@ -353,7 +353,7 @@ describe("auth/roles", () => {
             `;
 
             // missing super-admin
-            const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 await session.run(`
@@ -444,7 +444,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [""] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: [""] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 await session.run(`
@@ -520,7 +520,7 @@ describe("auth/roles", () => {
             `;
 
             // missing super-admin
-            const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 await session.run(`
@@ -611,7 +611,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [""] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: [""] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 await session.run(`
@@ -659,7 +659,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 const socket = new Socket({ readable: true });
@@ -715,7 +715,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 await session.run(`
@@ -764,7 +764,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 const socket = new Socket({ readable: true });
@@ -807,7 +807,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 const socket = new Socket({ readable: true });
@@ -854,7 +854,7 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
             try {
                 const socket = new Socket({ readable: true });

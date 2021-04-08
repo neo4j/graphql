@@ -32,12 +32,12 @@ describe("Custom Resolvers", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        process.env.NEO4j_GRAPHQL_JWT_SECRET = "secret";
+        process.env.NEO4J_GRAPHQL_JWT_SECRET = "secret";
     });
 
     afterAll(async () => {
         await driver.close();
-        delete process.env.NEO4j_GRAPHQL_JWT_SECRET;
+        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
     });
 
     test("should define a custom field resolver and resolve it", async () => {
@@ -455,7 +455,7 @@ describe("Custom Resolvers", () => {
                         charset: "alphabetic",
                     });
 
-                    const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+                    const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
                     const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -503,7 +503,7 @@ describe("Custom Resolvers", () => {
                         charset: "alphabetic",
                     });
 
-                    const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+                    const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
                     const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -550,7 +550,7 @@ describe("Custom Resolvers", () => {
                     charset: "alphabetic",
                 });
 
-                const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4j_GRAPHQL_JWT_SECRET as string);
+                const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
 
                 const neoSchema = new Neo4jGraphQL({ typeDefs });
 

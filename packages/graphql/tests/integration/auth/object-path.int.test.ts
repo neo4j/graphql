@@ -31,12 +31,12 @@ describe("auth/object-path", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        process.env.NEO4j_GRAPHQL_JWT_SECRET = "secret";
+        process.env.NEO4J_GRAPHQL_JWT_SECRET = "secret";
     });
 
     afterAll(async () => {
         await driver.close();
-        delete process.env.NEO4j_GRAPHQL_JWT_SECRET;
+        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
     });
 
     test("should use object path with allow", async () => {
@@ -73,7 +73,7 @@ describe("auth/object-path", () => {
                     },
                 },
             },
-            process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+            process.env.NEO4J_GRAPHQL_JWT_SECRET as string
         );
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -138,7 +138,7 @@ describe("auth/object-path", () => {
             {
                 roles: [],
             },
-            process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+            process.env.NEO4J_GRAPHQL_JWT_SECRET as string
         );
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -168,7 +168,7 @@ describe("auth/object-path", () => {
     });
 
     test("should use object path with roles", async () => {
-        process.env.NEO4j_GRAPHQL_JWT_ROLES_OBJECT_PATH =
+        process.env.NEO4J_GRAPHQL_JWT_ROLES_OBJECT_PATH =
             "https://github\\.com/claims.https://github\\.com/claims/roles";
 
         const session = driver.session({ defaultAccessMode: "WRITE" });
@@ -195,7 +195,7 @@ describe("auth/object-path", () => {
 
         const token = jsonwebtoken.sign(
             { "https://github.com/claims": { "https://github.com/claims/roles": ["admin"] } },
-            process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+            process.env.NEO4J_GRAPHQL_JWT_SECRET as string
         );
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -221,7 +221,7 @@ describe("auth/object-path", () => {
             expect(user).toEqual({ id: userId });
         } finally {
             await session.close();
-            delete process.env.NEO4j_GRAPHQL_JWT_ROLES_OBJECT_PATH;
+            delete process.env.NEO4J_GRAPHQL_JWT_ROLES_OBJECT_PATH;
         }
     });
 });

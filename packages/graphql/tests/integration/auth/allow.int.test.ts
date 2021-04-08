@@ -31,12 +31,12 @@ describe("auth/allow", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        process.env.NEO4j_GRAPHQL_JWT_SECRET = "secret";
+        process.env.NEO4J_GRAPHQL_JWT_SECRET = "secret";
     });
 
     afterAll(async () => {
         await driver.close();
-        delete process.env.NEO4j_GRAPHQL_JWT_SECRET;
+        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
     });
 
     describe("read", () => {
@@ -68,7 +68,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -124,7 +124,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -191,7 +191,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -260,7 +260,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -343,7 +343,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -402,7 +402,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -461,7 +461,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -530,7 +530,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -601,7 +601,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -659,7 +659,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -733,7 +733,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -804,7 +804,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -894,7 +894,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -967,7 +967,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -1058,7 +1058,7 @@ describe("auth/allow", () => {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4j_GRAPHQL_JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });

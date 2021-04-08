@@ -48,11 +48,11 @@ import createAuthParam from "../../src/translate/create-auth-param";
 const TCK_DIR = path.join(__dirname, "tck-test-files");
 
 beforeAll(() => {
-    process.env.NEO4j_GRAPHQL_JWT_SECRET = "secret";
+    process.env.NEO4J_GRAPHQL_JWT_SECRET = "secret";
 });
 
 afterAll(() => {
-    delete process.env.NEO4j_GRAPHQL_JWT_SECRET;
+    delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
 });
 
 function generateCustomScalar(name: string): GraphQLScalarType {
@@ -94,7 +94,7 @@ describe("TCK Generated tests", () => {
                     if (!cypherParams.jwt) {
                         const socket = new Socket({ readable: true });
                         const req = new IncomingMessage(socket);
-                        const token = jsonwebtoken.sign(jwt, process.env.NEO4j_GRAPHQL_JWT_SECRET as string, {
+                        const token = jsonwebtoken.sign(jwt, process.env.NEO4J_GRAPHQL_JWT_SECRET as string, {
                             noTimestamp: true,
                         });
                         req.headers.authorization = `Bearer ${token}`;
