@@ -1,4 +1,4 @@
-# Neo4j GraphQL
+# Neo4j GraphQL Library
 
 💡 Welcome to the Monorepo for [Neo4j](https://neo4j.com/) + [GraphQL](https://graphql.org/).
 
