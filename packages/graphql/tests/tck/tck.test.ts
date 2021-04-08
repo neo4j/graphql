@@ -39,7 +39,13 @@ import { SchemaDirectiveVisitor, printSchemaWithDirectives } from "@graphql-tool
 import { translateCreate, translateDelete, translateRead, translateUpdate } from "../../src/translate";
 import { Context } from "../../src/types";
 import { Neo4jGraphQL } from "../../src";
-import { generateTestCasesFromMd, Test, TestCase } from "./utils/generate-test-cases-from-md.utils";
+import {
+    generateTestCasesFromMd,
+    setTestEnvVars,
+    Test,
+    TestCase,
+    unsetTestEnvVars,
+} from "./utils/generate-test-cases-from-md.utils";
 import { trimmer } from "../../src/utils";
 import * as Scalars from "../../src/schema/scalars";
 import { Node } from "../../src/classes";
@@ -74,10 +80,12 @@ class CustomDirective extends SchemaDirectiveVisitor {
 describe("TCK Generated tests", () => {
     const testCases: TestCase[] = generateTestCasesFromMd(TCK_DIR);
 
-    testCases.forEach(({ schema, tests, file, kind }) => {
+    testCases.forEach(({ schema, tests, file, kind, envVars }) => {
         describe(`${file}`, () => {
+            setTestEnvVars(envVars);
             if (kind === "cypher") {
                 const document = parse(schema as string);
+
                 // @ts-ignore
                 const neoSchema = new Neo4jGraphQL({ typeDefs: schema as string, driver: {} });
 
@@ -324,6 +332,7 @@ describe("TCK Generated tests", () => {
                     );
                 });
             }
+            unsetTestEnvVars(envVars);
         });
     });
 });

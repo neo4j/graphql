@@ -40,6 +40,7 @@ export type TestCase = {
     schema?: string;
     tests: Test[];
     file: string;
+    envVars?: string;
 };
 
 function captureOrEmptyString(contents: string, re: RegExp): string {
@@ -58,6 +59,7 @@ const cypherParamsRe = /```cypher-params(?<capture>(.|\s)*?)```/;
 const typeDefsInputRe = /```typedefs-input(?<capture>(.|\s)*?)```/;
 const schemaOutputRe = /```schema-output(?<capture>(.|\s)*?)```/;
 const jwtRe = /```jwt(?<capture>(.|\s)*?)```/;
+const envVarsRe = /```env(?<capture>(.|\s)*?)```/;
 
 function extractTests(contents: string, kind: string): Test[] {
     // Strip head of file
@@ -117,15 +119,17 @@ function extractSchema(contents: string): string {
 function generateTests(filePath, kind: string): TestCase {
     const data = fs.readFileSync(filePath, { encoding: "utf8" });
     const file = path.basename(filePath);
+    const dataStr = data.toString();
 
     const out: TestCase = {
         kind,
-        tests: extractTests(data.toString(), kind),
+        tests: extractTests(dataStr, kind),
         file: `${file} (${kind})`,
     };
 
     if (kind === "cypher") {
-        out.schema = extractSchema(data.toString());
+        out.schema = extractSchema(dataStr);
+        out.envVars = captureOrEmptyString(dataStr, envVarsRe);
     }
 
     return out;
@@ -145,4 +149,22 @@ export function generateTestCasesFromMd(dir: string, kind = ""): TestCase[] {
     }, []);
 
     return files;
+}
+
+export function setTestEnvVars(envVars: string | undefined): void {
+    if (envVars) {
+        envVars.split(/\n/g).forEach((v: string) => {
+            const [name, val] = v.split("=");
+            process.env[name] = val;
+        });
+    }
+}
+
+export function unsetTestEnvVars(envVars: string | undefined): void {
+    if (envVars) {
+        envVars.split(/\n/g).forEach((v: string) => {
+            const [name] = v.split("=");
+            delete process.env[name];
+        });
+    }
 }

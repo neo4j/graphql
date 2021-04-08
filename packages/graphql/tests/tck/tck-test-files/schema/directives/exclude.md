@@ -47,7 +47,6 @@ input ActorWhere {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
-  name_MATCHES: String
 }
 
 type DeleteInfo {
@@ -99,7 +98,6 @@ input MovieWhere {
   title_NOT_STARTS_WITH: String
   title_ENDS_WITH: String
   title_NOT_ENDS_WITH: String
-  title_MATCHES: String
 }
 
 type CreateMoviesMutationResponse {
@@ -180,7 +178,6 @@ input ActorWhere {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
-  name_MATCHES: String
 }
 
 type DeleteInfo {
@@ -277,7 +274,6 @@ input MovieWhere {
   title_NOT_STARTS_WITH: String
   title_ENDS_WITH: String
   title_NOT_ENDS_WITH: String
-  title_MATCHES: String
 }
 
 type CreateMoviesMutationResponse {
@@ -375,7 +371,6 @@ input MovieWhere {
   title_NOT_STARTS_WITH: String
   title_ENDS_WITH: String
   title_NOT_ENDS_WITH: String
-  title_MATCHES: String
 }
 
 type CreateMoviesMutationResponse {
@@ -470,7 +465,6 @@ input ActorWhere {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
-  name_MATCHES: String
 }
 
 type DeleteInfo {
@@ -558,7 +552,6 @@ input MovieWhere {
   title_NOT_STARTS_WITH: String
   title_ENDS_WITH: String
   title_NOT_ENDS_WITH: String
-  title_MATCHES: String
 }
 
 type CreateMoviesMutationResponse {
@@ -649,7 +642,6 @@ input ActorWhere {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
-  name_MATCHES: String
 }
 
 type DeleteInfo {

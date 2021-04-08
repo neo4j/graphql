@@ -14,6 +14,10 @@ type User {
 }
 ```
 
+```env
+NEO4J_GRAPHQL_ENABLE_REGEX=1
+```
+
 ---
 
 ### Simple

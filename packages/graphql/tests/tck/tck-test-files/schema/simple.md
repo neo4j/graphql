@@ -72,7 +72,6 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
-  id_MATCHES: String
   actorCount: Int
   actorCount_IN: [Int]
   actorCount_NOT: Int
