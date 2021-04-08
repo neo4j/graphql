@@ -120,7 +120,6 @@ input MovieWhere {
   id_NOT: ID
   id_IN: [ID]
   id_NOT_IN: [ID]
-  id_MATCHES: String
   id_CONTAINS: ID
   id_NOT_CONTAINS: ID
   id_STARTS_WITH: ID
@@ -135,7 +134,6 @@ input MovieWhere {
   name_CONTAINS: String
   name_ENDS_WITH: String
   name_IN: [String]
-  name_MATCHES: String
   name_NOT: String
   name_NOT_CONTAINS: String
   name_NOT_ENDS_WITH: String

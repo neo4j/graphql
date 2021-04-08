@@ -299,7 +299,7 @@ function makeAugmentedSchema({
                     }
 
                     if (["String", "ID"].includes(f.typeMeta.name)) {
-                        if (!environment.NEO4J_GRAPHQL_DISABLE_REGEX) {
+                        if (environment.NEO4J_GRAPHQL_ENABLE_REGEX) {
                             res[`${f.fieldName}_MATCHES`] = "String";
                         }
 
