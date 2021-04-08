@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql",
-    "version": "1.0.0-alpha.6",
+    "version": "1.0.0-beta.1",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
@@ -9,9 +9,9 @@
     ],
     "license": "Apache-2.0",
     "bugs": {
-        "url": "https://github.com/neo4j/graphql-tracker-temp/issues"
+        "url": "https://github.com/neo4j/graphql/issues"
     },
-    "homepage": "https://github.com/neo4j/graphql-tracker-temp/blob/master/README.md",
+    "homepage": "https://github.com/neo4j/graphql/blob/master/README.md",
     "exports": "./dist/index.js",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
