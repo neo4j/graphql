@@ -16,13 +16,13 @@ content-type: application/json
 |===
 |Variable | Usage
 
-|`JWT_SECRET`
+|`NEO4j_GRAPHQL_JWT_SECRET`
 | Specify JWT secret
 
-|`JWT_NO_VERIFY`
+|`NEO4j_GRAPHQL_JWT_NO_VERIFY`
 | Disable the verification of the JW
 
-|`JWT_ROLES_OBJECT_PATH`
+|`NEO4j_GRAPHQL_JWT_ROLES_OBJECT_PATH`
 | Specify where on the JWT the roles key is
 |===
 
@@ -114,7 +114,7 @@ Specify the path in the environment;
 
 [source, bash]
 ----
-$ JWT_ROLES_OBJECT_PATH="https://auth0.mysite.com/claims\\.https://auth0.mysite.com/claims/roles" node server
+$ NEO4j_GRAPHQL_JWT_ROLES_OBJECT_PATH="https://auth0.mysite.com/claims\\.https://auth0.mysite.com/claims/roles" node server
 ----
 
 == Auth Value Plucking

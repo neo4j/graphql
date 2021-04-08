@@ -41,10 +41,10 @@ function getJWT(context: any): any {
     }
 
     try {
-        if (!environment.JWT_SECRET && environment.JWT_NO_VERIFY) {
+        if (!environment.NEO4j_GRAPHQL_JWT_SECRET && environment.NEO4j_GRAPHQL_JWT_NO_VERIFY) {
             result = jsonwebtoken.decode(token);
         } else {
-            result = jsonwebtoken.verify(token, environment.JWT_SECRET as string, {
+            result = jsonwebtoken.verify(token, environment.NEO4j_GRAPHQL_JWT_SECRET as string, {
                 algorithms: ["HS256", "RS256"],
             });
         }

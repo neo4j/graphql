@@ -21,21 +21,21 @@
     https://stackoverflow.com/questions/45194598/using-process-env-in-typescript
     https://dev.to/isthatcentered/typing-process-env-and-dealing-with-nodeenv-3ilm
     If you just do;
-        exports const JWT_ROLES_OBJECT_PATH = process.env.JWT_ROLES_OBJECT_PATH;
+        exports const NEO4j_GRAPHQL_JWT_ROLES_OBJECT_PATH = process.env.NEO4j_GRAPHQL_JWT_ROLES_OBJECT_PATH;
     the const will be undefined.
 */
 const environment = {
-    get JWT_SECRET() {
-        return process.env.JWT_SECRET;
+    get NEO4j_GRAPHQL_JWT_SECRET() {
+        return process.env.NEO4j_GRAPHQL_JWT_SECRET;
     },
-    get JWT_NO_VERIFY() {
-        return Boolean(process.env.JWT_NO_VERIFY || false);
+    get NEO4j_GRAPHQL_JWT_NO_VERIFY() {
+        return Boolean(process.env.NEO4j_GRAPHQL_JWT_NO_VERIFY || false);
     },
     get NEO4J_GRAPHQL_DISABLE_REGEX() {
         return Boolean(process.env.NEO4J_GRAPHQL_DISABLE_REGEX || false);
     },
-    get JWT_ROLES_OBJECT_PATH() {
-        return process.env.JWT_ROLES_OBJECT_PATH;
+    get NEO4j_GRAPHQL_JWT_ROLES_OBJECT_PATH() {
+        return process.env.NEO4j_GRAPHQL_JWT_ROLES_OBJECT_PATH;
     },
     get NPM_PACKAGE_VERSION() {
         return process.env.NPM_PACKAGE_VERSION as string;

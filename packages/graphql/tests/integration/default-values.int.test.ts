@@ -30,12 +30,12 @@ describe("Default values", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        process.env.JWT_SECRET = "secret";
+        process.env.NEO4j_GRAPHQL_JWT_SECRET = "secret";
     });
 
     afterAll(async () => {
         await driver.close();
-        delete process.env.JWT_SECRET;
+        delete process.env.NEO4j_GRAPHQL_JWT_SECRET;
     });
 
     test("should allow default value on custom @cypher node field", async () => {
