@@ -30,10 +30,12 @@ describe("Advanced Filtering", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
+        process.env.NEO4J_GRAPHQL_ENABLE_REGEX = "true";
     });
 
     afterAll(async () => {
         await driver.close();
+        delete process.env.NEO4J_GRAPHQL_ENABLE_REGEX;
     });
 
     describe("String/ID Filtering", () => {
