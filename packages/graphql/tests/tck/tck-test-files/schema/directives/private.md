@@ -61,7 +61,6 @@ input UserWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
-  id_MATCHES: String
   OR: [UserWhere!]
   AND: [UserWhere!]
 }

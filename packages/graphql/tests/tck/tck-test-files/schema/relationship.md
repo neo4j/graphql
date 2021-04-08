@@ -65,7 +65,6 @@ input ActorWhere {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
-  name_MATCHES: String
   OR: [ActorWhere!]
   AND: [ActorWhere!]
 }
@@ -120,7 +119,6 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
-  id_MATCHES: String
   OR: [MovieWhere!]
   AND: [MovieWhere!]
   actors: ActorWhere
@@ -303,7 +301,6 @@ input ActorWhere {
   name_NOT_STARTS_WITH: String
   name_ENDS_WITH: String
   name_NOT_ENDS_WITH: String
-  name_MATCHES: String
   movies: MovieWhere
   movies_NOT: MovieWhere
 }
@@ -417,7 +414,6 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
-  id_MATCHES: String
   actors: ActorWhere
   actors_NOT: ActorWhere
 }
