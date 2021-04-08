@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+    neo4j:
+        image: neo4j
+        ports:
+            - 7474:7474
+            - 7687:7687
+        environment:
+            - NEO4J_AUTH=neo4j/test
+            - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+        volumes:
+            - $HOME/neo4j/data:/data
+            - $HOME/neo4j/logs:/logs
+            - $HOME/neo4j/import:/var/lib/neo4j/import
+            - $HOME/neo4j/plugins:/plugins
+        healthcheck:
+            test: wget http://localhost:7474/browser -O -
+            interval: 1s
+            timeout: 1s
+            retries: 25
+
+    test:
+        build:
+            context: .
+            dockerfile: Dockerfile.test
+        depends_on:
+            neo4j:
+                condition: service_healthy
+        environment:
+            - NEO_USER=neo4j
+            - NEO_PASSWORD=test
+            - NEO_URL=bolt://host.docker.internal:7687/neo4j

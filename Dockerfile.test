@@ -1,0 +1,20 @@
+FROM node:14.16
+
+WORKDIR /app
+
+RUN npm install -g --force yarn
+
+COPY ./package.json ./package.json
+
+COPY ./ ./
+
+WORKDIR /app/examples/neo-push/server
+
+# Invalid ELF header, 
+# Ensures we install bcrypt based on this machine
+RUN yarn add bcrypt
+
+WORKDIR /app
+RUN yarn install
+
+CMD ["yarn", "test"]

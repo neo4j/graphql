@@ -76,6 +76,26 @@ $ yarn
 
 This library uses eslint with AirBnb style. Please use either use a IDE or format your code before submitting a PR. The recommend setup would be VSCode and Prettier.
 
+### Testing
+
+You will need a running neo4j instance unless your using Docker.
+
+#### Local Neo4j
+
+From the root run
+
+```
+cross-env NEO_USER=YOUR_USER NEO_PASSWORD_YOUR_PASSWORD NEO_URL=YOUR_URL yarn run test
+```
+
+#### Docker 🐋
+
+From the root run
+
+```
+docker-compose -f ./docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from test
+```
+
 ## Further reading
 
 If you want to find out more about how you can contribute, head over to our website for [more information](http://neo4j.com/developer/contributing-code/).
