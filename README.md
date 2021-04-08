@@ -6,7 +6,7 @@
 
 ## Links
 
-1. [Documentation](./docs/asciidoc/index.adoc)
+1. [Documentation](https://neo4j.com/docs/graphql-manual/current/)
 2. [Discord](https://discord.gg/neo4j)
 3. [Examples](./examples)
 
