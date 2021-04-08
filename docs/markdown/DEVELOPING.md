@@ -62,6 +62,8 @@ Tests are run using Jest, which has been configured to allow for execution of te
 yarn test
 ```
 
+> In order to run all of the tests, you will need to have a local instance of Neo4j running! We highly recommend [Neo4j Desktop](https://neo4j.com/download/) to easily get up and running with a local Neo4j instance.
+
 The above command can additionally be run from `packages/graphql`, `packages/ogm`, or any directory where there is a `jest.config.js` file!
 
 Additionally, for projects which have the appropriate Yarn scripts setup, you can run individual test suites. For instance, to run the TCK test suite of `@neo4j/graphql`, run the following from `packages/graphql`:
