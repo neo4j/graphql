@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/neo4j/graphql/issues"
     },
-    "homepage": "https://github.com/neo4j/graphql/blob/master/README.md",
+    "homepage": "https://github.com/neo4j/graphql/tree/master/packages/ogm",
     "exports": {
         "require": "./dist/index.js"
     },
