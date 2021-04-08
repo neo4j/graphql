@@ -15,17 +15,8 @@ Firstly, if you are an Enterprise customer, you might want to head over to our [
 
 There are plenty of public channels available too, though.
 If you simply want to get started or have a question on how to use a particular feature, ask a question in [Neo4j Online Community](https://community.neo4j.com/).
-If you think you might have hit a bug in our software (it happens occasionally!) or you have specific feature request then use the issue feature at [Github Issues](https://github.com/neo4j/graphql/issues).
-Check first though as someone else may have already raised something similar.
 
-Include as much information as you can in any request you make:
-
--   Which versions of our products are you using?
--   What does your Schema, or a section of it, looks like ?
--   What operating system are you on?
--   What query caused the problem?
--   What errors are you seeing?
--   What solutions have you tried already?
+If you want to report a bug or request a new feature, please [raise an issue](https://github.com/neo4j/graphql/issues/new/choose) and you will be asked to provide us with the relevant information. Please check first though as someone else may have already raised something similar.
 
 ## Submitting your contribution
 
@@ -41,40 +32,14 @@ If you want to contribute a pull request, we have a little bit of process you'll
 We can't guarantee that we'll accept pull requests and may ask you to make some changes before they go in.
 Occasionally, we might also have logistical, commercial, or legal reasons why we can't accept your work but we'll try to find an alternative way for you to contribute in that case.
 
+We have a short [development guide](./DEVELOPING.md) to walk you through the basics of development on this project.
+
 ## Got an idea for a new project?
 
 If you have an idea for a new tool or library, start by talking to other people in the community.
 Chances are that someone has a similar idea or may have already started working on it.
 The best software comes from getting like minds together to solve a problem.
 And we'll do our best to help you promote and co-ordinate your Neo ecosystem projects.
-
-## Getting started locally
-
-> This is a TypeScript Monorepo managed with [lerna](https://github.com/lerna/lerna) & [Yarn Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
-
-### Forking
-
-First make a fork of the monorepo, once done clone your fork locally;
-
-```
-$ git clone https://github.com/MY_NAME/graphql.git
-```
-
-### Node
-
-Please use the LTS version of Node; 14.15.3 as of writing.
-
-### Installing
-
-The library is part of a monorepo, at the root, run;
-
-```
-$ yarn
-```
-
-### Linting
-
-This library uses eslint with AirBnb style. Please use either use a IDE or format your code before submitting a PR. The recommend setup would be VSCode and Prettier.
 
 ## Further reading
 

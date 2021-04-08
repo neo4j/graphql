@@ -4,9 +4,13 @@
 
 ![Neo4j + GraphQL](./docs/images/readme-banner.png)
 
+## Contributing
+
+Want to contribute to `@neo4j/graphql`? See our [contributing guide](./docs/markdown/CONTRIBUTING.md) and [development guide](./docs/markdown/DEVELOPING.md) to get started!
+
 ## Links
 
-1. [Documentation](./docs/asciidoc/index.adoc)
+1. [Documentation](https://neo4j.com/docs/graphql-manual/current/)
 2. [Discord](https://discord.gg/neo4j)
 3. [Examples](./examples)
 
