@@ -184,10 +184,10 @@ describe("makeAugmentedSchema", () => {
 
     describe("REGEX", () => {
         beforeEach(() => {
-            process.env.NEO4J_GRAPHQL_DISABLE_REGEX = "true";
+            process.env.NEO4J_GRAPHQL_ENABLE_REGEX = "true";
         });
 
-        test("should remove the MATCHES filter when NEO4J_GRAPHQL_DISABLE_REGEX is set", () => {
+        test("should remove the MATCHES filter when NEO4J_GRAPHQL_ENABLE_REGEX is set", () => {
             const typeDefs = `
                     type Node {
                         name: String
@@ -208,7 +208,7 @@ describe("makeAugmentedSchema", () => {
         });
 
         afterEach(() => {
-            delete process.env.NEO4J_GRAPHQL_DISABLE_REGEX;
+            delete process.env.NEO4J_GRAPHQL_ENABLE_REGEX;
         });
     });
 });
