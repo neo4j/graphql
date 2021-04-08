@@ -50,14 +50,14 @@ And we'll do our best to help you promote and co-ordinate your Neo ecosystem pro
 
 ## Getting started locally
 
-> This is a TypeScript Monorepo managed with [lerna](https://github.com/lerna/lerna) & [Yarn Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
+> This is a TypeScript Monorepo managed with [Yarn Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
 
 ### Forking
 
 First make a fork of the monorepo, once done clone your fork locally;
 
 ```
-$ git clone https://github.com/MY_NAME/graphql.git
+$ git clone https://github.com/neo4j/graphql.git
 ```
 
 ### Node
