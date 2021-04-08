@@ -59,7 +59,7 @@ The Jest extension should automatically detect the tests for this repository and
 Tests are run using Jest, which has been configured to allow for execution of test suites at any level in the project. To run all of the tests in the repository, simply run the following command from the root of the project:
 
 ```bash
-yarn test
+NEO_URL=neo4j://localhost:7687 NEO_USER=admin NEO_PASSWORD=password yarn test
 ```
 
 > In order to run all of the tests, you will need to have a local instance of Neo4j running! We highly recommend [Neo4j Desktop](https://neo4j.com/download/) to easily get up and running with a local Neo4j instance.
