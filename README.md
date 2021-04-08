@@ -1,8 +1,12 @@
-# Neo4j GraphQL
+# Neo4j GraphQL Library
 
 💡 Welcome to the Monorepo for [Neo4j](https://neo4j.com/) + [GraphQL](https://graphql.org/).
 
 ![Neo4j + GraphQL](./docs/images/readme-banner.png)
+
+## Contributing
+
+Want to contribute to `@neo4j/graphql`? See our [contributing guide](./docs/markdown/CONTRIBUTING.md) and [development guide](./docs/markdown/DEVELOPING.md) to get started!
 
 ## Links
 
