@@ -183,11 +183,7 @@ describe("makeAugmentedSchema", () => {
     });
 
     describe("REGEX", () => {
-        beforeEach(() => {
-            process.env.NEO4J_GRAPHQL_ENABLE_REGEX = "true";
-        });
-
-        test("should remove the MATCHES filter when NEO4J_GRAPHQL_ENABLE_REGEX is set", () => {
+        test("should remove the MATCHES filter by default", () => {
             const typeDefs = `
                     type Node {
                         name: String
@@ -205,6 +201,26 @@ describe("makeAugmentedSchema", () => {
             const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("_MATCHES"));
 
             expect(matchesField).toBeUndefined();
+        });
+        test("should add the MATCHES filter when NEO4J_GRAPHQL_ENABLE_REGEX is set", () => {
+            process.env.NEO4J_GRAPHQL_ENABLE_REGEX = "true";
+            const typeDefs = `
+                    type Node {
+                        name: String
+                    }
+                `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const document = parse(printSchema(neoSchema.schema));
+
+            const nodeWhereInput = document.definitions.find(
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "NodeWhere"
+            ) as InputObjectTypeDefinitionNode;
+
+            const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("_MATCHES"));
+
+            expect(matchesField).not.toBeUndefined();
         });
 
         afterEach(() => {

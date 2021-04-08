@@ -70,7 +70,6 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
-  id_MATCHES: String
   createdAt: DateTime
   createdAt_NOT: DateTime
   createdAt_IN: [DateTime]
