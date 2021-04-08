@@ -31,12 +31,12 @@ describe("auth/bind", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        process.env.JWT_SECRET = "secret";
+        process.env.NEO4J_GRAPHQL_JWT_SECRET = "secret";
     });
 
     afterAll(async () => {
         await driver.close();
-        delete process.env.JWT_SECRET;
+        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
     });
 
     describe("create", () => {
@@ -70,7 +70,7 @@ describe("auth/bind", () => {
                     roles: [],
                     sub: userId,
                 },
-                process.env.JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -138,7 +138,7 @@ describe("auth/bind", () => {
                     roles: [],
                     sub: userId,
                 },
-                process.env.JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -207,7 +207,7 @@ describe("auth/bind", () => {
                     roles: [],
                     sub: userId,
                 },
-                process.env.JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -265,7 +265,7 @@ describe("auth/bind", () => {
                     roles: [],
                     sub: userId,
                 },
-                process.env.JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -341,7 +341,7 @@ describe("auth/bind", () => {
                     roles: [],
                     sub: userId,
                 },
-                process.env.JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -402,7 +402,7 @@ describe("auth/bind", () => {
                     roles: [],
                     sub: userId,
                 },
-                process.env.JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -476,7 +476,7 @@ describe("auth/bind", () => {
                     roles: [],
                     sub: userId,
                 },
-                process.env.JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -550,7 +550,7 @@ describe("auth/bind", () => {
                     roles: [],
                     sub: userId,
                 },
-                process.env.JWT_SECRET as string
+                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
             );
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });

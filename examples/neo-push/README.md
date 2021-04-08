@@ -121,7 +121,7 @@ This application has two custom resolvers; sign in and sign up. In the resolvers
 }
 ```
 
-the `.sub` property is the users id. We use `JWT_SECRET` env var on the sever to configure the secret, this happens to be the same env `@neo4j/graphql` looks at too.
+the `.sub` property is the users id. We use `NEO4J_GRAPHQL_JWT_SECRET` env var on the sever to configure the secret, this happens to be the same env `@neo4j/graphql` looks at too.
 
 > Note to keep things simple... This application has no JWT expiry or refreshing mechanism. Patterns you would implement outside of `@neo4j/graphql` so we deemed it less important in this showcase.
 
