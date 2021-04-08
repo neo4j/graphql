@@ -12,9 +12,7 @@
         "url": "https://github.com/neo4j/graphql-tracker-temp/issues"
     },
     "homepage": "https://github.com/neo4j/graphql-tracker-temp/blob/master/README.md",
-    "exports": {
-        "require": "./dist/index.js"
-    },
+    "exports": "./dist/index.js",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "files": [
