@@ -17,28 +17,31 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
 import { Neo4jGraphQL, Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import Model from "./Model";
 import { filterDocument } from "../utils";
+
+export interface OGMConstructor {
+    typeDefs: Neo4jGraphQLConstructor["typeDefs"];
+    resolvers?: Neo4jGraphQLConstructor["resolvers"];
+    config?: Neo4jGraphQLConstructor["config"];
+}
 
 class OGM {
     public neoSchema: Neo4jGraphQL;
 
     public models: Model[];
 
-    public input: Neo4jGraphQLConstructor;
+    public input: OGMConstructor;
 
-    constructor(input: Neo4jGraphQLConstructor) {
+    constructor(input: OGMConstructor) {
         this.input = input;
+        const { config = {}, ...rest } = input;
 
         this.neoSchema = new Neo4jGraphQL({
-            typeDefs: filterDocument(input.typeDefs),
-            driver: input.driver,
-            resolvers: input.resolvers,
-            schemaDirectives: input.schemaDirectives,
-            debug: input.debug,
-            driverConfig: input.driverConfig,
+            ...rest,
+            typeDefs: filterDocument(rest.typeDefs),
+            config,
         });
 
         this.models = this.neoSchema.nodes.map((n) => {
@@ -69,10 +72,10 @@ class OGM {
         return found;
     }
 
-    async checkNeo4jCompat(input: { driver?: Driver } = {}): Promise<void> {
-        const driver = input.driver || this.input.driver;
+    checkNeo4jCompat(): Promise<void> {
+        const { config: { driver, driverConfig } = {} } = this.input;
 
-        return this.neoSchema.checkNeo4jCompat({ driver });
+        return this.neoSchema.checkNeo4jCompat({ driver, driverConfig });
     }
 }
 

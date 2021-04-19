@@ -1,7 +1,10 @@
 {
     "extends": "../../../../tsconfig.base.json",
     "compilerOptions": {
-        "types": ["node", "jest"]
+        "types": ["node", "jest"],
+        "paths": {
+            "@neo4j/graphql-ogm": ["../../../../packages/ogm/src"]
+        }
     },
-    "references": [{ "path": "../src/tsconfig.json" }]
+    "references": [{ "path": "../src/tsconfig.json" }, { "path": "../../../../packages/ogm/src/tsconfig.json" }]
 }

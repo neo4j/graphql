@@ -79,7 +79,10 @@ describe("multi-database", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver, driverConfig: { database: "another-random-db" } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: { driver, driverConfig: { database: "another-random-db" } },
+        });
 
         const id = generate({
             charset: "alphabetic",

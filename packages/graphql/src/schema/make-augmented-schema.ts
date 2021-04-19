@@ -19,7 +19,6 @@
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
-import { ITypeDefinitions, IResolvers } from "@graphql-tools/utils";
 import camelCase from "camelcase";
 import {
     DefinitionNode,
@@ -57,17 +56,11 @@ import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-co
 import validateTypeDefs from "./validation";
 import environment from "../environment";
 
-type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
-
 function makeAugmentedSchema({
     typeDefs,
     resolvers,
     schemaDirectives,
-}: {
-    typeDefs: ITypeDefinitions;
-    resolvers?: IResolvers;
-    schemaDirectives?: SchemaDirectives;
-}): { schema: GraphQLSchema; nodes: Node[] } {
+}: IExecutableSchemaDefinition): { schema: GraphQLSchema; nodes: Node[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
     validateTypeDefs(document);

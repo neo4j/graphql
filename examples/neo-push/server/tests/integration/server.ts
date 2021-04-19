@@ -7,7 +7,7 @@ import { Context } from "../../src/types";
 function server(driver, context = {}) {
     const ogm = new OGM({
         typeDefs,
-        driver,
+        config: { driver },
     });
 
     const apolloServer = new ApolloServer({

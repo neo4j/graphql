@@ -16,8 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { IResolvers } from "@graphql-tools/utils";
+import { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import createAuthParam from "../translate/create-auth-param";
 
 function wrapCustomResolvers({
@@ -25,10 +24,10 @@ function wrapCustomResolvers({
     generatedResolvers,
     nodeNames,
 }: {
-    resolvers: IResolvers;
+    resolvers: IExecutableSchemaDefinition["resolvers"];
     nodeNames: string[];
     generatedResolvers: any;
-}): IResolvers {
+}): IExecutableSchemaDefinition["resolvers"] {
     let newResolvers: any = {};
 
     const {

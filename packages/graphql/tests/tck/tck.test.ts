@@ -87,7 +87,7 @@ describe("TCK Generated tests", () => {
                 const document = parse(schema as string);
 
                 // @ts-ignore
-                const neoSchema = new Neo4jGraphQL({ typeDefs: schema as string, driver: {} });
+                const neoSchema = new Neo4jGraphQL({ typeDefs: schema as string, config: { driver: {} } });
 
                 // @ts-ignore
                 test.each(tests.map((t) => [t.name, t]))("%s", async (_, obj) => {
@@ -146,8 +146,6 @@ describe("TCK Generated tests", () => {
 
                                 context.neoSchema = neoSchema;
                                 context.resolveTree = resolveTree;
-                                // @ts-ignore
-                                context.driver = {};
 
                                 const mergedContext = { ...context, ...defaultContext };
 
@@ -184,8 +182,6 @@ describe("TCK Generated tests", () => {
 
                                 context.neoSchema = neoSchema;
                                 context.resolveTree = resolveTree;
-                                // @ts-ignore
-                                context.driver = {};
 
                                 const mergedContext = { ...context, ...defaultContext };
 
@@ -214,8 +210,6 @@ describe("TCK Generated tests", () => {
 
                                 context.neoSchema = neoSchema;
                                 context.resolveTree = resolveTree;
-                                // @ts-ignore
-                                context.driver = {};
 
                                 const mergedContext = { ...context, ...defaultContext };
 
@@ -239,8 +233,6 @@ describe("TCK Generated tests", () => {
 
                                 context.neoSchema = neoSchema;
                                 context.resolveTree = resolveTree;
-                                // @ts-ignore
-                                context.driver = {};
 
                                 const mergedContext = { ...context, ...defaultContext };
 
@@ -300,10 +292,12 @@ describe("TCK Generated tests", () => {
                             ...customScalars,
                             schemaDirectives: directives,
                         }),
-                        // @ts-ignore
-                        driver: {},
-                        // @ts-ignore
-                        driverConfig: {},
+                        config: {
+                            // @ts-ignore
+                            driver: {},
+                            // @ts-ignore
+                            driverConfig: {},
+                        },
                     });
 
                     const result = await graphql(executableSchema, graphQlQuery, null, defaultContext, graphQlParams);

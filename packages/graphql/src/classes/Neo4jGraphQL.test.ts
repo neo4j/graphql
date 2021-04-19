@@ -42,7 +42,7 @@ describe("Neo4jGraphQL", () => {
 
                 console.log = (m) => expect(m).toEqual(msg);
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs: "type User {id: ID}", debug: true });
+                const neoSchema = new Neo4jGraphQL({ typeDefs: "type User {id: ID}", config: { debug: true } });
 
                 neoSchema.debug(msg);
 
@@ -54,7 +54,7 @@ describe("Neo4jGraphQL", () => {
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs: "type User {id: ID}",
-                    debug: (m: string) => expect(m).toEqual(msg),
+                    config: { debug: (m: string) => expect(m).toEqual(msg) },
                 });
 
                 neoSchema.debug(msg);

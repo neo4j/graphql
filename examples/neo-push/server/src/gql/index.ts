@@ -17,14 +17,15 @@ const resolvers = {
 
 export const ogm = new OGM({
     typeDefs,
-    driver,
-    debug: config.NODE_ENV === "development",
+    config: { driver, debug: config.NODE_ENV === "development" },
 });
 
 export const neoSchema = new Neo4jGraphQL({
     typeDefs,
     resolvers,
-    debug: config.NODE_ENV === "development",
+    config: {
+        debug: config.NODE_ENV === "development",
+    },
 });
 
 export const server: ApolloServer = new ApolloServer({

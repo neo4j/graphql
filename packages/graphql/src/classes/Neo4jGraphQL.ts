@@ -19,7 +19,6 @@
 
 import { Driver } from "neo4j-driver";
 import { DocumentNode, GraphQLSchema, parse, printSchema } from "graphql";
-import { ITypeDefinitions, IResolvers } from "@graphql-tools/utils";
 import { addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import type { DriverConfig } from "../types";
@@ -30,13 +29,14 @@ import { getJWT } from "../auth/index";
 
 export type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
 
-export interface Neo4jGraphQLConstructor {
-    typeDefs: ITypeDefinitions;
-    resolvers?: IResolvers;
-    schemaDirectives?: SchemaDirectives;
+export interface Neo4jGraphQLConfig {
     debug?: boolean | ((message: string) => void);
     driver?: Driver;
     driverConfig?: DriverConfig;
+}
+
+export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
+    config?: Neo4jGraphQLConfig;
 }
 
 class Neo4jGraphQL {
@@ -56,41 +56,37 @@ class Neo4jGraphQL {
     }
 
     constructor(input: Neo4jGraphQLConstructor) {
-        this.driver = input.driver;
-        this.driverConfig = input.driverConfig;
+        const { config = {}, ...rest } = input;
+        this.driver = config.driver;
+        this.driverConfig = config.driverConfig;
+        const { nodes, schema } = makeAugmentedSchema(rest);
 
-        const { nodes, schema } = makeAugmentedSchema({
-            typeDefs: input.typeDefs,
-            resolvers: input.resolvers,
-            schemaDirectives: input.schemaDirectives,
-        });
-
-        if (input.debug) {
+        if (input.config?.debug) {
             // eslint-disable-next-line no-console
             let logger = console.log;
 
-            if (typeof input.debug === "function") {
-                logger = input.debug;
+            if (typeof input.config.debug === "function") {
+                logger = input.config.debug;
             }
 
             this.debug = (message: string) => logger(message);
         }
 
         this.nodes = nodes;
-        this.schema = this.createWrappedSchema({ schema, driver: input.driver, driverConfig: input.driverConfig });
+        this.schema = this.createWrappedSchema({ schema, config });
         this.document = parse(printSchema(schema));
     }
 
     private createWrappedSchema({
         schema,
-        driver,
-        driverConfig,
+        config,
     }: {
         schema: GraphQLSchema;
-        driver?: Driver;
-        driverConfig?: DriverConfig;
+        config: Neo4jGraphQLConfig;
     }): GraphQLSchema {
         return addSchemaLevelResolver(schema, (_obj, _args, context: any, resolveInfo: any) => {
+            const { driver, driverConfig } = config;
+
             /*
                 Deleting this property ensures that we call this function more than once,
                 See https://github.com/ardatan/graphql-tools/issues/353#issuecomment-499569711
