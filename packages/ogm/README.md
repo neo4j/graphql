@@ -44,7 +44,7 @@ const driver = neo4j.driver(
     neo4j.auth.basic("admin", "password")
 );
 
-const ogm = new OGM({ typeDefs, driver });
+const ogm = new OGM({ typeDefs, config: { driver } });
 
 const Movie = ogm.model("Movie");
 
