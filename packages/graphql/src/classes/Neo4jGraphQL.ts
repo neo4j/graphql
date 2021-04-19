@@ -57,8 +57,6 @@ class Neo4jGraphQL {
 
     constructor(input: Neo4jGraphQLConstructor) {
         const { config = {}, ...rest } = input;
-        this.driver = config.driver;
-        this.driverConfig = config.driverConfig;
         const { nodes, schema } = makeAugmentedSchema(rest);
 
         if (input.config?.debug) {
@@ -72,6 +70,8 @@ class Neo4jGraphQL {
             this.debug = (message: string) => logger(message);
         }
 
+        this.driver = config.driver;
+        this.driverConfig = config.driverConfig;
         this.nodes = nodes;
         this.schema = this.createWrappedSchema({ schema, config });
         this.document = parse(printSchema(schema));
