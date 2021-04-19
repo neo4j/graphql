@@ -19,7 +19,11 @@ const neo4jGraphQL = new Neo4jGraphQL({
     typeDefs,
     resolvers?,
     schemaDirectives?,
-    debug?,
+    config?: {
+        driver?
+        driverConfig?
+        debug?
+    },
 });
 ----
 

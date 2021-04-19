@@ -45,7 +45,7 @@ const typeDefs = `
 `;
 
 // public without password
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+const neoSchema = new Neo4jGraphQL({ typeDefs, config: { driver } });
 
 // private with access to password
 const ogm = new OGM({ typeDefs, driver });
