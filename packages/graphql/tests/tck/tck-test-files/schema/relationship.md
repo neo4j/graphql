@@ -159,12 +159,12 @@ type CreateMoviesMutationResponse {
   movies: [Movie!]!
 }
 
-input MovieActorsDeleteInput {
+input MovieActorsDeleteFieldInput {
   where: ActorWhere
 }
 
 input MovieDeleteInput {
-  actors: [MovieActorsDeleteInput!]
+  actors: [MovieActorsDeleteFieldInput!]
 }
 
 type UpdateMoviesMutationResponse {
@@ -368,18 +368,18 @@ input MovieSort {
   id: SortDirection
 }
 
-input MovieActorsDeleteInput {
+input MovieActorsDeleteFieldInput {
   where: ActorWhere
   delete: ActorDeleteInput
 }
 
-input ActorMoviesDeleteInput {
+input ActorMoviesDeleteFieldInput {
   where: MovieWhere
   delete: MovieDeleteInput
 }
 
 input MovieDeleteInput {
-  actors: [MovieActorsDeleteInput!]
+  actors: [MovieActorsDeleteFieldInput!]
 }
 
 input MovieDeleteFieldInput {
@@ -388,7 +388,7 @@ input MovieDeleteFieldInput {
 }
 
 input ActorDeleteInput {
-  movies: [ActorMoviesDeleteInput!]
+  movies: [ActorMoviesDeleteFieldInput!]
 }
 
 input ActorDeleteFieldInput {
