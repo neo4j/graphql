@@ -49,7 +49,7 @@ const typeDefs = `
     }
 `;
 
-const neoSchema = new Neo4jGraphQL({ typeDefs, config: { driver } });
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
 const driver = neo4j.driver(
     "bolt://localhost:7687",

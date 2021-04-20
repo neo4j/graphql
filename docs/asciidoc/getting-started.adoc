@@ -67,7 +67,7 @@ const driver = neo4j.driver(
     neo4j.auth.basic("neo4j", "letmein")
 );
 
-const neoSchema = new Neo4jGraphQL({ typeDefs, config: { driver } });
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
 const server = new ApolloServer({
     schema: neoSchema.schema,

@@ -21,11 +21,7 @@ import { Neo4jGraphQL, Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import Model from "./Model";
 import { filterDocument } from "../utils";
 
-export interface OGMConstructor {
-    typeDefs: Neo4jGraphQLConstructor["typeDefs"];
-    resolvers?: Neo4jGraphQLConstructor["resolvers"];
-    config?: Neo4jGraphQLConstructor["config"];
-}
+export type OGMConstructor = Neo4jGraphQLConstructor;
 
 class OGM {
     public neoSchema: Neo4jGraphQL;
@@ -36,12 +32,11 @@ class OGM {
 
     constructor(input: OGMConstructor) {
         this.input = input;
-        const { config = {}, ...rest } = input;
+        const { typeDefs, ...rest } = input;
 
         this.neoSchema = new Neo4jGraphQL({
             ...rest,
-            typeDefs: filterDocument(rest.typeDefs),
-            config,
+            typeDefs: filterDocument(typeDefs),
         });
 
         this.models = this.neoSchema.nodes.map((n) => {
@@ -73,7 +68,7 @@ class OGM {
     }
 
     checkNeo4jCompat(): Promise<void> {
-        const { config: { driver, driverConfig } = {} } = this.input;
+        const { driver, config: { driverConfig } = {} } = this.input;
 
         return this.neoSchema.checkNeo4jCompat({ driver, driverConfig });
     }

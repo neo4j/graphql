@@ -64,9 +64,7 @@ const resolvers = {
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     resolvers,
-    config: {
-        driver
-    },
+    driver
 });
 
 const server = new ApolloServer({

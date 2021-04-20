@@ -87,7 +87,7 @@ describe("TCK Generated tests", () => {
                 const document = parse(schema as string);
 
                 // @ts-ignore
-                const neoSchema = new Neo4jGraphQL({ typeDefs: schema as string, config: { driver: {} } });
+                const neoSchema = new Neo4jGraphQL({ typeDefs: schema as string, driver: {} });
 
                 // @ts-ignore
                 test.each(tests.map((t) => [t.name, t]))("%s", async (_, obj) => {

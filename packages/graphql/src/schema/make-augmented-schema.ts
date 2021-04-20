@@ -59,7 +59,7 @@ import environment from "../environment";
 function makeAugmentedSchema({
     typeDefs,
     resolvers,
-    schemaDirectives,
+    ...rest
 }: IExecutableSchemaDefinition): { schema: GraphQLSchema; nodes: Node[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
@@ -728,6 +728,12 @@ function makeAugmentedSchema({
         composer.createInputTC(point.cartesianPointDistance);
     }
 
+    ["Query", "Mutation"].forEach((type) => {
+        if (!Object.values(composer[type].getFields()).length) {
+            composer.delete(type);
+        }
+    });
+
     const generatedTypeDefs = composer.toSDL();
     let generatedResolvers: any = {
         ...composer.getResolveMethods(),
@@ -738,6 +744,8 @@ function makeAugmentedSchema({
             return res;
         }, {}),
     };
+
+    composer.removeEmptyTypes(composer.get("Mutation") as ObjectTypeComposer, new Set());
 
     if (resolvers) {
         generatedResolvers = wrapCustomResolvers({
@@ -753,9 +761,9 @@ function makeAugmentedSchema({
     });
 
     const schema = makeExecutableSchema({
+        ...rest,
         typeDefs: generatedTypeDefs,
         resolvers: generatedResolvers,
-        schemaDirectives,
     });
 
     return {

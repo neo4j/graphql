@@ -50,7 +50,7 @@ describe("find", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { driver } });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         const id = generate({
             charset: "alphabetic",

@@ -29,14 +29,24 @@ import { getJWT } from "../auth/index";
 
 export type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
 
+// options: {
+//     driverConfig: {},
+//     jwt: {
+//         secret: "",
+//         rolesPath: "...",
+//         noVerify: true,
+//     },
+//     enableRegex: true,
+// },
+
 export interface Neo4jGraphQLConfig {
-    debug?: boolean | ((message: string) => void);
-    driver?: Driver;
     driverConfig?: DriverConfig;
 }
 
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     config?: Neo4jGraphQLConfig;
+    driver?: Driver;
+    debug?: boolean | ((message: string) => void);
 }
 
 class Neo4jGraphQL {
@@ -56,21 +66,21 @@ class Neo4jGraphQL {
     }
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, ...rest } = input;
+        const { config = {}, debug, driver, ...rest } = input;
         const { nodes, schema } = makeAugmentedSchema(rest);
 
-        if (input.config?.debug) {
+        if (debug) {
             // eslint-disable-next-line no-console
             let logger = console.log;
 
-            if (typeof input.config.debug === "function") {
-                logger = input.config.debug;
+            if (typeof debug === "function") {
+                logger = debug;
             }
 
             this.debug = (message: string) => logger(message);
         }
 
-        this.driver = config.driver;
+        this.driver = driver;
         this.driverConfig = config.driverConfig;
         this.nodes = nodes;
         this.schema = this.createWrappedSchema({ schema, config });
@@ -85,7 +95,7 @@ class Neo4jGraphQL {
         config: Neo4jGraphQLConfig;
     }): GraphQLSchema {
         return addSchemaLevelResolver(schema, (_obj, _args, context: any, resolveInfo: any) => {
-            const { driver, driverConfig } = config;
+            const { driverConfig } = config;
 
             /*
                 Deleting this property ensures that we call this function more than once,
@@ -95,12 +105,12 @@ class Neo4jGraphQL {
             delete resolveInfo.operation.__runAtMostOnce;
 
             if (!context?.driver) {
-                if (!driver) {
+                if (!this.driver) {
                     throw new Error(
                         "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
                     );
                 }
-                context.driver = driver;
+                context.driver = this.driver;
             }
 
             if (!context?.driverConfig) {
