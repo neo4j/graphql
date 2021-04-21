@@ -133,5 +133,12 @@
         <d:tocentry linkend="drivers-and-config">
             <?dbhtml filename="drivers-and-config/index.html"?>
         </d:tocentry>
+
+        <d:tocentry linkend="guides">
+            <?dbhtml filename="guides/index.html"?>
+            <d:tocentry linkend="migration-guide">
+                <?dbhtml filename="guides/migration-guide/index.html"?>
+            </d:tocentry>
+        </d:tocentry>
     </d:tocentry>
 </d:toc>
