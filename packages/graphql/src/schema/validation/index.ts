@@ -20,7 +20,8 @@
 import { DefinitionNode, DocumentNode, print } from "graphql";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { SchemaComposer, printDirective, printEnum, printScalar } from "graphql-compose";
-import * as scalars from "./scalars";
+import * as scalars from "../scalars";
+import { ScalarType } from "./scalars";
 import * as enums from "./enums";
 import * as directives from "./directives";
 
@@ -51,6 +52,7 @@ function validateSchema(document: DocumentNode): void {
     const composer = new SchemaComposer();
     const doc = print(filterDocument(document));
 
+    composer.addTypeDefs(printScalar(ScalarType));
     Object.values(scalars).forEach((scalar) => {
         composer.addTypeDefs(printScalar(scalar));
     });

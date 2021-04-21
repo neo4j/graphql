@@ -223,4 +223,27 @@ describe("makeAugmentedSchema", () => {
             expect(matchesField).not.toBeUndefined();
         });
     });
+
+    describe("issues", () => {
+        test("158", () => {
+            // https://github.com/neo4j/graphql/issues/158
+
+            const typeDefs = `
+                type Node {
+                    createdAt: DateTime
+                }
+              
+                type Query {
+                  nodes: [Node] @cypher(statement: "")
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const document = parse(printSchema(neoSchema.schema));
+
+            // make sure the schema constructs
+            expect(document.kind).toEqual("Document");
+        });
+    });
 });
