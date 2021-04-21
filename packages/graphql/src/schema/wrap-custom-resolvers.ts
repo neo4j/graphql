@@ -17,8 +17,10 @@
  * limitations under the License.
  */
 
-import { IResolvers } from "@graphql-tools/utils";
+import { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import createAuthParam from "../translate/create-auth-param";
+
+type IResolvers = IExecutableSchemaDefinition["resolvers"];
 
 function wrapCustomResolvers({
     resolvers,

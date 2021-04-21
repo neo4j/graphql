@@ -19,7 +19,6 @@
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
-import { ITypeDefinitions, IResolvers } from "@graphql-tools/utils";
 import camelCase from "camelcase";
 import {
     DefinitionNode,
@@ -57,6 +56,8 @@ import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-co
 import validateTypeDefs from "./validation";
 import environment from "../environment";
 
+type IResolvers = IExecutableSchemaDefinition["resolvers"];
+type ITypeDefinitions = IExecutableSchemaDefinition["typeDefs"];
 type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
 
 function makeAugmentedSchema({
@@ -733,6 +734,10 @@ function makeAugmentedSchema({
         composer.createObjectTC(point.cartesianPoint);
         composer.createInputTC(point.cartesianPointInput);
         composer.createInputTC(point.cartesianPointDistance);
+    }
+
+    if (!Object.values(composer.Mutation.getFields()).length) {
+        composer.delete("Mutation");
     }
 
     const generatedTypeDefs = composer.toSDL();
