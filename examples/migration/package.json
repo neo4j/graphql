@@ -1,0 +1,13 @@
+{
+    "name": "migration",
+    "scripts": {
+        "start": "node src/index.js"
+    },
+    "dependencies": {
+        "apollo-server": "^2.23.0",
+        "graphql": "^15.5.0",
+        "graphql-auth-directives": "^2.2.2",
+        "neo4j-driver": "^4.2.3",
+        "neo4j-graphql-js": "^2.19.2"
+    }
+}
