@@ -726,11 +726,9 @@ function makeAugmentedSchema(
         composer.createInputTC(point.cartesianPointDistance);
     }
 
-    ["Query", "Mutation"].forEach((type) => {
-        if (!Object.values(composer[type].getFields()).length) {
-            composer.delete(type);
-        }
-    });
+    if (!Object.values(composer.Mutation.getFields()).length) {
+        composer.delete("Mutation");
+    }
 
     const generatedTypeDefs = composer.toSDL();
     let generatedResolvers: any = {

@@ -27,8 +27,6 @@ import Node from "./Node";
 import { checkNeo4jCompat } from "../utils";
 import { getJWT } from "../auth/index";
 
-export type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
-
 export interface Neo4jGraphQLJWT {
     secret: string;
     noVerify?: string;
