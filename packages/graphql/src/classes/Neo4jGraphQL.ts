@@ -19,7 +19,6 @@
 
 import { Driver } from "neo4j-driver";
 import { DocumentNode, GraphQLSchema, parse, printSchema } from "graphql";
-import { ITypeDefinitions, IResolvers } from "@graphql-tools/utils";
 import { addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import type { DriverConfig } from "../types";
@@ -28,7 +27,9 @@ import Node from "./Node";
 import { checkNeo4jCompat } from "../utils";
 import { getJWT } from "../auth/index";
 
-export type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
+type IResolvers = IExecutableSchemaDefinition["resolvers"];
+type ITypeDefinitions = IExecutableSchemaDefinition["typeDefs"];
+type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
 
 export interface Neo4jGraphQLConstructor {
     typeDefs: ITypeDefinitions;
