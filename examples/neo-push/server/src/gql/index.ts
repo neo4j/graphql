@@ -25,6 +25,11 @@ export const neoSchema = new Neo4jGraphQL({
     typeDefs,
     resolvers,
     debug: config.NODE_ENV === "development",
+    config: {
+        jwt: {
+            secret: config.NEO4J_GRAPHQL_JWT_SECRET,
+        },
+    },
 });
 
 export const server: ApolloServer = new ApolloServer({

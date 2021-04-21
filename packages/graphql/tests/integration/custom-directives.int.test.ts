@@ -30,12 +30,10 @@ describe("Custom Directives", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        process.env.NEO4J_GRAPHQL_JWT_SECRET = "secret";
     });
 
     afterAll(async () => {
         await driver.close();
-        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
     });
 
     test("should define a custom schemaDirective and resolve it", async () => {

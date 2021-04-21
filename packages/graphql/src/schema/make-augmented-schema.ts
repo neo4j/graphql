@@ -54,13 +54,11 @@ import getObjFieldMeta from "./get-obj-field-meta";
 import * as point from "./point";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
 import validateTypeDefs from "./validation";
-import environment from "../environment";
 
-function makeAugmentedSchema({
-    typeDefs,
-    resolvers,
-    ...rest
-}: IExecutableSchemaDefinition): { schema: GraphQLSchema; nodes: Node[] } {
+function makeAugmentedSchema(
+    { typeDefs, resolvers, ...rest }: IExecutableSchemaDefinition,
+    { enableRegex }: { enableRegex?: boolean } = {}
+): { schema: GraphQLSchema; nodes: Node[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
     validateTypeDefs(document);
@@ -292,7 +290,7 @@ function makeAugmentedSchema({
                     }
 
                     if (["String", "ID"].includes(f.typeMeta.name)) {
-                        if (environment.NEO4J_GRAPHQL_ENABLE_REGEX) {
+                        if (enableRegex) {
                             res[`${f.fieldName}_MATCHES`] = "String";
                         }
 

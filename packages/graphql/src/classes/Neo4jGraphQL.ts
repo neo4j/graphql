@@ -29,18 +29,16 @@ import { getJWT } from "../auth/index";
 
 export type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
 
-// options: {
-//     driverConfig: {},
-//     jwt: {
-//         secret: "",
-//         rolesPath: "...",
-//         noVerify: true,
-//     },
-//     enableRegex: true,
-// },
+export interface Neo4jGraphQLJWT {
+    secret: string;
+    noVerify?: string;
+    jwtRolesObjectPath?: string;
+}
 
 export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
+    jwt?: Neo4jGraphQLJWT;
+    enableRegex?: boolean;
 }
 
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
@@ -58,7 +56,7 @@ class Neo4jGraphQL {
 
     private driver?: Driver;
 
-    private driverConfig?: DriverConfig;
+    public config?: Neo4jGraphQLConfig;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars,class-methods-use-this
     debug(message: string): void {
@@ -67,7 +65,7 @@ class Neo4jGraphQL {
 
     constructor(input: Neo4jGraphQLConstructor) {
         const { config = {}, debug, driver, ...rest } = input;
-        const { nodes, schema } = makeAugmentedSchema(rest);
+        const { nodes, schema } = makeAugmentedSchema(rest, { enableRegex: config.enableRegex });
 
         if (debug) {
             // eslint-disable-next-line no-console
@@ -81,7 +79,7 @@ class Neo4jGraphQL {
         }
 
         this.driver = driver;
-        this.driverConfig = config.driverConfig;
+        this.config = config;
         this.nodes = nodes;
         this.schema = this.createWrappedSchema({ schema, config });
         this.document = parse(printSchema(schema));
@@ -125,7 +123,7 @@ class Neo4jGraphQL {
 
     async checkNeo4jCompat(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
         const driver = input.driver || this.driver;
-        const driverConfig = input.driverConfig || this.driverConfig;
+        const driverConfig = input.driverConfig || this.config?.driverConfig;
 
         if (!driver) {
             throw new Error("neo4j-driver Driver missing");

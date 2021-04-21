@@ -53,13 +53,7 @@ import createAuthParam from "../../src/translate/create-auth-param";
 
 const TCK_DIR = path.join(__dirname, "tck-test-files");
 
-beforeAll(() => {
-    process.env.NEO4J_GRAPHQL_JWT_SECRET = "secret";
-});
-
-afterAll(() => {
-    delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
-});
+const secret = "secret";
 
 function generateCustomScalar(name: string): GraphQLScalarType {
     return new GraphQLScalarType({
@@ -85,9 +79,13 @@ describe("TCK Generated tests", () => {
             setTestEnvVars(envVars);
             if (kind === "cypher") {
                 const document = parse(schema as string);
-
                 // @ts-ignore
-                const neoSchema = new Neo4jGraphQL({ typeDefs: schema as string, driver: {} });
+                const neoSchema = new Neo4jGraphQL({
+                    typeDefs: schema as string,
+                    // @ts-ignore
+                    driver: {},
+                    config: { enableRegex: true, jwt: { secret } },
+                });
 
                 // @ts-ignore
                 test.each(tests.map((t) => [t.name, t]))("%s", async (_, obj) => {
@@ -102,7 +100,7 @@ describe("TCK Generated tests", () => {
                     if (!cypherParams.jwt) {
                         const socket = new Socket({ readable: true });
                         const req = new IncomingMessage(socket);
-                        const token = jsonwebtoken.sign(jwt, process.env.NEO4J_GRAPHQL_JWT_SECRET as string, {
+                        const token = jsonwebtoken.sign(jwt, secret, {
                             noTimestamp: true,
                         });
                         req.headers.authorization = `Bearer ${token}`;

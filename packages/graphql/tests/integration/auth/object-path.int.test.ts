@@ -31,12 +31,10 @@ describe("auth/object-path", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        process.env.NEO4J_GRAPHQL_JWT_SECRET = "secret";
     });
 
     afterAll(async () => {
         await driver.close();
-        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
     });
 
     test("should use object path with allow", async () => {
@@ -62,6 +60,8 @@ describe("auth/object-path", () => {
             }
         `;
 
+        const secret = "secret";
+
         const token = jsonwebtoken.sign(
             {
                 roles: [],
@@ -73,10 +73,10 @@ describe("auth/object-path", () => {
                     },
                 },
             },
-            process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+            secret
         );
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
             await session.run(`
@@ -134,14 +134,16 @@ describe("auth/object-path", () => {
             }
         `;
 
+        const secret = "secret";
+
         const token = jsonwebtoken.sign(
             {
                 roles: [],
             },
-            process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+            secret
         );
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
             await session.run(`
@@ -168,9 +170,6 @@ describe("auth/object-path", () => {
     });
 
     test("should use object path with roles", async () => {
-        process.env.NEO4J_GRAPHQL_JWT_ROLES_OBJECT_PATH =
-            "https://github\\.com/claims.https://github\\.com/claims/roles";
-
         const session = driver.session({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
@@ -193,12 +192,19 @@ describe("auth/object-path", () => {
             }
         `;
 
+        const secret = "secret";
+
         const token = jsonwebtoken.sign(
             { "https://github.com/claims": { "https://github.com/claims/roles": ["admin"] } },
-            process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+            secret
         );
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: {
+                jwt: { secret, jwtRolesObjectPath: "https://github\\.com/claims.https://github\\.com/claims/roles" },
+            },
+        });
 
         try {
             await session.run(`
@@ -221,7 +227,6 @@ describe("auth/object-path", () => {
             expect(user).toEqual({ id: userId });
         } finally {
             await session.close();
-            delete process.env.NEO4J_GRAPHQL_JWT_ROLES_OBJECT_PATH;
         }
     });
 });
