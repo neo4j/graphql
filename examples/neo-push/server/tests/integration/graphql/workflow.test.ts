@@ -11,12 +11,10 @@ describe("workflow", () => {
     let driver: Driver;
 
     beforeAll(async () => {
-        process.env.NEO4J_GRAPHQL_JWT_SECRET = "supersecret";
         driver = await neo4j.connect();
     });
 
     afterAll(async () => {
-        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
         await driver.close();
     });
 
@@ -63,7 +61,7 @@ describe("workflow", () => {
             }),
         };
 
-        const token = jsonwebtoken.sign({ sub: user.id }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+        const token = jsonwebtoken.sign({ sub: user.id }, "secret");
 
         const socket = new Socket({ readable: true });
         const req = new IncomingMessage(socket);

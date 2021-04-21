@@ -11,7 +11,7 @@ import * as config from "../config";
 
 export const typeDefs = [User.typeDefs, Blog.typeDefs, Post.typeDefs, Comment.typeDefs];
 
-const resolvers = {
+export const resolvers = {
     ...User.resolvers,
 };
 

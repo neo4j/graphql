@@ -3,8 +3,15 @@
     "compilerOptions": {
         "types": ["node", "jest"],
         "paths": {
+            "@neo4j/graphql": ["../../../../packages/graphql/src"],
             "@neo4j/graphql-ogm": ["../../../../packages/ogm/src"]
         }
     },
-    "references": [{ "path": "../src/tsconfig.json" }, { "path": "../../../../packages/ogm/src/tsconfig.json" }]
+    "references": [
+        { "path": "../src/tsconfig.json" },
+        {
+            "path": "../../../../packages/ogm/src/tsconfig.json",
+            "path": "../../../../packages/graphql/src/tsconfig.json"
+        }
+    ]
 }
