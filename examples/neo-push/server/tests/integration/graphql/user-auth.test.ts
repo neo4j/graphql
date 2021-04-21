@@ -2,10 +2,10 @@ import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
-import jsonwebtoken from "jsonwebtoken";
 import { gql } from "apollo-server-express";
 import * as neo4j from "../neo4j";
 import server from "../server";
+import { createJWT } from "../../../src/utils";
 
 describe("user-auth", () => {
     let driver: Driver;
@@ -37,7 +37,7 @@ describe("user-auth", () => {
             }
         `;
 
-        const token = jsonwebtoken.sign({ sub: userId }, "secret");
+        const token = await createJWT({ sub: userId });
 
         const socket = new Socket({ readable: true });
         const req = new IncomingMessage(socket);

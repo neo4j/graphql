@@ -4,6 +4,7 @@ import { OGM } from "@neo4j/graphql-ogm";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { typeDefs, resolvers } from "../../src/gql";
 import { Context } from "../../src/types";
+import * as config from "../../src/config";
 
 function server(driver, context = {}) {
     const ogm = new OGM({
@@ -16,7 +17,7 @@ function server(driver, context = {}) {
         resolvers,
         config: {
             jwt: {
-                secret: "secret",
+                secret: config.NEO4J_GRAPHQL_JWT_SECRET,
             },
         },
     });
