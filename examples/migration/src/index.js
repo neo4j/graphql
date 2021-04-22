@@ -1,13 +1,13 @@
 const { ApolloServer } = require("apollo-server");
-const { makeAugmentedSchema } = require("neo4j-graphql-js");
+const { Neo4jGraphQL } = require("@neo4j/graphql");
 
 const driver = require("./driver");
 const typeDefs = require("./type-definitions");
 
-const schema = makeAugmentedSchema({ typeDefs });
+const neo4jGraphQL = new Neo4jGraphQL({ typeDefs, driver });
 
-const server = new ApolloServer({ schema, context: { driver } });
+const server = new ApolloServer({ schema: neo4jGraphQL.schema });
 
 server.listen().then(({ url }) => {
-    console.log(`neo4j-graphql-js API ready at ${url}`);
+    console.log(`@neo4j/graphql API ready at ${url}`);
 });
