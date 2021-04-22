@@ -8095,7 +8095,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"graphql@npm:^15.4.0, graphql@npm:^15.5.0":
+"graphql@npm:^15.4.0":
   version: 15.5.0
   resolution: "graphql@npm:15.5.0"
   checksum: 789cdcb069a3e00592e779002217a6bc5fd09efad63ee8c4190c4b3ea96c89010e74f085fb1cba876a0bb0e324e01df2eddb84d79dca90a28e582bc425fef9ef
@@ -10784,9 +10784,6 @@ fsevents@^1.2.7:
   resolution: "migration@workspace:examples/migration"
   dependencies:
     apollo-server: ^2.23.0
-    graphql: ^15.5.0
-    graphql-auth-directives: ^2.2.2
-    neo4j-driver: ^4.2.3
     neo4j-graphql-js: ^2.19.2
   languageName: unknown
   linkType: soft
@@ -11179,7 +11176,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"neo4j-driver@npm:^4.2.1, neo4j-driver@npm:^4.2.3":
+"neo4j-driver@npm:^4.2.1":
   version: 4.2.3
   resolution: "neo4j-driver@npm:4.2.3"
   dependencies:
