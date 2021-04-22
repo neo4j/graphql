@@ -933,12 +933,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-ogm@1.0.0-alpha.1, @neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@npm:1.0.0-alpha.1":
+  version: 1.0.0-alpha.1
+  resolution: "@neo4j/graphql-ogm@npm:1.0.0-alpha.1"
+  dependencies:
+    "@graphql-tools/merge": 6.2.10
+    "@neo4j/graphql": 1.0.0-alpha.6
+    camelcase: 6.2.0
+    pluralize: 8.0.0
+    upper-case-first: ^2.0.2
+  peerDependencies:
+    graphql: ^15.0.0
+    neo4j-driver: ^4.2.0
+  checksum: f7986899a39e606e61c457fe09bd2591bb971bff1c355743e0446c757b06b86f7e96f6953a9b1bc66ecd3578d3f048d217ea73e60942792f9b1d9f81c4da27a8
+  languageName: node
+  linkType: hard
+
+"@neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
     "@graphql-tools/merge": 6.2.10
-    "@neo4j/graphql": 1.0.0-alpha.6
+    "@neo4j/graphql": 1.0.0-beta.2
     "@types/jest": 26.0.8
     "@types/node": 14.0.27
     camelcase: 6.2.0
@@ -958,7 +974,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@1.0.0-alpha.6, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@1.0.0-beta.2, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -1000,6 +1016,26 @@ __metadata:
     neo4j-driver: ^4.2.0
   languageName: unknown
   linkType: soft
+
+"@neo4j/graphql@npm:1.0.0-alpha.6":
+  version: 1.0.0-alpha.6
+  resolution: "@neo4j/graphql@npm:1.0.0-alpha.6"
+  dependencies:
+    "@graphql-tools/merge": ^6.2.3
+    "@graphql-tools/schema": ^6.2.3
+    camelcase: 6.2.0
+    deep-equal: 2.0.5
+    dot-prop: 6.0.1
+    graphql-compose: 7.21.4
+    graphql-parse-resolve-info: 4.9.0
+    jsonwebtoken: 8.5.1
+    pluralize: 8.0.0
+  peerDependencies:
+    graphql: ^15.0.0
+    neo4j-driver: ^4.2.0
+  checksum: f4f0aef16b02841cd166fd03ceb980915d628c625c3a50b763fe5320a608c61260fec3acf19866cf57782c150da7148bffb7303c615b59712e1dbac332dea62b
+  languageName: node
+  linkType: hard
 
 "@neo4j/package-tests@workspace:packages/package-tests":
   version: 0.0.0-use.local
