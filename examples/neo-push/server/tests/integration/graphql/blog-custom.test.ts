@@ -2,21 +2,19 @@ import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
-import jsonwebtoken from "jsonwebtoken";
 import { gql } from "apollo-server-express";
 import * as neo4j from "../neo4j";
 import server from "../server";
+import { createJWT } from "../../../src/utils";
 
 describe("blog-custom", () => {
     let driver: Driver;
 
     beforeAll(async () => {
-        process.env.NEO4J_GRAPHQL_JWT_SECRET = "supersecret";
         driver = await neo4j.connect();
     });
 
     afterAll(async () => {
-        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
         await driver.close();
     });
 
@@ -41,7 +39,7 @@ describe("blog-custom", () => {
 
             `;
 
-            const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const token = await createJWT({ sub: userId });
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
@@ -86,7 +84,7 @@ describe("blog-custom", () => {
 
             `;
 
-            const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const token = await createJWT({ sub: userId });
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
@@ -134,7 +132,7 @@ describe("blog-custom", () => {
 
             `;
 
-            const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const token = await createJWT({ sub: userId });
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
@@ -179,7 +177,7 @@ describe("blog-custom", () => {
 
             `;
 
-            const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const token = await createJWT({ sub: userId });
 
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);

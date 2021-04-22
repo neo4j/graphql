@@ -11,7 +11,7 @@ import * as config from "../config";
 
 export const typeDefs = [User.typeDefs, Blog.typeDefs, Post.typeDefs, Comment.typeDefs];
 
-const resolvers = {
+export const resolvers = {
     ...User.resolvers,
 };
 
@@ -25,6 +25,11 @@ export const neoSchema = new Neo4jGraphQL({
     typeDefs,
     resolvers,
     debug: config.NODE_ENV === "development",
+    config: {
+        jwt: {
+            secret: config.NEO4J_GRAPHQL_JWT_SECRET,
+        },
+    },
 });
 
 export const server: ApolloServer = new ApolloServer({

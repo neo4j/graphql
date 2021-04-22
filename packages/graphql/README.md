@@ -49,7 +49,7 @@ const typeDefs = `
     }
 `;
 
-const neoSchema = new Neo4jGraphQL({ typeDefs });
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
 const driver = neo4j.driver(
     "bolt://localhost:7687",
@@ -58,7 +58,7 @@ const driver = neo4j.driver(
 
 const server = new ApolloServer({
     schema: neoSchema.schema,
-    context: ({ req }) => ({ req, driver }),
+    context: ({ req }) => ({ req }),
 });
 
 server.listen(4000).then(() => console.log("Online"));

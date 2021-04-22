@@ -54,21 +54,11 @@ import getObjFieldMeta from "./get-obj-field-meta";
 import * as point from "./point";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
 import validateTypeDefs from "./validation";
-import environment from "../environment";
 
-type IResolvers = IExecutableSchemaDefinition["resolvers"];
-type ITypeDefinitions = IExecutableSchemaDefinition["typeDefs"];
-type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
-
-function makeAugmentedSchema({
-    typeDefs,
-    resolvers,
-    schemaDirectives,
-}: {
-    typeDefs: ITypeDefinitions;
-    resolvers?: IResolvers;
-    schemaDirectives?: SchemaDirectives;
-}): { schema: GraphQLSchema; nodes: Node[] } {
+function makeAugmentedSchema(
+    { typeDefs, resolvers, ...schemaDefinition }: IExecutableSchemaDefinition,
+    { enableRegex }: { enableRegex?: boolean } = {}
+): { schema: GraphQLSchema; nodes: Node[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
     validateTypeDefs(document);
@@ -300,7 +290,7 @@ function makeAugmentedSchema({
                     }
 
                     if (["String", "ID"].includes(f.typeMeta.name)) {
-                        if (environment.NEO4J_GRAPHQL_ENABLE_REGEX) {
+                        if (enableRegex) {
                             res[`${f.fieldName}_MATCHES`] = "String";
                         }
 
@@ -765,9 +755,9 @@ function makeAugmentedSchema({
     });
 
     const schema = makeExecutableSchema({
+        ...schemaDefinition,
         typeDefs: generatedTypeDefs,
         resolvers: generatedResolvers,
-        schemaDirectives,
     });
 
     return {
