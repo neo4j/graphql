@@ -59,11 +59,12 @@ const baseTypeScriptRules = {
     start of @typescript-eslint/recommended-requiring-type-checking rules
     TODO Over the long term, reduce our usage of `any` and switch these rules on
     */
-    "@typescript-eslint/no-unsafe-assignment": "off", // Approximately 1100 instances
-    "@typescript-eslint/no-unsafe-member-access": "off", // Approximately 700 instances
-    "@typescript-eslint/no-unsafe-call": "off", // Approximately 500 instances
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/restrict-template-expressions": "off", // TODO Make sure variables are properly cast when using in template expressions (approximately 350 instances)
-    "@typescript-eslint/no-unsafe-return": "off", // Approximately 70 instances
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/no-empty-interface": "off",
     /* end of @typescript-eslint/recommended-requiring-type-checking rules */
 };
 

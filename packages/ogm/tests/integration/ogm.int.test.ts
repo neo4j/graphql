@@ -43,7 +43,7 @@ describe("OGM", () => {
             }
         `;
 
-        const ogm = new OGM({ typeDefs, driver, driverConfig: { database: "another-random-db" } });
+        const ogm = new OGM({ typeDefs, driver, config: { driverConfig: { database: "another-random-db" } } });
 
         await expect(ogm.model("Movie")?.find()).rejects.toThrow();
 
