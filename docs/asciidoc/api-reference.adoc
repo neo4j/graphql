@@ -23,7 +23,7 @@ const neo4jGraphQL = new Neo4jGraphQL({
     debug?
     config?: {
         driverConfig?,
-        enableRegex,
+        enableRegex?,
         jwt?: {
             secret?,
             noVerify?,
