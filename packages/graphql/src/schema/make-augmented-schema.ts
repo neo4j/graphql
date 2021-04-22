@@ -411,13 +411,15 @@ function makeAugmentedSchema(
             },
         });
 
-        composer.createInputTC({
-            name: `${node.name}DeleteFieldInput`,
-            fields: {
-                where: `${node.name}Where`,
-                ...(node.relationFields.length ? { delete: nodeDeleteInput } : {}),
-            },
-        });
+        if (!composer.has(`${node.name}DeleteFieldInput`)) {
+            composer.createInputTC({
+                name: `${node.name}DeleteFieldInput`,
+                fields: {
+                    where: `${node.name}Where`,
+                    ...(node.relationFields.length ? { delete: nodeDeleteInput } : {}),
+                },
+            });
+        }
 
         node.relationFields.forEach((rel) => {
             if (rel.union) {
@@ -442,7 +444,7 @@ function makeAugmentedSchema(
                     }UpdateFieldInput`;
                     const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${
                         n.name
-                    }DeleteInput`;
+                    }DeleteFieldInput`;
 
                     const connectField = rel.typeMeta.array
                         ? `[${n.name}ConnectFieldInput!]`
@@ -527,7 +529,7 @@ function makeAugmentedSchema(
             const updateField = `${n.name}UpdateInput`;
             const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
             const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}UpdateFieldInput`;
-            const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}DeleteInput`;
+            const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}DeleteFieldInput`;
             const connectField = rel.typeMeta.array ? `[${n.name}ConnectFieldInput!]` : `${n.name}ConnectFieldInput`;
             const disconnectField = rel.typeMeta.array
                 ? `[${n.name}DisconnectFieldInput!]`
@@ -574,17 +576,19 @@ function makeAugmentedSchema(
                 },
             });
 
-            composer.createInputTC({
-                name: nodeFieldDeleteInputName,
-                fields: {
-                    where: `${n.name}Where`,
-                    ...(n.relationFields.length
-                        ? {
-                              delete: `${n.name}DeleteInput`,
-                          }
-                        : {}),
-                },
-            });
+            if (!composer.has(nodeFieldDeleteInputName)) {
+                composer.createInputTC({
+                    name: nodeFieldDeleteInputName,
+                    fields: {
+                        where: `${n.name}Where`,
+                        ...(n.relationFields.length
+                            ? {
+                                  delete: `${n.name}DeleteInput`,
+                              }
+                            : {}),
+                    },
+                });
+            }
 
             nodeRelationInput.addFields({
                 [rel.fieldName]: createField,
