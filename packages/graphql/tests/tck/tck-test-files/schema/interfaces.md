@@ -137,13 +137,13 @@ input MovieUpdateInput {
   movies: [MovieMoviesUpdateFieldInput!]
 }
 
-input MovieMoviesDeleteInput {
+input MovieMoviesDeleteFieldInput {
   where: MovieWhere
   delete: MovieDeleteInput
 }
 
 input MovieDeleteInput {
-  movies: [MovieMoviesDeleteInput!]
+  movies: [MovieMoviesDeleteFieldInput!]
 }
 
 type CreateMoviesMutationResponse {
