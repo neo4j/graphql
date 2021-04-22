@@ -56,7 +56,7 @@ import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-co
 import validateTypeDefs from "./validation";
 
 function makeAugmentedSchema(
-    { typeDefs, resolvers, ...rest }: IExecutableSchemaDefinition,
+    { typeDefs, resolvers, ...schemaDefinition }: IExecutableSchemaDefinition,
     { enableRegex }: { enableRegex?: boolean } = {}
 ): { schema: GraphQLSchema; nodes: Node[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
@@ -741,8 +741,6 @@ function makeAugmentedSchema(
         }, {}),
     };
 
-    composer.removeEmptyTypes(composer.get("Mutation") as ObjectTypeComposer, new Set());
-
     if (resolvers) {
         generatedResolvers = wrapCustomResolvers({
             generatedResolvers,
@@ -757,7 +755,7 @@ function makeAugmentedSchema(
     });
 
     const schema = makeExecutableSchema({
-        ...rest,
+        ...schemaDefinition,
         typeDefs: generatedTypeDefs,
         resolvers: generatedResolvers,
     });

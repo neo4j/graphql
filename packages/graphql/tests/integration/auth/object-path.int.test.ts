@@ -202,7 +202,7 @@ describe("auth/object-path", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             config: {
-                jwt: { secret, jwtRolesObjectPath: "https://github\\.com/claims.https://github\\.com/claims/roles" },
+                jwt: { secret, rolesPath: "https://github\\.com/claims.https://github\\.com/claims/roles" },
             },
         });
 

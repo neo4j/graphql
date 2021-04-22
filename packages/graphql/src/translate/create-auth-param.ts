@@ -38,8 +38,8 @@ function createAuthParam({ context }: { context: Context }) {
         return param;
     }
 
-    if (jwtConfig.jwtRolesObjectPath) {
-        param.roles = dotProp.get(jwt, jwtConfig.jwtRolesObjectPath);
+    if (jwtConfig.rolesPath) {
+        param.roles = dotProp.get(jwt, jwtConfig.rolesPath);
     } else if (jwt.roles) {
         param.roles = jwt.roles;
     }
