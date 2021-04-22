@@ -30,7 +30,7 @@ import { getJWT } from "../auth/index";
 export interface Neo4jGraphQLJWT {
     secret: string;
     noVerify?: string;
-    jwtRolesObjectPath?: string;
+    rolesPath?: string;
 }
 
 export interface Neo4jGraphQLConfig {
@@ -62,8 +62,8 @@ class Neo4jGraphQL {
     }
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, debug, driver, ...rest } = input;
-        const { nodes, schema } = makeAugmentedSchema(rest, { enableRegex: config.enableRegex });
+        const { config = {}, debug, driver, ...schemaDefinition } = input;
+        const { nodes, schema } = makeAugmentedSchema(schemaDefinition, { enableRegex: config.enableRegex });
 
         if (debug) {
             // eslint-disable-next-line no-console

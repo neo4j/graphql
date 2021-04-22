@@ -24,7 +24,7 @@ Auth centric values on the Config object passed to Neo4jGraphQL or OGM.
 |`noVerify`
 | Disable the verification of the JW
 
-|`jwtRolesObjectPath`
+|`rolesPath`
 | Specify where on the JWT the roles key is
 |===
 
@@ -128,7 +128,7 @@ const neoSchema = new Neo4jGraphQL({
     config: {
         jwt: {
             secret,
-            jwtRolesObjectPath: "https://auth0.mysite.com/claims\\.https://auth0.mysite.com/claims/roles"
+            rolesPath: "https://auth0.mysite.com/claims\\.https://auth0.mysite.com/claims/roles"
         }
     }
 });
