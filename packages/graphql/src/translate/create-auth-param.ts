@@ -19,7 +19,6 @@
 
 import dotProp from "dot-prop";
 import { Context } from "../types";
-import environment from "../environment";
 
 function createAuthParam({ context }: { context: Context }) {
     const { jwt } = context;
@@ -33,8 +32,14 @@ function createAuthParam({ context }: { context: Context }) {
         return param;
     }
 
-    if (environment.NEO4J_GRAPHQL_JWT_ROLES_OBJECT_PATH) {
-        param.roles = dotProp.get(jwt, environment.NEO4J_GRAPHQL_JWT_ROLES_OBJECT_PATH);
+    const jwtConfig = context.neoSchema.config?.jwt;
+
+    if (!jwtConfig) {
+        return param;
+    }
+
+    if (jwtConfig.rolesPath) {
+        param.roles = dotProp.get(jwt, jwtConfig.rolesPath);
     } else if (jwt.roles) {
         param.roles = jwt.roles;
     }

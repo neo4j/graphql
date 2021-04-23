@@ -202,15 +202,15 @@ describe("makeAugmentedSchema", () => {
 
             expect(matchesField).toBeUndefined();
         });
+
         test("should add the MATCHES filter when NEO4J_GRAPHQL_ENABLE_REGEX is set", () => {
-            process.env.NEO4J_GRAPHQL_ENABLE_REGEX = "true";
             const typeDefs = `
                     type Node {
                         name: String
                     }
                 `;
 
-            const neoSchema = makeAugmentedSchema({ typeDefs });
+            const neoSchema = makeAugmentedSchema({ typeDefs }, { enableRegex: true });
 
             const document = parse(printSchema(neoSchema.schema));
 
@@ -222,9 +222,28 @@ describe("makeAugmentedSchema", () => {
 
             expect(matchesField).not.toBeUndefined();
         });
+    });
 
-        afterEach(() => {
-            delete process.env.NEO4J_GRAPHQL_ENABLE_REGEX;
+    describe("issues", () => {
+        test("158", () => {
+            // https://github.com/neo4j/graphql/issues/158
+
+            const typeDefs = `
+                type Node {
+                    createdAt: DateTime
+                }
+              
+                type Query {
+                  nodes: [Node] @cypher(statement: "")
+                }
+            `;
+
+            const neoSchema = makeAugmentedSchema({ typeDefs });
+
+            const document = parse(printSchema(neoSchema.schema));
+
+            // make sure the schema constructs
+            expect(document.kind).toEqual("Document");
         });
     });
 });

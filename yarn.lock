@@ -36,8 +36,8 @@ __metadata:
   linkType: hard
 
 "@apollo/protobufjs@npm:^1.0.3":
-  version: 1.0.5
-  resolution: "@apollo/protobufjs@npm:1.0.5"
+  version: 1.2.0
+  resolution: "@apollo/protobufjs@npm:1.2.0"
   dependencies:
     "@protobufjs/aspromise": ^1.1.2
     "@protobufjs/base64": ^1.1.2
@@ -55,7 +55,7 @@ __metadata:
   bin:
     apollo-pbjs: bin/pbjs
     apollo-pbts: bin/pbts
-  checksum: 593f898542e2745be5754b76119cb398ac28b17cb3e8f8377b0b0ece6349633ebe26e06d21f2800c6fdd4092656e74ad4cd2988f26f426c99f6a250a422ff5ab
+  checksum: d3b77471fa5748c7ab9e2b8a06ddfacbb1019007e8468ae97f9c949f3f03ea90025b406ac811c40867df1e146c050b258370251191e426e70a183c92ed27835f
   languageName: node
   linkType: hard
 
@@ -599,20 +599,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/merge@npm:6.2.10":
-  version: 6.2.10
-  resolution: "@graphql-tools/merge@npm:6.2.10"
-  dependencies:
-    "@graphql-tools/schema": ^7.0.0
-    "@graphql-tools/utils": ^7.5.0
-    tslib: ~2.1.0
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0
-  checksum: b9b4bac1b18ede71ae06fd8669b59d8af327a9843d0b2510d79cdd3777ac53f88f6a3db75d9416995d76ce76d3afca72ce4ad9ebf4fb127f745cbc7ee7b8841e
-  languageName: node
-  linkType: hard
-
-"@graphql-tools/merge@npm:^6.2.3":
+"@graphql-tools/merge@npm:^6.2.13":
   version: 6.2.13
   resolution: "@graphql-tools/merge@npm:6.2.13"
   dependencies:
@@ -625,19 +612,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/schema@npm:^6.2.3":
-  version: 6.2.4
-  resolution: "@graphql-tools/schema@npm:6.2.4"
-  dependencies:
-    "@graphql-tools/utils": ^6.2.4
-    tslib: ~2.0.1
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0
-  checksum: 030f1a7489873d0541119d93f1cbe17cdba2bd7619f4bcb254df123db024e5e481da862d8e31dc3e58d78f4a1193950cc7e9f2419dbcac6bcb130580d44532f6
-  languageName: node
-  linkType: hard
-
-"@graphql-tools/schema@npm:^7.0.0":
+"@graphql-tools/schema@npm:^7.0.0, @graphql-tools/schema@npm:^7.1.3":
   version: 7.1.3
   resolution: "@graphql-tools/schema@npm:7.1.3"
   dependencies:
@@ -649,33 +624,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/utils@npm:7.1.4":
-  version: 7.1.4
-  resolution: "@graphql-tools/utils@npm:7.1.4"
-  dependencies:
-    "@ardatan/aggregate-error": 0.0.6
-    camel-case: 4.1.2
-    tslib: ~2.0.1
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0
-  checksum: 1d91f8d4ba491dfc42e1dd67d6c38e7607caf790e8e4d5abcfdad5737acca72c89375ee6040942452c9951943b61a08240046622e5b038abfa5ab0bb42dbaf4b
-  languageName: node
-  linkType: hard
-
-"@graphql-tools/utils@npm:^6.2.4":
-  version: 6.2.4
-  resolution: "@graphql-tools/utils@npm:6.2.4"
-  dependencies:
-    "@ardatan/aggregate-error": 0.0.6
-    camel-case: 4.1.1
-    tslib: ~2.0.1
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0
-  checksum: d773b36540ac9c997945f09dce5bfd7eab22256a0e3279cfc6b861dfb437d6eda70f572d6bea532677acbb7fadead301978d92d205030f85189b72dc356934a1
-  languageName: node
-  linkType: hard
-
-"@graphql-tools/utils@npm:^7.1.2, @graphql-tools/utils@npm:^7.5.0, @graphql-tools/utils@npm:^7.7.0":
+"@graphql-tools/utils@npm:^7.1.2, @graphql-tools/utils@npm:^7.7.0, @graphql-tools/utils@npm:^7.7.3":
   version: 7.7.3
   resolution: "@graphql-tools/utils@npm:7.7.3"
   dependencies:
@@ -950,36 +899,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-ogm@npm:1.0.0-alpha.1":
-  version: 1.0.0-alpha.1
-  resolution: "@neo4j/graphql-ogm@npm:1.0.0-alpha.1"
-  dependencies:
-    "@graphql-tools/merge": 6.2.10
-    "@neo4j/graphql": 1.0.0-alpha.6
-    camelcase: 6.2.0
-    pluralize: 8.0.0
-    upper-case-first: ^2.0.2
-  peerDependencies:
-    graphql: ^15.0.0
-    neo4j-driver: ^4.2.0
-  checksum: f7986899a39e606e61c457fe09bd2591bb971bff1c355743e0446c757b06b86f7e96f6953a9b1bc66ecd3578d3f048d217ea73e60942792f9b1d9f81c4da27a8
-  languageName: node
-  linkType: hard
-
-"@neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@>1.0.0-beta <1.0.0, @neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
-    "@graphql-tools/merge": 6.2.10
-    "@neo4j/graphql": 1.0.0-beta.2
+    "@graphql-tools/merge": ^6.2.13
+    "@neo4j/graphql": ">1.0.0-beta <1.0.0"
     "@types/jest": 26.0.8
     "@types/node": 14.0.27
-    camelcase: 6.2.0
+    camelcase: ^6.2.0
     graphql-tag: 2.11.0
     jest: 26.2.2
     libnpmsearch: 3.1.0
     npm-run-all: ^4.1.5
-    pluralize: 8.0.0
+    pluralize: ^8.0.0
     randomstring: 1.1.5
     semver: 7.3.5
     ts-jest: 26.1.4
@@ -987,17 +920,17 @@ __metadata:
     upper-case-first: ^2.0.2
   peerDependencies:
     graphql: ^15.0.0
-    neo4j-driver: ^4.2.0
+    neo4j-driver: ^4.1.0
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@1.0.0-beta.2, @neo4j/graphql@>1.0.0-beta <1.0.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@>1.0.0-beta <1.0.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
-    "@graphql-tools/merge": ^6.2.3
-    "@graphql-tools/schema": ^6.2.3
-    "@graphql-tools/utils": 7.1.4
+    "@graphql-tools/merge": ^6.2.13
+    "@graphql-tools/schema": ^7.1.3
+    "@graphql-tools/utils": ^7.7.3
     "@types/deep-equal": 1.0.1
     "@types/faker": 5.1.7
     "@types/is-uuid": 1.0.0
@@ -1007,19 +940,20 @@ __metadata:
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.6
     apollo-server: 2.21.0
-    camelcase: 6.2.0
-    deep-equal: 2.0.5
-    dot-prop: 6.0.1
+    camelcase: ^6.2.0
+    debug: ^4.3.1
+    deep-equal: ^2.0.5
+    dot-prop: ^6.0.1
     faker: 5.2.0
-    graphql-compose: 7.21.4
-    graphql-parse-resolve-info: 4.9.0
+    graphql-compose: ^7.25.1
+    graphql-parse-resolve-info: ^4.11.0
     graphql-tag: 2.11.0
     is-uuid: 1.0.2
     jest: 26.2.2
-    jsonwebtoken: 8.5.1
+    jsonwebtoken: ^8.5.1
     libnpmsearch: 3.1.0
     npm-run-all: 4.1.5
-    pluralize: 8.0.0
+    pluralize: ^8.0.0
     randomstring: 1.1.5
     rimraf: 3.0.2
     semver: 7.3.5
@@ -1031,26 +965,6 @@ __metadata:
     neo4j-driver: ^4.1.0
   languageName: unknown
   linkType: soft
-
-"@neo4j/graphql@npm:1.0.0-alpha.6":
-  version: 1.0.0-alpha.6
-  resolution: "@neo4j/graphql@npm:1.0.0-alpha.6"
-  dependencies:
-    "@graphql-tools/merge": ^6.2.3
-    "@graphql-tools/schema": ^6.2.3
-    camelcase: 6.2.0
-    deep-equal: 2.0.5
-    dot-prop: 6.0.1
-    graphql-compose: 7.21.4
-    graphql-parse-resolve-info: 4.9.0
-    jsonwebtoken: 8.5.1
-    pluralize: 8.0.0
-  peerDependencies:
-    graphql: ^15.0.0
-    neo4j-driver: ^4.2.0
-  checksum: f4f0aef16b02841cd166fd03ceb980915d628c625c3a50b763fe5320a608c61260fec3acf19866cf57782c150da7148bffb7303c615b59712e1dbac332dea62b
-  languageName: node
-  linkType: hard
 
 "@neo4j/package-tests@workspace:packages/package-tests":
   version: 0.0.0-use.local
@@ -3932,16 +3846,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camel-case@npm:4.1.1":
-  version: 4.1.1
-  resolution: "camel-case@npm:4.1.1"
-  dependencies:
-    pascal-case: ^3.1.1
-    tslib: ^1.10.0
-  checksum: c202f62a74c020e51ab6d7d02c0367a6b8cd5d1803e69371421970186d6ca32a20437eb45257baa00a7bb976a202e8fbdb75d509145f5b022f7f80936997c6b8
-  languageName: node
-  linkType: hard
-
 "camel-case@npm:4.1.2, camel-case@npm:^4.1.1":
   version: 4.1.2
   resolution: "camel-case@npm:4.1.2"
@@ -3952,17 +3856,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camelcase@npm:6.2.0, camelcase@npm:^6.0.0, camelcase@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "camelcase@npm:6.2.0"
-  checksum: 654700600a80cb1f06ab85b3e2fe80333f94b441884d40826becdac549774f51b0317c6dcb6040416df26241fa9481eb58d0c1659d4d6d5627dcd4259be61beb
-  languageName: node
-  linkType: hard
-
 "camelcase@npm:^5.0.0, camelcase@npm:^5.3.1":
   version: 5.3.1
   resolution: "camelcase@npm:5.3.1"
   checksum: 6a3350c4ea8ab6e5109e0b443cfaf43dc40abfad7b2d79dcafbbafbe9b6b4059b4365b17ad822e24cf08e6627c1ffb65a9651d05cef9fcc6f64b6a0c2f327feb
+  languageName: node
+  linkType: hard
+
+"camelcase@npm:^6.0.0, camelcase@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "camelcase@npm:6.2.0"
+  checksum: 654700600a80cb1f06ab85b3e2fe80333f94b441884d40826becdac549774f51b0317c6dcb6040416df26241fa9481eb58d0c1659d4d6d5627dcd4259be61beb
   languageName: node
   linkType: hard
 
@@ -4715,7 +4619,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.0.0, debug@npm:^4.0.1, debug@npm:^4.1.0, debug@npm:^4.1.1":
+"debug@npm:4, debug@npm:^4.0.0, debug@npm:^4.0.1, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1":
   version: 4.3.2
   resolution: "debug@npm:4.3.2"
   dependencies:
@@ -4785,7 +4689,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deep-equal@npm:2.0.5":
+"deep-equal@npm:^1.0.1":
+  version: 1.1.1
+  resolution: "deep-equal@npm:1.1.1"
+  dependencies:
+    is-arguments: ^1.0.4
+    is-date-object: ^1.0.1
+    is-regex: ^1.0.4
+    object-is: ^1.0.1
+    object-keys: ^1.1.1
+    regexp.prototype.flags: ^1.2.0
+  checksum: cc6a0009ce73a10230758d50795211fb3ceb7eb7f2cf8baed1c4a4cb2a06dc28857ce11e641c95ca9abb5edc1f1e86a4bb6bcffaadf9fe9d310c102d346d043b
+  languageName: node
+  linkType: hard
+
+"deep-equal@npm:^2.0.5":
   version: 2.0.5
   resolution: "deep-equal@npm:2.0.5"
   dependencies:
@@ -4805,20 +4723,6 @@ __metadata:
     which-collection: ^1.0.1
     which-typed-array: ^1.1.2
   checksum: bf99bc27fa34dc229829126b9d18d509fd54e8ac92941c7c9d2be5dddff66fdbce35e9b39026ab12b4d2235491cdcc56cb50317da41230ab558d3b57f48ec454
-  languageName: node
-  linkType: hard
-
-"deep-equal@npm:^1.0.1":
-  version: 1.1.1
-  resolution: "deep-equal@npm:1.1.1"
-  dependencies:
-    is-arguments: ^1.0.4
-    is-date-object: ^1.0.1
-    is-regex: ^1.0.4
-    object-is: ^1.0.1
-    object-keys: ^1.1.1
-    regexp.prototype.flags: ^1.2.0
-  checksum: cc6a0009ce73a10230758d50795211fb3ceb7eb7f2cf8baed1c4a4cb2a06dc28857ce11e641c95ca9abb5edc1f1e86a4bb6bcffaadf9fe9d310c102d346d043b
   languageName: node
   linkType: hard
 
@@ -5184,21 +5088,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dot-prop@npm:6.0.1":
-  version: 6.0.1
-  resolution: "dot-prop@npm:6.0.1"
-  dependencies:
-    is-obj: ^2.0.0
-  checksum: 06793b868079d70bffce4f0ac7e32055778723cc90b6e0bb12a2dff157298e693fb9ac7733556e4bb2d54de9d670a0b6a67610295cb1119a204fb7e340fafe54
-  languageName: node
-  linkType: hard
-
 "dot-prop@npm:^5.2.0":
   version: 5.3.0
   resolution: "dot-prop@npm:5.3.0"
   dependencies:
     is-obj: ^2.0.0
   checksum: 76e6693d8803eeff9cb920988446bf223cf1f6e5b1c0c2fe07a66906392134931a481b11e3c0bd852c5cfc97fad65258bcb4359169ad1d8d624cb3f56932be98
+  languageName: node
+  linkType: hard
+
+"dot-prop@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "dot-prop@npm:6.0.1"
+  dependencies:
+    is-obj: ^2.0.0
+  checksum: 06793b868079d70bffce4f0ac7e32055778723cc90b6e0bb12a2dff157298e693fb9ac7733556e4bb2d54de9d670a0b6a67610295cb1119a204fb7e340fafe54
   languageName: node
   linkType: hard
 
@@ -5263,9 +5167,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.3.719":
-  version: 1.3.719
-  resolution: "electron-to-chromium@npm:1.3.719"
-  checksum: bde0bd8a91c98830454f3c6715e109c1d2e3eca5eff93aa5eaa26d8efd9d674b207f39a269130a48e7bcb2c66fc732d8b46182bbd6286d35e4c3c8bc404b68f0
+  version: 1.3.720
+  resolution: "electron-to-chromium@npm:1.3.720"
+  checksum: 51bb3720af1ffe2ac04e0760f4cdcf319c2e371625e7ed9e433ee962c1c7ae09e65b44afbe7ddf5c71dc9a01583c8e0015ff04b86f0222ed7cc5b5871494078d
   languageName: node
   linkType: hard
 
@@ -6696,15 +6600,15 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"graphql-compose@npm:7.21.4":
-  version: 7.21.4
-  resolution: "graphql-compose@npm:7.21.4"
+"graphql-compose@npm:^7.25.1":
+  version: 7.25.1
+  resolution: "graphql-compose@npm:7.25.1"
   dependencies:
     graphql-type-json: 0.3.2
-    object-path: ^0.11.4
+    object-path: 0.11.5
   peerDependencies:
     graphql: ^14.2.0 || ^15.0.0
-  checksum: fce6ffd4a19e4da8589a5b2b5d52c0f0a13c448551a14793bbd48e4d89e352ca565bd760f14dca10a5f79c742557f59bf591b1d004d0922a1d83be886f8fff46
+  checksum: 96aa8a6ab9f2c3b2c97747bb2706aeaa4a88d90c10246d0d40caf8936aeea04e61267fb60db2651e59a6665e58a4a52c911259297c005a63900095dd3881e44f
   languageName: node
   linkType: hard
 
@@ -6721,15 +6625,15 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"graphql-parse-resolve-info@npm:4.9.0":
-  version: 4.9.0
-  resolution: "graphql-parse-resolve-info@npm:4.9.0"
+"graphql-parse-resolve-info@npm:^4.11.0":
+  version: 4.11.0
+  resolution: "graphql-parse-resolve-info@npm:4.11.0"
   dependencies:
     debug: ^4.1.1
     tslib: ^2.0.1
   peerDependencies:
-    graphql: ">=0.9 <0.14 || ^14.0.2"
-  checksum: 4005a0818aa27ff91ac404f3d1207333bf2ad13888ac741ca72fd6bc128dc134677ac30a1ff56da605c50f7ae8ebf0e5f3e4e2ce8e481d65c1be4d7f7927ebd3
+    graphql: ">=0.9 <0.14 || ^14.0.2 || ^15.4.0"
+  checksum: ef41c34e647abbfeb720398012c559c4d3e4d3f78f6e5e994e55940bcfa5c48ad65274609bc22f1e8837c7b1027a897ef9c2334ec2152d3b52f1ba9f22dbc817
   languageName: node
   linkType: hard
 
@@ -8742,7 +8646,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:8.5.1":
+"jsonwebtoken@npm:8.5.1, jsonwebtoken@npm:^8.5.1":
   version: 8.5.1
   resolution: "jsonwebtoken@npm:8.5.1"
   dependencies:
@@ -9774,8 +9678,8 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "neo-push-server@workspace:examples/neo-push/server"
   dependencies:
-    "@neo4j/graphql": 1.0.0-alpha.6
-    "@neo4j/graphql-ogm": 1.0.0-alpha.1
+    "@neo4j/graphql": ">1.0.0-beta <1.0.0"
+    "@neo4j/graphql-ogm": ">1.0.0-beta <1.0.0"
     "@types/bcrypt": 3.0.0
     "@types/debug": 4.1.5
     "@types/dotenv": 8.2.0
@@ -10170,7 +10074,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"object-path@npm:^0.11.4":
+"object-path@npm:0.11.5, object-path@npm:^0.11.4":
   version: 0.11.5
   resolution: "object-path@npm:0.11.5"
   checksum: a2be57f65eb247161763280e857ddbafcfbb41ad7cfcfb0a78aca2e8adb990a7b5afe6b182c20baf0e218e541ec75c1807fd04d50e3049920c2ec65e6eb9c900
@@ -10582,7 +10486,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"pascal-case@npm:^3.1.1, pascal-case@npm:^3.1.2":
+"pascal-case@npm:^3.1.2":
   version: 3.1.2
   resolution: "pascal-case@npm:3.1.2"
   dependencies:
@@ -10810,7 +10714,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"pluralize@npm:8.0.0":
+"pluralize@npm:^8.0.0":
   version: 8.0.0
   resolution: "pluralize@npm:8.0.0"
   checksum: 5251b470a0c8e5181ac7e1d61028553f90cb2c85c34b8e468cea269ae715499524546c2c3681029ef5697d86c54bfb12e49388f5cc6082051e84f5888588f4ec
@@ -10897,13 +10801,13 @@ fsevents@^1.2.7:
   linkType: hard
 
 "postcss@npm:^8.1.4":
-  version: 8.2.10
-  resolution: "postcss@npm:8.2.10"
+  version: 8.2.12
+  resolution: "postcss@npm:8.2.12"
   dependencies:
     colorette: ^1.2.2
     nanoid: ^3.1.22
     source-map: ^0.6.1
-  checksum: 83912f846376ceb501d887951bb3c7f5efc16452b124ba5ffbdd27f718dabd1edce8f6ef777a88aeb93366081cc2a3804581b2e6711a1e89ecaecb0dff2d2b73
+  checksum: f16956a6cc20ae78390338362e0640fa25a88895ddc55bd5850536a3140897a538fe91b5d6dc9c84147a20ff100f6389b7445deb539159bea4df7e584f5a63ac
   languageName: node
   linkType: hard
 
