@@ -911,7 +911,6 @@ __metadata:
     graphql-tag: 2.11.0
     jest: 26.2.2
     libnpmsearch: 3.1.0
-    neo4j-driver: 4.2.0
     npm-run-all: ^4.1.5
     pluralize: ^8.0.0
     randomstring: 1.1.5
@@ -9710,18 +9709,6 @@ fsevents@^1.2.7:
     typescript: 4.1.3
   languageName: unknown
   linkType: soft
-
-"neo4j-driver@npm:4.2.0":
-  version: 4.2.0
-  resolution: "neo4j-driver@npm:4.2.0"
-  dependencies:
-    "@babel/runtime": ^7.5.5
-    rxjs: ^6.6.3
-    text-encoding-utf-8: ^1.0.2
-    uri-js: ^4.4.0
-  checksum: 450d490819a35bd592978be2102c1a55f3733c5f5cf7b9854db29b37d21723643b0de4032bab5538874e7e117db12af64a7832168f1229bc0ec80f1f654ee014
-  languageName: node
-  linkType: hard
 
 "neo4j-driver@npm:^4.2.0, neo4j-driver@npm:^4.2.3":
   version: 4.2.3
