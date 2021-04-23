@@ -133,5 +133,9 @@
         <d:tocentry linkend="drivers-and-config">
             <?dbhtml filename="drivers-and-config/index.html"?>
         </d:tocentry>
+
+        <d:tocentry linkend="troubleshooting">
+            <?dbhtml filename="troubleshooting/index.html"?>
+        </d:tocentry>
     </d:tocentry>
 </d:toc>

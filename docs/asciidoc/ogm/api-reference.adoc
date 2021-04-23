@@ -17,7 +17,6 @@ const { OGM } = require("@neo4j/graphql-ogm");
 const ogm = new OGM({
     typeDefs,
     resolvers?,
-    debug?,
 });
 ----
 
@@ -25,7 +24,7 @@ const ogm = new OGM({
 === Methods
 
 ==== `model()`
-Reference: <<ogm-api-reference-model>> 
+Reference: <<ogm-api-reference-model>>
 
 [[ogm-api-reference-model]]
 == `Model`

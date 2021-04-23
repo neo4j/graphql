@@ -31,12 +31,10 @@ describe("auth/allow", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        process.env.NEO4J_GRAPHQL_JWT_SECRET = "secret";
     });
 
     afterAll(async () => {
         await driver.close();
-        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
     });
 
     describe("read", () => {
@@ -63,15 +61,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -119,15 +119,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -186,15 +188,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -255,15 +259,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -338,15 +344,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -397,15 +405,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -456,15 +466,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -525,15 +537,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -596,15 +610,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -654,15 +670,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -728,15 +746,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -799,15 +819,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -889,15 +911,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -962,15 +986,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -1053,15 +1079,17 @@ describe("auth/allow", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: "invalid",
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
