@@ -31,12 +31,10 @@ describe("auth/roles", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        process.env.NEO4J_GRAPHQL_JWT_SECRET = "secret";
     });
 
     afterAll(async () => {
         await driver.close();
-        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
     });
 
     describe("read", () => {
@@ -53,17 +51,17 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const query = `
-                {
-                    products {
-                        id
-                    }
+            {
+                products {
+                    id
                 }
+            }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -92,8 +90,6 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const query = `
                 {
                     users {
@@ -102,7 +98,9 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -136,8 +134,6 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const query = `
                 mutation {
                     createUsers(input: [{ id: "1" }]) {
@@ -148,7 +144,9 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -180,8 +178,6 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const query = `
                 mutation {
                     createUsers(input: [{ password: "1" }]) {
@@ -192,7 +188,9 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -226,8 +224,6 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const query = `
                 mutation {
                     updateUsers(update: { id: "1" }) {
@@ -238,7 +234,9 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -270,8 +268,6 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const query = `
                 mutation {
                     updateUsers(update: { password: "1" }) {
@@ -282,7 +278,9 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -340,8 +338,6 @@ describe("auth/roles", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const query = `
                 mutation {
                     updateUsers(update: { id: "${userId}" }, connect: { posts: { where: { id: "${postId}" } } }) {
@@ -352,8 +348,10 @@ describe("auth/roles", () => {
                 }
             `;
 
+            const secret = "secret";
             // missing super-admin
-            const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: ["admin"] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -423,8 +421,6 @@ describe("auth/roles", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const query = `
                 mutation {
                     updateComments(
@@ -444,7 +440,9 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [""] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [""] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -507,8 +505,6 @@ describe("auth/roles", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const query = `
                 mutation {
                     updateUsers(update: { id: "${userId}" }, disconnect: { posts: { where: { id: "${postId}" } } }) {
@@ -519,8 +515,10 @@ describe("auth/roles", () => {
                 }
             `;
 
+            const secret = "secret";
             // missing super-admin
-            const token = jsonwebtoken.sign({ roles: ["admin"] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const token = jsonwebtoken.sign({ roles: ["admin"] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -590,8 +588,6 @@ describe("auth/roles", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const query = `
                 mutation {
                     updateComments(
@@ -611,7 +607,9 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [""] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [""] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -649,8 +647,6 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const query = `
                 mutation {
                     deleteUsers {
@@ -659,7 +655,9 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -697,8 +695,6 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const userId = generate({
                 charset: "alphabetic",
             });
@@ -715,8 +711,9 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
-
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
             try {
                 await session.run(`
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
@@ -754,8 +751,6 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const query = `
                 query {
                     users {
@@ -764,7 +759,9 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -797,8 +794,6 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const query = `
                 mutation {
                     createUser {
@@ -807,7 +802,9 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -842,8 +839,6 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
             const query = `
                 {
                     users {
@@ -854,7 +849,9 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const token = jsonwebtoken.sign({ roles: [] }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });

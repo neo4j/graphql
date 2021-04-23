@@ -19,9 +19,9 @@
 
 import { IncomingMessage } from "http";
 import jsonwebtoken from "jsonwebtoken";
-import environment from "../environment";
+import { Context } from "../types";
 
-function getJWT(context: any): any {
+function getJWT(context: Context): any {
     const req = context instanceof IncomingMessage ? context : context.req || context.request;
     let result;
 
@@ -40,11 +40,17 @@ function getJWT(context: any): any {
         return result;
     }
 
+    const jwtConfig = context.neoSchema.config?.jwt;
+
+    if (!jwtConfig) {
+        return result;
+    }
+
     try {
-        if (!environment.NEO4J_GRAPHQL_JWT_SECRET && environment.NEO4J_GRAPHQL_JWT_NO_VERIFY) {
+        if (jwtConfig.noVerify) {
             result = jsonwebtoken.decode(token);
         } else {
-            result = jsonwebtoken.verify(token, environment.NEO4J_GRAPHQL_JWT_SECRET as string, {
+            result = jsonwebtoken.verify(token, jwtConfig.secret, {
                 algorithms: ["HS256", "RS256"],
             });
         }
