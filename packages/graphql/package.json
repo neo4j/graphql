@@ -66,6 +66,7 @@
         "@graphql-tools/schema": "^6.2.3",
         "@graphql-tools/utils": "7.6.0",
         "camelcase": "6.2.0",
+        "debug": "^4.3.1",
         "deep-equal": "2.0.5",
         "dot-prop": "6.0.1",
         "graphql-compose": "7.21.4",

@@ -1008,6 +1008,7 @@ __metadata:
     "@types/randomstring": 1.1.6
     apollo-server: 2.21.0
     camelcase: 6.2.0
+    debug: ^4.3.1
     deep-equal: 2.0.5
     dot-prop: 6.0.1
     faker: 5.2.0
@@ -4715,7 +4716,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.0.0, debug@npm:^4.0.1, debug@npm:^4.1.0, debug@npm:^4.1.1":
+"debug@npm:4, debug@npm:^4.0.0, debug@npm:^4.0.1, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1":
   version: 4.3.2
   resolution: "debug@npm:4.3.2"
   dependencies:
