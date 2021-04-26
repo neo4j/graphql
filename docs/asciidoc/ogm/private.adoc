@@ -1,7 +1,7 @@
 [[ogm-private]]
 = `@private` Directive
 
-The `@private` directive allows you to specify fields that should only be accessible through the OGM. This is very handy as you can hide fields such as user password to the outside world. Simply put the `@private` directive on the field you wish to be inaccessible through the exposed API;
+The `@private` directive allows you to specify fields that should only be accessible through the OGM. This is very handy as you can hide fields such as passwords to the outside world. Simply put the `@private` directive on the field you wish to be inaccessible through the exposed API;
 
 == Definition
 
