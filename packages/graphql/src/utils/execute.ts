@@ -18,11 +18,14 @@
  */
 
 import { SessionMode } from "neo4j-driver";
+import Debug from "debug";
 import { Neo4jGraphQLForbiddenError, Neo4jGraphQLAuthenticationError } from "../classes";
-import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR, DEBUG_EXECUTE } from "../constants";
 import createAuthParam from "../translate/create-auth-param";
 import { Context, DriverConfig } from "../types";
 import environment from "../environment";
+
+const debug = Debug(DEBUG_EXECUTE);
 
 async function execute(input: {
     cypher: string;
@@ -64,7 +67,11 @@ async function execute(input: {
     }
 
     try {
-        input.context.neoSchema.debug(`Cypher: ${input.cypher}\nParams: ${JSON.stringify(input.params, null, 2)}`);
+        // input.context.neoSchema.debug(`Cypher: ${input.cypher}\nParams: ${JSON.stringify(input.params, null, 2)}`);
+        debug(
+            "%s",
+            `About to execute Cypher:\nCypher:\n${input.cypher}\nParams:\n${JSON.stringify(input.params, null, 2)}`
+        );
 
         const result = await session[`${input.defaultAccessMode.toLowerCase()}Transaction`]((tx) =>
             tx.run(input.cypher, input.params)
@@ -78,7 +85,11 @@ async function execute(input: {
             return result;
         }
 
-        return result.records.map((r) => r.toObject());
+        const records = result.records.map((r) => r.toObject());
+
+        debug(`Execute successful, received ${records.length} records`);
+
+        return records;
     } catch (error) {
         if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_FORBIDDEN_ERROR}`)) {
             throw new Neo4jGraphQLForbiddenError("Forbidden");
@@ -87,6 +98,8 @@ async function execute(input: {
         if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_UNAUTHENTICATED_ERROR}`)) {
             throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
         }
+
+        debug("%s", error);
 
         throw error;
     } finally {
