@@ -40,4 +40,8 @@
 ** xref:drivers-and-config/index.adoc[]
 ** xref:guides/index.adoc[]
 *** xref:guides/migration-guide/index.adoc[]
+**** xref:guides/migration-guide/server/index.adoc[]
+**** xref:guides/migration-guide/type-definitions/index.adoc[]
+**** xref:guides/migration-guide/queries/index.adoc[]
+**** xref:guides/migration-guide/mutations/index.adoc[]
 ** xref:troubleshooting/index.adoc[]

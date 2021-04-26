@@ -1,0 +1,106 @@
+[[migration-guide-type-definitions]]
+= Type Definitions
+
+This page will walk through what needs to change in your type definitions before you can pass them into `@neo4j/graphql`.
+
+> An important discrepancy to note at this early stage is that relationship type definitions are not yet supported in `@neo4j/graphql`, and as such, neither are relationship properties. This is in the pipeline, so keep an eye out for any news relating to this!
+
+== Directives
+
+Both `neo4j-graphql-js` and `@neo4j/graphql` are highly driven by GraphQL directives. Each heading in this section will address how/if one or many directives available in `neo4j-graphql-js` can be migrated to `@neo4j/graphql`.
+
+=== `@relation`
+
+Migrating this directive is trivial:
+
+1. Rename `@relation` to `@relationship`
+2. Rename the argument `name` to `type`
+
+For example, `@relation(name: "ACTED_IN", direction: OUT)` becomes `@relationship(type: "ACTED_IN", direction: OUT)`.
+
+See <<type-definitions-relationships>> for more information on relationships in `@neo4j/graphql`.
+
+=== `@cypher`
+
+No change. See <<type-definitions-cypher>> for more details on this directive in `@neo4j/graphql`.
+
+=== `@neo4j_ignore`
+
+`@neo4j/graphql` offers two directives for skipping autogeneration for specified types/fields:
+
+* <<type-definitions-access-control-exclude>>: Skip generation of specified Query/Mutation fields for an object type
+* <<type-definitions-access-control-ignore>>: Ignore a field, which will need custom logic for resolution
+
+=== `@isAuthenticated`, `@hasRole` and `@hasScope`
+
+Will require significant migration, but will be worth the effort! See <<auth>>.
+
+=== `@additionalLabels`
+
+Not supported at this time.
+
+=== `@id`
+
+There is an equivalent directive in the new library, but it does not work using database constraints as per the old library. See <<type-definitions-autogeneration-id>>.
+
+=== `@unique`, `@index` and `@search`
+
+These all relate to database indexes and constraints, which are not currently supported by `@neo4j/graphql`.
+
+== Types
+
+=== Scalar Types
+
+Supported as you would expect, with additional <<type-definitions-types-bigint>> support for 64 bit integers.
+
+=== Temporal Types (`DateTime`)
+
+Temporal Types have been massively simplified in `@neo4j/graphql`, down to a single type, `DateTime`, which uses ISO 8601 strings only for parsing and serialization.
+
+In terms of migrating from the old library, the `formatted` field of the old `DateTime` type now becomes the value itself. For example, used in a query:
+
+[source, graphql]
+----
+{
+  Movie(released: { formatted: "1992-10-09T00:00:00Z" }) {
+    title
+  }
+}
+----
+
+Has become:
+
+[source, graphql]
+----
+{
+  Movie(released: "1992-10-09T00:00:00Z") {
+    title
+  }
+}
+----
+
+Due to the move to ISO 8601 strings, input types are no longer necessary for temporal instances, so `_Neo4jDateTimeInput` has simply become `DateTime` for input.
+
+See <<type-definitions-types-datetime>>.
+
+=== Spatial Types
+
+The single type in `neo4j-graphql-js`, `Point`, has been split out into two types:
+
+* <<type-definitions-types-point>>
+* <<type-definitions-types-cartesian-point>>
+
+Correspondingly, `_Neo4jPointInput` has also been split out into two input types:
+
+* `PointInput`
+* `CartesianPointInput`
+
+Using them in Queries and Mutations should feel remarkably similar.
+
+=== Interface Types
+
+Interface Types are not yet supported in `@neo4j/graphql`. `neo4j-graphql-js` leverages multiple labels for this purpose, which are not yet supported in the new library.
+
+=== Union Types
+
+Supported, queryable using inline fragments as per `neo4j-graphql-js`, but can also be created using Nested Mutations. See <<type-definitions-unions-and-interfaces-union-types>>.
