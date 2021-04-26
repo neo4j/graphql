@@ -13,7 +13,6 @@ await User.delete({ where: { name: "dan" }});
 
 == Args
 
-
 === `where`
 JavaScript object representation of the GraphQL `where` input type, used for <<schema-queries>>.
 
@@ -21,10 +20,10 @@ JavaScript object representation of the GraphQL `where` input type, used for <<s
 JavaScript object representation of the GraphQL `delete` input type, used for <<schema-mutations-delete>>.
 
 === `args`
-The arguments for the GraphQL Query. 
+The arguments for the GraphQL Query.
 
 === `context`
-The `context` for the GraphQL Query. 
+The `context` for the GraphQL Query.
 
 === `rootValue`
-The `rootValue` for the GraphQL Query. 
+The `rootValue` for the GraphQL Query.

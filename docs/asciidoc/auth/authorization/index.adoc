@@ -1,4 +1,4 @@
 [[auth-authorization]]
 = Authorization
 
-You specify authorization rules inside the `@auth` directive, this section looks at each option available & explains how to use to implement authorization.
+You specify authorization rules inside the `@auth` directive. This section looks at each option available and explains how to use it to implement authorization.

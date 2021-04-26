@@ -1,7 +1,7 @@
 [[ogm]]
 = OGM
 
-Common applications won't just expose a single API. On the same instance as the GraphQL API there may be; scheduled jobs, authentication, migrations and not to forget any custom logic in the resolvers themselves. We expose a OGM(Object Graph Model) on top of the pre-existing GraphQL work and abstractions.
+Common applications won't just expose a single API. On the same instance as the GraphQL API there may be; scheduled jobs, authentication, migrations and not to forget any custom logic in the resolvers themselves. We expose an OGM (Object Graph Mapper) on top of the pre-existing GraphQL work and abstractions.
 
 * <<ogm-getting-started>>
 * <<ogm-api-reference>>
@@ -11,7 +11,7 @@ Common applications won't just expose a single API. On the same instance as the 
 
 
 == Directives
-The following directives are excluded from the OGM's schema; 
+The following directives are excluded from the OGM's schema;
 
 * `@auth`
 * `@exclude`
