@@ -15,9 +15,6 @@
     "exports": "./dist/index.js",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
-    "files": [
-        "dist/"
-    ],
     "scripts": {
         "clean": "cd src/ && tsc --build --clean",
         "test": "jest",
