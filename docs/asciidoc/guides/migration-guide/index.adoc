@@ -1,0 +1,23 @@
+[[migration-guide]]
+= Migration Guide
+
+`@neo4j/graphql` was never intended to be a drop-in replacement for `neo4j-graphql-js`. However, simple applications should have a fairly trivial migration process.
+
+== How to Upgrade
+
+You need to uninstall the old library and install the new one (and its peer dependencies) using npm or your package manager of choice:
+
+[source, bash]
+----
+npm uninstall neo4j-graphql-js
+npm install @neo4j/graphql graphql neo4j-driver
+----
+
+From this point on, see each section within this guide:
+
+1. <<migration-guide-server>> for how to generate a schema and host it using Apollo Server, including database configuration
+2. <<migration-guide-type-definitions>> for the changes needed in your type definitions, including GraphQL types and directives
+3. <<migration-guide-queries>> for how you need to change your queries to work with the new schema
+4. <<migration-guide-mutations>> for how you need to change your mutations to work with the new schema
+
+Subscriptions are not supported at this stage.
