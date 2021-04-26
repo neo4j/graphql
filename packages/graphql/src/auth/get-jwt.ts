@@ -19,11 +19,22 @@
 
 import { IncomingMessage } from "http";
 import jsonwebtoken from "jsonwebtoken";
+import Debug from "debug";
 import { Context } from "../types";
+import { DEBUG_AUTH } from "../constants";
+
+const debug = Debug(DEBUG_AUTH);
 
 function getJWT(context: Context): any {
-    const req = context instanceof IncomingMessage ? context : context.req || context.request;
+    const jwtConfig = context.neoSchema.config?.jwt;
     let result;
+
+    if (!jwtConfig) {
+        debug("JWT not configured");
+        return result;
+    }
+
+    const req = context instanceof IncomingMessage ? context : context.req || context.request;
 
     if (
         !req ||
@@ -31,31 +42,36 @@ function getJWT(context: Context): any {
         (!req.headers.authorization && !req.headers.Authorization) ||
         (!req && !req.cookies && !req.cookies.token)
     ) {
+        debug("Could not extract request from context");
+
         return result;
     }
 
-    const authorization = req.headers.authorization || req.headers.Authorization || req.cookies.token || "";
+    const authorization = req.headers.authorization || req.headers.Authorization || req.cookies.token;
+    if (!authorization) {
+        debug("Could not extract authorization header from request");
+    }
+
     const token = authorization.split("Bearer ")[1];
     if (!token) {
-        return result;
-    }
-
-    const jwtConfig = context.neoSchema.config?.jwt;
-
-    if (!jwtConfig) {
+        debug("Authorization header was not in expected format 'Bearer <token>'");
         return result;
     }
 
     try {
         if (jwtConfig.noVerify) {
+            debug("Skipping verifying JWT as noVerify is not set");
+
             result = jsonwebtoken.decode(token);
         } else {
+            debug("Verifying JWT");
+
             result = jsonwebtoken.verify(token, jwtConfig.secret, {
                 algorithms: ["HS256", "RS256"],
             });
         }
     } catch (error) {
-        // TODO DEBUG
+        debug("%s", error);
     }
 
     return result;

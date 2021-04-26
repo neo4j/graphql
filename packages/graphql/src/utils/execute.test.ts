@@ -72,9 +72,6 @@ describe("execute", () => {
                 const neoSchema: Neo4jGraphQL = {
                     // @ts-ignore
                     options: {},
-                    debug: (message) => {
-                        expect(message).toEqual(`Cypher: ${cypher}\nParams: ${JSON.stringify(params, null, 2)}`);
-                    },
                 };
 
                 const result = await execute({

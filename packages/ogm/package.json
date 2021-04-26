@@ -47,7 +47,6 @@
         "graphql-tag": "2.11.0",
         "jest": "26.2.2",
         "libnpmsearch": "3.1.0",
-        "neo4j-driver": "4.2.0",
         "npm-run-all": "^4.1.5",
         "randomstring": "1.1.5",
         "semver": "7.3.5",

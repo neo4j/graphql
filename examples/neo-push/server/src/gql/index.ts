@@ -18,13 +18,11 @@ export const resolvers = {
 export const ogm = new OGM({
     typeDefs,
     driver,
-    debug: config.NODE_ENV === "development",
 });
 
 export const neoSchema = new Neo4jGraphQL({
     typeDefs,
     resolvers,
-    debug: config.NODE_ENV === "development",
     config: {
         jwt: {
             secret: config.NEO4J_GRAPHQL_JWT_SECRET,
