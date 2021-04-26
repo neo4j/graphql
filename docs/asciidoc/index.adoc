@@ -1,5 +1,5 @@
 [[index]]
-= Neo4j GraphQL
+= Neo4j GraphQL Library
 :experimental:
 :sectnums:
 :chapter-label:

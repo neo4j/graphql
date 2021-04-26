@@ -1,6 +1,6 @@
 name: graphql-manual
-title: Neo4j GraphQL
-version: '1.0.0-beta'
+title: Neo4j GraphQL Library
+version: '1.0.0'
 start_page: ROOT:index.adoc
 nav:
 - modules/ROOT/content-nav.adoc
