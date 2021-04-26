@@ -65,6 +65,11 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     resolvers,
     driver,
+    config: {
+        jwt: {
+            secret
+        }
+    }
 });
 
 const server = new ApolloServer({

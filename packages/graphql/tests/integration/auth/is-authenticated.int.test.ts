@@ -30,12 +30,10 @@ describe("auth/is-authenticated", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        process.env.NEO4J_GRAPHQL_JWT_SECRET = "secret";
     });
 
     afterAll(async () => {
         await driver.close();
-        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
     });
 
     describe("read", () => {
@@ -52,7 +50,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 {
@@ -91,7 +89,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 {
@@ -135,7 +133,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -179,7 +177,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -225,7 +223,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -269,7 +267,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -339,7 +337,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -415,7 +413,7 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -467,7 +465,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -515,7 +513,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const userId = generate({
                 charset: "alphabetic",
@@ -572,7 +570,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 query {
@@ -615,7 +613,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -660,7 +658,7 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 {

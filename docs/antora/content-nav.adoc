@@ -40,3 +40,4 @@
 ** xref:drivers-and-config/index.adoc[]
 ** xref:guides/index.adoc[]
 *** xref:guides/migration-guide/index.adoc[]
+** xref:troubleshooting/index.adoc[]

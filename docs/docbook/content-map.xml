@@ -140,5 +140,9 @@
                 <?dbhtml filename="guides/migration-guide/index.html"?>
             </d:tocentry>
         </d:tocentry>
+
+        <d:tocentry linkend="troubleshooting">
+            <?dbhtml filename="troubleshooting/index.html"?>
+        </d:tocentry>
     </d:tocentry>
 </d:toc>
