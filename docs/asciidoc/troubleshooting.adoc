@@ -1,0 +1,18 @@
+[[troubleshooting]]
+= Troubleshooting
+
+== Debug Logging
+
+`@neo4j/graphql` uses the https://www.npmjs.com/package/debug[`debug`] library for debug-level logging. You can turn on all debug logging by setting the environment variable `DEBUG` to `@neo4j/graphql:*` whilst running. For example:
+
+[source, bash]
+----
+DEBUG=@neo4j/graphql:* node src/index.js
+----
+
+Alternatively, if you are debugging a particular functionality, you can specify a number of namespaces to isolate certain log lines:
+
+1. `@neo4j/graphql:*` - Logs all
+2. `@neo4j/graphql:auth` - Logs the status of authorization header and token extraction, and decoding of JWT
+3. `@neo4j/graphql:graphql` - Logs the GraphQL query and variables
+4. `@neo4j/graphql:execute` - Logs the Cypher and Cypher paramaters before execution, and summary of execution

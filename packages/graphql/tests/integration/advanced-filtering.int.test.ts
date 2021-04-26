@@ -122,7 +122,7 @@ describe("Advanced Filtering", () => {
                         }
                     `;
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs, config: { enableRegex: true } });
 
                     const value = generate({
                         readable: true,

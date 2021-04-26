@@ -178,18 +178,18 @@ input MovieUpdateInput {
   search_Movie: [MovieSearchMovieUpdateFieldInput!]
 }
 
-input MovieSearchGenreDeleteInput {
+input MovieSearchGenreDeleteFieldInput {
   where: GenreWhere
 }
 
-input MovieSearchMovieDeleteInput {
+input MovieSearchMovieDeleteFieldInput {
   where: MovieWhere
   delete: MovieDeleteInput
 }
 
 input MovieDeleteInput {
-  search_Genre: [MovieSearchGenreDeleteInput!]
-  search_Movie: [MovieSearchMovieDeleteInput!]
+  search_Genre: [MovieSearchGenreDeleteFieldInput!]
+  search_Movie: [MovieSearchMovieDeleteFieldInput!]
 }
 
 input MovieWhere {

@@ -519,12 +519,12 @@ input MovieRelationInput {
   actors: [ActorCreateInput!]
 }
 
-input MovieActorsDeleteInput {
+input MovieActorsDeleteFieldInput {
   where: ActorWhere
 }
 
 input MovieDeleteInput {
-  actors: [MovieActorsDeleteInput!]
+  actors: [MovieActorsDeleteFieldInput!]
 }
 
 """Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""

@@ -10,19 +10,21 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3O
 content-type: application/json
 ----
 
-== Environment Variables
+== Config
 
-.Auth Environment Variables Matrix
+Auth centric values on the Config object passed to Neo4jGraphQL or OGM. 
+
+.Auth Config
 |===
 |Variable | Usage
 
-|`NEO4J_GRAPHQL_JWT_SECRET`
+|`secret`
 | Specify JWT secret
 
-|`NEO4J_GRAPHQL_JWT_NO_VERIFY`
+|`noVerify`
 | Disable the verification of the JW
 
-|`NEO4J_GRAPHQL_JWT_ROLES_OBJECT_PATH`
+|`rolesPath`
 | Specify where on the JWT the roles key is
 |===
 
@@ -31,7 +33,14 @@ Request object needs to be injected into the context before you can use auth. He
 
 [source, javascript]
 ----
-const neoSchema = new Neo4jGraphQL({});
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        jwt: {
+            secret
+        }
+    }
+});
 
 const server = new ApolloServer({
     schema: neoSchema.schema,
@@ -110,11 +119,19 @@ If you are using 3rd party Auth solutions such as Auth0 you may find your roles 
 }
 ----
 
-Specify the path in the environment;
+Specify the key at construction: 
 
-[source, bash]
+[source, javascript]
 ----
-$ NEO4J_GRAPHQL_JWT_ROLES_OBJECT_PATH="https://auth0.mysite.com/claims\\.https://auth0.mysite.com/claims/roles" node server
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        jwt: {
+            secret,
+            rolesPath: "https://auth0.mysite.com/claims\\.https://auth0.mysite.com/claims/roles"
+        }
+    }
+});
 ----
 
 == Auth Value Plucking
@@ -156,7 +173,7 @@ const resolvers = {
     }
 };
 
-const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
+const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers, config: { jwt } });
 
 const server = new ApolloServer({
     schema: neo4jGraphQL.schema,
