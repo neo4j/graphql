@@ -29,7 +29,7 @@ In this section you will find; notes on background information, links and resour
 
 Bringing the native graph storage of Neo4j to the GraphQL ecosystem has been a long time in the making. Translating your GraphQL queries to Cypher that the Neo4j database can understand means that we can easily eliminate the n+1 issue that plagues a lot of GraphQL implementations.
 
-== What is Neo4j GraphQl ?
+== What is Neo4j GraphQL ?
 
 It is a GraphQL to Cypher query execution layer for Neo4j and **JavaScript** GraphQL implementations. Such an implementation makes it easier for developers to use Neo4j and GraphQL together.
 
