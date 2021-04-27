@@ -1,7 +1,7 @@
 [[ogm-methods-find]]
 = Find
 
-Use to update many nodes. The `model.find` method maps to the underlying <<schema-queries>> operations.
+Use to update many nodes. The `model.find` method maps to the underlying schema <<schema-queries>>.
 
 == Usage
 
@@ -13,7 +13,6 @@ const User = ogm.model("User");
 
 const users = await User.find();
 ----
-
 
 == Relationships
 Reference: <<ogm-selection-set>>
@@ -48,10 +47,10 @@ JavaScript object representation of the GraphQL `options` input type, used for <
 Reference: <<ogm-selection-set>>
 
 === `args`
-The arguments for the GraphQL Query. 
+The arguments for the GraphQL Query.
 
 === `context`
-The `context` for the GraphQL Query. 
+The `context` for the GraphQL Query.
 
 === `rootValue`
-The `rootValue` for the GraphQL Query. 
+The `rootValue` for the GraphQL Query.

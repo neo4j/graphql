@@ -1,7 +1,7 @@
 [[ogm-getting-started]]
 = Getting Started
 
-This section will help you get started with Neo4j GraphQL OGM. Before starting we recommend readers have an understanding of; 
+This section will help you get started with Neo4j GraphQL OGM. Before starting we recommend readers have an understanding of;
 
 * `Neo4jGraphQL` <<getting-started>>
 * <<type-definitions>>
@@ -13,8 +13,7 @@ This section will help you get started with Neo4j GraphQL OGM. Before starting w
 npm install @neo4j/graphql-ogm
 ----
 
-graphql and neo4j-driver are are peerDependency(s).
-
+graphql and neo4j-driver are are peerDependencies.
 
 == Requiring
 [source, javascript]
@@ -22,9 +21,8 @@ graphql and neo4j-driver are are peerDependency(s).
 const { OGM } = require("@neo4j/graphql-ogm");
 ----
 
-
 == REST API Quick Start
-This section demonstrates how to use the OGM outside of a GraphQL API. The example exposes a https://expressjs.com/[Express] server and uses the OGM, in the endpoint, to interact with Neo4j. 
+This section demonstrates how to use the OGM outside of a GraphQL API. The example exposes a https://expressjs.com/[Express] server and uses the OGM, in the endpoint, to interact with Neo4j.
 
 [source, javascript]
 ----
