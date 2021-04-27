@@ -5,8 +5,6 @@ In this section you will learn more about how to secure your GraphQL API using N
 
 > Using auth requires various APOC functions and procedures, one being https://neo4j.com/labs/apoc/4.1/overview/apoc.util/apoc.util.validatePredicate/[apoc.util.validatePredicate] that is not currently in Neo4j Aura. Run the <<drivers-and-config-checkNeo4jCompat>> method to ensure your Graph has all the requirements.
 
-Using auth requires various APOC functions and producers, one being https://neo4j.com/labs/apoc/4.1/overview/apoc.util/apoc.util.validatePredicate/[apoc.util.validatePredicate] that is not currently in Neo4j Aura. Run the <<drivers-and-config-checkNeo4jCompat>> method to ensure your Graph has all the requirements.
-
 == Preview
 
 
