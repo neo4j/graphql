@@ -29,7 +29,7 @@
     "author": "Neo4j Inc.",
     "dependencies": {
         "@graphql-tools/merge": "^6.2.13",
-        "@neo4j/graphql": ">1.0.0-beta <1.0.0",
+        "@neo4j/graphql": "^1.0.0-beta",
         "camelcase": "^6.2.0",
         "pluralize": "^8.0.0",
         "upper-case-first": "^2.0.2"
