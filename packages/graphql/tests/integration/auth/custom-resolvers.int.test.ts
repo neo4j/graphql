@@ -31,12 +31,10 @@ describe("auth/custom-resolvers", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        process.env.NEO4J_GRAPHQL_JWT_SECRET = "secret";
     });
 
     afterAll(async () => {
         await driver.close();
-        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
     });
 
     describe("auth-injection", () => {
@@ -63,12 +61,14 @@ describe("auth/custom-resolvers", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: userId,
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
             const neoSchema = new Neo4jGraphQL({
@@ -78,6 +78,7 @@ describe("auth/custom-resolvers", () => {
                         me: (_, __, ctx) => ({ id: ctx.auth.jwt.sub }),
                     },
                 },
+                config: { jwt: { secret } },
             });
 
             const socket = new Socket({ readable: true });
@@ -117,17 +118,20 @@ describe("auth/custom-resolvers", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: userId,
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 resolvers: { Mutation: { me: (_, __, ctx) => ({ id: ctx.auth.jwt.sub }) } },
+                config: { jwt: { secret } },
             });
 
             const socket = new Socket({ readable: true });
@@ -167,12 +171,14 @@ describe("auth/custom-resolvers", () => {
                 }
             `;
 
+            const secret = "secret";
+
             const token = jsonwebtoken.sign(
                 {
                     roles: [],
                     sub: userId,
                 },
-                process.env.NEO4J_GRAPHQL_JWT_SECRET as string
+                secret
             );
 
             const neoSchema = new Neo4jGraphQL({
@@ -180,6 +186,11 @@ describe("auth/custom-resolvers", () => {
                 resolvers: {
                     Query: { me: () => ({}) },
                     User: { customId: (_, __, ctx) => ctx.auth.jwt.sub },
+                },
+                config: {
+                    jwt: {
+                        secret,
+                    },
                 },
             });
 

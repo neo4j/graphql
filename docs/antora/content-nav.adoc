@@ -38,3 +38,4 @@
 *** xref:ogm/selection-set/index.adoc[]
 *** xref:ogm/api-reference/index.adoc[]
 ** xref:drivers-and-config/index.adoc[]
+** xref:troubleshooting/index.adoc[]
