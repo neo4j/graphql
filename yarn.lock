@@ -69,11 +69,11 @@ __metadata:
   linkType: hard
 
 "@apollographql/apollo-tools@npm:^0.4.3":
-  version: 0.4.12
-  resolution: "@apollographql/apollo-tools@npm:0.4.12"
+  version: 0.4.14
+  resolution: "@apollographql/apollo-tools@npm:0.4.14"
   dependencies:
-    apollo-env: ^0.9.0
-  checksum: 5e1e57eb14d2683639d1f9e6633abad7942fad6d387d29fa3c00e0ca539a2a1f48178e561fe3ab1e16355430fcb647a93ff4036fe3bfb9accad2231b86a06c52
+    apollo-env: ^0.9.2
+  checksum: 0bc3dd850233b453e92279ef4fd85047dde8ee32bf7a109cabe60e9ab2013ffa01067e989ca0f13df82ef022840b3757dde8674682f124326afc6417be312685
   languageName: node
   linkType: hard
 
@@ -625,15 +625,15 @@ __metadata:
   linkType: hard
 
 "@graphql-tools/utils@npm:^7.1.2, @graphql-tools/utils@npm:^7.7.0, @graphql-tools/utils@npm:^7.7.3":
-  version: 7.7.3
-  resolution: "@graphql-tools/utils@npm:7.7.3"
+  version: 7.8.0
+  resolution: "@graphql-tools/utils@npm:7.8.0"
   dependencies:
     "@ardatan/aggregate-error": 0.0.6
     camel-case: 4.1.2
     tslib: ~2.2.0
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0
-  checksum: 08a04cf47375316cbd391ff81daa6350431550afe3a4ea7fe93263d76e18e8a086fddb43a1034af6f29a6840f18caa87e2a153d01260a9e9a6b75d2dbc8fe0fb
+  checksum: 8b9b38c26318a034199d705f43968bb82da7263652ada46908fb63288872d96e5dfcb4036105fbdaeb8521805635b3e306487c6ab3b418c44d93b38281d43ac6
   languageName: node
   linkType: hard
 
@@ -899,12 +899,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-ogm@>1.0.0-beta <1.0.0, @neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@^1.0.0, @neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
     "@graphql-tools/merge": ^6.2.13
-    "@neo4j/graphql": ">1.0.0-beta <1.0.0"
+    "@neo4j/graphql": ^1.0.0
     "@types/jest": 26.0.8
     "@types/node": 14.0.27
     camelcase: ^6.2.0
@@ -924,7 +924,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@>1.0.0-beta <1.0.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@^1.0.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -1544,12 +1544,12 @@ __metadata:
   linkType: hard
 
 "@types/jest@npm:26.x":
-  version: 26.0.22
-  resolution: "@types/jest@npm:26.0.22"
+  version: 26.0.23
+  resolution: "@types/jest@npm:26.0.23"
   dependencies:
     jest-diff: ^26.0.0
     pretty-format: ^26.0.0
-  checksum: 4c98ed058522f6cc74bcb47b8b7b104b77b2d4e42e087171f3d2d3ae5338c21f43ec26f2a186bc229c1bd72c3f776ad07faba837f0ec27f22cf94e154516c0b3
+  checksum: a015676b78bdc51be6f6315acef10d9106ea8064e3e49143bca3c75b834b61285b45c5f5ccfd049a80107f1e2869a9183cdb5be85816c073ea8dd05852fafdc6
   languageName: node
   linkType: hard
 
@@ -1656,6 +1656,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node-fetch@npm:2.5.10":
+  version: 2.5.10
+  resolution: "@types/node-fetch@npm:2.5.10"
+  dependencies:
+    "@types/node": "*"
+    form-data: ^3.0.0
+  checksum: 7687038f73cf0f2e4bac8ced3abdfbb77f8b2719de2f180d0064238d7460c8b4dc0b39c08da35a76d7db9f86528599ea0f7cee7c468ad7cfecfe2db1c5863641
+  languageName: node
+  linkType: hard
+
 "@types/node-fetch@npm:2.5.7":
   version: 2.5.7
   resolution: "@types/node-fetch@npm:2.5.7"
@@ -1666,20 +1676,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node-fetch@npm:2.5.8":
-  version: 2.5.8
-  resolution: "@types/node-fetch@npm:2.5.8"
-  dependencies:
-    "@types/node": "*"
-    form-data: ^3.0.0
-  checksum: 608cdd6aed2c6a44a26406eb63475d4bfb8f63f78f22f747e30dd7cda309b86dc019e4427b9092011541da95d83ef03e2e6558c37d39221c0931617f32d3c4e1
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:*, @types/node@npm:>=6":
-  version: 14.14.41
-  resolution: "@types/node@npm:14.14.41"
-  checksum: 37dfb639644c8ee9b9846106834983f590d494b855e74645a4f169ea24199f7559366d25f6e72e83ba940b59eb6370e002bd53963d098d6d9fdf935a37011417
+  version: 15.0.0
+  resolution: "@types/node@npm:15.0.0"
+  checksum: 9d3ced65feb73444056941cc7bcbbc4885b60fb22ba3c38e1ad26c96909dd914e1d87fa4c22a5dbada8588606c56116bbd6d42569e87513866919b801e314d2e
   languageName: node
   linkType: hard
 
@@ -1800,13 +1800,13 @@ __metadata:
   linkType: hard
 
 "@types/react@npm:*, @types/react@npm:>=16.9.11":
-  version: 17.0.3
-  resolution: "@types/react@npm:17.0.3"
+  version: 17.0.4
+  resolution: "@types/react@npm:17.0.4"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 5bcaabadc90a23ad9008540eae98a5819b638c4cf1b968adc67be47d6a8dc8cb100061d877dae97618fb275e405dc484b37154080c7ac0ea7df5efcdd8f98c24
+  checksum: d7a8121faa889d52148df392751b771be16a45369872e9ad2b5db3d5bb8f76e684db27c2447b440441e3da1f353d434fa20fdcb45b3a56a296aab0757862da77
   languageName: node
   linkType: hard
 
@@ -1964,11 +1964,11 @@ __metadata:
   linkType: hard
 
 "@types/ws@npm:^7.0.0":
-  version: 7.4.1
-  resolution: "@types/ws@npm:7.4.1"
+  version: 7.4.2
+  resolution: "@types/ws@npm:7.4.2"
   dependencies:
     "@types/node": "*"
-  checksum: 69a752f6ffd809d170098e84bad046fa6589d9485e8e5292d2c48f8b8014b6b58779e4fac07a808895de79f595032ef055bb36b41945c6e1cc9d63010a0f50fb
+  checksum: 29fc34b61cc039c0f51e835ff8746faf7b98186e6bf785fb099c9fb006ae79825312e62a0c1e856b405543ae6302e196d1a1d372753dbcdce59ab5b72011a9f2
   languageName: node
   linkType: hard
 
@@ -2806,15 +2806,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-env@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "apollo-env@npm:0.9.0"
+"apollo-env@npm:^0.9.2":
+  version: 0.9.2
+  resolution: "apollo-env@npm:0.9.2"
   dependencies:
-    "@types/node-fetch": 2.5.8
+    "@types/node-fetch": 2.5.10
     core-js: ^3.0.1
     node-fetch: ^2.2.0
     sha.js: ^2.4.11
-  checksum: 0c560f155cce7e743eb78a97de198dd46f6a67a3ec9f23d151db9b72d9d9cd24c57e9261637a6534986a323e1367e38d330ce12e9dc752db89beb5df0f924644
+  checksum: 75282e72d1b8694bc916e99dd2db52bd06d1415d84d02d9bdbd6644c25d37fd9947ff100ee9f31fc9251c0e49602c30afb5b9ba72b50ce01c2887c9355aa4e88
   languageName: node
   linkType: hard
 
@@ -3407,9 +3407,9 @@ __metadata:
   linkType: hard
 
 "axe-core@npm:^4.0.2":
-  version: 4.1.4
-  resolution: "axe-core@npm:4.1.4"
-  checksum: 66008b9fbda484733945d2a8539d94d7bd20b3416a0a3e5e716aa11f9b03e566acd2ad345c92ba632c55107dd5c9627bf5e62d2758c0f2a897a345c922b8dac8
+  version: 4.2.0
+  resolution: "axe-core@npm:4.2.0"
+  checksum: c8c4ec5aec2d4330ee4b5b2fef9f609c897a60c96ec095e599d0de6e56ea40e9f947bf83057c4eca1496ca38038b818d14f9d59275a1841ff70e940b9e8a7c63
   languageName: node
   linkType: hard
 
@@ -3871,9 +3871,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001214":
-  version: 1.0.30001216
-  resolution: "caniuse-lite@npm:1.0.30001216"
-  checksum: c170cd09b573d25d252f0326f2e1503594c5717bd8cf69f4f686fb0ab510ef44a9d6e001dc41d3af6c27a24f01d58d9c4b9759987e74b5b464b6ffe2d9555032
+  version: 1.0.30001218
+  resolution: "caniuse-lite@npm:1.0.30001218"
+  checksum: ba15b4757ce19422ec444da2a4783e809286666fffabeb593f4d66840849028365a5c63475383332358aff20ef38693db65685710f5a138922bcf9f6bff9c6d7
   languageName: node
   linkType: hard
 
@@ -4977,12 +4977,12 @@ __metadata:
   linkType: hard
 
 "dom-helpers@npm:^5.0.1, dom-helpers@npm:^5.1.2, dom-helpers@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "dom-helpers@npm:5.2.0"
+  version: 5.2.1
+  resolution: "dom-helpers@npm:5.2.1"
   dependencies:
     "@babel/runtime": ^7.8.7
     csstype: ^3.0.2
-  checksum: 9ef27628f4ccfdfa0537b35ecf3b9600f1656f9c66f57a1530b552a65b51f4466d44514f2cb87399a15feee3c51047a77760327971e9aabc64fe637efd319156
+  checksum: 4bbdac8dfd37ad689921af2c4d0027870108c673d458a0fc65b4350900c6195df2f872dd75c357755d197208b228e90c55619f75f9a9d337910e5050e83832af
   languageName: node
   linkType: hard
 
@@ -5167,9 +5167,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.3.719":
-  version: 1.3.720
-  resolution: "electron-to-chromium@npm:1.3.720"
-  checksum: 51bb3720af1ffe2ac04e0760f4cdcf319c2e371625e7ed9e433ee962c1c7ae09e65b44afbe7ddf5c71dc9a01583c8e0015ff04b86f0222ed7cc5b5871494078d
+  version: 1.3.722
+  resolution: "electron-to-chromium@npm:1.3.722"
+  checksum: cd44a7bb5e173adb4d0042b91b9094f20709a8c2e64bdfb29c6aa5651d79a999fd8b6204dc9d381f9852abdcb736f377b581b75225c59817392cc4f9d9f637f7
   languageName: node
   linkType: hard
 
@@ -9327,7 +9327,7 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "migration@workspace:examples/migration"
   dependencies:
-    "@neo4j/graphql": ">1.0.0-beta <1.0.0"
+    "@neo4j/graphql": ^1.0.0
     apollo-server: ^2.23.0
     graphql: ^15.0.0
     neo4j-driver: ^4.2.0
@@ -9678,8 +9678,8 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "neo-push-server@workspace:examples/neo-push/server"
   dependencies:
-    "@neo4j/graphql": ">1.0.0-beta <1.0.0"
-    "@neo4j/graphql-ogm": ">1.0.0-beta <1.0.0"
+    "@neo4j/graphql": ^1.0.0
+    "@neo4j/graphql-ogm": ^1.0.0
     "@types/bcrypt": 3.0.0
     "@types/debug": 4.1.5
     "@types/dotenv": 8.2.0
@@ -10801,13 +10801,13 @@ fsevents@^1.2.7:
   linkType: hard
 
 "postcss@npm:^8.1.4":
-  version: 8.2.12
-  resolution: "postcss@npm:8.2.12"
+  version: 8.2.13
+  resolution: "postcss@npm:8.2.13"
   dependencies:
     colorette: ^1.2.2
     nanoid: ^3.1.22
     source-map: ^0.6.1
-  checksum: f16956a6cc20ae78390338362e0640fa25a88895ddc55bd5850536a3140897a538fe91b5d6dc9c84147a20ff100f6389b7445deb539159bea4df7e584f5a63ac
+  checksum: df64697cbd6d8e501eac2eaed501dc9a9c848538b4b51c53bfe7ed62a91736e97135d1fe22384b69af11bb2387a6cb483f5eecd14b19ca192ab5497ed5522124
   languageName: node
   linkType: hard
 
@@ -12867,15 +12867,15 @@ resolve@^2.0.0-next.3:
   linkType: hard
 
 "terser@npm:^5.5.1":
-  version: 5.6.1
-  resolution: "terser@npm:5.6.1"
+  version: 5.7.0
+  resolution: "terser@npm:5.7.0"
   dependencies:
     commander: ^2.20.0
     source-map: ~0.7.2
     source-map-support: ~0.5.19
   bin:
     terser: bin/terser
-  checksum: 55348dd25452f0a1690040f943a890dc3e33b8711b1c0592ef1114b2eca51d6ec8db8f8f769f1483b088575c07f44b7e92b3dda5f430ff6fa8c2ebd461db26f9
+  checksum: 9604fed5b093ee8000282cc69b07ff7a4e651aa13cb6e34055bf77592a4e1d0fed80c19ee80fe3a4e92f5485badcafb5aeed414fe8b5b7185599707236111900
   languageName: node
   linkType: hard
 
