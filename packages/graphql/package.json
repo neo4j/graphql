@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql",
-    "version": "1.0.0-beta.2",
+    "version": "1.0.0-beta.3",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
@@ -15,9 +15,6 @@
     "exports": "./dist/index.js",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
-    "files": [
-        "dist/"
-    ],
     "scripts": {
         "clean": "cd src/ && tsc --build --clean",
         "test": "jest",

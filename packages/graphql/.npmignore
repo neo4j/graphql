@@ -1,5 +1,6 @@
 src/
 tests/
+scripts/
 .npmrc
 .npmignore
 jest.config.js
