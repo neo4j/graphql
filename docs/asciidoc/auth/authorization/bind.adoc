@@ -1,7 +1,7 @@
 [[auth-authorization-bind]]
 = Bind
 
-Use bind to ensure, on creating or updating nodes, a connection exists between a value on the JWT vs a property on a matched node. This validation is done after the operation but inside a transaction. Taking a closer, look let's put a user in our database;
+Use bind to ensure that on creating or updating nodes, a connection exists between a value on the JWT vs a property on a matched node. This validation is done after the operation but inside a transaction. Taking a closer look, let's put a user in our database;
 
 [source, cypher]
 ----
@@ -17,7 +17,7 @@ type User {
 ----
 
 
-Given the above GraphQL type definitions - How can we restrict `user1` from changing there id ?
+Given the above GraphQL type definitions - How can we restrict `user1` from changing their ID?
 
 [source, graphql]
 ----
@@ -36,7 +36,7 @@ extend type User @auth(
 )
 ----
 
-After we update or create the node we validate that the property on the node is equal to the `JWT.sub` property. This validation is done in Cypher with function `apoc.util.validate`
+After we update or create the node we validate that the property on the node is equal to the `jwt.sub` property. This validation is done in Cypher with function `apoc.util.validate`
 
 Given `user1` has the decoded JWT;
 
@@ -48,7 +48,7 @@ Given `user1` has the decoded JWT;
 }
 ----
 
-With this JWT makes a GraphQL mutation to update there id to someone else;
+With this JWT makes a GraphQL mutation to update their ID to someone else;
 
 
 [source, graphql]
