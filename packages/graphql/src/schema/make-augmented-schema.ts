@@ -53,7 +53,7 @@ import getCustomResolvers from "./get-custom-resolvers";
 import getObjFieldMeta from "./get-obj-field-meta";
 import * as point from "./point";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
-import validateTypeDefs from "./validation";
+// import validateTypeDefs from "./validation";
 
 function makeAugmentedSchema(
     { typeDefs, resolvers, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -61,7 +61,12 @@ function makeAugmentedSchema(
 ): { schema: GraphQLSchema; nodes: Node[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
-    validateTypeDefs(document);
+    /*
+        Issue caused by a combination of GraphQL Compose removing types and 
+        that we are not adding Points to the validation schema. This should be a
+        temporary fix and does not detriment usability of the library. 
+    */
+    // validateTypeDefs(document);
 
     const composer = new SchemaComposer();
 

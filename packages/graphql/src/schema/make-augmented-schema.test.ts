@@ -152,25 +152,28 @@ describe("makeAugmentedSchema", () => {
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate an array");
     });
 
-    test("should throw timestamp operations must be an array", () => {
-        const typeDefs = `
-                type Movie  {
-                    name: DateTime @timestamp(operations: "read")
-                }
-            `;
+    /*
+        Removal of validateTypeDefs function
+    */
+    // test("should throw timestamp operations must be an array", () => {
+    //     const typeDefs = `
+    //             type Movie  {
+    //                 name: DateTime @timestamp(operations: "read")
+    //             }
+    //         `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow('Argument "operations" has invalid value "read".');
-    });
+    //     expect(() => makeAugmentedSchema({ typeDefs })).toThrow('Argument "operations" has invalid value "read".');
+    // });
 
-    test("should throw timestamp operations[0] invalid", () => {
-        const typeDefs = `
-                type Movie  {
-                    name: DateTime @timestamp(operations: ["read"])
-                }
-            `;
+    // test("should throw timestamp operations[0] invalid", () => {
+    //     const typeDefs = `
+    //             type Movie  {
+    //                 name: DateTime @timestamp(operations: ["read"])
+    //             }
+    //         `;
 
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow('Argument "operations" has invalid value ["read"].');
-    });
+    //     expect(() => makeAugmentedSchema({ typeDefs })).toThrow('Argument "operations" has invalid value ["read"].');
+    // });
 
     test("should throw cannot have auth directive on a relationship", () => {
         const typeDefs = `
