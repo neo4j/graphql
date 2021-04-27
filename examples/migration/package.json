@@ -4,7 +4,7 @@
         "start": "node src/index.js"
     },
     "dependencies": {
-        "@neo4j/graphql": ">1.0.0-beta <1.0.0",
+        "@neo4j/graphql": "^1.0.0-beta",
         "apollo-server": "^2.23.0",
         "graphql": "^15.0.0",
         "neo4j-driver": "^4.2.0"
