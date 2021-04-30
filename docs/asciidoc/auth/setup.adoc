@@ -12,7 +12,7 @@ content-type: application/json
 
 == Config
 
-Auth centric values on the Config object passed to Neo4jGraphQL or OGM. 
+Auth centric values on the Config object passed to Neo4jGraphQL or OGM.
 
 .Auth Config
 |===
@@ -29,7 +29,7 @@ Auth centric values on the Config object passed to Neo4jGraphQL or OGM.
 |===
 
 == Server Construction
-Request object needs to be injected into the context before you can use auth. Here is an example using Apollo Sever;
+Request object needs to be injected into the context before you can use auth. Here is an example using Apollo Server;
 
 [source, javascript]
 ----
@@ -50,7 +50,7 @@ const server = new ApolloServer({
 
 == `rules`
 
-You can have many rules for many operations. We fallthrough each rule, on the corresponding operation, until a match. On no match, an error is thrown. You can think of rules as a big OR.
+You can have many rules for many operations. We fall through each rule, on the corresponding operation, until we find a match. On no match found, an error is thrown. You can think of rules as a big OR.
 
 [source, graphql]
 ----
@@ -73,7 +73,7 @@ Operations is an array, you can re-use the same rule for many operations.
 ])
 ----
 
-> No `operations` will imply all operations
+> The absence of an `operations` argument will imply all operations
 
 Many different operations can be called in one query take the below mutation;
 
@@ -119,7 +119,7 @@ If you are using 3rd party Auth solutions such as Auth0 you may find your roles 
 }
 ----
 
-Specify the key at construction: 
+Specify the key at construction:
 
 [source, javascript]
 ----

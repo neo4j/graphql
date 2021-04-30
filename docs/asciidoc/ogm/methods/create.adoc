@@ -21,11 +21,10 @@ JavaScript object representation of the GraphQL `input` input type, used for <<s
 Reference: <<ogm-selection-set>>
 
 === `args`
-The arguments to the GraphQL Query. 
+The arguments to the GraphQL Query.
 
 === `context`
-The `context` for the GraphQL Query. 
-
+The `context` for the GraphQL Query.
 
 === `rootValue`
-The `rootValue` for the GraphQL Query. 
+The `rootValue` for the GraphQL Query.

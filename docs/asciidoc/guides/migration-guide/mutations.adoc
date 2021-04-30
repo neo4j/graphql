@@ -1,0 +1,206 @@
+[[migration-guide-mutations]]
+= Mutations
+
+This section will walk through each operation available through GraphQL Mutations, and how to migrate each from `neo4j-graphql-js` to `@neo4j/graphql`.
+
+The examples in this section will be based off the following type definitions (which have been migrated over to `@neo4j/graphql` syntax):
+
+[source, graphql]
+----
+type Actor {
+    name: String!
+    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+}
+
+type Movie {
+    title: String!
+    averageRating: Float
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+}
+----
+
+A summary of migration points is as follows:
+
+* Mutations which were previously in the singular and in _PascalCase_ are now pluralized and in _camelCase_ - for example `CreateMovie` has become `createMovies`
+* Connect and disconnect Mutations are no longer present, these operations are accessed through an update Mutation
+* The object(s) being mutated are returned as a nested field, to allow for metadata about the operation to be added in future
+* Mutation arguments are now commonly named between different types, but with different input types - such as `where` and `input`
+
+> Note that <<schema-mutations>> in `@neo4j/graphql` are incredibly powerful, and it is well worthwhile reading about them in full. You might find that you can collapse multiple current mutations down into one!
+
+== Creating
+
+For creating nodes, the input arguments of `neo4j-graphql` have been moved inside an `input` argument in `@neo4j/graphql`.
+
+For example, creating a movie using the old library:
+
+[source, graphql]
+----
+mutation {
+    CreateMovie(title: "Forrest Gump") {
+        title
+    }
+}
+----
+
+Looks like the following using `@neo4j/graphql`:
+
+[source, graphql]
+----
+mutation {
+    createMovies(input: { title: "Forrest Gump" }) {
+        movies {
+            title
+        }
+    }
+}
+----
+
+Note that `movies` must also be first selected in the selection set.
+
+== Updating
+
+An update Mutation using `neo4j-graphql-js` had all of the arguments at the root of the Mutation, including the filter and fields to change.
+
+This has all changed in `@neo4j/graphql`, with a `where` argument to select the node, and then an `update` argument (amongst many others) to select what to update.
+
+For example, updating the average rating of the Movie Forrest Gump:
+
+[source, graphql]
+----
+mutation {
+    UpdateMovie(title: "Forrest Gump", averageRating: 5.0) {
+        title
+        averageRating
+    }
+}
+----
+
+Will look like the following using the new library:
+
+[source, graphql]
+----
+mutation {
+    updateMovies(where: { title: "Forrest Gump" }, update: { averageRating: 5.0 }) {
+        movies {
+            title
+            averageRating
+        }
+    }
+}
+----
+
+== Deleting
+
+The arguments for selecting which node to delete have now been moved into a `where` argument.
+
+Additionally, the return value is now a `DeleteInfo` object informing how many nodes and relationships were deleted.
+
+For example, deleting a movie:
+
+[source, graphql]
+----
+mutation {
+    DeleteMovie(title: "Forrest Gump") {
+        title
+    }
+}
+----
+
+Looks like the following using `@neo4j/graphql`:
+
+[source, graphql]
+----
+mutation {
+    deleteMovies(where: { title: "Forrest Gump" }) {
+        nodesDeleted
+        relationshipsDeleted
+    }
+}
+----
+
+== Connecting
+
+Using `neo4j-graphql-js`, connecting two of the nodes in our example would have been achieved by executing either the `AddMovieActors` or `AddActorMovies` Mutation.
+
+In `@neo4j/graphql`, this is achieved by specifying the `connect` argument on either the `updateMovies` or `updateActors` Mutation.
+
+For example:
+
+[source, graphql]
+----
+mutation {
+    AddMovieActors(from: { name: "Tom Hanks" }, to: { title: "Forrest Gump" }) {
+        from {
+            name
+        }
+        to {
+            title
+        }
+    }
+}
+----
+
+Would become the following using `@neo4j/graphql`:
+
+[source, graphql]
+----
+mutation {
+    updateMovies(
+        where: { title: "Forrest Gump" }
+        connect: { actors: { where: { name: "Tom Hanks" } } }
+    ) {
+        movies {
+            title
+            actors {
+                name
+            }
+        }
+    }
+}
+----
+
+Note, there are many ways to achieve the same goal using the powerful Mutation ability of `@neo4j/graphql`, so do what feels best for your data!
+
+== Disconnecting
+
+Similarly to connecting, using `neo4j-graphql-js`, disconnecting two of the nodes in our example would have been achieved by executing either the `RemoveMovieActors` or `RemoveActorMovies` Mutation.
+
+In `@neo4j/graphql`, this is achieved by specifying the `disconnect` argument on either the `updateMovies` or `updateActors` Mutation.
+
+For example:
+
+[source, graphql]
+----
+mutation {
+    RemoveMovieActors(from: { name: "Tom Hanks" }, to: { title: "Forrest Gump" }) {
+        from {
+            name
+        }
+        to {
+            title
+        }
+    }
+}
+----
+
+Would become the following using `@neo4j/graphql`:
+
+[source, graphql]
+----
+mutation {
+    updateMovies(
+        where: { title: "Forrest Gump" }
+        disconnect: { actors: { where: { name: "Tom Hanks" } } }
+    ) {
+        movies {
+            title
+            actors {
+                name
+            }
+        }
+    }
+}
+----
+
+In the result field `actors`, Tom Hanks should no longer be present.

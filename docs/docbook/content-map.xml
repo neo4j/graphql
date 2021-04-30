@@ -134,6 +134,25 @@
             <?dbhtml filename="drivers-and-config/index.html"?>
         </d:tocentry>
 
+        <d:tocentry linkend="guides">
+            <?dbhtml filename="guides/index.html"?>
+            <d:tocentry linkend="migration-guide">
+                <?dbhtml filename="guides/migration-guide/index.html"?>
+                <d:tocentry linkend="migration-guide-server">
+                    <?dbhtml filename="guides/migration-guide/server/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="migration-guide-type-definitions">
+                    <?dbhtml filename="guides/migration-guide/type-definitions/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="migration-guide-queries">
+                    <?dbhtml filename="guides/migration-guide/queries/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="migration-guide-mutations">
+                    <?dbhtml filename="guides/migration-guide/mutations/index.html"?>
+                </d:tocentry>
+            </d:tocentry>
+        </d:tocentry>
+
         <d:tocentry linkend="troubleshooting">
             <?dbhtml filename="troubleshooting/index.html"?>
         </d:tocentry>
