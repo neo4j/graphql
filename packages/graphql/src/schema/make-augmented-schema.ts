@@ -19,7 +19,6 @@
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
-import { ITypeDefinitions, IResolvers } from "@graphql-tools/utils";
 import camelCase from "camelcase";
 import {
     DefinitionNode,
@@ -54,23 +53,20 @@ import getCustomResolvers from "./get-custom-resolvers";
 import getObjFieldMeta from "./get-obj-field-meta";
 import * as point from "./point";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
-import validateTypeDefs from "./validation";
-import environment from "../environment";
+// import validateTypeDefs from "./validation";
 
-type SchemaDirectives = IExecutableSchemaDefinition["schemaDirectives"];
-
-function makeAugmentedSchema({
-    typeDefs,
-    resolvers,
-    schemaDirectives,
-}: {
-    typeDefs: ITypeDefinitions;
-    resolvers?: IResolvers;
-    schemaDirectives?: SchemaDirectives;
-}): { schema: GraphQLSchema; nodes: Node[] } {
+function makeAugmentedSchema(
+    { typeDefs, resolvers, ...schemaDefinition }: IExecutableSchemaDefinition,
+    { enableRegex }: { enableRegex?: boolean } = {}
+): { schema: GraphQLSchema; nodes: Node[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
-    validateTypeDefs(document);
+    /*
+        Issue caused by a combination of GraphQL Compose removing types and 
+        that we are not adding Points to the validation schema. This should be a
+        temporary fix and does not detriment usability of the library. 
+    */
+    // validateTypeDefs(document);
 
     const composer = new SchemaComposer();
 
@@ -299,7 +295,7 @@ function makeAugmentedSchema({
                     }
 
                     if (["String", "ID"].includes(f.typeMeta.name)) {
-                        if (environment.NEO4J_GRAPHQL_ENABLE_REGEX) {
+                        if (enableRegex) {
                             res[`${f.fieldName}_MATCHES`] = "String";
                         }
 
@@ -420,13 +416,15 @@ function makeAugmentedSchema({
             },
         });
 
-        composer.createInputTC({
-            name: `${node.name}DeleteFieldInput`,
-            fields: {
-                where: `${node.name}Where`,
-                ...(node.relationFields.length ? { delete: nodeDeleteInput } : {}),
-            },
-        });
+        if (!composer.has(`${node.name}DeleteFieldInput`)) {
+            composer.createInputTC({
+                name: `${node.name}DeleteFieldInput`,
+                fields: {
+                    where: `${node.name}Where`,
+                    ...(node.relationFields.length ? { delete: nodeDeleteInput } : {}),
+                },
+            });
+        }
 
         node.relationFields.forEach((rel) => {
             if (rel.union) {
@@ -451,7 +449,7 @@ function makeAugmentedSchema({
                     }UpdateFieldInput`;
                     const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${
                         n.name
-                    }DeleteInput`;
+                    }DeleteFieldInput`;
 
                     const connectField = rel.typeMeta.array
                         ? `[${n.name}ConnectFieldInput!]`
@@ -536,7 +534,7 @@ function makeAugmentedSchema({
             const updateField = `${n.name}UpdateInput`;
             const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
             const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}UpdateFieldInput`;
-            const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}DeleteInput`;
+            const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}DeleteFieldInput`;
             const connectField = rel.typeMeta.array ? `[${n.name}ConnectFieldInput!]` : `${n.name}ConnectFieldInput`;
             const disconnectField = rel.typeMeta.array
                 ? `[${n.name}DisconnectFieldInput!]`
@@ -583,17 +581,19 @@ function makeAugmentedSchema({
                 },
             });
 
-            composer.createInputTC({
-                name: nodeFieldDeleteInputName,
-                fields: {
-                    where: `${n.name}Where`,
-                    ...(n.relationFields.length
-                        ? {
-                              delete: `${n.name}DeleteInput`,
-                          }
-                        : {}),
-                },
-            });
+            if (!composer.has(nodeFieldDeleteInputName)) {
+                composer.createInputTC({
+                    name: nodeFieldDeleteInputName,
+                    fields: {
+                        where: `${n.name}Where`,
+                        ...(n.relationFields.length
+                            ? {
+                                  delete: `${n.name}DeleteInput`,
+                              }
+                            : {}),
+                    },
+                });
+            }
 
             nodeRelationInput.addFields({
                 [rel.fieldName]: createField,
@@ -735,6 +735,10 @@ function makeAugmentedSchema({
         composer.createInputTC(point.cartesianPointDistance);
     }
 
+    if (!Object.values(composer.Mutation.getFields()).length) {
+        composer.delete("Mutation");
+    }
+
     const generatedTypeDefs = composer.toSDL();
     let generatedResolvers: any = {
         ...composer.getResolveMethods(),
@@ -760,9 +764,9 @@ function makeAugmentedSchema({
     });
 
     const schema = makeExecutableSchema({
+        ...schemaDefinition,
         typeDefs: generatedTypeDefs,
         resolvers: generatedResolvers,
-        schemaDirectives,
     });
 
     return {

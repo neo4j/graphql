@@ -15,7 +15,7 @@ This section will help users get started with Neo4j GraphQL. Before starting we 
 $ npm install @neo4j/graphql
 ----
 
-`graphql` and `neo4j-driver` are **peerDependency(s)**, so unless the project already has them installed they need to be installed as well.
+`graphql` and `neo4j-driver` are **peerDependencies**, so unless the project already has them installed they need to be installed as well.
 
 == Requiring
 
@@ -62,12 +62,12 @@ const typeDefs = `
     }
 `;
 
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-
 const driver = neo4j.driver(
     "bolt://localhost:7687",
     neo4j.auth.basic("neo4j", "letmein")
 );
+
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
 const server = new ApolloServer({
     schema: neoSchema.schema,

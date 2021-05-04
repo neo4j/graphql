@@ -1,7 +1,7 @@
 [[auth]]
 = Auth
 
-In this section you will learn more about how to secure your GraphQL API using Neo4j GraphQL's inbuilt auth mechanics. 
+In this section you will learn more about how to secure your GraphQL API using Neo4j GraphQL's inbuilt auth mechanics.
 
 == Preview
 

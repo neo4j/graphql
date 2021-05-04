@@ -1,11 +1,11 @@
 [[index]]
-= Neo4j GraphQL
+= Neo4j GraphQL Library
 :experimental:
 :sectnums:
 :chapter-label:
 :toc-title: Contents
 //:front-cover-image: image::title-page.png[]
-:header-title: NEO4J GRAPHQL
+:header-title: NEO4J GRAPHQL LIBRARY
 :title-page-background-image: image::title-page.png[]
 
 ifndef::backend-pdf[]
@@ -19,29 +19,28 @@ License: <<license, Creative Commons 4.0>>
 endif::[]
 
 
-Welcome to the official documentation for Neo4j GraphQL.
+Welcome to the official documentation for the Neo4j GraphQL Library.
 
 == Introduction
 
 In this section you will find; notes on background information, links and resources, dependencies and requirements, plus pointers on where to get support. If you are already familiar with Neo4j GraphQL, or just want to get started, then jump directly to <<getting-started>>.
 
+== Why Neo4j and GraphQL?
 
-== Why Neo4j GraphQL ?
+Bringing the native graph storage of Neo4j to the GraphQL ecosystem has been a long time in the making. Translating your GraphQL queries to Cypher that the Neo4j database can understand means that we can easily eliminate the n+1 issue that plagues a lot of GraphQL implementations.
 
-Both Neo4j and GraphQL concern themselves with the topic of Graphs, with this in consideration, we can make a fairly good assumption "right off the bat" that the two technologies could coexist peacefully.
+== What is Neo4j GraphQL ?
 
-== What is Neo4j GraphQl ?
+It is a GraphQL to Cypher query execution layer for Neo4j and **JavaScript** GraphQL implementations. Such an implementation makes it easier for developers to use Neo4j and GraphQL together.
 
-It is a GraphQL to Cypher query execution layer for Neo4j and **JavaScript** GraphQL implementations. Such an imeplemtation makes it easier, for developers, to use Neo4j and GraphQL together.
-
-Taking a set of Type Definitions; we produce an executable GraphQL Schema, where a given GraphQL query is transformed into a single Cypher query. This translation means users can let the libary handle all the database talking, and thus enabling users to focus on building great applications.
+Taking a set of Type Definitions; we produce an executable GraphQL Schema, where a given GraphQL query is transformed into a single Cypher query. This translation means users can let the library handle all the database communications, and thus enabling users to focus on building great applications.
 
 Our GraphQL implementation exposes two products;
 
 1. `Neo4jGraphQL` - Used for GraphQL API's such as Apollo Server
 2. <<ogm>> - A Handy tool, to use in application code, driven by GraphQL Type Definitions.
 
-With a next gen feature set including;
+With a powerful feature set including;
 
 1. <<auth>>
 2. Nested Mutations

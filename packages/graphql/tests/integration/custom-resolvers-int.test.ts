@@ -32,12 +32,10 @@ describe("Custom Resolvers", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        process.env.NEO4J_GRAPHQL_JWT_SECRET = "secret";
     });
 
     afterAll(async () => {
         await driver.close();
-        delete process.env.NEO4J_GRAPHQL_JWT_SECRET;
     });
 
     test("should define a custom field resolver and resolve it", async () => {
@@ -455,9 +453,11 @@ describe("Custom Resolvers", () => {
                         charset: "alphabetic",
                     });
 
-                    const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+                    const secret = "secret";
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const token = jsonwebtoken.sign({ sub: userId }, secret);
+
+                    const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
                     const query = `
                         {
@@ -503,9 +503,11 @@ describe("Custom Resolvers", () => {
                         charset: "alphabetic",
                     });
 
-                    const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+                    const secret = "secret";
 
-                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const token = jsonwebtoken.sign({ sub: userId }, secret);
+
+                    const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
                     const query = `
                         mutation {
@@ -550,9 +552,11 @@ describe("Custom Resolvers", () => {
                     charset: "alphabetic",
                 });
 
-                const token = jsonwebtoken.sign({ sub: userId }, process.env.NEO4J_GRAPHQL_JWT_SECRET as string);
+                const secret = "secret";
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const token = jsonwebtoken.sign({ sub: userId }, secret);
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
                 const query = `
                 {

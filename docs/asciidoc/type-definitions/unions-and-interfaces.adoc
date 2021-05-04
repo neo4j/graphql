@@ -3,11 +3,12 @@
 
 Unions and interfaces are abstract GraphQL types that enable a schema field to return one of multiple object types.
 
-== Union type
+[[type-definitions-unions-and-interfaces-union-types]]
+== Union Types
 Neo4j GraphQL supports the use of Unions on a `@relationship` field.
 
 === Example
-The following schema defines a `User` type, that has a relationship(`HAS_CONTENT`), of type `[Content]`. `Content` is of type `union` representing either `Blog` or `Post`. 
+The following schema defines a `User` type, that has a relationship(`HAS_CONTENT`), of type `[Content]`. `Content` is of type `union` representing either `Blog` or `Post`.
 
 [source, graphql]
 ----
@@ -30,7 +31,7 @@ type User {
 
 
 === Querying a union
-The below query gets the user and their content; 
+The below query gets the user and their content;
 
 [source, graphql]
 ----
@@ -53,7 +54,7 @@ query GetUsersWithContent {
 ----
 
 === Creating a union
-The below mutation creates the user and their content; 
+The below mutation creates the user and their content;
 
 [source, graphql]
 ----
@@ -82,6 +83,6 @@ mutation CreateUserAndContent {
 ----
 
 
-== Interface type
+== Interface Types
 
-Using the interface type will give you no real database support therefor no; query, update, delete, filter support. But instead used as a language feature to safeguard your schema. Great for When dealing with repetitive or large schemas you can essentially put "The side railings up".
+Using interface types will give you no real database support therefor no; query, update, delete, filter support. But instead used as a language feature to safeguard your schema. Great for when dealing with repetitive or large schemas you can essentially put "The side railings up".
