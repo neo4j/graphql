@@ -192,3 +192,7 @@ type Invoice @auth(rules: [{ operations: [READ], roles: ["read:invoice"] }]) {
     total: Int
 }
 ```
+
+## Licence
+
+[Apache 2.0](https://github.com/neo4j/graphql/blob/master/packages/graphql/LICENSE.txt)
