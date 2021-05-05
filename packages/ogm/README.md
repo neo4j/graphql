@@ -50,3 +50,7 @@ const Movie = ogm.model("Movie");
 
 const [theMatrix] = await Movie.find({ where: { name: "The Matrix" } });
 ```
+
+## Licence
+
+[Apache 2.0](https://github.com/neo4j/graphql/blob/master/packages/graphql/LICENSE.txt)
