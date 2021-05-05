@@ -9,13 +9,13 @@
 :title-page-background-image: image::title-page.png[]
 
 ifndef::backend-pdf[]
-License: link:{common-license-page-uri}[Creative Commons 4.0]
+Documentation license: link:{common-license-page-uri}[Creative Commons 4.0]
 endif::[]
 
 ifdef::backend-pdf[]
 (C) {copyright}
 
-License: <<license, Creative Commons 4.0>>
+Documentation license: <<license, Creative Commons 4.0>>
 endif::[]
 
 
@@ -55,3 +55,7 @@ Overall anyone in the Javascript ecosystem, wanting to use either Neo4j and or G
 1. https://github.com/neo4j/graphql[Github]
 2. https://github.com/neo4j/graphql/issues[Bug Tracker]
 3. https://www.npmjs.com/package/@neo4j/graphql[NPM]
+
+== Licence
+1. Documentation: link:{common-license-page-uri}[Creative Commons 4.0]
+2. Source: https://www.apache.org/licenses/LICENSE-2.0[Apache 2.0]
