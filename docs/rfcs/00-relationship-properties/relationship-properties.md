@@ -45,12 +45,12 @@ interface ActedIn {
     screenTime: Int!
 }
 
-type ActorMovieRelationship implements ActedIn {
+type ActorMoviesRelationship implements ActedIn {
     node: Movie!
     screenTime: Int!
 }
 
-type MovieActorRelationship implements ActedIn {
+type MovieActorsRelationship implements ActedIn {
     node: Actor!
     screenTime: Int!
 }
@@ -62,13 +62,11 @@ Connection types will be automatically generated for all relationships to facili
 
 ```graphql
 type ActorMoviesConnection {
-    edges: [ActorMovieRelationship!]!
-    pageInfo: PageInfo!
+    edges: [ActorMoviesRelationship!]!
 }
 
 type MovieActorsConnection {
-    edges: [MovieActorRelationship!]!
-    pageInfo: PageInfo!
+    edges: [MovieActorsRelationship!]!
 }
 ```
 
@@ -100,7 +98,7 @@ input ActedInSort {
 And for composites of both node and relationship properties:
 
 ```graphql
-input ActorMovieWhere {
+input ActorMoviesWhere {
     relationship: ActedInWhere
     relationship_NOT: ActedInWhere
     node: MovieWhere
@@ -109,16 +107,16 @@ input ActorMovieWhere {
     OR: [ActorMoviesWhere!]
 }
 
-input ActorMovieSort {
+input ActorMoviesSort {
     relationship: ActedInSort
     node: MovieSort
 }
 
-input ActorMovieOptions {
-    sort: [ActorMovieSort!]
+input ActorMoviesOptions {
+    sort: [ActorMoviesSort!]
 }
 
-input MovieActorWhere {
+input MovieActorsWhere {
     relationship: ActedInWhere
     relationship_NOT: ActedInWhere
     node: ActorWhere
@@ -127,13 +125,13 @@ input MovieActorWhere {
     OR: [MovieActorsWhere!]
 }
 
-input MovieActorSort {
+input MovieActorsSort {
     relationship: ActedInSort
     node: ActorSort
 }
 
-input MovieActorOptions {
-    sort: [MovieActorSort!]
+input MovieActorsOptions {
+    sort: [MovieActorsSort!]
 }
 ```
 
@@ -147,8 +145,8 @@ type Actor {
     name: String!
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
     moviesConnection(
-        where: ActorMovieWhere
-        options: ActorMovieOptions
+        where: ActorMoviesWhere
+        options: ActorMoviesOptions
     ): ActorMoviesConnection!
 }
 
@@ -157,8 +155,8 @@ type Movie {
     title: String!
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
     actorsConnection(
-        where: MovieActorWhere
-        options: MovieActorOptions
+        where: MovieActorsWhere
+        options: MovieActorsOptions
     ): MovieActorsConnection!
 }
 ```
@@ -222,7 +220,7 @@ Additionally, the `where` argument will be changed so that filtering can be done
 ```graphql
 input ActorMoviesUpdateFieldInput {
     properties: ActedInUpdateInput
-    where: ActorMovieWhere
+    where: ActorMoviesWhere
     update: MovieUpdateInput
     connect: [MovieConnectFieldInput!]
     create: [MovieCreateFieldInput!]
@@ -232,7 +230,7 @@ input ActorMoviesUpdateFieldInput {
 
 input MovieActorsUpdateFieldInput {
     properties: ActedInUpdateInput
-    where: MovieActorWhere
+    where: MovieActorsWhere
     update: ActorUpdateInput
     create: [ActorCreateFieldInput!]
     connect: [ActorConnectFieldInput!]
