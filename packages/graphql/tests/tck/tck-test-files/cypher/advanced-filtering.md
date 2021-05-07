@@ -606,7 +606,7 @@ RETURN this { .budget } as this
 
 ```cypher
 MATCH (this:Movie)
-WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ALL(this_genres IN [(this)-[:IN_GENRE]->(this_genres:Genre) | this_genres] WHERE this_genres.name = $this_genres_name)
+WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ANY(this_genres IN [(this)-[:IN_GENRE]->(this_genres:Genre) | this_genres] WHERE this_genres.name = $this_genres_name)
 RETURN this { .actorCount } as this
 ```
 
