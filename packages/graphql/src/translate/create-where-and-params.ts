@@ -286,7 +286,7 @@ function createWhereAndParams({
 
             let resultStr = [
                 `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${equalityRelation.typeMeta.name}))`,
-                `AND ALL(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${equalityRelation.typeMeta.name}) | ${param}] INNER_WHERE `,
+                `AND ANY(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${equalityRelation.typeMeta.name}) | ${param}] INNER_WHERE `,
             ].join(" ");
 
             const recurse = createWhereAndParams({
@@ -299,7 +299,7 @@ function createWhereAndParams({
             });
 
             resultStr += recurse[0];
-            resultStr += ")"; // close ALL
+            resultStr += ")"; // close ANY
             res.clauses.push(resultStr);
             res.params = { ...res.params, ...recurse[1] };
             return res;
