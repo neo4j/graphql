@@ -114,6 +114,10 @@ input ActorMovieSort {
     node: MovieSort
 }
 
+input ActorMovieOptions {
+    sort: [ActorMovieSort!]
+}
+
 input MovieActorWhere {
     relationship: ActedInWhere
     relationship_NOT: ActedInWhere
@@ -126,6 +130,10 @@ input MovieActorWhere {
 input MovieActorSort {
     relationship: ActedInSort
     node: ActorSort
+}
+
+input MovieActorOptions {
+    sort: [MovieActorSort!]
 }
 ```
 
@@ -140,7 +148,7 @@ type Actor {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
     moviesConnection(
         where: ActorMovieWhere
-        sort: ActorMovieSort
+        options: ActorMovieOptions
     ): ActorMoviesConnection!
 }
 
@@ -150,7 +158,7 @@ type Movie {
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
     actorsConnection(
         where: MovieActorWhere
-        sort: MovieActorSort
+        options: MovieActorOptions
     ): MovieActorsConnection!
 }
 ```
@@ -245,7 +253,7 @@ query {
         title
         actorsConnection(
             where: { node: { name_STARTS_WITH: "Tom" } }
-            sort: { node: { name: ASC } }
+            options: { sort: { node: { name: ASC } } }
         ) {
             edges {
                 screenTime
