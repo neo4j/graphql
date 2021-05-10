@@ -59,6 +59,8 @@ const baseTypeScriptRules = {
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/no-empty-interface": "off",
     /* end of @typescript-eslint/recommended-requiring-type-checking rules */
+    "@typescript-eslint/indent": "off",
+    "@typescript-eslint/quotes": "off",
 };
 
 module.exports = {
@@ -93,6 +95,10 @@ module.exports = {
             rules: {
                 "import/prefer-default-export": "off",
                 "@typescript-eslint/no-unnecessary-type-assertion": ["off"],
+                "@typescript-eslint/indent": "off",
+                "@typescript-eslint/quotes": "off",
+                "react/jsx-indent": "off",
+                "react/jsx-indent-props": "off",
             },
         },
         {
