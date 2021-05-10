@@ -103,8 +103,8 @@ input ActorMoviesConnectionWhere {
     relationship_NOT: ActedInWhere
     node: MovieWhere
     node_NOT: MovieWhere
-    AND: [ActorMoviesWhere!]
-    OR: [ActorMoviesWhere!]
+    AND: [ActorMoviesConnectionWhere!]
+    OR: [ActorMoviesConnectionWhere!]
 }
 
 input ActorMoviesConnectionSort {
@@ -113,7 +113,7 @@ input ActorMoviesConnectionSort {
 }
 
 input ActorMoviesConnectionOptions {
-    sort: [ActorMoviesSort!]
+    sort: [ActorMoviesConnectionSort!]
 }
 
 input MovieActorsConnectionWhere {
@@ -121,8 +121,8 @@ input MovieActorsConnectionWhere {
     relationship_NOT: ActedInWhere
     node: ActorWhere
     node_NOT: ActorWhere
-    AND: [MovieActorsWhere!]
-    OR: [MovieActorsWhere!]
+    AND: [MovieActorsConnectionWhere!]
+    OR: [MovieActorsConnectionWhere!]
 }
 
 input MovieActorsConnectionSort {
@@ -131,7 +131,7 @@ input MovieActorsConnectionSort {
 }
 
 input MovieActorsConnectionOptions {
-    sort: [MovieActorsSort!]
+    sort: [MovieActorsConnectionSort!]
 }
 ```
 
