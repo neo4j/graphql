@@ -95,10 +95,10 @@ input ActedInSort {
 }
 ```
 
-And for composites of both node and relationship properties:
+And for composites of both node and relationship properties ("Connection" needed in name to avoid collisions):
 
 ```graphql
-input ActorMoviesWhere {
+input ActorMoviesConnectionWhere {
     relationship: ActedInWhere
     relationship_NOT: ActedInWhere
     node: MovieWhere
@@ -107,16 +107,16 @@ input ActorMoviesWhere {
     OR: [ActorMoviesWhere!]
 }
 
-input ActorMoviesSort {
+input ActorMoviesConnectionSort {
     relationship: ActedInSort
     node: MovieSort
 }
 
-input ActorMoviesOptions {
+input ActorMoviesConnectionOptions {
     sort: [ActorMoviesSort!]
 }
 
-input MovieActorsWhere {
+input MovieActorsConnectionWhere {
     relationship: ActedInWhere
     relationship_NOT: ActedInWhere
     node: ActorWhere
@@ -125,12 +125,12 @@ input MovieActorsWhere {
     OR: [MovieActorsWhere!]
 }
 
-input MovieActorsSort {
+input MovieActorsConnectionSort {
     relationship: ActedInSort
     node: ActorSort
 }
 
-input MovieActorsOptions {
+input MovieActorsConnectionOptions {
     sort: [MovieActorsSort!]
 }
 ```
@@ -145,8 +145,8 @@ type Actor {
     name: String!
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
     moviesConnection(
-        where: ActorMoviesWhere
-        options: ActorMoviesOptions
+        where: ActorMoviesConnectionWhere
+        options: ActorMoviesConnectionOptions
     ): ActorMoviesConnection!
 }
 
@@ -155,8 +155,8 @@ type Movie {
     title: String!
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
     actorsConnection(
-        where: MovieActorsWhere
-        options: MovieActorsOptions
+        where: MovieActorsConnectionWhere
+        options: MovieActorsConnectionOptions
     ): MovieActorsConnection!
 }
 ```
@@ -220,7 +220,7 @@ Additionally, the `where` argument will be changed so that filtering can be done
 ```graphql
 input ActorMoviesUpdateFieldInput {
     properties: ActedInUpdateInput
-    where: ActorMoviesWhere
+    where: ActorMoviesConnectionWhere
     update: MovieUpdateInput
     connect: [MovieConnectFieldInput!]
     create: [MovieCreateFieldInput!]
@@ -230,7 +230,7 @@ input ActorMoviesUpdateFieldInput {
 
 input MovieActorsUpdateFieldInput {
     properties: ActedInUpdateInput
-    where: MovieActorsWhere
+    where: MovieActorsConnectionWhere
     update: ActorUpdateInput
     create: [ActorCreateFieldInput!]
     connect: [ActorConnectFieldInput!]
