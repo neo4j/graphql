@@ -1,6 +1,16 @@
 # @neo4j/graphql
 
-[![npm version](https://badge.fury.io/js/%40neo4j%2Fgraphql.svg)](https://badge.fury.io/js/%40neo4j%2Fgraphql)
+<p align="center">
+  <a href="https://badge.fury.io/js/%40neo4j%2Fgraphql">
+    <img alt="npm package" src="https://badge.fury.io/js/%40neo4j%2Fgraphql.svg">
+  </a>
+  <a href="https://discord.gg/neo4j">
+    <img alt="Discord" src="https://img.shields.io/discord/787399249741479977?logo=discord&logoColor=white">
+  </a>
+  <a href="https://community.neo4j.com/c/drivers-stacks/graphql/33">
+    <img alt="Discourse users" src="https://img.shields.io/discourse/users?logo=discourse&server=https%3A%2F%2Fcommunity.neo4j.com">
+  </a>
+</p>
 
 A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations.
 
