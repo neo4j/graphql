@@ -30,6 +30,7 @@ import {
     StringValueNode,
     UnionTypeDefinitionNode,
 } from "graphql";
+import { upperFirst } from "graphql-compose";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getAuth from "./get-auth";
@@ -47,11 +48,13 @@ import {
     DateTimeField,
     PointField,
     TimeStampOperations,
+    ConnectionField,
 } from "../types";
 import parseValueNode from "./parse-value-node";
 
 interface ObjectFields {
     relationFields: RelationField[];
+    connectionFields: ConnectionField[];
     primitiveFields: PrimitiveField[];
     cypherFields: CypherField[];
     scalarFields: CustomScalarField[];
@@ -162,6 +165,41 @@ function getObjFieldMeta({
                 }
 
                 res.relationFields.push(relationField);
+
+                if (obj.kind !== "InterfaceTypeDefinition") {
+                    const connectionTypeName = `${obj.name.value}${upperFirst(`${baseField.fieldName}Connection`)}`;
+                    const relationshipTypeName = `${obj.name.value}${upperFirst(`${baseField.fieldName}Relationship`)}`;
+
+                    const connectionField: ConnectionField = {
+                        fieldName: `${baseField.fieldName}Connection`,
+                        relationshipTypeName,
+                        typeMeta: {
+                            name: connectionTypeName,
+                            required: true,
+                            pretty: `${connectionTypeName}!`,
+                            input: {
+                                where: {
+                                    type: `${connectionTypeName}Where`,
+                                    pretty: `${connectionTypeName}Where`,
+                                },
+                                create: {
+                                    type: "",
+                                    pretty: "",
+                                },
+                                update: {
+                                    type: "",
+                                    pretty: "",
+                                },
+                            },
+                        },
+                        otherDirectives: [],
+                        arguments: [...(field.arguments || [])],
+                        description: field.description?.value,
+                        relationship: relationField,
+                    };
+
+                    res.connectionFields.push(connectionField);
+                }
             } else if (cypherMeta) {
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
@@ -390,6 +428,7 @@ function getObjFieldMeta({
         },
         {
             relationFields: [],
+            connectionFields: [],
             primitiveFields: [],
             cypherFields: [],
             scalarFields: [],

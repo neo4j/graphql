@@ -25,6 +25,7 @@ import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import type { DriverConfig } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
+import Relationship from "./Relationship";
 import { checkNeo4jCompat } from "../utils";
 import { getJWT } from "../auth/index";
 import { DEBUG_GRAPHQL } from "../constants";
@@ -53,6 +54,8 @@ class Neo4jGraphQL {
 
     public nodes: Node[];
 
+    public relationships: Relationship[];
+
     public document: DocumentNode;
 
     private driver?: Driver;
@@ -61,11 +64,14 @@ class Neo4jGraphQL {
 
     constructor(input: Neo4jGraphQLConstructor) {
         const { config = {}, driver, ...schemaDefinition } = input;
-        const { nodes, schema } = makeAugmentedSchema(schemaDefinition, { enableRegex: config.enableRegex });
+        const { nodes, relationships, schema } = makeAugmentedSchema(schemaDefinition, {
+            enableRegex: config.enableRegex,
+        });
 
         this.driver = driver;
         this.config = config;
         this.nodes = nodes;
+        this.relationships = relationships;
         this.schema = this.createWrappedSchema({ schema, config });
         this.document = parse(printSchema(schema));
     }
