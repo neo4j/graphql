@@ -20,7 +20,7 @@
 import camelCase from "camelcase";
 import pluralize from "pluralize";
 import { Node } from "../classes";
-import { Context, GraphQLWhereArg, RelationField } from "../types";
+import { Context, GraphQLWhereArg, RelationField, ConnectionField } from "../types";
 import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
@@ -30,6 +30,7 @@ import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
+import createConnectionAndParams from "./connection/create-connection-and-params";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
@@ -51,6 +52,8 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
     const whereStrs: string[] = [];
+    const connectionStrs: string[] = [];
+
     const { fieldsByTypeName } = resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][
         pluralize(camelCase(node.name))
     ];
@@ -190,6 +193,22 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
+    if (projection[2]?.connectionFields?.length) {
+        projection[2].connectionFields.forEach((connectionResolveTree) => {
+            const connectionField = node.connectionFields.find(
+                (x) => x.fieldName === connectionResolveTree.name
+            ) as ConnectionField;
+            const connection = createConnectionAndParams({
+                resolveTree: connectionResolveTree,
+                field: connectionField,
+                context,
+                nodeVariable: varName,
+            });
+            connectionStrs.push(connection[0]);
+            cypherParams = { ...cypherParams, ...connection[1] };
+        });
+    }
+
     const cypher = [
         matchStr,
         whereStr,
@@ -199,6 +218,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         createStrs.join("\n"),
         deleteStr,
         ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
+        ...connectionStrs,
         `RETURN ${varName} ${projStr} AS ${varName}`,
     ];
 

@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { GraphQLWhereArg, Context } from "../../../types";
-import { Node } from "../../../classes";
+import { GraphQLWhereArg, Context } from "../../types";
+import { Node } from "../../classes";
+import createFilter from "./create-filter";
 
 interface Res {
     clauses: string[];
@@ -146,19 +147,17 @@ function createNodeWhereAndParams({
             }
 
             if (value === null) {
-                res.clauses.push(
-                    not ? `${nodeVariable}.${fieldName} IS NOT NULL` : `${nodeVariable}.${fieldName} IS NULL`
-                );
+                res.clauses.push(not ? `${property} IS NOT NULL` : `${property} IS NULL`);
                 return res;
             }
 
             if (pointField) {
                 if (pointField.typeMeta.array) {
-                    let clause = `${nodeVariable}.${fieldName} = [p in $${param} | point(p)]`;
+                    let clause = `${property} = [p in $${param} | point(p)]`;
                     if (not) clause = `(NOT ${clause})`;
                     res.clauses.push(clause);
                 } else {
-                    let clause = `${nodeVariable}.${fieldName} = point($${param})`;
+                    let clause = `${property} = point($${param})`;
                     if (not) clause = `(NOT ${clause})`;
                     res.clauses.push(clause);
                 }
@@ -212,14 +211,20 @@ function createNodeWhereAndParams({
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
                 res.params = { ...res.params, fieldName: nestedParams };
-            } else if (pointField) {
-                let clause = `${nodeVariable}.${fieldName} IN [p in $${param} | point(p)]`;
-                if (not) clause = `(NOT ${clause})`;
-                res.clauses.push(clause);
-                res.params[key] = value;
+                // } else if (pointField) {
+                //     let clause = `${property} IN [p in $${param} | point(p)]`;
+                //     if (not) clause = `(NOT ${clause})`;
+                //     res.clauses.push(clause);
+                //     res.params[key] = value;
             } else {
-                let clause = `${property} IN $${param}`;
-                if (not) clause = `(NOT ${clause})`;
+                // let clause = `${property} IN $${param}`;
+                // if (not) clause = `(NOT ${clause})`;
+                const clause = createFilter({
+                    left: property,
+                    operator,
+                    right: pointField ? `[p in $${param} | point(p)]` : `$${param}`,
+                    not,
+                });
                 res.clauses.push(clause);
                 res.params[key] = value;
             }
@@ -228,7 +233,7 @@ function createNodeWhereAndParams({
         }
 
         if (operator === "INCLUDES") {
-            let clause = pointField ? `point($${param}) IN ${nodeVariable}.${fieldName}` : `$${param} IN ${property}`;
+            let clause = pointField ? `point($${param}) IN ${property}` : `$${param} IN ${property}`;
 
             if (not) clause = `(NOT ${clause})`;
 
@@ -256,7 +261,7 @@ function createNodeWhereAndParams({
         if (operator && ["LT", "LTE", "GTE", "GT"].includes(operator)) {
             res.clauses.push(
                 pointField
-                    ? `distance(${nodeVariable}.${fieldName}, point($${param}.point)) ${operators[operator]} $${param}.distance`
+                    ? `distance(${property}, point($${param}.point)) ${operators[operator]} $${param}.distance`
                     : `${property} ${operators[operator]} $${param}`
             );
             res.params[key] = value;
@@ -264,7 +269,7 @@ function createNodeWhereAndParams({
         }
 
         if (key.endsWith("_DISTANCE")) {
-            res.clauses.push(`distance(${nodeVariable}.${fieldName}, point($${param}.point)) = $${param}.distance`);
+            res.clauses.push(`distance(${property}, point($${param}.point)) = $${param}.distance`);
             res.params[key] = value;
 
             return res;

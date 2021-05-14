@@ -4,7 +4,7 @@ import { Node } from "../../classes";
 import createProjectionAndParams from "../create-projection-and-params";
 import Relationship from "../../classes/Relationship";
 import createRelationshipPropertyElement from "../projection/elements/create-relationship-property-element";
-import createConnectionWhereAndParams from "../projection/where/create-connection-where-and-params";
+import createConnectionWhereAndParams from "../where/create-connection-where-and-params";
 
 /*
 input:

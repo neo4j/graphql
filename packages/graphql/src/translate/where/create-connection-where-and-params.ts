@@ -1,5 +1,5 @@
-import { Node, Relationship } from "../../../classes";
-import { ConnectionWhereArg, Context } from "../../../types";
+import { Node, Relationship } from "../../classes";
+import { ConnectionWhereArg, Context } from "../../types";
 import createRelationshipWhereAndParams from "./create-relationship-where-and-params";
 import createNodeWhereAndParams from "./create-node-where-and-params";
 
@@ -73,6 +73,7 @@ function createConnectionWhereAndParams({
 
     if (whereInput.AND) {
         const innerClauses: string[] = [];
+        const innerParams: any[] = [];
 
         whereInput.AND.forEach((a, i) => {
             const and = createConnectionWhereAndParams({
@@ -86,14 +87,16 @@ function createConnectionWhereAndParams({
             });
 
             innerClauses.push(`${and[0]}`);
-            params = { ...params, ...and[1] };
+            innerParams.push(and[1]);
         });
 
         whereStrs.push(`(${innerClauses.join(" AND ")})`);
+        params = { ...params, AND: innerParams };
     }
 
     if (whereInput.OR) {
         const innerClauses: string[] = [];
+        const innerParams: any[] = [];
 
         whereInput.OR.forEach((o, i) => {
             const or = createConnectionWhereAndParams({
@@ -107,10 +110,11 @@ function createConnectionWhereAndParams({
             });
 
             innerClauses.push(`${or[0]}`);
-            params = { ...params, ...or[1] };
+            innerParams.push(or[1]);
         });
 
         whereStrs.push(`(${innerClauses.join(" OR ")})`);
+        params = { ...params, OR: innerParams };
     }
 
     return [whereStrs.join(" AND "), params];

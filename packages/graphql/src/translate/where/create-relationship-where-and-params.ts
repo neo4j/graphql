@@ -1,5 +1,6 @@
-import Relationship from "../../../classes/Relationship";
-import { GraphQLWhereArg, Context, PrimitiveField } from "../../../types";
+import Relationship from "../../classes/Relationship";
+import { GraphQLWhereArg, Context, PrimitiveField } from "../../types";
+import createFilter from "./create-filter";
 
 interface Res {
     clauses: string[];
@@ -12,15 +13,12 @@ function createRelationshipWhereAndParams({
     relationship,
     relationshipVariable,
     parameterPrefix,
-}: // chainStr,
-{
+}: {
     whereInput: GraphQLWhereArg;
     context: Context;
     relationship: Relationship;
     relationshipVariable: string;
     parameterPrefix: string;
-    // authValidateStrs?: string[];
-    // chainStr?: string;
 }): [string, any] {
     if (!Object.keys(whereInput).length) {
         return ["", {}];
@@ -28,20 +26,6 @@ function createRelationshipWhereAndParams({
 
     function reducer(res: Res, [key, value]: [string, GraphQLWhereArg]): Res {
         const param = `${parameterPrefix}.${key}`;
-
-        const operators = {
-            INCLUDES: "IN",
-            IN: "IN",
-            MATCHES: "=~",
-            CONTAINS: "CONTAINS",
-            STARTS_WITH: "STARTS WITH",
-            ENDS_WITH: "ENDS WITH",
-            LT: "<",
-            GT: ">",
-            GTE: ">=",
-            LTE: "<=",
-            DISTANCE: "=",
-        };
 
         const re = /(?<field>[_A-Za-z][_0-9A-Za-z]*?)(?:_(?<not>NOT))?(?:_(?<operator>INCLUDES|IN|MATCHES|CONTAINS|STARTS_WITH|ENDS_WITH|LT|GT|GTE|LTE|DISTANCE))?$/gm;
 
@@ -73,14 +57,11 @@ function createRelationshipWhereAndParams({
                     whereInput: v,
                     relationship,
                     relationshipVariable,
-                    // chainStr: `${param}${i > 0 ? i : ""}`,
                     context,
-                    // recursing: true,
                     parameterPrefix: `${parameterPrefix}.${fieldName}[${i}]`,
                 });
 
                 innerClauses.push(`(${recurse[0]})`);
-                // res.params = { ...res.params, ...recurse[1] };
                 nestedParams.push(recurse[1]);
             });
 
@@ -93,21 +74,17 @@ function createRelationshipWhereAndParams({
         // Equality/inequality
         if (!operator) {
             if (value === null) {
-                res.clauses.push(
-                    not
-                        ? `${relationshipVariable}.${fieldName} IS NOT NULL`
-                        : `${relationshipVariable}.${fieldName} IS NULL`
-                );
+                res.clauses.push(not ? `${property} IS NOT NULL` : `${property} IS NULL`);
                 return res;
             }
 
             if (pointField) {
                 if (pointField.typeMeta.array) {
-                    let clause = `${relationshipVariable}.${fieldName} = [p in $${param} | point(p)]`;
+                    let clause = `${property} = [p in $${param} | point(p)]`;
                     if (not) clause = `(NOT ${clause})`;
                     res.clauses.push(clause);
                 } else {
-                    let clause = `${relationshipVariable}.${fieldName} = point($${param})`;
+                    let clause = `${property} = point($${param})`;
                     if (not) clause = `(NOT ${clause})`;
                     res.clauses.push(clause);
                 }
@@ -122,65 +99,51 @@ function createRelationshipWhereAndParams({
         }
 
         if (operator === "IN") {
-            if (pointField) {
-                let clause = `${relationshipVariable}.${fieldName} IN [p in $${param} | point(p)]`;
-                if (not) clause = `(NOT ${clause})`;
-                res.clauses.push(clause);
-                res.params[key] = value;
-            } else {
-                let clause = `${property} IN $${param}`;
-                if (not) clause = `(NOT ${clause})`;
-                res.clauses.push(clause);
-                res.params[key] = value;
-            }
+            const clause = createFilter({
+                left: property,
+                operator,
+                right: pointField ? `[p in $${param} | point(p)]` : `$${param}`,
+                not,
+            });
+            res.clauses.push(clause);
+            res.params[key] = value;
 
             return res;
         }
 
         if (operator === "INCLUDES") {
-            let clause = pointField
-                ? `point($${param}) IN ${relationshipVariable}.${fieldName}`
-                : `$${param} IN ${property}`;
-
-            if (not) clause = `(NOT ${clause})`;
-
+            const clause = createFilter({
+                left: pointField ? `point($${param})` : `$${param}`,
+                operator,
+                right: property,
+                not,
+            });
             res.clauses.push(clause);
             res.params[key] = value;
 
             return res;
         }
 
-        if (key.endsWith("_MATCHES")) {
-            res.clauses.push(`${property} =~ $${param}`);
-            res.params[key] = value;
-
-            return res;
-        }
-
-        if (operator && ["CONTAINS", "STARTS_WITH", "ENDS_WITH"].includes(operator)) {
-            let clause = `${property} ${operators[operator]} $${param}`;
-            if (not) clause = `(NOT ${clause})`;
+        if (operator && ["MATCHES", "CONTAINS", "STARTS_WITH", "ENDS_WITH"].includes(operator)) {
+            const clause = createFilter({
+                left: property,
+                operator,
+                right: `$${param}`,
+                not,
+            });
             res.clauses.push(clause);
             res.params[key] = value;
             return res;
         }
 
-        if (operator && ["LT", "LTE", "GTE", "GT"].includes(operator)) {
-            res.clauses.push(
-                pointField
-                    ? `distance(${relationshipVariable}.${fieldName}, point($${param}.point)) ${operators[operator]} $${param}.distance`
-                    : `${property} ${operators[operator]} $${param}`
-            );
+        if (operator && ["DISTANCE", "LT", "LTE", "GTE", "GT"].includes(operator)) {
+            const clause = createFilter({
+                left: pointField ? `distance(${property}, point($${param}.point))` : property,
+                operator,
+                right: pointField ? `$${param}.distance` : `$${param}`,
+            });
+            res.clauses.push(clause);
             res.params[key] = value;
-            return res;
-        }
-
-        if (key.endsWith("_DISTANCE")) {
-            res.clauses.push(
-                `distance(${relationshipVariable}.${fieldName}, point($${param}.point)) = $${param}.distance`
-            );
-            res.params[key] = value;
-
             return res;
         }
 

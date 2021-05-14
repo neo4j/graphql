@@ -192,6 +192,13 @@ function makeAugmentedSchema(
             }
         });
 
+        if (!pointInTypeDefs) {
+            pointInTypeDefs = nodeFields.pointFields.some((field) => field.typeMeta.name === "Point");
+        }
+        if (!cartesianPointInTypeDefs) {
+            cartesianPointInTypeDefs = nodeFields.pointFields.some((field) => field.typeMeta.name === "CartesianPoint");
+        }
+
         const node = new Node({
             name: definition.name.value,
             interfaces: nodeInterfaces,
@@ -216,6 +223,13 @@ function makeAugmentedSchema(
 
     relationshipProperties.forEach((relationship) => {
         const relationshipFieldMeta = getRelationshipFieldMeta({ relationship });
+
+        if (!pointInTypeDefs) {
+            pointInTypeDefs = relationshipFieldMeta.some((field) => field.typeMeta.name === "Point");
+        }
+        if (!cartesianPointInTypeDefs) {
+            cartesianPointInTypeDefs = relationshipFieldMeta.some((field) => field.typeMeta.name === "CartesianPoint");
+        }
 
         relationshipFields.set(relationship.name.value, relationshipFieldMeta);
 
@@ -262,6 +276,22 @@ function makeAugmentedSchema(
             fields: relationshipWhereFields,
         });
     });
+
+    if (pointInTypeDefs) {
+        // Every field (apart from CRS) in Point needs a custom resolver
+        // to deconstruct the point objects we fetch from the database
+        composer.createObjectTC(point.point);
+        composer.createInputTC(point.pointInput);
+        composer.createInputTC(point.pointDistance);
+    }
+
+    if (cartesianPointInTypeDefs) {
+        // Every field (apart from CRS) in CartesianPoint needs a custom resolver
+        // to deconstruct the point objects we fetch from the database
+        composer.createObjectTC(point.cartesianPoint);
+        composer.createInputTC(point.cartesianPointInput);
+        composer.createInputTC(point.cartesianPointDistance);
+    }
 
     nodes.forEach((node) => {
         const nodeFields = objectFieldsToComposeFields([
@@ -343,13 +373,6 @@ function makeAugmentedSchema(
             }, {}),
             ...[...node.primitiveFields, ...node.dateTimeFields, ...node.enumFields, ...node.pointFields].reduce(
                 (res, f) => {
-                    // This is the only sensible place to flag whether Point and CartesianPoint are used
-                    if (f.typeMeta.name === "Point") {
-                        pointInTypeDefs = true;
-                    } else if (f.typeMeta.name === "CartesianPoint") {
-                        cartesianPointInTypeDefs = true;
-                    }
-
                     res[f.fieldName] = f.typeMeta.input.where.pretty;
                     res[`${f.fieldName}_NOT`] = f.typeMeta.input.where.pretty;
 
@@ -880,22 +903,6 @@ function makeAugmentedSchema(
     });
 
     Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
-
-    if (pointInTypeDefs) {
-        // Every field (apart from CRS) in Point needs a custom resolver
-        // to deconstruct the point objects we fetch from the database
-        composer.createObjectTC(point.point);
-        composer.createInputTC(point.pointInput);
-        composer.createInputTC(point.pointDistance);
-    }
-
-    if (cartesianPointInTypeDefs) {
-        // Every field (apart from CRS) in CartesianPoint needs a custom resolver
-        // to deconstruct the point objects we fetch from the database
-        composer.createObjectTC(point.cartesianPoint);
-        composer.createInputTC(point.cartesianPointInput);
-        composer.createInputTC(point.cartesianPointDistance);
-    }
 
     if (!Object.values(composer.Mutation.getFields()).length) {
         composer.delete("Mutation");

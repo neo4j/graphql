@@ -138,7 +138,11 @@ function generateTests(filePath, kind: string): TestCase {
 export function generateTestCasesFromMd(dir: string, kind = ""): TestCase[] {
     const files = fs.readdirSync(dir, { withFileTypes: true }).reduce((res: TestCase[], item) => {
         if (item.isFile()) {
-            return [...res, generateTests(path.join(dir, item.name), kind)];
+            try {
+                return [...res, generateTests(path.join(dir, item.name), kind)];
+            } catch {
+                throw new Error(`Error generating test ${path.join(dir, item.name)}`);
+            }
         }
 
         if (item.isDirectory()) {
