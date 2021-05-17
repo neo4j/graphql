@@ -14,7 +14,7 @@ const baseExtends = [
     "plugin:jest/style",
     "plugin:import/errors",
     "plugin:import/warnings",
-    "plugin:prettier/recommended", // Enables eslint-plugin-prettier and eslint-config-prettier - ensure this is always last in the extends array
+    "prettier", // Ensure this is always last in the extends array
 ]; // Always spread at end of extends due to plugin:prettier/recommended
 
 const baseRules = {
@@ -37,7 +37,6 @@ const baseTypeScriptExtends = [
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:import/typescript",
-    "prettier/@typescript-eslint", // Disables ESLint rules from @typescript-eslint/eslint-plugin that conflict with Prettier
     ...baseExtends,
 ];
 
@@ -49,12 +48,6 @@ const baseTypeScriptRules = {
     "@typescript-eslint/no-use-before-define": "warn", // Unavoidable in some places, but a refactor should potentially happen and this rule switched on
     "@typescript-eslint/explicit-module-boundary-types": "off", // TODO We should really define what our functions return
     "@typescript-eslint/no-unused-vars": ["error"], // Additional rule enabled because we don't want unused variables hanging about!
-    "prettier/prettier": [
-        "error",
-        {
-            endOfLine: "auto",
-        },
-    ], // Support all operating system line endings
     /*
     start of @typescript-eslint/recommended-requiring-type-checking rules
     TODO Over the long term, reduce our usage of `any` and switch these rules on
@@ -66,6 +59,8 @@ const baseTypeScriptRules = {
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/no-empty-interface": "off",
     /* end of @typescript-eslint/recommended-requiring-type-checking rules */
+    "@typescript-eslint/indent": "off",
+    "@typescript-eslint/quotes": "off",
 };
 
 module.exports = {
@@ -100,6 +95,10 @@ module.exports = {
             rules: {
                 "import/prefer-default-export": "off",
                 "@typescript-eslint/no-unnecessary-type-assertion": ["off"],
+                "@typescript-eslint/indent": "off",
+                "@typescript-eslint/quotes": "off",
+                "react/jsx-indent": "off",
+                "react/jsx-indent-props": "off",
             },
         },
         {
