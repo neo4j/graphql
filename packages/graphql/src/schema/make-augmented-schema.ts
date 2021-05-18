@@ -729,14 +729,62 @@ function makeAugmentedSchema(
             });
         });
 
-        node.connectionFields
-            .filter((c) => !c.relationship.union)
-            .forEach((connectionField) => {
-                const relationship = composer.createObjectTC({
-                    name: connectionField.relationshipTypeName,
-                    fields: {
-                        node: `${connectionField.relationship.typeMeta.name}!`,
-                    },
+        node.connectionFields.forEach((connectionField) => {
+            const relationship = composer.createObjectTC({
+                name: connectionField.relationshipTypeName,
+                fields: {
+                    node: `${connectionField.relationship.typeMeta.name}!`,
+                },
+            });
+
+            const connectionWhereName = `${connectionField.typeMeta.name}Where`;
+
+            const connectionWhere = composer.createInputTC({
+                name: connectionWhereName,
+                fields: {
+                    AND: `[${connectionWhereName}!]`,
+                    OR: `[${connectionWhereName}!]`,
+                },
+            });
+
+            const connection = composer.createObjectTC({
+                name: connectionField.typeMeta.name,
+                fields: {
+                    edges: relationship.NonNull.List.NonNull,
+                },
+            });
+
+            if (connectionField.relationship.properties) {
+                const propertiesInterface = composer.getIFTC(connectionField.relationship.properties);
+                relationship.addInterface(propertiesInterface);
+                relationship.addFields(propertiesInterface.getFields());
+
+                connectionWhere.addFields({
+                    relationship: `${connectionField.relationship.properties}Where`,
+                    relationship_NOT: `${connectionField.relationship.properties}Where`,
+                });
+            }
+
+            let composeNodeArgs: {
+                where: any;
+                options?: any;
+            } = {
+                where: connectionWhere,
+            };
+
+            if (connectionField.relationship.union) {
+                const relatedNodes = nodes.filter((n) => connectionField.relationship.union?.nodes?.includes(n.name));
+
+                relatedNodes.forEach((n) => {
+                    connectionWhere.addFields({
+                        [n.name]: `${n.name}Where`,
+                        [`${n.name}_NOT`]: `${n.name}Where`,
+                    });
+                });
+            } else {
+                connectionWhere.addFields({
+                    node: `${connectionField.relationship.typeMeta.name}Where`,
+                    node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
                 });
 
                 const connectionSort = composer.createInputTC({
@@ -746,37 +794,11 @@ function makeAugmentedSchema(
                     },
                 });
 
-                const connectionWhereName = `${connectionField.typeMeta.name}Where`;
-
-                const connectionWhere = composer.createInputTC({
-                    name: connectionWhereName,
-                    fields: {
-                        node: `${connectionField.relationship.typeMeta.name}Where`,
-                        node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
-                        AND: `[${connectionWhereName}!]`,
-                        OR: `[${connectionWhereName}!]`,
-                    },
-                });
-
                 if (connectionField.relationship.properties) {
-                    const propertiesInterface = composer.getIFTC(connectionField.relationship.properties);
-                    relationship.addInterface(propertiesInterface);
-                    relationship.addFields(propertiesInterface.getFields());
                     connectionSort.addFields({
                         relationship: `${connectionField.relationship.properties}Sort`,
                     });
-                    connectionWhere.addFields({
-                        relationship: `${connectionField.relationship.properties}Where`,
-                        relationship_NOT: `${connectionField.relationship.properties}Where`,
-                    });
                 }
-
-                const connection = composer.createObjectTC({
-                    name: connectionField.typeMeta.name,
-                    fields: {
-                        edges: relationship.NonNull.List.NonNull,
-                    },
-                });
 
                 const connectionOptions = composer.createInputTC({
                     name: `${connectionField.typeMeta.name}Options`,
@@ -785,25 +807,25 @@ function makeAugmentedSchema(
                     },
                 });
 
-                composeNode.addFields({
-                    [connectionField.fieldName]: {
-                        type: connection.NonNull,
-                        args: {
-                            where: connectionWhere,
-                            options: connectionOptions,
-                        },
-                    },
-                });
+                composeNodeArgs = { ...composeNodeArgs, options: connectionOptions };
+            }
 
-                const r = new Relationship({
-                    name: connectionField.relationshipTypeName,
-                    type: connectionField.relationship.type,
-                    fields: connectionField.relationship.properties
-                        ? (relationshipFields.get(connectionField.relationship.properties) as RelationshipField[])
-                        : [],
-                });
-                relationships.push(r);
+            composeNode.addFields({
+                [connectionField.fieldName]: {
+                    type: connection.NonNull,
+                    args: composeNodeArgs,
+                },
             });
+
+            const r = new Relationship({
+                name: connectionField.relationshipTypeName,
+                type: connectionField.relationship.type,
+                fields: connectionField.relationship.properties
+                    ? (relationshipFields.get(connectionField.relationship.properties) as RelationshipField[])
+                    : [],
+            });
+            relationships.push(r);
+        });
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({

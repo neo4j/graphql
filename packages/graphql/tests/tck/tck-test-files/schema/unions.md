@@ -89,7 +89,25 @@ input GenreWhere {
 type Movie {
   id: ID
   search(options: QueryOptions, Genre: GenreWhere, Movie: MovieWhere): [Search]
+  searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
   searchNoDirective: Search
+}
+
+type MovieSearchConnection {
+  edges: [MovieSearchRelationship!]!
+}
+
+input MovieSearchConnectionWhere {
+  AND: [MovieSearchConnectionWhere!]
+  Genre: GenreWhere
+  Genre_NOT: GenreWhere
+  Movie: MovieWhere
+  Movie_NOT: MovieWhere
+  OR: [MovieSearchConnectionWhere!]
+}
+
+type MovieSearchRelationship {
+  node: Search!
 }
 
 input MovieConnectFieldInput {
