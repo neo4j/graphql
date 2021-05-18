@@ -275,6 +275,28 @@ function makeAugmentedSchema(
             name: `${relationship.name.value}Where`,
             fields: relationshipWhereFields,
         });
+
+        composer.createInputTC({
+            name: `${relationship.name.value}CreateInput`,
+            // TODO - Duplicated with rel properties
+            fields: relationshipFieldMeta.reduce((res, f) => {
+                if ((f as PrimitiveField)?.autogenerate) {
+                    return res;
+                }
+
+                if ((f as PrimitiveField)?.defaultValue !== undefined) {
+                    const field: InputTypeComposerFieldConfigAsObjectDefinition = {
+                        type: f.typeMeta.input.create.pretty,
+                        defaultValue: (f as PrimitiveField)?.defaultValue,
+                    };
+                    res[f.fieldName] = field;
+                } else {
+                    res[f.fieldName] = f.typeMeta.input.create.pretty;
+                }
+
+                return res;
+            }, {}),
+        });
     });
 
     if (pointInTypeDefs) {
@@ -363,6 +385,7 @@ function makeAugmentedSchema(
             });
         }
 
+        // TODO - use getWhereFields
         const queryFields = {
             OR: `[${node.name}Where!]`,
             AND: `[${node.name}Where!]`,
@@ -434,6 +457,7 @@ function makeAugmentedSchema(
 
         const nodeInput = composer.createInputTC({
             name: `${node.name}CreateInput`,
+            // TODO - Duplicated with rel properties
             fields: [
                 ...node.primitiveFields,
                 ...node.scalarFields,
@@ -551,6 +575,9 @@ function makeAugmentedSchema(
                 refNodes.forEach((n) => {
                     const concatFieldName = `${rel.fieldName}_${n.name}`;
                     const createField = rel.typeMeta.array ? `[${n.name}CreateInput!]` : `${n.name}CreateInput`;
+                    const createFieldInputName = rel.typeMeta.array
+                        ? `[${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput!]`
+                        : `${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput`;
                     const updateField = `${n.name}UpdateInput`;
                     const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${n.name}FieldInput`;
                     const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${
@@ -575,6 +602,14 @@ function makeAugmentedSchema(
                     });
 
                     composer.createInputTC({
+                        name: `${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput`,
+                        fields: {
+                            node: `${n.name}CreateInput`,
+                            ...(rel.properties ? { properties: `${rel.properties}CreateInput` } : {}),
+                        },
+                    });
+
+                    composer.createInputTC({
                         name: nodeFieldUpdateInputName,
                         fields: {
                             where: `${n.name}Where`,
@@ -589,7 +624,7 @@ function makeAugmentedSchema(
                     composer.createInputTC({
                         name: nodeFieldInputName,
                         fields: {
-                            create: createField,
+                            create: createFieldInputName,
                             connect: connectField,
                         },
                     });
@@ -642,6 +677,9 @@ function makeAugmentedSchema(
             const createField = rel.typeMeta.array ? `[${n.name}CreateInput!]` : `${n.name}CreateInput`;
             const updateField = `${n.name}UpdateInput`;
             const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
+            const createFieldInputName = rel.typeMeta.array
+                ? `[${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput!]`
+                : `${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput`;
             const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}UpdateFieldInput`;
             const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}DeleteFieldInput`;
             const connectField = rel.typeMeta.array ? `[${n.name}ConnectFieldInput!]` : `${n.name}ConnectFieldInput`;
@@ -658,6 +696,14 @@ function makeAugmentedSchema(
                           [`${rel.fieldName}_IN`]: `[${n.name}Where!]`,
                           [`${rel.fieldName}_NOT_IN`]: `[${n.name}Where!]`,
                       }),
+            });
+
+            composer.createInputTC({
+                name: `${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput`,
+                fields: {
+                    node: `${n.name}CreateInput`,
+                    ...(rel.properties ? { properties: `${rel.properties}CreateInput` } : {}),
+                },
             });
 
             composeNode.addFields({
@@ -685,7 +731,7 @@ function makeAugmentedSchema(
             composer.createInputTC({
                 name: nodeFieldInputName,
                 fields: {
-                    create: createField,
+                    create: createFieldInputName,
                     connect: connectField,
                 },
             });
@@ -801,6 +847,7 @@ function makeAugmentedSchema(
                     fields: connectionField.relationship.properties
                         ? (relationshipFields.get(connectionField.relationship.properties) as RelationshipField[])
                         : [],
+                    properties: connectionField.relationship.properties,
                 });
                 relationships.push(r);
             });
