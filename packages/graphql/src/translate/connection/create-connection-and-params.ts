@@ -76,7 +76,6 @@ function createConnectionAndParams({
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
     const relationshipVariable = `${nodeVariable}_${field.relationship.type.toLowerCase()}`;
-
     const relationship = context.neoSchema.relationships.find(
         (r) => r.name === field.relationshipTypeName
     ) as Relationship;
