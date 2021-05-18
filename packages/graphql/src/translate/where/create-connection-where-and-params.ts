@@ -20,104 +20,77 @@ function createConnectionWhereAndParams({
     relationshipVariable: string;
     parameterPrefix: string;
 }): [string, any] {
-    const whereStrs: string[] = [];
-    let params = {};
+    const reduced = Object.entries(whereInput).reduce<{ whereStrs: string[]; params: any }>(
+        (res, [k, v]) => {
+            if (["AND", "OR"].includes(k)) {
+                const innerClauses: string[] = [];
+                const innerParams: any[] = [];
 
-    if (whereInput.node) {
-        const nodeWhere = createNodeWhereAndParams({
-            whereInput: whereInput.node,
-            node,
-            nodeVariable,
-            context,
-            parameterPrefix: `${parameterPrefix}.node`,
-        });
-        whereStrs.push(nodeWhere[0]);
-        params = { ...params, node: nodeWhere[1] };
-    }
+                v.forEach((o, i) => {
+                    const or = createConnectionWhereAndParams({
+                        whereInput: o,
+                        node,
+                        nodeVariable,
+                        relationship,
+                        relationshipVariable,
+                        context,
+                        parameterPrefix: `${parameterPrefix}.${k}[${i}]`,
+                    });
 
-    if (whereInput.node_NOT) {
-        const nodeWhere = createNodeWhereAndParams({
-            whereInput: whereInput.node_NOT,
-            node,
-            nodeVariable,
-            context,
-            parameterPrefix: `${parameterPrefix}.node_NOT`,
-        });
-        whereStrs.push(`(NOT ${nodeWhere[0]})`);
-        params = { ...params, node_NOT: nodeWhere[1] };
-    }
+                    innerClauses.push(`${or[0]}`);
+                    innerParams.push(or[1]);
+                });
 
-    if (whereInput.relationship) {
-        const relationshipWhere = createRelationshipWhereAndParams({
-            whereInput: whereInput.relationship,
-            relationship,
-            relationshipVariable,
-            context,
-            parameterPrefix: `${parameterPrefix}.relationship`,
-        });
-        whereStrs.push(relationshipWhere[0]);
-        params = { ...params, relationship: relationshipWhere[1] };
-    }
+                // whereStrs.push(`(${innerClauses.join(` ${k} `)})`);
+                // params = { ...params, [k]: innerParams };
 
-    if (whereInput.relationship_NOT) {
-        const relationshipWhere = createRelationshipWhereAndParams({
-            whereInput: whereInput.relationship_NOT,
-            relationship,
-            relationshipVariable,
-            context,
-            parameterPrefix: `${parameterPrefix}.relationship_NOT`,
-        });
-        whereStrs.push(`(NOT ${relationshipWhere[0]})`);
-        params = { ...params, relationship_NOT: relationshipWhere[1] };
-    }
+                const whereStrs = [...res.whereStrs, `(${innerClauses.filter((clause) => !!clause).join(` ${k} `)})`];
+                const params = { ...res.params, [k]: innerParams };
+                res = { whereStrs, params };
+                return res;
+            }
 
-    if (whereInput.AND) {
-        const innerClauses: string[] = [];
-        const innerParams: any[] = [];
+            if (k.startsWith("relationship")) {
+                const relationshipWhere = createRelationshipWhereAndParams({
+                    whereInput: v,
+                    relationship,
+                    relationshipVariable,
+                    context,
+                    parameterPrefix: `${parameterPrefix}.${k}`,
+                });
+                // whereStrs.push(k === "relationship_NOT" ? `(NOT ${relationshipWhere[0]})` : relationshipWhere[0]);
+                // params = { ...params, [k]: relationshipWhere[1] };
 
-        whereInput.AND.forEach((a, i) => {
-            const and = createConnectionWhereAndParams({
-                whereInput: a,
-                node,
-                nodeVariable,
-                relationship,
-                relationshipVariable,
-                context,
-                parameterPrefix: `${parameterPrefix}.AND[${i}]`,
-            });
+                const whereStrs = [
+                    ...res.whereStrs,
+                    k === "relationship_NOT" ? `(NOT ${relationshipWhere[0]})` : relationshipWhere[0],
+                ];
+                const params = { ...res.params, [k]: relationshipWhere[1] };
+                res = { whereStrs, params };
+                return res;
+            }
 
-            innerClauses.push(`${and[0]}`);
-            innerParams.push(and[1]);
-        });
+            if (k.startsWith("node") || k.startsWith(node.name)) {
+                const nodeWhere = createNodeWhereAndParams({
+                    whereInput: v,
+                    node,
+                    nodeVariable,
+                    context,
+                    parameterPrefix: `${parameterPrefix}.${k}`,
+                });
+                // whereStrs.push(k.endsWith("_NOT") ? `(NOT ${nodeWhere[0]})` : nodeWhere[0]);
+                // params = { ...params, [k]: nodeWhere[1] };
 
-        whereStrs.push(`(${innerClauses.join(" AND ")})`);
-        params = { ...params, AND: innerParams };
-    }
+                const whereStrs = [...res.whereStrs, k.endsWith("_NOT") ? `(NOT ${nodeWhere[0]})` : nodeWhere[0]];
+                const params = { ...res.params, [k]: nodeWhere[1] };
+                res = { whereStrs, params };
+            }
+            return res;
+        },
+        { whereStrs: [], params: {} }
+    );
 
-    if (whereInput.OR) {
-        const innerClauses: string[] = [];
-        const innerParams: any[] = [];
-
-        whereInput.OR.forEach((o, i) => {
-            const or = createConnectionWhereAndParams({
-                whereInput: o,
-                node,
-                nodeVariable,
-                relationship,
-                relationshipVariable,
-                context,
-                parameterPrefix: `${parameterPrefix}.OR[${i}]`,
-            });
-
-            innerClauses.push(`${or[0]}`);
-            innerParams.push(or[1]);
-        });
-
-        whereStrs.push(`(${innerClauses.join(" OR ")})`);
-        params = { ...params, OR: innerParams };
-    }
-
-    return [whereStrs.join(" AND "), params];
+    return [reduced.whereStrs.join(" AND "), reduced.params];
 }
 
 export default createConnectionWhereAndParams;
