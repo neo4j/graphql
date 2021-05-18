@@ -475,6 +475,30 @@ type DeleteInfo {
 type Movie {
   title: String
   actors(options: ActorOptions, where: ActorWhere): [Actor]
+  actorsConnection(options: MovieActorsConnectionOptions, where: MovieActorsConnectionWhere): MovieActorsConnection!
+}
+
+type MovieActorsRelationship {
+  node: Actor!
+}
+
+type MovieActorsConnection {
+  edges: [MovieActorsRelationship!]!
+}
+
+input MovieActorsConnectionOptions {
+  sort: [MovieActorsConnectionSort!]
+}
+
+input MovieActorsConnectionSort {
+  node: ActorSort
+}
+
+input MovieActorsConnectionWhere {
+  AND: [MovieActorsConnectionWhere!]
+  OR: [MovieActorsConnectionWhere!]
+  node: ActorWhere
+  node_NOT: ActorWhere
 }
 
 input MovieActorsFieldInput {

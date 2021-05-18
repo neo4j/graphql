@@ -80,6 +80,30 @@ input ActorDisconnectFieldInput {
 type Movie {
   id: ID
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  actorsConnection(options: MovieActorsConnectionOptions, where: MovieActorsConnectionWhere): MovieActorsConnection!
+}
+
+type MovieActorsRelationship {
+  node: Actor!
+}
+
+type MovieActorsConnection {
+  edges: [MovieActorsRelationship!]!
+}
+
+input MovieActorsConnectionOptions {
+  sort: [MovieActorsConnectionSort!]
+}
+
+input MovieActorsConnectionSort {
+  node: ActorSort
+}
+
+input MovieActorsConnectionWhere {
+  AND: [MovieActorsConnectionWhere!]
+  OR: [MovieActorsConnectionWhere!]
+  node: ActorWhere
+  node_NOT: ActorWhere
 }
 
 input MovieActorsFieldInput {
@@ -228,6 +252,7 @@ enum SortDirection {
 type Actor {
   name: String
   movies(where: MovieWhere, options: MovieOptions): [Movie]
+  moviesConnection(options: ActorMoviesConnectionOptions, where: ActorMoviesConnectionWhere): ActorMoviesConnection!
 }
 
 input ActorConnectFieldInput {
@@ -255,6 +280,29 @@ input ActorDisconnectFieldInput {
 
 input ActorDisconnectInput {
   movies: [MovieDisconnectFieldInput!]
+}
+
+type ActorMoviesRelationship {
+  node: Movie!
+}
+
+type ActorMoviesConnection {
+  edges: [ActorMoviesRelationship!]!
+}
+
+input ActorMoviesConnectionOptions {
+  sort: [ActorMoviesConnectionSort!]
+}
+
+input ActorMoviesConnectionSort {
+  node: MovieSort
+}
+
+input ActorMoviesConnectionWhere {
+  AND: [ActorMoviesConnectionWhere!]
+  OR: [ActorMoviesConnectionWhere!]
+  node: MovieWhere
+  node_NOT: MovieWhere
 }
 
 input ActorMoviesFieldInput {
@@ -313,6 +361,30 @@ type DeleteInfo {
 type Movie {
   id: ID
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  actorsConnection(options: MovieActorsConnectionOptions, where: MovieActorsConnectionWhere): MovieActorsConnection!
+}
+
+type MovieActorsRelationship {
+  node: Actor!
+}
+
+type MovieActorsConnection {
+  edges: [MovieActorsRelationship!]!
+}
+
+input MovieActorsConnectionOptions {
+  sort: [MovieActorsConnectionSort!]
+}
+
+input MovieActorsConnectionSort {
+  node: ActorSort
+}
+
+input MovieActorsConnectionWhere {
+  AND: [MovieActorsConnectionWhere!]
+  OR: [MovieActorsConnectionWhere!]
+  node: ActorWhere
+  node_NOT: ActorWhere
 }
 
 input MovieActorsFieldInput {

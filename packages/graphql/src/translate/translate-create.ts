@@ -22,10 +22,14 @@ import pluralize from "pluralize";
 import { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { Context } from "../types";
+import { Context, ConnectionField } from "../types";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import createConnectionAndParams from "./connection/create-connection-and-params";
 
 function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
+    const connectionStrs: string[] = [];
+    let connectionParams: any;
+
     const { resolveTree } = context;
 
     const { fieldsByTypeName } = resolveTree.fieldsByTypeName[`Create${pluralize(node.name)}MutationResponse`][
@@ -78,6 +82,44 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
         return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
     }, {});
 
+    if (projection[2]?.connectionFields?.length) {
+        projection[2].connectionFields.forEach((connectionResolveTree) => {
+            const connectionField = node.connectionFields.find(
+                (x) => x.fieldName === connectionResolveTree.name
+            ) as ConnectionField;
+            const connection = createConnectionAndParams({
+                resolveTree: connectionResolveTree,
+                field: connectionField,
+                context,
+                nodeVariable: "REPLACE_ME",
+            });
+            connectionStrs.push(connection[0]);
+            if (!connectionParams) connectionParams = {};
+            connectionParams = { ...connectionParams, ...connection[1] };
+        });
+    }
+
+    const replacedConnectionStrs = connectionStrs.length
+        ? createStrs.map((_, i) => {
+              return connectionStrs
+                  .map((connectionStr) => {
+                      return connectionStr.replace(/REPLACE_ME/g, `this${i}`);
+                  })
+                  .join("\n");
+          })
+        : [];
+
+    const replacedConnectionParams = connectionParams
+        ? createStrs.reduce((res1, _, i) => {
+              return {
+                  ...res1,
+                  ...Object.entries(connectionParams).reduce((res2, [key, value]) => {
+                      return { ...res2, [key.replace("REPLACE_ME", `this${i}`)]: value };
+                  }, {}),
+              };
+          }, {})
+        : {};
+
     const projectionStr = createStrs
         .map(
             (_, i) =>
@@ -91,9 +133,9 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
         .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
         .join("\n");
 
-    const cypher = [`${createStrs.join("\n")}`, authCalls, `\nRETURN ${projectionStr}`];
+    const cypher = [`${createStrs.join("\n")}`, authCalls, ...replacedConnectionStrs, `\nRETURN ${projectionStr}`];
 
-    return [cypher.filter(Boolean).join("\n"), { ...params, ...replacedProjectionParams }];
+    return [cypher.filter(Boolean).join("\n"), { ...params, ...replacedProjectionParams, ...replacedConnectionParams }];
 }
 
 export default translateCreate;
