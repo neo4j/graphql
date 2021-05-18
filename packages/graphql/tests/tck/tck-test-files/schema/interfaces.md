@@ -49,7 +49,31 @@ type Movie implements Node {
   id: ID
   nodes: [Node]
   movies(options: MovieOptions, where: MovieWhere): [Movie]
+  moviesConnection(options: MovieMoviesConnectionOptions, where: MovieMoviesConnectionWhere): MovieMoviesConnection!
   customQuery: [Movie]
+}
+
+type MovieMoviesRelationship {
+  node: Movie!
+}
+
+type MovieMoviesConnection {
+  edges: [MovieMoviesRelationship!]!
+}
+
+input MovieMoviesConnectionOptions {
+  sort: [MovieMoviesConnectionSort!]
+}
+
+input MovieMoviesConnectionSort {
+  node: MovieSort
+}
+
+input MovieMoviesConnectionWhere {
+  AND: [MovieMoviesConnectionWhere!]
+  OR: [MovieMoviesConnectionWhere!]
+  node: MovieWhere
+  node_NOT: MovieWhere
 }
 
 type DeleteInfo {

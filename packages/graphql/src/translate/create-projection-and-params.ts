@@ -17,21 +17,24 @@
  * limitations under the License.
  */
 
-import { FieldsByTypeName } from "graphql-parse-resolve-info";
+import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import createDatetimeElement from "./projection/elements/create-datetime-element";
+import createPointElement from "./projection/elements/create-point-element";
 
 interface Res {
     projection: string[];
     params: any;
-    meta?: ProjectionMeta;
+    meta: ProjectionMeta;
 }
 
 interface ProjectionMeta {
     authValidateStrs?: string[];
+    connectionFields?: ResolveTree[];
 }
 
 function createSkipLimitStr({ skip, limit }: { skip?: number; limit?: number }): string {
@@ -132,12 +135,14 @@ function createProjectionAndParams({
     context,
     chainStr,
     varName,
+    literalElements,
 }: {
     fieldsByTypeName: FieldsByTypeName;
     node: Node;
     context: Context;
     chainStr?: string;
     varName: string;
+    literalElements?: boolean;
 }): [string, any, ProjectionMeta?] {
     function reducer(res: Res, [k, field]: [string, any]): Res {
         let key = k;
@@ -159,6 +164,7 @@ function createProjectionAndParams({
         const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
         const cypherField = node.cypherFields.find((x) => x.fieldName === key);
         const relationField = node.relationFields.find((x) => x.fieldName === key);
+        const connectionField = node.connectionFields.find((x) => x.fieldName === key);
         const pointField = node.pointFields.find((x) => x.fieldName === key);
         const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === key);
         const authableField = node.authableFields.find((x) => x.fieldName === key);
@@ -172,10 +178,10 @@ function createProjectionAndParams({
                     allow: { parentNode: node, varName, chainStr: param },
                 });
                 if (allowAndParams[0]) {
-                    if (!res.meta) {
-                        res.meta = { authValidateStrs: [] };
+                    if (!res.meta.authValidateStrs) {
+                        res.meta.authValidateStrs = [];
                     }
-                    res.meta?.authValidateStrs?.push(allowAndParams[0]);
+                    res.meta.authValidateStrs?.push(allowAndParams[0]);
                     res.params = { ...res.params, ...allowAndParams[1] };
                 }
             }
@@ -390,35 +396,19 @@ function createProjectionAndParams({
             return res;
         }
 
+        if (connectionField) {
+            if (!res.meta.connectionFields) res.meta.connectionFields = [];
+            res.meta.connectionFields.push(field as ResolveTree);
+            res.projection.push(literalElements ? `${field.name}: ${field.name}` : `${field.name}`);
+            return res;
+        }
+
         if (pointField) {
-            const isArray = pointField.typeMeta.array;
-
-            const { crs, ...point } = fieldFields[pointField.typeMeta.name];
-            const fields: string[] = [];
-
-            // Sadly need to select the whole point object due to the risk of height/z
-            // being selected on a 2D point, to which the database will throw an error
-            if (point) {
-                fields.push(isArray ? "point:p" : `point: ${varName}.${key}`);
-            }
-
-            if (crs) {
-                fields.push(isArray ? "crs: p.crs" : `crs: ${varName}.${key}.crs`);
-            }
-
-            res.projection.push(
-                isArray
-                    ? `${key}: [p in ${varName}.${key} | { ${fields.join(", ")} }]`
-                    : `${key}: { ${fields.join(", ")} }`
-            );
+            res.projection.push(createPointElement({ resolveTree: field, field: pointField, variable: varName }));
         } else if (dateTimeField) {
-            res.projection.push(
-                dateTimeField.typeMeta.array
-                    ? `${key}: [ dt in ${varName}.${key} | apoc.date.convertFormat(toString(dt), "iso_zoned_date_time", "iso_offset_date_time") ]`
-                    : `${key}: apoc.date.convertFormat(toString(${varName}.${key}), "iso_zoned_date_time", "iso_offset_date_time")`
-            );
+            res.projection.push(createDatetimeElement({ resolveTree: field, field: dateTimeField, variable: varName }));
         } else {
-            res.projection.push(`.${key}`);
+            res.projection.push(literalElements ? `${key}: ${varName}.${key}` : `.${key}`);
         }
 
         return res;
@@ -429,6 +419,7 @@ function createProjectionAndParams({
         {
             projection: [],
             params: {},
+            meta: {},
         }
     );
 

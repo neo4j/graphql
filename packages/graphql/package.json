@@ -46,6 +46,7 @@
         "@types/pluralize": "0.0.29",
         "@types/randomstring": "1.1.6",
         "apollo-server": "2.21.0",
+        "dedent": "^0.7.0",
         "faker": "5.2.0",
         "graphql-tag": "2.11.0",
         "is-uuid": "1.0.2",

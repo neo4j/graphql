@@ -93,6 +93,7 @@ export interface BaseField {
     description?: string;
     readonly?: boolean;
     writeonly?: boolean;
+    ignored?: boolean;
 }
 
 /**
@@ -101,7 +102,13 @@ export interface BaseField {
 export interface RelationField extends BaseField {
     direction: "OUT" | "IN";
     type: string;
+    properties?: string;
     union?: UnionField;
+}
+
+export interface ConnectionField extends BaseField {
+    relationship: RelationField;
+    relationshipTypeName: string;
 }
 
 /**
@@ -146,6 +153,11 @@ export interface GraphQLSortArg {
     [field: string]: SortDirection;
 }
 
+export interface ConnectionSortArg {
+    node?: GraphQLSortArg;
+    relationship?: GraphQLSortArg;
+}
+
 /**
  * Representation of the options arg
  * passed to resolvers.
@@ -156,6 +168,10 @@ export interface GraphQLOptionsArg {
     sort?: GraphQLSortArg[];
 }
 
+export interface ConnectionOptionsArg {
+    sort?: ConnectionSortArg[];
+}
+
 /**
  * Representation of the where arg
  * passed to resolvers.
@@ -164,6 +180,15 @@ export interface GraphQLWhereArg {
     [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
     AND?: GraphQLWhereArg[];
     OR?: GraphQLWhereArg[];
+}
+
+export interface ConnectionWhereArg {
+    node?: GraphQLWhereArg;
+    node_NOT?: GraphQLWhereArg;
+    relationship?: GraphQLWhereArg;
+    relationship_NOT?: GraphQLWhereArg;
+    AND?: ConnectionWhereArg[];
+    OR?: ConnectionWhereArg[];
 }
 
 export type AuthOperations = "CREATE" | "READ" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT";

@@ -53,18 +53,22 @@ import getCustomResolvers from "./get-custom-resolvers";
 import getObjFieldMeta from "./get-obj-field-meta";
 import * as point from "./point";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
+import getFieldTypeMeta from "./get-field-type-meta";
+import Relationship, { RelationshipField } from "../classes/Relationship";
+import getRelationshipFieldMeta from "./get-relationship-field-meta";
+import getWhereFields from "./get-where-fields";
 // import validateTypeDefs from "./validation";
 
 function makeAugmentedSchema(
     { typeDefs, resolvers, ...schemaDefinition }: IExecutableSchemaDefinition,
     { enableRegex }: { enableRegex?: boolean } = {}
-): { schema: GraphQLSchema; nodes: Node[] } {
+): { schema: GraphQLSchema; nodes: Node[]; relationships: Relationship[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
     /*
-        Issue caused by a combination of GraphQL Compose removing types and 
+        Issue caused by a combination of GraphQL Compose removing types and
         that we are not adding Points to the validation schema. This should be a
-        temporary fix and does not detriment usability of the library. 
+        temporary fix and does not detriment usability of the library.
     */
     // validateTypeDefs(document);
 
@@ -76,6 +80,8 @@ function makeAugmentedSchema(
     // These are flags to check whether the types are used and then create them if they are
     let pointInTypeDefs = false;
     let cartesianPointInTypeDefs = false;
+
+    const relationships: Relationship[] = [];
 
     composer.createObjectTC({
         name: "DeleteInfo",
@@ -121,7 +127,7 @@ function makeAugmentedSchema(
         (x) => x.kind === "InputObjectTypeDefinition"
     ) as InputObjectTypeDefinitionNode[];
 
-    const interfaces = document.definitions.filter(
+    let interfaces = document.definitions.filter(
         (x) => x.kind === "InterfaceTypeDefinition"
     ) as InterfaceTypeDefinitionNode[];
 
@@ -131,7 +137,21 @@ function makeAugmentedSchema(
 
     const unions = document.definitions.filter((x) => x.kind === "UnionTypeDefinition") as UnionTypeDefinitionNode[];
 
+    const relationshipPropertyInterfaceNames = new Set<string>();
+
     const nodes = objectNodes.map((definition) => {
+        if (definition.name.value === "PageInfo") {
+            throw new Error(
+                "Type name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information."
+            );
+        }
+
+        if (definition.name.value.endsWith("Connection")) {
+            throw new Error(
+                'Type names ending "Connection" are reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.'
+            );
+        }
+
         checkNodeImplementsInterfaces(definition, interfaces);
 
         const otherDirectives = (definition.directives || []).filter(
@@ -160,6 +180,25 @@ function makeAugmentedSchema(
             objects: objectNodes,
         });
 
+        nodeFields.relationFields.forEach((relationship) => {
+            if (relationship.properties) {
+                const propertiesInterface = interfaces.find((i) => i.name.value === relationship.properties);
+                if (!propertiesInterface) {
+                    throw new Error(
+                        `Cannot find interface specified in ${definition.name.value}.${relationship.fieldName}`
+                    );
+                }
+                relationshipPropertyInterfaceNames.add(relationship.properties);
+            }
+        });
+
+        if (!pointInTypeDefs) {
+            pointInTypeDefs = nodeFields.pointFields.some((field) => field.typeMeta.name === "Point");
+        }
+        if (!cartesianPointInTypeDefs) {
+            cartesianPointInTypeDefs = nodeFields.pointFields.some((field) => field.typeMeta.name === "CartesianPoint");
+        }
+
         const node = new Node({
             name: definition.name.value,
             interfaces: nodeInterfaces,
@@ -175,7 +214,84 @@ function makeAugmentedSchema(
         return node;
     });
 
+    const relationshipProperties = interfaces.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
+    interfaces = interfaces.filter((i) => !relationshipPropertyInterfaceNames.has(i.name.value));
+
     const nodeNames = nodes.map((x) => x.name);
+
+    const relationshipFields = new Map<string, RelationshipField[]>();
+
+    relationshipProperties.forEach((relationship) => {
+        const relationshipFieldMeta = getRelationshipFieldMeta({ relationship });
+
+        if (!pointInTypeDefs) {
+            pointInTypeDefs = relationshipFieldMeta.some((field) => field.typeMeta.name === "Point");
+        }
+        if (!cartesianPointInTypeDefs) {
+            cartesianPointInTypeDefs = relationshipFieldMeta.some((field) => field.typeMeta.name === "CartesianPoint");
+        }
+
+        relationshipFields.set(relationship.name.value, relationshipFieldMeta);
+
+        const propertiesInterface = composer.createInterfaceTC({
+            name: relationship.name.value,
+            fields: {
+                ...relationship.fields?.reduce((res, f) => {
+                    const typeMeta = getFieldTypeMeta(f);
+
+                    return {
+                        ...res,
+                        [f.name.value]: {
+                            description: f.description?.value,
+                            type: typeMeta.pretty,
+                        },
+                    };
+                }, {}),
+            },
+        });
+
+        composer.createInputTC({
+            name: `${relationship.name.value}Sort`,
+            fields: propertiesInterface.getFieldNames().reduce((res, f) => {
+                return { ...res, [f]: "SortDirection" };
+            }, {}),
+        });
+
+        const relationshipWhereFields = getWhereFields({
+            typeName: relationship.name.value,
+            fields: {
+                scalarFields: [],
+                enumFields: [],
+                dateTimeFields: relationshipFieldMeta.filter((f) => f.typeMeta.name === "DateTime"),
+                pointFields: relationshipFieldMeta.filter((f) => ["Point", "CartesianPoint"].includes(f.typeMeta.name)),
+                primitiveFields: relationshipFieldMeta.filter((f) =>
+                    ["ID", "String", "Int", "Float"].includes(f.typeMeta.name)
+                ),
+            },
+            enableRegex: enableRegex || false,
+        });
+
+        composer.createInputTC({
+            name: `${relationship.name.value}Where`,
+            fields: relationshipWhereFields,
+        });
+    });
+
+    if (pointInTypeDefs) {
+        // Every field (apart from CRS) in Point needs a custom resolver
+        // to deconstruct the point objects we fetch from the database
+        composer.createObjectTC(point.point);
+        composer.createInputTC(point.pointInput);
+        composer.createInputTC(point.pointDistance);
+    }
+
+    if (cartesianPointInTypeDefs) {
+        // Every field (apart from CRS) in CartesianPoint needs a custom resolver
+        // to deconstruct the point objects we fetch from the database
+        composer.createObjectTC(point.cartesianPoint);
+        composer.createInputTC(point.cartesianPointInput);
+        composer.createInputTC(point.cartesianPointDistance);
+    }
 
     nodes.forEach((node) => {
         const nodeFields = objectFieldsToComposeFields([
@@ -257,13 +373,6 @@ function makeAugmentedSchema(
             }, {}),
             ...[...node.primitiveFields, ...node.dateTimeFields, ...node.enumFields, ...node.pointFields].reduce(
                 (res, f) => {
-                    // This is the only sensible place to flag whether Point and CartesianPoint are used
-                    if (f.typeMeta.name === "Point") {
-                        pointInTypeDefs = true;
-                    } else if (f.typeMeta.name === "CartesianPoint") {
-                        cartesianPointInTypeDefs = true;
-                    }
-
                     res[f.fieldName] = f.typeMeta.input.where.pretty;
                     res[`${f.fieldName}_NOT`] = f.typeMeta.input.where.pretty;
 
@@ -620,6 +729,82 @@ function makeAugmentedSchema(
             });
         });
 
+        node.connectionFields
+            .filter((c) => !c.relationship.union)
+            .forEach((connectionField) => {
+                const relationship = composer.createObjectTC({
+                    name: connectionField.relationshipTypeName,
+                    fields: {
+                        node: `${connectionField.relationship.typeMeta.name}!`,
+                    },
+                });
+
+                const connectionSort = composer.createInputTC({
+                    name: `${connectionField.typeMeta.name}Sort`,
+                    fields: {
+                        node: `${connectionField.relationship.typeMeta.name}Sort`,
+                    },
+                });
+
+                const connectionWhereName = `${connectionField.typeMeta.name}Where`;
+
+                const connectionWhere = composer.createInputTC({
+                    name: connectionWhereName,
+                    fields: {
+                        node: `${connectionField.relationship.typeMeta.name}Where`,
+                        node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
+                        AND: `[${connectionWhereName}!]`,
+                        OR: `[${connectionWhereName}!]`,
+                    },
+                });
+
+                if (connectionField.relationship.properties) {
+                    const propertiesInterface = composer.getIFTC(connectionField.relationship.properties);
+                    relationship.addInterface(propertiesInterface);
+                    relationship.addFields(propertiesInterface.getFields());
+                    connectionSort.addFields({
+                        relationship: `${connectionField.relationship.properties}Sort`,
+                    });
+                    connectionWhere.addFields({
+                        relationship: `${connectionField.relationship.properties}Where`,
+                        relationship_NOT: `${connectionField.relationship.properties}Where`,
+                    });
+                }
+
+                const connection = composer.createObjectTC({
+                    name: connectionField.typeMeta.name,
+                    fields: {
+                        edges: relationship.NonNull.List.NonNull,
+                    },
+                });
+
+                const connectionOptions = composer.createInputTC({
+                    name: `${connectionField.typeMeta.name}Options`,
+                    fields: {
+                        sort: connectionSort.NonNull.List,
+                    },
+                });
+
+                composeNode.addFields({
+                    [connectionField.fieldName]: {
+                        type: connection.NonNull,
+                        args: {
+                            where: connectionWhere,
+                            options: connectionOptions,
+                        },
+                    },
+                });
+
+                const r = new Relationship({
+                    name: connectionField.relationshipTypeName,
+                    type: connectionField.relationship.type,
+                    fields: connectionField.relationship.properties
+                        ? (relationshipFields.get(connectionField.relationship.properties) as RelationshipField[])
+                        : [],
+                });
+                relationships.push(r);
+            });
+
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
                 [pluralize(camelCase(node.name))]: findResolver({ node }),
@@ -719,22 +904,6 @@ function makeAugmentedSchema(
 
     Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
 
-    if (pointInTypeDefs) {
-        // Every field (apart from CRS) in Point needs a custom resolver
-        // to deconstruct the point objects we fetch from the database
-        composer.createObjectTC(point.point);
-        composer.createInputTC(point.pointInput);
-        composer.createInputTC(point.pointDistance);
-    }
-
-    if (cartesianPointInTypeDefs) {
-        // Every field (apart from CRS) in CartesianPoint needs a custom resolver
-        // to deconstruct the point objects we fetch from the database
-        composer.createObjectTC(point.cartesianPoint);
-        composer.createInputTC(point.cartesianPointInput);
-        composer.createInputTC(point.cartesianPointDistance);
-    }
-
     if (!Object.values(composer.Mutation.getFields()).length) {
         composer.delete("Mutation");
     }
@@ -771,6 +940,7 @@ function makeAugmentedSchema(
 
     return {
         nodes,
+        relationships,
         schema,
     };
 }
