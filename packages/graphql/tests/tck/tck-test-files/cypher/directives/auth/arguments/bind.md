@@ -102,8 +102,12 @@ mutation {
                 posts: {
                     create: [
                         {
-                            id: "post-id-1"
-                            creator: { create: { id: "some-user-id" } }
+                            node: {
+                                id: "post-id-1"
+                                creator: {
+                                    create: { node: { id: "some-user-id" } }
+                                }
+                            }
                         }
                     ]
                 }
@@ -126,22 +130,22 @@ CALL {
     this0.name = $this0_name
 
     WITH this0
-    CREATE (this0_posts0:Post)
-    SET this0_posts0.id = $this0_posts0_id
+    CREATE (this0_posts0_node:Post)
+    SET this0_posts0_node.id = $this0_posts0_node_id
 
-    WITH this0, this0_posts0
-    CREATE (this0_posts0_creator0:User)
-    SET this0_posts0_creator0.id = $this0_posts0_creator0_id
+    WITH this0, this0_posts0_node
+    CREATE (this0_posts0_node_creator0_node:User)
+    SET this0_posts0_node_creator0_node.id = $this0_posts0_node_creator0_node_id
 
-    WITH this0, this0_posts0, this0_posts0_creator0
-    CALL apoc.util.validate(NOT(EXISTS(this0_posts0_creator0.id) AND this0_posts0_creator0.id = $this0_posts0_creator0_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+    WITH this0, this0_posts0_node, this0_posts0_node_creator0_node
+    CALL apoc.util.validate(NOT(EXISTS(this0_posts0_node_creator0_node.id) AND this0_posts0_node_creator0_node.id = $this0_posts0_node_creator0_node_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
 
-    MERGE (this0_posts0)<-[:HAS_POST]-(this0_posts0_creator0)
+    MERGE (this0_posts0_node)<-[:HAS_POST]-(this0_posts0_node_creator0_node)
 
-    WITH this0, this0_posts0
-    CALL apoc.util.validate(NOT(EXISTS((this0_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts0_auth_bind0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+    WITH this0, this0_posts0_node
+    CALL apoc.util.validate(NOT(EXISTS((this0_posts0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts0_node_auth_bind0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
 
-    MERGE (this0)-[:HAS_POST]->(this0_posts0)
+    MERGE (this0)-[:HAS_POST]->(this0_posts0_node)
 
     WITH this0
     CALL apoc.util.validate(NOT(EXISTS(this0.id) AND this0.id = $this0_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
@@ -158,11 +162,11 @@ RETURN this0 { .id } AS this0
 {
     "this0_id": "user-id",
     "this0_name": "bob",
-    "this0_posts0_id": "post-id-1",
+    "this0_posts0_node_id": "post-id-1",
     "this0_auth_bind0_id": "id-01",
-    "this0_posts0_auth_bind0_creator_id": "id-01",
-    "this0_posts0_creator0_auth_bind0_id": "id-01",
-    "this0_posts0_creator0_id": "some-user-id"
+    "this0_posts0_node_auth_bind0_creator_id": "id-01",
+    "this0_posts0_node_creator0_node_auth_bind0_id": "id-01",
+    "this0_posts0_node_creator0_node_id": "some-user-id"
 }
 ```
 

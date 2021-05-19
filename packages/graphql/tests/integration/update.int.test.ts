@@ -1101,12 +1101,16 @@ describe("update", () => {
                   update: {
                       photos: [{
                           create: [{
-                            id: "${photoId}",
-                            name: "Green Photo",
-                            color: {
-                                create: {
-                                    id: "${colorId}",
-                                    name: "Green"
+                            node: {
+                                id: "${photoId}",
+                                name: "Green Photo",
+                                color: {
+                                    create: {
+                                        node: {
+                                            id: "${colorId}",
+                                            name: "Green"
+                                        }
+                                    }
                                 }
                             }
                          }]
@@ -1199,12 +1203,16 @@ describe("update", () => {
                   where: { id: "${productId}" }
                   create: {
                     photos: [{
-                      id: "${photoId}",
-                      name: "Green Photo",
-                      color: {
-                          create: {
-                            id: "${colorId}",
-                            name: "Green"
+                      node: {
+                        id: "${photoId}",
+                        name: "Green Photo",
+                        color: {
+                            create: {
+                              node: {
+                                id: "${colorId}",
+                                name: "Green"
+                              }
+                            }
                         }
                       }
                     }]
@@ -1216,8 +1224,8 @@ describe("update", () => {
                             id
                             name
                             color {
-                            id
-                            name
+                                id
+                                name
                             }
                         }
                     }

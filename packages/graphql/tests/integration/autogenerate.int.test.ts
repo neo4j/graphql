@@ -100,7 +100,7 @@ describe("autogenerate", () => {
                         {
                             name: "dan",
                             genres: {
-                                create: [{name: "Comedy"}]
+                                create: [{node: {name: "Comedy"}}]
                             }
                         }
                     ]

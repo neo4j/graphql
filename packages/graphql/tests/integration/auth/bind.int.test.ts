@@ -119,9 +119,11 @@ describe("auth/bind", () => {
                         id: "${userId}",
                         posts: {
                             create: [{
-                                id: "post-id-1",
-                                creator: {
-                                    create: { id: "not valid" }
+                                node: {
+                                    id: "post-id-1",
+                                    creator: {
+                                        create: { node: {id: "not valid"} }
+                                    }
                                 }
                             }]
                         }
@@ -193,7 +195,7 @@ describe("auth/bind", () => {
                        where: { id: "${postId}" }
                        update: {
                            creator: {
-                               create: { id: "not bound" }
+                               create: { node: { id: "not bound" } }
                            }
                        }
                     ) {

@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
+import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import createSetRelationshipProperties from "./create-set-relationship-properties";
 
 interface Res {
     creates: string[];
@@ -68,23 +69,41 @@ function createCreateAndParams({
             if (value.create) {
                 const creates = relationField.typeMeta.array ? value.create : [value.create];
                 creates.forEach((create, index) => {
-                    const innerVarName = `${_varName}${index}`;
                     res.creates.push(`\nWITH ${withVars.join(", ")}`);
 
+                    const baseName = `${_varName}${index}`;
+                    const nodeName = `${baseName}_node`;
+                    const propertiesName = `${baseName}_relationship`;
+
                     const recurse = createCreateAndParams({
-                        input: create,
+                        input: create.node,
                         context,
                         node: refNode,
-                        varName: innerVarName,
-                        withVars: [...withVars, innerVarName],
+                        varName: nodeName,
+                        withVars: [...withVars, nodeName],
                     });
                     res.creates.push(recurse[0]);
                     res.params = { ...res.params, ...recurse[1] };
 
                     const inStr = relationField.direction === "IN" ? "<-" : "-";
                     const outStr = relationField.direction === "OUT" ? "->" : "-";
-                    const relTypeStr = `[:${relationField.type}]`;
-                    res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${innerVarName})`);
+                    const relTypeStr = `[${create.properties ? propertiesName : ""}:${relationField.type}]`;
+                    res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+
+                    if (create.properties) {
+                        const relationship = (context.neoSchema.relationships.find(
+                            (x) => x.properties === relationField.properties
+                        ) as unknown) as Relationship;
+
+                        const setA = createSetRelationshipProperties({
+                            properties: create.properties,
+                            varName: propertiesName,
+                            relationship,
+                            operation: "CREATE",
+                        });
+                        res.creates.push(setA[0]);
+                        res.params = { ...res.params, ...setA[1] };
+                    }
                 });
             }
 
@@ -132,10 +151,13 @@ function createCreateAndParams({
             } else {
                 res.creates.push(`SET ${varName}.${key} = point($${_varName})`);
             }
-        } else {
-            res.creates.push(`SET ${varName}.${key} = $${_varName}`);
+
+            res.params[_varName] = value;
+
+            return res;
         }
 
+        res.creates.push(`SET ${varName}.${key} = $${_varName}`);
         res.params[_varName] = value;
 
         return res;

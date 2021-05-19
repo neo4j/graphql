@@ -19,7 +19,7 @@
 
 import camelCase from "camelcase";
 import pluralize from "pluralize";
-import { Node } from "../classes";
+import { Node, Relationship } from "../classes";
 import { Context, GraphQLWhereArg, RelationField, ConnectionField } from "../types";
 import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
@@ -31,6 +31,7 @@ import createDisconnectAndParams from "./create-disconnect-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createConnectionAndParams from "./connection/create-connection-and-params";
+import createSetRelationshipProperties from "./create-set-relationship-properties";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
@@ -142,26 +143,53 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
 
     if (createInput) {
         Object.entries(createInput).forEach((entry) => {
-            const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
-            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const relationField = node.relationFields.find((x) => entry[0].startsWith(x.fieldName)) as RelationField;
+
+            let refNode: Node;
+            let unionTypeName = "";
+
+            if (relationField.union) {
+                [unionTypeName] = entry[0].split(`${relationField.fieldName}_`).join("").split("_");
+                refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
+            } else {
+                refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            }
+
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const outStr = relationField.direction === "OUT" ? "->" : "-";
-            const relTypeStr = `[:${relationField.type}]`;
 
             const creates = relationField.typeMeta.array ? entry[1] : [entry[1]];
             creates.forEach((create, index) => {
-                const innerVarName = `${varName}_create_${entry[0]}${index}`;
+                const baseName = `${varName}_create_${entry[0]}${index}`;
+                const nodeName = `${baseName}_node`;
+                const propertiesName = `${baseName}_relationship`;
+                const relTypeStr = `[${create.properties ? propertiesName : ""}:${relationField.type}]`;
 
                 const createAndParams = createCreateAndParams({
                     context,
                     node: refNode,
-                    input: create,
-                    varName: innerVarName,
-                    withVars: [varName, innerVarName],
+                    input: create.node,
+                    varName: nodeName,
+                    withVars: [varName, nodeName],
                 });
                 createStrs.push(createAndParams[0]);
                 cypherParams = { ...cypherParams, ...createAndParams[1] };
-                createStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${innerVarName})`);
+                createStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+
+                if (create.properties) {
+                    const relationship = (context.neoSchema.relationships.find(
+                        (x) => x.properties === relationField.properties
+                    ) as unknown) as Relationship;
+
+                    const setA = createSetRelationshipProperties({
+                        properties: create.properties,
+                        varName: propertiesName,
+                        relationship,
+                        operation: "CREATE",
+                    });
+                    createStrs.push(setA[0]);
+                    cypherParams = { ...cypherParams, ...createAndParams[1] };
+                }
             });
         });
     }

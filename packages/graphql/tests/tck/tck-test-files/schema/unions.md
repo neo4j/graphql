@@ -27,6 +27,10 @@ type Movie {
 ```schema-output
 union Search = Movie | Genre
 
+input MovieSearchCreateFieldInput {
+  node: GenreCreateInput!
+}
+
 type DeleteInfo {
   nodesDeleted: Int!
   relationshipsDeleted: Int!
@@ -144,12 +148,12 @@ sort: [MovieSort]
 }
 
 input MovieRelationInput {
-  search_Genre: [GenreCreateInput!]
-  search_Movie: [MovieCreateInput!]
+  search_Genre: [MovieSearchCreateFieldInput!]
+  search_Movie: [MovieSearchCreateFieldInput!]
 }
 
 input MovieSearchGenreFieldInput {
-  create: [GenreCreateInput!]
+  create: [MovieSearchCreateFieldInput!]
   connect: [GenreConnectFieldInput!]
 }
 
@@ -158,12 +162,12 @@ input MovieSearchGenreUpdateFieldInput {
   update: GenreUpdateInput
   connect: [GenreConnectFieldInput!]
   disconnect: [GenreDisconnectFieldInput!]
-  create: [GenreCreateInput!]
+  create: [MovieSearchCreateFieldInput!]
   delete: [GenreDeleteFieldInput!]
 }
 
 input MovieSearchMovieFieldInput {
-  create: [MovieCreateInput!]
+  create: [MovieSearchCreateFieldInput!]
   connect: [MovieConnectFieldInput!]
 }
 
@@ -181,7 +185,7 @@ input MovieSearchMovieUpdateFieldInput {
   update: MovieUpdateInput
   connect: [MovieConnectFieldInput!]
   disconnect: [MovieDisconnectFieldInput!]
-  create: [MovieCreateInput!]
+  create: [MovieSearchCreateFieldInput!]
   delete: [MovieDeleteFieldInput!]
 }
 
