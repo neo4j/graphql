@@ -136,6 +136,7 @@ function createProjectionAndParams({
     chainStr,
     varName,
     literalElements,
+    resolveType,
 }: {
     fieldsByTypeName: FieldsByTypeName;
     node: Node;
@@ -143,6 +144,7 @@ function createProjectionAndParams({
     chainStr?: string;
     varName: string;
     literalElements?: boolean;
+    resolveType?: boolean;
 }): [string, any, ProjectionMeta?] {
     function reducer(res: Res, [k, field]: [string, any]): Res {
         let key = k;
@@ -417,7 +419,7 @@ function createProjectionAndParams({
     const { projection, params, meta } = Object.entries(fieldsByTypeName[node.name] as { [k: string]: any }).reduce(
         reducer,
         {
-            projection: [],
+            projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
             params: {},
             meta: {},
         }
