@@ -1,4 +1,4 @@
-## Cypher -> Connetions -> Unions
+## Cypher -> Connections -> Unions
 
 Schema:
 
@@ -61,12 +61,12 @@ CALL {
     CALL {
         WITH this
         OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Book:Book)
-        WITH { words: this_wrote.words, node: { title: this_Book.title } } AS edge
+        WITH { words: this_wrote.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
         RETURN edge
     UNION
         WITH this
         OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Journal:Journal)
-        WITH { words: this_wrote.words, node: { subject: this_Journal.subject } } AS edge
+        WITH { words: this_wrote.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
         RETURN edge
     }
     WITH collect(edge) as edges
@@ -125,13 +125,13 @@ CALL {
         WITH this
         OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Book:Book)
         WHERE (this_Book.title = $this_publicationsConnection.args.where.OR[0].Book.title)
-        WITH { words: this_wrote.words, node: { title: this_Book.title } } AS edge
+        WITH { words: this_wrote.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
         RETURN edge
     UNION
         WITH this
         OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Journal:Journal)
         WHERE (this_Journal.subject = $this_publicationsConnection.args.where.OR[1].Journal.subject)
-        WITH { words: this_wrote.words, node: { subject: this_Journal.subject } } AS edge
+        WITH { words: this_wrote.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
         RETURN edge
     }
     WITH collect(edge) as edges

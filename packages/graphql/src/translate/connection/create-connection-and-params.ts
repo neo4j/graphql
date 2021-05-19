@@ -129,6 +129,7 @@ function createConnectionAndParams({
                     context,
                     varName: relatedNodeVariable,
                     literalElements: true,
+                    resolveType: true,
                 });
                 const [nodeProjection, nodeProjectionParams] = nodeProjectionAndParams;
                 unionSubqueryElementsToCollect.push(`node: ${nodeProjection}`);
@@ -190,7 +191,9 @@ function createConnectionAndParams({
                     }.args.where`,
                 });
                 const [whereClause] = where;
-                unionSubquery.push(`WHERE ${whereClause}`);
+                if (whereClause) {
+                    unionSubquery.push(`WHERE ${whereClause}`);
+                }
             }
 
             if (nestedSubqueries.length) {
