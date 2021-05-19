@@ -394,7 +394,9 @@ mutation {
         where: { name: "Dan" }
         update: {
             movies: {
-                create: [{ id: "dan_movie_id", title: "The Story of Beer" }]
+                create: [
+                    { node: { id: "dan_movie_id", title: "The Story of Beer" } }
+                ]
             }
         }
     ) {
@@ -416,10 +418,10 @@ MATCH (this:Actor)
 WHERE this.name = $this_name
 
 WITH this
-CREATE (this_movies0_create0:Movie)
-SET this_movies0_create0.id = $this_movies0_create0_id
-SET this_movies0_create0.title = $this_movies0_create0_title
-MERGE (this)-[:ACTED_IN]->(this_movies0_create0)
+CREATE (this_movies0_create0_node:Movie)
+SET this_movies0_create0_node.id = $this_movies0_create0_node_id
+SET this_movies0_create0_node.title = $this_movies0_create0_node_title
+MERGE (this)-[:ACTED_IN]->(this_movies0_create0_node)
 
 RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)  | this_movies { .id, .title } ] } AS this
 ```
@@ -429,8 +431,8 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)  | this_m
 ```cypher-params
 {
   "this_name": "Dan",
-  "this_movies0_create0_id": "dan_movie_id",
-  "this_movies0_create0_title": "The Story of Beer"
+  "this_movies0_create0_node_id": "dan_movie_id",
+  "this_movies0_create0_node_title": "The Story of Beer"
 }
 ```
 
@@ -444,57 +446,9 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)  | this_m
 mutation {
     updateActors(
         where: { name: "Dan" }
-        create: { movies: [{ id: "dan_movie_id", title: "The Story of Beer" }] }
-    ) {
-        actors {
-            name
-            movies {
-                id
-                title
-            }
-        }
-    }
-}
-```
-
-**Expected Cypher output**
-
-```cypher
-MATCH (this:Actor)
-WHERE this.name = $this_name
-
-CREATE (this_create_movies0:Movie)
-SET this_create_movies0.id = $this_create_movies0_id
-SET this_create_movies0.title = $this_create_movies0_title
-MERGE (this)-[:ACTED_IN]->(this_create_movies0)
-
-RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_movies { .id, .title } ] } AS this
-```
-
-**Expected Cypher params**
-
-```cypher-params
-{
-  "this_name": "Dan",
-  "this_create_movies0_id": "dan_movie_id",
-  "this_create_movies0_title": "The Story of Beer"
-}
-```
-
----
-
-### Update an Actor while creating and connecting to multiple new Movies (via top level)
-
-**GraphQL input**
-
-```graphql
-mutation {
-    updateActors(
-        where: { name: "Dan" }
         create: {
             movies: [
-                { id: "dan_movie_id", title: "The Story of Beer" }
-                { id: "dan_movie2_id", title: "Forrest Gump" }
+                { node: { id: "dan_movie_id", title: "The Story of Beer" } }
             ]
         }
     ) {
@@ -515,15 +469,10 @@ mutation {
 MATCH (this:Actor)
 WHERE this.name = $this_name
 
-CREATE (this_create_movies0:Movie)
-SET this_create_movies0.id = $this_create_movies0_id
-SET this_create_movies0.title = $this_create_movies0_title
-MERGE (this)-[:ACTED_IN]->(this_create_movies0)
-
-CREATE (this_create_movies1:Movie)
-SET this_create_movies1.id = $this_create_movies1_id
-SET this_create_movies1.title = $this_create_movies1_title
-MERGE (this)-[:ACTED_IN]->(this_create_movies1)
+CREATE (this_create_movies0_node:Movie)
+SET this_create_movies0_node.id = $this_create_movies0_node_id
+SET this_create_movies0_node.title = $this_create_movies0_node_title
+MERGE (this)-[:ACTED_IN]->(this_create_movies0_node)
 
 RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_movies { .id, .title } ] } AS this
 ```
@@ -533,10 +482,67 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_mo
 ```cypher-params
 {
   "this_name": "Dan",
-  "this_create_movies0_id": "dan_movie_id",
-  "this_create_movies0_title": "The Story of Beer",
-  "this_create_movies1_id": "dan_movie2_id",
-  "this_create_movies1_title": "Forrest Gump"
+  "this_create_movies0_node_id": "dan_movie_id",
+  "this_create_movies0_node_title": "The Story of Beer"
+}
+```
+
+---
+
+### Update an Actor while creating and connecting to multiple new Movies (via top level)
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateActors(
+        where: { name: "Dan" }
+        create: {
+            movies: [
+                { node: { id: "dan_movie_id", title: "The Story of Beer" } }
+                { node: { id: "dan_movie2_id", title: "Forrest Gump" } }
+            ]
+        }
+    ) {
+        actors {
+            name
+            movies {
+                id
+                title
+            }
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Actor)
+WHERE this.name = $this_name
+
+CREATE (this_create_movies0_node:Movie)
+SET this_create_movies0_node.id = $this_create_movies0_node_id
+SET this_create_movies0_node.title = $this_create_movies0_node_title
+MERGE (this)-[:ACTED_IN]->(this_create_movies0_node)
+
+CREATE (this_create_movies1_node:Movie)
+SET this_create_movies1_node.id = $this_create_movies1_node_id
+SET this_create_movies1_node.title = $this_create_movies1_node_title
+MERGE (this)-[:ACTED_IN]->(this_create_movies1_node)
+
+RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_movies { .id, .title } ] } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+  "this_name": "Dan",
+  "this_create_movies0_node_id": "dan_movie_id",
+  "this_create_movies0_node_title": "The Story of Beer",
+  "this_create_movies1_node_id": "dan_movie2_id",
+  "this_create_movies1_node_title": "Forrest Gump"
 }
 ```
 

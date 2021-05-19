@@ -95,7 +95,7 @@ input AuthorPublicationsBookDeleteFieldInput {
 }
 
 input AuthorPublicationsBookFieldInput {
-  create: [BookCreateInput!]
+  create: [AuthorPublicationsCreateFieldInput!]
   connect: [BookConnectFieldInput!]
 }
 
@@ -104,7 +104,7 @@ input AuthorPublicationsBookUpdateFieldInput {
   update: BookUpdateInput
   connect: [BookConnectFieldInput!]
   disconnect: [BookDisconnectFieldInput!]
-  create: [BookCreateInput!]
+  create: [AuthorPublicationsCreateFieldInput!]
   delete: [BookDeleteFieldInput!]
 }
 
@@ -123,13 +123,18 @@ input AuthorPublicationsConnectionWhere {
   Journal_NOT: JournalWhere
 }
 
+input AuthorPublicationsCreateFieldInput {
+  node: BookCreateInput!
+  properties: WroteCreateInput!
+}
+
 input AuthorPublicationsJournalDeleteFieldInput {
   where: JournalWhere
   delete: JournalDeleteInput
 }
 
 input AuthorPublicationsJournalFieldInput {
-  create: [JournalCreateInput!]
+  create: [AuthorPublicationsCreateFieldInput!]
   connect: [JournalConnectFieldInput!]
 }
 
@@ -138,7 +143,7 @@ input AuthorPublicationsJournalUpdateFieldInput {
   update: JournalUpdateInput
   connect: [JournalConnectFieldInput!]
   disconnect: [JournalDisconnectFieldInput!]
-  create: [JournalCreateInput!]
+  create: [AuthorPublicationsCreateFieldInput!]
   delete: [JournalDeleteFieldInput!]
 }
 
@@ -148,8 +153,8 @@ type AuthorPublicationsRelationship implements Wrote {
 }
 
 input AuthorRelationInput {
-  publications_Book: [BookCreateInput!]
-  publications_Journal: [JournalCreateInput!]
+   publications_Book: [AuthorPublicationsCreateFieldInput!]
+  publications_Journal: [AuthorPublicationsCreateFieldInput!]
 }
 
 # Fields to sort Authors by. The order in which sorts are applied is not guaranteed when specifying many fields in one AuthorSort object.
@@ -209,13 +214,18 @@ input BookAuthorConnectionWhere {
   node_NOT: AuthorWhere
 }
 
+input BookAuthorCreateFieldInput {
+  node: AuthorCreateInput!
+  properties: WroteCreateInput!
+}
+
 input BookAuthorDeleteFieldInput {
   where: AuthorWhere
   delete: AuthorDeleteInput
 }
 
 input BookAuthorFieldInput {
-  create: [AuthorCreateInput!]
+  create: [BookAuthorCreateFieldInput!]
   connect: [AuthorConnectFieldInput!]
 }
 
@@ -229,7 +239,7 @@ input BookAuthorUpdateFieldInput {
   update: AuthorUpdateInput
   connect: [AuthorConnectFieldInput!]
   disconnect: [AuthorDisconnectFieldInput!]
-  create: [AuthorCreateInput!]
+  create: [BookAuthorCreateFieldInput!]
   delete: [AuthorDeleteFieldInput!]
 }
 
@@ -273,7 +283,7 @@ input BookOptions {
 }
 
 input BookRelationInput {
-  author: [AuthorCreateInput!]
+  author: [BookAuthorCreateFieldInput!]
 }
 
 # Fields to sort Books by. The order in which sorts are applied is not guaranteed when specifying many fields in one BookSort object.
@@ -351,13 +361,18 @@ input JournalAuthorConnectionWhere {
   node_NOT: AuthorWhere
 }
 
+input JournalAuthorCreateFieldInput {
+  node: AuthorCreateInput!
+  properties: WroteCreateInput!
+}
+
 input JournalAuthorDeleteFieldInput {
   where: AuthorWhere
   delete: AuthorDeleteInput
 }
 
 input JournalAuthorFieldInput {
-  create: [AuthorCreateInput!]
+  create: [JournalAuthorCreateFieldInput!]
   connect: [AuthorConnectFieldInput!]
 }
 
@@ -371,7 +386,7 @@ input JournalAuthorUpdateFieldInput {
   update: AuthorUpdateInput
   connect: [AuthorConnectFieldInput!]
   disconnect: [AuthorDisconnectFieldInput!]
-  create: [AuthorCreateInput!]
+  create: [JournalAuthorCreateFieldInput!]
   delete: [AuthorDeleteFieldInput!]
 }
 
@@ -415,7 +430,7 @@ input JournalOptions {
 }
 
 input JournalRelationInput {
-  author: [AuthorCreateInput!]
+  author: [JournalAuthorCreateFieldInput!]
 }
 
 # Fields to sort Journals by. The order in which sorts are applied is not guaranteed when specifying many fields in one JournalSort object.
@@ -512,6 +527,10 @@ type UpdateJournalsMutationResponse {
 }
 
 interface Wrote {
+  words: Int!
+}
+
+input WroteCreateInput {
   words: Int!
 }
 

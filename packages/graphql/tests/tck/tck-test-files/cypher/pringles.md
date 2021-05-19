@@ -49,34 +49,40 @@ mutation {
                 name: "Pringles"
                 sizes: {
                     create: [
-                        { id: 103, name: "Small" }
-                        { id: 104, name: "Large" }
+                        { node: { id: 103, name: "Small" } }
+                        { node: { id: 104, name: "Large" } }
                     ]
                 }
                 colors: {
                     create: [
-                        { id: 100, name: "Red" }
-                        { id: 102, name: "Green" }
+                        { node: { id: 100, name: "Red" } }
+                        { node: { id: 102, name: "Green" } }
                     ]
                 }
                 photos: {
                     create: [
                         {
-                            id: 105
-                            description: "Outdoor photo"
-                            url: "outdoor.png"
+                            node: {
+                                id: 105
+                                description: "Outdoor photo"
+                                url: "outdoor.png"
+                            }
                         }
                         {
-                            id: 106
-                            description: "Green photo"
-                            url: "g.png"
-                            color: { connect: { where: { id: "102" } } }
+                            node: {
+                                id: 106
+                                description: "Green photo"
+                                url: "g.png"
+                                color: { connect: { where: { id: "102" } } }
+                            }
                         }
                         {
-                            id: 107
-                            description: "Red photo"
-                            url: "r.png"
-                            color: { connect: { where: { id: "100" } } }
+                            node: {
+                                id: 107
+                                description: "Red photo"
+                                url: "r.png"
+                                color: { connect: { where: { id: "100" } } }
+                            }
                         }
                     ]
                 }
@@ -99,63 +105,63 @@ CALL {
   SET this0.name = $this0_name
 
     WITH this0
-    CREATE (this0_sizes0:Size)
-    SET this0_sizes0.id = $this0_sizes0_id
-    SET this0_sizes0.name = $this0_sizes0_name
-    MERGE (this0)-[:HAS_SIZE]->(this0_sizes0)
+    CREATE (this0_sizes0_node:Size)
+    SET this0_sizes0_node.id = $this0_sizes0_node_id
+    SET this0_sizes0_node.name = $this0_sizes0_node_name
+    MERGE (this0)-[:HAS_SIZE]->(this0_sizes0_node)
 
     WITH this0
-    CREATE (this0_sizes1:Size)
-    SET this0_sizes1.id = $this0_sizes1_id
-    SET this0_sizes1.name = $this0_sizes1_name
-    MERGE (this0)-[:HAS_SIZE]->(this0_sizes1)
+    CREATE (this0_sizes1_node:Size)
+    SET this0_sizes1_node.id = $this0_sizes1_node_id
+    SET this0_sizes1_node.name = $this0_sizes1_node_name
+    MERGE (this0)-[:HAS_SIZE]->(this0_sizes1_node)
 
     WITH this0
-    CREATE (this0_colors0:Color)
-    SET this0_colors0.id = $this0_colors0_id
-    SET this0_colors0.name = $this0_colors0_name
-    MERGE (this0)-[:HAS_COLOR]->(this0_colors0)
+    CREATE (this0_colors0_node:Color)
+    SET this0_colors0_node.id = $this0_colors0_node_id
+    SET this0_colors0_node.name = $this0_colors0_node_name
+    MERGE (this0)-[:HAS_COLOR]->(this0_colors0_node)
 
     WITH this0
-    CREATE (this0_colors1:Color)
-    SET this0_colors1.id = $this0_colors1_id
-    SET this0_colors1.name = $this0_colors1_name
-    MERGE (this0)-[:HAS_COLOR]->(this0_colors1)
+    CREATE (this0_colors1_node:Color)
+    SET this0_colors1_node.id = $this0_colors1_node_id
+    SET this0_colors1_node.name = $this0_colors1_node_name
+    MERGE (this0)-[:HAS_COLOR]->(this0_colors1_node)
 
     WITH this0
-    CREATE (this0_photos0:Photo)
-    SET this0_photos0.id = $this0_photos0_id
-    SET this0_photos0.description = $this0_photos0_description
-    SET this0_photos0.url = $this0_photos0_url
-    MERGE (this0)-[:HAS_PHOTO]->(this0_photos0)
+    CREATE (this0_photos0_node:Photo)
+    SET this0_photos0_node.id = $this0_photos0_node_id
+    SET this0_photos0_node.description = $this0_photos0_node_description
+    SET this0_photos0_node.url = $this0_photos0_node_url
+    MERGE (this0)-[:HAS_PHOTO]->(this0_photos0_node)
 
     WITH this0
-    CREATE (this0_photos1:Photo)
-    SET this0_photos1.id = $this0_photos1_id
-    SET this0_photos1.description = $this0_photos1_description
-    SET this0_photos1.url = $this0_photos1_url
+    CREATE (this0_photos1_node:Photo)
+    SET this0_photos1_node.id = $this0_photos1_node_id
+    SET this0_photos1_node.description = $this0_photos1_node_description
+    SET this0_photos1_node.url = $this0_photos1_node_url
 
-      WITH this0, this0_photos1
-      OPTIONAL MATCH (this0_photos1_color_connect0:Color)
-      WHERE this0_photos1_color_connect0.id = $this0_photos1_color_connect0_id
-      FOREACH(_ IN CASE this0_photos1_color_connect0 WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this0_photos1)-[:OF_COLOR]->(this0_photos1_color_connect0)
+      WITH this0, this0_photos1_node
+      OPTIONAL MATCH (this0_photos1_node_color_connect0:Color)
+      WHERE this0_photos1_node_color_connect0.id = $this0_photos1_node_color_connect0_id
+      FOREACH(_ IN CASE this0_photos1_node_color_connect0 WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0)
       )
-    MERGE (this0)-[:HAS_PHOTO]->(this0_photos1)
+    MERGE (this0)-[:HAS_PHOTO]->(this0_photos1_node)
 
     WITH this0
-    CREATE (this0_photos2:Photo)
-    SET this0_photos2.id = $this0_photos2_id
-    SET this0_photos2.description = $this0_photos2_description
-    SET this0_photos2.url = $this0_photos2_url
+    CREATE (this0_photos2_node:Photo)
+    SET this0_photos2_node.id = $this0_photos2_node_id
+    SET this0_photos2_node.description = $this0_photos2_node_description
+    SET this0_photos2_node.url = $this0_photos2_node_url
 
-      WITH this0, this0_photos2
-      OPTIONAL MATCH (this0_photos2_color_connect0:Color)
-      WHERE this0_photos2_color_connect0.id = $this0_photos2_color_connect0_id
-      FOREACH(_ IN CASE this0_photos2_color_connect0 WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this0_photos2)-[:OF_COLOR]->(this0_photos2_color_connect0)
+      WITH this0, this0_photos2_node
+      OPTIONAL MATCH (this0_photos2_node_color_connect0:Color)
+      WHERE this0_photos2_node_color_connect0.id = $this0_photos2_node_color_connect0_id
+      FOREACH(_ IN CASE this0_photos2_node_color_connect0 WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0)
       )
-    MERGE (this0)-[:HAS_PHOTO]->(this0_photos2)
+    MERGE (this0)-[:HAS_PHOTO]->(this0_photos2_node)
 
   RETURN this0
 }
@@ -169,25 +175,25 @@ RETURN this0 { .id } AS this0
 {
   "this0_id": "1",
   "this0_name": "Pringles",
-  "this0_sizes0_id": "103",
-  "this0_sizes0_name": "Small",
-  "this0_sizes1_id": "104",
-  "this0_sizes1_name": "Large",
-  "this0_colors0_id": "100",
-  "this0_colors0_name": "Red",
-  "this0_colors1_id": "102",
-  "this0_colors1_name": "Green",
-  "this0_photos0_id": "105",
-  "this0_photos0_description": "Outdoor photo",
-  "this0_photos0_url": "outdoor.png",
-  "this0_photos1_id": "106",
-  "this0_photos1_description": "Green photo",
-  "this0_photos1_url": "g.png",
-  "this0_photos1_color_connect0_id": "102",
-  "this0_photos2_id": "107",
-  "this0_photos2_description": "Red photo",
-  "this0_photos2_url": "r.png",
-  "this0_photos2_color_connect0_id": "100"
+  "this0_sizes0_node_id": "103",
+  "this0_sizes0_node_name": "Small",
+  "this0_sizes1_node_id": "104",
+  "this0_sizes1_node_name": "Large",
+  "this0_colors0_node_id": "100",
+  "this0_colors0_node_name": "Red",
+  "this0_colors1_node_id": "102",
+  "this0_colors1_node_name": "Green",
+  "this0_photos0_node_id": "105",
+  "this0_photos0_node_description": "Outdoor photo",
+  "this0_photos0_node_url": "outdoor.png",
+  "this0_photos1_node_id": "106",
+  "this0_photos1_node_description": "Green photo",
+  "this0_photos1_node_url": "g.png",
+  "this0_photos1_node_color_connect0_id": "102",
+  "this0_photos2_node_id": "107",
+  "this0_photos2_node_description": "Red photo",
+  "this0_photos2_node_url": "r.png",
+  "this0_photos2_node_color_connect0_id": "100"
 }
 ```
 

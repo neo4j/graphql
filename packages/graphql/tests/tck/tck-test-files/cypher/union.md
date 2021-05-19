@@ -100,7 +100,7 @@ RETURN this {
 
 ---
 
-### Create Unions
+### Create Unions from create mutation
 
 **GraphQL input**
 
@@ -110,7 +110,7 @@ mutation {
         input: [
             {
                 title: "some movie"
-                search_Genre: { create: [{ name: "some genre" }] }
+                search_Genre: { create: [{ node: { name: "some genre" } }] }
             }
         ]
     ) {
@@ -129,9 +129,9 @@ CALL {
     SET this0.title = $this0_title
 
     WITH this0
-    CREATE (this0_search_Genre0:Genre)
-    SET this0_search_Genre0.name = $this0_search_Genre0_name
-    MERGE (this0)-[:SEARCH]->(this0_search_Genre0)
+    CREATE (this0_search_Genre0_node:Genre)
+    SET this0_search_Genre0_node.name = $this0_search_Genre0_node_name
+    MERGE (this0)-[:SEARCH]->(this0_search_Genre0_node)
 
     RETURN this0
 }
@@ -146,7 +146,41 @@ RETURN this0 {
 ```cypher-params
 {
    "this0_title": "some movie",
-   "this0_search_Genre0_name": "some genre"
+   "this0_search_Genre0_node_name": "some genre"
+}
+```
+
+---
+
+### Create Unions from update create(top-level)
+
+**GraphQL input**
+
+```graphql
+mutation {
+    updateMovies(create: { search_Genre: [{ node: { name: "some genre" } }] }) {
+        movies {
+            title
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+CREATE (this_create_search_Genre0_node:Genre)
+SET this_create_search_Genre0_node.name = $this_create_search_Genre0_node_name
+MERGE (this)-[:SEARCH]->(this_create_search_Genre0_node)
+RETURN this { .title } AS this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+   "this_create_search_Genre0_node_name": "some genre"
 }
 ```
 

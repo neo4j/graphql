@@ -31,6 +31,7 @@ export interface RelationshipConstructor {
     name: string;
     type: string;
     description?: string;
+    properties?: string;
     fields: RelationshipField[];
 }
 
@@ -41,12 +42,15 @@ class Relationship {
 
     public description?: string;
 
+    public properties?: string;
+
     public fields: RelationshipField[];
 
     constructor(input: RelationshipConstructor) {
         this.name = input.name;
         this.type = input.type;
         this.description = input.description;
+        this.properties = input.properties;
         this.fields = input.fields;
     }
 }

@@ -262,19 +262,13 @@ describe("create", () => {
                 input: [
                     {
                         ...product,
-                        sizes: { create: sizes },
-                        colors: { create: colors },
+                        sizes: { create: sizes.map((x) => ({ node: x })) },
+                        colors: { create: colors.map((x) => ({ node: x })) },
                         photos: {
                             create: [
-                                photos[0],
-                                {
-                                    ...photos[1],
-                                    color: { connect: { where: { id: colors[0].id } } },
-                                },
-                                {
-                                    ...photos[2],
-                                    color: { connect: { where: { id: colors[1].id } } },
-                                },
+                                { node: photos[0] },
+                                { node: { ...photos[1], color: { connect: { where: { id: colors[0].id } } } } },
+                                { node: { ...photos[2], color: { connect: { where: { id: colors[1].id } } } } },
                             ],
                         },
                     },
