@@ -129,6 +129,7 @@ function createConnectionAndParams({
                     context,
                     varName: relatedNodeVariable,
                     literalElements: true,
+                    resolveType: true,
                 });
                 const [nodeProjection, nodeProjectionParams] = nodeProjectionAndParams;
                 unionSubqueryElementsToCollect.push(`node: ${nodeProjection}`);
