@@ -140,7 +140,9 @@ describe("unions", () => {
                     title: "${movieTitle}",
                     search_Genre: {
                         create: [{
-                            name: "${genreName}"
+                            node: {
+                                name: "${genreName}"
+                            }
                         }]
                     }
                 }]) {
