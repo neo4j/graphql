@@ -191,7 +191,9 @@ function createConnectionAndParams({
                     }.args.where`,
                 });
                 const [whereClause] = where;
-                unionSubquery.push(`WHERE ${whereClause}`);
+                if (whereClause) {
+                    unionSubquery.push(`WHERE ${whereClause}`);
+                }
             }
 
             if (nestedSubqueries.length) {
