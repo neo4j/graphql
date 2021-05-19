@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
+import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
@@ -27,6 +27,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createAuthParam from "./create-auth-param";
 import createAuthAndParams from "./create-auth-and-params";
+import createSetRelationshipProperties from "./create-set-relationship-properties";
 
 interface Res {
     strs: string[];
@@ -85,10 +86,10 @@ function createUpdateAndParams({
 
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const outStr = relationField.direction === "OUT" ? "->" : "-";
-            const relTypeStr = `[:${relationField.type}]`;
 
             const updates = relationField.typeMeta.array ? value : [value];
             updates.forEach((update, index) => {
+                const relTypeStr = `[:${relationField.type}]`;
                 const _varName = `${varName}_${key}${index}`;
 
                 if (update.update) {
@@ -224,19 +225,40 @@ function createUpdateAndParams({
 
                     const creates = relationField.typeMeta.array ? update.create : [update.create];
                     creates.forEach((create, i) => {
-                        const innerVarName = `${_varName}_create${i}`;
+                        const baseName = `${_varName}_create${i}`;
+                        const nodeName = `${baseName}_node`;
+                        const propertiesName = `${baseName}_relationship`;
 
                         const createAndParams = createCreateAndParams({
                             context,
                             node: refNode,
-                            input: create,
-                            varName: innerVarName,
-                            withVars: [...withVars, innerVarName],
+                            input: create.node,
+                            varName: nodeName,
+                            withVars: [...withVars, nodeName],
                             insideDoWhen,
                         });
                         res.strs.push(createAndParams[0]);
                         res.params = { ...res.params, ...createAndParams[1] };
-                        res.strs.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${innerVarName})`);
+                        res.strs.push(
+                            `MERGE (${parentVar})${inStr}[${create.properties ? propertiesName : ""}:${
+                                relationField.type
+                            }]${outStr}(${nodeName})`
+                        );
+
+                        if (create.properties) {
+                            const relationship = (context.neoSchema.relationships.find(
+                                (x) => x.properties === relationField.properties
+                            ) as unknown) as Relationship;
+
+                            const setA = createSetRelationshipProperties({
+                                properties: create.properties,
+                                varName: propertiesName,
+                                relationship,
+                                operation: "CREATE",
+                            });
+                            res.strs.push(setA[0]);
+                            res.params = { ...res.params, ...setA[1] };
+                        }
                     });
                 }
             });

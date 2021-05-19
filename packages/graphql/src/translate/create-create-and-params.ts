@@ -73,7 +73,7 @@ function createCreateAndParams({
 
                     const baseName = `${_varName}${index}`;
                     const nodeName = `${baseName}_node`;
-                    const propertiesName = `${baseName}_properties`;
+                    const propertiesName = `${baseName}_relationship`;
 
                     const recurse = createCreateAndParams({
                         input: create.node,
@@ -151,10 +151,13 @@ function createCreateAndParams({
             } else {
                 res.creates.push(`SET ${varName}.${key} = point($${_varName})`);
             }
-        } else {
-            res.creates.push(`SET ${varName}.${key} = $${_varName}`);
+
+            res.params[_varName] = value;
+
+            return res;
         }
 
+        res.creates.push(`SET ${varName}.${key} = $${_varName}`);
         res.params[_varName] = value;
 
         return res;

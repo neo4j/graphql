@@ -74,7 +74,7 @@ CALL {
 CALL {
     WITH this0
     MATCH (this0)<-[this0_acted_in:ACTED_IN]-(this0_actor:Actor)
-    WITH collect({ node: { name: this0_actor.name } }) AS edges
+    WITH collect({ screenTime: this0_acted_in.screenTime, node: { name: this0_actor.name } }) AS edges
     RETURN { edges: edges } AS actorsConnection
 }
 
@@ -86,9 +86,12 @@ this0 { .title, actorsConnection } AS this0
 
 ```cypher-params
 {
-    "this_title": "Forrest Gump",
+    "this0_title": "Forrest Gump",
     "this0_actors0_node_name": "Tom Hanks",
-    "this0_actors0_relationship_screenTime": 60
+    "this0_actors0_relationship_screenTime": {
+        "high": 0,
+        "low": 60
+    }
 }
 ```
 

@@ -574,7 +574,6 @@ function makeAugmentedSchema(
 
                 refNodes.forEach((n) => {
                     const concatFieldName = `${rel.fieldName}_${n.name}`;
-                    const createField = rel.typeMeta.array ? `[${n.name}CreateInput!]` : `${n.name}CreateInput`;
                     const createFieldInputName = rel.typeMeta.array
                         ? `[${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput!]`
                         : `${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput`;
@@ -601,13 +600,15 @@ function makeAugmentedSchema(
                         [n.name]: `${n.name}Where`,
                     });
 
-                    composer.createInputTC({
-                        name: `${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput`,
-                        fields: {
-                            node: `${n.name}CreateInput`,
-                            ...(rel.properties ? { properties: `${rel.properties}CreateInput` } : {}),
-                        },
-                    });
+                    if (!composer.has(`${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput`)) {
+                        composer.createInputTC({
+                            name: `${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput`,
+                            fields: {
+                                node: `${n.name}CreateInput!`,
+                                ...(rel.properties ? { properties: `${rel.properties}CreateInput!` } : {}),
+                            },
+                        });
+                    }
 
                     composer.createInputTC({
                         name: nodeFieldUpdateInputName,
@@ -616,7 +617,7 @@ function makeAugmentedSchema(
                             update: updateField,
                             connect: connectField,
                             disconnect: disconnectField,
-                            create: createField,
+                            create: createFieldInputName,
                             delete: deleteField,
                         },
                     });
@@ -642,7 +643,7 @@ function makeAugmentedSchema(
                     });
 
                     nodeRelationInput.addFields({
-                        [concatFieldName]: createField,
+                        [concatFieldName]: createFieldInputName,
                     });
 
                     nodeInput.addFields({
@@ -674,7 +675,6 @@ function makeAugmentedSchema(
             }
 
             const n = nodes.find((x) => x.name === rel.typeMeta.name) as Node;
-            const createField = rel.typeMeta.array ? `[${n.name}CreateInput!]` : `${n.name}CreateInput`;
             const updateField = `${n.name}UpdateInput`;
             const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
             const createFieldInputName = rel.typeMeta.array
@@ -698,13 +698,15 @@ function makeAugmentedSchema(
                       }),
             });
 
-            composer.createInputTC({
-                name: `${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput`,
-                fields: {
-                    node: `${n.name}CreateInput`,
-                    ...(rel.properties ? { properties: `${rel.properties}CreateInput` } : {}),
-                },
-            });
+            if (!composer.has(`${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput`)) {
+                composer.createInputTC({
+                    name: `${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput`,
+                    fields: {
+                        node: `${n.name}CreateInput!`,
+                        ...(rel.properties ? { properties: `${rel.properties}CreateInput!` } : {}),
+                    },
+                });
+            }
 
             composeNode.addFields({
                 [rel.fieldName]: {
@@ -723,7 +725,7 @@ function makeAugmentedSchema(
                     update: updateField,
                     connect: connectField,
                     disconnect: disconnectField,
-                    create: createField,
+                    create: createFieldInputName,
                     delete: deleteField,
                 },
             });
@@ -751,7 +753,7 @@ function makeAugmentedSchema(
             }
 
             nodeRelationInput.addFields({
-                [rel.fieldName]: createField,
+                [rel.fieldName]: createFieldInputName,
             });
 
             nodeInput.addFields({

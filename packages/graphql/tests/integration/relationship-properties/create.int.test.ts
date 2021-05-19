@@ -184,13 +184,13 @@ describe("Relationship properties - create", () => {
         expect(result.data?.createActors.actors).toEqual([
             {
                 name: actorName,
-                actors: [{ name: actorName }],
+                publications: [{ title: movieTitle }],
             },
         ]);
 
         const cypher = `
             MATCH (a:Actor {name: $actorName})
-                    <-[:WROTE {words: $words}]-
+                    -[:WROTE {words: $words}]->
                         (:Movie {title: $movieTitle})
             RETURN a
         `;
