@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import dotProp from "dot-prop";
 import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
@@ -30,6 +29,7 @@ import createAuthParam from "./create-auth-param";
 import createAuthAndParams from "./create-auth-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
+import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 
 interface Res {
     strs: string[];
@@ -81,9 +81,9 @@ function createUpdateAndParams({
         if (relationField) {
             let refNode: Node;
 
-            const relationship = context.neoSchema.relationships.find(
-                (r) => r.name === relationField.typeMeta.name
-            ) as Relationship;
+            const relationship = (context.neoSchema.relationships.find(
+                (x) => x.properties === relationField.properties
+            ) as unknown) as Relationship;
 
             if (relationField.union) {
                 [unionTypeName] = key.split(`${relationField.fieldName}_`).join("").split("_");
@@ -101,7 +101,7 @@ function createUpdateAndParams({
                 const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
                 const _varName = `${varName}_${key}${index}`;
 
-                if (update.update) {
+                if (update.update || update.properties) {
                     if (withVars) {
                         res.strs.push(`WITH ${withVars.join(", ")}`);
                     }
@@ -142,43 +142,97 @@ function createUpdateAndParams({
                         res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
                     }
 
-                    res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
+                    if (update.update) {
+                        res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
 
-                    const auth = createAuthParam({ context });
-                    let innerApocParams = { auth };
+                        const auth = createAuthParam({ context });
+                        let innerApocParams = { auth };
 
-                    const updateAndParams = createUpdateAndParams({
-                        context,
-                        node: refNode,
-                        updateInput: update.update,
-                        varName: _varName,
-                        withVars: [...withVars, _varName],
-                        parentVar: _varName,
-                        chainStr: `${param}${index}`,
-                        insideDoWhen: true,
-                        parameterPrefix: `${parameterPrefix}.${key}[${index}].update`,
-                    });
-                    res.params = { ...res.params, ...updateAndParams[1], auth };
-                    innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
+                        const updateAndParams = createUpdateAndParams({
+                            context,
+                            node: refNode,
+                            updateInput: update.update,
+                            varName: _varName,
+                            withVars: [...withVars, _varName],
+                            parentVar: _varName,
+                            chainStr: `${param}${index}`,
+                            insideDoWhen: true,
+                            parameterPrefix: `${parameterPrefix}.${key}[${index}].update`,
+                        });
+                        res.params = { ...res.params, ...updateAndParams[1], auth };
+                        innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
 
-                    const updateStrs = [updateAndParams[0], "RETURN count(*)"];
-                    const apocArgs = `{${parentVar}:${parentVar}, ${parameterPrefix?.split(".")[0]}: $${
-                        parameterPrefix?.split(".")[0]
-                    }, ${_varName}:${_varName}REPLACE_ME}`;
+                        const updateStrs = [updateAndParams[0], "RETURN count(*)"];
+                        const apocArgs = `{${parentVar}:${parentVar}, ${parameterPrefix?.split(".")[0]}: $${
+                            parameterPrefix?.split(".")[0]
+                        }, ${_varName}:${_varName}REPLACE_ME}`;
 
-                    if (insideDoWhen) {
-                        updateStrs.push(`\\", \\"\\", ${apocArgs})`);
-                    } else {
-                        updateStrs.push(`", "", ${apocArgs})`);
+                        if (insideDoWhen) {
+                            updateStrs.push(`\\", \\"\\", ${apocArgs})`);
+                        } else {
+                            updateStrs.push(`", "", ${apocArgs})`);
+                        }
+                        updateStrs.push("YIELD value as _");
+
+                        const paramsString = Object.keys(innerApocParams)
+                            .reduce((r: string[], k) => [...r, `${k}:$${k}`], [])
+                            .join(",");
+
+                        const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
+                        res.strs.push(updateStr);
                     }
-                    updateStrs.push("YIELD value as _");
 
-                    const paramsString = Object.keys(innerApocParams)
-                        .reduce((r: string[], k) => [...r, `${k}:$${k}`], [])
-                        .join(",");
+                    if (update.properties) {
+                        res.strs.push(
+                            `CALL apoc.do.when(${relationshipVariable} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`
+                        );
 
-                    const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
-                    res.strs.push(updateStr);
+                        // const auth = createAuthParam({ context });
+                        // let innerApocParams = { auth };
+                        // let innerApocParams = {};
+
+                        const setProperties = createSetRelationshipProperties({
+                            properties: update.properties,
+                            varName: relationshipVariable,
+                            relationship,
+                            operation: "UPDATE",
+                            parameterPrefix: `${parameterPrefix}.${key}[${index}].properties`,
+                        });
+
+                        // const updateAndParams = createUpdateAndParams({
+                        //     context,
+                        //     node: refNode,
+                        //     updateInput: update.update,
+                        //     varName: _varName,
+                        //     withVars: [...withVars, _varName],
+                        //     parentVar: _varName,
+                        //     chainStr: `${param}${index}`,
+                        //     insideDoWhen: true,
+                        //     parameterPrefix: `${parameterPrefix}.${key}[${index}].update`,
+                        // });
+                        // res.params = { ...res.params, ...updateAndParams[1], auth };
+                        // res.params = { ...res.params, ...updateAndParams[1] };
+                        // innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
+
+                        const updateStrs = [setProperties, "RETURN count(*)"];
+                        const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
+                            parameterPrefix?.split(".")[0]
+                        }: $${parameterPrefix?.split(".")[0]}}`;
+
+                        if (insideDoWhen) {
+                            updateStrs.push(`\\", \\"\\", ${apocArgs})`);
+                        } else {
+                            updateStrs.push(`", "", ${apocArgs})`);
+                        }
+                        updateStrs.push("YIELD value as _");
+
+                        // const paramsString = Object.keys(innerApocParams)
+                        //     .reduce((r: string[], k) => [...r, `${k}:$${k}`], [])
+                        //     .join(",");
+
+                        // const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
+                        res.strs.push(updateStrs.join("\n"));
+                    }
                 }
 
                 if (update.disconnect) {
@@ -260,7 +314,7 @@ function createUpdateAndParams({
                         );
 
                         if (create.properties) {
-                            const setA = createSetRelationshipProperties({
+                            const setA = createSetRelationshipPropertiesAndParams({
                                 properties: create.properties,
                                 varName: propertiesName,
                                 relationship,

@@ -31,7 +31,7 @@ import createDisconnectAndParams from "./create-disconnect-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createConnectionAndParams from "./connection/create-connection-and-params";
-import createSetRelationshipProperties from "./create-set-relationship-properties";
+import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
@@ -187,7 +187,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                         (x) => x.properties === relationField.properties
                     ) as unknown) as Relationship;
 
-                    const setA = createSetRelationshipProperties({
+                    const setA = createSetRelationshipPropertiesAndParams({
                         properties: create.properties,
                         varName: propertiesName,
                         relationship,
