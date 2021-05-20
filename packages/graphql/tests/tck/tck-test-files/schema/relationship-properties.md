@@ -35,6 +35,10 @@ input ActedInCreateInput {
   screenTime: Int!
 }
 
+input ActedInUpdateInput {
+  screenTime: Int
+}
+
 input ActedInSort {
   screenTime: SortDirection
 }
@@ -136,7 +140,8 @@ type ActorMoviesRelationship implements ActedIn {
 }
 
 input ActorMoviesUpdateFieldInput {
-  where: MovieWhere
+  properties: ActedInUpdateInput
+  where: ActorMoviesConnectionWhere
   update: MovieUpdateInput
   connect: [MovieConnectFieldInput!]
   disconnect: [MovieDisconnectFieldInput!]
@@ -247,7 +252,8 @@ type MovieActorsRelationship implements ActedIn {
 }
 
 input MovieActorsUpdateFieldInput {
-  where: ActorWhere
+  properties: ActedInUpdateInput
+  where: MovieActorsConnectionWhere
   update: ActorUpdateInput
   connect: [ActorConnectFieldInput!]
   disconnect: [ActorDisconnectFieldInput!]

@@ -427,14 +427,14 @@ WHERE this.id = $this_id
 WITH this
 CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
 WITH this
-OPTIONAL MATCH (this)<-[:HAS_POST]-(this_creator0:User)
+OPTIONAL MATCH (this)<-[this_has_post0:HAS_POST]-(this_creator0:User)
 CALL apoc.do.when(this_creator0 IS NOT NULL, "
     WITH this, this_creator0
     CALL apoc.util.validate(NOT(EXISTS(this_creator0.id) AND this_creator0.id = $this_creator0_auth_allow0_id), \"@neo4j/graphql/FORBIDDEN\", [0])
     SET this_creator0.id = $this_update_creator0_id
     RETURN count(*) ",
     "",
-    {this:this, this_creator0:this_creator0, auth:$auth,this_update_creator0_id:$this_update_creator0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
+    {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_id:$this_update_creator0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
 YIELD value as _
 
 RETURN this { .id } AS this
@@ -459,6 +459,17 @@ RETURN this { .id } AS this
       "roles": [
         "admin"
       ]
+    },
+    "updatePosts": {
+        "args": {
+            "update": {
+                "creator": {
+                    "update": {
+                        "id": "new-id"
+                    }
+                }
+            }
+        }
     }
 }
 ```
@@ -498,7 +509,8 @@ MATCH (this:Post)
 WHERE this.id = $this_id
 
 WITH this
-CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0]) WITH this OPTIONAL MATCH (this)<-[:HAS_POST]-(this_creator0:User)
+CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+WITH this OPTIONAL MATCH (this)<-[this_has_post0:HAS_POST]-(this_creator0:User)
 
 CALL apoc.do.when(this_creator0 IS NOT NULL, "
     WITH this, this_creator0
@@ -507,7 +519,7 @@ CALL apoc.do.when(this_creator0 IS NOT NULL, "
     RETURN count(*)
     ",
     "",
-    {this:this, this_creator0:this_creator0, auth:$auth,this_update_creator0_password:$this_update_creator0_password,this_update_creator0_password_auth_allow0_id:$this_update_creator0_password_auth_allow0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id}) YIELD value as _
+    {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_password:$this_update_creator0_password,this_update_creator0_password_auth_allow0_id:$this_update_creator0_password_auth_allow0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id}) YIELD value as _
     RETURN this { .id } AS this
 ```
 
@@ -531,6 +543,17 @@ CALL apoc.do.when(this_creator0 IS NOT NULL, "
       "roles": [
         "admin"
       ]
+    },
+    "updatePosts": {
+        "args": {
+            "update": {
+                "creator": {
+                    "update": {
+                        "password": "new-password"
+                    }
+                }
+            }
+        }
     }
 }
 ```

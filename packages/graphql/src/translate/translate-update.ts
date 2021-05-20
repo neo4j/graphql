@@ -96,9 +96,15 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             varName,
             parentVar: varName,
             withVars: [varName],
+            parameterPrefix: `${resolveTree.name}.args.update`,
         });
         [updateStr] = updateAndParams;
-        cypherParams = { ...cypherParams, ...updateAndParams[1] };
+        cypherParams = {
+            ...cypherParams,
+            // Crude check if parameter is actually used before ading it
+            ...(updateStr.includes(resolveTree.name) ? { [resolveTree.name]: { args: { update: updateInput } } } : {}),
+            ...updateAndParams[1],
+        };
     }
 
     if (disconnectInput) {

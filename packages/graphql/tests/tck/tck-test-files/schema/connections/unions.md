@@ -100,7 +100,8 @@ input AuthorPublicationsBookFieldInput {
 }
 
 input AuthorPublicationsBookUpdateFieldInput {
-  where: BookWhere
+  properties: WroteUpdateInput
+  where: AuthorPublicationsConnectionWhere
   update: BookUpdateInput
   connect: [BookConnectFieldInput!]
   disconnect: [BookDisconnectFieldInput!]
@@ -139,7 +140,8 @@ input AuthorPublicationsJournalFieldInput {
 }
 
 input AuthorPublicationsJournalUpdateFieldInput {
-  where: JournalWhere
+  properties: WroteUpdateInput
+  where: AuthorPublicationsConnectionWhere
   update: JournalUpdateInput
   connect: [JournalConnectFieldInput!]
   disconnect: [JournalDisconnectFieldInput!]
@@ -235,7 +237,8 @@ type BookAuthorRelationship implements Wrote {
 }
 
 input BookAuthorUpdateFieldInput {
-  where: AuthorWhere
+  properties: WroteUpdateInput
+  where: BookAuthorConnectionWhere
   update: AuthorUpdateInput
   connect: [AuthorConnectFieldInput!]
   disconnect: [AuthorDisconnectFieldInput!]
@@ -382,7 +385,8 @@ type JournalAuthorRelationship implements Wrote {
 }
 
 input JournalAuthorUpdateFieldInput {
-  where: AuthorWhere
+  properties: WroteUpdateInput
+  where: JournalAuthorConnectionWhere
   update: AuthorUpdateInput
   connect: [AuthorConnectFieldInput!]
   disconnect: [AuthorDisconnectFieldInput!]
@@ -536,6 +540,10 @@ input WroteCreateInput {
 
 input WroteSort {
   words: SortDirection
+}
+
+input WroteUpdateInput {
+  words: Int
 }
 
 input WroteWhere {

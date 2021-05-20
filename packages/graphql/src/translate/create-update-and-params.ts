@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import dotProp from "dot-prop";
 import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
@@ -28,6 +29,7 @@ import createDeleteAndParams from "./create-delete-and-params";
 import createAuthParam from "./create-auth-param";
 import createAuthAndParams from "./create-auth-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
+import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
 interface Res {
     strs: string[];
@@ -49,6 +51,7 @@ function createUpdateAndParams({
     insideDoWhen,
     withVars,
     context,
+    parameterPrefix,
 }: {
     parentVar: string;
     updateInput: any;
@@ -58,6 +61,7 @@ function createUpdateAndParams({
     withVars: string[];
     insideDoWhen?: boolean;
     context: Context;
+    parameterPrefix?: string;
 }): [string, any] {
     let hasAppliedTimeStamps = false;
 
@@ -77,6 +81,10 @@ function createUpdateAndParams({
         if (relationField) {
             let refNode: Node;
 
+            const relationship = context.neoSchema.relationships.find(
+                (r) => r.name === relationField.typeMeta.name
+            ) as Relationship;
+
             if (relationField.union) {
                 [unionTypeName] = key.split(`${relationField.fieldName}_`).join("").split("_");
                 refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
@@ -89,7 +97,8 @@ function createUpdateAndParams({
 
             const updates = relationField.typeMeta.array ? value : [value];
             updates.forEach((update, index) => {
-                const relTypeStr = `[:${relationField.type}]`;
+                const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}`;
+                const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
                 const _varName = `${varName}_${key}${index}`;
 
                 if (update.update) {
@@ -102,19 +111,21 @@ function createUpdateAndParams({
                     );
 
                     const whereStrs: string[] = [];
+
                     if (update.where) {
-                        const whereAndParams = createWhereAndParams({
-                            varName: _varName,
+                        const where = createConnectionWhereAndParams({
                             whereInput: update.where,
                             node: refNode,
+                            nodeVariable: _varName,
+                            relationship,
+                            relationshipVariable,
                             context,
-                            recursing: true,
+                            parameterPrefix: `${parameterPrefix}.${key}[${index}].where`,
                         });
-                        if (whereAndParams[0]) {
-                            whereStrs.push(whereAndParams[0]);
-                            res.params = { ...res.params, ...whereAndParams[1] };
-                        }
+                        const [whereClause] = where;
+                        whereStrs.push(whereClause);
                     }
+
                     if (node.auth) {
                         const whereAuth = createAuthAndParams({
                             operation: "UPDATE",
@@ -145,12 +156,15 @@ function createUpdateAndParams({
                         parentVar: _varName,
                         chainStr: `${param}${index}`,
                         insideDoWhen: true,
+                        parameterPrefix: `${parameterPrefix}.${key}[${index}].update`,
                     });
                     res.params = { ...res.params, ...updateAndParams[1], auth };
                     innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
 
                     const updateStrs = [updateAndParams[0], "RETURN count(*)"];
-                    const apocArgs = `{${parentVar}:${parentVar}, ${_varName}:${_varName}REPLACE_ME}`;
+                    const apocArgs = `{${parentVar}:${parentVar}, ${parameterPrefix?.split(".")[0]}: $${
+                        parameterPrefix?.split(".")[0]
+                    }, ${_varName}:${_varName}REPLACE_ME}`;
 
                     if (insideDoWhen) {
                         updateStrs.push(`\\", \\"\\", ${apocArgs})`);
@@ -246,10 +260,6 @@ function createUpdateAndParams({
                         );
 
                         if (create.properties) {
-                            const relationship = (context.neoSchema.relationships.find(
-                                (x) => x.properties === relationField.properties
-                            ) as unknown) as Relationship;
-
                             const setA = createSetRelationshipProperties({
                                 properties: create.properties,
                                 varName: propertiesName,
