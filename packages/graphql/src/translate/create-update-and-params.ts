@@ -187,10 +187,6 @@ function createUpdateAndParams({
                             `CALL apoc.do.when(${relationshipVariable} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`
                         );
 
-                        // const auth = createAuthParam({ context });
-                        // let innerApocParams = { auth };
-                        // let innerApocParams = {};
-
                         const setProperties = createSetRelationshipProperties({
                             properties: update.properties,
                             varName: relationshipVariable,
@@ -198,21 +194,6 @@ function createUpdateAndParams({
                             operation: "UPDATE",
                             parameterPrefix: `${parameterPrefix}.${key}[${index}].properties`,
                         });
-
-                        // const updateAndParams = createUpdateAndParams({
-                        //     context,
-                        //     node: refNode,
-                        //     updateInput: update.update,
-                        //     varName: _varName,
-                        //     withVars: [...withVars, _varName],
-                        //     parentVar: _varName,
-                        //     chainStr: `${param}${index}`,
-                        //     insideDoWhen: true,
-                        //     parameterPrefix: `${parameterPrefix}.${key}[${index}].update`,
-                        // });
-                        // res.params = { ...res.params, ...updateAndParams[1], auth };
-                        // res.params = { ...res.params, ...updateAndParams[1] };
-                        // innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
 
                         const updateStrs = [setProperties, "RETURN count(*)"];
                         const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
@@ -224,13 +205,7 @@ function createUpdateAndParams({
                         } else {
                             updateStrs.push(`", "", ${apocArgs})`);
                         }
-                        updateStrs.push("YIELD value as _");
-
-                        // const paramsString = Object.keys(innerApocParams)
-                        //     .reduce((r: string[], k) => [...r, `${k}:$${k}`], [])
-                        //     .join(",");
-
-                        // const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
+                        updateStrs.push(`YIELD value as ${relationshipVariable}_${key}${index}_properties`);
                         res.strs.push(updateStrs.join("\n"));
                     }
                 }

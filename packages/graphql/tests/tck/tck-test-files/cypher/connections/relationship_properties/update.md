@@ -58,7 +58,7 @@ CALL apoc.do.when(this_acted_in0 IS NOT NULL, "
 SET this_acted_in0.screenTime = $updateMovies.args.update.actors[0].properties.screenTime
 RETURN count(*)
 ", "", {this_acted_in0:this_acted_in0, updateMovies: $updateMovies})
-YIELD value as _
+YIELD value as this_acted_in0_actors0_properties
 
 RETURN this { .title } AS this
 ```
@@ -139,7 +139,7 @@ CALL apoc.do.when(this_acted_in0 IS NOT NULL, "
 SET this_acted_in0.screenTime = $updateMovies.args.update.actors[0].properties.screenTime
 RETURN count(*)
 ", "", {this_acted_in0:this_acted_in0, updateMovies: $updateMovies})
-YIELD value as _
+YIELD value as this_acted_in0_actors0_properties
 
 RETURN this { .title } AS this
 ```
