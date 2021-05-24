@@ -361,14 +361,14 @@ MATCH (this:Post)
 WHERE this.id = $this_id
 
 WITH this
-OPTIONAL MATCH (this_connect_creator0:User)
-WHERE this_connect_creator0.id = $this_connect_creator0_id
-FOREACH(_ IN CASE this_connect_creator0 WHEN NULL THEN [] ELSE [1] END |
-    MERGE (this)<-[:HAS_POST]-(this_connect_creator0)
+OPTIONAL MATCH (this_connect_creator0_node:User)
+WHERE this_connect_creator0_node.id = $this_connect_creator0_node_id
+FOREACH(_ IN CASE this_connect_creator0_node WHEN NULL THEN [] ELSE [1] END |
+    MERGE (this)<-[:HAS_POST]-(this_connect_creator0_node)
 )
 
-WITH this, this_connect_creator0
-CALL apoc.util.validate(NOT(EXISTS((this_connect_creator0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_creator0Post0_bind_auth_bind0_creator_id) AND EXISTS(this_connect_creator0.id) AND this_connect_creator0.id = $this_connect_creator0User1_bind_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+WITH this, this_connect_creator0_node
+CALL apoc.util.validate(NOT(EXISTS((this_connect_creator0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_creator0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_creator0_nodePost0_bind_auth_bind0_creator_id) AND EXISTS(this_connect_creator0_node.id) AND this_connect_creator0_node.id = $this_connect_creator0_nodeUser1_bind_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
 
 RETURN this { .id } AS this
 ```
@@ -378,9 +378,9 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_id": "id-01",
-    "this_connect_creator0Post0_bind_auth_bind0_creator_id": "id-01",
-    "this_connect_creator0User1_bind_auth_bind0_id": "id-01",
-    "this_connect_creator0_id": "user-id",
+    "this_connect_creator0_nodePost0_bind_auth_bind0_creator_id": "id-01",
+    "this_connect_creator0_nodeUser1_bind_auth_bind0_id": "id-01",
+    "this_connect_creator0_node_id": "user-id",
     "this_id": "post-id"
 }
 ```

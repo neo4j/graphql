@@ -35,12 +35,12 @@ input ActedInCreateInput {
   screenTime: Int!
 }
 
-input ActedInUpdateInput {
-  screenTime: Int
-}
-
 input ActedInSort {
   screenTime: SortDirection
+}
+
+input ActedInUpdateInput {
+  screenTime: Int
 }
 
 input ActedInWhere {
@@ -59,19 +59,11 @@ input ActedInWhere {
 type Actor {
   name: String!
   movies(where: MovieWhere, options: MovieOptions): [Movie]
-  moviesConnection(
-    where: ActorMoviesConnectionWhere
-    options: ActorMoviesConnectionOptions
-  ): ActorMoviesConnection!
-}
-
-input ActorConnectFieldInput {
-  where: ActorWhere
-  connect: ActorConnectInput
+  moviesConnection(where: ActorMoviesConnectionWhere, options: ActorMoviesConnectionOptions): ActorMoviesConnection!
 }
 
 input ActorConnectInput {
-  movies: [MovieConnectFieldInput!]
+  movies: [ActorMoviesConnectFieldInput!]
 }
 
 input ActorCreateInput {
@@ -95,6 +87,12 @@ input ActorDisconnectFieldInput {
 
 input ActorDisconnectInput {
   movies: [MovieDisconnectFieldInput!]
+}
+
+input ActorMoviesConnectFieldInput {
+  where: MovieWhere
+  connect: [MovieConnectInput!]
+  properties: ActedInCreateInput!
 }
 
 type ActorMoviesConnection {
@@ -131,7 +129,7 @@ input ActorMoviesDeleteFieldInput {
 
 input ActorMoviesFieldInput {
   create: [ActorMoviesCreateFieldInput!]
-  connect: [MovieConnectFieldInput!]
+  connect: [ActorMoviesConnectFieldInput!]
 }
 
 type ActorMoviesRelationship implements ActedIn {
@@ -143,14 +141,16 @@ input ActorMoviesUpdateFieldInput {
   properties: ActedInUpdateInput
   where: ActorMoviesConnectionWhere
   update: MovieUpdateInput
-  connect: [MovieConnectFieldInput!]
+  connect: [ActorMoviesConnectFieldInput!]
   disconnect: [MovieDisconnectFieldInput!]
   create: [ActorMoviesCreateFieldInput!]
   delete: [MovieDeleteFieldInput!]
 }
 
 input ActorOptions {
-  # Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+  """
+  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+  """
   sort: [ActorSort]
   limit: Int
   skip: Int
@@ -160,7 +160,9 @@ input ActorRelationInput {
   movies: [ActorMoviesCreateFieldInput!]
 }
 
-# Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+"""
+Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+"""
 input ActorSort {
   name: SortDirection
 }
@@ -203,10 +205,13 @@ type DeleteInfo {
 type Movie {
   title: String!
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
-  actorsConnection(
-    where: MovieActorsConnectionWhere
-    options: MovieActorsConnectionOptions
-  ): MovieActorsConnection!
+  actorsConnection(where: MovieActorsConnectionWhere, options: MovieActorsConnectionOptions): MovieActorsConnection!
+}
+
+input MovieActorsConnectFieldInput {
+  where: ActorWhere
+  connect: [ActorConnectInput!]
+  properties: ActedInCreateInput!
 }
 
 type MovieActorsConnection {
@@ -243,7 +248,7 @@ input MovieActorsDeleteFieldInput {
 
 input MovieActorsFieldInput {
   create: [MovieActorsCreateFieldInput!]
-  connect: [ActorConnectFieldInput!]
+  connect: [MovieActorsConnectFieldInput!]
 }
 
 type MovieActorsRelationship implements ActedIn {
@@ -255,19 +260,14 @@ input MovieActorsUpdateFieldInput {
   properties: ActedInUpdateInput
   where: MovieActorsConnectionWhere
   update: ActorUpdateInput
-  connect: [ActorConnectFieldInput!]
+  connect: [MovieActorsConnectFieldInput!]
   disconnect: [ActorDisconnectFieldInput!]
   create: [MovieActorsCreateFieldInput!]
   delete: [ActorDeleteFieldInput!]
 }
 
-input MovieConnectFieldInput {
-  where: MovieWhere
-  connect: MovieConnectInput
-}
-
 input MovieConnectInput {
-  actors: [ActorConnectFieldInput!]
+  actors: [MovieActorsConnectFieldInput!]
 }
 
 input MovieCreateInput {
@@ -294,7 +294,9 @@ input MovieDisconnectInput {
 }
 
 input MovieOptions {
-  # Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+  """
+  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+  """
   sort: [MovieSort]
   limit: Int
   skip: Int
@@ -304,7 +306,9 @@ input MovieRelationInput {
   actors: [MovieActorsCreateFieldInput!]
 }
 
-# Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+"""
+Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+"""
 input MovieSort {
   title: SortDirection
 }
@@ -334,24 +338,10 @@ input MovieWhere {
 type Mutation {
   createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
   deleteActors(where: ActorWhere, delete: ActorDeleteInput): DeleteInfo!
-  updateActors(
-    where: ActorWhere
-    update: ActorUpdateInput
-    connect: ActorConnectInput
-    disconnect: ActorDisconnectInput
-    create: ActorRelationInput
-    delete: ActorDeleteInput
-  ): UpdateActorsMutationResponse!
+  updateActors(where: ActorWhere, update: ActorUpdateInput, connect: ActorConnectInput, disconnect: ActorDisconnectInput, create: ActorRelationInput, delete: ActorDeleteInput): UpdateActorsMutationResponse!
   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
-  updateMovies(
-    where: MovieWhere
-    update: MovieUpdateInput
-    connect: MovieConnectInput
-    disconnect: MovieDisconnectInput
-    create: MovieRelationInput
-    delete: MovieDeleteInput
-  ): UpdateMoviesMutationResponse!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
 }
 
 type Query {
@@ -360,10 +350,10 @@ type Query {
 }
 
 enum SortDirection {
-  # Sort by field values in ascending order.
+  """Sort by field values in ascending order."""
   ASC
 
-  # Sort by field values in descending order.
+  """Sort by field values in descending order."""
   DESC
 }
 

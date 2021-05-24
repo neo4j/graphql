@@ -262,10 +262,10 @@ mutation {
 MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this
-OPTIONAL MATCH (this_connect_actors0:Actor)
-WHERE this_connect_actors0.name = $this_connect_actors0_name
-FOREACH(_ IN CASE this_connect_actors0 WHEN NULL THEN [] ELSE [1] END |
-MERGE (this)<-[:ACTED_IN]-(this_connect_actors0)
+OPTIONAL MATCH (this_connect_actors0_node:Actor)
+WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
+FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+    MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
 )
 RETURN this { .id } AS this
 ```
@@ -275,7 +275,7 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_id": "1",
-    "this_connect_actors0_name": "Daniel"
+    "this_connect_actors0_node_name": "Daniel"
 }
 ```
 
@@ -309,16 +309,16 @@ mutation {
 MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this
-OPTIONAL MATCH (this_connect_actors0:Actor)
-WHERE this_connect_actors0.name = $this_connect_actors0_name
-FOREACH(_ IN CASE this_connect_actors0 WHEN NULL THEN [] ELSE [1] END |
-MERGE (this)<-[:ACTED_IN]-(this_connect_actors0)
+OPTIONAL MATCH (this_connect_actors0_node:Actor)
+WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
+FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+    MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
 )
 WITH this
-OPTIONAL MATCH (this_connect_actors1:Actor)
-WHERE this_connect_actors1.name = $this_connect_actors1_name
-FOREACH(_ IN CASE this_connect_actors1 WHEN NULL THEN [] ELSE [1] END |
-MERGE (this)<-[:ACTED_IN]-(this_connect_actors1)
+OPTIONAL MATCH (this_connect_actors1_node:Actor)
+WHERE this_connect_actors1_node.name = $this_connect_actors1_node_name
+FOREACH(_ IN CASE this_connect_actors1_node WHEN NULL THEN [] ELSE [1] END |
+    MERGE (this)<-[:ACTED_IN]-(this_connect_actors1_node)
 )
 RETURN this { .id } AS this
 ```
@@ -328,8 +328,8 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_id": "1",
-    "this_connect_actors0_name": "Daniel",
-    "this_connect_actors1_name": "Darrell"
+    "this_connect_actors0_node_name": "Daniel",
+    "this_connect_actors1_node_name": "Darrell"
 }
 ```
 

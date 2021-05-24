@@ -36,19 +36,8 @@ interface Wrote {
 ```schema-output
 type Author {
   name: String!
-  publications(
-    options: QueryOptions
-    Book: BookWhere
-    Journal: JournalWhere
-  ): [Publication]
-  publicationsConnection(
-    where: AuthorPublicationsConnectionWhere
-  ): AuthorPublicationsConnection!
-}
-
-input AuthorConnectFieldInput {
-  where: AuthorWhere
-  connect: AuthorConnectInput
+  publications(options: QueryOptions, Book: BookWhere, Journal: JournalWhere): [Publication]
+  publicationsConnection(where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
 }
 
 input AuthorConnectInput {
@@ -83,7 +72,9 @@ input AuthorDisconnectInput {
 }
 
 input AuthorOptions {
-  # Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.
+  """
+  Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.
+  """
   sort: [AuthorSort]
   limit: Int
   skip: Int
@@ -155,11 +146,13 @@ type AuthorPublicationsRelationship implements Wrote {
 }
 
 input AuthorRelationInput {
-   publications_Book: [AuthorPublicationsCreateFieldInput!]
+  publications_Book: [AuthorPublicationsCreateFieldInput!]
   publications_Journal: [AuthorPublicationsCreateFieldInput!]
 }
 
-# Fields to sort Authors by. The order in which sorts are applied is not guaranteed when specifying many fields in one AuthorSort object.
+"""
+Fields to sort Authors by. The order in which sorts are applied is not guaranteed when specifying many fields in one AuthorSort object.
+"""
 input AuthorSort {
   name: SortDirection
 }
@@ -188,10 +181,13 @@ input AuthorWhere {
 type Book {
   title: String!
   author(where: AuthorWhere, options: AuthorOptions): [Author!]!
-  authorConnection(
-    where: BookAuthorConnectionWhere
-    options: BookAuthorConnectionOptions
-  ): BookAuthorConnection!
+  authorConnection(where: BookAuthorConnectionWhere, options: BookAuthorConnectionOptions): BookAuthorConnection!
+}
+
+input BookAuthorConnectFieldInput {
+  where: AuthorWhere
+  connect: [AuthorConnectInput!]
+  properties: WroteCreateInput!
 }
 
 type BookAuthorConnection {
@@ -228,7 +224,7 @@ input BookAuthorDeleteFieldInput {
 
 input BookAuthorFieldInput {
   create: [BookAuthorCreateFieldInput!]
-  connect: [AuthorConnectFieldInput!]
+  connect: [BookAuthorConnectFieldInput!]
 }
 
 type BookAuthorRelationship implements Wrote {
@@ -240,7 +236,7 @@ input BookAuthorUpdateFieldInput {
   properties: WroteUpdateInput
   where: BookAuthorConnectionWhere
   update: AuthorUpdateInput
-  connect: [AuthorConnectFieldInput!]
+  connect: [BookAuthorConnectFieldInput!]
   disconnect: [AuthorDisconnectFieldInput!]
   create: [BookAuthorCreateFieldInput!]
   delete: [AuthorDeleteFieldInput!]
@@ -252,7 +248,7 @@ input BookConnectFieldInput {
 }
 
 input BookConnectInput {
-  author: [AuthorConnectFieldInput!]
+  author: [BookAuthorConnectFieldInput!]
 }
 
 input BookCreateInput {
@@ -279,7 +275,9 @@ input BookDisconnectInput {
 }
 
 input BookOptions {
-  # Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.
+  """
+  Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.
+  """
   sort: [BookSort]
   limit: Int
   skip: Int
@@ -289,7 +287,9 @@ input BookRelationInput {
   author: [BookAuthorCreateFieldInput!]
 }
 
-# Fields to sort Books by. The order in which sorts are applied is not guaranteed when specifying many fields in one BookSort object.
+"""
+Fields to sort Books by. The order in which sorts are applied is not guaranteed when specifying many fields in one BookSort object.
+"""
 input BookSort {
   title: SortDirection
 }
@@ -336,10 +336,13 @@ type DeleteInfo {
 type Journal {
   subject: String!
   author(where: AuthorWhere, options: AuthorOptions): [Author!]!
-  authorConnection(
-    where: JournalAuthorConnectionWhere
-    options: JournalAuthorConnectionOptions
-  ): JournalAuthorConnection!
+  authorConnection(where: JournalAuthorConnectionWhere, options: JournalAuthorConnectionOptions): JournalAuthorConnection!
+}
+
+input JournalAuthorConnectFieldInput {
+  where: AuthorWhere
+  connect: [AuthorConnectInput!]
+  properties: WroteCreateInput!
 }
 
 type JournalAuthorConnection {
@@ -376,7 +379,7 @@ input JournalAuthorDeleteFieldInput {
 
 input JournalAuthorFieldInput {
   create: [JournalAuthorCreateFieldInput!]
-  connect: [AuthorConnectFieldInput!]
+  connect: [JournalAuthorConnectFieldInput!]
 }
 
 type JournalAuthorRelationship implements Wrote {
@@ -388,7 +391,7 @@ input JournalAuthorUpdateFieldInput {
   properties: WroteUpdateInput
   where: JournalAuthorConnectionWhere
   update: AuthorUpdateInput
-  connect: [AuthorConnectFieldInput!]
+  connect: [JournalAuthorConnectFieldInput!]
   disconnect: [AuthorDisconnectFieldInput!]
   create: [JournalAuthorCreateFieldInput!]
   delete: [AuthorDeleteFieldInput!]
@@ -400,7 +403,7 @@ input JournalConnectFieldInput {
 }
 
 input JournalConnectInput {
-  author: [AuthorConnectFieldInput!]
+  author: [JournalAuthorConnectFieldInput!]
 }
 
 input JournalCreateInput {
@@ -427,7 +430,9 @@ input JournalDisconnectInput {
 }
 
 input JournalOptions {
-  # Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.
+  """
+  Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.
+  """
   sort: [JournalSort]
   limit: Int
   skip: Int
@@ -437,7 +442,9 @@ input JournalRelationInput {
   author: [JournalAuthorCreateFieldInput!]
 }
 
-# Fields to sort Journals by. The order in which sorts are applied is not guaranteed when specifying many fields in one JournalSort object.
+"""
+Fields to sort Journals by. The order in which sorts are applied is not guaranteed when specifying many fields in one JournalSort object.
+"""
 input JournalSort {
   subject: SortDirection
 }
@@ -467,34 +474,13 @@ input JournalWhere {
 type Mutation {
   createAuthors(input: [AuthorCreateInput!]!): CreateAuthorsMutationResponse!
   deleteAuthors(where: AuthorWhere, delete: AuthorDeleteInput): DeleteInfo!
-  updateAuthors(
-    where: AuthorWhere
-    update: AuthorUpdateInput
-    connect: AuthorConnectInput
-    disconnect: AuthorDisconnectInput
-    create: AuthorRelationInput
-    delete: AuthorDeleteInput
-  ): UpdateAuthorsMutationResponse!
+  updateAuthors(where: AuthorWhere, update: AuthorUpdateInput, connect: AuthorConnectInput, disconnect: AuthorDisconnectInput, create: AuthorRelationInput, delete: AuthorDeleteInput): UpdateAuthorsMutationResponse!
   createBooks(input: [BookCreateInput!]!): CreateBooksMutationResponse!
   deleteBooks(where: BookWhere, delete: BookDeleteInput): DeleteInfo!
-  updateBooks(
-    where: BookWhere
-    update: BookUpdateInput
-    connect: BookConnectInput
-    disconnect: BookDisconnectInput
-    create: BookRelationInput
-    delete: BookDeleteInput
-  ): UpdateBooksMutationResponse!
+  updateBooks(where: BookWhere, update: BookUpdateInput, connect: BookConnectInput, disconnect: BookDisconnectInput, create: BookRelationInput, delete: BookDeleteInput): UpdateBooksMutationResponse!
   createJournals(input: [JournalCreateInput!]!): CreateJournalsMutationResponse!
   deleteJournals(where: JournalWhere, delete: JournalDeleteInput): DeleteInfo!
-  updateJournals(
-    where: JournalWhere
-    update: JournalUpdateInput
-    connect: JournalConnectInput
-    disconnect: JournalDisconnectInput
-    create: JournalRelationInput
-    delete: JournalDeleteInput
-  ): UpdateJournalsMutationResponse!
+  updateJournals(where: JournalWhere, update: JournalUpdateInput, connect: JournalConnectInput, disconnect: JournalDisconnectInput, create: JournalRelationInput, delete: JournalDeleteInput): UpdateJournalsMutationResponse!
 }
 
 union Publication = Book | Journal
@@ -511,10 +497,10 @@ input QueryOptions {
 }
 
 enum SortDirection {
-  # Sort by field values in ascending order.
+  """Sort by field values in ascending order."""
   ASC
 
-  # Sort by field values in descending order.
+  """Sort by field values in descending order."""
   DESC
 }
 
