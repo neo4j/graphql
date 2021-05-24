@@ -64,7 +64,10 @@ mutation {
         where: { id: "1" }
         update: {
             actors: [
-                { where: { name: "old name" }, update: { name: "new name" } }
+                {
+                    where: { node: { name: "old name" } }
+                    update: { name: "new name" }
+                }
             ]
         }
     ) {
@@ -81,15 +84,15 @@ mutation {
 MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this
-OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
-WHERE this_actors0.name = $this_actors0_name
+OPTIONAL MATCH (this)<-[this_acted_in0:ACTED_IN]-(this_actors0:Actor)
+WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
 CALL apoc.do.when(this_actors0 IS NOT NULL,
   "
     SET this_actors0.name = $this_update_actors0_name
     RETURN count(*)
   ",
   "",
-  {this:this, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name}) YIELD value as _
+  {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name}) YIELD value as _
 
 RETURN this { .id } AS this
 ```
@@ -99,12 +102,29 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_id": "1",
-    "this_actors0_name": "old name",
     "this_update_actors0_name": "new name",
     "auth": {
        "isAuthenticated": true,
        "roles": [],
        "jwt": {}
+    },
+    "updateMovies": {
+        "args": {
+            "update": {
+                "actors": [
+                    {
+                        "update": {
+                            "name": "new name"
+                        },
+                        "where": {
+                            "node": {
+                                "name": "old name"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
     }
 }
 ```
@@ -122,12 +142,12 @@ mutation {
         update: {
             actors: [
                 {
-                    where: { name: "old actor name" }
+                    where: { node: { name: "old actor name" } }
                     update: {
                         name: "new actor name"
                         movies: [
                             {
-                                where: { id: "old movie title" }
+                                where: { node: { id: "old movie title" } }
                                 update: { title: "new movie title" }
                             }
                         ]
@@ -149,25 +169,25 @@ mutation {
 MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this
-OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
-WHERE this_actors0.name = $this_actors0_name
+OPTIONAL MATCH (this)<-[this_acted_in0:ACTED_IN]-(this_actors0:Actor)
+WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
 CALL apoc.do.when(this_actors0 IS NOT NULL, "
     SET this_actors0.name = $this_update_actors0_name
 
     WITH this, this_actors0
-    OPTIONAL MATCH (this_actors0)-[:ACTED_IN]->(this_actors0_movies0:Movie)
-    WHERE this_actors0_movies0.id = $this_actors0_movies0_id
+    OPTIONAL MATCH (this_actors0)-[this_actors0_acted_in0:ACTED_IN]->(this_actors0_movies0:Movie)
+    WHERE this_actors0_movies0.id = $updateMovies.args.update.actors[0].update.movies[0].where.node.id
     CALL apoc.do.when(this_actors0_movies0 IS NOT NULL, \"
         SET this_actors0_movies0.title = $this_update_actors0_movies0_title
         RETURN count(*)
     \",
       \"\",
-      {this_actors0:this_actors0, this_actors0_movies0:this_actors0_movies0, auth:$auth,this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _
+      {this_actors0:this_actors0, updateMovies: $updateMovies, this_actors0_movies0:this_actors0_movies0, auth:$auth,this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _
 
     RETURN count(*)
   ",
   "",
-  {this:this, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name,this_actors0_movies0_id:$this_actors0_movies0_id,this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _
+  {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name,this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _
 
 RETURN this { .id } AS this
 ```
@@ -177,15 +197,42 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_id": "1",
-    "this_actors0_name": "old name",
-    "this_actors0_movies0_id": "old movie title",
-    "this_actors0_name": "old actor name",
     "this_update_actors0_movies0_title": "new movie title",
     "this_update_actors0_name": "new actor name",
     "auth": {
        "isAuthenticated": true,
        "roles": [],
        "jwt": {}
+    },
+    "updateMovies": {
+      "args": {
+        "update": {
+          "actors": [
+                {
+                    "update": {
+                        "movies": [
+                            {
+                                "update": {
+                                    "title": "new movie title"
+                                },
+                                "where": {
+                                    "node": {
+                                        "id": "old movie title"
+                                    }
+                                }
+                            }
+                        ],
+                        "name": "new actor name"
+                    },
+                    "where": {
+                        "node": {
+                            "name": "old actor name"
+                        }
+                    }
+                }
+          ]
+        }
+      }
     }
 }
 ```
@@ -600,7 +647,7 @@ mutation {
         where: { id: "1" }
         update: {
             actors: {
-                where: { name: "Actor to update" }
+                where: { node: { name: "Actor to update" } }
                 update: { name: "Updated name" }
             }
         }
@@ -619,14 +666,14 @@ mutation {
 MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this
-OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0:Actor)
-WHERE this_actors0.name = $this_actors0_name
+OPTIONAL MATCH (this)<-[this_acted_in0:ACTED_IN]-(this_actors0:Actor)
+WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
 CALL apoc.do.when(this_actors0 IS NOT NULL, "
     SET this_actors0.name = $this_update_actors0_name
     RETURN count(*)
 ",
 "",
-{this:this, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name}) YIELD value as _
+{this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name}) YIELD value as _
 WITH this
 OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_delete_actors0:Actor)
 WHERE this_delete_actors0.name = $this_delete_actors0_name
@@ -641,13 +688,30 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_id": "1",
-    "this_actors0_name": "Actor to update",
     "this_update_actors0_name": "Updated name",
     "this_delete_actors0_name": "Actor to delete",
     "auth": {
         "isAuthenticated": true,
         "jwt": {},
         "roles": []
+    },
+    "updateMovies": {
+      "args": {
+        "update": {
+          "actors": [
+            {
+                "update": {
+                    "name": "Updated name"
+                },
+                "where": {
+                    "node": {
+                        "name": "Actor to update"
+                    }
+                }
+            }
+          ]
+        }
+      }
     }
 }
 ```

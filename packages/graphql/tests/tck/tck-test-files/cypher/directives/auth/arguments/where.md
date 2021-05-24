@@ -398,10 +398,10 @@ mutation {
 MATCH (this:User)
 WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
-WITH this OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
+WITH this OPTIONAL MATCH (this)-[this_has_post0:HAS_POST]->(this_posts0:Post)
 WHERE EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_auth_where0_creator_id)
 
-CALL apoc.do.when(this_posts0 IS NOT NULL, " SET this_posts0.id = $this_update_posts0_id RETURN count(*) ", "", {this:this, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id}) YIELD value as _
+CALL apoc.do.when(this_posts0 IS NOT NULL, " SET this_posts0.id = $this_update_posts0_id RETURN count(*) ", "", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id}) YIELD value as _
 
 RETURN this {
     .id,
@@ -428,6 +428,19 @@ RETURN this {
       "roles": [
         "admin"
       ]
+    },
+    "updateUsers": {
+      "args": {
+        "update": {
+          "posts": [
+            {
+              "update": {
+                "id": "new-id"
+              }
+            }
+          ]
+        }
+      }
     }
 }
 ```
