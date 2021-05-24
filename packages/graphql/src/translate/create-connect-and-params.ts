@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
+import { Node, Relationship } from "../classes";
 import { RelationField, Context } from "../types";
 import createWhereAndParams from "./create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import createSetRelationshipProperties from "./create-set-relationship-properties";
 
 interface Res {
     connects: string[];
@@ -54,10 +55,12 @@ function createConnectAndParams({
     insideDoWhen?: boolean;
 }): [string, any] {
     function reducer(res: Res, connect: any, index): Res {
-        const _varName = `${varName}${index}`;
+        const baseName = `${varName}${index}`;
+        const nodeName = `${baseName}_node`;
+        const relationshipName = `${baseName}_relationship`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
-        const relTypeStr = `[:${relationField.type}]`;
+        const relTypeStr = `[${connect.properties ? relationshipName : ""}:${relationField.type}]`;
 
         if (parentNode.auth && !fromCreate) {
             const whereAuth = createAuthAndParams({
@@ -74,12 +77,12 @@ function createConnectAndParams({
         }
 
         res.connects.push(`WITH ${withVars.join(", ")}`);
-        res.connects.push(`OPTIONAL MATCH (${_varName}:${labelOverride || relationField.typeMeta.name})`);
+        res.connects.push(`OPTIONAL MATCH (${nodeName}:${labelOverride || relationField.typeMeta.name})`);
 
         const whereStrs: string[] = [];
         if (connect.where) {
             const where = createWhereAndParams({
-                varName: _varName,
+                varName: nodeName,
                 whereInput: connect.where,
                 node: refNode,
                 context,
@@ -95,7 +98,7 @@ function createConnectAndParams({
                 operation: "CONNECT",
                 entity: refNode,
                 context,
-                where: { varName: _varName, node: refNode },
+                where: { varName: nodeName, node: refNode },
             });
             if (whereAuth[0]) {
                 whereStrs.push(whereAuth[0]);
@@ -118,7 +121,7 @@ function createConnectAndParams({
                     operation: "CONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_allow` },
+                    allow: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}${i}_allow` },
                 });
 
                 if (!str) {
@@ -135,7 +138,7 @@ function createConnectAndParams({
 
         if (preAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            res.connects.push(`WITH ${[...withVars, _varName].join(", ")}`);
+            res.connects.push(`WITH ${[...withVars, nodeName].join(", ")}`);
             res.connects.push(
                 `CALL apoc.util.validate(NOT(${preAuth.connects.join(
                     " AND "
@@ -149,8 +152,24 @@ function createConnectAndParams({
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
-        res.connects.push(`FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END | `);
-        res.connects.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName})`);
+        res.connects.push(`FOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
+        res.connects.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+
+        if (connect.properties) {
+            const relationship = (context.neoSchema.relationships.find(
+                (x) => x.properties === relationField.properties
+            ) as unknown) as Relationship;
+
+            const setA = createSetRelationshipProperties({
+                properties: connect.properties,
+                varName: relationshipName,
+                relationship,
+                operation: "CREATE",
+            });
+            res.connects.push(setA[0]);
+            res.params = { ...res.params, ...setA[1] };
+        }
+
         res.connects.push(`)`); // close FOREACH
 
         if (connect.connect) {
@@ -171,11 +190,11 @@ function createConnectAndParams({
                         }
 
                         const recurse = createConnectAndParams({
-                            withVars: [...withVars, _varName],
+                            withVars: [...withVars, nodeName],
                             value: v,
-                            varName: `${_varName}_${k}`,
+                            varName: `${nodeName}_${k}`,
                             relationField: relField as RelationField,
-                            parentVar: _varName,
+                            parentVar: nodeName,
                             context,
                             refNode: newRefNode,
                             parentNode: refNode,
@@ -206,7 +225,7 @@ function createConnectAndParams({
                     escapeQuotes: Boolean(insideDoWhen),
                     skipIsAuthenticated: true,
                     skipRoles: true,
-                    bind: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_bind` },
+                    bind: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}${i}_bind` },
                 });
 
                 if (!str) {
@@ -223,7 +242,7 @@ function createConnectAndParams({
 
         if (postAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            res.connects.push(`WITH ${[...withVars, _varName].join(", ")}`);
+            res.connects.push(`WITH ${[...withVars, nodeName].join(", ")}`);
             res.connects.push(
                 `CALL apoc.util.validate(NOT(${postAuth.connects.join(
                     " AND "
