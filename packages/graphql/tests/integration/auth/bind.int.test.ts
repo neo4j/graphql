@@ -330,7 +330,7 @@ describe("auth/bind", () => {
                         where: { id: "${userId}" },
                         update: {
                             posts: {
-                                where: { id: "${postId}" },
+                                where: { node: { id: "${postId}" } },
                                 update: {
                                     creator: { update: { id: "not bound" } }
                                 }

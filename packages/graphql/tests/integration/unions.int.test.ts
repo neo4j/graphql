@@ -288,7 +288,7 @@ describe("unions", () => {
                     where: { title: "${movieTitle}" },
                     update: {
                         search_Genre: {
-                            where: { name: "${genreName}" },
+                            where: { Genre: { name: "${genreName}" } },
                             update: {
                                 name: "${newGenreName}"
                             }

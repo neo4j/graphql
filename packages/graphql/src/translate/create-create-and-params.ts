@@ -22,7 +22,7 @@ import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createSetRelationshipProperties from "./create-set-relationship-properties";
+import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 
 interface Res {
     creates: string[];
@@ -95,7 +95,7 @@ function createCreateAndParams({
                             (x) => x.properties === relationField.properties
                         ) as unknown) as Relationship;
 
-                        const setA = createSetRelationshipProperties({
+                        const setA = createSetRelationshipPropertiesAndParams({
                             properties: create.properties,
                             varName: propertiesName,
                             relationship,

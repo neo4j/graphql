@@ -519,7 +519,7 @@ type MovieActorsRelationship {
 }
 
 input MovieActorsUpdateFieldInput {
-  where: ActorWhere
+  where: MovieActorsConnectionWhere
   update: ActorUpdateInput
   connect: [ActorConnectFieldInput!]
   disconnect: [ActorDisconnectFieldInput!]

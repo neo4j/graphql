@@ -212,7 +212,7 @@ mutation {
         update: {
             photos: [
                 {
-                    where: { description: "Green Photo" }
+                    where: { node: { description: "Green Photo" } }
                     update: {
                         description: "Light Green Photo"
                         color: {
@@ -238,8 +238,8 @@ MATCH (this:Product)
 WHERE this.name = $this_name
 
 WITH this
-OPTIONAL MATCH (this)-[:HAS_PHOTO]->(this_photos0:Photo)
-WHERE this_photos0.description = $this_photos0_description
+OPTIONAL MATCH (this)-[this_has_photo0:HAS_PHOTO]->(this_photos0:Photo)
+WHERE this_photos0.description = $updateProducts.args.update.photos[0].where.node.description
 CALL apoc.do.when(this_photos0 IS NOT NULL,
   "
     SET this_photos0.description = $this_update_photos0_description
@@ -260,7 +260,7 @@ CALL apoc.do.when(this_photos0 IS NOT NULL,
     RETURN count(*)
   ",
   "",
-  {this:this, this_photos0:this_photos0, auth:$auth,this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_disconnect0_name:$this_photos0_color0_disconnect0_name,this_photos0_color0_connect0_name:$this_photos0_color0_connect0_name}) YIELD value as _
+  {this:this, updateProducts: $updateProducts, this_photos0:this_photos0, auth:$auth,this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_disconnect0_name:$this_photos0_color0_disconnect0_name,this_photos0_color0_connect0_name:$this_photos0_color0_connect0_name}) YIELD value as _
 
 RETURN this { .id } AS this
 ```
@@ -270,7 +270,6 @@ RETURN this { .id } AS this
 ```cypher-params
 {
   "this_name": "Pringles",
-  "this_photos0_description": "Green Photo",
   "this_update_photos0_description": "Light Green Photo",
   "this_photos0_color0_connect0_name": "Light Green",
   "this_photos0_color0_disconnect0_name": "Green",
@@ -278,6 +277,36 @@ RETURN this { .id } AS this
        "isAuthenticated": true,
        "roles": [],
        "jwt": {}
+  },
+  "updateProducts": {
+    "args": {
+      "update": {
+        "photos": [
+          {
+            "update": {
+                "color": {
+                    "connect": {
+                        "where": {
+                            "name": "Light Green"
+                        }
+                    },
+                    "disconnect": {
+                        "where": {
+                            "name": "Green"
+                        }
+                    }
+                },
+                "description": "Light Green Photo"
+            },
+            "where": {
+              "node": {
+                "description": "Green Photo"
+              }
+            }
+          }
+        ]
+      }
+    }
   }
 }
 ```

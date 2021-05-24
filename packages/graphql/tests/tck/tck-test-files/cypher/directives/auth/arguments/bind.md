@@ -239,7 +239,7 @@ mutation {
         where: { id: "id-01" }
         update: {
             posts: {
-                where: { id: "post-id" }
+                where: { node: { id: "post-id" } }
                 update: { creator: { update: { id: "not bound" } } }
             }
         }
@@ -257,12 +257,12 @@ mutation {
 MATCH (this:User)
 WHERE this.id = $this_id
 
-WITH this OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
-WHERE this_posts0.id = $this_posts0_id
+WITH this OPTIONAL MATCH (this)-[this_has_post0:HAS_POST]->(this_posts0:Post)
+WHERE this_posts0.id = $updateUsers.args.update.posts[0].where.node.id
 CALL apoc.do.when(this_posts0 IS NOT NULL,
 "
     WITH this, this_posts0
-    OPTIONAL MATCH (this_posts0)<-[:HAS_POST]-(this_posts0_creator0:User)
+    OPTIONAL MATCH (this_posts0)<-[this_posts0_has_post0:HAS_POST]-(this_posts0_creator0:User)
     CALL apoc.do.when(this_posts0_creator0 IS NOT NULL,
     \"
         SET this_posts0_creator0.id = $this_update_posts0_creator0_id
@@ -273,11 +273,11 @@ CALL apoc.do.when(this_posts0 IS NOT NULL,
         RETURN count(*)
     \",
     \"\",
-    {this_posts0:this_posts0, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id}) YIELD value as _
+    {this_posts0:this_posts0, updateUsers: $updateUsers, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id}) YIELD value as _
     RETURN count(*)
 ",
 "",
-{this:this, this_posts0:this_posts0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id}) YIELD value as _
+{this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id}) YIELD value as _
 
 WITH this
 CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
@@ -291,7 +291,6 @@ RETURN this { .id } AS this
 {
     "this_id": "id-01",
     "this_posts0_creator0_auth_bind0_id": "id-01",
-    "this_posts0_id": "post-id",
     "this_update_posts0_creator0_id": "not bound",
     "this_auth_bind0_id": "id-01",
     "auth": {
@@ -301,6 +300,28 @@ RETURN this { .id } AS this
             "sub": "id-01"
         },
         "roles": ["admin"]
+    },
+    "updateUsers": {
+        "args": {
+            "update": {
+                "posts": [
+                    {
+                        "update": {
+                            "creator": {
+                                "update": {
+                                    "id": "not bound"
+                                }
+                            }
+                        },
+                        "where": {
+                            "node": {
+                                "id": "post-id"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
     }
 }
 ```

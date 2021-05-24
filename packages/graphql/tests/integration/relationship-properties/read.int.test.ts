@@ -20,6 +20,7 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
+import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
@@ -40,6 +41,10 @@ describe("Relationship properties - read", () => {
             screenTime: Int!
         }
     `;
+    const movieTitle = generate({ charset: "alphabetic" });
+    const actorA = `a${generate({ charset: "alphabetic" })}`;
+    const actorB = `b${generate({ charset: "alphabetic" })}`;
+    const actorC = `c${generate({ charset: "alphabetic" })}`;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -47,14 +52,14 @@ describe("Relationship properties - read", () => {
 
         try {
             await session.run(
-                "CREATE (:Actor { name: 'Tom Hanks' })-[:ACTED_IN { screenTime: 105 }]->(:Movie { title: 'Forrest Gump'})"
+                `CREATE (:Actor { name: '${actorA}' })-[:ACTED_IN { screenTime: 105 }]->(:Movie { title: '${movieTitle}'})`
             );
             // Another couple of actors to test sorting and filtering
             await session.run(
-                "MATCH (m:Movie) WHERE m.title = 'Forrest Gump' CREATE (m)<-[:ACTED_IN { screenTime: 105 }]-(:Actor { name: 'Robin Wright' })"
+                `MATCH (m:Movie) WHERE m.title = '${movieTitle}' CREATE (m)<-[:ACTED_IN { screenTime: 105 }]-(:Actor { name: '${actorB}' })`
             );
             await session.run(
-                "MATCH (m:Movie) WHERE m.title = 'Forrest Gump' CREATE (m)<-[:ACTED_IN { screenTime: 5 }]-(:Actor { name: 'Sally Field' })"
+                `MATCH (m:Movie) WHERE m.title = '${movieTitle}' CREATE (m)<-[:ACTED_IN { screenTime: 5 }]-(:Actor { name: '${actorC}' })`
             );
         } finally {
             await session.close();
@@ -65,10 +70,10 @@ describe("Relationship properties - read", () => {
         const session = driver.session();
 
         try {
-            await session.run("MATCH (a:Actor) WHERE a.name = 'Tom Hanks' DETACH DELETE a");
-            await session.run("MATCH (a:Actor) WHERE a.name = 'Robin Wright' DETACH DELETE a");
-            await session.run("MATCH (a:Actor) WHERE a.name = 'Sally Field' DETACH DELETE a");
-            await session.run("MATCH (m:Movie) WHERE m.title = 'Forrest Gump' DETACH DELETE m");
+            await session.run(`MATCH (a:Actor) WHERE a.name = '${actorA}' DETACH DELETE a`);
+            await session.run(`MATCH (a:Actor) WHERE a.name = '${actorB}' DETACH DELETE a`);
+            await session.run(`MATCH (a:Actor) WHERE a.name = '${actorC}' DETACH DELETE a`);
+            await session.run(`MATCH (m:Movie) WHERE m.title = '${movieTitle}' DETACH DELETE m`);
         } finally {
             await session.close();
         }
@@ -83,7 +88,7 @@ describe("Relationship properties - read", () => {
 
         const query = `
             query {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title: "${movieTitle}" }) {
                     title
                     actorsConnection {
                         edges {
@@ -110,25 +115,25 @@ describe("Relationship properties - read", () => {
 
             expect(result?.data?.movies).toEqual([
                 {
-                    title: "Forrest Gump",
+                    title: movieTitle,
                     actorsConnection: {
                         edges: [
                             {
                                 screenTime: 5,
                                 node: {
-                                    name: "Sally Field",
+                                    name: actorC,
                                 },
                             },
                             {
                                 screenTime: 105,
                                 node: {
-                                    name: "Robin Wright",
+                                    name: actorB,
                                 },
                             },
                             {
                                 screenTime: 105,
                                 node: {
-                                    name: "Tom Hanks",
+                                    name: actorA,
                                 },
                             },
                         ],
@@ -147,10 +152,10 @@ describe("Relationship properties - read", () => {
 
         const query = `
             query {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title: "${movieTitle}" }) {
                     title
                     actorsConnection(
-                        where: { AND: [{ relationship: { screenTime_GT: 60 } }, { node: { name_STARTS_WITH: "Tom" } }] }
+                        where: { AND: [{ relationship: { screenTime_GT: 60 } }, { node: { name_STARTS_WITH: "a" } }] }
                     ) {
                         edges {
                             screenTime
@@ -176,13 +181,13 @@ describe("Relationship properties - read", () => {
 
             expect(result?.data?.movies).toEqual([
                 {
-                    title: "Forrest Gump",
+                    title: movieTitle,
                     actorsConnection: {
                         edges: [
                             {
                                 screenTime: 105,
                                 node: {
-                                    name: "Tom Hanks",
+                                    name: actorA,
                                 },
                             },
                         ],
@@ -201,7 +206,7 @@ describe("Relationship properties - read", () => {
 
         const query = `
             query ConnectionWithSort($nameSort: SortDirection) {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title: "${movieTitle}" }) {
                     title
                     actorsConnection(
                         options: { sort: [{ relationship: { screenTime: DESC } }, { node: { name: $nameSort } }] }
@@ -231,25 +236,25 @@ describe("Relationship properties - read", () => {
 
             expect(ascResult?.data?.movies).toEqual([
                 {
-                    title: "Forrest Gump",
+                    title: movieTitle,
                     actorsConnection: {
                         edges: [
                             {
                                 screenTime: 105,
                                 node: {
-                                    name: "Robin Wright",
+                                    name: actorA,
                                 },
                             },
                             {
                                 screenTime: 105,
                                 node: {
-                                    name: "Tom Hanks",
+                                    name: actorB,
                                 },
                             },
                             {
                                 screenTime: 5,
                                 node: {
-                                    name: "Sally Field",
+                                    name: actorC,
                                 },
                             },
                         ],
@@ -268,25 +273,25 @@ describe("Relationship properties - read", () => {
 
             expect(descResult?.data?.movies).toEqual([
                 {
-                    title: "Forrest Gump",
+                    title: movieTitle,
                     actorsConnection: {
                         edges: [
                             {
                                 screenTime: 105,
                                 node: {
-                                    name: "Tom Hanks",
+                                    name: actorB,
                                 },
                             },
                             {
                                 screenTime: 105,
                                 node: {
-                                    name: "Robin Wright",
+                                    name: actorA,
                                 },
                             },
                             {
                                 screenTime: 5,
                                 node: {
-                                    name: "Sally Field",
+                                    name: actorC,
                                 },
                             },
                         ],
@@ -305,7 +310,7 @@ describe("Relationship properties - read", () => {
 
         const query = `
             query ConnectionWithSort($nameSort: SortDirection) {
-                movies(where: { title: "Forrest Gump" }) {
+                movies(where: { title: "${movieTitle}" }) {
                     title
                     actorsConnection(
                         where: { relationship: { screenTime_GT: 60 } }
@@ -336,19 +341,19 @@ describe("Relationship properties - read", () => {
 
             expect(ascResult?.data?.movies).toEqual([
                 {
-                    title: "Forrest Gump",
+                    title: movieTitle,
                     actorsConnection: {
                         edges: [
                             {
                                 screenTime: 105,
                                 node: {
-                                    name: "Robin Wright",
+                                    name: actorA,
                                 },
                             },
                             {
                                 screenTime: 105,
                                 node: {
-                                    name: "Tom Hanks",
+                                    name: actorB,
                                 },
                             },
                         ],
@@ -367,19 +372,19 @@ describe("Relationship properties - read", () => {
 
             expect(descResult?.data?.movies).toEqual([
                 {
-                    title: "Forrest Gump",
+                    title: movieTitle,
                     actorsConnection: {
                         edges: [
                             {
                                 screenTime: 105,
                                 node: {
-                                    name: "Tom Hanks",
+                                    name: actorB,
                                 },
                             },
                             {
                                 screenTime: 105,
                                 node: {
-                                    name: "Robin Wright",
+                                    name: actorA,
                                 },
                             },
                         ],

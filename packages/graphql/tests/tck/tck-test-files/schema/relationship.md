@@ -132,7 +132,7 @@ type MovieActorsRelationship {
 }
 
 input MovieActorsUpdateFieldInput {
-  where: ActorWhere
+  where: MovieActorsConnectionWhere
   update: ActorUpdateInput
   connect: [ActorConnectFieldInput!]
   disconnect: [ActorDisconnectFieldInput!]
@@ -334,7 +334,7 @@ input ActorMoviesFieldInput {
 }
 
 input ActorMoviesUpdateFieldInput {
-  where: MovieWhere
+  where: ActorMoviesConnectionWhere
   update: MovieUpdateInput
   connect: [MovieConnectFieldInput!]
   create: [ActorMoviesCreateFieldInput!]
@@ -416,7 +416,7 @@ input MovieActorsFieldInput {
 }
 
 input MovieActorsUpdateFieldInput {
-  where: ActorWhere
+  where: MovieActorsConnectionWhere
   update: ActorUpdateInput
   create: [MovieActorsCreateFieldInput!]
   connect: [ActorConnectFieldInput!]

@@ -548,7 +548,7 @@ mutation {
 ```cypher
 MATCH (this:Comment)
 WITH this
-OPTIONAL MATCH (this)<-[:HAS_COMMENT]-(this_post0:Post)
+OPTIONAL MATCH (this)<-[this_has_comment0:HAS_COMMENT]-(this_post0:Post)
 CALL apoc.do.when(this_post0 IS NOT NULL,
 "
     WITH this, this_post0
@@ -565,7 +565,7 @@ CALL apoc.do.when(this_post0 IS NOT NULL,
     RETURN count(*)
 ",
 "",
-{this:this, this_post0:this_post0, auth:$auth,this_post0_creator0_connect0_id:$this_post0_creator0_connect0_id}) YIELD value as _
+{this:this, updateComments: $updateComments, this_post0:this_post0, auth:$auth,this_post0_creator0_connect0_id:$this_post0_creator0_connect0_id}) YIELD value as _
 
 RETURN this { .content } AS this
 ```
@@ -583,6 +583,23 @@ RETURN this { .content } AS this
                 "admin"
             ],
             "sub": "super_admin"
+        }
+    },
+    "updateComments": {
+        "args": {
+            "update": {
+                "post": {
+                    "update": {
+                        "creator": {
+                            "connect": {
+                                "where": {
+                                    "id": "user-id"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -687,7 +704,7 @@ mutation {
 MATCH (this:Comment)
 
 WITH this
-OPTIONAL MATCH (this)<-[:HAS_COMMENT]-(this_post0:Post)
+OPTIONAL MATCH (this)<-[this_has_comment0:HAS_COMMENT]-(this_post0:Post)
 CALL apoc.do.when(this_post0 IS NOT NULL, "
     WITH this, this_post0
     OPTIONAL MATCH (this_post0)-[this_post0_creator0_disconnect0_rel:HAS_POST]->(this_post0_creator0_disconnect0:User)
@@ -702,7 +719,7 @@ CALL apoc.do.when(this_post0 IS NOT NULL, "
     RETURN count(*)
 ",
 "",
-{this:this, this_post0:this_post0, auth:$auth,this_post0_creator0_disconnect0_id:$this_post0_creator0_disconnect0_id}) YIELD value as _
+{this:this, updateComments: $updateComments, this_post0:this_post0, auth:$auth,this_post0_creator0_disconnect0_id:$this_post0_creator0_disconnect0_id}) YIELD value as _
 
 RETURN this { .content } AS this
 ```
@@ -720,6 +737,23 @@ RETURN this { .content } AS this
                 "admin"
             ],
             "sub": "super_admin"
+        }
+    },
+    "updateComments": {
+        "args": {
+            "update": {
+                "post": {
+                    "update": {
+                        "creator": {
+                            "disconnect": {
+                                "where": {
+                                    "id": "user-id"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
