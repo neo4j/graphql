@@ -243,7 +243,7 @@ describe("update", () => {
               where: { id: $movieId },
               update: {
                 actors: [{
-                  where: { name: $initialName },
+                  where: { node: { name: $initialName } },
                   update: { name: $updatedName }
                 }]
               }
@@ -627,11 +627,11 @@ describe("update", () => {
               where: { id: "${movieId}" }
               update: {
                 actors: [{
-                  where: { name: "old actor name" }
+                  where: { node: { name: "old actor name" } }
                   update: {
                     name: "new actor name"
                     movies: [{
-                      where: { title: "old movie title" }
+                      where: { node: { title: "old movie title" } }
                       update: { title: "new movie title" }
                     }]
                   }
@@ -846,7 +846,7 @@ describe("update", () => {
               where: { id: "${productId}" }
               update: {
                 photos: [{
-                  where: { id: "${photoId}" }
+                  where: { node: { id: "${photoId}" } }
                   update: {
                     color: { disconnect: { where: { id: "${colorId}" } } }
                   }
@@ -959,7 +959,7 @@ describe("update", () => {
                   update: {
                     photos: [
                       {
-                        where: { name: "Green Photo", id: "${photo0Id}" }
+                        where: { node: { name: "Green Photo", id: "${photo0Id}" } }
                         update: {
                           name: "Light Green Photo"
                           color: {
@@ -969,7 +969,7 @@ describe("update", () => {
                         }
                       }
                       {
-                        where: { name: "Yellow Photo", id: "${photo1Id}" }
+                        where: { node: { name: "Yellow Photo", id: "${photo1Id}" } }
                         update: {
                           name: "Light Yellow Photo"
                           color: {

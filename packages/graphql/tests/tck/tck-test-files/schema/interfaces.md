@@ -122,7 +122,7 @@ type MovieMoviesRelationship {
 }
 
 input MovieMoviesUpdateFieldInput {
-  where: MovieWhere
+  where: MovieMoviesConnectionWhere
   update: MovieUpdateInput
   connect: [MovieConnectFieldInput!]
   disconnect: [MovieDisconnectFieldInput!]

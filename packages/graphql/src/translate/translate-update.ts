@@ -31,7 +31,7 @@ import createDisconnectAndParams from "./create-disconnect-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createConnectionAndParams from "./connection/create-connection-and-params";
-import createSetRelationshipProperties from "./create-set-relationship-properties";
+import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
@@ -96,9 +96,15 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             varName,
             parentVar: varName,
             withVars: [varName],
+            parameterPrefix: `${resolveTree.name}.args.update`,
         });
         [updateStr] = updateAndParams;
-        cypherParams = { ...cypherParams, ...updateAndParams[1] };
+        cypherParams = {
+            ...cypherParams,
+            // Crude check if parameter is actually used before ading it
+            ...(updateStr.includes(resolveTree.name) ? { [resolveTree.name]: { args: { update: updateInput } } } : {}),
+            ...updateAndParams[1],
+        };
     }
 
     if (disconnectInput) {
@@ -181,7 +187,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                         (x) => x.properties === relationField.properties
                     ) as unknown) as Relationship;
 
-                    const setA = createSetRelationshipProperties({
+                    const setA = createSetRelationshipPropertiesAndParams({
                         properties: create.properties,
                         varName: propertiesName,
                         relationship,

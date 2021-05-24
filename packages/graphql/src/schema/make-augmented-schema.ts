@@ -38,6 +38,7 @@ import {
     InputTypeComposer,
     ObjectTypeComposer,
     InputTypeComposerFieldConfigAsObjectDefinition,
+    upperFirst,
 } from "graphql-compose";
 import pluralize from "pluralize";
 import { Node, Exclude } from "../classes";
@@ -255,6 +256,20 @@ function makeAugmentedSchema(
             fields: propertiesInterface.getFieldNames().reduce((res, f) => {
                 return { ...res, [f]: "SortDirection" };
             }, {}),
+        });
+
+        composer.createInputTC({
+            name: `${relationship.name.value}UpdateInput`,
+            fields: relationshipFieldMeta.reduce(
+                (res, f) =>
+                    f.readonly || (f as PrimitiveField)?.autogenerate
+                        ? res
+                        : {
+                              ...res,
+                              [f.fieldName]: f.typeMeta.input.update.pretty,
+                          },
+                {}
+            ),
         });
 
         const relationshipWhereFields = getWhereFields({
@@ -613,7 +628,8 @@ function makeAugmentedSchema(
                     composer.createInputTC({
                         name: nodeFieldUpdateInputName,
                         fields: {
-                            where: `${n.name}Where`,
+                            ...(rel.properties ? { properties: `${rel.properties}UpdateInput` } : {}),
+                            where: `${node.name}${upperFirstLetter(rel.fieldName)}ConnectionWhere`,
                             update: updateField,
                             connect: connectField,
                             disconnect: disconnectField,
@@ -734,7 +750,8 @@ function makeAugmentedSchema(
             composer.createInputTC({
                 name: nodeFieldUpdateInputName,
                 fields: {
-                    where: `${n.name}Where`,
+                    ...(rel.properties ? { properties: `${rel.properties}UpdateInput` } : {}),
+                    where: `${node.name}${upperFirstLetter(rel.fieldName)}ConnectionWhere`,
                     update: updateField,
                     connect,
                     disconnect: disconnectField,

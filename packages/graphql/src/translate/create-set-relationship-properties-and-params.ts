@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 import { Relationship } from "../classes";
 import { BaseField, DateTimeField, PrimitiveField } from "../types";
 
@@ -6,24 +7,23 @@ import { BaseField, DateTimeField, PrimitiveField } from "../types";
            This was not reused due to the large differences between node fields
            - and relationship fields.
 */
-function createSetRelationshipProperties({
+function createSetRelationshipPropertiesAndParams({
     properties,
     varName,
     relationship,
     operation,
-    parameterPrefix,
 }: {
     properties: Record<string, unknown>;
     varName: string;
     relationship: Relationship;
     operation: "CREATE" | "UPDATE";
-    parameterPrefix: string;
-}): string {
+}): [string, any] {
     const strs: string[] = [];
+    const params = {};
 
-    Object.entries(properties).forEach(([key]) => {
-        const paramName = `${parameterPrefix}.${key}`;
-        const field = (relationship.fields.find((x) => x.fieldName === key) as unknown) as BaseField;
+    Object.entries(properties).forEach((entry) => {
+        const paramName = `${varName}_${entry[0]}`;
+        const field = (relationship.fields.find((x) => x.fieldName === entry[0]) as unknown) as BaseField;
 
         if ("timestamps" in field) {
             const f = field as DateTimeField;
@@ -51,13 +51,18 @@ function createSetRelationshipProperties({
                 strs.push(`SET ${varName}.${field.fieldName} = point($${paramName})`);
             }
 
+            params[paramName] = entry[1];
+
             return;
         }
 
         strs.push(`SET ${varName}.${field.fieldName} = $${paramName}`);
+        params[paramName] = entry[1];
     });
 
-    return strs.join("\n");
+    return [strs.join("\n"), params];
 }
 
-export default createSetRelationshipProperties;
+export default createSetRelationshipPropertiesAndParams;
+
+/* eslint-enable prefer-destructuring */
