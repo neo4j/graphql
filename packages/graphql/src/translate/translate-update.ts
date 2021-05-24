@@ -251,7 +251,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         disconnectStrs.join("\n"),
         createStrs.join("\n"),
         deleteStr,
-        `WITH ${varName}`, // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
+        ...(connectionStrs.length || projAuth ? [`WITH ${varName}`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
         ...(projAuth ? [projAuth] : []),
         ...connectionStrs,
         `RETURN ${varName} ${projStr} AS ${varName}`,
