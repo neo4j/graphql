@@ -127,6 +127,95 @@ describe("Relationship properties - connect", () => {
         }
     });
 
+    test("should create an actor while connecting a relationship that has properties(with Union)", async () => {
+        const typeDefs = gql`
+            type Movie {
+                title: String!
+            }
+
+            type Show {
+                name: String!
+            }
+
+            type Actor {
+                name: String!
+                actedIn: [ActedInUnion!]!
+                    @relationship(type: "ACTED_IN", properties: "ActedInInterface", direction: OUT)
+            }
+
+            union ActedInUnion = Movie | Show
+
+            interface ActedInInterface {
+                screenTime: Int!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const session = driver.session();
+        const movieTitle = generate({ charset: "alphabetic" });
+        const actorName = generate({ charset: "alphabetic" });
+        const screenTime = Math.floor((Math.random() * 1e10) / Math.random());
+
+        const source = `
+            mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
+                createActors(input: [{
+                    name: $actorName,
+                    actedIn_Movie: {
+                        connect: {
+                            where: {
+                                title: $movieTitle
+                            },
+                            properties: {
+                                screenTime: $screenTime
+                            }
+                        }
+                    }
+                }]) {
+                    actors {
+                        name
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                    CREATE (:Movie {title:$movieTitle})
+                `,
+                { movieTitle }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source,
+                contextValue: { driver },
+                variableValues: { movieTitle, actorName, screenTime },
+            });
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data?.createActors.actors).toEqual([
+                {
+                    name: actorName,
+                },
+            ]);
+
+            const cypher = `
+                MATCH (a:Actor {name: $actorName})
+                        -[:ACTED_IN {screenTime: $screenTime}]->
+                            (:Movie {title: $movieTitle})
+                RETURN a
+            `;
+
+            const neo4jResult = await session.run(cypher, { movieTitle, screenTime, actorName });
+            expect(neo4jResult.records).toHaveLength(1);
+        } finally {
+            await session.close();
+        }
+    });
+
     test("should update a movie while connecting a relationship that has properties", async () => {
         const typeDefs = gql`
             type Movie {
@@ -207,6 +296,92 @@ describe("Relationship properties - connect", () => {
                         <-[:ACTED_IN {screenTime: $screenTime}]-
                             (:Actor {name: $actorName})
                 RETURN m
+            `;
+
+            const neo4jResult = await session.run(cypher, { movieTitle, screenTime, actorName });
+            expect(neo4jResult.records).toHaveLength(1);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should update an actor while connecting a relationship that has properties(with Union)", async () => {
+        const typeDefs = gql`
+            type Movie {
+                title: String!
+            }
+
+            type Show {
+                name: String!
+            }
+
+            type Actor {
+                name: String!
+                actedIn: [ActedInUnion!]!
+                    @relationship(type: "ACTED_IN", properties: "ActedInInterface", direction: OUT)
+            }
+
+            union ActedInUnion = Movie | Show
+
+            interface ActedInInterface {
+                screenTime: Int!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const session = driver.session();
+        const movieTitle = generate({ charset: "alphabetic" });
+        const actorName = generate({ charset: "alphabetic" });
+        const screenTime = Math.floor((Math.random() * 1e10) / Math.random());
+
+        const source = `
+            mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
+                updateActors(
+                    where: { name: $actorName }
+                    connect: {
+                        actedIn_Movie: {
+                            where: { title: $movieTitle },
+                            properties: { screenTime: $screenTime }
+                        }
+                    }
+                ) {
+                    actors {
+                        name
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                    CREATE (:Movie {title:$movieTitle})
+                    CREATE (:Actor {name:$actorName})
+                `,
+                { movieTitle, actorName }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source,
+                contextValue: { driver },
+                variableValues: { movieTitle, actorName, screenTime },
+            });
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data?.updateActors.actors).toEqual([
+                {
+                    name: actorName,
+                },
+            ]);
+
+            const cypher = `
+                MATCH (a:Actor {name: $actorName})
+                        -[:ACTED_IN {screenTime: $screenTime}]->
+                            (:Movie {title: $movieTitle})
+                RETURN a
             `;
 
             const neo4jResult = await session.run(cypher, { movieTitle, screenTime, actorName });

@@ -41,8 +41,8 @@ type Author {
 }
 
 input AuthorConnectInput {
-  publications_Book: [BookConnectFieldInput!]
-  publications_Journal: [JournalConnectFieldInput!]
+  publications_Book: [AuthorPublicationsConnectFieldInput!]
+  publications_Journal: [AuthorPublicationsConnectFieldInput!]
 }
 
 input AuthorCreateInput {
@@ -72,12 +72,15 @@ input AuthorDisconnectInput {
 }
 
 input AuthorOptions {
-  """
-  Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.
-  """
+  """Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array."""
   sort: [AuthorSort]
   limit: Int
   skip: Int
+}
+
+input AuthorPublicationsBookCreateFieldInput {
+  node: BookCreateInput!
+  properties: WroteCreateInput!
 }
 
 input AuthorPublicationsBookDeleteFieldInput {
@@ -86,18 +89,24 @@ input AuthorPublicationsBookDeleteFieldInput {
 }
 
 input AuthorPublicationsBookFieldInput {
-  create: [AuthorPublicationsCreateFieldInput!]
-  connect: [BookConnectFieldInput!]
+  create: [AuthorPublicationsBookCreateFieldInput!]
+  connect: [AuthorPublicationsConnectFieldInput!]
 }
 
 input AuthorPublicationsBookUpdateFieldInput {
   properties: WroteUpdateInput
   where: AuthorPublicationsConnectionWhere
   update: BookUpdateInput
-  connect: [BookConnectFieldInput!]
+  connect: [AuthorPublicationsConnectFieldInput!]
   disconnect: [BookDisconnectFieldInput!]
-  create: [AuthorPublicationsCreateFieldInput!]
+  create: [AuthorPublicationsBookCreateFieldInput!]
   delete: [BookDeleteFieldInput!]
+}
+
+input AuthorPublicationsConnectFieldInput {
+  where: BookWhere
+  connect: [BookConnectInput!]
+  properties: WroteCreateInput!
 }
 
 type AuthorPublicationsConnection {
@@ -115,8 +124,8 @@ input AuthorPublicationsConnectionWhere {
   Journal_NOT: JournalWhere
 }
 
-input AuthorPublicationsCreateFieldInput {
-  node: BookCreateInput!
+input AuthorPublicationsJournalCreateFieldInput {
+  node: JournalCreateInput!
   properties: WroteCreateInput!
 }
 
@@ -126,17 +135,17 @@ input AuthorPublicationsJournalDeleteFieldInput {
 }
 
 input AuthorPublicationsJournalFieldInput {
-  create: [AuthorPublicationsCreateFieldInput!]
-  connect: [JournalConnectFieldInput!]
+  create: [AuthorPublicationsJournalCreateFieldInput!]
+  connect: [AuthorPublicationsConnectFieldInput!]
 }
 
 input AuthorPublicationsJournalUpdateFieldInput {
   properties: WroteUpdateInput
   where: AuthorPublicationsConnectionWhere
   update: JournalUpdateInput
-  connect: [JournalConnectFieldInput!]
+  connect: [AuthorPublicationsConnectFieldInput!]
   disconnect: [JournalDisconnectFieldInput!]
-  create: [AuthorPublicationsCreateFieldInput!]
+  create: [AuthorPublicationsJournalCreateFieldInput!]
   delete: [JournalDeleteFieldInput!]
 }
 
@@ -146,8 +155,8 @@ type AuthorPublicationsRelationship implements Wrote {
 }
 
 input AuthorRelationInput {
-  publications_Book: [AuthorPublicationsCreateFieldInput!]
-  publications_Journal: [AuthorPublicationsCreateFieldInput!]
+  publications_Book: [AuthorPublicationsBookCreateFieldInput!]
+  publications_Journal: [AuthorPublicationsJournalCreateFieldInput!]
 }
 
 """
@@ -242,11 +251,6 @@ input BookAuthorUpdateFieldInput {
   delete: [AuthorDeleteFieldInput!]
 }
 
-input BookConnectFieldInput {
-  where: BookWhere
-  connect: BookConnectInput
-}
-
 input BookConnectInput {
   author: [BookAuthorConnectFieldInput!]
 }
@@ -276,8 +280,7 @@ input BookDisconnectInput {
 
 input BookOptions {
   """
-  Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.
-  """
+  Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array."""
   sort: [BookSort]
   limit: Int
   skip: Int
@@ -395,11 +398,6 @@ input JournalAuthorUpdateFieldInput {
   disconnect: [AuthorDisconnectFieldInput!]
   create: [JournalAuthorCreateFieldInput!]
   delete: [AuthorDeleteFieldInput!]
-}
-
-input JournalConnectFieldInput {
-  where: JournalWhere
-  connect: JournalConnectInput
 }
 
 input JournalConnectInput {
