@@ -46,19 +46,11 @@ type Movie implements Node {
   customQuery: [Movie]
   nodes: [Node]
   movies(where: MovieWhere, options: MovieOptions): [Movie]
-  moviesConnection(
-    where: MovieMoviesConnectionWhere
-    options: MovieMoviesConnectionOptions
-  ): MovieMoviesConnection!
-}
-
-input MovieConnectFieldInput {
-  where: MovieWhere
-  connect: MovieConnectInput
+  moviesConnection(where: MovieMoviesConnectionWhere, options: MovieMoviesConnectionOptions): MovieMoviesConnection!
 }
 
 input MovieConnectInput {
-  movies: [MovieConnectFieldInput!]
+  movies: [MovieMoviesConnectFieldInput!]
 }
 
 input MovieCreateInput {
@@ -82,6 +74,11 @@ input MovieDisconnectFieldInput {
 
 input MovieDisconnectInput {
   movies: [MovieDisconnectFieldInput!]
+}
+
+input MovieMoviesConnectFieldInput {
+  where: MovieWhere
+  connect: [MovieConnectInput!]
 }
 
 type MovieMoviesConnection {
@@ -114,7 +111,7 @@ input MovieMoviesDeleteFieldInput {
 
 input MovieMoviesFieldInput {
   create: [MovieMoviesCreateFieldInput!]
-  connect: [MovieConnectFieldInput!]
+  connect: [MovieMoviesConnectFieldInput!]
 }
 
 type MovieMoviesRelationship {
@@ -124,14 +121,16 @@ type MovieMoviesRelationship {
 input MovieMoviesUpdateFieldInput {
   where: MovieMoviesConnectionWhere
   update: MovieUpdateInput
-  connect: [MovieConnectFieldInput!]
+  connect: [MovieMoviesConnectFieldInput!]
   disconnect: [MovieDisconnectFieldInput!]
   create: [MovieMoviesCreateFieldInput!]
   delete: [MovieDeleteFieldInput!]
 }
 
 input MovieOptions {
-  # Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+  """
+  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+  """
   sort: [MovieSort]
   limit: Int
   skip: Int
@@ -141,7 +140,9 @@ input MovieRelationInput {
   movies: [MovieMoviesCreateFieldInput!]
 }
 
-# Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+"""
+Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+"""
 input MovieSort {
   id: SortDirection
 }
@@ -171,14 +172,7 @@ input MovieWhere {
 type Mutation {
   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
-  updateMovies(
-    where: MovieWhere
-    update: MovieUpdateInput
-    connect: MovieConnectInput
-    disconnect: MovieDisconnectInput
-    create: MovieRelationInput
-    delete: MovieDeleteInput
-  ): UpdateMoviesMutationResponse!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
 }
 
 interface Node {
@@ -192,10 +186,10 @@ type Query {
 }
 
 enum SortDirection {
-  # Sort by field values in ascending order.
+  """Sort by field values in ascending order."""
   ASC
 
-  # Sort by field values in descending order.
+  """Sort by field values in descending order."""
   DESC
 }
 

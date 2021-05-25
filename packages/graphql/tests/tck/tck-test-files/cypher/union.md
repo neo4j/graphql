@@ -215,10 +215,10 @@ CALL {
     SET this0.title = $this0_title
 
     WITH this0
-    OPTIONAL MATCH (this0_search_Genre_connect0:Genre)
-    WHERE this0_search_Genre_connect0.name = $this0_search_Genre_connect0_name
-    FOREACH(_ IN CASE this0_search_Genre_connect0 WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0)
+    OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
+    WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_name
+    FOREACH(_ IN CASE this0_search_Genre_connect0_node WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
     )
 
     RETURN this0
@@ -232,7 +232,7 @@ RETURN this0 { .title } AS this0
 ```cypher-params
 {
    "this0_title": "some movie",
-   "this0_search_Genre_connect0_name": "some genre"
+   "this0_search_Genre_connect0_node_name": "some genre"
 }
 
 ```
