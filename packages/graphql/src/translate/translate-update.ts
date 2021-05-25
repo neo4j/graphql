@@ -129,8 +129,17 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
 
     if (connectInput) {
         Object.entries(connectInput).forEach((entry) => {
-            const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
-            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const relationField = node.relationFields.find((x) => entry[0].startsWith(x.fieldName)) as RelationField;
+
+            let refNode: Node;
+            let unionTypeName = "";
+
+            if (relationField.union) {
+                [unionTypeName] = entry[0].split(`${relationField.fieldName}_`).join("").split("_");
+                refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
+            } else {
+                refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            }
 
             const connectAndParams = createConnectAndParams({
                 context,
@@ -141,6 +150,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 varName: `${varName}_connect_${entry[0]}`,
                 withVars: [varName],
                 parentNode: node,
+                labelOverride: unionTypeName,
             });
             connectStrs.push(connectAndParams[0]);
             cypherParams = { ...cypherParams, ...connectAndParams[1] };
