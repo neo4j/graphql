@@ -280,10 +280,10 @@ CALL {
   SET this0.id = $this0_id
 
     WITH this0
-    OPTIONAL MATCH (this0_actors_connect0:Actor)
-    WHERE this0_actors_connect0.name = $this0_actors_connect0_name
-    FOREACH(_ IN CASE this0_actors_connect0 WHEN NULL THEN [] ELSE [1] END |
-      MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0)
+    OPTIONAL MATCH (this0_actors_connect0_node:Actor)
+    WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_name
+    FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
+      MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
     )
 
   RETURN this0
@@ -297,7 +297,7 @@ RETURN this0 { .id } AS this0
 ```cypher-params
 {
     "this0_id": "1",
-    "this0_actors_connect0_name": "Dan"
+    "this0_actors_connect0_node_name": "Dan"
 }
 ```
 

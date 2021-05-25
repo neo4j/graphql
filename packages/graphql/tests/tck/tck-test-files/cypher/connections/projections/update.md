@@ -47,6 +47,7 @@ mutation {
 ```cypher
 MATCH (this:Movie)
 WHERE this.title = $this_title
+WITH this
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)

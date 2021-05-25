@@ -615,10 +615,10 @@ CALL {
     SET this0.password = $this0_password
 
     WITH this0
-    OPTIONAL MATCH (this0_posts_connect0:Post)
-    WHERE EXISTS((this0_posts_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts_connect0_auth_where0_creator_id)
+    OPTIONAL MATCH (this0_posts_connect0_node:Post)
+    WHERE EXISTS((this0_posts_connect0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts_connect0_node_auth_where0_creator_id)
 
-    FOREACH(_ IN CASE this0_posts_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0) )
+    FOREACH(_ IN CASE this0_posts_connect0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node) )
 
     RETURN this0
 }
@@ -633,7 +633,7 @@ RETURN this0 { .id } AS this0
     "this0_id": "123",
     "this0_name": "Bob",
     "this0_password": "password",
-    "this0_posts_connect0_auth_where0_creator_id": "id-01"
+    "this0_posts_connect0_node_auth_where0_creator_id": "id-01"
 }
 ```
 
@@ -681,10 +681,10 @@ CALL {
     SET this0.password = $this0_password
 
     WITH this0
-    OPTIONAL MATCH (this0_posts_connect0:Post)
-    WHERE this0_posts_connect0.id = $this0_posts_connect0_id AND EXISTS((this0_posts_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts_connect0_auth_where0_creator_id)
+    OPTIONAL MATCH (this0_posts_connect0_node:Post)
+    WHERE this0_posts_connect0_node.id = $this0_posts_connect0_node_id AND EXISTS((this0_posts_connect0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts_connect0_node_auth_where0_creator_id)
 
-    FOREACH(_ IN CASE this0_posts_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0) )
+    FOREACH(_ IN CASE this0_posts_connect0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node) )
     RETURN this0
 }
 
@@ -698,8 +698,8 @@ RETURN this0 { .id } AS this0
     "this0_id": "123",
     "this0_name": "Bob",
     "this0_password": "password",
-    "this0_posts_connect0_auth_where0_creator_id": "id-01",
-    "this0_posts_connect0_id": "post-id"
+    "this0_posts_connect0_node_auth_where0_creator_id": "id-01",
+    "this0_posts_connect0_node_id": "post-id"
 }
 ```
 
@@ -739,10 +739,10 @@ WITH this
 WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
 WITH this
-OPTIONAL MATCH (this_posts0_connect0:Post)
-WHERE EXISTS((this_posts0_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_connect0_auth_where0_creator_id)
+OPTIONAL MATCH (this_posts0_connect0_node:Post)
+WHERE EXISTS((this_posts0_connect0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_connect0_node_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_posts0_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0) )
+FOREACH(_ IN CASE this_posts0_connect0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node) )
 
 RETURN this { .id } AS this
 ```
@@ -752,7 +752,7 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_auth_where0_id": "id-01",
-    "this_posts0_connect0_auth_where0_creator_id": "id-01"
+    "this_posts0_connect0_node_auth_where0_creator_id": "id-01"
 }
 ```
 
@@ -791,10 +791,10 @@ WITH this
 WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
 WITH this
-OPTIONAL MATCH (this_posts0_connect0:Post)
-WHERE this_posts0_connect0.id = $this_posts0_connect0_id AND EXISTS((this_posts0_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_connect0_auth_where0_creator_id)
+OPTIONAL MATCH (this_posts0_connect0_node:Post)
+WHERE this_posts0_connect0_node.id = $this_posts0_connect0_node_id AND EXISTS((this_posts0_connect0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_connect0_node_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_posts0_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0) )
+FOREACH(_ IN CASE this_posts0_connect0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node) )
 
 RETURN this { .id } AS this
 ```
@@ -804,8 +804,8 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_auth_where0_id": "id-01",
-    "this_posts0_connect0_auth_where0_creator_id": "id-01",
-    "this_posts0_connect0_id": "new-id"
+    "this_posts0_connect0_node_auth_where0_creator_id": "id-01",
+    "this_posts0_connect0_node_id": "new-id"
 }
 ```
 
@@ -844,10 +844,10 @@ WITH this
 WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
 WITH this
-OPTIONAL MATCH (this_connect_posts0:Post)
-WHERE EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_posts0_auth_where0_creator_id)
+OPTIONAL MATCH (this_connect_posts0_node:Post)
+WHERE EXISTS((this_connect_posts0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_posts0_node_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0) )
+FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0_node) )
 
 RETURN this { .id } AS this
 ```
@@ -857,7 +857,7 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_auth_where0_id": "id-01",
-    "this_connect_posts0_auth_where0_creator_id": "id-01"
+    "this_connect_posts0_node_auth_where0_creator_id": "id-01"
 }
 ```
 
@@ -896,10 +896,10 @@ WITH this
 WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
 WITH this
-OPTIONAL MATCH (this_connect_posts0:Post)
-WHERE this_connect_posts0.id = $this_connect_posts0_id AND EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_posts0_auth_where0_creator_id)
+OPTIONAL MATCH (this_connect_posts0_node:Post)
+WHERE this_connect_posts0_node.id = $this_connect_posts0_node_id AND EXISTS((this_connect_posts0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_posts0_node_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0) )
+FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0_node) )
 
 RETURN this { .id } AS this
 ```
@@ -909,8 +909,8 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_auth_where0_id": "id-01",
-    "this_connect_posts0_auth_where0_creator_id": "id-01",
-    "this_connect_posts0_id": "some-id"
+    "this_connect_posts0_node_auth_where0_creator_id": "id-01",
+    "this_connect_posts0_node_id": "some-id"
 }
 ```
 
