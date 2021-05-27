@@ -14,7 +14,7 @@
         "@neo4j/graphql": "file:./package",
         "apollo-server": "^2.19.0",
         "graphql": "^15.4.0",
-        "neo4j-driver": "^4.2.0",
+        "neo4j-driver": "^4.3.0",
         "node-fetch": "^2.6.1"
     }
 }

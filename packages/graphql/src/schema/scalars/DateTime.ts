@@ -18,15 +18,15 @@
  */
 
 import { GraphQLScalarType } from "graphql";
-import { DateTime as Neo4jDateTime } from "neo4j-driver/lib/temporal-types";
+import neo4j from "neo4j-driver";
 
 export default new GraphQLScalarType({
     name: "DateTime",
     description: "A date and time, represented as an ISO-8601 string",
-    serialize: (value: Neo4jDateTime) => {
+    serialize: (value: typeof neo4j.types.DateTime) => {
         return new Date(value.toString()).toISOString();
     },
     parseValue: (value: string) => {
-        return Neo4jDateTime.fromStandardDate(new Date(value));
+        return neo4j.types.DateTime.fromStandardDate(new Date(value));
     },
 });
