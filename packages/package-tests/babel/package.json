@@ -10,7 +10,7 @@
     "dependencies": {
         "@neo4j/graphql": "file:./package",
         "graphql": "^15.4.0",
-        "neo4j-driver": "^4.3.0"
+        "neo4j-driver": "^4.2.0"
     },
     "devDependencies": {
         "@babel/core": "^7.12.3",
