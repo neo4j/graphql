@@ -24,11 +24,13 @@ import {
     DefinitionNode,
     DirectiveDefinitionNode,
     EnumTypeDefinitionNode,
+    GraphQLNonNull,
     GraphQLSchema,
     InputObjectTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
+    parse,
     print,
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode,
@@ -53,7 +55,7 @@ import getCustomResolvers from "./get-custom-resolvers";
 import getObjFieldMeta from "./get-obj-field-meta";
 import * as point from "./point";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
-// import validateTypeDefs from "./validation";
+import { validateDocument } from "./validation";
 
 function makeAugmentedSchema(
     { typeDefs, resolvers, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -61,12 +63,7 @@ function makeAugmentedSchema(
 ): { schema: GraphQLSchema; nodes: Node[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
-    /*
-        Issue caused by a combination of GraphQL Compose removing types and 
-        that we are not adding Points to the validation schema. This should be a
-        temporary fix and does not detriment usability of the library. 
-    */
-    // validateTypeDefs(document);
+    validateDocument(document);
 
     const composer = new SchemaComposer();
 
@@ -80,16 +77,16 @@ function makeAugmentedSchema(
     composer.createObjectTC({
         name: "DeleteInfo",
         fields: {
-            nodesDeleted: "Int!",
-            relationshipsDeleted: "Int!",
+            nodesDeleted: new GraphQLNonNull(Scalars.Int),
+            relationshipsDeleted: new GraphQLNonNull(Scalars.Int),
         },
     });
 
     const queryOptions = composer.createInputTC({
         name: "QueryOptions",
         fields: {
-            skip: "Int",
-            limit: "Int",
+            skip: Scalars.Int,
+            limit: Scalars.Int,
         },
     });
 
@@ -236,14 +233,14 @@ function makeAugmentedSchema(
                         )} by. The sorts will be applied in the order in which they are arranged in the array.`,
                         type: sortInput.List,
                     },
-                    limit: "Int",
-                    skip: "Int",
+                    limit: Scalars.Int,
+                    skip: Scalars.Int,
                 },
             });
         } else {
             composer.createInputTC({
                 name: `${node.name}Options`,
-                fields: { limit: "Int", skip: "Int" },
+                fields: { limit: Scalars.Int, skip: Scalars.Int },
             });
         }
 
@@ -274,6 +271,7 @@ function makeAugmentedSchema(
                     if (f.typeMeta.array) {
                         res[`${f.fieldName}_INCLUDES`] = f.typeMeta.input.where.type;
                         res[`${f.fieldName}_NOT_INCLUDES`] = f.typeMeta.input.where.type;
+
                         return res;
                     }
 
@@ -281,9 +279,28 @@ function makeAugmentedSchema(
                     res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}]`;
 
                     if (["Float", "Int", "BigInt", "DateTime"].includes(f.typeMeta.name)) {
+                        let type: any = f.typeMeta.name;
+
+                        if (f.typeMeta.name === "Float") {
+                            type = Scalars.Float;
+                        }
+
+                        if (f.typeMeta.name === "Int") {
+                            type = Scalars.Int;
+                        }
+
+                        if (f.typeMeta.name === "DateTime") {
+                            type = Scalars.DateTime;
+                        }
+
+                        if (f.typeMeta.name === "BigInt") {
+                            type = Scalars.BigInt;
+                        }
+
                         ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                            res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
+                            res[`${f.fieldName}${comparator}`] = type;
                         });
+
                         return res;
                     }
 
@@ -291,6 +308,7 @@ function makeAugmentedSchema(
                         ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
                             res[`${f.fieldName}${comparator}`] = `${f.typeMeta.name}Distance`;
                         });
+
                         return res;
                     }
 
@@ -309,6 +327,7 @@ function makeAugmentedSchema(
                         ].forEach((comparator) => {
                             res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
                         });
+
                         return res;
                     }
 
@@ -717,8 +736,6 @@ function makeAugmentedSchema(
         });
     });
 
-    Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
-
     if (pointInTypeDefs) {
         // Every field (apart from CRS) in Point needs a custom resolver
         // to deconstruct the point objects we fetch from the database
@@ -738,6 +755,12 @@ function makeAugmentedSchema(
     if (!Object.values(composer.Mutation.getFields()).length) {
         composer.delete("Mutation");
     }
+
+    Object.keys(Scalars).forEach((scalar) => {
+        if (!composer.has(scalar)) {
+            composer.addTypeDefs(`scalar ${scalar}`);
+        }
+    });
 
     const generatedTypeDefs = composer.toSDL();
     let generatedResolvers: any = {
@@ -763,9 +786,30 @@ function makeAugmentedSchema(
         generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
     });
 
+    const seen = {};
+    let parsedDoc = parse(generatedTypeDefs);
+    parsedDoc = {
+        ...parsedDoc,
+        definitions: parsedDoc.definitions.filter((definition) => {
+            if (!("name" in definition)) {
+                return true;
+            }
+
+            const n = definition.name?.value as string;
+
+            if (seen[n]) {
+                return false;
+            }
+
+            seen[n] = n;
+
+            return true;
+        }),
+    };
+
     const schema = makeExecutableSchema({
         ...schemaDefinition,
-        typeDefs: generatedTypeDefs,
+        typeDefs: print(parsedDoc),
         resolvers: generatedResolvers,
     });
 

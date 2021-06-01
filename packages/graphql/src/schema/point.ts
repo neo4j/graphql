@@ -17,103 +17,126 @@
  * limitations under the License.
  */
 
-import { InputTypeComposerAsObjectDefinition, ObjectTypeComposerAsObjectDefinition } from "graphql-compose";
+import { GraphQLInputObjectType, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { Float as FloatScalar, Int } from "./scalars";
 
-export const point: ObjectTypeComposerAsObjectDefinition<unknown, unknown> = {
+export const point = new GraphQLObjectType({
     name: "Point",
     fields: {
         longitude: {
-            type: "Float!",
+            type: new GraphQLNonNull(FloatScalar),
             resolve: (source) => {
                 return source.point.x;
             },
         },
         latitude: {
-            type: "Float!",
+            type: new GraphQLNonNull(FloatScalar),
             resolve: (source) => {
                 return source.point.y;
             },
         },
         height: {
-            type: "Float",
+            type: FloatScalar,
             resolve: (source) => {
                 return source.point.z;
             },
         },
-        crs: "String!",
+        crs: {
+            type: new GraphQLNonNull(GraphQLString),
+        },
         srid: {
-            type: "Int!",
+            type: new GraphQLNonNull(Int),
             resolve: (source) => {
                 return source.point.srid;
             },
         },
     },
-};
+});
 
-export const pointInput: InputTypeComposerAsObjectDefinition = {
+export const pointInput = new GraphQLInputObjectType({
     name: "PointInput",
     fields: {
-        longitude: "Float!",
-        latitude: "Float!",
-        height: "Float",
+        longitude: {
+            type: new GraphQLNonNull(FloatScalar),
+        },
+        latitude: {
+            type: new GraphQLNonNull(FloatScalar),
+        },
+        height: {
+            type: FloatScalar,
+        },
     },
-};
+});
 
-export const pointDistance: InputTypeComposerAsObjectDefinition = {
+export const pointDistance = new GraphQLInputObjectType({
     name: "PointDistance",
     fields: {
-        point: "PointInput!",
+        point: {
+            type: new GraphQLNonNull(pointInput),
+        },
         distance: {
-            type: "Float!",
+            type: new GraphQLNonNull(FloatScalar),
             description: "The distance in metres to be used when comparing two points",
         },
     },
-};
+});
 
-export const cartesianPoint: ObjectTypeComposerAsObjectDefinition<unknown, unknown> = {
+export const cartesianPoint = new GraphQLObjectType({
     name: "CartesianPoint",
     fields: {
         x: {
-            type: "Float!",
+            type: new GraphQLNonNull(FloatScalar),
             resolve: (source) => {
                 return source.point.x;
             },
         },
         y: {
-            type: "Float!",
+            type: new GraphQLNonNull(FloatScalar),
             resolve: (source) => {
                 return source.point.y;
             },
         },
         z: {
-            type: "Float",
+            type: FloatScalar,
             resolve: (source) => {
                 return source.point.z;
             },
         },
-        crs: "String!",
+        crs: {
+            type: new GraphQLNonNull(GraphQLString),
+        },
         srid: {
-            type: "Int!",
+            type: new GraphQLNonNull(Int),
             resolve: (source) => {
                 return source.point.srid;
             },
         },
     },
-};
+});
 
-export const cartesianPointInput: InputTypeComposerAsObjectDefinition = {
+export const cartesianPointInput = new GraphQLInputObjectType({
     name: "CartesianPointInput",
     fields: {
-        x: "Float!",
-        y: "Float!",
-        z: "Float",
+        x: {
+            type: new GraphQLNonNull(FloatScalar),
+        },
+        y: {
+            type: new GraphQLNonNull(FloatScalar),
+        },
+        z: {
+            type: FloatScalar,
+        },
     },
-};
+});
 
-export const cartesianPointDistance: InputTypeComposerAsObjectDefinition = {
+export const cartesianPointDistance = new GraphQLInputObjectType({
     name: "CartesianPointDistance",
     fields: {
-        point: "CartesianPointInput!",
-        distance: "Float!",
+        point: {
+            type: new GraphQLNonNull(cartesianPointInput),
+        },
+        distance: {
+            type: new GraphQLNonNull(FloatScalar),
+        },
     },
-};
+});
