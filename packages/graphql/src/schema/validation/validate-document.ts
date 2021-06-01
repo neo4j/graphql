@@ -19,9 +19,7 @@
 
 import { DefinitionNode, DocumentNode, GraphQLSchema } from "graphql";
 import { validateSDL } from "graphql/validation/validate";
-import { SchemaComposer, printScalar } from "graphql-compose";
 import * as scalars from "../scalars";
-import { ScalarType } from "./scalars";
 import * as enums from "./enums";
 import * as directives from "./directives";
 import * as point from "../point";
@@ -50,16 +48,12 @@ function filterDocument(document: DocumentNode) {
 }
 
 function validateDocument(document: DocumentNode): void {
-    const composer = new SchemaComposer();
     const doc = filterDocument(document);
 
     const schemaToExtend = new GraphQLSchema({
-        assumeValid: true,
         directives: Object.values(directives),
         types: [...Object.values(scalars), ...Object.values(enums), ...Object.values(point)],
     });
-
-    composer.addTypeDefs(printScalar(ScalarType));
 
     const errors = validateSDL(doc, schemaToExtend);
     if (errors.length) {
