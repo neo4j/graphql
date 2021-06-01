@@ -18,8 +18,7 @@
  */
 
 import camelCase from "camelcase";
-import { Driver } from "neo4j-driver";
-import { DateTime } from "neo4j-driver/lib/temporal-types";
+import neo4jDriver, { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import pluralize from "pluralize";
@@ -82,7 +81,10 @@ describe("DateTime", () => {
                     RETURN m {.id, .datetime} as m
                 `);
 
-                const movie: { id: string; datetime: DateTime } = (result.records[0].toObject() as any).m;
+                const movie: {
+                    id: string;
+                    datetime: typeof neo4jDriver.types.DateTime;
+                } = (result.records[0].toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
                 expect(new Date(movie.datetime.toString()).toISOString()).toEqual(date.toISOString());
@@ -135,7 +137,10 @@ describe("DateTime", () => {
                     RETURN m {.id, .datetimes} as m
                 `);
 
-                const movie: { id: string; datetimes: DateTime[] } = (result.records[0].toObject() as any).m;
+                const movie: {
+                    id: string;
+                    datetimes: typeof neo4jDriver.types.DateTime[];
+                } = (result.records[0].toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
 
@@ -178,7 +183,7 @@ describe("DateTime", () => {
                 }
             `;
 
-            const nDateTime = DateTime.fromStandardDate(date);
+            const nDateTime = neo4jDriver.types.DateTime.fromStandardDate(date);
 
             try {
                 await session.run(
@@ -303,7 +308,10 @@ describe("DateTime", () => {
                     RETURN m {.id, .datetime} as m
                 `);
 
-                const movie: { id: string; datetime: DateTime } = (result.records[0].toObject() as any).m;
+                const movie: {
+                    id: string;
+                    datetime: typeof neo4jDriver.types.DateTime;
+                } = (result.records[0].toObject() as any).m;
 
                 expect(movie.id).toEqual(id);
                 expect(new Date(movie.datetime.toString()).toISOString()).toEqual(date.toISOString());
