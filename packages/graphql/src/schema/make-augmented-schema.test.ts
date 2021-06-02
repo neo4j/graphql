@@ -104,24 +104,6 @@ describe("makeAugmentedSchema", () => {
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot have interface on relationship");
     });
 
-    test("should throw type X does not implement interface X correctly", () => {
-        const typeDefs = `
-            interface Node @auth(rules: [{operations: [READ]}]) {
-                id: ID
-                relation: [Movie] @relationship(type: "SOME_TYPE", direction: OUT)
-                cypher: [Movie] @cypher(statement: "MATCH (a) RETURN a")
-            }
-
-            type Movie implements Node {
-                title: String!
-            }
-            `;
-
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-            "type Movie does not implement interface Node correctly"
-        );
-    });
-
     test("should throw cannot auto-generate a non ID field", () => {
         const typeDefs = `
             type Movie  {
@@ -151,29 +133,6 @@ describe("makeAugmentedSchema", () => {
 
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate an array");
     });
-
-    /*
-        Removal of validateTypeDefs function
-    */
-    // test("should throw timestamp operations must be an array", () => {
-    //     const typeDefs = `
-    //             type Movie  {
-    //                 name: DateTime @timestamp(operations: "read")
-    //             }
-    //         `;
-
-    //     expect(() => makeAugmentedSchema({ typeDefs })).toThrow('Argument "operations" has invalid value "read".');
-    // });
-
-    // test("should throw timestamp operations[0] invalid", () => {
-    //     const typeDefs = `
-    //             type Movie  {
-    //                 name: DateTime @timestamp(operations: ["read"])
-    //             }
-    //         `;
-
-    //     expect(() => makeAugmentedSchema({ typeDefs })).toThrow('Argument "operations" has invalid value ["read"].');
-    // });
 
     test("should throw cannot have auth directive on a relationship", () => {
         const typeDefs = `

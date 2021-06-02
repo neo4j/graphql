@@ -47,7 +47,6 @@ import getAuth from "./get-auth";
 import { PrimitiveField, Auth } from "../types";
 import { upperFirstLetter } from "../utils";
 import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
-import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
 import wrapCustomResolvers from "./wrap-custom-resolvers";
@@ -129,8 +128,6 @@ function makeAugmentedSchema(
     const unions = document.definitions.filter((x) => x.kind === "UnionTypeDefinition") as UnionTypeDefinitionNode[];
 
     const nodes = objectNodes.map((definition) => {
-        checkNodeImplementsInterfaces(definition, interfaces);
-
         const otherDirectives = (definition.directives || []).filter(
             (x) => !["auth", "exclude"].includes(x.name.value)
         );
