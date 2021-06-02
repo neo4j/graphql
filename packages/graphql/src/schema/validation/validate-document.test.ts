@@ -188,4 +188,27 @@ describe("validateDocument", () => {
             expect(res).toBeUndefined();
         });
     });
+
+    describe("Github Issue 213", () => {
+        test("should not throw error on validation of schema", () => {
+            const doc = parse(`
+                  interface Vehicle {
+                    id: ID!
+                    color: String # NOTE: 'color' is optional on the interface
+                  }
+                
+                  type Car implements Vehicle {
+                    id: ID!
+                    color: String! # NOTE: 'color' is mandatory on the type, which should be okay
+                  }
+                
+                  type Query {
+                    cars: [Vehicle!]!
+                  }
+            `);
+
+            const res = validateDocument(doc);
+            expect(res).toBeUndefined();
+        });
+    });
 });
