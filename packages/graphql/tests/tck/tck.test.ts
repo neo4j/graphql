@@ -141,7 +141,6 @@ describe("TCK Generated tests", () => {
                                 context: Context,
                                 info: GraphQLResolveInfo
                             ) => {
-                                // const resolveTree = parseResolveInfo(info) as ResolveTree;
                                 const resolveTree = getNeo4jResolveTree(info);
 
                                 context.neoSchema = neoSchema;
@@ -178,7 +177,6 @@ describe("TCK Generated tests", () => {
                                 context: any,
                                 info: GraphQLResolveInfo
                             ) => {
-                                // const resolveTree = parseResolveInfo(info) as ResolveTree;
                                 const resolveTree = getNeo4jResolveTree(info);
 
                                 context.neoSchema = neoSchema;
@@ -207,7 +205,6 @@ describe("TCK Generated tests", () => {
                                 context: any,
                                 info: GraphQLResolveInfo
                             ) => {
-                                // const resolveTree = parseResolveInfo(info) as ResolveTree;
                                 const resolveTree = getNeo4jResolveTree(info);
 
                                 context.neoSchema = neoSchema;
@@ -231,7 +228,6 @@ describe("TCK Generated tests", () => {
                                 };
                             },
                             [`delete${pluralize(def.name.value)}`]: (_root: any, _params: any, context: any, info) => {
-                                // const resolveTree = parseResolveInfo(info) as ResolveTree;
                                 const resolveTree = getNeo4jResolveTree(info);
 
                                 context.neoSchema = neoSchema;

@@ -21,7 +21,6 @@ import Debug from "debug";
 import { Driver } from "neo4j-driver";
 import { DocumentNode, GraphQLResolveInfo, GraphQLSchema, parse, printSchema, print } from "graphql";
 import { addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
-// import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import type { DriverConfig } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
@@ -115,7 +114,6 @@ class Neo4jGraphQL {
             }
 
             context.neoSchema = this;
-            // context.resolveTree = parseResolveInfo(resolveInfo) as ResolveTree;
 
             context.resolveTree = getNeo4jResolveTree(resolveInfo);
 
