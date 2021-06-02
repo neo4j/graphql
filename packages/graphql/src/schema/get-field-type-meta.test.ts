@@ -140,7 +140,7 @@ describe("getFieldTypeMeta", () => {
 
         expect(res).toMatchObject({
             name: "ABC",
-            required: true,
+            required: false,
             array: true,
             pretty: "[ABC!]",
         });
