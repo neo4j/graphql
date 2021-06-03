@@ -421,12 +421,12 @@ input ActorCreateInput {
   name: String
 }
 
-input ActorDeleteFieldInput {
-  where: ActorWhere
+input MovieActorsDeleteFieldInput {
+  where: MovieActorsConnectionWhere
 }
 
-input ActorDisconnectFieldInput {
-  where: ActorWhere
+input MovieActorsDisconnectFieldInput {
+  where: MovieActorsConnectionWhere
 }
 
 input ActorOptions {
@@ -506,10 +506,6 @@ input MovieActorsCreateFieldInput {
   node: ActorCreateInput!
 }
 
-input MovieActorsDeleteFieldInput {
-  where: ActorWhere
-}
-
 input MovieActorsFieldInput {
   create: [MovieActorsCreateFieldInput!]
   connect: [MovieActorsConnectFieldInput!]
@@ -523,9 +519,9 @@ input MovieActorsUpdateFieldInput {
   where: MovieActorsConnectionWhere
   update: ActorUpdateInput
   connect: [MovieActorsConnectFieldInput!]
-  disconnect: [ActorDisconnectFieldInput!]
+  disconnect: [MovieActorsDisconnectFieldInput!]
   create: [MovieActorsCreateFieldInput!]
-  delete: [ActorDeleteFieldInput!]
+  delete: [MovieActorsDeleteFieldInput!]
 }
 
 input MovieConnectInput {
@@ -542,7 +538,7 @@ input MovieDeleteInput {
 }
 
 input MovieDisconnectInput {
-  actors: [ActorDisconnectFieldInput!]
+  actors: [MovieActorsDisconnectFieldInput!]
 }
 
 input MovieOptions {

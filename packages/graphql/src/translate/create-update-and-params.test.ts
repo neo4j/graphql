@@ -82,6 +82,7 @@ describe("createUpdateAndParams", () => {
             varName: "this",
             parentVar: "this",
             withVars: ["this"],
+            parameterPrefix: "this",
         });
 
         expect(trimmer(result[0])).toEqual(

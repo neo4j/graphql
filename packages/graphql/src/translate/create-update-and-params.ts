@@ -21,7 +21,6 @@ import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import createWhereAndParams from "./create-where-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
@@ -61,7 +60,7 @@ function createUpdateAndParams({
     withVars: string[];
     insideDoWhen?: boolean;
     context: Context;
-    parameterPrefix?: string;
+    parameterPrefix: string;
 }): [string, any] {
     let hasAppliedTimeStamps = false;
 
@@ -222,6 +221,7 @@ function createUpdateAndParams({
                         labelOverride: unionTypeName,
                         parentNode: node,
                         insideDoWhen,
+                        parameterPrefix: `${parameterPrefix}.${key}[${index}].disconnect`,
                     });
                     res.strs.push(disconnectAndParams[0]);
                     res.params = { ...res.params, ...disconnectAndParams[1] };
@@ -256,6 +256,7 @@ function createUpdateAndParams({
                         parentVar,
                         withVars,
                         insideDoWhen,
+                        parameterPrefix: `${parameterPrefix}.${key}[${index}].delete`,
                     });
                     res.strs.push(deleteAndParams[0]);
                     res.params = { ...res.params, ...deleteAndParams[1] };

@@ -554,7 +554,7 @@ MATCH (this:User)
 WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
 WITH this
-OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
+OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
 WHERE EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_auth_where0_creator_id)
 
 FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_posts0 )

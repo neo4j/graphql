@@ -548,7 +548,7 @@ describe("auth/bind", () => {
                         where: { id: "${postId}" },
                         disconnect: {
                             creator: {
-                                where: { id: "${userId}" }
+                                where: { node: { id: "${userId}" } }
                             }
                         }
                     ) {

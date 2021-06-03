@@ -54,6 +54,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     let cypherParams: { [k: string]: any } = {};
     const whereStrs: string[] = [];
     const connectionStrs: string[] = [];
+    let updateArgs = {};
 
     const { fieldsByTypeName } = resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][
         pluralize(camelCase(node.name))
@@ -101,14 +102,18 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         [updateStr] = updateAndParams;
         cypherParams = {
             ...cypherParams,
-            // Crude check if parameter is actually used before ading it
-            ...(updateStr.includes(resolveTree.name) ? { [resolveTree.name]: { args: { update: updateInput } } } : {}),
+            // Crude check if parameter is actually used before adding it
+            // ...(updateStr.includes(resolveTree.name) ? { [resolveTree.name]: { args: { update: updateInput } } } : {}),
             ...updateAndParams[1],
+        };
+        updateArgs = {
+            ...updateArgs,
+            ...(updateStr.includes(resolveTree.name) ? { update: updateInput } : {}),
         };
     }
 
     if (disconnectInput) {
-        Object.entries(disconnectInput).forEach((entry) => {
+        Object.entries(disconnectInput).forEach((entry, index) => {
             const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
             const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
@@ -121,10 +126,16 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 varName: `${varName}_disconnect_${entry[0]}`,
                 withVars: [varName],
                 parentNode: node,
+                parameterPrefix: `${resolveTree.name}.args.disconnect.${entry[0]}[${index}]`,
             });
             disconnectStrs.push(disconnectAndParams[0]);
             cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
         });
+
+        updateArgs = {
+            ...updateArgs,
+            disconnect: disconnectInput,
+        };
     }
 
     if (connectInput) {
@@ -218,9 +229,18 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             varName: `${varName}_delete`,
             parentVar: varName,
             withVars: [varName],
+            parameterPrefix: `${resolveTree.name}.args.delete`,
         });
         [deleteStr] = deleteAndParams;
-        cypherParams = { ...cypherParams, ...deleteAndParams[1] };
+        cypherParams = {
+            ...cypherParams,
+            // ...(deleteStr.includes(resolveTree.name) ? { [resolveTree.name]: { args: { delete: deleteInput } } } : {}),
+            ...deleteAndParams[1],
+        };
+        updateArgs = {
+            ...updateArgs,
+            ...(deleteStr.includes(resolveTree.name) ? { delete: deleteInput } : {}),
+        };
     }
 
     const projection = createProjectionAndParams({
@@ -267,7 +287,10 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         `RETURN ${varName} ${projStr} AS ${varName}`,
     ];
 
-    return [cypher.filter(Boolean).join("\n"), cypherParams];
+    return [
+        cypher.filter(Boolean).join("\n"),
+        { ...cypherParams, ...(Object.keys(updateArgs).length ? { [resolveTree.name]: { args: updateArgs } } : {}) },
+    ];
 }
 
 export default translateUpdate;

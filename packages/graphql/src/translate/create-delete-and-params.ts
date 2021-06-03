@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
+import { Node, Relationship } from "../classes";
 import { Context } from "../types";
-import createWhereAndParams from "./create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
+import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 interface Res {
@@ -37,6 +37,7 @@ function createDeleteAndParams({
     withVars,
     context,
     insideDoWhen,
+    parameterPrefix,
 }: {
     parentVar: string;
     deleteInput: any;
@@ -46,6 +47,7 @@ function createDeleteAndParams({
     withVars: string[];
     context: Context;
     insideDoWhen?: boolean;
+    parameterPrefix: string;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]) {
         const relationField = node.relationFields.find((x) => key.startsWith(x.fieldName));
@@ -53,6 +55,10 @@ function createDeleteAndParams({
 
         if (relationField) {
             let refNode: Node;
+
+            const relationship = (context.neoSchema.relationships.find(
+                (x) => x.properties === relationField.properties
+            ) as unknown) as Relationship;
 
             if (relationField.union) {
                 [unionTypeName] = key.split(`${relationField.fieldName}_`).join("").split("_");
@@ -63,11 +69,12 @@ function createDeleteAndParams({
 
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const outStr = relationField.direction === "OUT" ? "->" : "-";
-            const relTypeStr = `[:${relationField.type}]`;
 
             const deletes = relationField.typeMeta.array ? value : [value];
             deletes.forEach((d, index) => {
                 const _varName = chainStr ? `${varName}${index}` : `${varName}_${key}${index}`;
+                const relationshipVariable = `${_varName}_relationship`;
+                const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
 
                 if (withVars) {
                     res.strs.push(`WITH ${withVars.join(", ")}`);
@@ -79,16 +86,18 @@ function createDeleteAndParams({
 
                 const whereStrs: string[] = [];
                 if (d.where) {
-                    const whereAndParams = createWhereAndParams({
-                        varName: _varName,
+                    const whereAndParams = createConnectionWhereAndParams({
+                        nodeVariable: _varName,
                         whereInput: d.where,
                         node: refNode,
                         context,
-                        recursing: true,
+                        relationshipVariable,
+                        relationship,
+                        parameterPrefix: `${parameterPrefix}.${key}[${index}].where`,
                     });
                     if (whereAndParams[0]) {
                         whereStrs.push(whereAndParams[0]);
-                        res.params = { ...res.params, ...whereAndParams[1] };
+                        // res.params = { ...res.params, ...whereAndParams[1] };
                     }
                 }
                 const whereAuth = createAuthAndParams({
@@ -129,6 +138,7 @@ function createDeleteAndParams({
                         varName: _varName,
                         withVars: [...withVars, _varName],
                         parentVar: _varName,
+                        parameterPrefix: `${parameterPrefix}.${key}[${index}].delete`,
                     });
                     res.strs.push(deleteAndParams[0]);
                     res.params = { ...res.params, ...deleteAndParams[1] };
