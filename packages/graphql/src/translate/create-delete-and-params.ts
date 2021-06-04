@@ -38,6 +38,7 @@ function createDeleteAndParams({
     context,
     insideDoWhen,
     parameterPrefix,
+    recursing,
 }: {
     parentVar: string;
     deleteInput: any;
@@ -48,6 +49,7 @@ function createDeleteAndParams({
     context: Context;
     insideDoWhen?: boolean;
     parameterPrefix: string;
+    recursing?: boolean;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]) {
         const relationField = node.relationFields.find((x) => key.startsWith(x.fieldName));
@@ -93,7 +95,10 @@ function createDeleteAndParams({
                         context,
                         relationshipVariable,
                         relationship,
-                        parameterPrefix: `${parameterPrefix}.${key}[${index}].where`,
+                        parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
+                            // used here
+                            relationField.typeMeta.array ? `[${index}]` : ""
+                        }.where`,
                     });
                     if (whereAndParams[0]) {
                         whereStrs.push(whereAndParams[0]);
@@ -138,7 +143,10 @@ function createDeleteAndParams({
                         varName: _varName,
                         withVars: [...withVars, _varName],
                         parentVar: _varName,
-                        parameterPrefix: `${parameterPrefix}.${key}[${index}].delete`,
+                        parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
+                            relationField.typeMeta.array ? `[${index}]` : ""
+                        }.delete`, // TODO
+                        recursing: false,
                     });
                     res.strs.push(deleteAndParams[0]);
                     res.params = { ...res.params, ...deleteAndParams[1] };

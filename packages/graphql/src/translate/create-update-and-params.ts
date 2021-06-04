@@ -119,7 +119,9 @@ function createUpdateAndParams({
                             relationship,
                             relationshipVariable,
                             context,
-                            parameterPrefix: `${parameterPrefix}.${key}[${index}].where`,
+                            parameterPrefix: `${parameterPrefix}.${key}${
+                                relationField.typeMeta.array ? `[${index}]` : ``
+                            }.where`,
                         });
                         const [whereClause] = where;
                         whereStrs.push(whereClause);
@@ -156,7 +158,9 @@ function createUpdateAndParams({
                             parentVar: _varName,
                             chainStr: `${param}${index}`,
                             insideDoWhen: true,
-                            parameterPrefix: `${parameterPrefix}.${key}[${index}].update`,
+                            parameterPrefix: `${parameterPrefix}.${key}${
+                                relationField.typeMeta.array ? `[${index}]` : ``
+                            }.update`,
                         });
                         res.params = { ...res.params, ...updateAndParams[1], auth };
                         innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
@@ -221,7 +225,9 @@ function createUpdateAndParams({
                         labelOverride: unionTypeName,
                         parentNode: node,
                         insideDoWhen,
-                        parameterPrefix: `${parameterPrefix}.${key}[${index}].disconnect`,
+                        parameterPrefix: `${parameterPrefix}.${key}${
+                            relationField.typeMeta.array ? `[${index}]` : ""
+                        }.disconnect`,
                     });
                     res.strs.push(disconnectAndParams[0]);
                     res.params = { ...res.params, ...disconnectAndParams[1] };
@@ -250,13 +256,16 @@ function createUpdateAndParams({
                     const deleteAndParams = createDeleteAndParams({
                         context,
                         node,
-                        deleteInput: { [key]: update.delete },
+                        deleteInput: { [key]: update.delete }, // OBJECT ENTIERS key reused twice
                         varName: innerVarName,
                         chainStr: innerVarName,
                         parentVar,
                         withVars,
                         insideDoWhen,
-                        parameterPrefix: `${parameterPrefix}.${key}[${index}].delete`,
+                        parameterPrefix: `${parameterPrefix}.${key}${
+                            relationField.typeMeta.array ? `[${index}]` : ``
+                        }.delete`, // its use here
+                        recursing: true,
                     });
                     res.strs.push(deleteAndParams[0]);
                     res.params = { ...res.params, ...deleteAndParams[1] };

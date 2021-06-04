@@ -245,7 +245,7 @@ CALL apoc.do.when(this_photos0 IS NOT NULL,
     SET this_photos0.description = $this_update_photos0_description
     WITH this, this_photos0
     OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
-    WHERE this_photos0_color0_disconnect0.name = $updateProducts.args.update.photos[0].update.color[0].disconnect.where.node.name
+    WHERE this_photos0_color0_disconnect0.name = $updateProducts.args.update.photos[0].update.color.disconnect.where.node.name
     FOREACH(_ IN CASE this_photos0_color0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
       DELETE this_photos0_color0_disconnect0_rel
     )

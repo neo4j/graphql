@@ -798,7 +798,7 @@ FOREACH(_ IN CASE this_post0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
 
 WITH this, this_post0_disconnect0
 OPTIONAL MATCH (this_post0_disconnect0)<-[this_post0_disconnect0_creator0_rel:HAS_POST]-(this_post0_disconnect0_creator0:User)
-WHERE this_post0_disconnect0_creator0.id = $updateComments.args.update.post[0].disconnect.creator[0].disconnect.where.node.id
+WHERE this_post0_disconnect0_creator0.id = $updateComments.args.update.post.disconnect.creator[0].disconnect.where.node.id
 WITH this, this_post0_disconnect0, this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel
 
 CALL apoc.util.validate(NOT(EXISTS((this_post0_disconnect0_creator0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_post0_disconnect0_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_post0_disconnect0_creator0Post0_allow_auth_allow0_creator_id) AND EXISTS(this_post0_disconnect0_creator0.id) AND this_post0_disconnect0_creator0.id = $this_post0_disconnect0_creator0User1_allow_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])

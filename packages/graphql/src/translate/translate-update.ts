@@ -113,7 +113,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     }
 
     if (disconnectInput) {
-        Object.entries(disconnectInput).forEach((entry, index) => {
+        Object.entries(disconnectInput).forEach((entry) => {
             const relationField = node.relationFields.find((x) => x.fieldName === entry[0]) as RelationField;
             const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
 
@@ -126,7 +126,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 varName: `${varName}_disconnect_${entry[0]}`,
                 withVars: [varName],
                 parentNode: node,
-                parameterPrefix: `${resolveTree.name}.args.disconnect.${entry[0]}[${index}]`,
+                parameterPrefix: `${resolveTree.name}.args.disconnect.${entry[0]}`,
             });
             disconnectStrs.push(disconnectAndParams[0]);
             cypherParams = { ...cypherParams, ...disconnectAndParams[1] };

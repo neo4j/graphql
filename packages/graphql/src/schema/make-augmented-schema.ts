@@ -594,13 +594,14 @@ function makeAugmentedSchema(
                     const nodeFieldInputName = `${unionPrefix}FieldInput`;
                     const nodeFieldUpdateInputName = `${unionPrefix}UpdateFieldInput`;
                     const nodeFieldDeleteInputName = `${unionPrefix}DeleteFieldInput`;
+                    const nodeFieldDisconnectInputName = `${unionPrefix}DisconnectFieldInput`;
 
-                    const disconnectField = rel.typeMeta.array
-                        ? `[${n.name}DisconnectFieldInput!]`
-                        : `${n.name}DisconnectFieldInput`;
-                    const deleteField = rel.typeMeta.array
-                        ? `[${n.name}DeleteFieldInput!]`
-                        : `${n.name}DeleteFieldInput`;
+                    // const disconnectField = rel.typeMeta.array
+                    //     ? `[${n.name}DisconnectFieldInput!]`
+                    //     : `${n.name}DisconnectFieldInput`;
+                    // const deleteField = rel.typeMeta.array
+                    //     ? `[${n.name}DeleteFieldInput!]`
+                    //     : `${n.name}DeleteFieldInput`;
 
                     composeNode.addFieldArgs(rel.fieldName, {
                         [n.name]: `${n.name}Where`,
@@ -644,9 +645,11 @@ function makeAugmentedSchema(
                             where: `${node.name}${upperFirstLetter(rel.fieldName)}ConnectionWhere`,
                             update: updateField,
                             connect,
-                            disconnect: disconnectField,
+                            disconnect: rel.typeMeta.array
+                                ? `[${nodeFieldDisconnectInputName}!]`
+                                : nodeFieldDisconnectInputName,
                             create,
-                            delete: deleteField,
+                            delete: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
                         },
                     });
 
@@ -658,13 +661,42 @@ function makeAugmentedSchema(
                         },
                     });
 
+                    const connectionWhereName = `${unionPrefix}ConnectionWhere`;
+                    composer.createInputTC({
+                        name: connectionWhereName,
+                        fields: {
+                            node: `${n.name}Where`,
+                            node_NOT: `${n.name}Where`,
+                            AND: `[${connectionWhereName}!]`,
+                            OR: `[${connectionWhereName}!]`,
+                            ...(rel.properties
+                                ? {
+                                      relationship: `${rel.properties}Where`,
+                                      relationship_NOT: `${rel.properties}Where`,
+                                  }
+                                : {}),
+                        },
+                    });
+
                     composer.createInputTC({
                         name: nodeFieldDeleteInputName,
                         fields: {
-                            where: `${n.name}Where`,
+                            where: connectionWhereName,
                             ...(n.relationFields.length
                                 ? {
                                       delete: `${n.name}DeleteInput`,
+                                  }
+                                : {}),
+                        },
+                    });
+
+                    composer.createInputTC({
+                        name: nodeFieldDisconnectInputName,
+                        fields: {
+                            where: connectionWhereName,
+                            ...(n.relationFields.length
+                                ? {
+                                      disconnect: `${n.name}DisconnectInput`,
                                   }
                                 : {}),
                         },
@@ -695,7 +727,9 @@ function makeAugmentedSchema(
                     });
 
                     nodeDisconnectInput.addFields({
-                        [concatFieldName]: disconnectField,
+                        [concatFieldName]: rel.typeMeta.array
+                            ? `[${nodeFieldDisconnectInputName}!]`
+                            : nodeFieldDisconnectInputName,
                     });
                 });
 

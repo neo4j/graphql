@@ -431,7 +431,7 @@ DELETE this_disconnect_actors0_rel
 )
 WITH this
 OPTIONAL MATCH (this)<-[this_disconnect_actors1_rel:ACTED_IN]-(this_disconnect_actors1:Actor)
-WHERE this_disconnect_actors1.name = $updateMovies.args.disconnect.actors[0].where.node.name
+WHERE this_disconnect_actors1.name = $updateMovies.args.disconnect.actors[1].where.node.name
 FOREACH(_ IN CASE this_disconnect_actors1 WHEN NULL THEN [] ELSE [1] END |
 DELETE this_disconnect_actors1_rel
 )
@@ -820,7 +820,7 @@ MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this
 OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:ACTED_IN]-(this_actors0_delete0:Actor)
-WHERE this_actors0_delete0.name = $updateMovies.args.update.actors[0].delete.actors[0].where.node.name
+WHERE this_actors0_delete0.name = $updateMovies.args.update.actors[0].delete[0].where.node.name
 FOREACH(_ IN CASE this_actors0_delete0 WHEN NULL THEN [] ELSE [1] END |
     DETACH DELETE this_actors0_delete0
 )
@@ -886,10 +886,10 @@ mutation {
 MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:ACTED_IN]-(this_actors0_delete0:Actor)
-WHERE this_actors0_delete0.name = $updateMovies.args.update.actors[0].delete.actors[0].where.node.name
+WHERE this_actors0_delete0.name = $updateMovies.args.update.actors[0].delete[0].where.node.name
 WITH this, this_actors0_delete0
 OPTIONAL MATCH (this_actors0_delete0)-[this_actors0_delete0_movies0_relationship:ACTED_IN]->(this_actors0_delete0_movies0:Movie)
-WHERE this_actors0_delete0_movies0.id = $updateMovies.args.update.actors[0].delete.actors[0].delete.movies[0].where.node.id
+WHERE this_actors0_delete0_movies0.id = $updateMovies.args.update.actors[0].delete[0].delete.movies[0].where.node.id
 FOREACH(_ IN CASE this_actors0_delete0_movies0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_actors0_delete0_movies0 )
 FOREACH(_ IN CASE this_actors0_delete0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_actors0_delete0 )
 RETURN this { .id } AS this

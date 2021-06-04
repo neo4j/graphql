@@ -365,7 +365,7 @@ describe("unions", () => {
                     update: {
                         search_Genre: {
                             disconnect: [{
-                                where: { name: "${genreName}" }
+                                where: { node: { name: "${genreName}" } }
                             }]
                         }
                     }

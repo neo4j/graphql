@@ -51,31 +51,32 @@ input AuthorCreateInput {
   publications_Journal: AuthorPublicationsJournalFieldInput
 }
 
-input AuthorDeleteFieldInput {
-  where: AuthorWhere
-  delete: AuthorDeleteInput
-}
-
 input AuthorDeleteInput {
   publications_Book: [AuthorPublicationsBookDeleteFieldInput!]
   publications_Journal: [AuthorPublicationsJournalDeleteFieldInput!]
 }
 
-input AuthorDisconnectFieldInput {
-  where: AuthorWhere
-  disconnect: AuthorDisconnectInput
-}
-
 input AuthorDisconnectInput {
-  publications_Book: [BookDisconnectFieldInput!]
-  publications_Journal: [JournalDisconnectFieldInput!]
+  publications_Book: [AuthorPublicationsBookDisconnectFieldInput!]
+  publications_Journal: [AuthorPublicationsJournalDisconnectFieldInput!]
 }
 
 input AuthorOptions {
-  """Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array."""
+  """
+  Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.
+  """
   sort: [AuthorSort]
   limit: Int
   skip: Int
+}
+
+input AuthorPublicationsBookConnectionWhere {
+  node: BookWhere
+  node_NOT: BookWhere
+  AND: [AuthorPublicationsBookConnectionWhere!]
+  OR: [AuthorPublicationsBookConnectionWhere!]
+  relationship: WroteWhere
+  relationship_NOT: WroteWhere
 }
 
 input AuthorPublicationsBookCreateFieldInput {
@@ -84,8 +85,13 @@ input AuthorPublicationsBookCreateFieldInput {
 }
 
 input AuthorPublicationsBookDeleteFieldInput {
-  where: BookWhere
+  where: AuthorPublicationsBookConnectionWhere
   delete: BookDeleteInput
+}
+
+input AuthorPublicationsBookDisconnectFieldInput {
+  where: AuthorPublicationsBookConnectionWhere
+  disconnect: BookDisconnectInput
 }
 
 input AuthorPublicationsBookFieldInput {
@@ -98,9 +104,9 @@ input AuthorPublicationsBookUpdateFieldInput {
   where: AuthorPublicationsConnectionWhere
   update: BookUpdateInput
   connect: [AuthorPublicationsConnectFieldInput!]
-  disconnect: [BookDisconnectFieldInput!]
+  disconnect: [AuthorPublicationsBookDisconnectFieldInput!]
   create: [AuthorPublicationsBookCreateFieldInput!]
-  delete: [BookDeleteFieldInput!]
+  delete: [AuthorPublicationsBookDeleteFieldInput!]
 }
 
 input AuthorPublicationsConnectFieldInput {
@@ -124,14 +130,28 @@ input AuthorPublicationsConnectionWhere {
   Journal_NOT: JournalWhere
 }
 
+input AuthorPublicationsJournalConnectionWhere {
+  node: JournalWhere
+  node_NOT: JournalWhere
+  AND: [AuthorPublicationsJournalConnectionWhere!]
+  OR: [AuthorPublicationsJournalConnectionWhere!]
+  relationship: WroteWhere
+  relationship_NOT: WroteWhere
+}
+
 input AuthorPublicationsJournalCreateFieldInput {
   node: JournalCreateInput!
   properties: WroteCreateInput!
 }
 
 input AuthorPublicationsJournalDeleteFieldInput {
-  where: JournalWhere
+  where: AuthorPublicationsJournalConnectionWhere
   delete: JournalDeleteInput
+}
+
+input AuthorPublicationsJournalDisconnectFieldInput {
+  where: AuthorPublicationsJournalConnectionWhere
+  disconnect: JournalDisconnectInput
 }
 
 input AuthorPublicationsJournalFieldInput {
@@ -144,9 +164,9 @@ input AuthorPublicationsJournalUpdateFieldInput {
   where: AuthorPublicationsConnectionWhere
   update: JournalUpdateInput
   connect: [AuthorPublicationsConnectFieldInput!]
-  disconnect: [JournalDisconnectFieldInput!]
+  disconnect: [AuthorPublicationsJournalDisconnectFieldInput!]
   create: [AuthorPublicationsJournalCreateFieldInput!]
-  delete: [JournalDeleteFieldInput!]
+  delete: [AuthorPublicationsJournalDeleteFieldInput!]
 }
 
 type AuthorPublicationsRelationship implements Wrote {
@@ -227,8 +247,13 @@ input BookAuthorCreateFieldInput {
 }
 
 input BookAuthorDeleteFieldInput {
-  where: AuthorWhere
+  where: BookAuthorConnectionWhere
   delete: AuthorDeleteInput
+}
+
+input BookAuthorDisconnectFieldInput {
+  where: BookAuthorConnectionWhere
+  disconnect: AuthorDisconnectInput
 }
 
 input BookAuthorFieldInput {
@@ -246,9 +271,9 @@ input BookAuthorUpdateFieldInput {
   where: BookAuthorConnectionWhere
   update: AuthorUpdateInput
   connect: [BookAuthorConnectFieldInput!]
-  disconnect: [AuthorDisconnectFieldInput!]
+  disconnect: [BookAuthorDisconnectFieldInput!]
   create: [BookAuthorCreateFieldInput!]
-  delete: [AuthorDeleteFieldInput!]
+  delete: [BookAuthorDeleteFieldInput!]
 }
 
 input BookConnectInput {
@@ -260,27 +285,18 @@ input BookCreateInput {
   author: BookAuthorFieldInput
 }
 
-input BookDeleteFieldInput {
-  where: BookWhere
-  delete: BookDeleteInput
-}
-
 input BookDeleteInput {
   author: [BookAuthorDeleteFieldInput!]
 }
 
-input BookDisconnectFieldInput {
-  where: BookWhere
-  disconnect: BookDisconnectInput
-}
-
 input BookDisconnectInput {
-  author: [AuthorDisconnectFieldInput!]
+  author: [BookAuthorDisconnectFieldInput!]
 }
 
 input BookOptions {
   """
-  Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array."""
+  Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.
+  """
   sort: [BookSort]
   limit: Int
   skip: Int
@@ -376,8 +392,13 @@ input JournalAuthorCreateFieldInput {
 }
 
 input JournalAuthorDeleteFieldInput {
-  where: AuthorWhere
+  where: JournalAuthorConnectionWhere
   delete: AuthorDeleteInput
+}
+
+input JournalAuthorDisconnectFieldInput {
+  where: JournalAuthorConnectionWhere
+  disconnect: AuthorDisconnectInput
 }
 
 input JournalAuthorFieldInput {
@@ -395,9 +416,9 @@ input JournalAuthorUpdateFieldInput {
   where: JournalAuthorConnectionWhere
   update: AuthorUpdateInput
   connect: [JournalAuthorConnectFieldInput!]
-  disconnect: [AuthorDisconnectFieldInput!]
+  disconnect: [JournalAuthorDisconnectFieldInput!]
   create: [JournalAuthorCreateFieldInput!]
-  delete: [AuthorDeleteFieldInput!]
+  delete: [JournalAuthorDeleteFieldInput!]
 }
 
 input JournalConnectInput {
@@ -409,22 +430,12 @@ input JournalCreateInput {
   author: JournalAuthorFieldInput
 }
 
-input JournalDeleteFieldInput {
-  where: JournalWhere
-  delete: JournalDeleteInput
-}
-
 input JournalDeleteInput {
   author: [JournalAuthorDeleteFieldInput!]
 }
 
-input JournalDisconnectFieldInput {
-  where: JournalWhere
-  disconnect: JournalDisconnectInput
-}
-
 input JournalDisconnectInput {
-  author: [AuthorDisconnectFieldInput!]
+  author: [JournalAuthorDisconnectFieldInput!]
 }
 
 input JournalOptions {

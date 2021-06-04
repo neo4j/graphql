@@ -288,7 +288,7 @@ describe("update", () => {
         }
     });
 
-    test("should delete a nested actor from a movie", async () => {
+    test("should delete a nested actor from a movie abc", async () => {
         const session = driver.session();
 
         const typeDefs = gql`
@@ -424,7 +424,7 @@ describe("update", () => {
         }
     });
 
-    test("should delete a nested actor and one of their nested movies, within an update block", async () => {
+    test("should delete a nested actor and one of their nested movies, within an update block abc", async () => {
         const session = driver.session();
 
         const typeDefs = gql`

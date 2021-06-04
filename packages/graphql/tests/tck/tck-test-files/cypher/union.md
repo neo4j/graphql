@@ -318,7 +318,9 @@ mutation {
     updateMovies(
         where: { title: "some movie" }
         update: {
-            search_Genre: { disconnect: [{ where: { name: "some genre" } }] }
+            search_Genre: {
+                disconnect: [{ where: { node: { name: "some genre" } } }]
+            }
         }
     ) {
         movies {
@@ -336,7 +338,7 @@ WHERE this.title = $this_title
 
 WITH this
 OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre)
-WHERE this_search_Genre0_disconnect0.name = $this_search_Genre0_disconnect0_name
+WHERE this_search_Genre0_disconnect0.name = $updateMovies.args.update.search_Genre[0].disconnect[0].where.node.name
 FOREACH(_ IN CASE this_search_Genre0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
     DELETE this_search_Genre0_disconnect0_rel
 )
@@ -348,7 +350,25 @@ RETURN this { .title } AS this
 
 ```cypher-params
 {
-   "this_title": "some movie",
-   "this_search_Genre0_disconnect0_name": "some genre"
+    "this_title": "some movie",
+    "updateMovies": {
+        "args": {
+            "update": {
+                "search_Genre": [
+                    {
+                        "disconnect": [
+                            {
+                                "where": {
+                                    "node": {
+                                        "name": "some genre"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
 }
 ```

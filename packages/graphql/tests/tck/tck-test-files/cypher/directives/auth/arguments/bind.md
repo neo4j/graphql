@@ -421,7 +421,7 @@ WHERE this.id = $this_id
 
 WITH this
 OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
-WHERE this_disconnect_creator0.id = $updatePosts.args.disconnect.creator[0].where.node.id
+WHERE this_disconnect_creator0.id = $updatePosts.args.disconnect.creator.where.node.id
 FOREACH(_ IN CASE this_disconnect_creator0 WHEN NULL THEN [] ELSE [1] END |
     DELETE this_disconnect_creator0_rel
 )

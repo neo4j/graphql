@@ -116,7 +116,7 @@ describe("composite-where", () => {
         });
     });
 
-    describe.only("Disconnect", () => {
+    describe("Disconnect", () => {
         test("should use composite where to delete", async () => {
             const session = driver.session();
 

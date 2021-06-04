@@ -984,7 +984,9 @@ RETURN this { .id } AS this
 ```graphql
 mutation {
     updateUsers(
-        update: { posts: { disconnect: { where: { id: "new-id" } } } }
+        update: {
+            posts: [{ disconnect: { where: { node: { id: "new-id" } } } }]
+        }
     ) {
         users {
             id
@@ -1003,7 +1005,7 @@ WITH this
 WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
 WITH this
-OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post) WHERE this_posts0_disconnect0.id = $this_posts0_disconnect0_id AND EXISTS((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id)
+OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post) WHERE this_posts0_disconnect0.id = $updateUsers.args.update.posts[0].disconnect[0].where.node.id AND EXISTS((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id)
 
 FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | DELETE this_posts0_disconnect0_rel )
 
@@ -1016,7 +1018,25 @@ RETURN this { .id } AS this
 {
     "this_auth_where0_id": "id-01",
     "this_posts0_disconnect0_auth_where0_creator_id": "id-01",
-    "this_posts0_disconnect0_id": "new-id"
+    "updateUsers": {
+        "args": {
+            "update": {
+                "posts": [
+                    {
+                        "disconnect": [
+                            {
+                                "where": {
+                                    "node": {
+                                        "id": "new-id"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
 }
 ```
 
@@ -1066,7 +1086,18 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_auth_where0_id": "id-01",
-    "this_disconnect_posts0_auth_where0_creator_id": "id-01"
+    "this_disconnect_posts0_auth_where0_creator_id": "id-01",
+    "updateUsers": {
+        "args": {
+            "disconnect": {
+                "posts": [
+                    {
+                        "where": {}
+                    }
+                ]
+            }
+        }
+    }
 }
 ```
 
@@ -1087,7 +1118,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateUsers(disconnect: { posts: { where: { id: "some-id" } } }) {
+    updateUsers(disconnect: { posts: { where: { node: { id: "some-id" } } } }) {
         users {
             id
         }
@@ -1101,7 +1132,7 @@ mutation {
 MATCH (this:User)
 WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 WITH this
-WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id WITH this OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post) WHERE this_disconnect_posts0.id = $this_disconnect_posts0_id AND EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_disconnect_posts0_auth_where0_creator_id)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id WITH this OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post) WHERE this_disconnect_posts0.id = $updateUsers.args.disconnect.posts[0].where.node.id AND EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_disconnect_posts0_auth_where0_creator_id)
 
 FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
     DELETE this_disconnect_posts0_rel
@@ -1116,7 +1147,21 @@ RETURN this { .id } AS this
 {
     "this_auth_where0_id": "id-01",
     "this_disconnect_posts0_auth_where0_creator_id": "id-01",
-    "this_disconnect_posts0_id": "some-id"
+    "updateUsers": {
+        "args": {
+            "disconnect": {
+                "posts": [
+                    {
+                        "where": {
+                            "node": {
+                                "id": "some-id"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
 }
 ```
 
