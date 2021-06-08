@@ -119,10 +119,9 @@ function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4j
             );
         }
 
-        /* isTypeOf and resolveType are defining for GraphQLObjectType and GraphQLInterfaceType */
-        if ((_type as GraphQLObjectType).isTypeOf) {
+        if (_type.astNode?.kind === "ObjectTypeDefinition") {
             type = _type as GraphQLObjectType;
-        } else if ((_type as GraphQLInterfaceType).resolveType) {
+        } else if (_type.astNode?.kind === "InterfaceTypeDefinition") {
             type = _type as GraphQLInterfaceType;
         } else {
             return {
