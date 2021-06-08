@@ -657,7 +657,7 @@ describe("OGM", () => {
 
                 const { movies } = await Movie?.update({
                     where: { id: movieId },
-                    disconnect: { actors: [{ where: { id: actorId } }] },
+                    disconnect: { actors: [{ where: { node: { id: actorId } } }] },
                     selectionSet: `
                         {
                             movies {
@@ -741,7 +741,7 @@ describe("OGM", () => {
 
                 const result = await Movie?.delete({
                     where: { id: movieId },
-                    delete: { genres: { where: { id: genreId } } },
+                    delete: { genres: { where: { node: { id: genreId } } } },
                 });
 
                 expect(result).toEqual({ nodesDeleted: 2, relationshipsDeleted: 1 });

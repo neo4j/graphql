@@ -58,22 +58,22 @@ input MovieCreateInput {
   movies: MovieMoviesFieldInput
 }
 
-input MovieDeleteFieldInput {
-  where: MovieWhere
-  delete: MovieDeleteInput
-}
-
 input MovieDeleteInput {
   movies: [MovieMoviesDeleteFieldInput!]
 }
 
-input MovieDisconnectFieldInput {
-  where: MovieWhere
-  disconnect: MovieDisconnectInput
+input MovieDisconnectInput {
+  movies: [MovieMoviesDisconnectFieldInput!]
 }
 
-input MovieDisconnectInput {
-  movies: [MovieDisconnectFieldInput!]
+input MovieMoviesDeleteFieldInput {
+  delete: MovieDeleteInput
+  where: MovieMoviesConnectionWhere
+}
+
+input MovieMoviesDisconnectFieldInput {
+  disconnect: MovieDisconnectInput
+  where: MovieMoviesConnectionWhere
 }
 
 input MovieMoviesConnectFieldInput {
@@ -104,11 +104,6 @@ input MovieMoviesCreateFieldInput {
   node: MovieCreateInput!
 }
 
-input MovieMoviesDeleteFieldInput {
-  where: MovieWhere
-  delete: MovieDeleteInput
-}
-
 input MovieMoviesFieldInput {
   create: [MovieMoviesCreateFieldInput!]
   connect: [MovieMoviesConnectFieldInput!]
@@ -122,9 +117,9 @@ input MovieMoviesUpdateFieldInput {
   where: MovieMoviesConnectionWhere
   update: MovieUpdateInput
   connect: [MovieMoviesConnectFieldInput!]
-  disconnect: [MovieDisconnectFieldInput!]
+  disconnect: [MovieMoviesDisconnectFieldInput!]
   create: [MovieMoviesCreateFieldInput!]
-  delete: [MovieDeleteFieldInput!]
+  delete: [MovieMoviesDeleteFieldInput!]
 }
 
 input MovieOptions {

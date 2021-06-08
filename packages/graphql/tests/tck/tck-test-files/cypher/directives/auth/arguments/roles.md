@@ -654,6 +654,15 @@ RETURN this { .id } AS this
             ],
             "sub": "super_admin"
         }
+    },
+    "updateUsers": {
+        "args": {
+            "disconnect": {
+                "posts": [
+                    {}
+                ]
+            }
+        }
     }
 }
 ```
@@ -679,7 +688,9 @@ mutation {
         update: {
             post: {
                 update: {
-                    creator: { disconnect: { where: { id: "user-id" } } }
+                    creator: {
+                        disconnect: { where: { node: { id: "user-id" } } }
+                    }
                 }
             }
         }
@@ -701,7 +712,7 @@ OPTIONAL MATCH (this)<-[this_has_comment0:HAS_COMMENT]-(this_post0:Post)
 CALL apoc.do.when(this_post0 IS NOT NULL, "
     WITH this, this_post0
     OPTIONAL MATCH (this_post0)-[this_post0_creator0_disconnect0_rel:HAS_POST]->(this_post0_creator0_disconnect0:User)
-    WHERE this_post0_creator0_disconnect0.id = $this_post0_creator0_disconnect0_id
+    WHERE this_post0_creator0_disconnect0.id = $updateComments.args.update.post.update.creator.disconnect.where.node.id
     WITH this, this_post0, this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel
     CALL apoc.util.validate(NOT(ANY(r IN [\"super-admin\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND ANY(r IN [\"admin\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \"@neo4j/graphql/FORBIDDEN\", [0])
 
@@ -712,7 +723,7 @@ CALL apoc.do.when(this_post0 IS NOT NULL, "
     RETURN count(*)
 ",
 "",
-{this:this, updateComments: $updateComments, this_post0:this_post0, auth:$auth,this_post0_creator0_disconnect0_id:$this_post0_creator0_disconnect0_id}) YIELD value as _
+{this:this, updateComments: $updateComments, this_post0:this_post0, auth:$auth}) YIELD value as _
 
 RETURN this { .content } AS this
 ```
@@ -721,7 +732,6 @@ RETURN this { .content } AS this
 
 ```cypher-params
 {
-    "this_post0_creator0_disconnect0_id": "user-id",
     "auth": {
         "isAuthenticated": true,
         "roles": ["admin"],
@@ -740,7 +750,9 @@ RETURN this { .content } AS this
                         "creator": {
                             "disconnect": {
                                 "where": {
-                                    "id": "user-id"
+                                    "node": {
+                                        "id": "user-id"
+                                    }
                                 }
                             }
                         }
@@ -833,7 +845,7 @@ MATCH (this:User)
 
 WITH this
 
-OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
+OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
 
 WITH this, this_posts0
 

@@ -572,7 +572,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { posts: { disconnect: { where: { id: "${postId}" } } } }) {
+                    updateUsers(update: { posts: { disconnect: { where: { node: { id: "${postId}" } } } } }) {
                         users {
                             id
                             posts {
@@ -644,7 +644,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    updateUsers(disconnect:{posts:{where:{id: "${postId}"}}}) {
+                    updateUsers(disconnect: { posts: { where: {node: { id : "${postId}"}}}}) {
                         users {
                             id
                             posts {

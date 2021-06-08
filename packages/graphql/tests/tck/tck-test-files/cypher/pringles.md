@@ -217,7 +217,7 @@ mutation {
                         description: "Light Green Photo"
                         color: {
                             connect: { where: { name: "Light Green" } }
-                            disconnect: { where: { name: "Green" } }
+                            disconnect: { where: { node: { name: "Green" } } }
                         }
                     }
                 }
@@ -245,7 +245,7 @@ CALL apoc.do.when(this_photos0 IS NOT NULL,
     SET this_photos0.description = $this_update_photos0_description
     WITH this, this_photos0
     OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
-    WHERE this_photos0_color0_disconnect0.name = $this_photos0_color0_disconnect0_name
+    WHERE this_photos0_color0_disconnect0.name = $updateProducts.args.update.photos[0].update.color.disconnect.where.node.name
     FOREACH(_ IN CASE this_photos0_color0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
       DELETE this_photos0_color0_disconnect0_rel
     )
@@ -260,7 +260,7 @@ CALL apoc.do.when(this_photos0 IS NOT NULL,
     RETURN count(*)
   ",
   "",
-  {this:this, updateProducts: $updateProducts, this_photos0:this_photos0, auth:$auth,this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_disconnect0_name:$this_photos0_color0_disconnect0_name,this_photos0_color0_connect0_node_name:$this_photos0_color0_connect0_node_name}) YIELD value as _
+  {this:this, updateProducts: $updateProducts, this_photos0:this_photos0, auth:$auth,this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_connect0_node_name:$this_photos0_color0_connect0_node_name}) YIELD value as _
 
 RETURN this { .id } AS this
 ```
@@ -272,7 +272,6 @@ RETURN this { .id } AS this
   "this_name": "Pringles",
   "this_update_photos0_description": "Light Green Photo",
   "this_photos0_color0_connect0_node_name": "Light Green",
-  "this_photos0_color0_disconnect0_name": "Green",
   "auth": {
        "isAuthenticated": true,
        "roles": [],
@@ -292,7 +291,9 @@ RETURN this { .id } AS this
                     },
                     "disconnect": {
                         "where": {
+                          "node": {
                             "name": "Green"
+                          }
                         }
                     }
                 },

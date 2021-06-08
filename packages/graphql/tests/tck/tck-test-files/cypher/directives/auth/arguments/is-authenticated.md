@@ -548,6 +548,15 @@ RETURN this { .id } AS this
             ],
             "sub": "super_admin"
         }
+    },
+    "updateUsers": {
+        "args": {
+            "disconnect": {
+                "posts": [
+                    {}
+                ]
+            }
+        }
     }
 }
 ```
@@ -632,7 +641,7 @@ mutation {
 MATCH (this:User)
 
 WITH this
-OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
+OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
 WITH this, this_posts0
 CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
 
