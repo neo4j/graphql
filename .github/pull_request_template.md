@@ -16,4 +16,5 @@ The following requirements should have been met (depending on the changes in the
 - [ ] TCK tests have been updated
 - [ ] Integration tests have been updated
 - [ ] Example applications have been updated
+- [ ] New files have copyright header
 - [ ] CLA (https://neo4j.com/developer/cla/) has been signed

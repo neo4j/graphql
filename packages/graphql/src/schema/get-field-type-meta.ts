@@ -47,7 +47,7 @@ function getFieldTypeMeta(field: FieldDefinitionNode | InputValueDefinitionNode)
     const name = getName(field.type);
     const pretty = getPrettyName(field.type);
     const array = /\[.+\]/g.test(pretty);
-    const required = pretty.includes("!");
+    const required = field.type.kind === "NonNullType";
 
     // Things to do with the T inside the Array [T]
     let arrayTypePretty = "";
