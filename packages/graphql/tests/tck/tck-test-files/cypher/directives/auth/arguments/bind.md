@@ -404,7 +404,7 @@ RETURN this { .id } AS this
 mutation {
     updatePosts(
         where: { id: "post-id" }
-        disconnect: { creator: { where: { id: "user-id" } } }
+        disconnect: { creator: { where: { node: { id: "user-id" } } } }
     ) {
         posts {
             id
@@ -421,7 +421,7 @@ WHERE this.id = $this_id
 
 WITH this
 OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
-WHERE this_disconnect_creator0.id = $this_disconnect_creator0_id
+WHERE this_disconnect_creator0.id = $updatePosts.args.disconnect.creator.where.node.id
 FOREACH(_ IN CASE this_disconnect_creator0 WHEN NULL THEN [] ELSE [1] END |
     DELETE this_disconnect_creator0_rel
 )
@@ -436,11 +436,22 @@ RETURN this { .id } AS this
 
 ```cypher-params
 {
-    "this_id": "id-01",
     "this_disconnect_creator0Post0_bind_auth_bind0_creator_id": "id-01",
     "this_disconnect_creator0User1_bind_auth_bind0_id": "id-01",
-    "this_disconnect_creator0_id": "user-id",
-    "this_id": "post-id"
+    "this_id": "post-id",
+    "updatePosts": {
+        "args": {
+            "disconnect": {
+                "creator": {
+                    "where": {
+                        "node": {
+                            "id": "user-id"
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 ```
 

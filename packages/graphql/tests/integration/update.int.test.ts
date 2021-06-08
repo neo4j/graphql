@@ -288,7 +288,7 @@ describe("update", () => {
         }
     });
 
-    test("should delete a nested actor from a movie", async () => {
+    test("should delete a nested actor from a movie abc", async () => {
         const session = driver.session();
 
         const typeDefs = gql`
@@ -315,7 +315,7 @@ describe("update", () => {
 
         const mutation = `
             mutation($id: ID, $name: String) {
-                updateMovies(where: { id: $id }, delete: { actors: { where: { name: $name } } }) {
+                updateMovies(where: { id: $id }, delete: { actors: { where: { node: { name: $name } } } }) {
                     movies {
                         id
                         actors {
@@ -383,7 +383,7 @@ describe("update", () => {
 
         const mutation = `
             mutation($id: ID, $name: String) {
-                updateMovies(where: { id: $id }, update: { actors: { delete: { where: { name: $name } } } }) {
+                updateMovies(where: { id: $id }, update: { actors: { delete: { where: { node: { name: $name } } } } }) {
                     movies {
                         id
                         actors {
@@ -424,7 +424,7 @@ describe("update", () => {
         }
     });
 
-    test("should delete a nested actor and one of their nested movies, within an update block", async () => {
+    test("should delete a nested actor and one of their nested movies, within an update block abc", async () => {
         const session = driver.session();
 
         const typeDefs = gql`
@@ -458,7 +458,7 @@ describe("update", () => {
                 updateMovies(
                     where: { id: $id1 }
                     update: {
-                        actors: { delete: { where: { name: $name }, delete: { movies: { where: { id: $id2 } } } } }
+                        actors: { delete: { where: { node: { name: $name } }, delete: { movies: { where: { node: { id: $id2 } } } } } }
                     }
                 ) {
                     movies {
@@ -551,7 +551,7 @@ describe("update", () => {
             mutation($id: ID, $name1: String, $name3: String) {
                 updateMovies(
                     where: { id: $id }
-                    delete: { actors: [{ where: { name: $name1 } }, { where: { name: $name3 } }] }
+                    delete: { actors: [{ where: { node: { name: $name1 } } }, { where: { node: { name: $name3 } } }] }
                 ) {
                     movies {
                         id
@@ -768,7 +768,7 @@ describe("update", () => {
 
         const query = `
         mutation {
-            updateMovies(where: { id: "${movieId}" }, disconnect: {actors: [{where: {id: "${actorId}"}}]}) {
+            updateMovies(where: { id: "${movieId}" }, disconnect: {actors: [{where: { node: { id: "${actorId}"}}}]}) {
                 movies {
                     id
                     actors {
@@ -848,7 +848,7 @@ describe("update", () => {
                 photos: [{
                   where: { node: { id: "${photoId}" } }
                   update: {
-                    color: { disconnect: { where: { id: "${colorId}" } } }
+                    color: { disconnect: { where: { node: { id: "${colorId}" } } } }
                   }
                 }]
               }
@@ -964,7 +964,7 @@ describe("update", () => {
                           name: "Light Green Photo"
                           color: {
                             connect: { where: { name: "Light Green", id: "${photo0Color1Id}" } }
-                            disconnect: { where: { name: "Green", id: "${photo0Color0Id}" } }
+                            disconnect: { where: { node: { name: "Green", id: "${photo0Color0Id}" } } }
                           }
                         }
                       }
@@ -974,7 +974,7 @@ describe("update", () => {
                           name: "Light Yellow Photo"
                           color: {
                             connect: { where: { name: "Light Yellow", id: "${photo1Color1Id}" } }
-                            disconnect: { where: { name: "Yellow", id: "${photo1Color0Id}" } }
+                            disconnect: { where: { node: { name: "Yellow", id: "${photo1Color0Id}" } } }
                           }
                         }
                       }

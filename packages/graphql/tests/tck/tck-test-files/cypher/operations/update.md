@@ -7,14 +7,19 @@ Schema:
 ```schema
 type Actor {
     name: String
-    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+    movies: [Movie] @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
 
 type Movie {
     id: ID
     title: String
-    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+    actors: [Actor]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
 }
+
+interface ActedIn {
+    screenTime: Int
+}
+
 ```
 
 ---
@@ -343,7 +348,7 @@ RETURN this { .id } AS this
 mutation {
     updateMovies(
         where: { id: "1" }
-        disconnect: { actors: [{ where: { name: "Daniel" } }] }
+        disconnect: { actors: [{ where: { node: { name: "Daniel" } } }] }
     ) {
         movies {
             id
@@ -359,7 +364,7 @@ MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this
 OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
-WHERE this_disconnect_actors0.name = $this_disconnect_actors0_name
+WHERE this_disconnect_actors0.name = $updateMovies.args.disconnect.actors[0].where.node.name
 FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
 DELETE this_disconnect_actors0_rel
 )
@@ -371,7 +376,21 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_id": "1",
-    "this_disconnect_actors0_name": "Daniel"
+    "updateMovies": {
+        "args": {
+            "disconnect": {
+                "actors": [
+                    {
+                        "where": {
+                            "node": {
+                                "name": "Daniel"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
 }
 ```
 
@@ -387,8 +406,8 @@ mutation {
         where: { id: "1" }
         disconnect: {
             actors: [
-                { where: { name: "Daniel" } }
-                { where: { name: "Darrell" } }
+                { where: { node: { name: "Daniel" } } }
+                { where: { node: { name: "Darrell" } } }
             ]
         }
     ) {
@@ -406,13 +425,13 @@ MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this
 OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
-WHERE this_disconnect_actors0.name = $this_disconnect_actors0_name
+WHERE this_disconnect_actors0.name = $updateMovies.args.disconnect.actors[0].where.node.name
 FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
 DELETE this_disconnect_actors0_rel
 )
 WITH this
 OPTIONAL MATCH (this)<-[this_disconnect_actors1_rel:ACTED_IN]-(this_disconnect_actors1:Actor)
-WHERE this_disconnect_actors1.name = $this_disconnect_actors1_name
+WHERE this_disconnect_actors1.name = $updateMovies.args.disconnect.actors[1].where.node.name
 FOREACH(_ IN CASE this_disconnect_actors1 WHEN NULL THEN [] ELSE [1] END |
 DELETE this_disconnect_actors1_rel
 )
@@ -424,8 +443,28 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_id": "1",
-    "this_disconnect_actors0_name": "Daniel",
-    "this_disconnect_actors1_name": "Darrell"
+    "updateMovies": {
+        "args": {
+            "disconnect": {
+                "actors": [
+                    {
+                        "where": {
+                            "node": {
+                                "name": "Daniel"
+                            }
+                        }
+                    },
+                    {
+                        "where": {
+                            "node": {
+                                "name": "Darrell"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
 }
 ```
 
@@ -603,7 +642,14 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_mo
 mutation {
     updateMovies(
         where: { id: "1" }
-        delete: { actors: { where: { name: "Actor to delete" } } }
+        delete: {
+            actors: {
+                where: {
+                    node: { name: "Actor to delete" }
+                    relationship: { screenTime: 60 }
+                }
+            }
+        }
     ) {
         movies {
             id
@@ -618,8 +664,8 @@ mutation {
 MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this
-OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_delete_actors0:Actor)
-WHERE this_delete_actors0.name = $this_delete_actors0_name
+OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
+WHERE this_delete_actors0_relationship.screenTime = $updateMovies.args.delete.actors[0].where.relationship.screenTime AND this_delete_actors0.name = $updateMovies.args.delete.actors[0].where.node.name
 FOREACH(_ IN CASE this_delete_actors0 WHEN NULL THEN [] ELSE [1] END |
     DETACH DELETE this_delete_actors0
 )
@@ -631,7 +677,27 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_id": "1",
-    "this_delete_actors0_name": "Actor to delete"
+    "updateMovies": {
+      "args": {
+        "delete": {
+          "actors": [
+            {
+              "where": {
+                "node": {
+                  "name": "Actor to delete"
+                },
+                "relationship": {
+                    "screenTime": {
+                        "high": 0,
+                        "low": 60
+                    }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
 }
 ```
 
@@ -651,7 +717,7 @@ mutation {
                 update: { name: "Updated name" }
             }
         }
-        delete: { actors: { where: { name: "Actor to delete" } } }
+        delete: { actors: { where: { node: { name: "Actor to delete" } } } }
     ) {
         movies {
             id
@@ -675,8 +741,8 @@ CALL apoc.do.when(this_actors0 IS NOT NULL, "
 "",
 {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name}) YIELD value as _
 WITH this
-OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_delete_actors0:Actor)
-WHERE this_delete_actors0.name = $this_delete_actors0_name
+OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
+WHERE this_delete_actors0.name = $updateMovies.args.delete.actors[0].where.node.name
 FOREACH(_ IN CASE this_delete_actors0 WHEN NULL THEN [] ELSE [1] END |
     DETACH DELETE this_delete_actors0
 )
@@ -689,29 +755,39 @@ RETURN this { .id } AS this
 {
     "this_id": "1",
     "this_update_actors0_name": "Updated name",
-    "this_delete_actors0_name": "Actor to delete",
     "auth": {
         "isAuthenticated": true,
         "jwt": {},
         "roles": []
     },
     "updateMovies": {
-      "args": {
-        "update": {
-          "actors": [
-            {
-                "update": {
-                    "name": "Updated name"
-                },
-                "where": {
-                    "node": {
-                        "name": "Actor to update"
+        "args": {
+            "delete": {
+                "actors": [
+                    {
+                        "where": {
+                            "node": {
+                                "name": "Actor to delete"
+                            }
+                        }
                     }
-                }
+                ]
+            },
+            "update": {
+                "actors": [
+                    {
+                        "update": {
+                            "name": "Updated name"
+                        },
+                        "where": {
+                            "node": {
+                                "name": "Actor to update"
+                            }
+                        }
+                    }
+                ]
             }
-          ]
         }
-      }
     }
 }
 ```
@@ -726,7 +802,9 @@ RETURN this { .id } AS this
 mutation {
     updateMovies(
         where: { id: "1" }
-        update: { actors: { delete: { where: { name: "Actor to delete" } } } }
+        update: {
+            actors: { delete: { where: { node: { name: "Actor to delete" } } } }
+        }
     ) {
         movies {
             id
@@ -741,8 +819,8 @@ mutation {
 MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this
-OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0_delete0:Actor)
-WHERE this_actors0_delete0.name = $this_actors0_delete0_name
+OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:ACTED_IN]-(this_actors0_delete0:Actor)
+WHERE this_actors0_delete0.name = $updateMovies.args.update.actors[0].delete[0].where.node.name
 FOREACH(_ IN CASE this_actors0_delete0 WHEN NULL THEN [] ELSE [1] END |
     DETACH DELETE this_actors0_delete0
 )
@@ -754,7 +832,25 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_id": "1",
-    "this_actors0_delete0_name": "Actor to delete"
+    "updateMovies": {
+      "args": {
+        "update": {
+          "actors": [
+            {
+              "delete": [
+                {
+                  "where": {
+                    "node": {
+                      "name": "Actor to delete"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
 }
 ```
 
@@ -771,8 +867,8 @@ mutation {
         update: {
             actors: {
                 delete: {
-                    where: { name: "Actor to delete" }
-                    delete: { movies: { where: { id: "2" } } }
+                    where: { node: { name: "Actor to delete" } }
+                    delete: { movies: { where: { node: { id: "2" } } } }
                 }
             }
         }
@@ -789,18 +885,13 @@ mutation {
 ```cypher
 MATCH (this:Movie)
 WHERE this.id = $this_id
-WITH this
-OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors0_delete0:Actor)
-WHERE this_actors0_delete0.name = $this_actors0_delete0_name
+WITH this OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:ACTED_IN]-(this_actors0_delete0:Actor)
+WHERE this_actors0_delete0.name = $updateMovies.args.update.actors[0].delete[0].where.node.name
 WITH this, this_actors0_delete0
-OPTIONAL MATCH (this_actors0_delete0)-[:ACTED_IN]->(this_actors0_delete0_movies0:Movie)
-WHERE this_actors0_delete0_movies0.id = $this_actors0_delete0_movies0_id
-FOREACH(_ IN CASE this_actors0_delete0_movies0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_actors0_delete0_movies0
-)
-FOREACH(_ IN CASE this_actors0_delete0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_actors0_delete0
-)
+OPTIONAL MATCH (this_actors0_delete0)-[this_actors0_delete0_movies0_relationship:ACTED_IN]->(this_actors0_delete0_movies0:Movie)
+WHERE this_actors0_delete0_movies0.id = $updateMovies.args.update.actors[0].delete[0].delete.movies[0].where.node.id
+FOREACH(_ IN CASE this_actors0_delete0_movies0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_actors0_delete0_movies0 )
+FOREACH(_ IN CASE this_actors0_delete0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_actors0_delete0 )
 RETURN this { .id } AS this
 ```
 
@@ -809,8 +900,36 @@ RETURN this { .id } AS this
 ```cypher-params
 {
     "this_id": "1",
-    "this_actors0_delete0_name": "Actor to delete",
-    "this_actors0_delete0_movies0_id": "2"
+    "updateMovies": {
+        "args": {
+            "update": {
+                "actors": [
+                    {
+                        "delete": [
+                            {
+                                "delete": {
+                                    "movies": [
+                                        {
+                                            "where": {
+                                                "node": {
+                                                    "id": "2"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+                                "where": {
+                                    "node": {
+                                        "name": "Actor to delete"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
 }
 ```
 

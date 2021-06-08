@@ -736,7 +736,9 @@ describe("auth/allow", () => {
                         delete: {
                             posts: {
                                 where: {
-                                    id: "${postId}"
+                                    node: {
+                                        id: "${postId}"
+                                    }
                                 }
                             }
                         }
@@ -810,7 +812,7 @@ describe("auth/allow", () => {
                 mutation {
                     updateUsers(
                         where: { id: "${userId}" }
-                        disconnect: { posts: { where: { id: "${postId}" } } }
+                        disconnect: { posts: { where: { node: { id: "${postId}" } } } }
                     ) {
                         users {
                             id
@@ -897,7 +899,7 @@ describe("auth/allow", () => {
                                 disconnect: {
                                     disconnect: {
                                         creator: {
-                                            where: { id: "${userId}" }
+                                            where: { node: { id: "${userId}" } }
                                         }
                                     }
                                 }

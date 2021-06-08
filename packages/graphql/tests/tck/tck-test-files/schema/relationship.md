@@ -30,14 +30,6 @@ input ActorCreateInput {
   name: String
 }
 
-input ActorDeleteFieldInput {
-  where: ActorWhere
-}
-
-input ActorDisconnectFieldInput {
-  where: ActorWhere
-}
-
 input ActorOptions {
   """
   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
@@ -120,7 +112,11 @@ input MovieActorsCreateFieldInput {
 }
 
 input MovieActorsDeleteFieldInput {
-  where: ActorWhere
+  where: MovieActorsConnectionWhere
+}
+
+input MovieActorsDisconnectFieldInput {
+  where: MovieActorsConnectionWhere
 }
 
 input MovieActorsFieldInput {
@@ -136,9 +132,9 @@ input MovieActorsUpdateFieldInput {
   where: MovieActorsConnectionWhere
   update: ActorUpdateInput
   connect: [MovieActorsConnectFieldInput!]
-  disconnect: [ActorDisconnectFieldInput!]
+  disconnect: [MovieActorsDisconnectFieldInput!]
   create: [MovieActorsCreateFieldInput!]
-  delete: [ActorDeleteFieldInput!]
+  delete: [MovieActorsDeleteFieldInput!]
 }
 
 input MovieConnectInput {
@@ -155,7 +151,7 @@ input MovieDeleteInput {
 }
 
 input MovieDisconnectInput {
-  actors: [ActorDisconnectFieldInput!]
+  actors: [MovieActorsDisconnectFieldInput!]
 }
 
 input MovieOptions {
@@ -267,22 +263,22 @@ input ActorCreateInput {
   movies: ActorMoviesFieldInput
 }
 
-input ActorDeleteFieldInput {
-  where: ActorWhere
-  delete: ActorDeleteInput
-}
-
 input ActorDeleteInput {
   movies: [ActorMoviesDeleteFieldInput!]
 }
 
-input ActorDisconnectFieldInput {
-  where: ActorWhere
-  disconnect: ActorDisconnectInput
+input ActorMoviesDeleteFieldInput {
+  delete: MovieDeleteInput
+  where: ActorMoviesConnectionWhere
+}
+
+input ActorMoviesDisconnectFieldInput {
+  disconnect: MovieDisconnectInput
+  where: ActorMoviesConnectionWhere
 }
 
 input ActorDisconnectInput {
-  movies: [MovieDisconnectFieldInput!]
+  movies: [ActorMoviesDisconnectFieldInput!]
 }
 
 input ActorMoviesConnectFieldInput {
@@ -313,11 +309,6 @@ input ActorMoviesCreateFieldInput {
   node: MovieCreateInput!
 }
 
-input ActorMoviesDeleteFieldInput {
-  where: MovieWhere
-  delete: MovieDeleteInput
-}
-
 input ActorMoviesFieldInput {
   create: [ActorMoviesCreateFieldInput!]
   connect: [ActorMoviesConnectFieldInput!]
@@ -331,9 +322,9 @@ input ActorMoviesUpdateFieldInput {
   where: ActorMoviesConnectionWhere
   update: MovieUpdateInput
   connect: [ActorMoviesConnectFieldInput!]
-  disconnect: [MovieDisconnectFieldInput!]
+  disconnect: [ActorMoviesDisconnectFieldInput!]
   create: [ActorMoviesCreateFieldInput!]
-  delete: [MovieDeleteFieldInput!]
+  delete: [ActorMoviesDeleteFieldInput!]
 }
 
 input ActorOptions {
@@ -426,8 +417,13 @@ input MovieActorsCreateFieldInput {
 }
 
 input MovieActorsDeleteFieldInput {
-  where: ActorWhere
   delete: ActorDeleteInput
+  where: MovieActorsConnectionWhere
+}
+
+input MovieActorsDisconnectFieldInput {
+  disconnect: ActorDisconnectInput
+  where: MovieActorsConnectionWhere
 }
 
 input MovieActorsFieldInput {
@@ -443,9 +439,9 @@ input MovieActorsUpdateFieldInput {
   where: MovieActorsConnectionWhere
   update: ActorUpdateInput
   connect: [MovieActorsConnectFieldInput!]
-  disconnect: [ActorDisconnectFieldInput!]
+  disconnect: [MovieActorsDisconnectFieldInput!]
   create: [MovieActorsCreateFieldInput!]
-  delete: [ActorDeleteFieldInput!]
+  delete: [MovieActorsDeleteFieldInput!]
 }
 
 input MovieConnectInput {
@@ -457,22 +453,12 @@ input MovieCreateInput {
   actors: MovieActorsFieldInput
 }
 
-input MovieDeleteFieldInput {
-  where: MovieWhere
-  delete: MovieDeleteInput
-}
-
 input MovieDeleteInput {
   actors: [MovieActorsDeleteFieldInput!]
 }
 
-input MovieDisconnectFieldInput {
-  where: MovieWhere
-  disconnect: MovieDisconnectInput
-}
-
 input MovieDisconnectInput {
-  actors: [ActorDisconnectFieldInput!]
+  actors: [MovieActorsDisconnectFieldInput!]
 }
 
 input MovieOptions {

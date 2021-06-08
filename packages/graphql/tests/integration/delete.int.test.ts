@@ -176,7 +176,7 @@ describe("delete", () => {
 
         const mutation = `
             mutation($id: ID!, $name: String) {
-                deleteMovies(where: { id: $id }, delete: { actors: { where: { name: $name } } }) {
+                deleteMovies(where: { id: $id }, delete: { actors: { where: { node: { name: $name } } } }) {
                     nodesDeleted
                     relationshipsDeleted
                 }
@@ -264,7 +264,7 @@ describe("delete", () => {
             mutation($id1: ID!, $name: String, $id2: ID!) {
                 deleteMovies(
                     where: { id: $id1 }
-                    delete: { actors: { where: { name: $name }, delete: { movies: { where: { id: $id2 } } } } }
+                    delete: { actors: { where: { node: { name: $name } }, delete: { movies: { where: { node: { id: $id2 } } } } } }
                 ) {
                     nodesDeleted
                     relationshipsDeleted

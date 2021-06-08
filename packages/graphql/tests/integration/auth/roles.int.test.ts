@@ -507,7 +507,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { id: "${userId}" }, disconnect: { posts: { where: { id: "${postId}" } } }) {
+                    updateUsers(update: { id: "${userId}" }, disconnect: { posts: { where: { node: { id: "${postId}" } } } }) {
                         users {
                             id
                         }
@@ -595,7 +595,7 @@ describe("auth/roles", () => {
                         update: {
                             post: {
                                 update: {
-                                    creator: { disconnect: { where: { id: "${userId}" } } }
+                                    creator: { disconnect: { where: { node: { id: "${userId}" } } } }
                                 }
                             }
                         }
@@ -705,7 +705,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    deleteUsers(where: {id: "${userId}"}, delete:{posts: {where:{id: "${postId}"}}}) {
+                    deleteUsers(where: {id: "${userId}"}, delete:{posts: {where:{node: { id: "${postId}"}}}}) {
                         nodesDeleted
                     }
                 }

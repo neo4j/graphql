@@ -417,7 +417,7 @@ describe("auth/is-authenticated", () => {
 
             const query = `
                 mutation {
-                    updateUsers(where: { id: "${userId}" }, disconnect: { posts: { where: { id: "${postId}" } } }) {
+                    updateUsers(where: { id: "${userId}" }, disconnect: { posts: { where: { node: { id: "${postId}" } } } }) {
                         users {
                             id
                         }
@@ -525,7 +525,7 @@ describe("auth/is-authenticated", () => {
 
             const query = `
                 mutation {
-                    deleteUsers(where: {id: "${userId}"}, delete:{posts: {where:{id: "${postId}"}}}) {
+                    deleteUsers(where: {id: "${userId}"}, delete:{posts: {where:{node: { id: "${postId}"}}} }) {
                         nodesDeleted
                     }
                 }

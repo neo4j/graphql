@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
+import { Node, Relationship } from "../classes";
 import { RelationField, Context } from "../types";
-import createWhereAndParams from "./create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
 interface Res {
     disconnects: string[];
@@ -39,6 +39,7 @@ function createDisconnectAndParams({
     labelOverride,
     parentNode,
     insideDoWhen,
+    parameterPrefix,
 }: {
     withVars: string[];
     value: any;
@@ -50,8 +51,9 @@ function createDisconnectAndParams({
     labelOverride?: string;
     parentNode: Node;
     insideDoWhen?: boolean;
+    parameterPrefix: string;
 }): [string, any] {
-    function reducer(res: Res, disconnect: any, index): Res {
+    function reducer(res: Res, disconnect: { where: any; disconnect: any }, index): Res {
         const _varName = `${varName}${index}`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
@@ -81,19 +83,25 @@ function createDisconnectAndParams({
 
         const whereStrs: string[] = [];
 
+        const relationship = (context.neoSchema.relationships.find(
+            (x) => x.properties === relationField.properties
+        ) as unknown) as Relationship;
+
         if (disconnect.where) {
-            const where = createWhereAndParams({
-                varName: _varName,
+            const whereAndParams = createConnectionWhereAndParams({
+                nodeVariable: _varName,
                 whereInput: disconnect.where,
                 node: refNode,
                 context,
-                recursing: true,
+                relationshipVariable: relVarName,
+                relationship,
+                parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
             });
-            if (where[0]) {
-                whereStrs.push(where[0]);
-                res.params = { ...res.params, ...where[1] };
+            if (whereAndParams[0]) {
+                whereStrs.push(whereAndParams[0]);
             }
         }
+
         if (refNode.auth) {
             const whereAuth = createAuthAndParams({
                 operation: "DISCONNECT",
@@ -157,11 +165,9 @@ function createDisconnectAndParams({
         res.disconnects.push(`)`); // close FOREACH
 
         if (disconnect.disconnect) {
-            const disconnects = (Array.isArray(disconnect.disconnect)
-                ? disconnect.disconnect
-                : [disconnect.disconnect]) as any[];
+            const disconnects = Array.isArray(disconnect.disconnect) ? disconnect.disconnect : [disconnect.disconnect];
 
-            disconnects.forEach((c) => {
+            disconnects.forEach((c, i) => {
                 const reduced = Object.entries(c).reduce(
                     (r: Res, [k, v]) => {
                         const relField = refNode.relationFields.find((x) => k.startsWith(x.fieldName));
@@ -185,6 +191,7 @@ function createDisconnectAndParams({
                             context,
                             refNode: newRefNode,
                             parentNode: refNode,
+                            parameterPrefix: `${parameterPrefix}.${k}[${i}].disconnect`,
                         });
                         r.disconnects.push(recurse[0]);
                         r.params = { ...r.params, ...recurse[1] };
