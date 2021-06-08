@@ -21,7 +21,6 @@ import Debug from "debug";
 import { Driver } from "neo4j-driver";
 import { DocumentNode, GraphQLResolveInfo, GraphQLSchema, parse, printSchema, print } from "graphql";
 import { addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
-import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import type { DriverConfig } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
@@ -29,6 +28,7 @@ import Relationship from "./Relationship";
 import { checkNeo4jCompat } from "../utils";
 import { getJWT } from "../auth/index";
 import { DEBUG_GRAPHQL } from "../constants";
+import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -120,7 +120,9 @@ class Neo4jGraphQL {
             }
 
             context.neoSchema = this;
-            context.resolveTree = parseResolveInfo(resolveInfo) as ResolveTree;
+
+            context.resolveTree = getNeo4jResolveTree(resolveInfo);
+
             context.jwt = getJWT(context);
         });
     }
