@@ -151,6 +151,12 @@
                     <?dbhtml filename="guides/migration-guide/mutations/index.html"?>
                 </d:tocentry>
             </d:tocentry>
+            <d:tocentry linkend="2.0.0-migration">
+                <?dbhtml filename="guides/2.0.0-migration/index.html"?>
+                <d:tocentry linkend="2.0.0-migration-mutations">
+                    <?dbhtml filename="guides/2.0.0-migration/mutations/index.html"?>
+                </d:tocentry>
+            </d:tocentry>
         </d:tocentry>
 
         <d:tocentry linkend="troubleshooting">
