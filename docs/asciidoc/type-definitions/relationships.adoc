@@ -7,11 +7,11 @@ Without relationships, your type definitions are simply a collection of disconne
 
 We will be using the following example graph, where a Person type has two different relationship types which can connect it to a Movie type.
 
-image::relationships.png[title="Example graph"]
+image::relationships.svg[title="Example graph"]
 
 == Type definitions
 
-First, we should define the two distinct types in this model:
+First, to define the nodes, we should define the two distinct types in this model:
 
 [source, graphql]
 ----
@@ -58,7 +58,7 @@ Relationship properties can be added to the above type definitions in two steps:
 1. Add an interface definition containing the desired relationship properties
 2. Add a `properties` argument to both "sides" of the `@relationship` directive which points to the newly defined interface
 
-For example, to distinguish which role an actor played in a film:
+For example, to distinguish which roles an actor played in a movie:
 
 [source, graphql]
 ----
@@ -77,7 +77,7 @@ type Movie {
 }
 
 type ActedIn {
-    role: String
+    roles: [String!]
 }
 ----
 
@@ -94,8 +94,10 @@ mutation CreateMovieAndDirector {
             released: 1994
             director: {
                 create: {
-                    name: "Robert Zemeckis"
-                    born: 1951
+                    node: {
+                        name: "Robert Zemeckis"
+                        born: 1951s
+                    }
                 }
             }
         }
@@ -112,7 +114,7 @@ mutation CreateMovieAndDirector {
 }
 ----
 
-We then need to create the actor in our example, and connect them to the new Movie node:
+We then need to create the actor in our example, and connect them to the new Movie node, also specifying which roles they played:
 
 [source, graphql]
 ----
@@ -126,6 +128,9 @@ mutation CreateActor {
                     where: {
                         title: "Forrest Gump"
                     }
+                    properties: {
+                        roles: ["Forrest"]
+                    }
                 }
             }
         }
@@ -137,14 +142,21 @@ mutation CreateActor {
                 name
                 born
             }
-            actors {
-                name
-                born
+            actorsConnection {
+                edges {
+                    roles
+                    node {
+                        name
+                        born
+                    }
+                }
             }
         }
     }
 }
 ----
+
+Note that we select the `actorsConnection` field in order to query the `roles` relationship property.
 
 As you can see, these nested mutations are very powerful, and in the second Mutation we ran, we were able to return the entire graph which was created in this example. In fact, these mutations can actually be compressed down into a single Mutation which inserts all of the data we need:
 
@@ -157,15 +169,22 @@ mutation CreateMovieDirectorAndActor {
             released: 1994
             director: {
                 create: {
-                    name: "Robert Zemeckis"
-                    born: 1951
+                    node: {
+                        name: "Robert Zemeckis"
+                        born: 1951
+                    }
                 }
             }
             actors: {
                 create: [
                     {
-                        name: "Tom Hanks"
-                        born: 1956
+                        node: {
+                            name: "Tom Hanks"
+                            born: 1956
+                        }
+                        properties: {
+                            roles: ["Forrest"]
+                        }
                     }
                 ]
             }
@@ -178,9 +197,14 @@ mutation CreateMovieDirectorAndActor {
                 name
                 born
             }
-            actors {
-                name
-                born
+            actorsConnection {
+                edges {
+                    roles
+                    node {
+                        name
+                        born
+                    }
+                }
             }
         }
     }
@@ -203,9 +227,14 @@ query {
             name
             born
         }
-        actors {
-            name
-            born
+        actorsConnection {
+            edges {
+                roles
+                node {
+                    name
+                    born
+                }
+            }
         }
     }
 }

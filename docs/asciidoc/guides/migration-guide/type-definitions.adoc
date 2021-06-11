@@ -3,8 +3,6 @@
 
 This page will walk through what needs to change in your type definitions before you can pass them into `@neo4j/graphql`.
 
-> An important discrepancy to note at this early stage is that relationship type definitions are not yet supported in `@neo4j/graphql`, and as such, neither are relationship properties. This is in the pipeline, so keep an eye out for any news relating to this!
-
 == Directives
 
 Both `neo4j-graphql-js` and `@neo4j/graphql` are highly driven by GraphQL directives. Each heading in this section will address how/if one or many directives available in `neo4j-graphql-js` can be migrated to `@neo4j/graphql`.
@@ -19,6 +17,55 @@ Migrating this directive is trivial:
 For example, `@relation(name: "ACTED_IN", direction: OUT)` becomes `@relationship(type: "ACTED_IN", direction: OUT)`.
 
 See <<type-definitions-relationships>> for more information on relationships in `@neo4j/graphql`.
+
+=== Relationship Properties
+
+If for instance using `neo4j-graphql-js`, you have the following type definitions defining an `ACTED_IN` relationship with a `roles` property:
+
+[source, graphql]
+----
+type Actor {
+    movies: [ActedIn!]!
+}
+
+type Movie {
+    actors: [ActedIn!]!
+}
+
+type ActedIn @relation(name: "ACTED_IN") {
+    from: Actor
+    to: Movie
+    roles: [String!]
+}
+----
+
+This will need to be refactored to the following in the new library:
+
+[source, graphql]
+----
+type Actor {
+    movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+}
+
+type Movie {
+    actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+}
+
+interface ActedIn {
+    roles: [String!]
+}
+----
+
+Note the following changes to the `ActedIn` type:
+
+* Changed from `type` to `interface`
+* Removed `@relation` directive
+* Removed `from` and `to` fields
+
+And note the following changes to the two node types:
+
+* Relationship field types changed from the relationship type to the neighbouring node type
+* Normal `@relationship` directive added to each relationship field, with an additional `properties` argument pointing to the relationship properties interface
 
 === `@cypher`
 
