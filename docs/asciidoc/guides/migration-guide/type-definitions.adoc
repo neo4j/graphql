@@ -151,3 +151,16 @@ Interface Types are not yet supported in `@neo4j/graphql`. `neo4j-graphql-js` le
 === Union Types
 
 Supported, queryable using inline fragments as per `neo4j-graphql-js`, but can also be created using Nested Mutations. See <<type-definitions-unions-and-interfaces-union-types>>.
+
+== Fields
+
+=== `_id`
+
+An `_id` field exposing the underlying node ID is not included in each type by default in `@neo4j/graphql` like it was in `neo4j-graphql-js`. If you require this functionality (however, it should be noted that underlying node IDs should not be relied on because they can be reused), you can include a field definition such as in the following type definition:
+
+[source, graphql]
+----
+type ExampleType {
+  _id: ID! @cypher(statement: "RETURN ID(this)")
+}
+----
