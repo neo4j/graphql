@@ -24,12 +24,29 @@ import { graphqlArgsToCompose } from "../to-compose";
 import createAuthAndParams from "../../translate/create-auth-and-params";
 import createAuthParam from "../../translate/create-auth-param";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
+import createProjectionAndParams from "../../translate/create-projection-and-params";
 
-export default function cypherResolver({ field, statement }: { field: BaseField; statement: string }) {
+export default function cypherResolver({
+    field,
+    statement,
+    type,
+}: {
+    field: BaseField;
+    statement: string;
+    type: "Query" | "Mutation";
+}) {
     async function resolve(_root: any, args: any, _context: unknown) {
         const context = _context as Context;
+        const {
+            resolveTree: { fieldsByTypeName },
+        } = context;
         const cypherStrs: string[] = [];
         let params = { ...args, auth: createAuthParam({ context }) };
+        let projectionStr = "";
+        let projectionAuthStr = "";
+        const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
+            field.typeMeta.name
+        );
 
         const preAuth = createAuthAndParams({ entity: field, context });
         if (preAuth[0]) {
@@ -37,7 +54,56 @@ export default function cypherResolver({ field, statement }: { field: BaseField;
             cypherStrs.push(`CALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
-        cypherStrs.push(statement);
+        const referenceNode = context.neoSchema.nodes.find((x) => x.name === field.typeMeta.name);
+        if (referenceNode) {
+            const recurse = createProjectionAndParams({
+                fieldsByTypeName,
+                node: referenceNode,
+                context,
+                varName: `this`,
+            });
+            [projectionStr] = recurse;
+            params = { ...params, ...recurse[1] };
+            if (recurse[2]?.authValidateStrs?.length) {
+                projectionAuthStr = recurse[2].authValidateStrs.join(" AND ");
+            }
+        }
+
+        const expectMultipleValues = referenceNode && field.typeMeta.array ? "true" : "false";
+        const apocParams = Object.entries(args).reduce(
+            (r: { strs: string[]; params: any }, entry) => {
+                return {
+                    strs: [...r.strs, `${entry[0]}: $${entry[0]}`],
+                    params: { ...r.params, [entry[0]]: entry[1] },
+                };
+            },
+            { strs: ["auth: $auth"], params }
+        ) as { strs: string[]; params: any };
+        const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
+
+        if (type === "Query") {
+            cypherStrs.push(`
+                WITH apoc.cypher.runFirstColumn("${statement}", ${apocParamsStr}, ${expectMultipleValues}) as x
+                UNWIND x as this
+            `);
+        } else {
+            cypherStrs.push(`
+                CALL apoc.cypher.doIt("${statement}", ${apocParamsStr}) YIELD value
+                WITH apoc.map.values(value, [keys(value)[0]])[0] AS this
+            `);
+        }
+
+        if (projectionAuthStr) {
+            cypherStrs.push(
+                `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStr}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+            );
+        }
+
+        if (!isPrimitive) {
+            cypherStrs.push(`RETURN this ${projectionStr} AS this`);
+        } else {
+            cypherStrs.push(`RETURN this`);
+        }
 
         const result = await execute({
             cypher: cypherStrs.join("\n"),
