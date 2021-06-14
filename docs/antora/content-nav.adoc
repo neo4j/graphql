@@ -44,6 +44,6 @@
 **** xref:guides/migration-guide/type-definitions/index.adoc[]
 **** xref:guides/migration-guide/queries/index.adoc[]
 **** xref:guides/migration-guide/mutations/index.adoc[]
-*** xref:guides/2.0.0-migration/index.adoc[]
-**** xref:guides/2.0.0-migration/mutations/index.adoc[]
+*** xref:guides/rel-migration/index.adoc[]
+**** xref:guides/rel-migration/mutations/index.adoc[]
 ** xref:troubleshooting/index.adoc[]
