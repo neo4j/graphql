@@ -42,7 +42,7 @@ import {
 import pluralize from "pluralize";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth } from "../types";
+import { PrimitiveField, Auth, CustomEnumField } from "../types";
 import { upperFirstLetter } from "../utils";
 import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
@@ -139,6 +139,22 @@ function makeAugmentedSchema(
 
     const relationshipPropertyInterfaceNames = new Set<string>();
 
+    const extraDefinitions = [
+        ...enums,
+        ...scalars,
+        ...directives,
+        ...inputs,
+        ...unions,
+        ...([
+            customResolvers.customQuery,
+            customResolvers.customMutation,
+            customResolvers.customSubscription,
+        ] as ObjectTypeDefinitionNode[]),
+    ].filter(Boolean) as DefinitionNode[];
+    if (extraDefinitions.length) {
+        composer.addTypeDefs(print({ kind: "Document", definitions: extraDefinitions }));
+    }
+
     const nodes = objectNodes.map((definition) => {
         if (definition.name.value === "PageInfo") {
             throw new Error(
@@ -222,7 +238,7 @@ function makeAugmentedSchema(
     const relationshipFields = new Map<string, RelationshipField[]>();
 
     relationshipProperties.forEach((relationship) => {
-        const relationshipFieldMeta = getRelationshipFieldMeta({ relationship });
+        const relationshipFieldMeta = getRelationshipFieldMeta({ relationship, enums });
 
         if (!pointInTypeDefs) {
             pointInTypeDefs = relationshipFieldMeta.some((field) => field.typeMeta.name === "Point");
@@ -275,7 +291,9 @@ function makeAugmentedSchema(
             typeName: relationship.name.value,
             fields: {
                 scalarFields: [],
-                enumFields: [],
+                enumFields: relationshipFieldMeta.filter(
+                    (f) => (f as CustomEnumField).kind === "Enum"
+                ) as CustomEnumField[],
                 dateTimeFields: relationshipFieldMeta.filter((f) => f.typeMeta.name === "DateTime"),
                 pointFields: relationshipFieldMeta.filter((f) => ["Point", "CartesianPoint"].includes(f.typeMeta.name)),
                 primitiveFields: relationshipFieldMeta.filter((f) =>
@@ -1045,22 +1063,6 @@ function makeAugmentedSchema(
             });
         }
     });
-
-    const extraDefinitions = [
-        ...enums,
-        ...scalars,
-        ...directives,
-        ...inputs,
-        ...unions,
-        ...([
-            customResolvers.customQuery,
-            customResolvers.customMutation,
-            customResolvers.customSubscription,
-        ] as ObjectTypeDefinitionNode[]),
-    ].filter(Boolean) as DefinitionNode[];
-    if (extraDefinitions.length) {
-        composer.addTypeDefs(print({ kind: "Document", definitions: extraDefinitions }));
-    }
 
     interfaces.forEach((inter) => {
         const objectFields = getObjFieldMeta({ obj: inter, scalars, enums, interfaces, unions, objects: objectNodes });
