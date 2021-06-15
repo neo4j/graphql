@@ -4,3 +4,4 @@
 Here you can find a selection of guides to help you work with the Neo4j GraphQL Library.
 
 1. <<migration-guide>> - migrating from `neo4j-graphql-js` to `@neo4j/graphql`
+2. <<2.0.0-migration>> - migrating from version 1.* of `@neo4j/graphql` to version 2.* for relationship property support
