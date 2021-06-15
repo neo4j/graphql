@@ -204,9 +204,9 @@ function makeAugmentedSchema(
             interfaces: nodeInterfaces,
             otherDirectives,
             ...nodeFields,
-            // @ts-ignore we can be sure its defined
+            // @ts-ignore we can be sure it's defined
             auth,
-            // @ts-ignore we can be sure its defined
+            // @ts-ignore we can be sure it's defined
             exclude,
             description: definition.description?.value,
         });
