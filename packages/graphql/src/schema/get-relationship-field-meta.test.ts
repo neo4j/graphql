@@ -21,7 +21,7 @@ describe("getRelationshipFieldMeta", () => {
             (d) => d.kind === "InterfaceTypeDefinition"
         ) as InterfaceTypeDefinitionNode;
 
-        const fieldMeta = getRelationshipFieldMeta({ relationship });
+        const fieldMeta = getRelationshipFieldMeta({ relationship, enums: [] });
 
         expect(fieldMeta).toEqual([
             {

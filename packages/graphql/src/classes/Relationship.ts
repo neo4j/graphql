@@ -17,15 +17,10 @@
  * limitations under the License.
  */
 
-import type { PrimitiveField, DateTimeField, PointField } from "../types";
+import type { PrimitiveField, DateTimeField, PointField, CustomEnumField } from "../types";
 
-// export interface NodeConstructor {
-//     otherDirectives: DirectiveNode[];
-//     ignoredFields: BaseField[];
-// }
-
-// TODO do CustomScalarField and CustomEnumField need to be in the mix?
-export type RelationshipField = PrimitiveField | DateTimeField | PointField;
+// TODO does CustomScalarField need to be in the mix?
+export type RelationshipField = PrimitiveField | DateTimeField | PointField | CustomEnumField;
 
 export interface RelationshipConstructor {
     name: string;

@@ -232,6 +232,7 @@ function getObjFieldMeta({
                 }
 
                 const enumField: CustomEnumField = {
+                    kind: "Enum",
                     ...baseField,
                 };
                 res.enumFields.push(enumField);
