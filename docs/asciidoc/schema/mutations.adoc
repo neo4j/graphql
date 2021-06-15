@@ -90,7 +90,9 @@ mutation {
             posts: {
                 create: [
                     {
-                        content: "Hi, my name is John!"
+                        node: {
+                            content: "Hi, my name is John!"
+                        }
                     }
                 ]
             }
@@ -178,7 +180,7 @@ mutation {
         where: { name: "John Doe" }
         create: {
             posts: [
-                { content: "An interesting way of adding a new Post!" }
+                { node: { content: "An interesting way of adding a new Post!" } }
             ]
         }
     ) {
@@ -274,8 +276,10 @@ mutation {
         delete: {
             posts: [
                 where: {
-                    creator: {
-                        name: "Jane Doe"
+                    node: {
+                        creator: {
+                            name: "Jane Doe"
+                        }
                     }
                 }
             ]

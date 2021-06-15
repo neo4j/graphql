@@ -59,19 +59,28 @@ The below mutation creates the user and their content;
 [source, graphql]
 ----
 mutation CreateUserAndContent {
-  createUsers(
-    input: [
-      {
-        name: "Dan"
-        content_Blog: {
-          create: [
-            {
-              title: "My Cool Blog"
-              posts: { create: [{ content: "My Cool Post" }] }
+    createUsers(input: [
+        {
+            name: "Dan"
+            content_Blog: {
+                create: [
+                    {
+                        node: {
+                            title: "My Cool Blog"
+                            posts: {
+                                create: [
+                                    {
+                                        node: {
+                                            content: "My Cool Post"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
             }
-          ]
         }
-      }
     ]
   ) {
     users {
