@@ -171,7 +171,6 @@ function createRelationshipWhereAndParams({
     }
 
     const { clauses, params } = Object.entries(whereInput).reduce(reducer, { clauses: [], params: {} });
-    // let where = `${!recursing ? "WHERE " : ""}`;
     const where = clauses.join(" AND ").replace(/INNER_WHERE/gi, "WHERE");
 
     return [where, params];

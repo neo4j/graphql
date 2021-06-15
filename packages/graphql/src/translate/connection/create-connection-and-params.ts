@@ -25,54 +25,6 @@ import Relationship from "../../classes/Relationship";
 import createRelationshipPropertyElement from "../projection/elements/create-relationship-property-element";
 import createConnectionWhereAndParams from "../where/create-connection-where-and-params";
 
-/*
-input:
-
-{
-    actorsConnection: {
-        alias: "actorsConnection"
-        name: "actorsConnection"
-        args: { where, options }????
-        fieldsByTypeName: {
-            MovieActorsConnection: {
-                edges: {
-                    alias: "edges"
-                    name: "edges"
-                    args: { }
-                    fieldsByTypeName: {
-                        MovieActorsRelationship: {
-                            screenTime: {
-                                alias: "screenTime"
-                                name: "screenTime"
-                            }
-                            node: {
-                                alias: "node"
-                                name: "node"
-                                fieldsByTypeName: {   PASS ME BACK TO create-projection-and-params
-                                    ..........
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-output:
-
-actorsConnection: apoc.cypher.runFirstColumn(
-    "
-      MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actors:Actor)
-      WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actors.name }}) as edges
-      RETURN { edges: edges }
-    ",
-    {this: this},
-    true
-  )
-
-*/
 function createConnectionAndParams({
     resolveTree,
     field,
@@ -231,11 +183,6 @@ function createConnectionAndParams({
         const nodeOutStr = `(${relatedNodeVariable}:${field.relationship.typeMeta.name})`;
         const relatedNode = context.neoSchema.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
 
-        /*
-        MATCH clause, example:
-
-        MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-        */
         subquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 
         if (whereInput) {
