@@ -310,7 +310,7 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${relationship.name.value}CreateInput`,
-            // TODO - Duplicated with node properties on line 492
+            // TODO - This reduce duplicated when creating node CreateInput - put into shared function?
             fields: relationshipFieldMeta.reduce((res, f) => {
                 if ((f as PrimitiveField)?.autogenerate) {
                     return res;
@@ -489,7 +489,7 @@ function makeAugmentedSchema(
 
         const nodeInput = composer.createInputTC({
             name: `${node.name}CreateInput`,
-            // TODO - Duplicated with relationship properties on line 313
+            // TODO - This reduce duplicated when creating relationship CreateInput - put into shared function?
             fields: [
                 ...node.primitiveFields,
                 ...node.scalarFields,
