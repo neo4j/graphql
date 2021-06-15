@@ -29,7 +29,7 @@ export default function cypherResolver({ field, statement }: { field: BaseField;
     async function resolve(_root: any, args: any, _context: unknown) {
         const context = _context as Context;
         const cypherStrs: string[] = [];
-        let params = { ...args, auth: createAuthParam({ context }) };
+        let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
 
         const preAuth = createAuthAndParams({ entity: field, context });
         if (preAuth[0]) {
