@@ -115,7 +115,7 @@ type Mutation {
 }
 
 type Query {
-  users(where: UserWhere, options: UserOptions): [User]!
+  users(where: UserWhere, options: UserOptions): [User!]!
 }
 ```
 

@@ -126,7 +126,7 @@ type Mutation {
 }
 
 type Query {
-  movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
 }
 ```
 
@@ -202,7 +202,7 @@ type Mutation {
 }
 
 type Query {
-  actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor!]!
 }
 ```
 
@@ -291,7 +291,7 @@ type Mutation {
 }
 
 type Query {
-  movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
 }
 ```
 
@@ -389,7 +389,7 @@ type Mutation {
 
 type Query {
   customActorQuery: Actor
-  movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
 }
 ```
 
@@ -579,7 +579,7 @@ type Mutation {
 }
 
 type Query {
-  movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
 }
 ```
 
@@ -664,7 +664,7 @@ type Mutation {
 }
 
 type Query {
-  actors(where: ActorWhere, options: ActorOptions): [Actor]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor!]!
 }
 ```
 
