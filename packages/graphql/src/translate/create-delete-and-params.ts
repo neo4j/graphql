@@ -96,13 +96,11 @@ function createDeleteAndParams({
                         relationshipVariable,
                         relationship,
                         parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
-                            // used here
                             relationField.typeMeta.array ? `[${index}]` : ""
                         }.where`,
                     });
                     if (whereAndParams[0]) {
                         whereStrs.push(whereAndParams[0]);
-                        // res.params = { ...res.params, ...whereAndParams[1] };
                     }
                 }
                 const whereAuth = createAuthAndParams({
@@ -145,7 +143,7 @@ function createDeleteAndParams({
                         parentVar: _varName,
                         parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
                             relationField.typeMeta.array ? `[${index}]` : ""
-                        }.delete`, // TODO
+                        }.delete`,
                         recursing: false,
                     });
                     res.strs.push(deleteAndParams[0]);

@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { ConnectionField, ConnectionOptionsArg, ConnectionWhereArg, Context } from "../../types";
 import { Node } from "../../classes";
@@ -6,54 +25,6 @@ import Relationship from "../../classes/Relationship";
 import createRelationshipPropertyElement from "../projection/elements/create-relationship-property-element";
 import createConnectionWhereAndParams from "../where/create-connection-where-and-params";
 
-/*
-input:
-
-{
-    actorsConnection: {
-        alias: "actorsConnection"
-        name: "actorsConnection"
-        args: { where, options }????
-        fieldsByTypeName: {
-            MovieActorsConnection: {
-                edges: {
-                    alias: "edges"
-                    name: "edges"
-                    args: { }
-                    fieldsByTypeName: {
-                        MovieActorsRelationship: {
-                            screenTime: {
-                                alias: "screenTime"
-                                name: "screenTime"
-                            }
-                            node: {
-                                alias: "node"
-                                name: "node"
-                                fieldsByTypeName: {   PASS ME BACK TO create-projection-and-params
-                                    ..........
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-output:
-
-actorsConnection: apoc.cypher.runFirstColumn(
-    "
-      MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actors:Actor)
-      WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actors.name }}) as edges
-      RETURN { edges: edges }
-    ",
-    {this: this},
-    true
-  )
-
-*/
 function createConnectionAndParams({
     resolveTree,
     field,
@@ -212,11 +183,6 @@ function createConnectionAndParams({
         const nodeOutStr = `(${relatedNodeVariable}:${field.relationship.typeMeta.name})`;
         const relatedNode = context.neoSchema.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
 
-        /*
-        MATCH clause, example:
-
-        MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-        */
         subquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 
         if (whereInput) {

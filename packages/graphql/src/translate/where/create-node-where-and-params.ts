@@ -87,14 +87,11 @@ function createNodeWhereAndParams({
                     whereInput: v,
                     node,
                     nodeVariable,
-                    // chainStr: `${param}${i > 0 ? i : ""}`,
                     context,
-                    // recursing: true,
                     parameterPrefix: `${parameterPrefix}.${fieldName}[${i}]`,
                 });
 
                 innerClauses.push(`(${recurse[0]})`);
-                // res.params = { ...res.params, ...recurse[1] };
                 nestedParams.push(recurse[1]);
             });
 
@@ -211,14 +208,7 @@ function createNodeWhereAndParams({
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
                 res.params = { ...res.params, fieldName: nestedParams };
-                // } else if (pointField) {
-                //     let clause = `${property} IN [p in $${param} | point(p)]`;
-                //     if (not) clause = `(NOT ${clause})`;
-                //     res.clauses.push(clause);
-                //     res.params[key] = value;
             } else {
-                // let clause = `${property} IN $${param}`;
-                // if (not) clause = `(NOT ${clause})`;
                 const clause = createFilter({
                     left: property,
                     operator,
@@ -280,7 +270,6 @@ function createNodeWhereAndParams({
     }
 
     const { clauses, params } = Object.entries(whereInput).reduce(reducer, { clauses: [], params: {} });
-    // let where = `${!recursing ? "WHERE " : ""}`;
     const where = clauses.join(" AND ").replace(/INNER_WHERE/gi, "WHERE");
 
     return [where, params];
