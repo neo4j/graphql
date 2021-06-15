@@ -37,7 +37,7 @@ export default function findResolver({ node }: { node: Node }) {
     }
 
     return {
-        type: `[${node.name}]!`,
+        type: `[${node.name}!]!`,
         resolve,
         args: { where: `${node.name}Where`, options: `${node.name}Options` },
     };

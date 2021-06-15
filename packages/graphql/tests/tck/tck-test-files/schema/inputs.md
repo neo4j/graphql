@@ -95,7 +95,7 @@ type Mutation {
 }
 
 type Query {
-  movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
   name(input: NodeInput): String
 }
 ```
