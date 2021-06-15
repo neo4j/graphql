@@ -19,6 +19,7 @@
 
 import {
     BooleanValueNode,
+    EnumTypeDefinitionNode,
     FloatValueNode,
     InterfaceTypeDefinitionNode,
     IntValueNode,
@@ -27,263 +28,221 @@ import {
     StringValueNode,
 } from "graphql";
 import getFieldTypeMeta from "./get-field-type-meta";
-import { PrimitiveField, BaseField, DateTimeField, PointField, TimeStampOperations } from "../types";
+import { PrimitiveField, BaseField, DateTimeField, PointField, TimeStampOperations, CustomEnumField } from "../types";
 import { RelationshipField } from "../classes/Relationship";
 import parseValueNode from "./parse-value-node";
 
-// interface ObjectFields {
-//     relationFields: RelationField[];
-//     connectionFields: ConnectionField[];
-//     primitiveFields: PrimitiveField[];
-//     cypherFields: CypherField[];
-//     scalarFields: CustomScalarField[];
-//     enumFields: CustomEnumField[];
-//     unionFields: UnionField[];
-//     interfaceFields: InterfaceField[];
-//     objectFields: ObjectField[];
-//     dateTimeFields: DateTimeField[];
-//     pointFields: PointField[];
-//     ignoredFields: BaseField[];
-// }
-
 function getRelationshipFieldMeta({
     relationship,
-}: // objects,
-// interfaces,
-// scalars,
-// unions,
-// enums,
-{
+    enums,
+}: {
     relationship: InterfaceTypeDefinitionNode;
-    // objects: ObjectTypeDefinitionNode[];
-    // interfaces: InterfaceTypeDefinitionNode[];
-    // unions: UnionTypeDefinitionNode[];
-    // scalars: ScalarTypeDefinitionNode[];
-    // enums: EnumTypeDefinitionNode[];
+    enums: EnumTypeDefinitionNode[];
 }): RelationshipField[] {
-    // return relationship?.fields?.reduce(
-    //     (res: ObjectFields, field) =>
-
     return relationship.fields
         ?.filter((field) => !field?.directives?.some((x) => x.name.value === "private"))
-        .map(
-            (field) => {
-                // if (field?.directives?.some((x) => x.name.value === "private")) {
-                //     return res;
-                // }
+        .map((field) => {
+            const typeMeta = getFieldTypeMeta(field);
+            const idDirective = field?.directives?.find((x) => x.name.value === "id");
+            const defaultDirective = field?.directives?.find((x) => x.name.value === "default");
+            const coalesceDirective = field?.directives?.find((x) => x.name.value === "coalesce");
+            const timestampDirective = field?.directives?.find((x) => x.name.value === "timestamp");
+            // const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
+            const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
 
-                const typeMeta = getFieldTypeMeta(field);
-                const idDirective = field?.directives?.find((x) => x.name.value === "id");
-                const defaultDirective = field?.directives?.find((x) => x.name.value === "default");
-                const coalesceDirective = field?.directives?.find((x) => x.name.value === "coalesce");
-                const timestampDirective = field?.directives?.find((x) => x.name.value === "timestamp");
-                // const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
-                // const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
+            const baseField: BaseField = {
+                fieldName: field.name.value,
+                typeMeta,
+                otherDirectives: (field.directives || []).filter(
+                    (x) =>
+                        !["id", "readonly", "writeonly", "ignore", "default", "coalesce", "timestamp"].includes(
+                            x.name.value
+                        )
+                ),
+                arguments: [...(field.arguments || [])],
+                description: field.description?.value,
+                readonly: field?.directives?.some((d) => d.name.value === "readonly"),
+                writeonly: field?.directives?.some((d) => d.name.value === "writeonly"),
+            };
 
-                const baseField: BaseField = {
-                    fieldName: field.name.value,
-                    typeMeta,
-                    otherDirectives: (field.directives || []).filter(
-                        (x) =>
-                            !["id", "readonly", "writeonly", "ignore", "default", "coalesce", "timestamp"].includes(
-                                x.name.value
-                            )
-                    ),
-                    arguments: [...(field.arguments || [])],
-                    description: field.description?.value,
-                    readonly: field?.directives?.some((d) => d.name.value === "readonly"),
-                    writeonly: field?.directives?.some((d) => d.name.value === "writeonly"),
-                };
+            // if (fieldScalar) {
+            //     if (defaultDirective) {
+            //         throw new Error("@default directive can only be used on primitive type fields");
+            //     }
+            //     const scalarField: CustomScalarField = {
+            //         ...baseField,
+            //     };
+            //     res.scalarFields.push(scalarField);
+            // } else
 
-                // if (fieldScalar) {
-                //     if (defaultDirective) {
-                //         throw new Error("@default directive can only be used on primitive type fields");
-                //     }
-                //     const scalarField: CustomScalarField = {
-                //         ...baseField,
-                //     };
-                //     res.scalarFields.push(scalarField);
-                // } else if (fieldEnum) {
-                //     if (defaultDirective) {
-                //         throw new Error("@default directive can only be used on primitive type fields");
-                //     }
-
-                //     if (coalesceDirective) {
-                //         throw new Error("@coalesce directive can only be used on primitive type fields");
-                //     }
-
-                //     const enumField: CustomEnumField = {
-                //         ...baseField,
-                //     };
-                //     res.enumFields.push(enumField);
-                // } else
-
-                if (field.directives?.some((d) => d.name.value === "ignore")) {
-                    baseField.ignored = true;
-                    return baseField;
-                }
-                if (typeMeta.name === "DateTime") {
-                    const dateTimeField: DateTimeField = {
-                        ...baseField,
-                    };
-
-                    if (timestampDirective) {
-                        if (baseField.typeMeta.array) {
-                            throw new Error("cannot auto-generate an array");
-                        }
-
-                        const operations = timestampDirective?.arguments?.find((x) => x.name.value === "operations")
-                            ?.value as ListValueNode;
-
-                        const timestamps = operations
-                            ? (operations?.values.map((x) => parseValueNode(x)) as TimeStampOperations[])
-                            : (["CREATE", "UPDATE"] as TimeStampOperations[]);
-
-                        dateTimeField.timestamps = timestamps;
-                    }
-
-                    if (defaultDirective) {
-                        const value = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
-
-                        if (Number.isNaN(Date.parse((value as StringValueNode).value))) {
-                            throw new Error(
-                                `Default value for ${relationship.name.value}.${dateTimeField.fieldName} is not a valid DateTime`
-                            );
-                        }
-
-                        dateTimeField.defaultValue = (value as StringValueNode).value;
-                    }
-
-                    if (coalesceDirective) {
-                        throw new Error("@coalesce is not supported by DateTime fields at this time");
-                    }
-
-                    return dateTimeField;
+            if (fieldEnum) {
+                if (defaultDirective) {
+                    throw new Error("@default directive can only be used on primitive type fields");
                 }
 
-                if (["Point", "CartesianPoint"].includes(typeMeta.name)) {
-                    if (defaultDirective) {
-                        throw new Error("@default directive can only be used on primitive type fields");
-                    }
-
-                    if (coalesceDirective) {
-                        throw new Error("@coalesce directive can only be used on primitive type fields");
-                    }
-
-                    const pointField: PointField = {
-                        ...baseField,
-                    };
-                    return pointField;
+                if (coalesceDirective) {
+                    throw new Error("@coalesce directive can only be used on primitive type fields");
                 }
-                const primitiveField: PrimitiveField = {
+
+                const enumField: CustomEnumField = {
+                    kind: "Enum",
                     ...baseField,
                 };
 
-                if (idDirective) {
-                    const autogenerate = idDirective.arguments?.find((a) => a.name.value === "autogenerate");
-                    if (!autogenerate || (autogenerate.value as BooleanValueNode).value) {
-                        if (baseField.typeMeta.name !== "ID") {
-                            throw new Error("cannot auto-generate a non ID field");
-                        }
+                return enumField;
+            }
 
-                        if (baseField.typeMeta.array) {
-                            throw new Error("cannot auto-generate an array");
-                        }
+            if (field.directives?.some((d) => d.name.value === "ignore")) {
+                baseField.ignored = true;
+                return baseField;
+            }
 
-                        primitiveField.autogenerate = true;
+            if (typeMeta.name === "DateTime") {
+                const dateTimeField: DateTimeField = {
+                    ...baseField,
+                };
+
+                if (timestampDirective) {
+                    if (baseField.typeMeta.array) {
+                        throw new Error("cannot auto-generate an array");
                     }
+
+                    const operations = timestampDirective?.arguments?.find((x) => x.name.value === "operations")
+                        ?.value as ListValueNode;
+
+                    const timestamps = operations
+                        ? (operations?.values.map((x) => parseValueNode(x)) as TimeStampOperations[])
+                        : (["CREATE", "UPDATE"] as TimeStampOperations[]);
+
+                    dateTimeField.timestamps = timestamps;
                 }
 
                 if (defaultDirective) {
                     const value = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
 
-                    const checkKind = (kind: string) => {
-                        if (value?.kind !== kind) {
-                            throw new Error(
-                                `Default value for ${relationship.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`
-                            );
-                        }
-                    };
-
-                    switch (baseField.typeMeta.name) {
-                        case "ID":
-                        case "String":
-                            checkKind(Kind.STRING);
-                            primitiveField.defaultValue = (value as StringValueNode).value;
-                            break;
-                        case "Boolean":
-                            checkKind(Kind.BOOLEAN);
-                            primitiveField.defaultValue = (value as BooleanValueNode).value;
-                            break;
-                        case "Int":
-                            checkKind(Kind.INT);
-                            primitiveField.defaultValue = parseInt((value as IntValueNode).value, 10);
-                            break;
-                        case "Float":
-                            checkKind(Kind.FLOAT);
-                            primitiveField.defaultValue = parseFloat((value as FloatValueNode).value);
-                            break;
-                        default:
-                            throw new Error(
-                                "@default directive can only be used on types: Int | Float | String | Boolean | ID | DateTime"
-                            );
+                    if (Number.isNaN(Date.parse((value as StringValueNode).value))) {
+                        throw new Error(
+                            `Default value for ${relationship.name.value}.${dateTimeField.fieldName} is not a valid DateTime`
+                        );
                     }
+
+                    dateTimeField.defaultValue = (value as StringValueNode).value;
                 }
 
                 if (coalesceDirective) {
-                    const value = coalesceDirective.arguments?.find((a) => a.name.value === "value")?.value;
-
-                    const checkKind = (kind: string) => {
-                        if (value?.kind !== kind) {
-                            throw new Error(
-                                `coalesce() value for ${relationship.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`
-                            );
-                        }
-                    };
-
-                    switch (baseField.typeMeta.name) {
-                        case "ID":
-                        case "String":
-                            checkKind(Kind.STRING);
-                            primitiveField.coalesceValue = `"${(value as StringValueNode).value}"`;
-                            break;
-                        case "Boolean":
-                            checkKind(Kind.BOOLEAN);
-                            primitiveField.coalesceValue = (value as BooleanValueNode).value;
-                            break;
-                        case "Int":
-                            checkKind(Kind.INT);
-                            primitiveField.coalesceValue = parseInt((value as IntValueNode).value, 10);
-                            break;
-                        case "Float":
-                            checkKind(Kind.FLOAT);
-                            primitiveField.coalesceValue = parseFloat((value as FloatValueNode).value);
-                            break;
-                        default:
-                            throw new Error(
-                                "@coalesce directive can only be used on types: Int | Float | String | Boolean | ID | DateTime"
-                            );
-                    }
+                    throw new Error("@coalesce is not supported by DateTime fields at this time");
                 }
 
-                return primitiveField;
+                return dateTimeField;
             }
-            // {
-            //     relationFields: [],
-            //     connectionFields: [],
-            //     primitiveFields: [],
-            //     cypherFields: [],
-            //     scalarFields: [],
-            //     enumFields: [],
-            //     unionFields: [],
-            //     interfaceFields: [],
-            //     objectFields: [],
-            //     dateTimeFields: [],
-            //     pointFields: [],
-            //     ignoredFields: [],
-            // }
-        ) as RelationshipField[];
-    // as ObjectFields;
+
+            if (["Point", "CartesianPoint"].includes(typeMeta.name)) {
+                if (defaultDirective) {
+                    throw new Error("@default directive can only be used on primitive type fields");
+                }
+
+                if (coalesceDirective) {
+                    throw new Error("@coalesce directive can only be used on primitive type fields");
+                }
+
+                const pointField: PointField = {
+                    ...baseField,
+                };
+                return pointField;
+            }
+            const primitiveField: PrimitiveField = {
+                ...baseField,
+            };
+
+            if (idDirective) {
+                const autogenerate = idDirective.arguments?.find((a) => a.name.value === "autogenerate");
+                if (!autogenerate || (autogenerate.value as BooleanValueNode).value) {
+                    if (baseField.typeMeta.name !== "ID") {
+                        throw new Error("cannot auto-generate a non ID field");
+                    }
+
+                    if (baseField.typeMeta.array) {
+                        throw new Error("cannot auto-generate an array");
+                    }
+
+                    primitiveField.autogenerate = true;
+                }
+            }
+
+            if (defaultDirective) {
+                const value = defaultDirective.arguments?.find((a) => a.name.value === "value")?.value;
+
+                const checkKind = (kind: string) => {
+                    if (value?.kind !== kind) {
+                        throw new Error(
+                            `Default value for ${relationship.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`
+                        );
+                    }
+                };
+
+                switch (baseField.typeMeta.name) {
+                    case "ID":
+                    case "String":
+                        checkKind(Kind.STRING);
+                        primitiveField.defaultValue = (value as StringValueNode).value;
+                        break;
+                    case "Boolean":
+                        checkKind(Kind.BOOLEAN);
+                        primitiveField.defaultValue = (value as BooleanValueNode).value;
+                        break;
+                    case "Int":
+                        checkKind(Kind.INT);
+                        primitiveField.defaultValue = parseInt((value as IntValueNode).value, 10);
+                        break;
+                    case "Float":
+                        checkKind(Kind.FLOAT);
+                        primitiveField.defaultValue = parseFloat((value as FloatValueNode).value);
+                        break;
+                    default:
+                        throw new Error(
+                            "@default directive can only be used on types: Int | Float | String | Boolean | ID | DateTime"
+                        );
+                }
+            }
+
+            if (coalesceDirective) {
+                const value = coalesceDirective.arguments?.find((a) => a.name.value === "value")?.value;
+
+                const checkKind = (kind: string) => {
+                    if (value?.kind !== kind) {
+                        throw new Error(
+                            `coalesce() value for ${relationship.name.value}.${primitiveField.fieldName} does not have matching type ${primitiveField.typeMeta.name}`
+                        );
+                    }
+                };
+
+                switch (baseField.typeMeta.name) {
+                    case "ID":
+                    case "String":
+                        checkKind(Kind.STRING);
+                        primitiveField.coalesceValue = `"${(value as StringValueNode).value}"`;
+                        break;
+                    case "Boolean":
+                        checkKind(Kind.BOOLEAN);
+                        primitiveField.coalesceValue = (value as BooleanValueNode).value;
+                        break;
+                    case "Int":
+                        checkKind(Kind.INT);
+                        primitiveField.coalesceValue = parseInt((value as IntValueNode).value, 10);
+                        break;
+                    case "Float":
+                        checkKind(Kind.FLOAT);
+                        primitiveField.coalesceValue = parseFloat((value as FloatValueNode).value);
+                        break;
+                    default:
+                        throw new Error(
+                            "@coalesce directive can only be used on types: Int | Float | String | Boolean | ID | DateTime"
+                        );
+                }
+            }
+
+            return primitiveField;
+        }) as RelationshipField[];
 }
 
 export default getRelationshipFieldMeta;

@@ -131,7 +131,10 @@ export interface PrimitiveField extends BaseField {
 
 export type CustomScalarField = BaseField;
 
-export type CustomEnumField = BaseField;
+export interface CustomEnumField extends BaseField {
+    // TODO Must be "Enum" - really needs refactoring into classes
+    kind: string;
+}
 
 export interface UnionField extends BaseField {
     nodes?: string[];
