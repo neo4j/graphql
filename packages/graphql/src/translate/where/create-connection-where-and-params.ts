@@ -60,9 +60,6 @@ function createConnectionWhereAndParams({
                     innerParams.push(or[1]);
                 });
 
-                // whereStrs.push(`(${innerClauses.join(` ${k} `)})`);
-                // params = { ...params, [k]: innerParams };
-
                 const whereStrs = [...res.whereStrs, `(${innerClauses.filter((clause) => !!clause).join(` ${k} `)})`];
                 const params = { ...res.params, [k]: innerParams };
                 res = { whereStrs, params };
@@ -77,8 +74,6 @@ function createConnectionWhereAndParams({
                     context,
                     parameterPrefix: `${parameterPrefix}.${k}`,
                 });
-                // whereStrs.push(k === "relationship_NOT" ? `(NOT ${relationshipWhere[0]})` : relationshipWhere[0]);
-                // params = { ...params, [k]: relationshipWhere[1] };
 
                 const whereStrs = [
                     ...res.whereStrs,
@@ -97,8 +92,6 @@ function createConnectionWhereAndParams({
                     context,
                     parameterPrefix: `${parameterPrefix}.${k}`,
                 });
-                // whereStrs.push(k.endsWith("_NOT") ? `(NOT ${nodeWhere[0]})` : nodeWhere[0]);
-                // params = { ...params, [k]: nodeWhere[1] };
 
                 const whereStrs = [...res.whereStrs, k.endsWith("_NOT") ? `(NOT ${nodeWhere[0]})` : nodeWhere[0]];
                 const params = { ...res.params, [k]: nodeWhere[1] };

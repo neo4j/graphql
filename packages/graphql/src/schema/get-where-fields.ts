@@ -38,13 +38,6 @@ function getWhereFields({ typeName, fields, enableRegex }: { typeName: string; f
         }, {}),
         ...[...fields.primitiveFields, ...fields.dateTimeFields, ...fields.enumFields, ...fields.pointFields].reduce(
             (res, f) => {
-                // This is the only sensible place to flag whether Point and CartesianPoint are used
-                // if (f.typeMeta.name === "Point") {
-                //     pointInTypeDefs = true;
-                // } else if (f.typeMeta.name === "CartesianPoint") {
-                //     cartesianPointInTypeDefs = true;
-                // }
-
                 res[f.fieldName] = f.typeMeta.input.where.pretty;
                 res[`${f.fieldName}_NOT`] = f.typeMeta.input.where.pretty;
 

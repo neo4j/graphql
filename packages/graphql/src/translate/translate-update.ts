@@ -102,8 +102,6 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         [updateStr] = updateAndParams;
         cypherParams = {
             ...cypherParams,
-            // Crude check if parameter is actually used before adding it
-            // ...(updateStr.includes(resolveTree.name) ? { [resolveTree.name]: { args: { update: updateInput } } } : {}),
             ...updateAndParams[1],
         };
         updateArgs = {
@@ -234,7 +232,6 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         [deleteStr] = deleteAndParams;
         cypherParams = {
             ...cypherParams,
-            // ...(deleteStr.includes(resolveTree.name) ? { [resolveTree.name]: { args: { delete: deleteInput } } } : {}),
             ...deleteAndParams[1],
         };
         updateArgs = {
