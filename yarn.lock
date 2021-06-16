@@ -6618,6 +6618,26 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"graphql-playground-html@npm:^1.6.29":
+  version: 1.6.29
+  resolution: "graphql-playground-html@npm:1.6.29"
+  dependencies:
+    xss: ^1.0.6
+  checksum: 3958fd648b255ee3605c2e5c4899cc2b4eb593d4538dfaf82886fa032ee4bf81a52860adfd8ec6b8fba5af23397270dba96d51efae26a20e3f79c3af86775563
+  languageName: node
+  linkType: hard
+
+"graphql-playground-middleware-express@npm:^1.7.22":
+  version: 1.7.22
+  resolution: "graphql-playground-middleware-express@npm:1.7.22"
+  dependencies:
+    graphql-playground-html: ^1.6.29
+  peerDependencies:
+    express: ^4.16.2
+  checksum: aa3c7cdca1f429bc6b6c2597290738141b015cf9a04ea859c2d9b58a825534dc677e4b1db51f9a0e12b76c447314301038d9a10a0bde2c1efe0a24201ee1b3e9
+  languageName: node
+  linkType: hard
+
 "graphql-subscriptions@npm:^1.0.0":
   version: 1.2.1
   resolution: "graphql-subscriptions@npm:1.2.1"
@@ -9679,6 +9699,7 @@ fsevents@^1.2.7:
     express: 4.17.1
     faker: 5.1.0
     graphql: ^15.0.0
+    graphql-playground-middleware-express: ^1.7.22
     jest: 26.6.3
     jsonwebtoken: 8.5.1
     neo4j-driver: ^4.2.0

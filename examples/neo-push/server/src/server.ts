@@ -19,6 +19,15 @@ if (config.NODE_ENV === "production") {
     });
 }
 
+if (config.NODE_ENV === "development"){
+    debug("Development serving graphql-playground");
+    const expressPlayground = require('graphql-playground-middleware-express').default
+    app.get('/playground', expressPlayground({ endpoint: '/graphql' }))
+    console.log(
+        `Serving the GraphQL Playground on http://localhost:${config.HTTP_PORT}/playground`,
+      )
+}
+
 export function start(): Promise<void> {
     debug(`Starting on PORT ${config.HTTP_PORT}`);
 
