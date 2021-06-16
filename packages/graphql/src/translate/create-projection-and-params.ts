@@ -215,6 +215,10 @@ function createProjectionAndParams({
                 }
             }
 
+            const initApocParamsStrs = [
+                "auth: $auth",
+                ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
+            ];
             const apocParams = Object.entries(field.args).reduce(
                 (r: { strs: string[]; params: any }, entry) => {
                     const argName = `${param}_${entry[0]}`;
@@ -224,9 +228,9 @@ function createProjectionAndParams({
                         params: { ...r.params, [argName]: entry[1] },
                     };
                 },
-                { strs: ["auth: $auth"], params: {} }
+                { strs: initApocParamsStrs, params: {} }
             ) as { strs: string[]; params: any };
-            res.params = { ...res.params, ...apocParams.params };
+            res.params = { ...res.params, ...apocParams.params, cypherParams: context.cypherParams };
 
             const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
             const apocWhere = `${
