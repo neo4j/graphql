@@ -34,6 +34,7 @@ import {
     UnionTypeDefinitionNode,
 } from "graphql";
 import {
+    upperFirst,
     SchemaComposer,
     InputTypeComposer,
     ObjectTypeComposer,
@@ -43,7 +44,6 @@ import pluralize from "pluralize";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
 import { PrimitiveField, Auth } from "../types";
-import { upperFirstLetter } from "../utils";
 import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import * as Scalars from "./scalars";
@@ -62,9 +62,9 @@ function makeAugmentedSchema(
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
     /*
-        Issue caused by a combination of GraphQL Compose removing types and 
+        Issue caused by a combination of GraphQL Compose removing types and
         that we are not adding Points to the validation schema. This should be a
-        temporary fix and does not detriment usability of the library. 
+        temporary fix and does not detriment usability of the library.
     */
     // validateTypeDefs(document);
 
@@ -443,11 +443,11 @@ function makeAugmentedSchema(
                     const concatFieldName = `${rel.fieldName}_${n.name}`;
                     const createField = rel.typeMeta.array ? `[${n.name}CreateInput!]` : `${n.name}CreateInput`;
                     const updateField = `${n.name}UpdateInput`;
-                    const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${n.name}FieldInput`;
-                    const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${
+                    const nodeFieldInputName = `${node.name}${upperFirst(rel.fieldName)}${n.name}FieldInput`;
+                    const nodeFieldUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}${
                         n.name
                     }UpdateFieldInput`;
-                    const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${
+                    const nodeFieldDeleteInputName = `${node.name}${upperFirst(rel.fieldName)}${
                         n.name
                     }DeleteFieldInput`;
 
@@ -532,9 +532,9 @@ function makeAugmentedSchema(
             const n = nodes.find((x) => x.name === rel.typeMeta.name) as Node;
             const createField = rel.typeMeta.array ? `[${n.name}CreateInput!]` : `${n.name}CreateInput`;
             const updateField = `${n.name}UpdateInput`;
-            const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
-            const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}UpdateFieldInput`;
-            const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}DeleteFieldInput`;
+            const nodeFieldInputName = `${node.name}${upperFirst(rel.fieldName)}FieldInput`;
+            const nodeFieldUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateFieldInput`;
+            const nodeFieldDeleteInputName = `${node.name}${upperFirst(rel.fieldName)}DeleteFieldInput`;
             const connectField = rel.typeMeta.array ? `[${n.name}ConnectFieldInput!]` : `${n.name}ConnectFieldInput`;
             const disconnectField = rel.typeMeta.array
                 ? `[${n.name}DisconnectFieldInput!]`
