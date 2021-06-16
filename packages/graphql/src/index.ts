@@ -17,5 +17,8 @@
  * limitations under the License.
  */
 
+import { upperFirst } from "graphql-compose";
+
+export { upperFirst };
 export { DriverConfig, GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo, GraphQLSortArg } from "./types";
 export { Neo4jGraphQL, Neo4jGraphQLConstructor } from "./classes";

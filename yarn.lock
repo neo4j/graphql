@@ -917,7 +917,6 @@ __metadata:
     semver: 7.3.5
     ts-jest: 26.1.4
     typescript: 3.9.7
-    upper-case-first: ^2.0.2
   peerDependencies:
     graphql: ^15.0.0
     neo4j-driver: ^4.1.0
@@ -960,7 +959,6 @@ __metadata:
     semver: 7.3.5
     ts-jest: 26.1.4
     typescript: 3.9.7
-    upper-case-first: ^2.0.2
   peerDependencies:
     graphql: ^15.0.0
     neo4j-driver: ^4.1.0

@@ -108,7 +108,7 @@ type Mutation {
 }
 
 type Query {
-  movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
   testQuery(input: ExampleInput): String
   testCypherQuery(input: ExampleInput): String
 }
