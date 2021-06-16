@@ -69,8 +69,7 @@
         "graphql-compose": "^7.25.1",
         "graphql-parse-resolve-info": "^4.11.0",
         "jsonwebtoken": "^8.5.1",
-        "pluralize": "^8.0.0",
-        "upper-case-first": "^2.0.2"
+        "pluralize": "^8.0.0"
     },
     "peerDependencies": {
         "graphql": "^15.0.0",

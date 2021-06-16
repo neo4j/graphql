@@ -102,7 +102,7 @@ type Mutation {
 }
 
 type Query {
-  movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
 }
 ```
 
@@ -205,7 +205,7 @@ type Mutation {
 }
 
 type Query {
-  machines(where: MachineWhere, options: MachineOptions): [Machine]!
+  machines(where: MachineWhere, options: MachineOptions): [Machine!]!
 }
 ```
 
@@ -284,7 +284,7 @@ type Mutation {
 }
 
 type Query {
-  movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
 }
 ```
 
@@ -363,7 +363,7 @@ type Mutation {
 }
 
 type Query {
-  machines(where: MachineWhere, options: MachineOptions): [Machine]!
+  machines(where: MachineWhere, options: MachineOptions): [Machine!]!
 }
 ```
 

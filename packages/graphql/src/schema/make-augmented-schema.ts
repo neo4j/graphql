@@ -34,6 +34,7 @@ import {
     UnionTypeDefinitionNode,
 } from "graphql";
 import {
+    upperFirst,
     SchemaComposer,
     InputTypeComposer,
     ObjectTypeComposer,
@@ -43,7 +44,6 @@ import pluralize from "pluralize";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
 import { PrimitiveField, Auth, CustomEnumField } from "../types";
-import { upperFirstLetter } from "../utils";
 import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import * as Scalars from "./scalars";
@@ -588,9 +588,10 @@ function makeAugmentedSchema(
 
                 refNodes.forEach((n) => {
                     const concatFieldName = `${rel.fieldName}_${n.name}`;
-                    const unionPrefix = `${node.name}${upperFirstLetter(rel.fieldName)}${n.name}`;
+                    const unionPrefix = `${node.name}${upperFirst(rel.fieldName)}${n.name}`;
 
                     const updateField = `${n.name}UpdateInput`;
+
                     const nodeFieldInputName = `${unionPrefix}FieldInput`;
                     const nodeFieldUpdateInputName = `${unionPrefix}UpdateFieldInput`;
                     const nodeFieldDeleteInputName = `${unionPrefix}DeleteFieldInput`;
@@ -600,7 +601,7 @@ function makeAugmentedSchema(
                         [n.name]: `${n.name}Where`,
                     });
 
-                    const createName = `${node.name}${upperFirstLetter(rel.fieldName)}${n.name}CreateFieldInput`;
+                    const createName = `${node.name}${upperFirst(rel.fieldName)}${n.name}CreateFieldInput`;
                     const create = rel.typeMeta.array ? `[${createName}!]` : createName;
                     if (!composer.has(createName)) {
                         composer.createInputTC({
@@ -612,7 +613,7 @@ function makeAugmentedSchema(
                         });
                     }
 
-                    const connectName = `${node.name}${upperFirstLetter(rel.fieldName)}ConnectFieldInput`;
+                    const connectName = `${node.name}${upperFirst(rel.fieldName)}ConnectFieldInput`;
                     const connect = rel.typeMeta.array ? `[${connectName}!]` : `${connectName}`;
                     if (!composer.has(connectName)) {
                         composer.createInputTC({
@@ -635,7 +636,7 @@ function makeAugmentedSchema(
                         name: nodeFieldUpdateInputName,
                         fields: {
                             ...(rel.properties ? { properties: `${rel.properties}UpdateInput` } : {}),
-                            where: `${node.name}${upperFirstLetter(rel.fieldName)}ConnectionWhere`,
+                            where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
                             update: updateField,
                             connect,
                             disconnect: rel.typeMeta.array
@@ -731,10 +732,11 @@ function makeAugmentedSchema(
 
             const n = nodes.find((x) => x.name === rel.typeMeta.name) as Node;
             const updateField = `${n.name}UpdateInput`;
-            const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
-            const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}UpdateFieldInput`;
-            const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}DeleteFieldInput`;
-            const nodeFieldDisconnectInputName = `${node.name}${upperFirstLetter(rel.fieldName)}DisconnectFieldInput`;
+
+            const nodeFieldInputName = `${node.name}${upperFirst(rel.fieldName)}FieldInput`;
+            const nodeFieldUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateFieldInput`;
+            const nodeFieldDeleteInputName = `${node.name}${upperFirst(rel.fieldName)}DeleteFieldInput`;
+            const nodeFieldDisconnectInputName = `${node.name}${upperFirst(rel.fieldName)}DisconnectFieldInput`;
 
             whereInput.addFields({
                 ...{ [rel.fieldName]: `${n.name}Where`, [`${rel.fieldName}_NOT`]: `${n.name}Where` },
@@ -753,7 +755,7 @@ function makeAugmentedSchema(
                 anyNonNullRelProperties = relFields.some((field) => field.typeMeta.required);
             }
 
-            const createName = `${node.name}${upperFirstLetter(rel.fieldName)}CreateFieldInput`;
+            const createName = `${node.name}${upperFirst(rel.fieldName)}CreateFieldInput`;
             const create = rel.typeMeta.array ? `[${createName}!]` : createName;
             if (!composer.has(createName)) {
                 composer.createInputTC({
@@ -767,7 +769,7 @@ function makeAugmentedSchema(
                 });
             }
 
-            const connectName = `${node.name}${upperFirstLetter(rel.fieldName)}ConnectFieldInput`;
+            const connectName = `${node.name}${upperFirst(rel.fieldName)}ConnectFieldInput`;
             const connect = rel.typeMeta.array ? `[${connectName}!]` : connectName;
             if (!composer.has(connectName)) {
                 composer.createInputTC({
@@ -798,7 +800,7 @@ function makeAugmentedSchema(
                 name: nodeFieldUpdateInputName,
                 fields: {
                     ...(rel.properties ? { properties: `${rel.properties}UpdateInput` } : {}),
-                    where: `${node.name}${upperFirstLetter(rel.fieldName)}ConnectionWhere`,
+                    where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
                     update: updateField,
                     connect,
                     disconnect: rel.typeMeta.array
@@ -821,7 +823,7 @@ function makeAugmentedSchema(
                 composer.createInputTC({
                     name: nodeFieldDeleteInputName,
                     fields: {
-                        where: `${node.name}${upperFirstLetter(rel.fieldName)}ConnectionWhere`,
+                        where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
                         ...(n.relationFields.length
                             ? {
                                   delete: `${n.name}DeleteInput`,
@@ -835,7 +837,7 @@ function makeAugmentedSchema(
                 composer.createInputTC({
                     name: nodeFieldDisconnectInputName,
                     fields: {
-                        where: `${node.name}${upperFirstLetter(rel.fieldName)}ConnectionWhere`,
+                        where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
                         ...(n.relationFields.length
                             ? {
                                   disconnect: `${n.name}DisconnectInput`,

@@ -495,9 +495,9 @@ type Mutation {
 union Publication = Book | Journal
 
 type Query {
-  authors(where: AuthorWhere, options: AuthorOptions): [Author]!
-  books(where: BookWhere, options: BookOptions): [Book]!
-  journals(where: JournalWhere, options: JournalOptions): [Journal]!
+  authors(where: AuthorWhere, options: AuthorOptions): [Author!]!
+  books(where: BookWhere, options: BookOptions): [Book!]!
+  journals(where: JournalWhere, options: JournalOptions): [Journal!]!
 }
 
 input QueryOptions {
