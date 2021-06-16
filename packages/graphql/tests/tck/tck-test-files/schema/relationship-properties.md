@@ -335,8 +335,8 @@ type Mutation {
 }
 
 type Query {
-  actors(where: ActorWhere, options: ActorOptions): [Actor]!
-  movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor!]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
 }
 
 enum SortDirection {
