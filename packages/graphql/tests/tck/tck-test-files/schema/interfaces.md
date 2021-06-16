@@ -177,7 +177,7 @@ interface Node {
 }
 
 type Query {
-  movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
 }
 
 enum SortDirection {

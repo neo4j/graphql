@@ -50,6 +50,39 @@ describe("OGM", () => {
         await session.close();
     });
 
+    test("should filter the document and remove directives such as auth", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Movie @auth(rules: [{ isAuthenticated: true }]){
+                id: ID
+            }
+        `;
+
+        const ogm = new OGM({ typeDefs, driver });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        try {
+            await ogm.checkNeo4jCompat();
+
+            await session.run(`
+                CREATE (:Movie {id: "${id}"})
+            `);
+
+            const Movie = ogm.model("Movie");
+
+            const movies = await Movie?.find({ where: { id } });
+
+            // should return without error due to the fact auth should be removed
+            expect(movies).toEqual([{ id }]);
+        } finally {
+            await session.close();
+        }
+    });
+
     describe("find", () => {
         test("find a single node", async () => {
             const session = driver.session();

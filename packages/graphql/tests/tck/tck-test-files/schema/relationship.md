@@ -206,8 +206,8 @@ type Mutation {
 }
 
 type Query {
-  actors(where: ActorWhere, options: ActorOptions): [Actor]!
-  movies(where: MovieWhere, options: MovieOptions): [Movie]!
+  actors(where: ActorWhere, options: ActorOptions): [Actor!]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
 }
 
 enum SortDirection {
@@ -503,20 +503,6 @@ input MovieWhere {
   actors_NOT: ActorWhere
 }
 
-type Mutation {
-  createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
-  deleteActors(where: ActorWhere, delete: ActorDeleteInput): DeleteInfo!
-  updateActors(where: ActorWhere, update: ActorUpdateInput, connect: ActorConnectInput, disconnect: ActorDisconnectInput, create: ActorRelationInput, delete: ActorDeleteInput): UpdateActorsMutationResponse!
-  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-  deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
-  updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
-}
-
-type Query {
-  actors(where: ActorWhere, options: ActorOptions): [Actor]!
-  movies(where: MovieWhere, options: MovieOptions): [Movie]!
-}
-
 enum SortDirection {
   """Sort by field values in ascending order."""
   ASC
@@ -531,6 +517,40 @@ type UpdateActorsMutationResponse {
 
 type UpdateMoviesMutationResponse {
   movies: [Movie!]!
+}
+
+type Mutation {
+  createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
+  deleteActors(
+    where: ActorWhere
+    delete: ActorDeleteInput
+  ): DeleteInfo!
+  updateActors(
+    where: ActorWhere
+    update: ActorUpdateInput
+    connect: ActorConnectInput
+    disconnect: ActorDisconnectInput
+    create: ActorRelationInput
+    delete: ActorDeleteInput
+  ): UpdateActorsMutationResponse!
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+  deleteMovies(
+    where: MovieWhere
+    delete: MovieDeleteInput
+  ): DeleteInfo!
+  updateMovies(
+    where: MovieWhere
+    update: MovieUpdateInput
+    connect: MovieConnectInput
+    disconnect: MovieDisconnectInput
+    create: MovieRelationInput
+    delete: MovieDeleteInput
+  ): UpdateMoviesMutationResponse!
+}
+
+type Query {
+  actors(where: ActorWhere, options: ActorOptions): [Actor!]!
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
 }
 ```
 
