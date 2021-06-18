@@ -155,6 +155,8 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: "Document", definitions: extraDefinitions }));
     }
 
+    Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
+
     const nodes = objectNodes.map((definition) => {
         if (definition.name.value === "PageInfo") {
             throw new Error(
@@ -1053,8 +1055,6 @@ function makeAugmentedSchema(
             },
         });
     });
-
-    Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
 
     if (!Object.values(composer.Mutation.getFields()).length) {
         composer.delete("Mutation");
