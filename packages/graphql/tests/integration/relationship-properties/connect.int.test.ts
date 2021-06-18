@@ -59,7 +59,7 @@ describe("Relationship properties - connect", () => {
         const session = driver.session();
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
-        const screenTime = Math.floor((Math.random() * 1e10) / Math.random());
+        const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
 
         const source = `
             mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
@@ -68,9 +68,9 @@ describe("Relationship properties - connect", () => {
                         {
                             title: $movieTitle
                             actors: {
-                                connect: [{ 
+                                connect: [{
                                     where: { name: $actorName },
-                                    properties: { screenTime: $screenTime }, 
+                                    properties: { screenTime: $screenTime },
                                 }]
                             }
                         }
@@ -157,7 +157,7 @@ describe("Relationship properties - connect", () => {
         const session = driver.session();
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
-        const screenTime = Math.floor((Math.random() * 1e10) / Math.random());
+        const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
 
         const source = `
             mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
@@ -240,7 +240,7 @@ describe("Relationship properties - connect", () => {
         const session = driver.session();
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
-        const screenTime = Math.floor((Math.random() * 1e10) / Math.random());
+        const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
 
         const source = `
             mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
@@ -335,7 +335,7 @@ describe("Relationship properties - connect", () => {
         const session = driver.session();
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
-        const screenTime = Math.floor((Math.random() * 1e10) / Math.random());
+        const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
 
         const source = `
             mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
