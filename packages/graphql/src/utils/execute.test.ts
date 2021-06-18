@@ -21,6 +21,7 @@ import { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import execute from "./execute";
+import environment from "../environment";
 
 describe("execute", () => {
     test("should execute return records.toObject", async () => {
@@ -82,6 +83,8 @@ describe("execute", () => {
                 });
 
                 expect(result).toEqual([{ title }]);
+                // @ts-ignore
+                expect(driver._userAgent).toEqual(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
             })
         );
     });

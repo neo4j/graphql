@@ -53,7 +53,7 @@ async function execute(input: {
     }
 
     // @ts-ignore: Required to set connection user agent
-    input.context.driver._userAgent = `${environment.NPM_PACKAGE_VERSION}/${environment.NPM_PACKAGE_NAME}`; // eslint-disable-line no-underscore-dangle
+    input.context.driver._userAgent = `${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`; // eslint-disable-line no-underscore-dangle
 
     const session = input.context.driver.session(sessionParams);
 
