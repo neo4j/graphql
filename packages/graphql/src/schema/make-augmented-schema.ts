@@ -39,8 +39,10 @@ import {
     InputTypeComposer,
     ObjectTypeComposer,
     InputTypeComposerFieldConfigAsObjectDefinition,
+    ObjectTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
 import pluralize from "pluralize";
+import { Integer, isInt } from "neo4j-driver";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
 import { PrimitiveField, Auth, CustomEnumField } from "../types";
@@ -155,6 +157,8 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: "Document", definitions: extraDefinitions }));
     }
 
+    Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
+
     const nodes = objectNodes.map((definition) => {
         if (definition.name.value === "PageInfo") {
             throw new Error(
@@ -255,12 +259,25 @@ function makeAugmentedSchema(
                 ...relationship.fields?.reduce((res, f) => {
                     const typeMeta = getFieldTypeMeta(f);
 
+                    const newField = {
+                        description: f.description?.value,
+                        type: typeMeta.pretty,
+                    } as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
+
+                    if (["Int", "Float"].includes(typeMeta.name)) {
+                        newField.resolve = (source) => {
+                            // @ts-ignore: outputValue is unknown, and to cast to object would be an antipattern
+                            if (isInt(source[f.name.value])) {
+                                return (source[f.name.value] as Integer).toNumber();
+                            }
+
+                            return source[f.name.value];
+                        };
+                    }
+
                     return {
                         ...res,
-                        [f.name.value]: {
-                            description: f.description?.value,
-                            type: typeMeta.pretty,
-                        },
+                        [f.name.value]: newField,
                     };
                 }, {}),
             },
@@ -1054,8 +1071,6 @@ function makeAugmentedSchema(
         });
     });
 
-    Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
-
     if (!Object.values(composer.Mutation.getFields()).length) {
         composer.delete("Mutation");
     }
@@ -1080,8 +1095,9 @@ function makeAugmentedSchema(
     }
 
     unions.forEach((union) => {
-        // eslint-disable-next-line no-underscore-dangle
-        generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
+        if (!generatedResolvers[union.name.value]) {
+            generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
+        }
     });
 
     const schema = makeExecutableSchema({

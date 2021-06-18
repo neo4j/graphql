@@ -19,6 +19,7 @@
 
 import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 import { ExtensionsDirective, DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
+import { isInt, Integer } from "neo4j-driver";
 import getFieldTypeMeta from "./get-field-type-meta";
 import parseValueNode from "./parse-value-node";
 import { BaseField } from "../types";
@@ -65,6 +66,17 @@ export function objectFieldsToComposeFields(
         if (field.otherDirectives.length) {
             newField.extensions = {
                 directives: graphqlDirectivesToCompose(field.otherDirectives),
+            };
+        }
+
+        if (["Int", "Float"].includes(field.typeMeta.name)) {
+            newField.resolve = (source) => {
+                // @ts-ignore: outputValue is unknown, and to cast to object would be an antipattern
+                if (isInt(source[field.fieldName])) {
+                    return (source[field.fieldName] as Integer).toNumber();
+                }
+
+                return source[field.fieldName];
             };
         }
 
