@@ -32,7 +32,7 @@ type Query {
 Changes to note for migration:
 
 * Query fields were previously named in the singular, and in _PascalCase_ - they are now pluralized and in _camelCase_
-* Query return types were previously in nullable arrays - the array is now non-nullable
+* Query return types were previously in nullable lists of nullable types - they are now non-nullable lists of non-nullable types, _e.g._ `[Movie]` is now `[Movie!]!`; ensuring either an array of defined `Movie` objects or an empty array.
 * In this example, the `_MovieFilter` type has essentially been renamed to `MovieWhere`, the `filter` arguments renamed to `where`, and the top-level field arguments `title` and `averageRating` removed - see <<migration-guide-queries-filtering>> below
 * The `first`, `offset` and `orderBy` have been collapsed into the `MovieOptions` type and renamed `limit`, `skip` and `sort`, respectively - see <<migration-guide-queries-options>> below
 
