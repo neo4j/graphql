@@ -1081,7 +1081,9 @@ function makeAugmentedSchema(
 
     unions.forEach((union) => {
         // eslint-disable-next-line no-underscore-dangle
-        generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
+        if (!generatedResolvers[union.name.value]) {
+            generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
+        }
     });
 
     const schema = makeExecutableSchema({
