@@ -3,6 +3,7 @@ import * as path from "path";
 import * as config from "./config";
 import createDebug from "./debugger";
 import * as graphql from "./gql";
+import expressPlayground from 'graphql-playground-middleware-express';
 
 export const app = express();
 graphql.server.applyMiddleware({ app });
@@ -21,7 +22,6 @@ if (config.NODE_ENV === "production") {
 
 if (config.NODE_ENV === "development"){
     debug("Development serving graphql-playground");
-    const expressPlayground = require('graphql-playground-middleware-express').default
     app.get('/playground', expressPlayground({ endpoint: '/graphql' }))
     console.log(
         `Serving the GraphQL Playground on http://localhost:${config.HTTP_PORT}/playground`,

@@ -36,7 +36,7 @@
         "apollo-server-testing": "2.19.0",
         "cross-env": "7.0.3",
         "faker": "5.1.0",
-        "graphql-playground-middleware-express": "^1.7.22",
+        "graphql-playground-middleware-express": "1.7.22",
         "jest": "26.6.3",
         "nodemon": "2.0.6",
         "randomstring": "1.1.5",
