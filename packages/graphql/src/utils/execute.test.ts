@@ -67,6 +67,8 @@ describe("execute", () => {
                             close: () => true,
                         };
                     },
+                    // @ts-ignore
+                    _config: {},
                 };
 
                 // @ts-ignore
@@ -85,6 +87,10 @@ describe("execute", () => {
                 expect(result).toEqual([{ title }]);
                 // @ts-ignore
                 expect(driver._userAgent).toEqual(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
+                // @ts-ignore
+                expect(driver._config.userAgent).toEqual(
+                    `${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`
+                );
             })
         );
     });
