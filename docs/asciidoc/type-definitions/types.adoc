@@ -14,6 +14,17 @@ type User {
 }
 ----
 
+[[type-definitions-types-date]]
+== `Date`
+"yyyy-mm-dd" date string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-date[date] temporal type.
+
+[source, graphql]
+----
+type Movie {
+    releaseDate: Date
+}
+----
+
 [[type-definitions-types-bigint]]
 == `BigInt`
 Supports up to 64 bit integers, serialized as strings in variables and in data responses. Shares the same <<schema-filtering-numerical-operators>> as the other numeric types.
