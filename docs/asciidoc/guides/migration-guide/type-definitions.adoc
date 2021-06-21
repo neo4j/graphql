@@ -100,9 +100,9 @@ These all relate to database indexes and constraints, which are not currently su
 
 Supported as you would expect, with additional <<type-definitions-types-bigint>> support for 64 bit integers.
 
-=== Temporal Types (`DateTime`)
+=== Temporal Types (`DateTime`, `Date`)
 
-Temporal Types have been massively simplified in `@neo4j/graphql`, down to a single type, `DateTime`, which uses ISO 8601 strings only for parsing and serialization.
+Temporal Types have been massively simplified in `@neo4j/graphql`, down to `DateTime` and `Date`, which uses ISO 8601 and "yyyy-mm-dd" strings respectively for parsing and serialization.
 
 In terms of migrating from the old library, the `formatted` field of the old `DateTime` type now becomes the value itself. For example, used in a query:
 
