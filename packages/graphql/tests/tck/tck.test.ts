@@ -255,7 +255,7 @@ describe("TCK Generated tests", () => {
                         Query: queries,
                         Mutation: mutations,
                         ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
-                            if (printSchema(neoSchema.schema).includes(name)) {
+                            if (printSchema(neoSchema.schema).includes(`scalar ${name}\n`)) {
                                 res[name] = scalar;
                             }
                             return res;
