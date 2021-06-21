@@ -1079,7 +1079,7 @@ function makeAugmentedSchema(
     let generatedResolvers: any = {
         ...composer.getResolveMethods(),
         ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
-            if (generatedTypeDefs.includes(`scalar ${name}`)) {
+            if (generatedTypeDefs.includes(`scalar ${name}\n`)) {
                 res[name] = scalar;
             }
             return res;
