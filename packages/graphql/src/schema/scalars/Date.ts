@@ -17,7 +17,16 @@
  * limitations under the License.
  */
 
-export { default as BigInt } from "./BigInt";
-export { default as DateTime } from "./DateTime";
-export { default as Date } from "./Date";
-export { default as ID } from "./ID";
+import { GraphQLScalarType } from "graphql";
+import neo4j from "neo4j-driver";
+
+export default new GraphQLScalarType({
+    name: "Date",
+    description: "A date, represented as a 'yyyy-mm-dd' string",
+    serialize: (value: typeof neo4j.types.Date) => {
+        return new Date(value.toString()).toISOString().split("T")[0];
+    },
+    parseValue: (value: string) => {
+        return neo4j.types.Date.fromStandardDate(new Date(value));
+    },
+});
