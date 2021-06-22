@@ -49,7 +49,7 @@ function getJWT(context: Context): any {
         return result;
     }
 
-    const authorization = (req.headers.authorization || req.headers.Authorization || req.cookies.token) as string;
+    const authorization = (req.headers.authorization || req.headers.Authorization || req.cookies?.token) as string;
     if (!authorization) {
         debug("Could not get .authorization, .Authorization or .cookies.token from req");
 
