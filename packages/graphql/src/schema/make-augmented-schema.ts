@@ -966,6 +966,8 @@ function makeAugmentedSchema(
                     name: `${connectionField.typeMeta.name}Options`,
                     fields: {
                         sort: connectionSort.NonNull.List,
+                        skip: "Int",
+                        limit: "Int",
                     },
                 });
 
@@ -1096,6 +1098,7 @@ function makeAugmentedSchema(
 
     unions.forEach((union) => {
         if (!generatedResolvers[union.name.value]) {
+            // eslint-disable-next-line no-underscore-dangle
             generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
         }
     });

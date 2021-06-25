@@ -229,4 +229,90 @@ describe("createConnectionAndParams", () => {
             RETURN { edges: edges } AS actorsConnection
             }`);
     });
+
+    test("Returns an entry with skip and limit args", () => {
+        // @ts-ignore
+        const mockedNeo4jGraphQL = mocked(new Neo4jGraphQL(), true);
+        // @ts-ignore
+        mockedNeo4jGraphQL.nodes = [
+            // @ts-ignore
+            {
+                name: "Actor",
+            },
+        ];
+        // @ts-ignore
+        mockedNeo4jGraphQL.relationships = [
+            // @ts-ignore
+            {
+                name: "MovieActorsRelationship",
+                fields: [],
+            },
+        ];
+
+        const resolveTree: ResolveTree = {
+            alias: "actorsConnection",
+            name: "actorsConnection",
+            args: {
+                options: {
+                    skip: 20,
+                    limit: 20,
+                },
+            },
+            fieldsByTypeName: {
+                MovieActorsConnection: {
+                    edges: {
+                        alias: "edges",
+                        name: "edges",
+                        args: {},
+                        fieldsByTypeName: {
+                            MovieActorsRelationship: {
+                                screenTime: {
+                                    alias: "screenTime",
+                                    name: "screenTime",
+                                    args: {},
+                                    fieldsByTypeName: {},
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        const field: ConnectionField = {
+            fieldName: "actorsConnection",
+            relationshipTypeName: "MovieActorsRelationship",
+            // @ts-ignore
+            typeMeta: {
+                name: "MovieActorsConnection",
+                required: true,
+            },
+            otherDirectives: [],
+            // @ts-ignore
+            relationship: {
+                fieldName: "actors",
+                type: "ACTED_IN",
+                direction: "IN",
+                // @ts-ignore
+                typeMeta: {
+                    name: "Actor",
+                },
+            },
+        };
+
+        // @ts-ignore
+        const context: Context = { neoSchema: mockedNeo4jGraphQL };
+
+        const entry = createConnectionAndParams({ resolveTree, field, context, nodeVariable: "this" });
+
+        expect(dedent(entry[0])).toEqual(dedent`CALL {
+            WITH this
+            MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+            WITH this_acted_in, this_actor
+            SKIP 20
+            LIMIT 20
+            WITH collect({ screenTime: this_acted_in.screenTime }) AS edges
+            RETURN { edges: edges } AS actorsConnection
+            }`);
+    });
 });

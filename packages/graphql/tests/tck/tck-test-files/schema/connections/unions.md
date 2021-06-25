@@ -225,6 +225,8 @@ type BookAuthorConnection {
 
 input BookAuthorConnectionOptions {
   sort: [BookAuthorConnectionSort!]
+  skip: Int
+  limit: Int
 }
 
 input BookAuthorConnectionSort {
@@ -370,6 +372,8 @@ type JournalAuthorConnection {
 
 input JournalAuthorConnectionOptions {
   sort: [JournalAuthorConnectionSort!]
+  skip: Int
+  limit: Int
 }
 
 input JournalAuthorConnectionSort {

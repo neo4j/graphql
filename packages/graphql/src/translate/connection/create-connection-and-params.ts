@@ -44,6 +44,8 @@ function createConnectionAndParams({
     const subquery = ["CALL {", `WITH ${nodeVariable}`];
 
     const sortInput = (resolveTree.args.options as ConnectionOptionsArg)?.sort;
+    const skipInput = (resolveTree.args.options as ConnectionOptionsArg)?.skip;
+    const limitInput = (resolveTree.args.options as ConnectionOptionsArg)?.limit;
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
     const relationshipVariable = `${nodeVariable}_${field.relationship.type.toLowerCase()}`;
@@ -201,17 +203,29 @@ function createConnectionAndParams({
             subquery.push(`WHERE ${whereClause}`);
         }
 
-        if (sortInput && sortInput.length) {
-            const sort = sortInput.map((s) =>
-                [
-                    ...Object.entries(s.relationship || []).map(
-                        ([f, direction]) => `${relationshipVariable}.${f} ${direction}`
-                    ),
-                    ...Object.entries(s.node || []).map(([f, direction]) => `${relatedNodeVariable}.${f} ${direction}`),
-                ].join(", ")
-            );
+        if (sortInput || limitInput || skipInput) {
             subquery.push(`WITH ${relationshipVariable}, ${relatedNodeVariable}`);
-            subquery.push(`ORDER BY ${sort.join(", ")}`);
+
+            if (skipInput) {
+                subquery.push(`SKIP ${skipInput}`);
+            }
+            if (limitInput) {
+                subquery.push(`LIMIT ${limitInput}`);
+            }
+
+            if (sortInput && sortInput.length) {
+                const sort = sortInput.map((s) =>
+                    [
+                        ...Object.entries(s.relationship || []).map(
+                            ([f, direction]) => `${relationshipVariable}.${f} ${direction}`
+                        ),
+                        ...Object.entries(s.node || []).map(
+                            ([f, direction]) => `${relatedNodeVariable}.${f} ${direction}`
+                        ),
+                    ].join(", ")
+                );
+                subquery.push(`ORDER BY ${sort.join(", ")}`);
+            }
         }
 
         const nestedSubqueries: string[] = [];

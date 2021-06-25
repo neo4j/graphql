@@ -87,6 +87,8 @@ type MovieMoviesConnection {
 
 input MovieMoviesConnectionOptions {
   sort: [MovieMoviesConnectionSort!]
+  skip: Int
+  limit: Int
 }
 
 input MovieMoviesConnectionSort {

@@ -110,6 +110,8 @@ type ActorMoviesConnection {
 
 input ActorMoviesConnectionOptions {
     sort: [ActorMoviesConnectionSort!]
+    skip: Int
+    limit: Int
 }
 
 input ActorMoviesConnectionSort {
@@ -227,6 +229,8 @@ type MovieActorsConnection {
 
 input MovieActorsConnectionOptions {
     sort: [MovieActorsConnectionSort!]
+    skip: Int
+    limit: Int
 }
 
 input MovieActorsConnectionSort {
