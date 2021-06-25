@@ -115,6 +115,44 @@ function makeAugmentedSchema(
         },
     });
 
+    composer.createScalarTC({
+        name: "Cursor",
+        description: "Opaque cursor used for pagination (Relay)",
+        serialize: (val: string) => `${val}`,
+    });
+
+    composer.createObjectTC({
+        name: "PageInfo",
+        description: "Pagination information (Relay)",
+        fields: {
+            hasNextPage: "Boolean!",
+            hasPreviousPage: "Boolean!",
+            startCursor: "Cursor",
+            endCursor: "Cursor",
+        },
+    });
+
+    composer.createObjectTC({
+        name: "PageCursor",
+        description: "Information for a page of data when using page-based pagination (Relay)",
+        fields: {
+            cursor: "Cursor!",
+            page: "Int!",
+            isCurrent: "Boolean!",
+        },
+    });
+
+    composer.createObjectTC({
+        name: "PageCursors",
+        description: "Pagination information when using page-based pagination (Relay)",
+        fields: {
+            first: "PageCursor",
+            last: "PageCursor",
+            previous: "PageCursor",
+            around: "[PageCursor!]!",
+        },
+    });
+
     const customResolvers = getCustomResolvers(document);
 
     const scalars = document.definitions.filter((x) => x.kind === "ScalarTypeDefinition") as ScalarTypeDefinitionNode[];
@@ -913,6 +951,9 @@ function makeAugmentedSchema(
                 name: connectionField.typeMeta.name,
                 fields: {
                     edges: relationship.NonNull.List.NonNull,
+                    totalCount: "Int!",
+                    pageInfo: "PageInfo!",
+                    pageCursors: "PageCursors!",
                 },
             });
 

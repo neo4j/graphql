@@ -106,6 +106,9 @@ input ActorMoviesConnectFieldInput {
 
 type ActorMoviesConnection {
     edges: [ActorMoviesRelationship!]!
+    pageInfo: PageInfo!
+    pageCursors: PageCursors!
+    totalCount: Int!
 }
 
 input ActorMoviesConnectionOptions {
@@ -203,6 +206,9 @@ type CreateMoviesMutationResponse {
     movies: [Movie!]!
 }
 
+"""Opaque cursor used for pagination (Relay)"""
+scalar Cursor
+
 type DeleteInfo {
     nodesDeleted: Int!
     relationshipsDeleted: Int!
@@ -225,6 +231,9 @@ input MovieActorsConnectFieldInput {
 
 type MovieActorsConnection {
     edges: [MovieActorsRelationship!]!
+    totalCount: Int!
+    pageInfo: PageInfo!
+    pageCursors: PageCursors!
 }
 
 input MovieActorsConnectionOptions {
@@ -362,6 +371,29 @@ type Mutation {
         create: MovieRelationInput
         delete: MovieDeleteInput
     ): UpdateMoviesMutationResponse!
+}
+
+"""Information for a page of data when using page-based pagination (Relay)"""
+type PageCursor {
+    cursor: Cursor!
+    isCurrent: Boolean!
+    page: Int!
+}
+
+"""Pagination information when using page-based pagination (Relay)"""
+type PageCursors {
+    around: [PageCursor!]!
+    first: PageCursor
+    last: PageCursor
+    previous: PageCursor
+}
+
+"""Pagination information (Relay)"""
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: Cursor
+    endCursor: Cursor
 }
 
 type Query {

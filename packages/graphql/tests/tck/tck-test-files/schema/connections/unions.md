@@ -117,6 +117,9 @@ input AuthorPublicationsConnectFieldInput {
 
 type AuthorPublicationsConnection {
   edges: [AuthorPublicationsRelationship!]!
+  pageInfo: PageInfo!
+  pageCursors: PageCursors!
+  totalCount: Int!
 }
 
 input AuthorPublicationsConnectionWhere {
@@ -221,6 +224,9 @@ input BookAuthorConnectFieldInput {
 
 type BookAuthorConnection {
   edges: [BookAuthorRelationship!]!
+  pageInfo: PageInfo!
+  pageCursors: PageCursors!
+  totalCount: Int!
 }
 
 input BookAuthorConnectionOptions {
@@ -349,6 +355,9 @@ type CreateJournalsMutationResponse {
   journals: [Journal!]!
 }
 
+"""Opaque cursor used for pagination (Relay)"""
+scalar Cursor
+
 type DeleteInfo {
   nodesDeleted: Int!
   relationshipsDeleted: Int!
@@ -368,6 +377,9 @@ input JournalAuthorConnectFieldInput {
 
 type JournalAuthorConnection {
   edges: [JournalAuthorRelationship!]!
+  pageInfo: PageInfo!
+  pageCursors: PageCursors!
+  totalCount: Int!
 }
 
 input JournalAuthorConnectionOptions {
@@ -497,6 +509,29 @@ type Mutation {
 }
 
 union Publication = Book | Journal
+
+"""Information for a page of data when using page-based pagination (Relay)"""
+type PageCursor {
+    cursor: Cursor!
+    isCurrent: Boolean!
+    page: Int!
+}
+
+"""Pagination information when using page-based pagination (Relay)"""
+type PageCursors {
+    around: [PageCursor!]!
+    first: PageCursor
+    last: PageCursor
+    previous: PageCursor
+}
+
+"""Pagination information (Relay)"""
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: Cursor
+    endCursor: Cursor
+}
 
 type Query {
   authors(where: AuthorWhere, options: AuthorOptions): [Author!]!
