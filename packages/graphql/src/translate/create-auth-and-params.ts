@@ -100,7 +100,7 @@ function createAuthPredicate({
                 } else if (ctxPath) {
                     paramValue = dotProp.get({ value: context }, `value.${ctxPath}`) as string;
                 }
-                // To avoid loosing params on query execution
+                // To avoid losing params on query execution
                 if ((jwtPath || ctxPath) && paramValue === undefined) {
                     paramValue = null;
                 }
