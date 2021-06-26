@@ -100,9 +100,9 @@ function createAuthPredicate({
                 } else if (ctxPath) {
                     paramValue = dotProp.get({ value: context }, `value.${ctxPath}`) as string;
                 }
-                // To avoid loosing param on query execution
+                // To avoid loosing params on query execution
                 if ((jwtPath || ctxPath) && paramValue === undefined) {
-                    paramValue = null
+                    paramValue = null;
                 }
 
                 const param = `${chainStr}_${key}`;
