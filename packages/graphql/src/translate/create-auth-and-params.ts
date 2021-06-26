@@ -93,12 +93,16 @@ function createAuthPredicate({
             if (authableField) {
                 const [, jwtPath] = (value as string).split("$jwt.");
                 const [, ctxPath] = (value as string).split("$context.");
-                let paramValue: string = value as string;
+                let paramValue: string | null = value as string;
 
                 if (jwtPath) {
                     paramValue = dotProp.get({ value: jwt }, `value.${jwtPath}`) as string;
                 } else if (ctxPath) {
                     paramValue = dotProp.get({ value: context }, `value.${ctxPath}`) as string;
+                }
+                // To avoid loosing param on query execution
+                if ((jwtPath || ctxPath) && paramValue === undefined) {
+                    paramValue = null
                 }
 
                 const param = `${chainStr}_${key}`;
