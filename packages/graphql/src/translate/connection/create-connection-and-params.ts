@@ -206,13 +206,6 @@ function createConnectionAndParams({
         if (sortInput || limitInput || skipInput) {
             subquery.push(`WITH ${relationshipVariable}, ${relatedNodeVariable}`);
 
-            if (skipInput) {
-                subquery.push(`SKIP ${skipInput}`);
-            }
-            if (limitInput) {
-                subquery.push(`LIMIT ${limitInput}`);
-            }
-
             if (sortInput && sortInput.length) {
                 const sort = sortInput.map((s) =>
                     [
@@ -225,6 +218,12 @@ function createConnectionAndParams({
                     ].join(", ")
                 );
                 subquery.push(`ORDER BY ${sort.join(", ")}`);
+            }
+            if (skipInput) {
+                subquery.push(`SKIP ${skipInput}`);
+            }
+            if (limitInput) {
+                subquery.push(`LIMIT ${limitInput}`);
             }
         }
 
@@ -283,10 +282,10 @@ function createConnectionAndParams({
         }
 
         if (nestedSubqueries.length) subquery.push(nestedSubqueries.join("\n"));
-        subquery.push(`WITH collect({ ${elementsToCollect.join(", ")} }) AS edges`);
+        subquery.push(`WITH collect({ ${elementsToCollect.join(", ")} }) AS edges, count(*) as totalCount`);
     }
 
-    subquery.push(`RETURN { edges: edges } AS ${resolveTree.alias}`);
+    subquery.push(`RETURN { edges: edges, totalCount: totalCount } AS ${resolveTree.alias}`);
     subquery.push("}");
 
     const params = {

@@ -111,6 +111,14 @@ export interface ConnectionField extends BaseField {
     relationshipTypeName: string;
 }
 
+export interface ConnectionAndRelayArguments {
+    first?: number;
+    last?: number;
+    after?: string;
+    before?: string;
+    [key: string]: unknown;
+}
+
 /**
  * Representation of the `@cypher` directive and its meta.
  */

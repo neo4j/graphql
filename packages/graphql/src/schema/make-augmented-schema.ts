@@ -41,11 +41,12 @@ import {
     InputTypeComposerFieldConfigAsObjectDefinition,
     ObjectTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
+import { connectionFromArraySlice, cursorToOffset } from "graphql-relay";
 import pluralize from "pluralize";
 import { Integer, isInt } from "neo4j-driver";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth, CustomEnumField } from "../types";
+import { PrimitiveField, Auth, CustomEnumField, ConnectionAndRelayArguments } from "../types";
 import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import * as Scalars from "./scalars";
@@ -1019,6 +1020,23 @@ function makeAugmentedSchema(
                 [connectionField.fieldName]: {
                     type: connection.NonNull,
                     args: composeNodeArgs,
+                    resolve: (source, args: ConnectionAndRelayArguments) => {
+                        const { totalCount: count, edges } = source[connectionField.fieldName];
+
+                        const totalCount = typeof count === "number" ? count : count.toNumber();
+
+                        const offset = args.endCursor ? cursorToOffset(args.endCursor as string) : 0;
+
+                        const flatEdges = edges.map((edge: { node: Record<string, any> }) => edge.node);
+
+                        return {
+                            totalCount,
+                            ...connectionFromArraySlice(flatEdges, args, {
+                                sliceStart: offset,
+                                arrayLength: totalCount,
+                            }),
+                        };
+                    },
                 },
             });
 
