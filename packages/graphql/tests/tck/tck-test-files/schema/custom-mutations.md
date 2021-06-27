@@ -107,10 +107,16 @@ type Mutation {
   testCypherMutation(input: ExampleInput): String
 }
 
+"""Globally-identifiable node (Relay)"""
+interface Node {
+  id: ID!
+}
+
 type Query {
   movies(where: MovieWhere, options: MovieOptions): [Movie!]!
   testQuery(input: ExampleInput): String
   testCypherQuery(input: ExampleInput): String
+  node(id: ID!): Node!
 }
 
 type Subscription {

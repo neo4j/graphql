@@ -98,8 +98,14 @@ type Mutation {
   updateFiles(where: FileWhere, update: FileUpdateInput): UpdateFilesMutationResponse!
 }
 
+"""Globally-identifiable node (Relay)"""
+interface Node {
+  id: ID!
+}
+
 type Query {
   files(where: FileWhere, options: FileOptions): [File!]!
+  node(id: ID!): Node!
 }
 ```
 

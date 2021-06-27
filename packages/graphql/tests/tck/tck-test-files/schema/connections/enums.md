@@ -377,6 +377,11 @@ type Mutation {
     ): UpdateMoviesMutationResponse!
 }
 
+"""Globally-identifiable node (Relay)"""
+interface Node {
+    id: ID!
+}
+
 """Pagination information (Relay)"""
 type PageInfo {
     hasNextPage: Boolean!
@@ -388,6 +393,7 @@ type PageInfo {
 type Query {
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    node(id: ID!): Node!
 }
 
 enum SortDirection {

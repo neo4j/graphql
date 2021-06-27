@@ -9,7 +9,7 @@ Tests that the provided typeDefs return the correct schema.
 **TypeDefs**
 
 ```typedefs-input
-interface Node @auth(rules: [{allow: "*", operations: [READ]}]) {
+interface MovieNode @auth(rules: [{allow: "*", operations: [READ]}]) {
     id: ID
     movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
     customQuery: [Movie] @cypher(statement: """
@@ -18,9 +18,9 @@ interface Node @auth(rules: [{allow: "*", operations: [READ]}]) {
     """)
 }
 
-type Movie implements Node @auth(rules: [{allow: "*", operations: [READ]}]) {
+type Movie implements MovieNode @auth(rules: [{allow: "*", operations: [READ]}]) {
     id: ID
-    nodes: [Node]
+    nodes: [MovieNode]
     movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
     customQuery: [Movie] @cypher(statement: """
       MATCH (m:Movie)
@@ -44,10 +44,10 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
-type Movie implements Node {
+type Movie implements MovieNode {
   id: ID
   customQuery: [Movie]
-  nodes: [Node]
+  nodes: [MovieNode]
   movies(where: MovieWhere, options: MovieOptions): [Movie]
   moviesConnection(
     first: Int
@@ -183,7 +183,7 @@ type Mutation {
   updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
 }
 
-interface Node {
+interface MovieNode {
   movies: [Movie]
   id: ID
   customQuery: [Movie]
@@ -197,8 +197,14 @@ type PageInfo {
     endCursor: Cursor
 }
 
+"""Globally-identifiable node (Relay)"""
+interface Node {
+  id: ID!
+}
+
 type Query {
   movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+  node(id: ID!): Node!
 }
 
 enum SortDirection {

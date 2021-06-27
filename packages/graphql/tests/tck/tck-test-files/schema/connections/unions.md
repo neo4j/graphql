@@ -520,6 +520,11 @@ type Mutation {
 
 union Publication = Book | Journal
 
+"""Globally-identifiable node (Relay)"""
+interface Node {
+  id: ID!
+}
+
 """Pagination information (Relay)"""
 type PageInfo {
     hasNextPage: Boolean!
@@ -532,6 +537,7 @@ type Query {
   authors(where: AuthorWhere, options: AuthorOptions): [Author!]!
   books(where: BookWhere, options: BookOptions): [Book!]!
   journals(where: JournalWhere, options: JournalOptions): [Journal!]!
+  node(id: ID!): Node!
 }
 
 input QueryOptions {

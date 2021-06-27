@@ -17,8 +17,51 @@
  * limitations under the License.
  */
 
-import { InterfaceTypeDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
+import { InterfaceTypeDefinitionNode, Kind, ObjectTypeDefinitionNode } from "graphql";
 import equal from "deep-equal";
+
+const nodeInterfaceDef = {
+    kind: Kind.INTERFACE_TYPE_DEFINITION,
+    description: {
+        kind: Kind.STRING,
+        value: "Globally-identifiable node (Relay)",
+    },
+    name: {
+        kind: Kind.NAME,
+        value: "Node",
+    },
+    fields: [
+        {
+            name: {
+                kind: Kind.NAME,
+                value: "id",
+            },
+            kind: Kind.FIELD_DEFINITION,
+            arguments: [],
+            type: {
+                kind: Kind.NON_NULL_TYPE,
+                type: {
+                    kind: Kind.NAMED_TYPE,
+                    name: {
+                        kind: Kind.NAME,
+                        value: "ID",
+                    },
+                },
+            },
+            directives: [
+                {
+                    kind: Kind.DIRECTIVE,
+                    name: {
+                        kind: Kind.NAME,
+                        value: "id",
+                    },
+                    arguments: [],
+                },
+            ],
+        },
+    ],
+    directives: [],
+};
 
 function stripLoc(obj: any) {
     return JSON.parse(
@@ -40,7 +83,7 @@ function checkNodeImplementsInterfaces(node: ObjectTypeDefinitionNode, interface
     node.interfaces.forEach((inter) => {
         const error = new Error(`type ${node.name.value} does not implement interface ${inter.name.value} correctly`);
 
-        const interDefinition = interfaces.find((x) => x.name.value === inter.name.value);
+        const interDefinition = [...interfaces, nodeInterfaceDef].find((x) => x.name.value === inter.name.value);
         if (!interDefinition) {
             throw error;
         }

@@ -269,6 +269,11 @@ type Mutation {
     ): UpdateMoviesMutationResponse!
 }
 
+"""Globally-identifiable node (Relay)"""
+interface Node {
+    id: ID!
+}
+
 """Pagination information (Relay)"""
 type PageInfo {
     hasNextPage: Boolean!
@@ -280,6 +285,7 @@ type PageInfo {
 type Query {
     genres(where: GenreWhere, options: GenreOptions): [Genre!]!
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    node(id: ID!): Node!
 }
 
 input QueryOptions {

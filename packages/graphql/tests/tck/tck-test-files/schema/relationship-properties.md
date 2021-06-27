@@ -364,9 +364,16 @@ type PageInfo {
     startCursor: Cursor
     endCursor: Cursor
 }
+
+"""Globally-identifiable node (Relay)"""
+interface Node {
+  id: ID!
+}
+
 type Query {
   actors(where: ActorWhere, options: ActorOptions): [Actor!]!
   movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+  node(id: ID!): Node!
 }
 
 enum SortDirection {

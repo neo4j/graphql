@@ -108,8 +108,14 @@ type Mutation {
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
 
+"""Globally-identifiable node (Relay)"""
+interface Node {
+  id: ID!
+}
+
 type Query {
   movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+  node(id: ID!): Node!
 }
 ```
 

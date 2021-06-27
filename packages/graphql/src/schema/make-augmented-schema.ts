@@ -61,6 +61,8 @@ import Relationship, { RelationshipField } from "../classes/Relationship";
 import getRelationshipFieldMeta from "./get-relationship-field-meta";
 import getWhereFields from "./get-where-fields";
 import createConnectionWithEdgeProperties from "./connection";
+import { execute } from "../utils";
+import { translateRead } from "../translate";
 // import validateTypeDefs from "./validation";
 
 function makeAugmentedSchema(
@@ -134,6 +136,26 @@ function makeAugmentedSchema(
         },
     });
 
+    composer.createInterfaceTC({
+        name: "Node",
+        description: "Globally-identifiable node (Relay)",
+        fields: {
+            id: {
+                type: "ID!",
+                directives: ["id"],
+            },
+        },
+    });
+
+    composer.Query.addFields({
+        node: {
+            type: "Node!",
+            args: {
+                id: "ID!",
+            },
+        },
+    });
+
     const customResolvers = getCustomResolvers(document);
 
     const scalars = document.definitions.filter((x) => x.kind === "ScalarTypeDefinition") as ScalarTypeDefinitionNode[];
@@ -151,6 +173,14 @@ function makeAugmentedSchema(
     let interfaces = document.definitions.filter(
         (x) => x.kind === "InterfaceTypeDefinition"
     ) as InterfaceTypeDefinitionNode[];
+
+    if (interfaces.length) {
+        if (interfaces.find((x) => x.name.value === "Node")) {
+            throw new Error(
+                "Interface name `Node` reserved to support the node interface. See https://relay.dev/docs/guides/graphql-server-specification"
+            );
+        }
+    }
 
     const directives = document.definitions.filter(
         (x) => x.kind === "DirectiveDefinition"
@@ -179,6 +209,11 @@ function makeAugmentedSchema(
     Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
 
     const nodes = objectNodes.map((definition) => {
+        if (definition.name.value === "Node") {
+            throw new Error(
+                "Type name `Node` reserved to support the node interface. See https://relay.dev/docs/guides/graphql-server-specification"
+            );
+        }
         if (definition.name.value === "PageInfo") {
             throw new Error(
                 "Type name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information."
@@ -1122,6 +1157,47 @@ function makeAugmentedSchema(
     if (!Object.values(composer.Mutation.getFields()).length) {
         composer.delete("Mutation");
     }
+    composer.addResolveMethods({
+        Query: {
+            node: async (src: unknown, args: any, context: any) => {
+                const { records: labelQuery } = await execute({
+                    cypher: "MATCH (n)\nWHERE n.id = $id\nRETURN n",
+                    params: { id: args.id },
+                    defaultAccessMode: "READ",
+                    context,
+                    raw: true,
+                });
+                const label = labelQuery[0].get(0).labels[0];
+
+                const node = nodes.find((n) => n.name === label);
+                if (!node) {
+                    throw new Error(`Can't find node for label ${label}`);
+                }
+                // replace the { id: "" } arg with { where: { id: "" }}
+                // to make it compatible with translate-read
+                context.resolveTree = {
+                    ...context.resolveTree,
+                    args: {
+                        where: {
+                            id: args.id,
+                        },
+                    },
+                };
+
+                const [cypher, params] = translateRead({ context, node });
+
+                const result = await execute({
+                    cypher,
+                    params,
+                    defaultAccessMode: "READ",
+                    context,
+                });
+
+                const withTypes = result.map((x) => ({ ...x.this, __resolveType: label }));
+                return withTypes[0];
+            },
+        },
+    });
 
     const generatedTypeDefs = composer.toSDL();
     let generatedResolvers: any = {
@@ -1148,6 +1224,9 @@ function makeAugmentedSchema(
             generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
         }
     });
+
+    // eslint-disable-next-line no-underscore-dangle
+    generatedResolvers.Node = { __resolveType: (root) => root.__resolveType };
 
     const schema = makeExecutableSchema({
         ...schemaDefinition,
