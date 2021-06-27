@@ -95,6 +95,7 @@ describe("Connection Resolvers", () => {
                                 startCursor
                             }
                             edges {
+                                screenTime
                                 node {
                                     id
                                     name
@@ -127,6 +128,7 @@ describe("Connection Resolvers", () => {
                     },
                     edges: [
                         {
+                            screenTime: 100,
                             node: {
                                 id: actorId,
                                 name: "Keanu Reeves",

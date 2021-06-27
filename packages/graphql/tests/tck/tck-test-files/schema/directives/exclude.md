@@ -479,7 +479,14 @@ type DeleteInfo {
 type Movie {
   title: String
   actors(where: ActorWhere, options: ActorOptions): [Actor]
-  actorsConnection(where: MovieActorsConnectionWhere, options: MovieActorsConnectionOptions): MovieActorsConnection!
+  actorsConnection(
+    first: Int
+    last: Int
+    before: Cursor
+    after: Cursor
+    where: MovieActorsConnectionWhere, 
+    options: MovieActorsConnectionOptions
+  ): MovieActorsConnection!
 }
 
 input MovieActorsConnectFieldInput {
@@ -489,14 +496,11 @@ input MovieActorsConnectFieldInput {
 type MovieActorsConnection {
   edges: [MovieActorsRelationship!]!
   pageInfo: PageInfo!
-  pageCursors: PageCursors!
   totalCount: Int!
 }
 
 input MovieActorsConnectionOptions {
   sort: [MovieActorsConnectionSort!]
-  limit: Int
-  skip: Int
 }
 
 input MovieActorsConnectionSort {
@@ -520,6 +524,7 @@ input MovieActorsFieldInput {
 }
 
 type MovieActorsRelationship {
+  cursor: Cursor!
   node: Actor!
 }
 
@@ -595,21 +600,6 @@ type Mutation {
   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
-}
-
-"""Information for a page of data when using page-based pagination (Relay)"""
-type PageCursor {
-    cursor: Cursor!
-    isCurrent: Boolean!
-    page: Int!
-}
-
-"""Pagination information when using page-based pagination (Relay)"""
-type PageCursors {
-    around: [PageCursor!]!
-    first: PageCursor
-    last: PageCursor
-    previous: PageCursor
 }
 
 """Pagination information (Relay)"""

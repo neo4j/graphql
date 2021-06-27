@@ -18,6 +18,7 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
+import { offsetToCursor } from "graphql-relay";
 import dedent from "dedent";
 import { mocked } from "ts-jest/utils";
 import { ConnectionField, Context } from "../../types";
@@ -117,7 +118,7 @@ describe("createConnectionAndParams", () => {
         WITH this
         MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
         WITH collect({ screenTime: this_acted_in.screenTime }) AS edges
-        RETURN { edges: edges } AS actorsConnection
+        RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
         }`);
     });
 
@@ -226,7 +227,7 @@ describe("createConnectionAndParams", () => {
             WITH this_acted_in, this_actor
             ORDER BY this_acted_in.screenTime DESC, this_actor.name ASC
             WITH collect({ screenTime: this_acted_in.screenTime }) AS edges
-            RETURN { edges: edges } AS actorsConnection
+            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }`);
     });
 
@@ -253,10 +254,8 @@ describe("createConnectionAndParams", () => {
             alias: "actorsConnection",
             name: "actorsConnection",
             args: {
-                options: {
-                    skip: 20,
-                    limit: 20,
-                },
+                first: 10,
+                after: offsetToCursor(10),
             },
             fieldsByTypeName: {
                 MovieActorsConnection: {
@@ -308,11 +307,9 @@ describe("createConnectionAndParams", () => {
         expect(dedent(entry[0])).toEqual(dedent`CALL {
             WITH this
             MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-            WITH this_acted_in, this_actor
-            SKIP 20
-            LIMIT 20
             WITH collect({ screenTime: this_acted_in.screenTime }) AS edges
-            RETURN { edges: edges } AS actorsConnection
+            WITH this, edges, size(edges) AS totalCount, edges([10..10]) AS limitedSelection
+            RETURN { edges: limitedSelection, totalCount: totalCount } AS actorsConnection
             }`);
     });
 });

@@ -18,12 +18,33 @@
  */
 
 import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
+import { cursorToOffset } from "graphql-relay";
 import { ConnectionField, ConnectionOptionsArg, ConnectionWhereArg, Context } from "../../types";
 import { Node } from "../../classes";
 import createProjectionAndParams from "../create-projection-and-params";
 import Relationship from "../../classes/Relationship";
 import createRelationshipPropertyElement from "../projection/elements/create-relationship-property-element";
 import createConnectionWhereAndParams from "../where/create-connection-where-and-params";
+
+function createSkipLimitStr({ skip, limit }: { skip?: number; limit?: number }): string {
+    const hasSkip = typeof skip !== "undefined";
+    const hasLimit = typeof limit !== "undefined";
+    let skipLimitStr = "";
+
+    if (hasSkip && !hasLimit) {
+        skipLimitStr = `[${skip}..]`;
+    }
+
+    if (hasLimit && !hasSkip) {
+        skipLimitStr = `[..${limit}]`;
+    }
+
+    if (hasLimit && hasSkip) {
+        skipLimitStr = `[${skip}..${limit}]`;
+    }
+
+    return skipLimitStr;
+}
 
 function createConnectionAndParams({
     resolveTree,
@@ -44,8 +65,8 @@ function createConnectionAndParams({
     const subquery = ["CALL {", `WITH ${nodeVariable}`];
 
     const sortInput = (resolveTree.args.options as ConnectionOptionsArg)?.sort;
-    const skipInput = (resolveTree.args.options as ConnectionOptionsArg)?.skip;
-    const limitInput = (resolveTree.args.options as ConnectionOptionsArg)?.limit;
+    const afterInput = resolveTree.args?.after;
+    const firstInput = resolveTree.args?.first;
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
     const relationshipVariable = `${nodeVariable}_${field.relationship.type.toLowerCase()}`;
@@ -179,7 +200,29 @@ function createConnectionAndParams({
             unionSubqueries.push(unionSubquery.join("\n"));
         });
 
-        subquery.push(["CALL {", unionSubqueries.join("\nUNION\n"), "}", "WITH collect(edge) as edges"].join("\n"));
+        // need to implement skip limit on unions
+        if (!firstInput && !afterInput) {
+            subquery.push(
+                [
+                    "CALL {",
+                    unionSubqueries.join("\nUNION\n"),
+                    "}",
+                    "WITH collect(edge) as edges, count(edge) as totalCount",
+                ].join("\n")
+            );
+        } else {
+            const offset = afterInput ? cursorToOffset(afterInput as string) : 0;
+            const skipLimitStr = createSkipLimitStr({ skip: offset, limit: firstInput as number });
+            subquery.push(
+                [
+                    "Call {",
+                    unionSubqueries.join("\nUNION\n"),
+                    "}",
+                    "WITH collect(edge) AS allEdges",
+                    `WITH allEdges, size(allEdges) as totalCount, allEdges(${skipLimitStr}) AS edges`,
+                ].join("\n")
+            );
+        }
     } else {
         const relatedNodeVariable = `${nodeVariable}_${field.relationship.typeMeta.name.toLowerCase()}`;
         const nodeOutStr = `(${relatedNodeVariable}:${field.relationship.typeMeta.name})`;
@@ -203,7 +246,7 @@ function createConnectionAndParams({
             subquery.push(`WHERE ${whereClause}`);
         }
 
-        if (sortInput || limitInput || skipInput) {
+        if (sortInput) {
             subquery.push(`WITH ${relationshipVariable}, ${relatedNodeVariable}`);
 
             if (sortInput && sortInput.length) {
@@ -218,12 +261,6 @@ function createConnectionAndParams({
                     ].join(", ")
                 );
                 subquery.push(`ORDER BY ${sort.join(", ")}`);
-            }
-            if (skipInput) {
-                subquery.push(`SKIP ${skipInput}`);
-            }
-            if (limitInput) {
-                subquery.push(`LIMIT ${limitInput}`);
             }
         }
 
@@ -282,10 +319,23 @@ function createConnectionAndParams({
         }
 
         if (nestedSubqueries.length) subquery.push(nestedSubqueries.join("\n"));
-        subquery.push(`WITH collect({ ${elementsToCollect.join(", ")} }) AS edges, count(*) as totalCount`);
+        subquery.push(`WITH collect({ ${elementsToCollect.join(", ")} }) AS edges`);
     }
 
-    subquery.push(`RETURN { edges: edges, totalCount: totalCount } AS ${resolveTree.alias}`);
+    if (!firstInput && !afterInput) {
+        subquery.push(
+            `RETURN { edges: edges, totalCount: ${field.relationship.union ? "totalCount" : "size(edges)"} } AS ${
+                resolveTree.alias
+            }`
+        );
+    } else {
+        const skipLimitStr = createSkipLimitStr({
+            skip: afterInput ? cursorToOffset(afterInput as string) : undefined,
+            limit: firstInput as number,
+        });
+        subquery.push(`WITH this, edges, size(edges) AS totalCount, edges(${skipLimitStr}) AS limitedSelection`);
+        subquery.push(`RETURN { edges: limitedSelection, totalCount: totalCount } AS ${resolveTree.alias}`);
+    }
     subquery.push("}");
 
     const params = {

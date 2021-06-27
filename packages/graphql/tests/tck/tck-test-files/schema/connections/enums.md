@@ -66,6 +66,10 @@ type Actor {
     name: String!
     movies(where: MovieWhere, options: MovieOptions): [Movie]
     moviesConnection(
+        after: Cursor
+        before: Cursor
+        first: Int
+        last: Int
         where: ActorMoviesConnectionWhere
         options: ActorMoviesConnectionOptions
     ): ActorMoviesConnection!
@@ -107,14 +111,11 @@ input ActorMoviesConnectFieldInput {
 type ActorMoviesConnection {
     edges: [ActorMoviesRelationship!]!
     pageInfo: PageInfo!
-    pageCursors: PageCursors!
     totalCount: Int!
 }
 
 input ActorMoviesConnectionOptions {
     sort: [ActorMoviesConnectionSort!]
-    skip: Int
-    limit: Int
 }
 
 input ActorMoviesConnectionSort {
@@ -142,6 +143,7 @@ input ActorMoviesFieldInput {
 }
 
 type ActorMoviesRelationship implements ActedIn {
+    cursor: Cursor!
     node: Movie!
     roleType: RoleType!
 }
@@ -218,6 +220,10 @@ type Movie {
     title: String!
     actors(where: ActorWhere, options: ActorOptions): [Actor]!
     actorsConnection(
+        after: Cursor
+        before: Cursor
+        first: Int
+        last: Int
         where: MovieActorsConnectionWhere
         options: MovieActorsConnectionOptions
     ): MovieActorsConnection!
@@ -233,13 +239,10 @@ type MovieActorsConnection {
     edges: [MovieActorsRelationship!]!
     totalCount: Int!
     pageInfo: PageInfo!
-    pageCursors: PageCursors!
 }
 
 input MovieActorsConnectionOptions {
     sort: [MovieActorsConnectionSort!]
-    skip: Int
-    limit: Int
 }
 
 input MovieActorsConnectionSort {
@@ -267,6 +270,7 @@ input MovieActorsFieldInput {
 }
 
 type MovieActorsRelationship implements ActedIn {
+    cursor: Cursor!
     node: Actor!
     roleType: RoleType!
 }
@@ -371,21 +375,6 @@ type Mutation {
         create: MovieRelationInput
         delete: MovieDeleteInput
     ): UpdateMoviesMutationResponse!
-}
-
-"""Information for a page of data when using page-based pagination (Relay)"""
-type PageCursor {
-    cursor: Cursor!
-    isCurrent: Boolean!
-    page: Int!
-}
-
-"""Pagination information when using page-based pagination (Relay)"""
-type PageCursors {
-    around: [PageCursor!]!
-    first: PageCursor
-    last: PageCursor
-    previous: PageCursor
 }
 
 """Pagination information (Relay)"""

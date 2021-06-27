@@ -41,7 +41,7 @@ import {
     InputTypeComposerFieldConfigAsObjectDefinition,
     ObjectTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
-import { connectionFromArraySlice, cursorToOffset } from "graphql-relay";
+import { cursorToOffset } from "graphql-relay";
 import pluralize from "pluralize";
 import { Integer, isInt } from "neo4j-driver";
 import { Node, Exclude } from "../classes";
@@ -60,6 +60,7 @@ import getFieldTypeMeta from "./get-field-type-meta";
 import Relationship, { RelationshipField } from "../classes/Relationship";
 import getRelationshipFieldMeta from "./get-relationship-field-meta";
 import getWhereFields from "./get-where-fields";
+import createConnectionWithEdgeProperties from "./connection";
 // import validateTypeDefs from "./validation";
 
 function makeAugmentedSchema(
@@ -130,27 +131,6 @@ function makeAugmentedSchema(
             hasPreviousPage: "Boolean!",
             startCursor: "Cursor",
             endCursor: "Cursor",
-        },
-    });
-
-    composer.createObjectTC({
-        name: "PageCursor",
-        description: "Information for a page of data when using page-based pagination (Relay)",
-        fields: {
-            cursor: "Cursor!",
-            page: "Int!",
-            isCurrent: "Boolean!",
-        },
-    });
-
-    composer.createObjectTC({
-        name: "PageCursors",
-        description: "Pagination information when using page-based pagination (Relay)",
-        fields: {
-            first: "PageCursor",
-            last: "PageCursor",
-            previous: "PageCursor",
-            around: "[PageCursor!]!",
         },
     });
 
@@ -934,6 +914,7 @@ function makeAugmentedSchema(
             const relationship = composer.createObjectTC({
                 name: connectionField.relationshipTypeName,
                 fields: {
+                    cursor: "Cursor!",
                     node: `${connectionField.relationship.typeMeta.name}!`,
                 },
             });
@@ -954,7 +935,6 @@ function makeAugmentedSchema(
                     edges: relationship.NonNull.List.NonNull,
                     totalCount: "Int!",
                     pageInfo: "PageInfo!",
-                    pageCursors: "PageCursors!",
                 },
             });
 
@@ -972,6 +952,10 @@ function makeAugmentedSchema(
             let composeNodeArgs: {
                 where: any;
                 options?: any;
+                first?: any;
+                last?: any;
+                after?: any;
+                before?: any;
             } = {
                 where: connectionWhere,
             };
@@ -1008,12 +992,17 @@ function makeAugmentedSchema(
                     name: `${connectionField.typeMeta.name}Options`,
                     fields: {
                         sort: connectionSort.NonNull.List,
-                        skip: "Int",
-                        limit: "Int",
                     },
                 });
 
-                composeNodeArgs = { ...composeNodeArgs, options: connectionOptions };
+                composeNodeArgs = {
+                    ...composeNodeArgs,
+                    options: connectionOptions,
+                    first: "Int",
+                    last: "Int",
+                    before: "Cursor",
+                    after: "Cursor",
+                };
             }
 
             composeNode.addFields({
@@ -1025,13 +1014,11 @@ function makeAugmentedSchema(
 
                         const totalCount = typeof count === "number" ? count : count.toNumber();
 
-                        const offset = args.endCursor ? cursorToOffset(args.endCursor as string) : 0;
-
-                        const flatEdges = edges.map((edge: { node: Record<string, any> }) => edge.node);
+                        const offset = args.after ? cursorToOffset(args.after) : 0;
 
                         return {
                             totalCount,
-                            ...connectionFromArraySlice(flatEdges, args, {
+                            ...createConnectionWithEdgeProperties(edges, args, {
                                 sliceStart: offset,
                                 arrayLength: totalCount,
                             }),

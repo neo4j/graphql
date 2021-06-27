@@ -91,11 +91,15 @@ describe("Relationship properties - read", () => {
                 movies(where: { title: "${movieTitle}" }) {
                     title
                     actorsConnection {
+                        totalCount
                         edges {
                             screenTime
                             node {
                                 name
                             }
+                        }
+                        pageInfo {
+                            hasNextPage
                         }
                     }
                 }
@@ -117,6 +121,7 @@ describe("Relationship properties - read", () => {
                 {
                     title: movieTitle,
                     actorsConnection: {
+                        totalCount: 3,
                         edges: [
                             {
                                 screenTime: 5,
@@ -137,6 +142,9 @@ describe("Relationship properties - read", () => {
                                 },
                             },
                         ],
+                        pageInfo: {
+                            hasNextPage: false,
+                        },
                     },
                 },
             ]);
@@ -157,11 +165,16 @@ describe("Relationship properties - read", () => {
                     actorsConnection(
                         where: { AND: [{ relationship: { screenTime_GT: 60 } }, { node: { name_STARTS_WITH: "a" } }] }
                     ) {
+                        totalCount
                         edges {
+                            cursor
                             screenTime
                             node {
                                 name
                             }
+                        }
+                        pageInfo {
+                            hasNextPage
                         }
                     }
                 }
@@ -183,14 +196,19 @@ describe("Relationship properties - read", () => {
                 {
                     title: movieTitle,
                     actorsConnection: {
+                        totalCount: 1,
                         edges: [
                             {
+                                cursor: "YXJyYXljb25uZWN0aW9uOjA=",
                                 screenTime: 105,
                                 node: {
                                     name: actorA,
                                 },
                             },
                         ],
+                        pageInfo: {
+                            hasNextPage: false,
+                        },
                     },
                 },
             ]);
@@ -211,7 +229,9 @@ describe("Relationship properties - read", () => {
                     actorsConnection(
                         options: { sort: [{ relationship: { screenTime: DESC } }, { node: { name: $nameSort } }] }
                     ) {
+                        totalCount
                         edges {
+                            cursor
                             screenTime
                             node {
                                 name
@@ -238,20 +258,24 @@ describe("Relationship properties - read", () => {
                 {
                     title: movieTitle,
                     actorsConnection: {
+                        totalCount: 3,
                         edges: [
                             {
+                                cursor: "YXJyYXljb25uZWN0aW9uOjA=",
                                 screenTime: 105,
                                 node: {
                                     name: actorA,
                                 },
                             },
                             {
+                                cursor: "YXJyYXljb25uZWN0aW9uOjE=",
                                 screenTime: 105,
                                 node: {
                                     name: actorB,
                                 },
                             },
                             {
+                                cursor: "YXJyYXljb25uZWN0aW9uOjI=",
                                 screenTime: 5,
                                 node: {
                                     name: actorC,
@@ -275,20 +299,24 @@ describe("Relationship properties - read", () => {
                 {
                     title: movieTitle,
                     actorsConnection: {
+                        totalCount: 3,
                         edges: [
                             {
+                                cursor: "YXJyYXljb25uZWN0aW9uOjA=",
                                 screenTime: 105,
                                 node: {
                                     name: actorB,
                                 },
                             },
                             {
+                                cursor: "YXJyYXljb25uZWN0aW9uOjE=",
                                 screenTime: 105,
                                 node: {
                                     name: actorA,
                                 },
                             },
                             {
+                                cursor: "YXJyYXljb25uZWN0aW9uOjI=",
                                 screenTime: 5,
                                 node: {
                                     name: actorC,
@@ -316,11 +344,15 @@ describe("Relationship properties - read", () => {
                         where: { relationship: { screenTime_GT: 60 } }
                         options: { sort: [{ node: { name: $nameSort } }] }
                     ) {
+                        totalCount
                         edges {
                             screenTime
                             node {
                                 name
                             }
+                        }
+                        pageInfo {
+                            hasNextPage
                         }
                     }
                 }
@@ -343,6 +375,7 @@ describe("Relationship properties - read", () => {
                 {
                     title: movieTitle,
                     actorsConnection: {
+                        totalCount: 2,
                         edges: [
                             {
                                 screenTime: 105,
@@ -357,6 +390,9 @@ describe("Relationship properties - read", () => {
                                 },
                             },
                         ],
+                        pageInfo: {
+                            hasNextPage: false,
+                        },
                     },
                 },
             ]);
@@ -374,6 +410,7 @@ describe("Relationship properties - read", () => {
                 {
                     title: movieTitle,
                     actorsConnection: {
+                        totalCount: 2,
                         edges: [
                             {
                                 screenTime: 105,
@@ -388,6 +425,9 @@ describe("Relationship properties - read", () => {
                                 },
                             },
                         ],
+                        pageInfo: {
+                            hasNextPage: false,
+                        },
                     },
                 },
             ]);

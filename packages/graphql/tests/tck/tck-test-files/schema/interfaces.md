@@ -49,7 +49,14 @@ type Movie implements Node {
   customQuery: [Movie]
   nodes: [Node]
   movies(where: MovieWhere, options: MovieOptions): [Movie]
-  moviesConnection(where: MovieMoviesConnectionWhere, options: MovieMoviesConnectionOptions): MovieMoviesConnection!
+  moviesConnection(
+    first: Int
+    last: Int
+    before: Cursor
+    after: Cursor
+    where: MovieMoviesConnectionWhere, 
+    options: MovieMoviesConnectionOptions
+  ): MovieMoviesConnection!
 }
 
 input MovieConnectInput {
@@ -87,14 +94,11 @@ input MovieMoviesConnectFieldInput {
 type MovieMoviesConnection {
   edges: [MovieMoviesRelationship!]!
   pageInfo: PageInfo!
-  pageCursors: PageCursors!
   totalCount: Int!
 }
 
 input MovieMoviesConnectionOptions {
   sort: [MovieMoviesConnectionSort!]
-  skip: Int
-  limit: Int
 }
 
 input MovieMoviesConnectionSort {
@@ -118,6 +122,7 @@ input MovieMoviesFieldInput {
 }
 
 type MovieMoviesRelationship {
+  cursor: Cursor!
   node: Movie!
 }
 
@@ -182,21 +187,6 @@ interface Node {
   movies: [Movie]
   id: ID
   customQuery: [Movie]
-}
-
-"""Information for a page of data when using page-based pagination (Relay)"""
-type PageCursor {
-    cursor: Cursor!
-    isCurrent: Boolean!
-    page: Int!
-}
-
-"""Pagination information when using page-based pagination (Relay)"""
-type PageCursors {
-    around: [PageCursor!]!
-    first: PageCursor
-    last: PageCursor
-    previous: PageCursor
 }
 
 """Pagination information (Relay)"""
