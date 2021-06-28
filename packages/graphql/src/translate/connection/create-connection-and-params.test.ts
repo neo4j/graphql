@@ -254,8 +254,10 @@ describe("createConnectionAndParams", () => {
             alias: "actorsConnection",
             name: "actorsConnection",
             args: {
-                first: 10,
-                after: offsetToCursor(10),
+                options: {
+                    first: 10,
+                    after: offsetToCursor(10),
+                },
             },
             fieldsByTypeName: {
                 MovieActorsConnection: {

@@ -85,10 +85,6 @@ type Movie {
   id: ID
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
   actorsConnection(
-    before: Cursor,
-    after: Cursor,
-    first: Int,
-    last: Int,
     where: MovieActorsConnectionWhere, 
     options: MovieActorsConnectionOptions
   ): MovieActorsConnection!
@@ -106,6 +102,8 @@ type MovieActorsConnection {
 
 input MovieActorsConnectionOptions {
   sort: [MovieActorsConnectionSort!]
+  first: Int
+  after: Cursor
 }
 
 input MovieActorsConnectionSort {
@@ -279,10 +277,6 @@ type Actor {
   name: String
   movies(where: MovieWhere, options: MovieOptions): [Movie]
   moviesConnection(
-    first: Int,
-    after: Cursor
-    before: Cursor
-    last: Int
     where: ActorMoviesConnectionWhere, 
     options: ActorMoviesConnectionOptions
   ): ActorMoviesConnection!
@@ -328,6 +322,8 @@ type ActorMoviesConnection {
 
 input ActorMoviesConnectionOptions {
   sort: [ActorMoviesConnectionSort!]
+  after: Cursor
+  first: Int
 }
 
 input ActorMoviesConnectionSort {
@@ -426,10 +422,6 @@ type Movie {
   id: ID
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
   actorsConnection(
-    after: Cursor,
-    before: Cursor,
-    first: Int,
-    last: Int,
     where: MovieActorsConnectionWhere, 
     options: MovieActorsConnectionOptions
   ): MovieActorsConnection!
@@ -448,6 +440,8 @@ type MovieActorsConnection {
 
 input MovieActorsConnectionOptions {
   sort: [MovieActorsConnectionSort!]
+  after: Cursor
+  first: Int
 }
 
 input MovieActorsConnectionSort {

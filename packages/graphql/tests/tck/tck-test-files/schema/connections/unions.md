@@ -214,10 +214,6 @@ type Book {
   title: String!
   author(where: AuthorWhere, options: AuthorOptions): [Author!]!
   authorConnection(
-    first: Int
-    last: Int
-    before: Cursor
-    after: Cursor
     where: BookAuthorConnectionWhere, 
     options: BookAuthorConnectionOptions
   ): BookAuthorConnection!
@@ -237,6 +233,8 @@ type BookAuthorConnection {
 
 input BookAuthorConnectionOptions {
   sort: [BookAuthorConnectionSort!]
+  after: Cursor
+  first: Int
 }
 
 input BookAuthorConnectionSort {
@@ -372,10 +370,6 @@ type Journal {
   subject: String!
   author(where: AuthorWhere, options: AuthorOptions): [Author!]!
   authorConnection(
-    first: Int
-    last: Int
-    after: Cursor
-    before: Cursor
     where: JournalAuthorConnectionWhere, 
     options: JournalAuthorConnectionOptions
   ): JournalAuthorConnection!
@@ -395,6 +389,8 @@ type JournalAuthorConnection {
 
 input JournalAuthorConnectionOptions {
   sort: [JournalAuthorConnectionSort!]
+  after: Cursor
+  first: Int
 }
 
 input JournalAuthorConnectionSort {

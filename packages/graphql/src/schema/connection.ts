@@ -25,7 +25,7 @@ import { ArraySliceMetaInfo, getOffsetWithDefault, offsetToCursor } from "graphq
  */
 const createConnectionWithEdgeProperties = (
     arraySlice: { node: Record<string, any>; [key: string]: any }[],
-    args: ConnectionArguments,
+    args: ConnectionArguments = {},
     meta: ArraySliceMetaInfo
 ) => {
     const { after, before, first, last } = args;

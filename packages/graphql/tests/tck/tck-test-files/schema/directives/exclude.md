@@ -504,10 +504,6 @@ type Movie {
   title: String
   actors(where: ActorWhere, options: ActorOptions): [Actor]
   actorsConnection(
-    first: Int
-    last: Int
-    before: Cursor
-    after: Cursor
     where: MovieActorsConnectionWhere, 
     options: MovieActorsConnectionOptions
   ): MovieActorsConnection!
@@ -525,6 +521,8 @@ type MovieActorsConnection {
 
 input MovieActorsConnectionOptions {
   sort: [MovieActorsConnectionSort!]
+  first: Int
+  after: Cursor
 }
 
 input MovieActorsConnectionSort {

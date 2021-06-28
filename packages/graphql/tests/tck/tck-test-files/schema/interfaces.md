@@ -50,10 +50,6 @@ type Movie implements MovieNode {
   nodes: [MovieNode]
   movies(where: MovieWhere, options: MovieOptions): [Movie]
   moviesConnection(
-    first: Int
-    last: Int
-    before: Cursor
-    after: Cursor
     where: MovieMoviesConnectionWhere, 
     options: MovieMoviesConnectionOptions
   ): MovieMoviesConnection!
@@ -99,6 +95,8 @@ type MovieMoviesConnection {
 
 input MovieMoviesConnectionOptions {
   sort: [MovieMoviesConnectionSort!]
+  first: Int
+  after: Cursor
 }
 
 input MovieMoviesConnectionSort {

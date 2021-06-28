@@ -111,14 +111,6 @@ export interface ConnectionField extends BaseField {
     relationshipTypeName: string;
 }
 
-export interface ConnectionAndRelayArguments {
-    first?: number;
-    last?: number;
-    after?: string;
-    before?: string;
-    [key: string]: unknown;
-}
-
 /**
  * Representation of the `@cypher` directive and its meta.
  */
@@ -169,6 +161,11 @@ export interface ConnectionSortArg {
     relationship?: GraphQLSortArg;
 }
 
+export interface ConnectionQueryArgs {
+    where: ConnectionWhereArg;
+    options: ConnectionOptionsArg;
+}
+
 /**
  * Representation of the options arg
  * passed to resolvers.
@@ -181,6 +178,8 @@ export interface GraphQLOptionsArg {
 
 export interface ConnectionOptionsArg {
     sort?: ConnectionSortArg[];
+    first?: number;
+    after?: string;
 }
 
 /**

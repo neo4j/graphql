@@ -46,7 +46,7 @@ import pluralize from "pluralize";
 import { Integer, isInt } from "neo4j-driver";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth, CustomEnumField, ConnectionAndRelayArguments } from "../types";
+import { PrimitiveField, Auth, CustomEnumField, ConnectionQueryArgs } from "../types";
 import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import * as Scalars from "./scalars";
@@ -987,10 +987,6 @@ function makeAugmentedSchema(
             let composeNodeArgs: {
                 where: any;
                 options?: any;
-                first?: any;
-                last?: any;
-                after?: any;
-                before?: any;
             } = {
                 where: connectionWhere,
             };
@@ -1027,16 +1023,14 @@ function makeAugmentedSchema(
                     name: `${connectionField.typeMeta.name}Options`,
                     fields: {
                         sort: connectionSort.NonNull.List,
+                        first: "Int",
+                        after: "Cursor",
                     },
                 });
 
                 composeNodeArgs = {
                     ...composeNodeArgs,
                     options: connectionOptions,
-                    first: "Int",
-                    last: "Int",
-                    before: "Cursor",
-                    after: "Cursor",
                 };
             }
 
@@ -1044,16 +1038,16 @@ function makeAugmentedSchema(
                 [connectionField.fieldName]: {
                     type: connection.NonNull,
                     args: composeNodeArgs,
-                    resolve: (source, args: ConnectionAndRelayArguments) => {
+                    resolve: (source, args: ConnectionQueryArgs) => {
                         const { totalCount: count, edges } = source[connectionField.fieldName];
 
                         const totalCount = typeof count === "number" ? count : count.toNumber();
 
-                        const offset = args.after ? cursorToOffset(args.after) : 0;
+                        const offset = args.options?.after ? cursorToOffset(args.options.after) : 0;
 
                         return {
                             totalCount,
-                            ...createConnectionWithEdgeProperties(edges, args, {
+                            ...createConnectionWithEdgeProperties(edges, args.options, {
                                 sliceStart: offset,
                                 arrayLength: totalCount,
                             }),
