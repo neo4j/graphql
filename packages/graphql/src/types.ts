@@ -180,8 +180,6 @@ export interface GraphQLOptionsArg {
 }
 
 export interface ConnectionOptionsArg {
-    skip?: number;
-    limit?: number;
     sort?: ConnectionSortArg[];
 }
 

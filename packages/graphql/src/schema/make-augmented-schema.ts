@@ -1160,6 +1160,13 @@ function makeAugmentedSchema(
     composer.addResolveMethods({
         Query: {
             node: async (src: unknown, args: any, context: any) => {
+                // TODO: Evaluate ID Encoding Alternative
+                // Instead of making a call to the database to get the label
+                // you could encode the Node Name into the id so that
+                // the resolver can decode it to get the type
+                // see, e.g., https://github.com/graphql/graphql-relay-js#object-identification
+                // Pros: Don't need an inital db query to get the label; greater control over Node types
+                // Cons: Renders ids on the client opaque; adds complexity to resolvers who must decode id
                 const { records: labelQuery } = await execute({
                     cypher: "MATCH (n)\nWHERE n.id = $id\nRETURN n",
                     params: { id: args.id },
