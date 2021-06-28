@@ -99,7 +99,7 @@ type Mutation {
 }
 
 type Query {
-  files(where: FileWhere, options: FileOptions): [File]!
+  files(where: FileWhere, options: FileOptions): [File!]!
 }
 ```
 

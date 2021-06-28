@@ -17,9 +17,11 @@
  * limitations under the License.
  */
 
+import * as pack from "../package.json";
+
 const environment = {
-    NPM_PACKAGE_VERSION: process.env.NPM_PACKAGE_VERSION as string,
-    NPM_PACKAGE_NAME: process.env.NPM_PACKAGE_NAME as string,
+    NPM_PACKAGE_VERSION: pack.version,
+    NPM_PACKAGE_NAME: pack.name,
 };
 
 export default environment;

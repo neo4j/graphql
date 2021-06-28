@@ -34,6 +34,7 @@ import {
     UnionTypeDefinitionNode,
 } from "graphql";
 import {
+    upperFirst,
     SchemaComposer,
     InputTypeComposer,
     ObjectTypeComposer,
@@ -43,7 +44,6 @@ import pluralize from "pluralize";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
 import { PrimitiveField, Auth } from "../types";
-import { upperFirstLetter } from "../utils";
 import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import * as Scalars from "./scalars";
@@ -62,9 +62,9 @@ function makeAugmentedSchema(
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
     /*
-        Issue caused by a combination of GraphQL Compose removing types and 
+        Issue caused by a combination of GraphQL Compose removing types and
         that we are not adding Points to the validation schema. This should be a
-        temporary fix and does not detriment usability of the library. 
+        temporary fix and does not detriment usability of the library.
     */
     // validateTypeDefs(document);
 
@@ -280,7 +280,7 @@ function makeAugmentedSchema(
                     res[`${f.fieldName}_IN`] = `[${f.typeMeta.input.where.pretty}]`;
                     res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}]`;
 
-                    if (["Float", "Int", "BigInt", "DateTime"].includes(f.typeMeta.name)) {
+                    if (["Float", "Int", "BigInt", "DateTime", "Date"].includes(f.typeMeta.name)) {
                         ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
                             res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
                         });
@@ -443,11 +443,11 @@ function makeAugmentedSchema(
                     const concatFieldName = `${rel.fieldName}_${n.name}`;
                     const createField = rel.typeMeta.array ? `[${n.name}CreateInput!]` : `${n.name}CreateInput`;
                     const updateField = `${n.name}UpdateInput`;
-                    const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${n.name}FieldInput`;
-                    const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${
+                    const nodeFieldInputName = `${node.name}${upperFirst(rel.fieldName)}${n.name}FieldInput`;
+                    const nodeFieldUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}${
                         n.name
                     }UpdateFieldInput`;
-                    const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${
+                    const nodeFieldDeleteInputName = `${node.name}${upperFirst(rel.fieldName)}${
                         n.name
                     }DeleteFieldInput`;
 
@@ -532,9 +532,9 @@ function makeAugmentedSchema(
             const n = nodes.find((x) => x.name === rel.typeMeta.name) as Node;
             const createField = rel.typeMeta.array ? `[${n.name}CreateInput!]` : `${n.name}CreateInput`;
             const updateField = `${n.name}UpdateInput`;
-            const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
-            const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}UpdateFieldInput`;
-            const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}DeleteFieldInput`;
+            const nodeFieldInputName = `${node.name}${upperFirst(rel.fieldName)}FieldInput`;
+            const nodeFieldUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateFieldInput`;
+            const nodeFieldDeleteInputName = `${node.name}${upperFirst(rel.fieldName)}DeleteFieldInput`;
             const connectField = rel.typeMeta.array ? `[${n.name}ConnectFieldInput!]` : `${n.name}ConnectFieldInput`;
             const disconnectField = rel.typeMeta.array
                 ? `[${n.name}DisconnectFieldInput!]`
@@ -744,7 +744,7 @@ function makeAugmentedSchema(
     let generatedResolvers: any = {
         ...composer.getResolveMethods(),
         ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
-            if (generatedTypeDefs.includes(`scalar ${name}`)) {
+            if (generatedTypeDefs.includes(`scalar ${name}\n`)) {
                 res[name] = scalar;
             }
             return res;
@@ -761,7 +761,9 @@ function makeAugmentedSchema(
 
     unions.forEach((union) => {
         // eslint-disable-next-line no-underscore-dangle
-        generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
+        if (!generatedResolvers[union.name.value]) {
+            generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
+        }
     });
 
     const schema = makeExecutableSchema({

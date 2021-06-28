@@ -55,6 +55,36 @@ type Query {
 }
 ----
 
+
+=== `cypherParams`
+Use to inject values into the cypher query from the GraphQL context function.
+
+Inject into context: 
+
+[source, typescript]
+----
+const server = new ApolloServer({
+    typeDefs, 
+    context: () => {
+        return {
+            cypherParams: { userId: "user-id-01" }
+        }
+    }
+});
+----
+
+Use in cypher query: 
+
+[source, graphql]
+----
+type Query {
+    userPosts: [Post] @cypher(statement: """
+        MATCH (:User {id: $cypherParams.userId})-[:POSTED]->(p:Post)
+        RETURN p
+    """)
+}
+----
+
 == Return values
 
 The return value of the Cypher statement must be of the same type to which the directive is applied.

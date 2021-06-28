@@ -4,7 +4,7 @@
     "description": "",
     "main": "./dist/src/index.js",
     "scripts": {
-        "start": "nodemon --watch './src/**/*.ts' --exec ts-node -r tsconfig-paths/register --project ./src/tsconfig.json ./src/index.ts",
+        "start": "nodemon --watch './src/**/*.ts' --exec ./node_modules/.bin/ts-node -r tsconfig-paths/register --project ./src/tsconfig.json ./src/index.ts",
         "build": "tsc  --project src/",
         "seed": "ts-node -r tsconfig-paths/register --project ./src/tsconfig.json ./src/seeder.ts",
         "test": "jest"
@@ -12,8 +12,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@neo4j/graphql": "^1.0.2",
-        "@neo4j/graphql-ogm": "^1.0.2",
+        "@neo4j/graphql": "^1.0.3",
+        "@neo4j/graphql-ogm": "^1.0.3",
         "apollo-server-express": "2.19.0",
         "bcrypt": "5.0.1",
         "debug": "4.3.1",

@@ -41,7 +41,7 @@ export default function cypherResolver({
             resolveTree: { fieldsByTypeName },
         } = context;
         const cypherStrs: string[] = [];
-        let params = { ...args, auth: createAuthParam({ context }) };
+        let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
         let projectionStr = "";
         let projectionAuthStr = "";
         const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(

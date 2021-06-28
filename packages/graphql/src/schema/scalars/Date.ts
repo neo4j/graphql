@@ -18,26 +18,15 @@
  */
 
 import { GraphQLScalarType } from "graphql";
-import { Integer, isInt } from "neo4j-driver";
+import neo4j from "neo4j-driver";
 
 export default new GraphQLScalarType({
-    name: "Float",
-    parseValue(value) {
-        if (typeof value !== "number") {
-            throw new Error("Cannot represent non number as Float");
-        }
-
-        return value;
+    name: "Date",
+    description: "A date, represented as a 'yyyy-mm-dd' string",
+    serialize: (value: typeof neo4j.types.Date) => {
+        return new Date(value.toString()).toISOString().split("T")[0];
     },
-    serialize(value: number | Integer) {
-        if (typeof value === "number") {
-            return value;
-        }
-
-        if (isInt(value)) {
-            return value.toNumber();
-        }
-
-        return value;
+    parseValue: (value: string) => {
+        return neo4j.types.Date.fromStandardDate(new Date(value));
     },
 });

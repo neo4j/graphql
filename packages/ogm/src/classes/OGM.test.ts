@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { printSchema } from "graphql";
 import OGM from "./OGM";
 
 describe("OGM", () => {
@@ -27,16 +26,6 @@ describe("OGM", () => {
     });
 
     describe("methods", () => {
-        describe("constructor", () => {
-            test("should evoke the filterDocument method", () => {
-                const ogm = new OGM({ typeDefs: `type User @auth {id:ID}` });
-
-                const printed = printSchema(ogm.neoSchema.schema);
-
-                expect(printed.includes("@auth")).toBeFalsy();
-            });
-        });
-
         describe("checkNeo4jCompat", () => {
             test("should neo4j-driver Driver missing", async () => {
                 // @ts-ignore

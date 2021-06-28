@@ -31,30 +31,35 @@ function getJWT(context: Context): any {
 
     if (!jwtConfig) {
         debug("JWT not configured");
+
         return result;
     }
 
     const req = context instanceof IncomingMessage ? context : context.req || context.request;
 
-    if (
-        !req ||
-        !req.headers ||
-        (!req.headers.authorization && !req.headers.Authorization) ||
-        (!req && !req.cookies && !req.cookies.token)
-    ) {
-        debug("Could not extract request from context");
+    if (!req) {
+        debug("Could not get .req or .request from context");
 
         return result;
     }
 
-    const authorization = req.headers.authorization || req.headers.Authorization || req.cookies.token;
+    if (!req.headers && !req.cookies) {
+        debug(".headers or .cookies not found on req");
+
+        return result;
+    }
+
+    const authorization = (req.headers.authorization || req.headers.Authorization || req.cookies?.token) as string;
     if (!authorization) {
-        debug("Could not extract authorization header from request");
+        debug("Could not get .authorization, .Authorization or .cookies.token from req");
+
+        return result;
     }
 
     const token = authorization.split("Bearer ")[1];
     if (!token) {
         debug("Authorization header was not in expected format 'Bearer <token>'");
+
         return result;
     }
 
