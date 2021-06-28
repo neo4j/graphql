@@ -1033,7 +1033,7 @@ function makeAugmentedSchema(
                     resolve: (source, args: ConnectionQueryArgs) => {
                         const { totalCount: count, edges } = source[connectionField.fieldName];
 
-                        const totalCount = typeof count === "number" ? count : count.toNumber();
+                        const totalCount = isInt(count) ? count.toNumber() : count;
 
                         const offset = args.options?.after ? cursorToOffset(args.options.after) : 0;
 
