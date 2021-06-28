@@ -87,9 +87,6 @@ function SignUp() {
                                 onChange={(e) => setPasswordConfirm(e.target.value)}
                             />
                         </Form.Group>
-                        <Button block variant="outline-secondary" onClick={() => history.push(constants.SIGN_IN_PAGE)}>
-                            Sign In
-                        </Button>
                         <Button className="mt-3" variant="primary" type="submit">
                             Sign Up
                         </Button>
@@ -103,6 +100,13 @@ function SignUp() {
                                 {error}
                             </Alert>
                         )}
+                        <hr />
+                        <p>
+                            Go to{" "}
+                            <Alert.Link onClick={() => history.push(constants.SIGN_IN_PAGE)}>
+                                Sign In
+                            </Alert.Link> instead
+                        </p>
                     </Card>
                 </Form>
             </Row>
