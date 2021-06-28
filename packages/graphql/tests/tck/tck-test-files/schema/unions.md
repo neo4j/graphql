@@ -33,9 +33,6 @@ type CreateMoviesMutationResponse {
     movies: [Movie!]!
 }
 
-"""Opaque cursor used for pagination (Relay)"""
-scalar Cursor
-
 type DeleteInfo {
     nodesDeleted: Int!
     relationshipsDeleted: Int!
@@ -218,7 +215,7 @@ input MovieSearchMovieUpdateFieldInput {
 }
 
 type MovieSearchRelationship {
-    cursor: Cursor!
+    cursor: String!
     node: Search!
 }
 
@@ -278,8 +275,8 @@ interface Node {
 type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
-    startCursor: Cursor
-    endCursor: Cursor
+    startCursor: String
+    endCursor: String
 }
 
 type Query {

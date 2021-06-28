@@ -492,9 +492,6 @@ type CreateMoviesMutationResponse {
   movies: [Movie!]!
 }
 
-"""Opaque cursor used for pagination (Relay)"""
-scalar Cursor
-
 type DeleteInfo {
   nodesDeleted: Int!
   relationshipsDeleted: Int!
@@ -522,7 +519,7 @@ type MovieActorsConnection {
 input MovieActorsConnectionOptions {
   sort: [MovieActorsConnectionSort!]
   first: Int
-  after: Cursor
+  after: String
 }
 
 input MovieActorsConnectionSort {
@@ -546,7 +543,7 @@ input MovieActorsFieldInput {
 }
 
 type MovieActorsRelationship {
-  cursor: Cursor!
+  cursor: String!
   node: Actor!
 }
 
@@ -628,8 +625,8 @@ type Mutation {
 type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
-    startCursor: Cursor
-    endCursor: Cursor
+    startCursor: String
+    endCursor: String
 }
 
 """Globally-identifiable node (Relay)"""

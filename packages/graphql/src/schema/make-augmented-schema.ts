@@ -120,20 +120,14 @@ function makeAugmentedSchema(
         },
     });
 
-    composer.createScalarTC({
-        name: "Cursor",
-        description: "Opaque cursor used for pagination (Relay)",
-        serialize: (val: string) => `${val}`,
-    });
-
     composer.createObjectTC({
         name: "PageInfo",
         description: "Pagination information (Relay)",
         fields: {
             hasNextPage: "Boolean!",
             hasPreviousPage: "Boolean!",
-            startCursor: "Cursor",
-            endCursor: "Cursor",
+            startCursor: "String",
+            endCursor: "String",
         },
     });
 
@@ -950,7 +944,7 @@ function makeAugmentedSchema(
             const relationship = composer.createObjectTC({
                 name: connectionField.relationshipTypeName,
                 fields: {
-                    cursor: "Cursor!",
+                    cursor: "String!",
                     node: `${connectionField.relationship.typeMeta.name}!`,
                 },
             });
@@ -1025,7 +1019,7 @@ function makeAugmentedSchema(
                     fields: {
                         sort: connectionSort.NonNull.List,
                         first: "Int",
-                        after: "Cursor",
+                        after: "String",
                     },
                 });
 

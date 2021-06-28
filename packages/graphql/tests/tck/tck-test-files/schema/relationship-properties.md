@@ -107,7 +107,7 @@ type ActorMoviesConnection {
 input ActorMoviesConnectionOptions {
   sort: [ActorMoviesConnectionSort!]
   first: Int
-  after: Cursor
+  after: String
 }
 
 input ActorMoviesConnectionSort {
@@ -135,7 +135,7 @@ input ActorMoviesFieldInput {
 }
 
 type ActorMoviesRelationship implements ActedIn {
-  cursor: Cursor!
+  cursor: String!
   node: Movie!
   screenTime: Int!
 }
@@ -200,9 +200,6 @@ type CreateMoviesMutationResponse {
   movies: [Movie!]!
 }
 
-"""Opaque cursor used for pagination (Relay)"""
-scalar Cursor
-
 type DeleteInfo {
   nodesDeleted: Int!
   relationshipsDeleted: Int!
@@ -232,7 +229,7 @@ type MovieActorsConnection {
 input MovieActorsConnectionOptions {
   sort: [MovieActorsConnectionSort!]
   first: Int
-  after: Cursor
+  after: String
 }
 
 input MovieActorsConnectionSort {
@@ -260,7 +257,7 @@ input MovieActorsFieldInput {
 }
 
 type MovieActorsRelationship implements ActedIn {
-  cursor: Cursor!
+  cursor: String!
   node: Actor!
   screenTime: Int!
 }
@@ -357,8 +354,8 @@ type Mutation {
 type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
-    startCursor: Cursor
-    endCursor: Cursor
+    startCursor: String
+    endCursor: String
 }
 
 """Globally-identifiable node (Relay)"""

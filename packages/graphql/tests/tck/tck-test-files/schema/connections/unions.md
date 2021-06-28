@@ -172,7 +172,7 @@ input AuthorPublicationsJournalUpdateFieldInput {
 }
 
 type AuthorPublicationsRelationship implements Wrote {
-  cursor: Cursor!
+  cursor: String!
   node: Publication!
   words: Int!
 }
@@ -233,7 +233,7 @@ type BookAuthorConnection {
 
 input BookAuthorConnectionOptions {
   sort: [BookAuthorConnectionSort!]
-  after: Cursor
+  after: String
   first: Int
 }
 
@@ -272,7 +272,7 @@ input BookAuthorFieldInput {
 }
 
 type BookAuthorRelationship implements Wrote {
-  cursor: Cursor!
+  cursor: String!
   node: Author!
   words: Int!
 }
@@ -358,9 +358,6 @@ type CreateJournalsMutationResponse {
   journals: [Journal!]!
 }
 
-"""Opaque cursor used for pagination (Relay)"""
-scalar Cursor
-
 type DeleteInfo {
   nodesDeleted: Int!
   relationshipsDeleted: Int!
@@ -389,7 +386,7 @@ type JournalAuthorConnection {
 
 input JournalAuthorConnectionOptions {
   sort: [JournalAuthorConnectionSort!]
-  after: Cursor
+  after: String
   first: Int
 }
 
@@ -428,7 +425,7 @@ input JournalAuthorFieldInput {
 }
 
 type JournalAuthorRelationship implements Wrote {
-  cursor: Cursor!
+  cursor: String!
   node: Author!
   words: Int!
 }
@@ -525,8 +522,8 @@ interface Node {
 type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
-    startCursor: Cursor
-    endCursor: Cursor
+    startCursor: String
+    endCursor: String
 }
 
 type Query {
