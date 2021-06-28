@@ -29,6 +29,7 @@ import {
     InterfaceTypeDefinitionNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
+    parse,
     print,
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode,
@@ -136,17 +137,6 @@ function makeAugmentedSchema(
         },
     });
 
-    composer.createInterfaceTC({
-        name: "Node",
-        description: "Globally-identifiable node (Relay)",
-        fields: {
-            id: {
-                type: "ID!",
-                directives: ["id"],
-            },
-        },
-    });
-
     composer.Query.addFields({
         node: {
             type: "Node!",
@@ -181,6 +171,17 @@ function makeAugmentedSchema(
             );
         }
     }
+
+    const nodeTypeDef = `
+        """Globally-identifiable node (Relay)"""
+        interface Node {
+            id: ID! @id
+        } 
+    `;
+
+    const nodeInterfaceDef = parse(nodeTypeDef, { noLocation: true }).definitions[0];
+    // @ts-ignore we can be sure the interfaceTypeDef exists
+    interfaces.push(nodeInterfaceDef);
 
     const directives = document.definitions.filter(
         (x) => x.kind === "DirectiveDefinition"
@@ -1028,10 +1029,7 @@ function makeAugmentedSchema(
                     },
                 });
 
-                composeNodeArgs = {
-                    ...composeNodeArgs,
-                    options: connectionOptions,
-                };
+                composeNodeArgs = { ...composeNodeArgs, options: connectionOptions };
             }
 
             composeNode.addFields({
@@ -1141,6 +1139,7 @@ function makeAugmentedSchema(
 
         composer.createInterfaceTC({
             name: inter.name.value,
+            description: inter.description?.value,
             fields: objectComposeFields,
             extensions: {
                 directives: graphqlDirectivesToCompose((inter.directives || []).filter((x) => x.name.value !== "auth")),
