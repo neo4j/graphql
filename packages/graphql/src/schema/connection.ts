@@ -51,10 +51,7 @@ const createConnectionWithEdgeProperties = (
         startOffset = Math.max(startOffset, endOffset - last);
     }
 
-    // If supplied slice is too large, trim it down before mapping over it.
-    const slice = arraySlice.slice(Math.max(startOffset - sliceStart, 0), arraySlice.length - (sliceEnd - endOffset));
-
-    const edges = slice.map((value, index) => ({
+    const edges = arraySlice.map((value, index) => ({
         ...value,
         cursor: offsetToCursor(startOffset + index),
     }));
