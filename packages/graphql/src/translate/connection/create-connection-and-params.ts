@@ -21,30 +21,10 @@ import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { ConnectionField, ConnectionOptionsArg, ConnectionWhereArg, Context } from "../../types";
 import { Node } from "../../classes";
-import createProjectionAndParams from "../create-projection-and-params";
+import createProjectionAndParams, { createSkipLimitStr } from "../create-projection-and-params";
 import Relationship from "../../classes/Relationship";
 import createRelationshipPropertyElement from "../projection/elements/create-relationship-property-element";
 import createConnectionWhereAndParams from "../where/create-connection-where-and-params";
-
-function createSkipLimitStr({ skip, limit }: { skip?: number; limit?: number }): string {
-    const hasSkip = typeof skip !== "undefined";
-    const hasLimit = typeof limit !== "undefined";
-    let skipLimitStr = "";
-
-    if (hasSkip && !hasLimit) {
-        skipLimitStr = `[${skip}..]`;
-    }
-
-    if (hasLimit && !hasSkip) {
-        skipLimitStr = `[..${limit}]`;
-    }
-
-    if (hasLimit && hasSkip) {
-        skipLimitStr = `[${skip}..${limit}]`;
-    }
-
-    return skipLimitStr;
-}
 
 function createConnectionAndParams({
     resolveTree,
@@ -200,29 +180,19 @@ function createConnectionAndParams({
             unionSubqueries.push(unionSubquery.join("\n"));
         });
 
-        // need to implement skip limit on unions
+        const unionSubqueryCypher = ["CALL {", unionSubqueries.join("\nUNION\n"), "}"];
+
         if (!firstInput && !afterInput) {
-            subquery.push(
-                [
-                    "CALL {",
-                    unionSubqueries.join("\nUNION\n"),
-                    "}",
-                    "WITH collect(edge) as edges, count(edge) as totalCount",
-                ].join("\n")
-            );
+            unionSubqueryCypher.push("WITH collect(edge) as edges, count(edge) as totalCount");
         } else {
-            const offset = afterInput ? cursorToOffset(afterInput as string) : 0;
-            const skipLimitStr = createSkipLimitStr({ skip: offset, limit: firstInput as number });
-            subquery.push(
-                [
-                    "Call {",
-                    unionSubqueries.join("\nUNION\n"),
-                    "}",
-                    "WITH collect(edge) AS allEdges",
-                    `WITH allEdges, size(allEdges) as totalCount, allEdges(${skipLimitStr}) AS edges`,
-                ].join("\n")
-            );
+            const skipLimitStr = createSkipLimitStr({
+                skip: afterInput ? cursorToOffset(afterInput as string) : undefined,
+                limit: firstInput as number,
+            });
+            unionSubqueryCypher.push("WITH collect(edge) AS allEdges");
+            unionSubqueryCypher.push(`WITH allEdges, size(allEdges) as totalCount, allEdges(${skipLimitStr}) AS edges`);
         }
+        subquery.push(unionSubqueryCypher.join("\n"));
     } else {
         const relatedNodeVariable = `${nodeVariable}_${field.relationship.typeMeta.name.toLowerCase()}`;
         const nodeOutStr = `(${relatedNodeVariable}:${field.relationship.typeMeta.name})`;
@@ -246,22 +216,17 @@ function createConnectionAndParams({
             subquery.push(`WHERE ${whereClause}`);
         }
 
-        if (sortInput) {
+        if (sortInput && sortInput.length) {
+            const sort = sortInput.map((s) =>
+                [
+                    ...Object.entries(s.relationship || []).map(
+                        ([f, direction]) => `${relationshipVariable}.${f} ${direction}`
+                    ),
+                    ...Object.entries(s.node || []).map(([f, direction]) => `${relatedNodeVariable}.${f} ${direction}`),
+                ].join(", ")
+            );
             subquery.push(`WITH ${relationshipVariable}, ${relatedNodeVariable}`);
-
-            if (sortInput && sortInput.length) {
-                const sort = sortInput.map((s) =>
-                    [
-                        ...Object.entries(s.relationship || []).map(
-                            ([f, direction]) => `${relationshipVariable}.${f} ${direction}`
-                        ),
-                        ...Object.entries(s.node || []).map(
-                            ([f, direction]) => `${relatedNodeVariable}.${f} ${direction}`
-                        ),
-                    ].join(", ")
-                );
-                subquery.push(`ORDER BY ${sort.join(", ")}`);
-            }
+            subquery.push(`ORDER BY ${sort.join(", ")}`);
         }
 
         const nestedSubqueries: string[] = [];
