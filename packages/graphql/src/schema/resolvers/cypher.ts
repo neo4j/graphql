@@ -69,7 +69,7 @@ export default function cypherResolver({
             }
         }
 
-        const expectMultipleValues = referenceNode && field.typeMeta.array ? "true" : "false";
+        const initApocParamsStrs = ["auth: $auth", ...(context.cypherParams ? ["cypherParams: $cypherParams"] : [])];
         const apocParams = Object.entries(args).reduce(
             (r: { strs: string[]; params: any }, entry) => {
                 return {
@@ -77,10 +77,11 @@ export default function cypherResolver({
                     params: { ...r.params, [entry[0]]: entry[1] },
                 };
             },
-            { strs: ["auth: $auth"], params }
+            { strs: initApocParamsStrs, params }
         ) as { strs: string[]; params: any };
         const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
+        const expectMultipleValues = referenceNode && field.typeMeta.array ? "true" : "false";
         if (type === "Query") {
             cypherStrs.push(`
                 WITH apoc.cypher.runFirstColumn("${statement}", ${apocParamsStr}, ${expectMultipleValues}) as x
