@@ -117,8 +117,6 @@ input AuthorPublicationsConnectFieldInput {
 
 type AuthorPublicationsConnection {
   edges: [AuthorPublicationsRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
 }
 
 input AuthorPublicationsConnectionWhere {
@@ -172,7 +170,6 @@ input AuthorPublicationsJournalUpdateFieldInput {
 }
 
 type AuthorPublicationsRelationship implements Wrote {
-  cursor: String!
   node: Publication!
   words: Int!
 }
@@ -227,14 +224,10 @@ input BookAuthorConnectFieldInput {
 
 type BookAuthorConnection {
   edges: [BookAuthorRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
 }
 
 input BookAuthorConnectionOptions {
   sort: [BookAuthorConnectionSort!]
-  after: String
-  first: Int
 }
 
 input BookAuthorConnectionSort {
@@ -272,7 +265,6 @@ input BookAuthorFieldInput {
 }
 
 type BookAuthorRelationship implements Wrote {
-  cursor: String!
   node: Author!
   words: Int!
 }
@@ -380,14 +372,10 @@ input JournalAuthorConnectFieldInput {
 
 type JournalAuthorConnection {
   edges: [JournalAuthorRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
 }
 
 input JournalAuthorConnectionOptions {
   sort: [JournalAuthorConnectionSort!]
-  after: String
-  first: Int
 }
 
 input JournalAuthorConnectionSort {
@@ -425,7 +413,6 @@ input JournalAuthorFieldInput {
 }
 
 type JournalAuthorRelationship implements Wrote {
-  cursor: String!
   node: Author!
   words: Int!
 }
@@ -516,14 +503,6 @@ union Publication = Book | Journal
 """Globally-identifiable node (Relay)"""
 interface Node {
   id: ID!
-}
-
-"""Pagination information (Relay)"""
-type PageInfo {
-    hasNextPage: Boolean!
-    hasPreviousPage: Boolean!
-    startCursor: String
-    endCursor: String
 }
 
 type Query {

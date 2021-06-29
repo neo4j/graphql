@@ -49,7 +49,7 @@ CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -94,7 +94,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE this_actor.name = $this_actorsConnection.args.where.node.name
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -151,7 +151,7 @@ CALL {
     WITH this_acted_in, this_actor
     ORDER BY this_acted_in.screenTime DESC
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -206,10 +206,10 @@ CALL {
         WITH this_actor
         MATCH (this_actor)-[this_actor_acted_in:ACTED_IN]->(this_actor_movie:Movie)
         WITH collect({ screenTime: this_actor_acted_in.screenTime, node: { title: this_actor_movie.title } }) AS edges
-        RETURN { edges: edges, totalCount: size(edges) } AS moviesConnection
+        RETURN { edges: edges } AS moviesConnection
     }
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name, moviesConnection: moviesConnection } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -275,13 +275,13 @@ CALL {
             WITH this_actor_movie
             MATCH (this_actor_movie)<-[this_actor_movie_acted_in:ACTED_IN]-(this_actor_movie_actor:Actor)
             WITH collect({ screenTime: this_actor_movie_acted_in.screenTime, node: { name: this_actor_movie_actor.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            RETURN { edges: edges } AS actorsConnection
         }
         WITH collect({ screenTime: this_actor_acted_in.screenTime, node: { title: this_actor_movie.title, actorsConnection: actorsConnection } }) AS edges
-        RETURN { edges: edges, totalCount: size(edges) } AS moviesConnection
+        RETURN { edges: edges } AS moviesConnection
     }
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name, moviesConnection: moviesConnection } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```

@@ -178,8 +178,6 @@ export interface GraphQLOptionsArg {
 
 export interface ConnectionOptionsArg {
     sort?: ConnectionSortArg[];
-    first?: number;
-    after?: string;
 }
 
 /**

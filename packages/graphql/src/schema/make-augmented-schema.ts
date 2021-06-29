@@ -42,12 +42,11 @@ import {
     InputTypeComposerFieldConfigAsObjectDefinition,
     ObjectTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
-import { cursorToOffset } from "graphql-relay";
 import pluralize from "pluralize";
 import { Integer, isInt } from "neo4j-driver";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth, CustomEnumField, ConnectionQueryArgs } from "../types";
+import { PrimitiveField, Auth, CustomEnumField } from "../types";
 import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import * as Scalars from "./scalars";
@@ -61,7 +60,6 @@ import getFieldTypeMeta from "./get-field-type-meta";
 import Relationship, { RelationshipField } from "../classes/Relationship";
 import getRelationshipFieldMeta from "./get-relationship-field-meta";
 import getWhereFields from "./get-where-fields";
-import createConnectionWithEdgeProperties from "./connection";
 import { execute } from "../utils";
 import { translateRead } from "../translate";
 // import validateTypeDefs from "./validation";
@@ -117,17 +115,6 @@ function makeAugmentedSchema(
                 value: "DESC",
                 description: "Sort by field values in descending order.",
             },
-        },
-    });
-
-    composer.createObjectTC({
-        name: "PageInfo",
-        description: "Pagination information (Relay)",
-        fields: {
-            hasNextPage: "Boolean!",
-            hasPreviousPage: "Boolean!",
-            startCursor: "String",
-            endCursor: "String",
         },
     });
 
@@ -291,7 +278,10 @@ function makeAugmentedSchema(
     const relationshipFields = new Map<string, RelationshipField[]>();
 
     relationshipProperties.forEach((relationship) => {
-        const relationshipFieldMeta = getRelationshipFieldMeta({ relationship, enums });
+        const relationshipFieldMeta = getRelationshipFieldMeta({
+            relationship,
+            enums,
+        });
 
         if (!pointInTypeDefs) {
             pointInTypeDefs = relationshipFieldMeta.some((field) => field.typeMeta.name === "Point");
@@ -805,7 +795,10 @@ function makeAugmentedSchema(
             const nodeFieldDisconnectInputName = `${node.name}${upperFirst(rel.fieldName)}DisconnectFieldInput`;
 
             whereInput.addFields({
-                ...{ [rel.fieldName]: `${n.name}Where`, [`${rel.fieldName}_NOT`]: `${n.name}Where` },
+                ...{
+                    [rel.fieldName]: `${n.name}Where`,
+                    [`${rel.fieldName}_NOT`]: `${n.name}Where`,
+                },
                 ...(rel.typeMeta.array
                     ? {}
                     : {
@@ -829,7 +822,9 @@ function makeAugmentedSchema(
                     fields: {
                         node: `${n.name}CreateInput!`,
                         ...(rel.properties
-                            ? { properties: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
+                            ? {
+                                  properties: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}`,
+                              }
                             : {}),
                     },
                 });
@@ -843,10 +838,14 @@ function makeAugmentedSchema(
                     fields: {
                         where: `${n.name}Where`,
                         ...(n.relationFields.length
-                            ? { connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput` }
+                            ? {
+                                  connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput`,
+                              }
                             : {}),
                         ...(rel.properties
-                            ? { properties: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
+                            ? {
+                                  properties: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}`,
+                              }
                             : {}),
                     },
                 });
@@ -944,7 +943,6 @@ function makeAugmentedSchema(
             const relationship = composer.createObjectTC({
                 name: connectionField.relationshipTypeName,
                 fields: {
-                    cursor: "String!",
                     node: `${connectionField.relationship.typeMeta.name}!`,
                 },
             });
@@ -963,8 +961,6 @@ function makeAugmentedSchema(
                 name: connectionField.typeMeta.name,
                 fields: {
                     edges: relationship.NonNull.List.NonNull,
-                    totalCount: "Int!",
-                    pageInfo: "PageInfo!",
                 },
             });
 
@@ -1018,8 +1014,6 @@ function makeAugmentedSchema(
                     name: `${connectionField.typeMeta.name}Options`,
                     fields: {
                         sort: connectionSort.NonNull.List,
-                        first: "Int",
-                        after: "String",
                     },
                 });
 
@@ -1030,21 +1024,6 @@ function makeAugmentedSchema(
                 [connectionField.fieldName]: {
                     type: connection.NonNull,
                     args: composeNodeArgs,
-                    resolve: (source, args: ConnectionQueryArgs) => {
-                        const { totalCount: count, edges } = source[connectionField.fieldName];
-
-                        const totalCount = isInt(count) ? count.toNumber() : count;
-
-                        const offset = args.options?.after ? cursorToOffset(args.options.after) : 0;
-
-                        return {
-                            totalCount,
-                            ...createConnectionWithEdgeProperties(edges, args.options, {
-                                sliceStart: offset,
-                                arrayLength: totalCount,
-                            }),
-                        };
-                    },
                 },
             });
 
@@ -1119,13 +1098,22 @@ function makeAugmentedSchema(
 
                 const composedField = objectFieldsToComposeFields([field])[field.fieldName];
 
-                objectComposer.addFields({ [field.fieldName]: { ...composedField, ...customResolver } });
+                objectComposer.addFields({
+                    [field.fieldName]: { ...composedField, ...customResolver },
+                });
             });
         }
     });
 
     interfaces.forEach((inter) => {
-        const objectFields = getObjFieldMeta({ obj: inter, scalars, enums, interfaces, unions, objects: objectNodes });
+        const objectFields = getObjFieldMeta({
+            obj: inter,
+            scalars,
+            enums,
+            interfaces,
+            unions,
+            objects: objectNodes,
+        });
 
         const objectComposeFields = objectFieldsToComposeFields(
             Object.values(objectFields).reduce((acc, x) => [...acc, ...x], [])
@@ -1187,7 +1175,10 @@ function makeAugmentedSchema(
                     context,
                 });
 
-                const withTypes = result.map((x) => ({ ...x.this, __resolveType: label }));
+                const withTypes = result.map((x) => ({
+                    ...x.this,
+                    __resolveType: label,
+                }));
                 return withTypes[0];
             },
         },

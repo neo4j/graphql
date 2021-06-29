@@ -56,7 +56,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE this_acted_in.role CONTAINS $this_actorsConnection.args.where.relationship.role_CONTAINS
     WITH collect({ role: this_acted_in.role, node: { name: this_actor.name } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -110,7 +110,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE (NOT this_acted_in.role CONTAINS $this_actorsConnection.args.where.relationship.role_NOT_CONTAINS)
     WITH collect({ role: this_acted_in.role, node: { name: this_actor.name } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -164,7 +164,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE this_acted_in.role STARTS WITH $this_actorsConnection.args.where.relationship.role_STARTS_WITH
     WITH collect({ role: this_acted_in.role, node: { name: this_actor.name } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -218,7 +218,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE (NOT this_acted_in.role STARTS WITH $this_actorsConnection.args.where.relationship.role_NOT_STARTS_WITH)
     WITH collect({ role: this_acted_in.role, node: { name: this_actor.name } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -270,7 +270,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE this_acted_in.role ENDS WITH $this_actorsConnection.args.where.relationship.role_ENDS_WITH
     WITH collect({ role: this_acted_in.role, node: { name: this_actor.name } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -324,7 +324,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE (NOT this_acted_in.role ENDS WITH $this_actorsConnection.args.where.relationship.role_NOT_ENDS_WITH)
     WITH collect({ role: this_acted_in.role, node: { name: this_actor.name } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -378,7 +378,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE this_acted_in.role =~ $this_actorsConnection.args.where.relationship.role_MATCHES
     WITH collect({ role: this_acted_in.role, node: { name: this_actor.name } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```

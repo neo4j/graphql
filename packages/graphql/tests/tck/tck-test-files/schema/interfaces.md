@@ -47,7 +47,7 @@ type Movie implements MovieNode {
   nodes: [MovieNode]
   movies(where: MovieWhere, options: MovieOptions): [Movie]
   moviesConnection(
-    where: MovieMoviesConnectionWhere, 
+    where: MovieMoviesConnectionWhere,
     options: MovieMoviesConnectionOptions
   ): MovieMoviesConnection!
 }
@@ -86,14 +86,10 @@ input MovieMoviesConnectFieldInput {
 
 type MovieMoviesConnection {
   edges: [MovieMoviesRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
 }
 
 input MovieMoviesConnectionOptions {
   sort: [MovieMoviesConnectionSort!]
-  first: Int
-  after: String
 }
 
 input MovieMoviesConnectionSort {
@@ -117,7 +113,6 @@ input MovieMoviesFieldInput {
 }
 
 type MovieMoviesRelationship {
-  cursor: String!
   node: Movie!
 }
 
@@ -184,17 +179,9 @@ interface MovieNode {
   customQuery: [Movie]
 }
 
-"""Pagination information (Relay)"""
-type PageInfo {
-    hasNextPage: Boolean!
-    hasPreviousPage: Boolean!
-    startCursor: String
-    endCursor: String
-}
-
 """Globally-identifiable node (Relay)"""
 interface Node {
-  id: ID!
+    id: ID!
 }
 
 type Query {

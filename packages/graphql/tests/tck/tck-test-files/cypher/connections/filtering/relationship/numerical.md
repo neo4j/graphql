@@ -49,7 +49,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE this_acted_in.screenTime < $this_actorsConnection.args.where.relationship.screenTime_LT
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -104,7 +104,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE this_acted_in.screenTime <= $this_actorsConnection.args.where.relationship.screenTime_LTE
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -159,7 +159,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE this_acted_in.screenTime > $this_actorsConnection.args.where.relationship.screenTime_GT
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -214,7 +214,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE this_acted_in.screenTime >= $this_actorsConnection.args.where.relationship.screenTime_GTE
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```

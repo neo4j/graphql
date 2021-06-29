@@ -512,14 +512,10 @@ input MovieActorsConnectFieldInput {
 
 type MovieActorsConnection {
   edges: [MovieActorsRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
 }
 
 input MovieActorsConnectionOptions {
   sort: [MovieActorsConnectionSort!]
-  first: Int
-  after: String
 }
 
 input MovieActorsConnectionSort {
@@ -543,7 +539,6 @@ input MovieActorsFieldInput {
 }
 
 type MovieActorsRelationship {
-  cursor: String!
   node: Actor!
 }
 
@@ -619,14 +614,6 @@ type Mutation {
   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
-}
-
-"""Pagination information (Relay)"""
-type PageInfo {
-    hasNextPage: Boolean!
-    hasPreviousPage: Boolean!
-    startCursor: String
-    endCursor: String
 }
 
 """Globally-identifiable node (Relay)"""

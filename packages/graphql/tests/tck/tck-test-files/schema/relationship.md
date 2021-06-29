@@ -93,14 +93,10 @@ input MovieActorsConnectFieldInput {
 
 type MovieActorsConnection {
   edges: [MovieActorsRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
 }
 
 input MovieActorsConnectionOptions {
   sort: [MovieActorsConnectionSort!]
-  first: Int
-  after: String
 }
 
 input MovieActorsConnectionSort {
@@ -132,7 +128,6 @@ input MovieActorsFieldInput {
 }
 
 type MovieActorsRelationship {
-  cursor: String!
   node: Actor!
 }
 
@@ -213,13 +208,6 @@ type Mutation {
   updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
 }
 
-"""Pagination information (Relay)"""
-type PageInfo {
-    hasNextPage: Boolean!
-    hasPreviousPage: Boolean!
-    startCursor: String
-    endCursor: String
-}
 
 """Globally-identifiable node (Relay)"""
 interface Node {
@@ -313,14 +301,10 @@ input ActorMoviesConnectFieldInput {
 
 type ActorMoviesConnection {
   edges: [ActorMoviesRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
 }
 
 input ActorMoviesConnectionOptions {
   sort: [ActorMoviesConnectionSort!]
-  after: String
-  first: Int
 }
 
 input ActorMoviesConnectionSort {
@@ -344,7 +328,6 @@ input ActorMoviesFieldInput {
 }
 
 type ActorMoviesRelationship {
-  cursor: String!
   node: Movie!
 }
 
@@ -428,14 +411,10 @@ input MovieActorsConnectFieldInput {
 
 type MovieActorsConnection {
   edges: [MovieActorsRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
 }
 
 input MovieActorsConnectionOptions {
   sort: [MovieActorsConnectionSort!]
-  after: String
-  first: Int
 }
 
 input MovieActorsConnectionSort {
@@ -469,7 +448,6 @@ input MovieActorsFieldInput {
 }
 
 type MovieActorsRelationship {
-  cursor: String!
   node: Actor!
 }
 
@@ -584,14 +562,6 @@ type Mutation {
     create: MovieRelationInput
     delete: MovieDeleteInput
   ): UpdateMoviesMutationResponse!
-}
-
-"""Pagination information (Relay)"""
-type PageInfo {
-    hasNextPage: Boolean!
-    hasPreviousPage: Boolean!
-    startCursor: String
-    endCursor: String
 }
 
 """Globally-identifiable node (Relay)"""

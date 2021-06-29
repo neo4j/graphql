@@ -37,7 +37,7 @@ interface ProjectionMeta {
     connectionFields?: ResolveTree[];
 }
 
-export function createSkipLimitStr({ skip, limit }: { skip?: number; limit?: number }): string {
+function createSkipLimitStr({ skip, limit }: { skip?: number; limit?: number }): string {
     const hasSkip = typeof skip !== "undefined";
     const hasLimit = typeof limit !== "undefined";
     let skipLimitStr = "";

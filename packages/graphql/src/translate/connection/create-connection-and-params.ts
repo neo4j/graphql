@@ -18,10 +18,9 @@
  */
 
 import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
-import { cursorToOffset } from "graphql-relay";
 import { ConnectionField, ConnectionOptionsArg, ConnectionWhereArg, Context } from "../../types";
 import { Node } from "../../classes";
-import createProjectionAndParams, { createSkipLimitStr } from "../create-projection-and-params";
+import createProjectionAndParams from "../create-projection-and-params";
 import Relationship from "../../classes/Relationship";
 import createRelationshipPropertyElement from "../projection/elements/create-relationship-property-element";
 import createConnectionWhereAndParams from "../where/create-connection-where-and-params";
@@ -44,9 +43,7 @@ function createConnectionAndParams({
 
     const subquery = ["CALL {", `WITH ${nodeVariable}`];
 
-    const sortInput = (resolveTree.args?.options as ConnectionOptionsArg)?.sort;
-    const afterInput = (resolveTree.args?.options as ConnectionOptionsArg)?.after;
-    const firstInput = (resolveTree.args?.options as ConnectionOptionsArg)?.first;
+    const sortInput = (resolveTree.args.options as ConnectionOptionsArg)?.sort;
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
     const relationshipVariable = `${nodeVariable}_${field.relationship.type.toLowerCase()}`;
@@ -180,19 +177,7 @@ function createConnectionAndParams({
             unionSubqueries.push(unionSubquery.join("\n"));
         });
 
-        const unionSubqueryCypher = ["CALL {", unionSubqueries.join("\nUNION\n"), "}"];
-
-        if (!firstInput && !afterInput) {
-            unionSubqueryCypher.push("WITH collect(edge) as edges, count(edge) as totalCount");
-        } else {
-            const skipLimitStr = createSkipLimitStr({
-                skip: afterInput ? cursorToOffset(afterInput) : undefined,
-                limit: firstInput as number,
-            });
-            unionSubqueryCypher.push("WITH collect(edge) AS allEdges");
-            unionSubqueryCypher.push(`WITH allEdges, size(allEdges) as totalCount, allEdges(${skipLimitStr}) AS edges`);
-        }
-        subquery.push(unionSubqueryCypher.join("\n"));
+        subquery.push(["CALL {", unionSubqueries.join("\nUNION\n"), "}", "WITH collect(edge) as edges"].join("\n"));
     } else {
         const relatedNodeVariable = `${nodeVariable}_${field.relationship.typeMeta.name.toLowerCase()}`;
         const nodeOutStr = `(${relatedNodeVariable}:${field.relationship.typeMeta.name})`;
@@ -287,20 +272,7 @@ function createConnectionAndParams({
         subquery.push(`WITH collect({ ${elementsToCollect.join(", ")} }) AS edges`);
     }
 
-    if (!firstInput && !afterInput) {
-        subquery.push(
-            `RETURN { edges: edges, totalCount: ${field.relationship.union ? "totalCount" : "size(edges)"} } AS ${
-                resolveTree.alias
-            }`
-        );
-    } else {
-        const skipLimitStr = createSkipLimitStr({
-            skip: afterInput ? cursorToOffset(afterInput) : undefined,
-            limit: firstInput as number,
-        });
-        subquery.push(`WITH this, edges, size(edges) AS totalCount, edges(${skipLimitStr}) AS limitedSelection`);
-        subquery.push(`RETURN { edges: limitedSelection, totalCount: totalCount } AS ${resolveTree.alias}`);
-    }
+    subquery.push(`RETURN { edges: edges } AS ${resolveTree.alias}`);
     subquery.push("}");
 
     const params = {

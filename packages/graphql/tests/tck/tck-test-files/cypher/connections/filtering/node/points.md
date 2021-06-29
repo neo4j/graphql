@@ -63,7 +63,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE distance(this_actor.currentLocation, point($this_actorsConnection.args.where.node.currentLocation_DISTANCE.point)) = $this_actorsConnection.args.where.node.currentLocation_DISTANCE.distance
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name, currentLocation: { point: this_actor.currentLocation } } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+    RETURN { edges: edges } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
