@@ -226,14 +226,8 @@ input PointInput {
   height: Float
 }
 
-"""Globally-identifiable node (Relay)"""
-interface Node {
-  id: ID!
-}
-
 type Query {
   movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-  node(id: ID!): Node!
 }
 
 type UpdateMoviesMutationResponse {

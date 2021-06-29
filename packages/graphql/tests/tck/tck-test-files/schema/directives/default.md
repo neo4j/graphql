@@ -146,14 +146,8 @@ type Mutation {
   updateUsers(where: UserWhere, update: UserUpdateInput): UpdateUsersMutationResponse!
 }
 
-"""Globally-identifiable node (Relay)"""
-interface Node {
-  id: ID!
-}
-
 type Query {
   users(where: UserWhere, options: UserOptions): [User!]!
-  node(id: ID!): Node!
 }
 ```
 

@@ -125,14 +125,8 @@ type Mutation {
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
 
-"""Globally-identifiable node (Relay)"""
-interface Node {
-  id: ID!
-}
-
 type Query {
   movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-  node(id: ID!): Node!
 }
 ```
 
@@ -207,14 +201,8 @@ type Mutation {
   updateActors(where: ActorWhere, update: ActorUpdateInput): UpdateActorsMutationResponse!
 }
 
-"""Globally-identifiable node (Relay)"""
-interface Node {
-  id: ID!
-}
-
 type Query {
   actors(where: ActorWhere, options: ActorOptions): [Actor!]!
-  node(id: ID!): Node!
 }
 ```
 
@@ -302,14 +290,8 @@ type Mutation {
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
 
-"""Globally-identifiable node (Relay)"""
-interface Node {
-  id: ID!
-}
-
 type Query {
   movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-  node(id: ID!): Node!
 }
 ```
 
@@ -405,15 +387,9 @@ type Mutation {
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
 
-"""Globally-identifiable node (Relay)"""
-interface Node {
-  id: ID!
-}
-
 type Query {
   customActorQuery: Actor
   movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-  node(id: ID!): Node!
 }
 ```
 
@@ -501,7 +477,7 @@ type Movie {
   title: String
   actors(where: ActorWhere, options: ActorOptions): [Actor]
   actorsConnection(
-    where: MovieActorsConnectionWhere, 
+    where: MovieActorsConnectionWhere,
     options: MovieActorsConnectionOptions
   ): MovieActorsConnection!
 }
@@ -629,14 +605,8 @@ type PageInfo {
     endCursor: String
 }
 
-"""Globally-identifiable node (Relay)"""
-interface Node {
-  id: ID!
-}
-
 type Query {
   movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-  node(id: ID!): Node!
 }
 
 enum SortDirection {
@@ -732,14 +702,8 @@ type Mutation {
   updateActors(where: ActorWhere, update: ActorUpdateInput): UpdateActorsMutationResponse!
 }
 
-"""Globally-identifiable node (Relay)"""
-interface Node {
-  id: ID!
-}
-
 type Query {
   actors(where: ActorWhere, options: ActorOptions): [Actor!]!
-  node(id: ID!): Node!
 }
 ```
 

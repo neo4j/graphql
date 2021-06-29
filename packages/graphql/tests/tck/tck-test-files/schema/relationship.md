@@ -82,7 +82,7 @@ type Movie {
   id: ID
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
   actorsConnection(
-    where: MovieActorsConnectionWhere, 
+    where: MovieActorsConnectionWhere,
     options: MovieActorsConnectionOptions
   ): MovieActorsConnection!
 }
@@ -221,15 +221,9 @@ type PageInfo {
     endCursor: String
 }
 
-"""Globally-identifiable node (Relay)"""
-interface Node {
-  id: ID!
-}
-
 type Query {
   actors(where: ActorWhere, options: ActorOptions): [Actor!]!
   movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-  node(id: ID!): Node!
 }
 
 enum SortDirection {
@@ -274,7 +268,7 @@ type Actor {
   name: String
   movies(where: MovieWhere, options: MovieOptions): [Movie]
   moviesConnection(
-    where: ActorMoviesConnectionWhere, 
+    where: ActorMoviesConnectionWhere,
     options: ActorMoviesConnectionOptions
   ): ActorMoviesConnection!
 }
@@ -416,7 +410,7 @@ type Movie {
   id: ID
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
   actorsConnection(
-    where: MovieActorsConnectionWhere, 
+    where: MovieActorsConnectionWhere,
     options: MovieActorsConnectionOptions
   ): MovieActorsConnection!
 }
@@ -594,15 +588,9 @@ type PageInfo {
     endCursor: String
 }
 
-"""Globally-identifiable node (Relay)"""
-interface Node {
-  id: ID!
-}
-
 type Query {
   actors(where: ActorWhere, options: ActorOptions): [Actor!]!
   movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-  node(id: ID!): Node!
 }
 ```
 

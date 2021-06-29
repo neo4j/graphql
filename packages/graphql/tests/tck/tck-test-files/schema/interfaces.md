@@ -47,7 +47,7 @@ type Movie implements MovieNode {
   nodes: [MovieNode]
   movies(where: MovieWhere, options: MovieOptions): [Movie]
   moviesConnection(
-    where: MovieMoviesConnectionWhere, 
+    where: MovieMoviesConnectionWhere,
     options: MovieMoviesConnectionOptions
   ): MovieMoviesConnection!
 }
@@ -192,14 +192,8 @@ type PageInfo {
     endCursor: String
 }
 
-"""Globally-identifiable node (Relay)"""
-interface Node {
-  id: ID!
-}
-
 type Query {
   movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-  node(id: ID!): Node!
 }
 
 enum SortDirection {

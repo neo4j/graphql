@@ -19,7 +19,6 @@ type Movie {
 
 type Query {
   name(input: NodeInput): String
-  node(id: ID!): Node!
 }
 ```
 
@@ -95,15 +94,9 @@ type Mutation {
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
 }
 
-"""Globally-identifiable node (Relay)"""
-interface Node {
-  id: ID!
-}
-
 type Query {
   movies(where: MovieWhere, options: MovieOptions): [Movie!]!
   name(input: NodeInput): String
-  node(id: ID!): Node!
 }
 ```
 

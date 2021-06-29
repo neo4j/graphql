@@ -214,7 +214,7 @@ type Book {
   title: String!
   author(where: AuthorWhere, options: AuthorOptions): [Author!]!
   authorConnection(
-    where: BookAuthorConnectionWhere, 
+    where: BookAuthorConnectionWhere,
     options: BookAuthorConnectionOptions
   ): BookAuthorConnection!
 }
@@ -367,7 +367,7 @@ type Journal {
   subject: String!
   author(where: AuthorWhere, options: AuthorOptions): [Author!]!
   authorConnection(
-    where: JournalAuthorConnectionWhere, 
+    where: JournalAuthorConnectionWhere,
     options: JournalAuthorConnectionOptions
   ): JournalAuthorConnection!
 }
@@ -513,11 +513,6 @@ type Mutation {
 
 union Publication = Book | Journal
 
-"""Globally-identifiable node (Relay)"""
-interface Node {
-  id: ID!
-}
-
 """Pagination information (Relay)"""
 type PageInfo {
     hasNextPage: Boolean!
@@ -530,7 +525,6 @@ type Query {
   authors(where: AuthorWhere, options: AuthorOptions): [Author!]!
   books(where: BookWhere, options: BookOptions): [Book!]!
   journals(where: JournalWhere, options: JournalOptions): [Journal!]!
-  node(id: ID!): Node!
 }
 
 input QueryOptions {

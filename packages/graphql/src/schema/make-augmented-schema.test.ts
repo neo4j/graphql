@@ -91,13 +91,13 @@ describe("makeAugmentedSchema", () => {
 
     test("should throw cannot have interface on relationship", () => {
         const typeDefs = `
-                interface MovieNode {
+                interface Node {
                     id: ID
                 }
 
                 type Movie {
                     title: String!
-                    nodes: [MovieNode] @relationship(type: "NODE", direction: IN)
+                    nodes: [Node] @relationship(type: "NODE", direction: IN)
                 }
             `;
 
@@ -106,19 +106,19 @@ describe("makeAugmentedSchema", () => {
 
     test("should throw type X does not implement interface X correctly", () => {
         const typeDefs = `
-            interface MovieNode @auth(rules: [{operations: [READ]}]) {
+            interface Node @auth(rules: [{operations: [READ]}]) {
                 id: ID
                 relation: [Movie] @relationship(type: "SOME_TYPE", direction: OUT)
                 cypher: [Movie] @cypher(statement: "MATCH (a) RETURN a")
             }
 
-            type Movie implements MovieNode {
+            type Movie implements Node {
                 title: String!
             }
             `;
 
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-            "type Movie does not implement interface MovieNode correctly"
+            "type Movie does not implement interface Node correctly"
         );
     });
 
@@ -177,8 +177,8 @@ describe("makeAugmentedSchema", () => {
 
     test("should throw cannot have auth directive on a relationship", () => {
         const typeDefs = `
-                type MovieNode {
-                    node: MovieNode @relationship(type: "NODE", direction: OUT) @auth(rules: [{operations: [CREATE]}])
+                type Node {
+                    node: Node @relationship(type: "NODE", direction: OUT) @auth(rules: [{operations: [CREATE]}])
                 }
             `;
 
@@ -188,7 +188,7 @@ describe("makeAugmentedSchema", () => {
     describe("REGEX", () => {
         test("should remove the MATCHES filter by default", () => {
             const typeDefs = `
-                    type MovieNode {
+                    type Node {
                         name: String
                     }
                 `;
@@ -198,7 +198,7 @@ describe("makeAugmentedSchema", () => {
             const document = parse(printSchema(neoSchema.schema));
 
             const nodeWhereInput = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "MovieNodeWhere"
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "NodeWhere"
             ) as InputObjectTypeDefinitionNode;
 
             const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("_MATCHES"));
@@ -208,7 +208,7 @@ describe("makeAugmentedSchema", () => {
 
         test("should add the MATCHES filter when NEO4J_GRAPHQL_ENABLE_REGEX is set", () => {
             const typeDefs = `
-                    type MovieNode {
+                    type Node {
                         name: String
                     }
                 `;
@@ -218,7 +218,7 @@ describe("makeAugmentedSchema", () => {
             const document = parse(printSchema(neoSchema.schema));
 
             const nodeWhereInput = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "MovieNodeWhere"
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "NodeWhere"
             ) as InputObjectTypeDefinitionNode;
 
             const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("_MATCHES"));
@@ -232,7 +232,7 @@ describe("makeAugmentedSchema", () => {
             // https://github.com/neo4j/graphql/issues/158
 
             const typeDefs = `
-                type MovieNode {
+                type Node {
                     createdAt: DateTime
                 }
 
