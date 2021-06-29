@@ -326,7 +326,7 @@ describe("Point", () => {
         const id = faker.random.uuid();
         const size = faker.random.number({});
         const longitude = parseFloat(faker.address.longitude());
-        const latitude = parseFloat(faker.address.latitude());
+        const latitude = parseFloat(faker.address.latitude(88));
 
         const result = await session.run(`
             CALL {
