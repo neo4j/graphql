@@ -59,7 +59,7 @@ describe("Relationship properties - create", () => {
         const session = driver.session();
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
-        const screenTime = Math.floor((Math.random() * 1e10) / Math.random());
+        const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
 
         const source = `
             mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
@@ -68,9 +68,9 @@ describe("Relationship properties - create", () => {
                         {
                             title: $movieTitle
                             actors: {
-                                create: [{ 
-                                    properties: { screenTime: $screenTime }, 
-                                    node: { name: $actorName } 
+                                create: [{
+                                    properties: { screenTime: $screenTime },
+                                    node: { name: $actorName }
                                 }]
                             }
                         }
@@ -145,7 +145,7 @@ describe("Relationship properties - create", () => {
         const session = driver.session();
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
-        const words = Math.floor((Math.random() * 1e10) / Math.random());
+        const words = Math.floor((Math.random() * 1e3) / Math.random());
 
         const source = `
             mutation($actorName: String!, $words: Int!, $movieTitle: String!) {
@@ -154,9 +154,9 @@ describe("Relationship properties - create", () => {
                         {
                             name: $actorName
                             publications_Movie: {
-                                create: [{ 
-                                    properties: { words: $words }, 
-                                    node: { title: $movieTitle } 
+                                create: [{
+                                    properties: { words: $words },
+                                    node: { title: $movieTitle }
                                 }]
                             }
                         }
