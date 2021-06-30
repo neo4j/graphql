@@ -255,10 +255,7 @@ function makeAugmentedSchema(
     const relationshipFields = new Map<string, RelationshipField[]>();
 
     relationshipProperties.forEach((relationship) => {
-        const relationshipFieldMeta = getRelationshipFieldMeta({
-            relationship,
-            enums,
-        });
+        const relationshipFieldMeta = getRelationshipFieldMeta({ relationship, enums });
 
         if (!pointInTypeDefs) {
             pointInTypeDefs = relationshipFieldMeta.some((field) => field.typeMeta.name === "Point");
@@ -772,10 +769,7 @@ function makeAugmentedSchema(
             const nodeFieldDisconnectInputName = `${node.name}${upperFirst(rel.fieldName)}DisconnectFieldInput`;
 
             whereInput.addFields({
-                ...{
-                    [rel.fieldName]: `${n.name}Where`,
-                    [`${rel.fieldName}_NOT`]: `${n.name}Where`,
-                },
+                ...{ [rel.fieldName]: `${n.name}Where`, [`${rel.fieldName}_NOT`]: `${n.name}Where` },
                 ...(rel.typeMeta.array
                     ? {}
                     : {
@@ -799,9 +793,7 @@ function makeAugmentedSchema(
                     fields: {
                         node: `${n.name}CreateInput!`,
                         ...(rel.properties
-                            ? {
-                                  properties: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}`,
-                              }
+                            ? { properties: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
                             : {}),
                     },
                 });
@@ -815,14 +807,10 @@ function makeAugmentedSchema(
                     fields: {
                         where: `${n.name}Where`,
                         ...(n.relationFields.length
-                            ? {
-                                  connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput`,
-                              }
+                            ? { connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput` }
                             : {}),
                         ...(rel.properties
-                            ? {
-                                  properties: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}`,
-                              }
+                            ? { properties: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
                             : {}),
                     },
                 });
@@ -866,11 +854,7 @@ function makeAugmentedSchema(
                     name: nodeFieldDeleteInputName,
                     fields: {
                         where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
-                        ...(n.relationFields.length
-                            ? {
-                                  delete: `${n.name}DeleteInput`,
-                              }
-                            : {}),
+                        ...(n.relationFields.length ? { delete: `${n.name}DeleteInput` } : {}),
                     },
                 });
             }
@@ -880,11 +864,7 @@ function makeAugmentedSchema(
                     name: nodeFieldDisconnectInputName,
                     fields: {
                         where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
-                        ...(n.relationFields.length
-                            ? {
-                                  disconnect: `${n.name}DisconnectInput`,
-                              }
-                            : {}),
+                        ...(n.relationFields.length ? { disconnect: `${n.name}DisconnectInput` } : {}),
                     },
                 });
             }
@@ -1095,22 +1075,13 @@ function makeAugmentedSchema(
 
                 const composedField = objectFieldsToComposeFields([field])[field.fieldName];
 
-                objectComposer.addFields({
-                    [field.fieldName]: { ...composedField, ...customResolver },
-                });
+                objectComposer.addFields({ [field.fieldName]: { ...composedField, ...customResolver } });
             });
         }
     });
 
     interfaces.forEach((inter) => {
-        const objectFields = getObjFieldMeta({
-            obj: inter,
-            scalars,
-            enums,
-            interfaces,
-            unions,
-            objects: objectNodes,
-        });
+        const objectFields = getObjFieldMeta({ obj: inter, scalars, enums, interfaces, unions, objects: objectNodes });
 
         const objectComposeFields = objectFieldsToComposeFields(
             Object.values(objectFields).reduce((acc, x) => [...acc, ...x], [])
@@ -1150,10 +1121,8 @@ function makeAugmentedSchema(
 
     unions.forEach((union) => {
         if (!generatedResolvers[union.name.value]) {
-            generatedResolvers[union.name.value] = {
-                // eslint-disable-next-line no-underscore-dangle
-                __resolveType: (root) => root.__resolveType,
-            };
+            // eslint-disable-next-line no-underscore-dangle
+            generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
         }
     });
 
