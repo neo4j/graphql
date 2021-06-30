@@ -676,6 +676,7 @@ function makeAugmentedSchema(
                 const customResolver = cypherResolver({
                     field,
                     statement: field.statement,
+                    type: type as "Query" | "Mutation",
                 });
 
                 const composedField = objectFieldsToComposeFields([field])[field.fieldName];
