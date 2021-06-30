@@ -20,11 +20,13 @@
 import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
-import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context } from "../types";
+import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createDatetimeElement from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
+// eslint-disable-next-line import/no-cycle
+import createConnectionAndParams from "./connection/create-connection-and-params";
 
 interface Res {
     projection: string[];
@@ -137,6 +139,7 @@ function createProjectionAndParams({
     varName,
     literalElements,
     resolveType,
+    inRelationshipProjection,
 }: {
     fieldsByTypeName: FieldsByTypeName;
     node: Node;
@@ -145,6 +148,7 @@ function createProjectionAndParams({
     varName: string;
     literalElements?: boolean;
     resolveType?: boolean;
+    inRelationshipProjection?: boolean;
 }): [string, any, ProjectionMeta?] {
     function reducer(res: Res, [k, field]: [string, any]): Res {
         let key = k;
@@ -351,6 +355,7 @@ function createProjectionAndParams({
                 context,
                 varName: `${varName}_${key}`,
                 chainStr: param,
+                inRelationshipProjection: true,
             });
             [projectionStr] = recurse;
             res.params = { ...res.params, ...recurse[1] };
@@ -403,9 +408,32 @@ function createProjectionAndParams({
         }
 
         if (connectionField) {
-            if (!res.meta.connectionFields) res.meta.connectionFields = [];
-            res.meta.connectionFields.push(field as ResolveTree);
-            res.projection.push(literalElements ? `${field.name}: ${field.name}` : `${field.name}`);
+            if (!inRelationshipProjection) {
+                if (!res.meta.connectionFields) res.meta.connectionFields = [];
+                res.meta.connectionFields.push(field as ResolveTree);
+                res.projection.push(literalElements ? `${field.name}: ${field.name}` : `${field.name}`);
+                return res;
+            }
+
+            const matchedConnectionField = node.connectionFields.find(
+                (x) => x.fieldName === field.name
+            ) as ConnectionField;
+            const connection = createConnectionAndParams({
+                resolveTree: field,
+                field: matchedConnectionField,
+                context,
+                nodeVariable: varName,
+            });
+
+            const connectionParamName = Object.keys(connection[1])[0];
+            const runFirstColumnParams = connectionParamName
+                ? `{ ${chainStr}: ${chainStr}, ${connectionParamName}: $${connectionParamName} }`
+                : `{ ${chainStr}: ${chainStr} }`;
+
+            res.projection.push(
+                `${field.name}: apoc.cypher.runFirstColumn("${connection[0]} RETURN ${field.name}", ${runFirstColumnParams}, false)`
+            );
+            res.params = { ...res.params, ...connection[1] };
             return res;
         }
 

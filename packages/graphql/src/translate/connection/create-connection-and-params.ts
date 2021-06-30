@@ -25,6 +25,8 @@ import createProjectionAndParams, { createSkipLimitStr } from "../create-project
 import Relationship from "../../classes/Relationship";
 import createRelationshipPropertyElement from "../projection/elements/create-relationship-property-element";
 import createConnectionWhereAndParams from "../where/create-connection-where-and-params";
+import createAuthAndParams from "../create-auth-and-params";
+import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 
 function createConnectionAndParams({
     resolveTree,
@@ -39,7 +41,7 @@ function createConnectionAndParams({
     nodeVariable: string;
     parameterPrefix?: string;
 }): [string, any] {
-    let legacyProjectionWhereParams;
+    let globalParams = {};
     let nestedConnectionFieldParams;
 
     const subquery = ["CALL {", `WITH ${nodeVariable}`];
@@ -107,7 +109,10 @@ function createConnectionAndParams({
                 });
                 const [nodeProjection, nodeProjectionParams] = nodeProjectionAndParams;
                 unionSubqueryElementsToCollect.push(`node: ${nodeProjection}`);
-                legacyProjectionWhereParams = nodeProjectionParams;
+                globalParams = {
+                    ...globalParams,
+                    ...nodeProjectionParams,
+                };
 
                 if (nodeProjectionAndParams[2]?.connectionFields?.length) {
                     nodeProjectionAndParams[2].connectionFields.forEach((connectionResolveTree) => {
@@ -125,8 +130,8 @@ function createConnectionAndParams({
                         });
                         nestedSubqueries.push(nestedConnection[0]);
 
-                        legacyProjectionWhereParams = {
-                            ...legacyProjectionWhereParams,
+                        globalParams = {
+                            ...globalParams,
                             ...Object.entries(nestedConnection[1]).reduce<Record<string, unknown>>((res, [k, v]) => {
                                 if (k !== `${relatedNodeVariable}_${connectionResolveTree.name}`) {
                                     res[k] = v;
@@ -152,6 +157,23 @@ function createConnectionAndParams({
             unionSubquery.push(`WITH ${nodeVariable}`);
             unionSubquery.push(`OPTIONAL MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 
+            const allowAndParams = createAuthAndParams({
+                operation: "READ",
+                entity: n,
+                context,
+                allow: {
+                    parentNode: n,
+                    varName: relatedNodeVariable,
+                },
+            });
+            if (allowAndParams[0]) {
+                globalParams = { ...globalParams, ...allowAndParams[1] };
+                unionSubquery.push(
+                    `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                );
+            }
+
+            const whereStrs: string[] = [];
             if (whereInput) {
                 const where = createConnectionWhereAndParams({
                     whereInput,
@@ -166,8 +188,23 @@ function createConnectionAndParams({
                 });
                 const [whereClause] = where;
                 if (whereClause) {
-                    unionSubquery.push(`WHERE ${whereClause}`);
+                    whereStrs.push(whereClause);
                 }
+            }
+
+            const whereAuth = createAuthAndParams({
+                operation: "READ",
+                entity: n,
+                context,
+                where: { varName: relatedNodeVariable, node: n },
+            });
+            if (whereAuth[0]) {
+                whereStrs.push(whereAuth[0]);
+                globalParams = { ...globalParams, ...whereAuth[1] };
+            }
+
+            if (whereStrs.length) {
+                unionSubquery.push(`WHERE ${whereStrs.join(" AND ")}`);
             }
 
             if (nestedSubqueries.length) {
@@ -200,6 +237,8 @@ function createConnectionAndParams({
 
         subquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 
+        const whereStrs: string[] = [];
+
         if (whereInput) {
             const where = createConnectionWhereAndParams({
                 whereInput,
@@ -213,7 +252,36 @@ function createConnectionAndParams({
                 }.args.where`,
             });
             const [whereClause] = where;
-            subquery.push(`WHERE ${whereClause}`);
+            whereStrs.push(`${whereClause}`);
+        }
+
+        const whereAuth = createAuthAndParams({
+            operation: "READ",
+            entity: relatedNode,
+            context,
+            where: { varName: relatedNodeVariable, node: relatedNode },
+        });
+        if (whereAuth[0]) {
+            whereStrs.push(whereAuth[0]);
+            globalParams = { ...globalParams, ...whereAuth[1] };
+        }
+
+        if (whereStrs.length) {
+            subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
+        }
+
+        const allowAndParams = createAuthAndParams({
+            operation: "READ",
+            entity: relatedNode,
+            context,
+            allow: {
+                parentNode: relatedNode,
+                varName: relatedNodeVariable,
+            },
+        });
+        if (allowAndParams[0]) {
+            globalParams = { ...globalParams, ...allowAndParams[1] };
+            subquery.push(`CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
         if (sortInput && sortInput.length) {
@@ -239,12 +307,20 @@ function createConnectionAndParams({
                 varName: relatedNodeVariable,
                 literalElements: true,
             });
-            const [nodeProjection, nodeProjectionParams] = nodeProjectionAndParams;
+            const [nodeProjection, nodeProjectionParams, projectionMeta] = nodeProjectionAndParams;
             elementsToCollect.push(`node: ${nodeProjection}`);
-            legacyProjectionWhereParams = nodeProjectionParams;
+            globalParams = { ...globalParams, ...nodeProjectionParams };
 
-            if (nodeProjectionAndParams[2]?.connectionFields?.length) {
-                nodeProjectionAndParams[2].connectionFields.forEach((connectionResolveTree) => {
+            if (projectionMeta?.authValidateStrs?.length) {
+                subquery.push(
+                    `CALL apoc.util.validate(NOT(${projectionMeta.authValidateStrs.join(
+                        " AND "
+                    )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                );
+            }
+
+            if (projectionMeta?.connectionFields?.length) {
+                projectionMeta.connectionFields.forEach((connectionResolveTree) => {
                     const connectionField = relatedNode.connectionFields.find(
                         (x) => x.fieldName === connectionResolveTree.name
                     ) as ConnectionField;
@@ -259,8 +335,8 @@ function createConnectionAndParams({
                     });
                     nestedSubqueries.push(nestedConnection[0]);
 
-                    legacyProjectionWhereParams = {
-                        ...legacyProjectionWhereParams,
+                    globalParams = {
+                        ...globalParams,
                         ...Object.entries(nestedConnection[1]).reduce<Record<string, unknown>>((res, [k, v]) => {
                             if (k !== `${relatedNodeVariable}_${connectionResolveTree.name}`) {
                                 res[k] = v;
@@ -304,7 +380,7 @@ function createConnectionAndParams({
     subquery.push("}");
 
     const params = {
-        ...legacyProjectionWhereParams,
+        ...globalParams,
         ...((whereInput || nestedConnectionFieldParams) && {
             [`${nodeVariable}_${resolveTree.name}`]: {
                 ...(whereInput && { args: { where: whereInput } }),

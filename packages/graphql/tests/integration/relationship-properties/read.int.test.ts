@@ -435,4 +435,142 @@ describe("Relationship properties - read", () => {
             await session.close();
         }
     });
+
+    test("Projecting a connection from a relationship with no argument", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+            query {
+                actors(where: { name: "${actorA}" }) {
+                    name
+                    movies {
+                        title
+                        actorsConnection {
+                            edges {
+                                screenTime
+                                node {
+                                    name
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.actors).toEqual([
+                {
+                    name: actorA,
+                    movies: [
+                        {
+                            title: movieTitle,
+                            actorsConnection: {
+                                edges: [
+                                    {
+                                        screenTime: 5,
+                                        node: {
+                                            name: actorC,
+                                        },
+                                    },
+                                    {
+                                        screenTime: 105,
+                                        node: {
+                                            name: actorB,
+                                        },
+                                    },
+                                    {
+                                        screenTime: 105,
+                                        node: {
+                                            name: actorA,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("Projecting a connection from a relationship with `where` argument", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+            query {
+                actors(where: { name: "${actorA}" }) {
+                    name
+                    movies {
+                        title
+                        actorsConnection(where: { node: { name_NOT: "${actorA}" } }) {
+                            edges {
+                                screenTime
+                                node {
+                                    name
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.actors).toEqual([
+                {
+                    name: actorA,
+                    movies: [
+                        {
+                            title: movieTitle,
+                            actorsConnection: {
+                                edges: [
+                                    {
+                                        screenTime: 5,
+                                        node: {
+                                            name: actorC,
+                                        },
+                                    },
+                                    {
+                                        screenTime: 105,
+                                        node: {
+                                            name: actorB,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
 });

@@ -175,3 +175,67 @@ RETURN this { .title, actorsConnection } as this
 ```
 
 ---
+
+### Relationship -> Connection
+
+**GraphQL input**
+
+```graphql
+query {
+    movies(where: { title: "Forrest Gump" }) {
+        title
+        actors(where: { name: "Tom Hanks" }) {
+            name
+            moviesConnection(where: { node: { title_NOT: "Forrest Gump" } }) {
+                edges {
+                    screenTime
+                    node {
+                        title
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+WHERE this.title = $this_title
+RETURN this {
+    .title,
+    actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor) WHERE this_actors.name = $this_actors_name | this_actors {
+        .name,
+        moviesConnection: apoc.cypher.runFirstColumn("CALL {
+                    WITH this_actors
+                    MATCH (this_actors)-[this_actors_acted_in:ACTED_IN]->(this_actors_movie:Movie)
+                    WHERE (NOT this_actors_movie.title = $this_actors_moviesConnection.args.where.node.title_NOT)
+                    WITH collect({ screenTime: this_actors_acted_in.screenTime, node: { title: this_actors_movie.title } }) AS edges
+                    RETURN { edges: edges } AS moviesConnection
+                } RETURN moviesConnection", { this_actors: this_actors, this_actors_moviesConnection: $this_actors_moviesConnection }, false)
+        }
+    ]
+} as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_title": "Forrest Gump",
+    "this_actors_name": "Tom Hanks",
+    "this_actors_moviesConnection": {
+        "args": {
+            "where": {
+                "node": {
+                    "title_NOT": "Forrest Gump"
+                }
+            }
+        }
+    }
+}
+```
+
+---
