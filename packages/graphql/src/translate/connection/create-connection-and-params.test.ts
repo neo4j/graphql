@@ -145,18 +145,16 @@ describe("createConnectionAndParams", () => {
             alias: "actorsConnection",
             name: "actorsConnection",
             args: {
-                options: {
-                    sort: [
-                        {
-                            node: {
-                                name: "ASC",
-                            },
-                            relationship: {
-                                screenTime: "DESC",
-                            },
+                sort: [
+                    {
+                        node: {
+                            name: "ASC",
                         },
-                    ],
-                },
+                        relationship: {
+                            screenTime: "DESC",
+                        },
+                    },
+                ],
             },
             fieldsByTypeName: {
                 MovieActorsConnection: {
@@ -254,10 +252,8 @@ describe("createConnectionAndParams", () => {
             alias: "actorsConnection",
             name: "actorsConnection",
             args: {
-                options: {
-                    first: 10,
-                    after: offsetToCursor(10),
-                },
+                first: 10,
+                after: offsetToCursor(10),
             },
             fieldsByTypeName: {
                 MovieActorsConnection: {

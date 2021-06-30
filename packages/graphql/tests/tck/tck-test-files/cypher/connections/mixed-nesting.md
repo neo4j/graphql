@@ -213,7 +213,7 @@ RETURN this {
                     MATCH (this_actors)-[this_actors_acted_in:ACTED_IN]->(this_actors_movie:Movie)
                     WHERE (NOT this_actors_movie.title = $this_actors_moviesConnection.args.where.node.title_NOT)
                     WITH collect({ screenTime: this_actors_acted_in.screenTime, node: { title: this_actors_movie.title } }) AS edges
-                    RETURN { edges: edges } AS moviesConnection
+                    RETURN { edges: edges, totalCount: size(edges) } AS moviesConnection
                 } RETURN moviesConnection", { this_actors: this_actors, this_actors_moviesConnection: $this_actors_moviesConnection }, false)
         }
     ]

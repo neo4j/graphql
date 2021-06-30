@@ -41,7 +41,6 @@ import {
     InputTypeComposerFieldConfigAsObjectDefinition,
     ObjectTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
-import { cursorToOffset } from "graphql-relay";
 import pluralize from "pluralize";
 import { Integer, isInt } from "neo4j-driver";
 import { Node, Exclude } from "../classes";
@@ -60,7 +59,7 @@ import getFieldTypeMeta from "./get-field-type-meta";
 import Relationship, { RelationshipField } from "../classes/Relationship";
 import getRelationshipFieldMeta from "./get-relationship-field-meta";
 import getWhereFields from "./get-where-fields";
-import createConnectionWithEdgeProperties from "./connection";
+import { createConnectionWithEdgeProperties } from "./pagination";
 // import validateTypeDefs from "./validation";
 
 function makeAugmentedSchema(
@@ -123,8 +122,8 @@ function makeAugmentedSchema(
         fields: {
             hasNextPage: "Boolean!",
             hasPreviousPage: "Boolean!",
-            startCursor: "String",
-            endCursor: "String",
+            startCursor: "String!",
+            endCursor: "String!",
         },
     });
 
@@ -937,7 +936,9 @@ function makeAugmentedSchema(
 
             let composeNodeArgs: {
                 where: any;
-                options?: any;
+                sort?: any;
+                first?: any;
+                after?: any;
             } = {
                 where: connectionWhere,
             };
@@ -970,16 +971,16 @@ function makeAugmentedSchema(
                     });
                 }
 
-                const connectionOptions = composer.createInputTC({
-                    name: `${connectionField.typeMeta.name}Options`,
-                    fields: {
-                        sort: connectionSort.NonNull.List,
-                        first: "Int",
-                        after: "String",
+                composeNodeArgs = {
+                    ...composeNodeArgs,
+                    sort: connectionSort.NonNull.List,
+                    first: {
+                        type: "Int",
                     },
-                });
-
-                composeNodeArgs = { ...composeNodeArgs, options: connectionOptions };
+                    after: {
+                        type: "String",
+                    },
+                };
             }
 
             composeNode.addFields({
@@ -991,14 +992,9 @@ function makeAugmentedSchema(
 
                         const totalCount = isInt(count) ? count.toNumber() : count;
 
-                        const offset = args.options?.after ? cursorToOffset(args.options.after) : 0;
-
                         return {
                             totalCount,
-                            ...createConnectionWithEdgeProperties(edges, args.options, {
-                                sliceStart: offset,
-                                arrayLength: totalCount,
-                            }),
+                            ...createConnectionWithEdgeProperties(edges, args, totalCount),
                         };
                     },
                 },

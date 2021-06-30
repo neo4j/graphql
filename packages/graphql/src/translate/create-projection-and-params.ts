@@ -27,6 +27,7 @@ import createDatetimeElement from "./projection/elements/create-datetime-element
 import createPointElement from "./projection/elements/create-point-element";
 // eslint-disable-next-line import/no-cycle
 import createConnectionAndParams from "./connection/create-connection-and-params";
+import { createSkipLimitStr } from "../schema/pagination";
 
 interface Res {
     projection: string[];
@@ -37,26 +38,6 @@ interface Res {
 interface ProjectionMeta {
     authValidateStrs?: string[];
     connectionFields?: ResolveTree[];
-}
-
-export function createSkipLimitStr({ skip, limit }: { skip?: number; limit?: number }): string {
-    const hasSkip = typeof skip !== "undefined";
-    const hasLimit = typeof limit !== "undefined";
-    let skipLimitStr = "";
-
-    if (hasSkip && !hasLimit) {
-        skipLimitStr = `[${skip}..]`;
-    }
-
-    if (hasLimit && !hasSkip) {
-        skipLimitStr = `[..${limit}]`;
-    }
-
-    if (hasLimit && hasSkip) {
-        skipLimitStr = `[${skip}..${limit}]`;
-    }
-
-    return skipLimitStr;
 }
 
 function createNodeWhereAndParams({
@@ -297,7 +278,6 @@ function createProjectionAndParams({
 
                     if (field.fieldsByTypeName[refNode.name]) {
                         const recurse = createProjectionAndParams({
-                            // @ts-ignore
                             fieldsByTypeName: field.fieldsByTypeName,
                             node: refNode,
                             context,

@@ -19,14 +19,16 @@
 
 import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
-import { ConnectionField, ConnectionOptionsArg, ConnectionWhereArg, Context } from "../../types";
+import { ConnectionField, ConnectionSortArg, ConnectionWhereArg, Context } from "../../types";
 import { Node } from "../../classes";
-import createProjectionAndParams, { createSkipLimitStr } from "../create-projection-and-params";
+// eslint-disable-next-line import/no-cycle
+import createProjectionAndParams from "../create-projection-and-params";
 import Relationship from "../../classes/Relationship";
 import createRelationshipPropertyElement from "../projection/elements/create-relationship-property-element";
 import createConnectionWhereAndParams from "../where/create-connection-where-and-params";
 import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
+import { createSkipLimitStr } from "../../schema/pagination";
 
 function createConnectionAndParams({
     resolveTree,
@@ -46,9 +48,9 @@ function createConnectionAndParams({
 
     const subquery = ["CALL {", `WITH ${nodeVariable}`];
 
-    const sortInput = (resolveTree.args?.options as ConnectionOptionsArg)?.sort;
-    const afterInput = (resolveTree.args?.options as ConnectionOptionsArg)?.after;
-    const firstInput = (resolveTree.args?.options as ConnectionOptionsArg)?.first;
+    const sortInput = resolveTree.args.sort as ConnectionSortArg[];
+    const afterInput = resolveTree.args.after as string;
+    const firstInput = resolveTree.args.first as number;
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
     const relationshipVariable = `${nodeVariable}_${field.relationship.type.toLowerCase()}`;
@@ -224,7 +226,7 @@ function createConnectionAndParams({
         } else {
             const skipLimitStr = createSkipLimitStr({
                 skip: afterInput ? cursorToOffset(afterInput) : undefined,
-                limit: firstInput as number,
+                limit: firstInput,
             });
             unionSubqueryCypher.push("WITH collect(edge) AS allEdges");
             unionSubqueryCypher.push(`WITH allEdges, size(allEdges) as totalCount, allEdges(${skipLimitStr}) AS edges`);
@@ -372,7 +374,7 @@ function createConnectionAndParams({
     } else {
         const skipLimitStr = createSkipLimitStr({
             skip: afterInput ? cursorToOffset(afterInput) : undefined,
-            limit: firstInput as number,
+            limit: firstInput,
         });
         subquery.push(`WITH this, edges, size(edges) AS totalCount, edges(${skipLimitStr}) AS limitedSelection`);
         subquery.push(`RETURN { edges: limitedSelection, totalCount: totalCount } AS ${resolveTree.alias}`);

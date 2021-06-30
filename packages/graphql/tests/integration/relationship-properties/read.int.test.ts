@@ -227,7 +227,7 @@ describe("Relationship properties - read", () => {
                 movies(where: { title: "${movieTitle}" }) {
                     title
                     actorsConnection(
-                        options: { sort: [{ relationship: { screenTime: DESC } }, { node: { name: $nameSort } }] }
+                        sort: [{ relationship: { screenTime: DESC } }, { node: { name: $nameSort } }]
                     ) {
                         totalCount
                         edges {
@@ -342,7 +342,7 @@ describe("Relationship properties - read", () => {
                     title
                     actorsConnection(
                         where: { relationship: { screenTime_GT: 60 } }
-                        options: { sort: [{ node: { name: $nameSort } }] }
+                        sort: [{ node: { name: $nameSort } }]
                     ) {
                         totalCount
                         edges {

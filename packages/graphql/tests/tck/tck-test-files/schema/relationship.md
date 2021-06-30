@@ -82,8 +82,10 @@ type Movie {
   id: ID
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
   actorsConnection(
+    after: String,
+    first: Int,
+    sort: [MovieActorsConnectionSort!],
     where: MovieActorsConnectionWhere,
-    options: MovieActorsConnectionOptions
   ): MovieActorsConnection!
 }
 
@@ -95,12 +97,6 @@ type MovieActorsConnection {
   edges: [MovieActorsRelationship!]!
   pageInfo: PageInfo!
   totalCount: Int!
-}
-
-input MovieActorsConnectionOptions {
-  sort: [MovieActorsConnectionSort!]
-  first: Int
-  after: String
 }
 
 input MovieActorsConnectionSort {
@@ -217,8 +213,8 @@ type Mutation {
 type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
-    startCursor: String
-    endCursor: String
+    startCursor: String!
+    endCursor: String!
 }
 
 type Query {
@@ -268,8 +264,10 @@ type Actor {
   name: String
   movies(where: MovieWhere, options: MovieOptions): [Movie]
   moviesConnection(
+    after: String,
+    first: Int,
     where: ActorMoviesConnectionWhere,
-    options: ActorMoviesConnectionOptions
+    sort: [ActorMoviesConnectionSort!]
   ): ActorMoviesConnection!
 }
 
@@ -309,12 +307,6 @@ type ActorMoviesConnection {
   edges: [ActorMoviesRelationship!]!
   pageInfo: PageInfo!
   totalCount: Int!
-}
-
-input ActorMoviesConnectionOptions {
-  sort: [ActorMoviesConnectionSort!]
-  after: String
-  first: Int
 }
 
 input ActorMoviesConnectionSort {
@@ -410,8 +402,10 @@ type Movie {
   id: ID
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
   actorsConnection(
+    after: String,
+    first: Int,
     where: MovieActorsConnectionWhere,
-    options: MovieActorsConnectionOptions
+    sort: [MovieActorsConnectionSort!]
   ): MovieActorsConnection!
 }
 
@@ -424,12 +418,6 @@ type MovieActorsConnection {
   edges: [MovieActorsRelationship!]!
   pageInfo: PageInfo!
   totalCount: Int!
-}
-
-input MovieActorsConnectionOptions {
-  sort: [MovieActorsConnectionSort!]
-  after: String
-  first: Int
 }
 
 input MovieActorsConnectionSort {
@@ -584,8 +572,8 @@ type Mutation {
 type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
-    startCursor: String
-    endCursor: String
+    startCursor: String!
+    endCursor: String!
 }
 
 type Query {

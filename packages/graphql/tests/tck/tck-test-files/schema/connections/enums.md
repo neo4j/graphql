@@ -66,8 +66,10 @@ type Actor {
     name: String!
     movies(where: MovieWhere, options: MovieOptions): [Movie]
     moviesConnection(
+        after: String,
+        first: Int,
         where: ActorMoviesConnectionWhere
-        options: ActorMoviesConnectionOptions
+        sort: [ActorMoviesConnectionSort!]
     ): ActorMoviesConnection!
 }
 
@@ -108,12 +110,6 @@ type ActorMoviesConnection {
     edges: [ActorMoviesRelationship!]!
     pageInfo: PageInfo!
     totalCount: Int!
-}
-
-input ActorMoviesConnectionOptions {
-    sort: [ActorMoviesConnectionSort!]
-    first: Int
-    after: String
 }
 
 input ActorMoviesConnectionSort {
@@ -215,8 +211,10 @@ type Movie {
     title: String!
     actors(where: ActorWhere, options: ActorOptions): [Actor]!
     actorsConnection(
+        after: String,
+        first: Int,
         where: MovieActorsConnectionWhere
-        options: MovieActorsConnectionOptions
+        sort: [MovieActorsConnectionSort!]
     ): MovieActorsConnection!
 }
 
@@ -230,12 +228,6 @@ type MovieActorsConnection {
     edges: [MovieActorsRelationship!]!
     totalCount: Int!
     pageInfo: PageInfo!
-}
-
-input MovieActorsConnectionOptions {
-    sort: [MovieActorsConnectionSort!]
-    first: Int
-    after: String
 }
 
 input MovieActorsConnectionSort {
@@ -374,8 +366,8 @@ type Mutation {
 type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
-    startCursor: String
-    endCursor: String
+    startCursor: String!
+    endCursor: String!
 }
 
 type Query {

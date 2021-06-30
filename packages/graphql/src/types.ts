@@ -163,7 +163,9 @@ export interface ConnectionSortArg {
 
 export interface ConnectionQueryArgs {
     where: ConnectionWhereArg;
-    options: ConnectionOptionsArg;
+    first?: number;
+    after?: string;
+    sort: ConnectionSortArg[];
 }
 
 /**
@@ -174,12 +176,6 @@ export interface GraphQLOptionsArg {
     limit?: number;
     skip?: number;
     sort?: GraphQLSortArg[];
-}
-
-export interface ConnectionOptionsArg {
-    sort?: ConnectionSortArg[];
-    first?: number;
-    after?: string;
 }
 
 /**

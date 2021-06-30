@@ -214,8 +214,10 @@ type Book {
   title: String!
   author(where: AuthorWhere, options: AuthorOptions): [Author!]!
   authorConnection(
+    after: String,
+    first: Int,
     where: BookAuthorConnectionWhere,
-    options: BookAuthorConnectionOptions
+    sort: [BookAuthorConnectionSort!]
   ): BookAuthorConnection!
 }
 
@@ -229,12 +231,6 @@ type BookAuthorConnection {
   edges: [BookAuthorRelationship!]!
   pageInfo: PageInfo!
   totalCount: Int!
-}
-
-input BookAuthorConnectionOptions {
-  sort: [BookAuthorConnectionSort!]
-  after: String
-  first: Int
 }
 
 input BookAuthorConnectionSort {
@@ -367,8 +363,10 @@ type Journal {
   subject: String!
   author(where: AuthorWhere, options: AuthorOptions): [Author!]!
   authorConnection(
+    after: String,
+    first: Int,
     where: JournalAuthorConnectionWhere,
-    options: JournalAuthorConnectionOptions
+    sort: [JournalAuthorConnectionSort!]
   ): JournalAuthorConnection!
 }
 
@@ -382,12 +380,6 @@ type JournalAuthorConnection {
   edges: [JournalAuthorRelationship!]!
   pageInfo: PageInfo!
   totalCount: Int!
-}
-
-input JournalAuthorConnectionOptions {
-  sort: [JournalAuthorConnectionSort!]
-  after: String
-  first: Int
 }
 
 input JournalAuthorConnectionSort {
@@ -517,8 +509,8 @@ union Publication = Book | Journal
 type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
-    startCursor: String
-    endCursor: String
+    startCursor: String!
+    endCursor: String!
 }
 
 type Query {

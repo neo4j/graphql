@@ -47,8 +47,10 @@ type Movie implements MovieNode {
   nodes: [MovieNode]
   movies(where: MovieWhere, options: MovieOptions): [Movie]
   moviesConnection(
+    after: String,
+    first: Int,
     where: MovieMoviesConnectionWhere,
-    options: MovieMoviesConnectionOptions
+    sort: [MovieMoviesConnectionSort!]
   ): MovieMoviesConnection!
 }
 
@@ -88,12 +90,6 @@ type MovieMoviesConnection {
   edges: [MovieMoviesRelationship!]!
   pageInfo: PageInfo!
   totalCount: Int!
-}
-
-input MovieMoviesConnectionOptions {
-  sort: [MovieMoviesConnectionSort!]
-  first: Int
-  after: String
 }
 
 input MovieMoviesConnectionSort {
@@ -188,8 +184,8 @@ interface MovieNode {
 type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
-    startCursor: String
-    endCursor: String
+    startCursor: String!
+    endCursor: String!
 }
 
 type Query {

@@ -126,9 +126,7 @@ RETURN this { .title, actorsConnection } as this
 query {
     movies(where: { title: "Forrest Gump" }) {
         title
-        actorsConnection(
-            options: { sort: { relationship: { screenTime: DESC } } }
-        ) {
+        actorsConnection(sort: { relationship: { screenTime: DESC } }) {
             edges {
                 screenTime
                 node {
