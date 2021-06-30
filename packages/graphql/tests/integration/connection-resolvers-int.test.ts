@@ -19,6 +19,7 @@
 
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
+import { offsetToCursor } from "graphql-relay";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
 import neo4j from "./neo4j";
@@ -135,6 +136,206 @@ describe("Connection Resolvers", () => {
                             },
                         },
                     ],
+                },
+            });
+        } finally {
+            await session.close();
+        }
+    });
+    test("it should provide an after offset that correctly results in the next batch of items", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Actor {
+                id: ID
+                name: String!
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type Movie {
+                id: ID
+                title: String!
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
+
+            interface ActedIn {
+                screenTime: Int!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+        });
+
+        const create = `
+            mutation CreateMovie($input: [MovieCreateInput!]!) {
+                createMovies(input: $input) {
+                    movies {
+                        id
+                        title
+                        actorsConnection(first: 5, sort: [{ node: { name: ASC } }]) {
+                            totalCount
+                            pageInfo {
+                                hasNextPage
+                                hasPreviousPage
+                                endCursor
+                                startCursor
+                            }
+                            edges {
+                                cursor
+                                screenTime
+                                node {
+                                    id
+                                    name
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const actors = [...Array(20).keys()].map((x) => ({
+            node: {
+                id: generate({ charset: "alphabetic" }),
+                name: String.fromCharCode(x + 1 + 64) + generate({ charset: "alphabetic" }),
+            },
+            properties: {
+                screenTime: Math.floor(Math.random() * 200),
+            },
+        }));
+
+        const movieTitle = "Bill & Ted's Excellent Pagination Adventure";
+        const movieId = generate({ charset: "alphabetic" });
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: create,
+                contextValue: { driver },
+                variableValues: {
+                    input: [
+                        {
+                            id: movieId,
+                            title: movieTitle,
+                            actors: {
+                                create: actors,
+                            },
+                        },
+                    ],
+                },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.createMovies?.movies).toEqual([
+                {
+                    id: movieId,
+                    title: movieTitle,
+                    actorsConnection: {
+                        totalCount: 20,
+                        edges: actors.slice(0, 5).map(({ node, properties }) => ({
+                            node,
+                            screenTime: properties.screenTime,
+                            cursor: expect.any(String),
+                        })),
+                        pageInfo: {
+                            hasNextPage: true,
+                            hasPreviousPage: false,
+                            startCursor: offsetToCursor(1),
+                            endCursor: offsetToCursor(5),
+                        },
+                    },
+                },
+            ]);
+
+            const secondQuery = `
+                query Movies($movieId: ID!, $endCursor: String) {
+                    movies(where: { id: $movieId }) {
+                        id
+                        title
+                        actorsConnection(sort: [{ node: { name: ASC } }], first: 5, after: $endCursor) {
+                            totalCount
+                            edges {
+                                cursor
+                                screenTime
+                                node {
+                                    id
+                                    name
+                                }
+                            }
+                            pageInfo {
+                                hasPreviousPage
+                                hasNextPage
+                                startCursor
+                                endCursor
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const result2 = await graphql({
+                schema: neoSchema.schema,
+                source: secondQuery,
+                contextValue: { driver },
+                variableValues: {
+                    movieId,
+                    endCursor: result?.data?.createMovies.movies[0].actorsConnection.pageInfo.endCursor,
+                },
+            });
+            expect(result2.errors).toBeFalsy();
+
+            expect(result2?.data?.movies[0]).toEqual({
+                id: movieId,
+                title: movieTitle,
+                actorsConnection: {
+                    totalCount: 20,
+                    edges: actors.slice(5, 10).map(({ node, properties }) => ({
+                        node,
+                        cursor: expect.any(String),
+                        screenTime: properties.screenTime,
+                    })),
+                    pageInfo: {
+                        hasPreviousPage: true,
+                        hasNextPage: true,
+                        startCursor: offsetToCursor(6),
+                        endCursor: offsetToCursor(10),
+                    },
+                },
+            });
+
+            const result3 = await graphql({
+                schema: neoSchema.schema,
+                source: secondQuery,
+                contextValue: { driver },
+                variableValues: {
+                    movieId,
+                    endCursor: result2?.data?.movies[0].actorsConnection.pageInfo.endCursor,
+                },
+            });
+
+            expect(result3.errors).toBeFalsy();
+
+            expect(result3?.data?.movies[0]).toEqual({
+                id: movieId,
+                title: movieTitle,
+                actorsConnection: {
+                    totalCount: 20,
+                    edges: actors.slice(10, 15).map(({ node, properties }) => ({
+                        node,
+                        cursor: expect.any(String),
+                        screenTime: properties.screenTime,
+                    })),
+                    pageInfo: {
+                        hasPreviousPage: true,
+                        hasNextPage: true,
+                        startCursor: offsetToCursor(11),
+                        endCursor: offsetToCursor(15),
+                    },
                 },
             });
         } finally {

@@ -306,7 +306,7 @@ describe("createConnectionAndParams", () => {
             WITH this
             MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
             WITH collect({ screenTime: this_acted_in.screenTime }) AS edges
-            WITH this, edges, size(edges) AS totalCount, edges([10..10]) AS limitedSelection
+            WITH edges, size(edges) AS totalCount, edges[10..20] AS limitedSelection
             RETURN { edges: limitedSelection, totalCount: totalCount } AS actorsConnection
             }`);
     });

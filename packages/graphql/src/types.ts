@@ -19,7 +19,7 @@
 
 import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { Driver } from "neo4j-driver";
+import { Driver, Integer } from "neo4j-driver";
 import { Neo4jGraphQL } from "./classes";
 
 export type DriverConfig = {
@@ -162,10 +162,10 @@ export interface ConnectionSortArg {
 }
 
 export interface ConnectionQueryArgs {
-    where: ConnectionWhereArg;
+    where?: ConnectionWhereArg;
     first?: number;
     after?: string;
-    sort: ConnectionSortArg[];
+    sort?: ConnectionSortArg[];
 }
 
 /**
@@ -173,8 +173,8 @@ export interface ConnectionQueryArgs {
  * passed to resolvers.
  */
 export interface GraphQLOptionsArg {
-    limit?: number;
-    skip?: number;
+    limit?: number | Integer;
+    skip?: number | Integer;
     sort?: GraphQLSortArg[];
 }
 

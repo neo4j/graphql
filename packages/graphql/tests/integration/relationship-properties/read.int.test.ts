@@ -199,7 +199,7 @@ describe("Relationship properties - read", () => {
                         totalCount: 1,
                         edges: [
                             {
-                                cursor: "YXJyYXljb25uZWN0aW9uOjA=",
+                                cursor: "YXJyYXljb25uZWN0aW9uOjE=",
                                 screenTime: 105,
                                 node: {
                                     name: actorA,
@@ -261,21 +261,21 @@ describe("Relationship properties - read", () => {
                         totalCount: 3,
                         edges: [
                             {
-                                cursor: "YXJyYXljb25uZWN0aW9uOjA=",
+                                cursor: "YXJyYXljb25uZWN0aW9uOjE=",
                                 screenTime: 105,
                                 node: {
                                     name: actorA,
                                 },
                             },
                             {
-                                cursor: "YXJyYXljb25uZWN0aW9uOjE=",
+                                cursor: "YXJyYXljb25uZWN0aW9uOjI=",
                                 screenTime: 105,
                                 node: {
                                     name: actorB,
                                 },
                             },
                             {
-                                cursor: "YXJyYXljb25uZWN0aW9uOjI=",
+                                cursor: "YXJyYXljb25uZWN0aW9uOjM=",
                                 screenTime: 5,
                                 node: {
                                     name: actorC,
@@ -302,21 +302,21 @@ describe("Relationship properties - read", () => {
                         totalCount: 3,
                         edges: [
                             {
-                                cursor: "YXJyYXljb25uZWN0aW9uOjA=",
+                                cursor: "YXJyYXljb25uZWN0aW9uOjE=",
                                 screenTime: 105,
                                 node: {
                                     name: actorB,
                                 },
                             },
                             {
-                                cursor: "YXJyYXljb25uZWN0aW9uOjE=",
+                                cursor: "YXJyYXljb25uZWN0aW9uOjI=",
                                 screenTime: 105,
                                 node: {
                                     name: actorA,
                                 },
                             },
                             {
-                                cursor: "YXJyYXljb25uZWN0aW9uOjI=",
+                                cursor: "YXJyYXljb25uZWN0aW9uOjM=",
                                 screenTime: 5,
                                 node: {
                                     name: actorC,
