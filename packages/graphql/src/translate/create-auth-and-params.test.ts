@@ -548,4 +548,146 @@ describe("createAuthAndParams", () => {
             });
         });
     });
+
+    describe("params", () => {
+        test("should convert undefined $jwt parameters to null", () => {
+            const idField = {
+                fieldName: "id",
+                typeMeta: {
+                    name: "ID",
+                    array: false,
+                    required: false,
+                    pretty: "String",
+                    input: {
+                        where: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        create: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        update: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                    },
+                },
+                otherDirectives: [],
+                arguments: [],
+            };
+
+            // @ts-ignore
+            const node: Node = {
+                name: "Movie",
+                relationFields: [],
+                cypherFields: [],
+                enumFields: [],
+                scalarFields: [],
+                primitiveFields: [idField],
+                dateTimeFields: [],
+                interfaceFields: [],
+                objectFields: [],
+                pointFields: [],
+                authableFields: [idField],
+                auth: {
+                    rules: [
+                        { allow: { id: "$jwt.sub" } },
+                        { operations: ["CREATE"], roles: ["admin"] },
+                        { roles: ["admin"] },
+                    ],
+                    type: "JWT",
+                },
+            };
+
+            // @ts-ignore
+            const neoSchema: Neo4jGraphQL = {
+                nodes: [node],
+            };
+
+            // @ts-ignore
+            const context: Context = { neoSchema, jwt: {} };
+
+            const result = createAuthAndParams({
+                context,
+                entity: node,
+                operation: "READ",
+                allow: { parentNode: node, varName: "this" },
+            });
+
+            expect(result[1]).toMatchObject({
+                this_auth_allow0_id: null,
+            });
+        });
+
+        test("should convert undefined $context parameters to null", () => {
+            const idField = {
+                fieldName: "id",
+                typeMeta: {
+                    name: "ID",
+                    array: false,
+                    required: false,
+                    pretty: "String",
+                    input: {
+                        where: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        create: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        update: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                    },
+                },
+                otherDirectives: [],
+                arguments: [],
+            };
+
+            // @ts-ignore
+            const node: Node = {
+                name: "Movie",
+                relationFields: [],
+                cypherFields: [],
+                enumFields: [],
+                scalarFields: [],
+                primitiveFields: [idField],
+                dateTimeFields: [],
+                interfaceFields: [],
+                objectFields: [],
+                pointFields: [],
+                authableFields: [idField],
+                auth: {
+                    rules: [
+                        { allow: { id: "$context.nop" } },
+                        { operations: ["CREATE"], roles: ["admin"] },
+                        { roles: ["admin"] },
+                    ],
+                    type: "JWT",
+                },
+            };
+
+            // @ts-ignore
+            const neoSchema: Neo4jGraphQL = {
+                nodes: [node],
+            };
+
+            // @ts-ignore
+            const context: Context = { neoSchema, jwt: {} };
+
+            const result = createAuthAndParams({
+                context,
+                entity: node,
+                operation: "READ",
+                allow: { parentNode: node, varName: "this" },
+            });
+
+            expect(result[1]).toMatchObject({
+                this_auth_allow0_id: null,
+            });
+        });
+    });
 });
