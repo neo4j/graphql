@@ -192,6 +192,59 @@ RETURN this {
 
 ---
 
+### Read Connection
+
+**GraphQL input**
+
+```graphql
+{
+    users {
+        id
+        postsConnection {
+            edges {
+                node {
+                    content
+                }
+            }
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
+CALL {
+    WITH this MATCH (this)-[this_has_post:HAS_POST]->(this_post:Post)
+    WHERE EXISTS((this_post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_post_auth_where0_creator_id)
+    WITH collect({ node: { content: this_post.content } }) AS edges
+    RETURN { edges: edges } AS postsConnection
+}
+RETURN this { .id, postsConnection } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_auth_where0_id": "id-01",
+    "this_post_auth_where0_creator_id": "id-01"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
 ### Read Union Relationship + User Defined Where
 
 **GraphQL input**
@@ -274,6 +327,67 @@ RETURN this {
 {
     "this_auth_where0_id": "id-01",
     "this_content_Post_auth_where0_creator_id": "id-01"
+}
+```
+
+**JWT Object**
+
+```jwt
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+### Read Union Using Connection
+
+**GraphQL input**
+
+```graphql
+{
+    users {
+        id
+        contentConnection {
+            edges {
+                node {
+                    ... on Post {
+                        id
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:User)
+WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
+CALL {
+    WITH this
+    CALL {
+        WITH this
+        OPTIONAL MATCH (this)-[this_has_post:HAS_POST]->(this_Post:Post)
+        WHERE EXISTS((this_Post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_Post_auth_where0_creator_id)
+        WITH { node: { __resolveType: "Post", id: this_Post.id } } AS edge
+        RETURN edge
+    }
+    WITH collect(edge) as edges
+    RETURN { edges: edges } AS contentConnection
+}
+RETURN this { .id, contentConnection } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "this_auth_where0_id": "id-01",
+    "this_Post_auth_where0_creator_id": "id-01"
 }
 ```
 
