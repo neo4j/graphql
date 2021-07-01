@@ -289,8 +289,6 @@ describe("Connection Resolvers", () => {
             });
             expect(result2.errors).toBeFalsy();
 
-            console.log(JSON.stringify(result2?.data?.movies[0].actorsConnection, null, 2));
-
             expect(result2?.data?.movies[0]).toEqual({
                 id: movieId,
                 title: movieTitle,
