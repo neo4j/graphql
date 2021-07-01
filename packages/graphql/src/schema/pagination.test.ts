@@ -18,7 +18,7 @@
  */
 import { offsetToCursor } from "graphql-relay";
 import neo4j from "neo4j-driver";
-import { createSkipLimitStr, createConnectionWithEdgeProperties } from "../../src/schema/pagination";
+import { createSkipLimitStr, createConnectionWithEdgeProperties } from "./pagination";
 
 describe("cursor-pagination", () => {
     describe("createSkipLimitStr", () => {
