@@ -198,7 +198,7 @@ describe("Connection Resolvers", () => {
 
         const actors = [...Array(20).keys()].map((x) => ({
             node: {
-                id: generate({ charset: "alphabetic" }),
+                id: x.toString(),
                 name: String.fromCharCode(x + 1 + 64) + generate({ charset: "alphabetic" }),
             },
             properties: {
@@ -245,8 +245,8 @@ describe("Connection Resolvers", () => {
                         pageInfo: {
                             hasNextPage: true,
                             hasPreviousPage: false,
-                            startCursor: offsetToCursor(1),
-                            endCursor: offsetToCursor(5),
+                            startCursor: offsetToCursor(0),
+                            endCursor: offsetToCursor(4),
                         },
                     },
                 },
@@ -289,6 +289,8 @@ describe("Connection Resolvers", () => {
             });
             expect(result2.errors).toBeFalsy();
 
+            console.log(JSON.stringify(result2?.data?.movies[0].actorsConnection, null, 2));
+
             expect(result2?.data?.movies[0]).toEqual({
                 id: movieId,
                 title: movieTitle,
@@ -302,8 +304,8 @@ describe("Connection Resolvers", () => {
                     pageInfo: {
                         hasPreviousPage: true,
                         hasNextPage: true,
-                        startCursor: offsetToCursor(6),
-                        endCursor: offsetToCursor(10),
+                        startCursor: offsetToCursor(5),
+                        endCursor: offsetToCursor(9),
                     },
                 },
             });
@@ -333,8 +335,8 @@ describe("Connection Resolvers", () => {
                     pageInfo: {
                         hasPreviousPage: true,
                         hasNextPage: true,
-                        startCursor: offsetToCursor(11),
-                        endCursor: offsetToCursor(15),
+                        startCursor: offsetToCursor(10),
+                        endCursor: offsetToCursor(14),
                     },
                 },
             });

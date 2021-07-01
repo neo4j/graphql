@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { cursorToOffset, getOffsetWithDefault, offsetToCursor } from "graphql-relay/connection/arrayConnection";
+import { getOffsetWithDefault, offsetToCursor } from "graphql-relay/connection/arrayConnection";
 import { Integer, isInt } from "neo4j-driver";
 
 /**
@@ -29,21 +29,25 @@ export function createConnectionWithEdgeProperties(
     totalCount: number
 ) {
     const { after, first } = args;
-    const sliceStart = (typeof after === "string" ? cursorToOffset(after) : 0) + 1;
-    const sliceEnd = sliceStart + arraySlice.length;
 
-    let startOffset = Math.max(sliceStart, 0);
-
-    const afterOffset = getOffsetWithDefault(after, -1);
-
-    if (afterOffset >= 0 && afterOffset < totalCount) {
-        startOffset = Math.max(startOffset, afterOffset + 1);
+    if ((first as number) < 0) {
+        throw new Error('Argument "first" must be a non-negative integer');
     }
 
-    const edges = arraySlice.map((value, index) => ({
-        ...value,
-        cursor: offsetToCursor(startOffset + index),
-    }));
+    // after returns the last cursor in the previous set or -1 if invalid
+    const lastEdgeCursor = getOffsetWithDefault(after, -1);
+
+    // increment the last cursor position by one for the sliceStart
+    const sliceStart = lastEdgeCursor + 1;
+
+    const sliceEnd = sliceStart + ((first as number) || arraySlice.length);
+
+    const edges = arraySlice.map((value, index) => {
+        return {
+            ...value,
+            cursor: offsetToCursor(sliceStart + index),
+        };
+    });
 
     const firstEdge = edges[0];
     const lastEdge = edges[edges.length - 1];
@@ -52,15 +56,15 @@ export function createConnectionWithEdgeProperties(
         pageInfo: {
             startCursor: firstEdge.cursor,
             endCursor: lastEdge.cursor,
-            hasPreviousPage: afterOffset > 0,
+            hasPreviousPage: lastEdgeCursor > 0,
             hasNextPage: typeof first === "number" ? sliceEnd < totalCount : false,
         },
     };
 }
 
 export function createSkipLimitStr({ skip, limit }: { skip?: number | Integer; limit?: number | Integer }): string {
-    const hasSkip = typeof skip !== "undefined";
-    const hasLimit = typeof limit !== "undefined";
+    const hasSkip = typeof skip !== "undefined" && skip !== 0;
+    const hasLimit = typeof limit !== "undefined" && limit !== 0;
     let skipLimitStr = "";
 
     if (hasSkip && !hasLimit) {

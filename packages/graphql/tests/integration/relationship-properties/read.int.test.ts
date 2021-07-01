@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { offsetToCursor } from "graphql-relay";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
@@ -199,7 +200,7 @@ describe("Relationship properties - read", () => {
                         totalCount: 1,
                         edges: [
                             {
-                                cursor: "YXJyYXljb25uZWN0aW9uOjE=",
+                                cursor: offsetToCursor(0),
                                 screenTime: 105,
                                 node: {
                                     name: actorA,
@@ -261,21 +262,21 @@ describe("Relationship properties - read", () => {
                         totalCount: 3,
                         edges: [
                             {
-                                cursor: "YXJyYXljb25uZWN0aW9uOjE=",
+                                cursor: offsetToCursor(0),
                                 screenTime: 105,
                                 node: {
                                     name: actorA,
                                 },
                             },
                             {
-                                cursor: "YXJyYXljb25uZWN0aW9uOjI=",
+                                cursor: offsetToCursor(1),
                                 screenTime: 105,
                                 node: {
                                     name: actorB,
                                 },
                             },
                             {
-                                cursor: "YXJyYXljb25uZWN0aW9uOjM=",
+                                cursor: offsetToCursor(2),
                                 screenTime: 5,
                                 node: {
                                     name: actorC,
@@ -302,21 +303,21 @@ describe("Relationship properties - read", () => {
                         totalCount: 3,
                         edges: [
                             {
-                                cursor: "YXJyYXljb25uZWN0aW9uOjE=",
+                                cursor: offsetToCursor(0),
                                 screenTime: 105,
                                 node: {
                                     name: actorB,
                                 },
                             },
                             {
-                                cursor: "YXJyYXljb25uZWN0aW9uOjI=",
+                                cursor: offsetToCursor(1),
                                 screenTime: 105,
                                 node: {
                                     name: actorA,
                                 },
                             },
                             {
-                                cursor: "YXJyYXljb25uZWN0aW9uOjM=",
+                                cursor: offsetToCursor(2),
                                 screenTime: 5,
                                 node: {
                                     name: actorC,

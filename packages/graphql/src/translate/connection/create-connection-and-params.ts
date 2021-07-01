@@ -19,7 +19,7 @@
 
 import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
-import { Integer, isInt } from "neo4j-driver";
+import { Integer } from "neo4j-driver";
 import { ConnectionField, ConnectionSortArg, ConnectionWhereArg, Context } from "../../types";
 import { Node } from "../../classes";
 // eslint-disable-next-line import/no-cycle
@@ -226,8 +226,8 @@ function createConnectionAndParams({
             unionSubqueryCypher.push("WITH collect(edge) as edges, count(edge) as totalCount");
         } else {
             const skipLimitStr = createSkipLimitStr({
-                skip: typeof afterInput === "string" ? cursorToOffset(afterInput) : undefined,
-                limit: (isInt(firstInput as Integer) ? (firstInput as Integer).toNumber() : firstInput) as number,
+                skip: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
+                limit: firstInput as Integer | number | undefined,
             });
             unionSubqueryCypher.push("WITH collect(edge) AS allEdges");
             unionSubqueryCypher.push(`WITH allEdges, size(allEdges) as totalCount, allEdges${skipLimitStr} AS edges`);
@@ -374,8 +374,8 @@ function createConnectionAndParams({
         );
     } else {
         const skipLimitStr = createSkipLimitStr({
-            skip: typeof afterInput === "string" ? cursorToOffset(afterInput) : undefined,
-            limit: (isInt(firstInput as Integer) ? (firstInput as Integer).toNumber() : firstInput) as number,
+            skip: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
+            limit: firstInput as Integer | number | undefined,
         });
         subquery.push(`WITH edges, size(edges) AS totalCount, edges${skipLimitStr} AS limitedSelection`);
         subquery.push(`RETURN { edges: limitedSelection, totalCount: totalCount } AS ${resolveTree.alias}`);
