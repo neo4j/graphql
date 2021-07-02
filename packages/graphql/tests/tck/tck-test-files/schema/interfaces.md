@@ -76,8 +76,12 @@ input MovieMoviesDisconnectFieldInput {
   where: MovieMoviesConnectionWhere
 }
 
+input MovieConnectWhere {
+  node: MovieWhere!
+}
+
 input MovieMoviesConnectFieldInput {
-  where: MovieWhere
+  where: MovieConnectWhere
   connect: [MovieConnectInput!]
 }
 

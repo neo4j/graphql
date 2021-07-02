@@ -84,8 +84,12 @@ type Movie {
   actorsConnection(where: MovieActorsConnectionWhere, options: MovieActorsConnectionOptions): MovieActorsConnection!
 }
 
+input ActorConnectWhere {
+  node: ActorWhere!
+}
+
 input MovieActorsConnectFieldInput {
-  where: ActorWhere
+  where: ActorConnectWhere
 }
 
 type MovieActorsConnection {
@@ -281,8 +285,12 @@ input ActorDisconnectInput {
   movies: [ActorMoviesDisconnectFieldInput!]
 }
 
+input MovieConnectWhere {
+  node: MovieWhere!
+}
+
 input ActorMoviesConnectFieldInput {
-  where: MovieWhere
+  where: MovieConnectWhere
   connect: [MovieConnectInput!]
 }
 
@@ -388,8 +396,12 @@ type Movie {
   actorsConnection(where: MovieActorsConnectionWhere, options: MovieActorsConnectionOptions): MovieActorsConnection!
 }
 
+input ActorConnectWhere {
+  node: ActorWhere!
+}
+
 input MovieActorsConnectFieldInput {
-  where: ActorWhere
+  where: ActorConnectWhere
   connect: [ActorConnectInput!]
 }
 

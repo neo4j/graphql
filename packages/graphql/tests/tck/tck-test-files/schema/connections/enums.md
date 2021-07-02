@@ -98,8 +98,12 @@ input ActorDisconnectInput {
     movies: [ActorMoviesDisconnectFieldInput!]
 }
 
+input MovieConnectWhere {
+    node: MovieWhere!
+}
+
 input ActorMoviesConnectFieldInput {
-    where: MovieWhere
+    where: MovieConnectWhere
     connect: [MovieConnectInput!]
     properties: ActedInCreateInput!
 }
@@ -215,8 +219,12 @@ type Movie {
     ): MovieActorsConnection!
 }
 
+input ActorConnectWhere {
+    node: ActorWhere!
+}
+
 input MovieActorsConnectFieldInput {
-    where: ActorWhere
+    where: ActorConnectWhere
     connect: [ActorConnectInput!]
     properties: ActedInCreateInput!
 }

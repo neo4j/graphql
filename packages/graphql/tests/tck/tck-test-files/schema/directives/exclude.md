@@ -479,8 +479,12 @@ type Movie {
   actorsConnection(where: MovieActorsConnectionWhere, options: MovieActorsConnectionOptions): MovieActorsConnection!
 }
 
+input ActorConnectWhere {
+  node: ActorWhere!
+}
+
 input MovieActorsConnectFieldInput {
-  where: ActorWhere
+  where: ActorConnectWhere
 }
 
 type MovieActorsConnection {
