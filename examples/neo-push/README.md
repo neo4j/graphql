@@ -186,7 +186,12 @@ From the dashboard you can create a blog.
 ```graphql
 mutation($name: String!, $sub: ID) {
     createBlogs(
-        input: [{ name: $name, creator: { connect: { where: { id: $sub } } } }]
+        input: [
+            {
+                name: $name
+                creator: { connect: { where: { node: { id: $sub } } } }
+            }
+        ]
     ) {
         blogs {
             id
@@ -223,7 +228,7 @@ If you are the creator of a blog you can assign other users as an author. You ca
 mutation assignBlogAuthor($blog: ID, $authorEmail: String) {
     updateBlogs(
         where: { id: $blog }
-        connect: { authors: { where: { email: $authorEmail } } }
+        connect: { authors: { where: { node: { email: $authorEmail } } } }
     ) {
         blogs {
             authors {
@@ -288,8 +293,8 @@ mutation createPost($title: String!, $content: String!, $user: ID, $blog: ID) {
             {
                 title: $title
                 content: $content
-                blog: { connect: { where: { id: $blog } } }
-                author: { connect: { where: { id: $user } } }
+                blog: { connect: { where: { node: { id: $blog } } } }
+                author: { connect: { where: { node: { id: $user } } } }
             }
         ]
     ) {
@@ -354,8 +359,8 @@ mutation commentOnPost($post: ID, $content: String!, $user: ID) {
         input: [
             {
                 content: $content
-                post: { connect: { where: { id: $post } } }
-                author: { connect: { where: { id: $user } } }
+                post: { connect: { where: { node: { id: $post } } } }
+                author: { connect: { where: { node: { id: $user } } } }
             }
         ]
     ) {
