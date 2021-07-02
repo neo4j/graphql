@@ -166,3 +166,51 @@ RETURN this { .name, publicationsConnection } as this
 ```
 
 ---
+
+### Projecting only one member of union node and relationship properties with no arguments
+
+**GraphQL input**
+
+```graphql
+query {
+    authors {
+        name
+        publicationsConnection {
+            edges {
+                words
+                node {
+                    ... on Book {
+                        title
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Author)
+CALL {
+    WITH this
+    CALL {
+        WITH this
+        OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Book:Book)
+        WITH { words: this_wrote.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
+        RETURN edge
+    }
+    WITH collect(edge) as edges
+    RETURN { edges: edges } AS publicationsConnection
+}
+RETURN this { .name, publicationsConnection } as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{}
+```
+
+---

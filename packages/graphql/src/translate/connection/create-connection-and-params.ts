@@ -20,6 +20,7 @@
 import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { ConnectionField, ConnectionOptionsArg, ConnectionWhereArg, Context } from "../../types";
 import { Node } from "../../classes";
+// eslint-disable-next-line import/no-cycle
 import createProjectionAndParams from "../create-projection-and-params";
 import Relationship from "../../classes/Relationship";
 import createRelationshipPropertyElement from "../projection/elements/create-relationship-property-element";
@@ -79,6 +80,10 @@ function createConnectionAndParams({
         const unionSubqueries: string[] = [];
 
         unionNodes.forEach((n) => {
+            if (!node?.fieldsByTypeName[n.name]) {
+                return;
+            }
+
             const relatedNodeVariable = `${nodeVariable}_${n.name}`;
             const nodeOutStr = `(${relatedNodeVariable}:${n.name})`;
 
