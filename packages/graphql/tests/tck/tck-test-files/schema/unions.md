@@ -81,13 +81,17 @@ input GenreWhere {
     id_NOT_ENDS_WITH: ID
 }
 
+input SearchWhere {
+    Genre: GenreWhere
+    Movie: MovieWhere
+}
+
 type Movie {
     id: ID
     searchNoDirective: Search
     search(
         options: QueryOptions
-        Genre: GenreWhere
-        Movie: MovieWhere
+        where: SearchWhere
     ): [Search]
     searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
 }
