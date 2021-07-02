@@ -31,12 +31,12 @@ input ActorCreateInput {
 }
 
 input ActorOptions {
+  limit: Int
+  skip: Int
   """
   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
   """
   sort: [ActorSort]
-  limit: Int
-  skip: Int
 }
 
 """
@@ -81,7 +81,12 @@ type DeleteInfo {
 type Movie {
   id: ID
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
-  actorsConnection(where: MovieActorsConnectionWhere, options: MovieActorsConnectionOptions): MovieActorsConnection!
+  actorsConnection(
+    after: String,
+    first: Int,
+    sort: [MovieActorsConnectionSort!],
+    where: MovieActorsConnectionWhere,
+  ): MovieActorsConnection!
 }
 
 input MovieActorsConnectFieldInput {
@@ -90,10 +95,8 @@ input MovieActorsConnectFieldInput {
 
 type MovieActorsConnection {
   edges: [MovieActorsRelationship!]!
-}
-
-input MovieActorsConnectionOptions {
-  sort: [MovieActorsConnectionSort!]
+  pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 input MovieActorsConnectionSort {
@@ -125,6 +128,7 @@ input MovieActorsFieldInput {
 }
 
 type MovieActorsRelationship {
+  cursor: String!
   node: Actor!
 }
 
@@ -155,12 +159,12 @@ input MovieDisconnectInput {
 }
 
 input MovieOptions {
+  limit: Int
+  skip: Int
   """
   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
   """
   sort: [MovieSort]
-  limit: Int
-  skip: Int
 }
 
 input MovieRelationInput {
@@ -203,6 +207,14 @@ type Mutation {
   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
+}
+
+"""Pagination information (Relay)"""
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+    endCursor: String!
 }
 
 type Query {
@@ -251,7 +263,12 @@ type Movie {
 type Actor {
   name: String
   movies(where: MovieWhere, options: MovieOptions): [Movie]
-  moviesConnection(where: ActorMoviesConnectionWhere, options: ActorMoviesConnectionOptions): ActorMoviesConnection!
+  moviesConnection(
+    after: String,
+    first: Int,
+    where: ActorMoviesConnectionWhere,
+    sort: [ActorMoviesConnectionSort!]
+  ): ActorMoviesConnection!
 }
 
 input ActorConnectInput {
@@ -288,10 +305,8 @@ input ActorMoviesConnectFieldInput {
 
 type ActorMoviesConnection {
   edges: [ActorMoviesRelationship!]!
-}
-
-input ActorMoviesConnectionOptions {
-  sort: [ActorMoviesConnectionSort!]
+  pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 input ActorMoviesConnectionSort {
@@ -315,6 +330,7 @@ input ActorMoviesFieldInput {
 }
 
 type ActorMoviesRelationship {
+  cursor: String!
   node: Movie!
 }
 
@@ -328,12 +344,12 @@ input ActorMoviesUpdateFieldInput {
 }
 
 input ActorOptions {
+  limit: Int
+  skip: Int
   """
   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
   """
   sort: [ActorSort]
-  limit: Int
-  skip: Int
 }
 
 input ActorRelationInput {
@@ -385,7 +401,12 @@ type DeleteInfo {
 type Movie {
   id: ID
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
-  actorsConnection(where: MovieActorsConnectionWhere, options: MovieActorsConnectionOptions): MovieActorsConnection!
+  actorsConnection(
+    after: String,
+    first: Int,
+    where: MovieActorsConnectionWhere,
+    sort: [MovieActorsConnectionSort!]
+  ): MovieActorsConnection!
 }
 
 input MovieActorsConnectFieldInput {
@@ -395,10 +416,8 @@ input MovieActorsConnectFieldInput {
 
 type MovieActorsConnection {
   edges: [MovieActorsRelationship!]!
-}
-
-input MovieActorsConnectionOptions {
-  sort: [MovieActorsConnectionSort!]
+  pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 input MovieActorsConnectionSort {
@@ -432,6 +451,7 @@ input MovieActorsFieldInput {
 }
 
 type MovieActorsRelationship {
+  cursor: String!
   node: Actor!
 }
 
@@ -462,12 +482,12 @@ input MovieDisconnectInput {
 }
 
 input MovieOptions {
+  limit: Int
+  skip: Int
   """
   Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
   """
   sort: [MovieSort]
-  limit: Int
-  skip: Int
 }
 
 input MovieRelationInput {
@@ -546,6 +566,14 @@ type Mutation {
     create: MovieRelationInput
     delete: MovieDeleteInput
   ): UpdateMoviesMutationResponse!
+}
+
+"""Pagination information (Relay)"""
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+    endCursor: String!
 }
 
 type Query {

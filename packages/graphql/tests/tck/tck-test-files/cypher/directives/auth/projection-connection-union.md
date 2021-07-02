@@ -67,13 +67,13 @@ CALL {
             MATCH (this_Post)<-[this_Post_has_post:HAS_POST]-(this_Post_user:User)
             CALL apoc.util.validate(NOT(EXISTS(this_Post_user.id) AND this_Post_user.id = $this_Post_user_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
             WITH collect({ node: { name: this_Post_user.name } }) AS edges
-            RETURN { edges: edges } AS creatorConnection
+            RETURN { edges: edges, totalCount: size(edges) } AS creatorConnection
         }
         WITH { node: { __resolveType: "Post", content: this_Post.content, creatorConnection: creatorConnection } } AS edge
         RETURN edge
     }
-    WITH collect(edge) as edges
-    RETURN { edges: edges } AS contentConnection
+    WITH collect(edge) as edges, count(edge) as totalCount
+    RETURN { edges: edges, totalCount: totalCount } AS contentConnection
 }
 RETURN this { contentConnection } as this
 ```

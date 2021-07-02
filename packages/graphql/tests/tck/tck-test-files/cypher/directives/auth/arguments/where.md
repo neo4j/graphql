@@ -220,7 +220,7 @@ CALL {
     WITH this MATCH (this)-[this_has_post:HAS_POST]->(this_post:Post)
     WHERE EXISTS((this_post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_post_auth_where0_creator_id)
     WITH collect({ node: { content: this_post.content } }) AS edges
-    RETURN { edges: edges } AS postsConnection
+    RETURN { edges: edges, totalCount: size(edges) } AS postsConnection
 }
 RETURN this { .id, postsConnection } as this
 ```
@@ -273,7 +273,7 @@ CALL {
     WITH this MATCH (this)-[this_has_post:HAS_POST]->(this_post:Post)
     WHERE this_post.id = $this_postsConnection.args.where.node.id AND EXISTS((this_post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_post_auth_where0_creator_id)
     WITH collect({ node: { content: this_post.content } }) AS edges
-    RETURN { edges: edges } AS postsConnection
+    RETURN { edges: edges, totalCount: size(edges) } AS postsConnection
 }
 RETURN this { .id, postsConnection } as this
 ```
@@ -438,8 +438,8 @@ CALL {
         WITH { node: { __resolveType: "Post", id: this_Post.id } } AS edge
         RETURN edge
     }
-    WITH collect(edge) as edges
-    RETURN { edges: edges } AS contentConnection
+    WITH collect(edge) as edges, count(edge) as totalCount
+    RETURN { edges: edges, totalCount: totalCount } AS contentConnection
 }
 RETURN this { .id, contentConnection } as this
 ```
@@ -464,7 +464,7 @@ RETURN this { .id, contentConnection } as this
 
 ---
 
-### Read Union Using Connection + USer Defined Where
+### Read Union Using Connection + User Defined Where
 
 **GraphQL input**
 
@@ -499,8 +499,8 @@ CALL {
         WITH { node: { __resolveType: "Post", id: this_Post.id } } AS edge
         RETURN edge
     }
-    WITH collect(edge) as edges
-    RETURN { edges: edges } AS contentConnection
+    WITH collect(edge) as edges, count(edge) as totalCount
+    RETURN { edges: edges, totalCount: totalCount } AS contentConnection
 }
 RETURN this { .id, contentConnection } as this
 ```

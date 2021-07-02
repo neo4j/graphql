@@ -68,6 +68,7 @@
         "dot-prop": "^6.0.1",
         "graphql-compose": "^7.25.1",
         "graphql-parse-resolve-info": "^4.11.0",
+        "graphql-relay": "^0.7.0",
         "jsonwebtoken": "^8.5.1",
         "pluralize": "^8.0.0"
     },

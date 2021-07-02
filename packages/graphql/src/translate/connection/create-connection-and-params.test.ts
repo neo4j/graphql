@@ -18,6 +18,7 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
+import { offsetToCursor } from "graphql-relay";
 import dedent from "dedent";
 import { mocked } from "ts-jest/utils";
 import { ConnectionField, Context } from "../../types";
@@ -117,7 +118,7 @@ describe("createConnectionAndParams", () => {
         WITH this
         MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
         WITH collect({ screenTime: this_acted_in.screenTime }) AS edges
-        RETURN { edges: edges } AS actorsConnection
+        RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
         }`);
     });
 
@@ -144,18 +145,16 @@ describe("createConnectionAndParams", () => {
             alias: "actorsConnection",
             name: "actorsConnection",
             args: {
-                options: {
-                    sort: [
-                        {
-                            node: {
-                                name: "ASC",
-                            },
-                            relationship: {
-                                screenTime: "DESC",
-                            },
+                sort: [
+                    {
+                        node: {
+                            name: "ASC",
                         },
-                    ],
-                },
+                        relationship: {
+                            screenTime: "DESC",
+                        },
+                    },
+                ],
             },
             fieldsByTypeName: {
                 MovieActorsConnection: {
@@ -226,7 +225,89 @@ describe("createConnectionAndParams", () => {
             WITH this_acted_in, this_actor
             ORDER BY this_acted_in.screenTime DESC, this_actor.name ASC
             WITH collect({ screenTime: this_acted_in.screenTime }) AS edges
-            RETURN { edges: edges } AS actorsConnection
+            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            }`);
+    });
+
+    test("Returns an entry with skip and limit args", () => {
+        // @ts-ignore
+        const mockedNeo4jGraphQL = mocked(new Neo4jGraphQL(), true);
+        // @ts-ignore
+        mockedNeo4jGraphQL.nodes = [
+            // @ts-ignore
+            {
+                name: "Actor",
+            },
+        ];
+        // @ts-ignore
+        mockedNeo4jGraphQL.relationships = [
+            // @ts-ignore
+            {
+                name: "MovieActorsRelationship",
+                fields: [],
+            },
+        ];
+
+        const resolveTree: ResolveTree = {
+            alias: "actorsConnection",
+            name: "actorsConnection",
+            args: {
+                first: 10,
+                after: offsetToCursor(10),
+            },
+            fieldsByTypeName: {
+                MovieActorsConnection: {
+                    edges: {
+                        alias: "edges",
+                        name: "edges",
+                        args: {},
+                        fieldsByTypeName: {
+                            MovieActorsRelationship: {
+                                screenTime: {
+                                    alias: "screenTime",
+                                    name: "screenTime",
+                                    args: {},
+                                    fieldsByTypeName: {},
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        const field: ConnectionField = {
+            fieldName: "actorsConnection",
+            relationshipTypeName: "MovieActorsRelationship",
+            // @ts-ignore
+            typeMeta: {
+                name: "MovieActorsConnection",
+                required: true,
+            },
+            otherDirectives: [],
+            // @ts-ignore
+            relationship: {
+                fieldName: "actors",
+                type: "ACTED_IN",
+                direction: "IN",
+                // @ts-ignore
+                typeMeta: {
+                    name: "Actor",
+                },
+            },
+        };
+
+        // @ts-ignore
+        const context: Context = { neoSchema: mockedNeo4jGraphQL };
+
+        const entry = createConnectionAndParams({ resolveTree, field, context, nodeVariable: "this" });
+
+        expect(dedent(entry[0])).toEqual(dedent`CALL {
+            WITH this
+            MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+            WITH collect({ screenTime: this_acted_in.screenTime }) AS edges
+            WITH edges, size(edges) AS totalCount, edges[11..21] AS limitedSelection
+            RETURN { edges: limitedSelection, totalCount: totalCount } AS actorsConnection
             }`);
     });
 });
