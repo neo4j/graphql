@@ -9,7 +9,7 @@ Tests that the provided typeDefs return the correct schema.
 **TypeDefs**
 
 ```typedefs-input
-interface Node @auth(rules: [{allow: "*", operations: [READ]}]) {
+interface MovieNode @auth(rules: [{allow: "*", operations: [READ]}]) {
     id: ID
     movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
     customQuery: [Movie] @cypher(statement: """
@@ -18,9 +18,9 @@ interface Node @auth(rules: [{allow: "*", operations: [READ]}]) {
     """)
 }
 
-type Movie implements Node @auth(rules: [{allow: "*", operations: [READ]}]) {
+type Movie implements MovieNode @auth(rules: [{allow: "*", operations: [READ]}]) {
     id: ID
-    nodes: [Node]
+    nodes: [MovieNode]
     movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
     customQuery: [Movie] @cypher(statement: """
       MATCH (m:Movie)
@@ -41,12 +41,17 @@ type DeleteInfo {
   relationshipsDeleted: Int!
 }
 
-type Movie implements Node {
+type Movie implements MovieNode {
   id: ID
   customQuery: [Movie]
-  nodes: [Node]
+  nodes: [MovieNode]
   movies(where: MovieWhere, options: MovieOptions): [Movie]
-  moviesConnection(where: MovieMoviesConnectionWhere, options: MovieMoviesConnectionOptions): MovieMoviesConnection!
+  moviesConnection(
+    after: String,
+    first: Int,
+    where: MovieMoviesConnectionWhere,
+    sort: [MovieMoviesConnectionSort!]
+  ): MovieMoviesConnection!
 }
 
 input MovieConnectInput {
@@ -83,10 +88,8 @@ input MovieMoviesConnectFieldInput {
 
 type MovieMoviesConnection {
   edges: [MovieMoviesRelationship!]!
-}
-
-input MovieMoviesConnectionOptions {
-  sort: [MovieMoviesConnectionSort!]
+  pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 input MovieMoviesConnectionSort {
@@ -110,6 +113,7 @@ input MovieMoviesFieldInput {
 }
 
 type MovieMoviesRelationship {
+  cursor: String!
   node: Movie!
 }
 
@@ -170,10 +174,18 @@ type Mutation {
   updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
 }
 
-interface Node {
+interface MovieNode {
   movies: [Movie]
   id: ID
   customQuery: [Movie]
+}
+
+"""Pagination information (Relay)"""
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+    endCursor: String!
 }
 
 type Query {
