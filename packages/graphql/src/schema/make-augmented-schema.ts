@@ -582,14 +582,6 @@ function makeAugmentedSchema(
             );
         }
 
-        composer.createInputTC({
-            name: `${node.name}ConnectFieldInput`,
-            fields: {
-                where: `${node.name}Where`,
-                ...(node.relationFields.length ? { connect: nodeConnectInput } : {}),
-            },
-        });
-
         node.relationFields.forEach((rel) => {
             if (rel.union) {
                 const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
