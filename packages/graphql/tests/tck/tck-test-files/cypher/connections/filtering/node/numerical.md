@@ -51,7 +51,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE this_actor.age < $this_actorsConnection.args.where.node.age_LT
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name, age: this_actor.age } }) AS edges
-    RETURN { edges: edges } AS actorsConnection
+    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -107,7 +107,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE this_actor.age <= $this_actorsConnection.args.where.node.age_LTE
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name, age: this_actor.age } }) AS edges
-    RETURN { edges: edges } AS actorsConnection
+    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -163,7 +163,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE this_actor.age > $this_actorsConnection.args.where.node.age_GT
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name, age: this_actor.age } }) AS edges
-    RETURN { edges: edges } AS actorsConnection
+    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```
@@ -219,7 +219,7 @@ CALL {
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
     WHERE this_actor.age >= $this_actorsConnection.args.where.node.age_GTE
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name, age: this_actor.age } }) AS edges
-    RETURN { edges: edges } AS actorsConnection
+    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
 ```

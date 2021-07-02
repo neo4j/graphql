@@ -75,7 +75,7 @@ CALL {
     WITH this0
     MATCH (this0)<-[this0_acted_in:ACTED_IN]-(this0_actor:Actor)
     WITH collect({ screenTime: this0_acted_in.screenTime, node: { name: this0_actor.name } }) AS edges
-    RETURN { edges: edges } AS actorsConnection
+    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
 
 RETURN

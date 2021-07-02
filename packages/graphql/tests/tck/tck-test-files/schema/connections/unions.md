@@ -117,6 +117,8 @@ input AuthorPublicationsConnectFieldInput {
 
 type AuthorPublicationsConnection {
   edges: [AuthorPublicationsRelationship!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 input AuthorPublicationsConnectionWhere {
@@ -170,6 +172,7 @@ input AuthorPublicationsJournalUpdateFieldInput {
 }
 
 type AuthorPublicationsRelationship implements Wrote {
+  cursor: String!
   node: Publication!
   words: Int!
 }
@@ -210,7 +213,12 @@ input AuthorWhere {
 type Book {
   title: String!
   author(where: AuthorWhere, options: AuthorOptions): [Author!]!
-  authorConnection(where: BookAuthorConnectionWhere, options: BookAuthorConnectionOptions): BookAuthorConnection!
+  authorConnection(
+    after: String,
+    first: Int,
+    where: BookAuthorConnectionWhere,
+    sort: [BookAuthorConnectionSort!]
+  ): BookAuthorConnection!
 }
 
 input BookAuthorConnectFieldInput {
@@ -221,10 +229,8 @@ input BookAuthorConnectFieldInput {
 
 type BookAuthorConnection {
   edges: [BookAuthorRelationship!]!
-}
-
-input BookAuthorConnectionOptions {
-  sort: [BookAuthorConnectionSort!]
+  pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 input BookAuthorConnectionSort {
@@ -262,6 +268,7 @@ input BookAuthorFieldInput {
 }
 
 type BookAuthorRelationship implements Wrote {
+  cursor: String!
   node: Author!
   words: Int!
 }
@@ -355,7 +362,12 @@ type DeleteInfo {
 type Journal {
   subject: String!
   author(where: AuthorWhere, options: AuthorOptions): [Author!]!
-  authorConnection(where: JournalAuthorConnectionWhere, options: JournalAuthorConnectionOptions): JournalAuthorConnection!
+  authorConnection(
+    after: String,
+    first: Int,
+    where: JournalAuthorConnectionWhere,
+    sort: [JournalAuthorConnectionSort!]
+  ): JournalAuthorConnection!
 }
 
 input JournalAuthorConnectFieldInput {
@@ -366,10 +378,8 @@ input JournalAuthorConnectFieldInput {
 
 type JournalAuthorConnection {
   edges: [JournalAuthorRelationship!]!
-}
-
-input JournalAuthorConnectionOptions {
-  sort: [JournalAuthorConnectionSort!]
+  pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 input JournalAuthorConnectionSort {
@@ -407,6 +417,7 @@ input JournalAuthorFieldInput {
 }
 
 type JournalAuthorRelationship implements Wrote {
+  cursor: String!
   node: Author!
   words: Int!
 }
@@ -493,6 +504,14 @@ type Mutation {
 }
 
 union Publication = Book | Journal
+
+"""Pagination information (Relay)"""
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+    endCursor: String!
+}
 
 type Query {
   authors(where: AuthorWhere, options: AuthorOptions): [Author!]!
