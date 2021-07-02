@@ -59,7 +59,12 @@ input ActedInWhere {
 type Actor {
   name: String!
   movies(where: MovieWhere, options: MovieOptions): [Movie]
-  moviesConnection(where: ActorMoviesConnectionWhere, options: ActorMoviesConnectionOptions): ActorMoviesConnection!
+  moviesConnection(
+    after: String,
+    first: Int,
+    where: ActorMoviesConnectionWhere,
+    sort: [ActorMoviesConnectionSort!]
+  ): ActorMoviesConnection!
 }
 
 input ActorConnectInput {
@@ -97,10 +102,8 @@ input ActorMoviesConnectFieldInput {
 
 type ActorMoviesConnection {
   edges: [ActorMoviesRelationship!]!
-}
-
-input ActorMoviesConnectionOptions {
-  sort: [ActorMoviesConnectionSort!]
+  pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 input ActorMoviesConnectionSort {
@@ -128,6 +131,7 @@ input ActorMoviesFieldInput {
 }
 
 type ActorMoviesRelationship implements ActedIn {
+  cursor: String!
   node: Movie!
   screenTime: Int!
 }
@@ -200,7 +204,12 @@ type DeleteInfo {
 type Movie {
   title: String!
   actors(where: ActorWhere, options: ActorOptions): [Actor]!
-  actorsConnection(where: MovieActorsConnectionWhere, options: MovieActorsConnectionOptions): MovieActorsConnection!
+  actorsConnection(
+    after: String,
+    first: Int,
+    where: MovieActorsConnectionWhere,
+    sort: [MovieActorsConnectionSort!]
+  ): MovieActorsConnection!
 }
 
 input MovieActorsConnectFieldInput {
@@ -211,10 +220,8 @@ input MovieActorsConnectFieldInput {
 
 type MovieActorsConnection {
   edges: [MovieActorsRelationship!]!
-}
-
-input MovieActorsConnectionOptions {
-  sort: [MovieActorsConnectionSort!]
+  pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 input MovieActorsConnectionSort {
@@ -242,6 +249,7 @@ input MovieActorsFieldInput {
 }
 
 type MovieActorsRelationship implements ActedIn {
+  cursor: String!
   node: Actor!
   screenTime: Int!
 }
@@ -332,6 +340,14 @@ type Mutation {
   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
+}
+
+"""Pagination information (Relay)"""
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+    endCursor: String!
 }
 
 type Query {

@@ -18,14 +18,18 @@
  */
 
 import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
-import { ConnectionField, ConnectionOptionsArg, ConnectionWhereArg, Context } from "../../types";
+import { cursorToOffset } from "graphql-relay";
+import { Integer } from "neo4j-driver";
+import { ConnectionField, ConnectionSortArg, ConnectionWhereArg, Context } from "../../types";
 import { Node } from "../../classes";
+// eslint-disable-next-line import/no-cycle
 import createProjectionAndParams from "../create-projection-and-params";
 import Relationship from "../../classes/Relationship";
 import createRelationshipPropertyElement from "../projection/elements/create-relationship-property-element";
 import createConnectionWhereAndParams from "../where/create-connection-where-and-params";
 import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
+import { createSkipLimitStr } from "../../schema/pagination";
 
 function createConnectionAndParams({
     resolveTree,
@@ -45,7 +49,9 @@ function createConnectionAndParams({
 
     const subquery = ["CALL {", `WITH ${nodeVariable}`];
 
-    const sortInput = (resolveTree.args.options as ConnectionOptionsArg)?.sort;
+    const sortInput = resolveTree.args.sort as ConnectionSortArg[];
+    const afterInput = resolveTree.args.after;
+    const firstInput = resolveTree.args.first;
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
     const relationshipVariable = `${nodeVariable}_${field.relationship.type.toLowerCase()}`;
@@ -68,9 +74,9 @@ function createConnectionAndParams({
     const elementsToCollect: string[] = [];
 
     if (relationshipProperties.length) {
-        const relationshipPropertyEntries = relationshipProperties.map((v) =>
-            createRelationshipPropertyElement({ resolveTree: v, relationship, relationshipVariable })
-        );
+        const relationshipPropertyEntries = relationshipProperties
+            .filter((p) => p.name !== "cursor")
+            .map((v) => createRelationshipPropertyElement({ resolveTree: v, relationship, relationshipVariable }));
         elementsToCollect.push(relationshipPropertyEntries.join(", "));
     }
 
@@ -214,7 +220,19 @@ function createConnectionAndParams({
             unionSubqueries.push(unionSubquery.join("\n"));
         });
 
-        subquery.push(["CALL {", unionSubqueries.join("\nUNION\n"), "}", "WITH collect(edge) as edges"].join("\n"));
+        const unionSubqueryCypher = ["CALL {", unionSubqueries.join("\nUNION\n"), "}"];
+
+        if (!firstInput && !afterInput) {
+            unionSubqueryCypher.push("WITH collect(edge) as edges, count(edge) as totalCount");
+        } else {
+            const skipLimitStr = createSkipLimitStr({
+                skip: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
+                limit: firstInput as Integer | number | undefined,
+            });
+            unionSubqueryCypher.push("WITH collect(edge) AS allEdges");
+            unionSubqueryCypher.push(`WITH allEdges, size(allEdges) as totalCount, allEdges${skipLimitStr} AS edges`);
+        }
+        subquery.push(unionSubqueryCypher.join("\n"));
     } else {
         const relatedNodeVariable = `${nodeVariable}_${field.relationship.typeMeta.name.toLowerCase()}`;
         const nodeOutStr = `(${relatedNodeVariable}:${field.relationship.typeMeta.name})`;
@@ -348,7 +366,20 @@ function createConnectionAndParams({
         subquery.push(`WITH collect({ ${elementsToCollect.join(", ")} }) AS edges`);
     }
 
-    subquery.push(`RETURN { edges: edges } AS ${resolveTree.alias}`);
+    if (!firstInput && !afterInput) {
+        subquery.push(
+            `RETURN { edges: edges, totalCount: ${field.relationship.union ? "totalCount" : "size(edges)"} } AS ${
+                resolveTree.alias
+            }`
+        );
+    } else {
+        const skipLimitStr = createSkipLimitStr({
+            skip: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
+            limit: firstInput as Integer | number | undefined,
+        });
+        subquery.push(`WITH edges, size(edges) AS totalCount, edges${skipLimitStr} AS limitedSelection`);
+        subquery.push(`RETURN { edges: limitedSelection, totalCount: totalCount } AS ${resolveTree.alias}`);
+    }
     subquery.push("}");
 
     const params = {

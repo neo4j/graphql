@@ -69,8 +69,8 @@ CALL {
         WITH { words: this_wrote.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
         RETURN edge
     }
-    WITH collect(edge) as edges
-    RETURN { edges: edges } AS publicationsConnection
+    WITH collect(edge) as edges, count(edge) as totalCount
+    RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
 }
 RETURN this { .name, publicationsConnection } as this
 ```
@@ -134,8 +134,8 @@ CALL {
         WITH { words: this_wrote.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
         RETURN edge
     }
-    WITH collect(edge) as edges
-    RETURN { edges: edges } AS publicationsConnection
+    WITH collect(edge) as edges, count(edge) as totalCount
+    RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
 }
 RETURN this { .name, publicationsConnection } as this
 ```
