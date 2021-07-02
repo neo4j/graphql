@@ -476,7 +476,12 @@ type DeleteInfo {
 type Movie {
   title: String
   actors(where: ActorWhere, options: ActorOptions): [Actor]
-  actorsConnection(where: MovieActorsConnectionWhere, options: MovieActorsConnectionOptions): MovieActorsConnection!
+  actorsConnection(
+    after: String,
+    first: Int,
+    where: MovieActorsConnectionWhere,
+    sort: [MovieActorsConnectionSort!]
+  ): MovieActorsConnection!
 }
 
 input MovieActorsConnectFieldInput {
@@ -485,10 +490,8 @@ input MovieActorsConnectFieldInput {
 
 type MovieActorsConnection {
   edges: [MovieActorsRelationship!]!
-}
-
-input MovieActorsConnectionOptions {
-  sort: [MovieActorsConnectionSort!]
+  pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 input MovieActorsConnectionSort {
@@ -512,6 +515,7 @@ input MovieActorsFieldInput {
 }
 
 type MovieActorsRelationship {
+  cursor: String!
   node: Actor!
 }
 
@@ -587,6 +591,14 @@ type Mutation {
   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
+}
+
+"""Pagination information (Relay)"""
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+    endCursor: String!
 }
 
 type Query {

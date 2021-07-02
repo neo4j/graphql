@@ -137,6 +137,8 @@ input MovieSearchConnectFieldInput {
 
 type MovieSearchConnection {
     edges: [MovieSearchRelationship!]!
+    pageInfo: PageInfo!
+    totalCount: Int!
 }
 
 input MovieSearchConnectionWhere {
@@ -217,6 +219,7 @@ input MovieSearchMovieUpdateFieldInput {
 }
 
 type MovieSearchRelationship {
+    cursor: String!
     node: Search!
 }
 
@@ -265,6 +268,14 @@ type Mutation {
         create: MovieRelationInput
         delete: MovieDeleteInput
     ): UpdateMoviesMutationResponse!
+}
+
+"""Pagination information (Relay)"""
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+    endCursor: String!
 }
 
 type Query {

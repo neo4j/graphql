@@ -45,7 +45,7 @@ import pluralize from "pluralize";
 import { Integer, isInt } from "neo4j-driver";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth, CustomEnumField } from "../types";
+import { PrimitiveField, Auth, CustomEnumField, ConnectionQueryArgs } from "../types";
 import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import * as Scalars from "./scalars";
@@ -59,6 +59,7 @@ import getFieldTypeMeta from "./get-field-type-meta";
 import Relationship, { RelationshipField } from "../classes/Relationship";
 import getRelationshipFieldMeta from "./get-relationship-field-meta";
 import getWhereFields from "./get-where-fields";
+import { createConnectionWithEdgeProperties } from "./pagination";
 // import validateTypeDefs from "./validation";
 
 function makeAugmentedSchema(
@@ -112,6 +113,17 @@ function makeAugmentedSchema(
                 value: "DESC",
                 description: "Sort by field values in descending order.",
             },
+        },
+    });
+
+    composer.createObjectTC({
+        name: "PageInfo",
+        description: "Pagination information (Relay)",
+        fields: {
+            hasNextPage: "Boolean!",
+            hasPreviousPage: "Boolean!",
+            startCursor: "String!",
+            endCursor: "String!",
         },
     });
 
@@ -852,11 +864,7 @@ function makeAugmentedSchema(
                     name: nodeFieldDeleteInputName,
                     fields: {
                         where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
-                        ...(n.relationFields.length
-                            ? {
-                                  delete: `${n.name}DeleteInput`,
-                              }
-                            : {}),
+                        ...(n.relationFields.length ? { delete: `${n.name}DeleteInput` } : {}),
                     },
                 });
             }
@@ -866,11 +874,7 @@ function makeAugmentedSchema(
                     name: nodeFieldDisconnectInputName,
                     fields: {
                         where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
-                        ...(n.relationFields.length
-                            ? {
-                                  disconnect: `${n.name}DisconnectInput`,
-                              }
-                            : {}),
+                        ...(n.relationFields.length ? { disconnect: `${n.name}DisconnectInput` } : {}),
                     },
                 });
             }
@@ -906,6 +910,7 @@ function makeAugmentedSchema(
             const relationship = composer.createObjectTC({
                 name: connectionField.relationshipTypeName,
                 fields: {
+                    cursor: "String!",
                     node: `${connectionField.relationship.typeMeta.name}!`,
                 },
             });
@@ -924,6 +929,8 @@ function makeAugmentedSchema(
                 name: connectionField.typeMeta.name,
                 fields: {
                     edges: relationship.NonNull.List.NonNull,
+                    totalCount: "Int!",
+                    pageInfo: "PageInfo!",
                 },
             });
 
@@ -940,7 +947,9 @@ function makeAugmentedSchema(
 
             let composeNodeArgs: {
                 where: any;
-                options?: any;
+                sort?: any;
+                first?: any;
+                after?: any;
             } = {
                 where: connectionWhere,
             };
@@ -973,20 +982,32 @@ function makeAugmentedSchema(
                     });
                 }
 
-                const connectionOptions = composer.createInputTC({
-                    name: `${connectionField.typeMeta.name}Options`,
-                    fields: {
-                        sort: connectionSort.NonNull.List,
+                composeNodeArgs = {
+                    ...composeNodeArgs,
+                    sort: connectionSort.NonNull.List,
+                    first: {
+                        type: "Int",
                     },
-                });
-
-                composeNodeArgs = { ...composeNodeArgs, options: connectionOptions };
+                    after: {
+                        type: "String",
+                    },
+                };
             }
 
             composeNode.addFields({
                 [connectionField.fieldName]: {
                     type: connection.NonNull,
                     args: composeNodeArgs,
+                    resolve: (source, args: ConnectionQueryArgs) => {
+                        const { totalCount: count, edges } = source[connectionField.fieldName];
+
+                        const totalCount = isInt(count) ? count.toNumber() : count;
+
+                        return {
+                            totalCount,
+                            ...createConnectionWithEdgeProperties(edges, args, totalCount),
+                        };
+                    },
                 },
             });
 
@@ -1075,6 +1096,7 @@ function makeAugmentedSchema(
 
         composer.createInterfaceTC({
             name: inter.name.value,
+            description: inter.description?.value,
             fields: objectComposeFields,
             extensions: {
                 directives: graphqlDirectivesToCompose((inter.directives || []).filter((x) => x.name.value !== "auth")),
@@ -1085,7 +1107,6 @@ function makeAugmentedSchema(
     if (!Object.values(composer.Mutation.getFields()).length) {
         composer.delete("Mutation");
     }
-
     const generatedTypeDefs = composer.toSDL();
     let generatedResolvers: any = {
         ...composer.getResolveMethods(),
@@ -1107,6 +1128,7 @@ function makeAugmentedSchema(
 
     unions.forEach((union) => {
         if (!generatedResolvers[union.name.value]) {
+            // eslint-disable-next-line no-underscore-dangle
             generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
         }
     });
