@@ -190,7 +190,9 @@ mutation {
                         }
                     }
                     update: {
-                        name: "Christian Bale"
+                        node: {
+                            name: "Christian Bale"
+                        }
                     }
                 }
             ]
@@ -206,7 +208,7 @@ mutation {
 }
 ----
 
-Note that for update operations, only the filter for the nested operation needs an additional level `node` adding, whilst the update itself remains the same.
+Note the added layer of abstraction of `node` in both the `where` and `update` clauses.
 
 === Disconnect
 
