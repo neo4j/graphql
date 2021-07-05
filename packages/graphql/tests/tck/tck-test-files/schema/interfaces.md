@@ -140,7 +140,7 @@ input MovieOptions {
     """
     sort: [MovieSort]
     limit: Int
-    skip: Int
+    offset: Int
 }
 
 input MovieRelationInput {

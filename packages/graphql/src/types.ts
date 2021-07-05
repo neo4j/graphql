@@ -174,7 +174,7 @@ export interface ConnectionQueryArgs {
  */
 export interface GraphQLOptionsArg {
     limit?: number | Integer;
-    skip?: number | Integer;
+    offset?: number | Integer;
     sort?: GraphQLSortArg[];
 }
 

@@ -69,7 +69,7 @@ input AuthorOptions {
     """
     sort: [AuthorSort]
     limit: Int
-    skip: Int
+    offset: Int
 }
 
 input AuthorPublicationsBookConnectionWhere {
@@ -328,7 +328,7 @@ input BookOptions {
     """
     sort: [BookSort]
     limit: Int
-    skip: Int
+    offset: Int
 }
 
 input BookRelationInput {
@@ -481,7 +481,7 @@ input JournalOptions {
     """
     sort: [JournalSort]
     limit: Int
-    skip: Int
+    offset: Int
 }
 
 input JournalRelationInput {
@@ -576,7 +576,7 @@ type Query {
 }
 
 input QueryOptions {
-    skip: Int
+    offset: Int
     limit: Int
 }
 

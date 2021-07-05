@@ -18,54 +18,54 @@
  */
 import { offsetToCursor } from "graphql-relay";
 import neo4j from "neo4j-driver";
-import { createSkipLimitStr, createConnectionWithEdgeProperties } from "./pagination";
+import { createOffsetLimitStr, createConnectionWithEdgeProperties } from "./pagination";
 
 describe("cursor-pagination", () => {
-    describe("createSkipLimitStr", () => {
-        test("it returns an empty string when no skip or limit is provided", () => {
+    describe("createOffsetLimitStr", () => {
+        test("it returns an empty string when no offset or limit is provided", () => {
             const args = {};
-            const result = createSkipLimitStr(args);
+            const result = createOffsetLimitStr(args);
 
             expect(result).toBe("");
         });
 
-        test("it returns a string with only the sliceStart when skip is provided but limit isn't", () => {
-            const args = { skip: 10 };
-            const result = createSkipLimitStr(args);
+        test("it returns a string with only the sliceStart when offset is provided but limit isn't", () => {
+            const args = { offset: 10 };
+            const result = createOffsetLimitStr(args);
             expect(result).toBe("[10..]");
         });
 
-        test("it returns a string with only the sliceStart when skip is provided and the limit is zero", () => {
-            const args = { skip: 10, limit: 0 };
-            const result = createSkipLimitStr(args);
+        test("it returns a string with only the sliceStart when offset is provided and the limit is zero", () => {
+            const args = { offset: 10, limit: 0 };
+            const result = createOffsetLimitStr(args);
             expect(result).toBe("[10..]");
         });
 
-        test("it returns a string with only the sliceEnd when limit is provided but skip isn't", () => {
+        test("it returns a string with only the sliceEnd when limit is provided but offset isn't", () => {
             const args = { limit: 10 };
-            const result = createSkipLimitStr(args);
+            const result = createOffsetLimitStr(args);
             expect(result).toBe("[..10]");
         });
 
-        test("it returns a string with only the sliceEnd when limit is provided and the skip provided is zero", () => {
-            const args = { limit: 10, skip: 0 };
-            const result = createSkipLimitStr(args);
+        test("it returns a string with only the sliceEnd when limit is provided and the offset provided is zero", () => {
+            const args = { limit: 10, offset: 0 };
+            const result = createOffsetLimitStr(args);
             expect(result).toBe("[..10]");
         });
 
-        test("it returns a string with the full range of the slice when both skip and limit are provided", () => {
-            const args = { limit: 10, skip: 30 };
-            const result = createSkipLimitStr(args);
+        test("it returns a string with the full range of the slice when both offset and limit are provided", () => {
+            const args = { limit: 10, offset: 30 };
+            const result = createOffsetLimitStr(args);
             expect(result).toBe("[30..40]");
         });
 
         test("it returns a string with the full range of the slice when Integers are passed for both ski and limit", () => {
-            const args = { limit: neo4j.int(10), skip: neo4j.int(30) };
-            const result = createSkipLimitStr(args);
+            const args = { limit: neo4j.int(10), offset: neo4j.int(30) };
+            const result = createOffsetLimitStr(args);
             expect(result).toBe("[30..40]");
 
-            const mixedArgs = { limit: neo4j.int(30), skip: 20 };
-            const result2 = createSkipLimitStr(mixedArgs);
+            const mixedArgs = { limit: neo4j.int(30), offset: 20 };
+            const result2 = createOffsetLimitStr(mixedArgs);
             expect(result2).toBe("[20..50]");
         });
     });

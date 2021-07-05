@@ -47,7 +47,7 @@ input FileOptions {
   """Specify one or more FileSort objects to sort Files by. The sorts will be applied in the order in which they are arranged in the array."""
   sort: [FileSort]
   limit: Int
-  skip: Int
+  offset: Int
 }
 
 """Fields to sort Files by. The order in which sorts are applied is not guaranteed when specifying many fields in one FileSort object."""

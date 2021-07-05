@@ -27,7 +27,7 @@ import createDatetimeElement from "./projection/elements/create-datetime-element
 import createPointElement from "./projection/elements/create-point-element";
 // eslint-disable-next-line import/no-cycle
 import createConnectionAndParams from "./connection/create-connection-and-params";
-import { createSkipLimitStr } from "../schema/pagination";
+import { createOffsetLimitStr } from "../schema/pagination";
 
 interface Res {
     projection: string[];
@@ -316,9 +316,12 @@ function createProjectionAndParams({
                 unionStrs.push(") ]");
 
                 if (optionsInput) {
-                    const skipLimit = createSkipLimitStr({ skip: optionsInput.skip, limit: optionsInput.limit });
-                    if (skipLimit) {
-                        unionStrs.push(skipLimit);
+                    const offsetLimit = createOffsetLimitStr({
+                        offset: optionsInput.offset,
+                        limit: optionsInput.limit,
+                    });
+                    if (offsetLimit) {
+                        unionStrs.push(offsetLimit);
                     }
                 }
 
@@ -358,7 +361,7 @@ function createProjectionAndParams({
             let nestedQuery;
 
             if (optionsInput) {
-                const skipLimit = createSkipLimitStr({ skip: optionsInput.skip, limit: optionsInput.limit });
+                const offsetLimit = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
 
                 if (optionsInput.sort) {
                     const sorts = optionsInput.sort.reduce((s: string[], sort: GraphQLSortArg) => {
@@ -374,9 +377,11 @@ function createProjectionAndParams({
                         ];
                     }, []);
 
-                    nestedQuery = `${key}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${skipLimit}`;
+                    nestedQuery = `${key}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
                 } else {
-                    nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${skipLimit}${!isArray ? ")" : ""}`;
+                    nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${offsetLimit}${
+                        !isArray ? ")" : ""
+                    }`;
                 }
             } else {
                 nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
