@@ -341,7 +341,7 @@ describe("auth/is-authenticated", () => {
 
             const query = `
                 mutation {
-                    updateUsers(where: { id: "${userId}" }, connect: { posts: { where: { id: "${postId}" } } }) {
+                    updateUsers(where: { id: "${userId}" }, connect: { posts: { where: { node: { id: "${postId}" } } } }) {
                         users {
                             id
                         }

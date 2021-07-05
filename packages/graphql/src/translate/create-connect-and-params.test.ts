@@ -76,7 +76,12 @@ describe("createConnectAndParams", () => {
 
         const result = createConnectAndParams({
             withVars: ["this"],
-            value: [{ where: { title: "abc" }, connect: { similarMovies: [{ where: { title: "cba" } }] } }],
+            value: [
+                {
+                    where: { node: { title: "abc" } },
+                    connect: { similarMovies: [{ where: { node: { title: "cba" } } }] },
+                },
+            ],
             varName: "this",
             relationField: node.relationFields[0],
             parentVar: "this",

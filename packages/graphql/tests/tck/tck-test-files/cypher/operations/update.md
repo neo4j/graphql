@@ -252,7 +252,7 @@ RETURN this { .id } AS this
 mutation {
     updateMovies(
         where: { id: "1" }
-        connect: { actors: [{ where: { name: "Daniel" } }] }
+        connect: { actors: [{ where: { node: { name: "Daniel" } } }] }
     ) {
         movies {
             id
@@ -296,8 +296,8 @@ mutation {
         where: { id: "1" }
         connect: {
             actors: [
-                { where: { name: "Daniel" } }
-                { where: { name: "Darrell" } }
+                { where: { node: { name: "Daniel" } } }
+                { where: { node: { name: "Darrell" } } }
             ]
         }
     ) {

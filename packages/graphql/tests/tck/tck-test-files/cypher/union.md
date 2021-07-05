@@ -195,7 +195,9 @@ mutation {
         input: [
             {
                 title: "some movie"
-                search_Genre: { connect: [{ where: { name: "some genre" } }] }
+                search_Genre: {
+                    connect: [{ where: { node: { name: "some genre" } } }]
+                }
             }
         ]
     ) {

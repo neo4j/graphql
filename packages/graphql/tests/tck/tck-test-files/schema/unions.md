@@ -131,8 +131,12 @@ input MovieRelationInput {
     search_Movie: [MovieSearchMovieCreateFieldInput!]
 }
 
+input GenreConnectWhere {
+    node: GenreWhere!
+}
+
 input MovieSearchConnectFieldInput {
-    where: GenreWhere
+    where: GenreConnectWhere
 }
 
 type MovieSearchConnection {

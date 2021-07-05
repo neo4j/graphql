@@ -27,7 +27,7 @@ describe("blog-auth", () => {
 
         const mutation = gql`
             mutation {
-                createBlogs(input: [{ name: "test", creator: { connect: { where: { id: "invalid" } } } }]) {
+                createBlogs(input: [{ name: "test", creator: { connect: { where: { node: { id: "invalid" } } } } }]) {
                     blogs {
                         id
                     }

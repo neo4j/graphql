@@ -1127,7 +1127,7 @@ describe("auth/allow", () => {
                 mutation {
                     updateUsers(
                         where: { id: "${userId}" }
-                        connect: { posts: { where: { id: "${postId}" } } }
+                        connect: { posts: { where: { node: { id: "${postId}" } } } }
                     ) {
                         users {
                             id
@@ -1215,7 +1215,7 @@ describe("auth/allow", () => {
                                 connect: {
                                     connect: {
                                         creator: {
-                                            where: { id: "${userId}" }
+                                            where: { node: { id: "${userId}" } }
                                         }
                                     }
                                 }

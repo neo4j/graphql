@@ -263,7 +263,12 @@ RETURN this0 { .id } AS this0, this1 { .id } AS this1
 ```graphql
 mutation {
     createMovies(
-        input: [{ id: 1, actors: { connect: [{ where: { name: "Dan" } }] } }]
+        input: [
+            {
+                id: 1
+                actors: { connect: [{ where: { node: { name: "Dan" } } }] }
+            }
+        ]
     ) {
         movies {
             id

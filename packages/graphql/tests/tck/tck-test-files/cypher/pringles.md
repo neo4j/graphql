@@ -73,7 +73,9 @@ mutation {
                                 id: 106
                                 description: "Green photo"
                                 url: "g.png"
-                                color: { connect: { where: { id: "102" } } }
+                                color: {
+                                    connect: { where: { node: { id: "102" } } }
+                                }
                             }
                         }
                         {
@@ -81,7 +83,9 @@ mutation {
                                 id: 107
                                 description: "Red photo"
                                 url: "r.png"
-                                color: { connect: { where: { id: "100" } } }
+                                color: {
+                                    connect: { where: { node: { id: "100" } } }
+                                }
                             }
                         }
                     ]
@@ -216,7 +220,9 @@ mutation {
                     update: {
                         description: "Light Green Photo"
                         color: {
-                            connect: { where: { name: "Light Green" } }
+                            connect: {
+                                where: { node: { name: "Light Green" } }
+                            }
                             disconnect: { where: { node: { name: "Green" } } }
                         }
                     }
@@ -286,7 +292,9 @@ RETURN this { .id } AS this
                 "color": {
                     "connect": {
                         "where": {
-                            "name": "Light Green"
+                            "node": {
+                                "name": "Light Green"
+                            }
                         }
                     },
                     "disconnect": {
