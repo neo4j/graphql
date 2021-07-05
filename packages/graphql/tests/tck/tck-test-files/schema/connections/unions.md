@@ -36,7 +36,7 @@ interface Wrote {
 ```schema-output
 type Author {
   name: String!
-  publications(options: QueryOptions, Book: BookWhere, Journal: JournalWhere): [Publication]
+  publications(options: QueryOptions, where: PublicationWhere): [Publication]
   publicationsConnection(where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
 }
 
@@ -504,6 +504,11 @@ type Mutation {
 }
 
 union Publication = Book | Journal
+
+input PublicationWhere {
+    Book: BookWhere
+    Journal: JournalWhere
+}
 
 """Pagination information (Relay)"""
 type PageInfo {

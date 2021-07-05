@@ -376,6 +376,20 @@ function makeAugmentedSchema(
         composer.createInputTC(point.cartesianPointDistance);
     }
 
+    unions.forEach((union) => {
+        if (union.types && union.types.length) {
+            const fields = union.types.reduce((f, type) => {
+                f = { ...f, [type.name.value]: `${type.name.value}Where` };
+                return f;
+            }, {});
+
+            composer.createInputTC({
+                name: `${union.name.value}Where`,
+                fields,
+            });
+        }
+    });
+
     nodes.forEach((node) => {
         const nodeFields = objectFieldsToComposeFields([
             ...node.primitiveFields,
@@ -611,6 +625,7 @@ function makeAugmentedSchema(
                         type: rel.typeMeta.pretty,
                         args: {
                             options: queryOptions.getTypeName(),
+                            where: `${rel.typeMeta.name}Where`,
                         },
                     },
                 });
@@ -625,10 +640,6 @@ function makeAugmentedSchema(
                     const nodeFieldUpdateInputName = `${unionPrefix}UpdateFieldInput`;
                     const nodeFieldDeleteInputName = `${unionPrefix}DeleteFieldInput`;
                     const nodeFieldDisconnectInputName = `${unionPrefix}DisconnectFieldInput`;
-
-                    composeNode.addFieldArgs(rel.fieldName, {
-                        [n.name]: `${n.name}Where`,
-                    });
 
                     const createName = `${node.name}${upperFirst(rel.fieldName)}${n.name}CreateFieldInput`;
                     const create = rel.typeMeta.array ? `[${createName}!]` : createName;
