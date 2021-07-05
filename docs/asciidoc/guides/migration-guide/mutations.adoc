@@ -148,7 +148,7 @@ Would become the following using `@neo4j/graphql`:
 mutation {
     updateMovies(
         where: { title: "Forrest Gump" }
-        connect: { actors: { where: { name: "Tom Hanks" } } }
+        connect: { actors: { where: { node: { name: "Tom Hanks" } } } }
     ) {
         movies {
             title

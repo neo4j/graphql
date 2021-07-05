@@ -22,7 +22,7 @@ export const USER = gql`
 
 export const CREATE_BLOG = gql`
     mutation($name: String!, $sub: ID) {
-        createBlogs(input: [{ name: $name, creator: { connect: { where: { id: $sub } } } }]) {
+        createBlogs(input: [{ name: $name, creator: { connect: { where: { node: { id: $sub } } } } }]) {
             blogs {
                 id
                 name
@@ -123,8 +123,8 @@ export const CREATE_POST = gql`
                 {
                     title: $title
                     content: $content
-                    blog: { connect: { where: { id: $blog } } }
-                    author: { connect: { where: { id: $user } } }
+                    blog: { connect: { where: { node: { id: $blog } } } }
+                    author: { connect: { where: { node: { id: $user } } } }
                 }
             ]
         ) {
@@ -182,8 +182,8 @@ export const COMMENT_ON_POST = gql`
             input: [
                 {
                     content: $content
-                    post: { connect: { where: { id: $post } } }
-                    author: { connect: { where: { id: $user } } }
+                    post: { connect: { where: { node: { id: $post } } } }
+                    author: { connect: { where: { node: { id: $user } } } }
                 }
             ]
         ) {
@@ -265,7 +265,7 @@ export const DELETE_POST = gql`
 
 export const ASSIGN_BLOG_AUTHOR = gql`
     mutation assignBlogAuthor($blog: ID, $authorEmail: String) {
-        updateBlogs(where: { id: $blog }, connect: { authors: { where: { email: $authorEmail } } }) {
+        updateBlogs(where: { id: $blog }, connect: { authors: { where: { node: { email: $authorEmail } } } }) {
             blogs {
                 authors {
                     email

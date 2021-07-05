@@ -472,7 +472,7 @@ describe("auth/bind", () => {
                         where: { id: "${postId}" },
                         connect: {
                             creator: {
-                                where: { id: "not bound" }
+                                where: { node: { id: "not bound" } }
                             }
                         }
                     ) {

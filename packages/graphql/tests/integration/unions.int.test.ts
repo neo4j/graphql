@@ -211,7 +211,7 @@ describe("unions", () => {
                     title: "${movieTitle}",
                     search_Genre: {
                         connect: [{
-                            where: { name: "${genreName}" }
+                            where: { node: { name: "${genreName}" } }
                         }]
                     }
                 }]) {

@@ -267,8 +267,18 @@ describe("create", () => {
                         photos: {
                             create: [
                                 { node: photos[0] },
-                                { node: { ...photos[1], color: { connect: { where: { id: colors[0].id } } } } },
-                                { node: { ...photos[2], color: { connect: { where: { id: colors[1].id } } } } },
+                                {
+                                    node: {
+                                        ...photos[1],
+                                        color: { connect: { where: { node: { id: colors[0].id } } } },
+                                    },
+                                },
+                                {
+                                    node: {
+                                        ...photos[2],
+                                        color: { connect: { where: { node: { id: colors[1].id } } } },
+                                    },
+                                },
                             ],
                         },
                     },

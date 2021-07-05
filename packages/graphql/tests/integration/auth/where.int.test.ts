@@ -606,7 +606,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { posts: { connect: { where: { id: "${postId}" } } } }) {
+                    updateUsers(update: { posts: { connect: { where: { node: { id: "${postId}" } } } } }) {
                         users {
                             id
                             posts {
@@ -679,7 +679,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    updateUsers(connect:{posts:{where:{id: "${postId}"}}}) {
+                    updateUsers(connect:{posts:{where:{node:{id: "${postId}"}}}}) {
                         users {
                             id
                             posts {
