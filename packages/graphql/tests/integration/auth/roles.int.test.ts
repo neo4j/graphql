@@ -340,7 +340,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { id: "${userId}" }, connect: { posts: { where: { id: "${postId}" } } }) {
+                    updateUsers(update: { id: "${userId}" }, connect: { posts: { where: { node: { id: "${postId}" } } } }) {
                         users {
                             id
                         }
@@ -428,7 +428,7 @@ describe("auth/roles", () => {
                         update: {
                             post: {
                                 update: {
-                                    creator: { connect: { where: { id: "${userId}" } } }
+                                    creator: { connect: { where: { node: { id: "${userId}" } } } }
                                 }
                             }
                         }

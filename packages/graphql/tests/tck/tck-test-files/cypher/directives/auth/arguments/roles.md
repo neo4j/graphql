@@ -532,7 +532,9 @@ mutation {
     updateComments(
         update: {
             post: {
-                update: { creator: { connect: { where: { id: "user-id" } } } }
+                update: {
+                    creator: { connect: { where: { node: { id: "user-id" } } } }
+                }
             }
         }
     ) {
@@ -586,7 +588,9 @@ RETURN this { .content } AS this
                         "creator": {
                             "connect": {
                                 "where": {
-                                    "id": "user-id"
+                                    "node": {
+                                        "id": "user-id"
+                                    }
                                 }
                             }
                         }

@@ -703,7 +703,7 @@ describe("update", () => {
 
         const query = `
         mutation {
-            updateMovies(where: { id: "${movieId}" }, connect: {actors: [{where: {id: "${actorId}"}}]}) {
+            updateMovies(where: { id: "${movieId}" }, connect: {actors: [{where: {node:{id: "${actorId}"}}}]}) {
                 movies {
                     id
                     actors {
@@ -963,7 +963,7 @@ describe("update", () => {
                         update: {
                           name: "Light Green Photo"
                           color: {
-                            connect: { where: { name: "Light Green", id: "${photo0Color1Id}" } }
+                            connect: { where: { node: { name: "Light Green", id: "${photo0Color1Id}" } } }
                             disconnect: { where: { node: { name: "Green", id: "${photo0Color0Id}" } } }
                           }
                         }
@@ -973,7 +973,7 @@ describe("update", () => {
                         update: {
                           name: "Light Yellow Photo"
                           color: {
-                            connect: { where: { name: "Light Yellow", id: "${photo1Color1Id}" } }
+                            connect: { where: { node: { name: "Light Yellow", id: "${photo1Color1Id}" } } }
                             disconnect: { where: { node: { name: "Yellow", id: "${photo1Color0Id}" } } }
                           }
                         }

@@ -97,7 +97,9 @@ mutation {
                     connect: [
                         {
                             where: {
-                                name: "Christian Bale"
+                                node: {
+                                    name: "Christian Bale"
+                                }
                             }
                         }
                     ]
@@ -112,7 +114,7 @@ mutation {
 }
 ----
 
-Note the additional level "node" before specifying the actor name for the create operation. This additional level allows for the setting of relationship properties for the new relationship, and filtering on existing relationship properties when looking for the node to connect to. See the page <<schema-mutations>> for details on this.
+Note the additional level "node" before specifying the actor name for the create operation and in the connect where. This additional level allows for the setting of relationship properties for the new relationship, and filtering on existing relationship properties when looking for the node to connect to. See the page <<schema-mutations>> for details on this.
 
 == Update
 
