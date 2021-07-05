@@ -100,7 +100,7 @@ function createUpdateAndParams({
                 const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
                 const _varName = `${varName}_${key}${index}`;
 
-                if (update.update || update.properties) {
+                if (update.update) {
                     if (withVars) {
                         res.strs.push(`WITH ${withVars.join(", ")}`);
                     }
@@ -143,7 +143,7 @@ function createUpdateAndParams({
                         res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
                     }
 
-                    if (update.update) {
+                    if (update.update.node) {
                         res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
 
                         const auth = createAuthParam({ context });
@@ -152,7 +152,7 @@ function createUpdateAndParams({
                         const updateAndParams = createUpdateAndParams({
                             context,
                             node: refNode,
-                            updateInput: update.update,
+                            updateInput: update.update.node,
                             varName: _varName,
                             withVars: [...withVars, _varName],
                             parentVar: _varName,
@@ -160,7 +160,7 @@ function createUpdateAndParams({
                             insideDoWhen: true,
                             parameterPrefix: `${parameterPrefix}.${key}${
                                 relationField.typeMeta.array ? `[${index}]` : ``
-                            }.update`,
+                            }.update.node`,
                         });
                         res.params = { ...res.params, ...updateAndParams[1], auth };
                         innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
@@ -185,17 +185,17 @@ function createUpdateAndParams({
                         res.strs.push(updateStr);
                     }
 
-                    if (update.properties) {
+                    if (update.update.relationship) {
                         res.strs.push(
                             `CALL apoc.do.when(${relationshipVariable} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`
                         );
 
                         const setProperties = createSetRelationshipProperties({
-                            properties: update.properties,
+                            properties: update.update.relationship,
                             varName: relationshipVariable,
                             relationship,
                             operation: "UPDATE",
-                            parameterPrefix: `${parameterPrefix}.${key}[${index}].properties`,
+                            parameterPrefix: `${parameterPrefix}.${key}[${index}].update.relationship`,
                         });
 
                         const updateStrs = [setProperties, "RETURN count(*)"];

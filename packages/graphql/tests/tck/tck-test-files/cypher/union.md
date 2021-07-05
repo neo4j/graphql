@@ -251,7 +251,7 @@ mutation {
         update: {
             search_Genre: {
                 where: { Genre: { name: "some genre" } }
-                update: { name: "some new genre" }
+                update: { node: { name: "some new genre" } }
             }
         }
     ) {
@@ -293,7 +293,9 @@ RETURN this { .title } AS this
          "search_Genre": [
            {
                 "update": {
-                    "name": "some new genre"
+                    "node": {
+                        "name": "some new genre"
+                    }
                 },
                 "where": {
                     "Genre": {

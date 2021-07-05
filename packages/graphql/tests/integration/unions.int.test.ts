@@ -290,7 +290,9 @@ describe("unions", () => {
                         search_Genre: {
                             where: { Genre: { name: "${genreName}" } },
                             update: {
-                                name: "${newGenreName}"
+                                node: {
+                                    name: "${newGenreName}"
+                                }
                             }
                         }
                     }

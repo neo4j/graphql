@@ -94,4 +94,4 @@ mutation CreateUserAndContent {
 
 == Interface Types
 
-Using interface types will give you no real database support therefor no; query, update, delete, filter support. But instead used as a language feature to safeguard your schema. Great for when dealing with repetitive or large schemas you can essentially put "The side railings up".
+Using interface types will give you no real database support therefore no; query, update, delete, filter support. But instead used as a language feature to safeguard your schema. Great for when dealing with repetitive or large schemas you can essentially put "The side railings up".

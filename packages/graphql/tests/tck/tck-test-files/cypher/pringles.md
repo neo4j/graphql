@@ -218,12 +218,16 @@ mutation {
                 {
                     where: { node: { description: "Green Photo" } }
                     update: {
-                        description: "Light Green Photo"
-                        color: {
-                            connect: {
-                                where: { node: { name: "Light Green" } }
+                        node: {
+                            description: "Light Green Photo"
+                            color: {
+                                connect: {
+                                    where: { node: { name: "Light Green" } }
+                                }
+                                disconnect: {
+                                    where: { node: { name: "Green" } }
+                                }
                             }
-                            disconnect: { where: { node: { name: "Green" } } }
                         }
                     }
                 }
@@ -251,7 +255,7 @@ CALL apoc.do.when(this_photos0 IS NOT NULL,
     SET this_photos0.description = $this_update_photos0_description
     WITH this, this_photos0
     OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
-    WHERE this_photos0_color0_disconnect0.name = $updateProducts.args.update.photos[0].update.color.disconnect.where.node.name
+    WHERE this_photos0_color0_disconnect0.name = $updateProducts.args.update.photos[0].update.node.color.disconnect.where.node.name
     FOREACH(_ IN CASE this_photos0_color0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
       DELETE this_photos0_color0_disconnect0_rel
     )
@@ -289,23 +293,25 @@ RETURN this { .id } AS this
         "photos": [
           {
             "update": {
-                "color": {
-                    "connect": {
-                        "where": {
+                "node": {
+                    "color": {
+                        "connect": {
+                            "where": {
+                                "node": {
+                                    "name": "Light Green"
+                                }
+                            }
+                        },
+                        "disconnect": {
+                            "where": {
                             "node": {
-                                "name": "Light Green"
+                                "name": "Green"
+                            }
                             }
                         }
                     },
-                    "disconnect": {
-                        "where": {
-                          "node": {
-                            "name": "Green"
-                          }
-                        }
-                    }
-                },
-                "description": "Light Green Photo"
+                    "description": "Light Green Photo"
+                }
             },
             "where": {
               "node": {
