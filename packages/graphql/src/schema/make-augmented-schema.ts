@@ -376,6 +376,20 @@ function makeAugmentedSchema(
         composer.createInputTC(point.cartesianPointDistance);
     }
 
+    unions.forEach((union) => {
+        if (union.types && union.types.length) {
+            const fields = union.types.reduce((f, type) => {
+                f = { ...f, [type.name.value]: `${type.name.value}Where` };
+                return f;
+            }, {});
+
+            composer.createInputTC({
+                name: `${union.name.value}Where`,
+                fields,
+            });
+        }
+    });
+
     nodes.forEach((node) => {
         const nodeFields = objectFieldsToComposeFields([
             ...node.primitiveFields,
@@ -594,14 +608,6 @@ function makeAugmentedSchema(
             );
         }
 
-        composer.createInputTC({
-            name: `${node.name}ConnectFieldInput`,
-            fields: {
-                where: `${node.name}Where`,
-                ...(node.relationFields.length ? { connect: nodeConnectInput } : {}),
-            },
-        });
-
         node.relationFields.forEach((rel) => {
             if (rel.union) {
                 const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
@@ -611,6 +617,7 @@ function makeAugmentedSchema(
                         type: rel.typeMeta.pretty,
                         args: {
                             options: queryOptions.getTypeName(),
+                            where: `${rel.typeMeta.name}Where`,
                         },
                     },
                 });
@@ -626,10 +633,6 @@ function makeAugmentedSchema(
                     const nodeFieldDeleteInputName = `${unionPrefix}DeleteFieldInput`;
                     const nodeFieldDisconnectInputName = `${unionPrefix}DisconnectFieldInput`;
 
-                    composeNode.addFieldArgs(rel.fieldName, {
-                        [n.name]: `${n.name}Where`,
-                    });
-
                     const createName = `${node.name}${upperFirst(rel.fieldName)}${n.name}CreateFieldInput`;
                     const create = rel.typeMeta.array ? `[${createName}!]` : createName;
                     if (!composer.has(createName)) {
@@ -642,13 +645,23 @@ function makeAugmentedSchema(
                         });
                     }
 
+                    const connectWhereName = `${n.name}ConnectWhere`;
+                    if (!composer.has(connectWhereName)) {
+                        composer.createInputTC({
+                            name: connectWhereName,
+                            fields: {
+                                node: `${n.name}Where!`,
+                            },
+                        });
+                    }
+
                     const connectName = `${node.name}${upperFirst(rel.fieldName)}ConnectFieldInput`;
                     const connect = rel.typeMeta.array ? `[${connectName}!]` : `${connectName}`;
                     if (!composer.has(connectName)) {
                         composer.createInputTC({
                             name: connectName,
                             fields: {
-                                where: `${n.name}Where`,
+                                where: connectWhereName,
                                 ...(n.relationFields.length
                                     ? {
                                           connect: rel.typeMeta.array
@@ -798,13 +811,23 @@ function makeAugmentedSchema(
                 });
             }
 
+            const connectWhereName = `${n.name}ConnectWhere`;
+            if (!composer.has(connectWhereName)) {
+                composer.createInputTC({
+                    name: connectWhereName,
+                    fields: {
+                        node: `${n.name}Where!`,
+                    },
+                });
+            }
+
             const connectName = `${node.name}${upperFirst(rel.fieldName)}ConnectFieldInput`;
             const connect = rel.typeMeta.array ? `[${connectName}!]` : connectName;
             if (!composer.has(connectName)) {
                 composer.createInputTC({
                     name: connectName,
                     fields: {
-                        where: `${n.name}Where`,
+                        where: connectWhereName,
                         ...(n.relationFields.length
                             ? { connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput` }
                             : {}),

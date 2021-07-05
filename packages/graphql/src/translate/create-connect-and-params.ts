@@ -83,7 +83,7 @@ function createConnectAndParams({
         if (connect.where) {
             const where = createWhereAndParams({
                 varName: nodeName,
-                whereInput: connect.where,
+                whereInput: connect.where.node,
                 node: refNode,
                 context,
                 recursing: true,

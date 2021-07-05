@@ -861,7 +861,7 @@ RETURN this { .id } AS this
 mutation {
     updateUsers(
         where: { id: "user-id" }
-        connect: { posts: { where: { id: "post-id" } } }
+        connect: { posts: { where: { node: { id: "post-id" } } } }
     ) {
         users {
             id

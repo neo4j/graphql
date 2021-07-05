@@ -126,7 +126,7 @@ mutation CreateActor {
             movies: {
                 connect: {
                     where: {
-                        title: "Forrest Gump"
+                        node: { title: "Forrest Gump" }
                     }
                     properties: {
                         roles: ["Forrest"]

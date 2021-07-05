@@ -34,8 +34,7 @@ type Movie {
 {
     movies(where: { title: "some title" }) {
         search(
-            Movie: { title: "The Matrix" }
-            Genre: { name: "Horror" }
+            where: { Movie: { title: "The Matrix" }, Genre: { name: "Horror" } }
             options: { skip: 1, limit: 10 }
         ) {
             ... on Movie {
@@ -196,7 +195,9 @@ mutation {
         input: [
             {
                 title: "some movie"
-                search_Genre: { connect: [{ where: { name: "some genre" } }] }
+                search_Genre: {
+                    connect: [{ where: { node: { name: "some genre" } } }]
+                }
             }
         ]
     ) {

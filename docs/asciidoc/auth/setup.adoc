@@ -99,7 +99,7 @@ mutation {
                 content: "I like GraphQL"
                 creator: {
                     connect: {
-                        where: { id: "user-01" }
+                        where: { node: { id: "user-01" } }
                     }
                 }
             }

@@ -285,7 +285,7 @@ function createProjectionAndParams({
                         });
 
                         const nodeWhereAndParams = createNodeWhereAndParams({
-                            whereInput: field.args[refNode.name],
+                            whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
                             context,
                             node: refNode,
                             varName: param,
