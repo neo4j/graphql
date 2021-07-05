@@ -77,7 +77,7 @@ input MovieOptions {
   """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
   sort: [MovieSort]
   limit: Int
-  skip: Int
+  offset: Int
 }
 
 enum SortDirection {
