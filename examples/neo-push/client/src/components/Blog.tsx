@@ -138,7 +138,7 @@ function CreatePost({ close, blog }: { close: () => void; blog: BlogInterface })
 
 function BlogPosts({ blog }: { blog: BlogInterface }) {
     const { query } = useContext(graphql.Context);
-    const [skip, setSkip] = useState(0);
+    const [offset, setOffset] = useState(0);
     const [limit] = useState(10);
     const [hasMore, setHasMore] = useState(false);
     const [posts, setPosts] = useState<PostInterface[]>([]);
@@ -150,9 +150,9 @@ function BlogPosts({ blog }: { blog: BlogInterface }) {
                 query: BLOG_POSTS,
                 variables: {
                     blog: blog.id,
-                    skip: posts.length,
+                    offset: posts.length,
                     limit,
-                    hasNextPostsSkip: posts.length === 0 ? limit : posts.length + 1,
+                    hasNextPostsOffset: posts.length === 0 ? limit : posts.length + 1,
                 },
             });
 
@@ -161,11 +161,11 @@ function BlogPosts({ blog }: { blog: BlogInterface }) {
         } catch (e) {}
 
         setLoading(false);
-    }, [skip, posts]);
+    }, [offset, posts]);
 
     useEffect(() => {
         getPosts();
-    }, [skip]);
+    }, [offset]);
 
     if (loading) {
         <Card className="mt-3 p-3">
@@ -190,7 +190,7 @@ function BlogPosts({ blog }: { blog: BlogInterface }) {
             </Row>
             {hasMore && (
                 <div className="d-flex justify-content-center w-100">
-                    <Button onClick={() => setSkip((s) => s + 1)}>Load More</Button>
+                    <Button onClick={() => setOffset((s) => s + 1)}>Load More</Button>
                 </div>
             )}
         </Card>

@@ -49,7 +49,7 @@ input UserOptions {
   """Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array."""
   sort: [UserSort]
   limit: Int
-  skip: Int
+  offset: Int
 }
 
 """Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object."""
