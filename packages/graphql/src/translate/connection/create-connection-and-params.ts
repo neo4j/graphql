@@ -85,6 +85,10 @@ function createConnectionAndParams({
         const unionSubqueries: string[] = [];
 
         unionNodes.forEach((n) => {
+            if (!node?.fieldsByTypeName[n.name]) {
+                return;
+            }
+
             const relatedNodeVariable = `${nodeVariable}_${n.name}`;
             const nodeOutStr = `(${relatedNodeVariable}:${n.name})`;
 

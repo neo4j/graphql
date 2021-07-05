@@ -186,10 +186,6 @@ describe("Connections -> Unions", () => {
                                     title: "Oliver Twist",
                                 },
                             },
-                            {
-                                words: 3413,
-                                node: {},
-                            },
                         ],
                     },
                 },
