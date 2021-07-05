@@ -428,7 +428,9 @@ describe("auth/roles", () => {
                         update: {
                             post: {
                                 update: {
-                                    creator: { connect: { where: { node: { id: "${userId}" } } } }
+                                    node: {
+                                        creator: { connect: { where: { node: { id: "${userId}" } } } }
+                                    }
                                 }
                             }
                         }
@@ -595,7 +597,9 @@ describe("auth/roles", () => {
                         update: {
                             post: {
                                 update: {
-                                    creator: { disconnect: { where: { node: { id: "${userId}" } } } }
+                                    node: {
+                                        creator: { disconnect: { where: { node: { id: "${userId}" } } } }
+                                    }
                                 }
                             }
                         }

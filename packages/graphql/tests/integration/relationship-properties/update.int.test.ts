@@ -91,7 +91,7 @@ describe("Relationship properties - read", () => {
             mutation {
                 updateMovies(
                     where: { title: "${movieTitle}" }
-                    update: { actors: [{ where: { node: { name: "${actor1}" } }, properties: { screenTime: 60 } }] }
+                    update: { actors: [{ where: { node: { name: "${actor1}" } }, update: { relationship: { screenTime: 60 } } }] }
                 ) {
                     movies {
                         title
@@ -158,8 +158,10 @@ describe("Relationship properties - read", () => {
                         actors: [
                             {
                                 where: { node: { name: "${actor2}" } }
-                                properties: { screenTime: 60 }
-                                update: { name: "${actor3}" }
+                                update: {
+                                    relationship: { screenTime: 60 }
+                                    node: { name: "${actor3}" }
+                                }
                             }
                         ]
                     }

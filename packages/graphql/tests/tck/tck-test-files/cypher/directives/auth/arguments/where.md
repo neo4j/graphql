@@ -627,7 +627,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateUsers(update: { posts: { update: { id: "new-id" } } }) {
+    updateUsers(update: { posts: { update: { node: { id: "new-id" } } } }) {
         users {
             id
             posts {
@@ -681,7 +681,9 @@ RETURN this {
           "posts": [
             {
               "update": {
-                "id": "new-id"
+                  "node": {
+                    "id": "new-id"
+                  }
               }
             }
           ]

@@ -244,7 +244,7 @@ describe("update", () => {
               update: {
                 actors: [{
                   where: { node: { name: $initialName } },
-                  update: { name: $updatedName }
+                  update: { node: { name: $updatedName } }
                 }]
               }
           ) {
@@ -629,11 +629,13 @@ describe("update", () => {
                 actors: [{
                   where: { node: { name: "old actor name" } }
                   update: {
-                    name: "new actor name"
-                    movies: [{
-                      where: { node: { title: "old movie title" } }
-                      update: { title: "new movie title" }
-                    }]
+                    node: {
+                        name: "new actor name"
+                        movies: [{
+                            where: { node: { title: "old movie title" } }
+                            update: { node: { title: "new movie title" } }
+                        }]
+                    }
                   }
                 }]
               }
@@ -848,7 +850,9 @@ describe("update", () => {
                 photos: [{
                   where: { node: { id: "${photoId}" } }
                   update: {
-                    color: { disconnect: { where: { node: { id: "${colorId}" } } } }
+                      node: {
+                        color: { disconnect: { where: { node: { id: "${colorId}" } } } }
+                      }
                   }
                 }]
               }
@@ -961,21 +965,25 @@ describe("update", () => {
                       {
                         where: { node: { name: "Green Photo", id: "${photo0Id}" } }
                         update: {
-                          name: "Light Green Photo"
-                          color: {
-                            connect: { where: { node: { name: "Light Green", id: "${photo0Color1Id}" } } }
-                            disconnect: { where: { node: { name: "Green", id: "${photo0Color0Id}" } } }
-                          }
+                            node: {
+                                name: "Light Green Photo"
+                                color: {
+                                    connect: { where: { node: { name: "Light Green", id: "${photo0Color1Id}" } } }
+                                    disconnect: { where: { node: { name: "Green", id: "${photo0Color0Id}" } } }
+                                }
+                            }
                         }
                       }
                       {
                         where: { node: { name: "Yellow Photo", id: "${photo1Id}" } }
                         update: {
-                          name: "Light Yellow Photo"
-                          color: {
-                            connect: { where: { node: { name: "Light Yellow", id: "${photo1Color1Id}" } } }
-                            disconnect: { where: { node: { name: "Yellow", id: "${photo1Color0Id}" } } }
-                          }
+                            node: {
+                                name: "Light Yellow Photo"
+                                color: {
+                                    connect: { where: { node: { name: "Light Yellow", id: "${photo1Color1Id}" } } }
+                                    disconnect: { where: { node: { name: "Yellow", id: "${photo1Color0Id}" } } }
+                                }
+                            }
                         }
                       }
                     ]
