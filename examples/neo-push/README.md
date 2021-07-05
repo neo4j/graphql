@@ -142,10 +142,10 @@ Once logged in users are directed to the dashboard page;
 ![dashboard](assets/dashboard.jpg)
 
 ```graphql
-query myBlogs($id: ID, $skip: Int, $limit: Int, $hasNextBlogsSkip: Int) {
+query myBlogs($id: ID, $offset: Int, $limit: Int, $hasNextBlogsoffset: Int) {
     myBlogs: blogs(
         where: { OR: [{ creator: { id: $id } }, { authors: { id: $id } }] }
-        options: { limit: $limit, skip: $skip, sort: { createdAt: DESC } }
+        options: { limit: $limit, offset: $offset, sort: { createdAt: DESC } }
     ) {
         id
         name
@@ -159,7 +159,7 @@ query myBlogs($id: ID, $skip: Int, $limit: Int, $hasNextBlogsSkip: Int) {
         where: { OR: [{ creator: { id: $id } }, { authors: { id: $id } }] }
         options: {
             limit: 1
-            skip: $hasNextBlogsSkip
+            offset: $hasNextBlogsoffset
             sort: { createdAt: DESC }
         }
     ) {

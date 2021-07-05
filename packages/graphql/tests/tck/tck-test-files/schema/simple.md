@@ -50,7 +50,7 @@ input MovieOptions {
   """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
 sort: [MovieSort]
   limit: Int
-  skip: Int
+  offset: Int
 }
 
 """Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""

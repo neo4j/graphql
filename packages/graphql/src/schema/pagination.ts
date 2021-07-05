@@ -62,25 +62,31 @@ export function createConnectionWithEdgeProperties(
     };
 }
 
-export function createSkipLimitStr({ skip, limit }: { skip?: number | Integer; limit?: number | Integer }): string {
-    const hasSkip = typeof skip !== "undefined" && skip !== 0;
+export function createOffsetLimitStr({
+    offset,
+    limit,
+}: {
+    offset?: number | Integer;
+    limit?: number | Integer;
+}): string {
+    const hasOffset = typeof offset !== "undefined" && offset !== 0;
     const hasLimit = typeof limit !== "undefined" && limit !== 0;
-    let skipLimitStr = "";
+    let offsetLimitStr = "";
 
-    if (hasSkip && !hasLimit) {
-        skipLimitStr = `[${skip}..]`;
+    if (hasOffset && !hasLimit) {
+        offsetLimitStr = `[${offset}..]`;
     }
 
-    if (hasLimit && !hasSkip) {
-        skipLimitStr = `[..${limit}]`;
+    if (hasLimit && !hasOffset) {
+        offsetLimitStr = `[..${limit}]`;
     }
 
-    if (hasLimit && hasSkip) {
-        const sliceStart = isInt(skip as Integer) ? (skip as Integer).toNumber() : skip;
+    if (hasLimit && hasOffset) {
+        const sliceStart = isInt(offset as Integer) ? (offset as Integer).toNumber() : offset;
         const itemsToGrab = isInt(limit as Integer) ? (limit as Integer).toNumber() : limit;
         const sliceEnd = (sliceStart as number) + (itemsToGrab as number);
-        skipLimitStr = `[${skip}..${sliceEnd}]`;
+        offsetLimitStr = `[${offset}..${sliceEnd}]`;
     }
 
-    return skipLimitStr;
+    return offsetLimitStr;
 }

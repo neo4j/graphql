@@ -35,7 +35,7 @@ type Movie {
     movies(where: { title: "some title" }) {
         search(
             where: { Movie: { title: "The Matrix" }, Genre: { name: "Horror" } }
-            options: { skip: 1, limit: 10 }
+            options: { offset: 1, limit: 10 }
         ) {
             ... on Movie {
                 title

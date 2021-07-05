@@ -35,7 +35,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
     let authStr = "";
-    let skipStr = "";
+    let offsetStr = "";
     let limitStr = "";
     let sortStr = "";
     let projAuth = "";
@@ -118,12 +118,12 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     }
 
     if (optionsInput) {
-        const hasSkip = Boolean(optionsInput.skip) || optionsInput.skip === 0;
+        const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
         const hasLimit = Boolean(optionsInput.limit) || optionsInput.limit === 0;
 
-        if (hasSkip) {
-            skipStr = `SKIP $${varName}_skip`;
-            cypherParams[`${varName}_skip`] = optionsInput.skip;
+        if (hasOffset) {
+            offsetStr = `SKIP $${varName}_offset`;
+            cypherParams[`${varName}_offset`] = optionsInput.offset;
         }
 
         if (hasLimit) {
@@ -153,7 +153,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
         ...connectionStrs,
         `RETURN ${varName} ${projStr} as ${varName}`,
-        skipStr,
+        offsetStr,
         limitStr,
     ];
 
