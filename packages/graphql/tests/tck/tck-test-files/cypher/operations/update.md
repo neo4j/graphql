@@ -71,7 +71,7 @@ mutation {
             actors: [
                 {
                     where: { node: { name: "old name" } }
-                    update: { name: "new name" }
+                    update: { node: { name: "new name" } }
                 }
             ]
         }
@@ -119,7 +119,9 @@ RETURN this { .id } AS this
                 "actors": [
                     {
                         "update": {
-                            "name": "new name"
+                            "node": {
+                                "name": "new name"
+                            }
                         },
                         "where": {
                             "node": {
@@ -149,13 +151,17 @@ mutation {
                 {
                     where: { node: { name: "old actor name" } }
                     update: {
-                        name: "new actor name"
-                        movies: [
-                            {
-                                where: { node: { id: "old movie title" } }
-                                update: { title: "new movie title" }
-                            }
-                        ]
+                        node: {
+                            name: "new actor name"
+                            movies: [
+                                {
+                                    where: { node: { id: "old movie title" } }
+                                    update: {
+                                        node: { title: "new movie title" }
+                                    }
+                                }
+                            ]
+                        }
                     }
                 }
             ]
@@ -181,7 +187,7 @@ CALL apoc.do.when(this_actors0 IS NOT NULL, "
 
     WITH this, this_actors0
     OPTIONAL MATCH (this_actors0)-[this_actors0_acted_in0:ACTED_IN]->(this_actors0_movies0:Movie)
-    WHERE this_actors0_movies0.id = $updateMovies.args.update.actors[0].update.movies[0].where.node.id
+    WHERE this_actors0_movies0.id = $updateMovies.args.update.actors[0].update.node.movies[0].where.node.id
     CALL apoc.do.when(this_actors0_movies0 IS NOT NULL, \"
         SET this_actors0_movies0.title = $this_update_actors0_movies0_title
         RETURN count(*)
@@ -215,19 +221,23 @@ RETURN this { .id } AS this
           "actors": [
                 {
                     "update": {
-                        "movies": [
-                            {
-                                "update": {
-                                    "title": "new movie title"
-                                },
-                                "where": {
-                                    "node": {
-                                        "id": "old movie title"
+                        "node": {
+                            "movies": [
+                                {
+                                    "update": {
+                                        "node": {
+                                            "title": "new movie title"
+                                        }
+                                    },
+                                    "where": {
+                                        "node": {
+                                            "id": "old movie title"
+                                        }
                                     }
                                 }
-                            }
-                        ],
-                        "name": "new actor name"
+                            ],
+                            "name": "new actor name"
+                        }
                     },
                     "where": {
                         "node": {
@@ -714,7 +724,7 @@ mutation {
         update: {
             actors: {
                 where: { node: { name: "Actor to update" } }
-                update: { name: "Updated name" }
+                update: { node: { name: "Updated name" } }
             }
         }
         delete: { actors: { where: { node: { name: "Actor to delete" } } } }
@@ -777,7 +787,9 @@ RETURN this { .id } AS this
                 "actors": [
                     {
                         "update": {
-                            "name": "Updated name"
+                            "node": {
+                                "name": "Updated name"
+                            }
                         },
                         "where": {
                             "node": {

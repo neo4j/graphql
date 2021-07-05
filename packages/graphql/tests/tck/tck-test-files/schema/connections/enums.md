@@ -66,8 +66,8 @@ type Actor {
     name: String!
     movies(where: MovieWhere, options: MovieOptions): [Movie]
     moviesConnection(
-        after: String,
-        first: Int,
+        after: String
+        first: Int
         where: ActorMoviesConnectionWhere
         sort: [ActorMoviesConnectionSort!]
     ): ActorMoviesConnection!
@@ -146,10 +146,14 @@ type ActorMoviesRelationship implements ActedIn {
     roleType: RoleType!
 }
 
+input ActorMoviesUpdateConnectionInput {
+    node: MovieUpdateInput
+    relationship: ActedInUpdateInput
+}
+
 input ActorMoviesUpdateFieldInput {
-    properties: ActedInUpdateInput
     where: ActorMoviesConnectionWhere
-    update: MovieUpdateInput
+    update: ActorMoviesUpdateConnectionInput
     connect: [ActorMoviesConnectFieldInput!]
     disconnect: [ActorMoviesDisconnectFieldInput!]
     create: [ActorMoviesCreateFieldInput!]
@@ -215,8 +219,8 @@ type Movie {
     title: String!
     actors(where: ActorWhere, options: ActorOptions): [Actor]!
     actorsConnection(
-        after: String,
-        first: Int,
+        after: String
+        first: Int
         where: MovieActorsConnectionWhere
         sort: [MovieActorsConnectionSort!]
     ): MovieActorsConnection!
@@ -268,10 +272,14 @@ type MovieActorsRelationship implements ActedIn {
     roleType: RoleType!
 }
 
+input MovieActorsUpdateConnectionInput {
+    node: ActorUpdateInput
+    relationship: ActedInUpdateInput
+}
+
 input MovieActorsUpdateFieldInput {
-    properties: ActedInUpdateInput
     where: MovieActorsConnectionWhere
-    update: ActorUpdateInput
+    update: MovieActorsUpdateConnectionInput
     connect: [MovieActorsConnectFieldInput!]
     disconnect: [MovieActorsDisconnectFieldInput!]
     create: [MovieActorsCreateFieldInput!]
@@ -370,7 +378,9 @@ type Mutation {
     ): UpdateMoviesMutationResponse!
 }
 
-"""Pagination information (Relay)"""
+"""
+Pagination information (Relay)
+"""
 type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!

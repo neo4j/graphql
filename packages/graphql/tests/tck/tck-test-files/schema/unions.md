@@ -89,10 +89,7 @@ input SearchWhere {
 type Movie {
     id: ID
     searchNoDirective: Search
-    search(
-        options: QueryOptions
-        where: SearchWhere
-    ): [Search]
+    search(options: QueryOptions, where: SearchWhere): [Search]
     searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
 }
 
@@ -178,9 +175,13 @@ input MovieSearchGenreFieldInput {
     connect: [MovieSearchConnectFieldInput!]
 }
 
+input MovieSearchGenreUpdateConnectionInput {
+    node: GenreUpdateInput
+}
+
 input MovieSearchGenreUpdateFieldInput {
     where: MovieSearchConnectionWhere
-    update: GenreUpdateInput
+    update: MovieSearchGenreUpdateConnectionInput
     connect: [MovieSearchConnectFieldInput!]
     disconnect: [MovieSearchGenreDisconnectFieldInput!]
     create: [MovieSearchGenreCreateFieldInput!]
@@ -213,9 +214,13 @@ input MovieSearchMovieFieldInput {
     connect: [MovieSearchConnectFieldInput!]
 }
 
+input MovieSearchMovieUpdateConnectionInput {
+    node: MovieUpdateInput
+}
+
 input MovieSearchMovieUpdateFieldInput {
     where: MovieSearchConnectionWhere
-    update: MovieUpdateInput
+    update: MovieSearchMovieUpdateConnectionInput
     connect: [MovieSearchConnectFieldInput!]
     disconnect: [MovieSearchMovieDisconnectFieldInput!]
     create: [MovieSearchMovieCreateFieldInput!]
@@ -274,7 +279,9 @@ type Mutation {
     ): UpdateMoviesMutationResponse!
 }
 
-"""Pagination information (Relay)"""
+"""
+Pagination information (Relay)
+"""
 type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!

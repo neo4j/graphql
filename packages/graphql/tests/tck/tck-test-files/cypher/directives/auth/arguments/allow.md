@@ -409,7 +409,7 @@ RETURN this { .id } AS this
 mutation {
     updatePosts(
         where: { id: "post-id" }
-        update: { creator: { update: { id: "new-id" } } }
+        update: { creator: { update: { node: { id: "new-id" } } } }
     ) {
         posts {
             id
@@ -465,7 +465,9 @@ RETURN this { .id } AS this
             "update": {
                 "creator": {
                     "update": {
-                        "id": "new-id"
+                        "node": {
+                            "id": "new-id"
+                        }
                     }
                 }
             }
@@ -493,7 +495,7 @@ RETURN this { .id } AS this
 mutation {
     updatePosts(
         where: { id: "post-id" }
-        update: { creator: { update: { password: "new-password" } } }
+        update: { creator: { update: { node: { password: "new-password" } } } }
     ) {
         posts {
             id
@@ -549,7 +551,9 @@ CALL apoc.do.when(this_creator0 IS NOT NULL, "
             "update": {
                 "creator": {
                     "update": {
-                        "password": "new-password"
+                        "node": {
+                            "password": "new-password"
+                        }
                     }
                 }
             }
