@@ -52,7 +52,7 @@ input GenreOptions {
     """
     sort: [GenreSort]
     limit: Int
-    skip: Int
+    offset: Int
 }
 
 """
@@ -123,7 +123,7 @@ input MovieOptions {
     """
     sort: [MovieSort]
     limit: Int
-    skip: Int
+    offset: Int
 }
 
 input MovieRelationInput {
@@ -288,7 +288,7 @@ type Query {
 }
 
 input QueryOptions {
-    skip: Int
+    offset: Int
     limit: Int
 }
 

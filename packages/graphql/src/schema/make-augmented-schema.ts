@@ -97,7 +97,7 @@ function makeAugmentedSchema(
     const queryOptions = composer.createInputTC({
         name: "QueryOptions",
         fields: {
-            skip: "Int",
+            offset: "Int",
             limit: "Int",
         },
     });
@@ -450,13 +450,13 @@ function makeAugmentedSchema(
                         type: sortInput.List,
                     },
                     limit: "Int",
-                    skip: "Int",
+                    offset: "Int",
                 },
             });
         } else {
             composer.createInputTC({
                 name: `${node.name}Options`,
-                fields: { limit: "Int", skip: "Int" },
+                fields: { limit: "Int", offset: "Int" },
             });
         }
 

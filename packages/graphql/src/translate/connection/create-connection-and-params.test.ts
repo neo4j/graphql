@@ -229,7 +229,7 @@ describe("createConnectionAndParams", () => {
             }`);
     });
 
-    test("Returns an entry with skip and limit args", () => {
+    test("Returns an entry with offset and limit args", () => {
         // @ts-ignore
         const mockedNeo4jGraphQL = mocked(new Neo4jGraphQL(), true);
         // @ts-ignore
