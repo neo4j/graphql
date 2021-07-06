@@ -72,6 +72,69 @@ describe("validateDocument", () => {
         }
     });
 
+    test("should throw an error if a user tries to pass in their own Point definition", () => {
+        const doc = parse(`
+            type Point {
+                latitude: Float!
+                longitude: Float!
+            }
+
+            type User {
+                location: Point
+            }
+        `);
+
+        try {
+            validateDocument(doc);
+            throw new Error();
+        } catch (error) {
+            expect(error.message).toContain(
+                'Type "Point" already exists in the schema. It cannot also be defined in this type definition.'
+            );
+        }
+    });
+
+    test("should throw an error if a user tries to pass in their own DateTime definition", () => {
+        const doc = parse(`
+            scalar DateTime
+
+            type User {
+                birthDateTime: DateTime
+            }
+        `);
+
+        try {
+            validateDocument(doc);
+            throw new Error();
+        } catch (error) {
+            expect(error.message).toContain(
+                'Type "DateTime" already exists in the schema. It cannot also be defined in this type definition.'
+            );
+        }
+    });
+
+    test("should throw an error if a user tries to pass in their own PointInput definition", () => {
+        const doc = parse(`
+            input PointInput {
+                latitude: Float!
+                longitude: Float!
+            }
+
+            type Query {
+                pointQuery(point: PointInput!): String
+            }
+        `);
+
+        try {
+            validateDocument(doc);
+            throw new Error();
+        } catch (error) {
+            expect(error.message).toContain(
+                'Type "PointInput" already exists in the schema. It cannot also be defined in this type definition.'
+            );
+        }
+    });
+
     test("should throw an error if an interface is incorrectly implemented", () => {
         const doc = parse(`
             interface UserInterface {
