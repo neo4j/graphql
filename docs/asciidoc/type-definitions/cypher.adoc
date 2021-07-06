@@ -14,6 +14,33 @@ directive @cypher(
 ) on FIELD_DEFINITION
 ----
 
+== Character Escaping
+
+All double quotes must be _double escaped_ when used in a @cypher directive - once for GraphQL and once for the function in which we run the Cypher. For example, at its simplest:
+
+[source, graphql]
+----
+type Example {
+    string: String!
+        @cypher(
+            statement: """
+            RETURN \\"field-level string\\"
+            """
+        )
+}
+
+type Query {
+    string: String!
+        @cypher(
+            statement: """
+            RETURN \\"Query-level string\\"
+            """
+        )
+}
+----
+
+Note the double-backslash (`\\`) before each double quote (`"`).
+
 == Globals
 
 Global variables are available for use within the Cypher statement.
@@ -59,12 +86,12 @@ type Query {
 === `cypherParams`
 Use to inject values into the cypher query from the GraphQL context function.
 
-Inject into context: 
+Inject into context:
 
 [source, typescript]
 ----
 const server = new ApolloServer({
-    typeDefs, 
+    typeDefs,
     context: () => {
         return {
             cypherParams: { userId: "user-id-01" }
@@ -73,7 +100,7 @@ const server = new ApolloServer({
 });
 ----
 
-Use in cypher query: 
+Use in cypher query:
 
 [source, graphql]
 ----
