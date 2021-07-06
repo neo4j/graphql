@@ -24,6 +24,7 @@ import {
     DefinitionNode,
     DirectiveDefinitionNode,
     EnumTypeDefinitionNode,
+    GraphQLInt,
     GraphQLNonNull,
     GraphQLSchema,
     InputObjectTypeDefinitionNode,
@@ -36,6 +37,7 @@ import {
     UnionTypeDefinitionNode,
 } from "graphql";
 import {
+    upperFirst,
     SchemaComposer,
     InputTypeComposer,
     ObjectTypeComposer,
@@ -45,11 +47,9 @@ import pluralize from "pluralize";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
 import { PrimitiveField, Auth } from "../types";
-import { upperFirstLetter } from "../utils";
 import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
 import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
-import wrapCustomResolvers from "./wrap-custom-resolvers";
 import getCustomResolvers from "./get-custom-resolvers";
 import getObjFieldMeta from "./get-obj-field-meta";
 import * as point from "./point";
@@ -57,7 +57,7 @@ import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-co
 import { validateDocument } from "./validation";
 
 function makeAugmentedSchema(
-    { typeDefs, resolvers, ...schemaDefinition }: IExecutableSchemaDefinition,
+    { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
     { enableRegex }: { enableRegex?: boolean } = {}
 ): { schema: GraphQLSchema; nodes: Node[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
@@ -76,16 +76,16 @@ function makeAugmentedSchema(
     composer.createObjectTC({
         name: "DeleteInfo",
         fields: {
-            nodesDeleted: new GraphQLNonNull(Scalars.Int),
-            relationshipsDeleted: new GraphQLNonNull(Scalars.Int),
+            nodesDeleted: new GraphQLNonNull(GraphQLInt),
+            relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
         },
     });
 
     const queryOptions = composer.createInputTC({
         name: "QueryOptions",
         fields: {
-            skip: Scalars.Int,
-            limit: Scalars.Int,
+            skip: GraphQLInt,
+            limit: GraphQLInt,
         },
     });
 
@@ -159,17 +159,15 @@ function makeAugmentedSchema(
             interfaces: nodeInterfaces,
             otherDirectives,
             ...nodeFields,
-            // @ts-ignore we can be sure its defined
+            // @ts-ignore we can be sure it's defined
             auth,
-            // @ts-ignore we can be sure its defined
+            // @ts-ignore we can be sure it's defined
             exclude,
             description: definition.description?.value,
         });
 
         return node;
     });
-
-    const nodeNames = nodes.map((x) => x.name);
 
     nodes.forEach((node) => {
         const nodeFields = objectFieldsToComposeFields([
@@ -230,14 +228,14 @@ function makeAugmentedSchema(
                         )} by. The sorts will be applied in the order in which they are arranged in the array.`,
                         type: sortInput.List,
                     },
-                    limit: Scalars.Int,
-                    skip: Scalars.Int,
+                    limit: GraphQLInt,
+                    skip: GraphQLInt,
                 },
             });
         } else {
             composer.createInputTC({
                 name: `${node.name}Options`,
-                fields: { limit: Scalars.Int, skip: Scalars.Int },
+                fields: { limit: GraphQLInt, skip: GraphQLInt },
             });
         }
 
@@ -277,14 +275,6 @@ function makeAugmentedSchema(
 
                     if (["Float", "Int", "BigInt", "DateTime"].includes(f.typeMeta.name)) {
                         let type: any = f.typeMeta.name;
-
-                        if (f.typeMeta.name === "Float") {
-                            type = Scalars.Float;
-                        }
-
-                        if (f.typeMeta.name === "Int") {
-                            type = Scalars.Int;
-                        }
 
                         if (f.typeMeta.name === "DateTime") {
                             type = Scalars.DateTime;
@@ -459,11 +449,11 @@ function makeAugmentedSchema(
                     const concatFieldName = `${rel.fieldName}_${n.name}`;
                     const createField = rel.typeMeta.array ? `[${n.name}CreateInput!]` : `${n.name}CreateInput`;
                     const updateField = `${n.name}UpdateInput`;
-                    const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${n.name}FieldInput`;
-                    const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${
+                    const nodeFieldInputName = `${node.name}${upperFirst(rel.fieldName)}${n.name}FieldInput`;
+                    const nodeFieldUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}${
                         n.name
                     }UpdateFieldInput`;
-                    const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}${
+                    const nodeFieldDeleteInputName = `${node.name}${upperFirst(rel.fieldName)}${
                         n.name
                     }DeleteFieldInput`;
 
@@ -548,9 +538,9 @@ function makeAugmentedSchema(
             const n = nodes.find((x) => x.name === rel.typeMeta.name) as Node;
             const createField = rel.typeMeta.array ? `[${n.name}CreateInput!]` : `${n.name}CreateInput`;
             const updateField = `${n.name}UpdateInput`;
-            const nodeFieldInputName = `${node.name}${upperFirstLetter(rel.fieldName)}FieldInput`;
-            const nodeFieldUpdateInputName = `${node.name}${upperFirstLetter(rel.fieldName)}UpdateFieldInput`;
-            const nodeFieldDeleteInputName = `${node.name}${upperFirstLetter(rel.fieldName)}DeleteFieldInput`;
+            const nodeFieldInputName = `${node.name}${upperFirst(rel.fieldName)}FieldInput`;
+            const nodeFieldUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateFieldInput`;
+            const nodeFieldDeleteInputName = `${node.name}${upperFirst(rel.fieldName)}DeleteFieldInput`;
             const connectField = rel.typeMeta.array ? `[${n.name}ConnectFieldInput!]` : `${n.name}ConnectFieldInput`;
             const disconnectField = rel.typeMeta.array
                 ? `[${n.name}DisconnectFieldInput!]`
@@ -692,6 +682,7 @@ function makeAugmentedSchema(
                 const customResolver = cypherResolver({
                     field,
                     statement: field.statement,
+                    type: type as "Query" | "Mutation",
                 });
 
                 const composedField = objectFieldsToComposeFields([field])[field.fieldName];
@@ -760,27 +751,20 @@ function makeAugmentedSchema(
     });
 
     const generatedTypeDefs = composer.toSDL();
-    let generatedResolvers: any = {
+    const generatedResolvers = {
         ...composer.getResolveMethods(),
         ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
-            if (generatedTypeDefs.includes(`scalar ${name}`)) {
+            if (generatedTypeDefs.includes(`scalar ${name}\n`)) {
                 res[name] = scalar;
             }
             return res;
         }, {}),
     };
 
-    if (resolvers) {
-        generatedResolvers = wrapCustomResolvers({
-            generatedResolvers,
-            nodeNames,
-            resolvers,
-        });
-    }
-
     unions.forEach((union) => {
-        // eslint-disable-next-line no-underscore-dangle
-        generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
+        if (!generatedResolvers[union.name.value]) {
+            generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
+        }
     });
 
     const seen = {};

@@ -52,8 +52,16 @@ async function execute(input: {
         }
     }
 
-    // @ts-ignore: Required to set connection user agent
-    input.context.driver._userAgent = `${environment.NPM_PACKAGE_VERSION}/${environment.NPM_PACKAGE_NAME}`; // eslint-disable-line no-underscore-dangle
+    const userAgent = `${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`;
+
+    // @ts-ignore: below
+    if (input.context.driver?._config) {
+        // @ts-ignore: (driver >= 4.3)
+        input.context.driver._config.userAgent = userAgent; // eslint-disable-line no-underscore-dangle
+    }
+
+    // @ts-ignore: (driver <= 4.2)
+    input.context.driver._userAgent = userAgent; // eslint-disable-line no-underscore-dangle
 
     const session = input.context.driver.session(sessionParams);
 
@@ -67,7 +75,6 @@ async function execute(input: {
     }
 
     try {
-        // input.context.neoSchema.debug(`Cypher: ${input.cypher}\nParams: ${JSON.stringify(input.params, null, 2)}`);
         debug(
             "%s",
             `About to execute Cypher:\nCypher:\n${input.cypher}\nParams:\n${JSON.stringify(input.params, null, 2)}`

@@ -7,7 +7,7 @@ When querying for data, a number of operators are available for different types 
 
 === Equality operators
 
-All types can be tested for either equality or non-equality. These are only two comparison operators available for the `Boolean` type.
+All types can be tested for either equality or non-equality. For the `Boolean` type, these are the only available comparison operators.
 
 [[schema-filtering-numerical-operators]]
 === Numerical operators

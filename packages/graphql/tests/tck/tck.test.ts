@@ -34,7 +34,7 @@ import pluralize from "pluralize";
 import jsonwebtoken from "jsonwebtoken";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
-import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
+// import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import { SchemaDirectiveVisitor, printSchemaWithDirectives } from "@graphql-tools/utils";
 import { translateCreate, translateDelete, translateRead, translateUpdate } from "../../src/translate";
 import { Context } from "../../src/types";
@@ -50,6 +50,7 @@ import { trimmer } from "../../src/utils";
 import * as Scalars from "../../src/schema/scalars";
 import { Node } from "../../src/classes";
 import createAuthParam from "../../src/translate/create-auth-param";
+import getNeo4jResolveTree from "../../src/utils/get-neo4j-resolve-tree";
 
 const TCK_DIR = path.join(__dirname, "tck-test-files");
 
@@ -140,7 +141,7 @@ describe("TCK Generated tests", () => {
                                 context: Context,
                                 info: GraphQLResolveInfo
                             ) => {
-                                const resolveTree = parseResolveInfo(info) as ResolveTree;
+                                const resolveTree = getNeo4jResolveTree(info);
 
                                 context.neoSchema = neoSchema;
                                 context.resolveTree = resolveTree;
@@ -176,7 +177,7 @@ describe("TCK Generated tests", () => {
                                 context: any,
                                 info: GraphQLResolveInfo
                             ) => {
-                                const resolveTree = parseResolveInfo(info) as ResolveTree;
+                                const resolveTree = getNeo4jResolveTree(info);
 
                                 context.neoSchema = neoSchema;
                                 context.resolveTree = resolveTree;
@@ -204,7 +205,7 @@ describe("TCK Generated tests", () => {
                                 context: any,
                                 info: GraphQLResolveInfo
                             ) => {
-                                const resolveTree = parseResolveInfo(info) as ResolveTree;
+                                const resolveTree = getNeo4jResolveTree(info);
 
                                 context.neoSchema = neoSchema;
                                 context.resolveTree = resolveTree;
@@ -227,7 +228,7 @@ describe("TCK Generated tests", () => {
                                 };
                             },
                             [`delete${pluralize(def.name.value)}`]: (_root: any, _params: any, context: any, info) => {
-                                const resolveTree = parseResolveInfo(info) as ResolveTree;
+                                const resolveTree = getNeo4jResolveTree(info);
 
                                 context.neoSchema = neoSchema;
                                 context.resolveTree = resolveTree;
@@ -254,7 +255,7 @@ describe("TCK Generated tests", () => {
                         Query: queries,
                         Mutation: mutations,
                         ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
-                            if (printSchema(neoSchema.schema).includes(name)) {
+                            if (printSchema(neoSchema.schema).includes(`scalar ${name}\n`)) {
                                 res[name] = scalar;
                             }
                             return res;

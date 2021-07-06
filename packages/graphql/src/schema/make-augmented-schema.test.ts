@@ -65,8 +65,8 @@ describe("makeAugmentedSchema", () => {
 
             // Find
             const nodeFindQuery = queryObject.fields?.find((x) => x.name.value === pluralize(camelCase(type)));
-            const nodeFindQueryType = ((nodeFindQuery?.type as NonNullTypeNode).type as ListTypeNode)
-                .type as NamedTypeNode;
+            const nodeFindQueryType = (((nodeFindQuery?.type as NonNullTypeNode).type as ListTypeNode)
+                .type as NonNullTypeNode).type as NamedTypeNode;
             expect(nodeFindQueryType.name.value).toEqual(type);
 
             // Options
@@ -194,7 +194,7 @@ describe("makeAugmentedSchema", () => {
                 type Node {
                     createdAt: DateTime
                 }
-              
+
                 type Query {
                   nodes: [Node] @cypher(statement: "")
                 }

@@ -1,34 +1,17 @@
-## Schema Custom Mutations
+## Schema Date
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### Custom Mutations
+### Date
 
 **TypeDefs**
 
 ```typedefs-input
-input ExampleInput {
-    id: ID
-}
-
 type Movie {
     id: ID
-}
-
-type Query {
-  testQuery(input: ExampleInput): String
-  testCypherQuery(input: ExampleInput): String @cypher(statement: "")
-}
-
-type Mutation {
-  testMutation(input: ExampleInput): String
-  testCypherMutation(input: ExampleInput): String @cypher(statement: "")
-}
-
-type Subscription {
-  testSubscription(input: ExampleInput): String
+    date: Date
 }
 ```
 
@@ -36,12 +19,12 @@ type Subscription {
 
 ```schema-output
 
-input ExampleInput {
-    id: ID
-}
+"""A date, represented as a 'yyyy-mm-dd' string"""
+scalar Date
 
 type Movie {
   id: ID
+  date: Date
 }
 
 type DeleteInfo {
@@ -58,6 +41,7 @@ enum SortDirection {
 
 input MovieCreateInput {
   id: ID
+  date: Date
 }
 
 input MovieOptions {
@@ -70,6 +54,7 @@ sort: [MovieSort]
 """Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
 input MovieSort {
   id: SortDirection
+  date: SortDirection
 }
 
 input MovieWhere {
@@ -83,12 +68,21 @@ input MovieWhere {
   id_NOT_STARTS_WITH: ID
   id_ENDS_WITH: ID
   id_NOT_ENDS_WITH: ID
+  date: Date
+  date_GT: Date
+  date_GTE: Date
+  date_IN: [Date]
+  date_NOT: Date
+  date_NOT_IN: [Date]
+  date_LT: Date
+  date_LTE: Date
   OR: [MovieWhere!]
   AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {
   id: ID
+  date: Date
 }
 
 type CreateMoviesMutationResponse {
@@ -103,18 +97,10 @@ type Mutation {
   createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
   deleteMovies(where: MovieWhere): DeleteInfo!
   updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
-  testMutation(input: ExampleInput): String
-  testCypherMutation(input: ExampleInput): String
 }
 
 type Query {
   movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-  testQuery(input: ExampleInput): String
-  testCypherQuery(input: ExampleInput): String
-}
-
-type Subscription {
-  testSubscription(input: ExampleInput): String
 }
 ```
 
