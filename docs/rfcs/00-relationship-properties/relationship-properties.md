@@ -112,10 +112,6 @@ input ActorMoviesConnectionSort {
     node: MovieSort
 }
 
-input ActorMoviesConnectionOptions {
-    sort: [ActorMoviesConnectionSort!]
-}
-
 input MovieActorsConnectionWhere {
     relationship: ActedInWhere
     relationship_NOT: ActedInWhere
@@ -128,10 +124,6 @@ input MovieActorsConnectionWhere {
 input MovieActorsConnectionSort {
     relationship: ActedInSort
     node: ActorSort
-}
-
-input MovieActorsConnectionOptions {
-    sort: [MovieActorsConnectionSort!]
 }
 ```
 
@@ -146,7 +138,7 @@ type Actor {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
     moviesConnection(
         where: ActorMoviesConnectionWhere
-        options: ActorMoviesConnectionOptions
+        sort: [ActorMoviesConnectionSort!]
     ): ActorMoviesConnection!
 }
 
@@ -156,7 +148,7 @@ type Movie {
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
     actorsConnection(
         where: MovieActorsConnectionWhere
-        options: MovieActorsConnectionOptions
+        sort: [MovieActorsConnectionSort!]
     ): MovieActorsConnection!
 }
 ```
@@ -181,12 +173,12 @@ There are new input types to facilitate the setting of relationship properties w
 
 ```graphql
 input MovieCreateFieldInput {
-    properties: ActedInCreateInput!
+    relationship: ActedInCreateInput!
     node: MovieCreateInput!
 }
 
 input ActorCreateFieldInput {
-    properties: ActedInCreateInput!
+    relationship: ActedInCreateInput!
     node: ActorCreateInput!
 }
 ```
@@ -200,38 +192,46 @@ Now where nested create operations and `RelationInput` input types used the `Act
 ```graphql
 input ActorConnectFieldInput {
     where: ActorWhere
-    properties: ActedInCreateInput
+    relationship: ActedInCreateInput
     connect: ActorConnectInput
 }
 
 input MovieConnectFieldInput {
     where: MovieWhere
-    properties: ActedInCreateInput
+    relationship: ActedInCreateInput
     connect: MovieConnectInput
 }
 ```
 
 #### Changes to nested updates
 
-`UpdateFieldInput` types now contain a `properties` field for setting relationship properties on existing relationships.
+The `update` field of each `UpdateFieldInput` type is now of a different type to allow setting relationship properties on existing relationships.
 
 Additionally, the `where` argument will be changed so that filtering can be done on either node or relationship properties. This will be a breaking change and result in a major version bump.
 
 ```graphql
+input ActorMoviesConnectionUpdateInput {
+    relationship: ActedInUpdateInput
+    node: MovieUpdateInput
+}
+
 input ActorMoviesUpdateFieldInput {
-    properties: ActedInUpdateInput
     where: ActorMoviesConnectionWhere
-    update: MovieUpdateInput
+    update: ActorMoviesConnectionUpdateInput
     connect: [MovieConnectFieldInput!]
     create: [MovieCreateFieldInput!]
     disconnect: [MovieDisconnectFieldInput!]
     delete: [MovieDeleteFieldInput!]
 }
 
+input MovieActorsConnectionUpdateInput {
+    relationship: ActedInUpdateInput
+    node: ActorUpdateInput
+}
+
 input MovieActorsUpdateFieldInput {
-    properties: ActedInUpdateInput
     where: MovieActorsConnectionWhere
-    update: ActorUpdateInput
+    update: MovieActorsConnectionUpdateInput
     create: [ActorCreateFieldInput!]
     connect: [ActorConnectFieldInput!]
     disconnect: [ActorDisconnectFieldInput!]
@@ -251,7 +251,7 @@ query {
         title
         actorsConnection(
             where: { node: { name_STARTS_WITH: "Tom" } }
-            options: { sort: { node: { name: ASC } } }
+            sort: { node: { name: ASC } }
         ) {
             edges {
                 screenTime
@@ -280,7 +280,7 @@ mutation {
                     connect: [
                         {
                             where: { name: "Tom Hanks" }
-                            properties: { screenTime: 60 }
+                            relationship: { screenTime: 60 }
                         }
                     ]
                 }
@@ -308,7 +308,7 @@ mutation {
                     create: [
                         {
                             node: { name: "Tom Hanks" }
-                            properties: { screenTime: 60 }
+                            relationship: { screenTime: 60 }
                         }
                     ]
                 }
@@ -334,7 +334,7 @@ mutation {
             actors: [
                 {
                     where: { node: { name: "Tom Hanks" } }
-                    properties: { screenTime: 60 }
+                    update: { relationship: { screenTime: 60 } }
                 }
             ]
         }
