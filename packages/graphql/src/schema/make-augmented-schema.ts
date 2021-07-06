@@ -58,11 +58,13 @@ import { validateDocument } from "./validation";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
-    { enableRegex }: { enableRegex?: boolean } = {}
+    { enableRegex, skipValidateTypeDefs }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean } = {}
 ): { schema: GraphQLSchema; nodes: Node[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
-    validateDocument(document);
+    if (!skipValidateTypeDefs) {
+        validateDocument(document);
+    }
 
     const composer = new SchemaComposer();
 
@@ -273,7 +275,7 @@ function makeAugmentedSchema(
                     res[`${f.fieldName}_IN`] = `[${f.typeMeta.input.where.pretty}]`;
                     res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}]`;
 
-                    if (["Float", "Int", "BigInt", "DateTime"].includes(f.typeMeta.name)) {
+                    if (["Float", "Int", "BigInt", "DateTime", "Date"].includes(f.typeMeta.name)) {
                         let type: any = f.typeMeta.name;
 
                         if (f.typeMeta.name === "DateTime") {
@@ -282,6 +284,10 @@ function makeAugmentedSchema(
 
                         if (f.typeMeta.name === "BigInt") {
                             type = Scalars.BigInt;
+                        }
+
+                        if (f.typeMeta.name === "Date") {
+                            type = Scalars.Date;
                         }
 
                         ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {

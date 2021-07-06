@@ -54,9 +54,9 @@ function validateDocument(document: DocumentNode): void {
         types: [...Object.values(scalars), ...Object.values(enums), ...Object.values(point)],
     });
 
-    const schemaToValidate = extendSchema(schemaToExtend, doc);
+    const schema = extendSchema(schemaToExtend, doc);
 
-    const errors = validateSchema(schemaToValidate);
+    const errors = validateSchema(schema);
 
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
 

@@ -68,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
     test("DateTime values return correctly when using custom resolvers in the schema", async () => {
         const session = driver.session();
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers, driver });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers, driver, config: { skipValidateTypeDefs: true } });
 
         const title = generate({ charset: "alphabetic" });
 

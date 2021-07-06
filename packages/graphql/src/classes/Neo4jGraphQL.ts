@@ -42,6 +42,7 @@ export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
     jwt?: Neo4jGraphQLJWT;
     enableRegex?: boolean;
+    skipValidateTypeDefs?: boolean;
 }
 
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
@@ -62,7 +63,10 @@ class Neo4jGraphQL {
 
     constructor(input: Neo4jGraphQLConstructor) {
         const { config = {}, driver, resolvers, ...schemaDefinition } = input;
-        const { nodes, schema } = makeAugmentedSchema(schemaDefinition, { enableRegex: config.enableRegex });
+        const { nodes, schema } = makeAugmentedSchema(schemaDefinition, {
+            enableRegex: config.enableRegex,
+            skipValidateTypeDefs: config.skipValidateTypeDefs,
+        });
 
         this.driver = driver;
         this.config = config;
