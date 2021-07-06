@@ -70,178 +70,182 @@ function createUpdateAndParams({
         }
 
         const relationField = node.relationFields.find((x) => key.startsWith(x.fieldName));
-        const pointField = node.pointFields.find((x) => key.startsWith(x.fieldName));
+        const pointField = node.pointFields.find((x) => key === x.fieldName);
         let unionTypeName = "";
 
         if (relationField) {
-            let refNode: Node;
+            let refNode: Node | undefined;
 
             if (relationField.union) {
                 [unionTypeName] = key.split(`${relationField.fieldName}_`).join("").split("_");
                 refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
-            } else {
+            } else if (relationField.fieldName === key) {
                 refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             }
 
-            const inStr = relationField.direction === "IN" ? "<-" : "-";
-            const outStr = relationField.direction === "OUT" ? "->" : "-";
-            const relTypeStr = `[:${relationField.type}]`;
+            if (refNode) {
+                const inStr = relationField.direction === "IN" ? "<-" : "-";
+                const outStr = relationField.direction === "OUT" ? "->" : "-";
+                const relTypeStr = `[:${relationField.type}]`;
 
-            const updates = relationField.typeMeta.array ? value : [value];
-            updates.forEach((update, index) => {
-                const _varName = `${varName}_${key}${index}`;
+                const updates = relationField.typeMeta.array ? value : [value];
+                updates.forEach((update, index) => {
+                    const _varName = `${varName}_${key}${index}`;
 
-                if (update.update) {
-                    if (withVars) {
-                        res.strs.push(`WITH ${withVars.join(", ")}`);
-                    }
+                    if (update.update) {
+                        if (withVars) {
+                            res.strs.push(`WITH ${withVars.join(", ")}`);
+                        }
 
-                    res.strs.push(
-                        `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${refNode.name})`
-                    );
+                        res.strs.push(
+                            `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${
+                                (refNode as Node).name
+                            })`
+                        );
 
-                    const whereStrs: string[] = [];
-                    if (update.where) {
-                        const whereAndParams = createWhereAndParams({
+                        const whereStrs: string[] = [];
+                        if (update.where) {
+                            const whereAndParams = createWhereAndParams({
+                                varName: _varName,
+                                whereInput: update.where,
+                                node: refNode as Node,
+                                context,
+                                recursing: true,
+                            });
+                            if (whereAndParams[0]) {
+                                whereStrs.push(whereAndParams[0]);
+                                res.params = { ...res.params, ...whereAndParams[1] };
+                            }
+                        }
+                        if (node.auth) {
+                            const whereAuth = createAuthAndParams({
+                                operation: "UPDATE",
+                                entity: refNode as Node,
+                                context,
+                                where: { varName: _varName, node: refNode as Node },
+                            });
+                            if (whereAuth[0]) {
+                                whereStrs.push(whereAuth[0]);
+                                res.params = { ...res.params, ...whereAuth[1] };
+                            }
+                        }
+                        if (whereStrs.length) {
+                            res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
+                        }
+
+                        res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
+
+                        const auth = createAuthParam({ context });
+                        let innerApocParams = { auth };
+
+                        const updateAndParams = createUpdateAndParams({
+                            context,
+                            node: refNode as Node,
+                            updateInput: update.update,
                             varName: _varName,
-                            whereInput: update.where,
-                            node: refNode,
-                            context,
-                            recursing: true,
+                            withVars: [...withVars, _varName],
+                            parentVar: _varName,
+                            chainStr: `${param}${index}`,
+                            insideDoWhen: true,
                         });
-                        if (whereAndParams[0]) {
-                            whereStrs.push(whereAndParams[0]);
-                            res.params = { ...res.params, ...whereAndParams[1] };
+                        res.params = { ...res.params, ...updateAndParams[1], auth };
+                        innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
+
+                        const updateStrs = [updateAndParams[0], "RETURN count(*)"];
+                        const apocArgs = `{${parentVar}:${parentVar}, ${_varName}:${_varName}REPLACE_ME}`;
+
+                        if (insideDoWhen) {
+                            updateStrs.push(`\\", \\"\\", ${apocArgs})`);
+                        } else {
+                            updateStrs.push(`", "", ${apocArgs})`);
                         }
+                        updateStrs.push("YIELD value as _");
+
+                        const paramsString = Object.keys(innerApocParams)
+                            .reduce((r: string[], k) => [...r, `${k}:$${k}`], [])
+                            .join(",");
+
+                        const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
+                        res.strs.push(updateStr);
                     }
-                    if (node.auth) {
-                        const whereAuth = createAuthAndParams({
-                            operation: "UPDATE",
-                            entity: refNode,
+
+                    if (update.disconnect) {
+                        const disconnectAndParams = createDisconnectAndParams({
                             context,
-                            where: { varName: _varName, node: refNode },
-                        });
-                        if (whereAuth[0]) {
-                            whereStrs.push(whereAuth[0]);
-                            res.params = { ...res.params, ...whereAuth[1] };
-                        }
-                    }
-                    if (whereStrs.length) {
-                        res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
-                    }
-
-                    res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
-
-                    const auth = createAuthParam({ context });
-                    let innerApocParams = { auth };
-
-                    const updateAndParams = createUpdateAndParams({
-                        context,
-                        node: refNode,
-                        updateInput: update.update,
-                        varName: _varName,
-                        withVars: [...withVars, _varName],
-                        parentVar: _varName,
-                        chainStr: `${param}${index}`,
-                        insideDoWhen: true,
-                    });
-                    res.params = { ...res.params, ...updateAndParams[1], auth };
-                    innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
-
-                    const updateStrs = [updateAndParams[0], "RETURN count(*)"];
-                    const apocArgs = `{${parentVar}:${parentVar}, ${_varName}:${_varName}REPLACE_ME}`;
-
-                    if (insideDoWhen) {
-                        updateStrs.push(`\\", \\"\\", ${apocArgs})`);
-                    } else {
-                        updateStrs.push(`", "", ${apocArgs})`);
-                    }
-                    updateStrs.push("YIELD value as _");
-
-                    const paramsString = Object.keys(innerApocParams)
-                        .reduce((r: string[], k) => [...r, `${k}:$${k}`], [])
-                        .join(",");
-
-                    const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
-                    res.strs.push(updateStr);
-                }
-
-                if (update.disconnect) {
-                    const disconnectAndParams = createDisconnectAndParams({
-                        context,
-                        refNode,
-                        value: update.disconnect,
-                        varName: `${_varName}_disconnect`,
-                        withVars,
-                        parentVar,
-                        relationField,
-                        labelOverride: unionTypeName,
-                        parentNode: node,
-                        insideDoWhen,
-                    });
-                    res.strs.push(disconnectAndParams[0]);
-                    res.params = { ...res.params, ...disconnectAndParams[1] };
-                }
-
-                if (update.connect) {
-                    const connectAndParams = createConnectAndParams({
-                        context,
-                        refNode,
-                        value: update.connect,
-                        varName: `${_varName}_connect`,
-                        withVars,
-                        parentVar,
-                        relationField,
-                        labelOverride: unionTypeName,
-                        parentNode: node,
-                        insideDoWhen,
-                    });
-                    res.strs.push(connectAndParams[0]);
-                    res.params = { ...res.params, ...connectAndParams[1] };
-                }
-
-                if (update.delete) {
-                    const innerVarName = `${_varName}_delete`;
-
-                    const deleteAndParams = createDeleteAndParams({
-                        context,
-                        node,
-                        deleteInput: { [key]: update.delete },
-                        varName: innerVarName,
-                        chainStr: innerVarName,
-                        parentVar,
-                        withVars,
-                        insideDoWhen,
-                    });
-                    res.strs.push(deleteAndParams[0]);
-                    res.params = { ...res.params, ...deleteAndParams[1] };
-                }
-
-                if (update.create) {
-                    if (withVars) {
-                        res.strs.push(`WITH ${withVars.join(", ")}`);
-                    }
-
-                    const creates = relationField.typeMeta.array ? update.create : [update.create];
-                    creates.forEach((create, i) => {
-                        const innerVarName = `${_varName}_create${i}`;
-
-                        const createAndParams = createCreateAndParams({
-                            context,
-                            node: refNode,
-                            input: create,
-                            varName: innerVarName,
-                            withVars: [...withVars, innerVarName],
+                            refNode: refNode as Node,
+                            value: update.disconnect,
+                            varName: `${_varName}_disconnect`,
+                            withVars,
+                            parentVar,
+                            relationField,
+                            labelOverride: unionTypeName,
+                            parentNode: node,
                             insideDoWhen,
                         });
-                        res.strs.push(createAndParams[0]);
-                        res.params = { ...res.params, ...createAndParams[1] };
-                        res.strs.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${innerVarName})`);
-                    });
-                }
-            });
+                        res.strs.push(disconnectAndParams[0]);
+                        res.params = { ...res.params, ...disconnectAndParams[1] };
+                    }
 
-            return res;
+                    if (update.connect) {
+                        const connectAndParams = createConnectAndParams({
+                            context,
+                            refNode: refNode as Node,
+                            value: update.connect,
+                            varName: `${_varName}_connect`,
+                            withVars,
+                            parentVar,
+                            relationField,
+                            labelOverride: unionTypeName,
+                            parentNode: node,
+                            insideDoWhen,
+                        });
+                        res.strs.push(connectAndParams[0]);
+                        res.params = { ...res.params, ...connectAndParams[1] };
+                    }
+
+                    if (update.delete) {
+                        const innerVarName = `${_varName}_delete`;
+
+                        const deleteAndParams = createDeleteAndParams({
+                            context,
+                            node,
+                            deleteInput: { [key]: update.delete },
+                            varName: innerVarName,
+                            chainStr: innerVarName,
+                            parentVar,
+                            withVars,
+                            insideDoWhen,
+                        });
+                        res.strs.push(deleteAndParams[0]);
+                        res.params = { ...res.params, ...deleteAndParams[1] };
+                    }
+
+                    if (update.create) {
+                        if (withVars) {
+                            res.strs.push(`WITH ${withVars.join(", ")}`);
+                        }
+
+                        const creates = relationField.typeMeta.array ? update.create : [update.create];
+                        creates.forEach((create, i) => {
+                            const innerVarName = `${_varName}_create${i}`;
+
+                            const createAndParams = createCreateAndParams({
+                                context,
+                                node: refNode as Node,
+                                input: create,
+                                varName: innerVarName,
+                                withVars: [...withVars, innerVarName],
+                                insideDoWhen,
+                            });
+                            res.strs.push(createAndParams[0]);
+                            res.params = { ...res.params, ...createAndParams[1] };
+                            res.strs.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${innerVarName})`);
+                        });
+                    }
+                });
+
+                return res;
+            }
         }
 
         if (!hasAppliedTimeStamps) {
