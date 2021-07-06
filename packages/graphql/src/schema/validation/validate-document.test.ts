@@ -25,7 +25,7 @@ import { parse } from "graphql";
 import validateDocument from "./validate-document";
 
 describe("validateDocument", () => {
-    test("should throw one of the directive errors", () => {
+    test("should throw an error if a directive is in the wrong location", () => {
         const doc = parse(`
             type User @coalesce {
                 name: String
@@ -37,6 +37,23 @@ describe("validateDocument", () => {
             throw new Error();
         } catch (error) {
             expect(error.message).toContain('Directive "@coalesce" may not be used on OBJECT.');
+        }
+    });
+
+    test("should throw an error if a directive is missing an argument", () => {
+        const doc = parse(`
+            type User {
+                name: String @coalesce
+            }
+        `);
+
+        try {
+            validateDocument(doc);
+            throw new Error();
+        } catch (error) {
+            expect(error.message).toContain(
+                'Directive "@coalesce" argument "value" of type "Scalar!" is required, but it was not provided.'
+            );
         }
     });
 
@@ -52,6 +69,25 @@ describe("validateDocument", () => {
             throw new Error();
         } catch (error) {
             expect(error.message).toContain('Unknown type "Unknown".');
+        }
+    });
+
+    test("should throw an error if an interface is incorrectly implemented", () => {
+        const doc = parse(`
+            interface UserInterface {
+                age: Int!
+            }
+
+            type User implements UserInterface {
+                name: String!
+            }
+        `);
+
+        try {
+            validateDocument(doc);
+            throw new Error();
+        } catch (error) {
+            expect(error.message).toContain("Interface field UserInterface.age expected but User does not provide it.");
         }
     });
 
@@ -72,7 +108,7 @@ describe("validateDocument", () => {
                 type Node {
                     createdAt: DateTime
                 }
-              
+
               type Query {
                 nodes: [Node] @cypher(statement: "")
               }
@@ -93,30 +129,30 @@ describe("validateDocument", () => {
                 customer: Customer @relationship(type: "PLACED", direction: IN)
                 books: [Book] @relationship(type: "CONTAINS", direction: OUT)
               }
-              
+
               extend type Order {
                 subTotal: Float @cypher(statement:"MATCH (this)-[:CONTAINS]->(b:Book) RETURN sum(b.price)")
                 shippingCost: Float @cypher(statement:"MATCH (this)-[:SHIPS_TO]->(a:Address) RETURN round(0.01 * distance(a.location, Point({latitude: 40.7128, longitude: -74.0060})) / 1000, 2)")
                 estimatedDelivery: DateTime @ignore
               }
-              
+
               type Customer {
                 username: String
                 orders: [Order] @relationship(type: "PLACED", direction: OUT)
                 reviews: [Review] @relationship(type: "WROTE", direction: OUT)
                 recommended(limit: Int = 3): [Book] @cypher(statement: "MATCH (this)-[:PLACED]->(:Order)-[:CONTAINS]->(:Book)<-[:CONTAINS]-(:Order)<-[:PLACED]-(c:Customer) MATCH (c)-[:PLACED]->(:Order)-[:CONTAINS]->(rec:Book) WHERE NOT EXISTS((this)-[:PLACED]->(:Order)-[:CONTAINS]->(rec)) RETURN rec LIMIT $limit")
               }
-              
+
               type Address {
                 address: String
                 location: Point
                 order: Order @relationship(type: "SHIPS_TO", direction: IN)
               }
-              
+
               extend type Address {
                 currentWeather: Weather @cypher(statement:"CALL apoc.load.json('https://www.7timer.info/bin/civil.php?lon=' + this.location.longitude + '&lat=' + this.location.latitude + '&ac=0&unit=metric&output=json&tzshift=0') YIELD value WITH value.dataseries[0] as weather RETURN {temperature: weather.temp2m, windSpeed: weather.wind10m.speed, windDirection: weather.wind10m.direction, precipitation: weather.prec_type, summary: weather.weather} AS conditions")
               }
-              
+
               type Weather {
                 temperature: Int
                 windSpeed: Int
@@ -124,7 +160,7 @@ describe("validateDocument", () => {
                 precipitation: String
                 summary: String
               }
-              
+
               type Book {
                 isbn: ID!
                 title: String
@@ -134,7 +170,7 @@ describe("validateDocument", () => {
                 subjects: [Subject] @relationship(type: "ABOUT", direction: OUT)
                 reviews: [Review] @relationship(type: "REVIEWS", direction: IN)
               }
-              
+
               extend type Book {
                 similar: [Book] @cypher(statement: """
                 MATCH (this)-[:ABOUT]->(s:Subject)
@@ -146,7 +182,7 @@ describe("validateDocument", () => {
                 RETURN b LIMIT 1
                 """)
               }
-              
+
               type Review {
                 rating: Int
                 text: String
@@ -154,17 +190,17 @@ describe("validateDocument", () => {
                 book: Book @relationship(type: "REVIEWS", direction: OUT)
                 author: Customer @relationship(type: "WROTE", direction: IN)
               }
-              
+
               type Author {
                 name: String!
                 books: [Book] @relationship(type: "AUTHOR_OF", direction: OUT)
               }
-              
+
               type Subject {
                 name: String!
                 books: [Book] @relationship(type: "ABOUT", direction: IN)
               }
-              
+
               type Mutation {
                 mergeBookSubjects(subject: String!, bookTitles: [String!]!): Subject @cypher(statement: """
                 MERGE (s:Subject {name: $subject})
@@ -175,7 +211,7 @@ describe("validateDocument", () => {
                 RETURN s
                 """)
               }
-              
+
               type Query {
                 bookSearch(searchString: String!): [Book] @cypher(statement: """
                 CALL db.index.fulltext.queryNodes('bookIndex', $searchString+'~')
@@ -196,12 +232,12 @@ describe("validateDocument", () => {
                     id: ID!
                     color: String # NOTE: 'color' is optional on the interface
                   }
-                
+
                   type Car implements Vehicle {
                     id: ID!
                     color: String! # NOTE: 'color' is mandatory on the type, which should be okay
                   }
-                
+
                   type Query {
                     cars: [Vehicle!]!
                   }

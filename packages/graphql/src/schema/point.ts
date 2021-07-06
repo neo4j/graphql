@@ -17,26 +17,32 @@
  * limitations under the License.
  */
 
-import { GraphQLInputObjectType, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
-import { Float as FloatScalar, Int } from "./scalars";
+import {
+    GraphQLFloat,
+    GraphQLInputObjectType,
+    GraphQLInt,
+    GraphQLNonNull,
+    GraphQLObjectType,
+    GraphQLString,
+} from "graphql";
 
 export const point = new GraphQLObjectType({
     name: "Point",
     fields: {
         longitude: {
-            type: new GraphQLNonNull(FloatScalar),
+            type: new GraphQLNonNull(GraphQLFloat),
             resolve: (source) => {
                 return source.point.x;
             },
         },
         latitude: {
-            type: new GraphQLNonNull(FloatScalar),
+            type: new GraphQLNonNull(GraphQLFloat),
             resolve: (source) => {
                 return source.point.y;
             },
         },
         height: {
-            type: FloatScalar,
+            type: GraphQLFloat,
             resolve: (source) => {
                 return source.point.z;
             },
@@ -45,7 +51,7 @@ export const point = new GraphQLObjectType({
             type: new GraphQLNonNull(GraphQLString),
         },
         srid: {
-            type: new GraphQLNonNull(Int),
+            type: new GraphQLNonNull(GraphQLInt),
             resolve: (source) => {
                 return source.point.srid;
             },
@@ -57,13 +63,13 @@ export const pointInput = new GraphQLInputObjectType({
     name: "PointInput",
     fields: {
         longitude: {
-            type: new GraphQLNonNull(FloatScalar),
+            type: new GraphQLNonNull(GraphQLFloat),
         },
         latitude: {
-            type: new GraphQLNonNull(FloatScalar),
+            type: new GraphQLNonNull(GraphQLFloat),
         },
         height: {
-            type: FloatScalar,
+            type: GraphQLFloat,
         },
     },
 });
@@ -75,7 +81,7 @@ export const pointDistance = new GraphQLInputObjectType({
             type: new GraphQLNonNull(pointInput),
         },
         distance: {
-            type: new GraphQLNonNull(FloatScalar),
+            type: new GraphQLNonNull(GraphQLFloat),
             description: "The distance in metres to be used when comparing two points",
         },
     },
@@ -85,19 +91,19 @@ export const cartesianPoint = new GraphQLObjectType({
     name: "CartesianPoint",
     fields: {
         x: {
-            type: new GraphQLNonNull(FloatScalar),
+            type: new GraphQLNonNull(GraphQLFloat),
             resolve: (source) => {
                 return source.point.x;
             },
         },
         y: {
-            type: new GraphQLNonNull(FloatScalar),
+            type: new GraphQLNonNull(GraphQLFloat),
             resolve: (source) => {
                 return source.point.y;
             },
         },
         z: {
-            type: FloatScalar,
+            type: GraphQLFloat,
             resolve: (source) => {
                 return source.point.z;
             },
@@ -106,7 +112,7 @@ export const cartesianPoint = new GraphQLObjectType({
             type: new GraphQLNonNull(GraphQLString),
         },
         srid: {
-            type: new GraphQLNonNull(Int),
+            type: new GraphQLNonNull(GraphQLInt),
             resolve: (source) => {
                 return source.point.srid;
             },
@@ -118,13 +124,13 @@ export const cartesianPointInput = new GraphQLInputObjectType({
     name: "CartesianPointInput",
     fields: {
         x: {
-            type: new GraphQLNonNull(FloatScalar),
+            type: new GraphQLNonNull(GraphQLFloat),
         },
         y: {
-            type: new GraphQLNonNull(FloatScalar),
+            type: new GraphQLNonNull(GraphQLFloat),
         },
         z: {
-            type: FloatScalar,
+            type: GraphQLFloat,
         },
     },
 });
@@ -136,7 +142,7 @@ export const cartesianPointDistance = new GraphQLInputObjectType({
             type: new GraphQLNonNull(cartesianPointInput),
         },
         distance: {
-            type: new GraphQLNonNull(FloatScalar),
+            type: new GraphQLNonNull(GraphQLFloat),
         },
     },
 });

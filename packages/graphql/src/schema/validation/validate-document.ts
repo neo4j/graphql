@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-import { DefinitionNode, DocumentNode, GraphQLSchema } from "graphql";
-import { validateSDL } from "graphql/validation/validate";
+import { DefinitionNode, DocumentNode, GraphQLSchema, extendSchema, validateSchema } from "graphql";
 import * as scalars from "../scalars";
 import * as enums from "./enums";
 import * as directives from "./directives";
@@ -55,9 +54,14 @@ function validateDocument(document: DocumentNode): void {
         types: [...Object.values(scalars), ...Object.values(enums), ...Object.values(point)],
     });
 
-    const errors = validateSDL(doc, schemaToExtend);
-    if (errors.length) {
-        throw new Error(errors.join("\n"));
+    const schemaToValidate = extendSchema(schemaToExtend, doc);
+
+    const errors = validateSchema(schemaToValidate);
+
+    const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
+
+    if (filteredErrors.length) {
+        throw new Error(filteredErrors.join("\n"));
     }
 }
 
