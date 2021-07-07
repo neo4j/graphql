@@ -138,12 +138,14 @@ describe("unions", () => {
             mutation {
                 createMovies(input: [{
                     title: "${movieTitle}",
-                    search_Genre: {
-                        create: [{
-                            node: {
-                                name: "${genreName}"
-                            }
-                        }]
+                    search: {
+                        Genre: {
+                            create: [{
+                                node: {
+                                    name: "${genreName}"
+                                }
+                            }]
+                        }
                     }
                 }]) {
                     movies {
@@ -209,10 +211,12 @@ describe("unions", () => {
             mutation {
                 createMovies(input: [{
                     title: "${movieTitle}",
-                    search_Genre: {
-                        connect: [{
-                            where: { name: "${genreName}" }
-                        }]
+                    search: {
+                        Genre: {
+                            connect: [{
+                                where: { name: "${genreName}" }
+                            }]
+                        }
                     }
                 }]) {
                     movies {
@@ -287,10 +291,12 @@ describe("unions", () => {
                 updateMovies(
                     where: { title: "${movieTitle}" },
                     update: {
-                        search_Genre: {
-                            where: { Genre: { name: "${genreName}" } },
-                            update: {
-                                name: "${newGenreName}"
+                        search: {
+                            Genre: {
+                                where: { Genre: { name: "${genreName}" } },
+                                update: {
+                                    name: "${newGenreName}"
+                                }
                             }
                         }
                     }
@@ -363,10 +369,12 @@ describe("unions", () => {
                 updateMovies(
                     where: { title: "${movieTitle}" },
                     update: {
-                        search_Genre: {
-                            disconnect: [{
-                                where: { node: { name: "${genreName}" } }
-                            }]
+                        search: {
+                            Genre: {
+                                disconnect: [{
+                                    where: { node: { name: "${genreName}" } }
+                                }]
+                            }
                         }
                     }
                 ) {

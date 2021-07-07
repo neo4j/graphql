@@ -109,7 +109,9 @@ mutation {
         input: [
             {
                 title: "some movie"
-                search_Genre: { create: [{ node: { name: "some genre" } }] }
+                search: {
+                    Genre: { create: [{ node: { name: "some genre" } }] }
+                }
             }
         ]
     ) {
@@ -157,7 +159,11 @@ RETURN this0 {
 
 ```graphql
 mutation {
-    updateMovies(create: { search_Genre: [{ node: { name: "some genre" } }] }) {
+    updateMovies(
+        create: {
+            search: { Genre: { create: [{ node: { name: "some genre" } }] } }
+        }
+    ) {
         movies {
             title
         }
@@ -195,7 +201,9 @@ mutation {
         input: [
             {
                 title: "some movie"
-                search_Genre: { connect: [{ where: { name: "some genre" } }] }
+                search: {
+                    Genre: { connect: [{ where: { name: "some genre" } }] }
+                }
             }
         ]
     ) {
@@ -247,9 +255,11 @@ mutation {
     updateMovies(
         where: { title: "some movie" }
         update: {
-            search_Genre: {
-                where: { Genre: { name: "some genre" } }
-                update: { name: "some new genre" }
+            search: {
+                Genre: {
+                    where: { Genre: { name: "some genre" } }
+                    update: { name: "some new genre" }
+                }
             }
         }
     ) {
@@ -317,8 +327,10 @@ mutation {
     updateMovies(
         where: { title: "some movie" }
         update: {
-            search_Genre: {
-                disconnect: [{ where: { node: { name: "some genre" } } }]
+            search: {
+                Genre: {
+                    disconnect: [{ where: { node: { name: "some genre" } } }]
+                }
             }
         }
     ) {

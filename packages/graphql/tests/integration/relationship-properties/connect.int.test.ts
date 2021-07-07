@@ -163,13 +163,15 @@ describe("Relationship properties - connect", () => {
             mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                 createActors(input: [{
                     name: $actorName,
-                    actedIn_Movie: {
-                        connect: {
-                            where: {
-                                title: $movieTitle
-                            },
-                            properties: {
-                                screenTime: $screenTime
+                    actedIn: {
+                        Movie: {
+                            connect: {
+                                where: {
+                                    title: $movieTitle
+                                },
+                                properties: {
+                                    screenTime: $screenTime
+                                }
                             }
                         }
                     }
@@ -305,7 +307,7 @@ describe("Relationship properties - connect", () => {
         }
     });
 
-    test("should update an actor while connecting a relationship that has properties(with Union)", async () => {
+    test("abba", async () => {
         const typeDefs = gql`
             type Movie {
                 title: String!
@@ -342,9 +344,11 @@ describe("Relationship properties - connect", () => {
                 updateActors(
                     where: { name: $actorName }
                     connect: {
-                        actedIn_Movie: {
-                            where: { title: $movieTitle },
-                            properties: { screenTime: $screenTime }
+                        actedIn: {
+                            Movie: {
+                                where: { title: $movieTitle },
+                                properties: { screenTime: $screenTime }
+                            }
                         }
                     }
                 ) {
@@ -370,6 +374,7 @@ describe("Relationship properties - connect", () => {
                 contextValue: { driver },
                 variableValues: { movieTitle, actorName, screenTime },
             });
+            console.log(gqlResult.errors);
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.updateActors.actors).toEqual([
                 {

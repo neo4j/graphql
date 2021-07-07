@@ -41,24 +41,20 @@ type Author {
 }
 
 input AuthorConnectInput {
-  publications_Book: [AuthorPublicationsConnectFieldInput!]
-  publications_Journal: [AuthorPublicationsConnectFieldInput!]
+  publications: AuthorPublicationsConnectInput
 }
 
 input AuthorCreateInput {
   name: String!
-  publications_Book: AuthorPublicationsBookFieldInput
-  publications_Journal: AuthorPublicationsJournalFieldInput
+  publications: AuthorPublicationsCreateInput
 }
 
 input AuthorDeleteInput {
-  publications_Book: [AuthorPublicationsBookDeleteFieldInput!]
-  publications_Journal: [AuthorPublicationsJournalDeleteFieldInput!]
+  publications: AuthorPublicationsDeleteInput
 }
 
 input AuthorDisconnectInput {
-  publications_Book: [AuthorPublicationsBookDisconnectFieldInput!]
-  publications_Journal: [AuthorPublicationsJournalDisconnectFieldInput!]
+  publications: AuthorPublicationsDisconnectInput
 }
 
 input AuthorOptions {
@@ -115,10 +111,14 @@ input AuthorPublicationsConnectFieldInput {
   properties: WroteCreateInput!
 }
 
+input AuthorPublicationsConnectInput {
+  Book: [AuthorPublicationsConnectFieldInput!]
+}
+
 type AuthorPublicationsConnection {
   edges: [AuthorPublicationsRelationship!]!
-  pageInfo: PageInfo!
   totalCount: Int!
+  pageInfo: PageInfo!
 }
 
 input AuthorPublicationsConnectionWhere {
@@ -130,6 +130,21 @@ input AuthorPublicationsConnectionWhere {
   Book_NOT: BookWhere
   Journal: JournalWhere
   Journal_NOT: JournalWhere
+}
+
+input AuthorPublicationsCreateInput {
+  Book: AuthorPublicationsBookFieldInput
+  Journal: AuthorPublicationsJournalFieldInput
+}
+
+input AuthorPublicationsDeleteInput {
+  Book: [AuthorPublicationsBookDeleteFieldInput!]
+  Journal: [AuthorPublicationsJournalDeleteFieldInput!]
+}
+
+input AuthorPublicationsDisconnectInput {
+  Book: [AuthorPublicationsBookDisconnectFieldInput!]
+  Journal: [AuthorPublicationsJournalDisconnectFieldInput!]
 }
 
 input AuthorPublicationsJournalConnectionWhere {
@@ -177,9 +192,13 @@ type AuthorPublicationsRelationship implements Wrote {
   words: Int!
 }
 
+input AuthorPublicationsUpdateInput {
+  Book: [AuthorPublicationsBookUpdateFieldInput!]
+  Journal: [AuthorPublicationsJournalUpdateFieldInput!]
+}
+
 input AuthorRelationInput {
-  publications_Book: [AuthorPublicationsBookCreateFieldInput!]
-  publications_Journal: [AuthorPublicationsJournalCreateFieldInput!]
+  publications: AuthorPublicationsCreateInput
 }
 
 """
@@ -191,8 +210,7 @@ input AuthorSort {
 
 input AuthorUpdateInput {
   name: String
-  publications_Book: [AuthorPublicationsBookUpdateFieldInput!]
-  publications_Journal: [AuthorPublicationsJournalUpdateFieldInput!]
+  publications: AuthorPublicationsUpdateInput
 }
 
 input AuthorWhere {
@@ -213,12 +231,7 @@ input AuthorWhere {
 type Book {
   title: String!
   author(where: AuthorWhere, options: AuthorOptions): [Author!]!
-  authorConnection(
-    after: String,
-    first: Int,
-    where: BookAuthorConnectionWhere,
-    sort: [BookAuthorConnectionSort!]
-  ): BookAuthorConnection!
+  authorConnection(where: BookAuthorConnectionWhere, sort: [BookAuthorConnectionSort!], first: Int, after: String): BookAuthorConnection!
 }
 
 input BookAuthorConnectFieldInput {
@@ -229,8 +242,8 @@ input BookAuthorConnectFieldInput {
 
 type BookAuthorConnection {
   edges: [BookAuthorRelationship!]!
-  pageInfo: PageInfo!
   totalCount: Int!
+  pageInfo: PageInfo!
 }
 
 input BookAuthorConnectionSort {
@@ -362,12 +375,7 @@ type DeleteInfo {
 type Journal {
   subject: String!
   author(where: AuthorWhere, options: AuthorOptions): [Author!]!
-  authorConnection(
-    after: String,
-    first: Int,
-    where: JournalAuthorConnectionWhere,
-    sort: [JournalAuthorConnectionSort!]
-  ): JournalAuthorConnection!
+  authorConnection(where: JournalAuthorConnectionWhere, sort: [JournalAuthorConnectionSort!], first: Int, after: String): JournalAuthorConnection!
 }
 
 input JournalAuthorConnectFieldInput {
@@ -378,8 +386,8 @@ input JournalAuthorConnectFieldInput {
 
 type JournalAuthorConnection {
   edges: [JournalAuthorRelationship!]!
-  pageInfo: PageInfo!
   totalCount: Int!
+  pageInfo: PageInfo!
 }
 
 input JournalAuthorConnectionSort {
@@ -503,19 +511,19 @@ type Mutation {
   updateJournals(where: JournalWhere, update: JournalUpdateInput, connect: JournalConnectInput, disconnect: JournalDisconnectInput, create: JournalRelationInput, delete: JournalDeleteInput): UpdateJournalsMutationResponse!
 }
 
+"""Pagination information (Relay)"""
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String!
+  endCursor: String!
+}
+
 union Publication = Book | Journal
 
 input PublicationWhere {
-    Book: BookWhere
-    Journal: JournalWhere
-}
-
-"""Pagination information (Relay)"""
-type PageInfo {
-    hasNextPage: Boolean!
-    hasPreviousPage: Boolean!
-    startCursor: String!
-    endCursor: String!
+  Book: BookWhere
+  Journal: JournalWhere
 }
 
 type Query {
