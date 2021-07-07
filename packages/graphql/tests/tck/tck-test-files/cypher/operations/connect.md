@@ -48,13 +48,15 @@ mutation {
                 colors: {
                     connect: [
                         {
-                            where: { name: "Red" }
+                            where: { node: { name: "Red" } }
                             connect: {
                                 photos: [
                                     {
-                                        where: { id: "123" }
+                                        where: { node: { id: "123" } }
                                         connect: {
-                                            color: { where: { id: "134" } }
+                                            color: {
+                                                where: { node: { id: "134" } }
+                                            }
                                         }
                                     }
                                 ]
@@ -65,12 +67,16 @@ mutation {
                 photos: {
                     connect: [
                         {
-                            where: { id: "321" }
-                            connect: { color: { where: { name: "Green" } } }
+                            where: { node: { id: "321" } }
+                            connect: {
+                                color: { where: { node: { name: "Green" } } }
+                            }
                         }
                         {
-                            where: { id: "33211" }
-                            connect: { color: { where: { name: "Red" } } }
+                            where: { node: { id: "33211" } }
+                            connect: {
+                                color: { where: { node: { name: "Red" } } }
+                            }
                         }
                     ]
                 }

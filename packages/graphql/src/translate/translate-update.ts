@@ -191,7 +191,9 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 const v = relationField.union ? entry[1][refNode.name].create : entry[1];
                 const creates = relationField.typeMeta.array ? v : [v];
                 creates.forEach((create, index) => {
-                    const baseName = `${varName}_create_${entry[0]}_${refNode.name}${index}`;
+                    const baseName = `${varName}_create_${entry[0]}${
+                        relationField.union ? `_${refNode.name}` : ""
+                    }${index}`;
                     const nodeName = `${baseName}_node`;
                     const propertiesName = `${baseName}_relationship`;
                     const relTypeStr = `[${create.properties ? propertiesName : ""}:${relationField.type}]`;

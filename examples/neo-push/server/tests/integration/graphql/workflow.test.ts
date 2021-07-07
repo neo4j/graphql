@@ -96,7 +96,7 @@ describe("workflow", () => {
                                     name: "${blog.initialName}",
                                     creator: {
                                         connect: {
-                                            where: { id:"${user.id}" }
+                                            where: { node: { id:"${user.id}" } }
                                         }
                                     }
                                 }
@@ -137,12 +137,12 @@ describe("workflow", () => {
                                     title: "${post.initialTitle}"
                                     author: {
                                         connect: {
-                                            where: { id: "${user.id}" }
+                                            where: { node: { id: "${user.id}" } }
                                         }
                                     }
                                     blog: {
                                         connect: {
-                                            where: { id: "${blog.id}" }
+                                            where: { node: { id: "${blog.id}" } }
                                         }
                                     }
                                 }
@@ -182,12 +182,12 @@ describe("workflow", () => {
                                     content: "${comment.initialContent}",
                                     author: {
                                         connect: {
-                                            where: { id: "${user.id}" }
+                                            where: { node: { id: "${user.id}" } }
                                         }
                                     }
                                     post: {
                                         connect: {
-                                            where: { id: "${post.id}" }
+                                            where: { node: { id: "${post.id}" } }
                                         }
                                     }
                                 }

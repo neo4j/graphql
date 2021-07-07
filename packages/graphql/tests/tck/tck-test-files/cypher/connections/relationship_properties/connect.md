@@ -101,7 +101,7 @@ mutation {
                 actors: {
                     connect: [
                         {
-                            where: { name: "Tom Hanks" }
+                            where: { node: { name: "Tom Hanks" } }
                             properties: { screenTime: 60 }
                         }
                     ]
@@ -235,7 +235,7 @@ mutation {
         where: { title: "Forrest Gump" }
         connect: {
             actors: {
-                where: { name: "Tom Hanks" }
+                where: { node: { name: "Tom Hanks" } }
                 properties: { screenTime: 60 }
             }
         }

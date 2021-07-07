@@ -75,7 +75,6 @@ function createUpdateAndParams({
 
         const relationField = node.relationFields.find((x) => key === x.fieldName);
         const pointField = node.pointFields.find((x) => key === x.fieldName);
-        // let unionTypeName = "";
 
         if (relationField) {
             const refNodes: Node[] = [];
@@ -102,11 +101,10 @@ function createUpdateAndParams({
             refNodes.forEach((refNode) => {
                 const v = relationField.union ? value[refNode.name] : value;
                 const updates = relationField.typeMeta.array ? v : [v];
-
                 updates.forEach((update, index) => {
                     const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
-                    const _varName = `${varName}_${key}${index}`;
+                    const _varName = `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
 
                     if (update.update) {
                         if (withVars) {
@@ -128,8 +126,8 @@ function createUpdateAndParams({
                                 relationshipVariable,
                                 context,
                                 parameterPrefix: `${parameterPrefix}.${key}${
-                                    relationField.typeMeta.array ? `[${index}]` : ``
-                                }.where`,
+                                    relationField.union ? `.${refNode.name}` : ""
+                                }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
                             });
                             const [whereClause] = where;
                             whereStrs.push(whereClause);
@@ -164,11 +162,11 @@ function createUpdateAndParams({
                                 varName: _varName,
                                 withVars: [...withVars, _varName],
                                 parentVar: _varName,
-                                chainStr: `${param}${index}`,
+                                chainStr: `${param}${relationField.union ? `_${refNode.name}` : ""}${index}`,
                                 insideDoWhen: true,
                                 parameterPrefix: `${parameterPrefix}.${key}${
-                                    relationField.typeMeta.array ? `[${index}]` : ``
-                                }.update.node`,
+                                    relationField.union ? `.${refNode.name}` : ""
+                                }${relationField.typeMeta.array ? `[${index}]` : ``}.update.node`,
                             });
                             res.params = { ...res.params, ...updateAndParams[1], auth };
                             innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
@@ -203,7 +201,9 @@ function createUpdateAndParams({
                                 varName: relationshipVariable,
                                 relationship,
                                 operation: "UPDATE",
-                                parameterPrefix: `${parameterPrefix}.${key}[${index}].update.relationship`,
+                                parameterPrefix: `${parameterPrefix}.${key}${
+                                    relationField.union ? `.${refNode.name}` : ""
+                                }[${index}].update.relationship`,
                             });
 
                             const updateStrs = [setProperties, "RETURN count(*)"];
@@ -226,15 +226,15 @@ function createUpdateAndParams({
                             context,
                             refNode,
                             value: update.disconnect,
-                            varName: `${_varName}${relationField.union ? `_${refNode.name}${index}` : ""}_disconnect`,
+                            varName: `${_varName}_disconnect`,
                             withVars,
                             parentVar,
                             relationField,
-                            labelOverride: refNode.name,
+                            labelOverride: relationField.union ? refNode.name : "",
                             parentNode: node,
                             insideDoWhen,
                             parameterPrefix: `${parameterPrefix}.${key}${
-                                relationField.union ? `_${refNode.name}` : ""
+                                relationField.union ? `.${refNode.name}` : ""
                             }${relationField.typeMeta.array ? `[${index}]` : ""}.disconnect`,
                         });
                         res.strs.push(disconnectAndParams[0]);
@@ -250,7 +250,7 @@ function createUpdateAndParams({
                             withVars,
                             parentVar,
                             relationField,
-                            labelOverride: refNode.name,
+                            labelOverride: relationField.union ? refNode.name : "",
                             parentNode: node,
                             insideDoWhen,
                         });

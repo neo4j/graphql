@@ -35,7 +35,7 @@ type Movie {
     movies(where: { title: "some title" }) {
         search(
             where: { Movie: { title: "The Matrix" }, Genre: { name: "Horror" } }
-            options: { skip: 1, limit: 10 }
+            options: { offset: 1, limit: 10 }
         ) {
             ... on Movie {
                 title
@@ -202,7 +202,9 @@ mutation {
             {
                 title: "some movie"
                 search: {
-                    Genre: { connect: [{ where: { name: "some genre" } }] }
+                    Genre: {
+                        connect: [{ where: { node: { name: "some genre" } } }]
+                    }
                 }
             }
         ]
@@ -258,7 +260,7 @@ mutation {
             search: {
                 Genre: {
                     where: { Genre: { name: "some genre" } }
-                    update: { name: "some new genre" }
+                    update: { node: { name: "some new genre" } }
                 }
             }
         }
@@ -278,7 +280,7 @@ WHERE this.title = $this_title
 
 WITH this
 OPTIONAL MATCH (this)-[this_search0:SEARCH]->(this_search_Genre0:Genre)
-WHERE this_search_Genre0.name = $updateMovies.args.update.search_Genre[0].where.Genre.name
+WHERE this_search_Genre0.name = $updateMovies.args.update.search.Genre[0].where.Genre.name
 CALL apoc.do.when(this_search_Genre0 IS NOT NULL, " SET this_search_Genre0.name = $this_update_search_Genre0_name RETURN count(*) ", "", {this:this, updateMovies: $updateMovies, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name}) YIELD value as _
 
 RETURN this { .title } AS this
@@ -288,31 +290,35 @@ RETURN this { .title } AS this
 
 ```cypher-params
 {
-   "this_title": "some movie",
-   "this_update_search_Genre0_name": "some new genre",
-   "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
-   },
-   "updateMovies": {
-     "args": {
-       "update": {
-         "search_Genre": [
-           {
-                "update": {
-                    "name": "some new genre"
-                },
-                "where": {
-                    "Genre": {
-                        "name": "some genre"
-                    }
+    "this_title": "some movie",
+    "this_update_search_Genre0_name": "some new genre",
+    "auth": {
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
+    },
+    "updateMovies": {
+        "args": {
+            "update": {
+                "search": {
+                    "Genre": [
+                        {
+                            "update": {
+                                "node": {
+                                    "name": "some new genre"
+                                }
+                            },
+                            "where": {
+                                "Genre": {
+                                    "name": "some genre"
+                                }
+                            }
+                        }
+                    ]
                 }
-           }
-         ]
-       }
-     }
-   }
+            }
+        }
+    }
 }
 ```
 
@@ -349,7 +355,7 @@ WHERE this.title = $this_title
 
 WITH this
 OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre)
-WHERE this_search_Genre0_disconnect0.name = $updateMovies.args.update.search_Genre[0].disconnect[0].where.node.name
+WHERE this_search_Genre0_disconnect0.name = $updateMovies.args.update.search.Genre[0].disconnect[0].where.node.name
 FOREACH(_ IN CASE this_search_Genre0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
     DELETE this_search_Genre0_disconnect0_rel
 )
@@ -365,19 +371,21 @@ RETURN this { .title } AS this
     "updateMovies": {
         "args": {
             "update": {
-                "search_Genre": [
-                    {
-                        "disconnect": [
-                            {
-                                "where": {
-                                    "node": {
-                                        "name": "some genre"
+                "search": {
+                    "Genre": [
+                        {
+                            "disconnect": [
+                                {
+                                    "where": {
+                                        "node": {
+                                            "name": "some genre"
+                                        }
                                     }
                                 }
-                            }
-                        ]
-                    }
-                ]
+                            ]
+                        }
+                    ]
+                }
             }
         }
     }

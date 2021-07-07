@@ -29,7 +29,7 @@ import createRelationshipPropertyElement from "../projection/elements/create-rel
 import createConnectionWhereAndParams from "../where/create-connection-where-and-params";
 import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
-import { createSkipLimitStr } from "../../schema/pagination";
+import { createOffsetLimitStr } from "../../schema/pagination";
 
 function createConnectionAndParams({
     resolveTree,
@@ -85,6 +85,10 @@ function createConnectionAndParams({
         const unionSubqueries: string[] = [];
 
         unionNodes.forEach((n) => {
+            if (!node?.fieldsByTypeName[n.name]) {
+                return;
+            }
+
             const relatedNodeVariable = `${nodeVariable}_${n.name}`;
             const nodeOutStr = `(${relatedNodeVariable}:${n.name})`;
 
@@ -225,12 +229,12 @@ function createConnectionAndParams({
         if (!firstInput && !afterInput) {
             unionSubqueryCypher.push("WITH collect(edge) as edges, count(edge) as totalCount");
         } else {
-            const skipLimitStr = createSkipLimitStr({
-                skip: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
+            const offsetLimitStr = createOffsetLimitStr({
+                offset: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
                 limit: firstInput as Integer | number | undefined,
             });
             unionSubqueryCypher.push("WITH collect(edge) AS allEdges");
-            unionSubqueryCypher.push(`WITH allEdges, size(allEdges) as totalCount, allEdges${skipLimitStr} AS edges`);
+            unionSubqueryCypher.push(`WITH allEdges, size(allEdges) as totalCount, allEdges${offsetLimitStr} AS edges`);
         }
         subquery.push(unionSubqueryCypher.join("\n"));
     } else {
@@ -373,11 +377,11 @@ function createConnectionAndParams({
             }`
         );
     } else {
-        const skipLimitStr = createSkipLimitStr({
-            skip: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
+        const offsetLimitStr = createOffsetLimitStr({
+            offset: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
             limit: firstInput as Integer | number | undefined,
         });
-        subquery.push(`WITH edges, size(edges) AS totalCount, edges${skipLimitStr} AS limitedSelection`);
+        subquery.push(`WITH edges, size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`);
         subquery.push(`RETURN { edges: limitedSelection, totalCount: totalCount } AS ${resolveTree.alias}`);
     }
     subquery.push("}");

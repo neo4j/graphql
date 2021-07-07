@@ -32,7 +32,7 @@ mutation {
             actors: [
                 {
                     where: { node: { name: "Tom Hanks" } }
-                    properties: { screenTime: 60 }
+                    update: { relationship: { screenTime: 60 } }
                 }
             ]
         }
@@ -55,7 +55,7 @@ OPTIONAL MATCH (this)<-[this_acted_in0:ACTED_IN]-(this_actors0:Actor)
 WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
 
 CALL apoc.do.when(this_acted_in0 IS NOT NULL, "
-SET this_acted_in0.screenTime = $updateMovies.args.update.actors[0].properties.screenTime
+SET this_acted_in0.screenTime = $updateMovies.args.update.actors[0].update.relationship.screenTime
 RETURN count(*)
 ", "", {this_acted_in0:this_acted_in0, updateMovies: $updateMovies})
 YIELD value as this_acted_in0_actors0_properties
@@ -73,10 +73,12 @@ RETURN this { .title } AS this
         "update": {
           "actors": [
             {
-              "properties": {
-                "screenTime": {
-                  "high": 0,
-                  "low": 60
+              "update": {
+                "relationship": {
+                    "screenTime": {
+                        "high": 0,
+                        "low": 60
+                    }
                 }
               },
               "where": {
@@ -106,8 +108,10 @@ mutation {
             actors: [
                 {
                     where: { node: { name: "Tom Hanks" } }
-                    properties: { screenTime: 60 }
-                    update: { name: "Tom Hanks" }
+                    update: {
+                        relationship: { screenTime: 60 }
+                        node: { name: "Tom Hanks" }
+                    }
                 }
             ]
         }
@@ -136,7 +140,7 @@ RETURN count(*)
 YIELD value as _
 
 CALL apoc.do.when(this_acted_in0 IS NOT NULL, "
-SET this_acted_in0.screenTime = $updateMovies.args.update.actors[0].properties.screenTime
+SET this_acted_in0.screenTime = $updateMovies.args.update.actors[0].update.relationship.screenTime
 RETURN count(*)
 ", "", {this_acted_in0:this_acted_in0, updateMovies: $updateMovies})
 YIELD value as this_acted_in0_actors0_properties
@@ -160,14 +164,16 @@ RETURN this { .title } AS this
         "update": {
           "actors": [
             {
-              "properties": {
-                "screenTime": {
-                  "high": 0,
-                  "low": 60
-                }
-              },
               "update": {
-                  "name": "Tom Hanks"
+                "relationship": {
+                    "screenTime": {
+                        "high": 0,
+                        "low": 60
+                    }
+                },
+                "node": {
+                    "name": "Tom Hanks"
+                }
               },
               "where": {
                 "node": {

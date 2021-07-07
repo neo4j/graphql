@@ -627,7 +627,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateUsers(update: { posts: { update: { id: "new-id" } } }) {
+    updateUsers(update: { posts: { update: { node: { id: "new-id" } } } }) {
         users {
             id
             posts {
@@ -681,7 +681,9 @@ RETURN this {
           "posts": [
             {
               "update": {
-                "id": "new-id"
+                  "node": {
+                    "id": "new-id"
+                  }
               }
             }
           ]
@@ -840,7 +842,7 @@ mutation {
                 id: "123"
                 name: "Bob"
                 password: "password"
-                posts: { connect: { where: {} } }
+                posts: { connect: { where: { node: {} } } }
             }
         ]
     ) {
@@ -906,7 +908,7 @@ mutation {
                 id: "123"
                 name: "Bob"
                 password: "password"
-                posts: { connect: { where: { id: "post-id" } } }
+                posts: { connect: { where: { node: { id: "post-id" } } } }
             }
         ]
     ) {
@@ -966,7 +968,7 @@ RETURN this0 { .id } AS this0
 
 ```graphql
 mutation {
-    updateUsers(update: { posts: { connect: { where: {} } } }) {
+    updateUsers(update: { posts: { connect: { where: { node: {} } } } }) {
         users {
             id
         }
@@ -1019,7 +1021,9 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateUsers(update: { posts: { connect: { where: { id: "new-id" } } } }) {
+    updateUsers(
+        update: { posts: { connect: { where: { node: { id: "new-id" } } } } }
+    ) {
         users {
             id
         }
@@ -1072,7 +1076,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateUsers(connect: { posts: { where: {} } }) {
+    updateUsers(connect: { posts: { where: { node: {} } } }) {
         users {
             id
         }
@@ -1124,7 +1128,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateUsers(connect: { posts: { where: { id: "some-id" } } }) {
+    updateUsers(connect: { posts: { where: { node: { id: "some-id" } } } }) {
         users {
             id
         }

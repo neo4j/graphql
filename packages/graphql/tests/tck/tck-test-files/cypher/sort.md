@@ -77,16 +77,16 @@ RETURN this { .title } as this
 
 ---
 
-### Sort with skip limit & with other variables
+### Sort with offset limit & with other variables
 
 **GraphQL input**
 
 ```graphql
-query($title: String, $skip: Int, $limit: Int) {
+query($title: String, $offset: Int, $limit: Int) {
     movies(
         options: {
             sort: [{ id: DESC }, { title: ASC }]
-            skip: $skip
+            offset: $offset
             limit: $limit
         }
         where: { title: $title }
@@ -101,7 +101,7 @@ query($title: String, $skip: Int, $limit: Int) {
 ```graphql-params
 {
     "limit": 2,
-    "skip": 1,
+    "offset": 1,
     "title": "some title"
 }
 ```
@@ -114,7 +114,7 @@ WHERE this.title = $this_title
 WITH this
 ORDER BY this.id DESC, this.title ASC
 RETURN this { .title } as this
-SKIP $this_skip
+SKIP $this_offset
 LIMIT $this_limit
 ```
 
@@ -126,7 +126,7 @@ LIMIT $this_limit
         "high": 0,
         "low": 2
     },
-    "this_skip": {
+    "this_offset": {
         "high": 0,
         "low": 1
     },

@@ -35,9 +35,11 @@ interface Wrote {
 
 ```schema-output
 type Author {
-  name: String!
-  publications(options: QueryOptions, where: PublicationWhere): [Publication]
-  publicationsConnection(where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
+    name: String!
+    publications(options: QueryOptions, where: PublicationWhere): [Publication]
+    publicationsConnection(
+        where: AuthorPublicationsConnectionWhere
+    ): AuthorPublicationsConnection!
 }
 
 input AuthorConnectInput {
@@ -58,57 +60,65 @@ input AuthorDisconnectInput {
 }
 
 input AuthorOptions {
-  """
-  Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.
-  """
-  sort: [AuthorSort]
-  limit: Int
-  skip: Int
+    """
+    Specify one or more AuthorSort objects to sort Authors by. The sorts will be applied in the order in which they are arranged in the array.
+    """
+    sort: [AuthorSort]
+    limit: Int
+    offset: Int
 }
 
 input AuthorPublicationsBookConnectionWhere {
-  node: BookWhere
-  node_NOT: BookWhere
-  AND: [AuthorPublicationsBookConnectionWhere!]
-  OR: [AuthorPublicationsBookConnectionWhere!]
-  relationship: WroteWhere
-  relationship_NOT: WroteWhere
+    node: BookWhere
+    node_NOT: BookWhere
+    AND: [AuthorPublicationsBookConnectionWhere!]
+    OR: [AuthorPublicationsBookConnectionWhere!]
+    relationship: WroteWhere
+    relationship_NOT: WroteWhere
 }
 
 input AuthorPublicationsBookCreateFieldInput {
-  node: BookCreateInput!
-  properties: WroteCreateInput!
+    node: BookCreateInput!
+    properties: WroteCreateInput!
 }
 
 input AuthorPublicationsBookDeleteFieldInput {
-  where: AuthorPublicationsBookConnectionWhere
-  delete: BookDeleteInput
+    where: AuthorPublicationsBookConnectionWhere
+    delete: BookDeleteInput
 }
 
 input AuthorPublicationsBookDisconnectFieldInput {
-  where: AuthorPublicationsBookConnectionWhere
-  disconnect: BookDisconnectInput
+    where: AuthorPublicationsBookConnectionWhere
+    disconnect: BookDisconnectInput
 }
 
 input AuthorPublicationsBookFieldInput {
-  create: [AuthorPublicationsBookCreateFieldInput!]
-  connect: [AuthorPublicationsConnectFieldInput!]
+    create: [AuthorPublicationsBookCreateFieldInput!]
+    connect: [AuthorPublicationsConnectFieldInput!]
+}
+
+input AuthorPublicationsBookUpdateConnectionInput {
+    node: BookUpdateInput
+    relationship: WroteUpdateInput
 }
 
 input AuthorPublicationsBookUpdateFieldInput {
-  properties: WroteUpdateInput
-  where: AuthorPublicationsConnectionWhere
-  update: BookUpdateInput
-  connect: [AuthorPublicationsConnectFieldInput!]
-  disconnect: [AuthorPublicationsBookDisconnectFieldInput!]
-  create: [AuthorPublicationsBookCreateFieldInput!]
-  delete: [AuthorPublicationsBookDeleteFieldInput!]
+    where: AuthorPublicationsConnectionWhere
+    update: AuthorPublicationsBookUpdateConnectionInput
+    connect: [AuthorPublicationsConnectFieldInput!]
+    disconnect: [AuthorPublicationsBookDisconnectFieldInput!]
+    create: [AuthorPublicationsBookCreateFieldInput!]
+    delete: [AuthorPublicationsBookDeleteFieldInput!]
+}
+
+input BookConnectWhere {
+    node: BookWhere!
 }
 
 input AuthorPublicationsConnectFieldInput {
-  where: BookWhere
-  connect: [BookConnectInput!]
-  properties: WroteCreateInput!
+    where: BookConnectWhere
+    connect: [BookConnectInput!]
+    properties: WroteCreateInput!
 }
 
 input AuthorPublicationsConnectInput {
@@ -116,20 +126,20 @@ input AuthorPublicationsConnectInput {
 }
 
 type AuthorPublicationsConnection {
-  edges: [AuthorPublicationsRelationship!]!
-  totalCount: Int!
-  pageInfo: PageInfo!
+    edges: [AuthorPublicationsRelationship!]!
+    pageInfo: PageInfo!
+    totalCount: Int!
 }
 
 input AuthorPublicationsConnectionWhere {
-  AND: [AuthorPublicationsConnectionWhere!]
-  OR: [AuthorPublicationsConnectionWhere!]
-  relationship: WroteWhere
-  relationship_NOT: WroteWhere
-  Book: BookWhere
-  Book_NOT: BookWhere
-  Journal: JournalWhere
-  Journal_NOT: JournalWhere
+    AND: [AuthorPublicationsConnectionWhere!]
+    OR: [AuthorPublicationsConnectionWhere!]
+    relationship: WroteWhere
+    relationship_NOT: WroteWhere
+    Book: BookWhere
+    Book_NOT: BookWhere
+    Journal: JournalWhere
+    Journal_NOT: JournalWhere
 }
 
 input AuthorPublicationsCreateInput {
@@ -148,48 +158,52 @@ input AuthorPublicationsDisconnectInput {
 }
 
 input AuthorPublicationsJournalConnectionWhere {
-  node: JournalWhere
-  node_NOT: JournalWhere
-  AND: [AuthorPublicationsJournalConnectionWhere!]
-  OR: [AuthorPublicationsJournalConnectionWhere!]
-  relationship: WroteWhere
-  relationship_NOT: WroteWhere
+    node: JournalWhere
+    node_NOT: JournalWhere
+    AND: [AuthorPublicationsJournalConnectionWhere!]
+    OR: [AuthorPublicationsJournalConnectionWhere!]
+    relationship: WroteWhere
+    relationship_NOT: WroteWhere
 }
 
 input AuthorPublicationsJournalCreateFieldInput {
-  node: JournalCreateInput!
-  properties: WroteCreateInput!
+    node: JournalCreateInput!
+    properties: WroteCreateInput!
 }
 
 input AuthorPublicationsJournalDeleteFieldInput {
-  where: AuthorPublicationsJournalConnectionWhere
-  delete: JournalDeleteInput
+    where: AuthorPublicationsJournalConnectionWhere
+    delete: JournalDeleteInput
 }
 
 input AuthorPublicationsJournalDisconnectFieldInput {
-  where: AuthorPublicationsJournalConnectionWhere
-  disconnect: JournalDisconnectInput
+    where: AuthorPublicationsJournalConnectionWhere
+    disconnect: JournalDisconnectInput
 }
 
 input AuthorPublicationsJournalFieldInput {
-  create: [AuthorPublicationsJournalCreateFieldInput!]
-  connect: [AuthorPublicationsConnectFieldInput!]
+    create: [AuthorPublicationsJournalCreateFieldInput!]
+    connect: [AuthorPublicationsConnectFieldInput!]
+}
+
+input AuthorPublicationsJournalUpdateConnectionInput {
+    node: JournalUpdateInput
+    relationship: WroteUpdateInput
 }
 
 input AuthorPublicationsJournalUpdateFieldInput {
-  properties: WroteUpdateInput
-  where: AuthorPublicationsConnectionWhere
-  update: JournalUpdateInput
-  connect: [AuthorPublicationsConnectFieldInput!]
-  disconnect: [AuthorPublicationsJournalDisconnectFieldInput!]
-  create: [AuthorPublicationsJournalCreateFieldInput!]
-  delete: [AuthorPublicationsJournalDeleteFieldInput!]
+    where: AuthorPublicationsConnectionWhere
+    update: AuthorPublicationsJournalUpdateConnectionInput
+    connect: [AuthorPublicationsConnectFieldInput!]
+    disconnect: [AuthorPublicationsJournalDisconnectFieldInput!]
+    create: [AuthorPublicationsJournalCreateFieldInput!]
+    delete: [AuthorPublicationsJournalDeleteFieldInput!]
 }
 
 type AuthorPublicationsRelationship implements Wrote {
-  cursor: String!
-  node: Publication!
-  words: Int!
+    cursor: String!
+    node: Publication!
+    words: Int!
 }
 
 input AuthorPublicationsUpdateInput {
@@ -205,7 +219,7 @@ input AuthorRelationInput {
 Fields to sort Authors by. The order in which sorts are applied is not guaranteed when specifying many fields in one AuthorSort object.
 """
 input AuthorSort {
-  name: SortDirection
+    name: SortDirection
 }
 
 input AuthorUpdateInput {
@@ -214,301 +228,346 @@ input AuthorUpdateInput {
 }
 
 input AuthorWhere {
-  OR: [AuthorWhere!]
-  AND: [AuthorWhere!]
-  name: String
-  name_NOT: String
-  name_IN: [String]
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
+    OR: [AuthorWhere!]
+    AND: [AuthorWhere!]
+    name: String
+    name_NOT: String
+    name_IN: [String]
+    name_NOT_IN: [String]
+    name_CONTAINS: String
+    name_NOT_CONTAINS: String
+    name_STARTS_WITH: String
+    name_NOT_STARTS_WITH: String
+    name_ENDS_WITH: String
+    name_NOT_ENDS_WITH: String
 }
 
 type Book {
-  title: String!
-  author(where: AuthorWhere, options: AuthorOptions): [Author!]!
-  authorConnection(where: BookAuthorConnectionWhere, sort: [BookAuthorConnectionSort!], first: Int, after: String): BookAuthorConnection!
+    title: String!
+    author(where: AuthorWhere, options: AuthorOptions): [Author!]!
+    authorConnection(
+        after: String
+        first: Int
+        where: BookAuthorConnectionWhere
+        sort: [BookAuthorConnectionSort!]
+    ): BookAuthorConnection!
+}
+
+input AuthorConnectWhere {
+    node: AuthorWhere!
 }
 
 input BookAuthorConnectFieldInput {
-  where: AuthorWhere
-  connect: [AuthorConnectInput!]
-  properties: WroteCreateInput!
+    where: AuthorConnectWhere
+    connect: [AuthorConnectInput!]
+    properties: WroteCreateInput!
 }
 
 type BookAuthorConnection {
-  edges: [BookAuthorRelationship!]!
-  totalCount: Int!
-  pageInfo: PageInfo!
+    edges: [BookAuthorRelationship!]!
+    pageInfo: PageInfo!
+    totalCount: Int!
 }
 
 input BookAuthorConnectionSort {
-  node: AuthorSort
-  relationship: WroteSort
+    node: AuthorSort
+    relationship: WroteSort
 }
 
 input BookAuthorConnectionWhere {
-  AND: [BookAuthorConnectionWhere!]
-  OR: [BookAuthorConnectionWhere!]
-  relationship: WroteWhere
-  relationship_NOT: WroteWhere
-  node: AuthorWhere
-  node_NOT: AuthorWhere
+    AND: [BookAuthorConnectionWhere!]
+    OR: [BookAuthorConnectionWhere!]
+    relationship: WroteWhere
+    relationship_NOT: WroteWhere
+    node: AuthorWhere
+    node_NOT: AuthorWhere
 }
 
 input BookAuthorCreateFieldInput {
-  node: AuthorCreateInput!
-  properties: WroteCreateInput!
+    node: AuthorCreateInput!
+    properties: WroteCreateInput!
 }
 
 input BookAuthorDeleteFieldInput {
-  where: BookAuthorConnectionWhere
-  delete: AuthorDeleteInput
+    where: BookAuthorConnectionWhere
+    delete: AuthorDeleteInput
 }
 
 input BookAuthorDisconnectFieldInput {
-  where: BookAuthorConnectionWhere
-  disconnect: AuthorDisconnectInput
+    where: BookAuthorConnectionWhere
+    disconnect: AuthorDisconnectInput
 }
 
 input BookAuthorFieldInput {
-  create: [BookAuthorCreateFieldInput!]
-  connect: [BookAuthorConnectFieldInput!]
+    create: [BookAuthorCreateFieldInput!]
+    connect: [BookAuthorConnectFieldInput!]
 }
 
 type BookAuthorRelationship implements Wrote {
-  cursor: String!
-  node: Author!
-  words: Int!
+    cursor: String!
+    node: Author!
+    words: Int!
+}
+
+input BookAuthorUpdateConnectionInput {
+    node: AuthorUpdateInput
+    relationship: WroteUpdateInput
 }
 
 input BookAuthorUpdateFieldInput {
-  properties: WroteUpdateInput
-  where: BookAuthorConnectionWhere
-  update: AuthorUpdateInput
-  connect: [BookAuthorConnectFieldInput!]
-  disconnect: [BookAuthorDisconnectFieldInput!]
-  create: [BookAuthorCreateFieldInput!]
-  delete: [BookAuthorDeleteFieldInput!]
+    where: BookAuthorConnectionWhere
+    update: BookAuthorUpdateConnectionInput
+    connect: [BookAuthorConnectFieldInput!]
+    disconnect: [BookAuthorDisconnectFieldInput!]
+    create: [BookAuthorCreateFieldInput!]
+    delete: [BookAuthorDeleteFieldInput!]
 }
 
 input BookConnectInput {
-  author: [BookAuthorConnectFieldInput!]
+    author: [BookAuthorConnectFieldInput!]
 }
 
 input BookCreateInput {
-  title: String!
-  author: BookAuthorFieldInput
+    title: String!
+    author: BookAuthorFieldInput
 }
 
 input BookDeleteInput {
-  author: [BookAuthorDeleteFieldInput!]
+    author: [BookAuthorDeleteFieldInput!]
 }
 
 input BookDisconnectInput {
-  author: [BookAuthorDisconnectFieldInput!]
+    author: [BookAuthorDisconnectFieldInput!]
 }
 
 input BookOptions {
-  """
-  Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.
-  """
-  sort: [BookSort]
-  limit: Int
-  skip: Int
+    """
+    Specify one or more BookSort objects to sort Books by. The sorts will be applied in the order in which they are arranged in the array.
+    """
+    sort: [BookSort]
+    limit: Int
+    offset: Int
 }
 
 input BookRelationInput {
-  author: [BookAuthorCreateFieldInput!]
+    author: [BookAuthorCreateFieldInput!]
 }
 
 """
 Fields to sort Books by. The order in which sorts are applied is not guaranteed when specifying many fields in one BookSort object.
 """
 input BookSort {
-  title: SortDirection
+    title: SortDirection
 }
 
 input BookUpdateInput {
-  title: String
-  author: [BookAuthorUpdateFieldInput!]
+    title: String
+    author: [BookAuthorUpdateFieldInput!]
 }
 
 input BookWhere {
-  OR: [BookWhere!]
-  AND: [BookWhere!]
-  title: String
-  title_NOT: String
-  title_IN: [String]
-  title_NOT_IN: [String]
-  title_CONTAINS: String
-  title_NOT_CONTAINS: String
-  title_STARTS_WITH: String
-  title_NOT_STARTS_WITH: String
-  title_ENDS_WITH: String
-  title_NOT_ENDS_WITH: String
-  author: AuthorWhere
-  author_NOT: AuthorWhere
+    OR: [BookWhere!]
+    AND: [BookWhere!]
+    title: String
+    title_NOT: String
+    title_IN: [String]
+    title_NOT_IN: [String]
+    title_CONTAINS: String
+    title_NOT_CONTAINS: String
+    title_STARTS_WITH: String
+    title_NOT_STARTS_WITH: String
+    title_ENDS_WITH: String
+    title_NOT_ENDS_WITH: String
+    author: AuthorWhere
+    author_NOT: AuthorWhere
 }
 
 type CreateAuthorsMutationResponse {
-  authors: [Author!]!
+    authors: [Author!]!
 }
 
 type CreateBooksMutationResponse {
-  books: [Book!]!
+    books: [Book!]!
 }
 
 type CreateJournalsMutationResponse {
-  journals: [Journal!]!
+    journals: [Journal!]!
 }
 
 type DeleteInfo {
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
+    nodesDeleted: Int!
+    relationshipsDeleted: Int!
 }
 
 type Journal {
-  subject: String!
-  author(where: AuthorWhere, options: AuthorOptions): [Author!]!
-  authorConnection(where: JournalAuthorConnectionWhere, sort: [JournalAuthorConnectionSort!], first: Int, after: String): JournalAuthorConnection!
+    subject: String!
+    author(where: AuthorWhere, options: AuthorOptions): [Author!]!
+    authorConnection(
+        after: String
+        first: Int
+        where: JournalAuthorConnectionWhere
+        sort: [JournalAuthorConnectionSort!]
+    ): JournalAuthorConnection!
 }
 
 input JournalAuthorConnectFieldInput {
-  where: AuthorWhere
-  connect: [AuthorConnectInput!]
-  properties: WroteCreateInput!
+    where: AuthorConnectWhere
+    connect: [AuthorConnectInput!]
+    properties: WroteCreateInput!
 }
 
 type JournalAuthorConnection {
-  edges: [JournalAuthorRelationship!]!
-  totalCount: Int!
-  pageInfo: PageInfo!
+    edges: [JournalAuthorRelationship!]!
+    pageInfo: PageInfo!
+    totalCount: Int!
 }
 
 input JournalAuthorConnectionSort {
-  node: AuthorSort
-  relationship: WroteSort
+    node: AuthorSort
+    relationship: WroteSort
 }
 
 input JournalAuthorConnectionWhere {
-  AND: [JournalAuthorConnectionWhere!]
-  OR: [JournalAuthorConnectionWhere!]
-  relationship: WroteWhere
-  relationship_NOT: WroteWhere
-  node: AuthorWhere
-  node_NOT: AuthorWhere
+    AND: [JournalAuthorConnectionWhere!]
+    OR: [JournalAuthorConnectionWhere!]
+    relationship: WroteWhere
+    relationship_NOT: WroteWhere
+    node: AuthorWhere
+    node_NOT: AuthorWhere
 }
 
 input JournalAuthorCreateFieldInput {
-  node: AuthorCreateInput!
-  properties: WroteCreateInput!
+    node: AuthorCreateInput!
+    properties: WroteCreateInput!
 }
 
 input JournalAuthorDeleteFieldInput {
-  where: JournalAuthorConnectionWhere
-  delete: AuthorDeleteInput
+    where: JournalAuthorConnectionWhere
+    delete: AuthorDeleteInput
 }
 
 input JournalAuthorDisconnectFieldInput {
-  where: JournalAuthorConnectionWhere
-  disconnect: AuthorDisconnectInput
+    where: JournalAuthorConnectionWhere
+    disconnect: AuthorDisconnectInput
 }
 
 input JournalAuthorFieldInput {
-  create: [JournalAuthorCreateFieldInput!]
-  connect: [JournalAuthorConnectFieldInput!]
+    create: [JournalAuthorCreateFieldInput!]
+    connect: [JournalAuthorConnectFieldInput!]
 }
 
 type JournalAuthorRelationship implements Wrote {
-  cursor: String!
-  node: Author!
-  words: Int!
+    cursor: String!
+    node: Author!
+    words: Int!
+}
+
+input JournalAuthorUpdateConnectionInput {
+    node: AuthorUpdateInput
+    relationship: WroteUpdateInput
 }
 
 input JournalAuthorUpdateFieldInput {
-  properties: WroteUpdateInput
-  where: JournalAuthorConnectionWhere
-  update: AuthorUpdateInput
-  connect: [JournalAuthorConnectFieldInput!]
-  disconnect: [JournalAuthorDisconnectFieldInput!]
-  create: [JournalAuthorCreateFieldInput!]
-  delete: [JournalAuthorDeleteFieldInput!]
+    where: JournalAuthorConnectionWhere
+    update: JournalAuthorUpdateConnectionInput
+    connect: [JournalAuthorConnectFieldInput!]
+    disconnect: [JournalAuthorDisconnectFieldInput!]
+    create: [JournalAuthorCreateFieldInput!]
+    delete: [JournalAuthorDeleteFieldInput!]
 }
 
 input JournalConnectInput {
-  author: [JournalAuthorConnectFieldInput!]
+    author: [JournalAuthorConnectFieldInput!]
 }
 
 input JournalCreateInput {
-  subject: String!
-  author: JournalAuthorFieldInput
+    subject: String!
+    author: JournalAuthorFieldInput
 }
 
 input JournalDeleteInput {
-  author: [JournalAuthorDeleteFieldInput!]
+    author: [JournalAuthorDeleteFieldInput!]
 }
 
 input JournalDisconnectInput {
-  author: [JournalAuthorDisconnectFieldInput!]
+    author: [JournalAuthorDisconnectFieldInput!]
 }
 
 input JournalOptions {
-  """
-  Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.
-  """
-  sort: [JournalSort]
-  limit: Int
-  skip: Int
+    """
+    Specify one or more JournalSort objects to sort Journals by. The sorts will be applied in the order in which they are arranged in the array.
+    """
+    sort: [JournalSort]
+    limit: Int
+    offset: Int
 }
 
 input JournalRelationInput {
-  author: [JournalAuthorCreateFieldInput!]
+    author: [JournalAuthorCreateFieldInput!]
 }
 
 """
 Fields to sort Journals by. The order in which sorts are applied is not guaranteed when specifying many fields in one JournalSort object.
 """
 input JournalSort {
-  subject: SortDirection
+    subject: SortDirection
 }
 
 input JournalUpdateInput {
-  subject: String
-  author: [JournalAuthorUpdateFieldInput!]
+    subject: String
+    author: [JournalAuthorUpdateFieldInput!]
 }
 
 input JournalWhere {
-  OR: [JournalWhere!]
-  AND: [JournalWhere!]
-  subject: String
-  subject_NOT: String
-  subject_IN: [String]
-  subject_NOT_IN: [String]
-  subject_CONTAINS: String
-  subject_NOT_CONTAINS: String
-  subject_STARTS_WITH: String
-  subject_NOT_STARTS_WITH: String
-  subject_ENDS_WITH: String
-  subject_NOT_ENDS_WITH: String
-  author: AuthorWhere
-  author_NOT: AuthorWhere
+    OR: [JournalWhere!]
+    AND: [JournalWhere!]
+    subject: String
+    subject_NOT: String
+    subject_IN: [String]
+    subject_NOT_IN: [String]
+    subject_CONTAINS: String
+    subject_NOT_CONTAINS: String
+    subject_STARTS_WITH: String
+    subject_NOT_STARTS_WITH: String
+    subject_ENDS_WITH: String
+    subject_NOT_ENDS_WITH: String
+    author: AuthorWhere
+    author_NOT: AuthorWhere
 }
 
 type Mutation {
-  createAuthors(input: [AuthorCreateInput!]!): CreateAuthorsMutationResponse!
-  deleteAuthors(where: AuthorWhere, delete: AuthorDeleteInput): DeleteInfo!
-  updateAuthors(where: AuthorWhere, update: AuthorUpdateInput, connect: AuthorConnectInput, disconnect: AuthorDisconnectInput, create: AuthorRelationInput, delete: AuthorDeleteInput): UpdateAuthorsMutationResponse!
-  createBooks(input: [BookCreateInput!]!): CreateBooksMutationResponse!
-  deleteBooks(where: BookWhere, delete: BookDeleteInput): DeleteInfo!
-  updateBooks(where: BookWhere, update: BookUpdateInput, connect: BookConnectInput, disconnect: BookDisconnectInput, create: BookRelationInput, delete: BookDeleteInput): UpdateBooksMutationResponse!
-  createJournals(input: [JournalCreateInput!]!): CreateJournalsMutationResponse!
-  deleteJournals(where: JournalWhere, delete: JournalDeleteInput): DeleteInfo!
-  updateJournals(where: JournalWhere, update: JournalUpdateInput, connect: JournalConnectInput, disconnect: JournalDisconnectInput, create: JournalRelationInput, delete: JournalDeleteInput): UpdateJournalsMutationResponse!
+    createAuthors(input: [AuthorCreateInput!]!): CreateAuthorsMutationResponse!
+    deleteAuthors(where: AuthorWhere, delete: AuthorDeleteInput): DeleteInfo!
+    updateAuthors(
+        where: AuthorWhere
+        update: AuthorUpdateInput
+        connect: AuthorConnectInput
+        disconnect: AuthorDisconnectInput
+        create: AuthorRelationInput
+        delete: AuthorDeleteInput
+    ): UpdateAuthorsMutationResponse!
+    createBooks(input: [BookCreateInput!]!): CreateBooksMutationResponse!
+    deleteBooks(where: BookWhere, delete: BookDeleteInput): DeleteInfo!
+    updateBooks(
+        where: BookWhere
+        update: BookUpdateInput
+        connect: BookConnectInput
+        disconnect: BookDisconnectInput
+        create: BookRelationInput
+        delete: BookDeleteInput
+    ): UpdateBooksMutationResponse!
+    createJournals(
+        input: [JournalCreateInput!]!
+    ): CreateJournalsMutationResponse!
+    deleteJournals(where: JournalWhere, delete: JournalDeleteInput): DeleteInfo!
+    updateJournals(
+        where: JournalWhere
+        update: JournalUpdateInput
+        connect: JournalConnectInput
+        disconnect: JournalDisconnectInput
+        create: JournalRelationInput
+        delete: JournalDeleteInput
+    ): UpdateJournalsMutationResponse!
 }
 
 """Pagination information (Relay)"""
@@ -522,68 +581,72 @@ type PageInfo {
 union Publication = Book | Journal
 
 input PublicationWhere {
-  Book: BookWhere
-  Journal: JournalWhere
+    Book: BookWhere
+    Journal: JournalWhere
 }
 
 type Query {
-  authors(where: AuthorWhere, options: AuthorOptions): [Author!]!
-  books(where: BookWhere, options: BookOptions): [Book!]!
-  journals(where: JournalWhere, options: JournalOptions): [Journal!]!
+    authors(where: AuthorWhere, options: AuthorOptions): [Author!]!
+    books(where: BookWhere, options: BookOptions): [Book!]!
+    journals(where: JournalWhere, options: JournalOptions): [Journal!]!
 }
 
 input QueryOptions {
-  skip: Int
-  limit: Int
+    offset: Int
+    limit: Int
 }
 
 enum SortDirection {
-  """Sort by field values in ascending order."""
-  ASC
+    """
+    Sort by field values in ascending order.
+    """
+    ASC
 
-  """Sort by field values in descending order."""
-  DESC
+    """
+    Sort by field values in descending order.
+    """
+    DESC
 }
 
 type UpdateAuthorsMutationResponse {
-  authors: [Author!]!
+    authors: [Author!]!
 }
 
 type UpdateBooksMutationResponse {
-  books: [Book!]!
+    books: [Book!]!
 }
 
 type UpdateJournalsMutationResponse {
-  journals: [Journal!]!
+    journals: [Journal!]!
 }
 
 interface Wrote {
-  words: Int!
+    words: Int!
 }
 
 input WroteCreateInput {
-  words: Int!
+    words: Int!
 }
 
 input WroteSort {
-  words: SortDirection
+    words: SortDirection
 }
 
 input WroteUpdateInput {
-  words: Int
+    words: Int
 }
 
 input WroteWhere {
-  OR: [WroteWhere!]
-  AND: [WroteWhere!]
-  words: Int
-  words_NOT: Int
-  words_IN: [Int]
-  words_NOT_IN: [Int]
-  words_LT: Int
-  words_LTE: Int
-  words_GT: Int
-  words_GTE: Int
+    OR: [WroteWhere!]
+    AND: [WroteWhere!]
+    words: Int
+    words_NOT: Int
+    words_IN: [Int]
+    words_NOT_IN: [Int]
+    words_LT: Int
+    words_LTE: Int
+    words_GT: Int
+    words_GTE: Int
 }
 ```
 

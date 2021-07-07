@@ -97,7 +97,7 @@ function makeAugmentedSchema(
     const queryOptions = composer.createInputTC({
         name: "QueryOptions",
         fields: {
-            skip: "Int",
+            offset: "Int",
             limit: "Int",
         },
     });
@@ -450,13 +450,13 @@ function makeAugmentedSchema(
                         type: sortInput.List,
                     },
                     limit: "Int",
-                    skip: "Int",
+                    offset: "Int",
                 },
             });
         } else {
             composer.createInputTC({
                 name: `${node.name}Options`,
-                fields: { limit: "Int", skip: "Int" },
+                fields: { limit: "Int", offset: "Int" },
             });
         }
 
@@ -608,14 +608,6 @@ function makeAugmentedSchema(
             );
         }
 
-        composer.createInputTC({
-            name: `${node.name}ConnectFieldInput`,
-            fields: {
-                where: `${node.name}Where`,
-                ...(node.relationFields.length ? { connect: nodeConnectInput } : {}),
-            },
-        });
-
         node.relationFields.forEach((rel) => {
             if (rel.union) {
                 const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
@@ -676,6 +668,8 @@ function makeAugmentedSchema(
                     const disconnectName = `${unionPrefix}DisconnectFieldInput`;
                     const disconnect = rel.typeMeta.array ? `[${disconnectName}!]` : `${disconnectName}`;
 
+                    const connectionUpdateInputName = `${unionPrefix}UpdateConnectionInput`;
+
                     const createName = `${node.name}${upperFirst(rel.fieldName)}${n.name}CreateFieldInput`;
                     const create = rel.typeMeta.array ? `[${createName}!]` : createName;
                     if (!composer.has(createName)) {
@@ -692,13 +686,23 @@ function makeAugmentedSchema(
                         });
                     }
 
+                    const connectWhereName = `${n.name}ConnectWhere`;
+                    if (!composer.has(connectWhereName)) {
+                        composer.createInputTC({
+                            name: connectWhereName,
+                            fields: {
+                                node: `${n.name}Where!`,
+                            },
+                        });
+                    }
+
                     const connectName = `${node.name}${upperFirst(rel.fieldName)}ConnectFieldInput`;
                     const connect = rel.typeMeta.array ? `[${connectName}!]` : `${connectName}`;
                     if (!composer.has(connectName)) {
                         composer.createInputTC({
                             name: connectName,
                             fields: {
-                                where: `${n.name}Where`,
+                                where: connectWhereName,
                                 ...(n.relationFields.length
                                     ? {
                                           connect: rel.typeMeta.array
@@ -721,9 +725,8 @@ function makeAugmentedSchema(
                         composer.createInputTC({
                             name: updateName,
                             fields: {
-                                ...(rel.properties ? { properties: `${rel.properties}UpdateInput` } : {}),
                                 where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
-                                update: updateField,
+                                update: connectionUpdateInputName,
                                 connect,
                                 disconnect: rel.typeMeta.array ? `[${disconnectName}!]` : disconnectName,
                                 create,
@@ -735,6 +738,13 @@ function makeAugmentedSchema(
                             [n.name]: update,
                         });
                     }
+                    composer.createInputTC({
+                        name: connectionUpdateInputName,
+                        fields: {
+                            ...(rel.properties ? { relationship: `${rel.properties}UpdateInput` } : {}),
+                            node: updateField,
+                        },
+                    });
 
                     composer.createInputTC({
                         name: nodeFieldInputName,
@@ -832,6 +842,8 @@ function makeAugmentedSchema(
             const nodeFieldDeleteInputName = `${node.name}${upperFirst(rel.fieldName)}DeleteFieldInput`;
             const nodeFieldDisconnectInputName = `${node.name}${upperFirst(rel.fieldName)}DisconnectFieldInput`;
 
+            const connectionUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateConnectionInput`;
+
             whereInput.addFields({
                 ...{ [rel.fieldName]: `${n.name}Where`, [`${rel.fieldName}_NOT`]: `${n.name}Where` },
                 ...(rel.typeMeta.array
@@ -863,13 +875,23 @@ function makeAugmentedSchema(
                 });
             }
 
+            const connectWhereName = `${n.name}ConnectWhere`;
+            if (!composer.has(connectWhereName)) {
+                composer.createInputTC({
+                    name: connectWhereName,
+                    fields: {
+                        node: `${n.name}Where!`,
+                    },
+                });
+            }
+
             const connectName = `${node.name}${upperFirst(rel.fieldName)}ConnectFieldInput`;
             const connect = rel.typeMeta.array ? `[${connectName}!]` : connectName;
             if (!composer.has(connectName)) {
                 composer.createInputTC({
                     name: connectName,
                     fields: {
-                        where: `${n.name}Where`,
+                        where: connectWhereName,
                         ...(n.relationFields.length
                             ? { connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput` }
                             : {}),
@@ -891,11 +913,18 @@ function makeAugmentedSchema(
             });
 
             composer.createInputTC({
+                name: connectionUpdateInputName,
+                fields: {
+                    node: updateField,
+                    ...(rel.properties ? { relationship: `${rel.properties}UpdateInput` } : {}),
+                },
+            });
+
+            composer.createInputTC({
                 name: nodeFieldUpdateInputName,
                 fields: {
-                    ...(rel.properties ? { properties: `${rel.properties}UpdateInput` } : {}),
                     where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
-                    update: updateField,
+                    update: connectionUpdateInputName,
                     connect,
                     disconnect: rel.typeMeta.array
                         ? `[${nodeFieldDisconnectInputName}!]`

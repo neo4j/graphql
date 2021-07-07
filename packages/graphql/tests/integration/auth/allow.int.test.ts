@@ -676,7 +676,7 @@ describe("auth/allow", () => {
                 mutation {
                     updatePosts(
                         where: { id: "${postId}" }
-                        update: { creator: { update: { id: "new-id" } } }
+                        update: { creator: { update: { node: { id: "new-id" } } } }
                     ) {
                         posts {
                             id
@@ -749,7 +749,7 @@ describe("auth/allow", () => {
                 mutation {
                     updatePosts(
                         where: { id: "${postId}" }
-                        update: { creator: { update: { password: "new-password" } } }
+                        update: { creator: { update: { node: { password: "new-password" } } } }
                     ) {
                         posts {
                             id
@@ -1127,7 +1127,7 @@ describe("auth/allow", () => {
                 mutation {
                     updateUsers(
                         where: { id: "${userId}" }
-                        connect: { posts: { where: { id: "${postId}" } } }
+                        connect: { posts: { where: { node: { id: "${postId}" } } } }
                     ) {
                         users {
                             id
@@ -1215,7 +1215,7 @@ describe("auth/allow", () => {
                                 connect: {
                                     connect: {
                                         creator: {
-                                            where: { id: "${userId}" }
+                                            where: { node: { id: "${userId}" } }
                                         }
                                     }
                                 }

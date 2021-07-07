@@ -240,7 +240,9 @@ mutation {
         update: {
             posts: {
                 where: { node: { id: "post-id" } }
-                update: { creator: { update: { id: "not bound" } } }
+                update: {
+                    node: { creator: { update: { node: { id: "not bound" } } } }
+                }
             }
         }
     ) {
@@ -307,9 +309,13 @@ RETURN this { .id } AS this
                 "posts": [
                     {
                         "update": {
-                            "creator": {
-                                "update": {
-                                    "id": "not bound"
+                            "node": {
+                                "creator": {
+                                    "update": {
+                                        "node": {
+                                            "id": "not bound"
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -345,7 +351,7 @@ RETURN this { .id } AS this
 mutation {
     updatePosts(
         where: { id: "post-id" }
-        connect: { creator: { where: { id: "user-id" } } }
+        connect: { creator: { where: { node: { id: "user-id" } } } }
     ) {
         posts {
             id

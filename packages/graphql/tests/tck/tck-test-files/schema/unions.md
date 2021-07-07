@@ -47,12 +47,12 @@ input GenreCreateInput {
 }
 
 input GenreOptions {
-  """
-  Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
-  """
-  sort: [GenreSort]
-  limit: Int
-  skip: Int
+    """
+    Specify one or more GenreSort objects to sort Genres by. The sorts will be applied in the order in which they are arranged in the array.
+    """
+    sort: [GenreSort]
+    limit: Int
+    offset: Int
 }
 
 """
@@ -82,10 +82,10 @@ input GenreWhere {
 }
 
 type Movie {
-  id: ID
-  searchNoDirective: Search
-  search(options: QueryOptions, where: SearchWhere): [Search]
-  searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
+    id: ID
+    searchNoDirective: Search
+    search(options: QueryOptions, where: SearchWhere): [Search]
+    searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
 }
 
 input MovieConnectInput {
@@ -106,20 +106,24 @@ input MovieDisconnectInput {
 }
 
 input MovieOptions {
-  """
-  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-  """
-  sort: [MovieSort]
-  limit: Int
-  skip: Int
+    """
+    Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+    """
+    sort: [MovieSort]
+    limit: Int
+    offset: Int
 }
 
 input MovieRelationInput {
   search: MovieSearchCreateInput
 }
 
+input GenreConnectWhere {
+    node: GenreWhere!
+}
+
 input MovieSearchConnectFieldInput {
-  where: GenreWhere
+  where: GenreConnectWhere
 }
 
 input MovieSearchConnectInput {
@@ -175,18 +179,17 @@ input MovieSearchGenreDisconnectFieldInput {
   where: MovieSearchGenreConnectionWhere
 }
 
-input MovieSearchGenreFieldInput {
-  create: [MovieSearchGenreCreateFieldInput!]
-  connect: [MovieSearchConnectFieldInput!]
+input MovieSearchGenreUpdateConnectionInput {
+    node: GenreUpdateInput
 }
 
 input MovieSearchGenreUpdateFieldInput {
-  where: MovieSearchConnectionWhere
-  update: GenreUpdateInput
-  connect: [MovieSearchConnectFieldInput!]
-  disconnect: [MovieSearchGenreDisconnectFieldInput!]
-  create: [MovieSearchGenreCreateFieldInput!]
-  delete: [MovieSearchGenreDeleteFieldInput!]
+    where: MovieSearchConnectionWhere
+    update: MovieSearchGenreUpdateConnectionInput
+    connect: [MovieSearchConnectFieldInput!]
+    disconnect: [MovieSearchGenreDisconnectFieldInput!]
+    create: [MovieSearchGenreCreateFieldInput!]
+    delete: [MovieSearchGenreDeleteFieldInput!]
 }
 
 input MovieSearchMovieConnectionWhere {
@@ -215,13 +218,22 @@ input MovieSearchMovieFieldInput {
   connect: [MovieSearchConnectFieldInput!]
 }
 
-input MovieSearchMovieUpdateFieldInput {
-  where: MovieSearchConnectionWhere
-  update: MovieUpdateInput
+input MovieSearchGenreFieldInput {
+  create: [MovieSearchGenreCreateFieldInput!]
   connect: [MovieSearchConnectFieldInput!]
-  disconnect: [MovieSearchMovieDisconnectFieldInput!]
-  create: [MovieSearchMovieCreateFieldInput!]
-  delete: [MovieSearchMovieDeleteFieldInput!]
+}
+
+input MovieSearchMovieUpdateConnectionInput {
+    node: MovieUpdateInput
+}
+
+input MovieSearchMovieUpdateFieldInput {
+    where: MovieSearchConnectionWhere
+    update: MovieSearchMovieUpdateConnectionInput
+    connect: [MovieSearchConnectFieldInput!]
+    disconnect: [MovieSearchMovieDisconnectFieldInput!]
+    create: [MovieSearchMovieCreateFieldInput!]
+    delete: [MovieSearchMovieDeleteFieldInput!]
 }
 
 type MovieSearchRelationship {
@@ -270,7 +282,9 @@ type Mutation {
   updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
 }
 
-"""Pagination information (Relay)"""
+"""
+Pagination information (Relay)
+"""
 type PageInfo {
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
@@ -284,8 +298,8 @@ type Query {
 }
 
 input QueryOptions {
-  skip: Int
-  limit: Int
+    offset: Int
+    limit: Int
 }
 
 union Search = Movie | Genre

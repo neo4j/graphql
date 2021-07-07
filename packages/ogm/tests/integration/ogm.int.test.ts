@@ -371,13 +371,13 @@ describe("OGM", () => {
                                 {
                                     node: {
                                         ...photos[1],
-                                        color: { connect: { where: { id: colors[0].id } } },
+                                        color: { connect: { where: { node: { id: colors[0].id } } } },
                                     },
                                 },
                                 {
                                     node: {
                                         ...photos[2],
-                                        color: { connect: { where: { id: colors[1].id } } },
+                                        color: { connect: { where: { node: { id: colors[1].id } } } },
                                     },
                                 },
                             ],
@@ -571,7 +571,7 @@ describe("OGM", () => {
 
                 const { movies } = await Movie?.update({
                     where: { id: movieId },
-                    connect: { actors: [{ where: { id: actorId } }] },
+                    connect: { actors: [{ where: { node: { id: actorId } } }] },
                     selectionSet: `
                     {
                         movies {

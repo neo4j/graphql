@@ -28,321 +28,353 @@ interface ActedIn {
 
 ```schema-output
 interface ActedIn {
-  screenTime: Int!
+    screenTime: Int!
 }
 
 input ActedInCreateInput {
-  screenTime: Int!
+    screenTime: Int!
 }
 
 input ActedInSort {
-  screenTime: SortDirection
+    screenTime: SortDirection
 }
 
 input ActedInUpdateInput {
-  screenTime: Int
+    screenTime: Int
 }
 
 input ActedInWhere {
-  OR: [ActedInWhere!]
-  AND: [ActedInWhere!]
-  screenTime: Int
-  screenTime_NOT: Int
-  screenTime_IN: [Int]
-  screenTime_NOT_IN: [Int]
-  screenTime_LT: Int
-  screenTime_LTE: Int
-  screenTime_GT: Int
-  screenTime_GTE: Int
+    OR: [ActedInWhere!]
+    AND: [ActedInWhere!]
+    screenTime: Int
+    screenTime_NOT: Int
+    screenTime_IN: [Int]
+    screenTime_NOT_IN: [Int]
+    screenTime_LT: Int
+    screenTime_LTE: Int
+    screenTime_GT: Int
+    screenTime_GTE: Int
 }
 
 type Actor {
-  name: String!
-  movies(where: MovieWhere, options: MovieOptions): [Movie]
-  moviesConnection(
-    after: String,
-    first: Int,
-    where: ActorMoviesConnectionWhere,
-    sort: [ActorMoviesConnectionSort!]
-  ): ActorMoviesConnection!
+    name: String!
+    movies(where: MovieWhere, options: MovieOptions): [Movie]
+    moviesConnection(
+        after: String
+        first: Int
+        where: ActorMoviesConnectionWhere
+        sort: [ActorMoviesConnectionSort!]
+    ): ActorMoviesConnection!
 }
 
 input ActorConnectInput {
-  movies: [ActorMoviesConnectFieldInput!]
+    movies: [ActorMoviesConnectFieldInput!]
 }
 
 input ActorCreateInput {
-  name: String!
-  movies: ActorMoviesFieldInput
+    name: String!
+    movies: ActorMoviesFieldInput
 }
 
 input ActorDeleteInput {
-  movies: [ActorMoviesDeleteFieldInput!]
+    movies: [ActorMoviesDeleteFieldInput!]
 }
 
 input ActorMoviesDeleteFieldInput {
-  delete: MovieDeleteInput
-  where: ActorMoviesConnectionWhere
+    delete: MovieDeleteInput
+    where: ActorMoviesConnectionWhere
 }
 
 input ActorMoviesDisconnectFieldInput {
-  disconnect: MovieDisconnectInput
-  where: ActorMoviesConnectionWhere
+    disconnect: MovieDisconnectInput
+    where: ActorMoviesConnectionWhere
 }
 
 input ActorDisconnectInput {
-  movies: [ActorMoviesDisconnectFieldInput!]
+    movies: [ActorMoviesDisconnectFieldInput!]
+}
+
+input MovieConnectWhere {
+    node: MovieWhere!
 }
 
 input ActorMoviesConnectFieldInput {
-  where: MovieWhere
-  connect: [MovieConnectInput!]
-  properties: ActedInCreateInput!
+    where: MovieConnectWhere
+    connect: [MovieConnectInput!]
+    properties: ActedInCreateInput!
 }
 
 type ActorMoviesConnection {
-  edges: [ActorMoviesRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+    edges: [ActorMoviesRelationship!]!
+    pageInfo: PageInfo!
+    totalCount: Int!
 }
 
 input ActorMoviesConnectionSort {
-  node: MovieSort
-  relationship: ActedInSort
+    node: MovieSort
+    relationship: ActedInSort
 }
 
 input ActorMoviesConnectionWhere {
-  AND: [ActorMoviesConnectionWhere!]
-  OR: [ActorMoviesConnectionWhere!]
-  relationship: ActedInWhere
-  relationship_NOT: ActedInWhere
-  node: MovieWhere
-  node_NOT: MovieWhere
+    AND: [ActorMoviesConnectionWhere!]
+    OR: [ActorMoviesConnectionWhere!]
+    relationship: ActedInWhere
+    relationship_NOT: ActedInWhere
+    node: MovieWhere
+    node_NOT: MovieWhere
 }
 
 input ActorMoviesCreateFieldInput {
-  node: MovieCreateInput!
-  properties: ActedInCreateInput!
+    node: MovieCreateInput!
+    properties: ActedInCreateInput!
 }
 
 input ActorMoviesFieldInput {
-  create: [ActorMoviesCreateFieldInput!]
-  connect: [ActorMoviesConnectFieldInput!]
+    create: [ActorMoviesCreateFieldInput!]
+    connect: [ActorMoviesConnectFieldInput!]
 }
 
 type ActorMoviesRelationship implements ActedIn {
-  cursor: String!
-  node: Movie!
-  screenTime: Int!
+    cursor: String!
+    node: Movie!
+    screenTime: Int!
+}
+
+input ActorMoviesUpdateConnectionInput {
+    node: MovieUpdateInput
+    relationship: ActedInUpdateInput
 }
 
 input ActorMoviesUpdateFieldInput {
-  properties: ActedInUpdateInput
-  where: ActorMoviesConnectionWhere
-  update: MovieUpdateInput
-  connect: [ActorMoviesConnectFieldInput!]
-  disconnect: [ActorMoviesDisconnectFieldInput!]
-  create: [ActorMoviesCreateFieldInput!]
-  delete: [ActorMoviesDeleteFieldInput!]
+    where: ActorMoviesConnectionWhere
+    update: ActorMoviesUpdateConnectionInput
+    connect: [ActorMoviesConnectFieldInput!]
+    disconnect: [ActorMoviesDisconnectFieldInput!]
+    create: [ActorMoviesCreateFieldInput!]
+    delete: [ActorMoviesDeleteFieldInput!]
 }
 
 input ActorOptions {
-  """
-  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-  """
-  sort: [ActorSort]
-  limit: Int
-  skip: Int
+    """
+    Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
+    """
+    sort: [ActorSort]
+    limit: Int
+    offset: Int
 }
 
 input ActorRelationInput {
-  movies: [ActorMoviesCreateFieldInput!]
+    movies: [ActorMoviesCreateFieldInput!]
 }
 
 """
 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
 """
 input ActorSort {
-  name: SortDirection
+    name: SortDirection
 }
 
 input ActorUpdateInput {
-  name: String
-  movies: [ActorMoviesUpdateFieldInput!]
+    name: String
+    movies: [ActorMoviesUpdateFieldInput!]
 }
 
 input ActorWhere {
-  OR: [ActorWhere!]
-  AND: [ActorWhere!]
-  name: String
-  name_NOT: String
-  name_IN: [String]
-  name_NOT_IN: [String]
-  name_CONTAINS: String
-  name_NOT_CONTAINS: String
-  name_STARTS_WITH: String
-  name_NOT_STARTS_WITH: String
-  name_ENDS_WITH: String
-  name_NOT_ENDS_WITH: String
-  movies: MovieWhere
-  movies_NOT: MovieWhere
+    OR: [ActorWhere!]
+    AND: [ActorWhere!]
+    name: String
+    name_NOT: String
+    name_IN: [String]
+    name_NOT_IN: [String]
+    name_CONTAINS: String
+    name_NOT_CONTAINS: String
+    name_STARTS_WITH: String
+    name_NOT_STARTS_WITH: String
+    name_ENDS_WITH: String
+    name_NOT_ENDS_WITH: String
+    movies: MovieWhere
+    movies_NOT: MovieWhere
+}
+
+input ActorConnectWhere {
+    node: ActorWhere!
 }
 
 type CreateActorsMutationResponse {
-  actors: [Actor!]!
+    actors: [Actor!]!
 }
 
 type CreateMoviesMutationResponse {
-  movies: [Movie!]!
+    movies: [Movie!]!
 }
 
 type DeleteInfo {
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
+    nodesDeleted: Int!
+    relationshipsDeleted: Int!
 }
 
 type Movie {
-  title: String!
-  actors(where: ActorWhere, options: ActorOptions): [Actor]!
-  actorsConnection(
-    after: String,
-    first: Int,
-    where: MovieActorsConnectionWhere,
-    sort: [MovieActorsConnectionSort!]
-  ): MovieActorsConnection!
+    title: String!
+    actors(where: ActorWhere, options: ActorOptions): [Actor]!
+    actorsConnection(
+        after: String
+        first: Int
+        where: MovieActorsConnectionWhere
+        sort: [MovieActorsConnectionSort!]
+    ): MovieActorsConnection!
 }
 
 input MovieActorsConnectFieldInput {
-  where: ActorWhere
-  connect: [ActorConnectInput!]
-  properties: ActedInCreateInput!
+    where: ActorConnectWhere
+    connect: [ActorConnectInput!]
+    properties: ActedInCreateInput!
 }
 
 type MovieActorsConnection {
-  edges: [MovieActorsRelationship!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+    edges: [MovieActorsRelationship!]!
+    pageInfo: PageInfo!
+    totalCount: Int!
 }
 
 input MovieActorsConnectionSort {
-  node: ActorSort
-  relationship: ActedInSort
+    node: ActorSort
+    relationship: ActedInSort
 }
 
 input MovieActorsConnectionWhere {
-  AND: [MovieActorsConnectionWhere!]
-  OR: [MovieActorsConnectionWhere!]
-  relationship: ActedInWhere
-  relationship_NOT: ActedInWhere
-  node: ActorWhere
-  node_NOT: ActorWhere
+    AND: [MovieActorsConnectionWhere!]
+    OR: [MovieActorsConnectionWhere!]
+    relationship: ActedInWhere
+    relationship_NOT: ActedInWhere
+    node: ActorWhere
+    node_NOT: ActorWhere
 }
 
 input MovieActorsCreateFieldInput {
-  node: ActorCreateInput!
-  properties: ActedInCreateInput!
+    node: ActorCreateInput!
+    properties: ActedInCreateInput!
 }
 
 input MovieActorsFieldInput {
-  create: [MovieActorsCreateFieldInput!]
-  connect: [MovieActorsConnectFieldInput!]
+    create: [MovieActorsCreateFieldInput!]
+    connect: [MovieActorsConnectFieldInput!]
 }
 
 type MovieActorsRelationship implements ActedIn {
-  cursor: String!
-  node: Actor!
-  screenTime: Int!
+    cursor: String!
+    node: Actor!
+    screenTime: Int!
+}
+
+input MovieActorsUpdateConnectionInput {
+    node: ActorUpdateInput
+    relationship: ActedInUpdateInput
 }
 
 input MovieActorsUpdateFieldInput {
-  properties: ActedInUpdateInput
-  where: MovieActorsConnectionWhere
-  update: ActorUpdateInput
-  connect: [MovieActorsConnectFieldInput!]
-  disconnect: [MovieActorsDisconnectFieldInput!]
-  create: [MovieActorsCreateFieldInput!]
-  delete: [MovieActorsDeleteFieldInput!]
+    where: MovieActorsConnectionWhere
+    update: MovieActorsUpdateConnectionInput
+    connect: [MovieActorsConnectFieldInput!]
+    disconnect: [MovieActorsDisconnectFieldInput!]
+    create: [MovieActorsCreateFieldInput!]
+    delete: [MovieActorsDeleteFieldInput!]
 }
 
 input MovieConnectInput {
-  actors: [MovieActorsConnectFieldInput!]
+    actors: [MovieActorsConnectFieldInput!]
 }
 
 input MovieCreateInput {
-  title: String!
-  actors: MovieActorsFieldInput
+    title: String!
+    actors: MovieActorsFieldInput
 }
 
 input MovieDeleteInput {
-  actors: [MovieActorsDeleteFieldInput!]
+    actors: [MovieActorsDeleteFieldInput!]
 }
 
 input MovieActorsDeleteFieldInput {
-  delete: ActorDeleteInput
-  where: MovieActorsConnectionWhere
+    delete: ActorDeleteInput
+    where: MovieActorsConnectionWhere
 }
 
 input MovieActorsDisconnectFieldInput {
-  disconnect: ActorDisconnectInput
-  where: MovieActorsConnectionWhere
+    disconnect: ActorDisconnectInput
+    where: MovieActorsConnectionWhere
 }
 
 input MovieDisconnectInput {
-  actors: [MovieActorsDisconnectFieldInput!]
+    actors: [MovieActorsDisconnectFieldInput!]
 }
 
 input MovieOptions {
-  """
-  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-  """
-  sort: [MovieSort]
-  limit: Int
-  skip: Int
+    """
+    Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+    """
+    sort: [MovieSort]
+    limit: Int
+    offset: Int
 }
 
 input MovieRelationInput {
-  actors: [MovieActorsCreateFieldInput!]
+    actors: [MovieActorsCreateFieldInput!]
 }
 
 """
 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
 """
 input MovieSort {
-  title: SortDirection
+    title: SortDirection
 }
 
 input MovieUpdateInput {
-  title: String
-  actors: [MovieActorsUpdateFieldInput!]
+    title: String
+    actors: [MovieActorsUpdateFieldInput!]
 }
 
 input MovieWhere {
-  OR: [MovieWhere!]
-  AND: [MovieWhere!]
-  title: String
-  title_NOT: String
-  title_IN: [String]
-  title_NOT_IN: [String]
-  title_CONTAINS: String
-  title_NOT_CONTAINS: String
-  title_STARTS_WITH: String
-  title_NOT_STARTS_WITH: String
-  title_ENDS_WITH: String
-  title_NOT_ENDS_WITH: String
-  actors: ActorWhere
-  actors_NOT: ActorWhere
+    OR: [MovieWhere!]
+    AND: [MovieWhere!]
+    title: String
+    title_NOT: String
+    title_IN: [String]
+    title_NOT_IN: [String]
+    title_CONTAINS: String
+    title_NOT_CONTAINS: String
+    title_STARTS_WITH: String
+    title_NOT_STARTS_WITH: String
+    title_ENDS_WITH: String
+    title_NOT_ENDS_WITH: String
+    actors: ActorWhere
+    actors_NOT: ActorWhere
 }
 
 type Mutation {
-  createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
-  deleteActors(where: ActorWhere, delete: ActorDeleteInput): DeleteInfo!
-  updateActors(where: ActorWhere, update: ActorUpdateInput, connect: ActorConnectInput, disconnect: ActorDisconnectInput, create: ActorRelationInput, delete: ActorDeleteInput): UpdateActorsMutationResponse!
-  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-  deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
-  updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
+    createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
+    deleteActors(where: ActorWhere, delete: ActorDeleteInput): DeleteInfo!
+    updateActors(
+        where: ActorWhere
+        update: ActorUpdateInput
+        connect: ActorConnectInput
+        disconnect: ActorDisconnectInput
+        create: ActorRelationInput
+        delete: ActorDeleteInput
+    ): UpdateActorsMutationResponse!
+    createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+    deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
+    updateMovies(
+        where: MovieWhere
+        update: MovieUpdateInput
+        connect: MovieConnectInput
+        disconnect: MovieDisconnectInput
+        create: MovieRelationInput
+        delete: MovieDeleteInput
+    ): UpdateMoviesMutationResponse!
 }
 
-"""Pagination information (Relay)"""
+"""
+Pagination information (Relay)
+"""
 type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
@@ -351,24 +383,28 @@ type PageInfo {
 }
 
 type Query {
-  actors(where: ActorWhere, options: ActorOptions): [Actor!]!
-  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    actors(where: ActorWhere, options: ActorOptions): [Actor!]!
+    movies(where: MovieWhere, options: MovieOptions): [Movie!]!
 }
 
 enum SortDirection {
-  """Sort by field values in ascending order."""
-  ASC
+    """
+    Sort by field values in ascending order.
+    """
+    ASC
 
-  """Sort by field values in descending order."""
-  DESC
+    """
+    Sort by field values in descending order.
+    """
+    DESC
 }
 
 type UpdateActorsMutationResponse {
-  actors: [Actor!]!
+    actors: [Actor!]!
 }
 
 type UpdateMoviesMutationResponse {
-  movies: [Movie!]!
+    movies: [Movie!]!
 }
 ```
 

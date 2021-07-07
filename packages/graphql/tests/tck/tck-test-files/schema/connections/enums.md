@@ -66,8 +66,8 @@ type Actor {
     name: String!
     movies(where: MovieWhere, options: MovieOptions): [Movie]
     moviesConnection(
-        after: String,
-        first: Int,
+        after: String
+        first: Int
         where: ActorMoviesConnectionWhere
         sort: [ActorMoviesConnectionSort!]
     ): ActorMoviesConnection!
@@ -100,8 +100,12 @@ input ActorDisconnectInput {
     movies: [ActorMoviesDisconnectFieldInput!]
 }
 
+input MovieConnectWhere {
+    node: MovieWhere!
+}
+
 input ActorMoviesConnectFieldInput {
-    where: MovieWhere
+    where: MovieConnectWhere
     connect: [MovieConnectInput!]
     properties: ActedInCreateInput!
 }
@@ -142,10 +146,14 @@ type ActorMoviesRelationship implements ActedIn {
     roleType: RoleType!
 }
 
+input ActorMoviesUpdateConnectionInput {
+    node: MovieUpdateInput
+    relationship: ActedInUpdateInput
+}
+
 input ActorMoviesUpdateFieldInput {
-    properties: ActedInUpdateInput
     where: ActorMoviesConnectionWhere
-    update: MovieUpdateInput
+    update: ActorMoviesUpdateConnectionInput
     connect: [ActorMoviesConnectFieldInput!]
     disconnect: [ActorMoviesDisconnectFieldInput!]
     create: [ActorMoviesCreateFieldInput!]
@@ -158,7 +166,7 @@ input ActorOptions {
     """
     sort: [ActorSort]
     limit: Int
-    skip: Int
+    offset: Int
 }
 
 input ActorRelationInput {
@@ -211,15 +219,19 @@ type Movie {
     title: String!
     actors(where: ActorWhere, options: ActorOptions): [Actor]!
     actorsConnection(
-        after: String,
-        first: Int,
+        after: String
+        first: Int
         where: MovieActorsConnectionWhere
         sort: [MovieActorsConnectionSort!]
     ): MovieActorsConnection!
 }
 
+input ActorConnectWhere {
+    node: ActorWhere!
+}
+
 input MovieActorsConnectFieldInput {
-    where: ActorWhere
+    where: ActorConnectWhere
     connect: [ActorConnectInput!]
     properties: ActedInCreateInput!
 }
@@ -260,10 +272,14 @@ type MovieActorsRelationship implements ActedIn {
     roleType: RoleType!
 }
 
+input MovieActorsUpdateConnectionInput {
+    node: ActorUpdateInput
+    relationship: ActedInUpdateInput
+}
+
 input MovieActorsUpdateFieldInput {
-    properties: ActedInUpdateInput
     where: MovieActorsConnectionWhere
-    update: ActorUpdateInput
+    update: MovieActorsUpdateConnectionInput
     connect: [MovieActorsConnectFieldInput!]
     disconnect: [MovieActorsDisconnectFieldInput!]
     create: [MovieActorsCreateFieldInput!]
@@ -303,7 +319,7 @@ input MovieOptions {
     """
     sort: [MovieSort]
     limit: Int
-    skip: Int
+    offset: Int
 }
 
 input MovieRelationInput {
@@ -362,7 +378,9 @@ type Mutation {
     ): UpdateMoviesMutationResponse!
 }
 
-"""Pagination information (Relay)"""
+"""
+Pagination information (Relay)
+"""
 type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
