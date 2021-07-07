@@ -214,7 +214,7 @@ describe("unions", () => {
                     search: {
                         Genre: {
                             connect: [{
-                                where: { name: "${genreName}" }
+                                where: { node: { name: "${genreName}" } }
                             }]
                         }
                     }
@@ -295,7 +295,7 @@ describe("unions", () => {
                             Genre: {
                                 where: { Genre: { name: "${genreName}" } },
                                 update: {
-                                    name: "${newGenreName}"
+                                    node: { name: "${newGenreName}" }
                                 }
                             }
                         }
