@@ -124,10 +124,6 @@ input AuthorPublicationsConnectFieldInput {
     properties: WroteCreateInput!
 }
 
-input AuthorPublicationsConnectInput {
-    Book: [AuthorPublicationsConnectFieldInput!]
-}
-
 type AuthorPublicationsConnection {
     edges: [AuthorPublicationsRelationship!]!
     pageInfo: PageInfo!
@@ -145,6 +141,10 @@ input AuthorPublicationsConnectionWhere {
     Journal_NOT: JournalWhere
 }
 
+input AuthorPublicationsConnectInput {
+    Book: [AuthorPublicationsConnectFieldInput!]
+}
+
 input AuthorPublicationsCreateInput {
     Book: AuthorPublicationsBookFieldInput
     Journal: AuthorPublicationsJournalFieldInput
@@ -158,6 +158,11 @@ input AuthorPublicationsDeleteInput {
 input AuthorPublicationsDisconnectInput {
     Book: [AuthorPublicationsBookDisconnectFieldInput!]
     Journal: [AuthorPublicationsJournalDisconnectFieldInput!]
+}
+
+input AuthorPublicationsUpdateInput {
+    Book: [AuthorPublicationsBookUpdateFieldInput!]
+    Journal: [AuthorPublicationsJournalUpdateFieldInput!]
 }
 
 input AuthorPublicationsJournalConnectionWhere {
@@ -207,11 +212,6 @@ type AuthorPublicationsRelationship implements Wrote {
     cursor: String!
     node: Publication!
     words: Int!
-}
-
-input AuthorPublicationsUpdateInput {
-    Book: [AuthorPublicationsBookUpdateFieldInput!]
-    Journal: [AuthorPublicationsJournalUpdateFieldInput!]
 }
 
 input AuthorRelationInput {
@@ -573,6 +573,13 @@ type Mutation {
     ): UpdateJournalsMutationResponse!
 }
 
+union Publication = Book | Journal
+
+input PublicationWhere {
+    Book: BookWhere
+    Journal: JournalWhere
+}
+
 """
 Pagination information (Relay)
 """
@@ -581,13 +588,6 @@ type PageInfo {
     hasPreviousPage: Boolean!
     startCursor: String!
     endCursor: String!
-}
-
-union Publication = Book | Journal
-
-input PublicationWhere {
-    Book: BookWhere
-    Journal: JournalWhere
 }
 
 type Query {
