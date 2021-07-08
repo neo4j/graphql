@@ -26,24 +26,24 @@ type Movie {
 
 ```schema-output
 type CreateGenresMutationResponse {
-  genres: [Genre!]!
+    genres: [Genre!]!
 }
 
 type CreateMoviesMutationResponse {
-  movies: [Movie!]!
+    movies: [Movie!]!
 }
 
 type DeleteInfo {
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
+    nodesDeleted: Int!
+    relationshipsDeleted: Int!
 }
 
 type Genre {
-  id: ID
+    id: ID
 }
 
 input GenreCreateInput {
-  id: ID
+    id: ID
 }
 
 input GenreOptions {
@@ -59,26 +59,26 @@ input GenreOptions {
 Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.
 """
 input GenreSort {
-  id: SortDirection
+    id: SortDirection
 }
 
 input GenreUpdateInput {
-  id: ID
+    id: ID
 }
 
 input GenreWhere {
-  OR: [GenreWhere!]
-  AND: [GenreWhere!]
-  id: ID
-  id_NOT: ID
-  id_IN: [ID]
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
+    OR: [GenreWhere!]
+    AND: [GenreWhere!]
+    id: ID
+    id_NOT: ID
+    id_IN: [ID]
+    id_NOT_IN: [ID]
+    id_CONTAINS: ID
+    id_NOT_CONTAINS: ID
+    id_STARTS_WITH: ID
+    id_NOT_STARTS_WITH: ID
+    id_ENDS_WITH: ID
+    id_NOT_ENDS_WITH: ID
 }
 
 type Movie {
@@ -89,20 +89,20 @@ type Movie {
 }
 
 input MovieConnectInput {
-  search: MovieSearchConnectInput
+    search: MovieSearchConnectInput
 }
 
 input MovieCreateInput {
-  id: ID
-  search: MovieSearchCreateInput
+    id: ID
+    search: MovieSearchCreateInput
 }
 
 input MovieDeleteInput {
-  search: MovieSearchDeleteInput
+    search: MovieSearchDeleteInput
 }
 
 input MovieDisconnectInput {
-  search: MovieSearchDisconnectInput
+    search: MovieSearchDisconnectInput
 }
 
 input MovieOptions {
@@ -115,7 +115,7 @@ input MovieOptions {
 }
 
 input MovieRelationInput {
-  search: MovieSearchCreateInput
+    search: MovieSearchCreateInput
 }
 
 input GenreConnectWhere {
@@ -123,60 +123,60 @@ input GenreConnectWhere {
 }
 
 input MovieSearchConnectFieldInput {
-  where: GenreConnectWhere
+    where: GenreConnectWhere
 }
 
 input MovieSearchConnectInput {
-  Genre: [MovieSearchConnectFieldInput!]
+    Genre: [MovieSearchConnectFieldInput!]
 }
 
 type MovieSearchConnection {
-  edges: [MovieSearchRelationship!]!
-  totalCount: Int!
-  pageInfo: PageInfo!
+    edges: [MovieSearchRelationship!]!
+    totalCount: Int!
+    pageInfo: PageInfo!
 }
 
 input MovieSearchConnectionWhere {
-  AND: [MovieSearchConnectionWhere!]
-  OR: [MovieSearchConnectionWhere!]
-  Genre: GenreWhere
-  Genre_NOT: GenreWhere
-  Movie: MovieWhere
-  Movie_NOT: MovieWhere
+    AND: [MovieSearchConnectionWhere!]
+    OR: [MovieSearchConnectionWhere!]
+    Genre: GenreWhere
+    Genre_NOT: GenreWhere
+    Movie: MovieWhere
+    Movie_NOT: MovieWhere
 }
 
 input MovieSearchCreateInput {
-  Genre: MovieSearchGenreFieldInput
-  Movie: MovieSearchMovieFieldInput
+    Genre: MovieSearchGenreFieldInput
+    Movie: MovieSearchMovieFieldInput
 }
 
 input MovieSearchDeleteInput {
-  Genre: [MovieSearchGenreDeleteFieldInput!]
-  Movie: [MovieSearchMovieDeleteFieldInput!]
+    Genre: [MovieSearchGenreDeleteFieldInput!]
+    Movie: [MovieSearchMovieDeleteFieldInput!]
 }
 
 input MovieSearchDisconnectInput {
-  Genre: [MovieSearchGenreDisconnectFieldInput!]
-  Movie: [MovieSearchMovieDisconnectFieldInput!]
+    Genre: [MovieSearchGenreDisconnectFieldInput!]
+    Movie: [MovieSearchMovieDisconnectFieldInput!]
 }
 
 input MovieSearchGenreConnectionWhere {
-  node: GenreWhere
-  node_NOT: GenreWhere
-  AND: [MovieSearchGenreConnectionWhere!]
-  OR: [MovieSearchGenreConnectionWhere!]
+    node: GenreWhere
+    node_NOT: GenreWhere
+    AND: [MovieSearchGenreConnectionWhere!]
+    OR: [MovieSearchGenreConnectionWhere!]
 }
 
 input MovieSearchGenreCreateFieldInput {
-  node: GenreCreateInput!
+    node: GenreCreateInput!
 }
 
 input MovieSearchGenreDeleteFieldInput {
-  where: MovieSearchGenreConnectionWhere
+    where: MovieSearchGenreConnectionWhere
 }
 
 input MovieSearchGenreDisconnectFieldInput {
-  where: MovieSearchGenreConnectionWhere
+    where: MovieSearchGenreConnectionWhere
 }
 
 input MovieSearchGenreUpdateConnectionInput {
@@ -193,34 +193,34 @@ input MovieSearchGenreUpdateFieldInput {
 }
 
 input MovieSearchMovieConnectionWhere {
-  node: MovieWhere
-  node_NOT: MovieWhere
-  AND: [MovieSearchMovieConnectionWhere!]
-  OR: [MovieSearchMovieConnectionWhere!]
+    node: MovieWhere
+    node_NOT: MovieWhere
+    AND: [MovieSearchMovieConnectionWhere!]
+    OR: [MovieSearchMovieConnectionWhere!]
 }
 
 input MovieSearchMovieCreateFieldInput {
-  node: MovieCreateInput!
+    node: MovieCreateInput!
 }
 
 input MovieSearchMovieDeleteFieldInput {
-  where: MovieSearchMovieConnectionWhere
-  delete: MovieDeleteInput
+    where: MovieSearchMovieConnectionWhere
+    delete: MovieDeleteInput
 }
 
 input MovieSearchMovieDisconnectFieldInput {
-  where: MovieSearchMovieConnectionWhere
-  disconnect: MovieDisconnectInput
+    where: MovieSearchMovieConnectionWhere
+    disconnect: MovieDisconnectInput
 }
 
 input MovieSearchMovieFieldInput {
-  create: [MovieSearchMovieCreateFieldInput!]
-  connect: [MovieSearchConnectFieldInput!]
+    create: [MovieSearchMovieCreateFieldInput!]
+    connect: [MovieSearchConnectFieldInput!]
 }
 
 input MovieSearchGenreFieldInput {
-  create: [MovieSearchGenreCreateFieldInput!]
-  connect: [MovieSearchConnectFieldInput!]
+    create: [MovieSearchGenreCreateFieldInput!]
+    connect: [MovieSearchConnectFieldInput!]
 }
 
 input MovieSearchMovieUpdateConnectionInput {
@@ -237,64 +237,74 @@ input MovieSearchMovieUpdateFieldInput {
 }
 
 type MovieSearchRelationship {
-  cursor: String!
-  node: Search!
+    cursor: String!
+    node: Search!
 }
 
 input MovieSearchUpdateInput {
-  Genre: [MovieSearchGenreUpdateFieldInput!]
-  Movie: [MovieSearchMovieUpdateFieldInput!]
+    Genre: [MovieSearchGenreUpdateFieldInput!]
+    Movie: [MovieSearchMovieUpdateFieldInput!]
 }
 
 """
 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
 """
 input MovieSort {
-  id: SortDirection
+    id: SortDirection
 }
 
 input MovieUpdateInput {
-  id: ID
-  search: MovieSearchUpdateInput
+    id: ID
+    search: MovieSearchUpdateInput
 }
 
 input MovieWhere {
-  OR: [MovieWhere!]
-  AND: [MovieWhere!]
-  id: ID
-  id_NOT: ID
-  id_IN: [ID]
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
+    OR: [MovieWhere!]
+    AND: [MovieWhere!]
+    id: ID
+    id_NOT: ID
+    id_IN: [ID]
+    id_NOT_IN: [ID]
+    id_CONTAINS: ID
+    id_NOT_CONTAINS: ID
+    id_STARTS_WITH: ID
+    id_NOT_STARTS_WITH: ID
+    id_ENDS_WITH: ID
+    id_NOT_ENDS_WITH: ID
 }
 
 type Mutation {
-  createGenres(input: [GenreCreateInput!]!): CreateGenresMutationResponse!
-  deleteGenres(where: GenreWhere): DeleteInfo!
-  updateGenres(where: GenreWhere, update: GenreUpdateInput): UpdateGenresMutationResponse!
-  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-  deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
-  updateMovies(where: MovieWhere, update: MovieUpdateInput, connect: MovieConnectInput, disconnect: MovieDisconnectInput, create: MovieRelationInput, delete: MovieDeleteInput): UpdateMoviesMutationResponse!
+    createGenres(input: [GenreCreateInput!]!): CreateGenresMutationResponse!
+    deleteGenres(where: GenreWhere): DeleteInfo!
+    updateGenres(
+        where: GenreWhere
+        update: GenreUpdateInput
+    ): UpdateGenresMutationResponse!
+    createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+    deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
+    updateMovies(
+        where: MovieWhere
+        update: MovieUpdateInput
+        connect: MovieConnectInput
+        disconnect: MovieDisconnectInput
+        create: MovieRelationInput
+        delete: MovieDeleteInput
+    ): UpdateMoviesMutationResponse!
 }
 
 """
 Pagination information (Relay)
 """
 type PageInfo {
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String!
-  endCursor: String!
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+    endCursor: String!
 }
 
 type Query {
-  genres(where: GenreWhere, options: GenreOptions): [Genre!]!
-  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    genres(where: GenreWhere, options: GenreOptions): [Genre!]!
+    movies(where: MovieWhere, options: MovieOptions): [Movie!]!
 }
 
 input QueryOptions {
@@ -305,24 +315,28 @@ input QueryOptions {
 union Search = Movie | Genre
 
 input SearchWhere {
-  Movie: MovieWhere
-  Genre: GenreWhere
+    Movie: MovieWhere
+    Genre: GenreWhere
 }
 
 enum SortDirection {
-  """Sort by field values in ascending order."""
-  ASC
+    """
+    Sort by field values in ascending order.
+    """
+    ASC
 
-  """Sort by field values in descending order."""
-  DESC
+    """
+    Sort by field values in descending order.
+    """
+    DESC
 }
 
 type UpdateGenresMutationResponse {
-  genres: [Genre!]!
+    genres: [Genre!]!
 }
 
 type UpdateMoviesMutationResponse {
-  movies: [Movie!]!
+    movies: [Movie!]!
 }
 ```
 

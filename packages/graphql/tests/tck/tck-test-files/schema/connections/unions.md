@@ -13,17 +13,20 @@ union Publication = Book | Journal
 
 type Author {
     name: String!
-    publications: [Publication] @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
+    publications: [Publication]
+        @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
 }
 
 type Book {
     title: String!
-    author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
+    author: [Author!]!
+        @relationship(type: "WROTE", direction: IN, properties: "Wrote")
 }
 
 type Journal {
     subject: String!
-    author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
+    author: [Author!]!
+        @relationship(type: "WROTE", direction: IN, properties: "Wrote")
 }
 
 interface Wrote {
@@ -43,20 +46,20 @@ type Author {
 }
 
 input AuthorConnectInput {
-  publications: AuthorPublicationsConnectInput
+    publications: AuthorPublicationsConnectInput
 }
 
 input AuthorCreateInput {
-  name: String!
-  publications: AuthorPublicationsCreateInput
+    name: String!
+    publications: AuthorPublicationsCreateInput
 }
 
 input AuthorDeleteInput {
-  publications: AuthorPublicationsDeleteInput
+    publications: AuthorPublicationsDeleteInput
 }
 
 input AuthorDisconnectInput {
-  publications: AuthorPublicationsDisconnectInput
+    publications: AuthorPublicationsDisconnectInput
 }
 
 input AuthorOptions {
@@ -122,7 +125,7 @@ input AuthorPublicationsConnectFieldInput {
 }
 
 input AuthorPublicationsConnectInput {
-  Book: [AuthorPublicationsConnectFieldInput!]
+    Book: [AuthorPublicationsConnectFieldInput!]
 }
 
 type AuthorPublicationsConnection {
@@ -143,18 +146,18 @@ input AuthorPublicationsConnectionWhere {
 }
 
 input AuthorPublicationsCreateInput {
-  Book: AuthorPublicationsBookFieldInput
-  Journal: AuthorPublicationsJournalFieldInput
+    Book: AuthorPublicationsBookFieldInput
+    Journal: AuthorPublicationsJournalFieldInput
 }
 
 input AuthorPublicationsDeleteInput {
-  Book: [AuthorPublicationsBookDeleteFieldInput!]
-  Journal: [AuthorPublicationsJournalDeleteFieldInput!]
+    Book: [AuthorPublicationsBookDeleteFieldInput!]
+    Journal: [AuthorPublicationsJournalDeleteFieldInput!]
 }
 
 input AuthorPublicationsDisconnectInput {
-  Book: [AuthorPublicationsBookDisconnectFieldInput!]
-  Journal: [AuthorPublicationsJournalDisconnectFieldInput!]
+    Book: [AuthorPublicationsBookDisconnectFieldInput!]
+    Journal: [AuthorPublicationsJournalDisconnectFieldInput!]
 }
 
 input AuthorPublicationsJournalConnectionWhere {
@@ -207,12 +210,12 @@ type AuthorPublicationsRelationship implements Wrote {
 }
 
 input AuthorPublicationsUpdateInput {
-  Book: [AuthorPublicationsBookUpdateFieldInput!]
-  Journal: [AuthorPublicationsJournalUpdateFieldInput!]
+    Book: [AuthorPublicationsBookUpdateFieldInput!]
+    Journal: [AuthorPublicationsJournalUpdateFieldInput!]
 }
 
 input AuthorRelationInput {
-  publications: AuthorPublicationsCreateInput
+    publications: AuthorPublicationsCreateInput
 }
 
 """
@@ -223,8 +226,8 @@ input AuthorSort {
 }
 
 input AuthorUpdateInput {
-  name: String
-  publications: AuthorPublicationsUpdateInput
+    name: String
+    publications: AuthorPublicationsUpdateInput
 }
 
 input AuthorWhere {
@@ -570,12 +573,14 @@ type Mutation {
     ): UpdateJournalsMutationResponse!
 }
 
-"""Pagination information (Relay)"""
+"""
+Pagination information (Relay)
+"""
 type PageInfo {
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String!
-  endCursor: String!
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+    endCursor: String!
 }
 
 union Publication = Book | Journal
