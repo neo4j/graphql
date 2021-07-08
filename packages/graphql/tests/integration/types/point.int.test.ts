@@ -36,8 +36,18 @@ describe("Point", () => {
                 size: Int!
                 location: Point!
             }
+
+            type Query {
+                custom: String!
+            }
         `;
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        // Dummy custom resolvers to validate fix for https://github.com/neo4j/graphql/issues/278
+        const resolvers = {
+            Query: {
+                custom: () => "hello",
+            },
+        };
+        neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
     });
 
     beforeEach(() => {

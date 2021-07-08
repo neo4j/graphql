@@ -50,7 +50,6 @@ import { findResolver, createResolver, deleteResolver, cypherResolver, updateRes
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
-import wrapCustomResolvers from "./wrap-custom-resolvers";
 import getCustomResolvers from "./get-custom-resolvers";
 import getObjFieldMeta from "./get-obj-field-meta";
 import * as point from "./point";
@@ -63,7 +62,7 @@ import { createConnectionWithEdgeProperties } from "./pagination";
 // import validateTypeDefs from "./validation";
 
 function makeAugmentedSchema(
-    { typeDefs, resolvers, ...schemaDefinition }: IExecutableSchemaDefinition,
+    { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
     { enableRegex }: { enableRegex?: boolean } = {}
 ): { schema: GraphQLSchema; nodes: Node[]; relationships: Relationship[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
@@ -248,8 +247,6 @@ function makeAugmentedSchema(
 
     const relationshipProperties = interfaces.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
     interfaces = interfaces.filter((i) => !relationshipPropertyInterfaceNames.has(i.name.value));
-
-    const nodeNames = nodes.map((x) => x.name);
 
     const relationshipFields = new Map<string, RelationshipField[]>();
 
@@ -1161,6 +1158,7 @@ function makeAugmentedSchema(
                 const customResolver = cypherResolver({
                     field,
                     statement: field.statement,
+                    type: type as "Query" | "Mutation",
                 });
 
                 const composedField = objectFieldsToComposeFields([field])[field.fieldName];
@@ -1191,7 +1189,7 @@ function makeAugmentedSchema(
         composer.delete("Mutation");
     }
     const generatedTypeDefs = composer.toSDL();
-    let generatedResolvers: any = {
+    const generatedResolvers = {
         ...composer.getResolveMethods(),
         ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
             if (generatedTypeDefs.includes(`scalar ${name}\n`)) {
@@ -1200,14 +1198,6 @@ function makeAugmentedSchema(
             return res;
         }, {}),
     };
-
-    if (resolvers) {
-        generatedResolvers = wrapCustomResolvers({
-            generatedResolvers,
-            nodeNames,
-            resolvers,
-        });
-    }
 
     unions.forEach((union) => {
         if (!generatedResolvers[union.name.value]) {
