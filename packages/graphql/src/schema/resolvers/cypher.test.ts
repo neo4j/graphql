@@ -29,7 +29,7 @@ describe("Cypher resolver", () => {
             arguments: [],
         };
 
-        const result = cypherResolver({ field, statement: "" });
+        const result = cypherResolver({ field, statement: "", type: "Query" });
         expect(result.type).toEqual(field.typeMeta.pretty);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({});

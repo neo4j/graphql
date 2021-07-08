@@ -3,5 +3,8 @@
     "compilerOptions": {
         "outDir": "../dist"
     },
-    "exclude": ["**/*.test.ts"]
+    "exclude": ["**/*.test.ts"],
+    "references": [
+        { "path": "../" } // for package.json import
+    ]
 }
