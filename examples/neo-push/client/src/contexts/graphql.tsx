@@ -1,11 +1,9 @@
 import React from "react";
-import { ApolloClient } from "apollo-client";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { onError } from "apollo-link-error";
-import { ApolloLink, DocumentNode, split } from "apollo-link";
-import { ApolloProvider } from "@apollo/react-hooks";
-import { setContext } from "apollo-link-context";
-import { createHttpLink } from "apollo-link-http";
+import { ApolloClient, InMemoryCache, DocumentNode, ApolloLink, ApolloProvider } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
+import { setContext } from "@apollo/client/link/context";
+import { relayStylePagination } from "@apollo/client/utilities";
+import { createHttpLink } from "@apollo/client/link/http";
 import { API_URL, JWT_KEY } from "../config";
 import constants from "../constants";
 
@@ -38,17 +36,29 @@ const authLink = setContext((_: any, { headers }) => {
 const client = new ApolloClient({
     link: ApolloLink.from([
         onError(({ graphQLErrors }) => {
-            if (graphQLErrors)
+            if (graphQLErrors) {
                 graphQLErrors.forEach(({ message }) => {
                     if (message.includes("Unauthorized")) {
                         window.location.href = constants.LOG_OUT_PAGE;
                     }
                 });
+            }
         }),
         authLink.concat(httpLink),
     ]),
     cache: new InMemoryCache({
-        dataIdFromObject: (object: any) => object._id || null,
+        typePolicies: {
+            User: {
+                fields: {
+                    createdBlogsConnection: relayStylePagination(),
+                },
+            },
+            Blog: {
+                fields: {
+                    postsConnection: relayStylePagination(),
+                },
+            },
+        },
     }),
 });
 

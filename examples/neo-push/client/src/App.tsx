@@ -17,8 +17,8 @@ export default function App() {
                         <Route exact path={constants.SIGN_UP_PAGE} component={SignUp} />
                         <Route exact path={constants.SIGN_IN_PAGE} component={SignIn} />
                         <Protected exact path={constants.LOG_OUT_PAGE} component={Logout} />
-                        <Route exact path={constants.BLOG_PAGE + "/:id"} component={Blog} />
-                        <Route exact path={constants.POST_PAGE + "/:id"} component={Post} />
+                        <Route exact path={`${constants.BLOG_PAGE}/:id`} component={Blog} />
+                        <Route exact path={`${constants.POST_PAGE}/:id`} component={Post} />
                         <Protected exact path={constants.DASHBOARD_PAGE} component={Dashboard} />
                     </Switch>
                 </HashRouter>

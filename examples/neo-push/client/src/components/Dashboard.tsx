@@ -1,8 +1,9 @@
-import React, { useState, useContext, useEffect, useCallback } from "react";
+import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
 import { Alert, Spinner, Container, Card, Row, Col, Button, Modal, Form } from "react-bootstrap";
+import { useQuery } from "@apollo/client";
+import { Link, useHistory } from "react-router-dom";
 import { auth, graphql } from "../contexts";
 import constants from "../constants";
-import { Link, useHistory } from "react-router-dom";
 import { USER, CREATE_BLOG, MY_BLOGS, RECENTLY_UPDATED_BLOGS } from "../queries";
 import { BlogInterface } from "./Blog";
 
@@ -31,7 +32,7 @@ function CreateBlog({ close }: { close: () => void }) {
                     variables: { name, sub: getId() },
                 });
 
-                history.push(constants.BLOG_PAGE + "/" + response.createBlogs.blogs[0].id);
+                history.push(`${constants.BLOG_PAGE}/${response.createBlogs.blogs[0].id}`);
             } catch (e) {
                 setError(e.message);
             }
@@ -98,7 +99,7 @@ function BlogItem(props: { blog: any; updated?: boolean }) {
             <Card className="m-3">
                 <Card.Title className="m-2">{props.blog.name}</Card.Title>
                 <Card.Subtitle className="m-2">
-                    <Link to={constants.BLOG_PAGE + `/${props.blog.id}`}>Read</Link>
+                    <Link to={`${constants.BLOG_PAGE}/${props.blog.id}`}>Read</Link>
                 </Card.Subtitle>
                 <Card.Footer className="text-muted">
                     <p className="m-0 p-0">- {props.blog.creator.email}</p>
@@ -113,60 +114,65 @@ function BlogItem(props: { blog: any; updated?: boolean }) {
 
 function MyBlogs() {
     const { getId } = useContext(auth.Context);
-    const { query } = useContext(graphql.Context);
-    const [offset, setOffset] = useState(0);
-    const [limit] = useState(10);
-    const [myBlogsHasMore, setMyBlogsHasMore] = useState(false);
-    const [blogs, setBlogs] = useState<BlogInterface[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    const getBlogs = useCallback(async () => {
-        setLoading(true);
-
-        try {
-            const response = await query({
-                query: MY_BLOGS,
-                variables: {
-                    id: getId(),
-                    offset: blogs.length,
-                    limit,
-                    hasNextBlogsOffset: blogs.length === 0 ? limit : blogs.length + 1,
-                },
-            });
-
-            setMyBlogsHasMore(Boolean(response.hasNextBlogs.length));
-            setBlogs((b) => [...b, ...response.myBlogs]);
-        } catch (e) {}
-
-        setLoading(false);
-    }, [offset, blogs, limit]);
-
-    useEffect(() => {
-        getBlogs();
-    }, [offset]);
+    const first = 6;
+    const { data, loading, fetchMore } = useQuery(MY_BLOGS, { variables: { userId: getId(), first } });
+    const startCursor = useRef<string>();
+    const cachedCursor = startCursor.current;
 
     if (loading) {
-        <Card className="mt-3 p-3">
-            <h2>My Blogs</h2>
-            <div className="d-flex flex-column align-items-center">
-                <Spinner className="mt-5" animation="border" />
-            </div>
-        </Card>;
+        return (
+            <Card className="mt-3 p-3">
+                <h2>My Blogs</h2>
+                <div className="d-flex flex-column align-items-center">
+                    <Spinner className="mt-5" animation="border" />
+                </div>
+            </Card>
+        );
     }
+
+    const user = data.users[0];
+    const pageInfo = user.createdBlogsConnection.pageInfo;
+    const blogs = user.createdBlogsConnection.edges.map((e: any) => e.node) as BlogInterface[];
+    startCursor.current = pageInfo.startCursor;
 
     return (
         <Card className="mt-3 p-3">
             <h2>My Blogs</h2>
             <Row>
                 {blogs.map((blog) => (
-                    <BlogItem key={blog.id} blog={blog}></BlogItem>
+                    <BlogItem key={blog.id} blog={blog} />
                 ))}
             </Row>
-            {myBlogsHasMore && (
-                <div className="d-flex justify-content-center w-100" onClick={() => setOffset((s) => s + 1)}>
-                    <Button>Load More</Button>
-                </div>
-            )}
+            <div className="d-flex justify-content-center">
+                {pageInfo.hasPreviousPage && (
+                    <Button
+                        variant="secondary"
+                        className="mr-3"
+                        onClick={() => {
+                            fetchMore({
+                                variables: {
+                                    after: cachedCursor,
+                                },
+                            });
+                        }}
+                    >
+                        Go Back
+                    </Button>
+                )}
+                {pageInfo.hasNextPage && (
+                    <Button
+                        onClick={() => {
+                            fetchMore({
+                                variables: {
+                                    after: pageInfo.endCursor,
+                                },
+                            });
+                        }}
+                    >
+                        Next Page
+                    </Button>
+                )}
+            </div>
         </Card>
     );
 }
@@ -193,6 +199,7 @@ function RecentlyUpdatedBlogs() {
 
             setMyBlogsHasMore(Boolean(response.hasNextBlogs.length));
             setBlogs((b) => [...b, ...response.recentlyUpdatedBlogs]);
+            // eslint-disable-next-line no-empty
         } catch (e) {}
 
         setLoading(false);
@@ -216,12 +223,12 @@ function RecentlyUpdatedBlogs() {
             <h2>Recently Updated</h2>
             <Row>
                 {blogs.map((blog) => (
-                    <BlogItem key={blog.id} blog={blog} updated={true}></BlogItem>
+                    <BlogItem key={blog.id} blog={blog} updated />
                 ))}
             </Row>
             {myBlogsHasMore && (
-                <div className="d-flex justify-content-center w-100" onClick={() => setOffset((s) => s + 1)}>
-                    <Button>Load More</Button>
+                <div className="d-flex justify-content-center w-100">
+                    <Button onClick={() => setOffset((s) => s + 1)}>Load More</Button>
                 </div>
             )}
         </Card>
@@ -274,7 +281,7 @@ function Dashboard() {
                 show={creatingBlog}
                 onHide={() => setCreatingBlog((x) => !x)}
             >
-                <CreateBlog close={() => setCreatingBlog(false)}></CreateBlog>
+                <CreateBlog close={() => setCreatingBlog(false)} />
             </Modal>
             <Container>
                 <Card className="mt-3 p-3">

@@ -418,7 +418,6 @@ function PostComments({
 
             setComments((c: Comment[]) => [...c, ...response.postComments]);
         } catch (e) {
-            console.error(e);
             setError(e.message);
         }
 

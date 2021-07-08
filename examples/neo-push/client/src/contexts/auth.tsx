@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import * as config from "../config";
 
 interface Auth {
@@ -10,20 +10,21 @@ interface Auth {
 // @ts-ignore
 const Context = React.createContext<Auth>({});
 
-function getId(): string | undefined {
+function getId(): string {
     const key = localStorage.getItem(config.JWT_KEY as string);
 
     if (!key) {
-        return;
+        return "";
     }
 
-    return JSON.parse(window.atob(key.split(".")[1])).sub;
+    return JSON.parse(window.atob(key.split(".")[1])).sub as string;
 }
 
 function Provider(props: any) {
     let value;
     let setValue: (...args: any) => void;
 
+    // eslint-disable-next-line prefer-const
     [value, setValue] = useState({
         isLoggedIn: Boolean(localStorage.getItem(config.JWT_KEY as string)),
         getId,

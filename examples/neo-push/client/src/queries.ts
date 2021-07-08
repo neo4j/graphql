@@ -33,24 +33,29 @@ export const CREATE_BLOG = gql`
 `;
 
 export const MY_BLOGS = gql`
-    query myBlogs($id: ID, $offset: Int, $limit: Int, $hasNextBlogsOffset: Int) {
-        myBlogs: blogs(
-            where: { OR: [{ creator: { id: $id } }, { authors: { id: $id } }] }
-            options: { limit: $limit, offset: $offset, sort: { createdAt: DESC } }
-        ) {
-            id
-            name
-            creator {
-                id
-                email
+    query myBlogs($userId: ID, $after: String, $first: Int) {
+        users(where: { id: $userId }) {
+            createdBlogsConnection(first: $first, after: $after, sort: { node: { createdAt: DESC } }) {
+                edges {
+                    cursor
+                    node {
+                        id
+                        name
+                        updatedAt
+                        createdAt
+                        creator {
+                            id
+                            email
+                        }
+                    }
+                }
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                    hasPreviousPage
+                    startCursor
+                }
             }
-            createdAt
-        }
-        hasNextBlogs: blogs(
-            where: { OR: [{ creator: { id: $id } }, { authors: { id: $id } }] }
-            options: { limit: 1, offset: $hasNextBlogsOffset, sort: { createdAt: DESC } }
-        ) {
-            id
         }
     }
 `;
@@ -155,23 +160,27 @@ export const POST = gql`
 `;
 
 export const BLOG_POSTS = gql`
-    query blogPosts($blog: ID, $offset: Int, $limit: Int, $hasNextPostsOffset: Int) {
-        blogPosts: posts(
-            where: { blog: { id: $blog } }
-            options: { offset: $offset, limit: $limit, sort: { createdAt: DESC } }
-        ) {
-            id
-            title
-            author {
-                email
+    query blogPosts($blog: ID, $after: String, $first: Int) {
+        blogs(where: { id: $blog }) {
+            postsConnection(first: $first, after: $after, sort: { node: { createdAt: DESC } }) {
+                edges {
+                    cursor
+                    node {
+                        id
+                        title
+                        author {
+                            email
+                        }
+                        createdAt
+                    }
+                }
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                    hasPreviousPage
+                    startCursor
+                }
             }
-            createdAt
-        }
-        hasNextPosts: posts(
-            where: { blog: { id: $blog } }
-            options: { offset: $hasNextPostsOffset, limit: 1, sort: { createdAt: DESC } }
-        ) {
-            id
         }
     }
 `;

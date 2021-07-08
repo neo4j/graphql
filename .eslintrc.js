@@ -92,6 +92,9 @@ module.exports = {
             files: ["examples/neo-push/client/**/*.tsx"],
             ...typeScriptParser,
             extends: ["airbnb-typescript"],
+            env: {
+                browser: true,
+            },
             rules: {
                 "import/prefer-default-export": "off",
                 "@typescript-eslint/no-unnecessary-type-assertion": ["off"],
@@ -99,6 +102,14 @@ module.exports = {
                 "@typescript-eslint/quotes": "off",
                 "react/jsx-indent": "off",
                 "react/jsx-indent-props": "off",
+                "react/jsx-one-expression-per-line": "off",
+                "react/require-default-props": "off",
+                "react/destructuring-assignment": "off",
+                "max-len": "off",
+                "prefer-destructuring": "off",
+                "object-curly-newline": "off",
+                "comma-dangle": "off",
+                "linebreak-style": ["error", process.platform === "win32" ? "windows" : "unix"],
             },
         },
         {

@@ -1,4 +1,5 @@
-import React, { useState, useContext, useEffect, useCallback } from "react";
+import { useQuery } from "@apollo/client";
+import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
 import {
     Container,
     Card,
@@ -12,9 +13,8 @@ import {
     InputGroup,
     FormControl,
 } from "react-bootstrap";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
 import constants from "../constants";
-import { Link } from "react-router-dom";
 import { graphql, auth } from "../contexts";
 import {
     BLOG,
@@ -69,7 +69,7 @@ function CreatePost({ close, blog }: { close: () => void; blog: BlogInterface })
                     variables: { title, content, user: getId(), blog: blog.id },
                 });
 
-                history.push(constants.POST_PAGE + "/" + response.createPosts.posts[0].id);
+                history.push(`${constants.POST_PAGE}/${response.createPosts.posts[0].id}`);
             } catch (e) {
                 setError(e.message);
             }
@@ -114,7 +114,7 @@ function CreatePost({ close, blog }: { close: () => void; blog: BlogInterface })
 
                     <Form.Label>Content</Form.Label>
                     <div className="mb-3">
-                        <markdown.Editor markdown={content} onChange={(mk: string) => setContent(mk)}></markdown.Editor>
+                        <markdown.Editor markdown={content} onChange={(mk: string) => setContent(mk)} />
                     </div>
 
                     {error && (
@@ -136,45 +136,44 @@ function CreatePost({ close, blog }: { close: () => void; blog: BlogInterface })
     );
 }
 
-function BlogPosts({ blog }: { blog: BlogInterface }) {
-    const { query } = useContext(graphql.Context);
-    const [offset, setOffset] = useState(0);
-    const [limit] = useState(10);
-    const [hasMore, setHasMore] = useState(false);
-    const [posts, setPosts] = useState<PostInterface[]>([]);
-    const [loading, setLoading] = useState(true);
+function PostItem(props: { post: any }) {
+    return (
+        <Col md={{ span: 4 }} className="p-0">
+            <Card className="m-3">
+                <Card.Title className="m-2">{props.post.title}</Card.Title>
+                <Card.Subtitle className="m-2">
+                    <Link to={`${constants.POST_PAGE}/${props.post.id}`}>Read</Link>
+                </Card.Subtitle>
+                <Card.Footer className="text-muted">
+                    <p className="m-0 p-0">- {props.post.author.email}</p>
+                    <p className="m-0 p-0 font-italic">- {props.post.createdAt}</p>
+                </Card.Footer>
+            </Card>
+        </Col>
+    );
+}
 
-    const getPosts = useCallback(async () => {
-        try {
-            const response = await query({
-                query: BLOG_POSTS,
-                variables: {
-                    blog: blog.id,
-                    offset: posts.length,
-                    limit,
-                    hasNextPostsOffset: posts.length === 0 ? limit : posts.length + 1,
-                },
-            });
-
-            setHasMore(Boolean(response.hasNextPosts.length));
-            setPosts((p) => [...p, ...response.blogPosts]);
-        } catch (e) {}
-
-        setLoading(false);
-    }, [offset, posts]);
-
-    useEffect(() => {
-        getPosts();
-    }, [offset]);
+function BlogPosts(props: { blog: BlogInterface }) {
+    const first = 2;
+    const { data, loading, fetchMore } = useQuery(BLOG_POSTS, { variables: { blog: props.blog.id, first } });
+    const startCursor = useRef<string>();
+    const cachedCursor = startCursor.current;
 
     if (loading) {
-        <Card className="mt-3 p-3">
-            <h2>Posts</h2>
-            <div className="d-flex flex-column align-items-center">
-                <Spinner className="mt-5" animation="border" />
-            </div>
-        </Card>;
+        return (
+            <Card className="mt-3 p-3">
+                <h2>Posts</h2>
+                <div className="d-flex flex-column align-items-center">
+                    <Spinner className="mt-5" animation="border" />
+                </div>
+            </Card>
+        );
     }
+
+    const blog = data.blogs[0];
+    const pageInfo = blog.postsConnection.pageInfo;
+    const posts = blog.postsConnection.edges.map((e: any) => e.node) as PostInterface[];
+    startCursor.current = pageInfo.startCursor;
 
     if (!posts.length) {
         return <></>;
@@ -185,32 +184,40 @@ function BlogPosts({ blog }: { blog: BlogInterface }) {
             <h2>Posts</h2>
             <Row>
                 {posts.map((post) => (
-                    <PostItem key={post.id} post={post}></PostItem>
+                    <PostItem key={post.id} post={post} />
                 ))}
             </Row>
-            {hasMore && (
-                <div className="d-flex justify-content-center w-100">
-                    <Button onClick={() => setOffset((s) => s + 1)}>Load More</Button>
-                </div>
-            )}
+            <div className="d-flex justify-content-center">
+                {pageInfo.hasPreviousPage && (
+                    <Button
+                        variant="secondary"
+                        className="mr-3"
+                        onClick={() => {
+                            fetchMore({
+                                variables: {
+                                    after: cachedCursor,
+                                },
+                            });
+                        }}
+                    >
+                        Go Back
+                    </Button>
+                )}
+                {pageInfo.hasNextPage && (
+                    <Button
+                        onClick={() => {
+                            fetchMore({
+                                variables: {
+                                    after: pageInfo.endCursor,
+                                },
+                            });
+                        }}
+                    >
+                        Next Page
+                    </Button>
+                )}
+            </div>
         </Card>
-    );
-}
-
-function PostItem(props: { post: any }) {
-    return (
-        <Col md={{ span: 4 }} className="p-0">
-            <Card className="m-3">
-                <Card.Title className="m-2">{props.post.title}</Card.Title>
-                <Card.Subtitle className="m-2">
-                    <Link to={constants.POST_PAGE + `/${props.post.id}`}>Read</Link>
-                </Card.Subtitle>
-                <Card.Footer className="text-muted">
-                    <p className="m-0 p-0">- {props.post.author.email}</p>
-                    <p className="m-0 p-0 font-italic">- {props.post.createdAt}</p>
-                </Card.Footer>
-            </Card>
-        </Col>
     );
 }
 
@@ -287,11 +294,7 @@ function DeleteBlog(props: { blog: BlogInterface; close: () => void }) {
     );
 }
 
-function AdminModal(props: {
-    blog: BlogInterface;
-    close: () => void;
-    setBlog: (cb: (b: BlogInterface) => BlogInterface) => void;
-}) {
+function AdminModal(props: { blog: BlogInterface; setBlog: (cb: (b: BlogInterface) => BlogInterface) => void }) {
     const [authorEmail, setAuthorEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -389,7 +392,7 @@ function AdminModal(props: {
                     </Row>
                 )}
 
-                <hr></hr>
+                <hr />
 
                 <h4>Assign Author</h4>
                 <div className="d-flex mt-3">
@@ -504,7 +507,7 @@ function Blog() {
                 show={creatingPost}
                 onHide={() => setCreatingPost((x) => !x)}
             >
-                <CreatePost close={() => setCreatingPost(false)} blog={blog}></CreatePost>
+                <CreatePost close={() => setCreatingPost(false)} blog={blog} />
             </Modal>
             <Modal
                 aria-labelledby="contained-modal-title-vcenter"
@@ -513,7 +516,7 @@ function Blog() {
                 show={isDeleting}
                 onHide={() => setIsDeleting((x) => !x)}
             >
-                <DeleteBlog close={() => setIsDeleting(false)} blog={blog}></DeleteBlog>
+                <DeleteBlog close={() => setIsDeleting(false)} blog={blog} />
             </Modal>
             <Modal
                 aria-labelledby="contained-modal-title-vcenter"
@@ -522,7 +525,7 @@ function Blog() {
                 show={isAdminModalOpen}
                 onHide={() => setIsAdminModalOpen((x) => !x)}
             >
-                <AdminModal setBlog={setBlog} close={() => setCreatingPost(false)} blog={blog}></AdminModal>
+                <AdminModal setBlog={setBlog} blog={blog} />
             </Modal>
             <Container>
                 <Card className="mt-3 p-3">
@@ -597,7 +600,7 @@ function Blog() {
                         </>
                     )}
                 </Card>
-                <BlogPosts blog={blog}></BlogPosts>
+                <BlogPosts blog={blog} />
             </Container>
         </>
     );
