@@ -127,8 +127,17 @@ input GenreConnectWhere {
     node: GenreWhere!
 }
 
-input MovieSearchConnectFieldInput {
+input MovieConnectWhere {
+    node: MovieWhere!
+}
+
+input MovieSearchGenreConnectFieldInput {
     where: GenreConnectWhere
+}
+
+input MovieSearchMovieConnectFieldInput {
+    where: MovieConnectWhere
+    connect: [MovieConnectInput!]
 }
 
 type MovieSearchConnection {
@@ -151,7 +160,8 @@ input MovieSearchGenreCreateFieldInput {
 }
 
 input MovieSearchConnectInput {
-    Genre: [MovieSearchConnectFieldInput!]
+    Genre: [MovieSearchGenreConnectFieldInput!]
+    Movie: [MovieSearchMovieConnectFieldInput!]
 }
 
 input MovieSearchCreateInput {
@@ -191,7 +201,7 @@ input MovieSearchGenreDeleteFieldInput {
 
 input MovieSearchGenreFieldInput {
     create: [MovieSearchGenreCreateFieldInput!]
-    connect: [MovieSearchConnectFieldInput!]
+    connect: [MovieSearchGenreConnectFieldInput!]
 }
 
 input MovieSearchGenreUpdateConnectionInput {
@@ -201,7 +211,7 @@ input MovieSearchGenreUpdateConnectionInput {
 input MovieSearchGenreUpdateFieldInput {
     where: MovieSearchConnectionWhere
     update: MovieSearchGenreUpdateConnectionInput
-    connect: [MovieSearchConnectFieldInput!]
+    connect: [MovieSearchGenreConnectFieldInput!]
     disconnect: [MovieSearchGenreDisconnectFieldInput!]
     create: [MovieSearchGenreCreateFieldInput!]
     delete: [MovieSearchGenreDeleteFieldInput!]
@@ -230,7 +240,7 @@ input MovieSearchMovieDeleteFieldInput {
 
 input MovieSearchMovieFieldInput {
     create: [MovieSearchMovieCreateFieldInput!]
-    connect: [MovieSearchConnectFieldInput!]
+    connect: [MovieSearchMovieConnectFieldInput!]
 }
 
 input MovieSearchMovieUpdateConnectionInput {
@@ -240,7 +250,7 @@ input MovieSearchMovieUpdateConnectionInput {
 input MovieSearchMovieUpdateFieldInput {
     where: MovieSearchConnectionWhere
     update: MovieSearchMovieUpdateConnectionInput
-    connect: [MovieSearchConnectFieldInput!]
+    connect: [MovieSearchMovieConnectFieldInput!]
     disconnect: [MovieSearchMovieDisconnectFieldInput!]
     create: [MovieSearchMovieCreateFieldInput!]
     delete: [MovieSearchMovieDeleteFieldInput!]

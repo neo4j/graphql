@@ -676,7 +676,7 @@ function makeAugmentedSchema(
                         });
                     }
 
-                    const connectName = `${node.name}${upperFirst(rel.fieldName)}ConnectFieldInput`;
+                    const connectName = `${unionPrefix}ConnectFieldInput`;
                     const connect = rel.typeMeta.array ? `[${connectName}!]` : `${connectName}`;
                     if (!composer.has(connectName)) {
                         composer.createInputTC({

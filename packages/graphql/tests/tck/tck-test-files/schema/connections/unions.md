@@ -97,7 +97,7 @@ input AuthorPublicationsBookDisconnectFieldInput {
 
 input AuthorPublicationsBookFieldInput {
     create: [AuthorPublicationsBookCreateFieldInput!]
-    connect: [AuthorPublicationsConnectFieldInput!]
+    connect: [AuthorPublicationsBookConnectFieldInput!]
 }
 
 input AuthorPublicationsBookUpdateConnectionInput {
@@ -108,7 +108,7 @@ input AuthorPublicationsBookUpdateConnectionInput {
 input AuthorPublicationsBookUpdateFieldInput {
     where: AuthorPublicationsConnectionWhere
     update: AuthorPublicationsBookUpdateConnectionInput
-    connect: [AuthorPublicationsConnectFieldInput!]
+    connect: [AuthorPublicationsBookConnectFieldInput!]
     disconnect: [AuthorPublicationsBookDisconnectFieldInput!]
     create: [AuthorPublicationsBookCreateFieldInput!]
     delete: [AuthorPublicationsBookDeleteFieldInput!]
@@ -118,9 +118,19 @@ input BookConnectWhere {
     node: BookWhere!
 }
 
-input AuthorPublicationsConnectFieldInput {
+input JournalConnectWhere {
+    node: JournalWhere!
+}
+
+input AuthorPublicationsBookConnectFieldInput {
     where: BookConnectWhere
     connect: [BookConnectInput!]
+    properties: WroteCreateInput!
+}
+
+input AuthorPublicationsJournalConnectFieldInput {
+    where: JournalConnectWhere
+    connect: [JournalConnectInput!]
     properties: WroteCreateInput!
 }
 
@@ -142,7 +152,8 @@ input AuthorPublicationsConnectionWhere {
 }
 
 input AuthorPublicationsConnectInput {
-    Book: [AuthorPublicationsConnectFieldInput!]
+    Book: [AuthorPublicationsBookConnectFieldInput!]
+    Journal: [AuthorPublicationsJournalConnectFieldInput!]
 }
 
 input AuthorPublicationsCreateInput {
@@ -191,7 +202,7 @@ input AuthorPublicationsJournalDisconnectFieldInput {
 
 input AuthorPublicationsJournalFieldInput {
     create: [AuthorPublicationsJournalCreateFieldInput!]
-    connect: [AuthorPublicationsConnectFieldInput!]
+    connect: [AuthorPublicationsJournalConnectFieldInput!]
 }
 
 input AuthorPublicationsJournalUpdateConnectionInput {
@@ -202,7 +213,7 @@ input AuthorPublicationsJournalUpdateConnectionInput {
 input AuthorPublicationsJournalUpdateFieldInput {
     where: AuthorPublicationsConnectionWhere
     update: AuthorPublicationsJournalUpdateConnectionInput
-    connect: [AuthorPublicationsConnectFieldInput!]
+    connect: [AuthorPublicationsJournalConnectFieldInput!]
     disconnect: [AuthorPublicationsJournalDisconnectFieldInput!]
     create: [AuthorPublicationsJournalCreateFieldInput!]
     delete: [AuthorPublicationsJournalDeleteFieldInput!]
