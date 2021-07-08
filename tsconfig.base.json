@@ -10,6 +10,7 @@
         "strict": true,
         "target": "es6",
         // TODO Refactor so that noImplicitAny is no longer needed
-        "noImplicitAny": false
+        "noImplicitAny": false,
+        "resolveJsonModule": true
     }
 }

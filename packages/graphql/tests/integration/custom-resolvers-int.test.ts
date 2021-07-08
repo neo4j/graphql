@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-/* eslint-disable no-useless-escape */
 import { Driver } from "neo4j-driver";
 import { graphql, createSourceEventStream, parse } from "graphql";
 import { generate } from "randomstring";
@@ -236,7 +235,7 @@ describe("Custom Resolvers", () => {
                         typeDefs = `
                             type Query {
                                 test: ${type}! @cypher(statement: """
-                                RETURN \"${id}\"
+                                RETURN \\"${id}\\"
                                 """)
                             }
                         `;
@@ -304,7 +303,7 @@ describe("Custom Resolvers", () => {
 
                             type Query {
                                 test: Test! @cypher(statement: """
-                                RETURN {id: \"${id}\"}
+                                RETURN {id: \\"${id}\\"}
                                 """)
                             }
                         `;
@@ -404,7 +403,7 @@ describe("Custom Resolvers", () => {
 
                 type Mutation {
                     test(id: ID!): ID! @cypher(statement: """
-                        RETURN \"${id}\" + $id
+                        RETURN \\"${id}\\" + $id
                     """)
                 }
             `;
@@ -684,4 +683,3 @@ describe("Custom Resolvers", () => {
         });
     });
 });
-/* eslint-enable */
