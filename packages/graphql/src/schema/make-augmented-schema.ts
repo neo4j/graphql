@@ -623,35 +623,18 @@ function makeAugmentedSchema(
                 const upperNodeName = upperFirst(node.name);
                 const typePrefix = `${upperNodeName}${upperFieldName}`;
 
-                const unionCreateName = `${typePrefix}CreateInput`;
-                const unionCreateInput = composer.createInputTC({
-                    name: unionCreateName,
-                    fields: {},
-                });
-
-                const unionUpdateName = `${typePrefix}UpdateInput`;
-                const unionUpdateInput = composer.createInputTC({
-                    name: unionUpdateName,
-                    fields: {},
-                });
-
-                const unionConnectName = `${typePrefix}ConnectInput`;
-                const unionConnectInput = composer.createInputTC({
-                    name: unionConnectName,
-                    fields: {},
-                });
-
-                const unionDisconnectName = `${typePrefix}DisconnectInput`;
-                const unionDisconnectInput = composer.createInputTC({
-                    name: unionDisconnectName,
-                    fields: {},
-                });
-
-                const unionDeleteName = `${typePrefix}DeleteInput`;
-                const unionDeleteInput = composer.createInputTC({
-                    name: unionDeleteName,
-                    fields: {},
-                });
+                const [
+                    unionConnectInput,
+                    unionCreateInput,
+                    unionDeleteInput,
+                    unionDisconnectInput,
+                    unionUpdateInput,
+                ] = ["Connect", "Create", "Delete", "Disconnect", "Update"].map((operation) =>
+                    composer.createInputTC({
+                        name: `${typePrefix}${operation}Input`,
+                        fields: {},
+                    })
+                );
 
                 refNodes.forEach((n) => {
                     const unionPrefix = `${node.name}${upperFieldName}${n.name}`;
