@@ -214,7 +214,7 @@ input MovieSearchGenreUpdateConnectionInput {
 }
 
 input MovieSearchGenreUpdateFieldInput {
-    where: MovieSearchConnectionWhere
+    where: MovieSearchGenreConnectionWhere
     update: MovieSearchGenreUpdateConnectionInput
     connect: [MovieSearchGenreConnectFieldInput!]
     disconnect: [MovieSearchGenreDisconnectFieldInput!]
@@ -253,7 +253,7 @@ input MovieSearchMovieUpdateConnectionInput {
 }
 
 input MovieSearchMovieUpdateFieldInput {
-    where: MovieSearchConnectionWhere
+    where: MovieSearchMovieConnectionWhere
     update: MovieSearchMovieUpdateConnectionInput
     connect: [MovieSearchMovieConnectFieldInput!]
     disconnect: [MovieSearchMovieDisconnectFieldInput!]

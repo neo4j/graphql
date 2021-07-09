@@ -293,7 +293,7 @@ describe("unions", () => {
                     update: {
                         search: {
                             Genre: {
-                                where: { Genre: { name: "${genreName}" } },
+                                where: { node: { name: "${genreName}" } },
                                 update: {
                                     node: { name: "${newGenreName}" }
                                 }

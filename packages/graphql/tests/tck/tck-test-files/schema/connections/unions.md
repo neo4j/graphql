@@ -106,7 +106,7 @@ input AuthorPublicationsBookUpdateConnectionInput {
 }
 
 input AuthorPublicationsBookUpdateFieldInput {
-    where: AuthorPublicationsConnectionWhere
+    where: AuthorPublicationsBookConnectionWhere
     update: AuthorPublicationsBookUpdateConnectionInput
     connect: [AuthorPublicationsBookConnectFieldInput!]
     disconnect: [AuthorPublicationsBookDisconnectFieldInput!]
@@ -216,7 +216,7 @@ input AuthorPublicationsJournalUpdateConnectionInput {
 }
 
 input AuthorPublicationsJournalUpdateFieldInput {
-    where: AuthorPublicationsConnectionWhere
+    where: AuthorPublicationsJournalConnectionWhere
     update: AuthorPublicationsJournalUpdateConnectionInput
     connect: [AuthorPublicationsJournalConnectFieldInput!]
     disconnect: [AuthorPublicationsJournalDisconnectFieldInput!]

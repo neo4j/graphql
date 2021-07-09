@@ -714,7 +714,7 @@ function makeAugmentedSchema(
                         composer.createInputTC({
                             name: updateName,
                             fields: {
-                                where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
+                                where: whereName,
                                 update: connectionUpdateInputName,
                                 connect,
                                 disconnect: rel.typeMeta.array ? `[${disconnectName}!]` : disconnectName,

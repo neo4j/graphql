@@ -257,7 +257,7 @@ mutation {
         update: {
             search: {
                 Genre: {
-                    where: { Genre: { name: "some genre" } }
+                    where: { node: { name: "some genre" } }
                     update: { node: { name: "some new genre" } }
                 }
             }
@@ -278,7 +278,7 @@ WHERE this.title = $this_title
 
 WITH this
 OPTIONAL MATCH (this)-[this_search0:SEARCH]->(this_search_Genre0:Genre)
-WHERE this_search_Genre0.name = $updateMovies.args.update.search.Genre[0].where.Genre.name
+WHERE this_search_Genre0.name = $updateMovies.args.update.search.Genre[0].where.node.name
 CALL apoc.do.when(this_search_Genre0 IS NOT NULL, " SET this_search_Genre0.name = $this_update_search_Genre0_name RETURN count(*) ", "", {this:this, updateMovies: $updateMovies, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name}) YIELD value as _
 
 RETURN this { .title } AS this
@@ -307,7 +307,7 @@ RETURN this { .title } AS this
                                 }
                             },
                             "where": {
-                                "Genre": {
+                                "node": {
                                     "name": "some genre"
                                 }
                             }
