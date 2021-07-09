@@ -67,6 +67,10 @@ function createAuthPredicate({
     }
     const { jwt } = context;
 
+    if (!jwt) {
+        throw new Error("Can't generate auth predicate - no JWT in context");
+    }
+
     const result = Object.entries(rule[kind] as any).reduce(
         (res: Res, [key, value]) => {
             if (key === "AND" || key === "OR") {

@@ -131,7 +131,9 @@ class Neo4jGraphQL {
 
             context.resolveTree = getNeo4jResolveTree(resolveInfo);
 
-            context.jwt = getJWT(context);
+            if (!context.jwt) {
+                context.jwt = getJWT(context);
+            }
 
             context.auth = createAuthParam({ context });
         });

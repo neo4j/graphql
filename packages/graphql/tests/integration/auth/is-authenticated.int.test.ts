@@ -688,5 +688,47 @@ describe("auth/is-authenticated", () => {
                 await session.close();
             }
         });
+
+        test("should not throw if decoded JWT passed in context", async () => {
+            const session = driver.session({ defaultAccessMode: "READ" });
+
+            const typeDefs = `
+                type Product @auth(rules: [{
+                    operations: [READ],
+                    isAuthenticated: true
+                }]) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const query = `
+                {
+                    products {
+                        id
+                    }
+                }
+            `;
+
+            const jwt = {
+                sub: "1234567890",
+                name: "John Doe",
+                iat: 1516239022,
+            };
+
+            try {
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, jwt },
+                });
+
+                expect(gqlResult.errors).toBeFalsy();
+            } finally {
+                await session.close();
+            }
+        });
     });
 });
