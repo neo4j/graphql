@@ -160,9 +160,7 @@ RETURN this0 {
 ```graphql
 mutation {
     updateMovies(
-        create: {
-            search: { Genre: { create: [{ node: { name: "some genre" } }] } }
-        }
+        create: { search: { Genre: [{ node: { name: "some genre" } }] } }
     ) {
         movies {
             title

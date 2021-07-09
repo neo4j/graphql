@@ -119,8 +119,13 @@ input MovieOptions {
     offset: Int
 }
 
+input MovieSearchCreateFieldInput {
+    Genre: [MovieSearchGenreCreateFieldInput!]
+    Movie: [MovieSearchMovieCreateFieldInput!]
+}
+
 input MovieRelationInput {
-    search: MovieSearchCreateInput
+    search: MovieSearchCreateFieldInput
 }
 
 input GenreConnectWhere {

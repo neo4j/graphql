@@ -227,4 +227,324 @@ describe("Nested unions", () => {
             await session.close();
         }
     });
+
+    test("chain multiple deletes, all for union relationships", async () => {
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const session = driver.session();
+        const movieTitle = generate({ charset: "alphabetic" });
+        const actorName = generate({ charset: "alphabetic" });
+        const seriesName = generate({ charset: "alphabetic" });
+
+        const source = `
+            mutation {
+                updateMovies(
+                    where: { title: "${movieTitle}" }
+                    delete: {
+                        actors: {
+                            LeadActor: {
+                                where: { node: { name: "${actorName}" } }
+                                delete: { actedIn: { Series: { where: { node: { name: "${seriesName}" } } } } }
+                            }
+                        }
+                    }
+                ) {
+                    movies {
+                        title
+                        actors {
+                            ... on LeadActor {
+                                name
+                                actedIn {
+                                    ... on Series {
+                                        name
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                    CREATE (:Movie {title:$movieTitle})<-[:ACTED_IN]-(:LeadActor {name:$actorName})-[:ACTED_IN]->(:Series {name:$seriesName})
+                `,
+                { movieTitle, seriesName, actorName }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source,
+                contextValue: { driver },
+            });
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data?.updateMovies.movies).toEqual([
+                {
+                    title: movieTitle,
+                    actors: [],
+                },
+            ]);
+
+            const cypherMovie = `
+                MATCH (m:Movie {title: $movieTitle})
+                RETURN m
+            `;
+
+            const neo4jResultMovie = await session.run(cypherMovie, { movieTitle });
+            expect(neo4jResultMovie.records).toHaveLength(1);
+
+            const cypherActor = `
+                MATCH (a:LeadActor {name: $actorName})
+                RETURN a
+            `;
+
+            const neo4jResultActor = await session.run(cypherActor, { actorName });
+            expect(neo4jResultActor.records).toHaveLength(0);
+
+            const cypherSeries = `
+                MATCH (s:Series {name: $seriesName})
+                RETURN s
+            `;
+
+            const neo4jResultSeries = await session.run(cypherSeries, { seriesName });
+            expect(neo4jResultSeries.records).toHaveLength(0);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("chain multiple creates under update, all for union relationships", async () => {
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const session = driver.session();
+        const movieTitle = generate({ charset: "alphabetic" });
+        const actorName = generate({ charset: "alphabetic" });
+        const seriesName = generate({ charset: "alphabetic" });
+
+        const source = `
+            mutation {
+                updateMovies(
+                    where: { title: "${movieTitle}" }
+                    create: {
+                        actors: {
+                            LeadActor: {
+                                node: {
+                                    name: "${actorName}"
+                                    actedIn: {
+                                        Series: {
+                                            create: [
+                                                {
+                                                    node: {
+                                                        name: "${seriesName}"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    movies {
+                        title
+                        actors {
+                            ... on LeadActor {
+                                name
+                                actedIn {
+                                    ... on Series {
+                                        name
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                    CREATE (:Movie {title:$movieTitle})
+                `,
+                { movieTitle, seriesName, actorName }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source,
+                contextValue: { driver },
+            });
+            expect(gqlResult.errors).toBeFalsy();
+            // expect(gqlResult.data?.updateMovies.movies).toEqual([
+            //     {
+            //         title: movieTitle,
+            //         actors: [
+            //             {
+            //                 name: actorName,
+            //                 actedIn: [
+            //                     {},
+            //                     {
+            //                         name: seriesName,
+            //                     },
+            //                 ],
+            //             },
+            //         ],
+            //     },
+            // ]);
+            expect(gqlResult.data?.updateMovies.movies[0].title).toEqual(movieTitle);
+            expect(gqlResult.data?.updateMovies.movies[0].actors[0].name).toEqual(actorName);
+            expect(gqlResult.data?.updateMovies.movies[0].actors[0].actedIn).toContainEqual({
+                name: seriesName,
+            });
+
+            const cypherMovie = `
+                MATCH (m:Movie {title: $movieTitle})
+                RETURN m
+            `;
+
+            const neo4jResultMovie = await session.run(cypherMovie, { movieTitle });
+            expect(neo4jResultMovie.records).toHaveLength(1);
+
+            const cypherActor = `
+                MATCH (a:LeadActor {name: $actorName})
+                RETURN a
+            `;
+
+            const neo4jResultActor = await session.run(cypherActor, { actorName });
+            expect(neo4jResultActor.records).toHaveLength(1);
+
+            const cypherSeries = `
+                MATCH (s:Series {name: $seriesName})
+                RETURN s
+            `;
+
+            const neo4jResultSeries = await session.run(cypherSeries, { seriesName });
+            expect(neo4jResultSeries.records).toHaveLength(1);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("chain multiple creates under create, all for union relationships", async () => {
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const session = driver.session();
+        const movieTitle = generate({ charset: "alphabetic" });
+        const actorName = generate({ charset: "alphabetic" });
+        const seriesName = generate({ charset: "alphabetic" });
+
+        const source = `
+            mutation {
+                createMovies(
+                    input: [
+                        {
+                            title: "${movieTitle}"
+                            actors: {
+                                LeadActor: {
+                                    create: [
+                                        {
+                                            node: {
+                                                name: "${actorName}"
+                                                actedIn: {
+                                                    Series: {
+                                                        create: [
+                                                            {
+                                                                node: {
+                                                                    name: "${seriesName}"
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                ) {
+                    movies {
+                        title
+                        actors {
+                            ... on LeadActor {
+                                name
+                                actedIn {
+                                    ... on Series {
+                                        name
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source,
+                contextValue: { driver },
+            });
+            expect(gqlResult.errors).toBeFalsy();
+            // expect(gqlResult.data?.createMovies.movies).toEqual([
+            //     {
+            //         title: movieTitle,
+            //         actors: [
+            //             {
+            //                 name: actorName,
+            //                 actedIn: [
+            //                     {},
+            //                     {
+            //                         name: seriesName,
+            //                     },
+            //                 ],
+            //             },
+            //         ],
+            //     },
+            // ]);
+            expect(gqlResult.data?.createMovies.movies[0].title).toEqual(movieTitle);
+            expect(gqlResult.data?.createMovies.movies[0].actors[0].name).toEqual(actorName);
+            expect(gqlResult.data?.createMovies.movies[0].actors[0].actedIn).toContainEqual({
+                name: seriesName,
+            });
+
+            const cypherMovie = `
+                MATCH (m:Movie {title: $movieTitle})
+                RETURN m
+            `;
+
+            const neo4jResultMovie = await session.run(cypherMovie, { movieTitle });
+            expect(neo4jResultMovie.records).toHaveLength(1);
+
+            const cypherActor = `
+                MATCH (a:LeadActor {name: $actorName})
+                RETURN a
+            `;
+
+            const neo4jResultActor = await session.run(cypherActor, { actorName });
+            expect(neo4jResultActor.records).toHaveLength(1);
+
+            const cypherSeries = `
+                MATCH (s:Series {name: $seriesName})
+                RETURN s
+            `;
+
+            const neo4jResultSeries = await session.run(cypherSeries, { seriesName });
+            expect(neo4jResultSeries.records).toHaveLength(1);
+        } finally {
+            await session.close();
+        }
+    });
 });

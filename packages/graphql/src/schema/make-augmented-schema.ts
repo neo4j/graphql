@@ -636,6 +636,11 @@ function makeAugmentedSchema(
                     })
                 );
 
+                const unionCreateFieldInput = composer.createInputTC({
+                    name: `${typePrefix}CreateFieldInput`,
+                    fields: {},
+                });
+
                 refNodes.forEach((n) => {
                     const unionPrefix = `${node.name}${upperFieldName}${n.name}`;
                     const updateField = `${n.name}UpdateInput`;
@@ -663,6 +668,10 @@ function makeAugmentedSchema(
 
                         unionCreateInput.addFields({
                             [n.name]: nodeFieldInputName,
+                        });
+
+                        unionCreateFieldInput.addFields({
+                            [n.name]: `[${createName}!]`,
                         });
                     }
 
@@ -718,6 +727,7 @@ function makeAugmentedSchema(
                             [n.name]: update,
                         });
                     }
+
                     composer.createInputTC({
                         name: connectionUpdateInputName,
                         fields: {
@@ -792,7 +802,7 @@ function makeAugmentedSchema(
                 });
 
                 nodeRelationInput.addFields({
-                    [rel.fieldName]: unionCreateInput,
+                    [rel.fieldName]: unionCreateFieldInput,
                 });
 
                 nodeUpdateInput.addFields({

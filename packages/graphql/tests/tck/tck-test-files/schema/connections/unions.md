@@ -96,8 +96,8 @@ input AuthorPublicationsBookDisconnectFieldInput {
 }
 
 input AuthorPublicationsBookFieldInput {
-    create: [AuthorPublicationsBookCreateFieldInput!]
     connect: [AuthorPublicationsBookConnectFieldInput!]
+    create: [AuthorPublicationsBookCreateFieldInput!]
 }
 
 input AuthorPublicationsBookUpdateConnectionInput {
@@ -156,6 +156,11 @@ input AuthorPublicationsConnectInput {
     Journal: [AuthorPublicationsJournalConnectFieldInput!]
 }
 
+input AuthorPublicationsCreateFieldInput {
+    Book: [AuthorPublicationsBookCreateFieldInput!]
+    Journal: [AuthorPublicationsJournalCreateFieldInput!]
+}
+
 input AuthorPublicationsCreateInput {
     Book: AuthorPublicationsBookFieldInput
     Journal: AuthorPublicationsJournalFieldInput
@@ -201,8 +206,8 @@ input AuthorPublicationsJournalDisconnectFieldInput {
 }
 
 input AuthorPublicationsJournalFieldInput {
-    create: [AuthorPublicationsJournalCreateFieldInput!]
     connect: [AuthorPublicationsJournalConnectFieldInput!]
+    create: [AuthorPublicationsJournalCreateFieldInput!]
 }
 
 input AuthorPublicationsJournalUpdateConnectionInput {
@@ -226,7 +231,7 @@ type AuthorPublicationsRelationship implements Wrote {
 }
 
 input AuthorRelationInput {
-    publications: AuthorPublicationsCreateInput
+    publications: AuthorPublicationsCreateFieldInput
 }
 
 """
