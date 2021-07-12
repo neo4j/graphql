@@ -34,7 +34,7 @@ mutation {
                     create: [
                         {
                             node: { name: "Tom Hanks" }
-                            properties: { screenTime: 60 }
+                            relationship: { screenTime: 60 }
                         }
                     ]
                 }

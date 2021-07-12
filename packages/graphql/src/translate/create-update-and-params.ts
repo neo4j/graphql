@@ -216,7 +216,7 @@ function createUpdateAndParams({
                             } else {
                                 updateStrs.push(`", "", ${apocArgs})`);
                             }
-                            updateStrs.push(`YIELD value as ${relationshipVariable}_${key}${index}_properties`);
+                            updateStrs.push(`YIELD value as ${relationshipVariable}_${key}${index}_relationship`);
                             res.strs.push(updateStrs.join("\n"));
                         }
                     }
@@ -306,9 +306,9 @@ function createUpdateAndParams({
                                 }]${outStr}(${nodeName})`
                             );
 
-                            if (create.properties) {
+                            if (create.relationship) {
                                 const setA = createSetRelationshipPropertiesAndParams({
-                                    properties: create.properties,
+                                    properties: create.relationship,
                                     varName: propertiesName,
                                     relationship,
                                     operation: "CREATE",
