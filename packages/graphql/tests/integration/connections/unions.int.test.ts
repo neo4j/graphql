@@ -150,7 +150,7 @@ describe("Connections -> Unions", () => {
         query {
             authors(where: { name: "Charles Dickens" }) {
                 name
-                publicationsConnection(where: { Book: { title: "Oliver Twist" } }) {
+                publicationsConnection(where: { Book: { node: { title: "Oliver Twist" } } }) {
                     edges {
                         words
                         node {

@@ -93,10 +93,8 @@ query {
         name
         publicationsConnection(
             where: {
-                OR: [
-                    { Book: { title: "Book Title" } }
-                    { Journal: { subject: "Journal Subject" } }
-                ]
+                Book: { node: { title: "Book Title" } }
+                Journal: { node: { subject: "Journal Subject" } }
             }
         ) {
             edges {
@@ -124,13 +122,13 @@ CALL {
     CALL {
         WITH this
         OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Book:Book)
-        WHERE (this_Book.title = $this_publicationsConnection.args.where.OR[0].Book.title)
+        WHERE this_Book.title = $this_publicationsConnection.args.where.Book.node.title
         WITH { words: this_wrote.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
         RETURN edge
     UNION
         WITH this
         OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Journal:Journal)
-        WHERE (this_Journal.subject = $this_publicationsConnection.args.where.OR[1].Journal.subject)
+        WHERE this_Journal.subject = $this_publicationsConnection.args.where.Journal.node.subject
         WITH { words: this_wrote.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
         RETURN edge
     }
@@ -147,18 +145,16 @@ RETURN this { .name, publicationsConnection } as this
     "this_publicationsConnection": {
         "args": {
             "where": {
-                "OR": [
-                    {
-                        "Book": {
-                            "title": "Book Title"
-                        }
-                    },
-                    {
-                        "Journal": {
-                            "subject": "Journal Subject"
-                        }
+                "Book": {
+                    "node": {
+                        "title": "Book Title"
                     }
-                ]
+                },
+                "Journal": {
+                    "node": {
+                        "subject": "Journal Subject"
+                    }
+                }
             }
         }
     }
