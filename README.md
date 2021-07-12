@@ -34,24 +34,8 @@ This is a TypeScript Monorepo managed with [Yarn Workspaces](https://classic.yar
 
 Blogs, talks and other content surrounding Neo4j GraphQL. Sign up for [Nodes 2021](https://neo4j.brand.live/c/2021nodes-live) to view even more Neo4j GraphQL content.
 
-### Securing Your Graph With Neo4j GraphQL
-
-Blog: https://medium.com/neo4j/securing-your-graph-with-neo4j-graphql-91a2d7b08631
-
-Talk: https://youtu.be/FhOAQJluTIg
-
-### Neo4j and GraphQL The Past, Present and Future
-
-Talk: https://youtu.be/sZ-eBznM71M
-
-### Migrating To The Official Neo4j GraphQL Library
-
-Live Stream: https://youtu.be/4_rp1ikvFKc
-
-### Announcing the Stable Release of the Official Neo4j GraphQL Library 1.0.0
-
-Blog: https://medium.com/neo4j/announcing-the-stable-release-of-the-official-neo4j-graphql-library-1-0-0-6cdd30cd40b
-
-### Announcing the Neo4j GraphQL Library Beta Release
-
-Blog: https://medium.com/neo4j/announcing-the-neo4j-graphql-library-beta-99ae8541bbe7
+1. [Neo4j and GraphQL The Past, Present and Future](https://youtu.be/sZ-eBznM71M)
+2. [Securing Your Graph With Neo4j GraphQL](https://medium.com/neo4j/securing-your-graph-with-neo4j-graphql-91a2d7b08631)
+3. [Migrating To The Official Neo4j GraphQL Library](https://youtu.be/4_rp1ikvFKc)
+4. [Announcing the Stable Release of the Official Neo4j GraphQL Library 1.0.0](https://medium.com/neo4j/announcing-the-stable-release-of-the-official-neo4j-graphql-library-1-0-0-6cdd30cd40b)
+5. [Announcing the Neo4j GraphQL Library Beta Release](https://medium.com/neo4j/announcing-the-neo4j-graphql-library-beta-99ae8541bbe7)
