@@ -3,6 +3,7 @@
 💡 Welcome to the Monorepo for [Neo4j](https://neo4j.com/) + [GraphQL](https://graphql.org/).
 
 ![Neo4j + GraphQL](./docs/images/banner.png)
+
 <p align="center">
   <a href="https://discord.gg/neo4j">
     <img alt="Discord" src="https://img.shields.io/discord/787399249741479977?logo=discord&logoColor=white">
@@ -28,3 +29,29 @@ This is a TypeScript Monorepo managed with [Yarn Workspaces](https://classic.yar
 
 1. [`@neo4j/graphql`](./packages/graphql) - Familiar GraphQL generation, for usage with an API such as [Apollo Server](https://www.apollographql.com/docs/apollo-server/)
 2. [`@neo4j/graphql-ogm`](./packages/ogm) - Use GraphQL Type Definitions to drive interactions with the database
+
+## Media
+
+Blogs, talks and other content surrounding Neo4j GraphQL. Sign up for [Nodes 2021](https://neo4j.brand.live/c/2021nodes-live) to view even more Neo4j GraphQL content.
+
+### Securing Your Graph With Neo4j GraphQL
+
+Blog: https://medium.com/neo4j/securing-your-graph-with-neo4j-graphql-91a2d7b08631
+
+Talk: https://youtu.be/FhOAQJluTIg
+
+### Neo4j and GraphQL The Past, Present and Future
+
+Talk: https://youtu.be/sZ-eBznM71M
+
+### Migrating To The Official Neo4j GraphQL Library
+
+Live Stream: https://youtu.be/4_rp1ikvFKc
+
+### Announcing the Stable Release of the Official Neo4j GraphQL Library 1.0.0
+
+Blog: https://medium.com/neo4j/announcing-the-stable-release-of-the-official-neo4j-graphql-library-1-0-0-6cdd30cd40b
+
+### Announcing the Neo4j GraphQL Library Beta Release
+
+Blog: https://medium.com/neo4j/announcing-the-neo4j-graphql-library-beta-99ae8541bbe7
