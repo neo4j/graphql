@@ -51,78 +51,88 @@ function createCreateAndParams({
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const _varName = `${varName}_${key}`;
-        const relationField = node.relationFields.find((x) => key.startsWith(x.fieldName));
+        const relationField = node.relationFields.find((x) => key === x.fieldName);
         const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
-        const pointField = node.pointFields.find((x) => key.startsWith(x.fieldName));
+        const pointField = node.pointFields.find((x) => key === x.fieldName);
 
         if (relationField) {
-            let refNode: Node;
-            let unionTypeName = "";
+            const refNodes: Node[] = [];
+            // let unionTypeName = "";
 
             if (relationField.union) {
-                [unionTypeName] = key.split(`${relationField.fieldName}_`).join("").split("_");
-                refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
+                // [unionTypeName] = key.split(`${relationField.fieldName}_`).join("").split("_");
+
+                Object.keys(value).forEach((unionTypeName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                });
+
+                // refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
             } else {
-                refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
-            if (value.create) {
-                const creates = relationField.typeMeta.array ? value.create : [value.create];
-                creates.forEach((create, index) => {
-                    res.creates.push(`\nWITH ${withVars.join(", ")}`);
+            refNodes.forEach((refNode) => {
+                const v = relationField.union ? value[refNode.name] : value;
+                const unionTypeName = relationField.union ? refNode.name : "";
 
-                    const baseName = `${_varName}${index}`;
-                    const nodeName = `${baseName}_node`;
-                    const propertiesName = `${baseName}_relationship`;
+                if (v.create) {
+                    const creates = relationField.typeMeta.array ? v.create : [v.create];
+                    creates.forEach((create, index) => {
+                        res.creates.push(`\nWITH ${withVars.join(", ")}`);
 
-                    const recurse = createCreateAndParams({
-                        input: create.node,
-                        context,
-                        node: refNode,
-                        varName: nodeName,
-                        withVars: [...withVars, nodeName],
-                    });
-                    res.creates.push(recurse[0]);
-                    res.params = { ...res.params, ...recurse[1] };
+                        const baseName = `${_varName}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
+                        const nodeName = `${baseName}_node`;
+                        const propertiesName = `${baseName}_relationship`;
 
-                    const inStr = relationField.direction === "IN" ? "<-" : "-";
-                    const outStr = relationField.direction === "OUT" ? "->" : "-";
-                    const relTypeStr = `[${create.properties ? propertiesName : ""}:${relationField.type}]`;
-                    res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
-
-                    if (create.properties) {
-                        const relationship = (context.neoSchema.relationships.find(
-                            (x) => x.properties === relationField.properties
-                        ) as unknown) as Relationship;
-
-                        const setA = createSetRelationshipPropertiesAndParams({
-                            properties: create.properties,
-                            varName: propertiesName,
-                            relationship,
-                            operation: "CREATE",
+                        const recurse = createCreateAndParams({
+                            input: create.node,
+                            context,
+                            node: refNode,
+                            varName: nodeName,
+                            withVars: [...withVars, nodeName],
                         });
-                        res.creates.push(setA[0]);
-                        res.params = { ...res.params, ...setA[1] };
-                    }
-                });
-            }
+                        res.creates.push(recurse[0]);
+                        res.params = { ...res.params, ...recurse[1] };
 
-            if (value.connect) {
-                const connectAndParams = createConnectAndParams({
-                    withVars,
-                    value: value.connect,
-                    varName: `${_varName}_connect`,
-                    parentVar: varName,
-                    relationField,
-                    context,
-                    refNode,
-                    labelOverride: unionTypeName,
-                    parentNode: node,
-                    fromCreate: true,
-                });
-                res.creates.push(connectAndParams[0]);
-                res.params = { ...res.params, ...connectAndParams[1] };
-            }
+                        const inStr = relationField.direction === "IN" ? "<-" : "-";
+                        const outStr = relationField.direction === "OUT" ? "->" : "-";
+                        const relTypeStr = `[${create.properties ? propertiesName : ""}:${relationField.type}]`;
+                        res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+
+                        if (create.properties) {
+                            const relationship = (context.neoSchema.relationships.find(
+                                (x) => x.properties === relationField.properties
+                            ) as unknown) as Relationship;
+
+                            const setA = createSetRelationshipPropertiesAndParams({
+                                properties: create.properties,
+                                varName: propertiesName,
+                                relationship,
+                                operation: "CREATE",
+                            });
+                            res.creates.push(setA[0]);
+                            res.params = { ...res.params, ...setA[1] };
+                        }
+                    });
+                }
+
+                if (v.connect) {
+                    const connectAndParams = createConnectAndParams({
+                        withVars,
+                        value: v.connect,
+                        varName: `${_varName}${relationField.union ? "_" : ""}${unionTypeName}_connect`,
+                        parentVar: varName,
+                        relationField,
+                        context,
+                        refNode,
+                        labelOverride: unionTypeName,
+                        parentNode: node,
+                        fromCreate: true,
+                    });
+                    res.creates.push(connectAndParams[0]);
+                    res.params = { ...res.params, ...connectAndParams[1] };
+                }
+            });
 
             return res;
         }

@@ -163,13 +163,15 @@ describe("Relationship properties - connect", () => {
             mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
                 createActors(input: [{
                     name: $actorName,
-                    actedIn_Movie: {
-                        connect: {
-                            where: {
-                                node: { title: $movieTitle }
-                            },
-                            properties: {
-                                screenTime: $screenTime
+                    actedIn: {
+                        Movie: {
+                            connect: {
+                                where: {
+                                    node: { title: $movieTitle }
+                                },
+                                properties: {
+                                    screenTime: $screenTime
+                                }
                             }
                         }
                     }
@@ -310,19 +312,15 @@ describe("Relationship properties - connect", () => {
             type Movie {
                 title: String!
             }
-
             type Show {
                 name: String!
             }
-
             type Actor {
                 name: String!
                 actedIn: [ActedInUnion!]!
                     @relationship(type: "ACTED_IN", properties: "ActedInInterface", direction: OUT)
             }
-
             union ActedInUnion = Movie | Show
-
             interface ActedInInterface {
                 screenTime: Int!
             }
@@ -342,9 +340,11 @@ describe("Relationship properties - connect", () => {
                 updateActors(
                     where: { name: $actorName }
                     connect: {
-                        actedIn_Movie: {
-                            where: { node: { title: $movieTitle } },
-                            properties: { screenTime: $screenTime }
+                        actedIn: {
+                            Movie: {
+                                where: { node: { title: $movieTitle } }
+                                properties: { screenTime: $screenTime }
+                            }
                         }
                     }
                 ) {
