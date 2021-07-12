@@ -259,9 +259,18 @@ function createProjectionAndParams({
             const isArray = relationField.typeMeta.array;
 
             if (relationField.union) {
-                const referenceNodes = context.neoSchema.nodes.filter((x) =>
-                    relationField.union?.nodes?.includes(x.name)
+                let referenceNodes = context.neoSchema.nodes.filter(
+                    (x) =>
+                        relationField.union?.nodes?.includes(x.name) &&
+                        Object.prototype.hasOwnProperty.call(fieldFields, x.name)
                 );
+
+                // If for example, just selecting __typename, error will be thrown without this
+                if (!referenceNodes.length) {
+                    referenceNodes = context.neoSchema.nodes.filter((x) =>
+                        relationField.union?.nodes?.includes(x.name)
+                    );
+                }
 
                 const unionStrs: string[] = [
                     `${key}: ${!isArray ? "head(" : ""} [(${
