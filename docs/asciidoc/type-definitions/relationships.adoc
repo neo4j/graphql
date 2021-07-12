@@ -119,11 +119,11 @@ We then need to create the actor in our example, and connect them to the new Mov
 [source, graphql]
 ----
 mutation CreateActor {
-    createActors(input: [
+    createPeople(input: [
         {
             name: "Tom Hanks"
             born: 1956
-            movies: {
+            actedInMovies: {
                 connect: {
                     where: {
                         node: { title: "Forrest Gump" }
