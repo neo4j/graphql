@@ -153,11 +153,13 @@ describe("Relationship properties - create", () => {
                     input: [
                         {
                             name: $actorName
-                            publications_Movie: {
-                                create: [{
-                                    properties: { words: $words },
-                                    node: { title: $movieTitle }
-                                }]
+                            publications: {
+                                Movie: {
+                                    create: [{
+                                        properties: { words: $words },
+                                        node: { title: $movieTitle }
+                                    }]
+                                }
                             }
                         }
                     ]
