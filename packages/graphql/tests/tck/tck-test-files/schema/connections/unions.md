@@ -82,7 +82,7 @@ input AuthorPublicationsBookConnectionWhere {
 
 input AuthorPublicationsBookCreateFieldInput {
     node: BookCreateInput!
-    properties: WroteCreateInput!
+    relationship: WroteCreateInput!
 }
 
 input AuthorPublicationsBookDeleteFieldInput {
@@ -125,13 +125,13 @@ input JournalConnectWhere {
 input AuthorPublicationsBookConnectFieldInput {
     where: BookConnectWhere
     connect: [BookConnectInput!]
-    properties: WroteCreateInput!
+    relationship: WroteCreateInput!
 }
 
 input AuthorPublicationsJournalConnectFieldInput {
     where: JournalConnectWhere
     connect: [JournalConnectInput!]
-    properties: WroteCreateInput!
+    relationship: WroteCreateInput!
 }
 
 type AuthorPublicationsConnection {
@@ -192,7 +192,7 @@ input AuthorPublicationsJournalConnectionWhere {
 
 input AuthorPublicationsJournalCreateFieldInput {
     node: JournalCreateInput!
-    properties: WroteCreateInput!
+    relationship: WroteCreateInput!
 }
 
 input AuthorPublicationsJournalDeleteFieldInput {
@@ -279,7 +279,7 @@ input AuthorConnectWhere {
 input BookAuthorConnectFieldInput {
     where: AuthorConnectWhere
     connect: [AuthorConnectInput!]
-    properties: WroteCreateInput!
+    relationship: WroteCreateInput!
 }
 
 type BookAuthorConnection {
@@ -304,7 +304,7 @@ input BookAuthorConnectionWhere {
 
 input BookAuthorCreateFieldInput {
     node: AuthorCreateInput!
-    properties: WroteCreateInput!
+    relationship: WroteCreateInput!
 }
 
 input BookAuthorDeleteFieldInput {
@@ -432,7 +432,7 @@ type Journal {
 input JournalAuthorConnectFieldInput {
     where: AuthorConnectWhere
     connect: [AuthorConnectInput!]
-    properties: WroteCreateInput!
+    relationship: WroteCreateInput!
 }
 
 type JournalAuthorConnection {
@@ -457,7 +457,7 @@ input JournalAuthorConnectionWhere {
 
 input JournalAuthorCreateFieldInput {
     node: AuthorCreateInput!
-    properties: WroteCreateInput!
+    relationship: WroteCreateInput!
 }
 
 input JournalAuthorDeleteFieldInput {

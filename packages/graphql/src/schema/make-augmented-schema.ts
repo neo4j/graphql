@@ -662,7 +662,7 @@ function makeAugmentedSchema(
                             name: createName,
                             fields: {
                                 node: `${n.name}CreateInput!`,
-                                ...(rel.properties ? { properties: `${rel.properties}CreateInput!` } : {}),
+                                ...(rel.properties ? { relationship: `${rel.properties}CreateInput!` } : {}),
                             },
                         });
 
@@ -699,7 +699,7 @@ function makeAugmentedSchema(
                                               : `${n.name}ConnectInput`,
                                       }
                                     : {}),
-                                ...(rel.properties ? { properties: `${rel.properties}CreateInput!` } : {}),
+                                ...(rel.properties ? { relationship: `${rel.properties}CreateInput!` } : {}),
                             },
                         });
 
@@ -859,7 +859,7 @@ function makeAugmentedSchema(
                     fields: {
                         node: `${n.name}CreateInput!`,
                         ...(rel.properties
-                            ? { properties: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
+                            ? { relationship: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
                             : {}),
                     },
                 });
@@ -886,7 +886,7 @@ function makeAugmentedSchema(
                             ? { connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput` }
                             : {}),
                         ...(rel.properties
-                            ? { properties: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
+                            ? { relationship: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
                             : {}),
                     },
                 });
