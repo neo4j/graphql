@@ -1,38 +1,15 @@
 [[auth-setup]]
 = Setup
 
-The auth implementation uses JWT tokens. You are expected to pass a JWT into the request. The accepted token type should be Bearer where the header should be authorization;
+== Configuration
 
-[source]
-----
-POST / HTTP/1.1
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlcyI6WyJ1c2VyX2FkbWluIiwicG9zdF9hZG1pbiIsImdyb3VwX2FkbWluIl19.IY0LWqgHcjEtOsOw60mqKazhuRFKroSXFQkpCtWpgQI
-content-type: application/json
-----
+If you want the Neo4j GraphQL Library to perform JWT decoding and verification for you, you must pass the configuration option `jwt` into the `Neo4jGraphQL` or `OGM` constructor, which has the following arguments:
 
-== Config
+- `secret` - The secret to be used to decode and verify JWTs
+- `noVerify` (optional) - Disable verification of JWTs, defaults to _false_
+- `rolesPath` (optional) - A string key to specify where to find roles in the JWT, defaults to "roles"
 
-Auth centric values on the Config object passed to Neo4jGraphQL or OGM.
-
-.Auth Config
-|===
-|Variable | Usage
-
-|`secret`
-| Specify JWT secret
-
-|`noVerify`
-| Disable the verification of the JWT
-
-|`rolesPath`
-| Specify where on the JWT the roles key is
-|===
-
-== Server Construction
-
-*An object key `req` or `request` must be passed into the context before you can use auth.* This object must contain request headers, including the authorization header containing the JWT for each request.
-
-Here is an example using Apollo Server:
+The simplest construction of a `Neo4jGraphQL` instance would be:
 
 [source, javascript]
 ----
@@ -44,88 +21,12 @@ const neoSchema = new Neo4jGraphQL({
         }
     }
 });
-
-const server = new ApolloServer({
-    schema: neoSchema.schema,
-    context: ({ req }) => ({ req }),
-});
 ----
 
-We expect there to be a `headers` key within either a `req` or `request` object in the context. If for example, you are using `apollo-server-lambda` to host a GraphQL API as a lambda function, the context function will have an `event` object which will need to be renamed to `req`. For example:
+It is also possible to pass in JWTs which have already been decoded, in which case the `jwt` option is _not necessary_. This will be covered in the section <<auth-setup-passing-in>>.
 
-[source, javascript]
-----
-const server = new ApolloServer({
-    schema: neoSchema.schema,
-    context: ({ event }) => ({ req: event }),
-});
-----
-
-== `rules`
-
-You can have many rules for many operations. We fall through each rule, on the corresponding operation, until we find a match. On no match found, an error is thrown. You can think of rules as a big OR.
-
-[source, graphql]
-----
-@auth(rules: [
-    { operations: [CREATE, UPDATE], ... }, ## or
-    { operations: [READ, UPDATE], ...}, ## or
-    { operations: [DELETE, UPDATE], ... } ## or
-])
-----
-
-== `operations`
-
-Operations is an array, you can re-use the same rule for many operations.
-
-[source, graphql]
-----
-@auth(rules: [
-    { operations: [CREATE, UPDATE, DELETE, CONNECT, DISCONNECT] },
-    { operations: [READ] }
-])
-----
-
-> The absence of an `operations` argument will imply all operations
-
-Many different operations can be called in one query take the below mutation;
-
-[source, graphql]
-----
-mutation {
-    createPosts(
-        input: [
-            {
-                content: "I like GraphQL"
-                creator: {
-                    connect: {
-                        where: { node: { id: "user-01" } }
-                    }
-                }
-            }
-        ]
-    ) {
-        posts {
-            content
-        }
-    }
-}
-----
-
-In the above example; First we do a `create` operation then we do a `connect` operation.
-
-The full list of operations are;
-
-1. read - `MATCH`
-2. create - `CREATE`
-3. update - `SET`
-4. delete - `DELETE`
-5. connect - `MATCH` & `MERGE`
-6. disconnect - `MATCH` & `DELETE`
-
-
-== Auth Roles Object Paths
-If you are using 3rd party Auth solutions such as Auth0 you may find your roles property being nested inside an object;
+=== Auth Roles Object Paths
+If you are using a 3rd party auth provider such as Auth0 you may find your roles property being nested inside an object:
 
 [source, json]
 ----
@@ -136,7 +37,7 @@ If you are using 3rd party Auth solutions such as Auth0 you may find your roles 
 }
 ----
 
-Specify the key at construction:
+In order to make use of this, you must pass it in as a "dot path" into the `rolesPath` option:
 
 [source, javascript]
 ----
@@ -151,6 +52,125 @@ const neoSchema = new Neo4jGraphQL({
 });
 ----
 
+[[auth-setup-passing-in]]
+== Passing in JWTs
+
+If you wish to pass in an encoded JWT, this must be included in the `Authorization` header of your requests, in the format:
+
+[source]
+----
+POST / HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlcyI6WyJ1c2VyX2FkbWluIiwicG9zdF9hZG1pbiIsImdyb3VwX2FkbWluIl19.IY0LWqgHcjEtOsOw60mqKazhuRFKroSXFQkpCtWpgQI
+content-type: application/json
+----
+
+Note the string "Bearer" before the inclusion of the JWT.
+
+Then, using Apollo Server as an example, you must include the request in the GraphQL context, as follows (using the `neoSchema` instance from the example above):
+
+[source, javascript]
+----
+const server = new ApolloServer({
+    schema: neoSchema.schema,
+    context: ({ req }) => ({ req }),
+});
+----
+
+Note that the request key `req` is appropriate for Express servers, but different middlewares use different keys for request objects. You can more details at https://www.apollographql.com/docs/apollo-server/api/apollo-server/#middleware-specific-context-fields.
+
+=== Decoded JWTs
+
+Alternatively, you can pass a key `jwt` of type `JwtPayload` into the context, which has the following definition:
+
+[source, typescript]
+----
+// standard claims https://datatracker.ietf.org/doc/html/rfc7519#section-4.1
+interface JwtPayload {
+    [key: string]: any;
+    iss?: string | undefined;
+    sub?: string | undefined;
+    aud?: string | string[] | undefined;
+    exp?: number | undefined;
+    nbf?: number | undefined;
+    iat?: number | undefined;
+    jti?: string | undefined;
+}
+----
+
+_Do not_ pass in the header or the signature.
+
+For example, you might have a function `decodeJWT` which returns a decoded JWT:
+
+[source, javascript]
+----
+const decodedJWT = decodeJWT(encodedJWT)
+
+const server = new ApolloServer({
+    schema: neoSchema.schema,
+    context: { jwt: decodedJWT.payload },
+});
+----
+
+== `@auth` directive
+
+=== `rules`
+
+You can have many rules for many operations. We fall through each rule, on the corresponding operation, until we find a match. On no match found, an error is thrown. You can think of rules as a big OR.
+
+[source, graphql]
+----
+@auth(rules: [
+    { operations: [CREATE, UPDATE], ... }, ## or
+    { operations: [READ, UPDATE], ...}, ## or
+    { operations: [DELETE, UPDATE], ... } ## or
+])
+----
+
+=== `operations`
+
+Operations is an array which allows you to re-use the same rule for many operations.
+
+[source, graphql]
+----
+@auth(rules: [
+    { operations: [CREATE, UPDATE, DELETE, CONNECT, DISCONNECT] },
+    { operations: [READ] }
+])
+----
+
+NOTE: Note that the absence of an `operations` argument will imply _all_ operations.
+
+Many different operations can be called at once, for example in the following Mutation:
+
+[source, graphql]
+----
+mutation {
+    createPosts(
+        input: [
+            {
+                content: "I like GraphQL",
+                creator: { connect: { where: { id: "user-01" } } }
+            }
+        ]
+    ) {
+        posts {
+            content
+        }
+    }
+}
+----
+
+In the above example, we perform a `CREATE` followed by a `CONNECT`, so our auth rule must allow our user to perform both of these operations.
+
+The full list of operations are:
+
+- read - `MATCH`
+- create - `CREATE`
+- update - `SET`
+- delete - `DELETE`
+- connect - `MATCH` & `MERGE`
+- disconnect - `MATCH` & `DELETE`
+
 == Auth Value Plucking
 
 1. `$jwt.` - Pulls value from jsonwebtoken
@@ -158,29 +178,15 @@ const neoSchema = new Neo4jGraphQL({
 
 == Auth Custom Resolvers
 
-You cant put the auth directive on a custom resolver. We do make life easier by injecting the auth param into it. It will be available under the `context.auth` property;
+You can't use the `@auth` directive on a custom resolver, however, we do make life easier by injecting the auth parameter into it. It will be available under the `context.auth` property. For example, the following custom resolver returns the `sub` field from the JWT:
 
 [source, javascript]
 ----
-const { Neo4jGraphQL } = require("@neo4j/graphql")
-const neo4j = require("neo4j-driver");
-const { ApolloServer } = require("apollo-server")
-
 const typeDefs = `
-    type User {
-        id: ID!
-        email: String!
-        password: String!
-    }
     type Query {
         myId: ID!
     }
 `;
-
-const driver = neo4j.driver(
-    "bolt://localhost:7687",
-    neo4j.auth.basic("admin", "password")
-);
 
 const resolvers = {
     Query: {
@@ -189,20 +195,13 @@ const resolvers = {
         }
     }
 };
-
-const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers, config: { jwt } });
-
-const server = new ApolloServer({
-    schema: neo4jGraphQL.schema,
-    context: ({ req }) => ({ req, driver }),
-});
-
-server.listen(4000).then(() => console.log("online"));
 ----
 
 == Auth on `@cypher`
 
-You can put the `@auth` directive on a field with the `@cypher` directive. Functionality like allow and bind will not work but you can still utilize `isAuthenticated` and `roles`.
+You can put the `@auth` directive on a field with the `@cypher` directive. Functionality like `allow` and `bind` will not work but you can still utilize `isAuthenticated` and `roles`. Additionally, you don't need to specify operations for `@auth` directives on `@cypher` fields.
+
+The following example uses the `isAuthenticated` rule to ensure a user is authenticated, before returning the `User` associated with the JWT:
 
 [source, graphql]
 ----
@@ -210,18 +209,20 @@ type User @exclude {
     id: ID
     name: String
 }
+
 type Query {
-    users: [User] @cypher(statement: "MATCH (a:User) RETURN a") @auth(rules: [{ isAuthenticated: true }])
+    me: User @cypher(statement: "MATCH (u:User { id: $auth.jwt.sub }) RETURN u") @auth(rules: [{ isAuthenticated: true }])
 }
 ----
 
-Notice you don't need to specify operations for `@auth` directives on `@cypher` fields.
+In the following example, the current user must have role "admin" in order to query the `history` field on the type `User`:
 
 [source, graphql]
 ----
 type History @exclude {
     website: String!
 }
+
 type User {
     id: ID
     name: String

@@ -34,11 +34,7 @@ function createAuthParam({ context }: { context: Context }) {
 
     const jwtConfig = context.neoSchema.config?.jwt;
 
-    if (!jwtConfig) {
-        return param;
-    }
-
-    if (jwtConfig.rolesPath) {
+    if (jwtConfig?.rolesPath) {
         param.roles = dotProp.get(jwt, jwtConfig.rolesPath);
     } else if (jwt.roles) {
         param.roles = jwt.roles;
