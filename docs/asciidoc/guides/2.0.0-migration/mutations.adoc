@@ -3,7 +3,7 @@
 
 The most broadly affected area of functionality by the 2.0.0 upgrade are the nested operations of Mutations, to faciliate the mutation of and filtering on relationship properties.
 
-The examples in this section will be based off the following type definitions (which have been migrated over to `@neo4j/graphql` syntax):
+The examples in this section will be based off the following type definitions:
 
 [source, graphql]
 ----

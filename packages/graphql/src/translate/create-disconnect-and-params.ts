@@ -169,32 +169,38 @@ function createDisconnectAndParams({
 
             disconnects.forEach((c, i) => {
                 const reduced = Object.entries(c).reduce(
-                    (r: Res, [k, v]) => {
-                        const relField = refNode.relationFields.find((x) => k.startsWith(x.fieldName));
-                        let newRefNode: Node;
+                    (r: Res, [k, v]: [string, any]) => {
+                        const relField = refNode.relationFields.find((x) => k.startsWith(x.fieldName)) as RelationField;
+                        const newRefNodes: Node[] = [];
 
-                        if (relationField.union) {
-                            const [modelName] = k.split(`${relationField.fieldName}_`).join("").split("_");
-                            newRefNode = context.neoSchema.nodes.find((x) => x.name === modelName) as Node;
+                        if (relField.union) {
+                            Object.keys(v).forEach((modelName) => {
+                                newRefNodes.push(context.neoSchema.nodes.find((x) => x.name === modelName) as Node);
+                            });
                         } else {
-                            newRefNode = context.neoSchema.nodes.find(
-                                (x) => x.name === (relField as RelationField).typeMeta.name
-                            ) as Node;
+                            newRefNodes.push(
+                                context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
+                            );
                         }
 
-                        const recurse = createDisconnectAndParams({
-                            withVars: [...withVars, _varName],
-                            value: v,
-                            varName: `${_varName}_${k}`,
-                            relationField: relField as RelationField,
-                            parentVar: _varName,
-                            context,
-                            refNode: newRefNode,
-                            parentNode: refNode,
-                            parameterPrefix: `${parameterPrefix}.${k}[${i}].disconnect`,
+                        newRefNodes.forEach((newRefNode) => {
+                            const recurse = createDisconnectAndParams({
+                                withVars: [...withVars, _varName],
+                                value: relField.union ? v[newRefNode.name] : v,
+                                varName: `${_varName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
+                                relationField: relField,
+                                parentVar: _varName,
+                                context,
+                                refNode: newRefNode,
+                                parentNode: refNode,
+                                parameterPrefix: `${parameterPrefix}${
+                                    relField.typeMeta.array ? `[${i}]` : ""
+                                }.disconnect.${k}${relField.union ? `.${newRefNode.name}` : ""}`,
+                                labelOverride: relField.union ? newRefNode.name : "",
+                            });
+                            r.disconnects.push(recurse[0]);
+                            r.params = { ...r.params, ...recurse[1] };
                         });
-                        r.disconnects.push(recurse[0]);
-                        r.params = { ...r.params, ...recurse[1] };
 
                         return r;
                     },
