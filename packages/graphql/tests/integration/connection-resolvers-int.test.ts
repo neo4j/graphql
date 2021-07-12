@@ -79,7 +79,7 @@ describe("Connection Resolvers", () => {
                                 id: "${actorId}",
                                 name: "Keanu Reeves"
                             },
-                            properties: {
+                            relationship: {
                                 screenTime: 100
                             }
                         }]
@@ -201,7 +201,7 @@ describe("Connection Resolvers", () => {
                 id: x.toString(),
                 name: String.fromCharCode(x + 1 + 64) + generate({ charset: "alphabetic" }),
             },
-            properties: {
+            relationship: {
                 screenTime: Math.floor(Math.random() * 200),
             },
         }));
@@ -237,9 +237,9 @@ describe("Connection Resolvers", () => {
                     title: movieTitle,
                     actorsConnection: {
                         totalCount: 20,
-                        edges: actors.slice(0, 5).map(({ node, properties }) => ({
+                        edges: actors.slice(0, 5).map(({ node, relationship }) => ({
                             node,
-                            screenTime: properties.screenTime,
+                            screenTime: relationship.screenTime,
                             cursor: expect.any(String),
                         })),
                         pageInfo: {
@@ -294,10 +294,10 @@ describe("Connection Resolvers", () => {
                 title: movieTitle,
                 actorsConnection: {
                     totalCount: 20,
-                    edges: actors.slice(5, 10).map(({ node, properties }) => ({
+                    edges: actors.slice(5, 10).map(({ node, relationship }) => ({
                         node,
                         cursor: expect.any(String),
-                        screenTime: properties.screenTime,
+                        screenTime: relationship.screenTime,
                     })),
                     pageInfo: {
                         hasPreviousPage: true,
@@ -325,10 +325,10 @@ describe("Connection Resolvers", () => {
                 title: movieTitle,
                 actorsConnection: {
                     totalCount: 20,
-                    edges: actors.slice(10, 15).map(({ node, properties }) => ({
+                    edges: actors.slice(10, 15).map(({ node, relationship }) => ({
                         node,
                         cursor: expect.any(String),
-                        screenTime: properties.screenTime,
+                        screenTime: relationship.screenTime,
                     })),
                     pageInfo: {
                         hasPreviousPage: true,
