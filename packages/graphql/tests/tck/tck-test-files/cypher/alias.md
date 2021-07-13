@@ -52,12 +52,12 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
     }
 }
 ```

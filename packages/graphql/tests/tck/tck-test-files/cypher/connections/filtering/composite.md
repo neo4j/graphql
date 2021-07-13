@@ -66,17 +66,14 @@ RETURN this { .title, actorsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump",
     "this_actorsConnection": {
         "args": {
             "where": {
                 "node": {
-                    "AND": [
-                        { "firstName": "Tom" },
-                        { "lastName": "Hanks" }
-                    ]
+                    "AND": [{ "firstName": "Tom" }, { "lastName": "Hanks" }]
                 },
                 "relationship": {
                     "AND": [

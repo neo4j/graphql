@@ -77,7 +77,7 @@ RETURN this { .name, publicationsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {}
 ```
 
@@ -142,7 +142,7 @@ RETURN this { .name, publicationsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_publicationsConnection": {
         "args": {
@@ -209,7 +209,7 @@ RETURN this { .name, publicationsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {}
 ```
 

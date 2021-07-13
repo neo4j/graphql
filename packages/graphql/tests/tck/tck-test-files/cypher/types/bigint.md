@@ -35,7 +35,7 @@ RETURN this { .name } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_size": {
         "low": -1,
@@ -68,7 +68,7 @@ RETURN this { .name } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_size": {
         "low": -1,
@@ -91,9 +91,9 @@ query Files($size: BigInt) {
 }
 ```
 
-**GraphQL params**
+### GraphQL Params Input
 
-```graphql-params
+```json
 {
     "size": "9223372036854775807"
 }
@@ -109,7 +109,7 @@ RETURN this { .name } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_size": {
         "low": -1,

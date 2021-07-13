@@ -69,7 +69,7 @@ RETURN this0 { .id } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "user-id",
     "this0_name": "bob",
@@ -77,9 +77,9 @@ RETURN this0 { .id } AS this0
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -158,7 +158,7 @@ RETURN this0 { .id } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "user-id",
     "this0_name": "bob",
@@ -170,9 +170,9 @@ RETURN this0 { .id } AS this0
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -210,7 +210,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "id-01",
     "this_update_id": "not bound",
@@ -218,9 +218,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -289,7 +289,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "id-01",
     "this_posts0_creator0_auth_bind0_id": "id-01",
@@ -332,9 +332,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -381,7 +381,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "id-01",
     "this_connect_creator0_nodePost0_bind_auth_bind0_creator_id": "id-01",
@@ -391,9 +391,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -440,7 +440,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_disconnect_creator0Post0_bind_auth_bind0_creator_id": "id-01",
     "this_disconnect_creator0User1_bind_auth_bind0_id": "id-01",
@@ -461,9 +461,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]

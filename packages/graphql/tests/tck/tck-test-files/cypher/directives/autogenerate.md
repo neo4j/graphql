@@ -43,7 +43,7 @@ RETURN this0 { .id, .name } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_name": "dan"
 }
@@ -76,7 +76,7 @@ RETURN this { .id, .name } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_update_name": "dan"
 }

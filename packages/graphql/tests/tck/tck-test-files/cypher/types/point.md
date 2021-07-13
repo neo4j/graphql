@@ -39,12 +39,12 @@ RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_point": {
-    "longitude": 1,
-    "latitude": 2
-  }
+    "this_point": {
+        "longitude": 1,
+        "latitude": 2
+    }
 }
 ```
 
@@ -75,12 +75,12 @@ RETURN this { point: { point: this.point } } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_point_NOT": {
-    "longitude": 1,
-    "latitude": 2
-  }
+    "this_point_NOT": {
+        "longitude": 1,
+        "latitude": 2
+    }
 }
 ```
 
@@ -112,12 +112,14 @@ RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_point_IN": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+    "this_point_IN": [
+        {
+            "longitude": 1,
+            "latitude": 2
+        }
+    ]
 }
 ```
 
@@ -151,12 +153,14 @@ RETURN this { point: { point: this.point, crs: this.point.crs } } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_point_NOT_IN": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+    "this_point_NOT_IN": [
+        {
+            "longitude": 1,
+            "latitude": 2
+        }
+    ]
 }
 ```
 
@@ -194,15 +198,15 @@ RETURN this { point: { point: this.point } } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_point_LT": {
-    "point": {
-      "longitude": 1.1,
-      "latitude": 2.2
-    },
-    "distance": 3.3
-  }
+    "this_point_LT": {
+        "point": {
+            "longitude": 1.1,
+            "latitude": 2.2
+        },
+        "distance": 3.3
+    }
 }
 ```
 
@@ -240,15 +244,15 @@ RETURN this { point: { point: this.point } } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_point_LTE": {
-    "point": {
-      "longitude": 1.1,
-      "latitude": 2.2
-    },
-    "distance": 3.3
-  }
+    "this_point_LTE": {
+        "point": {
+            "longitude": 1.1,
+            "latitude": 2.2
+        },
+        "distance": 3.3
+    }
 }
 ```
 
@@ -286,15 +290,15 @@ RETURN this { point: { point: this.point } } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_point_GT": {
-    "point": {
-      "longitude": 1.1,
-      "latitude": 2.2
-    },
-    "distance": 3.3
-  }
+    "this_point_GT": {
+        "point": {
+            "longitude": 1.1,
+            "latitude": 2.2
+        },
+        "distance": 3.3
+    }
 }
 ```
 
@@ -332,15 +336,15 @@ RETURN this { point: { point: this.point } } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_point_GTE": {
-    "point": {
-      "longitude": 1.1,
-      "latitude": 2.2
-    },
-    "distance": 3.3
-  }
+    "this_point_GTE": {
+        "point": {
+            "longitude": 1.1,
+            "latitude": 2.2
+        },
+        "distance": 3.3
+    }
 }
 ```
 
@@ -378,15 +382,15 @@ RETURN this { point: { point: this.point } } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_point_DISTANCE": {
-    "point": {
-      "longitude": 1.1,
-      "latitude": 2.2
-    },
-    "distance": 3.3
-  }
+    "this_point_DISTANCE": {
+        "point": {
+            "longitude": 1.1,
+            "latitude": 2.2
+        },
+        "distance": 3.3
+    }
 }
 ```
 
@@ -425,12 +429,12 @@ this0 { point: { point: this0.point, crs: this0.point.crs } } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this0_point": {
-    "longitude": 1,
-    "latitude": 2
-  }
+    "this0_point": {
+        "longitude": 1,
+        "latitude": 2
+    }
 }
 ```
 
@@ -468,12 +472,12 @@ RETURN this { point: { point: this.point, crs: this.point.crs } } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_id": "id",
-  "this_update_point": {
-    "longitude": 1,
-    "latitude": 2
-  }
+    "this_id": "id",
+    "this_update_point": {
+        "longitude": 1,
+        "latitude": 2
+    }
 }
 ```

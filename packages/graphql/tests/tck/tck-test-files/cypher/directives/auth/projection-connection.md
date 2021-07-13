@@ -58,16 +58,16 @@ RETURN this { .name, postsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_post_auth_allow0_creator_id": "super_admin",
     "this_auth_allow0_id": "super_admin"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin"
 }
@@ -125,7 +125,7 @@ RETURN this { .name, postsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_post_auth_allow0_creator_id": "super_admin",
     "this_post_user_auth_allow0_id": "super_admin",
@@ -133,9 +133,9 @@ RETURN this { .name, postsConnection } as this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin"
 }

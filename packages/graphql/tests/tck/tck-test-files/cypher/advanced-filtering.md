@@ -48,7 +48,7 @@ RETURN this { ._id } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this__id_IN": ["123"]
 }
@@ -78,7 +78,7 @@ RETURN this { .id } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_MATCHES": "(?i)123.*"
 }
@@ -108,7 +108,7 @@ RETURN this { .id } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_NOT": "123"
 }
@@ -138,7 +138,7 @@ RETURN this { .id } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_NOT_IN": ["123"]
 }
@@ -168,7 +168,7 @@ RETURN this { .id } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_CONTAINS": "123"
 }
@@ -198,7 +198,7 @@ RETURN this { .id } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_NOT_CONTAINS": "123"
 }
@@ -228,7 +228,7 @@ RETURN this { .id } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_STARTS_WITH": "123"
 }
@@ -258,7 +258,7 @@ RETURN this { .id } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_NOT_STARTS_WITH": "123"
 }
@@ -288,7 +288,7 @@ RETURN this { .id } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_ENDS_WITH": "123"
 }
@@ -318,7 +318,7 @@ RETURN this { .id } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_NOT_ENDS_WITH": "123"
 }
@@ -348,7 +348,7 @@ RETURN this { .actorCount } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_actorCount_LT": {
         "high": 0,
@@ -381,7 +381,7 @@ RETURN this { .budget } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_budget_LT": {
         "low": -1,
@@ -414,7 +414,7 @@ RETURN this { .actorCount } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_actorCount_LTE": {
         "high": 0,
@@ -447,7 +447,7 @@ RETURN this { .budget } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_budget_LTE": {
         "low": -1,
@@ -480,7 +480,7 @@ RETURN this { .actorCount } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_actorCount_GT": {
         "high": 0,
@@ -513,7 +513,7 @@ RETURN this { .budget } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_budget_GT": {
         "low": -808,
@@ -546,7 +546,7 @@ RETURN this { .actorCount } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_actorCount_GTE": {
         "high": 0,
@@ -579,7 +579,7 @@ RETURN this { .budget } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_budget_GTE": {
         "low": -808,
@@ -612,7 +612,7 @@ RETURN this { .actorCount } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_genres_name": "some genre"
 }
@@ -642,7 +642,7 @@ RETURN this { .actorCount } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_genres_NOT_name": "some genre"
 }

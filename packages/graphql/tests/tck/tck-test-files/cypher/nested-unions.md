@@ -88,7 +88,7 @@ RETURN this { .title, actors: [(this)<-[:ACTED_IN]-(this_actors) WHERE "LeadActo
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_connect_actors_LeadActor0_node_actedIn_Series0_node_name": "Series",
     "this_connect_actors_LeadActor0_node_name": "Actor",
@@ -153,7 +153,7 @@ RETURN this { .title, actors: [(this)<-[:ACTED_IN]-(this_actors) WHERE "LeadActo
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Movie",
     "updateMovies": {

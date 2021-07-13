@@ -35,7 +35,7 @@ RETURN this { .date } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_date": {
         "day": 1,
@@ -69,7 +69,7 @@ RETURN this { .date } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_date_GTE": {
         "day": 8,
@@ -108,7 +108,7 @@ RETURN this0 { .date } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_date": {
         "day": 1,
@@ -145,7 +145,7 @@ RETURN this { .id, .date } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_update_date": {
         "day": 1,

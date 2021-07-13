@@ -41,7 +41,7 @@ DETACH DELETE this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "123"
 }
@@ -80,7 +80,7 @@ DETACH DELETE this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "123",
     "this_deleteMovies": {
@@ -145,7 +145,7 @@ DETACH DELETE this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "123",
     "this_deleteMovies": {
@@ -217,7 +217,7 @@ DETACH DELETE this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "123",
     "this_deleteMovies": {
@@ -310,7 +310,7 @@ DETACH DELETE this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "123",
     "this_deleteMovies": {

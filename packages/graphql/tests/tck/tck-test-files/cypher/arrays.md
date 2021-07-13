@@ -36,7 +36,7 @@ RETURN this { .title, .ratings } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_ratings_INCLUDES": 4.0
 }
@@ -67,7 +67,7 @@ RETURN this { .title, .ratings } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_ratings_NOT_INCLUDES": 4.0
 }

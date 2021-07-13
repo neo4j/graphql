@@ -66,7 +66,7 @@ RETURN this { .title, actorsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump",
     "this_actor_movies_title_NOT": "Forrest Gump",
@@ -145,7 +145,7 @@ RETURN this { .title, actorsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump",
     "this_actor_movie_actors_name_NOT": "Tom Hanks",
@@ -222,7 +222,7 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump",
     "this_actors_name": "Tom Hanks",

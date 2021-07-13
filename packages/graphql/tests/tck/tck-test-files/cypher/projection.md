@@ -97,7 +97,7 @@ this1 {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "1",
     "this1_id": "2",

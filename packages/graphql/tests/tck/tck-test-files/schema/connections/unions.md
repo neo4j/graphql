@@ -8,7 +8,7 @@ Tests that the provided typeDefs return the correct schema (with relationships).
 
 ### TypeDefs
 
-```typedefs-input
+```graphql
 union Publication = Book | Journal
 
 type Author {
@@ -36,7 +36,7 @@ interface Wrote {
 
 ### Output
 
-```schema-output
+```graphql
 type Author {
     name: String!
     publications(options: QueryOptions, where: PublicationWhere): [Publication]

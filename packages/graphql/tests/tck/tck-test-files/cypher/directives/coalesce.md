@@ -46,8 +46,16 @@ query(
 }
 ```
 
-```graphql-params
-{ "id": "Some ID", "name": "Some name", "verified": true, "numberOfFriends": 10, "rating": 3.5 }
+### GraphQL Params Input
+
+```json
+{
+    "id": "Some ID",
+    "name": "Some name",
+    "verified": true,
+    "numberOfFriends": 10,
+    "rating": 3.5
+}
 ```
 
 ### Expected Cypher Output
@@ -64,7 +72,7 @@ RETURN this { .name } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "Some ID",
     "this_name_MATCHES": "Some name",

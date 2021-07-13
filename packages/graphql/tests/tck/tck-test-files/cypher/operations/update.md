@@ -50,7 +50,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "1",
     "this_update_id": "2"
@@ -104,14 +104,14 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "1",
     "this_update_actors0_name": "new name",
     "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
     },
     "updateMovies": {
         "args": {
@@ -205,49 +205,49 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "1",
     "this_update_actors0_movies0_title": "new movie title",
     "this_update_actors0_name": "new actor name",
     "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
     },
     "updateMovies": {
-      "args": {
-        "update": {
-          "actors": [
-                {
-                    "update": {
-                        "node": {
-                            "movies": [
-                                {
-                                    "update": {
-                                        "node": {
-                                            "title": "new movie title"
-                                        }
-                                    },
-                                    "where": {
-                                        "node": {
-                                            "id": "old movie title"
+        "args": {
+            "update": {
+                "actors": [
+                    {
+                        "update": {
+                            "node": {
+                                "movies": [
+                                    {
+                                        "update": {
+                                            "node": {
+                                                "title": "new movie title"
+                                            }
+                                        },
+                                        "where": {
+                                            "node": {
+                                                "id": "old movie title"
+                                            }
                                         }
                                     }
-                                }
-                            ],
-                            "name": "new actor name"
-                        }
-                    },
-                    "where": {
-                        "node": {
-                            "name": "old actor name"
+                                ],
+                                "name": "new actor name"
+                            }
+                        },
+                        "where": {
+                            "node": {
+                                "name": "old actor name"
+                            }
                         }
                     }
-                }
-          ]
+                ]
+            }
         }
-      }
     }
 }
 ```
@@ -287,7 +287,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "1",
     "this_connect_actors0_node_name": "Daniel"
@@ -340,7 +340,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "1",
     "this_connect_actors0_node_name": "Daniel",
@@ -383,7 +383,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "1",
     "updateMovies": {
@@ -450,7 +450,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "1",
     "updateMovies": {
@@ -524,11 +524,11 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)  | this_m
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_name": "Dan",
-  "this_movies0_create0_node_id": "dan_movie_id",
-  "this_movies0_create0_node_title": "The Story of Beer"
+    "this_name": "Dan",
+    "this_movies0_create0_node_id": "dan_movie_id",
+    "this_movies0_create0_node_title": "The Story of Beer"
 }
 ```
 
@@ -575,11 +575,11 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_mo
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_name": "Dan",
-  "this_create_movies0_node_id": "dan_movie_id",
-  "this_create_movies0_node_title": "The Story of Beer"
+    "this_name": "Dan",
+    "this_create_movies0_node_id": "dan_movie_id",
+    "this_create_movies0_node_title": "The Story of Beer"
 }
 ```
 
@@ -632,13 +632,13 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_mo
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_name": "Dan",
-  "this_create_movies0_node_id": "dan_movie_id",
-  "this_create_movies0_node_title": "The Story of Beer",
-  "this_create_movies1_node_id": "dan_movie2_id",
-  "this_create_movies1_node_title": "Forrest Gump"
+    "this_name": "Dan",
+    "this_create_movies0_node_id": "dan_movie_id",
+    "this_create_movies0_node_title": "The Story of Beer",
+    "this_create_movies1_node_id": "dan_movie2_id",
+    "this_create_movies1_node_title": "Forrest Gump"
 }
 ```
 
@@ -684,29 +684,29 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "1",
     "updateMovies": {
-      "args": {
-        "delete": {
-          "actors": [
-            {
-              "where": {
-                "node": {
-                  "name": "Actor to delete"
-                },
-                "relationship": {
-                    "screenTime": {
-                        "high": 0,
-                        "low": 60
+        "args": {
+            "delete": {
+                "actors": [
+                    {
+                        "where": {
+                            "node": {
+                                "name": "Actor to delete"
+                            },
+                            "relationship": {
+                                "screenTime": {
+                                    "high": 0,
+                                    "low": 60
+                                }
+                            }
+                        }
                     }
-                }
-              }
+                ]
             }
-          ]
         }
-      }
     }
 }
 ```
@@ -761,7 +761,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "1",
     "this_update_actors0_name": "Updated name",
@@ -841,27 +841,27 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "1",
     "updateMovies": {
-      "args": {
-        "update": {
-          "actors": [
-            {
-              "delete": [
-                {
-                  "where": {
-                    "node": {
-                      "name": "Actor to delete"
+        "args": {
+            "update": {
+                "actors": [
+                    {
+                        "delete": [
+                            {
+                                "where": {
+                                    "node": {
+                                        "name": "Actor to delete"
+                                    }
+                                }
+                            }
+                        ]
                     }
-                  }
-                }
-              ]
+                ]
             }
-          ]
         }
-      }
     }
 }
 ```
@@ -909,7 +909,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "1",
     "updateMovies": {

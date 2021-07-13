@@ -80,7 +80,7 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "some title",
     "this_search_Genre_auth_allow0_name": ["Horror"],
@@ -89,9 +89,9 @@ RETURN this {
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "jwtAllowedNamesExample": ["Horror"]
 }
@@ -144,10 +144,10 @@ RETURN this0 {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-   "this0_title": "some movie",
-   "this0_search_Genre0_node_name": "some genre"
+    "this0_title": "some movie",
+    "this0_search_Genre0_node_name": "some genre"
 }
 ```
 
@@ -181,9 +181,9 @@ RETURN this { .title } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-   "this_create_search_Genre0_node_name": "some genre"
+    "this_create_search_Genre0_node_name": "some genre"
 }
 ```
 
@@ -236,12 +236,11 @@ RETURN this0 { .title } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-   "this0_title": "some movie",
-   "this0_search_Genre_connect0_node_name": "some genre"
+    "this0_title": "some movie",
+    "this0_search_Genre_connect0_node_name": "some genre"
 }
-
 ```
 
 ---
@@ -286,7 +285,7 @@ RETURN this { .title } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "some movie",
     "this_update_search_Genre0_name": "some new genre",
@@ -363,7 +362,7 @@ RETURN this { .title } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "some movie",
     "updateMovies": {
@@ -429,7 +428,7 @@ RETURN this { .title } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "some movie",
     "updateMovies": {
@@ -487,12 +486,11 @@ RETURN this { .title } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-   "this_title": "some movie",
-   "this_connect_search_Genre0_node_name": "some genre"
+    "this_title": "some movie",
+    "this_connect_search_Genre0_node_name": "some genre"
 }
-
 ```
 
 ---
@@ -530,7 +528,7 @@ RETURN this { .title } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "some movie",
     "updateMovies": {

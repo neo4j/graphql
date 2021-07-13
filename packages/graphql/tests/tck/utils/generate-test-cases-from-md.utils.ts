@@ -52,13 +52,13 @@ function captureOrEmptyString(contents: string, re: RegExp): string {
 }
 
 const nameRe = /##(?<capture>([^\n]+))/;
-const graphqlQueryRe = /```graphql(?<capture>(.|\s)*?)```/;
-const graphqlParamsRe = /```graphql-params(?<capture>(.|\s)*?)```/;
-const cypherQueryRe = /```cypher(?<capture>(.|\s)*?)```/;
-const cypherParamsRe = /```cypher-params(?<capture>(.|\s)*?)```/;
-const typeDefsInputRe = /```typedefs-input(?<capture>(.|\s)*?)```/;
-const schemaOutputRe = /```schema-output(?<capture>(.|\s)*?)```/;
-const jwtRe = /```jwt(?<capture>(.|\s)*?)```/;
+const graphqlQueryRe = /### GraphQL Input\s+```graphql(?<capture>(.|\s)*?)```/;
+const graphqlParamsRe = /### GraphQL Params Input\s+```json(?<capture>(.|\s)*?)```/;
+const cypherQueryRe = /### Expected Cypher Output\s+```cypher(?<capture>(.|\s)*?)```/;
+const cypherParamsRe = /### Expected Cypher Params\s+```json(?<capture>(.|\s)*?)```/;
+const typeDefsInputRe = /### TypeDefs\s+```graphql(?<capture>(.|\s)*?)```/;
+const schemaOutputRe = /### Output\s+```graphql(?<capture>(.|\s)*?)```/;
+const jwtRe = /### JWT Object\s+```json(?<capture>(.|\s)*?)```/;
 const envVarsRe = /```env(?<capture>(.|\s)*?)```/;
 
 function extractTests(contents: string, kind: string): Test[] {

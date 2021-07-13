@@ -59,7 +59,7 @@ RETURN this { .title, actorsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_actorsConnection": {
         "args": {
@@ -113,7 +113,7 @@ RETURN this { .title, actorsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_actorsConnection": {
         "args": {
@@ -168,7 +168,7 @@ RETURN this { .title, actorsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_actorsConnection": {
         "args": {
@@ -223,7 +223,7 @@ RETURN this { .title, actorsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_actorsConnection": {
         "args": {

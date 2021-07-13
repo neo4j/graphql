@@ -42,7 +42,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {}
 ```
 
@@ -71,7 +71,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {}
 ```
 
@@ -96,9 +96,9 @@ query($title: String, $offset: Int, $limit: Int) {
 }
 ```
 
-**GraphQL params input**
+### GraphQL Params Input
 
-```graphql-params
+```json
 {
     "limit": 2,
     "offset": 1,
@@ -120,7 +120,7 @@ LIMIT $this_limit
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_limit": {
         "high": 0,
@@ -161,7 +161,7 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {}
 ```
 
@@ -192,7 +192,7 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {}
 ```
 

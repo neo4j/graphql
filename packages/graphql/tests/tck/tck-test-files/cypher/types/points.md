@@ -39,12 +39,14 @@ RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_points": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+    "this_points": [
+        {
+            "longitude": 1,
+            "latitude": 2
+        }
+    ]
 }
 ```
 
@@ -77,12 +79,14 @@ RETURN this { points: [p in this.points | { point:p }] } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_points_NOT": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+    "this_points_NOT": [
+        {
+            "longitude": 1,
+            "latitude": 2
+        }
+    ]
 }
 ```
 
@@ -116,12 +120,12 @@ RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_points_INCLUDES": {
-    "longitude": 1,
-    "latitude": 2
-  }
+    "this_points_INCLUDES": {
+        "longitude": 1,
+        "latitude": 2
+    }
 }
 ```
 
@@ -155,12 +159,12 @@ RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_points_NOT_INCLUDES": {
-    "longitude": 1,
-    "latitude": 2
-  }
+    "this_points_NOT_INCLUDES": {
+        "longitude": 1,
+        "latitude": 2
+    }
 }
 ```
 
@@ -200,12 +204,14 @@ RETURN this0 { points: [p in this0.points | { point:p, crs: p.crs }] } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this0_points": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+    "this0_points": [
+        {
+            "longitude": 1,
+            "latitude": 2
+        }
+    ]
 }
 ```
 
@@ -243,12 +249,14 @@ RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_id": "id",
-  "this_update_points": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+    "this_id": "id",
+    "this_update_points": [
+        {
+            "longitude": 1,
+            "latitude": 2
+        }
+    ]
 }
 ```

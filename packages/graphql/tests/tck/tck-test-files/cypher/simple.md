@@ -35,7 +35,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 { "this_title": "River Runs Through It, A" }
 ```
 
@@ -64,7 +64,7 @@ RETURN this { .id, .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 { "this_title": "River Runs Through It, A" }
 ```
 
@@ -83,9 +83,9 @@ query($title: String) {
 }
 ```
 
-**GraphQL params input**
+### GraphQL Params Input
 
-```graphql-params
+```json
 { "title": "some title" }
 ```
 
@@ -99,6 +99,6 @@ RETURN this { .id, .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 { "this_title": "some title" }
 ```

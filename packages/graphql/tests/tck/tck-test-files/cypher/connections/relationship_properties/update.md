@@ -65,31 +65,31 @@ RETURN this { .title } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump",
     "updateMovies": {
-      "args": {
-        "update": {
-          "actors": [
-            {
-              "update": {
-                "relationship": {
-                    "screenTime": {
-                        "high": 0,
-                        "low": 60
+        "args": {
+            "update": {
+                "actors": [
+                    {
+                        "update": {
+                            "relationship": {
+                                "screenTime": {
+                                    "high": 0,
+                                    "low": 60
+                                }
+                            }
+                        },
+                        "where": {
+                            "node": {
+                                "name": "Tom Hanks"
+                            }
+                        }
                     }
-                }
-              },
-              "where": {
-                "node": {
-                  "name": "Tom Hanks"
-                }
-              }
+                ]
             }
-          ]
         }
-      }
     }
 }
 ```
@@ -150,7 +150,7 @@ RETURN this { .title } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
         "isAuthenticated": true,
@@ -160,30 +160,30 @@ RETURN this { .title } AS this
     "this_title": "Forrest Gump",
     "this_update_actors0_name": "Tom Hanks",
     "updateMovies": {
-      "args": {
-        "update": {
-          "actors": [
-            {
-              "update": {
-                "relationship": {
-                    "screenTime": {
-                        "high": 0,
-                        "low": 60
+        "args": {
+            "update": {
+                "actors": [
+                    {
+                        "update": {
+                            "relationship": {
+                                "screenTime": {
+                                    "high": 0,
+                                    "low": 60
+                                }
+                            },
+                            "node": {
+                                "name": "Tom Hanks"
+                            }
+                        },
+                        "where": {
+                            "node": {
+                                "name": "Tom Hanks"
+                            }
+                        }
                     }
-                },
-                "node": {
-                    "name": "Tom Hanks"
-                }
-              },
-              "where": {
-                "node": {
-                  "name": "Tom Hanks"
-                }
-              }
+                ]
             }
-          ]
         }
-      }
     }
 }
 ```

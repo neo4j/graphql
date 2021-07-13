@@ -89,15 +89,15 @@ RETURN this { .id } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -128,16 +128,16 @@ RETURN this { .id } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_name": "bob"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -174,16 +174,16 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_posts_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -227,16 +227,16 @@ RETURN this { .id, postsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_post_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -280,7 +280,7 @@ RETURN this { .id, postsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_post_auth_where0_creator_id": "id-01",
@@ -296,9 +296,9 @@ RETURN this { .id, postsConnection } as this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -336,7 +336,7 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_posts_content": "cool",
     "this_auth_where0_id": "id-01",
@@ -344,9 +344,9 @@ RETURN this {
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -385,16 +385,16 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_content_Post_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -446,16 +446,16 @@ RETURN this { .id, contentConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_Post_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -507,25 +507,25 @@ RETURN this { .id, contentConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_Post_auth_where0_creator_id": "id-01",
     "this_contentConnection": {
-      "args": {
-        "where": {
-          "Post": {
-            "id": "some-id"
-          }
+        "args": {
+            "where": {
+                "Post": {
+                    "id": "some-id"
+                }
+            }
         }
-      }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -559,16 +559,16 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_update_name": "Bob",
     "this_auth_where0_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -602,7 +602,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_update_name": "Bob",
     "this_auth_where0_id": "id-01",
@@ -610,9 +610,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -657,45 +657,41 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_posts_auth_where0_creator_id": "id-01",
     "this_posts0_auth_where0_creator_id": "id-01",
     "this_update_posts0_id": "new-id",
     "this_auth_where0_id": "id-01",
     "auth": {
-      "isAuthenticated": true,
-      "jwt": {
-        "roles": [
-          "admin"
-        ],
-        "sub": "id-01"
-      },
-      "roles": [
-        "admin"
-      ]
+        "isAuthenticated": true,
+        "jwt": {
+            "roles": ["admin"],
+            "sub": "id-01"
+        },
+        "roles": ["admin"]
     },
     "updateUsers": {
-      "args": {
-        "update": {
-          "posts": [
-            {
-              "update": {
-                  "node": {
-                    "id": "new-id"
-                  }
-              }
+        "args": {
+            "update": {
+                "posts": [
+                    {
+                        "update": {
+                            "node": {
+                                "id": "new-id"
+                            }
+                        }
+                    }
+                ]
             }
-          ]
         }
-      }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -726,15 +722,15 @@ DETACH DELETE this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -765,16 +761,16 @@ DETACH DELETE this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_name": "Bob"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -812,16 +808,16 @@ DETACH DELETE this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_posts0_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -876,7 +872,7 @@ RETURN this0 { .id } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "123",
     "this0_name": "Bob",
@@ -885,9 +881,9 @@ RETURN this0 { .id } AS this0
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -941,7 +937,7 @@ RETURN this0 { .id } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "123",
     "this0_name": "Bob",
@@ -951,9 +947,9 @@ RETURN this0 { .id } AS this0
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -997,16 +993,16 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_posts0_connect0_node_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1051,7 +1047,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_posts0_connect0_node_auth_where0_creator_id": "id-01",
@@ -1059,9 +1055,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1104,16 +1100,16 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_connect_posts0_node_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1156,7 +1152,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_connect_posts0_node_auth_where0_creator_id": "id-01",
@@ -1164,9 +1160,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1209,16 +1205,16 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_posts0_disconnect0_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1264,7 +1260,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_posts0_disconnect0_auth_where0_creator_id": "id-01",
@@ -1290,9 +1286,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1333,7 +1329,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_disconnect_posts0_auth_where0_creator_id": "id-01",
@@ -1351,9 +1347,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1393,7 +1389,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_disconnect_posts0_auth_where0_creator_id": "id-01",
@@ -1415,9 +1411,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]

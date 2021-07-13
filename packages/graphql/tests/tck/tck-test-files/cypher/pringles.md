@@ -175,29 +175,29 @@ RETURN this0 { .id } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this0_id": "1",
-  "this0_name": "Pringles",
-  "this0_sizes0_node_id": "103",
-  "this0_sizes0_node_name": "Small",
-  "this0_sizes1_node_id": "104",
-  "this0_sizes1_node_name": "Large",
-  "this0_colors0_node_id": "100",
-  "this0_colors0_node_name": "Red",
-  "this0_colors1_node_id": "102",
-  "this0_colors1_node_name": "Green",
-  "this0_photos0_node_id": "105",
-  "this0_photos0_node_description": "Outdoor photo",
-  "this0_photos0_node_url": "outdoor.png",
-  "this0_photos1_node_id": "106",
-  "this0_photos1_node_description": "Green photo",
-  "this0_photos1_node_url": "g.png",
-  "this0_photos1_node_color_connect0_node_id": "102",
-  "this0_photos2_node_id": "107",
-  "this0_photos2_node_description": "Red photo",
-  "this0_photos2_node_url": "r.png",
-  "this0_photos2_node_color_connect0_node_id": "100"
+    "this0_id": "1",
+    "this0_name": "Pringles",
+    "this0_sizes0_node_id": "103",
+    "this0_sizes0_node_name": "Small",
+    "this0_sizes1_node_id": "104",
+    "this0_sizes1_node_name": "Large",
+    "this0_colors0_node_id": "100",
+    "this0_colors0_node_name": "Red",
+    "this0_colors1_node_id": "102",
+    "this0_colors1_node_name": "Green",
+    "this0_photos0_node_id": "105",
+    "this0_photos0_node_description": "Outdoor photo",
+    "this0_photos0_node_url": "outdoor.png",
+    "this0_photos1_node_id": "106",
+    "this0_photos1_node_description": "Green photo",
+    "this0_photos1_node_url": "g.png",
+    "this0_photos1_node_color_connect0_node_id": "102",
+    "this0_photos2_node_id": "107",
+    "this0_photos2_node_description": "Red photo",
+    "this0_photos2_node_url": "r.png",
+    "this0_photos2_node_color_connect0_node_id": "100"
 }
 ```
 
@@ -277,52 +277,52 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_name": "Pringles",
-  "this_update_photos0_description": "Light Green Photo",
-  "this_photos0_color0_connect0_node_name": "Light Green",
-  "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
-  },
-  "updateProducts": {
-    "args": {
-      "update": {
-        "photos": [
-          {
+    "this_name": "Pringles",
+    "this_update_photos0_description": "Light Green Photo",
+    "this_photos0_color0_connect0_node_name": "Light Green",
+    "auth": {
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
+    },
+    "updateProducts": {
+        "args": {
             "update": {
-                "node": {
-                    "color": {
-                        "connect": {
-                            "where": {
-                                "node": {
-                                    "name": "Light Green"
-                                }
+                "photos": [
+                    {
+                        "update": {
+                            "node": {
+                                "color": {
+                                    "connect": {
+                                        "where": {
+                                            "node": {
+                                                "name": "Light Green"
+                                            }
+                                        }
+                                    },
+                                    "disconnect": {
+                                        "where": {
+                                            "node": {
+                                                "name": "Green"
+                                            }
+                                        }
+                                    }
+                                },
+                                "description": "Light Green Photo"
                             }
                         },
-                        "disconnect": {
-                            "where": {
+                        "where": {
                             "node": {
-                                "name": "Green"
-                            }
+                                "description": "Green Photo"
                             }
                         }
-                    },
-                    "description": "Light Green Photo"
-                }
-            },
-            "where": {
-              "node": {
-                "description": "Green Photo"
-              }
+                    }
+                ]
             }
-          }
-        ]
-      }
+        }
     }
-  }
 }
 ```
 

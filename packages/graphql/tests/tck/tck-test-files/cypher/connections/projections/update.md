@@ -59,7 +59,7 @@ RETURN this { .title, actorsConnection } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump"
 }

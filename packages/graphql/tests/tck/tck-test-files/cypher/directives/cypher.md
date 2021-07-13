@@ -61,12 +61,12 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
     }
 }
 ```
@@ -96,12 +96,12 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
     }
 }
 ```
@@ -143,13 +143,13 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_topActor_movies_title": "some title",
     "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
     }
 }
 ```
@@ -203,14 +203,14 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_topActor_movies_title": "some title",
     "this_topActor_movies_topActor_movies_title": "another title",
     "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
     }
 }
 ```
@@ -252,13 +252,13 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_topActor_movies_title": "some title",
     "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
     }
 }
 ```

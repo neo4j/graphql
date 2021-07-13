@@ -35,7 +35,7 @@ RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zo
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_datetime": {
         "day": 1,
@@ -80,7 +80,7 @@ RETURN this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), "iso_
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_datetime": {
         "day": 1,
@@ -123,7 +123,7 @@ RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), "i
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_update_datetime": {
         "day": 1,

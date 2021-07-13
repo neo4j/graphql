@@ -42,7 +42,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {}
 ```
 
@@ -70,7 +70,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {}
 ```
 
@@ -98,7 +98,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {}
 ```
 
@@ -126,7 +126,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {}
 ```
 

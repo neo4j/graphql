@@ -35,7 +35,7 @@ SKIP $this_offset
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_offset": {
         "high": 0,
@@ -68,7 +68,7 @@ LIMIT $this_limit
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_limit": {
         "high": 0,
@@ -102,7 +102,7 @@ LIMIT $this_limit
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_limit": {
         "high": 0,
@@ -129,9 +129,9 @@ query($offset: Int, $limit: Int) {
 }
 ```
 
-**GraphQL params input**
+### GraphQL Params Input
 
-```graphql-params
+```json
 {
     "offset": 0,
     "limit": 0
@@ -149,7 +149,7 @@ LIMIT $this_limit
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_offset": {
         "high": 0,
@@ -179,9 +179,9 @@ query($offset: Int, $limit: Int, $title: String) {
 }
 ```
 
-**GraphQL params input**
+### GraphQL Params Input
 
-```graphql-params
+```json
 {
     "limit": 1,
     "offset": 2,
@@ -201,7 +201,7 @@ LIMIT $this_limit
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_limit": {
         "high": 0,

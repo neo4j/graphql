@@ -80,7 +80,7 @@ RETURN this { contentConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_Post_auth_allow0_creator_id": "super_admin",
     "this_Post_user_auth_allow0_id": "super_admin",
@@ -88,9 +88,9 @@ RETURN this { contentConnection } as this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin"
 }

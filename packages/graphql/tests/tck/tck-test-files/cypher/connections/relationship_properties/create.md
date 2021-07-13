@@ -84,7 +84,7 @@ this0 { .title, actorsConnection } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_title": "Forrest Gump",
     "this0_actors0_node_name": "Tom Hanks",

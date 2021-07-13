@@ -8,7 +8,7 @@ Tests that the provided typeDefs return the correct schema.
 
 ### TypeDefs
 
-```typedefs-input
+```graphql
 union Search = Movie | Genre
 
 type Genre {
@@ -24,7 +24,7 @@ type Movie {
 
 ### Output
 
-```schema-output
+```graphql
 type CreateGenresMutationResponse {
     genres: [Genre!]!
 }

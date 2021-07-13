@@ -8,7 +8,7 @@ Tests that the provided typeDefs return the correct schema (with relationships).
 
 ### TypeDefs
 
-```typedefs-input
+```graphql
 type Actor {
     name: String
 }
@@ -21,7 +21,7 @@ type Movie {
 
 ### Output
 
-```schema-output
+```graphql
 type Actor {
     name: String
 }
@@ -269,7 +269,7 @@ type UpdateMoviesMutationResponse {
 
 ### TypeDefs
 
-```typedefs-input
+```graphql
 type Actor {
     name: String
     movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
@@ -283,7 +283,7 @@ type Movie {
 
 ### Output
 
-```schema-output
+```graphql
 type Actor {
     name: String
     movies(where: MovieWhere, options: MovieOptions): [Movie]

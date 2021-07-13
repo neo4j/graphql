@@ -77,26 +77,22 @@ RETURN this { .id, .name } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
-      "isAuthenticated": true,
-      "roles": [
-        "admin"
-      ],
-      "jwt": {
-        "roles": [
-            "admin"
-        ],
-        "sub": "super_admin"
-      }
+        "isAuthenticated": true,
+        "roles": ["admin"],
+        "jwt": {
+            "roles": ["admin"],
+            "sub": "super_admin"
+        }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -131,24 +127,22 @@ RETURN this { .id, .name, .password } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": [
-                "admin"
-            ],
+            "roles": ["admin"],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -185,24 +179,22 @@ RETURN this {
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
-       "isAuthenticated": true,
-       "roles": ["admin"],
-       "jwt": {
-            "roles": [
-                "admin"
-            ],
+        "isAuthenticated": true,
+        "roles": ["admin"],
+        "jwt": {
+            "roles": ["admin"],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -241,25 +233,23 @@ RETURN this0 { .id } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "1",
     "auth": {
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": [
-                "admin"
-            ],
+            "roles": ["admin"],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -301,7 +291,7 @@ RETURN this0 { .id } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "1",
     "this0_password": "super-password",
@@ -309,18 +299,16 @@ RETURN this0 { .id } AS this0
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": [
-                "admin"
-            ],
+            "roles": ["admin"],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -359,7 +347,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "1",
     "this_update_id": "id-1",
@@ -367,18 +355,16 @@ RETURN this { .id } AS this
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": [
-                "admin"
-            ],
+            "roles": ["admin"],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -417,7 +403,7 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "1",
     "this_update_password": "password",
@@ -425,18 +411,16 @@ RETURN this { .id } AS this
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": [
-                "admin"
-            ],
+            "roles": ["admin"],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -479,24 +463,22 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": [
-                "admin"
-            ],
+            "roles": ["admin"],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -537,33 +519,29 @@ RETURN this { .id } AS this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": [
-                "admin"
-            ],
+            "roles": ["admin"],
             "sub": "super_admin"
         }
     },
     "updateUsers": {
         "args": {
             "disconnect": {
-                "posts": [
-                    {}
-                ]
+                "posts": [{}]
             }
         }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -597,24 +575,22 @@ DETACH DELETE this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": [
-                "admin"
-            ],
+            "roles": ["admin"],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -657,24 +633,22 @@ DETACH DELETE this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": [
-                "admin"
-            ],
+            "roles": ["admin"],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin",
     "roles": ["admin"]

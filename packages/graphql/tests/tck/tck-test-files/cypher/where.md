@@ -32,7 +32,9 @@ query($title: String, $isFavorite: Boolean) {
 }
 ```
 
-```graphql-params
+### GraphQL Params Input
+
+```json
 { "title": "some title", "isFavorite": true }
 ```
 
@@ -47,7 +49,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "some title",
     "this_isFavorite": true
@@ -78,7 +80,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_AND_title": "some title"
 }
@@ -108,7 +110,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_AND_AND_title": "some title"
 }
@@ -138,7 +140,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_AND_AND_AND_title": "some title"
 }
@@ -168,7 +170,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_OR_title": "some title"
 }
@@ -198,7 +200,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_OR_OR_title": "some title"
 }
@@ -228,7 +230,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_OR_OR_OR_title": "some title"
 }
@@ -258,7 +260,7 @@ RETURN this { .title } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title_IN": ["some title"]
 }

@@ -8,7 +8,7 @@ Tests private fields are not included in the schema.
 
 ### TypeDefs
 
-```typedefs-input
+```graphql
 type User {
     id: ID
     password: String @private
@@ -17,74 +17,85 @@ type User {
 
 ### Output
 
-```schema-output
+```graphql
 type User {
-  id: ID
+    id: ID
 }
 
 type DeleteInfo {
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
+    nodesDeleted: Int!
+    relationshipsDeleted: Int!
 }
 
 enum SortDirection {
-  """Sort by field values in ascending order."""
-  ASC
-  """Sort by field values in descending order."""
-  DESC
+    """
+    Sort by field values in ascending order.
+    """
+    ASC
+    """
+    Sort by field values in descending order.
+    """
+    DESC
 }
 
 input UserCreateInput {
-  id: ID
+    id: ID
 }
 
 input UserOptions {
-  """Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array."""
-  sort: [UserSort]
-  limit: Int
-  offset: Int
+    """
+    Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+    """
+    sort: [UserSort]
+    limit: Int
+    offset: Int
 }
 
-"""Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object."""
+"""
+Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+"""
 input UserSort {
-  id: SortDirection
+    id: SortDirection
 }
 
 input UserWhere {
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  OR: [UserWhere!]
-  AND: [UserWhere!]
+    id: ID
+    id_IN: [ID]
+    id_NOT: ID
+    id_NOT_IN: [ID]
+    id_CONTAINS: ID
+    id_NOT_CONTAINS: ID
+    id_STARTS_WITH: ID
+    id_NOT_STARTS_WITH: ID
+    id_ENDS_WITH: ID
+    id_NOT_ENDS_WITH: ID
+    OR: [UserWhere!]
+    AND: [UserWhere!]
 }
 
 input UserUpdateInput {
-  id: ID
+    id: ID
 }
 
 type CreateUsersMutationResponse {
-  users: [User!]!
+    users: [User!]!
 }
 
 type UpdateUsersMutationResponse {
-  users: [User!]!
+    users: [User!]!
 }
 
 type Mutation {
-  createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
-  deleteUsers(where: UserWhere): DeleteInfo!
-  updateUsers(where: UserWhere, update: UserUpdateInput): UpdateUsersMutationResponse!
+    createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+    deleteUsers(where: UserWhere): DeleteInfo!
+    updateUsers(
+        where: UserWhere
+        update: UserUpdateInput
+    ): UpdateUsersMutationResponse!
 }
 
 type Query {
-  users(where: UserWhere, options: UserOptions): [User!]!
+    users(where: UserWhere, options: UserOptions): [User!]!
 }
 ```
 

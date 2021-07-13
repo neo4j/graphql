@@ -56,7 +56,7 @@ RETURN this { .title, actorsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump"
 }
@@ -101,7 +101,7 @@ RETURN this { .title, actorsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump",
     "this_actorsConnection": {
@@ -156,7 +156,7 @@ RETURN this { .title, actorsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump"
 }
@@ -214,7 +214,7 @@ RETURN this { .title, actorsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump"
 }
@@ -286,7 +286,7 @@ RETURN this { .title, actorsConnection } as this
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump"
 }

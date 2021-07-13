@@ -46,7 +46,7 @@ RETURN this0 { .id } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "1"
 }
@@ -89,7 +89,7 @@ RETURN this0 { .id } AS this0,
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "1",
     "this1_id": "2"
@@ -149,7 +149,7 @@ RETURN this0 { .id } AS this0, this1 { .id } AS this1
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "1",
     "this0_actors0_node_name": "actor 1",
@@ -243,7 +243,7 @@ RETURN this0 { .id } AS this0, this1 { .id } AS this1
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "1",
     "this0_actors0_node_name": "actor 1",
@@ -299,7 +299,7 @@ RETURN this0 { .id } AS this0
 
 ### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "1",
     "this0_actors_connect0_node_name": "Dan"
