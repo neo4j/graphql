@@ -36,6 +36,7 @@ Blogs, talks and other content surrounding Neo4j GraphQL. Sign up for [NODES 202
 
 1. [Neo4j and GraphQL The Past, Present and Future](https://youtu.be/sZ-eBznM71M)
 2. [Securing Your Graph With Neo4j GraphQL](https://medium.com/neo4j/securing-your-graph-with-neo4j-graphql-91a2d7b08631)
-3. [Migrating To The Official Neo4j GraphQL Library](https://youtu.be/4_rp1ikvFKc)
-4. [Announcing the Stable Release of the Official Neo4j GraphQL Library 1.0.0](https://medium.com/neo4j/announcing-the-stable-release-of-the-official-neo4j-graphql-library-1-0-0-6cdd30cd40b)
-5. [Announcing the Neo4j GraphQL Library Beta Release](https://medium.com/neo4j/announcing-the-neo4j-graphql-library-beta-99ae8541bbe7)
+3. [Best Practices For Using Cypher With GraphQL](https://youtu.be/YceBpk01Gxs)
+4. [Migrating To The Official Neo4j GraphQL Library](https://youtu.be/4_rp1ikvFKc)
+5. [Announcing the Stable Release of the Official Neo4j GraphQL Library 1.0.0](https://medium.com/neo4j/announcing-the-stable-release-of-the-official-neo4j-graphql-library-1-0-0-6cdd30cd40b)
+6. [Announcing the Neo4j GraphQL Library Beta Release](https://medium.com/neo4j/announcing-the-neo4j-graphql-library-beta-99ae8541bbe7)
