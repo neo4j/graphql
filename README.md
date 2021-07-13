@@ -32,7 +32,7 @@ This is a TypeScript Monorepo managed with [Yarn Workspaces](https://classic.yar
 
 ## Media
 
-Blogs, talks and other content surrounding Neo4j GraphQL. Sign up for [Nodes 2021](https://neo4j.brand.live/c/2021nodes-live) to view even more Neo4j GraphQL content.
+Blogs, talks and other content surrounding Neo4j GraphQL. Sign up for [NODES 2021](https://neo4j.brand.live/c/2021nodes-live) to view even more Neo4j GraphQL content.
 
 1. [Neo4j and GraphQL The Past, Present and Future](https://youtu.be/sZ-eBznM71M)
 2. [Securing Your Graph With Neo4j GraphQL](https://medium.com/neo4j/securing-your-graph-with-neo4j-graphql-91a2d7b08631)
