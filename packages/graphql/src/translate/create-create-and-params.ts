@@ -96,16 +96,16 @@ function createCreateAndParams({
 
                         const inStr = relationField.direction === "IN" ? "<-" : "-";
                         const outStr = relationField.direction === "OUT" ? "->" : "-";
-                        const relTypeStr = `[${create.properties ? propertiesName : ""}:${relationField.type}]`;
+                        const relTypeStr = `[${create.relationship ? propertiesName : ""}:${relationField.type}]`;
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
-                        if (create.properties) {
+                        if (create.relationship) {
                             const relationship = (context.neoSchema.relationships.find(
                                 (x) => x.properties === relationField.properties
                             ) as unknown) as Relationship;
 
                             const setA = createSetRelationshipPropertiesAndParams({
-                                properties: create.properties,
+                                properties: create.relationship,
                                 varName: propertiesName,
                                 relationship,
                                 operation: "CREATE",

@@ -70,7 +70,7 @@ describe("Relationship properties - connect", () => {
                             actors: {
                                 connect: [{
                                     where: { node: { name: $actorName } },
-                                    properties: { screenTime: $screenTime },
+                                    relationship: { screenTime: $screenTime },
                                 }]
                             }
                         }
@@ -169,7 +169,7 @@ describe("Relationship properties - connect", () => {
                                 where: {
                                     node: { title: $movieTitle }
                                 },
-                                properties: {
+                                relationship: {
                                     screenTime: $screenTime
                                 }
                             }
@@ -251,7 +251,7 @@ describe("Relationship properties - connect", () => {
                   connect: {
                     actors: {
                       where: { node: { name: $actorName } }
-                      properties: { screenTime: $screenTime }
+                      relationship: { screenTime: $screenTime }
                     }
                   }
                 ) {
@@ -343,7 +343,7 @@ describe("Relationship properties - connect", () => {
                         actedIn: {
                             Movie: {
                                 where: { node: { title: $movieTitle } }
-                                properties: { screenTime: $screenTime }
+                                relationship: { screenTime: $screenTime }
                             }
                         }
                     }

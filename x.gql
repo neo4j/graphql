@@ -1,0 +1,12 @@
+enum Relationships {
+    ActedIn
+}
+
+
+type Movie {
+    actors: [Actor] @relationship(properties: Relationships)
+}
+
+interface @relationship {
+    roles: [String]
+}

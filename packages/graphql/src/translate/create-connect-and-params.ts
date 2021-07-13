@@ -60,7 +60,7 @@ function createConnectAndParams({
         const relationshipName = `${baseName}_relationship`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
-        const relTypeStr = `[${connect.properties ? relationshipName : ""}:${relationField.type}]`;
+        const relTypeStr = `[${connect.relationship ? relationshipName : ""}:${relationField.type}]`;
 
         if (parentNode.auth && !fromCreate) {
             const whereAuth = createAuthAndParams({
@@ -155,13 +155,13 @@ function createConnectAndParams({
         res.connects.push(`FOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
         res.connects.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
-        if (connect.properties) {
+        if (connect.relationship) {
             const relationship = (context.neoSchema.relationships.find(
                 (x) => x.properties === relationField.properties
             ) as unknown) as Relationship;
 
             const setA = createSetRelationshipPropertiesAndParams({
-                properties: connect.properties,
+                properties: connect.relationship,
                 varName: relationshipName,
                 relationship,
                 operation: "CREATE",
