@@ -1037,6 +1037,8 @@ function makeAugmentedSchema(
                     });
                 });
             } else {
+                const relatedNode = nodes.find((n) => n.name === connectionField.relationship.typeMeta.name) as Node;
+
                 connectionWhere.addFields({
                     node: `${connectionField.relationship.typeMeta.name}Where`,
                     node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
@@ -1044,10 +1046,22 @@ function makeAugmentedSchema(
 
                 const connectionSort = composer.createInputTC({
                     name: `${connectionField.typeMeta.name}Sort`,
-                    fields: {
-                        node: `${connectionField.relationship.typeMeta.name}Sort`,
-                    },
+                    fields: {},
                 });
+
+                const nodeSortFields = [
+                    ...relatedNode.primitiveFields,
+                    ...relatedNode.enumFields,
+                    ...relatedNode.scalarFields,
+                    ...relatedNode.dateTimeFields,
+                    ...relatedNode.pointFields,
+                ].filter((f) => !f.typeMeta.array);
+
+                if (nodeSortFields.length) {
+                    connectionSort.addFields({
+                        node: `${connectionField.relationship.typeMeta.name}Sort`,
+                    });
+                }
 
                 if (connectionField.relationship.properties) {
                     connectionSort.addFields({
@@ -1057,7 +1071,6 @@ function makeAugmentedSchema(
 
                 composeNodeArgs = {
                     ...composeNodeArgs,
-                    sort: connectionSort.NonNull.List,
                     first: {
                         type: "Int",
                     },
@@ -1065,6 +1078,14 @@ function makeAugmentedSchema(
                         type: "String",
                     },
                 };
+
+                // If any sortable fields, add sort argument to connection field
+                if (nodeSortFields.length || connectionField.relationship.properties) {
+                    composeNodeArgs = {
+                        ...composeNodeArgs,
+                        sort: connectionSort.NonNull.List,
+                    };
+                }
             }
 
             composeNode.addFields({
