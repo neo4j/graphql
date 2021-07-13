@@ -4,7 +4,7 @@ Tests for edge cases where either end of a relationship might be a union.
 
 Schema:
 
-```schema
+```graphql
 type Movie {
     title: String!
     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)

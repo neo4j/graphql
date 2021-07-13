@@ -4,7 +4,7 @@ Simple queries with arguments and variables.
 
 Schema:
 
-```schema
+```graphql
 type Movie {
     id: ID
     title: String

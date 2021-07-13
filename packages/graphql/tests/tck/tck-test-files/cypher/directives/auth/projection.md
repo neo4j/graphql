@@ -4,7 +4,7 @@ Tests auth is added to projections in all operations
 
 Schema:
 
-```schema
+```graphql
 type User {
     id: ID
     name: String

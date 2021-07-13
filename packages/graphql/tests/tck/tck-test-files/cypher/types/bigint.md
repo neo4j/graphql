@@ -4,7 +4,7 @@ Tests BigInt scalar type.
 
 Schema:
 
-```schema
+```graphql
 type File {
     name: String!
     size: BigInt!

@@ -4,7 +4,7 @@ Tests connect operations.
 
 Schema:
 
-```schema
+```graphql
 type Product {
     id: ID!
     name: String

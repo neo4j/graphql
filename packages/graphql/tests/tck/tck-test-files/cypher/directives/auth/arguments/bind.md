@@ -4,7 +4,7 @@ Tests auth allow operations
 
 Schema:
 
-```schema
+```graphql
 type Post {
     id: ID
     creator: User @relationship(type: "HAS_POST", direction: IN)

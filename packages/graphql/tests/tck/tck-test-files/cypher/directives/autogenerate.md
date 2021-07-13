@@ -4,7 +4,7 @@ Tests autogenerate operations.
 
 Schema:
 
-```schema
+```graphql
 type Movie {
     id: ID! @id
     name: String!

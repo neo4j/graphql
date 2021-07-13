@@ -4,7 +4,7 @@ Tests auth `where` operations
 
 Schema:
 
-```schema
+```graphql
 union Search = Post
 
 type User {
@@ -32,24 +32,14 @@ extend type User
 
 extend type User {
     password: String!
-        @auth(
-            rules: [
-                {
-                    operations: [READ]
-                    where: { id: "$jwt.sub" }
-                }
-            ]
-        )
+        @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
 }
 
 extend type Post {
     secretKey: String!
         @auth(
             rules: [
-                {
-                    operations: [READ]
-                    where: { creator: { id: "$jwt.sub" } }
-                }
+                { operations: [READ], where: { creator: { id: "$jwt.sub" } } }
             ]
         )
 }

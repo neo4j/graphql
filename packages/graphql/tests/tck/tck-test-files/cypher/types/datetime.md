@@ -4,7 +4,7 @@ Tests DateTime operations. ⚠ The string in params is actually an object but th
 
 Schema:
 
-```schema
+```graphql
 type Movie {
     id: ID
     datetime: DateTime

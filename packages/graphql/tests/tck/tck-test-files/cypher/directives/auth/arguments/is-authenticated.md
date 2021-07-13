@@ -4,7 +4,7 @@ Tests auth isAuthenticated operation
 
 Schema:
 
-```schema
+```graphql
 type History {
     url: String @auth(rules: [{ operations: [READ], isAuthenticated: true }])
 }
@@ -31,16 +31,18 @@ extend type User
         ]
     )
 
-extend type Post @auth(rules: [{ operations: [CONNECT, DISCONNECT, DELETE], isAuthenticated: true }])
+extend type Post
+    @auth(
+        rules: [
+            { operations: [CONNECT, DISCONNECT, DELETE], isAuthenticated: true }
+        ]
+    )
 
 extend type User {
     password: String
         @auth(
             rules: [
-                {
-                    operations: [READ, CREATE, UPDATE]
-                    isAuthenticated: true
-                }
+                { operations: [READ, CREATE, UPDATE], isAuthenticated: true }
             ]
         )
 }

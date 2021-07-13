@@ -4,29 +4,41 @@ Tests for queries on cypher directives.
 
 Schema:
 
-```schema
+```graphql
 type Actor {
     name: String
-    movies(title: String): [Movie] @cypher(statement: """
-        MATCH (m:Movie {title: $title})
-        RETURN m
-    """)
-    randomNumber: Int @cypher(statement: """
-        RETURN rand()
-    """)
+    movies(title: String): [Movie]
+        @cypher(
+            statement: """
+            MATCH (m:Movie {title: $title})
+            RETURN m
+            """
+        )
+    randomNumber: Int
+        @cypher(
+            statement: """
+            RETURN rand()
+            """
+        )
 }
 
 type Movie {
     id: ID
     title: String
-    actors: [Actor] @cypher(statement: """
-        MATCH (a:Actor)
-        RETURN a
-    """)
-    topActor: Actor @cypher(statement: """
-        MATCH (a:Actor)
-        RETURN a
-    """)
+    actors: [Actor]
+        @cypher(
+            statement: """
+            MATCH (a:Actor)
+            RETURN a
+            """
+        )
+    topActor: Actor
+        @cypher(
+            statement: """
+            MATCH (a:Actor)
+            RETURN a
+            """
+        )
 }
 ```
 

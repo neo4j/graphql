@@ -4,7 +4,7 @@ Tests delete operations.
 
 Schema:
 
-```schema
+```graphql
 type Actor {
     name: String
     movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)

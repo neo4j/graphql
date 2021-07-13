@@ -4,7 +4,7 @@ Tests auth allow operations
 
 Schema:
 
-```schema
+```graphql
 type Comment {
     id: ID
     content: String

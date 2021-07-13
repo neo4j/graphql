@@ -4,17 +4,18 @@ Tests for queries on Unions.
 
 Schema:
 
-```schema
+```graphql
 union Search = Movie | Genre
 
-type Genre @auth(rules: [
-    {
-        operations: [READ],
-        allow: {
-            name: "$jwt.jwtAllowedNamesExample"
-        }
-    }
-]) {
+type Genre
+    @auth(
+        rules: [
+            {
+                operations: [READ]
+                allow: { name: "$jwt.jwtAllowedNamesExample" }
+            }
+        ]
+    ) {
     name: String
 }
 

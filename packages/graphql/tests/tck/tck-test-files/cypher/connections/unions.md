@@ -2,22 +2,25 @@
 
 Schema:
 
-```schema
+```graphql
 union Publication = Book | Journal
 
 type Author {
     name: String!
-    publications: [Publication] @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
+    publications: [Publication]
+        @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
 }
 
 type Book {
     title: String!
-    author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
+    author: [Author!]!
+        @relationship(type: "WROTE", direction: IN, properties: "Wrote")
 }
 
 type Journal {
     subject: String!
-    author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
+    author: [Author!]!
+        @relationship(type: "WROTE", direction: IN, properties: "Wrote")
 }
 
 interface Wrote {

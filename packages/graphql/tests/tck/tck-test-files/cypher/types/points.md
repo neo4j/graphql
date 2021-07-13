@@ -4,7 +4,7 @@ Tests Cypher generation for arrays of spatial types. [Point] and [CartesianPoint
 
 Schema:
 
-```schema
+```graphql
 type PointContainer {
     id: String
     points: [Point]

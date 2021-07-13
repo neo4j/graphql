@@ -4,7 +4,7 @@ Tests auth operations with roles
 
 Schema:
 
-```schema
+```graphql
 type History {
     url: String @auth(rules: [{ operations: [READ], roles: ["super-admin"] }])
 }
@@ -33,14 +33,7 @@ extend type User
     @auth(
         rules: [
             {
-                operations: [
-                    READ
-                    CREATE
-                    UPDATE
-                    CONNECT
-                    DISCONNECT
-                    DELETE
-                ]
+                operations: [READ, CREATE, UPDATE, CONNECT, DISCONNECT, DELETE]
                 roles: ["admin"]
             }
         ]
@@ -49,7 +42,10 @@ extend type User
 extend type Post
     @auth(
         rules: [
-            { operations: [CONNECT, DISCONNECT, DELETE], roles: ["super-admin"] }
+            {
+                operations: [CONNECT, DISCONNECT, DELETE]
+                roles: ["super-admin"]
+            }
         ]
     )
 
@@ -57,10 +53,7 @@ extend type User {
     password: String
         @auth(
             rules: [
-                {
-                    operations: [READ, CREATE, UPDATE]
-                    roles: ["super-admin"]
-                }
+                { operations: [READ, CREATE, UPDATE], roles: ["super-admin"] }
             ]
         )
 }

@@ -112,7 +112,7 @@ function extractTests(contents: string, kind: string): Test[] {
 }
 
 function extractSchema(contents: string): string {
-    const re = /```schema(?<capture>(.|\s)*?)```/;
+    const re = /Schema:\s+```graphql(?<capture>(.|\s)*?)```/;
     return captureOrEmptyString(contents, re);
 }
 

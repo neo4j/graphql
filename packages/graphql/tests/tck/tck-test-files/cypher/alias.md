@@ -4,7 +4,7 @@ Tests to ensure when using aliases that the cypher is correct.
 
 Schema:
 
-```schema
+```graphql
 type Actor {
     name: String
 }
@@ -12,10 +12,13 @@ type Actor {
 type Movie {
     id: ID
     actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
-    custom: [Movie] @cypher(statement: """
-        MATCH (m:Movie)
-        RETURN m
-    """)
+    custom: [Movie]
+        @cypher(
+            statement: """
+            MATCH (m:Movie)
+            RETURN m
+            """
+        )
 }
 ```
 

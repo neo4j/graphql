@@ -4,7 +4,7 @@ Tests advanced filtering.
 
 Schema:
 
-```schema
+```graphql
 type Movie {
     _id: ID
     id: ID
@@ -15,8 +15,8 @@ type Movie {
 }
 
 type Genre {
-  name: String
-  movies: [Movie] @relationship(type: "IN_GENRE", direction: IN)
+    name: String
+    movies: [Movie] @relationship(type: "IN_GENRE", direction: IN)
 }
 ```
 

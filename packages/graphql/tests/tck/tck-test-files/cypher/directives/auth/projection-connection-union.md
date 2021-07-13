@@ -4,7 +4,7 @@ Tests auth is added to projection connections
 
 Schema:
 
-```schema
+```graphql
 type Post {
     content: String
     creator: User @relationship(type: "HAS_POST", direction: IN)

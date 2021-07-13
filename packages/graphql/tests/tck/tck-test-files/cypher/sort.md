@@ -4,7 +4,7 @@ Tests for queries including reserved arguments `sort`.
 
 Schema:
 
-```schema
+```graphql
 type Movie {
     id: ID
     title: String

@@ -4,22 +4,23 @@ Tests Update operations.
 
 Schema:
 
-```schema
+```graphql
 type Actor {
     name: String
-    movies: [Movie] @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+    movies: [Movie]
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
 
 type Movie {
     id: ID
     title: String
-    actors: [Actor]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+    actors: [Actor]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
 }
 
 interface ActedIn {
     screenTime: Int
 }
-
 ```
 
 ---

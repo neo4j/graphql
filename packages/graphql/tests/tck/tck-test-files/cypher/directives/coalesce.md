@@ -4,7 +4,7 @@ Tests for queries where queried fields are decorated with @coalesce
 
 Schema:
 
-```schema
+```graphql
 type User {
     id: ID! @coalesce(value: "00000000-00000000-00000000-00000000")
     name: String! @coalesce(value: "Jane Smith")

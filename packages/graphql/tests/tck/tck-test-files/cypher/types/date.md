@@ -4,7 +4,7 @@ Tests Date operations. ⚠ The string in params is actually an object but the te
 
 Schema:
 
-```schema
+```graphql
 type Movie {
     id: ID
     date: Date

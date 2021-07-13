@@ -4,7 +4,7 @@ Tests for queries using options.where
 
 Schema:
 
-```schema
+```graphql
 type Movie {
     title: String!
     ratings: [Float!]!

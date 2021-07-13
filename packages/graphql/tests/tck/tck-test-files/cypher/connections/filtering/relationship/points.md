@@ -2,20 +2,22 @@
 
 Schema:
 
-```schema
+```graphql
 type Movie {
-  title: String!
-  actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+    title: String!
+    actors: [Actor!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
 }
 
 type Actor {
-  name: String!
-  movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+    name: String!
+    movies: [Movie!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
 
 interface ActedIn {
-  screenTime: Int!
-  location: Point!
+    screenTime: Int!
+    location: Point!
 }
 ```
 

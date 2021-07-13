@@ -4,7 +4,7 @@ Tests TimeStamps operations. ⚠ The string in params is actually an object but 
 
 Schema:
 
-```schema
+```graphql
 type Movie {
     id: ID
     name: String
