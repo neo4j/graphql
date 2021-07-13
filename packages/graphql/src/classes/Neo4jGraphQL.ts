@@ -33,7 +33,7 @@ const debug = Debug(DEBUG_GRAPHQL);
 
 export interface Neo4jGraphQLJWT {
     secret: string;
-    noVerify?: string;
+    noVerify?: boolean;
     rolesPath?: string;
 }
 
