@@ -1,4 +1,4 @@
-## Cypher NULL
+# Cypher NULL
 
 Tests for queries using null (in)equality in options.where
 
@@ -20,9 +20,9 @@ type Movie {
 
 ---
 
-### Simple IS NULL
+## Simple IS NULL
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -32,7 +32,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -40,7 +40,7 @@ WHERE this.title IS NULL
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {}
@@ -48,9 +48,9 @@ RETURN this { .title } as this
 
 ---
 
-### Simple IS NOT NULL
+## Simple IS NOT NULL
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -60,7 +60,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -68,7 +68,7 @@ WHERE this.title IS NOT NULL
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {}
@@ -76,9 +76,9 @@ RETURN this { .title } as this
 
 ---
 
-### Simple relationship IS NULL
+## Simple relationship IS NULL
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -88,7 +88,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -96,7 +96,7 @@ WHERE NOT EXISTS((this)<-[:ACTED_IN]-(:Actor))
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {}
@@ -104,9 +104,9 @@ RETURN this { .title } as this
 
 ---
 
-### Simple relationship IS NOT NULL
+## Simple relationship IS NOT NULL
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -116,7 +116,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -124,7 +124,7 @@ WHERE EXISTS((this)<-[:ACTED_IN]-(:Actor))
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {}

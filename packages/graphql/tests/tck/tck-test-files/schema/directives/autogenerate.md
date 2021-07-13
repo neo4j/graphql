@@ -1,12 +1,12 @@
-## Schema autogenerate directive
+# Schema autogenerate directive
 
 Tests that the autogenerate directive produces the correct schema.
 
 ---
 
-### Simple
+## Simple
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Movie {
@@ -15,7 +15,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 

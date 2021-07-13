@@ -1,12 +1,12 @@
-## Schema Access Directives
+# Schema Access Directives
 
 Tests that the access directives @readonly and @writeonly work as expected.
 
 ---
 
-### Simple
+## Simple
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type User {
@@ -16,7 +16,7 @@ type User {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 

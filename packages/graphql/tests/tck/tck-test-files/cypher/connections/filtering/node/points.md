@@ -1,4 +1,4 @@
-## Cypher -> Connections -> Filtering -> Node -> Points
+# Cypher -> Connections -> Filtering -> Node -> Points
 
 Schema:
 
@@ -21,9 +21,9 @@ interface ActedIn {
 
 ---
 
-### DISTANCE
+## DISTANCE
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -54,7 +54,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -68,7 +68,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

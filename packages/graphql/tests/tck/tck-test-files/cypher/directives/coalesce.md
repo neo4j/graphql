@@ -1,4 +1,4 @@
-## Cypher coalesce()
+# Cypher coalesce()
 
 Tests for queries where queried fields are decorated with @coalesce
 
@@ -20,9 +20,9 @@ NEO4J_GRAPHQL_ENABLE_REGEX=1
 
 ---
 
-### Simple
+## Simple
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query(
@@ -50,7 +50,7 @@ query(
 { "id": "Some ID", "name": "Some name", "verified": true, "numberOfFriends": 10, "rating": 3.5 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -62,7 +62,7 @@ AND coalesce(this.rating, 2.5) < $this_rating_LT
 RETURN this { .name } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

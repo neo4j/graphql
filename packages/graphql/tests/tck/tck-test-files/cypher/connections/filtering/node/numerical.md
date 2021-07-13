@@ -1,4 +1,4 @@
-## Cypher -> Connections -> Filtering -> Node -> Numerical
+# Cypher -> Connections -> Filtering -> Node -> Numerical
 
 Schema:
 
@@ -21,9 +21,9 @@ interface ActedIn {
 
 ---
 
-### LT
+## LT
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -42,7 +42,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -56,7 +56,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -77,9 +77,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### LTE
+## LTE
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -98,7 +98,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -112,7 +112,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -133,9 +133,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### GT
+## GT
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -154,7 +154,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -168,7 +168,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -189,9 +189,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### GTE
+## GTE
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -210,7 +210,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -224,7 +224,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

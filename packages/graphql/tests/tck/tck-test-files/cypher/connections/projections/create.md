@@ -1,4 +1,4 @@
-## Cypher -> Connections -> Projections -> Create
+# Cypher -> Connections -> Projections -> Create
 
 Schema:
 
@@ -20,9 +20,9 @@ interface ActedIn {
 
 ---
 
-### Connection can be selected following the creation of a single node
+## Connection can be selected following the creation of a single node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -42,7 +42,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -59,7 +59,7 @@ CALL {
 RETURN this0 { .title, actorsConnection } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -69,9 +69,9 @@ RETURN this0 { .title, actorsConnection } AS this0
 
 ---
 
-### Connection can be selected following the creation of a multiple nodes
+## Connection can be selected following the creation of a multiple nodes
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -91,7 +91,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -119,7 +119,7 @@ CALL {
 RETURN this0 { .title, actorsConnection } AS this0, this1 { .title, actorsConnection } AS this1
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -130,9 +130,9 @@ RETURN this0 { .title, actorsConnection } AS this0, this1 { .title, actorsConnec
 
 ---
 
-### Connection can be selected and filtered following the creation of a multiple nodes
+## Connection can be selected and filtered following the creation of a multiple nodes
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -152,7 +152,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -182,7 +182,7 @@ CALL {
 RETURN this0 { .title, actorsConnection } AS this0, this1 { .title, actorsConnection } AS this1
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

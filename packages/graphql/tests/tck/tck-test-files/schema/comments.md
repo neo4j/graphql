@@ -1,12 +1,12 @@
-## Schema Simple
+# Schema Simple
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### Simple
+## Simple
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 "A custom scalar."
@@ -41,7 +41,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 

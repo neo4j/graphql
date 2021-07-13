@@ -1,12 +1,12 @@
-## Schema Arrays
+# Schema Arrays
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### Arrays
+## Arrays
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Movie {
@@ -16,7 +16,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 

@@ -1,12 +1,12 @@
-## Schema Relationship Properties
+# Schema Relationship Properties
 
 Tests that the provided typeDefs return the correct schema (with relationships).
 
 ---
 
-### Relationship Properties
+## Relationship Properties
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Actor {
@@ -24,7 +24,7 @@ interface ActedIn {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 interface ActedIn {

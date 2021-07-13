@@ -1,4 +1,4 @@
-## Cypher -> Connections -> Projections -> Update
+# Cypher -> Connections -> Projections -> Update
 
 Schema:
 
@@ -20,9 +20,9 @@ interface ActedIn {
 
 ---
 
-### Connection can be selected following update Mutation
+## Connection can be selected following update Mutation
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -42,7 +42,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -57,7 +57,7 @@ CALL {
 RETURN this { .title, actorsConnection } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

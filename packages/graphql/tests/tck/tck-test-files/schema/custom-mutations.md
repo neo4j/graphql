@@ -1,12 +1,12 @@
-## Schema Custom Mutations
+# Schema Custom Mutations
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### Custom Mutations
+## Custom Mutations
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 input ExampleInput {
@@ -32,7 +32,7 @@ type Subscription {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 

@@ -1,12 +1,12 @@
-## Schema BigInt
+# Schema BigInt
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### BigInt
+## BigInt
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type File {
@@ -15,7 +15,7 @@ type File {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 """A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string."""

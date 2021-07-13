@@ -1,4 +1,4 @@
-## Nested Unions
+# Nested Unions
 
 Tests for edge cases where either end of a relationship might be a union.
 
@@ -32,9 +32,9 @@ union Actor = LeadActor | Extra
 
 ---
 
-### Nested Unions - Connect -> Connect
+## Nested Unions - Connect -> Connect
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -70,7 +70,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -86,7 +86,7 @@ FOREACH(_ IN CASE this_connect_actors_LeadActor0_node_actedIn_Series0_node WHEN 
 RETURN this { .title, actors: [(this)<-[:ACTED_IN]-(this_actors) WHERE "LeadActor" IN labels(this_actors) | head( [ this_actors IN [this_actors] WHERE "LeadActor" IN labels (this_actors) | this_actors { __resolveType: "LeadActor", .name, actedIn: [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE "Series" IN labels(this_actors_actedIn) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE "Series" IN labels (this_actors_actedIn) | this_actors_actedIn { __resolveType: "Series", .name } ] ) ] } ] ) ] } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -98,9 +98,9 @@ RETURN this { .title, actors: [(this)<-[:ACTED_IN]-(this_actors) WHERE "LeadActo
 
 ---
 
-### Nested Unions - Disconnect -> Disconnect
+## Nested Unions - Disconnect -> Disconnect
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -136,7 +136,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -151,7 +151,7 @@ FOREACH(_ IN CASE this_disconnect_actors_LeadActor0_actedIn_Series0 WHEN NULL TH
 RETURN this { .title, actors: [(this)<-[:ACTED_IN]-(this_actors) WHERE "LeadActor" IN labels(this_actors) | head( [ this_actors IN [this_actors] WHERE "LeadActor" IN labels (this_actors) | this_actors { __resolveType: "LeadActor", .name, actedIn: [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE "Series" IN labels(this_actors_actedIn) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE "Series" IN labels (this_actors_actedIn) | this_actors_actedIn { __resolveType: "Series", .name } ] ) ] } ] ) ] } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

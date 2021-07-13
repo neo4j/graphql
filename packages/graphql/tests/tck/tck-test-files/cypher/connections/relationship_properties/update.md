@@ -1,4 +1,4 @@
-## Cypher -> Connections -> Relationship Properties -> Update
+# Cypher -> Connections -> Relationship Properties -> Update
 
 Schema:
 
@@ -20,9 +20,9 @@ interface ActedIn {
 
 ---
 
-### Update a relationship property on a relationship between two specified nodes (update -> update)
+## Update a relationship property on a relationship between two specified nodes (update -> update)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -44,7 +44,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -63,7 +63,7 @@ YIELD value as this_acted_in0_actors0_relationship
 RETURN this { .title } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -96,9 +96,9 @@ RETURN this { .title } AS this
 
 ---
 
-### Update properties on both the relationship and end node in a nested update (update -> update)
+## Update properties on both the relationship and end node in a nested update (update -> update)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -123,7 +123,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -148,7 +148,7 @@ YIELD value as this_acted_in0_actors0_relationship
 RETURN this { .title } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

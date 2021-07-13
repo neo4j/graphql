@@ -1,12 +1,12 @@
-## Schema Null
+# Schema Null
 
 Tests that the not null of types are preserved
 
 ---
 
-### Simple
+## Simple
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Movie {
@@ -26,7 +26,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type CreateMoviesMutationResponse {

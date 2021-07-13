@@ -1,12 +1,12 @@
-## Schema Cypher Directive
+# Schema Cypher Directive
 
 Tests that the provided typeDefs return the correct schema (with `@exclude` directives).
 
 ---
 
-### Using `@exclude` directive to skip generation of Query
+## Using `@exclude` directive to skip generation of Query
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Actor @exclude(operations: [READ]) {
@@ -18,7 +18,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 
@@ -132,9 +132,9 @@ type Query {
 
 ---
 
-### Using `@exclude` directive to skip generator of Mutation
+## Using `@exclude` directive to skip generator of Mutation
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Actor @exclude(operations: [CREATE]) {
@@ -142,7 +142,7 @@ type Actor @exclude(operations: [CREATE]) {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type Actor {
@@ -208,9 +208,9 @@ type Query {
 
 ---
 
-### Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations and removes the type itself if not referenced elsewhere
+## Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations and removes the type itself if not referenced elsewhere
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Actor @exclude {
@@ -222,7 +222,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type DeleteInfo {
@@ -297,9 +297,9 @@ type Query {
 
 ---
 
-### Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations but retains the type itself if referenced elsewhere
+## Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations but retains the type itself if referenced elsewhere
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Actor @exclude {
@@ -315,7 +315,7 @@ type Query {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type Actor {
@@ -395,9 +395,9 @@ type Query {
 
 ---
 
-### Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations but retains the type itself if referenced in a `@relationship` directive
+## Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations but retains the type itself if referenced in a `@relationship` directive
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Actor @exclude {
@@ -410,7 +410,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type Actor {
@@ -641,9 +641,9 @@ type UpdateMoviesMutationResponse {
 
 ---
 
-### Ensure generation doesn't break if `@exclude` is provided with an empty array
+## Ensure generation doesn't break if `@exclude` is provided with an empty array
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Actor @exclude(operations: []) {
@@ -651,7 +651,7 @@ type Actor @exclude(operations: []) {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 enum SortDirection {

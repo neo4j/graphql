@@ -1,12 +1,12 @@
-## Schema Inputs
+# Schema Inputs
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### Inputs
+## Inputs
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 input NodeInput {
@@ -22,7 +22,7 @@ type Query {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 input NodeInput {

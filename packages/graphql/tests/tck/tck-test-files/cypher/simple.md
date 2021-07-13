@@ -1,4 +1,4 @@
-## Simple Cypher tests
+# Simple Cypher tests
 
 Simple queries with arguments and variables.
 
@@ -13,9 +13,9 @@ type Movie {
 
 ---
 
-### Single selection, Movie by title
+## Single selection, Movie by title
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -25,7 +25,7 @@ type Movie {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -33,7 +33,7 @@ WHERE this.title = $this_title
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 { "this_title": "River Runs Through It, A" }
@@ -41,9 +41,9 @@ RETURN this { .title } as this
 
 ---
 
-### Multi selection, Movie by title
+## Multi selection, Movie by title
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -54,7 +54,7 @@ RETURN this { .title } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -62,7 +62,7 @@ WHERE this.title = $this_title
 RETURN this { .id, .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 { "this_title": "River Runs Through It, A" }
@@ -70,9 +70,9 @@ RETURN this { .id, .title } as this
 
 ---
 
-### Multi selection, Movie by title via variable
+## Multi selection, Movie by title via variable
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query($title: String) {
@@ -89,7 +89,7 @@ query($title: String) {
 { "title": "some title" }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -97,7 +97,7 @@ WHERE this.title = $this_title
 RETURN this { .id, .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 { "this_title": "some title" }

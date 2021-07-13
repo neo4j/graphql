@@ -1,12 +1,12 @@
-## Schema Simple
+# Schema Simple
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### Simple
+## Simple
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Movie {
@@ -17,7 +17,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type Movie {

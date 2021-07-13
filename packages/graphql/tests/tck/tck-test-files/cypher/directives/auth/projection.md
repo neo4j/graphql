@@ -1,4 +1,4 @@
-## Cypher Auth Projection
+# Cypher Auth Projection
 
 Tests auth is added to projections in all operations
 
@@ -17,9 +17,9 @@ extend type User {
 
 ---
 
-### Update Node
+## Update Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -31,7 +31,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -43,7 +43,7 @@ CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_id_auth_allow0_i
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -64,9 +64,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Create Node
+## Create Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -78,7 +78,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -99,7 +99,7 @@ CALL apoc.util.validate(NOT(EXISTS(this1.id) AND this1.id = $projection_id_auth_
 RETURN this0 { .id } AS this0, this1 { .id } AS this1
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

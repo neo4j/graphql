@@ -1,12 +1,12 @@
-## Schema Unions
+# Schema Unions
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### Unions
+## Unions
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 union Search = Movie | Genre
@@ -22,7 +22,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type CreateGenresMutationResponse {

@@ -1,4 +1,4 @@
-## Mixed nesting
+# Mixed nesting
 
 Schema:
 
@@ -20,9 +20,9 @@ interface ActedIn {
 
 ---
 
-### Connection -> Relationship
+## Connection -> Relationship
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -43,7 +43,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -64,7 +64,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -84,9 +84,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### Connection -> Connection -> Relationship
+## Connection -> Connection -> Relationship
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -116,7 +116,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -143,7 +143,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -176,9 +176,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### Relationship -> Connection
+## Relationship -> Connection
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -199,7 +199,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -220,7 +220,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

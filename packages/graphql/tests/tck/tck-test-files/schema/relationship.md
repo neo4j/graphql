@@ -1,12 +1,12 @@
-## Schema Relationship
+# Schema Relationship
 
 Tests that the provided typeDefs return the correct schema (with relationships).
 
 ---
 
-### Single Relationship
+## Single Relationship
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Actor {
@@ -19,7 +19,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type Actor {
@@ -265,9 +265,9 @@ type UpdateMoviesMutationResponse {
 
 ---
 
-### Multi Relationship
+## Multi Relationship
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Actor {
@@ -281,7 +281,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type Actor {

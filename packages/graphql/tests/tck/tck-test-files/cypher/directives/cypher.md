@@ -1,4 +1,4 @@
-## Cypher directive
+# Cypher directive
 
 Tests for queries on cypher directives.
 
@@ -32,9 +32,9 @@ type Movie {
 
 ---
 
-### Simple directive
+## Simple directive
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -47,7 +47,7 @@ type Movie {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -59,7 +59,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -73,9 +73,9 @@ RETURN this {
 
 ---
 
-### Simple directive (primitive)
+## Simple directive (primitive)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -85,7 +85,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Actor)
@@ -94,7 +94,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -108,9 +108,9 @@ RETURN this {
 
 ---
 
-### Nested directive
+## Nested directive
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -126,7 +126,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -141,7 +141,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -156,9 +156,9 @@ RETURN this {
 
 ---
 
-### Super Nested directive
+## Super Nested directive
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -180,7 +180,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -201,7 +201,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -217,9 +217,9 @@ RETURN this {
 
 ---
 
-### Nested directive with params
+## Nested directive with params
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -235,7 +235,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -250,7 +250,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

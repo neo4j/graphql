@@ -1,4 +1,4 @@
-## Relationship Properties Create Cypher
+# Relationship Properties Create Cypher
 
 Schema:
 
@@ -20,9 +20,9 @@ interface ActedIn {
 
 ---
 
-### Create movie with a relationship that has properties
+## Create movie with a relationship that has properties
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -56,7 +56,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -82,7 +82,7 @@ RETURN
 this0 { .title, actorsConnection } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

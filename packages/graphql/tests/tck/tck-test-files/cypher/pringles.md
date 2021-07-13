@@ -1,4 +1,4 @@
-## Cypher Create Pringles
+# Cypher Create Pringles
 
 Tests operations for Pringles base case. see @ https://paper.dropbox.com/doc/Nested-mutations--A9l6qeiLzvYSxcyrii1ru0MNAg-LbUKLCTNN1nMO3Ka4VBoV
 
@@ -34,11 +34,11 @@ type Photo {
 
 ---
 
-### Create Pringles
+## Create Pringles
 
 Test the creation of the Pringles.
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -100,7 +100,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -173,7 +173,7 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -203,11 +203,11 @@ RETURN this0 { .id } AS this0
 
 ---
 
-### Update Pringles Color
+## Update Pringles Color
 
 Changes the color of Pringles from Green to Light Green.
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -241,7 +241,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Product)
@@ -275,7 +275,7 @@ CALL apoc.do.when(this_photos0 IS NOT NULL,
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

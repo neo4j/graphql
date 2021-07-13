@@ -1,12 +1,12 @@
-## Schema Preserve Directives
+# Schema Preserve Directives
 
 Tests that the provided typeDefs return the correct schema(with preserving directives).
 
 ---
 
-### Preserve Directives
+## Preserve Directives
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 directive @preservedTopLevel(string: String, int: Int, float: Float, boolean: Boolean) on OBJECT
@@ -17,7 +17,7 @@ type Movie @preservedTopLevel {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 

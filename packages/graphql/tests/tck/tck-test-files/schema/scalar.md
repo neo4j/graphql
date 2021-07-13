@@ -1,12 +1,12 @@
-## Schema Scalars
+# Schema Scalars
 
 Tests that the provided typeDefs return the correct schema(with scalars).
 
 ---
 
-### Scalars
+## Scalars
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 scalar CustomScalar
@@ -17,7 +17,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 scalar CustomScalar

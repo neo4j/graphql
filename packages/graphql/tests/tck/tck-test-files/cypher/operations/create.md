@@ -1,4 +1,4 @@
-## Cypher Create
+# Cypher Create
 
 Tests create operations.
 
@@ -18,9 +18,9 @@ type Movie {
 
 ---
 
-### Simple Create
+## Simple Create
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -32,7 +32,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -44,7 +44,7 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -54,9 +54,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-### Simple Multi Create
+## Simple Multi Create
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -68,7 +68,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -87,7 +87,7 @@ RETURN this0 { .id } AS this0,
        this1 { .id } AS this1
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -98,9 +98,9 @@ RETURN this0 { .id } AS this0,
 
 ---
 
-### Two Level Nested create
+## Two Level Nested create
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -117,7 +117,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -147,7 +147,7 @@ CALL {
 RETURN this0 { .id } AS this0, this1 { .id } AS this1
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -160,9 +160,9 @@ RETURN this0 { .id } AS this0, this1 { .id } AS this1
 
 ---
 
-### Three Level Nested create
+## Three Level Nested create
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -203,7 +203,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -241,7 +241,7 @@ CALL {
 RETURN this0 { .id } AS this0, this1 { .id } AS this1
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -256,9 +256,9 @@ RETURN this0 { .id } AS this0, this1 { .id } AS this1
 
 ---
 
-### Simple create and connect
+## Simple create and connect
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -277,7 +277,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -297,7 +297,7 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

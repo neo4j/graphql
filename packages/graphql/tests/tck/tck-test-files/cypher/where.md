@@ -1,4 +1,4 @@
-## Cypher WHERE
+# Cypher WHERE
 
 Tests for queries using options.where
 
@@ -20,9 +20,9 @@ type Movie {
 
 ---
 
-### Simple
+## Simple
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query($title: String, $isFavorite: Boolean) {
@@ -36,7 +36,7 @@ query($title: String, $isFavorite: Boolean) {
 { "title": "some title", "isFavorite": true }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -45,7 +45,7 @@ AND this.isFavorite = $this_isFavorite
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -56,9 +56,9 @@ RETURN this { .title } as this
 
 ---
 
-### Simple AND
+## Simple AND
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -68,7 +68,7 @@ RETURN this { .title } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -76,7 +76,7 @@ WHERE (this.title = $this_AND_title)
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -86,9 +86,9 @@ RETURN this { .title } as this
 
 ---
 
-### Nested AND
+## Nested AND
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -98,7 +98,7 @@ RETURN this { .title } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -106,7 +106,7 @@ WHERE ((this.title = $this_AND_AND_title))
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -116,9 +116,9 @@ RETURN this { .title } as this
 
 ---
 
-### Super Nested AND
+## Super Nested AND
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -128,7 +128,7 @@ RETURN this { .title } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -136,7 +136,7 @@ WHERE (((this.title = $this_AND_AND_AND_title)))
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -146,9 +146,9 @@ RETURN this { .title } as this
 
 ---
 
-### Simple OR
+## Simple OR
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -158,7 +158,7 @@ RETURN this { .title } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -166,7 +166,7 @@ WHERE (this.title = $this_OR_title)
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -176,9 +176,9 @@ RETURN this { .title } as this
 
 ---
 
-### Nested OR
+## Nested OR
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -188,7 +188,7 @@ RETURN this { .title } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -196,7 +196,7 @@ WHERE ((this.title = $this_OR_OR_title))
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -206,9 +206,9 @@ RETURN this { .title } as this
 
 ---
 
-### Super Nested OR
+## Super Nested OR
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -218,7 +218,7 @@ RETURN this { .title } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -226,7 +226,7 @@ WHERE (((this.title = $this_OR_OR_OR_title)))
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -236,9 +236,9 @@ RETURN this { .title } as this
 
 ---
 
-### Simple IN
+## Simple IN
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -248,7 +248,7 @@ RETURN this { .title } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -256,7 +256,7 @@ WHERE this.title IN $this_title_IN
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

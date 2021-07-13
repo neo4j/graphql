@@ -1,12 +1,12 @@
-## Schema Private
+# Schema Private
 
 Tests private fields are not included in the schema.
 
 ---
 
-### Simple
+## Simple
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type User {
@@ -15,7 +15,7 @@ type User {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type User {

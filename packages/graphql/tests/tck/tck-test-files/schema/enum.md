@@ -1,12 +1,12 @@
-## Schema Enums
+# Schema Enums
 
 Tests that the provided typeDefs return the correct schema(with enums).
 
 ---
 
-### Enums
+## Enums
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 enum Status {
@@ -20,7 +20,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 

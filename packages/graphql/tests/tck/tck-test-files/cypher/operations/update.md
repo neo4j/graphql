@@ -1,4 +1,4 @@
-## Cypher Update
+# Cypher Update
 
 Tests Update operations.
 
@@ -24,9 +24,9 @@ interface ActedIn {
 
 ---
 
-### Simple Update
+## Simple Update
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -38,7 +38,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -48,7 +48,7 @@ SET this.id = $this_update_id
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -59,9 +59,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Single Nested Update
+## Single Nested Update
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -83,7 +83,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -102,7 +102,7 @@ CALL apoc.do.when(this_actors0 IS NOT NULL,
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -138,9 +138,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Double Nested Update
+## Double Nested Update
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -174,7 +174,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -203,7 +203,7 @@ CALL apoc.do.when(this_actors0 IS NOT NULL, "
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -254,9 +254,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Simple Update as Connect
+## Simple Update as Connect
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -271,7 +271,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -285,7 +285,7 @@ FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -296,9 +296,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Update as multiple Connect
+## Update as multiple Connect
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -318,7 +318,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -338,7 +338,7 @@ FOREACH(_ IN CASE this_connect_actors1_node WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -350,9 +350,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Simple Update as Disconnect
+## Simple Update as Disconnect
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -367,7 +367,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -381,7 +381,7 @@ DELETE this_disconnect_actors0_rel
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -406,9 +406,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Update as multiple Disconnect
+## Update as multiple Disconnect
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -428,7 +428,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -448,7 +448,7 @@ DELETE this_disconnect_actors1_rel
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -480,9 +480,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Update an Actor while creating and connecting to a new Movie (via field level)
+## Update an Actor while creating and connecting to a new Movie (via field level)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -507,7 +507,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Actor)
@@ -522,7 +522,7 @@ MERGE (this)-[:ACTED_IN]->(this_movies0_create0_node)
 RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)  | this_movies { .id, .title } ] } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -534,9 +534,9 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)  | this_m
 
 ---
 
-### Update an Actor while creating and connecting to a new Movie (via top level)
+## Update an Actor while creating and connecting to a new Movie (via top level)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -559,7 +559,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Actor)
@@ -573,7 +573,7 @@ MERGE (this)-[:ACTED_IN]->(this_create_movies0_node)
 RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_movies { .id, .title } ] } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -585,9 +585,9 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_mo
 
 ---
 
-### Update an Actor while creating and connecting to multiple new Movies (via top level)
+## Update an Actor while creating and connecting to multiple new Movies (via top level)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -611,7 +611,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Actor)
@@ -630,7 +630,7 @@ MERGE (this)-[:ACTED_IN]->(this_create_movies1_node)
 RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_movies { .id, .title } ] } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -644,9 +644,9 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_mo
 
 ---
 
-### Delete related node as update
+## Delete related node as update
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -668,7 +668,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -682,7 +682,7 @@ FOREACH(_ IN CASE this_delete_actors0 WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -713,9 +713,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Delete and update nested operations under same mutation
+## Delete and update nested operations under same mutation
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -736,7 +736,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -759,7 +759,7 @@ FOREACH(_ IN CASE this_delete_actors0 WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -806,9 +806,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Nested delete under a nested update
+## Nested delete under a nested update
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -825,7 +825,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -839,7 +839,7 @@ FOREACH(_ IN CASE this_actors0_delete0 WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -868,9 +868,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Double nested delete under a nested update
+## Double nested delete under a nested update
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -892,7 +892,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -907,7 +907,7 @@ FOREACH(_ IN CASE this_actors0_delete0 WHEN NULL THEN [] ELSE [1] END | DETACH D
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

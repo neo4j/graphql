@@ -1,12 +1,12 @@
-## Schema Interfaces
+# Schema Interfaces
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### Interfaces
+## Interfaces
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 interface MovieNode @auth(rules: [{allow: "*", operations: [READ]}]) {
@@ -29,7 +29,7 @@ type Movie implements MovieNode @auth(rules: [{allow: "*", operations: [READ]}])
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type CreateMoviesMutationResponse {

@@ -51,7 +51,7 @@ function captureOrEmptyString(contents: string, re: RegExp): string {
     return "";
 }
 
-const nameRe = /###(?<capture>([^\n]+))/;
+const nameRe = /##(?<capture>([^\n]+))/;
 const graphqlQueryRe = /```graphql(?<capture>(.|\s)*?)```/;
 const graphqlParamsRe = /```graphql-params(?<capture>(.|\s)*?)```/;
 const cypherQueryRe = /```cypher(?<capture>(.|\s)*?)```/;

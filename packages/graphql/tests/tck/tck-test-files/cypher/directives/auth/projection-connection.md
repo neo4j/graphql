@@ -1,4 +1,4 @@
-## Cypher Auth Projection On Connections
+# Cypher Auth Projection On Connections
 
 Tests auth is added to projection connections
 
@@ -22,9 +22,9 @@ extend type Post @auth(rules: [{ allow: { creator: { id: "$jwt.sub" } } }])
 
 ---
 
-### One connection
+## One connection
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -41,7 +41,7 @@ extend type Post @auth(rules: [{ allow: { creator: { id: "$jwt.sub" } } }])
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -56,7 +56,7 @@ CALL {
 RETURN this { .name, postsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -75,9 +75,9 @@ RETURN this { .name, postsConnection } as this
 
 ---
 
-### Two connection
+## Two connection
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -101,7 +101,7 @@ RETURN this { .name, postsConnection } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -123,7 +123,7 @@ CALL {
 RETURN this { .name, postsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

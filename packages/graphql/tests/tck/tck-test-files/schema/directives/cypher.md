@@ -1,12 +1,12 @@
-## Schema Cypher Directive
+# Schema Cypher Directive
 
 Tests that the provided typeDefs return the correct schema (with cypher directives).
 
 ---
 
-### Custom Directive Simple
+## Custom Directive Simple
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Actor {
@@ -23,7 +23,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 

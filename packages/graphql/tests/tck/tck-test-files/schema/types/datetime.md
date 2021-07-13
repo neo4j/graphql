@@ -1,12 +1,12 @@
-## Schema DateTime
+# Schema DateTime
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### DateTime
+## DateTime
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Movie {
@@ -15,7 +15,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 

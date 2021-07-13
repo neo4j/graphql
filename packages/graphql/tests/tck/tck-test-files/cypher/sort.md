@@ -1,4 +1,4 @@
-## Cypher sort tests
+# Cypher sort tests
 
 Tests for queries including reserved arguments `sort`.
 
@@ -19,9 +19,9 @@ type Genre {
 
 ---
 
-### Simple Sort
+## Simple Sort
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -31,7 +31,7 @@ type Genre {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -40,7 +40,7 @@ ORDER BY this.id DESC
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {}
@@ -48,9 +48,9 @@ RETURN this { .title } as this
 
 ---
 
-### Multi Sort
+## Multi Sort
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -60,7 +60,7 @@ RETURN this { .title } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -69,7 +69,7 @@ ORDER BY this.id DESC, this.title ASC
 RETURN this { .title } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {}
@@ -77,9 +77,9 @@ RETURN this { .title } as this
 
 ---
 
-### Sort with offset limit & with other variables
+## Sort with offset limit & with other variables
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query($title: String, $offset: Int, $limit: Int) {
@@ -106,7 +106,7 @@ query($title: String, $offset: Int, $limit: Int) {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -118,7 +118,7 @@ SKIP $this_offset
 LIMIT $this_limit
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -136,9 +136,9 @@ LIMIT $this_limit
 
 ---
 
-### Nested Sort DESC
+## Nested Sort DESC
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -150,7 +150,7 @@ LIMIT $this_limit
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -159,7 +159,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {}
@@ -167,9 +167,9 @@ RETURN this {
 
 ---
 
-### Nested Sort ASC
+## Nested Sort ASC
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -181,7 +181,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -190,7 +190,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {}

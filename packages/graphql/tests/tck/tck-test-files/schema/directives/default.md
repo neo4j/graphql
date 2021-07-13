@@ -1,12 +1,12 @@
-## Schema Default
+# Schema Default
 
 Tests that the @default directive works as expected.
 
 ---
 
-### Simple
+## Simple
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type User {
@@ -19,7 +19,7 @@ type User {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 """A date and time, represented as an ISO-8601 string"""

@@ -1,4 +1,4 @@
-## Cypher Alias
+# Cypher Alias
 
 Tests to ensure when using aliases that the cypher is correct.
 
@@ -21,9 +21,9 @@ type Movie {
 
 ---
 
-### Alias
+## Alias
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -39,7 +39,7 @@ type Movie {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -50,7 +50,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

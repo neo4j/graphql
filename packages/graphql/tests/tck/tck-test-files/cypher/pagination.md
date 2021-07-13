@@ -1,4 +1,4 @@
-## Cypher pagination tests
+# Cypher pagination tests
 
 Tests for queries including reserved arguments `offset` and `limit`.
 
@@ -13,9 +13,9 @@ type Movie {
 
 ---
 
-### Skipping
+## Skipping
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -25,7 +25,7 @@ type Movie {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -33,7 +33,7 @@ RETURN this { .title } as this
 SKIP $this_offset
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -46,9 +46,9 @@ SKIP $this_offset
 
 ---
 
-### Limit
+## Limit
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -58,7 +58,7 @@ SKIP $this_offset
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -66,7 +66,7 @@ RETURN this { .title } as this
 LIMIT $this_limit
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -79,9 +79,9 @@ LIMIT $this_limit
 
 ---
 
-### Skip + Limit
+## Skip + Limit
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -91,7 +91,7 @@ LIMIT $this_limit
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -100,7 +100,7 @@ SKIP $this_offset
 LIMIT $this_limit
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -117,9 +117,9 @@ LIMIT $this_limit
 
 ---
 
-### Skip + Limit as variables
+## Skip + Limit as variables
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query($offset: Int, $limit: Int) {
@@ -138,7 +138,7 @@ query($offset: Int, $limit: Int) {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -147,7 +147,7 @@ SKIP $this_offset
 LIMIT $this_limit
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -164,9 +164,9 @@ LIMIT $this_limit
 
 ---
 
-### Skip + Limit with other variables
+## Skip + Limit with other variables
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query($offset: Int, $limit: Int, $title: String) {
@@ -189,7 +189,7 @@ query($offset: Int, $limit: Int, $title: String) {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -199,7 +199,7 @@ SKIP $this_offset
 LIMIT $this_limit
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

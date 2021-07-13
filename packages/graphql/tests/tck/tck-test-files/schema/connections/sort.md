@@ -1,12 +1,12 @@
-## Sort
+# Sort
 
 Tests sort argument on connection fields
 
 ---
 
-### sort argument is not present when nothing to sort
+## sort argument is not present when nothing to sort
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Node1 {
@@ -19,7 +19,7 @@ type Node2 {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type CreateNode1sMutationResponse {

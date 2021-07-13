@@ -1,4 +1,4 @@
-## Cypher -> Connections -> Filtering -> Relationship -> String
+# Cypher -> Connections -> Filtering -> Relationship -> String
 
 Schema:
 
@@ -25,9 +25,9 @@ NEO4J_GRAPHQL_ENABLE_REGEX=1
 
 ---
 
-### CONTAINS
+## CONTAINS
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -47,7 +47,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -61,7 +61,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -79,9 +79,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### NOT_CONTAINS
+## NOT_CONTAINS
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -101,7 +101,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -115,7 +115,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -133,9 +133,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### STARTS_WITH
+## STARTS_WITH
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -155,7 +155,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -169,7 +169,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -187,9 +187,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### NOT_STARTS_WITH
+## NOT_STARTS_WITH
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -209,7 +209,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -223,7 +223,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -241,9 +241,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### ENDS_WITH
+## ENDS_WITH
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -261,7 +261,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -275,7 +275,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -293,9 +293,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### NOT_ENDS_WITH
+## NOT_ENDS_WITH
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -315,7 +315,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -329,7 +329,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -347,9 +347,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### MATCHES
+## MATCHES
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -369,7 +369,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -383,7 +383,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

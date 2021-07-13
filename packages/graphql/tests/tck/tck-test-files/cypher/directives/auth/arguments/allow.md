@@ -1,4 +1,4 @@
-## Cypher Auth Allow
+# Cypher Auth Allow
 
 Tests auth allow operations
 
@@ -70,9 +70,9 @@ extend type Comment
 
 ---
 
-### Read Node
+## Read Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -82,7 +82,7 @@ extend type Comment
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -90,7 +90,7 @@ CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_auth_allow0_id),
 RETURN this { .id } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -109,9 +109,9 @@ RETURN this { .id } as this
 
 ---
 
-### Read Node & Protected Field
+## Read Node & Protected Field
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -121,7 +121,7 @@ RETURN this { .id } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -131,7 +131,7 @@ CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_password_auth_al
 RETURN this { .password } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -151,9 +151,9 @@ RETURN this { .password } as this
 
 ---
 
-### Read Relationship
+## Read Relationship
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -166,7 +166,7 @@ RETURN this { .password } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -177,7 +177,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -197,9 +197,9 @@ RETURN this {
 
 ---
 
-### Read Relationship & Protected Field
+## Read Relationship & Protected Field
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -211,7 +211,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Post)
@@ -226,7 +226,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -247,9 +247,9 @@ RETURN this {
 
 ---
 
-### Read Two Relationships
+## Read Two Relationships
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -264,7 +264,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -278,7 +278,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -302,9 +302,9 @@ RETURN this {
 
 ---
 
-### Update Node
+## Update Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -316,7 +316,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -330,7 +330,7 @@ SET this.id = $this_update_id
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -351,9 +351,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Update Node Property
+## Update Node Property
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -365,7 +365,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -379,7 +379,7 @@ SET this.password = $this_update_password
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -401,9 +401,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Nested Update Node
+## Nested Update Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -418,7 +418,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Post)
@@ -440,7 +440,7 @@ YIELD value as _
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -487,9 +487,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Nested Update Property
+## Nested Update Property
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -504,7 +504,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Post)
@@ -525,7 +525,7 @@ CALL apoc.do.when(this_creator0 IS NOT NULL, "
     RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -573,9 +573,9 @@ CALL apoc.do.when(this_creator0 IS NOT NULL, "
 
 ---
 
-### Delete Node
+## Delete Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -585,7 +585,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -594,7 +594,7 @@ CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_auth_allow0_id),
 DETACH DELETE this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -614,9 +614,9 @@ DETACH DELETE this
 
 ---
 
-### Nested Delete Node
+## Nested Delete Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -629,7 +629,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -648,7 +648,7 @@ CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_auth_allow0_id),
 DETACH DELETE this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -684,9 +684,9 @@ DETACH DELETE this
 
 ---
 
-### Disconnect Node
+## Disconnect Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -701,7 +701,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -720,7 +720,7 @@ FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -756,9 +756,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Nested Disconnect Node
+## Nested Disconnect Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -781,7 +781,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Comment)
@@ -814,7 +814,7 @@ FOREACH(_ IN CASE this_post0_disconnect0_creator0 WHEN NULL THEN [] ELSE [1] END
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -857,9 +857,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Connect Node
+## Connect Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -874,7 +874,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -893,7 +893,7 @@ FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

@@ -1,4 +1,4 @@
-## Cypher -> Connections -> Filtering -> Node -> Equality
+# Cypher -> Connections -> Filtering -> Node -> Equality
 
 Schema:
 
@@ -20,9 +20,9 @@ interface ActedIn {
 
 ---
 
-### Equality
+## Equality
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -40,7 +40,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -54,7 +54,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -72,9 +72,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### Inequality
+## Inequality
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -92,7 +92,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -106,7 +106,7 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

@@ -1,4 +1,4 @@
-## Cypher Auth Allow
+# Cypher Auth Allow
 
 Tests auth allow operations
 
@@ -39,9 +39,9 @@ extend type Post
 
 ---
 
-### Create Node
+## Create Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -53,7 +53,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -67,7 +67,7 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -88,9 +88,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-### Create Nested Node
+## Create Nested Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -121,7 +121,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -156,7 +156,7 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -181,9 +181,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-### Update Node
+## Update Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -195,7 +195,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -208,7 +208,7 @@ CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_auth_bind0_id), 
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -229,9 +229,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Update Nested Node
+## Update Nested Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -253,7 +253,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -287,7 +287,7 @@ CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_auth_bind0_id), 
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -343,9 +343,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Connect Node
+## Connect Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -360,7 +360,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Post)
@@ -379,7 +379,7 @@ CALL apoc.util.validate(NOT(EXISTS((this_connect_creator0_node)<-[:HAS_POST]-(:U
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -402,9 +402,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Disconnect Node
+## Disconnect Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -419,7 +419,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Post)
@@ -438,7 +438,7 @@ CALL apoc.util.validate(NOT(EXISTS((this_disconnect_creator0)<-[:HAS_POST]-(:Use
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

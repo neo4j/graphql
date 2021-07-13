@@ -1,4 +1,4 @@
-## Cypher Auth Projection On Connections On Unions
+# Cypher Auth Projection On Connections On Unions
 
 Tests auth is added to projection connections
 
@@ -24,9 +24,9 @@ extend type Post @auth(rules: [{ allow: { creator: { id: "$jwt.sub" } } }])
 
 ---
 
-### Two connection
+## Two connection
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -51,7 +51,7 @@ extend type Post @auth(rules: [{ allow: { creator: { id: "$jwt.sub" } } }])
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -78,7 +78,7 @@ CALL {
 RETURN this { contentConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

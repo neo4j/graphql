@@ -1,12 +1,12 @@
-## Schema @ignore directive
+# Schema @ignore directive
 
 Tests that the @ignore directive works as expected.
 
 ---
 
-### Simple
+## Simple
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type User {
@@ -17,7 +17,7 @@ type User {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type User {

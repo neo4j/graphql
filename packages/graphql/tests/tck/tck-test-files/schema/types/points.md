@@ -1,12 +1,12 @@
-## Schema Points
+# Schema Points
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### Point
+## Point
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Movie {
@@ -14,7 +14,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type Point {
@@ -108,9 +108,9 @@ type Query {
 
 ---
 
-### CartesianPoint
+## CartesianPoint
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Machine {
@@ -118,7 +118,7 @@ type Machine {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type CartesianPoint {
@@ -211,9 +211,9 @@ type Query {
 
 ---
 
-### Points
+## Points
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Movie {
@@ -221,7 +221,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type Point {
@@ -290,9 +290,9 @@ type Query {
 
 ---
 
-### CartesianPoints
+## CartesianPoints
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Machine {
@@ -300,7 +300,7 @@ type Machine {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type CartesianPoint {

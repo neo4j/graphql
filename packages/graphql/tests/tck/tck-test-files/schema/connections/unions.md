@@ -1,12 +1,12 @@
-## Schema -> Connections -> Unions
+# Schema -> Connections -> Unions
 
 Tests that the provided typeDefs return the correct schema (with relationships).
 
 ---
 
-### Relationship Properties
+## Relationship Properties
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 union Publication = Book | Journal
@@ -34,7 +34,7 @@ interface Wrote {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type Author {

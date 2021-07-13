@@ -1,12 +1,12 @@
-## Schema Extends
+# Schema Extends
 
 Tests that the provided typeDefs return the correct schema(with extends).
 
 ---
 
-### Extend
+## Extend
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Movie {
@@ -18,7 +18,7 @@ extend type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 type Movie {

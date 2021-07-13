@@ -1,4 +1,4 @@
-## Cypher Projection
+# Cypher Projection
 
 Schema:
 
@@ -33,11 +33,11 @@ type Photo {
 
 ---
 
-### Multi Create With Projection
+## Multi Create With Projection
 
 Makes that the projection is generated correctly. Usage of `projection` var name.
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -63,7 +63,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -95,7 +95,7 @@ this1 {
 } AS this1
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

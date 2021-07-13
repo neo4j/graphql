@@ -1,12 +1,12 @@
-## Schema TimeStamps
+# Schema TimeStamps
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### TimeStamp
+## TimeStamp
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Movie {
@@ -16,7 +16,7 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 

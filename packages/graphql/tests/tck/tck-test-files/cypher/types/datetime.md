@@ -1,4 +1,4 @@
-## Cypher DateTime
+# Cypher DateTime
 
 Tests DateTime operations. ⚠ The string in params is actually an object but the test suite turns it into a string when calling `JSON.stringify`.
 
@@ -13,9 +13,9 @@ type Movie {
 
 ---
 
-### Simple Read
+## Simple Read
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -25,7 +25,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -33,7 +33,7 @@ WHERE this.datetime = $this_datetime
 RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time") } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -53,9 +53,9 @@ RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zo
 
 ---
 
-### Simple Create
+## Simple Create
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -67,7 +67,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -78,7 +78,7 @@ CALL {
 RETURN this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), "iso_zoned_date_time", "iso_offset_date_time") } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -98,9 +98,9 @@ RETURN this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), "iso_
 
 ---
 
-### Simple Update
+## Simple Update
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -113,7 +113,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -121,7 +121,7 @@ SET this.datetime = $this_update_datetime
 RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time") } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

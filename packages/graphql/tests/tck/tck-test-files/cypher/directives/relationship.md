@@ -1,4 +1,4 @@
-## Cypher relationship
+# Cypher relationship
 
 Tests for queries on relationships.
 
@@ -20,9 +20,9 @@ type Movie {
 
 ---
 
-### Simple relation
+## Simple relation
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -35,14 +35,14 @@ type Movie {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
 RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor) | this_topActor { .name } ]) } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {}
@@ -50,9 +50,9 @@ RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor
 
 ---
 
-### Many relation
+## Many relation
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -65,14 +65,14 @@ RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
 RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor) | this_actors { .name } ] } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {}
@@ -80,9 +80,9 @@ RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor) | this_a
 
 ---
 
-### Nested relation
+## Nested relation
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -98,7 +98,7 @@ RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor) | this_a
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -113,7 +113,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {}
@@ -121,9 +121,9 @@ RETURN this {
 
 ---
 
-### Nested relation with params
+## Nested relation with params
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -139,7 +139,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -155,7 +155,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

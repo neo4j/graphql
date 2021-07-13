@@ -1,4 +1,4 @@
-## Cypher autogenerate directive
+# Cypher autogenerate directive
 
 Tests autogenerate operations.
 
@@ -13,9 +13,9 @@ type Movie {
 
 ---
 
-### Simple Create
+## Simple Create
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -28,7 +28,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -41,7 +41,7 @@ CALL {
 RETURN this0 { .id, .name } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -51,9 +51,9 @@ RETURN this0 { .id, .name } AS this0
 
 ---
 
-### Simple Update
+## Simple Update
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -66,7 +66,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -74,7 +74,7 @@ SET this.name = $this_update_name
 RETURN this { .id, .name } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

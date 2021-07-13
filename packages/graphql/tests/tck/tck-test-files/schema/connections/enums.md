@@ -1,12 +1,12 @@
-## Schema -> Connections -> Enums
+# Schema -> Connections -> Enums
 
 Tests that enums work correctly as relationship properties.
 
 ---
 
-### Enum Relationship Properties
+## Enum Relationship Properties
 
-**TypeDefs**
+### TypeDefs
 
 ```typedefs-input
 type Actor {
@@ -29,7 +29,7 @@ interface ActedIn {
 }
 ```
 
-**Output**
+### Output
 
 ```schema-output
 enum RoleType {

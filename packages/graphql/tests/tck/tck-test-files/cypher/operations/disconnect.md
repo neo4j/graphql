@@ -1,4 +1,4 @@
-## Cypher Disconnect
+# Cypher Disconnect
 
 Tests connect operations.
 
@@ -34,9 +34,9 @@ type Photo {
 
 ---
 
-### Recursive Connect
+## Recursive Connect
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -90,7 +90,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -154,7 +154,7 @@ RETURN
 this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

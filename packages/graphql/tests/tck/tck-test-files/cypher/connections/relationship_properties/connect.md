@@ -1,4 +1,4 @@
-## Relationship Properties Connect Cypher
+# Relationship Properties Connect Cypher
 
 Schema:
 
@@ -20,9 +20,9 @@ interface ActedIn {
 
 ---
 
-### Create movie while connecting a relationship that has properties
+## Create movie while connecting a relationship that has properties
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -49,7 +49,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -74,7 +74,7 @@ RETURN
 this0 { .title, actorsConnection } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -88,9 +88,9 @@ this0 { .title, actorsConnection } AS this0
 
 ---
 
-### Create movie while connecting a relationship that has properties(with where on node)
+## Create movie while connecting a relationship that has properties(with where on node)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -124,7 +124,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -150,7 +150,7 @@ RETURN
 this0 { .title, actorsConnection } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -165,9 +165,9 @@ this0 { .title, actorsConnection } AS this0
 
 ---
 
-### Update a movie while connecting a relationship that has properties(top level-connect)
+## Update a movie while connecting a relationship that has properties(top level-connect)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -190,7 +190,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -211,7 +211,7 @@ CALL {
 RETURN this { .title, actorsConnection } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -225,9 +225,9 @@ RETURN this { .title, actorsConnection } AS this
 
 ---
 
-### Update a movie while connecting a relationship that has properties(top level-connect)(with where on node)
+## Update a movie while connecting a relationship that has properties(top level-connect)(with where on node)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -255,7 +255,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -277,7 +277,7 @@ CALL {
 RETURN this { .title, actorsConnection } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {

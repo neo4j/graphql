@@ -1,4 +1,4 @@
-## Cypher Auth Roles
+# Cypher Auth Roles
 
 Tests auth operations with roles
 
@@ -74,9 +74,9 @@ extend type User {
 
 ---
 
-### Read Node
+## Read Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -87,7 +87,7 @@ extend type User {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -95,7 +95,7 @@ CALL apoc.util.validate(NOT(ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE
 RETURN this { .id, .name } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -123,9 +123,9 @@ RETURN this { .id, .name } as this
 
 ---
 
-### Read Node & Field
+## Read Node & Field
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -137,7 +137,7 @@ RETURN this { .id, .name } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -147,7 +147,7 @@ CALL apoc.util.validate(NOT(ANY(r IN ["super-admin"] WHERE ANY(rr IN $auth.roles
 RETURN this { .id, .name, .password } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -175,9 +175,9 @@ RETURN this { .id, .name, .password } as this
 
 ---
 
-### Read Node & Cypher Field
+## Read Node & Cypher Field
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -189,7 +189,7 @@ RETURN this { .id, .name, .password } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -201,7 +201,7 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -229,9 +229,9 @@ RETURN this {
 
 ---
 
-### Create Node
+## Create Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -243,7 +243,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -257,7 +257,7 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -286,9 +286,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-### Create Node & Field
+## Create Node & Field
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -300,7 +300,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -317,7 +317,7 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -347,9 +347,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-### Update Node
+## Update Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -361,7 +361,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -375,7 +375,7 @@ SET this.id = $this_update_id
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -405,9 +405,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Update Node & Field
+## Update Node & Field
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -419,7 +419,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -433,7 +433,7 @@ SET this.password = $this_update_password
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -463,9 +463,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Connect
+## Connect
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -477,7 +477,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -495,7 +495,7 @@ FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -523,9 +523,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Nested Connect
+## Nested Connect
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -549,7 +549,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Comment)
@@ -569,7 +569,7 @@ CALL apoc.do.when(this_post0 IS NOT NULL, "
 RETURN this { .content } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -619,9 +619,9 @@ RETURN this { .content } AS this
 
 ---
 
-### Disconnect
+## Disconnect
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -633,7 +633,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -651,7 +651,7 @@ FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -688,9 +688,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Nested Disconnect
+## Nested Disconnect
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -714,7 +714,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Comment)
@@ -740,7 +740,7 @@ CALL apoc.do.when(this_post0 IS NOT NULL, "
 RETURN this { .content } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -789,9 +789,9 @@ RETURN this { .content } AS this
 
 ---
 
-### Delete
+## Delete
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -801,7 +801,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -812,7 +812,7 @@ CALL apoc.util.validate(NOT(ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE
 DETACH DELETE this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
@@ -840,9 +840,9 @@ DETACH DELETE this
 
 ---
 
-### Nested Delete
+## Nested Delete
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -852,7 +852,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -874,7 +874,7 @@ WITH this CALL apoc.util.validate(NOT(ANY(r IN ["admin"] WHERE ANY(rr IN $auth.r
 DETACH DELETE this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
 ```cypher-params
 {
