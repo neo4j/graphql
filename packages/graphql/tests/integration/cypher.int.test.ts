@@ -257,6 +257,98 @@ describe("cypher", () => {
                     await session.close();
                 }
             });
+
+            test("should query multiple nodes and return relationship data", async () => {
+                const session = driver.session();
+
+                const movieTitle1 = generate({
+                    charset: "alphabetic",
+                });
+                const movieTitle2 = generate({
+                    charset: "alphabetic",
+                });
+                const movieTitle3 = generate({
+                    charset: "alphabetic",
+                });
+
+                const actorName = generate({
+                    charset: "alphabetic",
+                });
+
+                const typeDefs = `
+                    type Movie {
+                        title: String!
+                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                    }
+
+                    type Actor {
+                        name: String!
+                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+
+                    type Query {
+                        customMovies(titles: [String!]!): [Movie] @cypher(statement: """
+                            MATCH (m:Movie)
+                            WHERE m.title in $titles
+                            RETURN m
+                        """)
+                    }
+                `;
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const source = `
+                    query($titles: [String!]!) {
+                        customMovies(titles: $titles) {
+                            title
+                            actors {
+                                name
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (:Movie {title: $title1})<-[:ACTED_IN]-(a:Actor {name: $name})
+                            CREATE (:Movie {title: $title2})<-[:ACTED_IN]-(a)
+                            CREATE (:Movie {title: $title3})<-[:ACTED_IN]-(a)
+                        `,
+                        {
+                            title1: movieTitle1,
+                            title2: movieTitle2,
+                            title3: movieTitle3,
+                            name: actorName,
+                        }
+                    );
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source,
+                        contextValue: { driver },
+                        variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
+                    });
+
+                    expect(gqlResult.errors).toBeFalsy();
+
+                    expect((gqlResult?.data as any).customMovies).toHaveLength(3);
+                    expect((gqlResult?.data as any).customMovies).toContainEqual({
+                        title: movieTitle1,
+                        actors: [{ name: actorName }],
+                    });
+                    expect((gqlResult?.data as any).customMovies).toContainEqual({
+                        title: movieTitle2,
+                        actors: [{ name: actorName }],
+                    });
+                    expect((gqlResult?.data as any).customMovies).toContainEqual({
+                        title: movieTitle3,
+                        actors: [{ name: actorName }],
+                    });
+                } finally {
+                    await session.close();
+                }
+            });
         });
 
         describe("Mutation", () => {
@@ -511,7 +603,7 @@ describe("cypher", () => {
                             gender
                           }
                         }
-                    }                 
+                    }
                 `;
 
                 try {
