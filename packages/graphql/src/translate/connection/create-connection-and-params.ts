@@ -181,9 +181,10 @@ function createConnectionAndParams({
             }
 
             const whereStrs: string[] = [];
-            if (whereInput) {
+            const unionWhere = (whereInput || {})[n.name];
+            if (unionWhere) {
                 const where = createConnectionWhereAndParams({
-                    whereInput,
+                    whereInput: unionWhere,
                     node: n,
                     nodeVariable: relatedNodeVariable,
                     relationship,
@@ -191,7 +192,7 @@ function createConnectionAndParams({
                     context,
                     parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                         resolveTree.name
-                    }.args.where`,
+                    }.args.where.${n.name}`,
                 });
                 const [whereClause] = where;
                 if (whereClause) {

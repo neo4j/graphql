@@ -992,11 +992,15 @@ function makeAugmentedSchema(
 
             const connectionWhere = composer.createInputTC({
                 name: connectionWhereName,
-                fields: {
+                fields: {},
+            });
+
+            if (!connectionField.relationship.union) {
+                connectionWhere.addFields({
                     AND: `[${connectionWhereName}!]`,
                     OR: `[${connectionWhereName}!]`,
-                },
-            });
+                });
+            }
 
             const connection = composer.createObjectTC({
                 name: connectionField.typeMeta.name,
@@ -1007,7 +1011,7 @@ function makeAugmentedSchema(
                 },
             });
 
-            if (connectionField.relationship.properties) {
+            if (connectionField.relationship.properties && !connectionField.relationship.union) {
                 const propertiesInterface = composer.getIFTC(connectionField.relationship.properties);
                 relationship.addInterface(propertiesInterface);
                 relationship.addFields(propertiesInterface.getFields());
@@ -1031,9 +1035,33 @@ function makeAugmentedSchema(
                 const relatedNodes = nodes.filter((n) => connectionField.relationship.union?.nodes?.includes(n.name));
 
                 relatedNodes.forEach((n) => {
+                    const unionWhereName = `${connectionField.typeMeta.name}${n.name}Where`;
+                    const unionWhere = composer.createInputTC({
+                        name: unionWhereName,
+                        fields: {
+                            OR: `[${unionWhereName}]`,
+                            AND: `[${unionWhereName}]`,
+                        },
+                    });
+
+                    unionWhere.addFields({
+                        node: `${n.name}Where`,
+                        node_NOT: `${n.name}Where`,
+                    });
+
+                    if (connectionField.relationship.properties) {
+                        const propertiesInterface = composer.getIFTC(connectionField.relationship.properties);
+                        relationship.addInterface(propertiesInterface);
+                        relationship.addFields(propertiesInterface.getFields());
+
+                        unionWhere.addFields({
+                            relationship: `${connectionField.relationship.properties}Where`,
+                            relationship_NOT: `${connectionField.relationship.properties}Where`,
+                        });
+                    }
+
                     connectionWhere.addFields({
-                        [n.name]: `${n.name}Where`,
-                        [`${n.name}_NOT`]: `${n.name}Where`,
+                        [n.name]: unionWhere,
                     });
                 });
             } else {

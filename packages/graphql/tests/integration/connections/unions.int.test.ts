@@ -141,7 +141,7 @@ describe("Connections -> Unions", () => {
         }
     });
 
-    test("With `where` argument", async () => {
+    test("With `where` argument on node", async () => {
         const session = driver.session();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
@@ -150,7 +150,115 @@ describe("Connections -> Unions", () => {
         query {
             authors(where: { name: "Charles Dickens" }) {
                 name
-                publicationsConnection(where: { Book: { title: "Oliver Twist" } }) {
+                publicationsConnection(where: { Book: { node: { title: "Oliver Twist" } } }) {
+                    edges {
+                        words
+                        node {
+                            ... on Book {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.authors).toEqual([
+                {
+                    name: "Charles Dickens",
+                    publicationsConnection: {
+                        edges: [
+                            {
+                                words: 167543,
+                                node: {
+                                    title: "Oliver Twist",
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("With `where` argument on relationship", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+        query {
+            authors(where: { name: "Charles Dickens" }) {
+                name
+                publicationsConnection(where: { Book: { relationship: { words: 167543 } } }) {
+                    edges {
+                        words
+                        node {
+                            ... on Book {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.authors).toEqual([
+                {
+                    name: "Charles Dickens",
+                    publicationsConnection: {
+                        edges: [
+                            {
+                                words: 167543,
+                                node: {
+                                    title: "Oliver Twist",
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("With `where` argument on relationship and node", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+        query {
+            authors(where: { name: "Charles Dickens" }) {
+                name
+                publicationsConnection(where: { Book: { relationship: { words: 167543 }, node: { title: "Oliver Twist" } } }) {
                     edges {
                         words
                         node {

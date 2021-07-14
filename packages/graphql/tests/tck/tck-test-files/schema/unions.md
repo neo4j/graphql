@@ -42,6 +42,10 @@ type Genre {
     id: ID
 }
 
+input GenreConnectWhere {
+    node: GenreWhere!
+}
+
 input GenreCreateInput {
     id: ID
 }
@@ -81,11 +85,6 @@ input GenreWhere {
     id_NOT_ENDS_WITH: ID
 }
 
-input SearchWhere {
-    Genre: GenreWhere
-    Movie: MovieWhere
-}
-
 type Movie {
     id: ID
     searchNoDirective: Search
@@ -95,6 +94,10 @@ type Movie {
 
 input MovieConnectInput {
     search: MovieSearchConnectInput
+}
+
+input MovieConnectWhere {
+    node: MovieWhere!
 }
 
 input MovieCreateInput {
@@ -119,54 +122,43 @@ input MovieOptions {
     offset: Int
 }
 
-input MovieSearchCreateFieldInput {
-    Genre: [MovieSearchGenreCreateFieldInput!]
-    Movie: [MovieSearchMovieCreateFieldInput!]
-}
-
 input MovieRelationInput {
     search: MovieSearchCreateFieldInput
-}
-
-input GenreConnectWhere {
-    node: GenreWhere!
-}
-
-input MovieConnectWhere {
-    node: MovieWhere!
-}
-
-input MovieSearchGenreConnectFieldInput {
-    where: GenreConnectWhere
-}
-
-input MovieSearchMovieConnectFieldInput {
-    where: MovieConnectWhere
-    connect: [MovieConnectInput!]
-}
-
-type MovieSearchConnection {
-    edges: [MovieSearchRelationship!]!
-    pageInfo: PageInfo!
-    totalCount: Int!
-}
-
-input MovieSearchConnectionWhere {
-    AND: [MovieSearchConnectionWhere!]
-    OR: [MovieSearchConnectionWhere!]
-    Genre: GenreWhere
-    Genre_NOT: GenreWhere
-    Movie: MovieWhere
-    Movie_NOT: MovieWhere
-}
-
-input MovieSearchGenreCreateFieldInput {
-    node: GenreCreateInput!
 }
 
 input MovieSearchConnectInput {
     Genre: [MovieSearchGenreConnectFieldInput!]
     Movie: [MovieSearchMovieConnectFieldInput!]
+}
+
+type MovieSearchConnection {
+    edges: [MovieSearchRelationship!]!
+    totalCount: Int!
+    pageInfo: PageInfo!
+}
+
+input MovieSearchConnectionGenreWhere {
+    OR: [MovieSearchConnectionGenreWhere]
+    AND: [MovieSearchConnectionGenreWhere]
+    node: GenreWhere
+    node_NOT: GenreWhere
+}
+
+input MovieSearchConnectionMovieWhere {
+    OR: [MovieSearchConnectionMovieWhere]
+    AND: [MovieSearchConnectionMovieWhere]
+    node: MovieWhere
+    node_NOT: MovieWhere
+}
+
+input MovieSearchConnectionWhere {
+    Genre: MovieSearchConnectionGenreWhere
+    Movie: MovieSearchConnectionMovieWhere
+}
+
+input MovieSearchCreateFieldInput {
+    Genre: [MovieSearchGenreCreateFieldInput!]
+    Movie: [MovieSearchMovieCreateFieldInput!]
 }
 
 input MovieSearchCreateInput {
@@ -184,9 +176,8 @@ input MovieSearchDisconnectInput {
     Movie: [MovieSearchMovieDisconnectFieldInput!]
 }
 
-input MovieSearchUpdateInput {
-    Genre: [MovieSearchGenreUpdateFieldInput!]
-    Movie: [MovieSearchMovieUpdateFieldInput!]
+input MovieSearchGenreConnectFieldInput {
+    where: GenreConnectWhere
 }
 
 input MovieSearchGenreConnectionWhere {
@@ -196,11 +187,15 @@ input MovieSearchGenreConnectionWhere {
     OR: [MovieSearchGenreConnectionWhere!]
 }
 
-input MovieSearchGenreDisconnectFieldInput {
-    where: MovieSearchGenreConnectionWhere
+input MovieSearchGenreCreateFieldInput {
+    node: GenreCreateInput!
 }
 
 input MovieSearchGenreDeleteFieldInput {
+    where: MovieSearchGenreConnectionWhere
+}
+
+input MovieSearchGenreDisconnectFieldInput {
     where: MovieSearchGenreConnectionWhere
 }
 
@@ -222,8 +217,9 @@ input MovieSearchGenreUpdateFieldInput {
     delete: [MovieSearchGenreDeleteFieldInput!]
 }
 
-input MovieSearchMovieCreateFieldInput {
-    node: MovieCreateInput!
+input MovieSearchMovieConnectFieldInput {
+    where: MovieConnectWhere
+    connect: [MovieConnectInput!]
 }
 
 input MovieSearchMovieConnectionWhere {
@@ -233,14 +229,18 @@ input MovieSearchMovieConnectionWhere {
     OR: [MovieSearchMovieConnectionWhere!]
 }
 
-input MovieSearchMovieDisconnectFieldInput {
-    where: MovieSearchMovieConnectionWhere
-    disconnect: MovieDisconnectInput
+input MovieSearchMovieCreateFieldInput {
+    node: MovieCreateInput!
 }
 
 input MovieSearchMovieDeleteFieldInput {
     where: MovieSearchMovieConnectionWhere
     delete: MovieDeleteInput
+}
+
+input MovieSearchMovieDisconnectFieldInput {
+    where: MovieSearchMovieConnectionWhere
+    disconnect: MovieDisconnectInput
 }
 
 input MovieSearchMovieFieldInput {
@@ -264,6 +264,11 @@ input MovieSearchMovieUpdateFieldInput {
 type MovieSearchRelationship {
     cursor: String!
     node: Search!
+}
+
+input MovieSearchUpdateInput {
+    Genre: [MovieSearchGenreUpdateFieldInput!]
+    Movie: [MovieSearchMovieUpdateFieldInput!]
 }
 
 """
@@ -333,6 +338,11 @@ input QueryOptions {
 }
 
 union Search = Movie | Genre
+
+input SearchWhere {
+    Movie: MovieWhere
+    Genre: GenreWhere
+}
 
 enum SortDirection {
     """

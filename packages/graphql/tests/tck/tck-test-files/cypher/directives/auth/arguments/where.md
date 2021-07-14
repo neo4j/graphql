@@ -462,7 +462,7 @@ RETURN this { .id, contentConnection } as this
 {
     users {
         id
-        contentConnection(where: { Post: { id: "some-id" } }) {
+        contentConnection(where: { Post: { node: { id: "some-id" } } }) {
             edges {
                 node {
                     ... on Post {
@@ -485,7 +485,7 @@ CALL {
     CALL {
         WITH this
         OPTIONAL MATCH (this)-[this_has_post:HAS_POST]->(this_Post:Post)
-        WHERE this_Post.id = $this_contentConnection.args.where.Post.id AND EXISTS((this_Post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_Post_auth_where0_creator_id)
+        WHERE this_Post.id = $this_contentConnection.args.where.Post.node.id AND EXISTS((this_Post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_Post_auth_where0_creator_id)
         WITH { node: { __resolveType: "Post", id: this_Post.id } } AS edge
         RETURN edge
     }
@@ -505,7 +505,9 @@ RETURN this { .id, contentConnection } as this
         "args": {
             "where": {
                 "Post": {
-                    "id": "some-id"
+                    "node": {
+                        "id": "some-id"
+                    }
                 }
             }
         }
