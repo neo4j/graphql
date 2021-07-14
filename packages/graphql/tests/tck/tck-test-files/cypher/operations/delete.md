@@ -1,10 +1,10 @@
-## Cypher Delete
+# Cypher Delete
 
 Tests delete operations.
 
 Schema:
 
-```schema
+```graphql
 type Actor {
     name: String
     movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
@@ -19,9 +19,9 @@ type Movie {
 
 ---
 
-### Simple Delete
+## Simple Delete
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -31,7 +31,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -39,9 +39,9 @@ WHERE this.id = $this_id
 DETACH DELETE this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "123"
 }
@@ -49,9 +49,9 @@ DETACH DELETE this
 
 ---
 
-### Single Nested Delete
+## Single Nested Delete
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -64,7 +64,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -78,9 +78,9 @@ FOREACH(_ IN CASE this_actors0 WHEN NULL THEN [] ELSE [1] END |
 DETACH DELETE this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "123",
     "this_deleteMovies": {
@@ -103,9 +103,9 @@ DETACH DELETE this
 
 ---
 
-### Single Nested Delete deleting multiple
+## Single Nested Delete deleting multiple
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -123,7 +123,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -143,9 +143,9 @@ FOREACH(_ IN CASE this_actors1 WHEN NULL THEN [] ELSE [1] END |
 DETACH DELETE this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "123",
     "this_deleteMovies": {
@@ -175,9 +175,9 @@ DETACH DELETE this
 
 ---
 
-### Double Nested Delete
+## Double Nested Delete
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -195,7 +195,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -215,9 +215,9 @@ FOREACH(_ IN CASE this_actors0 WHEN NULL THEN [] ELSE [1] END |
 DETACH DELETE this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "123",
     "this_deleteMovies": {
@@ -251,9 +251,9 @@ DETACH DELETE this
 
 ---
 
-### Triple Nested Delete
+## Triple Nested Delete
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -282,7 +282,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -308,9 +308,9 @@ FOREACH(_ IN CASE this_actors0 WHEN NULL THEN [] ELSE [1] END |
 DETACH DELETE this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "123",
     "this_deleteMovies": {

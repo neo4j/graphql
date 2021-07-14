@@ -1,0 +1,5 @@
+{
+    "default": true,
+    "MD013": { "code_blocks": false },
+    "MD024": { "siblings_only": true }
+}

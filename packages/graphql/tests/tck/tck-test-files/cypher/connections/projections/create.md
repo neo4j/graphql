@@ -1,28 +1,30 @@
-## Cypher -> Connections -> Projections -> Create
+# Cypher -> Connections -> Projections -> Create
 
 Schema:
 
-```schema
+```graphql
 type Movie {
-  title: String!
-  actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+    title: String!
+    actors: [Actor!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
 }
 
 type Actor {
-  name: String!
-  movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+    name: String!
+    movies: [Movie!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
 
 interface ActedIn {
-  screenTime: Int!
+    screenTime: Int!
 }
 ```
 
 ---
 
-### Connection can be selected following the creation of a single node
+## Connection can be selected following the creation of a single node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -42,7 +44,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -59,9 +61,9 @@ CALL {
 RETURN this0 { .title, actorsConnection } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_title": "Forrest Gump"
 }
@@ -69,9 +71,9 @@ RETURN this0 { .title, actorsConnection } AS this0
 
 ---
 
-### Connection can be selected following the creation of a multiple nodes
+## Connection can be selected following the creation of a multiple nodes
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -91,7 +93,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -119,9 +121,9 @@ CALL {
 RETURN this0 { .title, actorsConnection } AS this0, this1 { .title, actorsConnection } AS this1
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_title": "Forrest Gump",
     "this1_title": "Toy Story"
@@ -130,9 +132,9 @@ RETURN this0 { .title, actorsConnection } AS this0, this1 { .title, actorsConnec
 
 ---
 
-### Connection can be selected and filtered following the creation of a multiple nodes
+## Connection can be selected and filtered following the creation of a multiple nodes
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -152,7 +154,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -182,9 +184,9 @@ CALL {
 RETURN this0 { .title, actorsConnection } AS this0, this1 { .title, actorsConnection } AS this1
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_title": "Forrest Gump",
     "this1_title": "Toy Story",

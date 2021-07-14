@@ -1,10 +1,10 @@
-## Cypher Create
+# Cypher Create
 
 Tests create operations.
 
 Schema:
 
-```schema
+```graphql
 type Actor {
     name: String
     movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
@@ -18,9 +18,9 @@ type Movie {
 
 ---
 
-### Simple Create
+## Simple Create
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -32,7 +32,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -44,9 +44,9 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "1"
 }
@@ -54,9 +54,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-### Simple Multi Create
+## Simple Multi Create
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -68,7 +68,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -87,9 +87,9 @@ RETURN this0 { .id } AS this0,
        this1 { .id } AS this1
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "1",
     "this1_id": "2"
@@ -98,9 +98,9 @@ RETURN this0 { .id } AS this0,
 
 ---
 
-### Two Level Nested create
+## Two Level Nested create
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -117,7 +117,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -147,9 +147,9 @@ CALL {
 RETURN this0 { .id } AS this0, this1 { .id } AS this1
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "1",
     "this0_actors0_node_name": "actor 1",
@@ -160,9 +160,9 @@ RETURN this0 { .id } AS this0, this1 { .id } AS this1
 
 ---
 
-### Three Level Nested create
+## Three Level Nested create
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -203,7 +203,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -241,9 +241,9 @@ CALL {
 RETURN this0 { .id } AS this0, this1 { .id } AS this1
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "1",
     "this0_actors0_node_name": "actor 1",
@@ -256,9 +256,9 @@ RETURN this0 { .id } AS this0, this1 { .id } AS this1
 
 ---
 
-### Simple create and connect
+## Simple create and connect
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -277,7 +277,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -297,9 +297,9 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "1",
     "this0_actors_connect0_node_name": "Dan"

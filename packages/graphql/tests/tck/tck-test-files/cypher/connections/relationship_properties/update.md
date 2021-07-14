@@ -1,28 +1,30 @@
-## Cypher -> Connections -> Relationship Properties -> Update
+# Cypher -> Connections -> Relationship Properties -> Update
 
 Schema:
 
-```schema
+```graphql
 type Movie {
-  title: String!
-  actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+    title: String!
+    actors: [Actor!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
 }
 
 type Actor {
-  name: String!
-  movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+    name: String!
+    movies: [Movie!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
 
 interface ActedIn {
-  screenTime: Int!
+    screenTime: Int!
 }
 ```
 
 ---
 
-### Update a relationship property on a relationship between two specified nodes (update -> update)
+## Update a relationship property on a relationship between two specified nodes (update -> update)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -44,7 +46,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -63,42 +65,42 @@ YIELD value as this_acted_in0_actors0_relationship
 RETURN this { .title } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump",
     "updateMovies": {
-      "args": {
-        "update": {
-          "actors": [
-            {
-              "update": {
-                "relationship": {
-                    "screenTime": {
-                        "high": 0,
-                        "low": 60
+        "args": {
+            "update": {
+                "actors": [
+                    {
+                        "update": {
+                            "relationship": {
+                                "screenTime": {
+                                    "high": 0,
+                                    "low": 60
+                                }
+                            }
+                        },
+                        "where": {
+                            "node": {
+                                "name": "Tom Hanks"
+                            }
+                        }
                     }
-                }
-              },
-              "where": {
-                "node": {
-                  "name": "Tom Hanks"
-                }
-              }
+                ]
             }
-          ]
         }
-      }
     }
 }
 ```
 
 ---
 
-### Update properties on both the relationship and end node in a nested update (update -> update)
+## Update properties on both the relationship and end node in a nested update (update -> update)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -123,7 +125,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -148,9 +150,9 @@ YIELD value as this_acted_in0_actors0_relationship
 RETURN this { .title } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
         "isAuthenticated": true,
@@ -160,30 +162,30 @@ RETURN this { .title } AS this
     "this_title": "Forrest Gump",
     "this_update_actors0_name": "Tom Hanks",
     "updateMovies": {
-      "args": {
-        "update": {
-          "actors": [
-            {
-              "update": {
-                "relationship": {
-                    "screenTime": {
-                        "high": 0,
-                        "low": 60
+        "args": {
+            "update": {
+                "actors": [
+                    {
+                        "update": {
+                            "relationship": {
+                                "screenTime": {
+                                    "high": 0,
+                                    "low": 60
+                                }
+                            },
+                            "node": {
+                                "name": "Tom Hanks"
+                            }
+                        },
+                        "where": {
+                            "node": {
+                                "name": "Tom Hanks"
+                            }
+                        }
                     }
-                },
-                "node": {
-                    "name": "Tom Hanks"
-                }
-              },
-              "where": {
-                "node": {
-                  "name": "Tom Hanks"
-                }
-              }
+                ]
             }
-          ]
         }
-      }
     }
 }
 ```

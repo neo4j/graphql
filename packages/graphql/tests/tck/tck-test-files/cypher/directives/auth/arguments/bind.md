@@ -1,10 +1,10 @@
-## Cypher Auth Allow
+# Cypher Auth Allow
 
 Tests auth allow operations
 
 Schema:
 
-```schema
+```graphql
 type Post {
     id: ID
     creator: User @relationship(type: "HAS_POST", direction: IN)
@@ -39,9 +39,9 @@ extend type Post
 
 ---
 
-### Create Node
+## Create Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -53,7 +53,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -67,9 +67,9 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "user-id",
     "this0_name": "bob",
@@ -77,9 +77,9 @@ RETURN this0 { .id } AS this0
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -88,9 +88,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-### Create Nested Node
+## Create Nested Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -121,7 +121,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -156,9 +156,9 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "user-id",
     "this0_name": "bob",
@@ -170,9 +170,9 @@ RETURN this0 { .id } AS this0
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -181,9 +181,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-### Update Node
+## Update Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -195,7 +195,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -208,9 +208,9 @@ CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_auth_bind0_id), 
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "id-01",
     "this_update_id": "not bound",
@@ -218,9 +218,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -229,9 +229,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Update Nested Node
+## Update Nested Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -253,7 +253,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -287,9 +287,9 @@ CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_auth_bind0_id), 
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "id-01",
     "this_posts0_creator0_auth_bind0_id": "id-01",
@@ -332,9 +332,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -343,9 +343,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Connect Node
+## Connect Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -360,7 +360,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Post)
@@ -379,9 +379,9 @@ CALL apoc.util.validate(NOT(EXISTS((this_connect_creator0_node)<-[:HAS_POST]-(:U
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id": "id-01",
     "this_connect_creator0_nodePost0_bind_auth_bind0_creator_id": "id-01",
@@ -391,9 +391,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -402,9 +402,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Disconnect Node
+## Disconnect Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -419,7 +419,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Post)
@@ -438,9 +438,9 @@ CALL apoc.util.validate(NOT(EXISTS((this_disconnect_creator0)<-[:HAS_POST]-(:Use
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_disconnect_creator0Post0_bind_auth_bind0_creator_id": "id-01",
     "this_disconnect_creator0User1_bind_auth_bind0_id": "id-01",
@@ -461,9 +461,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
