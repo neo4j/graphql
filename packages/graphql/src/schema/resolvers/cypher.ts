@@ -81,7 +81,7 @@ export default function cypherResolver({
         ) as { strs: string[]; params: any };
         const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
-        const expectMultipleValues = referenceNode && field.typeMeta.array ? "true" : "false";
+        const expectMultipleValues = field.typeMeta.array ? "true" : "false";
         if (type === "Query") {
             cypherStrs.push(`
                 WITH apoc.cypher.runFirstColumn("${statement}", ${apocParamsStr}, ${expectMultipleValues}) as x
