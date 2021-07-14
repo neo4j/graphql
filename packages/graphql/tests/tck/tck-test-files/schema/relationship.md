@@ -1,14 +1,14 @@
-## Schema Relationship
+# Schema Relationship
 
 Tests that the provided typeDefs return the correct schema (with relationships).
 
 ---
 
-### Single Relationship
+## Single Relationship
 
-**TypeDefs**
+### TypeDefs
 
-```typedefs-input
+```graphql
 type Actor {
     name: String
 }
@@ -19,9 +19,9 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
-```schema-output
+```graphql
 type Actor {
     name: String
 }
@@ -265,11 +265,11 @@ type UpdateMoviesMutationResponse {
 
 ---
 
-### Multi Relationship
+## Multi Relationship
 
-**TypeDefs**
+### TypeDefs
 
-```typedefs-input
+```graphql
 type Actor {
     name: String
     movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
@@ -281,9 +281,9 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
-```schema-output
+```graphql
 type Actor {
     name: String
     movies(where: MovieWhere, options: MovieOptions): [Movie]

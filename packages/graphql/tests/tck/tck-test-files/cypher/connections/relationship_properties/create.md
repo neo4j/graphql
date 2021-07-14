@@ -1,28 +1,30 @@
-## Relationship Properties Create Cypher
+# Relationship Properties Create Cypher
 
 Schema:
 
-```schema
+```graphql
 type Movie {
-  title: String!
-  actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+    title: String!
+    actors: [Actor!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
 }
 
 type Actor {
-  name: String!
-  movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+    name: String!
+    movies: [Movie!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
 
 interface ActedIn {
-  screenTime: Int!
+    screenTime: Int!
 }
 ```
 
 ---
 
-### Create movie with a relationship that has properties
+## Create movie with a relationship that has properties
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -56,7 +58,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -82,9 +84,9 @@ RETURN
 this0 { .title, actorsConnection } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_title": "Forrest Gump",
     "this0_actors0_node_name": "Tom Hanks",

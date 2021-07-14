@@ -1,10 +1,10 @@
-## Cypher Auth Projection On Connections On Unions
+# Cypher Auth Projection On Connections On Unions
 
 Tests auth is added to projection connections
 
 Schema:
 
-```schema
+```graphql
 type Post {
     content: String
     creator: User @relationship(type: "HAS_POST", direction: IN)
@@ -24,9 +24,9 @@ extend type Post @auth(rules: [{ allow: { creator: { id: "$jwt.sub" } } }])
 
 ---
 
-### Two connection
+## Two connection
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -51,7 +51,7 @@ extend type Post @auth(rules: [{ allow: { creator: { id: "$jwt.sub" } } }])
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -78,9 +78,9 @@ CALL {
 RETURN this { contentConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_Post_auth_allow0_creator_id": "super_admin",
     "this_Post_user_auth_allow0_id": "super_admin",
@@ -88,9 +88,9 @@ RETURN this { contentConnection } as this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin"
 }

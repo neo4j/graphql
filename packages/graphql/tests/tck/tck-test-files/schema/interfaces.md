@@ -1,37 +1,44 @@
-## Schema Interfaces
+# Schema Interfaces
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### Interfaces
+## Interfaces
 
-**TypeDefs**
+### TypeDefs
 
-```typedefs-input
-interface MovieNode @auth(rules: [{allow: "*", operations: [READ]}]) {
+```graphql
+interface MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
     id: ID
     movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
-    customQuery: [Movie] @cypher(statement: """
-      MATCH (m:Movie)
-      RETURN m
-    """)
+    customQuery: [Movie]
+        @cypher(
+            statement: """
+            MATCH (m:Movie)
+            RETURN m
+            """
+        )
 }
 
-type Movie implements MovieNode @auth(rules: [{allow: "*", operations: [READ]}]) {
+type Movie implements MovieNode
+    @auth(rules: [{ allow: "*", operations: [READ] }]) {
     id: ID
     nodes: [MovieNode]
     movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
-    customQuery: [Movie] @cypher(statement: """
-      MATCH (m:Movie)
-      RETURN m
-    """)
+    customQuery: [Movie]
+        @cypher(
+            statement: """
+            MATCH (m:Movie)
+            RETURN m
+            """
+        )
 }
 ```
 
-**Output**
+### Output
 
-```schema-output
+```graphql
 type CreateMoviesMutationResponse {
     movies: [Movie!]!
 }

@@ -1,10 +1,10 @@
-## Cypher Auth Projection On Connections
+# Cypher Auth Projection On Connections
 
 Tests auth is added to projection connections
 
 Schema:
 
-```schema
+```graphql
 type Post {
     content: String
     creator: User @relationship(type: "HAS_POST", direction: IN)
@@ -22,9 +22,9 @@ extend type Post @auth(rules: [{ allow: { creator: { id: "$jwt.sub" } } }])
 
 ---
 
-### One connection
+## One connection
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -41,7 +41,7 @@ extend type Post @auth(rules: [{ allow: { creator: { id: "$jwt.sub" } } }])
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -56,18 +56,18 @@ CALL {
 RETURN this { .name, postsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_post_auth_allow0_creator_id": "super_admin",
     "this_auth_allow0_id": "super_admin"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin"
 }
@@ -75,9 +75,9 @@ RETURN this { .name, postsConnection } as this
 
 ---
 
-### Two connection
+## Two connection
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -101,7 +101,7 @@ RETURN this { .name, postsConnection } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -123,9 +123,9 @@ CALL {
 RETURN this { .name, postsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_post_auth_allow0_creator_id": "super_admin",
     "this_post_user_auth_allow0_id": "super_admin",
@@ -133,9 +133,9 @@ RETURN this { .name, postsConnection } as this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin"
 }

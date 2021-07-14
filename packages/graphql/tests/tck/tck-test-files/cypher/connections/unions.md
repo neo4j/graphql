@@ -1,23 +1,26 @@
-## Cypher -> Connections -> Unions
+# Cypher -> Connections -> Unions
 
 Schema:
 
-```schema
+```graphql
 union Publication = Book | Journal
 
 type Author {
     name: String!
-    publications: [Publication] @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
+    publications: [Publication]
+        @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
 }
 
 type Book {
     title: String!
-    author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
+    author: [Author!]!
+        @relationship(type: "WROTE", direction: IN, properties: "Wrote")
 }
 
 type Journal {
     subject: String!
-    author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
+    author: [Author!]!
+        @relationship(type: "WROTE", direction: IN, properties: "Wrote")
 }
 
 interface Wrote {
@@ -27,9 +30,9 @@ interface Wrote {
 
 ---
 
-### Projecting union node and relationship properties with no arguments
+## Projecting union node and relationship properties with no arguments
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -52,7 +55,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Author)
@@ -75,17 +78,17 @@ CALL {
 RETURN this { .name, publicationsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {}
 ```
 
 ---
 
-### Projecting union node and relationship properties with where argument
+## Projecting union node and relationship properties with where argument
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -113,7 +116,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Author)
@@ -138,9 +141,9 @@ CALL {
 RETURN this { .name, publicationsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_publicationsConnection": {
         "args": {
@@ -163,9 +166,9 @@ RETURN this { .name, publicationsConnection } as this
 
 ---
 
-### Projecting union node and relationship properties with where relationship argument
+## Projecting union node and relationship properties with where relationship argument
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -193,7 +196,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Author)
@@ -218,9 +221,9 @@ CALL {
 RETURN this { .name, publicationsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_publicationsConnection": {
         "args": {
@@ -249,9 +252,9 @@ RETURN this { .name, publicationsConnection } as this
 
 ---
 
-### Projecting union node and relationship properties with where node and relationship argument
+## Projecting union node and relationship properties with where node and relationship argument
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -285,7 +288,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Author)
@@ -310,9 +313,9 @@ CALL {
 RETURN this { .name, publicationsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_publicationsConnection": {
         "args": {
@@ -347,9 +350,9 @@ RETURN this { .name, publicationsConnection } as this
 
 ---
 
-### Projecting only one member of union node and relationship properties with no arguments
+## Projecting only one member of union node and relationship properties with no arguments
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -369,7 +372,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Author)
@@ -387,9 +390,9 @@ CALL {
 RETURN this { .name, publicationsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {}
 ```
 

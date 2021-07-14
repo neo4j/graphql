@@ -1,10 +1,10 @@
-## Cypher Alias
+# Cypher Alias
 
 Tests to ensure when using aliases that the cypher is correct.
 
 Schema:
 
-```schema
+```graphql
 type Actor {
     name: String
 }
@@ -12,18 +12,21 @@ type Actor {
 type Movie {
     id: ID
     actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
-    custom: [Movie] @cypher(statement: """
-        MATCH (m:Movie)
-        RETURN m
-    """)
+    custom: [Movie]
+        @cypher(
+            statement: """
+            MATCH (m:Movie)
+            RETURN m
+            """
+        )
 }
 ```
 
 ---
 
-### Alias
+## Alias
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -39,7 +42,7 @@ type Movie {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -50,14 +53,14 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
     }
 }
 ```

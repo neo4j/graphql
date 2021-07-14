@@ -1,22 +1,24 @@
-## Schema -> Connections -> Enums
+# Schema -> Connections -> Enums
 
 Tests that enums work correctly as relationship properties.
 
 ---
 
-### Enum Relationship Properties
+## Enum Relationship Properties
 
-**TypeDefs**
+### TypeDefs
 
-```typedefs-input
+```graphql
 type Actor {
     name: String!
-    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+    movies: [Movie]
+        @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
 }
 
 type Movie {
     title: String!
-    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+    actors: [Actor]!
+        @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
 }
 
 enum RoleType {
@@ -29,9 +31,9 @@ interface ActedIn {
 }
 ```
 
-**Output**
+### Output
 
-```schema-output
+```graphql
 enum RoleType {
     LEADING
     SUPPORTING

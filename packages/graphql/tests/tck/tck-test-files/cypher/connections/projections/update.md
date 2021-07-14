@@ -1,28 +1,30 @@
-## Cypher -> Connections -> Projections -> Update
+# Cypher -> Connections -> Projections -> Update
 
 Schema:
 
-```schema
+```graphql
 type Movie {
-  title: String!
-  actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+    title: String!
+    actors: [Actor!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
 }
 
 type Actor {
-  name: String!
-  movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+    name: String!
+    movies: [Movie!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
 
 interface ActedIn {
-  screenTime: Int!
+    screenTime: Int!
 }
 ```
 
 ---
 
-### Connection can be selected following update Mutation
+## Connection can be selected following update Mutation
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -42,7 +44,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -57,9 +59,9 @@ CALL {
 RETURN this { .title, actorsConnection } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump"
 }

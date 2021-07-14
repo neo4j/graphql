@@ -1,28 +1,30 @@
-## Relationship Properties Cypher
+# Relationship Properties Cypher
 
 Schema:
 
-```schema
+```graphql
 type Movie {
-  title: String!
-  actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+    title: String!
+    actors: [Actor!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
 }
 
 type Actor {
-  name: String!
-  movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+    name: String!
+    movies: [Movie!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
 
 interface ActedIn {
-  screenTime: Int!
+    screenTime: Int!
 }
 ```
 
 ---
 
-### Projecting node and relationship properties with no arguments
+## Projecting node and relationship properties with no arguments
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -40,7 +42,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -54,9 +56,9 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump"
 }
@@ -64,9 +66,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### Projecting node and relationship properties with where argument
+## Projecting node and relationship properties with where argument
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -84,7 +86,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -99,9 +101,9 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump",
     "this_actorsConnection": {
@@ -118,9 +120,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### Projecting node and relationship properties with sort argument
+## Projecting node and relationship properties with sort argument
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -138,7 +140,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -154,9 +156,9 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump"
 }
@@ -164,9 +166,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### Projecting twice nested node and relationship properties with no arguments
+## Projecting twice nested node and relationship properties with no arguments
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -192,7 +194,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -212,9 +214,9 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump"
 }
@@ -222,9 +224,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### Projecting thrice nested node and relationship properties with no arguments
+## Projecting thrice nested node and relationship properties with no arguments
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -258,7 +260,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -284,9 +286,9 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump"
 }
