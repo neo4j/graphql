@@ -181,6 +181,8 @@ input MovieWhere {
     id_NOT_ENDS_WITH: ID
     movies: MovieWhere
     movies_NOT: MovieWhere
+    moviesConnection: MovieMoviesConnectionWhere
+    moviesConnection_NOT: MovieMoviesConnectionWhere
 }
 
 type Mutation {
