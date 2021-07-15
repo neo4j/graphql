@@ -1,28 +1,30 @@
-## Mixed nesting
+# Mixed nesting
 
 Schema:
 
-```schema
+```graphql
 type Movie {
-  title: String!
-  actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+    title: String!
+    actors: [Actor!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
 }
 
 type Actor {
-  name: String!
-  movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+    name: String!
+    movies: [Movie!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
 
 interface ActedIn {
-  screenTime: Int!
+    screenTime: Int!
 }
 ```
 
 ---
 
-### Connection -> Relationship
+## Connection -> Relationship
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -43,7 +45,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -64,9 +66,9 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump",
     "this_actor_movies_title_NOT": "Forrest Gump",
@@ -84,9 +86,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### Connection -> Connection -> Relationship
+## Connection -> Connection -> Relationship
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -116,7 +118,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -143,9 +145,9 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump",
     "this_actor_movie_actors_name_NOT": "Tom Hanks",
@@ -176,9 +178,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### Relationship -> Connection
+## Relationship -> Connection
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -199,7 +201,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -220,9 +222,9 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "Forrest Gump",
     "this_actors_name": "Tom Hanks",

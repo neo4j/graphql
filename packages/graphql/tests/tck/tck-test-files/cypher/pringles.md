@@ -1,10 +1,10 @@
-## Cypher Create Pringles
+# Cypher Create Pringles
 
 Tests operations for Pringles base case. see @ https://paper.dropbox.com/doc/Nested-mutations--A9l6qeiLzvYSxcyrii1ru0MNAg-LbUKLCTNN1nMO3Ka4VBoV
 
 Schema:
 
-```schema
+```graphql
 type Product {
     id: ID!
     name: String
@@ -34,11 +34,11 @@ type Photo {
 
 ---
 
-### Create Pringles
+## Create Pringles
 
 Test the creation of the Pringles.
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -100,7 +100,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -173,41 +173,41 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this0_id": "1",
-  "this0_name": "Pringles",
-  "this0_sizes0_node_id": "103",
-  "this0_sizes0_node_name": "Small",
-  "this0_sizes1_node_id": "104",
-  "this0_sizes1_node_name": "Large",
-  "this0_colors0_node_id": "100",
-  "this0_colors0_node_name": "Red",
-  "this0_colors1_node_id": "102",
-  "this0_colors1_node_name": "Green",
-  "this0_photos0_node_id": "105",
-  "this0_photos0_node_description": "Outdoor photo",
-  "this0_photos0_node_url": "outdoor.png",
-  "this0_photos1_node_id": "106",
-  "this0_photos1_node_description": "Green photo",
-  "this0_photos1_node_url": "g.png",
-  "this0_photos1_node_color_connect0_node_id": "102",
-  "this0_photos2_node_id": "107",
-  "this0_photos2_node_description": "Red photo",
-  "this0_photos2_node_url": "r.png",
-  "this0_photos2_node_color_connect0_node_id": "100"
+    "this0_id": "1",
+    "this0_name": "Pringles",
+    "this0_sizes0_node_id": "103",
+    "this0_sizes0_node_name": "Small",
+    "this0_sizes1_node_id": "104",
+    "this0_sizes1_node_name": "Large",
+    "this0_colors0_node_id": "100",
+    "this0_colors0_node_name": "Red",
+    "this0_colors1_node_id": "102",
+    "this0_colors1_node_name": "Green",
+    "this0_photos0_node_id": "105",
+    "this0_photos0_node_description": "Outdoor photo",
+    "this0_photos0_node_url": "outdoor.png",
+    "this0_photos1_node_id": "106",
+    "this0_photos1_node_description": "Green photo",
+    "this0_photos1_node_url": "g.png",
+    "this0_photos1_node_color_connect0_node_id": "102",
+    "this0_photos2_node_id": "107",
+    "this0_photos2_node_description": "Red photo",
+    "this0_photos2_node_url": "r.png",
+    "this0_photos2_node_color_connect0_node_id": "100"
 }
 ```
 
 ---
 
-### Update Pringles Color
+## Update Pringles Color
 
 Changes the color of Pringles from Green to Light Green.
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -241,7 +241,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Product)
@@ -275,54 +275,54 @@ CALL apoc.do.when(this_photos0 IS NOT NULL,
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_name": "Pringles",
-  "this_update_photos0_description": "Light Green Photo",
-  "this_photos0_color0_connect0_node_name": "Light Green",
-  "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
-  },
-  "updateProducts": {
-    "args": {
-      "update": {
-        "photos": [
-          {
+    "this_name": "Pringles",
+    "this_update_photos0_description": "Light Green Photo",
+    "this_photos0_color0_connect0_node_name": "Light Green",
+    "auth": {
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
+    },
+    "updateProducts": {
+        "args": {
             "update": {
-                "node": {
-                    "color": {
-                        "connect": {
-                            "where": {
-                                "node": {
-                                    "name": "Light Green"
-                                }
+                "photos": [
+                    {
+                        "update": {
+                            "node": {
+                                "color": {
+                                    "connect": {
+                                        "where": {
+                                            "node": {
+                                                "name": "Light Green"
+                                            }
+                                        }
+                                    },
+                                    "disconnect": {
+                                        "where": {
+                                            "node": {
+                                                "name": "Green"
+                                            }
+                                        }
+                                    }
+                                },
+                                "description": "Light Green Photo"
                             }
                         },
-                        "disconnect": {
-                            "where": {
+                        "where": {
                             "node": {
-                                "name": "Green"
-                            }
+                                "description": "Green Photo"
                             }
                         }
-                    },
-                    "description": "Light Green Photo"
-                }
-            },
-            "where": {
-              "node": {
-                "description": "Green Photo"
-              }
+                    }
+                ]
             }
-          }
-        ]
-      }
+        }
     }
-  }
 }
 ```
 

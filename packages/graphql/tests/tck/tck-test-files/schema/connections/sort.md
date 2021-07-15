@@ -1,14 +1,14 @@
-## Sort
+# Sort
 
 Tests sort argument on connection fields
 
 ---
 
-### sort argument is not present when nothing to sort
+## sort argument is not present when nothing to sort
 
-**TypeDefs**
+### TypeDefs
 
-```typedefs-input
+```graphql
 type Node1 {
     property: String!
     relatedTo: [Node2!]! @relationship(type: "RELATED_TO", direction: OUT)
@@ -19,9 +19,9 @@ type Node2 {
 }
 ```
 
-**Output**
+### Output
 
-```schema-output
+```graphql
 type CreateNode1sMutationResponse {
     node1s: [Node1!]!
 }

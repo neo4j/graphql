@@ -1,10 +1,10 @@
-## Cypher Disconnect
+# Cypher Disconnect
 
 Tests connect operations.
 
 Schema:
 
-```schema
+```graphql
 type Product {
     id: ID!
     name: String
@@ -34,9 +34,9 @@ type Photo {
 
 ---
 
-### Recursive Connect
+## Recursive Connect
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -90,7 +90,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -154,19 +154,19 @@ RETURN
 this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this0_id": "123",
-  "this0_name": "Nested Connect",
-  "this0_colors_connect0_node_name": "Red",
-  "this0_colors_connect0_node_photos0_node_id": "123",
-  "this0_colors_connect0_node_photos0_node_color0_node_id": "134",
-  "this0_photos_connect0_node_id": "321",
-  "this0_photos_connect0_node_color0_node_name": "Green",
-  "this0_photos_connect1_node_id": "33211",
-  "this0_photos_connect1_node_color0_node_name": "Red"
+    "this0_id": "123",
+    "this0_name": "Nested Connect",
+    "this0_colors_connect0_node_name": "Red",
+    "this0_colors_connect0_node_photos0_node_id": "123",
+    "this0_colors_connect0_node_photos0_node_color0_node_id": "134",
+    "this0_photos_connect0_node_id": "321",
+    "this0_photos_connect0_node_color0_node_name": "Green",
+    "this0_photos_connect1_node_id": "33211",
+    "this0_photos_connect1_node_color0_node_name": "Red"
 }
 ```
 
