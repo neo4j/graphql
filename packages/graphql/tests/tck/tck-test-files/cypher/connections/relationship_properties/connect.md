@@ -1,28 +1,30 @@
-## Relationship Properties Connect Cypher
+# Relationship Properties Connect Cypher
 
 Schema:
 
-```schema
+```graphql
 type Movie {
-  title: String!
-  actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+    title: String!
+    actors: [Actor!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
 }
 
 type Actor {
-  name: String!
-  movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+    name: String!
+    movies: [Movie!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
 
 interface ActedIn {
-  screenTime: Int!
+    screenTime: Int!
 }
 ```
 
 ---
 
-### Create movie while connecting a relationship that has properties
+## Create movie while connecting a relationship that has properties
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -49,7 +51,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -74,23 +76,23 @@ RETURN
 this0 { .title, actorsConnection } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this0_title": "Forrest Gump",
-  "this0_actors_connect0_relationship_screenTime": {
-    "low": 60,
-    "high": 0
-  }
+    "this0_title": "Forrest Gump",
+    "this0_actors_connect0_relationship_screenTime": {
+        "low": 60,
+        "high": 0
+    }
 }
 ```
 
 ---
 
-### Create movie while connecting a relationship that has properties(with where on node)
+## Create movie while connecting a relationship that has properties(with where on node)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -124,7 +126,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -150,24 +152,24 @@ RETURN
 this0 { .title, actorsConnection } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this0_title": "Forrest Gump",
-  "this0_actors_connect0_node_name": "Tom Hanks",
-  "this0_actors_connect0_relationship_screenTime": {
-    "low": 60,
-    "high": 0
-  }
+    "this0_title": "Forrest Gump",
+    "this0_actors_connect0_node_name": "Tom Hanks",
+    "this0_actors_connect0_relationship_screenTime": {
+        "low": 60,
+        "high": 0
+    }
 }
 ```
 
 ---
 
-### Update a movie while connecting a relationship that has properties(top level-connect)
+## Update a movie while connecting a relationship that has properties(top level-connect)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -190,7 +192,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -211,23 +213,23 @@ CALL {
 RETURN this { .title, actorsConnection } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_title": "Forrest Gump",
-  "this_connect_actors0_relationship_screenTime": {
-    "low": 60,
-    "high": 0
-  }
+    "this_title": "Forrest Gump",
+    "this_connect_actors0_relationship_screenTime": {
+        "low": 60,
+        "high": 0
+    }
 }
 ```
 
 ---
 
-### Update a movie while connecting a relationship that has properties(top level-connect)(with where on node)
+## Update a movie while connecting a relationship that has properties(top level-connect)(with where on node)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -255,7 +257,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -277,16 +279,16 @@ CALL {
 RETURN this { .title, actorsConnection } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_title": "Forrest Gump",
-  "this_connect_actors0_node_name": "Tom Hanks",
-  "this_connect_actors0_relationship_screenTime": {
-    "low": 60,
-    "high": 0
-  }
+    "this_title": "Forrest Gump",
+    "this_connect_actors0_node_name": "Tom Hanks",
+    "this_connect_actors0_relationship_screenTime": {
+        "low": 60,
+        "high": 0
+    }
 }
 ```
 

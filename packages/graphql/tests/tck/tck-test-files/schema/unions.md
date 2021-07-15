@@ -1,14 +1,14 @@
-## Schema Unions
+# Schema Unions
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### Unions
+## Unions
 
-**TypeDefs**
+### TypeDefs
 
-```typedefs-input
+```graphql
 union Search = Movie | Genre
 
 type Genre {
@@ -22,9 +22,9 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
-```schema-output
+```graphql
 type CreateGenresMutationResponse {
     genres: [Genre!]!
 }

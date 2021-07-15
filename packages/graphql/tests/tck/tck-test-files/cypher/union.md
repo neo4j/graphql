@@ -1,20 +1,21 @@
-## Cypher Union
+# Cypher Union
 
 Tests for queries on Unions.
 
 Schema:
 
-```schema
+```graphql
 union Search = Movie | Genre
 
-type Genre @auth(rules: [
-    {
-        operations: [READ],
-        allow: {
-            name: "$jwt.jwtAllowedNamesExample"
-        }
-    }
-]) {
+type Genre
+    @auth(
+        rules: [
+            {
+                operations: [READ]
+                allow: { name: "$jwt.jwtAllowedNamesExample" }
+            }
+        ]
+    ) {
     name: String
 }
 
@@ -26,9 +27,9 @@ type Movie {
 
 ---
 
-### Read Unions
+## Read Unions
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -48,7 +49,7 @@ type Movie {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -78,9 +79,9 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "some title",
     "this_search_Genre_auth_allow0_name": ["Horror"],
@@ -89,9 +90,9 @@ RETURN this {
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "jwtAllowedNamesExample": ["Horror"]
 }
@@ -99,9 +100,9 @@ RETURN this {
 
 ---
 
-### Create Unions from create mutation
+## Create Unions from create mutation
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -122,7 +123,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -142,20 +143,20 @@ RETURN this0 {
 } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-   "this0_title": "some movie",
-   "this0_search_Genre0_node_name": "some genre"
+    "this0_title": "some movie",
+    "this0_search_Genre0_node_name": "some genre"
 }
 ```
 
 ---
 
-### Create Unions from update create(top-level)
+## Create Unions from update create(top-level)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -169,7 +170,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -179,19 +180,19 @@ MERGE (this)-[:SEARCH]->(this_create_search_Genre0_node)
 RETURN this { .title } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-   "this_create_search_Genre0_node_name": "some genre"
+    "this_create_search_Genre0_node_name": "some genre"
 }
 ```
 
 ---
 
-### Connect Unions (in create)
+## Connect Unions (in create)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -214,7 +215,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -234,21 +235,20 @@ CALL {
 RETURN this0 { .title } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-   "this0_title": "some movie",
-   "this0_search_Genre_connect0_node_name": "some genre"
+    "this0_title": "some movie",
+    "this0_search_Genre_connect0_node_name": "some genre"
 }
-
 ```
 
 ---
 
-### Update Unions
+## Update Unions
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -270,7 +270,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -284,9 +284,9 @@ CALL apoc.do.when(this_search_Genre0 IS NOT NULL, " SET this_search_Genre0.name 
 RETURN this { .title } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "some movie",
     "this_update_search_Genre0_name": "some new genre",
@@ -322,9 +322,9 @@ RETURN this { .title } AS this
 
 ---
 
-### Disconnect Unions (in update)
+## Disconnect Unions (in update)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -345,7 +345,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -361,9 +361,9 @@ FOREACH(_ IN CASE this_search_Genre0_disconnect0 WHEN NULL THEN [] ELSE [1] END 
 RETURN this { .title } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "some movie",
     "updateMovies": {
@@ -392,9 +392,9 @@ RETURN this { .title } AS this
 
 ---
 
-### Disconnect Unions
+## Disconnect Unions
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -411,7 +411,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -427,9 +427,9 @@ FOREACH(_ IN CASE this_disconnect_search_Genre0 WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .title } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "some movie",
     "updateMovies": {
@@ -454,9 +454,9 @@ RETURN this { .title } AS this
 
 ---
 
-### Connect Unions (in update)
+## Connect Unions (in update)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -473,7 +473,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -485,21 +485,20 @@ FOREACH(_ IN CASE this_connect_search_Genre0_node WHEN NULL THEN [] ELSE [1] END
 RETURN this { .title } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-   "this_title": "some movie",
-   "this_connect_search_Genre0_node_name": "some genre"
+    "this_title": "some movie",
+    "this_connect_search_Genre0_node_name": "some genre"
 }
-
 ```
 
 ---
 
-### Delete Unions (from update)
+## Delete Unions (from update)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -516,7 +515,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -528,9 +527,9 @@ FOREACH(_ IN CASE this_delete_search_Genre0 WHEN NULL THEN [] ELSE [1] END | DET
 RETURN this { .title } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_title": "some movie",
     "updateMovies": {

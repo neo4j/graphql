@@ -1,28 +1,30 @@
-## Cypher -> Connections -> Filtering -> Node -> Equality
+# Cypher -> Connections -> Filtering -> Node -> Equality
 
 Schema:
 
-```schema
+```graphql
 type Movie {
-  title: String!
-  actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+    title: String!
+    actors: [Actor!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
 }
 
 type Actor {
-  name: String!
-  movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+    name: String!
+    movies: [Movie!]!
+        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
 
 interface ActedIn {
-  screenTime: Int!
+    screenTime: Int!
 }
 ```
 
 ---
 
-### Equality
+## Equality
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -40,7 +42,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -54,9 +56,9 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_actorsConnection": {
         "args": {
@@ -72,9 +74,9 @@ RETURN this { .title, actorsConnection } as this
 
 ---
 
-### Inequality
+## Inequality
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -92,7 +94,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -106,9 +108,9 @@ CALL {
 RETURN this { .title, actorsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_actorsConnection": {
         "args": {

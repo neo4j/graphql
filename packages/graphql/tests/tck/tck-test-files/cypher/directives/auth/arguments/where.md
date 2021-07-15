@@ -1,10 +1,10 @@
-## Cypher Auth Where
+# Cypher Auth Where
 
 Tests auth `where` operations
 
 Schema:
 
-```schema
+```graphql
 union Search = Post
 
 type User {
@@ -32,24 +32,14 @@ extend type User
 
 extend type User {
     password: String!
-        @auth(
-            rules: [
-                {
-                    operations: [READ]
-                    where: { id: "$jwt.sub" }
-                }
-            ]
-        )
+        @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
 }
 
 extend type Post {
     secretKey: String!
         @auth(
             rules: [
-                {
-                    operations: [READ]
-                    where: { creator: { id: "$jwt.sub" } }
-                }
+                { operations: [READ], where: { creator: { id: "$jwt.sub" } } }
             ]
         )
 }
@@ -67,9 +57,9 @@ extend type Post
 
 ---
 
-### Read Node
+## Read Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -79,7 +69,7 @@ extend type Post
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -87,17 +77,17 @@ WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 RETURN this { .id } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -106,9 +96,9 @@ RETURN this { .id } as this
 
 ---
 
-### Read Node + User Defined Where
+## Read Node + User Defined Where
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -118,7 +108,7 @@ RETURN this { .id } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -126,18 +116,18 @@ WHERE this.name = $this_name AND EXISTS(this.id) AND this.id = $this_auth_where0
 RETURN this { .id } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_name": "bob"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -146,9 +136,9 @@ RETURN this { .id } as this
 
 ---
 
-### Read Relationship
+## Read Relationship
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -161,7 +151,7 @@ RETURN this { .id } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -172,18 +162,18 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_posts_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -192,9 +182,9 @@ RETURN this {
 
 ---
 
-### Read Connection
+## Read Connection
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -211,7 +201,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -225,18 +215,18 @@ CALL {
 RETURN this { .id, postsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_post_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -245,9 +235,9 @@ RETURN this { .id, postsConnection } as this
 
 ---
 
-### Read Connection + User Defined Where
+## Read Connection + User Defined Where
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -264,7 +254,7 @@ RETURN this { .id, postsConnection } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -278,9 +268,9 @@ CALL {
 RETURN this { .id, postsConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_post_auth_where0_creator_id": "id-01",
@@ -296,9 +286,9 @@ RETURN this { .id, postsConnection } as this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -307,9 +297,9 @@ RETURN this { .id, postsConnection } as this
 
 ---
 
-### Read Union Relationship + User Defined Where
+## Read Union Relationship + User Defined Where
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -322,7 +312,7 @@ RETURN this { .id, postsConnection } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -334,9 +324,9 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_posts_content": "cool",
     "this_auth_where0_id": "id-01",
@@ -344,9 +334,9 @@ RETURN this {
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -355,9 +345,9 @@ RETURN this {
 
 ---
 
-### Read Union
+## Read Union
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -372,7 +362,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -383,18 +373,18 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_content_Post_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -403,9 +393,9 @@ RETURN this {
 
 ---
 
-### Read Union Using Connection
+## Read Union Using Connection
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -424,7 +414,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -444,18 +434,18 @@ CALL {
 RETURN this { .id, contentConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_Post_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -464,9 +454,9 @@ RETURN this { .id, contentConnection } as this
 
 ---
 
-### Read Union Using Connection + User Defined Where
+## Read Union Using Connection + User Defined Where
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -485,7 +475,7 @@ RETURN this { .id, contentConnection } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -505,29 +495,29 @@ CALL {
 RETURN this { .id, contentConnection } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_Post_auth_where0_creator_id": "id-01",
     "this_contentConnection": {
-      "args": {
-        "where": {
-          "Post": {
-            "node": {
-                "id": "some-id"
+        "args": {
+            "where": {
+                "Post": {
+                    "node": {
+                        "id": "some-id"
+                    }
+                }
             }
-          }
         }
-      }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -536,9 +526,9 @@ RETURN this { .id, contentConnection } as this
 
 ---
 
-### Update Node
+## Update Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -550,7 +540,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -559,18 +549,18 @@ SET this.name = $this_update_name
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_update_name": "Bob",
     "this_auth_where0_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -579,9 +569,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Update Node + User Defined Where
+## Update Node + User Defined Where
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -593,7 +583,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -602,9 +592,9 @@ SET this.name = $this_update_name
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_update_name": "Bob",
     "this_auth_where0_id": "id-01",
@@ -612,9 +602,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -623,9 +613,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Update Nested Node
+## Update Nested Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -640,7 +630,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -657,47 +647,43 @@ RETURN this {
 } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_posts_auth_where0_creator_id": "id-01",
     "this_posts0_auth_where0_creator_id": "id-01",
     "this_update_posts0_id": "new-id",
     "this_auth_where0_id": "id-01",
     "auth": {
-      "isAuthenticated": true,
-      "jwt": {
-        "roles": [
-          "admin"
-        ],
-        "sub": "id-01"
-      },
-      "roles": [
-        "admin"
-      ]
+        "isAuthenticated": true,
+        "jwt": {
+            "roles": ["admin"],
+            "sub": "id-01"
+        },
+        "roles": ["admin"]
     },
     "updateUsers": {
-      "args": {
-        "update": {
-          "posts": [
-            {
-              "update": {
-                  "node": {
-                    "id": "new-id"
-                  }
-              }
+        "args": {
+            "update": {
+                "posts": [
+                    {
+                        "update": {
+                            "node": {
+                                "id": "new-id"
+                            }
+                        }
+                    }
+                ]
             }
-          ]
         }
-      }
     }
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -706,9 +692,9 @@ RETURN this {
 
 ---
 
-### Delete Node
+## Delete Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -718,7 +704,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -726,17 +712,17 @@ WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 DETACH DELETE this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -745,9 +731,9 @@ DETACH DELETE this
 
 ---
 
-### Delete Node + User Defined Where
+## Delete Node + User Defined Where
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -757,7 +743,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -765,18 +751,18 @@ WHERE this.name = $this_name AND EXISTS(this.id) AND this.id = $this_auth_where0
 DETACH DELETE this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_name": "Bob"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -785,9 +771,9 @@ DETACH DELETE this
 
 ---
 
-### Delete Nested Node
+## Delete Nested Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -797,7 +783,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -812,18 +798,18 @@ FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE thi
 DETACH DELETE this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_posts0_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -832,9 +818,9 @@ DETACH DELETE this
 
 ---
 
-### Connect Node (from create)
+## Connect Node (from create)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -855,7 +841,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -876,9 +862,9 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "123",
     "this0_name": "Bob",
@@ -887,9 +873,9 @@ RETURN this0 { .id } AS this0
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -898,9 +884,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-### Connect Node + User Defined Where (from create)
+## Connect Node + User Defined Where (from create)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -921,7 +907,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -941,9 +927,9 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "123",
     "this0_name": "Bob",
@@ -953,9 +939,9 @@ RETURN this0 { .id } AS this0
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -964,9 +950,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-### Connect Node (from update update)
+## Connect Node (from update update)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -978,7 +964,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -997,18 +983,18 @@ FOREACH(_ IN CASE this_posts0_connect0_node WHEN NULL THEN [] ELSE [1] END | MER
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_posts0_connect0_node_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1017,9 +1003,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Connect Node + User Defined Where (from update update)
+## Connect Node + User Defined Where (from update update)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -1033,7 +1019,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -1051,9 +1037,9 @@ FOREACH(_ IN CASE this_posts0_connect0_node WHEN NULL THEN [] ELSE [1] END | MER
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_posts0_connect0_node_auth_where0_creator_id": "id-01",
@@ -1061,9 +1047,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1072,9 +1058,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Connect Node (from update connect)
+## Connect Node (from update connect)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -1086,7 +1072,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -1104,18 +1090,18 @@ FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END | MERG
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_connect_posts0_node_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1124,9 +1110,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Connect Node + User Defined Where (from update connect)
+## Connect Node + User Defined Where (from update connect)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -1138,7 +1124,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -1156,9 +1142,9 @@ FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END | MERG
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_connect_posts0_node_auth_where0_creator_id": "id-01",
@@ -1166,9 +1152,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1177,9 +1163,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Disconnect Node (from update update)
+## Disconnect Node (from update update)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -1191,7 +1177,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -1209,18 +1195,18 @@ FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | DELET
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_posts0_disconnect0_auth_where0_creator_id": "id-01"
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1229,9 +1215,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Disconnect Node + User Defined Where (from update update)
+## Disconnect Node + User Defined Where (from update update)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -1247,7 +1233,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -1264,9 +1250,9 @@ FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | DELET
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_posts0_disconnect0_auth_where0_creator_id": "id-01",
@@ -1292,9 +1278,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1303,9 +1289,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Disconnect Node (from update disconnect)
+## Disconnect Node (from update disconnect)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -1317,7 +1303,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -1333,9 +1319,9 @@ FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_disconnect_posts0_auth_where0_creator_id": "id-01",
@@ -1353,9 +1339,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1364,9 +1350,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Disconnect Node + User Defined Where (from update disconnect)
+## Disconnect Node + User Defined Where (from update disconnect)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -1378,7 +1364,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -1393,9 +1379,9 @@ FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_auth_where0_id": "id-01",
     "this_disconnect_posts0_auth_where0_creator_id": "id-01",
@@ -1417,9 +1403,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "id-01",
     "roles": ["admin"]

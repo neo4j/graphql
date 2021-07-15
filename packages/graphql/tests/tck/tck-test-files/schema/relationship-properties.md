@@ -1,22 +1,24 @@
-## Schema Relationship Properties
+# Schema Relationship Properties
 
 Tests that the provided typeDefs return the correct schema (with relationships).
 
 ---
 
-### Relationship Properties
+## Relationship Properties
 
-**TypeDefs**
+### TypeDefs
 
-```typedefs-input
+```graphql
 type Actor {
     name: String!
-    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+    movies: [Movie]
+        @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
 }
 
 type Movie {
     title: String!
-    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+    actors: [Actor]!
+        @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
 }
 
 interface ActedIn {
@@ -24,9 +26,9 @@ interface ActedIn {
 }
 ```
 
-**Output**
+### Output
 
-```schema-output
+```graphql
 interface ActedIn {
     screenTime: Int!
 }
