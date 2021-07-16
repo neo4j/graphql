@@ -46,7 +46,14 @@ import { Integer, isInt } from "neo4j-driver";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
 import { PrimitiveField, Auth, CustomEnumField, ConnectionQueryArgs } from "../types";
-import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
+import {
+    findResolver,
+    createResolver,
+    deleteResolver,
+    cypherResolver,
+    updateResolver,
+    countResolver,
+} from "./resolvers";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
@@ -1147,6 +1154,10 @@ function makeAugmentedSchema(
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
                 [pluralize(camelCase(node.name))]: findResolver({ node }),
+            });
+
+            composer.Query.addFields({
+                [`count${pluralize(node.name)}`]: countResolver({ node }),
             });
         }
 
