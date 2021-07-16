@@ -20,7 +20,7 @@
 import Debug from "debug";
 import { Driver } from "neo4j-driver";
 import { DocumentNode, GraphQLResolveInfo, GraphQLSchema, parse, printSchema, print } from "graphql";
-import { addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
+import { addResolversToSchema, addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import type { DriverConfig } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
@@ -28,6 +28,7 @@ import { checkNeo4jCompat } from "../utils";
 import { getJWT } from "../auth/index";
 import { DEBUG_GRAPHQL } from "../constants";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
+import createAuthParam from "../translate/create-auth-param";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -60,13 +61,26 @@ class Neo4jGraphQL {
     public config?: Neo4jGraphQLConfig;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, ...schemaDefinition } = input;
+        const { config = {}, driver, resolvers, ...schemaDefinition } = input;
         const { nodes, schema } = makeAugmentedSchema(schemaDefinition, { enableRegex: config.enableRegex });
 
         this.driver = driver;
         this.config = config;
         this.nodes = nodes;
-        this.schema = this.createWrappedSchema({ schema, config });
+        this.schema = schema;
+        /*
+            addResolversToSchema must be first, so that custom resolvers also get schema level resolvers
+        */
+        if (resolvers) {
+            if (Array.isArray(resolvers)) {
+                resolvers.forEach((r) => {
+                    this.schema = addResolversToSchema(this.schema, r);
+                });
+            } else {
+                this.schema = addResolversToSchema(this.schema, resolvers);
+            }
+        }
+        this.schema = this.createWrappedSchema({ schema: this.schema, config });
         this.document = parse(printSchema(schema));
     }
 
@@ -117,7 +131,11 @@ class Neo4jGraphQL {
 
             context.resolveTree = getNeo4jResolveTree(resolveInfo);
 
-            context.jwt = getJWT(context);
+            if (!context.jwt) {
+                context.jwt = getJWT(context);
+            }
+
+            context.auth = createAuthParam({ context });
         });
     }
 

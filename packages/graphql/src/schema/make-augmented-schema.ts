@@ -48,7 +48,6 @@ import { findResolver, createResolver, deleteResolver, cypherResolver, updateRes
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
-import wrapCustomResolvers from "./wrap-custom-resolvers";
 import getCustomResolvers from "./get-custom-resolvers";
 import getObjFieldMeta from "./get-obj-field-meta";
 import * as point from "./point";
@@ -56,7 +55,7 @@ import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-co
 // import validateTypeDefs from "./validation";
 
 function makeAugmentedSchema(
-    { typeDefs, resolvers, ...schemaDefinition }: IExecutableSchemaDefinition,
+    { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
     { enableRegex }: { enableRegex?: boolean } = {}
 ): { schema: GraphQLSchema; nodes: Node[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
@@ -174,8 +173,6 @@ function makeAugmentedSchema(
 
         return node;
     });
-
-    const nodeNames = nodes.map((x) => x.name);
 
     nodes.forEach((node) => {
         const nodeFields = objectFieldsToComposeFields([
@@ -676,6 +673,7 @@ function makeAugmentedSchema(
                 const customResolver = cypherResolver({
                     field,
                     statement: field.statement,
+                    type: type as "Query" | "Mutation",
                 });
 
                 const composedField = objectFieldsToComposeFields([field])[field.fieldName];
@@ -740,7 +738,7 @@ function makeAugmentedSchema(
     }
 
     const generatedTypeDefs = composer.toSDL();
-    let generatedResolvers: any = {
+    const generatedResolvers = {
         ...composer.getResolveMethods(),
         ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
             if (generatedTypeDefs.includes(`scalar ${name}\n`)) {
@@ -750,16 +748,7 @@ function makeAugmentedSchema(
         }, {}),
     };
 
-    if (resolvers) {
-        generatedResolvers = wrapCustomResolvers({
-            generatedResolvers,
-            nodeNames,
-            resolvers,
-        });
-    }
-
     unions.forEach((union) => {
-        // eslint-disable-next-line no-underscore-dangle
         if (!generatedResolvers[union.name.value]) {
             generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
         }

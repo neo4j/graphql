@@ -207,5 +207,53 @@ describe("auth/custom-resolvers", () => {
             expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any).me.customId).toEqual(userId);
         });
+
+        test("should inject auth in context of custom Query when decoded JWT passed in", async () => {
+            const typeDefs = `
+                type User {
+                    id: ID
+                }
+
+                type Query {
+                    me: User
+                }
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                {
+                    me {
+                        id
+                    }
+                }
+            `;
+
+            const jwt = {
+                sub: userId,
+                name: "John Doe",
+                iat: 1516239022,
+            };
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                resolvers: {
+                    Query: {
+                        me: (_, __, ctx) => ({ id: ctx.auth.jwt.sub }),
+                    },
+                },
+            });
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, jwt },
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+            expect((gqlResult.data as any).me.id).toEqual(userId);
+        });
     });
 });
