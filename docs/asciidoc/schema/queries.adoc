@@ -69,7 +69,7 @@ query {
 
 === Counting all Users
 
-The following Query will return all Users, returning their ID and name.
+The following Query will count all users and return a number. 
 
 [source, graphql]
 ----
