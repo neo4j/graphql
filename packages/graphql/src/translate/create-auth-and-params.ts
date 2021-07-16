@@ -67,6 +67,10 @@ function createAuthPredicate({
     }
     const { jwt } = context;
 
+    if (!jwt) {
+        throw new Error("Can't generate auth predicate - no JWT in context");
+    }
+
     const result = Object.entries(rule[kind] as any).reduce(
         (res: Res, [key, value]) => {
             if (key === "AND" || key === "OR") {
@@ -93,12 +97,16 @@ function createAuthPredicate({
             if (authableField) {
                 const [, jwtPath] = (value as string).split("$jwt.");
                 const [, ctxPath] = (value as string).split("$context.");
-                let paramValue: string = value as string;
+                let paramValue: string | null = value as string;
 
                 if (jwtPath) {
                     paramValue = dotProp.get({ value: jwt }, `value.${jwtPath}`) as string;
                 } else if (ctxPath) {
                     paramValue = dotProp.get({ value: context }, `value.${ctxPath}`) as string;
+                }
+                // To avoid losing params on query execution
+                if ((jwtPath || ctxPath) && paramValue === undefined) {
+                    paramValue = null;
                 }
 
                 const param = `${chainStr}_${key}`;
