@@ -622,6 +622,9 @@ type Query {
     authors(where: AuthorWhere, options: AuthorOptions): [Author!]!
     books(where: BookWhere, options: BookOptions): [Book!]!
     journals(where: JournalWhere, options: JournalOptions): [Journal!]!
+    countAuthors(where: AuthorWhere): Int!
+    countBooks(where: BookWhere): Int!
+    countJournals(where: JournalWhere): Int!
 }
 
 input QueryOptions {

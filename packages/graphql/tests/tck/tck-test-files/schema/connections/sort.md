@@ -302,6 +302,8 @@ type PageInfo {
 type Query {
     node1s(where: Node1Where, options: Node1Options): [Node1!]!
     node2s(where: Node2Where, options: Node2Options): [Node2!]!
+    countNode1s(where: Node1Where): Int!
+    countNode2s(where: Node2Where): Int!
 }
 
 enum SortDirection {

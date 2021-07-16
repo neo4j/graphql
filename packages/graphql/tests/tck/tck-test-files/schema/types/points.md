@@ -116,6 +116,7 @@ type Mutation {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    countMovies(where: MovieWhere): Int!
 }
 ```
 
@@ -232,6 +233,7 @@ type Mutation {
 
 type Query {
     machines(where: MachineWhere, options: MachineOptions): [Machine!]!
+    countMachines(where: MachineWhere): Int!
 }
 ```
 
@@ -314,6 +316,7 @@ type Mutation {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    countMovies(where: MovieWhere): Int!
 }
 ```
 
@@ -398,6 +401,7 @@ type Mutation {
 
 type Query {
     machines(where: MachineWhere, options: MachineOptions): [Machine!]!
+    countMachines(where: MachineWhere): Int!
 }
 ```
 

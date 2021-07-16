@@ -36,7 +36,7 @@ import { IncomingMessage } from "http";
 import { Socket } from "net";
 // import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import { SchemaDirectiveVisitor, printSchemaWithDirectives } from "@graphql-tools/utils";
-import { translateCreate, translateDelete, translateRead, translateUpdate } from "../../src/translate";
+import { translateCount, translateCreate, translateDelete, translateRead, translateUpdate } from "../../src/translate";
 import { Context } from "../../src/types";
 import { Neo4jGraphQL } from "../../src";
 import {
@@ -160,6 +160,32 @@ describe("TCK Generated tests", () => {
                                 );
 
                                 return [];
+                            },
+                            [`count${pluralize(def.name.value)}`]: (
+                                _root: any,
+                                _params: any,
+                                context: Context,
+                                info: GraphQLResolveInfo
+                            ) => {
+                                const resolveTree = getNeo4jResolveTree(info);
+
+                                context.neoSchema = neoSchema;
+                                context.resolveTree = resolveTree;
+
+                                const mergedContext = { ...context, ...defaultContext };
+
+                                const [cQuery, cQueryParams] = translateCount({
+                                    context: mergedContext,
+                                    node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                });
+
+                                compare(
+                                    { expected: cQuery, recived: cypherQuery },
+                                    { expected: cQueryParams, recived: cypherParams },
+                                    mergedContext
+                                );
+
+                                return 1;
                             },
                         };
                     }, {});

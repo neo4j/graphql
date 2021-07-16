@@ -387,6 +387,8 @@ type PageInfo {
 type Query {
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    countMovies(where: MovieWhere): Int!
+    countActors(where: ActorWhere): Int!
 }
 
 enum SortDirection {

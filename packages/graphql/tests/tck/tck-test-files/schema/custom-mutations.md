@@ -119,6 +119,7 @@ type Mutation {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    countMovies(where: MovieWhere): Int!
     testQuery(input: ExampleInput): String
     testCypherQuery(input: ExampleInput): String
 }
