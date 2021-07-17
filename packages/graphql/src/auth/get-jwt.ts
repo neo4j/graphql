@@ -27,7 +27,7 @@ const debug = Debug(DEBUG_AUTH);
 
 function getJWT(context: Context): any {
     const jwtConfig = context.neoSchema.config?.jwt;
-    let result;
+    let result = {};
 
     if (!jwtConfig) {
         debug("JWT not configured");
@@ -67,7 +67,7 @@ function getJWT(context: Context): any {
         if (jwtConfig.noVerify) {
             debug("Skipping verifying JWT as noVerify is not set");
 
-            result = jsonwebtoken.decode(token);
+            result = jsonwebtoken.decode(token) || {};
         } else {
             debug("Verifying JWT");
 
