@@ -372,18 +372,39 @@ function createConnectionAndParams({
     }
 
     if (!firstInput && !afterInput) {
-        subquery.push(
-            `RETURN { edges: edges, totalCount: ${field.relationship.union ? "totalCount" : "size(edges)"} } AS ${
-                resolveTree.alias
-            }`
-        );
+        const returnString = [
+            "RETURN",
+            "{",
+            edges && "edges: edges,",
+            `totalCount: ${field.relationship.union ? "totalCount" : "size(edges)"}`,
+            "}",
+            "AS",
+            resolveTree.alias,
+        ]
+            .filter(Boolean)
+            .join(" ");
+
+        subquery.push(returnString);
     } else {
         const offsetLimitStr = createOffsetLimitStr({
             offset: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
             limit: firstInput as Integer | number | undefined,
         });
         subquery.push(`WITH edges, size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`);
-        subquery.push(`RETURN { edges: limitedSelection, totalCount: totalCount } AS ${resolveTree.alias}`);
+
+        const returnString = [
+            "RETURN",
+            "{",
+            edges && "edges: limitedSelection,",
+            "totalCount: totalCount",
+            "}",
+            "AS",
+            resolveTree.alias,
+        ]
+            .filter(Boolean)
+            .join(" ");
+
+        subquery.push(returnString);
     }
     subquery.push("}");
 

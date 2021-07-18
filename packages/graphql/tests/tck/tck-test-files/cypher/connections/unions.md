@@ -421,7 +421,7 @@ CALL {
     WITH this
     CALL { }
     WITH collect(edge) as edges, count(edge) as totalCount
-    RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+    RETURN { totalCount: totalCount } AS publicationsConnection
 }
 RETURN this { .name, publicationsConnection } as this
 ```

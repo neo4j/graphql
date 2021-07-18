@@ -375,7 +375,7 @@ describe("createConnectionAndParams", () => {
             WITH this
             MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
             WITH collect({  }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            RETURN { totalCount: size(edges) } AS actorsConnection
             }`);
     });
 });
