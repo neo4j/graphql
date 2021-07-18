@@ -54,8 +54,8 @@ export function createConnectionWithEdgeProperties(
     return {
         edges,
         pageInfo: {
-            startCursor: firstEdge.cursor,
-            endCursor: lastEdge.cursor,
+            startCursor: firstEdge ? firstEdge.cursor : null,
+            endCursor: lastEdge ? lastEdge.cursor : null,
             hasPreviousPage: lastEdgeCursor > 0,
             hasNextPage: typeof first === "number" ? sliceEnd < totalCount : false,
         },

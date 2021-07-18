@@ -128,5 +128,20 @@ describe("cursor-pagination", () => {
                 },
             });
         });
+
+        test("it should return an empty array for edges when no results are returned (fix 327)", () => {
+            const args = {};
+            const totalCount = 0;
+            const result = createConnectionWithEdgeProperties([], args, totalCount);
+            expect(result).toStrictEqual({
+                edges: [],
+                pageInfo: {
+                    hasNextPage: false,
+                    hasPreviousPage: false,
+                    startCursor: null,
+                    endCursor: null,
+                },
+            });
+        });
     });
 });
