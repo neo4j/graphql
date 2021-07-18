@@ -310,4 +310,72 @@ describe("createConnectionAndParams", () => {
             RETURN { edges: limitedSelection, totalCount: totalCount } AS actorsConnection
             }`);
     });
+    test("it should return the totalCount when no edges are requested (fix-332)", () => {
+        // @ts-ignore
+        const mockedNeo4jGraphQL = mocked(new Neo4jGraphQL(), true);
+        // @ts-ignore
+        mockedNeo4jGraphQL.nodes = [
+            // @ts-ignore
+            {
+                name: "Actor",
+            },
+        ];
+        // @ts-ignore
+        mockedNeo4jGraphQL.relationships = [
+            // @ts-ignore
+            {
+                name: "MovieActorsRelationship",
+                fields: [],
+            },
+        ];
+
+        const resolveTree: ResolveTree = {
+            alias: "actorsConnection",
+            name: "actorsConnection",
+            args: {},
+            fieldsByTypeName: {
+                MovieActorsConnection: {
+                    totalCount: {
+                        alias: "totalCount",
+                        name: "totalCount",
+                        args: {},
+                        fieldsByTypeName: {},
+                    },
+                },
+            },
+        };
+
+        const field: ConnectionField = {
+            fieldName: "actorsConnection",
+            relationshipTypeName: "MovieActorsRelationship",
+            // @ts-ignore
+            typeMeta: {
+                name: "MovieActorsConnection",
+                required: true,
+            },
+            otherDirectives: [],
+            // @ts-ignore
+            relationship: {
+                fieldName: "actors",
+                type: "ACTED_IN",
+                direction: "IN",
+                // @ts-ignore
+                typeMeta: {
+                    name: "Actor",
+                },
+            },
+        };
+
+        // @ts-ignore
+        const context: Context = { neoSchema: mockedNeo4jGraphQL };
+
+        const entry = createConnectionAndParams({ resolveTree, field, context, nodeVariable: "this" });
+
+        expect(dedent(entry[0])).toEqual(dedent`CALL {
+            WITH this
+            MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+            WITH collect({  }) AS edges
+            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            }`);
+    });
 });

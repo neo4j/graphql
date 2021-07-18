@@ -66,7 +66,7 @@ function createConnectionAndParams({
     const connection = resolveTree.fieldsByTypeName[field.typeMeta.name];
     const { edges } = connection;
 
-    const relationshipFieldsByTypeName = edges.fieldsByTypeName[field.relationshipTypeName];
+    const relationshipFieldsByTypeName = edges ? edges.fieldsByTypeName[field.relationshipTypeName] : {};
 
     const relationshipProperties = Object.values(relationshipFieldsByTypeName).filter((v) => v.name !== "node");
     const node = Object.values(relationshipFieldsByTypeName).find((v) => v.name === "node") as ResolveTree;

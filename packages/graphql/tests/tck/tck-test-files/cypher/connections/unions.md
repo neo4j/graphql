@@ -397,3 +397,37 @@ RETURN this { .name, publicationsConnection } as this
 ```
 
 ---
+
+## Projecting only the totalCount of the union connection when no edges are requested (fix-332)
+
+### GraphQL Input
+
+```graphql
+query {
+    authors {
+        name
+        publicationsConnection {
+            totalCount
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Author)
+CALL {
+    WITH this
+    CALL { }
+    WITH collect(edge) as edges, count(edge) as totalCount
+    RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
+}
+RETURN this { .name, publicationsConnection } as this
+```
+
+### Expected Cypher Params
+
+```json
+{}
+```
