@@ -344,7 +344,7 @@ describe("Connection Resolvers", () => {
         }
     });
 
-    test("should return a total count of zero if no edges", async () => {
+    test("should return a total count of zero and correct pageInfo if no edges", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -374,6 +374,12 @@ describe("Connection Resolvers", () => {
                     id
                     actorsConnection {
                         totalCount
+                        pageInfo {
+                            startCursor
+                            endCursor
+                            hasNextPage
+                            hasPreviousPage
+                        }
                     }
                 }
             }
@@ -395,7 +401,15 @@ describe("Connection Resolvers", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).movies).toEqual([{ id: movieId, actorsConnection: { totalCount: 0 } }]);
+            expect((gqlResult.data as any).movies).toEqual([
+                {
+                    id: movieId,
+                    actorsConnection: {
+                        totalCount: 0,
+                        pageInfo: { startCursor: null, endCursor: null, hasNextPage: false, hasPreviousPage: false },
+                    },
+                },
+            ]);
         } finally {
             await session.close();
         }
