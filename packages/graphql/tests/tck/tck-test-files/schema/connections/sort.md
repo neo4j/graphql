@@ -180,6 +180,8 @@ input Node1Where {
     property_NOT_ENDS_WITH: String
     relatedTo: Node2Where
     relatedTo_NOT: Node2Where
+    relatedToConnection: Node1RelatedToConnectionWhere
+    relatedToConnection_NOT: Node1RelatedToConnectionWhere
 }
 
 type Node2 {
@@ -289,6 +291,8 @@ input Node2Where {
     AND: [Node2Where!]
     relatedTo: Node1Where
     relatedTo_NOT: Node1Where
+    relatedToConnection: Node2RelatedToConnectionWhere
+    relatedToConnection_NOT: Node2RelatedToConnectionWhere
 }
 
 # Pagination information (Relay)

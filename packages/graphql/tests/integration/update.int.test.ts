@@ -143,6 +143,81 @@ describe("update", () => {
         }
     });
 
+    test("should update a movie when matching on relationship property", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Actor {
+                name: String
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type Movie {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const initialMovieId = generate({
+            charset: "alphabetic",
+        });
+
+        const updatedMovieId = generate({
+            charset: "alphabetic",
+        });
+
+        const actorName = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+        mutation($updatedMovieId: ID, $actorName: String) {
+            updateMovies(
+              where: { actorsConnection: { node: { name: $actorName } } },
+              update: {
+                id: $updatedMovieId
+              }
+          ) {
+              movies {
+                id
+                actors {
+                    name
+                }
+              }
+            }
+          }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (m:Movie {id: $initialMovieId})<-[:ACTED_IN]-(a:Actor {name: $actorName})
+            `,
+                {
+                    initialMovieId,
+                    actorName,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: { updatedMovieId, actorName },
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateMovies).toEqual({
+                movies: [{ id: updatedMovieId, actors: [{ name: actorName }] }],
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
     test("should update 2 movies", async () => {
         const session = driver.session();
 
@@ -732,6 +807,85 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateMovies).toEqual({ movies: [{ id: movieId, actors: [{ id: actorId }] }] });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should connect a single movie to a actor based on a connection predicate", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Actor {
+                id: ID
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                series: [Series] @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type Movie {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+
+            type Series {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const movieId = generate({
+            charset: "alphabetic",
+        });
+
+        const actorId = generate({
+            charset: "alphabetic",
+        });
+
+        const seriesId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            mutation($movieId: ID, $seriesId: ID) {
+                updateMovies(
+                    where: { id: $movieId }
+                    connect: { actors: [{ where: { node: { seriesConnection: { node: { id: $seriesId } } } } }] }
+                ) {
+                    movies {
+                        id
+                        actors {
+                            id
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (:Movie {id: $movieId})
+                CREATE (:Actor {id: $actorId})-[:ACTED_IN]->(:Series {id: $seriesId})
+            `,
+                {
+                    movieId,
+                    actorId,
+                    seriesId,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: { movieId, seriesId },
                 contextValue: { driver },
             });
 
