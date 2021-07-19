@@ -332,4 +332,65 @@ describe("delete", () => {
             await session.close();
         }
     });
+
+    test("should delete a movie using a connection where filter", async () => {
+        const session = driver.session();
+
+        const typeDefs = gql`
+            type Actor {
+                name: String
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type Movie {
+                title: String
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const title = generate({
+            charset: "alphabetic",
+        });
+
+        const name = generate({
+            charset: "alphabetic",
+        });
+
+        const mutation = `
+            mutation($name: String) {
+                deleteMovies(where: { actorsConnection: { node: { name: $name } } } ) {
+                    nodesDeleted
+                    relationshipsDeleted
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                    CREATE (:Movie {id: $title})<-[:ACTED_IN]-(:Actor {name: $name})
+                    CREATE (:Movie {id: $title})<-[:ACTED_IN]-(:Actor {name: randomUUID()})
+                `,
+                {
+                    title,
+                    name,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: mutation,
+                variableValues: { name },
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.deleteMovies).toEqual({ nodesDeleted: 1, relationshipsDeleted: 1 });
+        } finally {
+            await session.close();
+        }
+    });
 });

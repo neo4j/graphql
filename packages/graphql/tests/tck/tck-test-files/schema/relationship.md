@@ -206,6 +206,8 @@ input MovieWhere {
     id_NOT_ENDS_WITH: ID
     actors: ActorWhere
     actors_NOT: ActorWhere
+    actorsConnection: MovieActorsConnectionWhere
+    actorsConnection_NOT: MovieActorsConnectionWhere
 }
 
 type Mutation {
@@ -415,6 +417,8 @@ input ActorWhere {
     name_NOT_ENDS_WITH: String
     movies: MovieWhere
     movies_NOT: MovieWhere
+    moviesConnection: ActorMoviesConnectionWhere
+    moviesConnection_NOT: ActorMoviesConnectionWhere
 }
 
 type CreateActorsMutationResponse {
@@ -561,6 +565,8 @@ input MovieWhere {
     id_NOT_ENDS_WITH: ID
     actors: ActorWhere
     actors_NOT: ActorWhere
+    actorsConnection: MovieActorsConnectionWhere
+    actorsConnection_NOT: MovieActorsConnectionWhere
 }
 
 enum SortDirection {

@@ -649,3 +649,83 @@ RETURN this { .actorCount } as this
 ```
 
 ---
+
+## Node and relationship properties equality
+
+### GraphQL Input
+
+```graphql
+{
+    movies(where: { genresConnection: { node: { name: "some genre" } } }) {
+        actorCount
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Movie)
+WHERE EXISTS((this)-[:IN_GENRE]->(:Genre))
+AND ANY(this_genresConnection_map IN [(this)-[this_genresConnection_MovieGenresRelationship:IN_GENRE]->(this_genresConnection:Genre) | { node: this_genresConnection, relationship: this_genresConnection_MovieGenresRelationship } ]
+WHERE this_genresConnection_map.node.name = $this_movies.where.genresConnection.node.name)
+RETURN this { .actorCount } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_movies": {
+        "where": {
+            "genresConnection": {
+                "node": {
+                    "name": "some genre"
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+## Node and relationship properties NOT
+
+### GraphQL Input
+
+```graphql
+{
+    movies(where: { genresConnection_NOT: { node: { name: "some genre" } } }) {
+        actorCount
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Movie)
+WHERE EXISTS((this)-[:IN_GENRE]->(:Genre))
+AND NONE(this_genresConnection_NOT_map IN [(this)-[this_genresConnection_NOT_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_NOT:Genre) | { node: this_genresConnection_NOT, relationship: this_genresConnection_NOT_MovieGenresRelationship } ]
+WHERE this_genresConnection_NOT_map.node.name = $this_movies.where.genresConnection_NOT.node.name)
+RETURN this { .actorCount } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_movies": {
+        "where": {
+            "genresConnection_NOT": {
+                "node": {
+                    "name": "some genre"
+                }
+            }
+        }
+    }
+}
+```
+
+---
