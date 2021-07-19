@@ -63,13 +63,17 @@ function createConnectionAndParams({
     const relTypeStr = `[${relationshipVariable}:${field.relationship.type}]`;
     const outStr = field.relationship.direction === "OUT" ? "->" : "-";
 
+    let relationshipProperties: ResolveTree[] = [];
+    let node: ResolveTree | undefined;
+
     const connection = resolveTree.fieldsByTypeName[field.typeMeta.name];
-    const { edges } = connection;
 
-    const relationshipFieldsByTypeName = edges.fieldsByTypeName[field.relationshipTypeName];
+    if (connection.edges) {
+        const relationshipFieldsByTypeName = connection.edges.fieldsByTypeName[field.relationshipTypeName];
 
-    const relationshipProperties = Object.values(relationshipFieldsByTypeName).filter((v) => v.name !== "node");
-    const node = Object.values(relationshipFieldsByTypeName).find((v) => v.name === "node") as ResolveTree;
+        relationshipProperties = Object.values(relationshipFieldsByTypeName).filter((v) => v.name !== "node");
+        node = Object.values(relationshipFieldsByTypeName).find((v) => v.name === "node") as ResolveTree;
+    }
 
     const elementsToCollect: string[] = [];
 
@@ -85,9 +89,9 @@ function createConnectionAndParams({
         const unionSubqueries: string[] = [];
 
         unionNodes.forEach((n) => {
-            if (!node?.fieldsByTypeName[n.name]) {
-                return;
-            }
+            // if (!node?.fieldsByTypeName[n.name]) {
+            //     return;
+            // }
 
             const relatedNodeVariable = `${nodeVariable}_${n.name}`;
             const nodeOutStr = `(${relatedNodeVariable}:${n.name})`;
@@ -159,6 +163,9 @@ function createConnectionAndParams({
                         }
                     });
                 }
+            } else {
+                // This ensures that totalCount calculation is accurate if edges not asked for
+                unionSubqueryElementsToCollect.push(`node: { __resolveType: "${n.name}" }`);
             }
 
             unionSubquery.push(`WITH ${nodeVariable}`);
@@ -227,8 +234,13 @@ function createConnectionAndParams({
 
         const unionSubqueryCypher = ["CALL {", unionSubqueries.join("\nUNION\n"), "}"];
 
+        const withValues: string[] = [];
         if (!firstInput && !afterInput) {
-            unionSubqueryCypher.push("WITH collect(edge) as edges, count(edge) as totalCount");
+            if (connection.edges || connection.pageInfo) {
+                withValues.push("collect(edge) as edges");
+            }
+            withValues.push("count(edge) as totalCount");
+            unionSubqueryCypher.push(`WITH ${withValues.join(", ")}`);
         } else {
             const offsetLimitStr = createOffsetLimitStr({
                 offset: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
@@ -371,18 +383,19 @@ function createConnectionAndParams({
         subquery.push(`WITH collect({ ${elementsToCollect.join(", ")} }) AS edges`);
     }
 
+    const returnValues: string[] = [];
     if (!firstInput && !afterInput) {
-        subquery.push(
-            `RETURN { edges: edges, totalCount: ${field.relationship.union ? "totalCount" : "size(edges)"} } AS ${
-                resolveTree.alias
-            }`
-        );
+        if (connection.edges || connection.pageInfo) {
+            returnValues.push("edges: edges");
+        }
+        returnValues.push(`totalCount: ${field.relationship.union ? "totalCount" : "size(edges)"}`);
+        subquery.push(`RETURN { ${returnValues.join(", ")} } AS ${resolveTree.alias}`);
     } else {
         const offsetLimitStr = createOffsetLimitStr({
             offset: typeof afterInput === "string" ? cursorToOffset(afterInput) + 1 : undefined,
             limit: firstInput as Integer | number | undefined,
         });
-        subquery.push(`WITH edges, size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`);
+        subquery.push(`WITH size(edges) AS totalCount, edges${offsetLimitStr} AS limitedSelection`);
         subquery.push(`RETURN { edges: limitedSelection, totalCount: totalCount } AS ${resolveTree.alias}`);
     }
     subquery.push("}");
