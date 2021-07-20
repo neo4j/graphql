@@ -524,5 +524,62 @@ describe("Custom Resolvers", () => {
                 await session.close();
             }
         });
+
+        test("should return an array of primitive values from a cypher directive (field level)", async () => {
+            const id = generate({
+                charset: "alphabetic",
+            });
+            const string1 = generate({
+                charset: "alphabetic",
+            });
+            const string2 = generate({
+                charset: "alphabetic",
+            });
+            const string3 = generate({
+                charset: "alphabetic",
+            });
+
+            const typeDefs = `
+                type Type {
+                    id: ID
+                    strings: [String] @cypher(statement: """
+                        RETURN ['${string1}', '${string2}', '${string3}']
+                    """)
+                }
+            `;
+
+            const query = `
+                query {
+                    types(where: { id: "${id}" }) {
+                        id
+                        strings
+                    }
+                }
+            `;
+
+            const session = driver.session();
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            try {
+                await session.run(`
+                    CREATE (:Type {id: "${id}"})
+                `);
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver },
+                });
+
+                expect(gqlResult.errors).toBeFalsy();
+
+                expect((gqlResult.data as any).types[0]).toEqual({ id, strings: [string1, string2, string3] });
+            } finally {
+                await session.close();
+            }
+        });
     });
 });
