@@ -217,6 +217,7 @@ describe("Relationship properties - read", () => {
             await session.close();
         }
     });
+
     test("Create relationship node through update field on end node in a nested update (update -> update)", async () => {
         const session = driver.session();
 
