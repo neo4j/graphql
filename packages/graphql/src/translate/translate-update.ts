@@ -230,7 +230,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                             operation: "CREATE",
                         });
                         createStrs.push(setA[0]);
-                        cypherParams = { ...cypherParams, ...createAndParams[1] };
+                        cypherParams = { ...cypherParams, ...createAndParams[1], ...setA[1] };
                     }
                 });
             });
