@@ -88,14 +88,23 @@ describe("createConnectAndParams", () => {
         expect(trimmer(result[0])).toEqual(
             trimmer(`
                 WITH this
-                OPTIONAL MATCH (this0:Movie)
-                WHERE this0.title = $this0_title
-                FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:SIMILAR]->(this0) )
+                CALL {
+                    WITH this
+                    OPTIONAL MATCH (this0:Movie)
+                    WHERE this0.title = $this0_title
+                    FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:SIMILAR]->(this0) )
 
-                WITH this, this0
-                OPTIONAL MATCH (this0_similarMovies0:Movie)
-                WHERE this0_similarMovies0.title = $this0_similarMovies0_title
-                FOREACH(_ IN CASE this0_similarMovies0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:SIMILAR]->(this0_similarMovies0) )
+                    WITH this, this0
+                    CALL {
+                        WITH this, this0
+                        OPTIONAL MATCH (this0_similarMovies0:Movie)
+                        WHERE this0_similarMovies0.title = $this0_similarMovies0_title
+                        FOREACH(_ IN CASE this0_similarMovies0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:SIMILAR]->(this0_similarMovies0) )
+                        RETURN count(*)
+                    }
+
+                    RETURN count(*)
+                }
             `)
         );
 

@@ -181,11 +181,15 @@ CALL {
     SET this0.title = $this0_title
 
     WITH this0
-    OPTIONAL MATCH (this0_search_Genre_connect0:Genre)
-    WHERE this0_search_Genre_connect0.name = $this0_search_Genre_connect0_name
-    FOREACH(_ IN CASE this0_search_Genre_connect0 WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0)
-    )
+    CALL {
+        WITH this0
+        OPTIONAL MATCH (this0_search_Genre_connect0:Genre)
+        WHERE this0_search_Genre_connect0.name = $this0_search_Genre_connect0_name
+        FOREACH(_ IN CASE this0_search_Genre_connect0 WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0)
+        )
+        RETURN count(*)
+    }
 
     RETURN this0
 }

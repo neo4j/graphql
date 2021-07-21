@@ -602,10 +602,15 @@ CALL {
     SET this0.password = $this0_password
 
     WITH this0
-    OPTIONAL MATCH (this0_posts_connect0:Post)
-    WHERE EXISTS((this0_posts_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts_connect0_auth_where0_creator_id)
+    CALL {
+        WITH this0
+        OPTIONAL MATCH (this0_posts_connect0:Post)
+        WHERE EXISTS((this0_posts_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts_connect0_auth_where0_creator_id)
 
-    FOREACH(_ IN CASE this0_posts_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0) )
+        FOREACH(_ IN CASE this0_posts_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0) )
+
+        RETURN count(*)
+    }
 
     RETURN this0
 }
@@ -666,12 +671,16 @@ CALL {
     SET this0.id = $this0_id
     SET this0.name = $this0_name
     SET this0.password = $this0_password
-
     WITH this0
-    OPTIONAL MATCH (this0_posts_connect0:Post)
-    WHERE this0_posts_connect0.id = $this0_posts_connect0_id AND EXISTS((this0_posts_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts_connect0_auth_where0_creator_id)
+    CALL {
+        WITH this0
+        OPTIONAL MATCH (this0_posts_connect0:Post)
+        WHERE this0_posts_connect0.id = $this0_posts_connect0_id AND EXISTS((this0_posts_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this0_posts_connect0_auth_where0_creator_id)
 
-    FOREACH(_ IN CASE this0_posts_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0) )
+        FOREACH(_ IN CASE this0_posts_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0) )
+
+        RETURN count(*)
+    }
     RETURN this0
 }
 
@@ -726,10 +735,15 @@ WITH this
 WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
 WITH this
-OPTIONAL MATCH (this_posts0_connect0:Post)
-WHERE EXISTS((this_posts0_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_connect0_auth_where0_creator_id)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_posts0_connect0:Post)
+    WHERE EXISTS((this_posts0_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_connect0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_posts0_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0) )
+    FOREACH(_ IN CASE this_posts0_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0) )
+
+    RETURN count(*)
+}
 
 RETURN this { .id } AS this
 ```
@@ -778,10 +792,15 @@ WITH this
 WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
 WITH this
-OPTIONAL MATCH (this_posts0_connect0:Post)
-WHERE this_posts0_connect0.id = $this_posts0_connect0_id AND EXISTS((this_posts0_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_connect0_auth_where0_creator_id)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_posts0_connect0:Post)
+    WHERE this_posts0_connect0.id = $this_posts0_connect0_id AND EXISTS((this_posts0_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_posts0_connect0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_posts0_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0) )
+    FOREACH(_ IN CASE this_posts0_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0) )
+
+    RETURN count(*)
+}
 
 RETURN this { .id } AS this
 ```
@@ -831,10 +850,15 @@ WITH this
 WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
 WITH this
-OPTIONAL MATCH (this_connect_posts0:Post)
-WHERE EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_posts0_auth_where0_creator_id)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_posts0:Post)
+    WHERE EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_posts0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0) )
+    FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0) )
+
+    RETURN count(*)
+}
 
 RETURN this { .id } AS this
 ```
@@ -883,10 +907,15 @@ WITH this
 WHERE EXISTS(this.id) AND this.id = $this_auth_where0_id
 
 WITH this
-OPTIONAL MATCH (this_connect_posts0:Post)
-WHERE this_connect_posts0.id = $this_connect_posts0_id AND EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_posts0_auth_where0_creator_id)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_posts0:Post)
+    WHERE this_connect_posts0.id = $this_connect_posts0_id AND EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_posts0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0) )
+    FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0) )
+
+    RETURN count(*)
+}
 
 RETURN this { .id } AS this
 ```
