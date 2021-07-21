@@ -807,15 +807,19 @@ mutation {
 MATCH (this:User)
 WHERE this.id = $this_id
 WITH this
-OPTIONAL MATCH (this_connect_posts0:Post)
-WHERE this_connect_posts0.id = $this_connect_posts0_id
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_posts0:Post)
+    WHERE this_connect_posts0.id = $this_connect_posts0_id
 
-WITH this, this_connect_posts0
-CALL apoc.util.validate(NOT(EXISTS(this_connect_posts0.id) AND this_connect_posts0.id = $this_connect_posts0User0_allow_auth_allow0_id AND EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_posts0Post1_allow_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+    WITH this, this_connect_posts0
+    CALL apoc.util.validate(NOT(EXISTS(this_connect_posts0.id) AND this_connect_posts0.id = $this_connect_posts0User0_allow_auth_allow0_id AND EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_posts0Post1_allow_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
 
-FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END |
-    MERGE (this)-[:HAS_POST]->(this_connect_posts0)
-)
+    FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this)-[:HAS_POST]->(this_connect_posts0)
+    )
+    RETURN count(*)
+}
 
 RETURN this { .id } AS this
 ```

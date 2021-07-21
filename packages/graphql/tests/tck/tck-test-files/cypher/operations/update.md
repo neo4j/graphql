@@ -215,11 +215,15 @@ mutation {
 MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this
-OPTIONAL MATCH (this_connect_actors0:Actor)
-WHERE this_connect_actors0.name = $this_connect_actors0_name
-FOREACH(_ IN CASE this_connect_actors0 WHEN NULL THEN [] ELSE [1] END |
-MERGE (this)<-[:ACTED_IN]-(this_connect_actors0)
-)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_actors0:Actor)
+    WHERE this_connect_actors0.name = $this_connect_actors0_name
+    FOREACH(_ IN CASE this_connect_actors0 WHEN NULL THEN [] ELSE [1] END |
+    MERGE (this)<-[:ACTED_IN]-(this_connect_actors0)
+    )
+    RETURN count(*)
+}
 RETURN this { .id } AS this
 ```
 
@@ -262,17 +266,25 @@ mutation {
 MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this
-OPTIONAL MATCH (this_connect_actors0:Actor)
-WHERE this_connect_actors0.name = $this_connect_actors0_name
-FOREACH(_ IN CASE this_connect_actors0 WHEN NULL THEN [] ELSE [1] END |
-MERGE (this)<-[:ACTED_IN]-(this_connect_actors0)
-)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_actors0:Actor)
+    WHERE this_connect_actors0.name = $this_connect_actors0_name
+    FOREACH(_ IN CASE this_connect_actors0 WHEN NULL THEN [] ELSE [1] END |
+    MERGE (this)<-[:ACTED_IN]-(this_connect_actors0)
+    )
+    RETURN count(*)
+}
 WITH this
-OPTIONAL MATCH (this_connect_actors1:Actor)
-WHERE this_connect_actors1.name = $this_connect_actors1_name
-FOREACH(_ IN CASE this_connect_actors1 WHEN NULL THEN [] ELSE [1] END |
-MERGE (this)<-[:ACTED_IN]-(this_connect_actors1)
-)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_actors1:Actor)
+    WHERE this_connect_actors1.name = $this_connect_actors1_name
+    FOREACH(_ IN CASE this_connect_actors1 WHEN NULL THEN [] ELSE [1] END |
+    MERGE (this)<-[:ACTED_IN]-(this_connect_actors1)
+    )
+    RETURN count(*)
+}
 RETURN this { .id } AS this
 ```
 
