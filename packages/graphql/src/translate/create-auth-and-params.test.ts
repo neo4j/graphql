@@ -550,7 +550,7 @@ describe("createAuthAndParams", () => {
     });
 
     describe("params", () => {
-        test("should convert undefined $jwt parameters to null", () => {
+        test("should throw if $jwt value is undefined", () => {
             const idField = {
                 fieldName: "id",
                 typeMeta: {
@@ -608,19 +608,17 @@ describe("createAuthAndParams", () => {
             // @ts-ignore
             const context: Context = { neoSchema, jwt: {} };
 
-            const result = createAuthAndParams({
-                context,
-                entity: node,
-                operation: "READ",
-                allow: { parentNode: node, varName: "this" },
-            });
-
-            expect(result[1]).toMatchObject({
-                this_auth_allow0_id: null,
-            });
+            expect(() => {
+                createAuthAndParams({
+                    context,
+                    entity: node,
+                    operation: "READ",
+                    allow: { parentNode: node, varName: "this" },
+                });
+            }).toThrow("Unauthenticated");
         });
 
-        test("should convert undefined $context parameters to null", () => {
+        test("should throw if $context value is undefined", () => {
             const idField = {
                 fieldName: "id",
                 typeMeta: {
@@ -678,16 +676,14 @@ describe("createAuthAndParams", () => {
             // @ts-ignore
             const context: Context = { neoSchema, jwt: {} };
 
-            const result = createAuthAndParams({
-                context,
-                entity: node,
-                operation: "READ",
-                allow: { parentNode: node, varName: "this" },
-            });
-
-            expect(result[1]).toMatchObject({
-                this_auth_allow0_id: null,
-            });
+            expect(() => {
+                createAuthAndParams({
+                    context,
+                    entity: node,
+                    operation: "READ",
+                    allow: { parentNode: node, varName: "this" },
+                });
+            }).toThrow("Unauthenticated");
         });
     });
 });
