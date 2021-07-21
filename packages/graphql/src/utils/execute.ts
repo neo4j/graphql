@@ -74,14 +74,18 @@ async function execute(input: {
         input.params.auth = createAuthParam({ context: input.context });
     }
 
+    const cypher =
+        input.context.queryOptions && Object.keys(input.context.queryOptions).length
+            ? `CYPHER ${Object.entries(input.context.queryOptions)
+                  .map(([key, value]) => `${key}=${value}`)
+                  .join(" ")}\n${input.cypher}`
+            : input.cypher;
+
     try {
-        debug(
-            "%s",
-            `About to execute Cypher:\nCypher:\n${input.cypher}\nParams:\n${JSON.stringify(input.params, null, 2)}`
-        );
+        debug("%s", `About to execute Cypher:\nCypher:\n${cypher}\nParams:\n${JSON.stringify(input.params, null, 2)}`);
 
         const result = await session[`${input.defaultAccessMode.toLowerCase()}Transaction`]((tx) =>
-            tx.run(input.cypher, input.params)
+            tx.run(cypher, input.params)
         );
 
         if (input.statistics) {
