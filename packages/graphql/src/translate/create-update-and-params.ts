@@ -301,7 +301,7 @@ function createUpdateAndParams({
                             res.strs.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
                             res.strs.push(
-                                `MERGE (${parentVar})${inStr}[${create.properties ? propertiesName : ""}:${
+                                `MERGE (${parentVar})${inStr}[${create.relationship ? propertiesName : ""}:${
                                     relationField.type
                                 }]${outStr}(${nodeName})`
                             );
