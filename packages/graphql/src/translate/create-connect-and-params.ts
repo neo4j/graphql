@@ -74,6 +74,9 @@ function createConnectAndParams({
         }
 
         res.connects.push(`WITH ${withVars.join(", ")}`);
+        res.connects.push("CALL {");
+
+        res.connects.push(`WITH ${withVars.join(", ")}`);
         res.connects.push(`OPTIONAL MATCH (${_varName}:${labelOverride || relationField.typeMeta.name})`);
 
         const whereStrs: string[] = [];
@@ -231,6 +234,9 @@ function createConnectAndParams({
             );
             res.params = { ...res.params, ...postAuth.params };
         }
+
+        res.connects.push("RETURN count(*)");
+        res.connects.push("}");
 
         return res;
     }

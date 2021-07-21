@@ -135,12 +135,16 @@ CALL {
     SET this0_photos1.description = $this0_photos1_description
     SET this0_photos1.url = $this0_photos1_url
 
-      WITH this0, this0_photos1
-      OPTIONAL MATCH (this0_photos1_color_connect0:Color)
-      WHERE this0_photos1_color_connect0.id = $this0_photos1_color_connect0_id
-      FOREACH(_ IN CASE this0_photos1_color_connect0 WHEN NULL THEN [] ELSE [1] END |
+    WITH this0, this0_photos1
+    CALL {
+        WITH this0, this0_photos1
+        OPTIONAL MATCH (this0_photos1_color_connect0:Color)
+        WHERE this0_photos1_color_connect0.id = $this0_photos1_color_connect0_id
+        FOREACH(_ IN CASE this0_photos1_color_connect0 WHEN NULL THEN [] ELSE [1] END |
         MERGE (this0_photos1)-[:OF_COLOR]->(this0_photos1_color_connect0)
-      )
+        )
+        RETURN count(*)
+    }
     MERGE (this0)-[:HAS_PHOTO]->(this0_photos1)
 
     WITH this0
@@ -149,12 +153,16 @@ CALL {
     SET this0_photos2.description = $this0_photos2_description
     SET this0_photos2.url = $this0_photos2_url
 
-      WITH this0, this0_photos2
-      OPTIONAL MATCH (this0_photos2_color_connect0:Color)
-      WHERE this0_photos2_color_connect0.id = $this0_photos2_color_connect0_id
-      FOREACH(_ IN CASE this0_photos2_color_connect0 WHEN NULL THEN [] ELSE [1] END |
+    WITH this0, this0_photos2
+    CALL {
+        WITH this0, this0_photos2
+        OPTIONAL MATCH (this0_photos2_color_connect0:Color)
+        WHERE this0_photos2_color_connect0.id = $this0_photos2_color_connect0_id
+        FOREACH(_ IN CASE this0_photos2_color_connect0 WHEN NULL THEN [] ELSE [1] END |
         MERGE (this0_photos2)-[:OF_COLOR]->(this0_photos2_color_connect0)
-      )
+        )
+        RETURN count(*)
+    }
     MERGE (this0)-[:HAS_PHOTO]->(this0_photos2)
 
   RETURN this0
@@ -245,11 +253,15 @@ CALL apoc.do.when(this_photos0 IS NOT NULL,
     )
 
     WITH this, this_photos0
-    OPTIONAL MATCH (this_photos0_color0_connect0:Color)
-    WHERE this_photos0_color0_connect0.name = $this_photos0_color0_connect0_name
-    FOREACH(_ IN CASE this_photos0_color0_connect0 WHEN NULL THEN [] ELSE [1] END |
-      MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0)
-    )
+    CALL {
+        WITH this, this_photos0
+        OPTIONAL MATCH (this_photos0_color0_connect0:Color)
+        WHERE this_photos0_color0_connect0.name = $this_photos0_color0_connect0_name
+        FOREACH(_ IN CASE this_photos0_color0_connect0 WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0)
+        )
+        RETURN count(*)
+    }
 
     RETURN count(*)
   ",

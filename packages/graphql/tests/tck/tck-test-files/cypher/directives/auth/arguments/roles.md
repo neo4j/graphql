@@ -483,14 +483,19 @@ mutation {
 MATCH (this:User)
 
 WITH this
-OPTIONAL MATCH (this_connect_posts0:Post)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_posts0:Post)
 
-WITH this, this_connect_posts0
-CALL apoc.util.validate(NOT(ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND ANY(r IN ["super-admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), "@neo4j/graphql/FORBIDDEN", [0])
+    WITH this, this_connect_posts0
+    CALL apoc.util.validate(NOT(ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND ANY(r IN ["super-admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), "@neo4j/graphql/FORBIDDEN", [0])
 
-FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END |
-    MERGE (this)-[:HAS_POST]->(this_connect_posts0)
-)
+    FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this)-[:HAS_POST]->(this_connect_posts0)
+    )
+
+    RETURN count(*)
+}
 
 RETURN this { .id } AS this
 ```
@@ -552,15 +557,20 @@ OPTIONAL MATCH (this)<-[:HAS_COMMENT]-(this_post0:Post)
 CALL apoc.do.when(this_post0 IS NOT NULL,
 "
     WITH this, this_post0
-    OPTIONAL MATCH (this_post0_creator0_connect0:User)
-    WHERE this_post0_creator0_connect0.id = $this_post0_creator0_connect0_id
-    WITH this, this_post0, this_post0_creator0_connect0
+    CALL {
+        WITH this, this_post0
+        OPTIONAL MATCH (this_post0_creator0_connect0:User)
+        WHERE this_post0_creator0_connect0.id = $this_post0_creator0_connect0_id
+        WITH this, this_post0, this_post0_creator0_connect0
 
-    CALL apoc.util.validate(NOT(ANY(r IN [\"super-admin\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND ANY(r IN [\"admin\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \"@neo4j/graphql/FORBIDDEN\", [0])
+        CALL apoc.util.validate(NOT(ANY(r IN [\"super-admin\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND ANY(r IN [\"admin\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \"@neo4j/graphql/FORBIDDEN\", [0])
 
-    FOREACH(_ IN CASE this_post0_creator0_connect0 WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0)
-    )
+        FOREACH(_ IN CASE this_post0_creator0_connect0 WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0)
+        )
+
+        RETURN count(*)
+    }
 
     RETURN count(*)
 ",
