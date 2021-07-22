@@ -1,0 +1,20 @@
+[[ogm-methods-count]]
+= Count
+
+Use to count nodes.
+
+== Usage
+
+=== Basic
+
+[source, javascript]
+----
+const User = ogm.model("User");
+
+const usersCount = await User.count();
+----
+
+== Args
+
+=== `where`
+JavaScript object representation of the GraphQL `where` input type, used for <<schema-queries>>.

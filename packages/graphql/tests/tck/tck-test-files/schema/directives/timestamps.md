@@ -1,14 +1,14 @@
-## Schema TimeStamps
+# Schema TimeStamps
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-### TimeStamp
+## TimeStamp
 
-**TypeDefs**
+### TypeDefs
 
-```typedefs-input
+```graphql
 type Movie {
     id: ID
     createdAt: DateTime! @timestamp(operations: [CREATE])
@@ -16,100 +16,113 @@ type Movie {
 }
 ```
 
-**Output**
+### Output
 
-```schema-output
-
-"""A date and time, represented as an ISO-8601 string"""
+```graphql
+"""
+A date and time, represented as an ISO-8601 string
+"""
 scalar DateTime
 
 type Movie {
-  id: ID
-  createdAt: DateTime!
-  updatedAt: DateTime!
+    id: ID
+    createdAt: DateTime!
+    updatedAt: DateTime!
 }
 
 type DeleteInfo {
-  nodesDeleted: Int!
-  relationshipsDeleted: Int!
+    nodesDeleted: Int!
+    relationshipsDeleted: Int!
 }
 
 enum SortDirection {
-  """Sort by field values in ascending order."""
-  ASC
-  """Sort by field values in descending order."""
-  DESC
+    """
+    Sort by field values in ascending order.
+    """
+    ASC
+    """
+    Sort by field values in descending order.
+    """
+    DESC
 }
 
 input MovieCreateInput {
-  id: ID
+    id: ID
 }
 
 input MovieOptions {
-  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
-sort: [MovieSort]
-  limit: Int
-  skip: Int
+    """
+    Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+    """
+    sort: [MovieSort]
+    limit: Int
+    offset: Int
 }
 
-"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+"""
+Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+"""
 input MovieSort {
-  id: SortDirection
-  createdAt: SortDirection
-  updatedAt: SortDirection
+    id: SortDirection
+    createdAt: SortDirection
+    updatedAt: SortDirection
 }
 
 input MovieWhere {
-  id: ID
-  id_IN: [ID]
-  id_NOT: ID
-  id_NOT_IN: [ID]
-  id_CONTAINS: ID
-  id_NOT_CONTAINS: ID
-  id_STARTS_WITH: ID
-  id_NOT_STARTS_WITH: ID
-  id_ENDS_WITH: ID
-  id_NOT_ENDS_WITH: ID
-  createdAt: DateTime
-  createdAt_NOT: DateTime
-  createdAt_IN: [DateTime]
-  createdAt_NOT_IN: [DateTime]
-  createdAt_LT: DateTime
-  createdAt_LTE: DateTime
-  createdAt_GT: DateTime
-  createdAt_GTE: DateTime
-  updatedAt: DateTime
-  updatedAt_NOT: DateTime
-  updatedAt_IN: [DateTime]
-  updatedAt_NOT_IN: [DateTime]
-  updatedAt_LT: DateTime
-  updatedAt_LTE: DateTime
-  updatedAt_GT: DateTime
-  updatedAt_GTE: DateTime
-  OR: [MovieWhere!]
-  AND: [MovieWhere!]
+    id: ID
+    id_IN: [ID]
+    id_NOT: ID
+    id_NOT_IN: [ID]
+    id_CONTAINS: ID
+    id_NOT_CONTAINS: ID
+    id_STARTS_WITH: ID
+    id_NOT_STARTS_WITH: ID
+    id_ENDS_WITH: ID
+    id_NOT_ENDS_WITH: ID
+    createdAt: DateTime
+    createdAt_NOT: DateTime
+    createdAt_IN: [DateTime]
+    createdAt_NOT_IN: [DateTime]
+    createdAt_LT: DateTime
+    createdAt_LTE: DateTime
+    createdAt_GT: DateTime
+    createdAt_GTE: DateTime
+    updatedAt: DateTime
+    updatedAt_NOT: DateTime
+    updatedAt_IN: [DateTime]
+    updatedAt_NOT_IN: [DateTime]
+    updatedAt_LT: DateTime
+    updatedAt_LTE: DateTime
+    updatedAt_GT: DateTime
+    updatedAt_GTE: DateTime
+    OR: [MovieWhere!]
+    AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {
-  id: ID
+    id: ID
 }
 
 type CreateMoviesMutationResponse {
-  movies: [Movie!]!
+    movies: [Movie!]!
 }
 
 type UpdateMoviesMutationResponse {
-  movies: [Movie!]!
+    movies: [Movie!]!
 }
 
 type Mutation {
-  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-  deleteMovies(where: MovieWhere): DeleteInfo!
-  updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
+    createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+    deleteMovies(where: MovieWhere): DeleteInfo!
+    updateMovies(
+        where: MovieWhere
+        update: MovieUpdateInput
+    ): UpdateMoviesMutationResponse!
 }
 
 type Query {
-  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesCount(where: MovieWhere): Int!
 }
 ```
 

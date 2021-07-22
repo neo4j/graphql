@@ -47,14 +47,14 @@ const User = ogm.model("User");
 
 const app = express();
 app.get("/users", async (req, res) => {
-    const { search, skip, limit, sort } = req.query;
+    const { search, offset, limit, sort } = req.query;
 
     const regex = search ? `(?i).*${search}.*` : null;
 
     const users = await User.find({
         where: { name_REGEX: regex },
         options: {
-            skip,
+            offset,
             limit,
             sort
         }

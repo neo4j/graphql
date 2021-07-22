@@ -19,7 +19,8 @@
 
 import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { Driver } from "neo4j-driver";
+import { JwtPayload } from "jsonwebtoken";
+import { Driver, Integer } from "neo4j-driver";
 import { Neo4jGraphQL } from "./classes";
 
 export type DriverConfig = {
@@ -27,12 +28,20 @@ export type DriverConfig = {
     bookmarks?: string | string[];
 };
 
+interface AuthContext {
+    isAuthenticated: boolean;
+    roles: [string];
+    jwt: JwtPayload;
+}
+
 export interface Context {
     driver: Driver;
     driverConfig?: DriverConfig;
     resolveTree: ResolveTree;
     neoSchema: Neo4jGraphQL;
-    jwt?: any;
+    jwt?: JwtPayload;
+    auth?: AuthContext;
+    queryOptions?: CypherQueryOptions;
     [k: string]: any;
 }
 
@@ -93,6 +102,7 @@ export interface BaseField {
     description?: string;
     readonly?: boolean;
     writeonly?: boolean;
+    ignored?: boolean;
 }
 
 /**
@@ -101,7 +111,13 @@ export interface BaseField {
 export interface RelationField extends BaseField {
     direction: "OUT" | "IN";
     type: string;
+    properties?: string;
     union?: UnionField;
+}
+
+export interface ConnectionField extends BaseField {
+    relationship: RelationField;
+    relationshipTypeName: string;
 }
 
 /**
@@ -124,7 +140,10 @@ export interface PrimitiveField extends BaseField {
 
 export type CustomScalarField = BaseField;
 
-export type CustomEnumField = BaseField;
+export interface CustomEnumField extends BaseField {
+    // TODO Must be "Enum" - really needs refactoring into classes
+    kind: string;
+}
 
 export interface UnionField extends BaseField {
     nodes?: string[];
@@ -146,13 +165,25 @@ export interface GraphQLSortArg {
     [field: string]: SortDirection;
 }
 
+export interface ConnectionSortArg {
+    node?: GraphQLSortArg;
+    relationship?: GraphQLSortArg;
+}
+
+export interface ConnectionQueryArgs {
+    where?: ConnectionWhereArg;
+    first?: number;
+    after?: string;
+    sort?: ConnectionSortArg[];
+}
+
 /**
  * Representation of the options arg
  * passed to resolvers.
  */
 export interface GraphQLOptionsArg {
-    limit?: number;
-    skip?: number;
+    limit?: number | Integer;
+    offset?: number | Integer;
     sort?: GraphQLSortArg[];
 }
 
@@ -164,6 +195,15 @@ export interface GraphQLWhereArg {
     [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
     AND?: GraphQLWhereArg[];
     OR?: GraphQLWhereArg[];
+}
+
+export interface ConnectionWhereArg {
+    node?: GraphQLWhereArg;
+    node_NOT?: GraphQLWhereArg;
+    relationship?: GraphQLWhereArg;
+    relationship_NOT?: GraphQLWhereArg;
+    AND?: ConnectionWhereArg[];
+    OR?: ConnectionWhereArg[];
 }
 
 export type AuthOperations = "CREATE" | "READ" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT";
@@ -179,3 +219,64 @@ export interface DeleteInfo {
 }
 
 export type TimeStampOperations = "CREATE" | "UPDATE";
+
+export enum CypherRuntime {
+    INTERPRETED = "interpreted",
+    SLOTTED = "slotted",
+    PIPELINED = "pipelined",
+}
+
+export enum CypherPlanner {
+    COST = "cost",
+    IDP = "idp",
+    DP = "dp",
+}
+
+export enum CypherConnectComponentsPlanner {
+    GREEDY = "greedy",
+    IDP = "idp",
+}
+
+export enum CypherUpdateStrategy {
+    DEFAULT = "default",
+    EAGER = "eager",
+}
+
+export enum CypherExpressionEngine {
+    DEFAULT = "default",
+    INTERPRETED = "interpreted",
+    COMPILED = "compiled",
+}
+
+export enum CypherOperatorEngine {
+    DEFAULT = "default",
+    INTERPRETED = "interpreted",
+    COMPILED = "compiled",
+}
+
+export enum CypherInterpretedPipesFallback {
+    DEFAULT = "default",
+    DISABLED = "disabled",
+    WHITELISTED_PLANS_ONLY = "whitelisted_plans_only",
+    ALL = "all",
+}
+
+export enum CypherReplanning {
+    DEFAULT = "default",
+    FORCE = "force",
+    SKIP = "skip",
+}
+
+/*
+  Object keys and enum values map to values at https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/#cypher-query-options
+*/
+export interface CypherQueryOptions {
+    runtime?: CypherRuntime;
+    planner?: CypherPlanner;
+    connectComponentsPlanner?: CypherConnectComponentsPlanner;
+    updateStrategy?: CypherUpdateStrategy;
+    expressionEngine?: CypherExpressionEngine;
+    operatorEngine?: CypherOperatorEngine;
+    interpretedPipesFallback?: CypherInterpretedPipesFallback;
+    replan?: CypherReplanning;
+}

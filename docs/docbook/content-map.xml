@@ -112,6 +112,9 @@
                 <d:tocentry linkend="ogm-methods-find">
                     <?dbhtml filename="ogm/methods/find/index.html"?>
                 </d:tocentry>
+                <d:tocentry linkend="ogm-methods-count">
+                    <?dbhtml filename="ogm/methods/count/index.html"?>
+                </d:tocentry>
                 <d:tocentry linkend="ogm-methods-update">
                     <?dbhtml filename="ogm/methods/update/index.html"?>
                 </d:tocentry>
@@ -149,6 +152,12 @@
                 </d:tocentry>
                 <d:tocentry linkend="migration-guide-mutations">
                     <?dbhtml filename="guides/migration-guide/mutations/index.html"?>
+                </d:tocentry>
+            </d:tocentry>
+            <d:tocentry linkend="rel-migration">
+                <?dbhtml filename="guides/rel-migration/index.html"?>
+                <d:tocentry linkend="rel-migration-mutations">
+                    <?dbhtml filename="guides/rel-migration/mutations/index.html"?>
                 </d:tocentry>
             </d:tocentry>
         </d:tocentry>

@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql",
-    "version": "1.1.0",
+    "version": "2.0.0-alpha.4",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
@@ -41,11 +41,12 @@
         "@types/faker": "5.1.7",
         "@types/is-uuid": "1.0.0",
         "@types/jest": "26.0.8",
-        "@types/jsonwebtoken": "8.5.0",
+        "@types/jsonwebtoken": "^8.5.4",
         "@types/node": "14.0.27",
         "@types/pluralize": "0.0.29",
         "@types/randomstring": "1.1.6",
         "apollo-server": "2.21.0",
+        "dedent": "^0.7.0",
         "faker": "5.2.0",
         "graphql-tag": "2.11.0",
         "is-uuid": "1.0.2",
@@ -68,6 +69,7 @@
         "dot-prop": "^6.0.1",
         "graphql-compose": "^7.25.1",
         "graphql-parse-resolve-info": "^4.11.0",
+        "graphql-relay": "^0.7.0",
         "jsonwebtoken": "^8.5.1",
         "pluralize": "^8.0.0"
     },

@@ -17,41 +17,27 @@
  * limitations under the License.
  */
 
-import { FieldsByTypeName } from "graphql-parse-resolve-info";
+import { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
-import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context } from "../types";
+import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import createDatetimeElement from "./projection/elements/create-datetime-element";
+import createPointElement from "./projection/elements/create-point-element";
+// eslint-disable-next-line import/no-cycle
+import createConnectionAndParams from "./connection/create-connection-and-params";
+import { createOffsetLimitStr } from "../schema/pagination";
 
 interface Res {
     projection: string[];
     params: any;
-    meta?: ProjectionMeta;
+    meta: ProjectionMeta;
 }
 
 interface ProjectionMeta {
     authValidateStrs?: string[];
-}
-
-function createSkipLimitStr({ skip, limit }: { skip?: number; limit?: number }): string {
-    const hasSkip = typeof skip !== "undefined";
-    const hasLimit = typeof limit !== "undefined";
-    let skipLimitStr = "";
-
-    if (hasSkip && !hasLimit) {
-        skipLimitStr = `[${skip}..]`;
-    }
-
-    if (hasLimit && !hasSkip) {
-        skipLimitStr = `[..${limit}]`;
-    }
-
-    if (hasLimit && hasSkip) {
-        skipLimitStr = `[${skip}..${limit}]`;
-    }
-
-    return skipLimitStr;
+    connectionFields?: ResolveTree[];
 }
 
 function createNodeWhereAndParams({
@@ -132,12 +118,18 @@ function createProjectionAndParams({
     context,
     chainStr,
     varName,
+    literalElements,
+    resolveType,
+    inRelationshipProjection,
 }: {
     fieldsByTypeName: FieldsByTypeName;
     node: Node;
     context: Context;
     chainStr?: string;
     varName: string;
+    literalElements?: boolean;
+    resolveType?: boolean;
+    inRelationshipProjection?: boolean;
 }): [string, any, ProjectionMeta?] {
     function reducer(res: Res, [k, field]: [string, any]): Res {
         let key = k;
@@ -159,6 +151,7 @@ function createProjectionAndParams({
         const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
         const cypherField = node.cypherFields.find((x) => x.fieldName === key);
         const relationField = node.relationFields.find((x) => x.fieldName === key);
+        const connectionField = node.connectionFields.find((x) => x.fieldName === key);
         const pointField = node.pointFields.find((x) => x.fieldName === key);
         const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === key);
         const authableField = node.authableFields.find((x) => x.fieldName === key);
@@ -172,10 +165,10 @@ function createProjectionAndParams({
                     allow: { parentNode: node, varName, chainStr: param },
                 });
                 if (allowAndParams[0]) {
-                    if (!res.meta) {
-                        res.meta = { authValidateStrs: [] };
+                    if (!res.meta.authValidateStrs) {
+                        res.meta.authValidateStrs = [];
                     }
-                    res.meta?.authValidateStrs?.push(allowAndParams[0]);
+                    res.meta.authValidateStrs?.push(allowAndParams[0]);
                     res.params = { ...res.params, ...allowAndParams[1] };
                 }
             }
@@ -239,14 +232,14 @@ function createProjectionAndParams({
                 projectionStr ? `| ${param} ${projectionStr}` : ""
             }`;
 
-            if (cypherField.typeMeta.array) {
-                res.projection.push(`${key}: [${apocStr}]`);
+            if (isPrimitive || isEnum) {
+                res.projection.push(`${key}: ${apocStr}`);
 
                 return res;
             }
 
-            if (isPrimitive || isEnum) {
-                res.projection.push(`${key}: ${apocStr}`);
+            if (cypherField.typeMeta.array) {
+                res.projection.push(`${key}: [${apocStr}]`);
 
                 return res;
             }
@@ -266,9 +259,18 @@ function createProjectionAndParams({
             const isArray = relationField.typeMeta.array;
 
             if (relationField.union) {
-                const referenceNodes = context.neoSchema.nodes.filter((x) =>
-                    relationField.union?.nodes?.includes(x.name)
+                let referenceNodes = context.neoSchema.nodes.filter(
+                    (x) =>
+                        relationField.union?.nodes?.includes(x.name) &&
+                        Object.prototype.hasOwnProperty.call(fieldFields, x.name)
                 );
+
+                // If for example, just selecting __typename, error will be thrown without this
+                if (!referenceNodes.length) {
+                    referenceNodes = context.neoSchema.nodes.filter((x) =>
+                        relationField.union?.nodes?.includes(x.name)
+                    );
+                }
 
                 const unionStrs: string[] = [
                     `${key}: ${!isArray ? "head(" : ""} [(${
@@ -285,7 +287,6 @@ function createProjectionAndParams({
 
                     if (field.fieldsByTypeName[refNode.name]) {
                         const recurse = createProjectionAndParams({
-                            // @ts-ignore
                             fieldsByTypeName: field.fieldsByTypeName,
                             node: refNode,
                             context,
@@ -293,7 +294,7 @@ function createProjectionAndParams({
                         });
 
                         const nodeWhereAndParams = createNodeWhereAndParams({
-                            whereInput: field.args[refNode.name],
+                            whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
                             context,
                             node: refNode,
                             varName: param,
@@ -324,9 +325,12 @@ function createProjectionAndParams({
                 unionStrs.push(") ]");
 
                 if (optionsInput) {
-                    const skipLimit = createSkipLimitStr({ skip: optionsInput.skip, limit: optionsInput.limit });
-                    if (skipLimit) {
-                        unionStrs.push(skipLimit);
+                    const offsetLimit = createOffsetLimitStr({
+                        offset: optionsInput.offset,
+                        limit: optionsInput.limit,
+                    });
+                    if (offsetLimit) {
+                        unionStrs.push(offsetLimit);
                     }
                 }
 
@@ -343,6 +347,7 @@ function createProjectionAndParams({
                 context,
                 varName: `${varName}_${key}`,
                 chainStr: param,
+                inRelationshipProjection: true,
             });
             [projectionStr] = recurse;
             res.params = { ...res.params, ...recurse[1] };
@@ -365,7 +370,7 @@ function createProjectionAndParams({
             let nestedQuery;
 
             if (optionsInput) {
-                const skipLimit = createSkipLimitStr({ skip: optionsInput.skip, limit: optionsInput.limit });
+                const offsetLimit = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
 
                 if (optionsInput.sort) {
                     const sorts = optionsInput.sort.reduce((s: string[], sort: GraphQLSortArg) => {
@@ -381,9 +386,11 @@ function createProjectionAndParams({
                         ];
                     }, []);
 
-                    nestedQuery = `${key}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${skipLimit}`;
+                    nestedQuery = `${key}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
                 } else {
-                    nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${skipLimit}${!isArray ? ")" : ""}`;
+                    nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${offsetLimit}${
+                        !isArray ? ")" : ""
+                    }`;
                 }
             } else {
                 nestedQuery = `${key}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
@@ -394,35 +401,42 @@ function createProjectionAndParams({
             return res;
         }
 
+        if (connectionField) {
+            if (!inRelationshipProjection) {
+                if (!res.meta.connectionFields) res.meta.connectionFields = [];
+                res.meta.connectionFields.push(field as ResolveTree);
+                res.projection.push(literalElements ? `${field.name}: ${field.name}` : `${field.name}`);
+                return res;
+            }
+
+            const matchedConnectionField = node.connectionFields.find(
+                (x) => x.fieldName === field.name
+            ) as ConnectionField;
+            const connection = createConnectionAndParams({
+                resolveTree: field,
+                field: matchedConnectionField,
+                context,
+                nodeVariable: varName,
+            });
+
+            const connectionParamName = Object.keys(connection[1])[0];
+            const runFirstColumnParams = connectionParamName
+                ? `{ ${chainStr}: ${chainStr}, ${connectionParamName}: $${connectionParamName} }`
+                : `{ ${chainStr}: ${chainStr} }`;
+
+            res.projection.push(
+                `${field.name}: apoc.cypher.runFirstColumn("${connection[0]} RETURN ${field.name}", ${runFirstColumnParams}, false)`
+            );
+            res.params = { ...res.params, ...connection[1] };
+            return res;
+        }
+
         if (pointField) {
-            const isArray = pointField.typeMeta.array;
-
-            const { crs, ...point } = fieldFields[pointField.typeMeta.name];
-            const fields: string[] = [];
-
-            // Sadly need to select the whole point object due to the risk of height/z
-            // being selected on a 2D point, to which the database will throw an error
-            if (point) {
-                fields.push(isArray ? "point:p" : `point: ${varName}.${key}`);
-            }
-
-            if (crs) {
-                fields.push(isArray ? "crs: p.crs" : `crs: ${varName}.${key}.crs`);
-            }
-
-            res.projection.push(
-                isArray
-                    ? `${key}: [p in ${varName}.${key} | { ${fields.join(", ")} }]`
-                    : `${key}: { ${fields.join(", ")} }`
-            );
+            res.projection.push(createPointElement({ resolveTree: field, field: pointField, variable: varName }));
         } else if (dateTimeField) {
-            res.projection.push(
-                dateTimeField.typeMeta.array
-                    ? `${key}: [ dt in ${varName}.${key} | apoc.date.convertFormat(toString(dt), "iso_zoned_date_time", "iso_offset_date_time") ]`
-                    : `${key}: apoc.date.convertFormat(toString(${varName}.${key}), "iso_zoned_date_time", "iso_offset_date_time")`
-            );
+            res.projection.push(createDatetimeElement({ resolveTree: field, field: dateTimeField, variable: varName }));
         } else {
-            res.projection.push(`.${key}`);
+            res.projection.push(literalElements ? `${key}: ${varName}.${key}` : `.${key}`);
         }
 
         return res;
@@ -431,8 +445,9 @@ function createProjectionAndParams({
     const { projection, params, meta } = Object.entries(fieldsByTypeName[node.name] as { [k: string]: any }).reduce(
         reducer,
         {
-            projection: [],
+            projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
             params: {},
+            meta: {},
         }
     );
 

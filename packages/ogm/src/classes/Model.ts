@@ -108,6 +108,32 @@ class Model {
         return (result.data as any)[this.camelCaseName] as T;
     }
 
+    async count({
+        where,
+    }: {
+        where?: GraphQLWhereArg;
+    } = {}): Promise<number> {
+        const argDefinitions = [`${where ? `($where: ${this.name}Where)` : ""}`];
+
+        const argsApply = [`${where ? `(where: $where)` : ""}`];
+
+        const query = `
+            query ${argDefinitions.join(" ")}{
+                ${this.camelCaseName}Count${argsApply.join(" ")}
+            }
+        `;
+
+        const variableValues = { where };
+
+        const result = await graphql(this.neoSchema.schema, query, null, {}, variableValues);
+
+        if (result.errors?.length) {
+            throw new Error(result.errors[0].message);
+        }
+
+        return (result.data as any)[`${this.camelCaseName}Count`] as number;
+    }
+
     async create<T = any>({
         input,
         selectionSet,

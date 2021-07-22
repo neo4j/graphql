@@ -899,12 +899,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-ogm@^1.1.0, @neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@^2.0.0-alpha.4, @neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
     "@graphql-tools/merge": ^6.2.13
-    "@neo4j/graphql": ^1.1.0
+    "@neo4j/graphql": ^2.0.0-alpha.4
     "@types/jest": 26.0.8
     "@types/node": 14.0.27
     camelcase: ^6.2.0
@@ -923,7 +923,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@^1.1.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@^2.0.0-alpha.4, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -934,18 +934,20 @@ __metadata:
     "@types/faker": 5.1.7
     "@types/is-uuid": 1.0.0
     "@types/jest": 26.0.8
-    "@types/jsonwebtoken": 8.5.0
+    "@types/jsonwebtoken": ^8.5.4
     "@types/node": 14.0.27
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.6
     apollo-server: 2.21.0
     camelcase: ^6.2.0
     debug: ^4.3.1
+    dedent: ^0.7.0
     deep-equal: ^2.0.5
     dot-prop: ^6.0.1
     faker: 5.2.0
     graphql-compose: ^7.25.1
     graphql-parse-resolve-info: ^4.11.0
+    graphql-relay: ^0.7.0
     graphql-tag: 2.11.0
     is-uuid: 1.0.2
     jest: 26.2.2
@@ -1594,21 +1596,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:8.5.0":
-  version: 8.5.0
-  resolution: "@types/jsonwebtoken@npm:8.5.0"
-  dependencies:
-    "@types/node": "*"
-  checksum: d1a6b28f826898bc4f5596d91705aa864419c4a5ca49215507260644af8ceff9edb6db1901a108207cfb22558d035655b55309f38b75fa081da01be9f5408b21
-  languageName: node
-  linkType: hard
-
 "@types/jsonwebtoken@npm:8.5.1":
   version: 8.5.1
   resolution: "@types/jsonwebtoken@npm:8.5.1"
   dependencies:
     "@types/node": "*"
   checksum: f66ee4a12584a699a6dba5daa79d0f87ae77950a332f918c7f485b6d33501be84547fcac992d7f5a8960d04f77f206b118d9a558d8dd49f1aea99c64a17182b0
+  languageName: node
+  linkType: hard
+
+"@types/jsonwebtoken@npm:^8.5.4":
+  version: 8.5.4
+  resolution: "@types/jsonwebtoken@npm:8.5.4"
+  dependencies:
+    "@types/node": "*"
+  checksum: 605ab698b007f04a1d1665b6af0dd31b0787c700c44dbca4474cebff6ae0e8435cc1166ae7d6895de3b6241f5a9ab62bea154ae5fdc7ac09cb13ab59dea4864d
   languageName: node
   linkType: hard
 
@@ -6645,6 +6647,15 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"graphql-relay@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "graphql-relay@npm:0.7.0"
+  peerDependencies:
+    graphql: ^15.5.0
+  checksum: 07a01d7325fddffd65fe3ff1c72d188af5f4b73e42268b7781e37725768489435b9e82bdaa6d4ef6af9da8b9ef7a02e0046b3e5039e5ef52422fabb8f55d028e
+  languageName: node
+  linkType: hard
+
 "graphql-subscriptions@npm:^1.0.0":
   version: 1.2.1
   resolution: "graphql-subscriptions@npm:1.2.1"
@@ -9335,7 +9346,7 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "migration@workspace:examples/migration"
   dependencies:
-    "@neo4j/graphql": ^1.1.0
+    "@neo4j/graphql": ^2.0.0-alpha.4
     apollo-server: ^2.23.0
     graphql: ^15.0.0
     neo4j-driver: ^4.2.0
@@ -9686,8 +9697,8 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "neo-push-server@workspace:examples/neo-push/server"
   dependencies:
-    "@neo4j/graphql": ^1.1.0
-    "@neo4j/graphql-ogm": ^1.1.0
+    "@neo4j/graphql": ^2.0.0-alpha.4
+    "@neo4j/graphql-ogm": ^2.0.0-alpha.4
     "@types/bcrypt": 3.0.0
     "@types/debug": 4.1.5
     "@types/dotenv": 8.2.0

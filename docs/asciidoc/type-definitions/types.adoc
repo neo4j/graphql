@@ -57,6 +57,19 @@ Neo4j GraphQL spatial types translate to spatial values stored using https://neo
 
 The `Point` type is used to describe the two https://neo4j.com/docs/cypher-manual/current/syntax/spatial/#cypher-spatial-crs-geographic[Geographic coordinate reference systems] supported by Neo4j.
 
+In order to use it in your schema, you quite simply add a field with a type `Point` to any type or types in schema, like the following:
+
+[source, graphql]
+----
+type TypeWithPoint {
+    location: Point!
+}
+----
+
+Once this has been done, the `Point` type will be automatically added to your schema, in addition to all of the input and output types you will need to query and manipulate spatial types through your API.
+
+The rest of the documentation under this heading is documenting all of those automatically generated types and how to use them.
+
 ==== Type definition
 
 [source, graphql]
@@ -156,6 +169,19 @@ query CloseByUsers($longitude: Float!, $latitude: Float!) {
 === `CartesianPoint`
 
 The `CartesianPoint` type is used to describe the two https://neo4j.com/docs/cypher-manual/current/syntax/spatial/#cypher-spatial-crs-cartesian[Cartesian coordinate reference systems] supported by Neo4j.
+
+In order to use it in your schema, you quite simply add a field with a type `CartesianPoint` to any type or types in schema, like the following:
+
+[source, graphql]
+----
+type TypeWithCartesianPoint {
+    location: CartesianPoint!
+}
+----
+
+Once this has been done, the `CartesianPoint` type will be automatically added to your schema, in addition to all of the input and output types you will need to query and manipulate spatial types through your API.
+
+The rest of the documentation under this heading is documenting all of those automatically generated types and how to use them.
 
 ==== Type definition
 

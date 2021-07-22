@@ -22,7 +22,7 @@ export const USER = gql`
 
 export const CREATE_BLOG = gql`
     mutation($name: String!, $sub: ID) {
-        createBlogs(input: [{ name: $name, creator: { connect: { where: { id: $sub } } } }]) {
+        createBlogs(input: [{ name: $name, creator: { connect: { where: { node: { id: $sub } } } } }]) {
             blogs {
                 id
                 name
@@ -33,10 +33,10 @@ export const CREATE_BLOG = gql`
 `;
 
 export const MY_BLOGS = gql`
-    query myBlogs($id: ID, $skip: Int, $limit: Int, $hasNextBlogsSkip: Int) {
+    query myBlogs($id: ID, $offset: Int, $limit: Int, $hasNextBlogsOffset: Int) {
         myBlogs: blogs(
             where: { OR: [{ creator: { id: $id } }, { authors: { id: $id } }] }
-            options: { limit: $limit, skip: $skip, sort: { createdAt: DESC } }
+            options: { limit: $limit, offset: $offset, sort: { createdAt: DESC } }
         ) {
             id
             name
@@ -48,7 +48,7 @@ export const MY_BLOGS = gql`
         }
         hasNextBlogs: blogs(
             where: { OR: [{ creator: { id: $id } }, { authors: { id: $id } }] }
-            options: { limit: 1, skip: $hasNextBlogsSkip, sort: { createdAt: DESC } }
+            options: { limit: 1, offset: $hasNextBlogsOffset, sort: { createdAt: DESC } }
         ) {
             id
         }
@@ -56,8 +56,8 @@ export const MY_BLOGS = gql`
 `;
 
 export const RECENTLY_UPDATED_BLOGS = gql`
-    query recentlyUpdatedBlogs($skip: Int, $limit: Int, $hasNextBlogsSkip: Int) {
-        recentlyUpdatedBlogs: blogs(options: { limit: $limit, skip: $skip, sort: { updatedAt: DESC } }) {
+    query recentlyUpdatedBlogs($offset: Int, $limit: Int, $hasNextBlogsOffset: Int) {
+        recentlyUpdatedBlogs: blogs(options: { limit: $limit, offset: $offset, sort: { updatedAt: DESC } }) {
             id
             name
             creator {
@@ -66,7 +66,7 @@ export const RECENTLY_UPDATED_BLOGS = gql`
             }
             updatedAt
         }
-        hasNextBlogs: blogs(options: { limit: 1, skip: $hasNextBlogsSkip, sort: { updatedAt: DESC } }) {
+        hasNextBlogs: blogs(options: { limit: 1, offset: $hasNextBlogsOffset, sort: { updatedAt: DESC } }) {
             id
         }
     }
@@ -123,8 +123,8 @@ export const CREATE_POST = gql`
                 {
                     title: $title
                     content: $content
-                    blog: { connect: { where: { id: $blog } } }
-                    author: { connect: { where: { id: $user } } }
+                    blog: { connect: { where: { node: { id: $blog } } } }
+                    author: { connect: { where: { node: { id: $user } } } }
                 }
             ]
         ) {
@@ -155,10 +155,10 @@ export const POST = gql`
 `;
 
 export const BLOG_POSTS = gql`
-    query blogPosts($blog: ID, $skip: Int, $limit: Int, $hasNextPostsSkip: Int) {
+    query blogPosts($blog: ID, $offset: Int, $limit: Int, $hasNextPostsOffset: Int) {
         blogPosts: posts(
             where: { blog: { id: $blog } }
-            options: { skip: $skip, limit: $limit, sort: { createdAt: DESC } }
+            options: { offset: $offset, limit: $limit, sort: { createdAt: DESC } }
         ) {
             id
             title
@@ -169,7 +169,7 @@ export const BLOG_POSTS = gql`
         }
         hasNextPosts: posts(
             where: { blog: { id: $blog } }
-            options: { skip: $hasNextPostsSkip, limit: 1, sort: { createdAt: DESC } }
+            options: { offset: $hasNextPostsOffset, limit: 1, sort: { createdAt: DESC } }
         ) {
             id
         }
@@ -182,8 +182,8 @@ export const COMMENT_ON_POST = gql`
             input: [
                 {
                     content: $content
-                    post: { connect: { where: { id: $post } } }
-                    author: { connect: { where: { id: $user } } }
+                    post: { connect: { where: { node: { id: $post } } } }
+                    author: { connect: { where: { node: { id: $user } } } }
                 }
             ]
         ) {
@@ -201,10 +201,10 @@ export const COMMENT_ON_POST = gql`
 `;
 
 export const POST_COMMENTS = gql`
-    query postComments($post: ID, $skip: Int, $limit: Int, $hasNextCommentsSkip: Int) {
+    query postComments($post: ID, $offset: Int, $limit: Int, $hasNextCommentsOffset: Int) {
         postComments: comments(
             where: { post: { id: $post } }
-            options: { skip: $skip, limit: $limit, sort: { createdAt: ASC } }
+            options: { offset: $offset, limit: $limit, sort: { createdAt: ASC } }
         ) {
             id
             author {
@@ -217,7 +217,7 @@ export const POST_COMMENTS = gql`
         }
         hasNextComments: comments(
             where: { post: { id: $post } }
-            options: { skip: $hasNextCommentsSkip, limit: 1, sort: { createdAt: ASC } }
+            options: { offset: $hasNextCommentsOffset, limit: 1, sort: { createdAt: ASC } }
         ) {
             id
         }
@@ -265,7 +265,7 @@ export const DELETE_POST = gql`
 
 export const ASSIGN_BLOG_AUTHOR = gql`
     mutation assignBlogAuthor($blog: ID, $authorEmail: String) {
-        updateBlogs(where: { id: $blog }, connect: { authors: { where: { email: $authorEmail } } }) {
+        updateBlogs(where: { id: $blog }, connect: { authors: { where: { node: { email: $authorEmail } } } }) {
             blogs {
                 authors {
                     email

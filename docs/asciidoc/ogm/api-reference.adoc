@@ -48,6 +48,9 @@ const model = ogm.model("name")
 ==== `find()`
 Reference: <<ogm-methods-find>>
 
+==== `count()`
+Reference: <<ogm-methods-count>>
+
 ==== `create()`
 Reference: <<ogm-methods-create>>
 

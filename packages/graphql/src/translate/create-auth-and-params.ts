@@ -18,7 +18,7 @@
  */
 
 import dotProp from "dot-prop";
-import { Node } from "../classes";
+import { Neo4jGraphQLAuthenticationError, Node } from "../classes";
 import { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context } from "../types";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 
@@ -65,6 +65,7 @@ function createAuthPredicate({
     if (!rule[kind]) {
         return ["", {}];
     }
+
     const { jwt } = context;
 
     const result = Object.entries(rule[kind] as any).reduce(
@@ -100,9 +101,9 @@ function createAuthPredicate({
                 } else if (ctxPath) {
                     paramValue = dotProp.get({ value: context }, `value.${ctxPath}`) as string;
                 }
-                // To avoid losing params on query execution
-                if ((jwtPath || ctxPath) && paramValue === undefined) {
-                    paramValue = null;
+
+                if (paramValue === undefined) {
+                    throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
                 }
 
                 const param = `${chainStr}_${key}`;

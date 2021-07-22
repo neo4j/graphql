@@ -119,9 +119,11 @@ describe("auth/bind", () => {
                         id: "${userId}",
                         posts: {
                             create: [{
-                                id: "post-id-1",
-                                creator: {
-                                    create: { id: "not valid" }
+                                node: {
+                                    id: "post-id-1",
+                                    creator: {
+                                        create: { node: {id: "not valid"} }
+                                    }
                                 }
                             }]
                         }
@@ -193,7 +195,7 @@ describe("auth/bind", () => {
                        where: { id: "${postId}" }
                        update: {
                            creator: {
-                               create: { id: "not bound" }
+                               create: { node: { id: "not bound" } }
                            }
                        }
                     ) {
@@ -328,9 +330,11 @@ describe("auth/bind", () => {
                         where: { id: "${userId}" },
                         update: {
                             posts: {
-                                where: { id: "${postId}" },
+                                where: { node: { id: "${postId}" } },
                                 update: {
-                                    creator: { update: { id: "not bound" } }
+                                    node: {
+                                        creator: { update: { node: { id: "not bound" } } }
+                                    }
                                 }
                             }
                         }
@@ -470,7 +474,7 @@ describe("auth/bind", () => {
                         where: { id: "${postId}" },
                         connect: {
                             creator: {
-                                where: { id: "not bound" }
+                                where: { node: { id: "not bound" } }
                             }
                         }
                     ) {
@@ -546,7 +550,7 @@ describe("auth/bind", () => {
                         where: { id: "${postId}" },
                         disconnect: {
                             creator: {
-                                where: { id: "${userId}" }
+                                where: { node: { id: "${userId}" } }
                             }
                         }
                     ) {

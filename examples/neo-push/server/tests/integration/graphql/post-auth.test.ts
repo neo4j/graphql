@@ -29,7 +29,11 @@ describe("post-auth", () => {
             mutation {
                 createPosts(
                     input: [
-                        { title: "some post", content: "content", author: { connect: { where: { id: "invalid" } } } }
+                        {
+                            title: "some post"
+                            content: "content"
+                            author: { connect: { where: { node: { id: "invalid" } } } }
+                        }
                     ]
                 ) {
                     posts {

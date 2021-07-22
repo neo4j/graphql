@@ -1,10 +1,10 @@
-## Cypher Date
+# Cypher Date
 
 Tests Date operations. ⚠ The string in params is actually an object but the test suite turns it into a string when calling `JSON.stringify`.
 
 Schema:
 
-```schema
+```graphql
 type Movie {
     id: ID
     date: Date
@@ -13,9 +13,9 @@ type Movie {
 
 ---
 
-### Simple Read
+## Simple Read
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -25,7 +25,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -33,9 +33,9 @@ WHERE this.date = $this_date
 RETURN this { .date } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_date": {
         "day": 1,
@@ -47,9 +47,9 @@ RETURN this { .date } as this
 
 ---
 
-### GTE Read
+## GTE Read
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -59,7 +59,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -67,9 +67,9 @@ WHERE this.date >= $this_date_GTE
 RETURN this { .date } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_date_GTE": {
         "day": 8,
@@ -81,9 +81,9 @@ RETURN this { .date } as this
 
 ---
 
-### Simple Create
+## Simple Create
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -95,7 +95,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -106,9 +106,9 @@ CALL {
 RETURN this0 { .date } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_date": {
         "day": 1,
@@ -120,9 +120,9 @@ RETURN this0 { .date } AS this0
 
 ---
 
-### Simple Update
+## Simple Update
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -135,7 +135,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -143,9 +143,9 @@ SET this.date = $this_update_date
 RETURN this { .id, .date } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_update_date": {
         "day": 1,

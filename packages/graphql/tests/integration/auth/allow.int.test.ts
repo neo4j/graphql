@@ -221,6 +221,79 @@ describe("auth/allow", () => {
             }
         });
 
+        test("should throw forbidden when reading a nested property with invalid allow (using connections)", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type Post {
+                    id: ID
+                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                }
+
+                type User {
+                    id: ID
+                }
+
+                extend type User {
+                    password: String @auth(rules: [{ operations: [READ], allow: { id: "$jwt.sub" } }])
+                }
+            `;
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                {
+                    posts(where: {id: "${postId}"}) {
+                        creatorConnection {
+                            edges {
+                                node {
+                                    password
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const secret = "secret";
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: "invalid",
+                },
+                secret
+            );
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+
+            try {
+                await session.run(`
+                    CREATE (:Post {id: "${postId}"})<-[:HAS_POST]-(:User {id: "${userId}", password: "letmein"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
         test("should throw forbidden when reading a node with invalid allow (across a single relationship)", async () => {
             const session = driver.session({ defaultAccessMode: "WRITE" });
 
@@ -254,6 +327,81 @@ describe("auth/allow", () => {
                         id
                         posts {
                             content
+                        }
+                    }
+                }
+            `;
+
+            const secret = "secret";
+
+            const token = jsonwebtoken.sign(
+                {
+                    roles: [],
+                    sub: "invalid",
+                },
+                secret
+            );
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+
+            try {
+                await session.run(`
+                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw forbidden when reading a node with invalid allow (across a single relationship)(using connections)", async () => {
+            const session = driver.session({ defaultAccessMode: "WRITE" });
+
+            const typeDefs = `
+                type Post {
+                    content: String
+                    creator: User @relationship(type: "HAS_POST", direction: IN)
+                }
+
+                type User {
+                    id: ID
+                    name: String
+                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                extend type Post
+                    @auth(rules: [{ operations: [READ], allow: { creator: { id: "$jwt.sub" } } }])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                {
+                    users(where: {id: "${userId}"}) {
+                        id
+                        postsConnection {
+                            edges {
+                                node {
+                                    content
+                                }
+                            }
                         }
                     }
                 }
@@ -528,7 +676,7 @@ describe("auth/allow", () => {
                 mutation {
                     updatePosts(
                         where: { id: "${postId}" }
-                        update: { creator: { update: { id: "new-id" } } }
+                        update: { creator: { update: { node: { id: "new-id" } } } }
                     ) {
                         posts {
                             id
@@ -601,7 +749,7 @@ describe("auth/allow", () => {
                 mutation {
                     updatePosts(
                         where: { id: "${postId}" }
-                        update: { creator: { update: { password: "new-password" } } }
+                        update: { creator: { update: { node: { password: "new-password" } } } }
                     ) {
                         posts {
                             id
@@ -736,7 +884,9 @@ describe("auth/allow", () => {
                         delete: {
                             posts: {
                                 where: {
-                                    id: "${postId}"
+                                    node: {
+                                        id: "${postId}"
+                                    }
                                 }
                             }
                         }
@@ -810,7 +960,7 @@ describe("auth/allow", () => {
                 mutation {
                     updateUsers(
                         where: { id: "${userId}" }
-                        disconnect: { posts: { where: { id: "${postId}" } } }
+                        disconnect: { posts: { where: { node: { id: "${postId}" } } } }
                     ) {
                         users {
                             id
@@ -897,7 +1047,7 @@ describe("auth/allow", () => {
                                 disconnect: {
                                     disconnect: {
                                         creator: {
-                                            where: { id: "${userId}" }
+                                            where: { node: { id: "${userId}" } }
                                         }
                                     }
                                 }
@@ -977,7 +1127,7 @@ describe("auth/allow", () => {
                 mutation {
                     updateUsers(
                         where: { id: "${userId}" }
-                        connect: { posts: { where: { id: "${postId}" } } }
+                        connect: { posts: { where: { node: { id: "${postId}" } } } }
                     ) {
                         users {
                             id
@@ -1065,7 +1215,7 @@ describe("auth/allow", () => {
                                 connect: {
                                     connect: {
                                         creator: {
-                                            where: { id: "${userId}" }
+                                            where: { node: { id: "${userId}" } }
                                         }
                                     }
                                 }

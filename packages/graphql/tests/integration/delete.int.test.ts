@@ -176,7 +176,7 @@ describe("delete", () => {
 
         const mutation = `
             mutation($id: ID!, $name: String) {
-                deleteMovies(where: { id: $id }, delete: { actors: { where: { name: $name } } }) {
+                deleteMovies(where: { id: $id }, delete: { actors: { where: { node: { name: $name } } } }) {
                     nodesDeleted
                     relationshipsDeleted
                 }
@@ -264,7 +264,7 @@ describe("delete", () => {
             mutation($id1: ID!, $name: String, $id2: ID!) {
                 deleteMovies(
                     where: { id: $id1 }
-                    delete: { actors: { where: { name: $name }, delete: { movies: { where: { id: $id2 } } } } }
+                    delete: { actors: { where: { node: { name: $name } }, delete: { movies: { where: { node: { id: $id2 } } } } } }
                 ) {
                     nodesDeleted
                     relationshipsDeleted
@@ -328,6 +328,67 @@ describe("delete", () => {
             );
 
             expect(movie2.records).toHaveLength(0);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should delete a movie using a connection where filter", async () => {
+        const session = driver.session();
+
+        const typeDefs = gql`
+            type Actor {
+                name: String
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type Movie {
+                title: String
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const title = generate({
+            charset: "alphabetic",
+        });
+
+        const name = generate({
+            charset: "alphabetic",
+        });
+
+        const mutation = `
+            mutation($name: String) {
+                deleteMovies(where: { actorsConnection: { node: { name: $name } } } ) {
+                    nodesDeleted
+                    relationshipsDeleted
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                    CREATE (:Movie {id: $title})<-[:ACTED_IN]-(:Actor {name: $name})
+                    CREATE (:Movie {id: $title})<-[:ACTED_IN]-(:Actor {name: randomUUID()})
+                `,
+                {
+                    title,
+                    name,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: mutation,
+                variableValues: { name },
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.deleteMovies).toEqual({ nodesDeleted: 1, relationshipsDeleted: 1 });
         } finally {
             await session.close();
         }
