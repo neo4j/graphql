@@ -269,7 +269,7 @@ CALL apoc.do.when(this_posts0 IS NOT NULL,
         RETURN count(*)
     \",
     \"\",
-    {this_posts0:this_posts0, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id}) YIELD value as _
+    {this:this, this_posts0:this_posts0, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id}) YIELD value as _
     RETURN count(*)
 ",
 "",

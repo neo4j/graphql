@@ -162,7 +162,7 @@ CALL apoc.do.when(this_actors0 IS NOT NULL, "
         RETURN count(*)
     \",
       \"\",
-      {this_actors0:this_actors0, this_actors0_movies0:this_actors0_movies0, auth:$auth,this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _
+      {this:this, this_actors0:this_actors0, this_actors0_movies0:this_actors0_movies0, auth:$auth,this_update_actors0_movies0_title:$this_update_actors0_movies0_title}) YIELD value as _
 
     RETURN count(*)
   ",

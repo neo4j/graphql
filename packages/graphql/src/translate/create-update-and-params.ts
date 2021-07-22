@@ -149,7 +149,9 @@ function createUpdateAndParams({
                     innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
 
                     const updateStrs = [updateAndParams[0], "RETURN count(*)"];
-                    const apocArgs = `{${parentVar}:${parentVar}, ${_varName}:${_varName}REPLACE_ME}`;
+                    const apocArgs = `{${withVars
+                        .map((withVar) => `${withVar}:${withVar}`)
+                        .join(", ")}, ${_varName}:${_varName}REPLACE_ME}`;
 
                     if (insideDoWhen) {
                         updateStrs.push(`\\", \\"\\", ${apocArgs})`);
