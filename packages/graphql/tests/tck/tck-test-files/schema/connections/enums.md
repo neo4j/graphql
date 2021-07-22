@@ -202,6 +202,8 @@ input ActorWhere {
     name_NOT_ENDS_WITH: String
     movies: MovieWhere
     movies_NOT: MovieWhere
+    moviesConnection: ActorMoviesConnectionWhere
+    moviesConnection_NOT: ActorMoviesConnectionWhere
 }
 
 type CreateActorsMutationResponse {
@@ -355,6 +357,8 @@ input MovieWhere {
     title_NOT_ENDS_WITH: String
     actors: ActorWhere
     actors_NOT: ActorWhere
+    actorsConnection: MovieActorsConnectionWhere
+    actorsConnection_NOT: MovieActorsConnectionWhere
 }
 
 type Mutation {

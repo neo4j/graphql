@@ -217,4 +217,158 @@ describe("Relationship properties - read", () => {
             await session.close();
         }
     });
+      
+    test("Create relationship node through update field on end node in a nested update (update -> update)", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const mutation = `
+            mutation {
+                updateMovies(
+                    where: { title: "${movieTitle}" }
+                    update: {
+                        actors: [
+                            {
+                                create: {
+                                    node: { name: "${actor3}" }
+                                    relationship: { screenTime: 60 }
+                                }
+                            }
+                        ]
+                    }
+                ) {
+                    movies {
+                        title
+                        actorsConnection {
+                            edges {
+                                screenTime
+                                node {
+                                    name
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: mutation,
+                contextValue: { driver },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.updateMovies?.movies).toEqual([
+                {
+                    title: movieTitle,
+                    actorsConnection: {
+                        edges: [
+                            {
+                                screenTime: 60,
+                                node: {
+                                    name: actor3,
+                                },
+                            },
+                            {
+                                screenTime: 105,
+                                node: {
+                                    name: actor2,
+                                },
+                            },
+                            {
+                                screenTime: 105,
+                                node: {
+                                    name: actor1,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+      
+    test("Create a relationship node with relationship properties on end node in a nested update (update -> create)", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const mutation = `
+            mutation {
+                updateMovies(
+                    where: { title: "${movieTitle}" }
+                    create: {
+                        actors: [
+                            {
+                                node: { name: "${actor3}" }
+                                relationship: { screenTime: 60 }
+                            }
+                        ]
+                    }
+                ) {
+                    movies {
+                        title
+                        actorsConnection {
+                            edges {
+                                screenTime
+                                node {
+                                    name
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: mutation,
+                contextValue: { driver },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.updateMovies?.movies).toEqual([
+                {
+                    title: movieTitle,
+                    actorsConnection: {
+                        edges: [
+                            {
+                                screenTime: 60,
+                                node: {
+                                    name: actor3,
+                                },
+                            },
+                            {
+                                screenTime: 105,
+                                node: {
+                                    name: actor2,
+                                },
+                            },
+                            {
+                                screenTime: 105,
+                                node: {
+                                    name: actor1,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
 });

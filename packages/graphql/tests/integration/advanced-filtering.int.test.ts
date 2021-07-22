@@ -1331,175 +1331,577 @@ describe("Advanced Filtering", () => {
     });
 
     describe("Relationship Filtering", () => {
-        test("should find relationship equality", async () => {
-            const session = driver.session();
+        describe("equality", () => {
+            test("should find using relationship equality on node", async () => {
+                const session = driver.session();
 
-            const randomType1 = `${generate({
-                charset: "alphabetic",
-            })}Movie`;
+                const randomType1 = `${generate({
+                    charset: "alphabetic",
+                })}Movie`;
 
-            const randomType2 = `${generate({
-                charset: "alphabetic",
-            })}Genre`;
+                const randomType2 = `${generate({
+                    charset: "alphabetic",
+                })}Genre`;
 
-            const pluralRandomType1 = pluralize(camelCase(randomType1));
-            const pluralRandomType2 = pluralize(camelCase(randomType2));
+                const pluralRandomType1 = pluralize(camelCase(randomType1));
+                const pluralRandomType2 = pluralize(camelCase(randomType2));
 
-            const typeDefs = `
-                    type ${randomType1} {
-                        id: ID
-                        ${pluralRandomType2}: [${randomType2}] @relationship(type: "IN_GENRE", direction: OUT)
-                    }
-
-                    type ${randomType2} {
-                        id: ID
-                    }
-            `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-            const rootId = generate({
-                charset: "alphabetic",
-            });
-
-            const relationId = generate({
-                charset: "alphabetic",
-            });
-
-            const randomId = generate({
-                charset: "alphabetic",
-            });
-
-            try {
-                await session.run(
-                    `
-                            CREATE (root:${randomType1} {id: $rootId})
-                            CREATE (:${randomType1} {id: $randomId})
-                            CREATE (relation:${randomType2} {id: $relationId})
-                            CREATE (:${randomType2} {id: $randomId})
-                            MERGE (root)-[:IN_GENRE]->(relation)
-                        `,
-                    { rootId, relationId, randomId }
-                );
-
-                const query = `
-                    {
-                        ${pluralRandomType1}(where: { ${pluralRandomType2}: { id: "${relationId}" } }) {
-                            id
-                            ${pluralRandomType2} {
-                                id
-                            }
+                const typeDefs = `
+                        type ${randomType1} {
+                            id: ID
+                            ${pluralRandomType2}: [${randomType2}] @relationship(type: "IN_GENRE", direction: OUT)
                         }
-                    }
+
+                        type ${randomType2} {
+                            id: ID
+                        }
                 `;
 
-                const gqlResult = await graphql({
-                    schema: neoSchema.schema,
-                    source: query,
-                    contextValue: { driver },
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const rootId = generate({
+                    charset: "alphabetic",
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                const relationId = generate({
+                    charset: "alphabetic",
+                });
+
+                const randomId = generate({
+                    charset: "alphabetic",
+                });
+
+                try {
+                    await session.run(
+                        `
+                                CREATE (root:${randomType1} {id: $rootId})
+                                CREATE (:${randomType1} {id: $randomId})
+                                CREATE (relation:${randomType2} {id: $relationId})
+                                CREATE (:${randomType2} {id: $randomId})
+                                MERGE (root)-[:IN_GENRE]->(relation)
+                            `,
+                        { rootId, relationId, randomId }
+                    );
+
+                    const query = `
+                        {
+                            ${pluralRandomType1}(where: { ${pluralRandomType2}: { id: "${relationId}" } }) {
+                                id
+                                ${pluralRandomType2} {
+                                    id
+                                }
+                            }
+                        }
+                    `;
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source: query,
+                        contextValue: { driver },
+                    });
+
+                    if (gqlResult.errors) {
+                        console.log(JSON.stringify(gqlResult.errors, null, 2));
+                    }
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
+                    expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
+                        id: rootId,
+                        [pluralRandomType2]: [{ id: relationId }],
+                    });
+                } finally {
+                    await session.close();
                 }
+            });
 
-                expect(gqlResult.errors).toBeUndefined();
+            test("should find using equality on node using connection", async () => {
+                const session = driver.session();
+                const typeDefs = `
+                        type Movie {
+                            id: ID
+                            genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
+                        }
 
-                expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
-                expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
-                    id: rootId,
-                    [pluralRandomType2]: [{ id: relationId }],
+                        type Genre {
+                            id: ID
+                        }
+                `;
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const movieId = generate({
+                    charset: "alphabetic",
                 });
-            } finally {
-                await session.close();
-            }
+
+                const genreId = generate({
+                    charset: "alphabetic",
+                });
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (movie:Movie {id: $movieId})-[:IN_GENRE]->(:Genre {id:$genreId})
+                        `,
+                        { movieId, genreId }
+                    );
+
+                    const query = `
+                        {
+                            movies(where: { genresConnection: { node: { id: "${genreId}" } } }) {
+                                id
+                                genres {
+                                    id
+                                }
+                            }
+                        }
+                    `;
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source: query,
+                        contextValue: { driver },
+                    });
+
+                    if (gqlResult.errors) {
+                        console.log(JSON.stringify(gqlResult.errors, null, 2));
+                    }
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    expect((gqlResult.data as any).movies).toHaveLength(1);
+                    expect((gqlResult.data as any).movies[0]).toMatchObject({
+                        id: movieId,
+                        genres: [{ id: genreId }],
+                    });
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should find using equality on relationship using connection", async () => {
+                const session = driver.session();
+                const typeDefs = `
+                        type Movie {
+                            id: ID
+                            genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
+                        }
+
+                        type Genre {
+                            id: ID
+                        }
+
+                        interface ActedIn {
+                            id: String
+                        }
+                `;
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const genreId = generate({
+                    charset: "alphabetic",
+                });
+
+                const actedInId = generate({
+                    charset: "alphabetic",
+                });
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (movie:Movie {id: $movieId})-[:IN_GENRE {id:$actedInId}]->(:Genre {id:$genreId})
+                        `,
+                        { movieId, genreId, actedInId }
+                    );
+
+                    const query = `
+                        {
+                            movies(where: { genresConnection: { relationship: { id: "${actedInId}" } } }) {
+                                id
+                                genres {
+                                    id
+                                }
+                            }
+                        }
+                    `;
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source: query,
+                        contextValue: { driver },
+                    });
+
+                    if (gqlResult.errors) {
+                        console.log(JSON.stringify(gqlResult.errors, null, 2));
+                    }
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    expect((gqlResult.data as any).movies).toHaveLength(1);
+                    expect((gqlResult.data as any).movies[0]).toMatchObject({
+                        id: movieId,
+                        genres: [{ id: genreId }],
+                    });
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should find relationship and node property equality using connection", async () => {
+                const session = driver.session();
+                const typeDefs = `
+                        type Movie {
+                            id: ID
+                            genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
+                        }
+
+                        type Genre {
+                            id: ID
+                        }
+
+                        interface ActedIn {
+                            id: String
+                        }
+                `;
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const movieId = generate({
+                    charset: "alphabetic",
+                });
+
+                const genreId = generate({
+                    charset: "alphabetic",
+                });
+
+                const actedInId = generate({
+                    charset: "alphabetic",
+                });
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (movie:Movie {id: $movieId})-[:IN_GENRE {id:$actedInId}]->(:Genre {id:$genreId})
+                        `,
+                        { movieId, genreId, actedInId }
+                    );
+
+                    const query = `
+                        {
+                            movies(where: { genresConnection: { node: { id: "${genreId}" } relationship: { id: "${actedInId}" } } }) {
+                                id
+                                genres {
+                                    id
+                                }
+                            }
+                        }
+                    `;
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source: query,
+                        contextValue: { driver },
+                    });
+
+                    if (gqlResult.errors) {
+                        console.log(JSON.stringify(gqlResult.errors, null, 2));
+                    }
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    expect((gqlResult.data as any).movies).toHaveLength(1);
+                    expect((gqlResult.data as any).movies[0]).toMatchObject({
+                        id: movieId,
+                        genres: [{ id: genreId }],
+                    });
+                } finally {
+                    await session.close();
+                }
+            });
         });
 
-        test("should find relationship_NOT", async () => {
-            const session = driver.session();
+        describe("NOT", () => {
+            test("should find using NOT on relationship", async () => {
+                const session = driver.session();
 
-            const randomType1 = `${generate({
-                charset: "alphabetic",
-            })}Movie`;
+                const randomType1 = `${generate({
+                    charset: "alphabetic",
+                })}Movie`;
 
-            const randomType2 = `${generate({
-                charset: "alphabetic",
-            })}Genre`;
+                const randomType2 = `${generate({
+                    charset: "alphabetic",
+                })}Genre`;
 
-            const pluralRandomType1 = pluralize(camelCase(randomType1));
-            const pluralRandomType2 = pluralize(camelCase(randomType2));
+                const pluralRandomType1 = pluralize(camelCase(randomType1));
+                const pluralRandomType2 = pluralize(camelCase(randomType2));
 
-            const typeDefs = `
-                    type ${randomType1} {
-                        id: ID
-                        ${pluralRandomType2}: [${randomType2}] @relationship(type: "IN_GENRE", direction: OUT)
-                    }
-
-                    type ${randomType2} {
-                        id: ID
-                    }
-            `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-            const rootId1 = generate({
-                charset: "alphabetic",
-            });
-            const rootId2 = generate({
-                charset: "alphabetic",
-            });
-
-            const relationId1 = generate({
-                charset: "alphabetic",
-            });
-            const relationId2 = generate({
-                charset: "alphabetic",
-            });
-
-            try {
-                await session.run(
-                    `
-                            CREATE (root1:${randomType1} {id: $rootId1})
-                            CREATE (root2:${randomType1} {id: $rootId2})
-                            CREATE (relation1:${randomType2} {id: $relationId1})
-                            CREATE (relation2:${randomType2} {id: $relationId2})
-                            MERGE (root1)-[:IN_GENRE]->(relation1)
-                            MERGE (root2)-[:IN_GENRE]->(relation2)
-                        `,
-                    { rootId1, rootId2, relationId1, relationId2 }
-                );
-
-                const query = `
-                    {
-                        ${pluralRandomType1}(where: { ${pluralRandomType2}_NOT: { id: "${relationId2}" } }) {
-                            id
-                            ${pluralRandomType2} {
-                                id
-                            }
+                const typeDefs = `
+                        type ${randomType1} {
+                            id: ID
+                            ${pluralRandomType2}: [${randomType2}] @relationship(type: "IN_GENRE", direction: OUT)
                         }
-                    }
+
+                        type ${randomType2} {
+                            id: ID
+                        }
                 `;
 
-                const gqlResult = await graphql({
-                    schema: neoSchema.schema,
-                    source: query,
-                    contextValue: { driver },
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const rootId1 = generate({
+                    charset: "alphabetic",
+                });
+                const rootId2 = generate({
+                    charset: "alphabetic",
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                const relationId1 = generate({
+                    charset: "alphabetic",
+                });
+                const relationId2 = generate({
+                    charset: "alphabetic",
+                });
+
+                try {
+                    await session.run(
+                        `
+                                CREATE (root1:${randomType1} {id: $rootId1})
+                                CREATE (root2:${randomType1} {id: $rootId2})
+                                CREATE (relation1:${randomType2} {id: $relationId1})
+                                CREATE (relation2:${randomType2} {id: $relationId2})
+                                MERGE (root1)-[:IN_GENRE]->(relation1)
+                                MERGE (root2)-[:IN_GENRE]->(relation2)
+                            `,
+                        { rootId1, rootId2, relationId1, relationId2 }
+                    );
+
+                    const query = `
+                        {
+                            ${pluralRandomType1}(where: { ${pluralRandomType2}_NOT: { id: "${relationId2}" } }) {
+                                id
+                                ${pluralRandomType2} {
+                                    id
+                                }
+                            }
+                        }
+                    `;
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source: query,
+                        contextValue: { driver },
+                    });
+
+                    if (gqlResult.errors) {
+                        console.log(JSON.stringify(gqlResult.errors, null, 2));
+                    }
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
+                    expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
+                        id: rootId1,
+                        [pluralRandomType2]: [{ id: relationId1 }],
+                    });
+                } finally {
+                    await session.close();
                 }
+            });
 
-                expect(gqlResult.errors).toBeUndefined();
+            test("should find using NOT on connections", async () => {
+                const session = driver.session();
 
-                expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
-                expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
-                    id: rootId1,
-                    [pluralRandomType2]: [{ id: relationId1 }],
+                const randomType1 = `${generate({
+                    charset: "alphabetic",
+                })}Movie`;
+
+                const randomType2 = `${generate({
+                    charset: "alphabetic",
+                })}Genre`;
+
+                const pluralRandomType1 = pluralize(camelCase(randomType1));
+                const pluralRandomType2 = pluralize(camelCase(randomType2));
+
+                const typeDefs = `
+                        type ${randomType1} {
+                            id: ID
+                            ${pluralRandomType2}: [${randomType2}] @relationship(type: "IN_GENRE", direction: OUT)
+                        }
+
+                        type ${randomType2} {
+                            id: ID
+                        }
+                `;
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const rootId1 = generate({
+                    charset: "alphabetic",
                 });
-            } finally {
-                await session.close();
-            }
+                const rootId2 = generate({
+                    charset: "alphabetic",
+                });
+
+                const relationId1 = generate({
+                    charset: "alphabetic",
+                });
+                const relationId2 = generate({
+                    charset: "alphabetic",
+                });
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (root1:${randomType1} {id: $rootId1})-[:IN_GENRE]->(relation1:${randomType2} {id: $relationId1})
+                            CREATE (root2:${randomType1} {id: $rootId2})-[:IN_GENRE]->(relation2:${randomType2} {id: $relationId2})
+                        `,
+                        { rootId1, rootId2, relationId1, relationId2 }
+                    );
+
+                    const query = `
+                        {
+                            ${pluralRandomType1}(where: { ${pluralRandomType2}Connection_NOT: { node: { id: "${relationId2}" } } }) {
+                                id
+                                ${pluralRandomType2} {
+                                    id
+                                }
+                            }
+                        }
+                    `;
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source: query,
+                        contextValue: { driver },
+                    });
+
+                    if (gqlResult.errors) {
+                        console.log(JSON.stringify(gqlResult.errors, null, 2));
+                    }
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
+                    expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
+                        id: rootId1,
+                        [pluralRandomType2]: [{ id: relationId1 }],
+                    });
+                } finally {
+                    await session.close();
+                }
+            });
+
+            /*
+MATCH (this:GHTBbirCAAIDHOUPWhUYLAGWqZHkBcJeMovie)
+WHERE EXISTS((this)-[:IN_GENRE]->(:YojUcAEPjTsYIXNdyhAfyMuNGnbrjiXRGenre)) AND NONE(this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection_NOT_map IN [(this)-[this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection_NOT_GHTBbirCAAIDHOUPWhUYLAGWqZHkBcJeMovieYojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresRelationship:IN_GENRE]->(this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection_NOT:YojUcAEPjTsYIXNdyhAfyMuNGnbrjiXRGenre)  | { node: this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection_NOT, relationship: this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection_NOT_GHTBbirCAAIDHOUPWhUYLAGWqZHkBcJeMovieYojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresRelationship } ] WHERE this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection_NOT_map.relationship.id = $this_ghtBbirCaaidhoupWhUylagWqZHkBcJeMovies.where.yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection_NOT.relationship.id)
+RETURN this { .id, yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenres: [ (this)-[:IN_GENRE]->(this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenres:YojUcAEPjTsYIXNdyhAfyMuNGnbrjiXRGenre)   | this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenres { .id } ] } as this
+Params:
+{
+  "this_ghtBbirCaaidhoupWhUylagWqZHkBcJeMovies": {
+    "where": {
+      "yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection": {
+        "relationship": {
+          "id": "RPfjgMqyZJmmycWltUClLFmgknWieyLA"
+        }
+      }
+    }
+  }
+}
+            */
+            test("should find using relationship properties and connections", async () => {
+                const session = driver.session();
+
+                const randomType1 = `${generate({
+                    charset: "alphabetic",
+                })}Movie`;
+
+                const randomType2 = `${generate({
+                    charset: "alphabetic",
+                })}Genre`;
+
+                const pluralRandomType1 = pluralize(camelCase(randomType1));
+                const pluralRandomType2 = pluralize(camelCase(randomType2));
+
+                const typeDefs = `
+                        type ${randomType1} {
+                            id: ID
+                            ${pluralRandomType2}: [${randomType2}] @relationship(type: "IN_GENRE", direction: OUT, properties: "ActedIn")
+                        }
+
+                        type ${randomType2} {
+                            id: ID
+                        }
+
+                        interface ActedIn {
+                            id: ID
+                        }
+                `;
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const rootId1 = generate({
+                    charset: "alphabetic",
+                });
+                const rootId2 = generate({
+                    charset: "alphabetic",
+                });
+
+                const relationId1 = generate({
+                    charset: "alphabetic",
+                });
+                const relationId2 = generate({
+                    charset: "alphabetic",
+                });
+                const actedInId = generate({
+                    charset: "alphabetic",
+                });
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (:${randomType1} {id: $rootId1})-[:IN_GENRE {id: $actedInId}]->(:${randomType2} {id: $relationId1})
+                            CREATE (:${randomType1} {id: $rootId2})-[:IN_GENRE {id: randomUUID()}]->(:${randomType2} {id: $relationId2})
+                        `,
+                        { rootId1, rootId2, relationId1, relationId2, actedInId }
+                    );
+
+                    const query = `
+                        {
+                            ${pluralRandomType1}(where: { ${pluralRandomType2}Connection_NOT: { relationship: { id: "${actedInId}" } } }) {
+                                id
+                                ${pluralRandomType2} {
+                                    id
+                                }
+                            }
+                        }
+                    `;
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source: query,
+                        contextValue: { driver },
+                    });
+
+                    if (gqlResult.errors) {
+                        console.log(JSON.stringify(gqlResult.errors, null, 2));
+                    }
+
+                    expect(gqlResult.errors).toBeUndefined();
+
+                    expect((gqlResult.data as any)[pluralRandomType1]).toHaveLength(1);
+                    expect((gqlResult.data as any)[pluralRandomType1][0]).toMatchObject({
+                        id: rootId2,
+                        [pluralRandomType2]: [{ id: relationId2 }],
+                    });
+                } finally {
+                    await session.close();
+                }
+            });
         });
 
         test("should test for not null", async () => {

@@ -1029,6 +1029,11 @@ function makeAugmentedSchema(
                 });
             }
 
+            whereInput.addFields({
+                [connectionField.fieldName]: connectionWhere,
+                [`${connectionField.fieldName}_NOT`]: connectionWhere,
+            });
+
             let composeNodeArgs: {
                 where: any;
                 sort?: any;

@@ -296,6 +296,8 @@ input MovieWhere {
     id_NOT_STARTS_WITH: ID
     id_ENDS_WITH: ID
     id_NOT_ENDS_WITH: ID
+    searchConnection: MovieSearchConnectionWhere
+    searchConnection_NOT: MovieSearchConnectionWhere
 }
 
 type Mutation {

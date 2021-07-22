@@ -267,6 +267,8 @@ input AuthorWhere {
     name_NOT_STARTS_WITH: String
     name_ENDS_WITH: String
     name_NOT_ENDS_WITH: String
+    publicationsConnection: AuthorPublicationsConnectionWhere
+    publicationsConnection_NOT: AuthorPublicationsConnectionWhere
 }
 
 type Book {
@@ -407,6 +409,8 @@ input BookWhere {
     title_NOT_ENDS_WITH: String
     author: AuthorWhere
     author_NOT: AuthorWhere
+    authorConnection: BookAuthorConnectionWhere
+    authorConnection_NOT: BookAuthorConnectionWhere
 }
 
 type CreateAuthorsMutationResponse {
@@ -564,6 +568,8 @@ input JournalWhere {
     subject_NOT_ENDS_WITH: String
     author: AuthorWhere
     author_NOT: AuthorWhere
+    authorConnection: JournalAuthorConnectionWhere
+    authorConnection_NOT: JournalAuthorConnectionWhere
 }
 
 type Mutation {

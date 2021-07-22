@@ -643,6 +643,8 @@ input MovieWhere {
     title_NOT_ENDS_WITH: String
     actors: ActorWhere
     actors_NOT: ActorWhere
+    actorsConnection: MovieActorsConnectionWhere
+    actorsConnection_NOT: MovieActorsConnectionWhere
 }
 
 type Mutation {
