@@ -128,8 +128,8 @@ function makeAugmentedSchema(
         fields: {
             hasNextPage: "Boolean!",
             hasPreviousPage: "Boolean!",
-            startCursor: "String!",
-            endCursor: "String!",
+            startCursor: "String",
+            endCursor: "String",
         },
     });
 
@@ -1137,9 +1137,20 @@ function makeAugmentedSchema(
 
                         const totalCount = isInt(count) ? count.toNumber() : count;
 
+                        const unionEdges = edges?.filter((edge) => {
+                            if (
+                                Object.keys(edge.node).length === 1 &&
+                                Object.prototype.hasOwnProperty.call(edge.node, "__resolveType")
+                            ) {
+                                return false;
+                            }
+
+                            return true;
+                        });
+
                         return {
                             totalCount,
-                            ...createConnectionWithEdgeProperties(edges, args, totalCount),
+                            ...createConnectionWithEdgeProperties(unionEdges, args, totalCount),
                         };
                     },
                 },

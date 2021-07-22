@@ -141,7 +141,7 @@ describe("Connections -> Unions", () => {
         }
     });
 
-    test("With `where` argument on node", async () => {
+    test("With where argument on node", async () => {
         const session = driver.session();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
@@ -195,7 +195,7 @@ describe("Connections -> Unions", () => {
         }
     });
 
-    test("With `where` argument on relationship", async () => {
+    test("With where argument on relationship", async () => {
         const session = driver.session();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
@@ -249,7 +249,7 @@ describe("Connections -> Unions", () => {
         }
     });
 
-    test("With `where` argument on relationship and node", async () => {
+    test("With where argument on relationship and node", async () => {
         const session = driver.session();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });

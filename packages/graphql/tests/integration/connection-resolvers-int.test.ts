@@ -142,6 +142,7 @@ describe("Connection Resolvers", () => {
             await session.close();
         }
     });
+
     test("it should provide an after offset that correctly results in the next batch of items", async () => {
         const session = driver.session();
 
@@ -338,6 +339,77 @@ describe("Connection Resolvers", () => {
                     },
                 },
             });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should return a total count of zero and correct pageInfo if no edges", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Actor {
+                id: ID
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type Movie {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        const movieId = generate({
+            charset: "alphabetic",
+        });
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+        });
+
+        const query = `
+            query GetMovie($movieId: ID) {
+                movies(where: { id: $movieId }) {
+                    id
+                    actorsConnection {
+                        totalCount
+                        pageInfo {
+                            startCursor
+                            endCursor
+                            hasNextPage
+                            hasPreviousPage
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run("CREATE (:Movie { id: $movieId })", { movieId });
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver },
+                variableValues: { movieId },
+            });
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
+            }
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect((gqlResult.data as any).movies).toEqual([
+                {
+                    id: movieId,
+                    actorsConnection: {
+                        totalCount: 0,
+                        pageInfo: { startCursor: null, endCursor: null, hasNextPage: false, hasPreviousPage: false },
+                    },
+                },
+            ]);
         } finally {
             await session.close();
         }

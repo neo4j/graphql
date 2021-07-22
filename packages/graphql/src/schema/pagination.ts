@@ -24,7 +24,7 @@ import { Integer, isInt } from "neo4j-driver";
  * Adapted from graphql-relay-js ConnectionFromArraySlice
  */
 export function createConnectionWithEdgeProperties(
-    arraySlice: { node: Record<string, any>; [key: string]: any }[],
+    arraySlice: { node: Record<string, any>; [key: string]: any }[] = [],
     args: { after?: string; first?: number } = {},
     totalCount: number
 ) {
@@ -54,8 +54,8 @@ export function createConnectionWithEdgeProperties(
     return {
         edges,
         pageInfo: {
-            startCursor: firstEdge.cursor,
-            endCursor: lastEdge.cursor,
+            startCursor: firstEdge?.cursor,
+            endCursor: lastEdge?.cursor,
             hasPreviousPage: lastEdgeCursor > 0,
             hasNextPage: typeof first === "number" ? sliceEnd < totalCount : false,
         },
