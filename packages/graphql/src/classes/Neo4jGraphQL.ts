@@ -21,7 +21,7 @@ import Debug from "debug";
 import { Driver } from "neo4j-driver";
 import { DocumentNode, GraphQLResolveInfo, GraphQLSchema, parse, printSchema, print } from "graphql";
 import { addResolversToSchema, addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
-import type { DriverConfig } from "../types";
+import type { DriverConfig, CypherQueryOptions } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
@@ -43,6 +43,7 @@ export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
     jwt?: Neo4jGraphQLJWT;
     enableRegex?: boolean;
+    queryOptions?: CypherQueryOptions;
 }
 
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
@@ -142,6 +143,8 @@ class Neo4jGraphQL {
             }
 
             context.auth = createAuthParam({ context });
+
+            context.queryOptions = config.queryOptions;
         });
     }
 

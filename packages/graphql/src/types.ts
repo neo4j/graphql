@@ -41,6 +41,7 @@ export interface Context {
     neoSchema: Neo4jGraphQL;
     jwt?: JwtPayload;
     auth?: AuthContext;
+    queryOptions?: CypherQueryOptions;
     [k: string]: any;
 }
 
@@ -218,3 +219,64 @@ export interface DeleteInfo {
 }
 
 export type TimeStampOperations = "CREATE" | "UPDATE";
+
+export enum CypherRuntime {
+    INTERPRETED = "interpreted",
+    SLOTTED = "slotted",
+    PIPELINED = "pipelined",
+}
+
+export enum CypherPlanner {
+    COST = "cost",
+    IDP = "idp",
+    DP = "dp",
+}
+
+export enum CypherConnectComponentsPlanner {
+    GREEDY = "greedy",
+    IDP = "idp",
+}
+
+export enum CypherUpdateStrategy {
+    DEFAULT = "default",
+    EAGER = "eager",
+}
+
+export enum CypherExpressionEngine {
+    DEFAULT = "default",
+    INTERPRETED = "interpreted",
+    COMPILED = "compiled",
+}
+
+export enum CypherOperatorEngine {
+    DEFAULT = "default",
+    INTERPRETED = "interpreted",
+    COMPILED = "compiled",
+}
+
+export enum CypherInterpretedPipesFallback {
+    DEFAULT = "default",
+    DISABLED = "disabled",
+    WHITELISTED_PLANS_ONLY = "whitelisted_plans_only",
+    ALL = "all",
+}
+
+export enum CypherReplanning {
+    DEFAULT = "default",
+    FORCE = "force",
+    SKIP = "skip",
+}
+
+/*
+  Object keys and enum values map to values at https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/#cypher-query-options
+*/
+export interface CypherQueryOptions {
+    runtime?: CypherRuntime;
+    planner?: CypherPlanner;
+    connectComponentsPlanner?: CypherConnectComponentsPlanner;
+    updateStrategy?: CypherUpdateStrategy;
+    expressionEngine?: CypherExpressionEngine;
+    operatorEngine?: CypherOperatorEngine;
+    interpretedPipesFallback?: CypherInterpretedPipesFallback;
+    replan?: CypherReplanning;
+}
