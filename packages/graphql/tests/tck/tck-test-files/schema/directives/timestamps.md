@@ -122,6 +122,7 @@ type Mutation {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesCount(where: MovieWhere): Int!
 }
 ```
 

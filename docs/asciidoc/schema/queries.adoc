@@ -32,6 +32,8 @@ The following Query fields will be automatically generated:
 type Query {
     posts(where: PostWhere, options: PostOptions): [Post!]!
     users(where: UserWhere, options: UserOptions): [User!]!
+    countPosts(where: PostWhere): Int!
+    usersCount(where: UserWhere): Int!
 }
 ----
 
@@ -61,6 +63,18 @@ query {
             content
         }
     }
+}
+----
+
+
+=== Counting all Users
+
+The following Query will count all users and return a number. 
+
+[source, graphql]
+----
+query {
+    usersCount
 }
 ----
 

@@ -304,8 +304,10 @@ type PageInfo {
 }
 
 type Query {
-    node1s(where: Node1Where, options: Node1Options): [Node1!]!
-    node2s(where: Node2Where, options: Node2Options): [Node2!]!
+    node1s(options: Node1Options, where: Node1Where): [Node1!]!
+    node1sCount(where: Node1Where): Int!
+    node2s(options: Node2Options, where: Node2Where): [Node2!]!
+    node2sCount(where: Node2Where): Int!
 }
 
 enum SortDirection {

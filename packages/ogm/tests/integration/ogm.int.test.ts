@@ -197,6 +197,76 @@ describe("OGM", () => {
         });
     });
 
+    describe("count", () => {
+        test("should count nodes", async () => {
+            const session = driver.session();
+
+            const randomType = `${generate({
+                charset: "alphabetic",
+                readable: true,
+            })}Movie`;
+
+            const typeDefs = `
+                type ${randomType} {
+                    id: ID
+                }
+            `;
+
+            const ogm = new OGM({ typeDefs, driver });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (:${randomType} {id: randomUUID()})
+                        CREATE (:${randomType} {id: randomUUID()})
+                    `
+                );
+
+                const model = ogm.model(randomType);
+
+                const count = await model?.count();
+
+                expect(count).toEqual(2);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should count movies with a where predicate", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type Movie {
+                    id: ID
+                }
+            `;
+
+            const ogm = new OGM({ typeDefs, driver });
+
+            const id = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                await ogm.checkNeo4jCompat();
+
+                await session.run(`
+                    CREATE (:Movie {id: "${id}"})
+                    CREATE (:Movie {id: randomUUID()})
+                    CREATE (:Movie {id: randomUUID()})
+                `);
+
+                const Movie = ogm.model("Movie");
+
+                const count = await Movie?.count({ where: { id } });
+
+                expect(count).toEqual(1);
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
     describe("create", () => {
         test("should create a single node", async () => {
             const session = driver.session();

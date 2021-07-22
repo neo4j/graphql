@@ -5,6 +5,7 @@ You can call the following on a model;
 
 . <<ogm-methods-create>>
 . <<ogm-methods-find>>
+. <<ogm-methods-count>>
 . <<ogm-methods-update>>
 . <<ogm-methods-delete>>
 

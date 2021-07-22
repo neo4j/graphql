@@ -113,6 +113,7 @@ type Mutation {
 
 type Query {
     files(where: FileWhere, options: FileOptions): [File!]!
+    filesCount(where: FileWhere): Int!
 }
 ```
 

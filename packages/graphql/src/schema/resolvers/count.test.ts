@@ -17,9 +17,21 @@
  * limitations under the License.
  */
 
-export { default as createResolver } from "./create";
-export { default as findResolver } from "./read";
-export { default as updateResolver } from "./update";
-export { default as deleteResolver } from "./delete";
-export { default as cypherResolver } from "./cypher";
-export { default as countResolver } from "./count";
+import { Node } from "../../classes";
+import countResolver from "./count";
+
+describe("Count resolver", () => {
+    test("should return the correct; type, args and resolve", () => {
+        // @ts-ignore
+        const node: Node = {
+            name: "Movie",
+        };
+
+        const result = countResolver({ node });
+        expect(result.type).toEqual("Int!");
+        expect(result.resolve).toBeInstanceOf(Function);
+        expect(result.args).toMatchObject({
+            where: "MovieWhere",
+        });
+    });
+});
