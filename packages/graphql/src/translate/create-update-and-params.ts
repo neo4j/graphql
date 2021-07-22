@@ -102,7 +102,7 @@ function createUpdateAndParams({
                 const v = relationField.union ? value[refNode.name] : value;
                 const updates = relationField.typeMeta.array ? v : [v];
                 updates.forEach((update, index) => {
-                    const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}`;
+                    const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
                     const _varName = `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
 
@@ -172,9 +172,9 @@ function createUpdateAndParams({
                             innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
 
                             const updateStrs = [updateAndParams[0], "RETURN count(*)"];
-                            const apocArgs = `{${parentVar}:${parentVar}, ${parameterPrefix?.split(".")[0]}: $${
+                            const apocArgs = `{${withVars.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
                                 parameterPrefix?.split(".")[0]
-                            }, ${_varName}:${_varName}REPLACE_ME}`;
+                            }: $${parameterPrefix?.split(".")[0]}, ${_varName}:${_varName}REPLACE_ME}`;
 
                             if (insideDoWhen) {
                                 updateStrs.push(`\\", \\"\\", ${apocArgs})`);

@@ -76,13 +76,21 @@ mutation {
 MATCH (this:Movie)
 WHERE this.title = $this_title
 WITH this
-OPTIONAL MATCH (this_connect_actors_LeadActor0_node:LeadActor)
-WHERE this_connect_actors_LeadActor0_node.name = $this_connect_actors_LeadActor0_node_name
-FOREACH(_ IN CASE this_connect_actors_LeadActor0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)<-[:ACTED_IN]-(this_connect_actors_LeadActor0_node) )
-WITH this, this_connect_actors_LeadActor0_node
-OPTIONAL MATCH (this_connect_actors_LeadActor0_node_actedIn_Series0_node:Series)
-WHERE this_connect_actors_LeadActor0_node_actedIn_Series0_node.name = $this_connect_actors_LeadActor0_node_actedIn_Series0_node_name
-FOREACH(_ IN CASE this_connect_actors_LeadActor0_node_actedIn_Series0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this_connect_actors_LeadActor0_node)-[:ACTED_IN]->(this_connect_actors_LeadActor0_node_actedIn_Series0_node) )
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_actors_LeadActor0_node:LeadActor)
+    WHERE this_connect_actors_LeadActor0_node.name = $this_connect_actors_LeadActor0_node_name
+    FOREACH(_ IN CASE this_connect_actors_LeadActor0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)<-[:ACTED_IN]-(this_connect_actors_LeadActor0_node) )
+    WITH this, this_connect_actors_LeadActor0_node
+    CALL {
+        WITH this, this_connect_actors_LeadActor0_node
+        OPTIONAL MATCH (this_connect_actors_LeadActor0_node_actedIn_Series0_node:Series)
+        WHERE this_connect_actors_LeadActor0_node_actedIn_Series0_node.name = $this_connect_actors_LeadActor0_node_actedIn_Series0_node_name
+        FOREACH(_ IN CASE this_connect_actors_LeadActor0_node_actedIn_Series0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this_connect_actors_LeadActor0_node)-[:ACTED_IN]->(this_connect_actors_LeadActor0_node_actedIn_Series0_node) )
+        RETURN count(*)
+    }
+    RETURN count(*)
+}
 RETURN this { .title, actors: [(this)<-[:ACTED_IN]-(this_actors) WHERE "LeadActor" IN labels(this_actors) | head( [ this_actors IN [this_actors] WHERE "LeadActor" IN labels (this_actors) | this_actors { __resolveType: "LeadActor", .name, actedIn: [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE "Series" IN labels(this_actors_actedIn) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE "Series" IN labels (this_actors_actedIn) | this_actors_actedIn { __resolveType: "Series", .name } ] ) ] } ] ) ] } AS this
 ```
 

@@ -451,14 +451,18 @@ mutation {
 MATCH (this:User)
 
 WITH this
-OPTIONAL MATCH (this_connect_posts0_node:Post)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_posts0_node:Post)
 
-WITH this, this_connect_posts0_node
-CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0]) AND apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
+    WITH this, this_connect_posts0_node
+    CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0]) AND apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
 
-FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
-    MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-)
+    FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+    )
+    RETURN count(*)
+}
 
 RETURN this { .id } AS this
 ```

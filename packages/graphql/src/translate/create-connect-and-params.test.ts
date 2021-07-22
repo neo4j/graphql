@@ -93,14 +93,23 @@ describe("createConnectAndParams", () => {
         expect(trimmer(result[0])).toEqual(
             trimmer(`
                 WITH this
-                OPTIONAL MATCH (this0_node:Movie)
-                WHERE this0_node.title = $this0_node_title
-                FOREACH(_ IN CASE this0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:SIMILAR]->(this0_node) )
+                CALL {
+                    WITH this
+                    OPTIONAL MATCH (this0_node:Movie)
+                    WHERE this0_node.title = $this0_node_title
+                    FOREACH(_ IN CASE this0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:SIMILAR]->(this0_node) )
 
-                WITH this, this0_node
-                OPTIONAL MATCH (this0_node_similarMovies0_node:Movie)
-                WHERE this0_node_similarMovies0_node.title = $this0_node_similarMovies0_node_title
-                FOREACH(_ IN CASE this0_node_similarMovies0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node) )
+                    WITH this, this0_node
+                    CALL {
+                        WITH this, this0_node
+                        OPTIONAL MATCH (this0_node_similarMovies0_node:Movie)
+                        WHERE this0_node_similarMovies0_node.title = $this0_node_similarMovies0_node_title
+                        FOREACH(_ IN CASE this0_node_similarMovies0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node) )
+                        RETURN count(*)
+                    }
+
+                    RETURN count(*)
+                }
             `)
         );
 
