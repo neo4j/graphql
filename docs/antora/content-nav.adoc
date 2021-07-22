@@ -32,6 +32,7 @@
 *** xref:ogm/methods/index.adoc[]
 **** xref:ogm/methods/create/index.adoc[]
 **** xref:ogm/methods/find/index.adoc[]
+**** xref:ogm/methods/count/index.adoc[]
 **** xref:ogm/methods/update/index.adoc[]
 **** xref:ogm/methods/delete/index.adoc[]
 *** xref:ogm/private/index.adoc[]
