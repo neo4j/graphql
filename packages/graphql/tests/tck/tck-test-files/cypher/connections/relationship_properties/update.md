@@ -53,14 +53,14 @@ MATCH (this:Movie)
 WHERE this.title = $this_title
 
 WITH this
-OPTIONAL MATCH (this)<-[this_acted_in0:ACTED_IN]-(this_actors0:Actor)
+OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
 WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
 
-CALL apoc.do.when(this_acted_in0 IS NOT NULL, "
-SET this_acted_in0.screenTime = $updateMovies.args.update.actors[0].update.relationship.screenTime
+CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, "
+SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.relationship.screenTime
 RETURN count(*)
-", "", {this_acted_in0:this_acted_in0, updateMovies: $updateMovies})
-YIELD value as this_acted_in0_actors0_relationship
+", "", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies})
+YIELD value as this_acted_in0_relationship_actors0_relationship
 
 RETURN this { .title } AS this
 ```
@@ -132,7 +132,7 @@ MATCH (this:Movie)
 WHERE this.title = $this_title
 
 WITH this
-OPTIONAL MATCH (this)<-[this_acted_in0:ACTED_IN]-(this_actors0:Actor)
+OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
 WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
 
 CALL apoc.do.when(this_actors0 IS NOT NULL, "
@@ -141,11 +141,11 @@ RETURN count(*)
 ", "", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
 YIELD value as _
 
-CALL apoc.do.when(this_acted_in0 IS NOT NULL, "
-SET this_acted_in0.screenTime = $updateMovies.args.update.actors[0].update.relationship.screenTime
+CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, "
+SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.relationship.screenTime
 RETURN count(*)
-", "", {this_acted_in0:this_acted_in0, updateMovies: $updateMovies})
-YIELD value as this_acted_in0_actors0_relationship
+", "", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies})
+YIELD value as this_acted_in0_relationship_actors0_relationship
 
 RETURN this { .title } AS this
 ```

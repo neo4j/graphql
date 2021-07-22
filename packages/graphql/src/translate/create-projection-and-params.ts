@@ -232,14 +232,14 @@ function createProjectionAndParams({
                 projectionStr ? `| ${param} ${projectionStr}` : ""
             }`;
 
-            if (cypherField.typeMeta.array) {
-                res.projection.push(`${key}: [${apocStr}]`);
+            if (isPrimitive || isEnum) {
+                res.projection.push(`${key}: ${apocStr}`);
 
                 return res;
             }
 
-            if (isPrimitive || isEnum) {
-                res.projection.push(`${key}: ${apocStr}`);
+            if (cypherField.typeMeta.array) {
+                res.projection.push(`${key}: [${apocStr}]`);
 
                 return res;
             }

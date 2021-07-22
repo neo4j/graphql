@@ -86,6 +86,7 @@ export default function cypherResolver({
             cypherStrs.push(`
                 WITH apoc.cypher.runFirstColumn("${statement}", ${apocParamsStr}, ${expectMultipleValues}) as x
                 UNWIND x as this
+                WITH this
             `);
         } else {
             cypherStrs.push(`

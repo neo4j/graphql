@@ -58,11 +58,15 @@ CALL {
     CREATE (this0:Movie)
     SET this0.title = $this0_title
     WITH this0
-    OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-    FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
-        SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
-    )
+    CALL {
+        WITH this0
+        OPTIONAL MATCH (this0_actors_connect0_node:Actor)
+        FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+            SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
+        )
+        RETURN count(*)
+    }
     RETURN this0
 }
 CALL {
@@ -133,12 +137,16 @@ CALL {
     CREATE (this0:Movie)
     SET this0.title = $this0_title
     WITH this0
-    OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-    WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_name
-    FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
-        SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
-    )
+    CALL {
+        WITH this0
+        OPTIONAL MATCH (this0_actors_connect0_node:Actor)
+        WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_name
+        FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+            SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
+        )
+        RETURN count(*)
+    }
     RETURN this0
 }
 CALL {
@@ -198,11 +206,15 @@ mutation {
 MATCH (this:Movie)
 WHERE this.title = $this_title
 WITH this
-OPTIONAL MATCH (this_connect_actors0_node:Actor)
-FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
-    MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
-    SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
-)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_actors0_node:Actor)
+    FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+        SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
+    )
+    RETURN count(*)
+}
 WITH this
 CALL {
     WITH this
@@ -263,12 +275,16 @@ mutation {
 MATCH (this:Movie)
 WHERE this.title = $this_title
 WITH this
-OPTIONAL MATCH (this_connect_actors0_node:Actor)
-WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
-FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
-    MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
-    SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
-)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_actors0_node:Actor)
+    WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
+    FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+        SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
+    )
+    RETURN count(*)
+}
 WITH this
 CALL {
     WITH this
