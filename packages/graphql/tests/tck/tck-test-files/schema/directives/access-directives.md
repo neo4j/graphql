@@ -123,6 +123,7 @@ type Mutation {
 
 type Query {
     users(where: UserWhere, options: UserOptions): [User!]!
+    usersCount(where: UserWhere): Int!
 }
 ```
 

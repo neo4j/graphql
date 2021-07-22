@@ -112,6 +112,9 @@
                 <d:tocentry linkend="ogm-methods-find">
                     <?dbhtml filename="ogm/methods/find/index.html"?>
                 </d:tocentry>
+                <d:tocentry linkend="ogm-methods-count">
+                    <?dbhtml filename="ogm/methods/count/index.html"?>
+                </d:tocentry>
                 <d:tocentry linkend="ogm-methods-update">
                     <?dbhtml filename="ogm/methods/update/index.html"?>
                 </d:tocentry>
