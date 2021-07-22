@@ -18,7 +18,7 @@ type Movie {
 
 ```graphql
 {
-    countMovies
+    moviesCount
 }
 ```
 
@@ -43,7 +43,7 @@ RETURN count(this)
 
 ```graphql
 {
-    countMovies(where: { title: "some-title" })
+    moviesCount(where: { title: "some-title" })
 }
 ```
 

@@ -332,8 +332,8 @@ type PageInfo {
 type Query {
     genres(where: GenreWhere, options: GenreOptions): [Genre!]!
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-    countMovies(where: MovieWhere): Int!
-    countGenres(where: GenreWhere): Int!
+    moviesCount(where: MovieWhere): Int!
+    genresCount(where: GenreWhere): Int!
 }
 
 input QueryOptions {

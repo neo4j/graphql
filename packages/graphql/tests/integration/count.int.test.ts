@@ -26,6 +26,7 @@ import pluralize from "pluralize";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import jsonwebtoken from "jsonwebtoken";
+import camelCase from "camelcase";
 
 describe("count", () => {
     let driver: Driver;
@@ -43,9 +44,10 @@ describe("count", () => {
 
         const randomType = `${generate({
             charset: "alphabetic",
+            readable: true,
         })}Movie`;
 
-        const pluralRandomType = pluralize(randomType);
+        const pluralRandomType = pluralize(camelCase(randomType));
 
         const typeDefs = `
             type ${randomType} {
@@ -65,7 +67,7 @@ describe("count", () => {
 
             const query = `
                 {
-                    count${pluralRandomType}
+                    ${pluralRandomType}Count
                 }
             `;
 
@@ -81,7 +83,7 @@ describe("count", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`count${pluralRandomType}`]).toEqual(2);
+            expect((gqlResult.data as any)[`${pluralRandomType}Count`]).toEqual(2);
         } finally {
             await session.close();
         }
@@ -117,7 +119,7 @@ describe("count", () => {
 
             const query = `
                 {
-                    countMovies(where: { OR: [{id: "${id1}"}, {id: "${id2}"}] })
+                    moviesCount(where: { OR: [{id: "${id1}"}, {id: "${id2}"}] })
                 }
             `;
 
@@ -133,7 +135,7 @@ describe("count", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).countMovies).toEqual(2);
+            expect((gqlResult.data as any).moviesCount).toEqual(2);
         } finally {
             await session.close();
         }
@@ -192,7 +194,7 @@ describe("count", () => {
 
             const query = `
                 {
-                    countPosts
+                    postsCount
                 }
             `;
 
@@ -212,7 +214,7 @@ describe("count", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).countPosts).toEqual(2);
+            expect((gqlResult.data as any).postsCount).toEqual(2);
         } finally {
             await session.close();
         }
@@ -255,7 +257,7 @@ describe("count", () => {
 
             const query = `
                 {
-                    countUsers
+                    usersCount
                 }
             `;
 

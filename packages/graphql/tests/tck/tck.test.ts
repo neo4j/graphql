@@ -161,7 +161,7 @@ describe("TCK Generated tests", () => {
 
                                 return [];
                             },
-                            [`count${pluralize(def.name.value)}`]: (
+                            [`${pluralize(camelCase(def.name.value))}Count`]: (
                                 _root: any,
                                 _params: any,
                                 context: Context,

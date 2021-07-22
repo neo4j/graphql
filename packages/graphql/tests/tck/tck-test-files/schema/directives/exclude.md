@@ -140,7 +140,7 @@ type Mutation {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-    countMovies(where: MovieWhere): Int!
+    moviesCount(where: MovieWhere): Int!
 }
 ```
 
@@ -228,7 +228,7 @@ type Mutation {
 
 type Query {
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
-    countActors(where: ActorWhere): Int!
+    actorsCount(where: ActorWhere): Int!
 }
 ```
 
@@ -329,7 +329,7 @@ type Mutation {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-    countMovies(where: MovieWhere): Int!
+    moviesCount(where: MovieWhere): Int!
 }
 ```
 
@@ -439,7 +439,7 @@ type Mutation {
 type Query {
     customActorQuery: Actor
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-    countMovies(where: MovieWhere): Int!
+    moviesCount(where: MovieWhere): Int!
 }
 ```
 
@@ -672,7 +672,7 @@ type PageInfo {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-    countMovies(where: MovieWhere): Int!
+    moviesCount(where: MovieWhere): Int!
 }
 
 enum SortDirection {
@@ -785,7 +785,7 @@ type Mutation {
 
 type Query {
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
-    countActors(where: ActorWhere): Int!
+    actorsCount(where: ActorWhere): Int!
 }
 ```
 

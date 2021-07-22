@@ -1162,7 +1162,7 @@ function makeAugmentedSchema(
             });
 
             composer.Query.addFields({
-                [`count${pluralize(node.name)}`]: countResolver({ node }),
+                [`${pluralize(camelCase(node.name))}Count`]: countResolver({ node }),
             });
         }
 
