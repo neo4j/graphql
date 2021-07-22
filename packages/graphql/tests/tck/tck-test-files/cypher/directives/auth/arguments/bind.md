@@ -259,12 +259,12 @@ mutation {
 MATCH (this:User)
 WHERE this.id = $this_id
 
-WITH this OPTIONAL MATCH (this)-[this_has_post0:HAS_POST]->(this_posts0:Post)
+WITH this OPTIONAL MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
 WHERE this_posts0.id = $updateUsers.args.update.posts[0].where.node.id
 CALL apoc.do.when(this_posts0 IS NOT NULL,
 "
     WITH this, this_posts0
-    OPTIONAL MATCH (this_posts0)<-[this_posts0_has_post0:HAS_POST]-(this_posts0_creator0:User)
+    OPTIONAL MATCH (this_posts0)<-[this_posts0_has_post0_relationship:HAS_POST]-(this_posts0_creator0:User)
     CALL apoc.do.when(this_posts0_creator0 IS NOT NULL,
     \"
         SET this_posts0_creator0.id = $this_update_posts0_creator0_id
@@ -275,7 +275,7 @@ CALL apoc.do.when(this_posts0 IS NOT NULL,
         RETURN count(*)
     \",
     \"\",
-    {this_posts0:this_posts0, updateUsers: $updateUsers, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id}) YIELD value as _
+    {this:this, this_posts0:this_posts0, updateUsers: $updateUsers, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id}) YIELD value as _
     RETURN count(*)
 ",
 "",
@@ -367,15 +367,19 @@ MATCH (this:Post)
 WHERE this.id = $this_id
 
 WITH this
-OPTIONAL MATCH (this_connect_creator0_node:User)
-WHERE this_connect_creator0_node.id = $this_connect_creator0_node_id
-FOREACH(_ IN CASE this_connect_creator0_node WHEN NULL THEN [] ELSE [1] END |
-    MERGE (this)<-[:HAS_POST]-(this_connect_creator0_node)
-)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_creator0_node:User)
+    WHERE this_connect_creator0_node.id = $this_connect_creator0_node_id
+    FOREACH(_ IN CASE this_connect_creator0_node WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this)<-[:HAS_POST]-(this_connect_creator0_node)
+    )
 
-WITH this, this_connect_creator0_node
-CALL apoc.util.validate(NOT(EXISTS((this_connect_creator0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_creator0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_creator0_nodePost0_bind_auth_bind0_creator_id) AND EXISTS(this_connect_creator0_node.id) AND this_connect_creator0_node.id = $this_connect_creator0_nodeUser1_bind_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+    WITH this, this_connect_creator0_node
+    CALL apoc.util.validate(NOT(EXISTS((this_connect_creator0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_creator0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_connect_creator0_nodePost0_bind_auth_bind0_creator_id) AND EXISTS(this_connect_creator0_node.id) AND this_connect_creator0_node.id = $this_connect_creator0_nodeUser1_bind_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
 
+    RETURN count(*)
+}
 RETURN this { .id } AS this
 ```
 

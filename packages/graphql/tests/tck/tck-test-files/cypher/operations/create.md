@@ -281,17 +281,21 @@ mutation {
 
 ```cypher
 CALL {
-  CREATE (this0:Movie)
-  SET this0.id = $this0_id
+    CREATE (this0:Movie)
+    SET this0.id = $this0_id
 
     WITH this0
-    OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-    WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_name
-    FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
-      MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
-    )
+    CALL {
+        WITH this0
+        OPTIONAL MATCH (this0_actors_connect0_node:Actor)
+        WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_name
+        FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
+        )
+        RETURN count(*)
+    }
 
-  RETURN this0
+    RETURN this0
 }
 
 RETURN this0 { .id } AS this0

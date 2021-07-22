@@ -145,12 +145,16 @@ CALL {
     SET this0_photos1_node.description = $this0_photos1_node_description
     SET this0_photos1_node.url = $this0_photos1_node_url
 
-      WITH this0, this0_photos1_node
-      OPTIONAL MATCH (this0_photos1_node_color_connect0_node:Color)
-      WHERE this0_photos1_node_color_connect0_node.id = $this0_photos1_node_color_connect0_node_id
-      FOREACH(_ IN CASE this0_photos1_node_color_connect0_node WHEN NULL THEN [] ELSE [1] END |
+    WITH this0, this0_photos1_node
+    CALL {
+        WITH this0, this0_photos1_node
+        OPTIONAL MATCH (this0_photos1_node_color_connect0_node:Color)
+        WHERE this0_photos1_node_color_connect0_node.id = $this0_photos1_node_color_connect0_node_id
+        FOREACH(_ IN CASE this0_photos1_node_color_connect0_node WHEN NULL THEN [] ELSE [1] END |
         MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
-      )
+        )
+        RETURN count(*)
+    }
     MERGE (this0)-[:HAS_PHOTO]->(this0_photos1_node)
 
     WITH this0
@@ -159,12 +163,16 @@ CALL {
     SET this0_photos2_node.description = $this0_photos2_node_description
     SET this0_photos2_node.url = $this0_photos2_node_url
 
-      WITH this0, this0_photos2_node
-      OPTIONAL MATCH (this0_photos2_node_color_connect0_node:Color)
-      WHERE this0_photos2_node_color_connect0_node.id = $this0_photos2_node_color_connect0_node_id
-      FOREACH(_ IN CASE this0_photos2_node_color_connect0_node WHEN NULL THEN [] ELSE [1] END |
+    WITH this0, this0_photos2_node
+    CALL {
+        WITH this0, this0_photos2_node
+        OPTIONAL MATCH (this0_photos2_node_color_connect0_node:Color)
+        WHERE this0_photos2_node_color_connect0_node.id = $this0_photos2_node_color_connect0_node_id
+        FOREACH(_ IN CASE this0_photos2_node_color_connect0_node WHEN NULL THEN [] ELSE [1] END |
         MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
-      )
+        )
+        RETURN count(*)
+    }
     MERGE (this0)-[:HAS_PHOTO]->(this0_photos2_node)
 
   RETURN this0
@@ -248,7 +256,7 @@ MATCH (this:Product)
 WHERE this.name = $this_name
 
 WITH this
-OPTIONAL MATCH (this)-[this_has_photo0:HAS_PHOTO]->(this_photos0:Photo)
+OPTIONAL MATCH (this)-[this_has_photo0_relationship:HAS_PHOTO]->(this_photos0:Photo)
 WHERE this_photos0.description = $updateProducts.args.update.photos[0].where.node.description
 CALL apoc.do.when(this_photos0 IS NOT NULL,
   "
@@ -261,11 +269,15 @@ CALL apoc.do.when(this_photos0 IS NOT NULL,
     )
 
     WITH this, this_photos0
-    OPTIONAL MATCH (this_photos0_color0_connect0_node:Color)
-    WHERE this_photos0_color0_connect0_node.name = $this_photos0_color0_connect0_node_name
-    FOREACH(_ IN CASE this_photos0_color0_connect0_node WHEN NULL THEN [] ELSE [1] END |
-      MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
-    )
+    CALL {
+        WITH this, this_photos0
+        OPTIONAL MATCH (this_photos0_color0_connect0_node:Color)
+        WHERE this_photos0_color0_connect0_node.name = $this_photos0_color0_connect0_node_name
+        FOREACH(_ IN CASE this_photos0_color0_connect0_node WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
+        )
+        RETURN count(*)
+    }
 
     RETURN count(*)
   ",

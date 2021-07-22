@@ -580,7 +580,7 @@ describe("auth/where", () => {
     });
 
     describe("connect", () => {
-        test("should add $jwt.id to where (update update)", async () => {
+        test("should add jwt.id to where - update update", async () => {
             const session = driver.session({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
@@ -653,7 +653,7 @@ describe("auth/where", () => {
             }
         });
 
-        test("should add $jwt.id to where (update connect)", async () => {
+        test("should add jwt.id to where - update connect", async () => {
             const session = driver.session({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `

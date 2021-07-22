@@ -223,11 +223,15 @@ CALL {
     SET this0.title = $this0_title
 
     WITH this0
-    OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
-    WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_name
-    FOREACH(_ IN CASE this0_search_Genre_connect0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
-    )
+    CALL {
+        WITH this0
+        OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
+        WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_name
+        FOREACH(_ IN CASE this0_search_Genre_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
+        )
+        RETURN count(*)
+    }
 
     RETURN this0
 }
@@ -277,7 +281,7 @@ MATCH (this:Movie)
 WHERE this.title = $this_title
 
 WITH this
-OPTIONAL MATCH (this)-[this_search0:SEARCH]->(this_search_Genre0:Genre)
+OPTIONAL MATCH (this)-[this_search0_relationship:SEARCH]->(this_search_Genre0:Genre)
 WHERE this_search_Genre0.name = $updateMovies.args.update.search.Genre[0].where.node.name
 CALL apoc.do.when(this_search_Genre0 IS NOT NULL, " SET this_search_Genre0.name = $this_update_search_Genre0_name RETURN count(*) ", "", {this:this, updateMovies: $updateMovies, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name}) YIELD value as _
 
@@ -479,9 +483,13 @@ mutation {
 MATCH (this:Movie)
 WHERE this.title = $this_title
 WITH this
-OPTIONAL MATCH (this_connect_search_Genre0_node:Genre)
-WHERE this_connect_search_Genre0_node.name = $this_connect_search_Genre0_node_name
-FOREACH(_ IN CASE this_connect_search_Genre0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node) )
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_search_Genre0_node:Genre)
+    WHERE this_connect_search_Genre0_node.name = $this_connect_search_Genre0_node_name
+    FOREACH(_ IN CASE this_connect_search_Genre0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node) )
+    RETURN count(*)
+}
 RETURN this { .title } AS this
 ```
 
