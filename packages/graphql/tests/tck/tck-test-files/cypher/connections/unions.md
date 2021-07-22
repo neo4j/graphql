@@ -383,6 +383,11 @@ CALL {
         OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Book:Book)
         WITH { words: this_wrote.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
         RETURN edge
+        UNION
+        WITH this
+        OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Journal:Journal)
+        WITH { words: this_wrote.words, node: { __resolveType: "Journal" } } AS edge
+        RETURN edge
     }
     WITH collect(edge) as edges, count(edge) as totalCount
     RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection

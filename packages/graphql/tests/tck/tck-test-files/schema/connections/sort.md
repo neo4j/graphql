@@ -299,8 +299,8 @@ input Node2Where {
 type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
-    startCursor: String!
-    endCursor: String!
+    startCursor: String
+    endCursor: String
 }
 
 type Query {
