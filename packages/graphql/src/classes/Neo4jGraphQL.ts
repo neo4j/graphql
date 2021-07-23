@@ -77,8 +77,15 @@ class Neo4jGraphQL {
         this.nodes = nodes;
         this.relationships = relationships;
         this.schema = schema;
+
         /*
-            addResolversToSchema must be first, so that custom resolvers also get schema level resolvers
+            Order must be:
+
+                addResolversToSchema -> visitSchemaDirectives -> createWrappedSchema
+
+            addResolversToSchema breaks schema directives added before it
+
+            createWrappedSchema must come last so that all requests have context prepared correctly
         */
         if (resolvers) {
             if (Array.isArray(resolvers)) {
@@ -91,11 +98,7 @@ class Neo4jGraphQL {
         }
 
         if (schemaDirectives) {
-            SchemaDirectiveVisitor.visitSchemaDirectives(
-                this.schema,
-                schemaDirectives
-                // (schemaDirectives as unknown) as Record<string, typeof SchemaDirectiveVisitor>
-            );
+            SchemaDirectiveVisitor.visitSchemaDirectives(this.schema, schemaDirectives);
         }
 
         this.schema = this.createWrappedSchema({ schema: this.schema, config });
