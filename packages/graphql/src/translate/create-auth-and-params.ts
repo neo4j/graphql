@@ -102,8 +102,10 @@ function createAuthPredicate({
                     paramValue = dotProp.get({ value: context }, `value.${ctxPath}`) as string;
                 }
 
-                if (paramValue === undefined) {
+                if (paramValue === undefined && rule.allowUnauthenticated !== true) {
                     throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
+                } else if (paramValue === undefined) {
+                    paramValue = null;
                 }
 
                 const param = `${chainStr}_${key}`;
