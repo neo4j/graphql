@@ -21,6 +21,7 @@ import Debug from "debug";
 import { Driver } from "neo4j-driver";
 import { DocumentNode, GraphQLResolveInfo, GraphQLSchema, parse, printSchema, print } from "graphql";
 import { addResolversToSchema, addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
+import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
 import type { DriverConfig, CypherQueryOptions } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
@@ -46,9 +47,10 @@ export interface Neo4jGraphQLConfig {
     queryOptions?: CypherQueryOptions;
 }
 
-export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
+export interface Neo4jGraphQLConstructor extends Omit<IExecutableSchemaDefinition, "schemaDirectives"> {
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
+    schemaDirectives?: Record<string, typeof SchemaDirectiveVisitor>;
 }
 
 class Neo4jGraphQL {
@@ -65,7 +67,7 @@ class Neo4jGraphQL {
     public config?: Neo4jGraphQLConfig;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, resolvers, ...schemaDefinition } = input;
+        const { config = {}, driver, resolvers, schemaDirectives, ...schemaDefinition } = input;
         const { nodes, relationships, schema } = makeAugmentedSchema(schemaDefinition, {
             enableRegex: config.enableRegex,
         });
@@ -87,6 +89,15 @@ class Neo4jGraphQL {
                 this.schema = addResolversToSchema(this.schema, resolvers);
             }
         }
+
+        if (schemaDirectives) {
+            SchemaDirectiveVisitor.visitSchemaDirectives(
+                this.schema,
+                schemaDirectives
+                // (schemaDirectives as unknown) as Record<string, typeof SchemaDirectiveVisitor>
+            );
+        }
+
         this.schema = this.createWrappedSchema({ schema: this.schema, config });
         this.document = parse(printSchema(schema));
     }
