@@ -154,6 +154,25 @@ describe("validateDocument", () => {
         }
     });
 
+    test("should throw an error a user tries to redefine one of our directives", () => {
+        const doc = parse(`
+            directive @relationship on FIELD_DEFINITION
+
+            type Movie {
+                title: String
+            }
+        `);
+
+        try {
+            validateDocument(doc);
+            throw new Error();
+        } catch (error) {
+            expect(error.message).toContain(
+                'Directive "@relationship" already exists in the schema. It cannot be redefined.'
+            );
+        }
+    });
+
     test("should remove auth directive and pass validation", () => {
         const doc = parse(`
             type User @auth {
