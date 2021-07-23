@@ -17,13 +17,31 @@
  * limitations under the License.
  */
 
-import { DefinitionNode, DocumentNode, GraphQLSchema, extendSchema, validateSchema } from "graphql";
+import {
+    DefinitionNode,
+    DocumentNode,
+    GraphQLSchema,
+    extendSchema,
+    validateSchema,
+    ObjectTypeDefinitionNode,
+} from "graphql";
 import * as scalars from "../scalars";
 import * as enums from "./enums";
 import * as directives from "./directives";
 import * as point from "../point";
 
 function filterDocument(document: DocumentNode) {
+    const nodeNames = document.definitions
+        .filter((definition) => {
+            if (definition.kind === "ObjectTypeDefinition") {
+                if (!["Query", "Mutation"].includes(definition.name.value)) {
+                    return true;
+                }
+            }
+            return false;
+        })
+        .map((definition) => (definition as ObjectTypeDefinitionNode).name.value);
+
     return {
         ...document,
         definitions: document.definitions.reduce((res: DefinitionNode[], def) => {
@@ -38,6 +56,22 @@ function filterDocument(document: DocumentNode) {
                     directives: def.directives?.filter((x) => !["auth"].includes(x.name.value)),
                     fields: def.fields?.map((f) => ({
                         ...f,
+                        arguments: f.arguments?.filter((argument) => {
+                            const getArgumentType = (type) => {
+                                if (["NonNullType", "ListType"].includes(type.kind)) {
+                                    return getArgumentType(type.type);
+                                }
+                                return type.name.value;
+                            };
+                            const type = getArgumentType(argument.type);
+                            const match = /(?<nodeName>.+)(?:CreateInput|UpdateInput|Where)/gm.exec(type);
+                            if (match?.groups?.nodeName) {
+                                if (nodeNames.includes(match.groups.nodeName)) {
+                                    return false;
+                                }
+                            }
+                            return true;
+                        }),
                         directives: f.directives?.filter((x) => !["auth"].includes(x.name.value)),
                     })),
                 },

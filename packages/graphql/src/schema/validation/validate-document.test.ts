@@ -165,6 +165,34 @@ describe("validateDocument", () => {
         expect(res).toBeUndefined();
     });
 
+    test("should not throw error on use of internal input types", () => {
+        const doc = parse(`
+            type Mutation {
+                login: String
+                createPost(input: PostCreateInput!): Post!
+                    @cypher(
+                        statement: """
+                        CREATE (post:Post)
+                        SET
+                          post = $input,
+                          post.datetime = datetime(),
+                          post.id = randomUUID()
+                        RETURN post
+                        """
+                    )
+            }
+
+            type Post {
+                id: ID! @id
+                title: String!
+                datetime: DateTime @readonly @timestamp(operations: [CREATE])
+            }
+        `);
+
+        const res = validateDocument(doc);
+        expect(res).toBeUndefined();
+    });
+
     describe("Github Issue 158", () => {
         test("should not throw error on validation of schema", () => {
             const doc = parse(`
