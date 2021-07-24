@@ -18,6 +18,7 @@
  */
 
 import { isInt } from "neo4j-driver";
+import { UnionTypeDefinitionNode } from "graphql/language/ast";
 import { execute } from "../../utils";
 import { BaseField, Context } from "../../types";
 import { graphqlArgsToCompose } from "../to-compose";
@@ -55,6 +56,11 @@ export default function cypherResolver({
         }
 
         const referenceNode = context.neoSchema.nodes.find((x) => x.name === field.typeMeta.name);
+        const unions = context.neoSchema.document.definitions.filter(
+            (x) => x.kind === "UnionTypeDefinition"
+        ) as UnionTypeDefinitionNode[];
+        const referenceUnion = unions.find((u) => u.name.value === field.typeMeta.name);
+
         if (referenceNode) {
             const recurse = createProjectionAndParams({
                 fieldsByTypeName,
@@ -66,6 +72,31 @@ export default function cypherResolver({
             params = { ...params, ...recurse[1] };
             if (recurse[2]?.authValidateStrs?.length) {
                 projectionAuthStr = recurse[2].authValidateStrs.join(" AND ");
+            }
+        } else if (referenceUnion) {
+            const referencedNodes = referenceUnion?.types?.map((u) =>
+                context.neoSchema.nodes.find((n) => n.name === u.name.value)
+            );
+            if (referencedNodes) {
+                referencedNodes
+                    .filter((b) => b !== undefined)
+                    .filter((n) => Object.keys(fieldsByTypeName).includes(n?.name ?? ""))
+                    .forEach((node) => {
+                        if (node) {
+                            const recurse = createProjectionAndParams({
+                                fieldsByTypeName: { [node.name]: fieldsByTypeName[node.name] },
+                                node,
+                                context,
+                                resolveType: true,
+                                varName: `this`,
+                            });
+                            [projectionStr] = recurse;
+                            params = { ...params, ...recurse[1] };
+                            if (recurse[2]?.authValidateStrs?.length) {
+                                projectionAuthStr = recurse[2].authValidateStrs.join(" AND ");
+                            }
+                        }
+                    });
             }
         }
 
