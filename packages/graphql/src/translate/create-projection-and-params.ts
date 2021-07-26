@@ -139,14 +139,7 @@ function createProjectionAndParams({
     chainStr?: string;
     varName: string;
 }): [string, any, ProjectionMeta?] {
-    function reducer(res: Res, [k, field]: [string, any]): Res {
-        let key = k;
-        const alias: string | undefined = field.alias !== field.name ? field.alias : undefined;
-
-        if (alias) {
-            key = field.name as string;
-        }
-
+    function reducer(res: Res, [key, field]: [string, any]): Res {
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
@@ -157,11 +150,11 @@ function createProjectionAndParams({
         const whereInput = field.args.where as GraphQLWhereArg;
         const optionsInput = field.args.options as GraphQLOptionsArg;
         const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
-        const cypherField = node.cypherFields.find((x) => x.fieldName === key);
-        const relationField = node.relationFields.find((x) => x.fieldName === key);
-        const pointField = node.pointFields.find((x) => x.fieldName === key);
-        const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === key);
-        const authableField = node.authableFields.find((x) => x.fieldName === key);
+        const cypherField = node.cypherFields.find((x) => x.fieldName === field.name);
+        const relationField = node.relationFields.find((x) => x.fieldName === field.name);
+        const pointField = node.pointFields.find((x) => x.fieldName === field.name);
+        const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === field.name);
+        const authableField = node.authableFields.find((x) => x.fieldName === field.name);
 
         if (authableField) {
             if (authableField.auth) {
@@ -422,7 +415,11 @@ function createProjectionAndParams({
                     : `${key}: apoc.date.convertFormat(toString(${varName}.${key}), "iso_zoned_date_time", "iso_offset_date_time")`
             );
         } else {
-            res.projection.push(`.${key}`);
+            // If field is aliased, rename projected field to alias and set to varName.fieldName
+            // e.g. RETURN varname { .fieldName } -> RETURN varName { alias: varName.fieldName }
+            const aliasedProj = field.alias !== field.name ? `${field.alias}: ${varName}` : "";
+
+            res.projection.push(`${aliasedProj}.${field.name}`);
         }
 
         return res;
