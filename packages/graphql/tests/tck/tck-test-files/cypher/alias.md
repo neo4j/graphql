@@ -11,6 +11,8 @@ type Actor {
 
 type Movie {
     id: ID
+    releaseDate: DateTime!
+    location: Point!
     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
     custom: [Movie!]! @cypher(statement: """
         MATCH (m:Movie)
@@ -102,5 +104,75 @@ RETURN this {
     },
     "this_keanu_name": "Keanu",
     "this_carrie_name": "Carrie"
+}
+```
+
+### Alias datetime field
+
+**GraphQL input**
+
+```graphql
+{
+    movies {
+        d1: releaseDate
+        d2: releaseDate
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+RETURN this {
+    d1: apoc.date.convertFormat(toString(this.releaseDate), "iso_zoned_date_time", "iso_offset_date_time"),
+    d2: apoc.date.convertFormat(toString(this.releaseDate), "iso_zoned_date_time", "iso_offset_date_time")
+} as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "auth": {
+       "isAuthenticated": true,
+       "roles": [],
+       "jwt": {}
+    }
+}
+```
+
+### Alias point field
+
+**GraphQL input**
+
+```graphql
+{
+    movies {
+        p1: location
+        p2: location
+    }
+}
+```
+
+**Expected Cypher output**
+
+```cypher
+MATCH (this:Movie)
+RETURN this {
+    p1: { point: this.location },
+    p2: { point: this.location }
+} as this
+```
+
+**Expected Cypher params**
+
+```cypher-params
+{
+    "auth": {
+       "isAuthenticated": true,
+       "roles": [],
+       "jwt": {}
+    }
 }
 ```
