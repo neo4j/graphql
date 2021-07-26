@@ -80,17 +80,13 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
             charset: "alphabetic",
         });
 
-        const comment1Content = generate({
-            charset: "alphabetic",
-        });
+        const comment1Content = "comment 1 content";
 
         const comment2Id = generate({
             charset: "alphabetic",
         });
 
-        const comment2Content = generate({
-            charset: "alphabetic",
-        });
+        const comment2Content = "comment 2 content";
 
         const query = `
             query {
