@@ -26,7 +26,7 @@ import { Node } from "../../classes";
 import { Context } from "../../types";
 
 export default function updateResolver({ node }: { node: Node }) {
-    async function resolve(_root: any, _args: any, _context: unknown, _info: GraphQLResolveInfo) {
+    async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         const [cypher, params] = translateUpdate({ context, node });
         const result = await execute({
@@ -36,7 +36,7 @@ export default function updateResolver({ node }: { node: Node }) {
             context,
         });
 
-        const responseField = _info.fieldNodes[0].selectionSet?.selections.find(
+        const responseField = info.fieldNodes[0].selectionSet?.selections.find(
             (selection) => selection.kind === "Field" && selection.name.value === pluralize(camelCase(node.name))
         ) as FieldNode; // Field exist by construction and must be selected as it is the only field.
 
