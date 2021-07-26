@@ -51,9 +51,13 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
     const whereStrs: string[] = [];
-    const { fieldsByTypeName } = resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`][
-        pluralize(camelCase(node.name))
-    ];
+
+    // Due to potential aliasing of returned object in response we look through fields of UpdateMutationResponse
+    // and find field where field.name ~ node.name which exists by construction
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { fieldsByTypeName } = Object.values(
+        resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`]
+    ).find((field) => field.name === pluralize(camelCase(node.name)))!;
 
     if (whereInput) {
         const where = createWhereAndParams({

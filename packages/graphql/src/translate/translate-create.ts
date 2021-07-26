@@ -28,9 +28,12 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
 
-    const { fieldsByTypeName } = resolveTree.fieldsByTypeName[`Create${pluralize(node.name)}MutationResponse`][
-        pluralize(camelCase(node.name))
-    ];
+    // Due to potential aliasing of returned object in response we look through fields of CreateMutationResponse
+    // and find field where field.name ~ node.name which exists by construction
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { fieldsByTypeName } = Object.values(
+        resolveTree.fieldsByTypeName[`Create${pluralize(node.name)}MutationResponse`]
+    ).find((field) => field.name === pluralize(camelCase(node.name)))!;
 
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {

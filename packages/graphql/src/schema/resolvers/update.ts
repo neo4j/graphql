@@ -19,13 +19,14 @@
 
 import camelCase from "camelcase";
 import pluralize from "pluralize";
+import { FieldNode, GraphQLResolveInfo } from "graphql";
+import { execute } from "../../utils";
+import { translateUpdate } from "../../translate";
 import { Node } from "../../classes";
 import { Context } from "../../types";
-import { translateUpdate } from "../../translate";
-import { execute } from "../../utils";
 
 export default function updateResolver({ node }: { node: Node }) {
-    async function resolve(_root: any, _args: any, _context: unknown) {
+    async function resolve(_root: any, _args: any, _context: unknown, _info: GraphQLResolveInfo) {
         const context = _context as Context;
         const [cypher, params] = translateUpdate({ context, node });
         const result = await execute({
@@ -35,7 +36,15 @@ export default function updateResolver({ node }: { node: Node }) {
             context,
         });
 
-        return { [pluralize(camelCase(node.name))]: result.map((x) => x.this) };
+        const responseField = _info.fieldNodes[0].selectionSet?.selections.find(
+            (selection) => selection.kind === "Field" && selection.name.value === pluralize(camelCase(node.name))
+        ) as FieldNode; // Field exist by construction and must be selected as it is the only field.
+
+        const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
+
+        return {
+            [responseKey]: result.map((x) => x.this),
+        };
     }
 
     return {
