@@ -21,13 +21,7 @@ import { DirectiveNode, valueFromASTUntyped } from "graphql";
 import { Auth, AuthRule, AuthOperations } from "../types";
 
 const validOperations: AuthOperations[] = ["CREATE", "READ", "UPDATE", "DELETE", "CONNECT", "DISCONNECT"];
-const validFields = [
-    "operations",
-    "AND", "OR",
-    "allow", "where", "bind",
-    "isAuthenticated", "allowUnauthenticated",
-    "roles"
-];
+const validFields = ["operations", "AND", "OR", "allow", "where", "bind", "isAuthenticated", "allowUnauthenticated", "roles"];
 
 function getAuth(directive: DirectiveNode): Auth {
     const auth: Auth = { rules: [], type: "JWT" };

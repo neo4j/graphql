@@ -67,7 +67,7 @@ function createAuthPredicate({
     }
 
     const { jwt } = context;
-    const allowUnauthenticated = rule.allowUnauthenticated
+    const { allowUnauthenticated } = rule;
 
     const result = Object.entries(rule[kind] as any).reduce(
         (res: Res, [key, value]) => {
@@ -113,7 +113,7 @@ function createAuthPredicate({
                 if (paramValue === undefined) {
                     res.strs.push("false");
                 } else if (paramValue === null) {
-                    res.strs.push(`${varName}.${key} IS null`);
+                    res.strs.push(`${varName}.${key} IS NULL`);
                 } else {
                     const param = `${chainStr}_${key}`;
                     res.params[param] = paramValue;
