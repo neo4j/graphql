@@ -29,15 +29,6 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
 
     beforeAll(async () => {
         driver = await neo4j();
-        const session = driver.session();
-        try {
-            await session.run(`
-                MATCH (n)
-                DETACH DELETE n
-            `);
-        } finally {
-            await session.close();
-        }
     });
 
     afterAll(async () => {
