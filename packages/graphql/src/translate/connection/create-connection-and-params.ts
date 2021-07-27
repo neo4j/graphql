@@ -89,143 +89,148 @@ function createConnectionAndParams({
         const unionSubqueries: string[] = [];
 
         unionNodes.forEach((n) => {
-            const relatedNodeVariable = `${nodeVariable}_${n.name}`;
-            const nodeOutStr = `(${relatedNodeVariable}:${n.name})`;
+            if (!whereInput || Object.prototype.hasOwnProperty.call(whereInput, n.name)) {
+                const relatedNodeVariable = `${nodeVariable}_${n.name}`;
+                const nodeOutStr = `(${relatedNodeVariable}:${n.name})`;
 
-            const unionSubquery: string[] = [];
-            const unionSubqueryElementsToCollect = [...elementsToCollect];
+                const unionSubquery: string[] = [];
+                const unionSubqueryElementsToCollect = [...elementsToCollect];
 
-            const nestedSubqueries: string[] = [];
+                const nestedSubqueries: string[] = [];
 
-            if (node) {
-                // Doing this for unions isn't necessary, but this would also work for interfaces if we decided to take that direction
-                const nodeFieldsByTypeName: FieldsByTypeName = {
-                    [n.name]: {
-                        ...node?.fieldsByTypeName[n.name],
-                        ...node?.fieldsByTypeName[field.relationship.typeMeta.name],
-                    },
-                };
+                if (node) {
+                    // Doing this for unions isn't necessary, but this would also work for interfaces if we decided to take that direction
+                    const nodeFieldsByTypeName: FieldsByTypeName = {
+                        [n.name]: {
+                            ...node?.fieldsByTypeName[n.name],
+                            ...node?.fieldsByTypeName[field.relationship.typeMeta.name],
+                        },
+                    };
 
-                const nodeProjectionAndParams = createProjectionAndParams({
-                    fieldsByTypeName: nodeFieldsByTypeName,
-                    node: n,
-                    context,
-                    varName: relatedNodeVariable,
-                    literalElements: true,
-                    resolveType: true,
-                });
-                const [nodeProjection, nodeProjectionParams] = nodeProjectionAndParams;
-                unionSubqueryElementsToCollect.push(`node: ${nodeProjection}`);
-                globalParams = {
-                    ...globalParams,
-                    ...nodeProjectionParams,
-                };
-
-                if (nodeProjectionAndParams[2]?.connectionFields?.length) {
-                    nodeProjectionAndParams[2].connectionFields.forEach((connectionResolveTree) => {
-                        const connectionField = n.connectionFields.find(
-                            (x) => x.fieldName === connectionResolveTree.name
-                        ) as ConnectionField;
-                        const nestedConnection = createConnectionAndParams({
-                            resolveTree: connectionResolveTree,
-                            field: connectionField,
-                            context,
-                            nodeVariable: relatedNodeVariable,
-                            parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
-                                resolveTree.name
-                            }.edges.node`,
-                        });
-                        nestedSubqueries.push(nestedConnection[0]);
-
-                        globalParams = {
-                            ...globalParams,
-                            ...Object.entries(nestedConnection[1]).reduce<Record<string, unknown>>((res, [k, v]) => {
-                                if (k !== `${relatedNodeVariable}_${connectionResolveTree.name}`) {
-                                    res[k] = v;
-                                }
-                                return res;
-                            }, {}),
-                        };
-
-                        if (nestedConnection[1][`${relatedNodeVariable}_${connectionResolveTree.name}`]) {
-                            if (!nestedConnectionFieldParams) nestedConnectionFieldParams = {};
-                            nestedConnectionFieldParams = {
-                                ...nestedConnectionFieldParams,
-                                ...{
-                                    [connectionResolveTree.name]:
-                                        nestedConnection[1][`${relatedNodeVariable}_${connectionResolveTree.name}`],
-                                },
-                            };
-                        }
+                    const nodeProjectionAndParams = createProjectionAndParams({
+                        fieldsByTypeName: nodeFieldsByTypeName,
+                        node: n,
+                        context,
+                        varName: relatedNodeVariable,
+                        literalElements: true,
+                        resolveType: true,
                     });
+                    const [nodeProjection, nodeProjectionParams] = nodeProjectionAndParams;
+                    unionSubqueryElementsToCollect.push(`node: ${nodeProjection}`);
+                    globalParams = {
+                        ...globalParams,
+                        ...nodeProjectionParams,
+                    };
+
+                    if (nodeProjectionAndParams[2]?.connectionFields?.length) {
+                        nodeProjectionAndParams[2].connectionFields.forEach((connectionResolveTree) => {
+                            const connectionField = n.connectionFields.find(
+                                (x) => x.fieldName === connectionResolveTree.name
+                            ) as ConnectionField;
+                            const nestedConnection = createConnectionAndParams({
+                                resolveTree: connectionResolveTree,
+                                field: connectionField,
+                                context,
+                                nodeVariable: relatedNodeVariable,
+                                parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
+                                    resolveTree.name
+                                }.edges.node`,
+                            });
+                            nestedSubqueries.push(nestedConnection[0]);
+
+                            globalParams = {
+                                ...globalParams,
+                                ...Object.entries(nestedConnection[1]).reduce<Record<string, unknown>>(
+                                    (res, [k, v]) => {
+                                        if (k !== `${relatedNodeVariable}_${connectionResolveTree.name}`) {
+                                            res[k] = v;
+                                        }
+                                        return res;
+                                    },
+                                    {}
+                                ),
+                            };
+
+                            if (nestedConnection[1][`${relatedNodeVariable}_${connectionResolveTree.name}`]) {
+                                if (!nestedConnectionFieldParams) nestedConnectionFieldParams = {};
+                                nestedConnectionFieldParams = {
+                                    ...nestedConnectionFieldParams,
+                                    ...{
+                                        [connectionResolveTree.name]:
+                                            nestedConnection[1][`${relatedNodeVariable}_${connectionResolveTree.name}`],
+                                    },
+                                };
+                            }
+                        });
+                    }
+                } else {
+                    // This ensures that totalCount calculation is accurate if edges not asked for
+                    unionSubqueryElementsToCollect.push(`node: { __resolveType: "${n.name}" }`);
                 }
-            } else {
-                // This ensures that totalCount calculation is accurate if edges not asked for
-                unionSubqueryElementsToCollect.push(`node: { __resolveType: "${n.name}" }`);
-            }
 
-            unionSubquery.push(`WITH ${nodeVariable}`);
-            unionSubquery.push(`OPTIONAL MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
+                unionSubquery.push(`WITH ${nodeVariable}`);
+                unionSubquery.push(`OPTIONAL MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 
-            const allowAndParams = createAuthAndParams({
-                operation: "READ",
-                entity: n,
-                context,
-                allow: {
-                    parentNode: n,
-                    varName: relatedNodeVariable,
-                },
-            });
-            if (allowAndParams[0]) {
-                globalParams = { ...globalParams, ...allowAndParams[1] };
-                unionSubquery.push(
-                    `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-                );
-            }
-
-            const whereStrs: string[] = [];
-            const unionWhere = (whereInput || {})[n.name];
-            if (unionWhere) {
-                const where = createConnectionWhereAndParams({
-                    whereInput: unionWhere,
-                    node: n,
-                    nodeVariable: relatedNodeVariable,
-                    relationship,
-                    relationshipVariable,
+                const allowAndParams = createAuthAndParams({
+                    operation: "READ",
+                    entity: n,
                     context,
-                    parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
-                        resolveTree.name
-                    }.args.where.${n.name}`,
+                    allow: {
+                        parentNode: n,
+                        varName: relatedNodeVariable,
+                    },
                 });
-                const [whereClause] = where;
-                if (whereClause) {
-                    whereStrs.push(whereClause);
+                if (allowAndParams[0]) {
+                    globalParams = { ...globalParams, ...allowAndParams[1] };
+                    unionSubquery.push(
+                        `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                    );
                 }
+
+                const whereStrs: string[] = [];
+                const unionWhere = (whereInput || {})[n.name];
+                if (unionWhere) {
+                    const where = createConnectionWhereAndParams({
+                        whereInput: unionWhere,
+                        node: n,
+                        nodeVariable: relatedNodeVariable,
+                        relationship,
+                        relationshipVariable,
+                        context,
+                        parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
+                            resolveTree.name
+                        }.args.where.${n.name}`,
+                    });
+                    const [whereClause] = where;
+                    if (whereClause) {
+                        whereStrs.push(whereClause);
+                    }
+                }
+
+                const whereAuth = createAuthAndParams({
+                    operation: "READ",
+                    entity: n,
+                    context,
+                    where: { varName: relatedNodeVariable, node: n },
+                });
+                if (whereAuth[0]) {
+                    whereStrs.push(whereAuth[0]);
+                    globalParams = { ...globalParams, ...whereAuth[1] };
+                }
+
+                if (whereStrs.length) {
+                    unionSubquery.push(`WHERE ${whereStrs.join(" AND ")}`);
+                }
+
+                if (nestedSubqueries.length) {
+                    unionSubquery.push(nestedSubqueries.join("\n"));
+                }
+
+                unionSubquery.push(`WITH { ${unionSubqueryElementsToCollect.join(", ")} } AS edge`);
+                unionSubquery.push("RETURN edge");
+
+                unionSubqueries.push(unionSubquery.join("\n"));
             }
-
-            const whereAuth = createAuthAndParams({
-                operation: "READ",
-                entity: n,
-                context,
-                where: { varName: relatedNodeVariable, node: n },
-            });
-            if (whereAuth[0]) {
-                whereStrs.push(whereAuth[0]);
-                globalParams = { ...globalParams, ...whereAuth[1] };
-            }
-
-            if (whereStrs.length) {
-                unionSubquery.push(`WHERE ${whereStrs.join(" AND ")}`);
-            }
-
-            if (nestedSubqueries.length) {
-                unionSubquery.push(nestedSubqueries.join("\n"));
-            }
-
-            unionSubquery.push(`WITH { ${unionSubqueryElementsToCollect.join(", ")} } AS edge`);
-            unionSubquery.push("RETURN edge");
-
-            unionSubqueries.push(unionSubquery.join("\n"));
         });
 
         const unionSubqueryCypher = ["CALL {", unionSubqueries.join("\nUNION\n"), "}"];

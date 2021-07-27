@@ -105,6 +105,74 @@ describe("unions", () => {
         }
     });
 
+    test("should read and return correct union members with where argument", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            union Search = Movie | Genre
+
+            type Genre {
+                name: String
+            }
+
+            type Movie {
+                title: String
+                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers: {},
+        });
+
+        const movieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const genreName = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            {
+                movies (where: {title: "${movieTitle}"}) {
+                    search(where: { Genre: { name: "${genreName}" }}) {
+                        __typename
+                        ... on Movie {
+                            title
+                        }
+                        ... on Genre {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(`
+                CREATE (m:Movie {title: "${movieTitle}"})
+                CREATE (g:Genre {name: "${genreName}"})
+                MERGE (m)-[:SEARCH]->(m)
+                MERGE (m)-[:SEARCH]->(g)
+            `);
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect((gqlResult.data as any).movies[0]).toEqual({
+                search: [{ __typename: "Genre", name: genreName }],
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
     test("should create a nested union", async () => {
         const session = driver.session();
 

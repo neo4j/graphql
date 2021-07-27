@@ -91,7 +91,7 @@ CALL {
     }
     RETURN count(*)
 }
-RETURN this { .title, actors: [(this)<-[:ACTED_IN]-(this_actors) WHERE "LeadActor" IN labels(this_actors) | head( [ this_actors IN [this_actors] WHERE "LeadActor" IN labels (this_actors) | this_actors { __resolveType: "LeadActor", .name, actedIn: [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE "Series" IN labels(this_actors_actedIn) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE "Series" IN labels (this_actors_actedIn) | this_actors_actedIn { __resolveType: "Series", .name } ] ) ] } ] ) ] } AS this
+RETURN this { .title, actors: [(this)<-[:ACTED_IN]-(this_actors) WHERE "LeadActor" IN labels(this_actors) OR "Extra" IN labels(this_actors) | head( [ this_actors IN [this_actors] WHERE "LeadActor" IN labels (this_actors) | this_actors { __resolveType: "LeadActor", .name, actedIn: [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE "Movie" IN labels(this_actors_actedIn) OR "Series" IN labels(this_actors_actedIn) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE "Movie" IN labels (this_actors_actedIn) | this_actors_actedIn { __resolveType: "Movie" } ] + [ this_actors_actedIn IN [this_actors_actedIn] WHERE "Series" IN labels (this_actors_actedIn) | this_actors_actedIn { __resolveType: "Series", .name } ] ) ] } ] + [ this_actors IN [this_actors] WHERE "Extra" IN labels (this_actors) | this_actors { __resolveType: "Extra" } ] ) ] } AS this
 ```
 
 ### Expected Cypher Params
@@ -156,7 +156,7 @@ WITH this, this_disconnect_actors_LeadActor0
 OPTIONAL MATCH (this_disconnect_actors_LeadActor0)-[this_disconnect_actors_LeadActor0_actedIn_Series0_rel:ACTED_IN]->(this_disconnect_actors_LeadActor0_actedIn_Series0:Series)
 WHERE this_disconnect_actors_LeadActor0_actedIn_Series0.name = $updateMovies.args.disconnect.actors.LeadActor[0].disconnect.actedIn.Series[0].where.node.name
 FOREACH(_ IN CASE this_disconnect_actors_LeadActor0_actedIn_Series0 WHEN NULL THEN [] ELSE [1] END | DELETE this_disconnect_actors_LeadActor0_actedIn_Series0_rel )
-RETURN this { .title, actors: [(this)<-[:ACTED_IN]-(this_actors) WHERE "LeadActor" IN labels(this_actors) | head( [ this_actors IN [this_actors] WHERE "LeadActor" IN labels (this_actors) | this_actors { __resolveType: "LeadActor", .name, actedIn: [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE "Series" IN labels(this_actors_actedIn) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE "Series" IN labels (this_actors_actedIn) | this_actors_actedIn { __resolveType: "Series", .name } ] ) ] } ] ) ] } AS this
+RETURN this { .title, actors: [(this)<-[:ACTED_IN]-(this_actors) WHERE "LeadActor" IN labels(this_actors) OR "Extra" IN labels(this_actors) | head( [ this_actors IN [this_actors] WHERE "LeadActor" IN labels (this_actors) | this_actors { __resolveType: "LeadActor", .name, actedIn: [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE "Movie" IN labels(this_actors_actedIn) OR "Series" IN labels(this_actors_actedIn) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE "Movie" IN labels (this_actors_actedIn) | this_actors_actedIn { __resolveType: "Movie" } ] + [ this_actors_actedIn IN [this_actors_actedIn] WHERE "Series" IN labels (this_actors_actedIn) | this_actors_actedIn { __resolveType: "Series", .name } ] ) ] } ] + [ this_actors IN [this_actors] WHERE "Extra" IN labels (this_actors) | this_actors { __resolveType: "Extra" } ] ) ] } AS this
 ```
 
 ### Expected Cypher Params
