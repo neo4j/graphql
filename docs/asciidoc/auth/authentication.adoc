@@ -98,22 +98,20 @@ In some cases, you may want to allow unauthenticated requests while also having 
 
 In the example below, only the publisher can see his blog posts even if it is not published yet. Once the blog post is published, anyone can see it.
 
-WARNING: In case of unauthenticated requests, auth parameters will be replaced by `null` in the cypher query. In this case, `publisher: "$jwt.sub"` will become `publisher: null`; This can lead to unwanted results if the field used for querying is nullable in Neo4J.
-
 [source, graphql]
 ----
-type BlogPost {
+type BlogPost
+    @auth(
+        rules: [
+            {
+                operations: [READ]
+                where: { OR: [{ publisher: "$jwt.sub" }, { published: true }] }
+                allowUnauthenticated: true
+            }
+        ]
+    ) {
     id: ID!
-    publisher: User!
+    publisher: String!
     published: Boolean!
-}
-
-extend type BlogPost {
-    password: String! @auth(rules: [
-        { operations: [READ], where: { OR: [
-            { publisher: "$jwt.sub" },
-            { published: true },
-        ] }, allowUnauthenticated: true }
-    ])
 }
 ----
