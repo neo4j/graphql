@@ -96,7 +96,7 @@ extend type Todo @auth(rules: [{ isAuthenticated: true }])
 == `allowUnauthenticated`
 In some cases, you may want to allow unauthenticated requests while also having auth-based rules. You can use the `allowUnauthenticated` parameter to avoid throwing an exception if no auth is present in the context.
 
-In the example below, only the publisher can see his blog posts even if it is not published yet. Once the blog post is published, anyone can see it.
+In the example below, only the publisher can see his blog posts if it is not published yet. Once the blog post is published, anyone can see it.
 
 [source, graphql]
 ----
