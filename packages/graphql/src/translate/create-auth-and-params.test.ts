@@ -751,6 +751,7 @@ describe("createAuthAndParams", () => {
                 allow: { parentNode: node, varName: "this" },
             });
 
+            expect(trimmer(result[0])).toEqual(trimmer('false OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))'));
             expect(result[1]).toEqual({});
         });
 
@@ -819,6 +820,7 @@ describe("createAuthAndParams", () => {
                 allow: { parentNode: node, varName: "this" },
             });
 
+            expect(trimmer(result[0])).toEqual(trimmer('false OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))'));
             expect(result[1]).toEqual({});
         });
     });
