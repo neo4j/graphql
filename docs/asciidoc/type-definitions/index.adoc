@@ -1,11 +1,13 @@
 [[type-definitions]]
 = Type Definitions
 
-* <<type-definitions-relationships>>
-* <<type-definitions-default-values>>
-* <<type-definitions-autogeneration>>
-* <<type-definitions-access-control>>
+* <<type-definitions-types>>
 * <<type-definitions-unions-and-interfaces>>
+* <<type-definitions-relationships>>
+* <<type-definitions-access-control>>
+* <<type-definitions-autogeneration>>
+* <<type-definitions-cypher>>
+* <<type-definitions-default-values>>
 
 == Basics
 
