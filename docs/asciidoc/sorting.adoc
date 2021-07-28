@@ -1,4 +1,4 @@
-[[schema-sorting]]
+[[sorting]]
 = Sorting
 
 A sorting input type is generated for every object type defined in your type definitions, allowing for Query results to be sorted by each individual field.

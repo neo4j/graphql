@@ -36,31 +36,30 @@
             </d:tocentry>
         </d:tocentry>
 
-        <d:tocentry linkend="schema">
-            <?dbhtml filename="schema/index.html"?>
-            <d:tocentry linkend="schema-queries">
-                <?dbhtml filename="schema/queries/index.html"?>
-            </d:tocentry>
-            <d:tocentry linkend="schema-mutations">
-                <?dbhtml filename="schema/mutations/index.html"?>
-            </d:tocentry>
-            <d:tocentry linkend="schema-sorting">
-                <?dbhtml filename="schema/sorting/index.html"?>
-            </d:tocentry>
-            <d:tocentry linkend="schema-filtering">
-                <?dbhtml filename="schema/filtering/index.html"?>
-            </d:tocentry>
-            <d:tocentry linkend="schema-pagination">
-                <?dbhtml filename="schema/pagination/index.html"?>
-            </d:tocentry>
-        </d:tocentry>
-
         <d:tocentry linkend="queries">
             <?dbhtml filename="queries/index.html"?>
         </d:tocentry>
 
         <d:tocentry linkend="mutations">
             <?dbhtml filename="mutations/index.html"?>
+        </d:tocentry>
+
+        <d:tocentry linkend="filtering">
+            <?dbhtml filename="filtering/index.html"?>
+        </d:tocentry>
+
+        <d:tocentry linkend="sorting">
+            <?dbhtml filename="sorting/index.html"?>
+        </d:tocentry>
+
+        <d:tocentry linkend="pagination">
+            <?dbhtml filename="pagination/index.html"?>
+            <d:tocentry linkend="pagination-offset-based">
+                <?dbhtml filename="pagination/offset-based/index.html"?>
+            </d:tocentry>
+            <d:tocentry linkend="pagination-cursor-based">
+                <?dbhtml filename="pagination/cursor-based/index.html"?>
+            </d:tocentry>
         </d:tocentry>
 
         <d:tocentry linkend="custom-resolvers">

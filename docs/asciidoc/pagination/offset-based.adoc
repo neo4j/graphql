@@ -1,7 +1,5 @@
-[[schema-pagination]]
-= Pagination
-
-== Page-based pagination
+[[pagination-offset-based]]
+= Offset-based pagination
 
 Page-based pagination can be achieved through the use of the `offset` and `limit` options available whilst querying for data.
 
@@ -55,11 +53,11 @@ query {
 }
 ----
 
-=== Total number of pages
+== Total number of pages
 
 You can fetch the total number of records for a certain type using its count query, and then divide that number by your entries per page in order to calculate the total number of pages. This will allow to to determine what the last page is, and whether there is a next page.
 
-=== Paginating relationship fields
+== Paginating relationship fields
 
 Say that in addition to the `User` type above, there is also a `Post` type which a `User` has many of. You can also fetch a `User` and then paginate through their posts:
 
@@ -79,7 +77,3 @@ query {
     }
 }
 ----
-
-== Cursor-based pagination
-
-On relationship fields, you are able to take advantage of cursor-based pagination.

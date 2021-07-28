@@ -26,7 +26,7 @@ A summary of migration points is as follows:
 * The object(s) being mutated are returned as a nested field, to allow for metadata about the operation to be added in future
 * Mutation arguments are now commonly named between different types, but with different input types - such as `where` and `input`
 
-> Note that <<schema-mutations>> in `@neo4j/graphql` are incredibly powerful, and it is well worthwhile reading about them in full. You might find that you can collapse multiple current mutations down into one!
+> Note that <<mutations>> in `@neo4j/graphql` are incredibly powerful, and it is well worthwhile reading about them in full. You might find that you can collapse multiple current mutations down into one!
 
 == Creating
 

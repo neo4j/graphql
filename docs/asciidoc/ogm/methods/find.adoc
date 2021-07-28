@@ -1,7 +1,7 @@
 [[ogm-methods-find]]
 = Find
 
-Use to update many nodes. The `model.find` method maps to the underlying schema <<schema-queries>>.
+Use to update many nodes. The `model.find` method maps to the underlying schema <<queries>>.
 
 == Usage
 
@@ -37,7 +37,7 @@ const users = await User.find({
 == Args
 
 === `where`
-JavaScript object representation of the GraphQL `where` input type, used for <<schema-queries>>.
+JavaScript object representation of the GraphQL `where` input type, used for <<queries>>.
 
 === `options`
 JavaScript object representation of the GraphQL `options` input type, used for <<schema-pagination>>.

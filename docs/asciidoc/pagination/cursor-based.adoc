@@ -1,0 +1,4 @@
+[[pagination-cursor-based]]
+= Cursor-based pagination
+
+On relationship fields, you are able to take advantage of cursor-based pagination.

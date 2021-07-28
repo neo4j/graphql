@@ -25,9 +25,11 @@ This documentation covers the following topics:
 - <<introduction>> - Introduction to the Neo4j GraphQL Library.
 - <<getting-started>> - Start here if you want to quickly get up and running with the library.
 - <<type-definitions>> - Define your nodes and relationships using type definitions as documented here.
-- <<schema>> - Interacting with the schema produced by the Neo4j GraphQL Library.
 - <<queries>> - GraphQL Queries allow you to read data in your Neo4j database.
 - <<mutations>> - GraphQL Mutations allow you to change data in your Neo4j database.
+- <<filtering>> - This chapter covers how to filter your data in Queries and Mutations.
+- <<sorting>> - This chapter covers how to sort the data being returned.
+- <<pagination>> - This chapter covers the pagination options offered by the Neo4j GraphQL Library.
 - <<custom-resolvers>> - Learn how to implement custom functionality accessible through your API.
 - <<auth>> - Covers the authentication and authorisation options offered by this library.
 - <<directives>> - An index of all of the directives offered by the Neo4j GraphQL Library.

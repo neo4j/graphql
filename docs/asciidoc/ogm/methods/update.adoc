@@ -1,7 +1,7 @@
 [[ogm-methods-update]]
 = Update
 
-Use to update many nodes. The `model.update` method maps to the underlying <<schema-mutations-update>> operation.
+Use to update many nodes. The `model.update` method maps to the underlying <<mutations-update>> operation.
 
 == Usage
 [source, javascript]
@@ -17,29 +17,29 @@ const { users } = await User.update({
 == Args
 
 === `where`
-JavaScript object representation of the GraphQL `where` input type, used for <<schema-queries>>.
+JavaScript object representation of the GraphQL `where` input type, used for <<queries>>.
 
 === `update`
-JavaScript object representation of the GraphQL `update` input type, used for <<schema-mutations-update>>.
+JavaScript object representation of the GraphQL `update` input type, used for <<mutations-update>>.
 
 === `connect`
-JavaScript object representation of the GraphQL `connect` input type, used for <<schema-mutations-update>>.
+JavaScript object representation of the GraphQL `connect` input type, used for <<mutations-update>>.
 
 === `disconnect`
-JavaScript object representation of the GraphQL `disconnect` input type, used for <<schema-mutations-update>>.
+JavaScript object representation of the GraphQL `disconnect` input type, used for <<mutations-update>>.
 
 === `create`
-JavaScript object representation of the GraphQL `create` input type, used for <<schema-mutations-update>>.
+JavaScript object representation of the GraphQL `create` input type, used for <<mutations-update>>.
 
 === `selectionSet`
 
 Reference: <<ogm-selection-set>>
 
 === `args`
-The arguments for the GraphQL Query. 
+The arguments for the GraphQL Query.
 
 === `context`
-The `context` for the GraphQL Query. 
+The `context` for the GraphQL Query.
 
 === `rootValue`
-The `rootValue` for the GraphQL Query. 
+The `rootValue` for the GraphQL Query.

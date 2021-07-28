@@ -17,4 +17,4 @@ const usersCount = await User.count();
 == Args
 
 === `where`
-JavaScript object representation of the GraphQL `where` input type, used for <<schema-queries>>.
+JavaScript object representation of the GraphQL `where` input type, used for <<queries>>.

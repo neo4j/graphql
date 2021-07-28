@@ -1,4 +1,4 @@
-[[schema-filtering]]
+[[filtering]]
 = Filtering
 
 == Operators
@@ -9,7 +9,7 @@ When querying for data, a number of operators are available for different types 
 
 All types can be tested for either equality or non-equality. For the `Boolean` type, these are the only available comparison operators.
 
-[[schema-filtering-numerical-operators]]
+[[filtering-numerical-operators]]
 === Numerical operators
 
 The following comparison operators are available for numeric types (`Int`, `Float`, <<type-definitions-types-bigint>>), temporal types (<<type-definitions-types-datetime>>) and spatial types (<<type-definitions-types-point>>, <<type-definitions-types-cartesian-point>>):
@@ -57,7 +57,7 @@ These four operators are available for all types apart from `Boolean`.
 
 == Usage
 
-Using the type definitions from <<schema-queries>>, below are some example of how filtering can be applied whilst querying for data.
+Using the type definitions from <<queries>>, below are some example of how filtering can be applied whilst querying for data.
 
 === At the root of a Query
 

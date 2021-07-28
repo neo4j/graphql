@@ -27,7 +27,7 @@ type Movie {
 
 [[type-definitions-types-bigint]]
 == `BigInt`
-Supports up to 64 bit integers, serialized as strings in variables and in data responses. Shares the same <<schema-filtering-numerical-operators>> as the other numeric types.
+Supports up to 64 bit integers, serialized as strings in variables and in data responses. Shares the same <<filtering-numerical-operators>> as the other numeric types.
 
 [source, graphql]
 ----
@@ -132,7 +132,7 @@ mutation CreateUsers($name: String!, $longitude: Float!, $latitude: Float!) {
 
 ==== Filtering
 
-In addition to the <<schema-filtering-numerical-operators>>, the `Point` type has an additional `_DISTANCE` filter. All of the filters take the following type as an argument:
+In addition to the <<filtering-numerical-operators>>, the `Point` type has an additional `_DISTANCE` filter. All of the filters take the following type as an argument:
 
 [source, graphql]
 ----
@@ -209,7 +209,7 @@ input CartesianPointInput {
 
 ==== Filtering
 
-In addition to the <<schema-filtering-numerical-operators>>, the `CartesianPoint` type has an additional `_DISTANCE` filter. All of the filters take the following type as an argument:
+In addition to the <<filtering-numerical-operators>>, the `CartesianPoint` type has an additional `_DISTANCE` filter. All of the filters take the following type as an argument:
 
 [source, graphql]
 ----
