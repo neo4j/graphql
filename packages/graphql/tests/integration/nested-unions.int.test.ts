@@ -117,21 +117,11 @@ describe("Nested unions", () => {
                 contextValue: { driver },
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.updateMovies.movies).toEqual([
-                {
-                    title: movieTitle,
-                    actors: [
-                        {
-                            name: actorName,
-                            actedIn: [
-                                {
-                                    name: seriesName,
-                                },
-                            ],
-                        },
-                    ],
-                },
-            ]);
+            expect(gqlResult.data?.updateMovies.movies[0].title).toEqual(movieTitle);
+            expect(gqlResult.data?.updateMovies.movies[0].actors[0].name).toEqual(actorName);
+            expect(gqlResult.data?.updateMovies.movies[0].actors[0].actedIn).toContainEqual({
+                name: seriesName,
+            });
         } finally {
             await session.close();
         }
@@ -377,21 +367,11 @@ describe("Nested unions", () => {
                 contextValue: { driver },
             });
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.updateMovies.movies).toEqual([
-                {
-                    title: movieTitle,
-                    actors: [
-                        {
-                            name: actorName,
-                            actedIn: [
-                                {
-                                    name: seriesName,
-                                },
-                            ],
-                        },
-                    ],
-                },
-            ]);
+            expect(gqlResult.data?.updateMovies.movies[0].title).toEqual(movieTitle);
+            expect(gqlResult.data?.updateMovies.movies[0].actors[0].name).toEqual(actorName);
+            expect(gqlResult.data?.updateMovies.movies[0].actors[0].actedIn).toContainEqual({
+                name: seriesName,
+            });
 
             const cypherMovie = `
                 MATCH (m:Movie {title: $movieTitle})
