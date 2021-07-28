@@ -44,6 +44,19 @@
             <?dbhtml filename="mutations/index.html"?>
         </d:tocentry>
 
+        <d:tocentry linkend="mutations">
+            <?dbhtml filename="mutations/index.html"?>
+            <d:tocentry linkend="mutations-create">
+                <?dbhtml filename="mutations/create/index.html"?>
+            </d:tocentry>
+            <d:tocentry linkend="mutations-update">
+                <?dbhtml filename="mutations/update/index.html"?>
+            </d:tocentry>
+            <d:tocentry linkend="mutations-delete">
+                <?dbhtml filename="mutations/delete/index.html"?>
+            </d:tocentry>
+        </d:tocentry>
+
         <d:tocentry linkend="filtering">
             <?dbhtml filename="filtering/index.html"?>
         </d:tocentry>
