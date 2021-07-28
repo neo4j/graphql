@@ -47,6 +47,7 @@ export interface Context {
 
 export interface BaseAuthRule {
     isAuthenticated?: boolean;
+    allowUnauthenticated?: boolean;
     allow?: { [k: string]: any } | "*";
     bind?: { [k: string]: any } | "*";
     where?: { [k: string]: any } | "*";
