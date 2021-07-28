@@ -193,6 +193,7 @@ describe("360", () => {
                 schema: neoSchema.schema,
                 source: query,
                 contextValue: { driver },
+                variableValues: { rangeStart, rangeEnd },
             });
 
             expect(gqlResult.errors).toBe(undefined);
