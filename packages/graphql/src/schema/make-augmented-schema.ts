@@ -1314,7 +1314,7 @@ function makeAugmentedSchema(
 
     const schema = makeExecutableSchema({
         ...schemaDefinition,
-        typeDefs: print(parsedDoc),
+        typeDefs: parsedDoc,
         resolvers: generatedResolvers,
     });
 

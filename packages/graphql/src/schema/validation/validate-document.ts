@@ -34,7 +34,7 @@ function filterDocument(document: DocumentNode) {
     const nodeNames = document.definitions
         .filter((definition) => {
             if (definition.kind === "ObjectTypeDefinition") {
-                if (!["Query", "Mutation"].includes(definition.name.value)) {
+                if (!["Query", "Mutation", "Subscription"].includes(definition.name.value)) {
                     return true;
                 }
             }
@@ -64,7 +64,7 @@ function filterDocument(document: DocumentNode) {
                                 return type.name.value;
                             };
                             const type = getArgumentType(argument.type);
-                            const match = /(?<nodeName>.+)(?:CreateInput|UpdateInput|Where)/gm.exec(type);
+                            const match = /(?<nodeName>.+)(?:CreateInput|Sort|UpdateInput|Where)/gm.exec(type);
                             if (match?.groups?.nodeName) {
                                 if (nodeNames.includes(match.groups.nodeName)) {
                                     return false;
