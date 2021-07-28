@@ -29,6 +29,7 @@ type User {
 
 Below you can find some examples of how queries and mutations work with this example.
 
+[[type-definitions-unions-and-interfaces-union-types-querying]]
 === Querying a union
 
 Which union members are returned by a Query are dictated by the `where` filter applied.

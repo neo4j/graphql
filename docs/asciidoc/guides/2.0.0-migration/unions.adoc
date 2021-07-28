@@ -96,3 +96,41 @@ mutation {
 ----
 
 Note the change in structure for union input, but also the additional `node` level which enables the use of relationship properties. These changes are consistent across all operations, including `where`.
+
+== Filtering union fields
+
+There has been a slight change to how you filter union fields, adding a `where` level above each union member. For example, for a query which would have used to have looked like:
+
+[source, graphql]
+----
+query {
+    actors {
+        name
+        actedIn(Movie: { "The Avengers" }) {
+            ... on Movie {
+                title
+            }
+        }
+    }
+}
+----
+
+This will now be written like:
+
+[source, graphql]
+----
+query {
+    actors {
+        name
+        actedIn(where: { Movie: { "The Avengers" }}) {
+            ... on Movie {
+                title
+            }
+        }
+    }
+}
+----
+
+We feel this has improved readability of queries.
+
+Furthermore, the where argument used now dictates which union members are returned from the database, to prevent overfetching. Please see <<type-definitions-unions-and-interfaces-union-types-querying>> for background and explanation of this decision.
