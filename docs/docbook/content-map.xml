@@ -159,6 +159,9 @@
                 <d:tocentry linkend="v2-migration-mutations">
                     <?dbhtml filename="guides/v2-migration/mutations/index.html"?>
                 </d:tocentry>
+                <d:tocentry linkend="v2-migration-unions">
+                    <?dbhtml filename="guides/v2-migration/unions/index.html"?>
+                </d:tocentry>
                 <d:tocentry linkend="v2-migration-miscellaneous">
                     <?dbhtml filename="guides/v2-migration/miscellaneous/index.html"?>
                 </d:tocentry>
