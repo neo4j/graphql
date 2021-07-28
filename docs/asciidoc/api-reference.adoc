@@ -35,7 +35,7 @@ const neo4jGraphQL = new Neo4jGraphQL({
 === Methods
 
 ==== `checkNeo4jCompat`
-Reference: <<drivers-and-config-checkNeo4jCompat>>
+Reference: <<driver-configuration-database-compatibility>>
 
 == `OGM`
 Reference: <<ogm-api-reference>>

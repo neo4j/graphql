@@ -3,6 +3,10 @@
     <d:tocentry linkend="graphql">
         <?dbhtml filename="index.html"?>
 
+        <d:tocentry linkend="introduction">
+            <?dbhtml filename="introduction/index.html"?>
+        </d:tocentry>
+
         <d:tocentry linkend="getting-started">
             <?dbhtml filename="getting-started/index.html"?>
         </d:tocentry>
@@ -133,8 +137,8 @@
             </d:tocentry>
         </d:tocentry>
 
-        <d:tocentry linkend="drivers-and-config">
-            <?dbhtml filename="drivers-and-config/index.html"?>
+        <d:tocentry linkend="driver-configuration">
+            <?dbhtml filename="driver-configuration/index.html"?>
         </d:tocentry>
 
         <d:tocentry linkend="guides">

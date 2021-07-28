@@ -1,4 +1,4 @@
-[[drivers-and-config]]
+[[driver-configuration]]
 = Driver Configuration
 
 
@@ -50,8 +50,8 @@ const driver = neo4j.driver(
 const ogm = new OGM({ typeDefs, driver });
 ----
 
-[[drivers-and-config-checkNeo4jCompat]]
-== `checkNeo4jCompat`
+[[driver-configuration-database-compatibility]]
+== Database Compatibility
 Use the `checkNeo4jCompat` method available on either `Neo4jGraphQL` or the `OGM` to ensure the specified DBMS has the required; versions, functions and procedures.
 
 ==== `Neo4jGraphQL`
