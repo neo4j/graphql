@@ -19,6 +19,7 @@
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
+import { forEachField } from "@graphql-tools/utils";
 import camelCase from "camelcase";
 import {
     DefinitionNode,
@@ -44,7 +45,14 @@ import pluralize from "pluralize";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
 import { PrimitiveField, Auth } from "../types";
-import { findResolver, createResolver, deleteResolver, cypherResolver, updateResolver } from "./resolvers";
+import {
+    findResolver,
+    createResolver,
+    deleteResolver,
+    cypherResolver,
+    updateResolver,
+    defaultFieldResolver,
+} from "./resolvers";
 import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
@@ -758,6 +766,14 @@ function makeAugmentedSchema(
         ...schemaDefinition,
         typeDefs: generatedTypeDefs,
         resolvers: generatedResolvers,
+    });
+
+    // Assign a default field resolver to account for aliasing of fields
+    forEachField(schema, (field) => {
+        if (!field.resolve) {
+            // eslint-disable-next-line no-param-reassign
+            field.resolve = defaultFieldResolver;
+        }
     });
 
     return {
