@@ -95,7 +95,7 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                    EXISTS(this.id) AND this.id = $this_auth_allow0_id OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                    this.id IS NOT NULL AND this.id = $this_auth_allow0_id OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
                 `)
             );
 
@@ -175,7 +175,7 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                    EXISTS(this.id) AND this.id = $this_auth_allow0_id OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                    this.id IS NOT NULL AND this.id = $this_auth_allow0_id OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
                 `)
             );
 
@@ -253,7 +253,7 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                     ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND EXISTS(this.id) AND this.id = $this_auth_allow0_id
+                     ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_allow0_id
                 `)
             );
 
@@ -334,7 +334,7 @@ describe("createAuthAndParams", () => {
 
                 expect(trimmer(result[0])).toEqual(
                     trimmer(`
-                        EXISTS(this.id) AND this.id = $this${key}0_auth_allow0_id ${key} ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                        this.id IS NOT NULL AND this.id = $this${key}0_auth_allow0_id ${key} ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
                     `)
                 );
 
@@ -422,11 +422,11 @@ describe("createAuthAndParams", () => {
                 trimmer(`
                     ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
                 AND
-                    EXISTS(this.id) AND this.id = $this_auth_allow0_id
+                    this.id IS NOT NULL AND this.id = $this_auth_allow0_id
                 AND
-                    EXISTS(this.id) AND this.id = $thisAND0_auth_allow0_id AND ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                    this.id IS NOT NULL AND this.id = $thisAND0_auth_allow0_id AND ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
                 AND
-                    EXISTS(this.id) AND this.id = $thisOR0_auth_allow0_id OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                    this.id IS NOT NULL AND this.id = $thisOR0_auth_allow0_id OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
                 `)
             );
 
@@ -536,7 +536,7 @@ describe("createAuthAndParams", () => {
 
                 expect(trimmer(result[0])).toEqual(
                     trimmer(`
-                        (EXISTS(this.id) AND this.id = $this_auth_allow0_${key}0_id ${key} EXISTS(this.id) AND this.id = $this_auth_allow0_${key}1_id ${key} EXISTS(this.id) AND this.id = $this_auth_allow0_${key}2_id)
+                        (this.id IS NOT NULL AND this.id = $this_auth_allow0_${key}0_id ${key} this.id IS NOT NULL AND this.id = $this_auth_allow0_${key}1_id ${key} this.id IS NOT NULL AND this.id = $this_auth_allow0_${key}2_id)
                     `)
                 );
 
@@ -684,6 +684,148 @@ describe("createAuthAndParams", () => {
                     allow: { parentNode: node, varName: "this" },
                 });
             }).toThrow("Unauthenticated");
+        });
+
+        test("should showcase the allowUnauthenticated behavior with undefined $jwt", () => {
+            const idField = {
+                fieldName: "id",
+                typeMeta: {
+                    name: "ID",
+                    array: false,
+                    required: false,
+                    pretty: "String",
+                    input: {
+                        where: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        create: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        update: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                    },
+                },
+                otherDirectives: [],
+                arguments: [],
+            };
+
+            // @ts-ignore
+            const node: Node = {
+                name: "Movie",
+                relationFields: [],
+                cypherFields: [],
+                enumFields: [],
+                scalarFields: [],
+                primitiveFields: [idField],
+                dateTimeFields: [],
+                interfaceFields: [],
+                objectFields: [],
+                pointFields: [],
+                authableFields: [idField],
+                auth: {
+                    rules: [
+                        { allow: { id: "$jwt.sub" }, allowUnauthenticated: true },
+                        { operations: ["CREATE"], roles: ["admin"] },
+                        { roles: ["admin"] },
+                    ],
+                    type: "JWT",
+                },
+            };
+
+            // @ts-ignore
+            const neoSchema: Neo4jGraphQL = {
+                nodes: [node],
+            };
+
+            // @ts-ignore
+            const context: Context = { neoSchema, jwt: {} };
+
+            const result = createAuthAndParams({
+                context,
+                entity: node,
+                operation: "READ",
+                allow: { parentNode: node, varName: "this" },
+            });
+
+            expect(trimmer(result[0])).toEqual(
+                trimmer('false OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))')
+            );
+            expect(result[1]).toEqual({});
+        });
+
+        test("should showcase the allowUnauthenticated behavior with undefined $context", () => {
+            const idField = {
+                fieldName: "id",
+                typeMeta: {
+                    name: "ID",
+                    array: false,
+                    required: false,
+                    pretty: "String",
+                    input: {
+                        where: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        create: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        update: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                    },
+                },
+                otherDirectives: [],
+                arguments: [],
+            };
+
+            // @ts-ignore
+            const node: Node = {
+                name: "Movie",
+                relationFields: [],
+                cypherFields: [],
+                enumFields: [],
+                scalarFields: [],
+                primitiveFields: [idField],
+                dateTimeFields: [],
+                interfaceFields: [],
+                objectFields: [],
+                pointFields: [],
+                authableFields: [idField],
+                auth: {
+                    rules: [
+                        { allow: { id: "$context.nop" }, allowUnauthenticated: true },
+                        { operations: ["CREATE"], roles: ["admin"] },
+                        { roles: ["admin"] },
+                    ],
+                    type: "JWT",
+                },
+            };
+
+            // @ts-ignore
+            const neoSchema: Neo4jGraphQL = {
+                nodes: [node],
+            };
+
+            // @ts-ignore
+            const context: Context = { neoSchema, jwt: {} };
+
+            const result = createAuthAndParams({
+                context,
+                entity: node,
+                operation: "READ",
+                allow: { parentNode: node, varName: "this" },
+            });
+
+            expect(trimmer(result[0])).toEqual(
+                trimmer('false OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))')
+            );
+            expect(result[1]).toEqual({});
         });
     });
 });
