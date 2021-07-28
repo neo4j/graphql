@@ -324,10 +324,10 @@ function makeAugmentedSchema(
                 enumFields: relationshipFieldMeta.filter(
                     (f) => (f as CustomEnumField).kind === "Enum"
                 ) as CustomEnumField[],
-                dateTimeFields: relationshipFieldMeta.filter((f) => f.typeMeta.name === "DateTime"),
+                dateTimeFields: relationshipFieldMeta.filter((f) => ["DateTime", "Date"].includes(f.typeMeta.name)),
                 pointFields: relationshipFieldMeta.filter((f) => ["Point", "CartesianPoint"].includes(f.typeMeta.name)),
                 primitiveFields: relationshipFieldMeta.filter((f) =>
-                    ["ID", "String", "Int", "Float"].includes(f.typeMeta.name)
+                    ["ID", "String", "Int", "Float", "Boolean", "BigInt"].includes(f.typeMeta.name)
                 ),
             },
             enableRegex: enableRegex || false,
