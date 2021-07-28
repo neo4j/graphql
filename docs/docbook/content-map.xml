@@ -32,10 +32,6 @@
             </d:tocentry>
         </d:tocentry>
 
-        <d:tocentry linkend="custom-resolvers">
-            <?dbhtml filename="custom-resolvers/index.html"?>
-        </d:tocentry>
-
         <d:tocentry linkend="schema">
             <?dbhtml filename="schema/index.html"?>
             <d:tocentry linkend="schema-queries">
@@ -61,6 +57,10 @@
 
         <d:tocentry linkend="mutations">
             <?dbhtml filename="mutations/index.html"?>
+        </d:tocentry>
+
+        <d:tocentry linkend="custom-resolvers">
+            <?dbhtml filename="custom-resolvers/index.html"?>
         </d:tocentry>
 
         <d:tocentry linkend="auth">
