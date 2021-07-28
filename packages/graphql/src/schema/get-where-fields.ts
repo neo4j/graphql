@@ -54,7 +54,7 @@ function getWhereFields({ typeName, fields, enableRegex }: { typeName: string; f
                 res[`${f.fieldName}_IN`] = `[${f.typeMeta.input.where.pretty}]`;
                 res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}]`;
 
-                if (["Float", "Int", "BigInt", "DateTime"].includes(f.typeMeta.name)) {
+                if (["Float", "Int", "BigInt", "DateTime", "Date"].includes(f.typeMeta.name)) {
                     ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
                         res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
                     });
