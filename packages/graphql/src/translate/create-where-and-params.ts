@@ -625,12 +625,15 @@ function createWhereAndParams({
                     context,
                     recursing: true,
                 });
-
-                innerClauses.push(`${recurse[0]}`);
-                res.params = { ...res.params, ...recurse[1] };
+                if (recurse[0]) {
+                    innerClauses.push(`${recurse[0]}`);
+                    res.params = { ...res.params, ...recurse[1] };
+                }
             });
 
-            res.clauses.push(`(${innerClauses.join(` ${key} `)})`);
+            if (innerClauses.length) {
+                res.clauses.push(`(${innerClauses.join(` ${key} `)})`);
+            }
 
             return res;
         }

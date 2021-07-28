@@ -55,17 +55,17 @@ extend type Post @auth(rules: [{ allow: { creator: { id: "$jwt.sub" } } }])
 
 ```cypher
 MATCH (this:User)
-CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 CALL {
     WITH this
     CALL {
         WITH this
         OPTIONAL MATCH (this)-[this_published:PUBLISHED]->(this_Post:Post)
-        CALL apoc.util.validate(NOT(EXISTS((this_Post)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE EXISTS(creator.id) AND creator.id = $this_Post_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+        CALL apoc.util.validate(NOT(EXISTS((this_Post)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
         CALL {
             WITH this_Post
             MATCH (this_Post)<-[this_Post_has_post:HAS_POST]-(this_Post_user:User)
-            CALL apoc.util.validate(NOT(EXISTS(this_Post_user.id) AND this_Post_user.id = $this_Post_user_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+            CALL apoc.util.validate(NOT(this_Post_user.id IS NOT NULL AND this_Post_user.id = $this_Post_user_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
             WITH collect({ node: { name: this_Post_user.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS creatorConnection
         }

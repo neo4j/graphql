@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
+export { default as countResolver } from "./count";
 export { default as createResolver } from "./create";
+export { default as cypherResolver } from "./cypher";
+export { default as defaultFieldResolver } from "./defaultField";
+export { default as deleteResolver } from "./delete";
 export { default as findResolver } from "./read";
 export { default as updateResolver } from "./update";
-export { default as deleteResolver } from "./delete";
-export { default as cypherResolver } from "./cypher";
-export { default as countResolver } from "./count";

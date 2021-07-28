@@ -36,10 +36,10 @@ mutation {
 ```cypher
 MATCH (this:User)
 WITH this
-CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_update_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_update_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 SET this.id = $this_update_id
 WITH this
-CALL apoc.util.validate(NOT(EXISTS(this.id) AND this.id = $this_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 RETURN this { .id } AS this
 ```
 
@@ -93,8 +93,8 @@ CALL {
     RETURN this1
 }
 
-CALL apoc.util.validate(NOT(EXISTS(this0.id) AND this0.id = $projection_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-CALL apoc.util.validate(NOT(EXISTS(this1.id) AND this1.id = $projection_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(this0.id IS NOT NULL AND this0.id = $projection_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(this1.id IS NOT NULL AND this1.id = $projection_id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 
 RETURN this0 { .id } AS this0, this1 { .id } AS this1
 ```
