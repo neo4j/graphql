@@ -99,7 +99,6 @@ function createConnectionAndParams({
                 const nestedSubqueries: string[] = [];
 
                 if (node) {
-                    // Doing this for unions isn't necessary, but this would also work for interfaces if we decided to take that direction
                     const nodeFieldsByTypeName: FieldsByTypeName = {
                         [n.name]: {
                             ...node?.fieldsByTypeName[n.name],
