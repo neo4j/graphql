@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
 
         const query = `
             query {
-                posts {
+                posts(where: { id: "${postId}" }) {
                     flaggedComments: comments(where: { flagged: true }) {
                         content
                         flagged
