@@ -31,8 +31,8 @@ This documentation covers the following topics:
 - <<custom-resolvers>> - Learn how to implement custom functionality accessible through your API.
 - <<auth>> - Covers the authentication and authorisation options offered by this library.
 - <<directives>> - An index of all of the directives offered by the Neo4j GraphQL Library.
-- <<api-reference>>
-- <<ogm>>
+- <<api-reference>> - API reference for constructing an instance of the library.
+- <<ogm>> - This chapter covers the OGM (Object Graph Mapper), a programmatic way of using your API.
 - <<driver-configuration>> - How to configure a database driver for use with this library.
 - <<guides>> - Guides for usage of the library, including migration guides for moving between versions.
 - <<troubleshooting>> - Having problems with the library? See if your problem has been found and solved before.
