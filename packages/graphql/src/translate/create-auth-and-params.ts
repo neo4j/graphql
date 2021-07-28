@@ -67,6 +67,7 @@ function createAuthPredicate({
     }
 
     const { jwt } = context;
+    const { allowUnauthenticated } = rule;
 
     const result = Object.entries(rule[kind] as any).reduce(
         (res: Res, [key, value]) => {
@@ -75,7 +76,10 @@ function createAuthPredicate({
 
                 (value as any[]).forEach((v, i) => {
                     const authPredicate = createAuthPredicate({
-                        rule: { [kind]: v } as AuthRule,
+                        rule: {
+                            [kind]: v,
+                            allowUnauthenticated
+                        } as AuthRule,
                         varName,
                         node,
                         chainStr: `${chainStr}_${key}${i}`,
@@ -92,8 +96,8 @@ function createAuthPredicate({
 
             const authableField = node.authableFields.find((field) => field.fieldName === key);
             if (authableField) {
-                const [, jwtPath] = (value as string).split("$jwt.");
-                const [, ctxPath] = (value as string).split("$context.");
+                const [, jwtPath] = (value as string)?.split?.("$jwt.") || [];
+                const [, ctxPath] = (value as string)?.split?.("$context.") || [];
                 let paramValue: string | null = value as string;
 
                 if (jwtPath) {
@@ -102,13 +106,19 @@ function createAuthPredicate({
                     paramValue = dotProp.get({ value: context }, `value.${ctxPath}`) as string;
                 }
 
-                if (paramValue === undefined) {
+                if (paramValue === undefined && allowUnauthenticated !== true) {
                     throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
                 }
 
-                const param = `${chainStr}_${key}`;
-                res.params[param] = paramValue;
-                res.strs.push(`EXISTS(${varName}.${key}) AND ${varName}.${key} = $${param}`);
+                if (paramValue === undefined) {
+                    res.strs.push("false");
+                } else if (paramValue === null) {
+                    res.strs.push(`${varName}.${key} IS NULL`);
+                } else {
+                    const param = `${chainStr}_${key}`;
+                    res.params[param] = paramValue;
+                    res.strs.push(`${varName}.${key} IS NOT NULL AND ${varName}.${key} = $${param}`);
+                }
             }
 
             const relationField = node.relationFields.find((x) => key === x.fieldName);
@@ -134,7 +144,10 @@ function createAuthPredicate({
                         context,
                         chainStr: `${chainStr}_${key}`,
                         varName: relationVarName,
-                        rule: { [kind]: { [k]: v } } as AuthRule,
+                        rule: {
+                            [kind]: { [k]: v },
+                            allowUnauthenticated
+                        } as AuthRule,
                         kind,
                     });
                     resultStr += authPredicate[0];
@@ -192,7 +205,10 @@ function createAuthAndParams({
                 }
 
                 const authWhere = createAuthPredicate({
-                    rule: { where: authRule.where },
+                    rule: {
+                        where: authRule.where,
+                        allowUnauthenticated: authRule.allowUnauthenticated
+                    },
                     context,
                     node: where.node,
                     varName: where.varName,

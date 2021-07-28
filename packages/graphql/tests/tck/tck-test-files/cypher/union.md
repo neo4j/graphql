@@ -62,7 +62,7 @@ RETURN this {
             [ this_search IN [this_search]
                 WHERE "Genre" IN labels (this_search) AND
                 this_search.name = $this_search_Genre_name AND
-                apoc.util.validatePredicate(NOT(EXISTS(this_search.name) AND this_search.name = $this_search_Genre_auth_allow0_name), "@neo4j/graphql/FORBIDDEN", [0])  |
+                apoc.util.validatePredicate(NOT(this_search.name IS NOT NULL AND this_search.name = $this_search_Genre_auth_allow0_name), "@neo4j/graphql/FORBIDDEN", [0])  |
                 this_search {
                     __resolveType: "Genre",
                      .name
