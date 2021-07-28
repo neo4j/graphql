@@ -44,6 +44,7 @@ export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
     jwt?: Neo4jGraphQLJWT;
     enableRegex?: boolean;
+    skipValidateTypeDefs?: boolean;
     queryOptions?: CypherQueryOptions;
 }
 
@@ -70,6 +71,7 @@ class Neo4jGraphQL {
         const { config = {}, driver, resolvers, schemaDirectives, ...schemaDefinition } = input;
         const { nodes, relationships, schema } = makeAugmentedSchema(schemaDefinition, {
             enableRegex: config.enableRegex,
+            skipValidateTypeDefs: config.skipValidateTypeDefs,
         });
 
         this.driver = driver;

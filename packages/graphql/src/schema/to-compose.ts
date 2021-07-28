@@ -71,12 +71,31 @@ export function objectFieldsToComposeFields(
 
         if (["Int", "Float"].includes(field.typeMeta.name)) {
             newField.resolve = (source) => {
+                const value = source[field.fieldName];
+
                 // @ts-ignore: outputValue is unknown, and to cast to object would be an antipattern
-                if (isInt(source[field.fieldName])) {
-                    return (source[field.fieldName] as Integer).toNumber();
+                if (isInt(value)) {
+                    return (value as Integer).toNumber();
                 }
 
-                return source[field.fieldName];
+                return value;
+            };
+        }
+
+        if (field.typeMeta.name === "ID") {
+            newField.resolve = (source) => {
+                const value = source[field.fieldName];
+
+                // @ts-ignore: outputValue is unknown, and to cast to object would be an antipattern
+                if (isInt(value)) {
+                    return (value as Integer).toNumber();
+                }
+
+                if (typeof value === "number") {
+                    return value.toString(10);
+                }
+
+                return value;
             };
         }
 

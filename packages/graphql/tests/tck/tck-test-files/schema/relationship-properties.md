@@ -23,26 +23,41 @@ type Movie {
 
 interface ActedIn {
     screenTime: Int!
+    startDate: Date!
+    leadRole: Boolean!
 }
 ```
 
 ### Output
 
 ```graphql
+"""
+A date, represented as a 'yyyy-mm-dd' string
+"""
+scalar Date
+
 interface ActedIn {
     screenTime: Int!
+    startDate: Date!
+    leadRole: Boolean!
 }
 
 input ActedInCreateInput {
     screenTime: Int!
+    startDate: Date!
+    leadRole: Boolean!
 }
 
 input ActedInSort {
     screenTime: SortDirection
+    startDate: SortDirection
+    leadRole: SortDirection
 }
 
 input ActedInUpdateInput {
     screenTime: Int
+    startDate: Date
+    leadRole: Boolean
 }
 
 input ActedInWhere {
@@ -56,6 +71,16 @@ input ActedInWhere {
     screenTime_LTE: Int
     screenTime_GT: Int
     screenTime_GTE: Int
+    startDate: Date
+    startDate_NOT: Date
+    startDate_IN: [Date]
+    startDate_NOT_IN: [Date]
+    startDate_LT: Date
+    startDate_LTE: Date
+    startDate_GT: Date
+    startDate_GTE: Date
+    leadRole: Boolean
+    leadRole_NOT: Boolean
 }
 
 type Actor {
@@ -140,6 +165,8 @@ type ActorMoviesRelationship implements ActedIn {
     cursor: String!
     node: Movie!
     screenTime: Int!
+    startDate: Date!
+    leadRole: Boolean!
 }
 
 input ActorMoviesUpdateConnectionInput {
@@ -268,6 +295,8 @@ type MovieActorsRelationship implements ActedIn {
     cursor: String!
     node: Actor!
     screenTime: Int!
+    startDate: Date!
+    leadRole: Boolean!
 }
 
 input MovieActorsUpdateConnectionInput {

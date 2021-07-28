@@ -131,14 +131,7 @@ function createProjectionAndParams({
     resolveType?: boolean;
     inRelationshipProjection?: boolean;
 }): [string, any, ProjectionMeta?] {
-    function reducer(res: Res, [k, field]: [string, any]): Res {
-        let key = k;
-        const alias: string | undefined = field.alias !== field.name ? field.alias : undefined;
-
-        if (alias) {
-            key = field.name as string;
-        }
-
+    function reducer(res: Res, [key, field]: [string, any]): Res {
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
@@ -149,12 +142,12 @@ function createProjectionAndParams({
         const whereInput = field.args.where as GraphQLWhereArg;
         const optionsInput = field.args.options as GraphQLOptionsArg;
         const fieldFields = (field.fieldsByTypeName as unknown) as FieldsByTypeName;
-        const cypherField = node.cypherFields.find((x) => x.fieldName === key);
-        const relationField = node.relationFields.find((x) => x.fieldName === key);
-        const connectionField = node.connectionFields.find((x) => x.fieldName === key);
-        const pointField = node.pointFields.find((x) => x.fieldName === key);
-        const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === key);
-        const authableField = node.authableFields.find((x) => x.fieldName === key);
+        const cypherField = node.cypherFields.find((x) => x.fieldName === field.name);
+        const relationField = node.relationFields.find((x) => x.fieldName === field.name);
+        const connectionField = node.connectionFields.find((x) => x.fieldName === field.name);
+        const pointField = node.pointFields.find((x) => x.fieldName === field.name);
+        const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === field.name);
+        const authableField = node.authableFields.find((x) => x.fieldName === field.name);
 
         if (authableField) {
             if (authableField.auth) {
@@ -259,18 +252,11 @@ function createProjectionAndParams({
             const isArray = relationField.typeMeta.array;
 
             if (relationField.union) {
-                let referenceNodes = context.neoSchema.nodes.filter(
+                const referenceNodes = context.neoSchema.nodes.filter(
                     (x) =>
                         relationField.union?.nodes?.includes(x.name) &&
-                        Object.prototype.hasOwnProperty.call(fieldFields, x.name)
+                        (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
                 );
-
-                // If for example, just selecting __typename, error will be thrown without this
-                if (!referenceNodes.length) {
-                    referenceNodes = context.neoSchema.nodes.filter((x) =>
-                        relationField.union?.nodes?.includes(x.name)
-                    );
-                }
 
                 const unionStrs: string[] = [
                     `${key}: ${!isArray ? "head(" : ""} [(${
@@ -436,7 +422,19 @@ function createProjectionAndParams({
         } else if (dateTimeField) {
             res.projection.push(createDatetimeElement({ resolveTree: field, field: dateTimeField, variable: varName }));
         } else {
-            res.projection.push(literalElements ? `${key}: ${varName}.${key}` : `.${key}`);
+            // If field is aliased, rename projected field to alias and set to varName.fieldName
+            // e.g. RETURN varname { .fieldName } -> RETURN varName { alias: varName.fieldName }
+            let aliasedProj: string;
+
+            if (field.alias !== field.name) {
+                aliasedProj = `${field.alias}: ${varName}`;
+            } else if (literalElements) {
+                aliasedProj = `${key}: ${varName}`;
+            } else {
+                aliasedProj = "";
+            }
+
+            res.projection.push(`${aliasedProj}.${field.name}`);
         }
 
         return res;

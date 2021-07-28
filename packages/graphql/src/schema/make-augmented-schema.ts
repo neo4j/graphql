@@ -19,16 +19,20 @@
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
+import { forEachField } from "@graphql-tools/utils";
 import camelCase from "camelcase";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
     EnumTypeDefinitionNode,
+    GraphQLInt,
+    GraphQLNonNull,
     GraphQLSchema,
     InputObjectTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
+    parse,
     print,
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode,
@@ -47,14 +51,14 @@ import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
 import { PrimitiveField, Auth, CustomEnumField, ConnectionQueryArgs } from "../types";
 import {
-    findResolver,
-    createResolver,
-    deleteResolver,
-    cypherResolver,
-    updateResolver,
     countResolver,
+    createResolver,
+    cypherResolver,
+    defaultFieldResolver,
+    deleteResolver,
+    findResolver,
+    updateResolver,
 } from "./resolvers";
-import checkNodeImplementsInterfaces from "./check-node-implements-interfaces";
 import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
 import getCustomResolvers from "./get-custom-resolvers";
@@ -66,20 +70,17 @@ import Relationship, { RelationshipField } from "../classes/Relationship";
 import getRelationshipFieldMeta from "./get-relationship-field-meta";
 import getWhereFields from "./get-where-fields";
 import { createConnectionWithEdgeProperties } from "./pagination";
-// import validateTypeDefs from "./validation";
+import { validateDocument } from "./validation";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
-    { enableRegex }: { enableRegex?: boolean } = {}
+    { enableRegex, skipValidateTypeDefs }: { enableRegex?: boolean; skipValidateTypeDefs?: boolean } = {}
 ): { schema: GraphQLSchema; nodes: Node[]; relationships: Relationship[] } {
     const document = mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
 
-    /*
-        Issue caused by a combination of GraphQL Compose removing types and
-        that we are not adding Points to the validation schema. This should be a
-        temporary fix and does not detriment usability of the library.
-    */
-    // validateTypeDefs(document);
+    if (!skipValidateTypeDefs) {
+        validateDocument(document);
+    }
 
     const composer = new SchemaComposer();
 
@@ -95,8 +96,8 @@ function makeAugmentedSchema(
     composer.createObjectTC({
         name: "DeleteInfo",
         fields: {
-            nodesDeleted: "Int!",
-            relationshipsDeleted: "Int!",
+            nodesDeleted: new GraphQLNonNull(GraphQLInt),
+            relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
         },
     });
 
@@ -189,8 +190,6 @@ function makeAugmentedSchema(
                 'Type names ending "Connection" are reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.'
             );
         }
-
-        checkNodeImplementsInterfaces(definition, interfaces);
 
         const otherDirectives = (definition.directives || []).filter(
             (x) => !["auth", "exclude"].includes(x.name.value)
@@ -327,10 +326,10 @@ function makeAugmentedSchema(
                 enumFields: relationshipFieldMeta.filter(
                     (f) => (f as CustomEnumField).kind === "Enum"
                 ) as CustomEnumField[],
-                dateTimeFields: relationshipFieldMeta.filter((f) => f.typeMeta.name === "DateTime"),
+                dateTimeFields: relationshipFieldMeta.filter((f) => ["DateTime", "Date"].includes(f.typeMeta.name)),
                 pointFields: relationshipFieldMeta.filter((f) => ["Point", "CartesianPoint"].includes(f.typeMeta.name)),
                 primitiveFields: relationshipFieldMeta.filter((f) =>
-                    ["ID", "String", "Int", "Float"].includes(f.typeMeta.name)
+                    ["ID", "String", "Int", "Float", "Boolean", "BigInt"].includes(f.typeMeta.name)
                 ),
             },
             enableRegex: enableRegex || false,
@@ -485,6 +484,7 @@ function makeAugmentedSchema(
                     if (f.typeMeta.array) {
                         res[`${f.fieldName}_INCLUDES`] = f.typeMeta.input.where.type;
                         res[`${f.fieldName}_NOT_INCLUDES`] = f.typeMeta.input.where.type;
+
                         return res;
                     }
 
@@ -492,9 +492,24 @@ function makeAugmentedSchema(
                     res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}]`;
 
                     if (["Float", "Int", "BigInt", "DateTime", "Date"].includes(f.typeMeta.name)) {
+                        let type: any = f.typeMeta.name;
+
+                        if (f.typeMeta.name === "DateTime") {
+                            type = Scalars.DateTime;
+                        }
+
+                        if (f.typeMeta.name === "BigInt") {
+                            type = Scalars.BigInt;
+                        }
+
+                        if (f.typeMeta.name === "Date") {
+                            type = Scalars.Date;
+                        }
+
                         ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                            res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
+                            res[`${f.fieldName}${comparator}`] = type;
                         });
+
                         return res;
                     }
 
@@ -502,6 +517,7 @@ function makeAugmentedSchema(
                         ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
                             res[`${f.fieldName}${comparator}`] = `${f.typeMeta.name}Distance`;
                         });
+
                         return res;
                     }
 
@@ -520,6 +536,7 @@ function makeAugmentedSchema(
                         ].forEach((comparator) => {
                             res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
                         });
+
                         return res;
                     }
 
@@ -1137,20 +1154,9 @@ function makeAugmentedSchema(
 
                         const totalCount = isInt(count) ? count.toNumber() : count;
 
-                        const unionEdges = edges?.filter((edge) => {
-                            if (
-                                Object.keys(edge.node).length === 1 &&
-                                Object.prototype.hasOwnProperty.call(edge.node, "__resolveType")
-                            ) {
-                                return false;
-                            }
-
-                            return true;
-                        });
-
                         return {
                             totalCount,
-                            ...createConnectionWithEdgeProperties(unionEdges, args, totalCount),
+                            ...createConnectionWithEdgeProperties(edges, args, totalCount),
                         };
                     },
                 },
@@ -1257,6 +1263,7 @@ function makeAugmentedSchema(
     if (!Object.values(composer.Mutation.getFields()).length) {
         composer.delete("Mutation");
     }
+
     const generatedTypeDefs = composer.toSDL();
     const generatedResolvers = {
         ...composer.getResolveMethods(),
@@ -1275,10 +1282,39 @@ function makeAugmentedSchema(
         }
     });
 
+    const seen = {};
+    let parsedDoc = parse(generatedTypeDefs);
+    parsedDoc = {
+        ...parsedDoc,
+        definitions: parsedDoc.definitions.filter((definition) => {
+            if (!("name" in definition)) {
+                return true;
+            }
+
+            const n = definition.name?.value as string;
+
+            if (seen[n]) {
+                return false;
+            }
+
+            seen[n] = n;
+
+            return true;
+        }),
+    };
+
     const schema = makeExecutableSchema({
         ...schemaDefinition,
-        typeDefs: generatedTypeDefs,
+        typeDefs: parsedDoc,
         resolvers: generatedResolvers,
+    });
+
+    // Assign a default field resolver to account for aliasing of fields
+    forEachField(schema, (field) => {
+        if (!field.resolve) {
+            // eslint-disable-next-line no-param-reassign
+            field.resolve = defaultFieldResolver;
+        }
     });
 
     return {
