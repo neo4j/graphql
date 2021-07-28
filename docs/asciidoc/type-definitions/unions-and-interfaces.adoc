@@ -31,9 +31,9 @@ Below you can find some examples of how queries and mutations work with this exa
 
 === Querying a union
 
-The Neo4j GraphQL Library only returns union members which have inline fragments in your selection set.
+Which union members are returned by a Query are dictated by the `where` filter applied.
 
-For example, the following will return users and only their blogs:
+For example, the following will return all user content, and you will specifically get the title of each blog.
 
 [source, graphql]
 ----
@@ -43,34 +43,70 @@ query GetUsersWithBlogs {
         content {
             ... on Blog {
                 title
-                posts {
-                    content
-                }
             }
         }
     }
 }
 ----
 
-Whilst the query below will return both the blogs and posts of users:
+Whilst the query below will only return blogs. We could for instance use a filter to check that the title is not null to essentially return all blogs:
 
 [source, graphql]
 ----
 query GetUsersWithAllContent {
     users {
         name
-        content {
+        content(where: { Blog: { title_NOT: null }}) {
             ... on Blog {
                 title
-                posts {
-                    content
-                }
-            }
-            ... on Post {
-                content
             }
         }
     }
+}
+----
+
+Conceptually, this maps to the `WHERE` clauses of the subquery unions in Cypher. Going back to the first example with no `where` argument, each subquery has a similar structure:
+
+[source, cypher]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    RETURN { __resolveType: "Blog", title: blog.title }
+UNION
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(journal:Post)
+    RETURN { __resolveType: "Post" }
+}
+----
+
+Now if we were to leave both subqueries and add a `WHERE` clause for blogs, it would look like this:
+
+[source, cypher]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    WHERE blog.title IS NOT NULL
+    RETURN { __resolveType: "Blog", title: blog.title }
+UNION
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(journal:Post)
+    RETURN { __resolveType: "Post" }
+}
+----
+
+As you can see, the subqueries are now "unbalanced", which could result in massive overfetching of `Post` nodes.
+
+So, when a `where` argument is passed in, we only include union members which are in the `where` object, so it is essentially acting as a logical OR gate, different from the rest of our `where` arguments:
+
+[source, cypher]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    WHERE blog.title IS NOT NULL
+    RETURN { __resolveType: "Blog", title: blog.title }
 }
 ----
 
