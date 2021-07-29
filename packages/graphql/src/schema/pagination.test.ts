@@ -77,7 +77,12 @@ describe("cursor-pagination", () => {
             const totalCount = 50;
 
             expect(() => {
-                createConnectionWithEdgeProperties(arraySlice, args, totalCount);
+                createConnectionWithEdgeProperties({
+                    source: { edges: arraySlice },
+                    args,
+                    totalCount,
+                    selectionSet: undefined,
+                });
             }).toThrow('Argument "first" must be a non-negative integer');
         });
 
@@ -85,8 +90,12 @@ describe("cursor-pagination", () => {
             const arraySlice = [...Array(20).keys()].map((key) => ({ node: { id: key } }));
             const args = { after: "invalid" };
             const totalCount = 50;
-            const result = createConnectionWithEdgeProperties(arraySlice, args, totalCount);
-
+            const result = createConnectionWithEdgeProperties({
+                source: { edges: arraySlice },
+                args,
+                totalCount,
+                selectionSet: undefined,
+            });
             expect(result).toStrictEqual({
                 edges: arraySlice.map((edge, index) => ({ ...edge, cursor: offsetToCursor(index) })),
                 pageInfo: {
@@ -102,7 +111,12 @@ describe("cursor-pagination", () => {
             const arraySlice = [...Array(20).keys()].map((key) => ({ node: { id: key } }));
             const args = {};
             const totalCount = 50;
-            const result = createConnectionWithEdgeProperties(arraySlice, args, totalCount);
+            const result = createConnectionWithEdgeProperties({
+                source: { edges: arraySlice },
+                args,
+                totalCount,
+                selectionSet: undefined,
+            });
             expect(result).toStrictEqual({
                 edges: arraySlice.map((edge, index) => ({ ...edge, cursor: offsetToCursor(index) })),
                 pageInfo: {
@@ -117,7 +131,12 @@ describe("cursor-pagination", () => {
             const arraySlice = [...Array(20).keys()].map((key) => ({ node: { id: key } }));
             const args = { after: offsetToCursor(10) };
             const totalCount = 50;
-            const result = createConnectionWithEdgeProperties(arraySlice, args, totalCount);
+            const result = createConnectionWithEdgeProperties({
+                source: { edges: arraySlice },
+                args,
+                totalCount,
+                selectionSet: undefined,
+            });
             expect(result).toStrictEqual({
                 edges: arraySlice.map((edge, index) => ({ ...edge, cursor: offsetToCursor(index + 11) })),
                 pageInfo: {
