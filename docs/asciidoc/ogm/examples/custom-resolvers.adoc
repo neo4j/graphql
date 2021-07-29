@@ -29,6 +29,8 @@ const { OGM } = require("@neo4j/graphql-ogm");
 const { ApolloServer } = require("apollo-server");
 const neo4j = require("neo4j-driver");
 
+const { createJWT, comparePassword } = require("./utils"); // example util functions
+
 const driver = neo4j.driver(
     "bolt://localhost:7687",
     neo4j.auth.basic("neo4j", "password")
@@ -42,7 +44,8 @@ const typeDefs = `
     }
 
     type Mutation {
-        createUser(username: String!, password: String!): User!
+        signUp(username: String!, password: String!): String! ### JWT
+        signIn(username: String!, password: String!): String! ### JWT
     }
 `;
 
@@ -51,8 +54,18 @@ const User = ogm.model("User");
 
 const resolvers = {
     Mutation: {
-        createUser(_source, { username, password }): async () => {
-            const { users } = await User.create({
+        signUp: async (_source, { username, password }) => {
+            const [existing] = await User.find({
+                where: {
+                    username,
+                },
+            });
+
+            if (existing) {
+                throw new Error(`User with username ${username} already exists!`);
+            }
+
+            const [user] = await User.create({
                 input: [
                     {
                         username,
@@ -61,7 +74,26 @@ const resolvers = {
                 ]
             });
 
-            return users[0];
+            return createJWT({ sub: user.id });
+        },
+        signIn: async (_source, { email, password }) => {
+            const [user] = await User.find({
+                where: {
+                    username,
+                },
+            });
+
+            if (!user) {
+                throw new Error(`User with username ${username} not found!`);
+            }
+
+            const correctPassword = await comparePassword(password, user.password);
+
+            if (!correctPassword) {
+                throw new Error(`Incorrect password for user with username ${username}!`);
+            }
+
+            return createJWT({ sub: user.id });
         },
     },
 };
@@ -69,6 +101,11 @@ const resolvers = {
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
     resolvers,
+    config: {
+        jwt: {
+            secret: "secret",
+        },
+    },
 });
 
 const server = new ApolloServer({
@@ -79,6 +116,8 @@ server.listen().then(({ url }) => {
     console.log(`🚀 Server ready at ${url}`);
 });
 ----
+
+It's important to note the JWT secret being passed into the `Neo4jGraphQL` constructor in this example.
 
 Back in the command line, run the following command to start your server:
 
@@ -94,4 +133,4 @@ You should see the following output:
 🚀 Server ready at http://localhost:4000/
 ----
 
-You can execute the `createUser` Mutation against this GraphQL API, but when you go to query the user through the same API, the password field will not be available.
+You can execute the `signUp` Mutation against this GraphQL API to sign up, but when you go to query the user through the same API, the password field will not be available.
