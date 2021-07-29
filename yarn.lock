@@ -971,7 +971,7 @@ __metadata:
     deep-equal: ^2.0.5
     dot-prop: ^6.0.1
     faker: 5.2.0
-    graphql-compose: ^8.1.0
+    graphql-compose: ^9.0.2
     graphql-parse-resolve-info: ^4.12.0
     graphql-relay: ^0.8.0
     graphql-tag: 2.11.0
@@ -6643,16 +6643,16 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"graphql-compose@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "graphql-compose@npm:8.1.0"
+"graphql-compose@npm:^9.0.2":
+  version: 9.0.2
+  resolution: "graphql-compose@npm:9.0.2"
   dependencies:
     "@types/object-path": ^0.11.0
     graphql-type-json: 0.3.2
     object-path: 0.11.5
   peerDependencies:
-    graphql: ^14.2.0 || ^15.0.0
-  checksum: 9c660ed7c6500e4ff7d1e815884c5e197afb49b3a11d18f95f2d211e6744c54cbe9a2ba1b07c0aebc8cbbca1d6d03a7658c10809f61849f7b4e7459e583e28d5
+    graphql: ^14.2.0 || ^15.0.0 || ^16.0.0
+  checksum: 0c5c7967c1e8e6ea4fd7f65fb08212d65ddda980a9321a089599dd7e000b9d53a71be317abe6d16fb4079e6687b95470b383f6670a288322e7d1d16fdfcd2132
   languageName: node
   linkType: hard
 
