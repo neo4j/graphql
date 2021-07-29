@@ -40,7 +40,7 @@ const users = await User.find({
 JavaScript object representation of the GraphQL `where` input type, used for <<queries>>.
 
 === `options`
-JavaScript object representation of the GraphQL `options` input type, used for <<schema-pagination>>.
+JavaScript object representation of the GraphQL `options` input type, used for <<pagination>>.
 
 === `selectionSet`
 

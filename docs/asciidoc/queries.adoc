@@ -4,7 +4,7 @@
 Each object defined in type definitions will have a Query field generated for it. Each Query field accepts two arguments:
 
 * `where`: Used to specify the <<filtering>> which should be applied whilst querying the data
-* `options`: Used to specify the options for <<sorting>> and <<schema-pagination>>
+* `options`: Used to specify the options for <<sorting>> and <<pagination>>
 
 == Example
 
