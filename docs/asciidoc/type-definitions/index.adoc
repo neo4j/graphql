@@ -1,38 +1,14 @@
 [[type-definitions]]
 = Type Definitions
 
-* <<type-definitions-types>>
-* <<type-definitions-unions-and-interfaces>>
-* <<type-definitions-relationships>>
-* <<type-definitions-access-control>>
-* <<type-definitions-autogeneration>>
-* <<type-definitions-cypher>>
-* <<type-definitions-default-values>>
+- <<type-definitions-basics>> - Learn how to define your nodes and relationships using GraphQL type definitions.
+- <<type-definitions-types>> - Learn about the various data types available in the Neo4j GraphQL Library.
+- <<type-definitions-unions-and-interfaces>> - Learn about two GraphQL concepts, unions and interfaces, and how they map to the Neo4j database.
+- <<type-definitions-relationships>> - Learn more about defining relationships using the Neo4j GraphQL Library.
+- <<type-definitions-access-control>> - Learn about how to restrict access to certain types or fields.
+- <<type-definitions-autogeneration>> - Learn about certain types which you can enable autogeneration of values for.
+- <<type-definitions-cypher>> - Learn about how to add custom Cypher to your type definitions.
+- <<type-definitions-default-values>> - Learn about different ways of setting default values for particular fields.
 
-== Basics
-
-=== Nodes
-
-To represent a node in the GraphQL schema use the type definition;
-
-[source, graphql]
-----
-type Node {
-    id: ID
-}
-----
-
-
-=== Relationships
-
-To represent a relationship between two nodes use the `@relationship` directive;
-
-[source, graphql]
-----
-type Node {
-    id: ID
-    related: [Node] @relationship(type: "RELATED", direction: OUT)
-}
-----
 
 

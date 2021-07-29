@@ -13,6 +13,9 @@
 
         <d:tocentry linkend="type-definitions">
             <?dbhtml filename="type-definitions/index.html"?>
+            <d:tocentry linkend="type-definitions-basics">
+                <?dbhtml filename="type-definitions/basics/index.html"?>
+            </d:tocentry>
             <d:tocentry linkend="type-definitions-types">
                 <?dbhtml filename="type-definitions/types/index.html"?>
             </d:tocentry>

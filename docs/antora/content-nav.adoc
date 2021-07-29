@@ -3,6 +3,7 @@
 ** xref:getting-started/index.adoc[]
 ** xref:type-definitions/index.adoc[]
 *** xref:type-definitions/types/index.adoc[]
+*** xref:type-definitions/basics/index.adoc[]
 *** xref:type-definitions/unions-and-interfaces/index.adoc[]
 *** xref:type-definitions/relationships/index.adoc[]
 *** xref:type-definitions/access-control/index.adoc[]
