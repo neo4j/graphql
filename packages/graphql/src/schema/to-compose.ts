@@ -18,7 +18,7 @@
  */
 
 import { InputValueDefinitionNode, DirectiveNode } from "graphql";
-import { ExtensionsDirective, DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
+import { DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition, Directive } from "graphql-compose";
 import { isInt, Integer } from "neo4j-driver";
 import getFieldTypeMeta from "./get-field-type-meta";
 import parseValueNode from "./parse-value-node";
@@ -39,7 +39,7 @@ export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
     }, {});
 }
 
-export function graphqlDirectivesToCompose(directives: DirectiveNode[]): ExtensionsDirective[] {
+export function graphqlDirectivesToCompose(directives: DirectiveNode[]): Directive[] {
     return directives.map((directive) => ({
         args: (directive.arguments || [])?.reduce(
             (r: DirectiveArgs, d) => ({ ...r, [d.name.value]: parseValueNode(d.value) }),
@@ -64,9 +64,7 @@ export function objectFieldsToComposeFields(
         } as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
 
         if (field.otherDirectives.length) {
-            newField.extensions = {
-                directives: graphqlDirectivesToCompose(field.otherDirectives),
-            };
+            newField.directives = graphqlDirectivesToCompose(field.otherDirectives);
         }
 
         if (["Int", "Float"].includes(field.typeMeta.name)) {

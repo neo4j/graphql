@@ -411,9 +411,7 @@ function makeAugmentedSchema(
             name: node.name,
             fields: nodeFields,
             description: node.description,
-            extensions: {
-                directives: graphqlDirectivesToCompose(node.otherDirectives),
-            },
+            directives: graphqlDirectivesToCompose(node.otherDirectives),
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
@@ -1254,9 +1252,7 @@ function makeAugmentedSchema(
             name: inter.name.value,
             description: inter.description?.value,
             fields: objectComposeFields,
-            extensions: {
-                directives: graphqlDirectivesToCompose((inter.directives || []).filter((x) => x.name.value !== "auth")),
-            },
+            directives: graphqlDirectivesToCompose((inter.directives || []).filter((x) => x.name.value !== "auth")),
         });
     });
 
