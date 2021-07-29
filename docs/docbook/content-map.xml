@@ -120,8 +120,17 @@
 
         <d:tocentry linkend="ogm">
             <?dbhtml filename="ogm/index.html"?>
-            <d:tocentry linkend="ogm-getting-started">
-                <?dbhtml filename="ogm/getting-started/index.html"?>
+            <d:tocentry linkend="ogm-installation">
+                <?dbhtml filename="ogm/installation/index.html"?>
+            </d:tocentry>
+            <d:tocentry linkend="ogm-examples">
+                <?dbhtml filename="ogm/examples/index.html"?>
+                <d:tocentry linkend="ogm-examples-custom-resolvers">
+                    <?dbhtml filename="ogm/examples/custom-resolvers/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="ogm-examples-rest-api">
+                    <?dbhtml filename="ogm/examples/rest-api/index.html"?>
+                </d:tocentry>
             </d:tocentry>
             <d:tocentry linkend="ogm-methods">
                 <?dbhtml filename="ogm/methods/index.html"?>
@@ -189,6 +198,9 @@
 
         <d:tocentry linkend="troubleshooting">
             <?dbhtml filename="troubleshooting/index.html"?>
+            <d:tocentry linkend="troubleshooting-faqs">
+                <?dbhtml filename="troubleshooting/faqs/index.html"?>
+            </d:tocentry>
         </d:tocentry>
     </d:tocentry>
 </d:toc>

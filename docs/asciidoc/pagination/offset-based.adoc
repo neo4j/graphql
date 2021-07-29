@@ -1,7 +1,7 @@
 [[pagination-offset-based]]
 = Offset-based pagination
 
-Page-based pagination can be achieved through the use of the `offset` and `limit` options available whilst querying for data.
+Offset-based pagination, often associated with navigation via pages, can be achieved through the use of the `offset` and `limit` options available whilst querying for data.
 
 Using the following type definition:
 
@@ -27,7 +27,8 @@ query {
 
 And then on subsequent calls, introduce the `offset` argument and increment it by 10 on each call.
 
-Page 2:
+*Page 2:*
+
 [source, graphql]
 ----
 query {
@@ -40,7 +41,8 @@ query {
 }
 ----
 
-Page 3:
+*Page 3:*
+
 [source, graphql]
 ----
 query {
@@ -53,9 +55,13 @@ query {
 }
 ----
 
+And so on, so forth.
+
 == Total number of pages
 
 You can fetch the total number of records for a certain type using its count query, and then divide that number by your entries per page in order to calculate the total number of pages. This will allow to to determine what the last page is, and whether there is a next page.
+
+See <<queries-count>> queries for details on how to execute these queries.
 
 == Paginating relationship fields
 

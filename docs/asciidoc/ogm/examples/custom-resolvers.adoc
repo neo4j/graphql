@@ -1,0 +1,97 @@
+[[ogm-examples-custom-resolvers]]
+= Custom Resolvers
+
+A common case for using the OGM will be within custom resolvers inside a Neo4j GraphQL instance (very meta!), due to the fact that it has access to some fields which the Neo4j GraphQL Library may not. A common use case might be to have a `password` field marked with directive `@private`, and a custom resolver for creating users with passwords.
+
+To get started with this example, create your example application directory, create a new project and also the file which will contain our application code:
+
+[source, bash]
+----
+mkdir ogm-custom-resolvers-example
+cd ogm-custom-resolvers-example
+npm init --yes
+touch index.js
+----
+
+Then we need to install our dependencies:
+
+[source, bash]
+----
+npm install @neo4j/graphql-ogm graphql neo4j-driver apollo-server
+----
+
+Assuming a running Neo4j database at "bolt://localhost:7687" with username "neo4j" and password "password", in our empty `index.js` file, add the following code:
+
+[source, javascript]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const { OGM } = require("@neo4j/graphql-ogm");
+const { ApolloServer } = require("apollo-server");
+const neo4j = require("neo4j-driver");
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const typeDefs = `
+    type User {
+        id: ID @id
+        username: String!
+        password: String! @private
+    }
+
+    type Mutation {
+        createUser(username: String!, password: String!): User!
+    }
+`;
+
+const ogm = new OGM({ typeDefs, driver });
+const User = ogm.model("User");
+
+const resolvers = {
+    Mutation: {
+        createUser(_source, { username, password }): async () => {
+            const { users } = await User.create({
+                input: [
+                    {
+                        username,
+                        password,
+                    }
+                ]
+            });
+
+            return users[0];
+        },
+    },
+};
+
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    resolvers,
+});
+
+const server = new ApolloServer({
+    schema: neoSchema.schema,
+});
+
+server.listen().then(({ url }) => {
+    console.log(`🚀 Server ready at ${url}`);
+});
+----
+
+Back in the command line, run the following command to start your server:
+
+[source, bash]
+----
+node index.js
+----
+
+You should see the following output:
+
+[source, bash]
+----
+🚀 Server ready at http://localhost:4000/
+----
+
+You can execute the `createUser` Mutation against this GraphQL API, but when you go to query the user through the same API, the password field will not be available.
