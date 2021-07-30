@@ -1,7 +1,7 @@
 [[auth-authorization-allow]]
 = Allow
 
-Use `allow` to ensure that on matched nodes, there is a match between a value on the JWT and a property on each matched node. Taking a closer look, let's create two users in a hypothetical empty database:
+Use `allow` to ensure that on matched nodes, there is equality between a value on the JWT and a property on each matched node. Taking a closer look, let's create two users in a hypothetical empty database:
 
 [source, cypher]
 ----
@@ -9,7 +9,7 @@ CREATE (:User { id: "user1", name: "one" })
 CREATE (:User { id: "user2", name: "two" })
 ----
 
-For the node type above, we might have the following simple type definition:
+For the label and properties of the nodes created above, we would have the equivalent GraphQL type definition as follows:
 
 [source, graphql]
 ----
@@ -19,7 +19,7 @@ type User {
 }
 ----
 
-Now we have two users in our database, and a simple type definition - we need to restrict `user1` from accessing `user2`? This is where `allow` comes in:
+Now that we have two users in our database, and a simple type definition - let's say we need to restrict `user1` from accessing `user2`. This is where `allow` comes in:
 
 [source, graphql]
 ----

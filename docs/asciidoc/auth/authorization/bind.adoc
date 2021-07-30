@@ -1,14 +1,14 @@
 [[auth-authorization-bind]]
 = Bind
 
-Use bind to ensure that on creating or updating nodes, there is a match between a value on the JWT and a property on a matched node. This validation is done after the operation but inside a transaction. Taking a closer look, let's create a user in our database:
+Use bind to ensure that on creating or updating nodes, there is equality between a value on the JWT and a property on a matched node. This validation is done after the operation but inside a transaction. Taking a closer look, let's create a user in our database:
 
 [source, cypher]
 ----
 CREATE (:User { id:"user1", name: "one" })
 ----
 
-For the node type above, we might have the following simple type definition:
+For the label and properties of the node created above, we would have the equivalent GraphQL type definition as follows:
 
 [source, graphql]
 ----

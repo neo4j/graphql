@@ -110,6 +110,7 @@ const neoSchema = new Neo4jGraphQL({
 
 const server = new ApolloServer({
     schema: neoSchema.schema,
+    context: ({ req }) => ({ req }),
 });
 
 server.listen().then(({ url }) => {

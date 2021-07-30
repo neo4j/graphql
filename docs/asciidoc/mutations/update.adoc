@@ -74,7 +74,7 @@ mutation {
 }
 ----
 
-== Nested update
+== Nested create
 
 Instead of creating a Post and connecting it to a User, you could update a User and create a Post as part of the Mutation:
 
