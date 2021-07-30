@@ -2,6 +2,8 @@
 
 💡 Welcome to the Monorepo for [Neo4j](https://neo4j.com/) + [GraphQL](https://graphql.org/).
 
+> We are working on Neo4j GraphQL 2.0.0, you can download the release candidate via `npm install @neo4j/graphql@next` and checkout the docs [here](https://neo4j.com/docs/graphql-manual/2.0/).
+
 ![Neo4j + GraphQL](./docs/images/banner.png)
 
 <p align="center">
