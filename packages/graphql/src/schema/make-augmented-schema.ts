@@ -27,6 +27,7 @@ import {
     EnumTypeDefinitionNode,
     GraphQLInt,
     GraphQLNonNull,
+    GraphQLResolveInfo,
     GraphQLSchema,
     InputObjectTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
@@ -69,7 +70,7 @@ import getFieldTypeMeta from "./get-field-type-meta";
 import Relationship, { RelationshipField } from "../classes/Relationship";
 import getRelationshipFieldMeta from "./get-relationship-field-meta";
 import getWhereFields from "./get-where-fields";
-import { createConnectionWithEdgeProperties } from "./pagination";
+import { connectionFieldResolver } from "./pagination";
 import { validateDocument } from "./validation";
 
 function makeAugmentedSchema(
@@ -1147,15 +1148,13 @@ function makeAugmentedSchema(
                 [connectionField.fieldName]: {
                     type: connection.NonNull,
                     args: composeNodeArgs,
-                    resolve: (source, args: ConnectionQueryArgs) => {
-                        const { totalCount: count, edges } = source[connectionField.fieldName];
-
-                        const totalCount = isInt(count) ? count.toNumber() : count;
-
-                        return {
-                            totalCount,
-                            ...createConnectionWithEdgeProperties(edges, args, totalCount),
-                        };
+                    resolve: (source, args: ConnectionQueryArgs, ctx, info: GraphQLResolveInfo) => {
+                        return connectionFieldResolver({
+                            connectionField,
+                            args,
+                            info,
+                            source,
+                        });
                     },
                 },
             });

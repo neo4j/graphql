@@ -389,9 +389,15 @@ function createProjectionAndParams({
 
         if (connectionField) {
             if (!inRelationshipProjection) {
-                if (!res.meta.connectionFields) res.meta.connectionFields = [];
-                res.meta.connectionFields.push(field as ResolveTree);
-                res.projection.push(literalElements ? `${field.name}: ${field.name}` : `${field.name}`);
+                if (!res.meta.connectionFields) {
+                    res.meta.connectionFields = [];
+                }
+
+                const f = field as ResolveTree;
+
+                res.meta.connectionFields.push(f);
+                res.projection.push(literalElements ? `${f.alias}: ${f.alias}` : `${f.alias}`);
+
                 return res;
             }
 
