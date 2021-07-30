@@ -17,17 +17,65 @@
  * limitations under the License.
  */
 
+import { FieldNode, GraphQLResolveInfo, SelectionSetNode } from "graphql";
 import { getOffsetWithDefault, offsetToCursor } from "graphql-relay/connection/arrayConnection";
 import { Integer, isInt } from "neo4j-driver";
+import { ConnectionField, ConnectionQueryArgs } from "../types";
+
+function getAliasKey({ selectionSet, key }: { selectionSet: SelectionSetNode | undefined; key: string }): string {
+    const selection = (selectionSet?.selections || []).find(
+        (x) => x.kind === "Field" && x.name.value === key
+    ) as FieldNode;
+
+    if (selection?.alias) {
+        return selection.alias.value;
+    }
+
+    return key;
+}
+
+export function connectionFieldResolver({
+    connectionField,
+    source,
+    args,
+    info,
+}: {
+    connectionField: ConnectionField;
+    source: any;
+    args: ConnectionQueryArgs;
+    info: GraphQLResolveInfo;
+}) {
+    const firstField = info.fieldNodes[0];
+    const selectionSet = firstField.selectionSet;
+
+    let value = source[connectionField.fieldName];
+    if (firstField.alias) {
+        value = source[firstField.alias.value];
+    }
+
+    const totalCountKey = getAliasKey({ selectionSet, key: "totalCount" });
+    const totalCount = value.totalCount;
+
+    return {
+        [totalCountKey]: isInt(totalCount) ? totalCount.toNumber() : totalCount,
+        ...createConnectionWithEdgeProperties({ source: value, selectionSet, args, totalCount }),
+    };
+}
 
 /**
  * Adapted from graphql-relay-js ConnectionFromArraySlice
  */
-export function createConnectionWithEdgeProperties(
-    arraySlice: { node: Record<string, any>; [key: string]: any }[] = [],
-    args: { after?: string; first?: number } = {},
-    totalCount: number
-) {
+export function createConnectionWithEdgeProperties({
+    selectionSet,
+    source,
+    args = {},
+    totalCount,
+}: {
+    selectionSet: SelectionSetNode | undefined;
+    source: any;
+    args: { after?: string; first?: number };
+    totalCount: number;
+}) {
     const { after, first } = args;
 
     if ((first as number) < 0) {
@@ -40,24 +88,43 @@ export function createConnectionWithEdgeProperties(
     // increment the last cursor position by one for the sliceStart
     const sliceStart = lastEdgeCursor + 1;
 
-    const sliceEnd = sliceStart + ((first as number) || arraySlice.length);
+    const edges = source?.edges || [];
 
-    const edges = arraySlice.map((value, index) => {
+    const selections = selectionSet?.selections || [];
+
+    const edgesField = selections.find((x) => x.kind === "Field" && x.name.value === "edges") as FieldNode;
+    const cursorKey = getAliasKey({ selectionSet: edgesField?.selectionSet, key: "cursor" });
+    const nodeKey = getAliasKey({ selectionSet: edgesField?.selectionSet, key: "node" });
+
+    const sliceEnd = sliceStart + ((first as number) || edges.length);
+
+    const mappedEdges = edges.map((value, index) => {
         return {
             ...value,
-            cursor: offsetToCursor(sliceStart + index),
+            ...(value.node ? { [nodeKey]: value.node } : {}),
+            [cursorKey]: offsetToCursor(sliceStart + index),
         };
     });
 
-    const firstEdge = edges[0];
-    const lastEdge = edges[edges.length - 1];
+    const startCursor = mappedEdges[0]?.cursor;
+    const endCursor = mappedEdges[mappedEdges.length - 1]?.cursor;
+
+    const pageInfoKey = getAliasKey({ selectionSet, key: "pageInfo" });
+    const edgesKey = getAliasKey({ selectionSet, key: "edges" });
+    const pageInfoField = selections.find((x) => x.kind === "Field" && x.name.value === "pageInfo") as FieldNode;
+    const pageInfoSelectionSet = pageInfoField?.selectionSet;
+    const startCursorKey = getAliasKey({ selectionSet: pageInfoSelectionSet, key: "startCursor" });
+    const endCursorKey = getAliasKey({ selectionSet: pageInfoSelectionSet, key: "endCursor" });
+    const hasPreviousPageKey = getAliasKey({ selectionSet: pageInfoSelectionSet, key: "hasPreviousPage" });
+    const hasNextPageKey = getAliasKey({ selectionSet: pageInfoSelectionSet, key: "hasNextPage" });
+
     return {
-        edges,
-        pageInfo: {
-            startCursor: firstEdge?.cursor,
-            endCursor: lastEdge?.cursor,
-            hasPreviousPage: lastEdgeCursor > 0,
-            hasNextPage: typeof first === "number" ? sliceEnd < totalCount : false,
+        [edgesKey]: mappedEdges,
+        [pageInfoKey]: {
+            [startCursorKey]: startCursor,
+            [endCursorKey]: endCursor,
+            [hasPreviousPageKey]: lastEdgeCursor > 0,
+            [hasNextPageKey]: typeof first === "number" ? sliceEnd < totalCount : false,
         },
     };
 }
