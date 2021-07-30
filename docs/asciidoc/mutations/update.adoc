@@ -1,0 +1,101 @@
+[[mutations-update]]
+= Update
+
+Using the following type definitions for these examples:
+
+[source, graphql]
+----
+type Post {
+    id: ID! @id
+    content: String!
+    creator: User @relationship(type: "HAS_POST", direction: IN)
+}
+
+type User {
+    id: ID! @id
+    name: String
+    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+}
+----
+
+The following update Mutations and response types will be generated for the above type definitions:
+
+[source, graphql]
+----
+type UpdatePostsMutationResponse {
+    posts: [Post!]!
+}
+
+type UpdateUsersMutationResponse {
+    users: [User!]!
+}
+
+type Mutation {
+    updatePosts(
+        where: PostWhere
+        update: PostUpdateInput
+        connect: PostConnectInput
+        disconnect: PostDisconnectInput
+        create: PostCreateInput
+        delete: PostDeleteInput
+    ): UpdatePostsMutationResponse!
+    updateUsers(
+        where: UserWhere
+        update: UserUpdateInput
+        connect: UserConnectInput
+        disconnect: UserDisconnectInput
+        create: UserCreateInput
+        delete: UserDeleteInput
+    ): UpdateUsersMutationResponse!
+}
+----
+
+> The `id` field not be update-able as the <<type-definitions-autogeneration-id>> directive has been used.
+
+== Single update
+
+Say we wanted to edit the content of a Post:
+
+[source, graphql]
+----
+mutation {
+    updatePosts(
+        where: {
+            id: "892CC104-A228-4BB3-8640-6ADC9F2C2A5F"
+        }
+        update: {
+            content: "Some new content for this Post!"
+        }
+    ) {
+        posts {
+            content
+        }
+    }
+}
+----
+
+== Nested create
+
+Instead of creating a Post and connecting it to a User, you could update a User and create a Post as part of the Mutation:
+
+[source, graphql]
+----
+mutation {
+    updateUsers(
+        where: { name: "John Doe" }
+        create: {
+            posts: [
+                { node: { content: "An interesting way of adding a new Post!" } }
+            ]
+        }
+    ) {
+        users {
+            id
+            name
+            posts {
+                content
+            }
+        }
+    }
+}
+----

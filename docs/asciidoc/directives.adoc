@@ -5,7 +5,7 @@
 
 The `@auth` directive is used to define complex fine-grained and role-based access control for object types and fields.
 
-Reference: <<auth>>
+Reference: <<auth-directive>>
 
 == `@coalesce`
 

@@ -1,6 +1,8 @@
 [[troubleshooting]]
 = Troubleshooting
 
+This chapter contains common troubleshooting steps. Additionally, there is a section for <<troubleshooting-faqs>> (Frequently Asked Questions) where you might find answers to your problems.
+
 == Debug Logging
 
 `@neo4j/graphql` uses the https://www.npmjs.com/package/debug[`debug`] library for debug-level logging. You can turn on all debug logging by setting the environment variable `DEBUG` to `@neo4j/graphql:*` whilst running. For example:
@@ -17,6 +19,7 @@ Alternatively, if you are debugging a particular functionality, you can specify 
 3. `@neo4j/graphql:graphql` - Logs the GraphQL query and variables
 4. `@neo4j/graphql:execute` - Logs the Cypher and Cypher paramaters before execution, and summary of execution
 
+[[troubleshooting-query-tuning]]
 == Query Tuning
 
 Hopefully you won't need to perform any query tuning, but if you do, the Neo4j GraphQL Library allows you to set the full array of query options on construction of the library.

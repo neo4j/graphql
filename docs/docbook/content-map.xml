@@ -3,12 +3,19 @@
     <d:tocentry linkend="graphql">
         <?dbhtml filename="index.html"?>
 
+        <d:tocentry linkend="introduction">
+            <?dbhtml filename="introduction/index.html"?>
+        </d:tocentry>
+
         <d:tocentry linkend="getting-started">
             <?dbhtml filename="getting-started/index.html"?>
         </d:tocentry>
 
         <d:tocentry linkend="type-definitions">
             <?dbhtml filename="type-definitions/index.html"?>
+            <d:tocentry linkend="type-definitions-basics">
+                <?dbhtml filename="type-definitions/basics/index.html"?>
+            </d:tocentry>
             <d:tocentry linkend="type-definitions-types">
                 <?dbhtml filename="type-definitions/types/index.html"?>
             </d:tocentry>
@@ -32,29 +39,6 @@
             </d:tocentry>
         </d:tocentry>
 
-        <d:tocentry linkend="custom-resolvers">
-            <?dbhtml filename="custom-resolvers/index.html"?>
-        </d:tocentry>
-
-        <d:tocentry linkend="schema">
-            <?dbhtml filename="schema/index.html"?>
-            <d:tocentry linkend="schema-queries">
-                <?dbhtml filename="schema/queries/index.html"?>
-            </d:tocentry>
-            <d:tocentry linkend="schema-mutations">
-                <?dbhtml filename="schema/mutations/index.html"?>
-            </d:tocentry>
-            <d:tocentry linkend="schema-sorting">
-                <?dbhtml filename="schema/sorting/index.html"?>
-            </d:tocentry>
-            <d:tocentry linkend="schema-filtering">
-                <?dbhtml filename="schema/filtering/index.html"?>
-            </d:tocentry>
-            <d:tocentry linkend="schema-pagination">
-                <?dbhtml filename="schema/pagination/index.html"?>
-            </d:tocentry>
-        </d:tocentry>
-
         <d:tocentry linkend="queries">
             <?dbhtml filename="queries/index.html"?>
         </d:tocentry>
@@ -63,10 +47,48 @@
             <?dbhtml filename="mutations/index.html"?>
         </d:tocentry>
 
+        <d:tocentry linkend="mutations">
+            <?dbhtml filename="mutations/index.html"?>
+            <d:tocentry linkend="mutations-create">
+                <?dbhtml filename="mutations/create/index.html"?>
+            </d:tocentry>
+            <d:tocentry linkend="mutations-update">
+                <?dbhtml filename="mutations/update/index.html"?>
+            </d:tocentry>
+            <d:tocentry linkend="mutations-delete">
+                <?dbhtml filename="mutations/delete/index.html"?>
+            </d:tocentry>
+        </d:tocentry>
+
+        <d:tocentry linkend="filtering">
+            <?dbhtml filename="filtering/index.html"?>
+        </d:tocentry>
+
+        <d:tocentry linkend="sorting">
+            <?dbhtml filename="sorting/index.html"?>
+        </d:tocentry>
+
+        <d:tocentry linkend="pagination">
+            <?dbhtml filename="pagination/index.html"?>
+            <d:tocentry linkend="pagination-offset-based">
+                <?dbhtml filename="pagination/offset-based/index.html"?>
+            </d:tocentry>
+            <d:tocentry linkend="pagination-cursor-based">
+                <?dbhtml filename="pagination/cursor-based/index.html"?>
+            </d:tocentry>
+        </d:tocentry>
+
+        <d:tocentry linkend="custom-resolvers">
+            <?dbhtml filename="custom-resolvers/index.html"?>
+        </d:tocentry>
+
         <d:tocentry linkend="auth">
             <?dbhtml filename="auth/index.html"?>
             <d:tocentry linkend="auth-setup">
                 <?dbhtml filename="auth/setup/index.html"?>
+            </d:tocentry>
+            <d:tocentry linkend="auth-directive">
+                <?dbhtml filename="auth/auth-directive/index.html"?>
             </d:tocentry>
             <d:tocentry linkend="auth-authentication">
                 <?dbhtml filename="auth/authentication/index.html"?>
@@ -76,17 +98,17 @@
             </d:tocentry>
             <d:tocentry linkend="auth-authorization">
                 <?dbhtml filename="auth/authorization/index.html"?>
-                <d:tocentry linkend="auth-authorization-roles">
-                    <?dbhtml filename="auth/authorization/roles/index.html"?>
-                </d:tocentry>
                 <d:tocentry linkend="auth-authorization-allow">
                     <?dbhtml filename="auth/authorization/allow/index.html"?>
                 </d:tocentry>
-                <d:tocentry linkend="auth-authorization-where">
-                    <?dbhtml filename="auth/authorization/where/index.html"?>
-                </d:tocentry>
                 <d:tocentry linkend="auth-authorization-bind">
                     <?dbhtml filename="auth/authorization/bind/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="auth-authorization-roles">
+                    <?dbhtml filename="auth/authorization/roles/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="auth-authorization-where">
+                    <?dbhtml filename="auth/authorization/where/index.html"?>
                 </d:tocentry>
             </d:tocentry>
         </d:tocentry>
@@ -97,44 +119,67 @@
 
         <d:tocentry linkend="api-reference">
             <?dbhtml filename="api-reference/index.html"?>
+            <d:tocentry linkend="api-reference-neo4jgraphql">
+                <?dbhtml filename="api-reference/neo4jgraphql/index.html"?>
+            </d:tocentry>
+            <d:tocentry linkend="api-reference-ogm">
+                <?dbhtml filename="api-reference/ogm/index.html"?>
+            </d:tocentry>
         </d:tocentry>
 
         <d:tocentry linkend="ogm">
             <?dbhtml filename="ogm/index.html"?>
-            <d:tocentry linkend="ogm-getting-started">
-                <?dbhtml filename="ogm/getting-started/index.html"?>
+
+            <d:tocentry linkend="ogm-installation">
+                <?dbhtml filename="ogm/installation/index.html"?>
             </d:tocentry>
-            <d:tocentry linkend="ogm-methods">
-                <?dbhtml filename="ogm/methods/index.html"?>
-                <d:tocentry linkend="ogm-methods-create">
-                    <?dbhtml filename="ogm/methods/create/index.html"?>
+
+            <d:tocentry linkend="ogm-examples">
+                <?dbhtml filename="ogm/examples/index.html"?>
+                <d:tocentry linkend="ogm-examples-custom-resolvers">
+                    <?dbhtml filename="ogm/examples/custom-resolvers/index.html"?>
                 </d:tocentry>
-                <d:tocentry linkend="ogm-methods-find">
-                    <?dbhtml filename="ogm/methods/find/index.html"?>
-                </d:tocentry>
-                <d:tocentry linkend="ogm-methods-count">
-                    <?dbhtml filename="ogm/methods/count/index.html"?>
-                </d:tocentry>
-                <d:tocentry linkend="ogm-methods-update">
-                    <?dbhtml filename="ogm/methods/update/index.html"?>
-                </d:tocentry>
-                <d:tocentry linkend="ogm-methods-delete">
-                    <?dbhtml filename="ogm/methods/delete/index.html"?>
+                <d:tocentry linkend="ogm-examples-rest-api">
+                    <?dbhtml filename="ogm/examples/rest-api/index.html"?>
                 </d:tocentry>
             </d:tocentry>
+
             <d:tocentry linkend="ogm-private">
                 <?dbhtml filename="ogm/private/index.html"?>
             </d:tocentry>
+
             <d:tocentry linkend="ogm-selection-set">
                 <?dbhtml filename="ogm/selection-set/index.html"?>
             </d:tocentry>
+
             <d:tocentry linkend="ogm-api-reference">
                 <?dbhtml filename="ogm/api-reference/index.html"?>
+                <d:tocentry linkend="ogm-api-reference-ogm">
+                    <?dbhtml filename="ogm/api-reference/ogm/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="ogm-api-reference-model">
+                    <?dbhtml filename="ogm/api-reference/model/index.html"?>
+                    <d:tocentry linkend="ogm-api-reference-model-create">
+                        <?dbhtml filename="ogm/api-reference/model/create/index.html"?>
+                    </d:tocentry>
+                    <d:tocentry linkend="ogm-api-reference-model-find">
+                        <?dbhtml filename="ogm/api-reference/model/find/index.html"?>
+                    </d:tocentry>
+                    <d:tocentry linkend="ogm-api-reference-model-update">
+                        <?dbhtml filename="ogm/api-reference/model/update/index.html"?>
+                    </d:tocentry>
+                    <d:tocentry linkend="ogm-api-reference-model-delete">
+                        <?dbhtml filename="ogm/api-reference/model/delete/index.html"?>
+                    </d:tocentry>
+                    <d:tocentry linkend="ogm-api-reference-model-count">
+                        <?dbhtml filename="ogm/api-reference/model/count/index.html"?>
+                    </d:tocentry>
+                </d:tocentry>
             </d:tocentry>
         </d:tocentry>
 
-        <d:tocentry linkend="drivers-and-config">
-            <?dbhtml filename="drivers-and-config/index.html"?>
+        <d:tocentry linkend="driver-configuration">
+            <?dbhtml filename="driver-configuration/index.html"?>
         </d:tocentry>
 
         <d:tocentry linkend="guides">
@@ -154,16 +199,25 @@
                     <?dbhtml filename="guides/migration-guide/mutations/index.html"?>
                 </d:tocentry>
             </d:tocentry>
-            <d:tocentry linkend="rel-migration">
-                <?dbhtml filename="guides/rel-migration/index.html"?>
-                <d:tocentry linkend="rel-migration-mutations">
-                    <?dbhtml filename="guides/rel-migration/mutations/index.html"?>
+            <d:tocentry linkend="v2-migration">
+                <?dbhtml filename="guides/v2-migration/index.html"?>
+                <d:tocentry linkend="v2-migration-mutations">
+                    <?dbhtml filename="guides/v2-migration/mutations/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="v2-migration-unions">
+                    <?dbhtml filename="guides/v2-migration/unions/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="v2-migration-miscellaneous">
+                    <?dbhtml filename="guides/v2-migration/miscellaneous/index.html"?>
                 </d:tocentry>
             </d:tocentry>
         </d:tocentry>
 
         <d:tocentry linkend="troubleshooting">
             <?dbhtml filename="troubleshooting/index.html"?>
+            <d:tocentry linkend="troubleshooting-faqs">
+                <?dbhtml filename="troubleshooting/faqs/index.html"?>
+            </d:tocentry>
         </d:tocentry>
     </d:tocentry>
 </d:toc>

@@ -1,4 +1,4 @@
-[[rel-migration-mutations]]
+[[v2-migration-mutations]]
 = Mutations
 
 The most broadly affected area of functionality by the 2.0.0 upgrade are the nested operations of Mutations, to faciliate the mutation of and filtering on relationship properties.
@@ -20,7 +20,7 @@ type Movie {
 
 The theme that you will notice during this section is that as a general rule of thumb, a `node` field will need adding to your inputs where it will also be possible to filter on relationship properties.
 
-[[rel-migration-mutations-create]]
+[[v2-migration-mutations-create]]
 == Create
 
 Focussing on the `createMovies` Mutation, notice that the definition of the `createMovies` Mutation is unchanged:
@@ -114,7 +114,7 @@ mutation {
 }
 ----
 
-Note the additional level "node" before specifying the actor name for the create operation and in the connect where. This additional level allows for the setting of relationship properties for the new relationship, and filtering on existing relationship properties when looking for the node to connect to. See the page <<schema-mutations>> for details on this.
+Note the additional level "node" before specifying the actor name for the create operation and in the connect where. This additional level allows for the setting of relationship properties for the new relationship, and filtering on existing relationship properties when looking for the node to connect to. See the page <<mutations>> for details on this.
 
 == Update
 
@@ -134,9 +134,9 @@ type Mutation {
 }
 ----
 
-The `create` and `connect` nested operations are primarily the same as in the `createMovies` Mutation, so please see the <<rel-migration-mutations-create>> section for the difference for these operations.
+The `create` and `connect` nested operations are primarily the same as in the `createMovies` Mutation, so please see the <<v2-migration-mutations-create>> section for the difference for these operations.
 
-The `delete` nested operation is primarily the same as in the `deleteMovies` Mutation, so please see the <<rel-migration-mutations-delete>> section for that.
+The `delete` nested operation is primarily the same as in the `deleteMovies` Mutation, so please see the <<v2-migration-mutations-delete>> section for that.
 
 === Update
 
@@ -272,7 +272,7 @@ mutation {
 }
 ----
 
-[[rel-migration-mutations-delete]]
+[[v2-migration-mutations-delete]]
 == Delete
 
 Focussing on the `deleteMovies` Mutation, notice that the definition of the `deleteMovies` Mutation is unchanged:
