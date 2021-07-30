@@ -36,21 +36,21 @@ function getAliasKey({ selectionSet, key }: { selectionSet: SelectionSetNode | u
 
 export function connectionFieldResolver({
     connectionField,
-    rootValue,
+    source,
     args,
-    resolveInfo,
+    info,
 }: {
     connectionField: ConnectionField;
-    rootValue: any;
+    source: any;
     args: ConnectionQueryArgs;
-    resolveInfo: GraphQLResolveInfo;
+    info: GraphQLResolveInfo;
 }) {
-    const firstField = resolveInfo.fieldNodes[0];
+    const firstField = info.fieldNodes[0];
     const selectionSet = firstField.selectionSet;
 
-    let value = rootValue[connectionField.fieldName];
+    let value = source[connectionField.fieldName];
     if (firstField.alias) {
-        value = rootValue[firstField.alias.value];
+        value = source[firstField.alias.value];
     }
 
     const totalCountKey = getAliasKey({ selectionSet, key: "totalCount" });

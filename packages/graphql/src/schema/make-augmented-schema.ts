@@ -1150,12 +1150,12 @@ function makeAugmentedSchema(
                 [connectionField.fieldName]: {
                     type: connection.NonNull,
                     args: composeNodeArgs,
-                    resolve: (rootValue, args: ConnectionQueryArgs, ctx, resolveInfo: GraphQLResolveInfo) => {
+                    resolve: (source, args: ConnectionQueryArgs, ctx, info: GraphQLResolveInfo) => {
                         return connectionFieldResolver({
                             connectionField,
                             args,
-                            resolveInfo,
-                            rootValue,
+                            info,
+                            source,
                         });
                     },
                 },
