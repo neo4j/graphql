@@ -652,6 +652,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@graphql-tools/merge@npm:6.2.16":
+  version: 6.2.16
+  resolution: "@graphql-tools/merge@npm:6.2.16"
+  dependencies:
+    "@graphql-tools/schema": ^8.0.1
+    "@graphql-tools/utils": 8.0.1
+    tslib: ~2.3.0
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0
+  checksum: 38185615f046875e0110cfe23f551a8c05da8216b40693f5fbc442f047f29ff8d4f2d5f8f6b9846990ed32108a4765b3103791eab162a2c71872103a5481f964
+  languageName: node
+  linkType: hard
+
+"@graphql-tools/mock@npm:^8.1.2":
+  version: 8.1.6
+  resolution: "@graphql-tools/mock@npm:8.1.6"
+  dependencies:
+    "@graphql-tools/merge": 6.2.16
+    "@graphql-tools/schema": ^8.0.1
+    "@graphql-tools/utils": 8.0.1
+    fast-json-stable-stringify: ^2.1.0
+    tslib: ~2.3.0
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0
+  checksum: 5e64dc869f1488af4e739fe59b5489275f518a400e9b1eda461b7a79f212bd9ccb0dfb41b8e5ecb1d52a238d67f4d59a317f34730d77951a364e6b67155bb82f
+  languageName: node
+  linkType: hard
+
 "@graphql-tools/schema@npm:^7.0.0":
   version: 7.1.3
   resolution: "@graphql-tools/schema@npm:7.1.3"
@@ -674,6 +702,31 @@ __metadata:
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0
   checksum: 23b1e5443919a2d9abff535bfa9cd935e3ee3f0b2e3938d396af40ffcbf8d90bacf74fd3faf895845b1b0bf7cada5f7e0d1fd67f667ec02752884f25b1e19ac4
+  languageName: node
+  linkType: hard
+
+"@graphql-tools/schema@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "@graphql-tools/schema@npm:8.0.1"
+  dependencies:
+    "@graphql-tools/merge": 6.2.16
+    "@graphql-tools/utils": 8.0.1
+    tslib: ~2.3.0
+    value-or-promise: 1.0.10
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0
+  checksum: 852e1f1dc78854bc2648b5078d955c54590260ddea57e927daeb6740bf02e21fd0aac8147d854c6892304f06fead8b594fd19fbeb0ca28df9c1370960a98843d
+  languageName: node
+  linkType: hard
+
+"@graphql-tools/utils@npm:8.0.1":
+  version: 8.0.1
+  resolution: "@graphql-tools/utils@npm:8.0.1"
+  dependencies:
+    tslib: ~2.3.0
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0
+  checksum: d66fca40457f91aeb5daeed9824bab688fe34c05cb6b1f3e5a34394464822a33dbc468a2514caf3128063aaafeb0c869adb9e39a4ec82659675b71c487e8fe60
   languageName: node
   linkType: hard
 
@@ -965,12 +1018,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-ogm@^2.0.0-alpha.4, @neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@^2.0.0-rc.1, @neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
     "@graphql-tools/merge": 6.2.14
-    "@neo4j/graphql": ^2.0.0-alpha.4
+    "@neo4j/graphql": ^2.0.0-rc.1
     "@types/jest": 26.0.8
     "@types/node": 14.0.27
     camelcase: ^6.2.0
@@ -989,7 +1042,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@^2.0.0-alpha.4, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@^2.0.0-rc.1, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -9600,7 +9653,7 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "migration@workspace:examples/migration"
   dependencies:
-    "@neo4j/graphql": ^2.0.0-alpha.4
+    "@neo4j/graphql": ^2.0.0-rc.1
     apollo-server: ^2.23.0
     graphql: ^15.0.0
     neo4j-driver: ^4.2.0
@@ -9951,8 +10004,8 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "neo-push-server@workspace:examples/neo-push/server"
   dependencies:
-    "@neo4j/graphql": ^2.0.0-alpha.4
-    "@neo4j/graphql-ogm": ^2.0.0-alpha.4
+    "@neo4j/graphql": ^2.0.0-rc.1
+    "@neo4j/graphql-ogm": ^2.0.0-rc.1
     "@types/bcrypt": 3.0.0
     "@types/debug": 4.1.5
     "@types/dotenv": 8.2.0
@@ -14013,6 +14066,13 @@ typescript@4.1.3:
   version: 1.0.1
   resolution: "value-equal@npm:1.0.1"
   checksum: ae8cc7bbb2bebcaf78ecbf7669944cfc6e23f50361d0d97dc903abbfb9ce5111ce1dc5cb2575646db69636a84b2a3b224e2191088edc3442fb4669c2365af874
+  languageName: node
+  linkType: hard
+
+"value-or-promise@npm:1.0.10":
+  version: 1.0.10
+  resolution: "value-or-promise@npm:1.0.10"
+  checksum: 381d254e1bf6e4b56a1512591664c88989e2fc584ac939e3164ba92055f078862e1b7dd8d0bed33d7772e16ac7ff14d521bd06fa7fd6468305132cb8958daf4c
   languageName: node
   linkType: hard
 
