@@ -32,6 +32,7 @@ The following case-sensitive comparison operators are only available for use on 
 * `_CONTAINS`
 * `_NOT_CONTAINS`
 
+[[filtering-regex]]
 ==== RegEx matching
 
 The filter `_MATCHES` is also available for comparison of `String` and `ID` types, which accepts a RegEx string as an argument and returns any matches.

@@ -119,13 +119,21 @@
 
         <d:tocentry linkend="api-reference">
             <?dbhtml filename="api-reference/index.html"?>
+            <d:tocentry linkend="api-reference-neo4jgraphql">
+                <?dbhtml filename="api-reference/neo4jgraphql/index.html"?>
+            </d:tocentry>
+            <d:tocentry linkend="api-reference-ogm">
+                <?dbhtml filename="api-reference/ogm/index.html"?>
+            </d:tocentry>
         </d:tocentry>
 
         <d:tocentry linkend="ogm">
             <?dbhtml filename="ogm/index.html"?>
+
             <d:tocentry linkend="ogm-installation">
                 <?dbhtml filename="ogm/installation/index.html"?>
             </d:tocentry>
+
             <d:tocentry linkend="ogm-examples">
                 <?dbhtml filename="ogm/examples/index.html"?>
                 <d:tocentry linkend="ogm-examples-custom-resolvers">
@@ -135,32 +143,38 @@
                     <?dbhtml filename="ogm/examples/rest-api/index.html"?>
                 </d:tocentry>
             </d:tocentry>
-            <d:tocentry linkend="ogm-methods">
-                <?dbhtml filename="ogm/methods/index.html"?>
-                <d:tocentry linkend="ogm-methods-create">
-                    <?dbhtml filename="ogm/methods/create/index.html"?>
-                </d:tocentry>
-                <d:tocentry linkend="ogm-methods-find">
-                    <?dbhtml filename="ogm/methods/find/index.html"?>
-                </d:tocentry>
-                <d:tocentry linkend="ogm-methods-count">
-                    <?dbhtml filename="ogm/methods/count/index.html"?>
-                </d:tocentry>
-                <d:tocentry linkend="ogm-methods-update">
-                    <?dbhtml filename="ogm/methods/update/index.html"?>
-                </d:tocentry>
-                <d:tocentry linkend="ogm-methods-delete">
-                    <?dbhtml filename="ogm/methods/delete/index.html"?>
-                </d:tocentry>
-            </d:tocentry>
+
             <d:tocentry linkend="ogm-private">
                 <?dbhtml filename="ogm/private/index.html"?>
             </d:tocentry>
+
             <d:tocentry linkend="ogm-selection-set">
                 <?dbhtml filename="ogm/selection-set/index.html"?>
             </d:tocentry>
+
             <d:tocentry linkend="ogm-api-reference">
                 <?dbhtml filename="ogm/api-reference/index.html"?>
+                <d:tocentry linkend="ogm-api-reference-ogm">
+                    <?dbhtml filename="ogm/api-reference/ogm/index.html"?>
+                </d:tocentry>
+                <d:tocentry linkend="ogm-api-reference-model">
+                    <?dbhtml filename="ogm/api-reference/model/index.html"?>
+                    <d:tocentry linkend="ogm-api-reference-model-create">
+                        <?dbhtml filename="ogm/api-reference/model/create/index.html"?>
+                    </d:tocentry>
+                    <d:tocentry linkend="ogm-api-reference-model-find">
+                        <?dbhtml filename="ogm/api-reference/model/find/index.html"?>
+                    </d:tocentry>
+                    <d:tocentry linkend="ogm-api-reference-model-update">
+                        <?dbhtml filename="ogm/api-reference/model/update/index.html"?>
+                    </d:tocentry>
+                    <d:tocentry linkend="ogm-api-reference-model-delete">
+                        <?dbhtml filename="ogm/api-reference/model/delete/index.html"?>
+                    </d:tocentry>
+                    <d:tocentry linkend="ogm-api-reference-model-count">
+                        <?dbhtml filename="ogm/api-reference/model/count/index.html"?>
+                    </d:tocentry>
+                </d:tocentry>
             </d:tocentry>
         </d:tocentry>
 
