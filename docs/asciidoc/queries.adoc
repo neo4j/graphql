@@ -5,8 +5,6 @@ Each node defined in type definitions will have two Query fields generated for i
 
 The examples in this chapter will use the following type definitions:
 
-Given the following type definitions:
-
 [source, graphql]
 ----
 type Post {
