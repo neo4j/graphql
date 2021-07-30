@@ -766,4 +766,96 @@ describe("Connections Alias", () => {
             await session.close();
         }
     });
+
+    test("should alias many keys on a connection", async () => {
+        const session = driver.session();
+
+        const typeDefs = gql`
+            type Movie {
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
+
+            type Actor {
+                name: String!
+            }
+
+            interface ActedIn {
+                roles: [String]!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const movieTitle = generate({
+            charset: "alphabetic",
+        });
+        const actorName = generate({
+            charset: "alphabetic",
+        });
+        const roles = [
+            generate({
+                charset: "alphabetic",
+            }),
+        ];
+
+        const query = `
+            {
+                movies(where: { title: "${movieTitle}" }) {
+                    title
+                    connection:actorsConnection {
+                        tC:totalCount
+                        edges {
+                            n:node {
+                                n:name
+                            }
+                            r:roles
+                        }
+                        page:pageInfo {
+                            hNP:hasNextPage
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `  
+                    CREATE (m:Movie {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN {roles: $roles}]-(:Actor {name: $actorName})
+                `,
+                {
+                    movieTitle,
+                    actorName,
+                    roles,
+                }
+            );
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver },
+            });
+
+            expect(result.errors).toBeUndefined();
+
+            expect(result.data as any).toEqual({
+                movies: [
+                    {
+                        title: movieTitle,
+                        connection: {
+                            tC: 1,
+                            edges: [{ n: { n: actorName }, r: roles }],
+                            page: {
+                                hNP: false,
+                            },
+                        },
+                    },
+                ],
+            });
+        } finally {
+            await session.close();
+        }
+    });
 });
