@@ -1,5 +1,5 @@
 [[type-definitions-cypher]]
-= `@cypher` Directive
+= `@cypher` directive
 
 The `@cypher` directive binds a GraphQL field to the result(s) of a Cypher query.
 
