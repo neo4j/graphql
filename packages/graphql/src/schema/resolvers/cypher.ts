@@ -19,12 +19,13 @@
 
 import { isInt } from "neo4j-driver";
 import { execute } from "../../utils";
-import { BaseField, Context } from "../../types";
+import { BaseField, ConnectionField, Context } from "../../types";
 import { graphqlArgsToCompose } from "../to-compose";
 import createAuthAndParams from "../../translate/create-auth-and-params";
 import createAuthParam from "../../translate/create-auth-param";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import createProjectionAndParams from "../../translate/create-projection-and-params";
+import createConnectionAndParams from "../../translate/connection/create-connection-and-params";
 
 export default function cypherResolver({
     field,
@@ -37,12 +38,11 @@ export default function cypherResolver({
 }) {
     async function resolve(_root: any, args: any, _context: unknown) {
         const context = _context as Context;
-        const {
-            resolveTree: { fieldsByTypeName },
-        } = context;
+        const { resolveTree } = context;
         const cypherStrs: string[] = [];
         let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
         let projectionStr = "";
+        let connectionProjectionStr = "";
         let projectionAuthStr = "";
         const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
             field.typeMeta.name
@@ -57,15 +57,35 @@ export default function cypherResolver({
         const referenceNode = context.neoSchema.nodes.find((x) => x.name === field.typeMeta.name);
         if (referenceNode) {
             const recurse = createProjectionAndParams({
-                fieldsByTypeName,
+                fieldsByTypeName: resolveTree.fieldsByTypeName,
                 node: referenceNode,
                 context,
                 varName: `this`,
             });
-            [projectionStr] = recurse;
-            params = { ...params, ...recurse[1] };
-            if (recurse[2]?.authValidateStrs?.length) {
-                projectionAuthStr = recurse[2].authValidateStrs.join(" AND ");
+            const [str, p, meta] = recurse;
+            projectionStr = str;
+            params = { ...params, ...p };
+
+            if (meta?.authValidateStrs?.length) {
+                projectionAuthStr = meta.authValidateStrs.join(" AND ");
+            }
+
+            if (meta?.connectionFields?.length) {
+                meta.connectionFields.forEach((connectionResolveTree) => {
+                    const connectionField = referenceNode.connectionFields.find(
+                        (x) => x.fieldName === connectionResolveTree.name
+                    ) as ConnectionField;
+
+                    const nestedConnection = createConnectionAndParams({
+                        resolveTree: connectionResolveTree,
+                        field: connectionField,
+                        context,
+                        nodeVariable: "this",
+                    });
+                    const [str, p] = nestedConnection;
+                    connectionProjectionStr = str;
+                    params = { ...params, ...p };
+                });
             }
         }
 
@@ -99,6 +119,10 @@ export default function cypherResolver({
             cypherStrs.push(
                 `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStr}), "${AUTH_FORBIDDEN_ERROR}", [0])`
             );
+        }
+
+        if (connectionProjectionStr) {
+            cypherStrs.push(connectionProjectionStr);
         }
 
         if (!isPrimitive) {
