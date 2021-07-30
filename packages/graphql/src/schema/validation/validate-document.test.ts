@@ -212,6 +212,85 @@ describe("validateDocument", () => {
         expect(res).toBeUndefined();
     });
 
+    test("should not throw error on use of internal input types within input types", () => {
+        const doc = parse(`
+            type Salary {
+                salaryId: ID!
+                amount: Float
+                currency: String
+                frequency: String
+                eligibleForBonus: Boolean
+                bonusPercentage: Float
+                salaryReviewDate: DateTime
+                pays_salary: EmploymentRecord @relationship(type: "PAYS_SALARY", direction: IN)
+            }
+
+            type EmploymentRecord {
+                employmentRecordId: ID!
+                pays_salary: [Salary] @relationship(type: "PAYS_SALARY", direction: OUT)
+            }
+
+            input EmpRecord {
+                employmentRecordId: ID!
+                salary: SalaryCreateInput
+                startDate: Date
+                endDate: Date
+            }
+
+            type Mutation {
+                mergeSalaries(salaries: [SalaryCreateInput!]): [Salary]
+                    @cypher(
+                        statement: """
+                        UNWIND $salaries as salary
+                        MERGE (s:Salary {salaryId: salary.salaryId})
+                        ON CREATE SET s.amount = salary.amount,
+                                      s.currency = salary.currency,
+                                      s.frequency = salary.frequency,
+                                      s.eligibleForBonus = salary.eligibleForBonus,
+                                      s.bonusPercentage = salary.bonusPercentage,
+                                      s.salaryReviewDate = salary.salaryReviewDate
+                        ON MATCH SET  s.amount = salary.amount,
+                                      s.currency = salary.currency,
+                                      s.frequency = salary.frequency,
+                                      s.eligibleForBonus = salary.eligibleForBonus,
+                                      s.bonusPercentage = salary.bonusPercentage,
+                                      s.salaryReviewDate = salary.salaryReviewDate
+                        RETURN s
+                        """
+                    )
+
+                mergeEmploymentRecords(employmentRecords: [EmpRecord]): [EmploymentRecord]
+                    @cypher(
+                        statement: """
+                        UNWIND $employmentRecords as employmentRecord
+                        MERGE (er:EmploymentRecord {
+                          employmentRecordId: employmentRecord.employmentRecordId
+                        })
+                        MERGE (s:Salary {salaryId: employmentRecord.salary.salaryId})
+                        ON CREATE SET s.amount = employmentRecord.salary.amount,
+                                      s.currency = employmentRecord.salary.currency,
+                                      s.frequency = employmentRecord.salary.frequency,
+                                      s.eligibleForBonus = employmentRecord.salary.eligibleForBonus,
+                                      s.bonusPercentage = employmentRecord.salary.bonusPercentage,
+                                      s.salaryReviewDate = employmentRecord.salary.salaryReviewDate
+                        ON MATCH SET  s.amount = employmentRecord.salary.amount,
+                                      s.currency = employmentRecord.salary.currency,
+                                      s.frequency = employmentRecord.salary.frequency,
+                                      s.eligibleForBonus = employmentRecord.salary.eligibleForBonus,
+                                      s.bonusPercentage = employmentRecord.salary.bonusPercentage,
+                                      s.salaryReviewDate = employmentRecord.salary.salaryReviewDate
+
+                        MERGE (er)-[:PAYS_SALARY]->(s)
+                        RETURN er
+                        """
+                    )
+            }
+        `);
+
+        const res = validateDocument(doc);
+        expect(res).toBeUndefined();
+    });
+
     describe("Github Issue 158", () => {
         test("should not throw error on validation of schema", () => {
             const doc = parse(`
