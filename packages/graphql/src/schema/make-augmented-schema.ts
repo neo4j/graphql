@@ -277,10 +277,13 @@ function makeAugmentedSchema(
         const fields = {};
 
         relationship.fields?.forEach((field) => {
-            const authDirective = (field.directives || []).find((x) => x.name.value === "auth");
-            if (authDirective) {
-                throw new Error("Cannot have @auth directive on relationship property");
-            }
+            const forbiddenDirectives = ["auth", "relationship"];
+            forbiddenDirectives.forEach((directive) => {
+                const found = (field.directives || []).find((x) => x.name.value === directive);
+                if (found) {
+                    throw new Error(`Cannot have @${directive} directive on relationship property`);
+                }
+            });
 
             const typeMeta = getFieldTypeMeta(field);
 
