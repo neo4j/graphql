@@ -52,7 +52,7 @@ import {
 } from "../types";
 import parseValueNode from "./parse-value-node";
 
-interface ObjectFields {
+export interface ObjectFields {
     relationFields: RelationField[];
     connectionFields: ConnectionField[];
     primitiveFields: PrimitiveField[];

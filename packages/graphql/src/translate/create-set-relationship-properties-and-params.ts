@@ -19,7 +19,6 @@
 
 /* eslint-disable prefer-destructuring */
 import { Relationship } from "../classes";
-import { BaseField, DateTimeField, PrimitiveField } from "../types";
 
 /*
     TODO - lets reuse this function for setting either node or rel properties.
@@ -40,43 +39,42 @@ function createSetRelationshipPropertiesAndParams({
     const strs: string[] = [];
     const params = {};
 
-    Object.entries(properties).forEach((entry) => {
-        const paramName = `${varName}_${entry[0]}`;
-        const field = (relationship.fields.find((x) => x.fieldName === entry[0]) as unknown) as BaseField;
+    Object.entries(properties).forEach(([key, value]) => {
+        const paramName = `${varName}_${key}`;
 
-        if ("timestamps" in field) {
-            const f = field as DateTimeField;
-            (f.timestamps || []).forEach((ts) => {
+        const dateTimeField = relationship.dateTimeFields.find((x) => x.fieldName === key);
+        if (dateTimeField && dateTimeField.timestamps?.length) {
+            (dateTimeField.timestamps || []).forEach((ts) => {
                 if (ts.includes(operation)) {
-                    strs.push(`SET ${varName}.${f.fieldName} = datetime()`);
+                    strs.push(`SET ${varName}.${key} = datetime()`);
                 }
             });
 
             return;
         }
 
-        if ("autogenerate" in field) {
-            const f = field as PrimitiveField;
-
-            strs.push(`SET ${varName}.${f.fieldName} = randomUUID()`);
+        const primitiveField = relationship.primitiveFields.find((x) => x.fieldName === key);
+        if (primitiveField?.autogenerate) {
+            strs.push(`SET ${varName}.${key} = randomUUID()`);
 
             return;
         }
 
-        if (["Point", "CartesianPoint"].includes(field.typeMeta.name)) {
-            if (field.typeMeta.array) {
-                strs.push(`SET ${varName}.${field.fieldName} = [p in $${paramName} | point(p)]`);
+        const pointField = relationship.pointFields.find((x) => x.fieldName === key);
+        if (pointField) {
+            if (pointField.typeMeta.array) {
+                strs.push(`SET ${varName}.${key} = [p in $${paramName} | point(p)]`);
             } else {
-                strs.push(`SET ${varName}.${field.fieldName} = point($${paramName})`);
+                strs.push(`SET ${varName}.${key} = point($${paramName})`);
             }
 
-            params[paramName] = entry[1];
+            params[paramName] = value;
 
             return;
         }
 
-        strs.push(`SET ${varName}.${field.fieldName} = $${paramName}`);
-        params[paramName] = entry[1];
+        strs.push(`SET ${varName}.${key} = $${paramName}`);
+        params[paramName] = value;
     });
 
     return [strs.join("\n"), params];
