@@ -12,14 +12,14 @@ All types can be tested for either equality or non-equality. For the `Boolean` t
 [[filtering-numerical-operators]]
 === Numerical operators
 
-The following comparison operators are available for numeric types (`Int`, `Float`, <<type-definitions-types-bigint>>), temporal types (<<type-definitions-types-datetime>>) and spatial types (<<type-definitions-types-point>>, <<type-definitions-types-cartesian-point>>):
+The following comparison operators are available for numeric types (`Int`, `Float`, <<type-definitions-types-bigint>>), <<type-definitions-types-temporal>> and <<type-definitions-types-spatial>>:
 
 * `_LT`
 * `_LTE`
 * `_GTE`
 * `_GT`
 
-Filtering of spatial types is different to filtering of numerical types and offers an additional filter - see <<type-definitions-types-spatial-types>>.
+Filtering of spatial types is different to filtering of numerical types and also offers an additional filter - see <<type-definitions-types-spatial>>.
 
 === String comparison
 

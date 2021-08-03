@@ -46,9 +46,9 @@ query {
 }
 ----
 
+[[type-definitions-types-temporal]]
 == Temporal Types
 
-[[type-definitions-types-datetime]]
 === `DateTime`
 
 ISO datetime string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime[datetime] temporal type.
@@ -60,7 +60,6 @@ type User {
 }
 ----
 
-[[type-definitions-types-date]]
 === `Date`
 
 "yyyy-mm-dd" date string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-date[date] temporal type.
@@ -72,7 +71,7 @@ type Movie {
 }
 ----
 
-[[type-definitions-types-spatial-types]]
+[[type-definitions-types-spatial]]
 == Spatial Types
 
 Neo4j GraphQL spatial types translate to spatial values stored using https://neo4j.com/docs/cypher-manual/current/syntax/spatial[point] in the database. The use of either of these types in a GraphQL schema will automatically introduce the types needed to run queries and mutations relevant to these spatial types.
