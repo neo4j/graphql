@@ -129,6 +129,37 @@ describe("checkNeo4jCompat", () => {
         await expect(checkNeo4jCompat({ driver: fakeDriver })).resolves.not.toThrow();
     });
 
+    test("should not throw Error for Aura version numbers", async () => {
+        // @ts-ignore
+        const fakeSession: Session = {
+            // @ts-ignore
+            run: () => ({
+                records: [
+                    {
+                        toObject: () => ({
+                            version: "4.2-aura",
+                            apocVersion: MIN_APOC_VERSION,
+                            functions: REQUIRED_APOC_FUNCTIONS,
+                            procedures: REQUIRED_APOC_PROCEDURES,
+                        }),
+                    },
+                ],
+            }),
+            // @ts-ignore
+            close: () => undefined,
+        };
+
+        // @ts-ignore
+        const fakeDriver: Driver = {
+            // @ts-ignore
+            session: () => fakeSession,
+            // @ts-ignore
+            verifyConnectivity: () => undefined,
+        };
+
+        await expect(checkNeo4jCompat({ driver: fakeDriver })).resolves.not.toThrow();
+    });
+
     test("should throw expected APOC version", async () => {
         const invalidApocVersion = "2.3.1";
 

@@ -69,7 +69,7 @@ async function checkNeo4jCompat({ driver, driverConfig }: { driver: Driver; driv
         const info = result.records[0].toObject() as DBInfo;
         const errors: string[] = [];
 
-        if (semver.lt(info.version, MIN_NEO4J_VERSION)) {
+        if (semver.lt(semver.coerce(info.version), MIN_NEO4J_VERSION)) {
             errors.push(`Expected minimum Neo4j version: '${MIN_NEO4J_VERSION}' received: '${info.version}'`);
         }
 
