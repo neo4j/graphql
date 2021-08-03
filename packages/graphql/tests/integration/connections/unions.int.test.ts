@@ -110,7 +110,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -170,7 +170,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -228,7 +228,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -282,7 +282,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -336,7 +336,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeFalsy();

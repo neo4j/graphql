@@ -20,9 +20,9 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
+import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { gql } from "apollo-server";
 
 describe("Connections Alias", () => {
     let driver: Driver;
@@ -69,7 +69,7 @@ describe("Connections Alias", () => {
 
         try {
             await session.run(
-                `  
+                `
                     CREATE (m:Movie {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN]-(:Actor)
                     CREATE (m)<-[:ACTED_IN]-(:Actor)
@@ -83,7 +83,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeUndefined();
@@ -129,7 +129,7 @@ describe("Connections Alias", () => {
 
         try {
             await session.run(
-                `  
+                `
                     CREATE (m:Movie {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN]-(:Actor)
                     CREATE (m)<-[:ACTED_IN]-(:Actor)
@@ -143,7 +143,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeUndefined();
@@ -192,7 +192,7 @@ describe("Connections Alias", () => {
 
         try {
             await session.run(
-                `  
+                `
                     CREATE (m:Movie {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN]-(:Actor)
                     CREATE (m)<-[:ACTED_IN]-(:Actor)
@@ -206,7 +206,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeUndefined();
@@ -254,7 +254,7 @@ describe("Connections Alias", () => {
 
         try {
             await session.run(
-                `  
+                `
                     CREATE (m:Movie {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN]-(:Actor)
                     CREATE (m)<-[:ACTED_IN]-(:Actor)
@@ -268,7 +268,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeUndefined();
@@ -314,7 +314,7 @@ describe("Connections Alias", () => {
 
         try {
             await session.run(
-                `  
+                `
                     CREATE (m:Movie {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN]-(:Actor)
                     CREATE (m)<-[:ACTED_IN]-(:Actor)
@@ -328,7 +328,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeUndefined();
@@ -374,7 +374,7 @@ describe("Connections Alias", () => {
 
         try {
             await session.run(
-                `  
+                `
                     CREATE (m:Movie {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN]-(:Actor)
                     CREATE (m)<-[:ACTED_IN]-(:Actor)
@@ -388,7 +388,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeUndefined();
@@ -434,7 +434,7 @@ describe("Connections Alias", () => {
 
         try {
             await session.run(
-                `  
+                `
                     CREATE (m:Movie {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
                     CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
@@ -448,7 +448,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeUndefined();
@@ -494,7 +494,7 @@ describe("Connections Alias", () => {
 
         try {
             await session.run(
-                `  
+                `
                     CREATE (m:Movie {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
                     CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
@@ -508,7 +508,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeUndefined();
@@ -554,7 +554,7 @@ describe("Connections Alias", () => {
 
         try {
             await session.run(
-                `  
+                `
                     CREATE (m:Movie {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
                     CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
@@ -568,7 +568,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeUndefined();
@@ -616,7 +616,7 @@ describe("Connections Alias", () => {
 
         try {
             await session.run(
-                `  
+                `
                     CREATE (m:Movie {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
                     CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
@@ -630,7 +630,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeUndefined();
@@ -678,7 +678,7 @@ describe("Connections Alias", () => {
 
         try {
             await session.run(
-                `  
+                `
                     CREATE (m:Movie {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
                     CREATE (m)<-[:ACTED_IN]-(:Actor {name: randomUUID()})
@@ -692,7 +692,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeUndefined();
@@ -742,7 +742,7 @@ describe("Connections Alias", () => {
 
         try {
             await session.run(
-                `  
+                `
                     CREATE (m:Movie {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN {roles: [randomUUID()]}]-(:Actor {name: randomUUID()})
                     CREATE (m)<-[:ACTED_IN {roles: [randomUUID()]}]-(:Actor {name: randomUUID()})
@@ -756,7 +756,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeUndefined();
@@ -821,7 +821,7 @@ describe("Connections Alias", () => {
 
         try {
             await session.run(
-                `  
+                `
                     CREATE (m:Movie {title: $movieTitle})
                     CREATE (m)<-[:ACTED_IN {roles: $roles}]-(:Actor {name: $actorName})
                 `,
@@ -835,7 +835,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeUndefined();

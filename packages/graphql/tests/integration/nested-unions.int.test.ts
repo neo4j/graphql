@@ -114,7 +114,7 @@ describe("Nested unions", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.updateMovies.movies[0].title).toEqual(movieTitle);
@@ -178,7 +178,7 @@ describe("Nested unions", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.updateMovies.movies).toEqual([
@@ -263,7 +263,7 @@ describe("Nested unions", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.updateMovies.movies).toEqual([
@@ -364,7 +364,7 @@ describe("Nested unions", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.updateMovies.movies[0].title).toEqual(movieTitle);
@@ -463,7 +463,7 @@ describe("Nested unions", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
             expect(gqlResult.errors).toBeFalsy();
             // expect(gqlResult.data?.createMovies.movies).toEqual([

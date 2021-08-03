@@ -77,7 +77,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: neoSchema.schema,
             source: create,
-            contextValue: { driver },
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             variableValues: { id, locations },
         });
 
@@ -132,7 +132,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: neoSchema.schema,
             source: create,
-            contextValue: { driver },
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             variableValues: { id, locations },
         });
 
@@ -218,7 +218,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: neoSchema.schema,
             source: update,
-            contextValue: { driver },
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             variableValues: { id, locations: newLocations },
         });
 
@@ -306,7 +306,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: neoSchema.schema,
             source: update,
-            contextValue: { driver },
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             variableValues: { id, locations: newLocations },
         });
 
@@ -374,7 +374,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: neoSchema.schema,
             source: partsQuery,
-            contextValue: { driver },
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             variableValues: { id },
         });
 
@@ -425,7 +425,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: neoSchema.schema,
             source: partsQuery,
-            contextValue: { driver },
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             variableValues: { id },
         });
 

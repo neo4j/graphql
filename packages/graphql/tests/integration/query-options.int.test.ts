@@ -83,7 +83,7 @@ describe("query options", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeFalsy();
