@@ -17,17 +17,28 @@
  * limitations under the License.
  */
 
-import type { PrimitiveField, DateTimeField, PointField, CustomEnumField } from "../types";
-
-// TODO does CustomScalarField need to be in the mix?
-export type RelationshipField = PrimitiveField | DateTimeField | PointField | CustomEnumField;
+import type {
+    PrimitiveField,
+    DateTimeField,
+    PointField,
+    CustomEnumField,
+    CypherField,
+    CustomScalarField,
+    BaseField,
+} from "../types";
 
 export interface RelationshipConstructor {
     name: string;
     type: string;
     description?: string;
     properties?: string;
-    fields: RelationshipField[];
+    cypherFields?: CypherField[];
+    primitiveFields?: PrimitiveField[];
+    scalarFields?: CustomScalarField[];
+    enumFields?: CustomEnumField[];
+    dateTimeFields?: DateTimeField[];
+    pointFields?: PointField[];
+    ignoredFields?: BaseField[];
 }
 
 class Relationship {
@@ -39,14 +50,29 @@ class Relationship {
 
     public properties?: string;
 
-    public fields: RelationshipField[];
+    public primitiveFields: PrimitiveField[];
+
+    public scalarFields: CustomScalarField[];
+
+    public enumFields: CustomEnumField[];
+
+    public dateTimeFields: DateTimeField[];
+
+    public pointFields: PointField[];
+
+    public ignoredFields: BaseField[];
 
     constructor(input: RelationshipConstructor) {
         this.name = input.name;
         this.type = input.type;
         this.description = input.description;
         this.properties = input.properties;
-        this.fields = input.fields;
+        this.primitiveFields = input.primitiveFields || [];
+        this.scalarFields = input.scalarFields || [];
+        this.enumFields = input.enumFields || [];
+        this.dateTimeFields = input.dateTimeFields || [];
+        this.pointFields = input.pointFields || [];
+        this.ignoredFields = input.ignoredFields || [];
     }
 }
 

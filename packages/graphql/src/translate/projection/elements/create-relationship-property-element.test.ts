@@ -29,7 +29,7 @@ describe("createRelationshipPropertyElement", () => {
         relationship = new Relationship({
             name: "TestRelationship",
             type: "TEST_RELATIONSHIP",
-            fields: [
+            primitiveFields: [
                 {
                     fieldName: "int",
                     typeMeta: {
@@ -59,35 +59,8 @@ describe("createRelationshipPropertyElement", () => {
                     readonly: false,
                     writeonly: false,
                 } as PrimitiveField,
-                {
-                    fieldName: "datetime",
-                    typeMeta: {
-                        name: "DateTime",
-                        array: false,
-                        required: true,
-                        pretty: "DateTime!",
-                        arrayTypePretty: "",
-                        input: {
-                            create: {
-                                type: "DateTime",
-                                pretty: "DateTime!",
-                            },
-                            update: {
-                                type: "DateTime",
-                                pretty: "DateTime",
-                            },
-                            where: {
-                                type: "DateTime",
-                                pretty: "DateTime",
-                            },
-                        },
-                    },
-                    otherDirectives: [],
-                    arguments: [],
-                    description: undefined,
-                    readonly: false,
-                    writeonly: false,
-                } as DateTimeField,
+            ],
+            pointFields: [
                 {
                     fieldName: "point",
                     typeMeta: {
@@ -117,6 +90,37 @@ describe("createRelationshipPropertyElement", () => {
                     readonly: false,
                     writeonly: false,
                 } as PointField,
+            ],
+            dateTimeFields: [
+                {
+                    fieldName: "datetime",
+                    typeMeta: {
+                        name: "DateTime",
+                        array: false,
+                        required: true,
+                        pretty: "DateTime!",
+                        arrayTypePretty: "",
+                        input: {
+                            create: {
+                                type: "DateTime",
+                                pretty: "DateTime!",
+                            },
+                            update: {
+                                type: "DateTime",
+                                pretty: "DateTime",
+                            },
+                            where: {
+                                type: "DateTime",
+                                pretty: "DateTime",
+                            },
+                        },
+                    },
+                    otherDirectives: [],
+                    arguments: [],
+                    description: undefined,
+                    readonly: false,
+                    writeonly: false,
+                } as DateTimeField,
             ],
         });
     });

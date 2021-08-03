@@ -44,13 +44,11 @@ import {
     InputTypeComposer,
     ObjectTypeComposer,
     InputTypeComposerFieldConfigAsObjectDefinition,
-    ObjectTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
 import pluralize from "pluralize";
-import { Integer, isInt } from "neo4j-driver";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth, CustomEnumField, ConnectionQueryArgs } from "../types";
+import { PrimitiveField, Auth, ConnectionQueryArgs } from "../types";
 import {
     countResolver,
     createResolver,
@@ -63,12 +61,10 @@ import {
 import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
 import getCustomResolvers from "./get-custom-resolvers";
-import getObjFieldMeta from "./get-obj-field-meta";
+import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
 import * as point from "./point";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
-import getFieldTypeMeta from "./get-field-type-meta";
-import Relationship, { RelationshipField } from "../classes/Relationship";
-import getRelationshipFieldMeta from "./get-relationship-field-meta";
+import Relationship from "../classes/Relationship";
 import getWhereFields from "./get-where-fields";
 import { connectionFieldResolver } from "./pagination";
 import { validateDocument } from "./validation";
@@ -255,7 +251,7 @@ function makeAugmentedSchema(
     const relationshipProperties = interfaces.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
     interfaces = interfaces.filter((i) => !relationshipPropertyInterfaceNames.has(i.name.value));
 
-    const relationshipFields = new Map<string, RelationshipField[]>();
+    const relationshipFields = new Map<string, ObjectFields>();
 
     relationshipProperties.forEach((relationship) => {
         const authDirective = (relationship.directives || []).find((x) => x.name.value === "auth");
@@ -263,52 +259,41 @@ function makeAugmentedSchema(
             throw new Error("Cannot have @auth directive on relationship properties interface");
         }
 
-        const relationshipFieldMeta = getRelationshipFieldMeta({ relationship, enums });
-
-        if (!pointInTypeDefs) {
-            pointInTypeDefs = relationshipFieldMeta.some((field) => field.typeMeta.name === "Point");
-        }
-        if (!cartesianPointInTypeDefs) {
-            cartesianPointInTypeDefs = relationshipFieldMeta.some((field) => field.typeMeta.name === "CartesianPoint");
-        }
-
-        relationshipFields.set(relationship.name.value, relationshipFieldMeta);
-
-        const fields = {};
-
         relationship.fields?.forEach((field) => {
-            const forbiddenDirectives = ["auth", "relationship"];
+            const forbiddenDirectives = ["auth", "relationship", "cypher"];
             forbiddenDirectives.forEach((directive) => {
                 const found = (field.directives || []).find((x) => x.name.value === directive);
                 if (found) {
                     throw new Error(`Cannot have @${directive} directive on relationship property`);
                 }
             });
-
-            const typeMeta = getFieldTypeMeta(field);
-
-            const newField = {
-                description: field.description?.value,
-                type: typeMeta.pretty,
-            } as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
-
-            if (["Int", "Float"].includes(typeMeta.name)) {
-                newField.resolve = (source) => {
-                    // @ts-ignore: outputValue is unknown, and to cast to object would be an antipattern
-                    if (isInt(source[field.name.value])) {
-                        return (source[field.name.value] as Integer).toNumber();
-                    }
-
-                    return source[field.name.value];
-                };
-            }
-
-            fields[field.name.value] = newField;
         });
+
+        const relFields = getObjFieldMeta({
+            enums,
+            interfaces,
+            objects: objectNodes,
+            scalars,
+            unions,
+            obj: relationship,
+        });
+
+        if (!pointInTypeDefs) {
+            pointInTypeDefs = relFields.pointFields.some((field) => field.typeMeta.name === "Point");
+        }
+        if (!cartesianPointInTypeDefs) {
+            cartesianPointInTypeDefs = relFields.pointFields.some((field) => field.typeMeta.name === "CartesianPoint");
+        }
+
+        relationshipFields.set(relationship.name.value, relFields);
+
+        const objectComposeFields = objectFieldsToComposeFields(
+            Object.values(relFields).reduce((acc, x) => [...acc, ...x], [])
+        );
 
         const propertiesInterface = composer.createInterfaceTC({
             name: relationship.name.value,
-            fields,
+            fields: objectComposeFields,
         });
 
         composer.createInputTC({
@@ -320,7 +305,13 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${relationship.name.value}UpdateInput`,
-            fields: relationshipFieldMeta.reduce(
+            fields: [
+                ...relFields.primitiveFields,
+                ...relFields.scalarFields,
+                ...relFields.enumFields,
+                ...relFields.dateTimeFields.filter((x) => !x.timestamps),
+                ...relFields.pointFields,
+            ].reduce(
                 (res, f) =>
                     f.readonly || (f as PrimitiveField)?.autogenerate
                         ? res
@@ -335,15 +326,11 @@ function makeAugmentedSchema(
         const relationshipWhereFields = getWhereFields({
             typeName: relationship.name.value,
             fields: {
-                scalarFields: [],
-                enumFields: relationshipFieldMeta.filter(
-                    (f) => (f as CustomEnumField).kind === "Enum"
-                ) as CustomEnumField[],
-                dateTimeFields: relationshipFieldMeta.filter((f) => ["DateTime", "Date"].includes(f.typeMeta.name)),
-                pointFields: relationshipFieldMeta.filter((f) => ["Point", "CartesianPoint"].includes(f.typeMeta.name)),
-                primitiveFields: relationshipFieldMeta.filter((f) =>
-                    ["ID", "String", "Int", "Float", "Boolean", "BigInt"].includes(f.typeMeta.name)
-                ),
+                scalarFields: relFields.scalarFields,
+                enumFields: relFields.enumFields,
+                dateTimeFields: relFields.dateTimeFields,
+                pointFields: relFields.pointFields,
+                primitiveFields: relFields.primitiveFields,
             },
             enableRegex: enableRegex || false,
         });
@@ -356,7 +343,13 @@ function makeAugmentedSchema(
         composer.createInputTC({
             name: `${relationship.name.value}CreateInput`,
             // TODO - This reduce duplicated when creating node CreateInput - put into shared function?
-            fields: relationshipFieldMeta.reduce((res, f) => {
+            fields: [
+                ...relFields.primitiveFields,
+                ...relFields.scalarFields,
+                ...relFields.enumFields,
+                ...relFields.dateTimeFields.filter((x) => !x.timestamps),
+                ...relFields.pointFields,
+            ].reduce((res, f) => {
                 if ((f as PrimitiveField)?.autogenerate) {
                     return res;
                 }
@@ -474,88 +467,17 @@ function makeAugmentedSchema(
             });
         }
 
-        // TODO - use getWhereFields
-        const queryFields = {
-            OR: `[${node.name}Where!]`,
-            AND: `[${node.name}Where!]`,
-            // Custom scalar fields only support basic equality
-            ...node.scalarFields.reduce((res, f) => {
-                res[f.fieldName] = f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name;
-                return res;
-            }, {}),
-            ...[...node.primitiveFields, ...node.dateTimeFields, ...node.enumFields, ...node.pointFields].reduce(
-                (res, f) => {
-                    res[f.fieldName] = f.typeMeta.input.where.pretty;
-                    res[`${f.fieldName}_NOT`] = f.typeMeta.input.where.pretty;
-
-                    if (f.typeMeta.name === "Boolean") {
-                        return res;
-                    }
-
-                    if (f.typeMeta.array) {
-                        res[`${f.fieldName}_INCLUDES`] = f.typeMeta.input.where.type;
-                        res[`${f.fieldName}_NOT_INCLUDES`] = f.typeMeta.input.where.type;
-
-                        return res;
-                    }
-
-                    res[`${f.fieldName}_IN`] = `[${f.typeMeta.input.where.pretty}]`;
-                    res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}]`;
-
-                    if (["Float", "Int", "BigInt", "DateTime", "Date"].includes(f.typeMeta.name)) {
-                        let type: any = f.typeMeta.name;
-
-                        if (f.typeMeta.name === "DateTime") {
-                            type = Scalars.DateTime;
-                        }
-
-                        if (f.typeMeta.name === "BigInt") {
-                            type = Scalars.BigInt;
-                        }
-
-                        if (f.typeMeta.name === "Date") {
-                            type = Scalars.Date;
-                        }
-
-                        ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                            res[`${f.fieldName}${comparator}`] = type;
-                        });
-
-                        return res;
-                    }
-
-                    if (["Point", "CartesianPoint"].includes(f.typeMeta.name)) {
-                        ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                            res[`${f.fieldName}${comparator}`] = `${f.typeMeta.name}Distance`;
-                        });
-
-                        return res;
-                    }
-
-                    if (["String", "ID"].includes(f.typeMeta.name)) {
-                        if (enableRegex) {
-                            res[`${f.fieldName}_MATCHES`] = "String";
-                        }
-
-                        [
-                            "_CONTAINS",
-                            "_NOT_CONTAINS",
-                            "_STARTS_WITH",
-                            "_NOT_STARTS_WITH",
-                            "_ENDS_WITH",
-                            "_NOT_ENDS_WITH",
-                        ].forEach((comparator) => {
-                            res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
-                        });
-
-                        return res;
-                    }
-
-                    return res;
-                },
-                {}
-            ),
-        };
+        const queryFields = getWhereFields({
+            typeName: node.name,
+            enableRegex,
+            fields: {
+                dateTimeFields: node.dateTimeFields,
+                enumFields: node.enumFields,
+                pointFields: node.pointFields,
+                primitiveFields: node.primitiveFields,
+                scalarFields: node.scalarFields,
+            },
+        });
 
         const whereInput = composer.createInputTC({
             name: `${node.name}Where`,
@@ -882,8 +804,17 @@ function makeAugmentedSchema(
             let anyNonNullRelProperties = false;
 
             if (rel.properties) {
-                const relFields = relationshipFields.get(rel.properties) || [];
-                anyNonNullRelProperties = relFields.some((field) => field.typeMeta.required);
+                const relFields = relationshipFields.get(rel.properties);
+
+                if (relFields) {
+                    anyNonNullRelProperties = [
+                        ...relFields.primitiveFields,
+                        ...relFields.scalarFields,
+                        ...relFields.enumFields,
+                        ...relFields.dateTimeFields,
+                        ...relFields.pointFields,
+                    ].some((field) => field.typeMeta.required);
+                }
             }
 
             const createName = `${node.name}${upperFirst(rel.fieldName)}CreateFieldInput`;
@@ -1171,13 +1102,23 @@ function makeAugmentedSchema(
                 },
             });
 
+            const relFields = connectionField.relationship.properties
+                ? relationshipFields.get(connectionField.relationship.properties)
+                : ({} as ObjectFields | undefined);
+
             const r = new Relationship({
                 name: connectionField.relationshipTypeName,
                 type: connectionField.relationship.type,
-                fields: connectionField.relationship.properties
-                    ? (relationshipFields.get(connectionField.relationship.properties) as RelationshipField[])
-                    : [],
                 properties: connectionField.relationship.properties,
+                ...(relFields
+                    ? {
+                          dateTimeFields: relFields.dateTimeFields,
+                          scalarFields: relFields.scalarFields,
+                          primitiveFields: relFields.primitiveFields,
+                          pointFields: relFields.pointFields,
+                          ignoredFields: relFields.ignoredFields,
+                      }
+                    : {}),
             });
             relationships.push(r);
         });

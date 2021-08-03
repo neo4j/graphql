@@ -54,13 +54,15 @@ function createRelationshipWhereAndParams({
         const not = !!match?.groups?.not;
         const operator = match?.groups?.operator;
 
-        const pointField = relationship.fields.find(
-            (f) => f.fieldName === fieldName && ["Point", "CartesianPoint"].includes(f.typeMeta.name)
-        );
+        const pointField = relationship.pointFields.find((f) => f.fieldName === fieldName);
 
-        const coalesceValue = (relationship.fields.find(
-            (f) => f.fieldName === fieldName && "coalesce" in f
-        ) as PrimitiveField)?.coalesceValue;
+        const coalesceValue = ([
+            ...relationship.dateTimeFields,
+            ...relationship.dateTimeFields,
+            ...relationship.enumFields,
+            ...relationship.scalarFields,
+            ...relationship.primitiveFields,
+        ].find((f) => f.fieldName === fieldName && "coalesce" in f) as PrimitiveField)?.coalesceValue;
 
         const property =
             coalesceValue !== undefined
