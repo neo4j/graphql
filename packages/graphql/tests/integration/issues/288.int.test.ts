@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
             const createResult = await graphql({
                 schema: neoSchema.schema,
                 source: createMutation,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(createResult.errors).toBeFalsy();
@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/288", () => {
             const updateResult = await graphql({
                 schema: neoSchema.schema,
                 source: updateMutation,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(updateResult.errors).toBeFalsy();

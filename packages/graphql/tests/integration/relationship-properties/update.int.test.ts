@@ -114,7 +114,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -187,7 +187,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -217,7 +217,7 @@ describe("Relationship properties - read", () => {
             await session.close();
         }
     });
-      
+
     test("Create relationship node through update field on end node in a nested update (update -> update)", async () => {
         const session = driver.session();
 
@@ -259,7 +259,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -295,7 +295,7 @@ describe("Relationship properties - read", () => {
             await session.close();
         }
     });
-      
+
     test("Create a relationship node with relationship properties on end node in a nested update (update -> create)", async () => {
         const session = driver.session();
 
@@ -335,7 +335,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeFalsy();

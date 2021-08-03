@@ -68,7 +68,7 @@ describe("create", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -126,7 +126,7 @@ describe("create", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id1, id2 },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -284,7 +284,7 @@ describe("create", () => {
                     },
                 ],
             },
-            contextValue: { driver },
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
 
         expect(gqlResult.errors).toBeFalsy();
