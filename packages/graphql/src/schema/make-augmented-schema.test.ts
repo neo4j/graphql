@@ -209,7 +209,7 @@ describe("makeAugmentedSchema", () => {
         });
     });
 
-    test("should throw error if auth is used on relationship properties interface", () => {
+    test("should throw error if @auth is used on relationship properties interface", () => {
         const typeDefs = `
             type Movie {
                 actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
@@ -229,7 +229,7 @@ describe("makeAugmentedSchema", () => {
         );
     });
 
-    test("should throw error if auth is used on relationship property", () => {
+    test("should throw error if @auth is used on relationship property", () => {
         const typeDefs = `
             type Movie {
                 actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
@@ -245,5 +245,25 @@ describe("makeAugmentedSchema", () => {
         `;
 
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("Cannot have @auth directive on relationship property");
+    });
+
+    test("should throw error if @relationship is used on relationship property", () => {
+        const typeDefs = `
+            type Movie {
+                actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type Actor {
+                name: String
+            }
+
+            interface ActedIn {
+                actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+        `;
+
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+            "Cannot have @relationship directive on relationship property"
+        );
     });
 });
