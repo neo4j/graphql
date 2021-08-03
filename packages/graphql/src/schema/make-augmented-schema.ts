@@ -258,6 +258,11 @@ function makeAugmentedSchema(
     const relationshipFields = new Map<string, RelationshipField[]>();
 
     relationshipProperties.forEach((relationship) => {
+        const authDirective = (relationship.directives || []).find((x) => x.name.value === "auth");
+        if (authDirective) {
+            throw new Error("Cannot have @auth directive on relationship properties interface");
+        }
+
         const relationshipFieldMeta = getRelationshipFieldMeta({ relationship, enums });
 
         if (!pointInTypeDefs) {
@@ -269,34 +274,41 @@ function makeAugmentedSchema(
 
         relationshipFields.set(relationship.name.value, relationshipFieldMeta);
 
-        const propertiesInterface = composer.createInterfaceTC({
-            name: relationship.name.value,
-            fields: {
-                ...relationship.fields?.reduce((res, f) => {
-                    const typeMeta = getFieldTypeMeta(f);
+        const fields = {};
 
-                    const newField = {
-                        description: f.description?.value,
-                        type: typeMeta.pretty,
-                    } as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
+        relationship.fields?.forEach((field) => {
+            const forbiddenDirectives = ["auth", "relationship"];
+            forbiddenDirectives.forEach((directive) => {
+                const found = (field.directives || []).find((x) => x.name.value === directive);
+                if (found) {
+                    throw new Error(`Cannot have @${directive} directive on relationship property`);
+                }
+            });
 
-                    if (["Int", "Float"].includes(typeMeta.name)) {
-                        newField.resolve = (source) => {
-                            // @ts-ignore: outputValue is unknown, and to cast to object would be an antipattern
-                            if (isInt(source[f.name.value])) {
-                                return (source[f.name.value] as Integer).toNumber();
-                            }
+            const typeMeta = getFieldTypeMeta(field);
 
-                            return source[f.name.value];
-                        };
+            const newField = {
+                description: field.description?.value,
+                type: typeMeta.pretty,
+            } as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
+
+            if (["Int", "Float"].includes(typeMeta.name)) {
+                newField.resolve = (source) => {
+                    // @ts-ignore: outputValue is unknown, and to cast to object would be an antipattern
+                    if (isInt(source[field.name.value])) {
+                        return (source[field.name.value] as Integer).toNumber();
                     }
 
-                    return {
-                        ...res,
-                        [f.name.value]: newField,
-                    };
-                }, {}),
-            },
+                    return source[field.name.value];
+                };
+            }
+
+            fields[field.name.value] = newField;
+        });
+
+        const propertiesInterface = composer.createInterfaceTC({
+            name: relationship.name.value,
+            fields,
         });
 
         composer.createInputTC({
