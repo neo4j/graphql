@@ -3,8 +3,7 @@
 
 Most applications won't just expose a single GraphQL API. There may also be scheduled jobs, authentication and migrations keeping an application ticking over. We provide an OGM (Object Graph Mapper) which can be used to programmatically interact with your Neo4j GraphQL API, which may help with achieving these goals.
 
-- <<ogm-getting-started>>
-- <<ogm-methods>>
+- <<ogm-installation>>
 - <<ogm-examples>>
 - <<ogm-private>>
 - <<ogm-selection-set>>

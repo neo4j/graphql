@@ -23,7 +23,7 @@ type User {
 }
 ----
 
-Using the password field is a great example here. In your application, you would want to hash passwords & hide them from snoopers. You could have a custom resolver, using the OGM, to update and set passwords. This is more apparent when you want to use the same type definitions to drive a public-facing schema and an OGM;
+Using the password field is a great example here. In your application, you would want to hash passwords and hide them from snoopers. You could have a custom resolver, using the OGM, to update and set passwords. This is more apparent when you want to use the same type definitions to drive a public-facing schema and an OGM:
 
 [source, javascript]
 ----
