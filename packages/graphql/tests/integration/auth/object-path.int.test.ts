@@ -90,7 +90,7 @@ describe("auth/object-path", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, req },
+                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -218,7 +218,7 @@ describe("auth/object-path", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, req },
+                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeUndefined();

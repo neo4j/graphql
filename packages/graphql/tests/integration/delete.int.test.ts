@@ -71,7 +71,7 @@ describe("delete", () => {
                 schema: neoSchema.schema,
                 source: mutation,
                 variableValues: { id },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -128,7 +128,7 @@ describe("delete", () => {
                 schema: neoSchema.schema,
                 source: mutation,
                 variableValues: { id: "NOT FOUND" },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -200,7 +200,7 @@ describe("delete", () => {
                 schema: neoSchema.schema,
                 source: mutation,
                 variableValues: { id, name },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -292,7 +292,7 @@ describe("delete", () => {
                 schema: neoSchema.schema,
                 source: mutation,
                 variableValues: { id1, name, id2 },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -383,7 +383,7 @@ describe("delete", () => {
                 schema: neoSchema.schema,
                 source: mutation,
                 variableValues: { name },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();

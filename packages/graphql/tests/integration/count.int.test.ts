@@ -20,13 +20,13 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "./neo4j";
-import { Neo4jGraphQL } from "../../src/classes";
 import pluralize from "pluralize";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import jsonwebtoken from "jsonwebtoken";
 import camelCase from "camelcase";
+import neo4j from "./neo4j";
+import { Neo4jGraphQL } from "../../src/classes";
 
 describe("count", () => {
     let driver: Driver;
@@ -74,7 +74,7 @@ describe("count", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             if (gqlResult.errors) {
@@ -126,7 +126,7 @@ describe("count", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             if (gqlResult.errors) {
@@ -205,7 +205,7 @@ describe("count", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, req },
+                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             if (gqlResult.errors) {
@@ -268,7 +268,7 @@ describe("count", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, req },
+                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");

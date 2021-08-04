@@ -88,7 +88,7 @@ describe("Relationship properties - disconnect", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 variableValues: { movieTitle, actorName },
             });
             expect(gqlResult.errors).toBeFalsy();
@@ -178,7 +178,7 @@ describe("Relationship properties - disconnect", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 variableValues: { actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();

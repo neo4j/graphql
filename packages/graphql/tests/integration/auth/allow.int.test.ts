@@ -85,7 +85,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -143,7 +143,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -212,7 +212,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -285,7 +285,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -356,7 +356,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -431,7 +431,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -516,7 +516,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -577,7 +577,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -638,7 +638,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -709,7 +709,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -782,7 +782,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -842,7 +842,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -920,7 +920,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -993,7 +993,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -1087,7 +1087,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -1161,7 +1161,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -1254,7 +1254,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");

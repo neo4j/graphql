@@ -43,7 +43,12 @@ describe("createConnectionAndParams", () => {
             // @ts-ignore
             {
                 name: "MovieActorsRelationship",
-                fields: [],
+                dateTimeFields: [],
+                enumFields: [],
+                ignoredFields: [],
+                pointFields: [],
+                primitiveFields: [],
+                scalarFields: [],
             },
         ];
 
@@ -65,21 +70,6 @@ describe("createConnectionAndParams", () => {
                                     args: {},
                                     fieldsByTypeName: {},
                                 },
-                                // node: {
-                                //     alias: "node",
-                                //     name: "node",
-                                //     args: {},
-                                //     fieldsByTypeName: {
-                                //         Actor: {
-                                //             name: {
-                                //                 alias: "name",
-                                //                 name: "name",
-                                //                 args: {},
-                                //                 fieldsByTypeName: {},
-                                //             },
-                                //         },
-                                //     },
-                                // },
                             },
                         },
                     },
@@ -137,7 +127,12 @@ describe("createConnectionAndParams", () => {
             // @ts-ignore
             {
                 name: "MovieActorsRelationship",
-                fields: [],
+                dateTimeFields: [],
+                enumFields: [],
+                ignoredFields: [],
+                pointFields: [],
+                primitiveFields: [],
+                scalarFields: [],
             },
         ];
 
@@ -244,7 +239,12 @@ describe("createConnectionAndParams", () => {
             // @ts-ignore
             {
                 name: "MovieActorsRelationship",
-                fields: [],
+                dateTimeFields: [],
+                enumFields: [],
+                ignoredFields: [],
+                pointFields: [],
+                primitiveFields: [],
+                scalarFields: [],
             },
         ];
 
