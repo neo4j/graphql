@@ -24,13 +24,14 @@ import {
     extendSchema,
     validateSchema,
     ObjectTypeDefinitionNode,
+    InputValueDefinitionNode,
 } from "graphql";
 import * as scalars from "../scalars";
 import * as enums from "./enums";
 import * as directives from "./directives";
 import * as point from "../point";
 
-function filterDocument(document: DocumentNode) {
+function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
         .filter((definition) => {
             if (definition.kind === "ObjectTypeDefinition") {
@@ -42,40 +43,54 @@ function filterDocument(document: DocumentNode) {
         })
         .map((definition) => (definition as ObjectTypeDefinitionNode).name.value);
 
+    const filterInputTypes = (fields: readonly InputValueDefinitionNode[] | undefined) => {
+        return fields?.filter((f) => {
+            const getArgumentType = (type) => {
+                if (["NonNullType", "ListType"].includes(type.kind)) {
+                    return getArgumentType(type.type);
+                }
+                return type.name.value;
+            };
+            const type = getArgumentType(f.type);
+            const match = /(?<nodeName>.+)(?:CreateInput|Sort|UpdateInput|Where)/gm.exec(type);
+            if (match?.groups?.nodeName) {
+                if (nodeNames.includes(match.groups.nodeName)) {
+                    return false;
+                }
+            }
+            return true;
+        });
+    };
+
     return {
         ...document,
         definitions: document.definitions.reduce((res: DefinitionNode[], def) => {
-            if (def.kind !== "ObjectTypeDefinition" && def.kind !== "InterfaceTypeDefinition") {
-                return [...res, def];
+            if (def.kind === "InputObjectTypeDefinition") {
+                return [
+                    ...res,
+                    {
+                        ...def,
+                        fields: filterInputTypes(def.fields),
+                    },
+                ];
             }
 
-            return [
-                ...res,
-                {
-                    ...def,
-                    directives: def.directives?.filter((x) => !["auth"].includes(x.name.value)),
-                    fields: def.fields?.map((f) => ({
-                        ...f,
-                        arguments: f.arguments?.filter((argument) => {
-                            const getArgumentType = (type) => {
-                                if (["NonNullType", "ListType"].includes(type.kind)) {
-                                    return getArgumentType(type.type);
-                                }
-                                return type.name.value;
-                            };
-                            const type = getArgumentType(argument.type);
-                            const match = /(?<nodeName>.+)(?:CreateInput|Sort|UpdateInput|Where)/gm.exec(type);
-                            if (match?.groups?.nodeName) {
-                                if (nodeNames.includes(match.groups.nodeName)) {
-                                    return false;
-                                }
-                            }
-                            return true;
-                        }),
-                        directives: f.directives?.filter((x) => !["auth"].includes(x.name.value)),
-                    })),
-                },
-            ];
+            if (def.kind === "ObjectTypeDefinition" || def.kind === "InterfaceTypeDefinition") {
+                return [
+                    ...res,
+                    {
+                        ...def,
+                        directives: def.directives?.filter((x) => !["auth"].includes(x.name.value)),
+                        fields: def.fields?.map((f) => ({
+                            ...f,
+                            arguments: filterInputTypes(f.arguments),
+                            directives: f.directives?.filter((x) => !["auth"].includes(x.name.value)),
+                        })),
+                    },
+                ];
+            }
+
+            return [...res, def];
         }, []),
     };
 }
