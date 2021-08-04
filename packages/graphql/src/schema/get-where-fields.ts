@@ -27,7 +27,15 @@ interface Fields {
     pointFields: PointField[];
 }
 
-function getWhereFields({ typeName, fields, enableRegex }: { typeName: string; fields: Fields; enableRegex: boolean }) {
+function getWhereFields({
+    typeName,
+    fields,
+    enableRegex,
+}: {
+    typeName: string;
+    fields: Fields;
+    enableRegex?: boolean;
+}) {
     return {
         OR: `[${typeName}Where!]`,
         AND: `[${typeName}Where!]`,

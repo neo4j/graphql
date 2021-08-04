@@ -90,7 +90,7 @@ describe("369", () => {
         `;
         try {
             await session.run(
-                `  
+                `
                     CREATE (:Dato {uuid: $datoUUID})-[:DEPENDE {uuid: $relUUID}]->(:Dato {uuid: $datoToUUID})
                 `,
                 {
@@ -103,7 +103,7 @@ describe("369", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -174,7 +174,7 @@ describe("369", () => {
         `;
         try {
             await session.run(
-                `  
+                `
                     CREATE (d:Dato {uuid: $datoUUID})-[:DEPENDE {uuid: $relUUID}]->(:Dato {uuid: $datoToUUID})
                     CREATE (d)-[:DEPENDE {uuid: randomUUID()}]->(:Dato {uuid: randomUUID()})
                     CREATE (d)-[:DEPENDE {uuid: randomUUID()}]->(:Dato {uuid: randomUUID()})
@@ -189,7 +189,7 @@ describe("369", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(result.errors).toBeFalsy();
