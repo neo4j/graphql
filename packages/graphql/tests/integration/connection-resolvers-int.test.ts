@@ -112,7 +112,7 @@ describe("Connection Resolvers", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: create,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -216,7 +216,7 @@ describe("Connection Resolvers", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: create,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 variableValues: {
                     input: [
                         {
@@ -282,7 +282,7 @@ describe("Connection Resolvers", () => {
             const result2 = await graphql({
                 schema: neoSchema.schema,
                 source: secondQuery,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 variableValues: {
                     movieId,
                     endCursor: result?.data?.createMovies.movies[0].actorsConnection.pageInfo.endCursor,
@@ -312,7 +312,7 @@ describe("Connection Resolvers", () => {
             const result3 = await graphql({
                 schema: neoSchema.schema,
                 source: secondQuery,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 variableValues: {
                     movieId,
                     endCursor: result2?.data?.movies[0].actorsConnection.pageInfo.endCursor,
@@ -391,7 +391,7 @@ describe("Connection Resolvers", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 variableValues: { movieId },
             });
 

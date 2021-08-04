@@ -42,7 +42,7 @@ describe("composite-where", () => {
                 type Actor {
                     name: String
                 }
-    
+
                 type Movie {
                     id: ID!
                     actors: [Actor] @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -104,7 +104,7 @@ describe("composite-where", () => {
                     schema: neoSchema.schema,
                     source: query,
                     variableValues: { movieId, actorName, screenTime },
-                    contextValue: { driver },
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -124,7 +124,7 @@ describe("composite-where", () => {
                 type Actor {
                     name: String
                 }
-    
+
                 type Movie {
                     id: ID!
                     actors: [Actor] @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -186,7 +186,7 @@ describe("composite-where", () => {
                     schema: neoSchema.schema,
                     source: query,
                     variableValues: { movieId, actorName, screenTime },
-                    contextValue: { driver },
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
