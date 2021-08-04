@@ -71,7 +71,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id, name: updatedName },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -132,7 +132,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id, name: updatedName },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -205,7 +205,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { updatedMovieId, actorName },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -267,7 +267,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id1, id2, name: updatedName },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -350,7 +350,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { movieId, updatedName, initialName },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -418,7 +418,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: mutation,
                 variableValues: { id, name },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -486,7 +486,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: mutation,
                 variableValues: { id, name },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -566,7 +566,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: mutation,
                 variableValues: { id1, name, id2 },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -661,7 +661,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: mutation,
                 variableValues: { id, name1, name3 },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -740,7 +740,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -807,7 +807,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -886,7 +886,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { movieId, seriesId },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -952,7 +952,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -1044,7 +1044,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -1190,7 +1190,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -1308,7 +1308,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -1409,7 +1409,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
