@@ -112,20 +112,20 @@ describe("TCK Generated tests", () => {
                     }
 
                     function compare(
-                        cypher: { expected: string; recived: string },
-                        params: { expected: any; recived: any },
+                        cypher: { expected: string; received: string },
+                        params: { expected: any; received: any },
                         context: any
                     ) {
                         if (
-                            cypher.recived.includes("$auth.") ||
-                            cypher.recived.includes("auth: $auth") ||
-                            cypher.recived.includes("auth:$auth")
+                            cypher.received.includes("$auth.") ||
+                            cypher.received.includes("auth: $auth") ||
+                            cypher.received.includes("auth:$auth")
                         ) {
                             params.expected.auth = createAuthParam({ context });
                         }
 
-                        expect(trimmer(cypher.expected)).toEqual(trimmer(cypher.recived));
-                        expect(params.expected).toEqual(params.recived);
+                        expect(trimmer(cypher.expected)).toEqual(trimmer(cypher.received));
+                        expect(params.expected).toEqual(params.received);
                     }
 
                     const queries = document.definitions.reduce((res, def) => {
@@ -154,8 +154,8 @@ describe("TCK Generated tests", () => {
                                 });
 
                                 compare(
-                                    { expected: cQuery, recived: cypherQuery },
-                                    { expected: cQueryParams, recived: cypherParams },
+                                    { expected: cQuery, received: cypherQuery },
+                                    { expected: cQueryParams, received: cypherParams },
                                     mergedContext
                                 );
 
@@ -180,8 +180,8 @@ describe("TCK Generated tests", () => {
                                 });
 
                                 compare(
-                                    { expected: cQuery, recived: cypherQuery },
-                                    { expected: cQueryParams, recived: cypherParams },
+                                    { expected: cQuery, received: cypherQuery },
+                                    { expected: cQueryParams, received: cypherParams },
                                     mergedContext
                                 );
 
@@ -216,8 +216,8 @@ describe("TCK Generated tests", () => {
                                 });
 
                                 compare(
-                                    { expected: cQuery, recived: cypherQuery },
-                                    { expected: cQueryParams, recived: cypherParams },
+                                    { expected: cQuery, received: cypherQuery },
+                                    { expected: cQueryParams, received: cypherParams },
                                     mergedContext
                                 );
 
@@ -244,8 +244,8 @@ describe("TCK Generated tests", () => {
                                 });
 
                                 compare(
-                                    { expected: cQuery, recived: cypherQuery },
-                                    { expected: cQueryParams, recived: cypherParams },
+                                    { expected: cQuery, received: cypherQuery },
+                                    { expected: cQueryParams, received: cypherParams },
                                     mergedContext
                                 );
 
@@ -267,8 +267,8 @@ describe("TCK Generated tests", () => {
                                 });
 
                                 compare(
-                                    { expected: cQuery, recived: cypherQuery },
-                                    { expected: cQueryParams, recived: cypherParams },
+                                    { expected: cQuery, received: cypherQuery },
+                                    { expected: cQueryParams, received: cypherParams },
                                     mergedContext
                                 );
 

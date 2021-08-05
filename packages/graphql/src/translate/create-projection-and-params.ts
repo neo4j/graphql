@@ -176,6 +176,9 @@ function createProjectionAndParams({
             const isEnum = context.neoSchema.document.definitions.find(
                 (x) => x.kind === "EnumTypeDefinition" && x.name.value === cypherField.typeMeta.name
             );
+            const isScalar = context.neoSchema.document.definitions.find(
+                (x) => x.kind === "ScalarTypeDefinition" && x.name.value === cypherField.typeMeta.name
+            );
 
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === cypherField.typeMeta.name);
             if (referenceNode) {
@@ -194,7 +197,7 @@ function createProjectionAndParams({
             }
 
             const initApocParamsStrs = [
-                "auth: $auth",
+                ...(context.auth ? ["auth: $auth"] : []),
                 ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
             ];
             const apocParams = Object.entries(field.args).reduce(
@@ -208,7 +211,11 @@ function createProjectionAndParams({
                 },
                 { strs: initApocParamsStrs, params: {} }
             ) as { strs: string[]; params: any };
-            res.params = { ...res.params, ...apocParams.params, cypherParams: context.cypherParams };
+            res.params = {
+                ...res.params,
+                ...apocParams.params,
+                ...(context.cypherParams ? { cypherParams: context.cypherParams } : {}),
+            };
 
             const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
             const apocWhere = `${
@@ -219,13 +226,13 @@ function createProjectionAndParams({
             const apocParamsStr = `{this: ${chainStr || varName}${
                 apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
             }}`;
-            const apocStr = `${!isPrimitive && !isEnum ? `${param} IN` : ""} apoc.cypher.runFirstColumn("${
+            const apocStr = `${!isPrimitive && !isEnum && !isScalar ? `${param} IN` : ""} apoc.cypher.runFirstColumn("${
                 cypherField.statement
-            }", ${apocParamsStr}, ${expectMultipleValues}) ${apocWhere} ${
-                projectionStr ? `| ${param} ${projectionStr}` : ""
+            }", ${apocParamsStr}, ${expectMultipleValues})${apocWhere ? ` ${apocWhere}` : ""}${
+                projectionStr ? ` | ${param} ${projectionStr}` : ""
             }`;
 
-            if (isPrimitive || isEnum) {
+            if (isPrimitive || isEnum || isScalar) {
                 res.projection.push(`${key}: ${apocStr}`);
 
                 return res;
