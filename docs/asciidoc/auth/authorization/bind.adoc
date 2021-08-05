@@ -1,14 +1,14 @@
 [[auth-authorization-bind]]
 = Bind
 
-Use bind to ensure that on creating or updating nodes, there is equality between a value on the JWT and a property on a matched node. This validation is done after the operation but inside a transaction. Taking a closer look, let's create a user in our database:
+Use bind to ensure that on creating or updating nodes, there is equality between a value on the JWT and a property on a matched node. This validation is done after the operation but inside a transaction. Taking a closer look, create a user in your database:
 
 [source, cypher]
 ----
 CREATE (:User { id:"user1", name: "one" })
 ----
 
-For the label and properties of the node created above, we would have the equivalent GraphQL type definition as follows:
+For the label and properties of the node created above, the corresponding GraphQL type definitions would be:
 
 [source, graphql]
 ----
@@ -18,7 +18,7 @@ type User {
 }
 ----
 
-Given the above GraphQL type definition - we can restrict `user1` from changing their own ID:
+Given the above GraphQL type definition - you could restrict `user1` from changing their own ID:
 
 [source, graphql]
 ----
@@ -37,7 +37,7 @@ extend type User @auth(
 )
 ----
 
-After we update or create the node we validate that the property `id` on the node is equal to the `jwt.sub` property.
+After the update or creation of the node, it is validated that the property `id` on the node is equal to the `jwt.sub` property.
 
 Given `user1` has the following decoded JWT:
 
@@ -62,7 +62,7 @@ mutation {
 }
 ----
 
-The generated cypher for this query would look like the below, throwing us out of the operation because the `id` property no longer matches.
+The generated cypher for this query would look like the below, throwing you out of the operation because the `id` property no longer matches.
 
 [source, cypher]
 ----

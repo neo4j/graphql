@@ -38,7 +38,7 @@ The following case-sensitive comparison operators are only available for use on 
 The filter `_MATCHES` is also available for comparison of `String` and `ID` types, which accepts a RegEx string as an argument and returns any matches.
 Note that RegEx matching filters are **disabled by default**.
 
-We have added the ability to enable the inclusion of this filter by setting the config option `enableRegex` to `true`.
+To enable the inclusion of this filter, set the config option `enableRegex` to `true`.
 
 > The nature of RegEx matching means that on an unprotected API, this could potentially be used to execute a ReDoS attack (https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) against the backing Neo4j database.
 

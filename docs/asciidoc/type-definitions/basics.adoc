@@ -20,7 +20,7 @@ type Movie {
 
 Relationships are represented by marking particular fields with a directive. This directive, `@relationship`, defines the relationship type in the database, as well as which direction that relationship goes in.
 
-Let's add a second node type, "Actor", and connect the two together:
+Add a second node type, "Actor", and connect the two together:
 
 [source, graphql]
 ----
@@ -39,7 +39,7 @@ Note there is a directive on each "end" of the relationship in this case, but it
 
 === Relationship properties
 
-In order to add relationship properties to a relationship, we need to add a new type to our type definitions, but this time it will be of type `interface`. For example, for our "ACTED_IN" relationship, let's add a property "roles":
+In order to add relationship properties to a relationship, you need to add a new type to your type definitions, but this time it will be of type `interface`. For example, for your "ACTED_IN" relationship, add a property "roles":
 
 [source, graphql]
 ----
@@ -58,4 +58,4 @@ interface ActedIn {
 }
 ----
 
-Note that in addition to this new interface type, we have added a key `properties` to the existing `@relationship` directives.
+Note that in addition to this new interface type, there is an added a key `properties` in the existing `@relationship` directives.

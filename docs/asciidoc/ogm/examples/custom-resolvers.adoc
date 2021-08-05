@@ -3,7 +3,7 @@
 
 A common case for using the OGM will be within custom resolvers inside a Neo4j GraphQL instance (very meta!), due to the fact that it has access to some fields which the Neo4j GraphQL Library may not. A common use case might be to have a `password` field marked with directive `@private`, and a custom resolver for creating users with passwords.
 
-To get started with this example, create your example application directory, create a new project and also the file which will contain our application code:
+To get started with this example, create your example application directory, create a new project and also the file which will contain your application code:
 
 [source, bash]
 ----
@@ -13,14 +13,14 @@ npm init --yes
 touch index.js
 ----
 
-Then we need to install our dependencies:
+Then you need to install your dependencies:
 
 [source, bash]
 ----
 npm install @neo4j/graphql-ogm graphql neo4j-driver apollo-server
 ----
 
-Assuming a running Neo4j database at "bolt://localhost:7687" with username "neo4j" and password "password", in our empty `index.js` file, add the following code:
+Assuming a running Neo4j database at "bolt://localhost:7687" with username "neo4j" and password "password", in your empty `index.js` file, add the following code:
 
 [source, javascript]
 ----

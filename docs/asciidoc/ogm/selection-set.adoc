@@ -32,7 +32,7 @@ The following snippet is the selection set:
 }
 ----
 
-When using the OGM we do not want users to have to provide a selection set by default. Doing so would make using the OGM feel more like querying the GraphQL schema directly, when the OGM is designed as an abstraction over it. To combat this, we automatically generate basic selection sets. Given the following type definition:
+When using the OGM, you do not have to provide a selection set by default. Doing so would make using the OGM feel more like querying the GraphQL schema directly, when the OGM is designed as an abstraction over it. This is achieved by automatically generated basic selection sets. Given the following type definition:
 
 [source, graphql]
 ----
@@ -44,7 +44,7 @@ type Node {
 }
 ----
 
-We don't include any relationship fields or Cypher fields in the generated selection set, as they could be computationally expensive. So, given the type definition above, the generated selection set would be:
+Neither relationship fields nor custom Cypher fields are included in the generated selection set, as they could be computationally expensive. So, given the type definition above, the generated selection set would be:
 
 [source, graphql]
 ----
@@ -58,7 +58,7 @@ This means that by default, querying for Node(s), you would only get the `.id` a
 
 ==  Selection set at execution time
 
-Using this approach, we would pass in a selection set every time we interact with the OGM. This would be an appropriate approach if the selection set is going to be different every time you ask for data. A full example of this would be as follows:
+Using this approach, you would pass in a selection set every time you interact with the OGM. This would be an appropriate approach if the selection set is going to be different every time you ask for data. A full example of this would be as follows:
 
 [source, javascript]
 ----
@@ -97,7 +97,7 @@ const selectionSet = `
 const nodes = await Node.find({ selectionSet });
 ----
 
-Note that we are passing in the argument `selectionSet` into the `Node.find()` function.
+Note that  the argument `selectionSet` is passed every invocation of the `Node.find()` function.
 
 ==  Selection set as a static
 
