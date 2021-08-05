@@ -99,8 +99,8 @@ And for composites of both node and relationship properties ("Connection" needed
 
 ```graphql
 input ActorMoviesConnectionWhere {
-    relationship: ActedInWhere
-    relationship_NOT: ActedInWhere
+    edge: ActedInWhere
+    edge_NOT: ActedInWhere
     node: MovieWhere
     node_NOT: MovieWhere
     AND: [ActorMoviesConnectionWhere!]
@@ -108,13 +108,13 @@ input ActorMoviesConnectionWhere {
 }
 
 input ActorMoviesConnectionSort {
-    relationship: ActedInSort
+    edge: ActedInSort
     node: MovieSort
 }
 
 input MovieActorsConnectionWhere {
-    relationship: ActedInWhere
-    relationship_NOT: ActedInWhere
+    edge: ActedInWhere
+    edge_NOT: ActedInWhere
     node: ActorWhere
     node_NOT: ActorWhere
     AND: [MovieActorsConnectionWhere!]
@@ -122,7 +122,7 @@ input MovieActorsConnectionWhere {
 }
 
 input MovieActorsConnectionSort {
-    relationship: ActedInSort
+    edge: ActedInSort
     node: ActorSort
 }
 ```
@@ -173,12 +173,12 @@ There are new input types to facilitate the setting of relationship properties w
 
 ```graphql
 input MovieCreateFieldInput {
-    relationship: ActedInCreateInput!
+    edge: ActedInCreateInput!
     node: MovieCreateInput!
 }
 
 input ActorCreateFieldInput {
-    relationship: ActedInCreateInput!
+    edge: ActedInCreateInput!
     node: ActorCreateInput!
 }
 ```
@@ -192,13 +192,13 @@ Now where nested create operations and `RelationInput` input types used the `Act
 ```graphql
 input ActorConnectFieldInput {
     where: ActorWhere
-    relationship: ActedInCreateInput
+    edge: ActedInCreateInput
     connect: ActorConnectInput
 }
 
 input MovieConnectFieldInput {
     where: MovieWhere
-    relationship: ActedInCreateInput
+    edge: ActedInCreateInput
     connect: MovieConnectInput
 }
 ```
@@ -211,7 +211,7 @@ Additionally, the `where` argument will be changed so that filtering can be done
 
 ```graphql
 input ActorMoviesConnectionUpdateInput {
-    relationship: ActedInUpdateInput
+    edge: ActedInUpdateInput
     node: MovieUpdateInput
 }
 
@@ -225,7 +225,7 @@ input ActorMoviesUpdateFieldInput {
 }
 
 input MovieActorsConnectionUpdateInput {
-    relationship: ActedInUpdateInput
+    edge: ActedInUpdateInput
     node: ActorUpdateInput
 }
 
@@ -280,7 +280,7 @@ mutation {
                     connect: [
                         {
                             where: { name: "Tom Hanks" }
-                            relationship: { screenTime: 60 }
+                            edge: { screenTime: 60 }
                         }
                     ]
                 }
@@ -308,7 +308,7 @@ mutation {
                     create: [
                         {
                             node: { name: "Tom Hanks" }
-                            relationship: { screenTime: 60 }
+                            edge: { screenTime: 60 }
                         }
                     ]
                 }
@@ -334,7 +334,7 @@ mutation {
             actors: [
                 {
                     where: { node: { name: "Tom Hanks" } }
-                    update: { relationship: { screenTime: 60 } }
+                    update: { edge: { screenTime: 60 } }
                 }
             ]
         }
