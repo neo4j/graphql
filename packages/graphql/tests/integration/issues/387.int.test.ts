@@ -101,4 +101,51 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
             await session.close();
         }
     });
+
+    test("should return custom scalars from root custom Cypher fields", async () => {
+        const url = generate({
+            charset: "alphabetic",
+        });
+
+        const typeDefs = gql`
+            scalar URL
+
+            type Query {
+                url: URL
+                    @cypher(
+                        statement: """
+                        return '${url}'
+                        """
+                    )
+                url_array: [URL]
+                    @cypher(
+                        statement: """
+                        return ['${url}', '${url}']
+                        """
+                    )
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const query = `
+            {
+                url
+                url_array
+            }
+        `;
+
+        const result = await graphql({
+            schema: neoSchema.schema,
+            source: query,
+            contextValue: { driver },
+        });
+
+        expect(result.errors).toBeFalsy();
+
+        expect(result.data as any).toEqual({
+            url,
+            url_array: [url, url],
+        });
+    });
 });
