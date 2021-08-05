@@ -906,11 +906,11 @@ describe("Connections Alias", () => {
         try {
             await session.run(
                 `
-              CREATE (post:Post {title: "title"})
-              FOREACH(flag in $flags |
-                CREATE (:Comment {flag: flag})<-[:HAS_COMMENT]-(post)
-              )
-          `,
+                    CREATE (post:Post {title: "title"})
+                    FOREACH(flag in $flags |
+                        CREATE (:Comment {flag: flag})<-[:HAS_COMMENT]-(post)
+                    )
+                `,
                 {
                     flags,
                 }
