@@ -5,7 +5,7 @@
 
 In the release of Apollo Client 3.0, it became a bit more opinionated about pagination, favouring `offset` and `limit` over `skip` and `limit`. Acknowledging that the majority of our user base will be using Apollo Client 3.0, we have updated the page-based pagination arguments to align with this change.
 
-For example, whilst fetching page 3 of pages of 10 movies would have looked like the following in version `1.x`:
+For example, fetching page 3 of pages of 10 movies would have looked like the following in version `1.x`:
 
 [source, graphql]
 ----

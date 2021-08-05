@@ -5,7 +5,7 @@ The library will autogenerate Query and Mutation resolvers, so you don’t need 
 
 *A note on custom resolvers*
 
-> Due to the nature of the Cypher generation in this library, you must query any fields used in a custom resolver. For example, in the first example below calculating `fullName`, `firstName` and `lastName` must be included in the selection set whilst querying `fullName`. Without this being the case, `firstName` and `lastName` will be undefined in the custom resolver.
+> Due to the nature of the Cypher generation in this library, you must query any fields used in a custom resolver. For example, in the first example below calculating `fullName`, `firstName` and `lastName` must be included in the selection set when querying `fullName`. Without this being the case, `firstName` and `lastName` will be undefined in the custom resolver.
 
 == Custom object type field resolver
 
