@@ -3,7 +3,7 @@
 
 == `skip` renamed to `offset`
 
-In the release of Apollo Client 3.0, it became a bit more opinionated about pagination, favouring `offset` and `limit` over `skip` and `limit`. Acknowledging that the majority of our user base will be using Apollo Client 3.0, we have updated the page-based pagination arguments to align with this change.
+In the release of Apollo Client 3.0, it became a bit more opinionated about pagination, favouring `offset` and `limit` over `skip` and `limit`. Acknowledging that the majority of users will be using Apollo Client 3.0, the page-based pagination arguments have been updated to align with this change.
 
 For example, fetching page 3 of pages of 10 movies would have looked like the following in version `1.x`:
 
@@ -33,7 +33,7 @@ Whilst not a necessary migration step, if you are using page-based pagination, i
 
 == Schema validation
 
-In version 2.0.0, we have added greater levels of schema validation. However, upon upgrading, you might find that validation is too strict (for example if using certain generated types in your definitions). You can temporarily disable this new validation on construction:
+In version 2.0.0, there are greater levels of schema validation. However, upon upgrading, you might find that validation is too strict (for example if using certain generated types in your definitions). You can temporarily disable this new validation on construction:
 
 [source, javascript]
 ----

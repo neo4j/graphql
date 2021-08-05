@@ -3,7 +3,7 @@
 
 This example demonstrates how you might use the OGM without exposing a Neo4j GraphQL API endpoint. The example starts an https://expressjs.com/[Express] server and uses the OGM to interact with the Neo4j GraphQL Library, exposed over a REST endpoint.
 
-First, create your example application directory, create a new project and also the file which will contain our application code:
+First, create your example application directory, create a new project and also the file which will contain yur application code:
 
 [source, bash]
 ----
@@ -13,14 +13,14 @@ npm init --yes
 touch index.js
 ----
 
-Then we need to install our dependencies:
+Then you need to install your dependencies:
 
 [source, bash]
 ----
 npm install @neo4j/graphql-ogm graphql neo4j-driver express
 ----
 
-Assuming a running Neo4j database at "bolt://localhost:7687" with username "neo4j" and password "password", in our empty `index.js` file, add the following code:
+Assuming a running Neo4j database at "bolt://localhost:7687" with username "neo4j" and password "password", in your empty `index.js` file, add the following code:
 
 [source, javascript]
 ----
@@ -68,7 +68,7 @@ app.listen(port, () => {
 });
 ----
 
-In our application directory, you can run this application:
+In your application directory, you can run this application:
 
 [source, bash]
 ----

@@ -5,7 +5,7 @@ The `@auth` directive definition is dynamically generated on runtime based on us
 
 == `rules`
 
-You can have many rules for many operations. We fall through each rule, until we find a match to the corresponding operation. If no match is found, an error is thrown. You can think of rules as a big `OR`.
+You can have many rules for many operations. Each rule is fallen through until a match is found against the corresponding operation. If no match is found, an error is thrown. You can think of rules as a big `OR`.
 
 [source, graphql]
 ----
@@ -50,7 +50,7 @@ mutation {
 }
 ----
 
-In the above example, we perform a `CREATE` followed by a `CONNECT`, so our auth rule must allow our user to perform both of these operations.
+In the above example, there is a `CREATE` operation followed by a `CONNECT`, so the auth rule must allow a user to perform both of these operations.
 
 The full list of operations and how they related to Cypher clauses are:
 

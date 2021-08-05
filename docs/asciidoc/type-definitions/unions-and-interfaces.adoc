@@ -50,7 +50,7 @@ query GetUsersWithBlogs {
 }
 ----
 
-Whilst the query below will only return blogs. We could for instance use a filter to check that the title is not null to essentially return all blogs:
+Whilst the query below will only return blogs. You could for instance use a filter to check that the title is not null to essentially return all blogs:
 
 [source, graphql]
 ----
@@ -81,7 +81,7 @@ UNION
 }
 ----
 
-Now if we were to leave both subqueries and add a `WHERE` clause for blogs, it would look like this:
+Now if you were to leave both subqueries and add a `WHERE` clause for blogs, it would look like this:
 
 [source, cypher]
 ----
@@ -99,7 +99,7 @@ UNION
 
 As you can see, the subqueries are now "unbalanced", which could result in massive overfetching of `Post` nodes.
 
-So, when a `where` argument is passed in, we only include union members which are in the `where` object, so it is essentially acting as a logical OR gate, different from the rest of our `where` arguments:
+So, when a `where` argument is passed in, only union members which are in the `where` object are fetched, so it is essentially acting as a logical OR gate, different from the rest of the `where` arguments in the schema:
 
 [source, cypher]
 ----

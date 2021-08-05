@@ -1,7 +1,7 @@
 [[v2-migration-unions]]
 = Unions
 
-In this release, we have decided to take the opportunity to overhaul the existing support for unions on relationship fields, to better set us up for adding top-level union support in the future.
+In this release, the decision was made to take the opportunity to overhaul the existing support for unions on relationship fields, laying down the foundations for adding top-level union support in the future.
 
 All examples in this section will be based off the following type definitions:
 
@@ -130,7 +130,5 @@ query {
     }
 }
 ----
-
-We feel this has improved readability of queries.
 
 Furthermore, the where argument used now dictates which union members are returned from the database, to prevent overfetching. Please see <<type-definitions-unions-and-interfaces-union-types-querying>> for background and explanation of this decision.
