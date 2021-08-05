@@ -82,9 +82,9 @@ export default function cypherResolver({
                         context,
                         nodeVariable: "this",
                     });
-                    const [str, p] = nestedConnection;
-                    connectionProjectionStr = str;
-                    params = { ...params, ...p };
+                    const [nestedStr, nestedP] = nestedConnection;
+                    connectionProjectionStr = nestedStr;
+                    params = { ...params, ...nestedP };
                 });
             }
         }
