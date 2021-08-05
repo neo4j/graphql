@@ -58,7 +58,7 @@ These four operators are available for all types apart from `Boolean`.
 
 == Usage
 
-Using the type definitions from <<queries>>, below are some example of how filtering can be applied whilst querying for data.
+Using the type definitions from <<queries>>, below are some example of how filtering can be applied when querying for data.
 
 === At the root of a Query
 
