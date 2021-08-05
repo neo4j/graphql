@@ -18,6 +18,7 @@
  */
 
 import { Driver } from "neo4j-driver";
+import faker from "faker";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { gql } from "apollo-server";
@@ -854,6 +855,77 @@ describe("Connections Alias", () => {
                     },
                 ],
             });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should allow multiple aliases on the same connection", async () => {
+        const session = driver.session();
+
+        const typeDefs = gql`
+            type Post {
+                title: String!
+                comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
+            }
+
+            type Comment {
+                flag: Boolean!
+                post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
+            }
+        `;
+
+        const { schema } = new Neo4jGraphQL({ typeDefs });
+
+        const flags = new Array(faker.random.number({ min: 2, max: 5 })).map(() => faker.random.boolean());
+
+        const flaggedCount = flags.filter((flag) => flag).length;
+        const unflaggedCount = flags.filter((flag) => !flag).length;
+
+        const query = `
+            {
+                posts {
+                    flagged: commentsConnection(where: { node: { flag: true } }) {
+                        edges {
+                            node {
+                                flag
+                            }
+                        }
+                    }
+                    unflagged: commentsConnection(where: { node: { flag: false } }) {
+                        edges {
+                            node {
+                                flag
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+              CREATE (post:Post {title: "title"})
+              FOREACH(flag in $flags |
+                CREATE (:Comment {flag: flag})<-[:HAS_COMMENT]-(post)
+              )
+          `,
+                {
+                    flags,
+                }
+            );
+
+            const result = await graphql({
+                schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            expect(result.errors).toBeUndefined();
+
+            expect((result.data as any).posts[0].flagged.edges).toHaveLength(flaggedCount);
+            expect((result.data as any).posts[0].unflagged.edges).toHaveLength(unflaggedCount);
         } finally {
             await session.close();
         }
