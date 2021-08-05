@@ -47,6 +47,12 @@ export default function cypherResolver({
         const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
             field.typeMeta.name
         );
+        const isEnum = context.neoSchema.document.definitions.find(
+            (x) => x.kind === "EnumTypeDefinition" && x.name.value === field.typeMeta.name
+        );
+        const isScalar = context.neoSchema.document.definitions.find(
+            (x) => x.kind === "ScalarTypeDefinition" && x.name.value === field.typeMeta.name
+        );
 
         const preAuth = createAuthAndParams({ entity: field, context });
         if (preAuth[0]) {
@@ -101,7 +107,7 @@ export default function cypherResolver({
         ) as { strs: string[]; params: any };
         const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
-        const expectMultipleValues = field.typeMeta.array ? "true" : "false";
+        const expectMultipleValues = !isPrimitive && !isScalar && !isEnum && field.typeMeta.array ? "true" : "false";
         if (type === "Query") {
             cypherStrs.push(`
                 WITH apoc.cypher.runFirstColumn("${statement}", ${apocParamsStr}, ${expectMultipleValues}) as x
@@ -125,10 +131,10 @@ export default function cypherResolver({
             cypherStrs.push(connectionProjectionStr);
         }
 
-        if (!isPrimitive) {
-            cypherStrs.push(`RETURN this ${projectionStr} AS this`);
-        } else {
+        if (isPrimitive || isEnum || isScalar) {
             cypherStrs.push(`RETURN this`);
+        } else {
+            cypherStrs.push(`RETURN this ${projectionStr} AS this`);
         }
 
         const result = await execute({
