@@ -176,8 +176,8 @@ query {
         name
         publicationsConnection(
             where: {
-                Book: { relationship: { words: 1000 } }
-                Journal: { relationship: { words: 2000 } }
+                Book: { edge: { words: 1000 } }
+                Journal: { edge: { words: 2000 } }
             }
         ) {
             edges {
@@ -205,13 +205,13 @@ CALL {
     CALL {
         WITH this
         OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Book:Book)
-        WHERE this_wrote.words = $this_publicationsConnection.args.where.Book.relationship.words
+        WHERE this_wrote.words = $this_publicationsConnection.args.where.Book.edge.words
         WITH { words: this_wrote.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
         RETURN edge
     UNION
         WITH this
         OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Journal:Journal)
-        WHERE this_wrote.words = $this_publicationsConnection.args.where.Journal.relationship.words
+        WHERE this_wrote.words = $this_publicationsConnection.args.where.Journal.edge.words
         WITH { words: this_wrote.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
         RETURN edge
     }
@@ -229,7 +229,7 @@ RETURN this { .name, publicationsConnection } as this
         "args": {
             "where": {
                 "Book": {
-                    "relationship": {
+                    "edge": {
                         "words": {
                             "low": 1000,
                             "high": 0
@@ -237,7 +237,7 @@ RETURN this { .name, publicationsConnection } as this
                     }
                 },
                 "Journal": {
-                    "relationship": {
+                    "edge": {
                         "words": {
                             "low": 2000,
                             "high": 0
@@ -262,12 +262,9 @@ query {
         name
         publicationsConnection(
             where: {
-                Book: {
-                    relationship: { words: 1000 }
-                    node: { title: "Book Title" }
-                }
+                Book: { edge: { words: 1000 }, node: { title: "Book Title" } }
                 Journal: {
-                    relationship: { words: 2000 }
+                    edge: { words: 2000 }
                     node: { subject: "Journal Subject" }
                 }
             }
@@ -297,13 +294,13 @@ CALL {
     CALL {
         WITH this
         OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Book:Book)
-        WHERE this_Book.title = $this_publicationsConnection.args.where.Book.node.title AND this_wrote.words = $this_publicationsConnection.args.where.Book.relationship.words
+        WHERE this_Book.title = $this_publicationsConnection.args.where.Book.node.title AND this_wrote.words = $this_publicationsConnection.args.where.Book.edge.words
         WITH { words: this_wrote.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
         RETURN edge
     UNION
         WITH this
         OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Journal:Journal)
-        WHERE this_Journal.subject = $this_publicationsConnection.args.where.Journal.node.subject AND this_wrote.words = $this_publicationsConnection.args.where.Journal.relationship.words
+        WHERE this_Journal.subject = $this_publicationsConnection.args.where.Journal.node.subject AND this_wrote.words = $this_publicationsConnection.args.where.Journal.edge.words
         WITH { words: this_wrote.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
         RETURN edge
     }
@@ -324,7 +321,7 @@ RETURN this { .name, publicationsConnection } as this
                     "node": {
                         "title": "Book Title"
                     },
-                    "relationship": {
+                    "edge": {
                         "words": {
                             "low": 1000,
                             "high": 0
@@ -335,7 +332,7 @@ RETURN this { .name, publicationsConnection } as this
                     "node": {
                         "subject": "Journal Subject"
                     },
-                    "relationship": {
+                    "edge": {
                         "words": {
                             "low": 2000,
                             "high": 0

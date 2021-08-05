@@ -33,7 +33,7 @@ query {
         title
         actorsConnection(
             where: {
-                relationship: {
+                edge: {
                     location_DISTANCE: {
                         point: { longitude: 1.0, latitude: 2.0 }
                         distance: 3.0
@@ -63,7 +63,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE distance(this_acted_in.location, point($this_actorsConnection.args.where.relationship.location_DISTANCE.point)) = $this_actorsConnection.args.where.relationship.location_DISTANCE.distance
+    WHERE distance(this_acted_in.location, point($this_actorsConnection.args.where.edge.location_DISTANCE.point)) = $this_actorsConnection.args.where.edge.location_DISTANCE.distance
     WITH collect({ screenTime: this_acted_in.screenTime, location: { point: this_acted_in.location }, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -77,7 +77,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "location_DISTANCE": {
                         "distance": 3,
                         "point": {

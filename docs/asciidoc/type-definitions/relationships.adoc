@@ -128,7 +128,7 @@ mutation CreateActor {
                     where: {
                         node: { title: "Forrest Gump" }
                     }
-                    relationship: {
+                    edge: {
                         roles: ["Forrest"]
                     }
                 }
@@ -182,7 +182,7 @@ mutation CreateMovieDirectorAndActor {
                             name: "Tom Hanks"
                             born: 1956
                         }
-                        relationship: {
+                        edge: {
                             roles: ["Forrest"]
                         }
                     }

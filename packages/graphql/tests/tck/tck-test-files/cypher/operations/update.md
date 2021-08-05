@@ -669,7 +669,7 @@ mutation {
             actors: {
                 where: {
                     node: { name: "Actor to delete" }
-                    relationship: { screenTime: 60 }
+                    edge: { screenTime: 60 }
                 }
             }
         }
@@ -688,7 +688,7 @@ MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this
 OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
-WHERE this_delete_actors0_relationship.screenTime = $updateMovies.args.delete.actors[0].where.relationship.screenTime AND this_delete_actors0.name = $updateMovies.args.delete.actors[0].where.node.name
+WHERE this_delete_actors0_relationship.screenTime = $updateMovies.args.delete.actors[0].where.edge.screenTime AND this_delete_actors0.name = $updateMovies.args.delete.actors[0].where.node.name
 FOREACH(_ IN CASE this_delete_actors0 WHEN NULL THEN [] ELSE [1] END |
     DETACH DELETE this_delete_actors0
 )
@@ -709,7 +709,7 @@ RETURN this { .id } AS this
                             "node": {
                                 "name": "Actor to delete"
                             },
-                            "relationship": {
+                            "edge": {
                                 "screenTime": {
                                     "high": 0,
                                     "low": 60

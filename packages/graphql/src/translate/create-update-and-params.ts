@@ -84,13 +84,9 @@ function createUpdateAndParams({
             ) as unknown) as Relationship;
 
             if (relationField.union) {
-                // [unionTypeName] = key.split(`${relationField.fieldName}_`).join("").split("_");
-
                 Object.keys(value).forEach((unionTypeName) => {
                     refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
-
-                // refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
             } else {
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
@@ -191,19 +187,19 @@ function createUpdateAndParams({
                             res.strs.push(updateStr);
                         }
 
-                        if (update.update.relationship) {
+                        if (update.update.edge) {
                             res.strs.push(
                                 `CALL apoc.do.when(${relationshipVariable} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`
                             );
 
                             const setProperties = createSetRelationshipProperties({
-                                properties: update.update.relationship,
+                                properties: update.update.edge,
                                 varName: relationshipVariable,
                                 relationship,
                                 operation: "UPDATE",
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
-                                }[${index}].update.relationship`,
+                                }[${index}].update.edge`,
                             });
 
                             const updateStrs = [setProperties, "RETURN count(*)"];
@@ -216,7 +212,7 @@ function createUpdateAndParams({
                             } else {
                                 updateStrs.push(`", "", ${apocArgs})`);
                             }
-                            updateStrs.push(`YIELD value as ${relationshipVariable}_${key}${index}_relationship`);
+                            updateStrs.push(`YIELD value as ${relationshipVariable}_${key}${index}_edge`);
                             res.strs.push(updateStrs.join("\n"));
                         }
                     }
@@ -301,14 +297,14 @@ function createUpdateAndParams({
                             res.strs.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
                             res.strs.push(
-                                `MERGE (${parentVar})${inStr}[${create.relationship ? propertiesName : ""}:${
+                                `MERGE (${parentVar})${inStr}[${create.edge ? propertiesName : ""}:${
                                     relationField.type
                                 }]${outStr}(${nodeName})`
                             );
 
-                            if (create.relationship) {
+                            if (create.edge) {
                                 const setA = createSetRelationshipPropertiesAndParams({
-                                    properties: create.relationship,
+                                    properties: create.edge,
                                     varName: propertiesName,
                                     relationship,
                                     operation: "CREATE",

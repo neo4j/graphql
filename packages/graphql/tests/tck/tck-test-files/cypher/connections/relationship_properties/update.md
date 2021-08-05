@@ -34,7 +34,7 @@ mutation {
             actors: [
                 {
                     where: { node: { name: "Tom Hanks" } }
-                    update: { relationship: { screenTime: 60 } }
+                    update: { edge: { screenTime: 60 } }
                 }
             ]
         }
@@ -57,10 +57,10 @@ OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Acto
 WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
 
 CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, "
-SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.relationship.screenTime
+SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
 RETURN count(*)
 ", "", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies})
-YIELD value as this_acted_in0_relationship_actors0_relationship
+YIELD value as this_acted_in0_relationship_actors0_edge
 
 RETURN this { .title } AS this
 ```
@@ -76,7 +76,7 @@ RETURN this { .title } AS this
                 "actors": [
                     {
                         "update": {
-                            "relationship": {
+                            "edge": {
                                 "screenTime": {
                                     "high": 0,
                                     "low": 60
@@ -111,7 +111,7 @@ mutation {
                 {
                     where: { node: { name: "Tom Hanks" } }
                     update: {
-                        relationship: { screenTime: 60 }
+                        edge: { screenTime: 60 }
                         node: { name: "Tom Hanks" }
                     }
                 }
@@ -142,10 +142,10 @@ RETURN count(*)
 YIELD value as _
 
 CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, "
-SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.relationship.screenTime
+SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
 RETURN count(*)
 ", "", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies})
-YIELD value as this_acted_in0_relationship_actors0_relationship
+YIELD value as this_acted_in0_relationship_actors0_edge
 
 RETURN this { .title } AS this
 ```
@@ -167,7 +167,7 @@ RETURN this { .title } AS this
                 "actors": [
                     {
                         "update": {
-                            "relationship": {
+                            "edge": {
                                 "screenTime": {
                                     "high": 0,
                                     "low": 60

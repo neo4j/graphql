@@ -32,7 +32,7 @@ mutation {
         input: [
             {
                 title: "Forrest Gump"
-                actors: { connect: [{ relationship: { screenTime: 60 } }] }
+                actors: { connect: [{ edge: { screenTime: 60 } }] }
             }
         ]
     ) {
@@ -108,7 +108,7 @@ mutation {
                     connect: [
                         {
                             where: { node: { name: "Tom Hanks" } }
-                            relationship: { screenTime: 60 }
+                            edge: { screenTime: 60 }
                         }
                     ]
                 }
@@ -183,7 +183,7 @@ this0 { .title, actorsConnection } AS this0
 mutation {
     updateMovies(
         where: { title: "Forrest Gump" }
-        connect: { actors: { relationship: { screenTime: 60 } } }
+        connect: { actors: { edge: { screenTime: 60 } } }
     ) {
         movies {
             title
@@ -250,7 +250,7 @@ mutation {
         connect: {
             actors: {
                 where: { node: { name: "Tom Hanks" } }
-                relationship: { screenTime: 60 }
+                edge: { screenTime: 60 }
             }
         }
     ) {

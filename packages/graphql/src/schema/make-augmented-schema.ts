@@ -619,7 +619,7 @@ function makeAugmentedSchema(
                             name: createName,
                             fields: {
                                 node: `${n.name}CreateInput!`,
-                                ...(rel.properties ? { relationship: `${rel.properties}CreateInput!` } : {}),
+                                ...(rel.properties ? { edge: `${rel.properties}CreateInput!` } : {}),
                             },
                         });
 
@@ -656,7 +656,7 @@ function makeAugmentedSchema(
                                               : `${n.name}ConnectInput`,
                                       }
                                     : {}),
-                                ...(rel.properties ? { relationship: `${rel.properties}CreateInput!` } : {}),
+                                ...(rel.properties ? { edge: `${rel.properties}CreateInput!` } : {}),
                             },
                         });
 
@@ -688,7 +688,7 @@ function makeAugmentedSchema(
                     composer.createInputTC({
                         name: connectionUpdateInputName,
                         fields: {
-                            ...(rel.properties ? { relationship: `${rel.properties}UpdateInput` } : {}),
+                            ...(rel.properties ? { edge: `${rel.properties}UpdateInput` } : {}),
                             node: updateField,
                         },
                     });
@@ -710,8 +710,8 @@ function makeAugmentedSchema(
                             OR: `[${whereName}!]`,
                             ...(rel.properties
                                 ? {
-                                      relationship: `${rel.properties}Where`,
-                                      relationship_NOT: `${rel.properties}Where`,
+                                      edge: `${rel.properties}Where`,
+                                      edge_NOT: `${rel.properties}Where`,
                                   }
                                 : {}),
                         },
@@ -825,7 +825,7 @@ function makeAugmentedSchema(
                     fields: {
                         node: `${n.name}CreateInput!`,
                         ...(rel.properties
-                            ? { relationship: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
+                            ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
                             : {}),
                     },
                 });
@@ -852,7 +852,7 @@ function makeAugmentedSchema(
                             ? { connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput` }
                             : {}),
                         ...(rel.properties
-                            ? { relationship: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
+                            ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
                             : {}),
                     },
                 });
@@ -872,7 +872,7 @@ function makeAugmentedSchema(
                 name: connectionUpdateInputName,
                 fields: {
                     node: updateField,
-                    ...(rel.properties ? { relationship: `${rel.properties}UpdateInput` } : {}),
+                    ...(rel.properties ? { edge: `${rel.properties}UpdateInput` } : {}),
                 },
             });
 
@@ -983,8 +983,8 @@ function makeAugmentedSchema(
                 relationship.addFields(propertiesInterface.getFields());
 
                 connectionWhere.addFields({
-                    relationship: `${connectionField.relationship.properties}Where`,
-                    relationship_NOT: `${connectionField.relationship.properties}Where`,
+                    edge: `${connectionField.relationship.properties}Where`,
+                    edge_NOT: `${connectionField.relationship.properties}Where`,
                 });
             }
 
@@ -1026,8 +1026,8 @@ function makeAugmentedSchema(
                         relationship.addFields(propertiesInterface.getFields());
 
                         unionWhere.addFields({
-                            relationship: `${connectionField.relationship.properties}Where`,
-                            relationship_NOT: `${connectionField.relationship.properties}Where`,
+                            edge: `${connectionField.relationship.properties}Where`,
+                            edge_NOT: `${connectionField.relationship.properties}Where`,
                         });
                     }
 
@@ -1064,7 +1064,7 @@ function makeAugmentedSchema(
 
                 if (connectionField.relationship.properties) {
                     connectionSort.addFields({
-                        relationship: `${connectionField.relationship.properties}Sort`,
+                        edge: `${connectionField.relationship.properties}Sort`,
                     });
                 }
 

@@ -145,7 +145,7 @@ describe("createConnectionAndParams", () => {
                         node: {
                             name: "ASC",
                         },
-                        relationship: {
+                        edge: {
                             screenTime: "DESC",
                         },
                     },
@@ -165,21 +165,6 @@ describe("createConnectionAndParams", () => {
                                     args: {},
                                     fieldsByTypeName: {},
                                 },
-                                // node: {
-                                //     alias: "node",
-                                //     name: "node",
-                                //     args: {},
-                                //     fieldsByTypeName: {
-                                //         Actor: {
-                                //             name: {
-                                //                 alias: "name",
-                                //                 name: "name",
-                                //                 args: {},
-                                //                 fieldsByTypeName: {},
-                                //             },
-                                //         },
-                                //     },
-                                // },
                             },
                         },
                     },

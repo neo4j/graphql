@@ -35,9 +35,7 @@ NEO4J_GRAPHQL_ENABLE_REGEX=1
 query {
     movies {
         title
-        actorsConnection(
-            where: { relationship: { role_CONTAINS: "Forrest" } }
-        ) {
+        actorsConnection(where: { edge: { role_CONTAINS: "Forrest" } }) {
             edges {
                 role
                 node {
@@ -56,7 +54,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE this_acted_in.role CONTAINS $this_actorsConnection.args.where.relationship.role_CONTAINS
+    WHERE this_acted_in.role CONTAINS $this_actorsConnection.args.where.edge.role_CONTAINS
     WITH collect({ role: this_acted_in.role, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -70,7 +68,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "role_CONTAINS": "Forrest"
                 }
             }
@@ -89,9 +87,7 @@ RETURN this { .title, actorsConnection } as this
 query {
     movies {
         title
-        actorsConnection(
-            where: { relationship: { role_NOT_CONTAINS: "Forrest" } }
-        ) {
+        actorsConnection(where: { edge: { role_NOT_CONTAINS: "Forrest" } }) {
             edges {
                 role
                 node {
@@ -110,7 +106,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE (NOT this_acted_in.role CONTAINS $this_actorsConnection.args.where.relationship.role_NOT_CONTAINS)
+    WHERE (NOT this_acted_in.role CONTAINS $this_actorsConnection.args.where.edge.role_NOT_CONTAINS)
     WITH collect({ role: this_acted_in.role, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -124,7 +120,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "role_NOT_CONTAINS": "Forrest"
                 }
             }
@@ -143,9 +139,7 @@ RETURN this { .title, actorsConnection } as this
 query {
     movies {
         title
-        actorsConnection(
-            where: { relationship: { role_STARTS_WITH: "Forrest" } }
-        ) {
+        actorsConnection(where: { edge: { role_STARTS_WITH: "Forrest" } }) {
             edges {
                 role
                 node {
@@ -164,7 +158,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE this_acted_in.role STARTS WITH $this_actorsConnection.args.where.relationship.role_STARTS_WITH
+    WHERE this_acted_in.role STARTS WITH $this_actorsConnection.args.where.edge.role_STARTS_WITH
     WITH collect({ role: this_acted_in.role, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -178,7 +172,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "role_STARTS_WITH": "Forrest"
                 }
             }
@@ -197,9 +191,7 @@ RETURN this { .title, actorsConnection } as this
 query {
     movies {
         title
-        actorsConnection(
-            where: { relationship: { role_NOT_STARTS_WITH: "Forrest" } }
-        ) {
+        actorsConnection(where: { edge: { role_NOT_STARTS_WITH: "Forrest" } }) {
             edges {
                 role
                 node {
@@ -218,7 +210,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE (NOT this_acted_in.role STARTS WITH $this_actorsConnection.args.where.relationship.role_NOT_STARTS_WITH)
+    WHERE (NOT this_acted_in.role STARTS WITH $this_actorsConnection.args.where.edge.role_NOT_STARTS_WITH)
     WITH collect({ role: this_acted_in.role, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -232,7 +224,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "role_NOT_STARTS_WITH": "Forrest"
                 }
             }
@@ -251,7 +243,7 @@ RETURN this { .title, actorsConnection } as this
 query {
     movies {
         title
-        actorsConnection(where: { relationship: { role_ENDS_WITH: "Gump" } }) {
+        actorsConnection(where: { edge: { role_ENDS_WITH: "Gump" } }) {
             edges {
                 role
                 node {
@@ -270,7 +262,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE this_acted_in.role ENDS WITH $this_actorsConnection.args.where.relationship.role_ENDS_WITH
+    WHERE this_acted_in.role ENDS WITH $this_actorsConnection.args.where.edge.role_ENDS_WITH
     WITH collect({ role: this_acted_in.role, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -284,7 +276,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "role_ENDS_WITH": "Gump"
                 }
             }
@@ -303,9 +295,7 @@ RETURN this { .title, actorsConnection } as this
 query {
     movies {
         title
-        actorsConnection(
-            where: { relationship: { role_NOT_ENDS_WITH: "Gump" } }
-        ) {
+        actorsConnection(where: { edge: { role_NOT_ENDS_WITH: "Gump" } }) {
             edges {
                 role
                 node {
@@ -324,7 +314,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE (NOT this_acted_in.role ENDS WITH $this_actorsConnection.args.where.relationship.role_NOT_ENDS_WITH)
+    WHERE (NOT this_acted_in.role ENDS WITH $this_actorsConnection.args.where.edge.role_NOT_ENDS_WITH)
     WITH collect({ role: this_acted_in.role, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -338,7 +328,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "role_NOT_ENDS_WITH": "Gump"
                 }
             }
@@ -357,9 +347,7 @@ RETURN this { .title, actorsConnection } as this
 query {
     movies {
         title
-        actorsConnection(
-            where: { relationship: { role_MATCHES: "Forrest.+" } }
-        ) {
+        actorsConnection(where: { edge: { role_MATCHES: "Forrest.+" } }) {
             edges {
                 role
                 node {
@@ -378,7 +366,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE this_acted_in.role =~ $this_actorsConnection.args.where.relationship.role_MATCHES
+    WHERE this_acted_in.role =~ $this_actorsConnection.args.where.edge.role_MATCHES
     WITH collect({ role: this_acted_in.role, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -392,7 +380,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "role_MATCHES": "Forrest.+"
                 }
             }
