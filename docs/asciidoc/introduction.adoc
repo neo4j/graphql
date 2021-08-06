@@ -31,7 +31,7 @@ The Neo4j GraphQL Library presents a large feature set for interacting with a Ne
 
 == Interaction
 
-In our <<getting-started>> guide, we start up a server using Apollo Server. This bundles Apollo Sandbox which can be used to interact directly with your GraphQL API with no front-end.
+In the <<getting-started>> guide, Apollo Server is used to host the GraphQL schema. This bundles Apollo Sandbox which can be used to interact directly with your GraphQL API with no front-end.
 
 There are a variety of front-end frameworks with clients for interacting with GraphQL APIs:
 
@@ -41,7 +41,7 @@ There are a variety of front-end frameworks with clients for interacting with Gr
 
 == Deployment
 
-There are a variety of methods for deploying GraphQL APIs, which we will not go into the details of in this documentation.
+There are a variety of methods for deploying GraphQL APIs, the details of which will not be in this documentation.
 
 However, Apollo has documented a subset in their https://www.apollographql.com/docs/apollo-server/deployment[Deployment] documentation, which will be a good starting point.
 

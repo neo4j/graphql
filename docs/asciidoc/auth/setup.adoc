@@ -114,7 +114,7 @@ const server = new ApolloServer({
 
 == Auth and Custom Resolvers
 
-You can't use the `@auth` directive on a custom resolver, however, we do make life easier by injecting the auth parameter into it. It will be available under the `context.auth` property. For example, the following custom resolver returns the `sub` field from the JWT:
+You can't use the `@auth` directive on custom resolvers, however, the an auth parameter is injected into the context for use in them. It will be available under the `auth` property. For example, the following custom resolver returns the `sub` field from the JWT:
 
 [source, javascript]
 ----
