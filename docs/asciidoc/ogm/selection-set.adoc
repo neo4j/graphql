@@ -36,11 +36,15 @@ When using the OGM, you do not have to provide a selection set by default. Doing
 
 [source, graphql]
 ----
-type Node {
+type Movie {
     id: ID
     name: String
-    relatedNodes: [Node] @relationship(type: "HAS_NODE", direction: OUT)
+    genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
     customCypher: String! @cypher(statement: "RETURN someCustomData")
+}
+
+type Genre {
+    name: String
 }
 ----
 
@@ -71,33 +75,36 @@ const driver = neo4j.driver(
 );
 
 const typeDefs = `
-    type Node {
+    type Movie {
         id: ID
         name: String
-        relatedNodes: [Node] @relationship(type: "HAS_NODE", direction: OUT)
+        genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
         customCypher: String! @cypher(statement: "RETURN someCustomData")
+    }
+
+    type Genre {
+        name: String
     }
 `;
 
 const ogm = new OGM({ typeDefs, driver });
-const Node = ogm.model("Node");
+const Movie = ogm.model("Movie");
 
 const selectionSet = `
     {
         id
         name
-        relatedNodes {
-            id
+        genres {
             name
         }
         customCypher
     }
 `;
 
-const nodes = await Node.find({ selectionSet });
+const movies = await Movie.find({ selectionSet });
 ----
 
-Note that  the argument `selectionSet` is passed every invocation of the `Node.find()` function.
+Note that  the argument `selectionSet` is passed every invocation of the `Movie.find()` function.
 
 ==  Selection set as a static
 
@@ -114,32 +121,35 @@ const driver = neo4j.driver(
 );
 
 const typeDefs = `
-    type Node {
+    type Movie {
         id: ID
         name: String
-        relatedNodes: [Node] @relationship(type: "HAS_NODE", direction: OUT)
+        genres: [Genre] @relationship(type: "IN_GENRE", direction: OUT)
         customCypher: String! @cypher(statement: "RETURN someCustomData")
+    }
+
+    type Genre {
+        name: String
     }
 `;
 
 const ogm = new OGM({ typeDefs, driver });
-const Node = ogm.model("Node");
+const Movie = ogm.model("Movie");
 
 const selectionSet = `
     {
         id
         name
-        relatedNodes {
-            id
+        genres {
             name
         }
         customCypher
     }
 `;
 
-Node.setSelectionSet(selectionSet)
+Movie.setSelectionSet(selectionSet)
 
-const nodes = await Node.find();
+const movies = await Movie.find();
 ----
 
-Note that despite not passing this selection set into `Node.find()`, the requested fields will be returned on each request.
+Note that despite not passing this selection set into `Movie.find()`, the requested fields will be returned on each request.
