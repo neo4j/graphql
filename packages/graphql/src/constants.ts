@@ -35,26 +35,21 @@ export const DEBUG_AUTH = `${DEBUG_PREFIX}:auth`;
 export const DEBUG_GRAPHQL = `${DEBUG_PREFIX}:graphql`;
 export const DEBUG_EXECUTE = `${DEBUG_PREFIX}:execute`;
 
-// [0]Property [1]Error
-export const RESERVED_NODE_LABELS = [
+// [0]Name [1]Error
+export const RESERVED_TYPE_NAMES = [
     [
         "PageInfo",
-        "Type name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.",
+        "Type or Interface with name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.",
     ],
     [
         "Connection",
-        'Type names ending "Connection" are reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.',
+        'Type or Interface with name ending "Connection" are reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.',
     ],
-    ["Node", "Type name 'Node' reserved to support relay See https://relay.dev/graphql/"],
+    ["Node", "Type or Interface with name 'Node' reserved to support relay See https://relay.dev/graphql/"],
 ];
 
-// [0]Property [1]Error
-export const RESERVED_INTERFACE_NAMES = [
-    ["Node", "Interface name 'Node' reserved to support relay See https://relay.dev/graphql/"],
-];
-
-// [0]Property [1]Error
-export const RESERVED_INTERFACE_PROPERTIES = [
+// [0]Field [1]Error
+export const RESERVED_INTERFACE_FIELDS = [
     ["node", "Interface field name 'node' reserved to support relay See https://relay.dev/graphql/"],
     ["cursor", "Interface field name 'cursor' reserved to support relay See https://relay.dev/graphql/"],
 ];

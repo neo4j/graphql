@@ -177,7 +177,7 @@ function makeAugmentedSchema(
     Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
 
     const nodes = objectNodes.map((definition) => {
-        constants.RESERVED_NODE_LABELS.forEach(([label, message]) => {
+        constants.RESERVED_TYPE_NAMES.forEach(([label, message]) => {
             let toThrowError = false;
 
             if (label === "Connection" && definition.name.value.endsWith("Connection")) {
@@ -259,8 +259,18 @@ function makeAugmentedSchema(
     const relationshipFields = new Map<string, ObjectFields>();
 
     relationshipProperties.forEach((relationship) => {
-        constants.RESERVED_INTERFACE_NAMES.forEach(([label, message = ""]) => {
+        constants.RESERVED_TYPE_NAMES.forEach(([label, message]) => {
+            let toThrowError = false;
+
+            if (label === "Connection" && relationship.name.value.endsWith("Connection")) {
+                toThrowError = true;
+            }
+
             if (relationship.name.value === label) {
+                toThrowError = true;
+            }
+
+            if (toThrowError) {
                 throw new Error(message);
             }
         });
@@ -271,7 +281,7 @@ function makeAugmentedSchema(
         }
 
         relationship.fields?.forEach((field) => {
-            constants.RESERVED_INTERFACE_PROPERTIES.forEach(([fieldName, message]) => {
+            constants.RESERVED_INTERFACE_FIELDS.forEach(([fieldName, message]) => {
                 if (field.name.value === fieldName) {
                     throw new Error(message);
                 }

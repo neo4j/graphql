@@ -311,42 +311,84 @@ describe("makeAugmentedSchema", () => {
         describe("Node", () => {
             test("should throw when using PageInfo as node name", () => {
                 const typeDefs = `
-                type PageInfo {
-                    id: ID
-                }
-            `;
+                    type PageInfo {
+                        id: ID
+                    }
+                `;
 
                 expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-                    (constants.RESERVED_NODE_LABELS.find((x) => x[0] === "PageInfo") as string[])[1]
+                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "PageInfo") as string[])[1]
                 );
             });
 
             test("should throw when using Connection in a node name", () => {
                 const typeDefs = `
-                type NodeConnection {
-                    id: ID
-                }
-            `;
+                    type NodeConnection {
+                        id: ID
+                    }
+                `;
 
                 expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-                    (constants.RESERVED_NODE_LABELS.find((x) => x[0] === "Connection") as string[])[1]
+                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "Connection") as string[])[1]
                 );
             });
 
             test("should throw when using Node as node name", () => {
                 const typeDefs = `
-                type Node {
-                    id: ID
-                }
-            `;
+                    type Node {
+                        id: ID
+                    }
+                `;
 
                 expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-                    (constants.RESERVED_NODE_LABELS.find((x) => x[0] === "Node") as string[])[1]
+                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "Node") as string[])[1]
                 );
             });
         });
 
         describe("Interface", () => {
+            test("should throw when using PageInfo as relationship properties interface name", () => {
+                const typeDefs = `
+                    type Movie {
+                        id: ID
+                        actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "PageInfo")
+                    }
+
+                    interface PageInfo {
+                        screenTime: Int
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "PageInfo") as string[])[1]
+                );
+            });
+
+            test("should throw when using Connection in a properties interface name", () => {
+                const typeDefs = `
+                    type Movie {
+                        id: ID
+                        actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "NodeConnection")
+                    }
+
+                    interface NodeConnection {
+                        screenTime: Int
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "Connection") as string[])[1]
+                );
+            });
+
             test("should throw when using Node as relationship properties interface name", () => {
                 const typeDefs = `
                     type Movie {
@@ -364,7 +406,7 @@ describe("makeAugmentedSchema", () => {
                 `;
 
                 expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-                    (constants.RESERVED_INTERFACE_NAMES.find((x) => x[0] === "Node") as string[])[1]
+                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "Node") as string[])[1]
                 );
             });
 
@@ -386,7 +428,7 @@ describe("makeAugmentedSchema", () => {
                     `;
 
                     expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-                        (constants.RESERVED_INTERFACE_PROPERTIES.find((x) => x[0] === "node") as string[])[1]
+                        (constants.RESERVED_INTERFACE_FIELDS.find((x) => x[0] === "node") as string[])[1]
                     );
                 });
 
@@ -407,7 +449,7 @@ describe("makeAugmentedSchema", () => {
                     `;
 
                     expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-                        (constants.RESERVED_INTERFACE_PROPERTIES.find((x) => x[0] === "cursor") as string[])[1]
+                        (constants.RESERVED_INTERFACE_FIELDS.find((x) => x[0] === "cursor") as string[])[1]
                     );
                 });
             });
