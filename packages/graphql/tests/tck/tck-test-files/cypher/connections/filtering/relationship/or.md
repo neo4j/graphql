@@ -33,7 +33,7 @@ query {
         title
         actorsConnection(
             where: {
-                relationship: {
+                edge: {
                     OR: [{ role_ENDS_WITH: "Gump" }, { screenTime_LT: 60 }]
                 }
             }
@@ -57,7 +57,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE ((this_acted_in.role ENDS WITH $this_actorsConnection.args.where.relationship.OR[0].role_ENDS_WITH) OR (this_acted_in.screenTime < $this_actorsConnection.args.where.relationship.OR[1].screenTime_LT))
+    WHERE ((this_acted_in.role ENDS WITH $this_actorsConnection.args.where.edge.OR[0].role_ENDS_WITH) OR (this_acted_in.screenTime < $this_actorsConnection.args.where.edge.OR[1].screenTime_LT))
     WITH collect({ role: this_acted_in.role, screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -71,7 +71,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "OR": [
                         {
                             "role_ENDS_WITH": "Gump"

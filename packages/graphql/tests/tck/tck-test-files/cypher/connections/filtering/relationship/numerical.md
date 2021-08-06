@@ -30,7 +30,7 @@ interface ActedIn {
 query {
     movies {
         title
-        actorsConnection(where: { relationship: { screenTime_LT: 60 } }) {
+        actorsConnection(where: { edge: { screenTime_LT: 60 } }) {
             edges {
                 screenTime
                 node {
@@ -49,7 +49,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE this_acted_in.screenTime < $this_actorsConnection.args.where.relationship.screenTime_LT
+    WHERE this_acted_in.screenTime < $this_actorsConnection.args.where.edge.screenTime_LT
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -63,7 +63,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "screenTime_LT": {
                         "high": 0,
                         "low": 60
@@ -85,7 +85,7 @@ RETURN this { .title, actorsConnection } as this
 query {
     movies {
         title
-        actorsConnection(where: { relationship: { screenTime_LTE: 60 } }) {
+        actorsConnection(where: { edge: { screenTime_LTE: 60 } }) {
             edges {
                 screenTime
                 node {
@@ -104,7 +104,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE this_acted_in.screenTime <= $this_actorsConnection.args.where.relationship.screenTime_LTE
+    WHERE this_acted_in.screenTime <= $this_actorsConnection.args.where.edge.screenTime_LTE
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -118,7 +118,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "screenTime_LTE": {
                         "high": 0,
                         "low": 60
@@ -140,7 +140,7 @@ RETURN this { .title, actorsConnection } as this
 query {
     movies {
         title
-        actorsConnection(where: { relationship: { screenTime_GT: 60 } }) {
+        actorsConnection(where: { edge: { screenTime_GT: 60 } }) {
             edges {
                 screenTime
                 node {
@@ -159,7 +159,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE this_acted_in.screenTime > $this_actorsConnection.args.where.relationship.screenTime_GT
+    WHERE this_acted_in.screenTime > $this_actorsConnection.args.where.edge.screenTime_GT
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -173,7 +173,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "screenTime_GT": {
                         "high": 0,
                         "low": 60
@@ -195,7 +195,7 @@ RETURN this { .title, actorsConnection } as this
 query {
     movies {
         title
-        actorsConnection(where: { relationship: { screenTime_GTE: 60 } }) {
+        actorsConnection(where: { edge: { screenTime_GTE: 60 } }) {
             edges {
                 screenTime
                 node {
@@ -214,7 +214,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE this_acted_in.screenTime >= $this_actorsConnection.args.where.relationship.screenTime_GTE
+    WHERE this_acted_in.screenTime >= $this_actorsConnection.args.where.edge.screenTime_GTE
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -228,7 +228,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "screenTime_GTE": {
                         "high": 0,
                         "low": 60

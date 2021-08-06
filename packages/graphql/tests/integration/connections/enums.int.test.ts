@@ -85,7 +85,7 @@ describe("Enum Relationship Properties", () => {
                             actors: {
                                 create: [
                                     {
-                                        relationship: { roleType: LEADING }
+                                        edge: { roleType: LEADING }
                                         node: { name: $name }
                                     }
                                 ]

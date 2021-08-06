@@ -34,9 +34,7 @@ query {
         actorsConnection(
             where: {
                 node: { AND: [{ firstName: "Tom" }, { lastName: "Hanks" }] }
-                relationship: {
-                    AND: [{ screenTime_GT: 30 }, { screenTime_LT: 90 }]
-                }
+                edge: { AND: [{ screenTime_GT: 30 }, { screenTime_LT: 90 }] }
             }
         ) {
             edges {
@@ -59,7 +57,7 @@ WHERE this.title = $this_title
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE ((this_acted_in.screenTime > $this_actorsConnection.args.where.relationship.AND[0].screenTime_GT) AND (this_acted_in.screenTime < $this_actorsConnection.args.where.relationship.AND[1].screenTime_LT)) AND ((this_actor.firstName = $this_actorsConnection.args.where.node.AND[0].firstName) AND (this_actor.lastName = $this_actorsConnection.args.where.node.AND[1].lastName))
+    WHERE ((this_acted_in.screenTime > $this_actorsConnection.args.where.edge.AND[0].screenTime_GT) AND (this_acted_in.screenTime < $this_actorsConnection.args.where.edge.AND[1].screenTime_LT)) AND ((this_actor.firstName = $this_actorsConnection.args.where.node.AND[0].firstName) AND (this_actor.lastName = $this_actorsConnection.args.where.node.AND[1].lastName))
     WITH collect({ screenTime: this_acted_in.screenTime, node: { firstName: this_actor.firstName, lastName: this_actor.lastName } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -77,7 +75,7 @@ RETURN this { .title, actorsConnection } as this
                 "node": {
                     "AND": [{ "firstName": "Tom" }, { "lastName": "Hanks" }]
                 },
-                "relationship": {
+                "edge": {
                     "AND": [
                         {
                             "screenTime_GT": {

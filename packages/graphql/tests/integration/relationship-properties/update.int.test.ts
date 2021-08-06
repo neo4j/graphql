@@ -91,7 +91,7 @@ describe("Relationship properties - read", () => {
             mutation {
                 updateMovies(
                     where: { title: "${movieTitle}" }
-                    update: { actors: [{ where: { node: { name: "${actor1}" } }, update: { relationship: { screenTime: 60 } } }] }
+                    update: { actors: [{ where: { node: { name: "${actor1}" } }, update: { edge: { screenTime: 60 } } }] }
                 ) {
                     movies {
                         title
@@ -159,7 +159,7 @@ describe("Relationship properties - read", () => {
                             {
                                 where: { node: { name: "${actor2}" } }
                                 update: {
-                                    relationship: { screenTime: 60 }
+                                    edge: { screenTime: 60 }
                                     node: { name: "${actor3}" }
                                 }
                             }
@@ -232,7 +232,7 @@ describe("Relationship properties - read", () => {
                             {
                                 create: {
                                     node: { name: "${actor3}" }
-                                    relationship: { screenTime: 60 }
+                                    edge: { screenTime: 60 }
                                 }
                             }
                         ]
@@ -309,7 +309,7 @@ describe("Relationship properties - read", () => {
                         actors: [
                             {
                                 node: { name: "${actor3}" }
-                                relationship: { screenTime: 60 }
+                                edge: { screenTime: 60 }
                             }
                         ]
                     }

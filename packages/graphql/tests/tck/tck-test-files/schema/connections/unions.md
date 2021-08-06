@@ -78,7 +78,7 @@ input AuthorOptions {
 input AuthorPublicationsBookConnectFieldInput {
     where: BookConnectWhere
     connect: [BookConnectInput!]
-    relationship: WroteCreateInput!
+    edge: WroteCreateInput!
 }
 
 input AuthorPublicationsBookConnectionWhere {
@@ -86,13 +86,13 @@ input AuthorPublicationsBookConnectionWhere {
     node_NOT: BookWhere
     AND: [AuthorPublicationsBookConnectionWhere!]
     OR: [AuthorPublicationsBookConnectionWhere!]
-    relationship: WroteWhere
-    relationship_NOT: WroteWhere
+    edge: WroteWhere
+    edge_NOT: WroteWhere
 }
 
 input AuthorPublicationsBookCreateFieldInput {
     node: BookCreateInput!
-    relationship: WroteCreateInput!
+    edge: WroteCreateInput!
 }
 
 input AuthorPublicationsBookDeleteFieldInput {
@@ -111,7 +111,7 @@ input AuthorPublicationsBookFieldInput {
 }
 
 input AuthorPublicationsBookUpdateConnectionInput {
-    relationship: WroteUpdateInput
+    edge: WroteUpdateInput
     node: BookUpdateInput
 }
 
@@ -140,8 +140,8 @@ input AuthorPublicationsConnectionBookWhere {
     AND: [AuthorPublicationsConnectionBookWhere]
     node: BookWhere
     node_NOT: BookWhere
-    relationship: WroteWhere
-    relationship_NOT: WroteWhere
+    edge: WroteWhere
+    edge_NOT: WroteWhere
 }
 
 input AuthorPublicationsConnectionJournalWhere {
@@ -149,8 +149,8 @@ input AuthorPublicationsConnectionJournalWhere {
     AND: [AuthorPublicationsConnectionJournalWhere]
     node: JournalWhere
     node_NOT: JournalWhere
-    relationship: WroteWhere
-    relationship_NOT: WroteWhere
+    edge: WroteWhere
+    edge_NOT: WroteWhere
 }
 
 input AuthorPublicationsConnectionWhere {
@@ -181,7 +181,7 @@ input AuthorPublicationsDisconnectInput {
 input AuthorPublicationsJournalConnectFieldInput {
     where: JournalConnectWhere
     connect: [JournalConnectInput!]
-    relationship: WroteCreateInput!
+    edge: WroteCreateInput!
 }
 
 input AuthorPublicationsJournalConnectionWhere {
@@ -189,13 +189,13 @@ input AuthorPublicationsJournalConnectionWhere {
     node_NOT: JournalWhere
     AND: [AuthorPublicationsJournalConnectionWhere!]
     OR: [AuthorPublicationsJournalConnectionWhere!]
-    relationship: WroteWhere
-    relationship_NOT: WroteWhere
+    edge: WroteWhere
+    edge_NOT: WroteWhere
 }
 
 input AuthorPublicationsJournalCreateFieldInput {
     node: JournalCreateInput!
-    relationship: WroteCreateInput!
+    edge: WroteCreateInput!
 }
 
 input AuthorPublicationsJournalDeleteFieldInput {
@@ -214,7 +214,7 @@ input AuthorPublicationsJournalFieldInput {
 }
 
 input AuthorPublicationsJournalUpdateConnectionInput {
-    relationship: WroteUpdateInput
+    edge: WroteUpdateInput
     node: JournalUpdateInput
 }
 
@@ -285,7 +285,7 @@ type Book {
 input BookAuthorConnectFieldInput {
     where: AuthorConnectWhere
     connect: [AuthorConnectInput!]
-    relationship: WroteCreateInput!
+    edge: WroteCreateInput!
 }
 
 type BookAuthorConnection {
@@ -296,21 +296,21 @@ type BookAuthorConnection {
 
 input BookAuthorConnectionSort {
     node: AuthorSort
-    relationship: WroteSort
+    edge: WroteSort
 }
 
 input BookAuthorConnectionWhere {
     AND: [BookAuthorConnectionWhere!]
     OR: [BookAuthorConnectionWhere!]
-    relationship: WroteWhere
-    relationship_NOT: WroteWhere
+    edge: WroteWhere
+    edge_NOT: WroteWhere
     node: AuthorWhere
     node_NOT: AuthorWhere
 }
 
 input BookAuthorCreateFieldInput {
     node: AuthorCreateInput!
-    relationship: WroteCreateInput!
+    edge: WroteCreateInput!
 }
 
 input BookAuthorDeleteFieldInput {
@@ -336,7 +336,7 @@ type BookAuthorRelationship implements Wrote {
 
 input BookAuthorUpdateConnectionInput {
     node: AuthorUpdateInput
-    relationship: WroteUpdateInput
+    edge: WroteUpdateInput
 }
 
 input BookAuthorUpdateFieldInput {
@@ -444,7 +444,7 @@ type Journal {
 input JournalAuthorConnectFieldInput {
     where: AuthorConnectWhere
     connect: [AuthorConnectInput!]
-    relationship: WroteCreateInput!
+    edge: WroteCreateInput!
 }
 
 type JournalAuthorConnection {
@@ -455,21 +455,21 @@ type JournalAuthorConnection {
 
 input JournalAuthorConnectionSort {
     node: AuthorSort
-    relationship: WroteSort
+    edge: WroteSort
 }
 
 input JournalAuthorConnectionWhere {
     AND: [JournalAuthorConnectionWhere!]
     OR: [JournalAuthorConnectionWhere!]
-    relationship: WroteWhere
-    relationship_NOT: WroteWhere
+    edge: WroteWhere
+    edge_NOT: WroteWhere
     node: AuthorWhere
     node_NOT: AuthorWhere
 }
 
 input JournalAuthorCreateFieldInput {
     node: AuthorCreateInput!
-    relationship: WroteCreateInput!
+    edge: WroteCreateInput!
 }
 
 input JournalAuthorDeleteFieldInput {
@@ -495,7 +495,7 @@ type JournalAuthorRelationship implements Wrote {
 
 input JournalAuthorUpdateConnectionInput {
     node: AuthorUpdateInput
-    relationship: WroteUpdateInput
+    edge: WroteUpdateInput
 }
 
 input JournalAuthorUpdateFieldInput {

@@ -152,7 +152,7 @@ describe("Relationship properties - disconnect", () => {
                     disconnect: {
                         actedIn: {
                             Movie: {
-                                where: { relationship: { screenTime: $screenTime } }
+                                where: { edge: { screenTime: $screenTime } }
                             }
                         }
                     }

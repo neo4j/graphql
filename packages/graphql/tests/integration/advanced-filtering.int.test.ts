@@ -1521,7 +1521,7 @@ describe("Advanced Filtering", () => {
 
                     const query = `
                         {
-                            movies(where: { genresConnection: { relationship: { id: "${actedInId}" } } }) {
+                            movies(where: { genresConnection: { edge: { id: "${actedInId}" } } }) {
                                 id
                                 genres {
                                     id
@@ -1593,7 +1593,7 @@ describe("Advanced Filtering", () => {
 
                     const query = `
                         {
-                            movies(where: { genresConnection: { node: { id: "${genreId}" } relationship: { id: "${actedInId}" } } }) {
+                            movies(where: { genresConnection: { node: { id: "${genreId}" } edge: { id: "${actedInId}" } } }) {
                                 id
                                 genres {
                                     id
@@ -1796,23 +1796,6 @@ describe("Advanced Filtering", () => {
                 }
             });
 
-            /*
-MATCH (this:GHTBbirCAAIDHOUPWhUYLAGWqZHkBcJeMovie)
-WHERE EXISTS((this)-[:IN_GENRE]->(:YojUcAEPjTsYIXNdyhAfyMuNGnbrjiXRGenre)) AND NONE(this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection_NOT_map IN [(this)-[this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection_NOT_GHTBbirCAAIDHOUPWhUYLAGWqZHkBcJeMovieYojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresRelationship:IN_GENRE]->(this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection_NOT:YojUcAEPjTsYIXNdyhAfyMuNGnbrjiXRGenre)  | { node: this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection_NOT, relationship: this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection_NOT_GHTBbirCAAIDHOUPWhUYLAGWqZHkBcJeMovieYojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresRelationship } ] WHERE this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection_NOT_map.relationship.id = $this_ghtBbirCaaidhoupWhUylagWqZHkBcJeMovies.where.yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection_NOT.relationship.id)
-RETURN this { .id, yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenres: [ (this)-[:IN_GENRE]->(this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenres:YojUcAEPjTsYIXNdyhAfyMuNGnbrjiXRGenre)   | this_yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenres { .id } ] } as this
-Params:
-{
-  "this_ghtBbirCaaidhoupWhUylagWqZHkBcJeMovies": {
-    "where": {
-      "yojUcAePjTsYixNdyhAfyMuNGnbrjiXrGenresConnection": {
-        "relationship": {
-          "id": "RPfjgMqyZJmmycWltUClLFmgknWieyLA"
-        }
-      }
-    }
-  }
-}
-            */
             test("should find using relationship properties and connections", async () => {
                 const session = driver.session();
 
@@ -1872,7 +1855,7 @@ Params:
 
                     const query = `
                         {
-                            ${pluralRandomType1}(where: { ${pluralRandomType2}Connection_NOT: { relationship: { id: "${actedInId}" } } }) {
+                            ${pluralRandomType1}(where: { ${pluralRandomType2}Connection_NOT: { edge: { id: "${actedInId}" } } }) {
                                 id
                                 ${pluralRandomType2} {
                                     id

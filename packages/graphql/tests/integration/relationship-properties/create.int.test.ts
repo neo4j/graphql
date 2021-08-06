@@ -69,7 +69,7 @@ describe("Relationship properties - create", () => {
                             title: $movieTitle
                             actors: {
                                 create: [{
-                                    relationship: { screenTime: $screenTime },
+                                    edge: { screenTime: $screenTime },
                                     node: { name: $actorName }
                                 }]
                             }
@@ -156,7 +156,7 @@ describe("Relationship properties - create", () => {
                             publications: {
                                 Movie: {
                                     create: [{
-                                        relationship: { words: $words },
+                                        edge: { words: $words },
                                         node: { title: $movieTitle }
                                     }]
                                 }

@@ -109,7 +109,7 @@ input MovieConnectWhere {
 input ActorMoviesConnectFieldInput {
     where: MovieConnectWhere
     connect: [MovieConnectInput!]
-    relationship: ActedInCreateInput!
+    edge: ActedInCreateInput!
 }
 
 type ActorMoviesConnection {
@@ -120,21 +120,21 @@ type ActorMoviesConnection {
 
 input ActorMoviesConnectionSort {
     node: MovieSort
-    relationship: ActedInSort
+    edge: ActedInSort
 }
 
 input ActorMoviesConnectionWhere {
     AND: [ActorMoviesConnectionWhere!]
     OR: [ActorMoviesConnectionWhere!]
-    relationship: ActedInWhere
-    relationship_NOT: ActedInWhere
+    edge: ActedInWhere
+    edge_NOT: ActedInWhere
     node: MovieWhere
     node_NOT: MovieWhere
 }
 
 input ActorMoviesCreateFieldInput {
     node: MovieCreateInput!
-    relationship: ActedInCreateInput!
+    edge: ActedInCreateInput!
 }
 
 input ActorMoviesFieldInput {
@@ -150,7 +150,7 @@ type ActorMoviesRelationship implements ActedIn {
 
 input ActorMoviesUpdateConnectionInput {
     node: MovieUpdateInput
-    relationship: ActedInUpdateInput
+    edge: ActedInUpdateInput
 }
 
 input ActorMoviesUpdateFieldInput {
@@ -237,7 +237,7 @@ input ActorConnectWhere {
 input MovieActorsConnectFieldInput {
     where: ActorConnectWhere
     connect: [ActorConnectInput!]
-    relationship: ActedInCreateInput!
+    edge: ActedInCreateInput!
 }
 
 type MovieActorsConnection {
@@ -248,21 +248,21 @@ type MovieActorsConnection {
 
 input MovieActorsConnectionSort {
     node: ActorSort
-    relationship: ActedInSort
+    edge: ActedInSort
 }
 
 input MovieActorsConnectionWhere {
     AND: [MovieActorsConnectionWhere!]
     OR: [MovieActorsConnectionWhere!]
-    relationship: ActedInWhere
-    relationship_NOT: ActedInWhere
+    edge: ActedInWhere
+    edge_NOT: ActedInWhere
     node: ActorWhere
     node_NOT: ActorWhere
 }
 
 input MovieActorsCreateFieldInput {
     node: ActorCreateInput!
-    relationship: ActedInCreateInput!
+    edge: ActedInCreateInput!
 }
 
 input MovieActorsFieldInput {
@@ -278,7 +278,7 @@ type MovieActorsRelationship implements ActedIn {
 
 input MovieActorsUpdateConnectionInput {
     node: ActorUpdateInput
-    relationship: ActedInUpdateInput
+    edge: ActedInUpdateInput
 }
 
 input MovieActorsUpdateFieldInput {

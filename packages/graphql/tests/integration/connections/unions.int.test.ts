@@ -262,7 +262,7 @@ describe("Connections -> Unions", () => {
         query {
             authors(where: { name: "Charles Dickens" }) {
                 name
-                publicationsConnection(where: { Book: { relationship: { words: 167543 } } }) {
+                publicationsConnection(where: { Book: { edge: { words: 167543 } } }) {
                     edges {
                         words
                         node {
@@ -316,7 +316,7 @@ describe("Connections -> Unions", () => {
         query {
             authors(where: { name: "Charles Dickens" }) {
                 name
-                publicationsConnection(where: { Book: { relationship: { words: 167543 }, node: { title: "Oliver Twist" } } }) {
+                publicationsConnection(where: { Book: { edge: { words: 167543 }, node: { title: "Oliver Twist" } } }) {
                     edges {
                         words
                         node {
