@@ -35,4 +35,9 @@ export {
     CypherRuntime,
     CypherUpdateStrategy,
 } from "./types";
-export { Neo4jGraphQL, Neo4jGraphQLConstructor } from "./classes";
+export {
+    Neo4jGraphQL,
+    Neo4jGraphQLConstructor,
+    Neo4jGraphQLAuthenticationError,
+    Neo4jGraphQLForbiddenError,
+} from "./classes";
