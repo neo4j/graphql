@@ -68,6 +68,7 @@ import Relationship from "../classes/Relationship";
 import getWhereFields from "./get-where-fields";
 import { connectionFieldResolver } from "./pagination";
 import { validateDocument } from "./validation";
+import * as constants from "../constants";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -176,17 +177,21 @@ function makeAugmentedSchema(
     Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
 
     const nodes = objectNodes.map((definition) => {
-        if (definition.name.value === "PageInfo") {
-            throw new Error(
-                "Type name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information."
-            );
-        }
+        constants.RESERVED_NODE_LABELS.forEach(([label, message]) => {
+            let toThrowError = false;
 
-        if (definition.name.value.endsWith("Connection")) {
-            throw new Error(
-                'Type names ending "Connection" are reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.'
-            );
-        }
+            if (label === "Connection" && definition.name.value.endsWith("Connection")) {
+                toThrowError = true;
+            }
+
+            if (definition.name.value === label) {
+                toThrowError = true;
+            }
+
+            if (toThrowError) {
+                throw new Error(message);
+            }
+        });
 
         const otherDirectives = (definition.directives || []).filter(
             (x) => !["auth", "exclude"].includes(x.name.value)
@@ -254,12 +259,24 @@ function makeAugmentedSchema(
     const relationshipFields = new Map<string, ObjectFields>();
 
     relationshipProperties.forEach((relationship) => {
+        constants.RESERVED_INTERFACE_NAMES.forEach(([label, message = ""]) => {
+            if (relationship.name.value === label) {
+                throw new Error(message);
+            }
+        });
+
         const authDirective = (relationship.directives || []).find((x) => x.name.value === "auth");
         if (authDirective) {
             throw new Error("Cannot have @auth directive on relationship properties interface");
         }
 
         relationship.fields?.forEach((field) => {
+            constants.RESERVED_INTERFACE_PROPERTIES.forEach(([fieldName, message]) => {
+                if (field.name.value === fieldName) {
+                    throw new Error(message);
+                }
+            });
+
             const forbiddenDirectives = ["auth", "relationship", "cypher"];
             forbiddenDirectives.forEach((directive) => {
                 const found = (field.directives || []).find((x) => x.name.value === directive);
