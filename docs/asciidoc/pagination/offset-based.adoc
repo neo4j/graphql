@@ -1,7 +1,7 @@
 [[pagination-offset-based]]
 = Offset-based pagination
 
-Offset-based pagination, often associated with navigation via pages, can be achieved through the use of the `offset` and `limit` options available whilst querying for data.
+Offset-based pagination, often associated with navigation via pages, can be achieved through the use of the `offset` and `limit` options available when querying for data.
 
 Using the following type definition:
 

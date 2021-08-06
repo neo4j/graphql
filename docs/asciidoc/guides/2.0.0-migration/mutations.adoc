@@ -39,7 +39,7 @@ type Mutation {
 
 There are no changes to any of the arguments or types at this level. However, within its nested operations, type modifications have taken place to allow for relationship properties.
 
-In practice, let's look at a Mutation that creates the film "The Dark Knight" and then:
+In practice, take a Mutation that creates the film "The Dark Knight" and then:
 
 * Creates a new actor "Heath Ledger"
 * Connects to the existing actor "Christian Bale"
@@ -140,7 +140,7 @@ The `delete` nested operation is primarily the same as in the `deleteMovies` Mut
 
 === Update
 
-Let's say that we accidentally misspelt Christian Bale's surname and wanted to fix that. In the previous version, we might have achieved that by:
+For example, say that you accidentally misspelt Christian Bale's surname and wanted to fix that. In the previous version, you might have achieved that by:
 
 [source, graphql]
 ----
@@ -212,7 +212,7 @@ Note the added layer of abstraction of `node` in both the `where` and `update` c
 
 === Disconnect
 
-Let's say we mistakenly put Ben Affleck as playing the role of Batman in "The Dark Knight" (I shall not share my opinion on the matter...), and we wanted to disconnect those nodes. In the previous version, this would have looked like:
+For example, say you mistakenly put Ben Affleck as playing the role of Batman in "The Dark Knight", and you wanted to disconnect those nodes. In the previous version, this would have looked like:
 
 [source, graphql]
 ----
@@ -288,7 +288,7 @@ type Mutation {
 }
 ----
 
-There are no changes to any of the arguments or types at this level, but let's dive into the `MovieActorsDeleteFieldInput` type.
+There are no changes to any of the arguments or types at this level, but there are some details to note in the `MovieActorsDeleteFieldInput` type.
 
 Previously, you would have expected this to look like:
 

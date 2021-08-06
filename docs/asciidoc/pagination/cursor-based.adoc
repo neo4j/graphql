@@ -39,7 +39,7 @@ query {
 }
 ----
 
-In the return value, if `hasNextPage` is `true`, you would pass `endCursor` into the next query of 10. We would likely do this using a variable as in the following example:
+In the return value, if `hasNextPage` is `true`, you would pass `endCursor` into the next query of 10. You might do this using a variable as in the following example:
 
 [source, graphql]
 ----

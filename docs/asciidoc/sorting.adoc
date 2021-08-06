@@ -62,7 +62,7 @@ query {
 }
 ----
 
-Additionally, say there was a relationship between the `Movie` and an `Actor` type, sorting can also be applied whilst fetching the `actors` field:
+Additionally, say there was a relationship between the `Movie` and an `Actor` type, sorting can also be applied when fetching the `actors` field:
 
 [source, graphql]
 ----

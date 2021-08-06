@@ -54,7 +54,7 @@ type Mutation {
 
 == Single update
 
-Say we wanted to edit the content of a Post:
+Say you wanted to edit the content of a Post:
 
 [source, graphql]
 ----
