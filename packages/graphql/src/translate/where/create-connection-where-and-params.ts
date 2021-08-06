@@ -66,7 +66,7 @@ function createConnectionWhereAndParams({
                 return res;
             }
 
-            if (k.startsWith("relationship")) {
+            if (k.startsWith("edge")) {
                 const relationshipWhere = createRelationshipWhereAndParams({
                     whereInput: v,
                     relationship,
@@ -77,7 +77,7 @@ function createConnectionWhereAndParams({
 
                 const whereStrs = [
                     ...res.whereStrs,
-                    k === "relationship_NOT" ? `(NOT ${relationshipWhere[0]})` : relationshipWhere[0],
+                    k === "edge_NOT" ? `(NOT ${relationshipWhere[0]})` : relationshipWhere[0],
                 ];
                 const params = { ...res.params, [k]: relationshipWhere[1] };
                 res = { whereStrs, params };

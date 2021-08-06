@@ -168,7 +168,7 @@ export interface GraphQLSortArg {
 
 export interface ConnectionSortArg {
     node?: GraphQLSortArg;
-    relationship?: GraphQLSortArg;
+    edge?: GraphQLSortArg;
 }
 
 export interface ConnectionQueryArgs {
@@ -201,8 +201,8 @@ export interface GraphQLWhereArg {
 export interface ConnectionWhereArg {
     node?: GraphQLWhereArg;
     node_NOT?: GraphQLWhereArg;
-    relationship?: GraphQLWhereArg;
-    relationship_NOT?: GraphQLWhereArg;
+    edge?: GraphQLWhereArg;
+    edge_NOT?: GraphQLWhereArg;
     AND?: ConnectionWhereArg[];
     OR?: ConnectionWhereArg[];
 }

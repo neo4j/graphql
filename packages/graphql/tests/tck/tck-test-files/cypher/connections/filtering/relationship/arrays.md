@@ -31,7 +31,7 @@ interface ActedIn {
 query {
     movies {
         title
-        actorsConnection(where: { relationship: { screenTime_IN: [60, 70] } }) {
+        actorsConnection(where: { edge: { screenTime_IN: [60, 70] } }) {
             edges {
                 screenTime
                 node {
@@ -50,7 +50,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE this_acted_in.screenTime IN $this_actorsConnection.args.where.relationship.screenTime_IN
+    WHERE this_acted_in.screenTime IN $this_actorsConnection.args.where.edge.screenTime_IN
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -64,7 +64,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "screenTime_IN": [
                         {
                             "high": 0,
@@ -92,9 +92,7 @@ RETURN this { .title, actorsConnection } as this
 query {
     movies {
         title
-        actorsConnection(
-            where: { relationship: { screenTime_NOT_IN: [60, 70] } }
-        ) {
+        actorsConnection(where: { edge: { screenTime_NOT_IN: [60, 70] } }) {
             edges {
                 screenTime
                 node {
@@ -113,7 +111,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE (NOT this_acted_in.screenTime IN $this_actorsConnection.args.where.relationship.screenTime_NOT_IN)
+    WHERE (NOT this_acted_in.screenTime IN $this_actorsConnection.args.where.edge.screenTime_NOT_IN)
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -127,7 +125,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "screenTime_NOT_IN": [
                         {
                             "high": 0,
@@ -157,9 +155,7 @@ query {
         title
         actorsConnection(
             where: {
-                relationship: {
-                    quotes_INCLUDES: "Life is like a box of chocolates"
-                }
+                edge: { quotes_INCLUDES: "Life is like a box of chocolates" }
             }
         ) {
             edges {
@@ -180,7 +176,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE $this_actorsConnection.args.where.relationship.quotes_INCLUDES IN this_acted_in.quotes
+    WHERE $this_actorsConnection.args.where.edge.quotes_INCLUDES IN this_acted_in.quotes
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -194,7 +190,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "quotes_INCLUDES": "Life is like a box of chocolates"
                 }
             }
@@ -215,7 +211,7 @@ query {
         title
         actorsConnection(
             where: {
-                relationship: {
+                edge: {
                     quotes_NOT_INCLUDES: "Life is like a box of chocolates"
                 }
             }
@@ -238,7 +234,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE (NOT $this_actorsConnection.args.where.relationship.quotes_NOT_INCLUDES IN this_acted_in.quotes)
+    WHERE (NOT $this_actorsConnection.args.where.edge.quotes_NOT_INCLUDES IN this_acted_in.quotes)
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -252,7 +248,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "quotes_NOT_INCLUDES": "Life is like a box of chocolates"
                 }
             }

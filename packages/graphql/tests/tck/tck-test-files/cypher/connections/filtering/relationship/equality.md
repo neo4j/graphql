@@ -30,7 +30,7 @@ interface ActedIn {
 query {
     movies {
         title
-        actorsConnection(where: { relationship: { screenTime: 60 } }) {
+        actorsConnection(where: { edge: { screenTime: 60 } }) {
             edges {
                 screenTime
                 node {
@@ -49,7 +49,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE this_acted_in.screenTime = $this_actorsConnection.args.where.relationship.screenTime
+    WHERE this_acted_in.screenTime = $this_actorsConnection.args.where.edge.screenTime
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -63,7 +63,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "screenTime": {
                         "high": 0,
                         "low": 60
@@ -85,7 +85,7 @@ RETURN this { .title, actorsConnection } as this
 query {
     movies {
         title
-        actorsConnection(where: { relationship: { screenTime_NOT: 60 } }) {
+        actorsConnection(where: { edge: { screenTime_NOT: 60 } }) {
             edges {
                 screenTime
                 node {
@@ -104,7 +104,7 @@ MATCH (this:Movie)
 CALL {
     WITH this
     MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WHERE (NOT this_acted_in.screenTime = $this_actorsConnection.args.where.relationship.screenTime_NOT)
+    WHERE (NOT this_acted_in.screenTime = $this_actorsConnection.args.where.edge.screenTime_NOT)
     WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -118,7 +118,7 @@ RETURN this { .title, actorsConnection } as this
     "this_actorsConnection": {
         "args": {
             "where": {
-                "relationship": {
+                "edge": {
                     "screenTime_NOT": {
                         "high": 0,
                         "low": 60

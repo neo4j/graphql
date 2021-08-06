@@ -307,7 +307,7 @@ function createConnectionAndParams({
         if (sortInput && sortInput.length) {
             const sort = sortInput.map((s) =>
                 [
-                    ...Object.entries(s.relationship || []).map(
+                    ...Object.entries(s.edge || []).map(
                         ([f, direction]) => `${relationshipVariable}.${f} ${direction}`
                     ),
                     ...Object.entries(s.node || []).map(([f, direction]) => `${relatedNodeVariable}.${f} ${direction}`),

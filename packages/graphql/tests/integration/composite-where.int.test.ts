@@ -75,7 +75,7 @@ describe("composite-where", () => {
                                     node: {
                                         name: $actorName
                                     }
-                                    relationship: {
+                                    edge: {
                                         screenTime: $screenTime
                                     }
                                 }
@@ -157,7 +157,7 @@ describe("composite-where", () => {
                                     node: {
                                         name: $actorName
                                     }
-                                    relationship: {
+                                    edge: {
                                         screenTime: $screenTime
                                     }
                                 }
