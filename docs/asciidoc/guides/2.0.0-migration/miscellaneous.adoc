@@ -46,3 +46,44 @@ const neoSchema = new Neo4jGraphQL({
 ----
 
 If you need to do this, please report the scenario as an issue on GitHub.
+
+== `_IN` and `_NOT_IN` filters on relationships removed
+
+There were previously `_IN` and `_NOT_IN` filters for one-to-many and one-to-one relationships, but these were surplus to requirements, and didn't match for all cardinalities (many-to-many relationships don't have `_INCLUDES` and `_NOT_INCLUDES`). These may be added back in the future if and when we look more holistically at distinguishing between different relationship cardinalities.
+
+You can still achieve identical filters through different routes. For example, if you had the following schema:
+
+[source, graphql]
+----
+type Movie {
+    title: String!
+    director: Director @relationship(type: "DIRECTED", direction: IN)
+}
+
+type Director {
+    name: String!
+    movies: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
+}
+----
+
+You would have been able to run the following query:
+
+[source, graphql]
+----
+query {
+    movies(where: { director_IN: [{ name: "A" }, { name: "B" }] }) {
+        title
+    }
+}
+----
+
+You can still achieve exactly the same filter with the following:
+
+[source, graphql]
+----
+query {
+    movies(where: { director: { OR: [{ name: "A" }, { name: "B" }]} }) {
+        title
+    }
+}
+----
