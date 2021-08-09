@@ -42,7 +42,7 @@ export default function cypherResolver({
         const cypherStrs: string[] = [];
         let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
         let projectionStr = "";
-        let connectionProjectionStr = "";
+        const connectionProjectionStrs: string[] = [];
         let projectionAuthStr = "";
         const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
             field.typeMeta.name
@@ -89,7 +89,7 @@ export default function cypherResolver({
                         nodeVariable: "this",
                     });
                     const [nestedStr, nestedP] = nestedConnection;
-                    connectionProjectionStr = nestedStr;
+                    connectionProjectionStrs.push(nestedStr);
                     params = { ...params, ...nestedP };
                 });
             }
@@ -127,9 +127,7 @@ export default function cypherResolver({
             );
         }
 
-        if (connectionProjectionStr) {
-            cypherStrs.push(connectionProjectionStr);
-        }
+        cypherStrs.push(connectionProjectionStrs.join("\n"));
 
         if (isPrimitive || isEnum || isScalar) {
             cypherStrs.push(`RETURN this`);
