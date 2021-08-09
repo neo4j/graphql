@@ -177,7 +177,6 @@ function createWhereAndParams({
 
         if (key.endsWith("_NOT_IN")) {
             const [fieldName] = key.split("_NOT_IN");
-            const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
 
             const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
                 (f) => fieldName === f.fieldName
@@ -187,38 +186,7 @@ function createWhereAndParams({
                     ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
                     : `${varName}.${fieldName}`;
 
-            if (relationField) {
-                const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-                const inStr = relationField.direction === "IN" ? "<-" : "-";
-                const outStr = relationField.direction === "OUT" ? "->" : "-";
-                const relTypeStr = `[:${relationField.type}]`;
-
-                let resultStr = [
-                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
-                    `AND ALL(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${relationField.typeMeta.name}) | ${param}] INNER_WHERE NOT(`,
-                ].join(" ");
-
-                const inner: string[] = [];
-
-                (value as any[]).forEach((v, i) => {
-                    const recurse = createWhereAndParams({
-                        whereInput: v,
-                        varName: param,
-                        chainStr: `${param}${i}`,
-                        node: refNode,
-                        context,
-                        recursing: true,
-                    });
-
-                    inner.push(recurse[0]);
-                    res.params = { ...res.params, ...recurse[1] };
-                });
-
-                resultStr += inner.join(" OR ");
-                resultStr += ")"; // close NOT
-                resultStr += ")"; // close ALL
-                res.clauses.push(resultStr);
-            } else if (pointField) {
+            if (pointField) {
                 res.clauses.push(`(NOT ${varName}.${fieldName} IN [p in $${param} | point(p)])`);
                 res.params[param] = value;
             } else {
@@ -231,7 +199,6 @@ function createWhereAndParams({
 
         if (key.endsWith("_IN")) {
             const [fieldName] = key.split("_IN");
-            const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
 
             const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
                 (f) => fieldName === f.fieldName
@@ -241,37 +208,7 @@ function createWhereAndParams({
                     ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
                     : `${varName}.${fieldName}`;
 
-            if (relationField) {
-                const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-                const inStr = relationField.direction === "IN" ? "<-" : "-";
-                const outStr = relationField.direction === "OUT" ? "->" : "-";
-                const relTypeStr = `[:${relationField.type}]`;
-
-                let resultStr = [
-                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
-                    `AND ALL(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${relationField.typeMeta.name}) | ${param}] INNER_WHERE `,
-                ].join(" ");
-
-                const inner: string[] = [];
-
-                (value as any[]).forEach((v, i) => {
-                    const recurse = createWhereAndParams({
-                        whereInput: v,
-                        varName: param,
-                        chainStr: `${param}${i}`,
-                        node: refNode,
-                        context,
-                        recursing: true,
-                    });
-
-                    inner.push(recurse[0]);
-                    res.params = { ...res.params, ...recurse[1] };
-                });
-
-                resultStr += inner.join(" OR ");
-                resultStr += ")"; // close ALL
-                res.clauses.push(resultStr);
-            } else if (pointField) {
+            if (pointField) {
                 res.clauses.push(`${varName}.${fieldName} IN [p in $${param} | point(p)]`);
                 res.params[param] = value;
             } else {
