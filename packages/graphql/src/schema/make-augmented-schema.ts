@@ -820,12 +820,6 @@ function makeAugmentedSchema(
 
             whereInput.addFields({
                 ...{ [rel.fieldName]: `${n.name}Where`, [`${rel.fieldName}_NOT`]: `${n.name}Where` },
-                ...(rel.typeMeta.array
-                    ? {}
-                    : {
-                          [`${rel.fieldName}_IN`]: `[${n.name}Where!]`,
-                          [`${rel.fieldName}_NOT_IN`]: `[${n.name}Where!]`,
-                      }),
             });
 
             let anyNonNullRelProperties = false;
