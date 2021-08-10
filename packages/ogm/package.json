@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql-ogm",
-    "version": "2.0.0-rc.2",
+    "version": "1.2.4",
     "description": "GraphQL powered OGM for Neo4j and Javascript applications",
     "keywords": [
         "neo4j",
@@ -26,8 +26,8 @@
     },
     "author": "Neo4j Inc.",
     "dependencies": {
-        "@graphql-tools/merge": "6.2.14",
-        "@neo4j/graphql": "^2.0.0-rc.2",
+        "@graphql-tools/merge": "^6.2.13",
+        "@neo4j/graphql": "^1.2.4",
         "camelcase": "^6.2.0",
         "pluralize": "^8.0.0"
     },

@@ -114,7 +114,7 @@ function BlogItem(props: { blog: any; updated?: boolean }) {
 function MyBlogs() {
     const { getId } = useContext(auth.Context);
     const { query } = useContext(graphql.Context);
-    const [offset, setOffset] = useState(0);
+    const [skip, setSkip] = useState(0);
     const [limit] = useState(10);
     const [myBlogsHasMore, setMyBlogsHasMore] = useState(false);
     const [blogs, setBlogs] = useState<BlogInterface[]>([]);
@@ -128,9 +128,9 @@ function MyBlogs() {
                 query: MY_BLOGS,
                 variables: {
                     id: getId(),
-                    offset: blogs.length,
+                    skip: blogs.length,
                     limit,
-                    hasNextBlogsOffset: blogs.length === 0 ? limit : blogs.length + 1,
+                    hasNextBlogsSkip: blogs.length === 0 ? limit : blogs.length + 1,
                 },
             });
 
@@ -139,11 +139,11 @@ function MyBlogs() {
         } catch (e) {}
 
         setLoading(false);
-    }, [offset, blogs, limit]);
+    }, [skip, blogs, limit]);
 
     useEffect(() => {
         getBlogs();
-    }, [offset]);
+    }, [skip]);
 
     if (loading) {
         <Card className="mt-3 p-3">
@@ -163,7 +163,7 @@ function MyBlogs() {
                 ))}
             </Row>
             {myBlogsHasMore && (
-                <div className="d-flex justify-content-center w-100" onClick={() => setOffset((s) => s + 1)}>
+                <div className="d-flex justify-content-center w-100" onClick={() => setSkip((s) => s + 1)}>
                     <Button>Load More</Button>
                 </div>
             )}
@@ -174,7 +174,7 @@ function MyBlogs() {
 function RecentlyUpdatedBlogs() {
     const { query } = useContext(graphql.Context);
     const [limit] = useState(10);
-    const [offset, setOffset] = useState(0);
+    const [skip, setSkip] = useState(0);
     const [myBlogsHasMore, setMyBlogsHasMore] = useState(false);
     const [blogs, setBlogs] = useState<BlogInterface[]>([]);
     const [loading, setLoading] = useState(true);
@@ -185,9 +185,9 @@ function RecentlyUpdatedBlogs() {
             const response = await query({
                 query: RECENTLY_UPDATED_BLOGS,
                 variables: {
-                    offset: blogs.length,
+                    skip: blogs.length,
                     limit,
-                    hasNextBlogsOffset: blogs.length === 0 ? limit : blogs.length + 1,
+                    hasNextBlogsSkip: blogs.length === 0 ? limit : blogs.length + 1,
                 },
             });
 
@@ -196,11 +196,11 @@ function RecentlyUpdatedBlogs() {
         } catch (e) {}
 
         setLoading(false);
-    }, [offset, blogs]);
+    }, [skip, blogs]);
 
     useEffect(() => {
         getBlogs();
-    }, [offset]);
+    }, [skip]);
 
     if (loading) {
         <Card className="mt-3 p-3">
@@ -220,7 +220,7 @@ function RecentlyUpdatedBlogs() {
                 ))}
             </Row>
             {myBlogsHasMore && (
-                <div className="d-flex justify-content-center w-100" onClick={() => setOffset((s) => s + 1)}>
+                <div className="d-flex justify-content-center w-100" onClick={() => setSkip((s) => s + 1)}>
                     <Button>Load More</Button>
                 </div>
             )}

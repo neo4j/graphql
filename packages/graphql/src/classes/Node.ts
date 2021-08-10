@@ -20,7 +20,6 @@
 import { DirectiveNode, NamedTypeNode } from "graphql";
 import type {
     RelationField,
-    ConnectionField,
     CypherField,
     PrimitiveField,
     CustomEnumField,
@@ -38,7 +37,6 @@ import Exclude from "./Exclude";
 export interface NodeConstructor {
     name: string;
     relationFields: RelationField[];
-    connectionFields: ConnectionField[];
     cypherFields: CypherField[];
     primitiveFields: PrimitiveField[];
     scalarFields: CustomScalarField[];
@@ -60,8 +58,6 @@ class Node {
     public name: string;
 
     public relationFields: RelationField[];
-
-    public connectionFields: ConnectionField[];
 
     public cypherFields: CypherField[];
 
@@ -123,7 +119,6 @@ class Node {
     constructor(input: NodeConstructor) {
         this.name = input.name;
         this.relationFields = input.relationFields;
-        this.connectionFields = input.connectionFields;
         this.cypherFields = input.cypherFields;
         this.primitiveFields = input.primitiveFields;
         this.scalarFields = input.scalarFields;

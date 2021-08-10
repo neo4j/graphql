@@ -20,10 +20,9 @@
 import { Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
-import { GraphQLWhereArg, GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField } from "../types";
+import { GraphQLWhereArg, GraphQLOptionsArg, GraphQLSortArg, Context } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createConnectionAndParams from "./connection/create-connection-and-params";
 
 function translateRead({ node, context }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
@@ -35,14 +34,13 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     const matchStr = `MATCH (${varName}:${node.name})`;
     let whereStr = "";
     let authStr = "";
-    let offsetStr = "";
+    let skipStr = "";
     let limitStr = "";
     let sortStr = "";
     let projAuth = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
     const whereStrs: string[] = [];
-    const connectionStrs: string[] = [];
 
     const projection = createProjectionAndParams({
         node,
@@ -56,22 +54,6 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
             " AND "
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-    }
-
-    if (projection[2]?.connectionFields?.length) {
-        projection[2].connectionFields.forEach((connectionResolveTree) => {
-            const connectionField = node.connectionFields.find(
-                (x) => x.fieldName === connectionResolveTree.name
-            ) as ConnectionField;
-            const connection = createConnectionAndParams({
-                resolveTree: connectionResolveTree,
-                field: connectionField,
-                context,
-                nodeVariable: varName,
-            });
-            connectionStrs.push(connection[0]);
-            cypherParams = { ...cypherParams, ...connection[1] };
-        });
     }
 
     if (whereInput) {
@@ -118,12 +100,12 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     }
 
     if (optionsInput) {
-        const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
+        const hasSkip = Boolean(optionsInput.skip) || optionsInput.skip === 0;
         const hasLimit = Boolean(optionsInput.limit) || optionsInput.limit === 0;
 
-        if (hasOffset) {
-            offsetStr = `SKIP $${varName}_offset`;
-            cypherParams[`${varName}_offset`] = optionsInput.offset;
+        if (hasSkip) {
+            skipStr = `SKIP $${varName}_skip`;
+            cypherParams[`${varName}_skip`] = optionsInput.skip;
         }
 
         if (hasLimit) {
@@ -151,9 +133,8 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         authStr,
         ...(sortStr ? [`WITH ${varName}`, sortStr] : []),
         ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
-        ...connectionStrs,
         `RETURN ${varName} ${projStr} as ${varName}`,
-        offsetStr,
+        skipStr,
         limitStr,
     ];
 

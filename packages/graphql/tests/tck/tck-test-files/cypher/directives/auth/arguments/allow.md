@@ -1,10 +1,10 @@
-# Cypher Auth Allow
+## Cypher Auth Allow
 
 Tests auth allow operations
 
 Schema:
 
-```graphql
+```schema
 type Comment {
     id: ID
     content: String
@@ -70,9 +70,9 @@ extend type Comment
 
 ---
 
-## Read Node
+### Read Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -82,7 +82,7 @@ extend type Comment
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -90,17 +90,17 @@ CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_
 RETURN this { .id } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_allow0_id": "id-01"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -109,9 +109,9 @@ RETURN this { .id } as this
 
 ---
 
-## Read Node & Protected Field
+### Read Node & Protected Field
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -121,7 +121,7 @@ RETURN this { .id } as this
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -131,18 +131,18 @@ CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_password_aut
 RETURN this { .password } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_allow0_id": "id-01",
     "this_password_auth_allow0_id": "id-01"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -151,9 +151,9 @@ RETURN this { .password } as this
 
 ---
 
-## Read Relationship
+### Read Relationship
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -166,7 +166,7 @@ RETURN this { .password } as this
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -177,18 +177,18 @@ RETURN this {
 } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_allow0_id": "id-01",
     "this_posts_auth_allow0_creator_id": "id-01"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -197,9 +197,9 @@ RETURN this {
 
 ---
 
-## Read Relationship & Protected Field
+### Read Relationship & Protected Field
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -211,7 +211,7 @@ RETURN this {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Post)
@@ -226,9 +226,9 @@ RETURN this {
 } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_allow0_creator_id": "id-01",
     "this_creator_auth_allow0_id": "id-01",
@@ -236,9 +236,9 @@ RETURN this {
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -247,9 +247,9 @@ RETURN this {
 
 ---
 
-## Read Two Relationships
+### Read Two Relationships
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -264,7 +264,7 @@ RETURN this {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -278,9 +278,9 @@ RETURN this {
 } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_id": "1",
     "this_posts_comments_auth_allow0_creator_id": "id-01",
@@ -291,9 +291,9 @@ RETURN this {
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -302,9 +302,9 @@ RETURN this {
 
 ---
 
-## Update Node
+### Update Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -316,7 +316,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -330,9 +330,9 @@ SET this.id = $this_update_id
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_id": "old-id",
     "this_auth_allow0_id": "old-id",
@@ -340,9 +340,9 @@ RETURN this { .id } AS this
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "old-id",
     "roles": ["admin"]
@@ -351,9 +351,9 @@ RETURN this { .id } AS this
 
 ---
 
-## Update Node Property
+### Update Node Property
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -365,7 +365,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -379,9 +379,9 @@ SET this.password = $this_update_password
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_id": "id-01",
     "this_auth_allow0_id": "id-01",
@@ -390,9 +390,9 @@ RETURN this { .id } AS this
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -401,15 +401,15 @@ RETURN this { .id } AS this
 
 ---
 
-## Nested Update Node
+### Nested Update Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
     updatePosts(
         where: { id: "post-id" }
-        update: { creator: { update: { node: { id: "new-id" } } } }
+        update: { creator: { update: { id: "new-id" } } }
     ) {
         posts {
             id
@@ -418,7 +418,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Post)
@@ -427,54 +427,45 @@ WHERE this.id = $this_id
 WITH this
 CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
 WITH this
-OPTIONAL MATCH (this)<-[this_has_post0_relationship:HAS_POST]-(this_creator0:User)
+OPTIONAL MATCH (this)<-[:HAS_POST]-(this_creator0:User)
 CALL apoc.do.when(this_creator0 IS NOT NULL, "
     WITH this, this_creator0
     CALL apoc.util.validate(NOT(this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0_auth_allow0_id), \"@neo4j/graphql/FORBIDDEN\", [0])
     SET this_creator0.id = $this_update_creator0_id
     RETURN count(*) ",
     "",
-    {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_id:$this_update_creator0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
+    {this:this, this_creator0:this_creator0, auth:$auth,this_update_creator0_id:$this_update_creator0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
 YIELD value as _
 
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_id": "post-id",
     "this_auth_allow0_creator_id": "user-id",
     "this_creator0_auth_allow0_id": "user-id",
     "this_update_creator0_id": "new-id",
     "auth": {
-        "isAuthenticated": true,
-        "jwt": {
-            "roles": ["admin"],
-            "sub": "user-id"
-        },
-        "roles": ["admin"]
-    },
-    "updatePosts": {
-        "args": {
-            "update": {
-                "creator": {
-                    "update": {
-                        "node": {
-                            "id": "new-id"
-                        }
-                    }
-                }
-            }
-        }
+      "isAuthenticated": true,
+      "jwt": {
+        "roles": [
+          "admin"
+        ],
+        "sub": "user-id"
+      },
+      "roles": [
+        "admin"
+      ]
     }
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "user-id",
     "roles": ["admin"]
@@ -483,15 +474,15 @@ RETURN this { .id } AS this
 
 ---
 
-## Nested Update Property
+### Nested Update Property
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
     updatePosts(
         where: { id: "post-id" }
-        update: { creator: { update: { node: { password: "new-password" } } } }
+        update: { creator: { update: { password: "new-password" } } }
     ) {
         posts {
             id
@@ -500,15 +491,14 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Post)
 WHERE this.id = $this_id
 
 WITH this
-CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
-WITH this OPTIONAL MATCH (this)<-[this_has_post0_relationship:HAS_POST]-(this_creator0:User)
+CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0]) WITH this OPTIONAL MATCH (this)<-[:HAS_POST]-(this_creator0:User)
 
 CALL apoc.do.when(this_creator0 IS NOT NULL, "
     WITH this, this_creator0
@@ -517,13 +507,13 @@ CALL apoc.do.when(this_creator0 IS NOT NULL, "
     RETURN count(*)
     ",
     "",
-    {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_password:$this_update_creator0_password,this_update_creator0_password_auth_allow0_id:$this_update_creator0_password_auth_allow0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id}) YIELD value as _
+    {this:this, this_creator0:this_creator0, auth:$auth,this_update_creator0_password:$this_update_creator0_password,this_update_creator0_password_auth_allow0_id:$this_update_creator0_password_auth_allow0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id}) YIELD value as _
     RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_id": "post-id",
     "this_auth_allow0_creator_id": "user-id",
@@ -531,32 +521,23 @@ CALL apoc.do.when(this_creator0 IS NOT NULL, "
     "this_update_creator0_password": "new-password",
     "this_update_creator0_password_auth_allow0_id": "user-id",
     "auth": {
-        "isAuthenticated": true,
-        "jwt": {
-            "roles": ["admin"],
-            "sub": "user-id"
-        },
-        "roles": ["admin"]
-    },
-    "updatePosts": {
-        "args": {
-            "update": {
-                "creator": {
-                    "update": {
-                        "node": {
-                            "password": "new-password"
-                        }
-                    }
-                }
-            }
-        }
+      "isAuthenticated": true,
+      "jwt": {
+        "roles": [
+          "admin"
+        ],
+        "sub": "user-id"
+      },
+      "roles": [
+        "admin"
+      ]
     }
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "user-id",
     "roles": ["admin"]
@@ -565,9 +546,9 @@ CALL apoc.do.when(this_creator0 IS NOT NULL, "
 
 ---
 
-## Delete Node
+### Delete Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -577,7 +558,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -586,18 +567,18 @@ CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_
 DETACH DELETE this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_id": "user-id",
     "this_auth_allow0_id": "user-id"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "user-id",
     "roles": ["admin"]
@@ -606,29 +587,29 @@ DETACH DELETE this
 
 ---
 
-## Nested Delete Node
+### Nested Delete Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
     deleteUsers(
         where: { id: "user-id" }
-        delete: { posts: { where: { node: { id: "post-id" } } } }
+        delete: { posts: { where: { id: "post-id" } } }
     ) {
         nodesDeleted
     }
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
 WHERE this.id = $this_id
 WITH this
-OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-WHERE this_posts0.id = $this_deleteUsers.args.delete.posts[0].where.node.id
+OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
+WHERE this_posts0.id = $this_posts0_id
 WITH this, this_posts0
 CALL apoc.util.validate(NOT(EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
 
@@ -640,34 +621,20 @@ CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_
 DETACH DELETE this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_id": "user-id",
     "this_auth_allow0_id": "user-id",
     "this_posts0_auth_allow0_creator_id": "user-id",
-    "this_deleteUsers": {
-        "args": {
-            "delete": {
-                "posts": [
-                    {
-                        "where": {
-                            "node": {
-                                "id": "post-id"
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-    }
+    "this_posts0_id": "post-id"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "user-id",
     "roles": ["admin"]
@@ -676,15 +643,15 @@ DETACH DELETE this
 
 ---
 
-## Disconnect Node
+### Disconnect Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
     updateUsers(
         where: { id: "user-id" }
-        disconnect: { posts: { where: { node: { id: "post-id" } } } }
+        disconnect: { posts: { where: { id: "post-id" } } }
     ) {
         users {
             id
@@ -693,14 +660,15 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
 WHERE this.id = $this_id
 WITH this
 OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
-WHERE this_disconnect_posts0.id = $updateUsers.args.disconnect.posts[0].where.node.id
+WHERE this_disconnect_posts0.id = $this_disconnect_posts0_id
+
 WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
 
 CALL apoc.util.validate(NOT(this_disconnect_posts0.id IS NOT NULL AND this_disconnect_posts0.id = $this_disconnect_posts0User0_allow_auth_allow0_id AND EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0Post1_allow_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
@@ -712,34 +680,20 @@ FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_id": "user-id",
+    "this_disconnect_posts0_id": "post-id",
     "this_disconnect_posts0User0_allow_auth_allow0_id": "user-id",
-    "this_disconnect_posts0Post1_allow_auth_allow0_creator_id": "user-id",
-    "updateUsers": {
-        "args": {
-            "disconnect": {
-                "posts": [
-                    {
-                        "where": {
-                            "node": {
-                                "id": "post-id"
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-    }
+    "this_disconnect_posts0Post1_allow_auth_allow0_creator_id": "user-id"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "user-id",
     "roles": ["admin"]
@@ -748,9 +702,9 @@ RETURN this { .id } AS this
 
 ---
 
-## Nested Disconnect Node
+### Nested Disconnect Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -759,9 +713,7 @@ mutation {
         update: {
             post: {
                 disconnect: {
-                    disconnect: {
-                        creator: { where: { node: { id: "user-id" } } }
-                    }
+                    disconnect: { creator: { where: { id: "user-id" } } }
                 }
             }
         }
@@ -773,7 +725,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Comment)
@@ -794,7 +746,7 @@ FOREACH(_ IN CASE this_post0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
 
 WITH this, this_post0_disconnect0
 OPTIONAL MATCH (this_post0_disconnect0)<-[this_post0_disconnect0_creator0_rel:HAS_POST]-(this_post0_disconnect0_creator0:User)
-WHERE this_post0_disconnect0_creator0.id = $updateComments.args.update.post.disconnect.disconnect.creator.where.node.id
+WHERE this_post0_disconnect0_creator0.id = $this_post0_disconnect0_creator0_id
 WITH this, this_post0_disconnect0, this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel
 
 CALL apoc.util.validate(NOT(EXISTS((this_post0_disconnect0_creator0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_post0_disconnect0_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post0_disconnect0_creator0Post0_allow_auth_allow0_creator_id) AND this_post0_disconnect0_creator0.id IS NOT NULL AND this_post0_disconnect0_creator0.id = $this_post0_disconnect0_creator0User1_allow_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
@@ -806,41 +758,24 @@ FOREACH(_ IN CASE this_post0_disconnect0_creator0 WHEN NULL THEN [] ELSE [1] END
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
-    "this_id": "comment-id",
+    "this_id": "user-id",
     "this_auth_allow0_creator_id": "user-id",
+    "this_id": "comment-id",
     "this_post0_disconnect0Comment0_allow_auth_allow0_creator_id": "user-id",
     "this_post0_disconnect0Post1_allow_auth_allow0_creator_id": "user-id",
     "this_post0_disconnect0_creator0Post0_allow_auth_allow0_creator_id": "user-id",
     "this_post0_disconnect0_creator0User1_allow_auth_allow0_id": "user-id",
-    "updateComments": {
-        "args": {
-            "update": {
-                "post": {
-                    "disconnect": {
-                        "disconnect": {
-                            "creator": {
-                                "where": {
-                                    "node": {
-                                        "id": "user-id"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+    "this_post0_disconnect0_creator0_id": "user-id"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "user-id",
     "roles": ["admin"]
@@ -849,15 +784,15 @@ RETURN this { .id } AS this
 
 ---
 
-## Connect Node
+### Connect Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
     updateUsers(
         where: { id: "user-id" }
-        connect: { posts: { where: { node: { id: "post-id" } } } }
+        connect: { posts: { where: { id: "post-id" } } }
     ) {
         users {
             id
@@ -866,7 +801,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -874,14 +809,14 @@ WHERE this.id = $this_id
 WITH this
 CALL {
     WITH this
-    OPTIONAL MATCH (this_connect_posts0_node:Post)
-    WHERE this_connect_posts0_node.id = $this_connect_posts0_node_id
+    OPTIONAL MATCH (this_connect_posts0:Post)
+    WHERE this_connect_posts0.id = $this_connect_posts0_id
 
-    WITH this, this_connect_posts0_node
-    CALL apoc.util.validate(NOT(this_connect_posts0_node.id IS NOT NULL AND this_connect_posts0_node.id = $this_connect_posts0_nodeUser0_allow_auth_allow0_id AND EXISTS((this_connect_posts0_node)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_connect_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_posts0_nodePost1_allow_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+    WITH this, this_connect_posts0
+    CALL apoc.util.validate(NOT(this_connect_posts0.id IS NOT NULL AND this_connect_posts0.id = $this_connect_posts0User0_allow_auth_allow0_id AND EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_posts0Post1_allow_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
 
-    FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+    FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this)-[:HAS_POST]->(this_connect_posts0)
     )
     RETURN count(*)
 }
@@ -889,20 +824,20 @@ CALL {
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_id": "user-id",
-    "this_connect_posts0_node_id": "post-id",
-    "this_connect_posts0_nodePost1_allow_auth_allow0_creator_id": "user-id",
-    "this_connect_posts0_nodeUser0_allow_auth_allow0_id": "user-id"
+    "this_connect_posts0_id": "post-id",
+    "this_connect_posts0Post1_allow_auth_allow0_creator_id": "user-id",
+    "this_connect_posts0User0_allow_auth_allow0_id": "user-id"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "user-id",
     "roles": ["admin"]

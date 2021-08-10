@@ -18,7 +18,7 @@
  */
 
 import { InputValueDefinitionNode, DirectiveNode } from "graphql";
-import { DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition, Directive } from "graphql-compose";
+import { ExtensionsDirective, DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
 import { isInt, Integer } from "neo4j-driver";
 import getFieldTypeMeta from "./get-field-type-meta";
 import parseValueNode from "./parse-value-node";
@@ -39,7 +39,7 @@ export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
     }, {});
 }
 
-export function graphqlDirectivesToCompose(directives: DirectiveNode[]): Directive[] {
+export function graphqlDirectivesToCompose(directives: DirectiveNode[]): ExtensionsDirective[] {
     return directives.map((directive) => ({
         args: (directive.arguments || [])?.reduce(
             (r: DirectiveArgs, d) => ({ ...r, [d.name.value]: parseValueNode(d.value) }),
@@ -64,36 +64,19 @@ export function objectFieldsToComposeFields(
         } as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>;
 
         if (field.otherDirectives.length) {
-            newField.directives = graphqlDirectivesToCompose(field.otherDirectives);
+            newField.extensions = {
+                directives: graphqlDirectivesToCompose(field.otherDirectives),
+            };
         }
 
         if (["Int", "Float"].includes(field.typeMeta.name)) {
             newField.resolve = (source) => {
-                const value = source[field.fieldName];
-
                 // @ts-ignore: outputValue is unknown, and to cast to object would be an antipattern
-                if (isInt(value)) {
-                    return (value as Integer).toNumber();
+                if (isInt(source[field.fieldName])) {
+                    return (source[field.fieldName] as Integer).toNumber();
                 }
 
-                return value;
-            };
-        }
-
-        if (field.typeMeta.name === "ID") {
-            newField.resolve = (source) => {
-                const value = source[field.fieldName];
-
-                // @ts-ignore: outputValue is unknown, and to cast to object would be an antipattern
-                if (isInt(value)) {
-                    return (value as Integer).toNumber();
-                }
-
-                if (typeof value === "number") {
-                    return value.toString(10);
-                }
-
-                return value;
+                return source[field.fieldName];
             };
         }
 

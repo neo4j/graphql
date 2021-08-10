@@ -42,7 +42,6 @@ describe("createProjectionAndParams", () => {
         const node: Node = {
             name: "Movie",
             relationFields: [],
-            connectionFields: [],
             cypherFields: [],
             enumFields: [],
             unionFields: [],

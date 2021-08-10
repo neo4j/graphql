@@ -1,238 +1,174 @@
-# Schema Interfaces
+## Schema Interfaces
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-## Interfaces
+### Interfaces
 
-### TypeDefs
+**TypeDefs**
 
-```graphql
-interface MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
+```typedefs-input
+interface Node @auth(rules: [{allow: "*", operations: [READ]}]) {
     id: ID
     movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
-    customQuery: [Movie]
-        @cypher(
-            statement: """
-            MATCH (m:Movie)
-            RETURN m
-            """
-        )
+    customQuery: [Movie] @cypher(statement: """
+      MATCH (m:Movie)
+      RETURN m
+    """)
 }
 
-type Movie implements MovieNode
-    @auth(rules: [{ allow: "*", operations: [READ] }]) {
+type Movie implements Node @auth(rules: [{allow: "*", operations: [READ]}]) {
     id: ID
-    nodes: [MovieNode]
+    nodes: [Node]
     movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
-    customQuery: [Movie]
-        @cypher(
-            statement: """
-            MATCH (m:Movie)
-            RETURN m
-            """
-        )
+    customQuery: [Movie] @cypher(statement: """
+      MATCH (m:Movie)
+      RETURN m
+    """)
 }
 ```
 
-### Output
+**Output**
 
-```graphql
-type CreateMoviesMutationResponse {
-    movies: [Movie!]!
+```schema-output
+enum SortDirection {
+  """Sort by field values in ascending order."""
+  ASC
+  """Sort by field values in descending order."""
+  DESC
+}
+
+interface Node {
+    id: ID
+    movies: [Movie]
+    customQuery: [Movie]
+}
+
+type Movie implements Node {
+  id: ID
+  nodes: [Node]
+  movies(options: MovieOptions, where: MovieWhere): [Movie]
+  customQuery: [Movie]
 }
 
 type DeleteInfo {
-    nodesDeleted: Int!
-    relationshipsDeleted: Int!
-}
-
-type Movie implements MovieNode {
-    id: ID
-    customQuery: [Movie]
-    nodes: [MovieNode]
-    movies(where: MovieWhere, options: MovieOptions): [Movie]
-    moviesConnection(
-        after: String
-        first: Int
-        where: MovieMoviesConnectionWhere
-        sort: [MovieMoviesConnectionSort!]
-    ): MovieMoviesConnection!
-}
-
-input MovieConnectInput {
-    movies: [MovieMoviesConnectFieldInput!]
+  nodesDeleted: Int!
+  relationshipsDeleted: Int!
 }
 
 input MovieCreateInput {
-    id: ID
-    movies: MovieMoviesFieldInput
-}
-
-input MovieDeleteInput {
-    movies: [MovieMoviesDeleteFieldInput!]
-}
-
-input MovieDisconnectInput {
-    movies: [MovieMoviesDisconnectFieldInput!]
-}
-
-input MovieMoviesDeleteFieldInput {
-    delete: MovieDeleteInput
-    where: MovieMoviesConnectionWhere
-}
-
-input MovieMoviesDisconnectFieldInput {
-    disconnect: MovieDisconnectInput
-    where: MovieMoviesConnectionWhere
-}
-
-input MovieConnectWhere {
-    node: MovieWhere!
-}
-
-input MovieMoviesConnectFieldInput {
-    where: MovieConnectWhere
-    connect: [MovieConnectInput!]
-}
-
-type MovieMoviesConnection {
-    edges: [MovieMoviesRelationship!]!
-    pageInfo: PageInfo!
-    totalCount: Int!
-}
-
-input MovieMoviesConnectionSort {
-    node: MovieSort
-}
-
-input MovieMoviesConnectionWhere {
-    AND: [MovieMoviesConnectionWhere!]
-    OR: [MovieMoviesConnectionWhere!]
-    node: MovieWhere
-    node_NOT: MovieWhere
-}
-
-input MovieMoviesCreateFieldInput {
-    node: MovieCreateInput!
-}
-
-input MovieMoviesFieldInput {
-    create: [MovieMoviesCreateFieldInput!]
-    connect: [MovieMoviesConnectFieldInput!]
-}
-
-type MovieMoviesRelationship {
-    cursor: String!
-    node: Movie!
-}
-
-input MovieMoviesUpdateConnectionInput {
-    node: MovieUpdateInput
-}
-
-input MovieMoviesUpdateFieldInput {
-    where: MovieMoviesConnectionWhere
-    update: MovieMoviesUpdateConnectionInput
-    connect: [MovieMoviesConnectFieldInput!]
-    disconnect: [MovieMoviesDisconnectFieldInput!]
-    create: [MovieMoviesCreateFieldInput!]
-    delete: [MovieMoviesDeleteFieldInput!]
+  id: ID
+  movies: MovieMoviesFieldInput
 }
 
 input MovieOptions {
-    """
-    Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-    """
-    sort: [MovieSort]
-    limit: Int
-    offset: Int
+  """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+sort: [MovieSort]
+  limit: Int
+  skip: Int
 }
 
-input MovieRelationInput {
-    movies: [MovieMoviesCreateFieldInput!]
-}
-
-"""
-Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-"""
+"""Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
 input MovieSort {
-    id: SortDirection
-}
-
-input MovieUpdateInput {
-    id: ID
-    movies: [MovieMoviesUpdateFieldInput!]
+  id: SortDirection
 }
 
 input MovieWhere {
-    OR: [MovieWhere!]
-    AND: [MovieWhere!]
-    id: ID
-    id_NOT: ID
-    id_IN: [ID]
-    id_NOT_IN: [ID]
-    id_CONTAINS: ID
-    id_NOT_CONTAINS: ID
-    id_STARTS_WITH: ID
-    id_NOT_STARTS_WITH: ID
-    id_ENDS_WITH: ID
-    id_NOT_ENDS_WITH: ID
-    movies: MovieWhere
-    movies_NOT: MovieWhere
-    moviesConnection: MovieMoviesConnectionWhere
-    moviesConnection_NOT: MovieMoviesConnectionWhere
+  id: ID
+  id_IN: [ID]
+  id_NOT: ID
+  id_NOT_IN: [ID]
+  id_CONTAINS: ID
+  id_NOT_CONTAINS: ID
+  id_STARTS_WITH: ID
+  id_NOT_STARTS_WITH: ID
+  id_ENDS_WITH: ID
+  id_NOT_ENDS_WITH: ID
+  movies: MovieWhere
+  movies_NOT: MovieWhere
+  OR: [MovieWhere!]
+  AND: [MovieWhere!]
 }
 
-type Mutation {
-    createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-    deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
-    updateMovies(
-        where: MovieWhere
-        update: MovieUpdateInput
-        connect: MovieConnectInput
-        disconnect: MovieDisconnectInput
-        create: MovieRelationInput
-        delete: MovieDeleteInput
-    ): UpdateMoviesMutationResponse!
+input MovieDisconnectFieldInput {
+  disconnect: MovieDisconnectInput
+  where: MovieWhere
 }
 
-interface MovieNode {
-    movies: [Movie]
-    id: ID
-    customQuery: [Movie]
+input MovieDisconnectInput {
+  movies: [MovieDisconnectFieldInput!]
 }
 
-"""
-Pagination information (Relay)
-"""
-type PageInfo {
-    hasNextPage: Boolean!
-    hasPreviousPage: Boolean!
-    startCursor: String
-    endCursor: String
+input MovieMoviesFieldInput {
+  connect: [MovieConnectFieldInput!]
+  create: [MovieCreateInput!]
 }
 
-type Query {
-    movies(where: MovieWhere, options: MovieOptions): [Movie!]!
-    moviesCount(where: MovieWhere): Int!
+input MovieDeleteFieldInput {
+  delete: MovieDeleteInput
+  where: MovieWhere
 }
 
-enum SortDirection {
-    """
-    Sort by field values in ascending order.
-    """
-    ASC
+input MovieMoviesUpdateFieldInput {
+  connect: [MovieConnectFieldInput!]
+  create: [MovieCreateInput!]
+  disconnect: [MovieDisconnectFieldInput!]
+  update: MovieUpdateInput
+  where: MovieWhere
+  delete: [MovieDeleteFieldInput!]
+}
 
-    """
-    Sort by field values in descending order.
-    """
-    DESC
+input MovieRelationInput {
+  movies: [MovieCreateInput!]
+}
+
+input MovieConnectFieldInput {
+  connect: MovieConnectInput
+  where: MovieWhere
+}
+
+input MovieConnectInput {
+  movies: [MovieConnectFieldInput!]
+}
+
+input MovieUpdateInput {
+  id: ID
+  movies: [MovieMoviesUpdateFieldInput!]
+}
+
+input MovieMoviesDeleteFieldInput {
+  where: MovieWhere
+  delete: MovieDeleteInput
+}
+
+input MovieDeleteInput {
+  movies: [MovieMoviesDeleteFieldInput!]
+}
+
+type CreateMoviesMutationResponse {
+  movies: [Movie!]!
 }
 
 type UpdateMoviesMutationResponse {
-    movies: [Movie!]!
+  movies: [Movie!]!
+}
+
+type Mutation {
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+  deleteMovies(where: MovieWhere, delete: MovieDeleteInput): DeleteInfo!
+  updateMovies(
+    where: MovieWhere
+    update: MovieUpdateInput
+    connect: MovieConnectInput
+    create: MovieRelationInput
+    disconnect: MovieDisconnectInput
+    delete: MovieDeleteInput
+  ): UpdateMoviesMutationResponse!
+}
+
+type Query {
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
 }
 ```
 

@@ -1,0 +1,10 @@
+[[schema]]
+= Schema
+
+In this section you will learn how to use the exposed GraphQL schema to interact with the Neo4j database.
+
+* <<schema-queries>>
+* <<schema-mutations>>
+* <<schema-sorting>>
+* <<schema-filtering>>
+* <<schema-pagination>>

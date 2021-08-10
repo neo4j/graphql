@@ -40,14 +40,14 @@ async function main() {
             return {
                 name: faker.lorem.word(),
                 creator: {
-                    connect: { where: { node: { id: user.id } } },
+                    connect: { where: { id: user.id } },
                 },
                 posts: {
                     create: new Array(3).fill(null).map(() => ({
                         title: faker.lorem.word(),
                         content: faker.lorem.paragraphs(4),
                         author: {
-                            connect: { where: { node: { id: user.id } } },
+                            connect: { where: { id: user.id } },
                         },
                         comments: {
                             create: new Array(3).fill(null).map(() => {
@@ -56,7 +56,7 @@ async function main() {
                                 return {
                                     content: faker.lorem.paragraph(),
                                     author: {
-                                        connect: { where: { node: { id: u.id } } },
+                                        connect: { where: { id: u.id } },
                                     },
                                 };
                             }),

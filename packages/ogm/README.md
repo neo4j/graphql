@@ -14,7 +14,7 @@
 
 GraphQL powered OGM for Neo4j and Javascript applications.
 
-1. [Documentation](https://neo4j.com/docs/graphql-manual/2.0/ogm/)
+1. [Documentation](https://neo4j.com/docs/graphql-manual/current/)
 
 ## Installation
 

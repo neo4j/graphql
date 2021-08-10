@@ -1,10 +1,10 @@
-# Cypher Create
+## Cypher Create
 
 Tests create operations.
 
 Schema:
 
-```graphql
+```schema
 type Actor {
     name: String
     movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
@@ -18,9 +18,9 @@ type Movie {
 
 ---
 
-## Simple Create
+### Simple Create
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -32,7 +32,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 CALL {
@@ -44,9 +44,9 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this0_id": "1"
 }
@@ -54,9 +54,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-## Simple Multi Create
+### Simple Multi Create
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -68,7 +68,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 CALL {
@@ -87,9 +87,9 @@ RETURN this0 { .id } AS this0,
        this1 { .id } AS this1
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this0_id": "1",
     "this1_id": "2"
@@ -98,16 +98,16 @@ RETURN this0 { .id } AS this0,
 
 ---
 
-## Two Level Nested create
+### Two Level Nested create
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
     createMovies(
         input: [
-            { id: 1, actors: { create: [{ node: { name: "actor 1" } }] } }
-            { id: 2, actors: { create: [{ node: { name: "actor 2" } }] } }
+            { id: 1, actors: { create: [{ name: "actor 1" }] } }
+            { id: 2, actors: { create: [{ name: "actor 2" }] } }
         ]
     ) {
         movies {
@@ -117,7 +117,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 CALL {
@@ -125,9 +125,9 @@ CALL {
   SET this0.id = $this0_id
 
     WITH this0
-    CREATE (this0_actors0_node:Actor)
-    SET this0_actors0_node.name = $this0_actors0_node_name
-    MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
+    CREATE (this0_actors0:Actor)
+    SET this0_actors0.name = $this0_actors0_name
+    MERGE (this0)<-[:ACTED_IN]-(this0_actors0)
 
   RETURN this0
 }
@@ -137,9 +137,9 @@ CALL {
   SET this1.id = $this1_id
 
     WITH this1
-    CREATE (this1_actors0_node:Actor)
-    SET this1_actors0_node.name = $this1_actors0_node_name
-    MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
+    CREATE (this1_actors0:Actor)
+    SET this1_actors0.name = $this1_actors0_name
+    MERGE (this1)<-[:ACTED_IN]-(this1_actors0)
 
   RETURN this1
 }
@@ -147,22 +147,22 @@ CALL {
 RETURN this0 { .id } AS this0, this1 { .id } AS this1
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this0_id": "1",
-    "this0_actors0_node_name": "actor 1",
+    "this0_actors0_name": "actor 1",
     "this1_id": "2",
-    "this1_actors0_node_name": "actor 2"
+    "this1_actors0_name": "actor 2"
 }
 ```
 
 ---
 
-## Three Level Nested create
+### Three Level Nested create
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -172,12 +172,7 @@ mutation {
                 id: "1"
                 actors: {
                     create: [
-                        {
-                            node: {
-                                name: "actor 1"
-                                movies: { create: [{ node: { id: "10" } }] }
-                            }
-                        }
+                        { name: "actor 1", movies: { create: [{ id: "10" }] } }
                     ]
                 }
             }
@@ -185,12 +180,7 @@ mutation {
                 id: "2"
                 actors: {
                     create: [
-                        {
-                            node: {
-                                name: "actor 2"
-                                movies: { create: [{ node: { id: "20" } }] }
-                            }
-                        }
+                        { name: "actor 2", movies: { create: [{ id: "20" }] } }
                     ]
                 }
             }
@@ -203,7 +193,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 CALL {
@@ -211,13 +201,13 @@ CALL {
   SET this0.id = $this0_id
 
     WITH this0
-    CREATE (this0_actors0_node:Actor)
-    SET this0_actors0_node.name = $this0_actors0_node_name
-      WITH this0, this0_actors0_node
-      CREATE (this0_actors0_node_movies0_node:Movie)
-      SET this0_actors0_node_movies0_node.id = $this0_actors0_node_movies0_node_id
-      MERGE (this0_actors0_node)-[:ACTED_IN]->(this0_actors0_node_movies0_node)
-      MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
+    CREATE (this0_actors0:Actor)
+    SET this0_actors0.name = $this0_actors0_name
+      WITH this0, this0_actors0
+      CREATE (this0_actors0_movies0:Movie)
+      SET this0_actors0_movies0.id = $this0_actors0_movies0_id
+      MERGE (this0_actors0)-[:ACTED_IN]->(this0_actors0_movies0)
+      MERGE (this0)<-[:ACTED_IN]-(this0_actors0)
 
   RETURN this0
 }
@@ -227,13 +217,13 @@ CALL {
   SET this1.id = $this1_id
 
     WITH this1
-    CREATE (this1_actors0_node:Actor)
-    SET this1_actors0_node.name = $this1_actors0_node_name
-      WITH this1, this1_actors0_node
-      CREATE (this1_actors0_node_movies0_node:Movie)
-      SET this1_actors0_node_movies0_node.id = $this1_actors0_node_movies0_node_id
-      MERGE (this1_actors0_node)-[:ACTED_IN]->(this1_actors0_node_movies0_node)
-      MERGE (this1)<-[:ACTED_IN]-(this1_actors0_node)
+    CREATE (this1_actors0:Actor)
+    SET this1_actors0.name = $this1_actors0_name
+      WITH this1, this1_actors0
+      CREATE (this1_actors0_movies0:Movie)
+      SET this1_actors0_movies0.id = $this1_actors0_movies0_id
+      MERGE (this1_actors0)-[:ACTED_IN]->(this1_actors0_movies0)
+      MERGE (this1)<-[:ACTED_IN]-(this1_actors0)
 
   RETURN this1
 }
@@ -241,34 +231,29 @@ CALL {
 RETURN this0 { .id } AS this0, this1 { .id } AS this1
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this0_id": "1",
-    "this0_actors0_node_name": "actor 1",
-    "this0_actors0_node_movies0_node_id": "10",
+    "this0_actors0_name": "actor 1",
+    "this0_actors0_movies0_id": "10",
     "this1_id": "2",
-    "this1_actors0_node_name": "actor 2",
-    "this1_actors0_node_movies0_node_id": "20"
+    "this1_actors0_name": "actor 2",
+    "this1_actors0_movies0_id": "20"
 }
 ```
 
 ---
 
-## Simple create and connect
+### Simple create and connect
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
     createMovies(
-        input: [
-            {
-                id: 1
-                actors: { connect: [{ where: { node: { name: "Dan" } } }] }
-            }
-        ]
+        input: [{ id: 1, actors: { connect: [{ where: { name: "Dan" } }] } }]
     ) {
         movies {
             id
@@ -277,7 +262,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 CALL {
@@ -287,10 +272,10 @@ CALL {
     WITH this0
     CALL {
         WITH this0
-        OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-        WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_name
-        FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
+        OPTIONAL MATCH (this0_actors_connect0:Actor)
+        WHERE this0_actors_connect0.name = $this0_actors_connect0_name
+        FOREACH(_ IN CASE this0_actors_connect0 WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0)
         )
         RETURN count(*)
     }
@@ -301,12 +286,12 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this0_id": "1",
-    "this0_actors_connect0_node_name": "Dan"
+    "this0_actors_connect0_name": "Dan"
 }
 ```
 

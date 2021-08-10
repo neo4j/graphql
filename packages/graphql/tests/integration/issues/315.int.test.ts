@@ -82,75 +82,51 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
                 friends: {
                     create: [
                         {
-                            node: {
-                                id: generate({ charset: "alphabetic" }),
-                                posts: {
-                                    create: [
-                                        {
-                                            node: {
-                                                content: generate({ charset: "alphabetic" }),
-                                            },
-                                        },
-                                        {
-                                            node: {
-                                                content: generate({ charset: "alphabetic" }),
-                                            },
-                                        },
-                                        {
-                                            node: {
-                                                content: generate({ charset: "alphabetic" }),
-                                            },
-                                        },
-                                    ],
-                                },
+                            id: generate({ charset: "alphabetic" }),
+                            posts: {
+                                create: [
+                                    {
+                                        content: generate({ charset: "alphabetic" }),
+                                    },
+                                    {
+                                        content: generate({ charset: "alphabetic" }),
+                                    },
+                                    {
+                                        content: generate({ charset: "alphabetic" }),
+                                    },
+                                ],
                             },
                         },
                         {
-                            node: {
-                                id: generate({ charset: "alphabetic" }),
-                                posts: {
-                                    create: [
-                                        {
-                                            node: {
-                                                content: generate({ charset: "alphabetic" }),
-                                            },
-                                        },
-                                        {
-                                            node: {
-                                                content: generate({ charset: "alphabetic" }),
-                                            },
-                                        },
-                                        {
-                                            node: {
-                                                content: generate({ charset: "alphabetic" }),
-                                            },
-                                        },
-                                    ],
-                                },
+                            id: generate({ charset: "alphabetic" }),
+                            posts: {
+                                create: [
+                                    {
+                                        content: generate({ charset: "alphabetic" }),
+                                    },
+                                    {
+                                        content: generate({ charset: "alphabetic" }),
+                                    },
+                                    {
+                                        content: generate({ charset: "alphabetic" }),
+                                    },
+                                ],
                             },
                         },
                         {
-                            node: {
-                                id: generate({ charset: "alphabetic" }),
-                                posts: {
-                                    create: [
-                                        {
-                                            node: {
-                                                content: generate({ charset: "alphabetic" }),
-                                            },
-                                        },
-                                        {
-                                            node: {
-                                                content: generate({ charset: "alphabetic" }),
-                                            },
-                                        },
-                                        {
-                                            node: {
-                                                content: generate({ charset: "alphabetic" }),
-                                            },
-                                        },
-                                    ],
-                                },
+                            id: generate({ charset: "alphabetic" }),
+                            posts: {
+                                create: [
+                                    {
+                                        content: generate({ charset: "alphabetic" }),
+                                    },
+                                    {
+                                        content: generate({ charset: "alphabetic" }),
+                                    },
+                                    {
+                                        content: generate({ charset: "alphabetic" }),
+                                    },
+                                ],
                             },
                         },
                     ],
@@ -158,19 +134,13 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
                 posts: {
                     create: [
                         {
-                            node: {
-                                content: generate({ charset: "alphabetic" }),
-                            },
+                            content: generate({ charset: "alphabetic" }),
                         },
                         {
-                            node: {
-                                content: generate({ charset: "alphabetic" }),
-                            },
+                            content: generate({ charset: "alphabetic" }),
                         },
                         {
-                            node: {
-                                content: generate({ charset: "alphabetic" }),
-                            },
+                            content: generate({ charset: "alphabetic" }),
                         },
                     ],
                 },
@@ -213,7 +183,7 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
             const mutationResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver },
                 variableValues: { input },
             });
 
@@ -230,7 +200,7 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
             const queryResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver },
                 variableValues: {
                     userID,
                 },

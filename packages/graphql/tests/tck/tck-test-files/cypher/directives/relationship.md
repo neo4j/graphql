@@ -1,10 +1,10 @@
-# Cypher relationship
+## Cypher relationship
 
 Tests for queries on relationships.
 
 Schema:
 
-```graphql
+```schema
 type Actor {
     name: String
     movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
@@ -20,9 +20,9 @@ type Movie {
 
 ---
 
-## Simple relation
+### Simple relation
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -35,24 +35,24 @@ type Movie {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Movie)
 RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor) | this_topActor { .name } ]) } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {}
 ```
 
 ---
 
-## Many relation
+### Many relation
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -65,24 +65,24 @@ RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Movie)
 RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor) | this_actors { .name } ] } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {}
 ```
 
 ---
 
-## Nested relation
+### Nested relation
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -98,7 +98,7 @@ RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor) | this_a
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Movie)
@@ -113,17 +113,17 @@ RETURN this {
 } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {}
 ```
 
 ---
 
-## Nested relation with params
+### Nested relation with params
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -139,7 +139,7 @@ RETURN this {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Movie)
@@ -155,9 +155,9 @@ RETURN this {
 } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_title": "some title",
     "this_topActor_name": "top actor",

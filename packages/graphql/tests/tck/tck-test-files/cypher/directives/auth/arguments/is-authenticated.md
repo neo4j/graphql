@@ -1,10 +1,10 @@
-# Cypher Auth isAuthenticated
+## Cypher Auth isAuthenticated
 
 Tests auth isAuthenticated operation
 
 Schema:
 
-```graphql
+```schema
 type History {
     url: String @auth(rules: [{ operations: [READ], isAuthenticated: true }])
 }
@@ -31,18 +31,16 @@ extend type User
         ]
     )
 
-extend type Post
-    @auth(
-        rules: [
-            { operations: [CONNECT, DISCONNECT, DELETE], isAuthenticated: true }
-        ]
-    )
+extend type Post @auth(rules: [{ operations: [CONNECT, DISCONNECT, DELETE], isAuthenticated: true }])
 
 extend type User {
     password: String
         @auth(
             rules: [
-                { operations: [READ, CREATE, UPDATE], isAuthenticated: true }
+                {
+                    operations: [READ, CREATE, UPDATE]
+                    isAuthenticated: true
+                }
             ]
         )
 }
@@ -56,9 +54,9 @@ extend type User {
 
 ---
 
-## Read Node
+### Read Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -69,7 +67,7 @@ extend type User {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -77,24 +75,28 @@ CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticate
 RETURN this { .id, .name } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "auth": {
-        "isAuthenticated": true,
-        "roles": ["admin"],
-        "jwt": {
-            "roles": ["admin"],
-            "sub": "super_admin"
-        }
+      "isAuthenticated": true,
+      "roles": [
+        "admin"
+      ],
+      "jwt": {
+        "roles": [
+            "admin"
+        ],
+        "sub": "super_admin"
+      }
     }
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -103,9 +105,9 @@ RETURN this { .id, .name } as this
 
 ---
 
-## Read Node & Field
+### Read Node & Field
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -117,7 +119,7 @@ RETURN this { .id, .name } as this
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -127,24 +129,26 @@ CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticate
 RETURN this { .id, .name, .password } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "auth": {
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": ["admin"],
+            "roles": [
+                "admin"
+            ],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -153,9 +157,9 @@ RETURN this { .id, .name, .password } as this
 
 ---
 
-## Read Node & Cypher Field
+### Read Node & Cypher Field
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -167,7 +171,7 @@ RETURN this { .id, .name, .password } as this
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -179,24 +183,26 @@ RETURN this {
 } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "auth": {
-        "isAuthenticated": true,
-        "roles": ["admin"],
-        "jwt": {
-            "roles": ["admin"],
+       "isAuthenticated": true,
+       "roles": ["admin"],
+       "jwt": {
+            "roles": [
+                "admin"
+            ],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -205,9 +211,9 @@ RETURN this {
 
 ---
 
-## Create Node
+### Create Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -219,7 +225,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 CALL {
@@ -233,25 +239,27 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this0_id": "1",
     "auth": {
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": ["admin"],
+            "roles": [
+                "admin"
+            ],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -260,9 +268,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-## Create Node & Field
+### Create Node & Field
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -274,7 +282,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 CALL {
@@ -291,9 +299,9 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this0_id": "1",
     "this0_password": "super-password",
@@ -301,16 +309,18 @@ RETURN this0 { .id } AS this0
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": ["admin"],
+            "roles": [
+                "admin"
+            ],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -319,9 +329,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-## Update Node
+### Update Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -333,7 +343,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -347,9 +357,9 @@ SET this.id = $this_update_id
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_id": "1",
     "this_update_id": "id-1",
@@ -357,16 +367,18 @@ RETURN this { .id } AS this
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": ["admin"],
+            "roles": [
+                "admin"
+            ],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -375,9 +387,9 @@ RETURN this { .id } AS this
 
 ---
 
-## Update Node & Field
+### Update Node & Field
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -389,7 +401,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -403,9 +415,9 @@ SET this.password = $this_update_password
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_id": "1",
     "this_update_password": "password",
@@ -413,16 +425,18 @@ RETURN this { .id } AS this
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": ["admin"],
+            "roles": [
+                "admin"
+            ],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -431,9 +445,9 @@ RETURN this { .id } AS this
 
 ---
 
-## Connect
+### Connect
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -445,7 +459,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -453,13 +467,13 @@ MATCH (this:User)
 WITH this
 CALL {
     WITH this
-    OPTIONAL MATCH (this_connect_posts0_node:Post)
+    OPTIONAL MATCH (this_connect_posts0:Post)
 
-    WITH this, this_connect_posts0_node
+    WITH this, this_connect_posts0
     CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0]) AND apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
 
-    FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+    FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this)-[:HAS_POST]->(this_connect_posts0)
     )
     RETURN count(*)
 }
@@ -467,24 +481,26 @@ CALL {
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "auth": {
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": ["admin"],
+            "roles": [
+                "admin"
+            ],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -493,9 +509,9 @@ RETURN this { .id } AS this
 
 ---
 
-## Disconnect
+### Disconnect
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -507,7 +523,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -523,31 +539,26 @@ FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END | DELETE
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "auth": {
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": ["admin"],
+            "roles": [
+                "admin"
+            ],
             "sub": "super_admin"
-        }
-    },
-    "updateUsers": {
-        "args": {
-            "disconnect": {
-                "posts": [{}]
-            }
         }
     }
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -556,9 +567,9 @@ RETURN this { .id } AS this
 
 ---
 
-## Delete
+### Delete
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -568,7 +579,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -579,24 +590,26 @@ CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticate
 DETACH DELETE this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "auth": {
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": ["admin"],
+            "roles": [
+                "admin"
+            ],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -605,9 +618,9 @@ DETACH DELETE this
 
 ---
 
-## Nested Delete
+### Nested Delete
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -617,13 +630,13 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
 
 WITH this
-OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
+OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
 WITH this, this_posts0
 CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
 
@@ -637,24 +650,26 @@ CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticate
 DETACH DELETE this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "auth": {
         "isAuthenticated": true,
         "roles": ["admin"],
         "jwt": {
-            "roles": ["admin"],
+            "roles": [
+                "admin"
+            ],
             "sub": "super_admin"
         }
     }
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "super_admin",
     "roles": ["admin"]

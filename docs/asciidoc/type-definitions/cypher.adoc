@@ -1,5 +1,5 @@
 [[type-definitions-cypher]]
-= `@cypher` directive
+= `@cypher` Directive
 
 The `@cypher` directive binds a GraphQL field to the result(s) of a Cypher query.
 
@@ -16,7 +16,7 @@ directive @cypher(
 
 == Character Escaping
 
-All double quotes must be _double escaped_ when used in a @cypher directive - once for GraphQL and once for the function in which the Cypher is wrapped. For example, at its simplest:
+All double quotes must be _double escaped_ when used in a @cypher directive - once for GraphQL and once for the function in which we run the Cypher. For example, at its simplest:
 
 [source, graphql]
 ----
@@ -171,7 +171,7 @@ The downside of the latter approach is that you will need to adjust the return o
 [[type-definitions-cypher-object-usage]]
 === On an object type field
 
-In the example below, a field `similarMovies` is bound to the `Movie` type, to find other movies with an overlap of actors:
+Below we add a field `similarMovies` to our Movie, which is bound to a Cypher query, to find other movies with an overlap of actors;
 
 [source, graphql]
 ----
@@ -201,7 +201,7 @@ type Movie {
 
 === On a Query type field
 
-The example below demonstrates a simple Query to return all of the actors in the database:
+Below we add a simple Query to return all of the actors in the database.
 
 [source, graphql]
 ----
@@ -223,7 +223,7 @@ type Query {
 
 === On a Mutation type field
 
-The example below demonstrates a simple Mutation using a Cypher query to insert a single actor with the specified name argument:
+Below we add a simple Mutation using a Cypher query to insert a single actor with the specified name argument.
 
 [source, graphql]
 ----

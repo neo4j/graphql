@@ -1,10 +1,10 @@
-# Cypher Auth Where
+## Cypher Auth Where
 
 Tests auth `where` operations
 
 Schema:
 
-```graphql
+```schema
 union Search = Post
 
 type User {
@@ -32,14 +32,24 @@ extend type User
 
 extend type User {
     password: String!
-        @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
+        @auth(
+            rules: [
+                {
+                    operations: [READ]
+                    where: { id: "$jwt.sub" }
+                }
+            ]
+        )
 }
 
 extend type Post {
     secretKey: String!
         @auth(
             rules: [
-                { operations: [READ], where: { creator: { id: "$jwt.sub" } } }
+                {
+                    operations: [READ]
+                    where: { creator: { id: "$jwt.sub" } }
+                }
             ]
         )
 }
@@ -57,9 +67,9 @@ extend type Post
 
 ---
 
-## Read Node
+### Read Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -69,7 +79,7 @@ extend type Post
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -77,17 +87,17 @@ WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 RETURN this { .id } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -96,9 +106,9 @@ RETURN this { .id } as this
 
 ---
 
-## Read Node + User Defined Where
+### Read Node + User Defined Where
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -108,7 +118,7 @@ RETURN this { .id } as this
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -116,18 +126,18 @@ WHERE this.name = $this_name AND this.id IS NOT NULL AND this.id = $this_auth_wh
 RETURN this { .id } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01",
     "this_name": "bob"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -136,9 +146,9 @@ RETURN this { .id } as this
 
 ---
 
-## Read Relationship
+### Read Relationship
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -151,7 +161,7 @@ RETURN this { .id } as this
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -162,18 +172,18 @@ RETURN this {
 } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01",
     "this_posts_auth_where0_creator_id": "id-01"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -182,124 +192,9 @@ RETURN this {
 
 ---
 
-## Read Connection
+### Read Union Relationship + User Defined Where
 
-### GraphQL Input
-
-```graphql
-{
-    users {
-        id
-        postsConnection {
-            edges {
-                node {
-                    content
-                }
-            }
-        }
-    }
-}
-```
-
-### Expected Cypher Output
-
-```cypher
-MATCH (this:User)
-WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
-CALL {
-    WITH this MATCH (this)-[this_has_post:HAS_POST]->(this_post:Post)
-    WHERE EXISTS((this_post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_where0_creator_id)
-    WITH collect({ node: { content: this_post.content } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS postsConnection
-}
-RETURN this { .id, postsConnection } as this
-```
-
-### Expected Cypher Params
-
-```json
-{
-    "this_auth_where0_id": "id-01",
-    "this_post_auth_where0_creator_id": "id-01"
-}
-```
-
-### JWT Object
-
-```json
-{
-    "sub": "id-01",
-    "roles": ["admin"]
-}
-```
-
----
-
-## Read Connection + User Defined Where
-
-### GraphQL Input
-
-```graphql
-{
-    users {
-        id
-        postsConnection(where: { node: { id: "some-id" } }) {
-            edges {
-                node {
-                    content
-                }
-            }
-        }
-    }
-}
-```
-
-### Expected Cypher Output
-
-```cypher
-MATCH (this:User)
-WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
-CALL {
-    WITH this MATCH (this)-[this_has_post:HAS_POST]->(this_post:Post)
-    WHERE this_post.id = $this_postsConnection.args.where.node.id AND EXISTS((this_post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_where0_creator_id)
-    WITH collect({ node: { content: this_post.content } }) AS edges
-    RETURN { edges: edges, totalCount: size(edges) } AS postsConnection
-}
-RETURN this { .id, postsConnection } as this
-```
-
-### Expected Cypher Params
-
-```json
-{
-    "this_auth_where0_id": "id-01",
-    "this_post_auth_where0_creator_id": "id-01",
-    "this_postsConnection": {
-        "args": {
-            "where": {
-                "node": {
-                    "id": "some-id"
-                }
-            }
-        }
-    }
-}
-```
-
-### JWT Object
-
-```json
-{
-    "sub": "id-01",
-    "roles": ["admin"]
-}
-```
-
----
-
-## Read Union Relationship + User Defined Where
-
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -312,7 +207,7 @@ RETURN this { .id, postsConnection } as this
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -324,9 +219,9 @@ RETURN this {
 } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_posts_content": "cool",
     "this_auth_where0_id": "id-01",
@@ -334,9 +229,9 @@ RETURN this {
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -345,9 +240,9 @@ RETURN this {
 
 ---
 
-## Read Union
+### Read Union
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -362,7 +257,7 @@ RETURN this {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -373,18 +268,18 @@ RETURN this {
 } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01",
     "this_content_Post_auth_where0_creator_id": "id-01"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -393,142 +288,9 @@ RETURN this {
 
 ---
 
-## Read Union Using Connection
+### Update Node
 
-### GraphQL Input
-
-```graphql
-{
-    users {
-        id
-        contentConnection {
-            edges {
-                node {
-                    ... on Post {
-                        id
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
-### Expected Cypher Output
-
-```cypher
-MATCH (this:User)
-WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
-CALL {
-    WITH this
-    CALL {
-        WITH this
-        OPTIONAL MATCH (this)-[this_has_post:HAS_POST]->(this_Post:Post)
-        WHERE EXISTS((this_Post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)
-        WITH { node: { __resolveType: "Post", id: this_Post.id } } AS edge
-        RETURN edge
-    }
-    WITH collect(edge) as edges, count(edge) as totalCount
-    RETURN { edges: edges, totalCount: totalCount } AS contentConnection
-}
-RETURN this { .id, contentConnection } as this
-```
-
-### Expected Cypher Params
-
-```json
-{
-    "this_auth_where0_id": "id-01",
-    "this_Post_auth_where0_creator_id": "id-01"
-}
-```
-
-### JWT Object
-
-```json
-{
-    "sub": "id-01",
-    "roles": ["admin"]
-}
-```
-
----
-
-## Read Union Using Connection + User Defined Where
-
-### GraphQL Input
-
-```graphql
-{
-    users {
-        id
-        contentConnection(where: { Post: { node: { id: "some-id" } } }) {
-            edges {
-                node {
-                    ... on Post {
-                        id
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
-### Expected Cypher Output
-
-```cypher
-MATCH (this:User)
-WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
-CALL {
-    WITH this
-    CALL {
-        WITH this
-        OPTIONAL MATCH (this)-[this_has_post:HAS_POST]->(this_Post:Post)
-        WHERE this_Post.id = $this_contentConnection.args.where.Post.node.id AND EXISTS((this_Post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)
-        WITH { node: { __resolveType: "Post", id: this_Post.id } } AS edge
-        RETURN edge
-    }
-    WITH collect(edge) as edges, count(edge) as totalCount
-    RETURN { edges: edges, totalCount: totalCount } AS contentConnection
-}
-RETURN this { .id, contentConnection } as this
-```
-
-### Expected Cypher Params
-
-```json
-{
-    "this_auth_where0_id": "id-01",
-    "this_Post_auth_where0_creator_id": "id-01",
-    "this_contentConnection": {
-        "args": {
-            "where": {
-                "Post": {
-                    "node": {
-                        "id": "some-id"
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
-### JWT Object
-
-```json
-{
-    "sub": "id-01",
-    "roles": ["admin"]
-}
-```
-
----
-
-## Update Node
-
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -540,7 +302,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -549,18 +311,18 @@ SET this.name = $this_update_name
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_update_name": "Bob",
     "this_auth_where0_id": "id-01"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -569,9 +331,9 @@ RETURN this { .id } AS this
 
 ---
 
-## Update Node + User Defined Where
+### Update Node + User Defined Where
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -583,7 +345,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -592,9 +354,9 @@ SET this.name = $this_update_name
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_update_name": "Bob",
     "this_auth_where0_id": "id-01",
@@ -602,9 +364,9 @@ RETURN this { .id } AS this
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -613,13 +375,13 @@ RETURN this { .id } AS this
 
 ---
 
-## Update Nested Node
+### Update Nested Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
-    updateUsers(update: { posts: { update: { node: { id: "new-id" } } } }) {
+    updateUsers(update: { posts: { update: { id: "new-id" } } }) {
         users {
             id
             posts {
@@ -630,16 +392,16 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 
-WITH this OPTIONAL MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
+WITH this OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
 WHERE EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_auth_where0_creator_id)
 
-CALL apoc.do.when(this_posts0 IS NOT NULL, " SET this_posts0.id = $this_update_posts0_id RETURN count(*) ", "", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id}) YIELD value as _
+CALL apoc.do.when(this_posts0 IS NOT NULL, " SET this_posts0.id = $this_update_posts0_id RETURN count(*) ", "", {this:this, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id}) YIELD value as _
 
 RETURN this {
     .id,
@@ -647,43 +409,32 @@ RETURN this {
 } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_posts_auth_where0_creator_id": "id-01",
     "this_posts0_auth_where0_creator_id": "id-01",
     "this_update_posts0_id": "new-id",
     "this_auth_where0_id": "id-01",
     "auth": {
-        "isAuthenticated": true,
-        "jwt": {
-            "roles": ["admin"],
-            "sub": "id-01"
-        },
-        "roles": ["admin"]
-    },
-    "updateUsers": {
-        "args": {
-            "update": {
-                "posts": [
-                    {
-                        "update": {
-                            "node": {
-                                "id": "new-id"
-                            }
-                        }
-                    }
-                ]
-            }
-        }
+      "isAuthenticated": true,
+      "jwt": {
+        "roles": [
+          "admin"
+        ],
+        "sub": "id-01"
+      },
+      "roles": [
+        "admin"
+      ]
     }
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -692,9 +443,9 @@ RETURN this {
 
 ---
 
-## Delete Node
+### Delete Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -704,7 +455,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -712,17 +463,17 @@ WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 DETACH DELETE this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -731,9 +482,9 @@ DETACH DELETE this
 
 ---
 
-## Delete Node + User Defined Where
+### Delete Node + User Defined Where
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -743,7 +494,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -751,18 +502,18 @@ WHERE this.name = $this_name AND this.id IS NOT NULL AND this.id = $this_auth_wh
 DETACH DELETE this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01",
     "this_name": "Bob"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -771,9 +522,9 @@ DETACH DELETE this
 
 ---
 
-## Delete Nested Node
+### Delete Nested Node
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -783,14 +534,14 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 
 WITH this
-OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
+OPTIONAL MATCH (this)-[:HAS_POST]->(this_posts0:Post)
 WHERE EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_auth_where0_creator_id)
 
 FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_posts0 )
@@ -798,18 +549,18 @@ FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE thi
 DETACH DELETE this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01",
     "this_posts0_auth_where0_creator_id": "id-01"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -818,9 +569,9 @@ DETACH DELETE this
 
 ---
 
-## Connect Node (from create)
+### Connect Node (from create)
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -830,7 +581,7 @@ mutation {
                 id: "123"
                 name: "Bob"
                 password: "password"
-                posts: { connect: { where: { node: {} } } }
+                posts: { connect: { where: {} } }
             }
         ]
     ) {
@@ -841,7 +592,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 CALL {
@@ -853,10 +604,10 @@ CALL {
     WITH this0
     CALL {
         WITH this0
-        OPTIONAL MATCH (this0_posts_connect0_node:Post)
-        WHERE EXISTS((this0_posts_connect0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_posts_connect0_node_auth_where0_creator_id)
+        OPTIONAL MATCH (this0_posts_connect0:Post)
+        WHERE EXISTS((this0_posts_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_posts_connect0_auth_where0_creator_id)
 
-        FOREACH(_ IN CASE this0_posts_connect0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node) )
+        FOREACH(_ IN CASE this0_posts_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0) )
 
         RETURN count(*)
     }
@@ -867,20 +618,20 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this0_id": "123",
     "this0_name": "Bob",
     "this0_password": "password",
-    "this0_posts_connect0_node_auth_where0_creator_id": "id-01"
+    "this0_posts_connect0_auth_where0_creator_id": "id-01"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -889,9 +640,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-## Connect Node + User Defined Where (from create)
+### Connect Node + User Defined Where (from create)
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -901,7 +652,7 @@ mutation {
                 id: "123"
                 name: "Bob"
                 password: "password"
-                posts: { connect: { where: { node: { id: "post-id" } } } }
+                posts: { connect: { where: { id: "post-id" } } }
             }
         ]
     ) {
@@ -912,7 +663,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 CALL {
@@ -923,10 +674,10 @@ CALL {
     WITH this0
     CALL {
         WITH this0
-        OPTIONAL MATCH (this0_posts_connect0_node:Post)
-        WHERE this0_posts_connect0_node.id = $this0_posts_connect0_node_id AND EXISTS((this0_posts_connect0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_posts_connect0_node_auth_where0_creator_id)
+        OPTIONAL MATCH (this0_posts_connect0:Post)
+        WHERE this0_posts_connect0.id = $this0_posts_connect0_id AND EXISTS((this0_posts_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_posts_connect0_auth_where0_creator_id)
 
-        FOREACH(_ IN CASE this0_posts_connect0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node) )
+        FOREACH(_ IN CASE this0_posts_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0) )
 
         RETURN count(*)
     }
@@ -936,21 +687,21 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this0_id": "123",
     "this0_name": "Bob",
     "this0_password": "password",
-    "this0_posts_connect0_node_auth_where0_creator_id": "id-01",
-    "this0_posts_connect0_node_id": "post-id"
+    "this0_posts_connect0_auth_where0_creator_id": "id-01",
+    "this0_posts_connect0_id": "post-id"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -959,13 +710,13 @@ RETURN this0 { .id } AS this0
 
 ---
 
-## Connect Node (from update update)
+### Connect Node (from update update)
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
-    updateUsers(update: { posts: { connect: { where: { node: {} } } } }) {
+    updateUsers(update: { posts: { connect: { where: {} } } }) {
         users {
             id
         }
@@ -973,7 +724,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -986,10 +737,10 @@ WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 WITH this
 CALL {
     WITH this
-    OPTIONAL MATCH (this_posts0_connect0_node:Post)
-    WHERE EXISTS((this_posts0_connect0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_connect0_node_auth_where0_creator_id)
+    OPTIONAL MATCH (this_posts0_connect0:Post)
+    WHERE EXISTS((this_posts0_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_connect0_auth_where0_creator_id)
 
-    FOREACH(_ IN CASE this_posts0_connect0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node) )
+    FOREACH(_ IN CASE this_posts0_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0) )
 
     RETURN count(*)
 }
@@ -997,18 +748,18 @@ CALL {
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01",
-    "this_posts0_connect0_node_auth_where0_creator_id": "id-01"
+    "this_posts0_connect0_auth_where0_creator_id": "id-01"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1017,15 +768,13 @@ RETURN this { .id } AS this
 
 ---
 
-## Connect Node + User Defined Where (from update update)
+### Connect Node + User Defined Where (from update update)
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
-    updateUsers(
-        update: { posts: { connect: { where: { node: { id: "new-id" } } } } }
-    ) {
+    updateUsers(update: { posts: { connect: { where: { id: "new-id" } } } }) {
         users {
             id
         }
@@ -1033,7 +782,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -1045,10 +794,10 @@ WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 WITH this
 CALL {
     WITH this
-    OPTIONAL MATCH (this_posts0_connect0_node:Post)
-    WHERE this_posts0_connect0_node.id = $this_posts0_connect0_node_id AND EXISTS((this_posts0_connect0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_connect0_node_auth_where0_creator_id)
+    OPTIONAL MATCH (this_posts0_connect0:Post)
+    WHERE this_posts0_connect0.id = $this_posts0_connect0_id AND EXISTS((this_posts0_connect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_connect0_auth_where0_creator_id)
 
-    FOREACH(_ IN CASE this_posts0_connect0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node) )
+    FOREACH(_ IN CASE this_posts0_connect0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0) )
 
     RETURN count(*)
 }
@@ -1056,19 +805,19 @@ CALL {
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01",
-    "this_posts0_connect0_node_auth_where0_creator_id": "id-01",
-    "this_posts0_connect0_node_id": "new-id"
+    "this_posts0_connect0_auth_where0_creator_id": "id-01",
+    "this_posts0_connect0_id": "new-id"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1077,13 +826,13 @@ RETURN this { .id } AS this
 
 ---
 
-## Connect Node (from update connect)
+### Connect Node (from update connect)
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
-    updateUsers(connect: { posts: { where: { node: {} } } }) {
+    updateUsers(connect: { posts: { where: {} } }) {
         users {
             id
         }
@@ -1091,7 +840,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -1103,10 +852,10 @@ WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 WITH this
 CALL {
     WITH this
-    OPTIONAL MATCH (this_connect_posts0_node:Post)
-    WHERE EXISTS((this_connect_posts0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_posts0_node_auth_where0_creator_id)
+    OPTIONAL MATCH (this_connect_posts0:Post)
+    WHERE EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_posts0_auth_where0_creator_id)
 
-    FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0_node) )
+    FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0) )
 
     RETURN count(*)
 }
@@ -1114,18 +863,18 @@ CALL {
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01",
-    "this_connect_posts0_node_auth_where0_creator_id": "id-01"
+    "this_connect_posts0_auth_where0_creator_id": "id-01"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1134,13 +883,13 @@ RETURN this { .id } AS this
 
 ---
 
-## Connect Node + User Defined Where (from update connect)
+### Connect Node + User Defined Where (from update connect)
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
-    updateUsers(connect: { posts: { where: { node: { id: "some-id" } } } }) {
+    updateUsers(connect: { posts: { where: { id: "some-id" } } }) {
         users {
             id
         }
@@ -1148,7 +897,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -1160,10 +909,10 @@ WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 WITH this
 CALL {
     WITH this
-    OPTIONAL MATCH (this_connect_posts0_node:Post)
-    WHERE this_connect_posts0_node.id = $this_connect_posts0_node_id AND EXISTS((this_connect_posts0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_posts0_node_auth_where0_creator_id)
+    OPTIONAL MATCH (this_connect_posts0:Post)
+    WHERE this_connect_posts0.id = $this_connect_posts0_id AND EXISTS((this_connect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_posts0_auth_where0_creator_id)
 
-    FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0_node) )
+    FOREACH(_ IN CASE this_connect_posts0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0) )
 
     RETURN count(*)
 }
@@ -1171,19 +920,19 @@ CALL {
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01",
-    "this_connect_posts0_node_auth_where0_creator_id": "id-01",
-    "this_connect_posts0_node_id": "some-id"
+    "this_connect_posts0_auth_where0_creator_id": "id-01",
+    "this_connect_posts0_id": "some-id"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1192,9 +941,9 @@ RETURN this { .id } AS this
 
 ---
 
-## Disconnect Node (from update update)
+### Disconnect Node (from update update)
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -1206,7 +955,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -1224,18 +973,18 @@ FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | DELET
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01",
     "this_posts0_disconnect0_auth_where0_creator_id": "id-01"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1244,16 +993,14 @@ RETURN this { .id } AS this
 
 ---
 
-## Disconnect Node + User Defined Where (from update update)
+### Disconnect Node + User Defined Where (from update update)
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
     updateUsers(
-        update: {
-            posts: [{ disconnect: { where: { node: { id: "new-id" } } } }]
-        }
+        update: { posts: { disconnect: { where: { id: "new-id" } } } }
     ) {
         users {
             id
@@ -1262,7 +1009,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -1272,44 +1019,26 @@ WITH this
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 
 WITH this
-OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post) WHERE this_posts0_disconnect0.id = $updateUsers.args.update.posts[0].disconnect[0].where.node.id AND EXISTS((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id)
+OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post) WHERE this_posts0_disconnect0.id = $this_posts0_disconnect0_id AND EXISTS((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id)
 
 FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | DELETE this_posts0_disconnect0_rel )
 
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01",
     "this_posts0_disconnect0_auth_where0_creator_id": "id-01",
-    "updateUsers": {
-        "args": {
-            "update": {
-                "posts": [
-                    {
-                        "disconnect": [
-                            {
-                                "where": {
-                                    "node": {
-                                        "id": "new-id"
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-    }
+    "this_posts0_disconnect0_id": "new-id"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1318,9 +1047,9 @@ RETURN this { .id } AS this
 
 ---
 
-## Disconnect Node (from update disconnect)
+### Disconnect Node (from update disconnect)
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -1332,7 +1061,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -1348,29 +1077,18 @@ FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01",
-    "this_disconnect_posts0_auth_where0_creator_id": "id-01",
-    "updateUsers": {
-        "args": {
-            "disconnect": {
-                "posts": [
-                    {
-                        "where": {}
-                    }
-                ]
-            }
-        }
-    }
+    "this_disconnect_posts0_auth_where0_creator_id": "id-01"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]
@@ -1379,13 +1097,13 @@ RETURN this { .id } AS this
 
 ---
 
-## Disconnect Node + User Defined Where (from update disconnect)
+### Disconnect Node + User Defined Where (from update disconnect)
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
-    updateUsers(disconnect: { posts: { where: { node: { id: "some-id" } } } }) {
+    updateUsers(disconnect: { posts: { where: { id: "some-id" } } }) {
         users {
             id
         }
@@ -1393,14 +1111,13 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 WITH this
-WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
-WITH this OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post) WHERE this_disconnect_posts0.id = $updateUsers.args.disconnect.posts[0].where.node.id AND EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0_auth_where0_creator_id)
+WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id WITH this OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post) WHERE this_disconnect_posts0.id = $this_disconnect_posts0_id AND EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0_auth_where0_creator_id)
 
 FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
     DELETE this_disconnect_posts0_rel
@@ -1409,33 +1126,19 @@ FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_auth_where0_id": "id-01",
     "this_disconnect_posts0_auth_where0_creator_id": "id-01",
-    "updateUsers": {
-        "args": {
-            "disconnect": {
-                "posts": [
-                    {
-                        "where": {
-                            "node": {
-                                "id": "some-id"
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-    }
+    "this_disconnect_posts0_id": "some-id"
 }
 ```
 
-### JWT Object
+**JWT Object**
 
-```json
+```jwt
 {
     "sub": "id-01",
     "roles": ["admin"]

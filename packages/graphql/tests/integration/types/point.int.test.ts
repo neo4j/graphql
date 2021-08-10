@@ -90,7 +90,7 @@ describe("Point", () => {
         const gqlResult = await graphql({
             schema: neoSchema.schema,
             source: create,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: { driver },
             variableValues: { id, size, longitude, latitude },
         });
 
@@ -157,7 +157,7 @@ describe("Point", () => {
         const gqlResult = await graphql({
             schema: neoSchema.schema,
             source: create,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: { driver },
             variableValues: { id, size, longitude, latitude, height },
         });
 
@@ -230,7 +230,7 @@ describe("Point", () => {
         const gqlResult = await graphql({
             schema: neoSchema.schema,
             source: update,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: { driver },
             variableValues: { id, longitude, latitude: newLatitude },
         });
 
@@ -304,7 +304,7 @@ describe("Point", () => {
         const gqlResult = await graphql({
             schema: neoSchema.schema,
             source: update,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: { driver },
             variableValues: { id, longitude, latitude: newLatitude, height },
         });
 
@@ -373,7 +373,7 @@ describe("Point", () => {
         const equalsResult = await graphql({
             schema: neoSchema.schema,
             source: photographsEqualsQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: { driver },
             variableValues: { longitude, latitude },
         });
 
@@ -408,7 +408,7 @@ describe("Point", () => {
         const inResult = await graphql({
             schema: neoSchema.schema,
             source: photographsInQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: { driver },
             variableValues: [
                 { longitude, latitude },
                 { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
@@ -446,7 +446,7 @@ describe("Point", () => {
         const notInResult = await graphql({
             schema: neoSchema.schema,
             source: photographsNotInQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: { driver },
             variableValues: [
                 { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
                 { longitude: parseFloat(faker.address.longitude()), latitude: parseFloat(faker.address.latitude()) },
@@ -486,7 +486,7 @@ describe("Point", () => {
         const lessThanResult = await graphql({
             schema: neoSchema.schema,
             source: photographsLessThanQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: { driver },
             variableValues: { longitude, latitude: latitude + 1 },
         });
 
@@ -523,7 +523,7 @@ describe("Point", () => {
         const greaterThanResult = await graphql({
             schema: neoSchema.schema,
             source: photographsGreaterThanQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: { driver },
             variableValues: { longitude, latitude: latitude + 1 },
         });
 
@@ -582,7 +582,7 @@ describe("Point", () => {
         const gqlResult = await graphql({
             schema: neoSchema.schema,
             source: photographsQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: { driver },
             variableValues: { longitude, latitude, height },
         });
 
