@@ -132,7 +132,7 @@ function createConnectionAndParams({
                                 context,
                                 nodeVariable: relatedNodeVariable,
                                 parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
-                                    resolveTree.name
+                                    resolveTree.alias
                                 }.edges.node`,
                             });
                             nestedSubqueries.push(nestedConnection[0]);
@@ -141,7 +141,7 @@ function createConnectionAndParams({
                                 ...globalParams,
                                 ...Object.entries(nestedConnection[1]).reduce<Record<string, unknown>>(
                                     (res, [k, v]) => {
-                                        if (k !== `${relatedNodeVariable}_${connectionResolveTree.name}`) {
+                                        if (k !== `${relatedNodeVariable}_${connectionResolveTree.alias}`) {
                                             res[k] = v;
                                         }
                                         return res;
@@ -150,13 +150,15 @@ function createConnectionAndParams({
                                 ),
                             };
 
-                            if (nestedConnection[1][`${relatedNodeVariable}_${connectionResolveTree.name}`]) {
+                            if (nestedConnection[1][`${relatedNodeVariable}_${connectionResolveTree.alias}`]) {
                                 if (!nestedConnectionFieldParams) nestedConnectionFieldParams = {};
                                 nestedConnectionFieldParams = {
                                     ...nestedConnectionFieldParams,
                                     ...{
-                                        [connectionResolveTree.name]:
-                                            nestedConnection[1][`${relatedNodeVariable}_${connectionResolveTree.name}`],
+                                        [connectionResolveTree.alias]:
+                                            nestedConnection[1][
+                                                `${relatedNodeVariable}_${connectionResolveTree.alias}`
+                                            ],
                                     },
                                 };
                             }
@@ -197,7 +199,7 @@ function createConnectionAndParams({
                         relationshipVariable,
                         context,
                         parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
-                            resolveTree.name
+                            resolveTree.alias
                         }.args.where.${n.name}`,
                     });
                     const [whereClause] = where;
@@ -268,7 +270,7 @@ function createConnectionAndParams({
                 relationshipVariable,
                 context,
                 parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
-                    resolveTree.name
+                    resolveTree.alias
                 }.args.where`,
             });
             const [whereClause] = where;
@@ -350,7 +352,7 @@ function createConnectionAndParams({
                         context,
                         nodeVariable: relatedNodeVariable,
                         parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
-                            resolveTree.name
+                            resolveTree.alias
                         }.edges.node`,
                     });
                     nestedSubqueries.push(nestedConnection[0]);
@@ -358,20 +360,20 @@ function createConnectionAndParams({
                     globalParams = {
                         ...globalParams,
                         ...Object.entries(nestedConnection[1]).reduce<Record<string, unknown>>((res, [k, v]) => {
-                            if (k !== `${relatedNodeVariable}_${connectionResolveTree.name}`) {
+                            if (k !== `${relatedNodeVariable}_${connectionResolveTree.alias}`) {
                                 res[k] = v;
                             }
                             return res;
                         }, {}),
                     };
 
-                    if (nestedConnection[1][`${relatedNodeVariable}_${connectionResolveTree.name}`]) {
+                    if (nestedConnection[1][`${relatedNodeVariable}_${connectionResolveTree.alias}`]) {
                         if (!nestedConnectionFieldParams) nestedConnectionFieldParams = {};
                         nestedConnectionFieldParams = {
                             ...nestedConnectionFieldParams,
                             ...{
-                                [connectionResolveTree.name]:
-                                    nestedConnection[1][`${relatedNodeVariable}_${connectionResolveTree.name}`],
+                                [connectionResolveTree.alias]:
+                                    nestedConnection[1][`${relatedNodeVariable}_${connectionResolveTree.alias}`],
                             },
                         };
                     }
@@ -403,7 +405,7 @@ function createConnectionAndParams({
     const params = {
         ...globalParams,
         ...((whereInput || nestedConnectionFieldParams) && {
-            [`${nodeVariable}_${resolveTree.name}`]: {
+            [`${nodeVariable}_${resolveTree.alias}`]: {
                 ...(whereInput && { args: { where: whereInput } }),
                 ...(nestedConnectionFieldParams && { edges: { node: { ...nestedConnectionFieldParams } } }),
             },
