@@ -109,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver },
             });
 
             expect(result.errors).toBeFalsy();
@@ -165,7 +165,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver },
             });
 
             expect(result.errors).toBeFalsy();

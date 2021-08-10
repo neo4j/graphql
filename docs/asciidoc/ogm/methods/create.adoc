@@ -1,0 +1,30 @@
+[[ogm-methods-create]]
+= Create
+
+Use to create many nodes. The `model.create` method maps to the underlying <<schema-mutations-create>> operation.
+
+== Usage
+[source, javascript]
+----
+const Movie = ogm.model("Movie");
+
+await Movie.create({ input: [{ title: "The Matrix" }] })
+----
+
+== Args
+
+=== `input`
+JavaScript object representation of the GraphQL `input` input type, used for <<schema-mutations-create>>.
+
+=== `selectionSet`
+
+Reference: <<ogm-selection-set>>
+
+=== `args`
+The arguments to the GraphQL Query.
+
+=== `context`
+The `context` for the GraphQL Query.
+
+=== `rootValue`
+The `rootValue` for the GraphQL Query.

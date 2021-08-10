@@ -51,14 +51,14 @@ function captureOrEmptyString(contents: string, re: RegExp): string {
     return "";
 }
 
-const nameRe = /##(?<capture>([^\n]+))/;
-const graphqlQueryRe = /### GraphQL Input\s+```graphql(?<capture>(.|\s)*?)```/;
-const graphqlParamsRe = /### GraphQL Params Input\s+```json(?<capture>(.|\s)*?)```/;
-const cypherQueryRe = /### Expected Cypher Output\s+```cypher(?<capture>(.|\s)*?)```/;
-const cypherParamsRe = /### Expected Cypher Params\s+```json(?<capture>(.|\s)*?)```/;
-const typeDefsInputRe = /### TypeDefs\s+```graphql(?<capture>(.|\s)*?)```/;
-const schemaOutputRe = /### Output\s+```graphql(?<capture>(.|\s)*?)```/;
-const jwtRe = /### JWT Object\s+```json(?<capture>(.|\s)*?)```/;
+const nameRe = /###(?<capture>([^\n]+))/;
+const graphqlQueryRe = /```graphql(?<capture>(.|\s)*?)```/;
+const graphqlParamsRe = /```graphql-params(?<capture>(.|\s)*?)```/;
+const cypherQueryRe = /```cypher(?<capture>(.|\s)*?)```/;
+const cypherParamsRe = /```cypher-params(?<capture>(.|\s)*?)```/;
+const typeDefsInputRe = /```typedefs-input(?<capture>(.|\s)*?)```/;
+const schemaOutputRe = /```schema-output(?<capture>(.|\s)*?)```/;
+const jwtRe = /```jwt(?<capture>(.|\s)*?)```/;
 const envVarsRe = /```env(?<capture>(.|\s)*?)```/;
 
 function extractTests(contents: string, kind: string): Test[] {
@@ -112,7 +112,7 @@ function extractTests(contents: string, kind: string): Test[] {
 }
 
 function extractSchema(contents: string): string {
-    const re = /Schema:\s+```graphql(?<capture>(.|\s)*?)```/;
+    const re = /```schema(?<capture>(.|\s)*?)```/;
     return captureOrEmptyString(contents, re);
 }
 
@@ -138,11 +138,7 @@ function generateTests(filePath, kind: string): TestCase {
 export function generateTestCasesFromMd(dir: string, kind = ""): TestCase[] {
     const files = fs.readdirSync(dir, { withFileTypes: true }).reduce((res: TestCase[], item) => {
         if (item.isFile()) {
-            try {
-                return [...res, generateTests(path.join(dir, item.name), kind)];
-            } catch {
-                throw new Error(`Error generating test ${path.join(dir, item.name)}`);
-            }
+            return [...res, generateTests(path.join(dir, item.name), kind)];
         }
 
         if (item.isDirectory()) {

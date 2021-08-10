@@ -18,25 +18,44 @@ ifdef::backend-pdf[]
 Documentation license: <<license, Creative Commons 4.0>>
 endif::[]
 
-> This is the documentation for the Neo4j GraphQL Library version 2.0, authored by the Neo4j GraphQL Team.
 
-This documentation covers the following topics:
+Welcome to the official documentation for the Neo4j GraphQL Library.
 
-- <<introduction>> - Introduction to the Neo4j GraphQL Library.
-- <<getting-started>> - Start here if you want to quickly get up and running with the library.
-- <<type-definitions>> - Define your nodes and relationships using type definitions as documented here.
-- <<queries>> - GraphQL Queries allow you to read data in your Neo4j database.
-- <<mutations>> - GraphQL Mutations allow you to change data in your Neo4j database.
-- <<filtering>> - This chapter covers how to filter your data in Queries and Mutations.
-- <<sorting>> - This chapter covers how to sort the data being returned.
-- <<pagination>> - This chapter covers the pagination options offered by the Neo4j GraphQL Library.
-- <<custom-resolvers>> - Learn how to implement custom functionality accessible through your API.
-- <<auth>> - Covers the authentication and authorisation options offered by this library.
-- <<directives>> - An index of all of the directives offered by the Neo4j GraphQL Library.
-- <<api-reference>> - API reference for constructing an instance of the library.
-- <<ogm>> - This chapter covers the OGM (Object Graph Mapper), a programmatic way of using your API.
-- <<driver-configuration>> - How to configure a database driver for use with this library.
-- <<guides>> - Guides for usage of the library, including migration guides for moving between versions.
-- <<troubleshooting>> - Having problems with the library? See if your problem has been found and solved before.
+== Introduction
 
-This manual is primarily written for software engineers building an API using the Neo4j GraphQL Library.
+In this section you will find; notes on background information, links and resources, dependencies and requirements, plus pointers on where to get support. If you are already familiar with Neo4j GraphQL, or just want to get started, then jump directly to <<getting-started>>.
+
+== Why Neo4j and GraphQL?
+
+Bringing the native graph storage of Neo4j to the GraphQL ecosystem has been a long time in the making. Translating your GraphQL queries to Cypher that the Neo4j database can understand means that we can easily eliminate the n+1 issue that plagues a lot of GraphQL implementations.
+
+== What is Neo4j GraphQL ?
+
+It is a GraphQL to Cypher query execution layer for Neo4j and **JavaScript** GraphQL implementations. Such an implementation makes it easier for developers to use Neo4j and GraphQL together.
+
+Taking a set of Type Definitions; we produce an executable GraphQL Schema, where a given GraphQL query is transformed into a single Cypher query. This translation means users can let the library handle all the database communications, and thus enabling users to focus on building great applications.
+
+Our GraphQL implementation exposes two products;
+
+1. `Neo4jGraphQL` - Used for GraphQL API's such as Apollo Server
+2. <<ogm>> - A Handy tool, to use in application code, driven by GraphQL Type Definitions.
+
+With a powerful feature set including;
+
+1. <<auth>>
+2. Nested Mutations
+
+Overall anyone in the Javascript ecosystem, wanting to use either Neo4j and or GraphQL should find Neo4j GraphQL an indispensable tool for building great applications.
+
+== Requirements
+1. https://neo4j.com/[Neo4j Database] 4.1.0 and above
+2. https://neo4j.com/developer/neo4j-apoc/[APOC] 4.1.0 and above
+
+== Resources
+1. https://github.com/neo4j/graphql[Github]
+2. https://github.com/neo4j/graphql/issues[Bug Tracker]
+3. https://www.npmjs.com/package/@neo4j/graphql[NPM]
+
+== Licence
+1. Documentation: link:{common-license-page-uri}[Creative Commons 4.0]
+2. Source: https://www.apache.org/licenses/LICENSE-2.0[Apache 2.0]

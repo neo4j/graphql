@@ -96,7 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
 
         try {
             await session.run(
-                `
+                `  
                     CREATE (post:Post {id: $postId, title: $postTitle, content: $postContent})
                     CREATE (comment1:Comment {id: $comment1Id, content: $comment1Content, flagged: true})
                     CREATE (comment2:Comment {id: $comment2Id, content: $comment2Content, flagged: false})
@@ -118,7 +118,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver },
             });
             expect(result.errors).toBeFalsy();
             expect(result?.data?.posts[0].flaggedComments).toContainEqual({

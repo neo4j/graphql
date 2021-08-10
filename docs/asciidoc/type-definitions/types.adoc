@@ -1,32 +1,33 @@
 [[type-definitions-types]]
 = Types
 
-Neo4j GraphQL supports all of the default GraphQL https://graphql.org/learn/schema/#scalar-types[scalar types] as well as additional scalar and object types specific to the Neo4j database.
+Neo4j GraphQL supports all of the default GraphQL https://graphql.org/learn/schema/#scalar-types[scalar types] as well as the additional scalar and object types specified in this document.
 
-== Int
+[[type-definitions-types-datetime]]
+== `DateTime`
+ISO datetime string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime[datetime] temporal type.
 
-One of the default GraphQL scalar types. Supports up to 53-bit values - see <<type-definitions-types-bigint>> for 64-bit value support.
+[source, graphql]
+----
+type User {
+    createdAt: DateTime
+}
+----
 
-== Float
+[[type-definitions-types-date]]
+== `Date`
+"yyyy-mm-dd" date string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-date[date] temporal type.
 
-One of the default GraphQL scalar types.
-
-== String
-
-One of the default GraphQL scalar types.
-
-== Boolean
-
-One of the default GraphQL scalar types.
-
-== ID
-
-One of the default GraphQL scalar types. Stored as a string in the database and always returned as a string.
+[source, graphql]
+----
+type Movie {
+    releaseDate: Date
+}
+----
 
 [[type-definitions-types-bigint]]
 == `BigInt`
-
-Supports up to 64 bit integers, serialized as strings in variables and in data responses. Shares the same <<filtering-numerical-operators>> as the other numeric types.
+Supports up to 64 bit integers, serialized as strings in variables and in data responses. Shares the same <<schema-filtering-numerical-operators>> as the other numeric types.
 
 [source, graphql]
 ----
@@ -46,32 +47,7 @@ query {
 }
 ----
 
-[[type-definitions-types-temporal]]
-== Temporal Types
-
-=== `DateTime`
-
-ISO datetime string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-datetime[datetime] temporal type.
-
-[source, graphql]
-----
-type User {
-    createdAt: DateTime
-}
-----
-
-=== `Date`
-
-"yyyy-mm-dd" date string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-date[date] temporal type.
-
-[source, graphql]
-----
-type Movie {
-    releaseDate: Date
-}
-----
-
-[[type-definitions-types-spatial]]
+[[type-definitions-types-spatial-types]]
 == Spatial Types
 
 Neo4j GraphQL spatial types translate to spatial values stored using https://neo4j.com/docs/cypher-manual/current/syntax/spatial[point] in the database. The use of either of these types in a GraphQL schema will automatically introduce the types needed to run queries and mutations relevant to these spatial types.
@@ -80,19 +56,6 @@ Neo4j GraphQL spatial types translate to spatial values stored using https://neo
 === `Point`
 
 The `Point` type is used to describe the two https://neo4j.com/docs/cypher-manual/current/syntax/spatial/#cypher-spatial-crs-geographic[Geographic coordinate reference systems] supported by Neo4j.
-
-In order to use it in your schema, you quite simply add a field with a type `Point` to any type or types in schema, like the following:
-
-[source, graphql]
-----
-type TypeWithPoint {
-    location: Point!
-}
-----
-
-Once this has been done, the `Point` type will be automatically added to your schema, in addition to all of the input and output types you will need to query and manipulate spatial types through your API.
-
-The rest of the documentation under this heading is documenting all of those automatically generated types and how to use them.
 
 ==== Type definition
 
@@ -156,7 +119,7 @@ mutation CreateUsers($name: String!, $longitude: Float!, $latitude: Float!) {
 
 ==== Filtering
 
-In addition to the <<filtering-numerical-operators>>, the `Point` type has an additional `_DISTANCE` filter. All of the filters take the following type as an argument:
+In addition to the <<schema-filtering-numerical-operators>>, the `Point` type has an additional `_DISTANCE` filter. All of the filters take the following type as an argument:
 
 [source, graphql]
 ----
@@ -194,19 +157,6 @@ query CloseByUsers($longitude: Float!, $latitude: Float!) {
 
 The `CartesianPoint` type is used to describe the two https://neo4j.com/docs/cypher-manual/current/syntax/spatial/#cypher-spatial-crs-cartesian[Cartesian coordinate reference systems] supported by Neo4j.
 
-In order to use it in your schema, you quite simply add a field with a type `CartesianPoint` to any type or types in schema, like the following:
-
-[source, graphql]
-----
-type TypeWithCartesianPoint {
-    location: CartesianPoint!
-}
-----
-
-Once this has been done, the `CartesianPoint` type will be automatically added to your schema, in addition to all of the input and output types you will need to query and manipulate spatial types through your API.
-
-The rest of the documentation under this heading is documenting all of those automatically generated types and how to use them.
-
 ==== Type definition
 
 [source, graphql]
@@ -233,7 +183,7 @@ input CartesianPointInput {
 
 ==== Filtering
 
-In addition to the <<filtering-numerical-operators>>, the `CartesianPoint` type has an additional `_DISTANCE` filter. All of the filters take the following type as an argument:
+In addition to the <<schema-filtering-numerical-operators>>, the `CartesianPoint` type has an additional `_DISTANCE` filter. All of the filters take the following type as an argument:
 
 [source, graphql]
 ----

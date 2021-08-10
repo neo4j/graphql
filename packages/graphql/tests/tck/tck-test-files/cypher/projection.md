@@ -1,8 +1,8 @@
-# Cypher Projection
+## Cypher Projection
 
 Schema:
 
-```graphql
+```schema
 type Product {
     id: ID!
     name: String
@@ -33,11 +33,11 @@ type Photo {
 
 ---
 
-## Multi Create With Projection
+### Multi Create With Projection
 
 Makes that the projection is generated correctly. Usage of `projection` var name.
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -63,7 +63,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 CALL {
@@ -95,9 +95,9 @@ this1 {
 } AS this1
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this0_id": "1",
     "this1_id": "2",

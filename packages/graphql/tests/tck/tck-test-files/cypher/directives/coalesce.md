@@ -1,10 +1,10 @@
-# Cypher coalesce()
+## Cypher coalesce()
 
 Tests for queries where queried fields are decorated with @coalesce
 
 Schema:
 
-```graphql
+```schema
 type User {
     id: ID! @coalesce(value: "00000000-00000000-00000000-00000000")
     name: String! @coalesce(value: "Jane Smith")
@@ -20,9 +20,9 @@ NEO4J_GRAPHQL_ENABLE_REGEX=1
 
 ---
 
-## Simple
+### Simple
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 query(
@@ -46,19 +46,11 @@ query(
 }
 ```
 
-### GraphQL Params Input
-
-```json
-{
-    "id": "Some ID",
-    "name": "Some name",
-    "verified": true,
-    "numberOfFriends": 10,
-    "rating": 3.5
-}
+```graphql-params
+{ "id": "Some ID", "name": "Some name", "verified": true, "numberOfFriends": 10, "rating": 3.5 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:User)
@@ -70,9 +62,9 @@ AND coalesce(this.rating, 2.5) < $this_rating_LT
 RETURN this { .name } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_id": "Some ID",
     "this_name_MATCHES": "Some name",
