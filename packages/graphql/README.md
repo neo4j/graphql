@@ -14,7 +14,7 @@
 
 A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations.
 
-1. [Documentation](https://neo4j.com/docs/graphql-manual/2.0/)
+1. [Documentation](https://neo4j.com/docs/graphql-manual/current/)
 
 ## Installation
 
