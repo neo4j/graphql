@@ -96,7 +96,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      AURA_URI_SECRET: AURA_${{ matrix.aura-instance }}_PASSWORD
+      AURA_URI_SECRET: AURA_${{ matrix.aura-instance }}_URI
       AURA_PASSWORD_SECRET: AURA_${{ matrix.aura-instance }}_PASSWORD
         
     steps:
