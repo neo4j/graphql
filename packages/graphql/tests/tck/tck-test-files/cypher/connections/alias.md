@@ -58,3 +58,91 @@ RETURN this { actors } as this
 ```
 
 ---
+
+## Alias Top Level Connection Field Multiple Times
+
+### GraphQL Input
+
+```graphql
+query {
+    movies(where: { title: "Forrest Gump" }) {
+        title
+        hanks: actorsConnection(where: { node: { name: "Tom Hanks" } }) {
+            edges {
+                screenTime
+                node {
+                    name
+                }
+            }
+        }
+        jenny: actorsConnection(where: { node: { name: "Robin Wright" } }) {
+            edges {
+                screenTime
+                node {
+                    name
+                }
+            }
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Movie)
+WHERE this.title = $this_title
+CALL {
+    WITH this
+    MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+    WHERE this_actor.name = $this_hanks.args.where.node.name
+    WITH collect({
+        screenTime: this_acted_in.screenTime,
+        node: {
+            name: this_actor.name
+        }
+    }) AS edges
+    RETURN { edges: edges, totalCount: size(edges) } AS hanks
+}
+CALL {
+    WITH this
+    MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+    WHERE this_actor.name = $this_jenny.args.where.node.name
+    WITH collect({
+        screenTime: this_acted_in.screenTime,
+        node: {
+            name: this_actor.name
+        }
+    }) AS edges
+    RETURN { edges: edges, totalCount: size(edges) } AS jenny
+}
+RETURN this { .title, hanks, jenny } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_title": "Forrest Gump",
+    "this_hanks": {
+        "args": {
+            "where": {
+                "node": {
+                    "name": "Tom Hanks"
+                }
+            }
+        }
+    },
+    "this_jenny": {
+        "args": {
+            "where": {
+                "node": {
+                    "name": "Robin Wright"
+                }
+            }
+        }
+    }
+}
+```
+
+---
