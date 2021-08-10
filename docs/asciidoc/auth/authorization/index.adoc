@@ -2,3 +2,8 @@
 = Authorization
 
 You specify authorization rules inside the `@auth` directive. This section looks at each option available and explains how to use it to implement authorization.
+
+- <<auth-authorization-allow>>
+- <<auth-authorization-bind>>
+- <<auth-authorization-roles>>
+- <<auth-authorization-where>>

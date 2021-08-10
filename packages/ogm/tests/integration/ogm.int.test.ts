@@ -197,6 +197,76 @@ describe("OGM", () => {
         });
     });
 
+    describe("count", () => {
+        test("should count nodes", async () => {
+            const session = driver.session();
+
+            const randomType = `${generate({
+                charset: "alphabetic",
+                readable: true,
+            })}Movie`;
+
+            const typeDefs = `
+                type ${randomType} {
+                    id: ID
+                }
+            `;
+
+            const ogm = new OGM({ typeDefs, driver });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (:${randomType} {id: randomUUID()})
+                        CREATE (:${randomType} {id: randomUUID()})
+                    `
+                );
+
+                const model = ogm.model(randomType);
+
+                const count = await model?.count();
+
+                expect(count).toEqual(2);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should count movies with a where predicate", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type Movie {
+                    id: ID
+                }
+            `;
+
+            const ogm = new OGM({ typeDefs, driver });
+
+            const id = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                await ogm.checkNeo4jCompat();
+
+                await session.run(`
+                    CREATE (:Movie {id: "${id}"})
+                    CREATE (:Movie {id: randomUUID()})
+                    CREATE (:Movie {id: randomUUID()})
+                `);
+
+                const Movie = ogm.model("Movie");
+
+                const count = await Movie?.count({ where: { id } });
+
+                expect(count).toEqual(1);
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
     describe("create", () => {
         test("should create a single node", async () => {
             const session = driver.session();
@@ -363,18 +433,22 @@ describe("OGM", () => {
                 input: [
                     {
                         ...product,
-                        sizes: { create: sizes },
-                        colors: { create: colors },
+                        sizes: { create: sizes.map((x) => ({ node: x })) },
+                        colors: { create: colors.map((x) => ({ node: x })) },
                         photos: {
                             create: [
-                                photos[0],
+                                { node: photos[0] },
                                 {
-                                    ...photos[1],
-                                    color: { connect: { where: { id: colors[0].id } } },
+                                    node: {
+                                        ...photos[1],
+                                        color: { connect: { where: { node: { id: colors[0].id } } } },
+                                    },
                                 },
                                 {
-                                    ...photos[2],
-                                    color: { connect: { where: { id: colors[1].id } } },
+                                    node: {
+                                        ...photos[2],
+                                        color: { connect: { where: { node: { id: colors[1].id } } } },
+                                    },
                                 },
                             ],
                         },
@@ -567,7 +641,7 @@ describe("OGM", () => {
 
                 const { movies } = await Movie?.update({
                     where: { id: movieId },
-                    connect: { actors: [{ where: { id: actorId } }] },
+                    connect: { actors: [{ where: { node: { id: actorId } } }] },
                     selectionSet: `
                     {
                         movies {
@@ -625,7 +699,7 @@ describe("OGM", () => {
 
                 const { movies } = await Movie?.update({
                     where: { id: movieId },
-                    create: { actors: [{ id: actorId }] },
+                    create: { actors: [{ node: { id: actorId } }] },
                     selectionSet: `
                         {
                             movies {
@@ -686,7 +760,7 @@ describe("OGM", () => {
 
                 const { movies } = await Movie?.update({
                     where: { id: movieId },
-                    disconnect: { actors: [{ where: { id: actorId } }] },
+                    disconnect: { actors: [{ where: { node: { id: actorId } } }] },
                     selectionSet: `
                         {
                             movies {
@@ -770,7 +844,7 @@ describe("OGM", () => {
 
                 const result = await Movie?.delete({
                     where: { id: movieId },
-                    delete: { genres: { where: { id: genreId } } },
+                    delete: { genres: { where: { node: { id: genreId } } } },
                 });
 
                 expect(result).toEqual({ nodesDeleted: 2, relationshipsDeleted: 1 });

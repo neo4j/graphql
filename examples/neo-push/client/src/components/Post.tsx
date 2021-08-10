@@ -396,7 +396,7 @@ function PostComments({
     setComments: (cb: (comments: Comment[]) => any) => void;
 }) {
     const { query } = useContext(graphql.Context);
-    const [skip, setSkip] = useState(0);
+    const [offset, setOffset] = useState(0);
     const [limit] = useState(10);
     const [hasMore, setHasMore] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -408,9 +408,9 @@ function PostComments({
                 query: POST_COMMENTS,
                 variables: {
                     post,
-                    skip: comments.length,
+                    offset: comments.length,
                     limit,
-                    hasNextCommentsSkip: comments.length === 0 ? limit : comments.length + 1,
+                    hasNextCommentsOffset: comments.length === 0 ? limit : comments.length + 1,
                 },
             });
 
@@ -423,11 +423,11 @@ function PostComments({
         }
 
         setLoading(false);
-    }, [skip]);
+    }, [offset]);
 
     useEffect(() => {
         getComments();
-    }, [skip]);
+    }, [offset]);
 
     if (error) {
         return (
@@ -463,7 +463,7 @@ function PostComments({
             ))}
             {hasMore && (
                 <div className="d-flex justify-content-center w-100 mt-3">
-                    <Button onClick={() => setSkip((s) => s + 1)}>Load More</Button>
+                    <Button onClick={() => setOffset((s) => s + 1)}>Load More</Button>
                 </div>
             )}
         </>

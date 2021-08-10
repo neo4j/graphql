@@ -1,10 +1,10 @@
-## Cypher Auth Projection
+# Cypher Auth Projection
 
 Tests auth is added to projections in all operations
 
 Schema:
 
-```schema
+```graphql
 type User {
     id: ID
     name: String
@@ -17,9 +17,9 @@ extend type User {
 
 ---
 
-### Update Node
+## Update Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -31,7 +31,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:User)
@@ -43,9 +43,9 @@ CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_id_auth_allo
 RETURN this { .id } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_auth_allow0_id": "super_admin",
     "this_update_id": "new-id",
@@ -53,9 +53,9 @@ RETURN this { .id } AS this
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin",
     "roles": ["admin"]
@@ -64,9 +64,9 @@ RETURN this { .id } AS this
 
 ---
 
-### Create Node
+## Create Node
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -78,7 +78,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -99,9 +99,9 @@ CALL apoc.util.validate(NOT(this1.id IS NOT NULL AND this1.id = $projection_id_a
 RETURN this0 { .id } AS this0, this1 { .id } AS this1
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this0_id": "id-1",
     "this1_id": "id-2",
@@ -109,9 +109,9 @@ RETURN this0 { .id } AS this0, this1 { .id } AS this1
 }
 ```
 
-**JWT Object**
+### JWT Object
 
-```jwt
+```json
 {
     "sub": "super_admin",
     "roles": ["admin"]

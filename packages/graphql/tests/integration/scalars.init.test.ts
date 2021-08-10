@@ -91,7 +91,7 @@ describe("scalars", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: create,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -139,7 +139,7 @@ describe("scalars", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
