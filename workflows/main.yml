@@ -1,0 +1,31 @@
+name: "@neo4j/graphql CI"
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn --frozen-lockfile
+      - run: yarn build
+      - name: Run @neo4j/graphql unit tests
+        run: yarn --cwd packages/graphql run test:unit
+      - name: Run @neo4j/graphql TCK tests
+        run: yarn --cwd packages/graphql run test:tck
+      - name: Run @neo4j/graphql package tests
+        run: yarn --cwd packages/graphql run test:package-tests
+      - name: Run @neo4j/graphql-ogm unit tests
+        run: yarn --cwd packages/ogm run test:unit
