@@ -1,40 +1,52 @@
-## Cypher directive
+# Cypher directive
 
 Tests for queries on cypher directives.
 
 Schema:
 
-```schema
+```graphql
 type Actor {
     name: String
-    movies(title: String): [Movie] @cypher(statement: """
-        MATCH (m:Movie {title: $title})
-        RETURN m
-    """)
-    randomNumber: Int @cypher(statement: """
-        RETURN rand()
-    """)
+    movies(title: String): [Movie]
+        @cypher(
+            statement: """
+            MATCH (m:Movie {title: $title})
+            RETURN m
+            """
+        )
+    randomNumber: Int
+        @cypher(
+            statement: """
+            RETURN rand()
+            """
+        )
 }
 
 type Movie {
     id: ID
     title: String
-    actors: [Actor] @cypher(statement: """
-        MATCH (a:Actor)
-        RETURN a
-    """)
-    topActor: Actor @cypher(statement: """
-        MATCH (a:Actor)
-        RETURN a
-    """)
+    actors: [Actor]
+        @cypher(
+            statement: """
+            MATCH (a:Actor)
+            RETURN a
+            """
+        )
+    topActor: Actor
+        @cypher(
+            statement: """
+            MATCH (a:Actor)
+            RETURN a
+            """
+        )
 }
 ```
 
 ---
 
-### Simple directive
+## Simple directive
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -47,7 +59,7 @@ type Movie {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -59,23 +71,23 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
     }
 }
 ```
 
 ---
 
-### Simple directive (primitive)
+## Simple directive (primitive)
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -85,7 +97,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Actor)
@@ -94,23 +106,23 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
     }
 }
 ```
 
 ---
 
-### Nested directive
+## Nested directive
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -126,7 +138,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -141,24 +153,24 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_topActor_movies_title": "some title",
     "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
     }
 }
 ```
 
 ---
 
-### Super Nested directive
+## Super Nested directive
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -180,7 +192,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -201,25 +213,25 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_topActor_movies_title": "some title",
     "this_topActor_movies_topActor_movies_title": "another title",
     "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
     }
 }
 ```
 
 ---
 
-### Nested directive with params
+## Nested directive with params
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -235,7 +247,7 @@ RETURN this {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -250,15 +262,15 @@ RETURN this {
 } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_topActor_movies_title": "some title",
     "auth": {
-       "isAuthenticated": true,
-       "roles": [],
-       "jwt": {}
+        "isAuthenticated": true,
+        "roles": [],
+        "jwt": {}
     }
 }
 ```

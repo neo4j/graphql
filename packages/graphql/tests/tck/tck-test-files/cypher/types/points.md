@@ -1,10 +1,10 @@
-## Cypher Points
+# Cypher Points
 
 Tests Cypher generation for arrays of spatial types. [Point] and [CartesianPoint] are processed equivalently when it comes to Cypher translation, so only one needs to be extensively tested.
 
 Schema:
 
-```schema
+```graphql
 type PointContainer {
     id: String
     points: [Point]
@@ -13,9 +13,9 @@ type PointContainer {
 
 ---
 
-### Simple Points query
+## Simple Points query
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -29,7 +29,7 @@ type PointContainer {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:PointContainer)
@@ -37,22 +37,24 @@ WHERE this.points = [p in $this_points | point(p)]
 RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_points": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+    "this_points": [
+        {
+            "longitude": 1,
+            "latitude": 2
+        }
+    ]
 }
 ```
 
 ---
 
-### Simple Points NOT query
+## Simple Points NOT query
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -67,7 +69,7 @@ RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:PointContainer)
@@ -75,22 +77,24 @@ WHERE (NOT this.points = [p in $this_points_NOT | point(p)])
 RETURN this { points: [p in this.points | { point:p }] } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_points_NOT": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+    "this_points_NOT": [
+        {
+            "longitude": 1,
+            "latitude": 2
+        }
+    ]
 }
 ```
 
 ---
 
-### Simple Points INCLUDES query
+## Simple Points INCLUDES query
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -106,7 +110,7 @@ RETURN this { points: [p in this.points | { point:p }] } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:PointContainer)
@@ -114,22 +118,22 @@ WHERE point($this_points_INCLUDES) IN this.points
 RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_points_INCLUDES": {
-    "longitude": 1,
-    "latitude": 2
-  }
+    "this_points_INCLUDES": {
+        "longitude": 1,
+        "latitude": 2
+    }
 }
 ```
 
 ---
 
-### Simple Points NOT INCLUDES query
+## Simple Points NOT INCLUDES query
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -145,7 +149,7 @@ RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:PointContainer)
@@ -153,22 +157,22 @@ WHERE (NOT point($this_points_NOT_INCLUDES) IN this.points)
 RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_points_NOT_INCLUDES": {
-    "longitude": 1,
-    "latitude": 2
-  }
+    "this_points_NOT_INCLUDES": {
+        "longitude": 1,
+        "latitude": 2
+    }
 }
 ```
 
 ---
 
-### Simple Points create mutation
+## Simple Points create mutation
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -186,7 +190,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 CALL {
@@ -198,22 +202,24 @@ CALL {
 RETURN this0 { points: [p in this0.points | { point:p, crs: p.crs }] } AS this0
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this0_points": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+    "this0_points": [
+        {
+            "longitude": 1,
+            "latitude": 2
+        }
+    ]
 }
 ```
 
 ---
 
-### Simple Points update mutation
+## Simple Points update mutation
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 mutation {
@@ -232,7 +238,7 @@ mutation {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:PointContainer)
@@ -241,14 +247,16 @@ SET this.points = [p in $this_update_points | point(p)]
 RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } AS this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-  "this_id": "id",
-  "this_update_points": [{
-    "longitude": 1,
-    "latitude": 2
-  }]
+    "this_id": "id",
+    "this_update_points": [
+        {
+            "longitude": 1,
+            "latitude": 2
+        }
+    ]
 }
 ```

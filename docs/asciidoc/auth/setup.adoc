@@ -23,9 +23,10 @@ const neoSchema = new Neo4jGraphQL({
 });
 ----
 
-It is also possible to pass in JWTs which have already been decoded, in which case the `jwt` option is _not necessary_. This will be covered in the section <<auth-setup-passing-in>>.
+It is also possible to pass in JWTs which have already been decoded, in which case the `jwt` option is _not necessary_. This is covered in the section <<auth-setup-passing-in>> below.
 
 === Auth Roles Object Paths
+
 If you are using a 3rd party auth provider such as Auth0 you may find your roles property being nested inside an object:
 
 [source, json]
@@ -55,7 +56,7 @@ const neoSchema = new Neo4jGraphQL({
 [[auth-setup-passing-in]]
 == Passing in JWTs
 
-If you wish to pass in an encoded JWT, this must be included in the `Authorization` header of your requests, in the format:
+If you wish to pass in an encoded JWT, this must be included in the `authorization` header of your requests, in the format:
 
 [source]
 ----
@@ -111,74 +112,9 @@ const server = new ApolloServer({
 });
 ----
 
-== `@auth` directive
+== Auth and Custom Resolvers
 
-=== `rules`
-
-You can have many rules for many operations. We fall through each rule, on the corresponding operation, until we find a match. On no match found, an error is thrown. You can think of rules as a big OR.
-
-[source, graphql]
-----
-@auth(rules: [
-    { operations: [CREATE, UPDATE], ... }, ## or
-    { operations: [READ, UPDATE], ...}, ## or
-    { operations: [DELETE, UPDATE], ... } ## or
-])
-----
-
-=== `operations`
-
-Operations is an array which allows you to re-use the same rule for many operations.
-
-[source, graphql]
-----
-@auth(rules: [
-    { operations: [CREATE, UPDATE, DELETE, CONNECT, DISCONNECT] },
-    { operations: [READ] }
-])
-----
-
-NOTE: Note that the absence of an `operations` argument will imply _all_ operations.
-
-Many different operations can be called at once, for example in the following Mutation:
-
-[source, graphql]
-----
-mutation {
-    createPosts(
-        input: [
-            {
-                content: "I like GraphQL",
-                creator: { connect: { where: { id: "user-01" } } }
-            }
-        ]
-    ) {
-        posts {
-            content
-        }
-    }
-}
-----
-
-In the above example, we perform a `CREATE` followed by a `CONNECT`, so our auth rule must allow our user to perform both of these operations.
-
-The full list of operations are:
-
-- read - `MATCH`
-- create - `CREATE`
-- update - `SET`
-- delete - `DELETE`
-- connect - `MATCH` & `MERGE`
-- disconnect - `MATCH` & `DELETE`
-
-== Auth Value Plucking
-
-1. `$jwt.` - Pulls value from jsonwebtoken
-2. `$context.` - Pulls value from context
-
-== Auth Custom Resolvers
-
-You can't use the `@auth` directive on a custom resolver, however, we do make life easier by injecting the auth parameter into it. It will be available under the `context.auth` property. For example, the following custom resolver returns the `sub` field from the JWT:
+You can't use the `@auth` directive on custom resolvers, however, the an auth parameter is injected into the context for use in them. It will be available under the `auth` property. For example, the following custom resolver returns the `sub` field from the JWT:
 
 [source, javascript]
 ----
@@ -190,16 +126,16 @@ const typeDefs = `
 
 const resolvers = {
     Query: {
-        myId(root, args, context) {
+        myId(_source, _args, context) {
             return context.auth.jwt.sub
         }
     }
 };
 ----
 
-== Auth on `@cypher`
+== Auth and `@cypher` fields
 
-You can put the `@auth` directive on a field with the `@cypher` directive. Functionality like `allow` and `bind` will not work but you can still utilize `isAuthenticated` and `roles`. Additionally, you don't need to specify operations for `@auth` directives on `@cypher` fields.
+You can put the `@auth` directive on a field alongside the `@cypher` directive. Functionality like `allow` and `bind` will not work but you can still utilize `isAuthenticated` and `roles`. Additionally, you don't need to specify `operations` for `@auth` directives on `@cypher` fields.
 
 The following example uses the `isAuthenticated` rule to ensure a user is authenticated, before returning the `User` associated with the JWT:
 
@@ -211,7 +147,9 @@ type User @exclude {
 }
 
 type Query {
-    me: User @cypher(statement: "MATCH (u:User { id: $auth.jwt.sub }) RETURN u") @auth(rules: [{ isAuthenticated: true }])
+    me: User
+        @cypher(statement: "MATCH (u:User { id: $auth.jwt.sub }) RETURN u")
+        @auth(rules: [{ isAuthenticated: true }])
 }
 ----
 

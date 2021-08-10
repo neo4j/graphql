@@ -36,7 +36,7 @@ import { IncomingMessage } from "http";
 import { Socket } from "net";
 // import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import { SchemaDirectiveVisitor, printSchemaWithDirectives } from "@graphql-tools/utils";
-import { translateCreate, translateDelete, translateRead, translateUpdate } from "../../src/translate";
+import { translateCount, translateCreate, translateDelete, translateRead, translateUpdate } from "../../src/translate";
 import { Context } from "../../src/types";
 import { Neo4jGraphQL } from "../../src";
 import {
@@ -112,20 +112,20 @@ describe("TCK Generated tests", () => {
                     }
 
                     function compare(
-                        cypher: { expected: string; recived: string },
-                        params: { expected: any; recived: any },
+                        cypher: { expected: string; received: string },
+                        params: { expected: any; received: any },
                         context: any
                     ) {
                         if (
-                            cypher.recived.includes("$auth.") ||
-                            cypher.recived.includes("auth: $auth") ||
-                            cypher.recived.includes("auth:$auth")
+                            cypher.received.includes("$auth.") ||
+                            cypher.received.includes("auth: $auth") ||
+                            cypher.received.includes("auth:$auth")
                         ) {
                             params.expected.auth = createAuthParam({ context });
                         }
 
-                        expect(trimmer(cypher.expected)).toEqual(trimmer(cypher.recived));
-                        expect(params.expected).toEqual(params.recived);
+                        expect(trimmer(cypher.expected)).toEqual(trimmer(cypher.received));
+                        expect(params.expected).toEqual(params.received);
                     }
 
                     const queries = document.definitions.reduce((res, def) => {
@@ -154,12 +154,38 @@ describe("TCK Generated tests", () => {
                                 });
 
                                 compare(
-                                    { expected: cQuery, recived: cypherQuery },
-                                    { expected: cQueryParams, recived: cypherParams },
+                                    { expected: cQuery, received: cypherQuery },
+                                    { expected: cQueryParams, received: cypherParams },
                                     mergedContext
                                 );
 
                                 return [];
+                            },
+                            [`${pluralize(camelCase(def.name.value))}Count`]: (
+                                _root: any,
+                                _params: any,
+                                context: Context,
+                                info: GraphQLResolveInfo
+                            ) => {
+                                const resolveTree = getNeo4jResolveTree(info);
+
+                                context.neoSchema = neoSchema;
+                                context.resolveTree = resolveTree;
+
+                                const mergedContext = { ...context, ...defaultContext };
+
+                                const [cQuery, cQueryParams] = translateCount({
+                                    context: mergedContext,
+                                    node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                });
+
+                                compare(
+                                    { expected: cQuery, received: cypherQuery },
+                                    { expected: cQueryParams, received: cypherParams },
+                                    mergedContext
+                                );
+
+                                return 1;
                             },
                         };
                     }, {});
@@ -190,8 +216,8 @@ describe("TCK Generated tests", () => {
                                 });
 
                                 compare(
-                                    { expected: cQuery, recived: cypherQuery },
-                                    { expected: cQueryParams, recived: cypherParams },
+                                    { expected: cQuery, received: cypherQuery },
+                                    { expected: cQueryParams, received: cypherParams },
                                     mergedContext
                                 );
 
@@ -218,8 +244,8 @@ describe("TCK Generated tests", () => {
                                 });
 
                                 compare(
-                                    { expected: cQuery, recived: cypherQuery },
-                                    { expected: cQueryParams, recived: cypherParams },
+                                    { expected: cQuery, received: cypherQuery },
+                                    { expected: cQueryParams, received: cypherParams },
                                     mergedContext
                                 );
 
@@ -241,8 +267,8 @@ describe("TCK Generated tests", () => {
                                 });
 
                                 compare(
-                                    { expected: cQuery, recived: cypherQuery },
-                                    { expected: cQueryParams, recived: cypherParams },
+                                    { expected: cQuery, received: cypherQuery },
+                                    { expected: cQueryParams, received: cypherParams },
                                     mergedContext
                                 );
 

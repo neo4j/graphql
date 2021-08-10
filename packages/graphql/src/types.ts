@@ -20,7 +20,7 @@
 import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { JwtPayload } from "jsonwebtoken";
-import { Driver } from "neo4j-driver";
+import { Driver, Integer } from "neo4j-driver";
 import { Neo4jGraphQL } from "./classes";
 
 export type DriverConfig = {
@@ -103,6 +103,7 @@ export interface BaseField {
     description?: string;
     readonly?: boolean;
     writeonly?: boolean;
+    ignored?: boolean;
 }
 
 /**
@@ -111,7 +112,13 @@ export interface BaseField {
 export interface RelationField extends BaseField {
     direction: "OUT" | "IN";
     type: string;
+    properties?: string;
     union?: UnionField;
+}
+
+export interface ConnectionField extends BaseField {
+    relationship: RelationField;
+    relationshipTypeName: string;
 }
 
 /**
@@ -134,7 +141,10 @@ export interface PrimitiveField extends BaseField {
 
 export type CustomScalarField = BaseField;
 
-export type CustomEnumField = BaseField;
+export interface CustomEnumField extends BaseField {
+    // TODO Must be "Enum" - really needs refactoring into classes
+    kind: string;
+}
 
 export interface UnionField extends BaseField {
     nodes?: string[];
@@ -156,13 +166,25 @@ export interface GraphQLSortArg {
     [field: string]: SortDirection;
 }
 
+export interface ConnectionSortArg {
+    node?: GraphQLSortArg;
+    edge?: GraphQLSortArg;
+}
+
+export interface ConnectionQueryArgs {
+    where?: ConnectionWhereArg;
+    first?: number;
+    after?: string;
+    sort?: ConnectionSortArg[];
+}
+
 /**
  * Representation of the options arg
  * passed to resolvers.
  */
 export interface GraphQLOptionsArg {
-    limit?: number;
-    skip?: number;
+    limit?: number | Integer;
+    offset?: number | Integer;
     sort?: GraphQLSortArg[];
 }
 
@@ -174,6 +196,15 @@ export interface GraphQLWhereArg {
     [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
     AND?: GraphQLWhereArg[];
     OR?: GraphQLWhereArg[];
+}
+
+export interface ConnectionWhereArg {
+    node?: GraphQLWhereArg;
+    node_NOT?: GraphQLWhereArg;
+    edge?: GraphQLWhereArg;
+    edge_NOT?: GraphQLWhereArg;
+    AND?: ConnectionWhereArg[];
+    OR?: ConnectionWhereArg[];
 }
 
 export type AuthOperations = "CREATE" | "READ" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT";
