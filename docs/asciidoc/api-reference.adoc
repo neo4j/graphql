@@ -1,0 +1,41 @@
+[[api-reference]]
+= API Reference
+
+
+== `Neo4jGraphQL`
+Main Entry to the library. Holds metadata about the GraphQL schema.
+
+=== Requiring
+[source, javascript]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+----
+
+=== Constructing
+
+[source, javascript]
+----
+const neo4jGraphQL = new Neo4jGraphQL({
+    typeDefs,
+    resolvers?,
+    schemaDirectives?,
+    driver?,
+    config?: {
+        driverConfig?,
+        enableRegex?,
+        jwt?: {
+            secret?,
+            noVerify?,
+            rolesPath?,
+        },
+    },
+});
+----
+
+=== Methods
+
+==== `checkNeo4jCompat`
+Reference: <<drivers-and-config-checkNeo4jCompat>>
+
+== `OGM`
+Reference: <<ogm-api-reference>>

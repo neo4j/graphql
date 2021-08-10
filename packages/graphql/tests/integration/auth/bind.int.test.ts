@@ -83,7 +83,7 @@ describe("auth/bind", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -119,11 +119,9 @@ describe("auth/bind", () => {
                         id: "${userId}",
                         posts: {
                             create: [{
-                                node: {
-                                    id: "post-id-1",
-                                    creator: {
-                                        create: { node: {id: "not valid"} }
-                                    }
+                                id: "post-id-1",
+                                creator: {
+                                    create: { id: "not valid" }
                                 }
                             }]
                         }
@@ -155,7 +153,7 @@ describe("auth/bind", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -195,7 +193,7 @@ describe("auth/bind", () => {
                        where: { id: "${postId}" }
                        update: {
                            creator: {
-                               create: { node: { id: "not bound" } }
+                               create: { id: "not bound" }
                            }
                        }
                     ) {
@@ -230,7 +228,7 @@ describe("auth/bind", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -290,7 +288,7 @@ describe("auth/bind", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -330,11 +328,9 @@ describe("auth/bind", () => {
                         where: { id: "${userId}" },
                         update: {
                             posts: {
-                                where: { node: { id: "${postId}" } },
+                                where: { id: "${postId}" },
                                 update: {
-                                    node: {
-                                        creator: { update: { node: { id: "not bound" } } }
-                                    }
+                                    creator: { update: { id: "not bound" } }
                                 }
                             }
                         }
@@ -370,7 +366,7 @@ describe("auth/bind", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -433,7 +429,7 @@ describe("auth/bind", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -474,7 +470,7 @@ describe("auth/bind", () => {
                         where: { id: "${postId}" },
                         connect: {
                             creator: {
-                                where: { node: { id: "not bound" } }
+                                where: { id: "not bound" }
                             }
                         }
                     ) {
@@ -509,7 +505,7 @@ describe("auth/bind", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -550,7 +546,7 @@ describe("auth/bind", () => {
                         where: { id: "${postId}" },
                         disconnect: {
                             creator: {
-                                where: { node: { id: "${userId}" } }
+                                where: { id: "${userId}" }
                             }
                         }
                     ) {
@@ -585,7 +581,7 @@ describe("auth/bind", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");

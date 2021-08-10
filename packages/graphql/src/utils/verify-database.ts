@@ -18,7 +18,6 @@
  */
 
 import { Driver } from "neo4j-driver";
-import semver from "semver";
 import { MIN_NEO4J_VERSION, MIN_APOC_VERSION, REQUIRED_APOC_FUNCTIONS, REQUIRED_APOC_PROCEDURES } from "../constants";
 import { DriverConfig } from "../types";
 
@@ -67,28 +66,23 @@ async function checkNeo4jCompat({ driver, driverConfig }: { driver: Driver; driv
     try {
         const result = await session.run(cypher);
         const info = result.records[0].toObject() as DBInfo;
-        const errors: string[] = [];
 
-        if (semver.lt(semver.coerce(info.version), MIN_NEO4J_VERSION)) {
-            errors.push(`Expected minimum Neo4j version: '${MIN_NEO4J_VERSION}' received: '${info.version}'`);
+        if (info.version < MIN_NEO4J_VERSION) {
+            throw new Error(`Expected minimum Neo4j version: '${MIN_NEO4J_VERSION}' received: '${info.version}'`);
         }
 
-        if (semver.lt(semver.coerce(info.apocVersion), MIN_APOC_VERSION)) {
-            errors.push(`Expected minimum APOC version: '${MIN_APOC_VERSION}' received: '${info.apocVersion}'`);
+        if (info.apocVersion < MIN_APOC_VERSION) {
+            throw new Error(`Expected minimum APOC version: '${MIN_APOC_VERSION}' received: '${info.apocVersion}'`);
         }
 
         const missingFunctions = REQUIRED_APOC_FUNCTIONS.filter((f) => !info.functions.includes(f));
         if (missingFunctions.length) {
-            errors.push(`Missing APOC functions: [ ${missingFunctions.join(", ")} ]`);
+            throw new Error(`Missing APOC functions: [ ${missingFunctions.join(", ")} ]`);
         }
 
         const missingProcedures = REQUIRED_APOC_PROCEDURES.filter((p) => !info.procedures.includes(p));
         if (missingProcedures.length) {
-            errors.push(`Missing APOC procedures: [ ${missingProcedures.join(", ")} ]`);
-        }
-
-        if (errors.length) {
-            throw new Error(`Encountered the following DBMS compatiblility issues:\n${errors.join("\n")}`);
+            throw new Error(`Missing APOC procedures: [ ${missingProcedures.join(", ")} ]`);
         }
     } finally {
         await session.close();

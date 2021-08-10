@@ -1,10 +1,10 @@
-# Cypher TimeStamps
+## Cypher TimeStamps
 
 Tests TimeStamps operations. ⚠ The string in params is actually an object but the test suite turns it into a string when calling `JSON.stringify`.
 
 Schema:
 
-```graphql
+```schema
 type Movie {
     id: ID
     name: String
@@ -15,9 +15,9 @@ type Movie {
 
 ---
 
-## Simple Create
+### Simple Create
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -29,7 +29,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 CALL {
@@ -41,9 +41,9 @@ CALL {
 RETURN this0 { .id } AS this0
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this0_id": "123"
 }
@@ -51,9 +51,9 @@ RETURN this0 { .id } AS this0
 
 ---
 
-## Simple Update
+### Simple Update
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 mutation {
@@ -65,7 +65,7 @@ mutation {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Movie)
@@ -75,9 +75,9 @@ SET this.name = $this_update_name
 RETURN this { .id } AS this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_update_id": "123",
     "this_update_name": "dan"

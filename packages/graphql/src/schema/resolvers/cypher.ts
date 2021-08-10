@@ -19,13 +19,12 @@
 
 import { isInt } from "neo4j-driver";
 import { execute } from "../../utils";
-import { BaseField, ConnectionField, Context } from "../../types";
+import { BaseField, Context } from "../../types";
 import { graphqlArgsToCompose } from "../to-compose";
 import createAuthAndParams from "../../translate/create-auth-and-params";
 import createAuthParam from "../../translate/create-auth-param";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import createProjectionAndParams from "../../translate/create-projection-and-params";
-import createConnectionAndParams from "../../translate/connection/create-connection-and-params";
 
 export default function cypherResolver({
     field,
@@ -38,20 +37,15 @@ export default function cypherResolver({
 }) {
     async function resolve(_root: any, args: any, _context: unknown) {
         const context = _context as Context;
-        const { resolveTree } = context;
+        const {
+            resolveTree: { fieldsByTypeName },
+        } = context;
         const cypherStrs: string[] = [];
         let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
         let projectionStr = "";
-        const connectionProjectionStrs: string[] = [];
         let projectionAuthStr = "";
         const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
             field.typeMeta.name
-        );
-        const isEnum = context.neoSchema.document.definitions.find(
-            (x) => x.kind === "EnumTypeDefinition" && x.name.value === field.typeMeta.name
-        );
-        const isScalar = context.neoSchema.document.definitions.find(
-            (x) => x.kind === "ScalarTypeDefinition" && x.name.value === field.typeMeta.name
         );
 
         const preAuth = createAuthAndParams({ entity: field, context });
@@ -63,35 +57,15 @@ export default function cypherResolver({
         const referenceNode = context.neoSchema.nodes.find((x) => x.name === field.typeMeta.name);
         if (referenceNode) {
             const recurse = createProjectionAndParams({
-                fieldsByTypeName: resolveTree.fieldsByTypeName,
+                fieldsByTypeName,
                 node: referenceNode,
                 context,
                 varName: `this`,
             });
-            const [str, p, meta] = recurse;
-            projectionStr = str;
-            params = { ...params, ...p };
-
-            if (meta?.authValidateStrs?.length) {
-                projectionAuthStr = meta.authValidateStrs.join(" AND ");
-            }
-
-            if (meta?.connectionFields?.length) {
-                meta.connectionFields.forEach((connectionResolveTree) => {
-                    const connectionField = referenceNode.connectionFields.find(
-                        (x) => x.fieldName === connectionResolveTree.name
-                    ) as ConnectionField;
-
-                    const nestedConnection = createConnectionAndParams({
-                        resolveTree: connectionResolveTree,
-                        field: connectionField,
-                        context,
-                        nodeVariable: "this",
-                    });
-                    const [nestedStr, nestedP] = nestedConnection;
-                    connectionProjectionStrs.push(nestedStr);
-                    params = { ...params, ...nestedP };
-                });
+            [projectionStr] = recurse;
+            params = { ...params, ...recurse[1] };
+            if (recurse[2]?.authValidateStrs?.length) {
+                projectionAuthStr = recurse[2].authValidateStrs.join(" AND ");
             }
         }
 
@@ -107,7 +81,7 @@ export default function cypherResolver({
         ) as { strs: string[]; params: any };
         const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
-        const expectMultipleValues = !isPrimitive && !isScalar && !isEnum && field.typeMeta.array ? "true" : "false";
+        const expectMultipleValues = field.typeMeta.array ? "true" : "false";
         if (type === "Query") {
             cypherStrs.push(`
                 WITH apoc.cypher.runFirstColumn("${statement}", ${apocParamsStr}, ${expectMultipleValues}) as x
@@ -127,12 +101,10 @@ export default function cypherResolver({
             );
         }
 
-        cypherStrs.push(connectionProjectionStrs.join("\n"));
-
-        if (isPrimitive || isEnum || isScalar) {
-            cypherStrs.push(`RETURN this`);
-        } else {
+        if (!isPrimitive) {
             cypherStrs.push(`RETURN this ${projectionStr} AS this`);
+        } else {
+            cypherStrs.push(`RETURN this`);
         }
 
         const result = await execute({

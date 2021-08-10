@@ -1,10 +1,10 @@
-# Cypher sort tests
+## Cypher sort tests
 
 Tests for queries including reserved arguments `sort`.
 
 Schema:
 
-```graphql
+```schema
 type Movie {
     id: ID
     title: String
@@ -19,9 +19,9 @@ type Genre {
 
 ---
 
-## Simple Sort
+### Simple Sort
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -31,7 +31,7 @@ type Genre {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Movie)
@@ -40,17 +40,17 @@ ORDER BY this.id DESC
 RETURN this { .title } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {}
 ```
 
 ---
 
-## Multi Sort
+### Multi Sort
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -60,7 +60,7 @@ RETURN this { .title } as this
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Movie)
@@ -69,24 +69,24 @@ ORDER BY this.id DESC, this.title ASC
 RETURN this { .title } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {}
 ```
 
 ---
 
-## Sort with offset limit & with other variables
+### Sort with skip limit & with other variables
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
-query($title: String, $offset: Int, $limit: Int) {
+query($title: String, $skip: Int, $limit: Int) {
     movies(
         options: {
             sort: [{ id: DESC }, { title: ASC }]
-            offset: $offset
+            skip: $skip
             limit: $limit
         }
         where: { title: $title }
@@ -96,17 +96,17 @@ query($title: String, $offset: Int, $limit: Int) {
 }
 ```
 
-### GraphQL Params Input
+**GraphQL params input**
 
-```json
+```graphql-params
 {
     "limit": 2,
-    "offset": 1,
+    "skip": 1,
     "title": "some title"
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Movie)
@@ -114,19 +114,19 @@ WHERE this.title = $this_title
 WITH this
 ORDER BY this.id DESC, this.title ASC
 RETURN this { .title } as this
-SKIP $this_offset
+SKIP $this_skip
 LIMIT $this_limit
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_limit": {
         "high": 0,
         "low": 2
     },
-    "this_offset": {
+    "this_skip": {
         "high": 0,
         "low": 1
     },
@@ -136,9 +136,9 @@ LIMIT $this_limit
 
 ---
 
-## Nested Sort DESC
+### Nested Sort DESC
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -150,7 +150,7 @@ LIMIT $this_limit
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Movie)
@@ -159,17 +159,17 @@ RETURN this {
 } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {}
 ```
 
 ---
 
-## Nested Sort ASC
+### Nested Sort ASC
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -181,7 +181,7 @@ RETURN this {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Movie)
@@ -190,9 +190,9 @@ RETURN this {
 } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {}
 ```
 

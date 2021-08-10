@@ -76,12 +76,7 @@ describe("createConnectAndParams", () => {
 
         const result = createConnectAndParams({
             withVars: ["this"],
-            value: [
-                {
-                    where: { node: { title: "abc" } },
-                    connect: { similarMovies: [{ where: { node: { title: "cba" } } }] },
-                },
-            ],
+            value: [{ where: { title: "abc" }, connect: { similarMovies: [{ where: { title: "cba" } }] } }],
             varName: "this",
             relationField: node.relationFields[0],
             parentVar: "this",
@@ -95,16 +90,16 @@ describe("createConnectAndParams", () => {
                 WITH this
                 CALL {
                     WITH this
-                    OPTIONAL MATCH (this0_node:Movie)
-                    WHERE this0_node.title = $this0_node_title
-                    FOREACH(_ IN CASE this0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:SIMILAR]->(this0_node) )
+                    OPTIONAL MATCH (this0:Movie)
+                    WHERE this0.title = $this0_title
+                    FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:SIMILAR]->(this0) )
 
-                    WITH this, this0_node
+                    WITH this, this0
                     CALL {
-                        WITH this, this0_node
-                        OPTIONAL MATCH (this0_node_similarMovies0_node:Movie)
-                        WHERE this0_node_similarMovies0_node.title = $this0_node_similarMovies0_node_title
-                        FOREACH(_ IN CASE this0_node_similarMovies0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node) )
+                        WITH this, this0
+                        OPTIONAL MATCH (this0_similarMovies0:Movie)
+                        WHERE this0_similarMovies0.title = $this0_similarMovies0_title
+                        FOREACH(_ IN CASE this0_similarMovies0 WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:SIMILAR]->(this0_similarMovies0) )
                         RETURN count(*)
                     }
 
@@ -114,8 +109,8 @@ describe("createConnectAndParams", () => {
         );
 
         expect(result[1]).toMatchObject({
-            this0_node_title: "abc",
-            this0_node_similarMovies0_node_title: "cba",
+            this0_title: "abc",
+            this0_similarMovies0_title: "cba",
         });
     });
 });

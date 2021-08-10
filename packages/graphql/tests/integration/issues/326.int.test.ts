@@ -20,11 +20,11 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
+import neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
 import { IncomingMessage } from "http";
 import jsonwebtoken from "jsonwebtoken";
 import { Socket } from "net";
-import neo4j from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("326", () => {
     let driver: Driver;
@@ -97,7 +97,7 @@ describe("326", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id },
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, req },
             });
 
             expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -166,7 +166,7 @@ describe("326", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id },
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, req },
             });
 
             expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");

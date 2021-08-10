@@ -21,7 +21,7 @@ Want to contribute to `@neo4j/graphql`? See our [contributing guide](./docs/mark
 
 ## Links
 
-1. [Documentation](https://neo4j.com/docs/graphql-manual/2.0/)
+1. [Documentation](https://neo4j.com/docs/graphql-manual/current/)
 2. [Discord](https://discord.gg/neo4j)
 3. [Examples](./examples)
 
