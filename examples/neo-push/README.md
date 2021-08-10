@@ -142,10 +142,10 @@ Once logged in users are directed to the dashboard page;
 ![dashboard](assets/dashboard.jpg)
 
 ```graphql
-query myBlogs($id: ID, $skip: Int, $limit: Int, $hasNextBlogsSkip: Int) {
+query myBlogs($id: ID, $offset: Int, $limit: Int, $hasNextBlogsoffset: Int) {
     myBlogs: blogs(
         where: { OR: [{ creator: { id: $id } }, { authors: { id: $id } }] }
-        options: { limit: $limit, skip: $skip, sort: { createdAt: DESC } }
+        options: { limit: $limit, offset: $offset, sort: { createdAt: DESC } }
     ) {
         id
         name
@@ -159,7 +159,7 @@ query myBlogs($id: ID, $skip: Int, $limit: Int, $hasNextBlogsSkip: Int) {
         where: { OR: [{ creator: { id: $id } }, { authors: { id: $id } }] }
         options: {
             limit: 1
-            skip: $hasNextBlogsSkip
+            offset: $hasNextBlogsoffset
             sort: { createdAt: DESC }
         }
     ) {
@@ -186,7 +186,12 @@ From the dashboard you can create a blog.
 ```graphql
 mutation($name: String!, $sub: ID) {
     createBlogs(
-        input: [{ name: $name, creator: { connect: { where: { id: $sub } } } }]
+        input: [
+            {
+                name: $name
+                creator: { connect: { where: { node: { id: $sub } } } }
+            }
+        ]
     ) {
         blogs {
             id
@@ -223,7 +228,7 @@ If you are the creator of a blog you can assign other users as an author. You ca
 mutation assignBlogAuthor($blog: ID, $authorEmail: String) {
     updateBlogs(
         where: { id: $blog }
-        connect: { authors: { where: { email: $authorEmail } } }
+        connect: { authors: { where: { node: { email: $authorEmail } } } }
     ) {
         blogs {
             authors {
@@ -288,8 +293,8 @@ mutation createPost($title: String!, $content: String!, $user: ID, $blog: ID) {
             {
                 title: $title
                 content: $content
-                blog: { connect: { where: { id: $blog } } }
-                author: { connect: { where: { id: $user } } }
+                blog: { connect: { where: { node: { id: $blog } } } }
+                author: { connect: { where: { node: { id: $user } } } }
             }
         ]
     ) {
@@ -354,8 +359,8 @@ mutation commentOnPost($post: ID, $content: String!, $user: ID) {
         input: [
             {
                 content: $content
-                post: { connect: { where: { id: $post } } }
-                author: { connect: { where: { id: $user } } }
+                post: { connect: { where: { node: { id: $post } } } }
+                author: { connect: { where: { node: { id: $user } } } }
             }
         ]
     ) {

@@ -1,0 +1,22 @@
+[[ogm-api-reference-model]]
+= `Model`
+
+== `create`
+
+See <<ogm-api-reference-model-create>>.
+
+== `find`
+
+See <<ogm-api-reference-model-find>>.
+
+== `update`
+
+See <<ogm-api-reference-model-update>>.
+
+== `delete`
+
+See <<ogm-api-reference-model-delete>>.
+
+== `count`
+
+See <<ogm-api-reference-model-count>>.

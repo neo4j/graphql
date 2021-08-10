@@ -68,7 +68,7 @@ describe("create", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -126,7 +126,7 @@ describe("create", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id1, id2 },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -262,25 +262,29 @@ describe("create", () => {
                 input: [
                     {
                         ...product,
-                        sizes: { create: sizes },
-                        colors: { create: colors },
+                        sizes: { create: sizes.map((x) => ({ node: x })) },
+                        colors: { create: colors.map((x) => ({ node: x })) },
                         photos: {
                             create: [
-                                photos[0],
+                                { node: photos[0] },
                                 {
-                                    ...photos[1],
-                                    color: { connect: { where: { id: colors[0].id } } },
+                                    node: {
+                                        ...photos[1],
+                                        color: { connect: { where: { node: { id: colors[0].id } } } },
+                                    },
                                 },
                                 {
-                                    ...photos[2],
-                                    color: { connect: { where: { id: colors[1].id } } },
+                                    node: {
+                                        ...photos[2],
+                                        color: { connect: { where: { node: { id: colors[1].id } } } },
+                                    },
                                 },
                             ],
                         },
                     },
                 ],
             },
-            contextValue: { driver },
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
 
         expect(gqlResult.errors).toBeFalsy();

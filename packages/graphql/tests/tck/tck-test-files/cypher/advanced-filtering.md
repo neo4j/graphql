@@ -1,10 +1,10 @@
-## Cypher Advanced Filtering
+# Cypher Advanced Filtering
 
 Tests advanced filtering.
 
 Schema:
 
-```schema
+```graphql
 type Movie {
     _id: ID
     id: ID
@@ -15,8 +15,8 @@ type Movie {
 }
 
 type Genre {
-  name: String
-  movies: [Movie] @relationship(type: "IN_GENRE", direction: IN)
+    name: String
+    movies: [Movie] @relationship(type: "IN_GENRE", direction: IN)
 }
 ```
 
@@ -26,9 +26,9 @@ NEO4J_GRAPHQL_ENABLE_REGEX=1
 
 ---
 
-### IN
+## IN
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -38,7 +38,7 @@ NEO4J_GRAPHQL_ENABLE_REGEX=1
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -46,9 +46,9 @@ WHERE this._id IN $this__id_IN
 RETURN this { ._id } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this__id_IN": ["123"]
 }
@@ -56,9 +56,9 @@ RETURN this { ._id } as this
 
 ---
 
-### REGEX
+## REGEX
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -68,7 +68,7 @@ RETURN this { ._id } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -76,9 +76,9 @@ WHERE this.id =~ $this_id_MATCHES
 RETURN this { .id } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_MATCHES": "(?i)123.*"
 }
@@ -86,9 +86,9 @@ RETURN this { .id } as this
 
 ---
 
-### NOT
+## NOT
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -98,7 +98,7 @@ RETURN this { .id } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -106,9 +106,9 @@ WHERE (NOT this.id = $this_id_NOT)
 RETURN this { .id } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_NOT": "123"
 }
@@ -116,9 +116,9 @@ RETURN this { .id } as this
 
 ---
 
-### NOT_IN
+## NOT_IN
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -128,7 +128,7 @@ RETURN this { .id } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -136,9 +136,9 @@ WHERE (NOT this.id IN $this_id_NOT_IN)
 RETURN this { .id } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_NOT_IN": ["123"]
 }
@@ -146,9 +146,9 @@ RETURN this { .id } as this
 
 ---
 
-### CONTAINS
+## CONTAINS
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -158,7 +158,7 @@ RETURN this { .id } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -166,9 +166,9 @@ WHERE this.id CONTAINS $this_id_CONTAINS
 RETURN this { .id } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_CONTAINS": "123"
 }
@@ -176,9 +176,9 @@ RETURN this { .id } as this
 
 ---
 
-### NOT_CONTAINS
+## NOT_CONTAINS
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -188,7 +188,7 @@ RETURN this { .id } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -196,9 +196,9 @@ WHERE (NOT this.id CONTAINS $this_id_NOT_CONTAINS)
 RETURN this { .id } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_NOT_CONTAINS": "123"
 }
@@ -206,9 +206,9 @@ RETURN this { .id } as this
 
 ---
 
-### STARTS_WITH
+## STARTS_WITH
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -218,7 +218,7 @@ RETURN this { .id } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -226,9 +226,9 @@ WHERE this.id STARTS WITH $this_id_STARTS_WITH
 RETURN this { .id } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_STARTS_WITH": "123"
 }
@@ -236,9 +236,9 @@ RETURN this { .id } as this
 
 ---
 
-### NOT_STARTS_WITH
+## NOT_STARTS_WITH
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -248,7 +248,7 @@ RETURN this { .id } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -256,9 +256,9 @@ WHERE (NOT this.id STARTS WITH $this_id_NOT_STARTS_WITH)
 RETURN this { .id } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_NOT_STARTS_WITH": "123"
 }
@@ -266,9 +266,9 @@ RETURN this { .id } as this
 
 ---
 
-### ENDS_WITH
+## ENDS_WITH
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -278,7 +278,7 @@ RETURN this { .id } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -286,9 +286,9 @@ WHERE this.id ENDS WITH $this_id_ENDS_WITH
 RETURN this { .id } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_ENDS_WITH": "123"
 }
@@ -296,9 +296,9 @@ RETURN this { .id } as this
 
 ---
 
-### NOT_ENDS_WITH
+## NOT_ENDS_WITH
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -308,7 +308,7 @@ RETURN this { .id } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -316,9 +316,9 @@ WHERE (NOT this.id ENDS WITH $this_id_NOT_ENDS_WITH)
 RETURN this { .id } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_id_NOT_ENDS_WITH": "123"
 }
@@ -326,9 +326,9 @@ RETURN this { .id } as this
 
 ---
 
-### LT
+## LT
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -338,7 +338,7 @@ RETURN this { .id } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -346,9 +346,9 @@ WHERE this.actorCount < $this_actorCount_LT
 RETURN this { .actorCount } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_actorCount_LT": {
         "high": 0,
@@ -359,9 +359,9 @@ RETURN this { .actorCount } as this
 
 ---
 
-### LT BigInt
+## LT BigInt
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -371,7 +371,7 @@ RETURN this { .actorCount } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -379,9 +379,9 @@ WHERE this.budget < $this_budget_LT
 RETURN this { .budget } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_budget_LT": {
         "low": -1,
@@ -392,9 +392,9 @@ RETURN this { .budget } as this
 
 ---
 
-### LTE
+## LTE
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -404,7 +404,7 @@ RETURN this { .budget } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -412,9 +412,9 @@ WHERE this.actorCount <= $this_actorCount_LTE
 RETURN this { .actorCount } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_actorCount_LTE": {
         "high": 0,
@@ -425,9 +425,9 @@ RETURN this { .actorCount } as this
 
 ---
 
-### LTE BigInt
+## LTE BigInt
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -437,7 +437,7 @@ RETURN this { .actorCount } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -445,9 +445,9 @@ WHERE this.budget <= $this_budget_LTE
 RETURN this { .budget } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_budget_LTE": {
         "low": -1,
@@ -458,9 +458,9 @@ RETURN this { .budget } as this
 
 ---
 
-### GT
+## GT
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -470,7 +470,7 @@ RETURN this { .budget } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -478,9 +478,9 @@ WHERE this.actorCount > $this_actorCount_GT
 RETURN this { .actorCount } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_actorCount_GT": {
         "high": 0,
@@ -491,9 +491,9 @@ RETURN this { .actorCount } as this
 
 ---
 
-### GT BigInt
+## GT BigInt
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -503,7 +503,7 @@ RETURN this { .actorCount } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -511,9 +511,9 @@ WHERE this.budget > $this_budget_GT
 RETURN this { .budget } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_budget_GT": {
         "low": -808,
@@ -524,9 +524,9 @@ RETURN this { .budget } as this
 
 ---
 
-### GTE
+## GTE
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -536,7 +536,7 @@ RETURN this { .budget } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -544,9 +544,9 @@ WHERE this.actorCount >= $this_actorCount_GTE
 RETURN this { .actorCount } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_actorCount_GTE": {
         "high": 0,
@@ -557,9 +557,9 @@ RETURN this { .actorCount } as this
 
 ---
 
-### GTE BigInt
+## GTE BigInt
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -569,7 +569,7 @@ RETURN this { .actorCount } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -577,9 +577,9 @@ WHERE this.budget >= $this_budget_GTE
 RETURN this { .budget } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_budget_GTE": {
         "low": -808,
@@ -590,9 +590,9 @@ RETURN this { .budget } as this
 
 ---
 
-### Relationship equality
+## Relationship equality
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -602,7 +602,7 @@ RETURN this { .budget } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -610,9 +610,9 @@ WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ANY(this_genres IN [(this)-[:IN_G
 RETURN this { .actorCount } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_genres_name": "some genre"
 }
@@ -620,9 +620,9 @@ RETURN this { .actorCount } as this
 
 ---
 
-### Relationship NOT
+## Relationship NOT
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -632,7 +632,7 @@ RETURN this { .actorCount } as this
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -640,11 +640,91 @@ WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND NONE(this_genres_NOT IN [(this)-[
 RETURN this { .actorCount } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_genres_NOT_name": "some genre"
+}
+```
+
+---
+
+## Node and relationship properties equality
+
+### GraphQL Input
+
+```graphql
+{
+    movies(where: { genresConnection: { node: { name: "some genre" } } }) {
+        actorCount
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Movie)
+WHERE EXISTS((this)-[:IN_GENRE]->(:Genre))
+AND ANY(this_genresConnection_map IN [(this)-[this_genresConnection_MovieGenresRelationship:IN_GENRE]->(this_genresConnection:Genre) | { node: this_genresConnection, relationship: this_genresConnection_MovieGenresRelationship } ]
+WHERE this_genresConnection_map.node.name = $this_movies.where.genresConnection.node.name)
+RETURN this { .actorCount } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_movies": {
+        "where": {
+            "genresConnection": {
+                "node": {
+                    "name": "some genre"
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+## Node and relationship properties NOT
+
+### GraphQL Input
+
+```graphql
+{
+    movies(where: { genresConnection_NOT: { node: { name: "some genre" } } }) {
+        actorCount
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Movie)
+WHERE EXISTS((this)-[:IN_GENRE]->(:Genre))
+AND NONE(this_genresConnection_NOT_map IN [(this)-[this_genresConnection_NOT_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_NOT:Genre) | { node: this_genresConnection_NOT, relationship: this_genresConnection_NOT_MovieGenresRelationship } ]
+WHERE this_genresConnection_NOT_map.node.name = $this_movies.where.genresConnection_NOT.node.name)
+RETURN this { .actorCount } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_movies": {
+        "where": {
+            "genresConnection_NOT": {
+                "node": {
+                    "name": "some genre"
+                }
+            }
+        }
+    }
 }
 ```
 

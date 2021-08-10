@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
         await driver.close();
     });
 
-    test("should return the correct number of results following connect", async () => {
+    test("should create the correct number of nodes following multiple connect", async () => {
         const typeDefs = gql`
             type A {
                 ID: ID! @id
@@ -80,8 +80,8 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
                     input: [
                         {
                             name: $a
-                            rel_b: { connect: { where: { name_IN: [$b1, $b2] } } }
-                            rel_c: { create: { name: $c } }
+                            rel_b: { connect: { where: { node: { name_IN: [$b1, $b2] } } } }
+                            rel_c: { create: { node: { name: $c } } }
                         }
                     ]
                 ) {

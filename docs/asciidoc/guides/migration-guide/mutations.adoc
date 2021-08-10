@@ -26,7 +26,7 @@ A summary of migration points is as follows:
 * The object(s) being mutated are returned as a nested field, to allow for metadata about the operation to be added in future
 * Mutation arguments are now commonly named between different types, but with different input types - such as `where` and `input`
 
-> Note that <<schema-mutations>> in `@neo4j/graphql` are incredibly powerful, and it is well worthwhile reading about them in full. You might find that you can collapse multiple current mutations down into one!
+> Note that <<mutations>> in `@neo4j/graphql` are incredibly powerful, and it is well worthwhile reading about them in full. You might find that you can collapse multiple current mutations down into one!
 
 == Creating
 
@@ -121,7 +121,7 @@ mutation {
 
 == Connecting
 
-Using `neo4j-graphql-js`, connecting two of the nodes in our example would have been achieved by executing either the `AddMovieActors` or `AddActorMovies` Mutation.
+Using `neo4j-graphql-js`, connecting two of the nodes in this example would have been achieved by executing either the `AddMovieActors` or `AddActorMovies` Mutation.
 
 In `@neo4j/graphql`, this is achieved by specifying the `connect` argument on either the `updateMovies` or `updateActors` Mutation.
 
@@ -148,7 +148,7 @@ Would become the following using `@neo4j/graphql`:
 mutation {
     updateMovies(
         where: { title: "Forrest Gump" }
-        connect: { actors: { where: { name: "Tom Hanks" } } }
+        connect: { actors: { where: { node: { name: "Tom Hanks" } } } }
     ) {
         movies {
             title
@@ -164,7 +164,7 @@ Note, there are many ways to achieve the same goal using the powerful Mutation a
 
 == Disconnecting
 
-Similarly to connecting, using `neo4j-graphql-js`, disconnecting two of the nodes in our example would have been achieved by executing either the `RemoveMovieActors` or `RemoveActorMovies` Mutation.
+Similarly to connecting, using `neo4j-graphql-js`, disconnecting two of the nodes in this example would have been achieved by executing either the `RemoveMovieActors` or `RemoveActorMovies` Mutation.
 
 In `@neo4j/graphql`, this is achieved by specifying the `disconnect` argument on either the `updateMovies` or `updateActors` Mutation.
 
@@ -191,7 +191,7 @@ Would become the following using `@neo4j/graphql`:
 mutation {
     updateMovies(
         where: { title: "Forrest Gump" }
-        disconnect: { actors: { where: { name: "Tom Hanks" } } }
+        disconnect: { actors: { where: { node: { name: "Tom Hanks" } } } }
     ) {
         movies {
             title

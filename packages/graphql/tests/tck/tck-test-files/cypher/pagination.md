@@ -1,10 +1,10 @@
-## Cypher pagination tests
+# Cypher pagination tests
 
-Tests for queries including reserved arguments `skip` and `limit`.
+Tests for queries including reserved arguments `offset` and `limit`.
 
 Schema:
 
-```schema
+```graphql
 type Movie {
     id: ID
     title: String
@@ -13,31 +13,31 @@ type Movie {
 
 ---
 
-### Skipping
+## Skipping
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
-    movies(options: { skip: 1 }) {
+    movies(options: { offset: 1 }) {
         title
     }
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
 RETURN this { .title } as this
-SKIP $this_skip
+SKIP $this_offset
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-    "this_skip": {
+    "this_offset": {
         "high": 0,
         "low": 1
     }
@@ -46,9 +46,9 @@ SKIP $this_skip
 
 ---
 
-### Limit
+## Limit
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
@@ -58,7 +58,7 @@ SKIP $this_skip
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
@@ -66,9 +66,9 @@ RETURN this { .title } as this
 LIMIT $this_limit
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_limit": {
         "high": 0,
@@ -79,36 +79,36 @@ LIMIT $this_limit
 
 ---
 
-### Skip + Limit
+## Skip + Limit
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 {
-    movies(options: { limit: 1, skip: 2 }) {
+    movies(options: { limit: 1, offset: 2 }) {
         title
     }
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
 RETURN this { .title } as this
-SKIP $this_skip
+SKIP $this_offset
 LIMIT $this_limit
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_limit": {
         "high": 0,
         "low": 1
     },
-    "this_skip": {
+    "this_offset": {
         "high": 0,
         "low": 2
     }
@@ -117,41 +117,41 @@ LIMIT $this_limit
 
 ---
 
-### Skip + Limit as variables
+## Skip + Limit as variables
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
-query($skip: Int, $limit: Int) {
-    movies(options: { limit: $limit, skip: $skip }) {
+query($offset: Int, $limit: Int) {
+    movies(options: { limit: $limit, offset: $offset }) {
         title
     }
 }
 ```
 
-**GraphQL params input**
+### GraphQL Params Input
 
-```graphql-params
+```json
 {
-    "skip": 0,
+    "offset": 0,
     "limit": 0
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
 RETURN this { .title } as this
-SKIP $this_skip
+SKIP $this_offset
 LIMIT $this_limit
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
-    "this_skip": {
+    "this_offset": {
         "high": 0,
         "low": 0
     },
@@ -164,47 +164,50 @@ LIMIT $this_limit
 
 ---
 
-### Skip + Limit with other variables
+## Skip + Limit with other variables
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
-query($skip: Int, $limit: Int, $title: String) {
-    movies(options: { limit: $limit, skip: $skip }, where: { title: $title }) {
+query($offset: Int, $limit: Int, $title: String) {
+    movies(
+        options: { limit: $limit, offset: $offset }
+        where: { title: $title }
+    ) {
         title
     }
 }
 ```
 
-**GraphQL params input**
+### GraphQL Params Input
 
-```graphql-params
+```json
 {
     "limit": 1,
-    "skip": 2,
+    "offset": 2,
     "title": "some title"
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:Movie)
 WHERE this.title = $this_title
 RETURN this { .title } as this
-SKIP $this_skip
+SKIP $this_offset
 LIMIT $this_limit
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_limit": {
         "high": 0,
         "low": 1
     },
-    "this_skip": {
+    "this_offset": {
         "high": 0,
         "low": 2
     },

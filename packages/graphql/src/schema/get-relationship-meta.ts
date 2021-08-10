@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import { FieldDefinitionNode } from "graphql";
+import { FieldDefinitionNode, StringValueNode } from "graphql";
 
 type RelationshipMeta = {
     direction: "IN" | "OUT";
     type: string;
+    properties?: string;
 };
 
 function getRelationshipMeta(field: FieldDefinitionNode): RelationshipMeta | undefined {
@@ -49,12 +50,19 @@ function getRelationshipMeta(field: FieldDefinitionNode): RelationshipMeta | und
         throw new Error("@relationship type not a string");
     }
 
+    const propertiesArg = directive.arguments?.find((x) => x.name.value === "properties");
+    if (propertiesArg && propertiesArg.value.kind !== "StringValue") {
+        throw new Error("@relationship properties not a string");
+    }
+
     const direction = directionArg.value.value as "IN" | "OUT";
     const type = typeArg.value.value;
+    const properties = (propertiesArg?.value as StringValueNode)?.value;
 
     return {
         direction,
         type,
+        properties,
     };
 }
 

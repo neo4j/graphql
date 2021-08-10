@@ -1,7 +1,9 @@
 [[auth-authorization-roles]]
 = Roles
 
-Use the roles property to specify the allowed roles for an operation. Use config `rolesPath` to specify a object path for JWT roles otherwise defaults to `jwt.roles`
+Use the `roles` property to specify the allowed roles for an operation. Use the `Neo4jGraphQL` config option `rolesPath` to specify a object path for JWT roles otherwise defaults to `jwt.roles`.
+
+The following type definitions show that an admin role is required for all update operations against Users.
 
 [source, graphql]
 ----
@@ -13,19 +15,16 @@ type User {
 extend type User @auth(rules: [{ operations: [UPDATE], roles: ["admin"] }])
 ----
 
-Above showing an admin role is required for all operations against Users. If you have multiple roles you can add more items to the array;
+If there are multiple possible roles you can add more items to the array, of which users only need one to satisfy a rule:
 
 [source, graphql]
 ----
-extend type User @auth(rules: [{ roles: ["admin", "super-admin"] }])
+extend type User @auth(rules: [{ operations: [UPDATE], roles: ["admin", "super-admin"] }])
 ----
-
-
-> Users only need one of many roles to satisfy a rule.
 
 == RBAC
 
-Here is a RBAC example using `roles`;
+Here is an example of RBAC (Role-Based Access Control) using `roles`:
 
 [source, graphql]
 ----
