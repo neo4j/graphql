@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: "@neo4j/graphql CI"
 
 # Controls when the workflow will run
 on:
@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn --frozen-lockfile
+      - run: yarn --immutable
       - run: yarn build
       - name: Run @neo4j/graphql unit tests
         run: yarn --cwd packages/graphql run test:unit
