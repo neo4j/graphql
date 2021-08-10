@@ -16,6 +16,7 @@ jobs:
       - uses: actions/checkout@v2
         with: 
           repository: neo-technology/whitelist-check
+          ssh-key: ${{ secrets.NEO_TECHNOLOGY_BUILD_AGENT_SSH_KEY }}
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
