@@ -84,4 +84,4 @@ server.listen().then(({ url }) => {
 });
 ----
 
-Database bookmarks are also supported. See <<driver-configuration>> for more information.
+Database bookmarks are also supported. See <<drivers-and-config>> for more information.

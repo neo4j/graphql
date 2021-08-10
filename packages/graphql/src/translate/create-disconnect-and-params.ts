@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { Node, Relationship } from "../classes";
+import { Node } from "../classes";
 import { RelationField, Context } from "../types";
+import createWhereAndParams from "./create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
 interface Res {
     disconnects: string[];
@@ -39,7 +39,6 @@ function createDisconnectAndParams({
     labelOverride,
     parentNode,
     insideDoWhen,
-    parameterPrefix,
 }: {
     withVars: string[];
     value: any;
@@ -51,9 +50,8 @@ function createDisconnectAndParams({
     labelOverride?: string;
     parentNode: Node;
     insideDoWhen?: boolean;
-    parameterPrefix: string;
 }): [string, any] {
-    function reducer(res: Res, disconnect: { where: any; disconnect: any }, index): Res {
+    function reducer(res: Res, disconnect: any, index): Res {
         const _varName = `${varName}${index}`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
@@ -83,25 +81,19 @@ function createDisconnectAndParams({
 
         const whereStrs: string[] = [];
 
-        const relationship = (context.neoSchema.relationships.find(
-            (x) => x.properties === relationField.properties
-        ) as unknown) as Relationship;
-
         if (disconnect.where) {
-            const whereAndParams = createConnectionWhereAndParams({
-                nodeVariable: _varName,
+            const where = createWhereAndParams({
+                varName: _varName,
                 whereInput: disconnect.where,
                 node: refNode,
                 context,
-                relationshipVariable: relVarName,
-                relationship,
-                parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
+                recursing: true,
             });
-            if (whereAndParams[0]) {
-                whereStrs.push(whereAndParams[0]);
+            if (where[0]) {
+                whereStrs.push(where[0]);
+                res.params = { ...res.params, ...where[1] };
             }
         }
-
         if (refNode.auth) {
             const whereAuth = createAuthAndParams({
                 operation: "DISCONNECT",
@@ -165,42 +157,37 @@ function createDisconnectAndParams({
         res.disconnects.push(`)`); // close FOREACH
 
         if (disconnect.disconnect) {
-            const disconnects = Array.isArray(disconnect.disconnect) ? disconnect.disconnect : [disconnect.disconnect];
+            const disconnects = (Array.isArray(disconnect.disconnect)
+                ? disconnect.disconnect
+                : [disconnect.disconnect]) as any[];
 
-            disconnects.forEach((c, i) => {
+            disconnects.forEach((c) => {
                 const reduced = Object.entries(c).reduce(
-                    (r: Res, [k, v]: [string, any]) => {
-                        const relField = refNode.relationFields.find((x) => k.startsWith(x.fieldName)) as RelationField;
-                        const newRefNodes: Node[] = [];
+                    (r: Res, [k, v]) => {
+                        const relField = refNode.relationFields.find((x) => k.startsWith(x.fieldName));
+                        let newRefNode: Node;
 
-                        if (relField.union) {
-                            Object.keys(v).forEach((modelName) => {
-                                newRefNodes.push(context.neoSchema.nodes.find((x) => x.name === modelName) as Node);
-                            });
+                        if (relationField.union) {
+                            const [modelName] = k.split(`${relationField.fieldName}_`).join("").split("_");
+                            newRefNode = context.neoSchema.nodes.find((x) => x.name === modelName) as Node;
                         } else {
-                            newRefNodes.push(
-                                context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
-                            );
+                            newRefNode = context.neoSchema.nodes.find(
+                                (x) => x.name === (relField as RelationField).typeMeta.name
+                            ) as Node;
                         }
 
-                        newRefNodes.forEach((newRefNode) => {
-                            const recurse = createDisconnectAndParams({
-                                withVars: [...withVars, _varName],
-                                value: relField.union ? v[newRefNode.name] : v,
-                                varName: `${_varName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
-                                relationField: relField,
-                                parentVar: _varName,
-                                context,
-                                refNode: newRefNode,
-                                parentNode: refNode,
-                                parameterPrefix: `${parameterPrefix}${
-                                    relField.typeMeta.array ? `[${i}]` : ""
-                                }.disconnect.${k}${relField.union ? `.${newRefNode.name}` : ""}`,
-                                labelOverride: relField.union ? newRefNode.name : "",
-                            });
-                            r.disconnects.push(recurse[0]);
-                            r.params = { ...r.params, ...recurse[1] };
+                        const recurse = createDisconnectAndParams({
+                            withVars: [...withVars, _varName],
+                            value: v,
+                            varName: `${_varName}_${k}`,
+                            relationField: relField as RelationField,
+                            parentVar: _varName,
+                            context,
+                            refNode: newRefNode,
+                            parentNode: refNode,
                         });
+                        r.disconnects.push(recurse[0]);
+                        r.params = { ...r.params, ...recurse[1] };
 
                         return r;
                     },

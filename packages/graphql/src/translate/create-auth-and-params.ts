@@ -78,7 +78,7 @@ function createAuthPredicate({
                     const authPredicate = createAuthPredicate({
                         rule: {
                             [kind]: v,
-                            allowUnauthenticated,
+                            allowUnauthenticated
                         } as AuthRule,
                         varName,
                         node,
@@ -146,7 +146,7 @@ function createAuthPredicate({
                         varName: relationVarName,
                         rule: {
                             [kind]: { [k]: v },
-                            allowUnauthenticated,
+                            allowUnauthenticated
                         } as AuthRule,
                         kind,
                     });
@@ -207,7 +207,7 @@ function createAuthAndParams({
                 const authWhere = createAuthPredicate({
                     rule: {
                         where: authRule.where,
-                        allowUnauthenticated: authRule.allowUnauthenticated,
+                        allowUnauthenticated: authRule.allowUnauthenticated
                     },
                     context,
                     node: where.node,

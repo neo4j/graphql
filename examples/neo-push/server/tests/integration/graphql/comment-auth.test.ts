@@ -27,9 +27,7 @@ describe("comment-auth", () => {
 
         const mutation = gql`
             mutation {
-                createComments(
-                    input: [{ content: "test", author: { connect: { where: { node: { id: "invalid" } } } } }]
-                ) {
+                createComments(input: [{ content: "test", author: { connect: { where: { id: "invalid" } } } }]) {
                     comments {
                         id
                     }

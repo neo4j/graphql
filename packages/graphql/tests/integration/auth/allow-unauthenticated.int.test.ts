@@ -48,7 +48,7 @@ describe("auth/allow-unauthenticated", () => {
                     publisher: String!
                     published: Boolean!
                 }
-
+    
                 extend type Post @auth(rules: [
                     { allow: { OR: [
                         { publisher: "$jwt.sub" },
@@ -56,30 +56,30 @@ describe("auth/allow-unauthenticated", () => {
                     ] }, allowUnauthenticated: true }
                 ])
             `;
-
+    
             const postId = generate({ charset: "alphabetic" });
-
+    
             const query = `
                 {
-                    posts(where: { id: "${postId}" }) {
+                    posts(where: { id: ${postId} }) {
                         id
                     }
                 }
             `;
-
+    
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
-
+    
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: true})
             `);
-
+    
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
-
+    
             const gqlResult = await graphql({
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, req },
                 schema: neoSchema.schema,
                 source: query,
             });
@@ -98,7 +98,7 @@ describe("auth/allow-unauthenticated", () => {
                     publisher: String!
                     published: Boolean!
                 }
-
+    
                 extend type Post @auth(rules: [
                     { allow: { OR: [
                         { publisher: "$jwt.sub" },
@@ -106,38 +106,38 @@ describe("auth/allow-unauthenticated", () => {
                     ] }, allowUnauthenticated: true }
                 ])
             `;
-
+    
             const postId = generate({ charset: "alphabetic" });
-
+    
             const query = `
                 {
-                    posts(where: { id: "${postId}" }) {
+                    posts(where: { id: ${postId} }) {
                         id
                     }
                 }
             `;
-
+    
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
-
+    
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
             `);
-
+    
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
-
+    
             const gqlResult = await graphql({
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, req },
                 schema: neoSchema.schema,
                 source: query,
             });
-
+    
             // Check that a Forbidden error have been throwed
             expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
-            expect(gqlResult.errors as any[]).toHaveLength(1);
-
+            expect((gqlResult.errors as any[])).toHaveLength(1);
+    
             // Check if returned data is what we really want
             expect(gqlResult.data?.posts).toBeUndefined();
         });
@@ -163,7 +163,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 {
-                    posts(where: { OR: [{id: "${postId}"}, {id: "${postId2}"}] }) {
+                    posts(where: { OR: [{id: ${postId}}, {id: ${postId2}}] }) {
                         id
                     }
                 }
@@ -182,14 +182,14 @@ describe("auth/allow-unauthenticated", () => {
             const req = new IncomingMessage(socket);
 
             const gqlResult = await graphql({
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, req },
                 schema: neoSchema.schema,
                 source: query,
             });
 
             // Check that a Forbidden error have been throwed
             expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
-            expect(gqlResult.errors as any[]).toHaveLength(1);
+            expect((gqlResult.errors as any[])).toHaveLength(1);
 
             // Check if returned data is what we really want
             expect(gqlResult.data?.posts).toBeUndefined();
@@ -204,7 +204,7 @@ describe("auth/allow-unauthenticated", () => {
                     publisher: String!
                     published: Boolean!
                 }
-
+    
                 extend type Post @auth(rules: [
                     { where: { OR: [
                         { publisher: "$jwt.sub" },
@@ -212,30 +212,30 @@ describe("auth/allow-unauthenticated", () => {
                     ] }, allowUnauthenticated: true }
                 ])
             `;
-
+    
             const postId = generate({ charset: "alphabetic" });
-
+    
             const query = `
                 {
-                    posts(where: { id: "${postId}" }) {
+                    posts(where: { id: ${postId} }) {
                         id
                     }
                 }
             `;
-
+    
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
-
+    
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: true})
             `);
-
+    
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
-
+    
             const gqlResult = await graphql({
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, req },
                 schema: neoSchema.schema,
                 source: query,
             });
@@ -254,7 +254,7 @@ describe("auth/allow-unauthenticated", () => {
                     publisher: String!
                     published: Boolean!
                 }
-
+    
                 extend type Post @auth(rules: [
                     { where: { OR: [
                         { publisher: "$jwt.sub" },
@@ -262,37 +262,37 @@ describe("auth/allow-unauthenticated", () => {
                     ] }, allowUnauthenticated: true }
                 ])
             `;
-
+    
             const postId = generate({ charset: "alphabetic" });
-
+    
             const query = `
                 {
-                    posts(where: { id: "${postId}" }) {
+                    posts(where: { id: ${postId} }) {
                         id
                     }
                 }
             `;
-
+    
             const secret = "secret";
             const session = driver.session({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
-
+    
             await session.run(`
                 CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
             `);
-
+    
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
-
+    
             const gqlResult = await graphql({
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, req },
                 schema: neoSchema.schema,
                 source: query,
             });
-
+    
             // Check that no errors have been throwed
             expect(gqlResult.errors).toBeUndefined();
-
+    
             // Check if returned data is what we really want
             expect(gqlResult.data?.posts).toStrictEqual([]);
         });
@@ -318,7 +318,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 {
-                    posts(where: { OR: [{id: "${postId}"}, {id: "${postId2}"}] }) {
+                    posts(where: { OR: [{id: ${postId}}, {id: ${postId2}}] }) {
                         id
                     }
                 }
@@ -337,7 +337,7 @@ describe("auth/allow-unauthenticated", () => {
             const req = new IncomingMessage(socket);
 
             const gqlResult = await graphql({
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, req },
                 schema: neoSchema.schema,
                 source: query,
             });
@@ -357,14 +357,14 @@ describe("auth/allow-unauthenticated", () => {
                 type User {
                     id: ID
                 }
-
-                extend type User @auth(rules: [{
+    
+                extend type User @auth(rules: [{ 
                     operations: [CREATE],
                     bind: { id: "$jwt.sub" },
                     allowUnauthenticated: true
                 }])
             `;
-
+    
             const query = `
                 mutation {
                     createUsers(input: [{id: "not bound"}]) {
@@ -377,10 +377,10 @@ describe("auth/allow-unauthenticated", () => {
 
             const secret = "secret";
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
-
+    
             const socket = new Socket({ readable: true });
             const req = new IncomingMessage(socket);
-
+    
             const gqlResult = await graphql({
                 contextValue: { driver, req },
                 schema: neoSchema.schema,
@@ -389,8 +389,8 @@ describe("auth/allow-unauthenticated", () => {
 
             // Check that a Forbidden error have been throwed
             expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
-            expect(gqlResult.errors as any[]).toHaveLength(1);
-
+            expect((gqlResult.errors as any[])).toHaveLength(1);
+    
             // Check if returned data is what we really want
             expect(gqlResult.data?.posts).toBeUndefined();
         });

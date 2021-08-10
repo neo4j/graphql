@@ -61,7 +61,7 @@ describe("autogenerate", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -100,7 +100,7 @@ describe("autogenerate", () => {
                         {
                             name: "dan",
                             genres: {
-                                create: [{node: {name: "Comedy"}}]
+                                create: [{name: "Comedy"}]
                             }
                         }
                     ]
@@ -120,7 +120,7 @@ describe("autogenerate", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver },
             });
 
             expect(gqlResult.errors).toBeFalsy();

@@ -87,16 +87,9 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
             varName,
             parentVar: varName,
             withVars: [varName],
-            parameterPrefix: `${varName}_${resolveTree.name}.args.delete`,
         });
         [deleteStr] = deleteAndParams;
-        cypherParams = {
-            ...cypherParams,
-            ...(deleteStr.includes(resolveTree.name)
-                ? { [`${varName}_${resolveTree.name}`]: { args: { delete: deleteInput } } }
-                : {}),
-            ...deleteAndParams[1],
-        };
+        cypherParams = { ...cypherParams, ...deleteAndParams[1] };
     }
 
     const cypher = [matchStr, whereStr, deleteStr, allowStr, `DETACH DELETE ${varName}`];

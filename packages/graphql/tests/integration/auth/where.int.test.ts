@@ -85,7 +85,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -161,7 +161,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -171,96 +171,6 @@ describe("auth/where", () => {
                 const post1 = posts.find((x) => x.id === postId1);
                 expect(post1).toBeTruthy();
                 const post2 = posts.find((x) => x.id === postId2);
-                expect(post2).toBeTruthy();
-            } finally {
-                await session.close();
-            }
-        });
-
-        test("should add $jwt.id to where on a relationship(using connection)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
-
-            const typeDefs = `
-                type User {
-                    id: ID
-                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
-                }
-
-                type Post {
-                    id: ID
-                    creator: User @relationship(type: "HAS_POST", direction: IN)
-                }
-
-                extend type Post @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
-            `;
-
-            const userId = generate({
-                charset: "alphabetic",
-            });
-
-            const postId1 = generate({
-                charset: "alphabetic",
-            });
-            const postId2 = generate({
-                charset: "alphabetic",
-            });
-            const randomPostId = generate({
-                charset: "alphabetic",
-            });
-
-            const query = `
-                {
-                    users(where: { id: "${userId}" }) {
-                        postsConnection {
-                            edges {
-                                node {
-                                    id
-                                }
-                            }
-                        }
-                    }
-                }
-            `;
-
-            const secret = "secret";
-
-            const token = jsonwebtoken.sign(
-                {
-                    roles: [],
-                    sub: userId,
-                },
-                secret
-            );
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
-
-            try {
-                await session.run(`
-                    CREATE (u:User {id: "${userId}"})
-                    CREATE (p1:Post {id: "${postId1}"})
-                    CREATE (p2:Post {id: "${postId2}"})
-                    CREATE (:Post {id: "${randomPostId}"})
-                    MERGE (u)-[:HAS_POST]->(p1)
-                    MERGE (u)-[:HAS_POST]->(p2)
-                `);
-
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
-
-                const gqlResult = await graphql({
-                    schema: neoSchema.schema,
-                    source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
-                });
-
-                expect(gqlResult.errors).toBeUndefined();
-
-                const posts = (gqlResult.data as any).users[0].postsConnection as { edges: { node: { id: string } }[] };
-                expect(posts.edges).toHaveLength(2);
-                const post1 = posts.edges.find((x) => x.node.id === postId1);
-                expect(post1).toBeTruthy();
-                const post2 = posts.edges.find((x) => x.node.id === postId2);
                 expect(post2).toBeTruthy();
             } finally {
                 await session.close();
@@ -339,7 +249,7 @@ describe("auth/where", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source: query,
-                        contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, req },
                     });
                     expect(gqlResult.errors).toBeUndefined();
                     const posts = (gqlResult.data as any).users[0].content as any[];
@@ -352,98 +262,6 @@ describe("auth/where", () => {
                     await session.close();
                 }
             });
-        });
-
-        test("should add $jwt.id to where and return users search(using connections)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
-
-            const typeDefs = `
-                union Content = Post
-
-                type User {
-                    id: ID
-                    content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
-                }
-
-                type Post {
-                    id: ID
-                    creator: User @relationship(type: "HAS_CONTENT", direction: IN)
-                }
-
-                extend type Post @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
-                extend type User @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
-            `;
-
-            const userId = generate({
-                charset: "alphabetic",
-            });
-
-            const postId1 = generate({
-                charset: "alphabetic",
-            });
-            const postId2 = generate({
-                charset: "alphabetic",
-            });
-
-            const query = `
-                {
-                    users {
-                        contentConnection {
-                            edges {
-                                node {
-                                    ... on Post {
-                                        id
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            `;
-
-            const secret = "secret";
-
-            const token = jsonwebtoken.sign(
-                {
-                    roles: [],
-                    sub: userId,
-                },
-                secret
-            );
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
-
-            try {
-                await session.run(`
-                    CREATE (u:User {id: "${userId}"})
-                    CREATE (p1:Post {id: "${postId1}"})
-                    CREATE (p2:Post {id: "${postId2}"})
-                    CREATE (:Post {id: randomUUID()})
-                    MERGE (u)-[:HAS_CONTENT]->(p1)
-                    MERGE (u)-[:HAS_CONTENT]->(p2)
-                `);
-
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
-
-                const gqlResult = await graphql({
-                    schema: neoSchema.schema,
-                    source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
-                });
-                expect(gqlResult.errors).toBeUndefined();
-                const posts = (gqlResult.data as any).users[0].contentConnection as {
-                    edges: { node: { id: string } }[];
-                };
-                expect(posts.edges).toHaveLength(2);
-                const post1 = posts.edges.find((x) => x.node.id === postId1);
-                expect(post1).toBeTruthy();
-                const post2 = posts.edges.find((x) => x.node.id === postId2);
-                expect(post2).toBeTruthy();
-            } finally {
-                await session.close();
-            }
         });
     });
 
@@ -500,7 +318,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -561,7 +379,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -606,7 +424,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { posts: { connect: { where: { node: { id: "${postId}" } } } } }) {
+                    updateUsers(update: { posts: { connect: { where: { id: "${postId}" } } } }) {
                         users {
                             id
                             posts {
@@ -642,7 +460,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -679,7 +497,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    updateUsers(connect:{posts:{where:{node:{id: "${postId}"}}}}) {
+                    updateUsers(connect:{posts:{where:{id: "${postId}"}}}) {
                         users {
                             id
                             posts {
@@ -715,7 +533,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -754,7 +572,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { posts: { disconnect: { where: { node: { id: "${postId}" } } } } }) {
+                    updateUsers(update: { posts: { disconnect: { where: { id: "${postId}" } } } }) {
                         users {
                             id
                             posts {
@@ -789,7 +607,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -826,7 +644,7 @@ describe("auth/where", () => {
 
             const query = `
                 mutation {
-                    updateUsers(disconnect: { posts: { where: {node: { id : "${postId}"}}}}) {
+                    updateUsers(disconnect:{posts:{where:{id: "${postId}"}}}) {
                         users {
                             id
                             posts {
@@ -861,7 +679,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req },
                 });
 
                 expect(gqlResult.errors).toBeUndefined();

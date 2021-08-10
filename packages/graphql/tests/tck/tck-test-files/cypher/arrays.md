@@ -1,10 +1,10 @@
-# Cypher Arrays
+## Cypher Arrays
 
 Tests for queries using options.where
 
 Schema:
 
-```graphql
+```schema
 type Movie {
     title: String!
     ratings: [Float!]!
@@ -13,9 +13,9 @@ type Movie {
 
 ---
 
-## WHERE INCLUDES
+### WHERE INCLUDES
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -26,7 +26,7 @@ type Movie {
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Movie)
@@ -34,9 +34,9 @@ WHERE $this_ratings_INCLUDES IN this.ratings
 RETURN this { .title, .ratings } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_ratings_INCLUDES": 4.0
 }
@@ -44,9 +44,9 @@ RETURN this { .title, .ratings } as this
 
 ---
 
-## WHERE NOT INCLUDES
+### WHERE NOT INCLUDES
 
-### GraphQL Input
+**GraphQL input**
 
 ```graphql
 {
@@ -57,7 +57,7 @@ RETURN this { .title, .ratings } as this
 }
 ```
 
-### Expected Cypher Output
+**Expected Cypher output**
 
 ```cypher
 MATCH (this:Movie)
@@ -65,9 +65,9 @@ WHERE (NOT $this_ratings_NOT_INCLUDES IN this.ratings)
 RETURN this { .title, .ratings } as this
 ```
 
-### Expected Cypher Params
+**Expected Cypher params**
 
-```json
+```cypher-params
 {
     "this_ratings_NOT_INCLUDES": 4.0
 }
