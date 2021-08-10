@@ -25,4 +25,4 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - run: ./bin/examine-pull-request neo4j graphql "${{ secrets.NEO_TECHNOLOGY_BUILD_AGENT_TOKEN }}" %teamcity.build.branch% cla-database.csv
+      - run: ./bin/examine-pull-request neo4j graphql "${{ secrets.NEO_TECHNOLOGY_BUILD_AGENT_TOKEN }}" ${{ env.GITHUB_HEAD_REF }} cla-database.csv
