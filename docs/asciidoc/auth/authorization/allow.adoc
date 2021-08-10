@@ -1,13 +1,15 @@
 [[auth-authorization-allow]]
 = Allow
 
-Use `allow` to ensure that on matched nodes, a connection exists between a value on the JWT and a property on each matched node. Taking a closer look, let's create two users in a hypothetical empty database;
+Use `allow` to ensure that on matched nodes, there is equality between a value on the JWT and a property on each matched node. Taking a closer look, create two users in a hypothetical empty database:
 
 [source, cypher]
 ----
-CREATE (:User {id:"user1", name: "one"})
-CREATE (:User {id:"user2", name: "two"})
+CREATE (:User { id: "user1", name: "one" })
+CREATE (:User { id: "user2", name: "two" })
 ----
+
+For the label and properties of the nodes created above, the corresponding GraphQL type definition would be:
 
 [source, graphql]
 ----
@@ -17,7 +19,7 @@ type User {
 }
 ----
 
-Now we have two users in our database, and given the above GraphQL type definitions - How can we restrict `user1` from accessing `user2`? This is where `allow` comes in;
+Now that there are two users in the database, and a simple type definition - it might be desirable to restrict `user1` from accessing `user2`. This is where `allow` comes in:
 
 [source, graphql]
 ----
@@ -36,18 +38,20 @@ extend type User @auth(
 )
 ----
 
-After we match the node, we validate that the property on the node is equal to the `jwt.sub` property. This validation is done in Cypher with two functions; `validatePredicate` and `validate`.
+After a match is made against a node, it is validated that the property `id` on the node is equal to the `jwt.sub` property.
 
-Given `user1` has the decoded JWT;
+Given `user1` has the following decoded JWT:
+
 [source, json]
 ----
 {
-  "sub": "user1",
-  "iat": 1516239022
+    "sub": "user1",
+    "iat": 1516239022
 }
 ----
 
-With this JWT makes a GraphQL query to get `user2`;
+If "user1" used this JWT in a request for "user2":
+
 [source, graphql]
 ----
 query {
@@ -57,26 +61,26 @@ query {
 }
 ----
 
-The generated cypher for this query would look like the below and throw you out the operation.
+The generated cypher for this query would look like the following and throw you out the operation:
 
 [source, cypher]
 ----
-MATCH (u:User {id: "user2"})
+MATCH (u:User { id: "user2" })
 CALL apoc.util.validate(NOT(u.id = "user1"), "Forbidden")
 RETURN u
 ----
 
-Allow is used on the following operations;
+Allow is available on the following operations:
 
-1. read
-2. update
-3. connect
-4. disconnect
-5. delete
+- `READ`
+- `UPDATE`
+- `CONNECT`
+- `DISCONNECT`
+- `DELETE`
 
-== `allow` Across Relationships
+== `allow` across relationships
 
-There may be a reason where you need to traverse across relationships to satisfy your auth implementation. One example of this could be "Grant update access to all Moderators of a Post";
+There may be a reason where you need to traverse across relationships to satisfy your authorization implementation. One example use case could be "grant update access to all Moderators of a Post":
 
 [source, graphql]
 ----
@@ -95,9 +99,9 @@ extend type Post @auth(rules: [
 ])
 ----
 
-When you specify allow on a relationship you can select fields on the referenced node. It's worth pointing out that allow on a relationship will perform an `ANY` on the matched nodes; to see if there is a match.
+When you specify allow on a relationship you can select fields on the referenced node. It's worth pointing out that allow on a relationship will perform an `ANY` on the matched nodes to see if there is a match.
 
-Given the above example - There may be a time when you need to give update access to either the creator of a post or a moderator, you can use `OR` and `AND` inside allow;
+Given the above example - There may be a time when you need to give update access to either the creator of a post or a moderator, you can use `OR` and `AND` inside `allow`:
 
 [source, graphql]
 ----
@@ -123,9 +127,9 @@ extend type Post
     )
 ----
 
-== Field Level `allow`
+== Field-level `allow`
 
-Allow works the same as it does on Type Definitions although its context is the Field. So instead of enforcing auth rules when the node is matched and/or upserted, it would instead be called when the Field is selected or upserted. Given the following, it is hiding the password to only the user themselves;
+`allow` works the same as it does on Types although its context is the Field. So instead of enforcing auth rules when the node is matched and/or modified, it would instead be called when the Field is match and/or modified. Given the following, it is hiding the password to all users but the user themselves:
 
 [source, graphql]
 ----

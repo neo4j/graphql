@@ -71,7 +71,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -110,7 +110,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -156,7 +156,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -200,7 +200,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -246,7 +246,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -290,7 +290,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -340,7 +340,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { id: "${userId}" }, connect: { posts: { where: { id: "${postId}" } } }) {
+                    updateUsers(update: { id: "${userId}" }, connect: { posts: { where: { node: { id: "${postId}" } } } }) {
                         users {
                             id
                         }
@@ -366,7 +366,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -428,7 +428,9 @@ describe("auth/roles", () => {
                         update: {
                             post: {
                                 update: {
-                                    creator: { connect: { where: { id: "${userId}" } } }
+                                    node: {
+                                        creator: { connect: { where: { node: { id: "${userId}" } } } }
+                                    }
                                 }
                             }
                         }
@@ -457,7 +459,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -507,7 +509,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { id: "${userId}" }, disconnect: { posts: { where: { id: "${postId}" } } }) {
+                    updateUsers(update: { id: "${userId}" }, disconnect: { posts: { where: { node: { id: "${postId}" } } } }) {
                         users {
                             id
                         }
@@ -533,7 +535,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -595,7 +597,9 @@ describe("auth/roles", () => {
                         update: {
                             post: {
                                 update: {
-                                    creator: { disconnect: { where: { id: "${userId}" } } }
+                                    node: {
+                                        creator: { disconnect: { where: { node: { id: "${userId}" } } } }
+                                    }
                                 }
                             }
                         }
@@ -623,7 +627,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -667,7 +671,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -705,7 +709,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    deleteUsers(where: {id: "${userId}"}, delete:{posts: {where:{id: "${postId}"}}}) {
+                    deleteUsers(where: {id: "${userId}"}, delete:{posts: {where:{node: { id: "${postId}"}}}}) {
                         nodesDeleted
                     }
                 }
@@ -726,7 +730,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -771,7 +775,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -814,7 +818,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -861,7 +865,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req },
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");

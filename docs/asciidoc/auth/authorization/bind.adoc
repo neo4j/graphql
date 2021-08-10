@@ -1,12 +1,14 @@
 [[auth-authorization-bind]]
 = Bind
 
-Use bind to ensure that on creating or updating nodes, a connection exists between a value on the JWT vs a property on a matched node. This validation is done after the operation but inside a transaction. Taking a closer look, let's put a user in our database;
+Use bind to ensure that on creating or updating nodes, there is equality between a value on the JWT and a property on a matched node. This validation is done after the operation but inside a transaction. Taking a closer look, create a user in your database:
 
 [source, cypher]
 ----
-CREATE (:User {id:"user1", name: "one"})
+CREATE (:User { id:"user1", name: "one" })
 ----
+
+For the label and properties of the node created above, the corresponding GraphQL type definitions would be:
 
 [source, graphql]
 ----
@@ -16,8 +18,7 @@ type User {
 }
 ----
 
-
-Given the above GraphQL type definitions - How can we restrict `user1` from changing their ID?
+Given the above GraphQL type definition - you could restrict `user1` from changing their own ID:
 
 [source, graphql]
 ----
@@ -36,20 +37,19 @@ extend type User @auth(
 )
 ----
 
-After we update or create the node we validate that the property on the node is equal to the `jwt.sub` property. This validation is done in Cypher with function `apoc.util.validate`
+After the update or creation of the node, it is validated that the property `id` on the node is equal to the `jwt.sub` property.
 
-Given `user1` has the decoded JWT;
+Given `user1` has the following decoded JWT:
 
 [source, json]
 ----
 {
-  "sub": "user1",
-  "iat": 1516239022
+    "sub": "user1",
+    "iat": 1516239022
 }
 ----
 
-With this JWT makes a GraphQL mutation to update their ID to someone else;
-
+When the user makes a request using this JWT to change their ID:
 
 [source, graphql]
 ----
@@ -62,30 +62,27 @@ mutation {
 }
 ----
 
-The generated cypher for this query would look like the below, Throwing us out of the operation because the ids do not match.
-
+The generated cypher for this query would look like the below, throwing you out of the operation because the `id` property no longer matches.
 
 [source, cypher]
 ----
-MATCH (u:User {id: "user1"})
+MATCH (u:User { id: "user1" })
 SET u.id = "user2"
 CALL apoc.util.validate(NOT(u.id = "user1"), "Forbidden")
 RETURN u
 ----
 
+Bind is available for the following operations;
 
-Bind is used on the following operations;
+- `READ`
+- `UPDATE`
+- `CONNECT`
+- `DISCONNECT`
+- `DELETE`
 
-1. create
-2. update
-3. connect
-4. disconnect
-5. delete
+== `bind` across relationships
 
-
-== `bind` Across Relationships
-
-There may be a reason where you need to traverse across relationships to satisfy your Auth implementation. One example of this could be "Ensure that users only create Posts related to themselves";
+There may be a reason where you need to traverse across relationships to satisfy your authorization implementation. One use case could be "ensure that users only create Posts related to themselves":
 
 [source, graphql]
 ----
@@ -104,11 +101,11 @@ extend type Post @auth(rules: [
 ])
 ----
 
-When you specify `bind` on a relationship you can select fields on the referenced node. It's worth pointing out that allow on a relationship will perform an `ALL` on the matched nodes; to see if there is a match. This means you can only use `bind` to enforce a single relationship to a single node.
+When you specify `bind` on a relationship you can select fields on the related node. It's worth pointing out that `bind` on a relationship field will perform an `ALL` on the matched nodes to see if there is a match. This means you can only use `bind` to enforce a single relationship to a single node.
 
-=== Field Level `bind`
+=== Field-level `bind`
 
-You can use bind on a field. The root is still considered the node. Taking the example at the start of this `bind` section; you could do the following;
+You can use `bind` on a field, and the root is still considered the node itself. Taking the example at the start of this chapter, you could do the following to implement the same behaviour:
 
 [source, graphql]
 ----

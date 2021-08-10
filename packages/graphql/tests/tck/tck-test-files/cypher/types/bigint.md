@@ -1,10 +1,10 @@
-## Cypher BigInt
+# Cypher BigInt
 
 Tests BigInt scalar type.
 
 Schema:
 
-```schema
+```graphql
 type File {
     name: String!
     size: BigInt!
@@ -13,9 +13,9 @@ type File {
 
 ---
 
-### Querying with native BigInt in AST
+## Querying with native BigInt in AST
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -25,7 +25,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:File)
@@ -33,9 +33,9 @@ WHERE this.size = $this_size
 RETURN this { .name } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_size": {
         "low": -1,
@@ -46,9 +46,9 @@ RETURN this { .name } as this
 
 ---
 
-### Querying with BigInt as string in AST
+## Querying with BigInt as string in AST
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query {
@@ -58,7 +58,7 @@ query {
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:File)
@@ -66,9 +66,9 @@ WHERE this.size = $this_size
 RETURN this { .name } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_size": {
         "low": -1,
@@ -79,9 +79,9 @@ RETURN this { .name } as this
 
 ---
 
-### Querying with BigInt as string in variables
+## Querying with BigInt as string in variables
 
-**GraphQL input**
+### GraphQL Input
 
 ```graphql
 query Files($size: BigInt) {
@@ -91,15 +91,15 @@ query Files($size: BigInt) {
 }
 ```
 
-**GraphQL params**
+### GraphQL Params Input
 
-```graphql-params
+```json
 {
     "size": "9223372036854775807"
 }
 ```
 
-**Expected Cypher output**
+### Expected Cypher Output
 
 ```cypher
 MATCH (this:File)
@@ -107,9 +107,9 @@ WHERE this.size = $this_size
 RETURN this { .name } as this
 ```
 
-**Expected Cypher params**
+### Expected Cypher Params
 
-```cypher-params
+```json
 {
     "this_size": {
         "low": -1,

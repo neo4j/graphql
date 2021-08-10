@@ -14,7 +14,7 @@
 
 A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations.
 
-1. [Documentation](https://neo4j.com/docs/graphql-manual/current/)
+1. [Documentation](https://neo4j.com/docs/graphql-manual/2.0/)
 
 ## Installation
 
@@ -97,7 +97,11 @@ mutation {
     updateMovies(
         where: { title: "The Matrix" }
         connect: {
-            genres: { where: { OR: [{ name: "Sci-fi" }, { name: "Action" }] } }
+            genres: {
+                where: {
+                    node: { OR: [{ name: "Sci-fi" }, { name: "Action" }] }
+                }
+            }
         }
     ) {
         movies {
@@ -119,7 +123,11 @@ mutation {
                 imdbRating: 8.7
                 genres: {
                     connect: {
-                        where: { AND: [{ name: "Sci-fi" }, { name: "Action" }] }
+                        where: {
+                            node: {
+                                AND: [{ name: "Sci-fi" }, { name: "Action" }]
+                            }
+                        }
                     }
                 }
             }

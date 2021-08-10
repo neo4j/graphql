@@ -65,7 +65,15 @@ function getNeo4jArgumentValue({ argument, type }: { argument: unknown | unknown
     }
 
     if (type instanceof GraphQLScalarType) {
-        return type.name === "Int" ? neo4j.int(argument as number) : argument;
+        if (type.name === "Int") {
+            return neo4j.int(argument as number);
+        }
+
+        if (type.name === "ID") {
+            if (typeof argument === "number") {
+                return argument.toString(10);
+            }
+        }
     }
 
     return argument;

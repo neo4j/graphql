@@ -1,0 +1,7 @@
+[[pagination]]
+= Pagination
+
+The Neo4j GraphQL Library offers two mechanisms for pagination:
+
+- <<pagination-offset-based>> - Pagination based on offsets, often associated with navigation via pages.
+- <<pagination-cursor-based>> - Pagination based on cursors, often associated with infinitely-scrolling applications.

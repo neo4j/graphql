@@ -1,0 +1,4 @@
+[[api-reference-ogm]]
+= `@neo4j/graphql-ogm`
+
+See <<ogm-api-reference-ogm>>.

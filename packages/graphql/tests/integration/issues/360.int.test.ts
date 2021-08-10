@@ -80,10 +80,10 @@ describe("360", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
-            expect(gqlResult.errors).toBe(undefined);
+            expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any)[pluralType]).toHaveLength(3);
         } finally {
             await session.close();
@@ -134,10 +134,10 @@ describe("360", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
-            expect(gqlResult.errors).toBe(undefined);
+            expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any)[pluralType]).toHaveLength(3);
         } finally {
             await session.close();
@@ -192,11 +192,11 @@ describe("360", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 variableValues: { rangeStart, rangeEnd },
             });
 
-            expect(gqlResult.errors).toBe(undefined);
+            expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any)[pluralType]).toHaveLength(3);
         } finally {
             await session.close();

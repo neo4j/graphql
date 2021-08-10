@@ -1,0 +1,89 @@
+[[pagination-cursor-based]]
+= Cursor-based pagination
+
+On relationship fields, you are able to take advantage of cursor-based pagination, which is often associated with infinitely-scrolling applications.
+
+Using the following type definition:
+
+[source, graphql]
+----
+type User {
+    name: String!
+    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+}
+
+type Post {
+    content: String!
+}
+----
+
+If you wanted to fetch the posts of user "John Smith" 10 at a time, you would first fetch 10:
+
+[source, graphql]
+----
+query {
+    users(where: { name: "John Smith" }) {
+        name
+        postsConnection(first: 10) {
+            edges {
+                node {
+                    content
+                }
+            }
+            pageInfo {
+                endCursor
+                hasNextPage
+            }
+        }
+    }
+}
+----
+
+In the return value, if `hasNextPage` is `true`, you would pass `endCursor` into the next query of 10. You might do this using a variable as in the following example:
+
+[source, graphql]
+----
+query Users($after: String) {
+    users(where: { name: "John Smith" }) {
+        name
+        postsConnection(first: 10, after: $after) {
+            edges {
+                node {
+                    content
+                }
+            }
+            pageInfo {
+                endCursor
+                hasNextPage
+            }
+        }
+    }
+}
+----
+
+You would continue doing this until `hasNextPage` if `false` - this is when you have reached the end of the data.
+
+== `totalCount`
+
+The Connection fields also offer a `totalCount` field which can be used to calculate page numbers, which is useful if you want to page by cursors but use page number in your application. Using the example above, you would simply add the `totalCount` field which will return the total number of results matching the filter used, which in this example would just be all posts:
+
+[source, graphql]
+----
+query Users($after: String) {
+    users(where: { name: "John Smith" }) {
+        name
+        postsConnection(first: 10) {
+            edges {
+                node {
+                    content
+                }
+            }
+            pageInfo {
+                endCursor
+                hasNextPage
+            }
+            totalCount
+        }
+    }
+}
+----

@@ -89,7 +89,7 @@ describe("unions", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -100,6 +100,74 @@ describe("unions", () => {
             expect(movieSearch.title).toEqual(movieTitle);
             const genreSearch = movies.search.find((x) => x.__typename === "Genre"); // eslint-disable-line no-underscore-dangle
             expect(genreSearch.name).toEqual(genreName);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should read and return correct union members with where argument", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            union Search = Movie | Genre
+
+            type Genre {
+                name: String
+            }
+
+            type Movie {
+                title: String
+                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers: {},
+        });
+
+        const movieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const genreName = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            {
+                movies (where: {title: "${movieTitle}"}) {
+                    search(where: { Genre: { name: "${genreName}" }}) {
+                        __typename
+                        ... on Movie {
+                            title
+                        }
+                        ... on Genre {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(`
+                CREATE (m:Movie {title: "${movieTitle}"})
+                CREATE (g:Genre {name: "${genreName}"})
+                MERGE (m)-[:SEARCH]->(m)
+                MERGE (m)-[:SEARCH]->(g)
+            `);
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect((gqlResult.data as any).movies[0]).toEqual({
+                search: [{ __typename: "Genre", name: genreName }],
+            });
         } finally {
             await session.close();
         }
@@ -138,10 +206,14 @@ describe("unions", () => {
             mutation {
                 createMovies(input: [{
                     title: "${movieTitle}",
-                    search_Genre: {
-                        create: [{
-                            name: "${genreName}"
-                        }]
+                    search: {
+                        Genre: {
+                            create: [{
+                                node: {
+                                    name: "${genreName}"
+                                }
+                            }]
+                        }
                     }
                 }]) {
                     movies {
@@ -161,13 +233,114 @@ describe("unions", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data as any).createMovies.movies[0]).toMatchObject({
                 title: movieTitle,
                 search: [{ __typename: "Genre", name: genreName }],
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should create multiple nested unions", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            union Search = Movie | Genre
+
+            type Genre {
+                name: String
+            }
+
+            type Movie {
+                title: String
+                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers: {},
+        });
+
+        const movieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const genreName = generate({
+            charset: "alphabetic",
+        });
+
+        const nestedMovieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const mutation = `
+            mutation {
+                createMovies(input: [{
+                    title: "${movieTitle}",
+                    search: {
+                        Genre: {
+                            create: [{
+                                node: {
+                                    name: "${genreName}"
+                                }
+                            }]
+                        }
+                        Movie: {
+                            create: [{
+                                node: {
+                                    title: "${nestedMovieTitle}"
+                                }
+                            }]
+                        }
+                    }
+                }]) {
+                    movies {
+                        title
+                        search {
+                            __typename
+                            ...on Genre {
+                                name
+                            }
+                            ... on Movie {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: mutation,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            // expect((gqlResult.data as any).createMovies.movies[0]).toEqual({
+            //     title: movieTitle,
+            //     search: [
+            //         { __typename: "Genre", name: genreName },
+            //         { __typename: "Movie", title: nestedMovieTitle },
+            //     ],
+            // });
+
+            expect((gqlResult.data as any).createMovies.movies[0].title).toEqual(movieTitle);
+            expect((gqlResult.data as any).createMovies.movies[0].search).toHaveLength(2);
+            expect((gqlResult.data as any).createMovies.movies[0].search).toContainEqual({
+                __typename: "Genre",
+                name: genreName,
+            });
+            expect((gqlResult.data as any).createMovies.movies[0].search).toContainEqual({
+                __typename: "Movie",
+                title: nestedMovieTitle,
             });
         } finally {
             await session.close();
@@ -207,10 +380,12 @@ describe("unions", () => {
             mutation {
                 createMovies(input: [{
                     title: "${movieTitle}",
-                    search_Genre: {
-                        connect: [{
-                            where: { name: "${genreName}" }
-                        }]
+                    search: {
+                        Genre: {
+                            connect: [{
+                                where: { node: { name: "${genreName}" } }
+                            }]
+                        }
                     }
                 }]) {
                     movies {
@@ -234,7 +409,7 @@ describe("unions", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -285,10 +460,12 @@ describe("unions", () => {
                 updateMovies(
                     where: { title: "${movieTitle}" },
                     update: {
-                        search_Genre: {
-                            where: { name: "${genreName}" },
-                            update: {
-                                name: "${newGenreName}"
+                        search: {
+                            Genre: {
+                                where: { node: { name: "${genreName}" } },
+                                update: {
+                                    node: { name: "${newGenreName}" }
+                                }
                             }
                         }
                     }
@@ -314,13 +491,119 @@ describe("unions", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data as any).updateMovies.movies[0]).toMatchObject({
                 title: movieTitle,
                 search: [{ __typename: "Genre", name: newGenreName }],
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should update multiple unions", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            union Search = Movie | Genre
+
+            type Genre {
+                name: String
+            }
+
+            type Movie {
+                title: String
+                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers: {},
+        });
+
+        const movieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const genreName = generate({
+            charset: "alphabetic",
+        });
+
+        const newGenreName = generate({
+            charset: "alphabetic",
+        });
+
+        const nestedMovieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const newNestedMovieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const mutation = `
+            mutation {
+                updateMovies(
+                    where: { title: "${movieTitle}" },
+                    update: {
+                        search: {
+                            Genre: {
+                                where: { node: { name: "${genreName}" } },
+                                update: {
+                                    node: { name: "${newGenreName}" }
+                                }
+                            }
+                            Movie: {
+                                where: { node: { title: "${nestedMovieTitle}" } },
+                                update: {
+                                    node: { title: "${newNestedMovieTitle}" }
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    movies {
+                        title
+                        search {
+                            __typename
+                            ...on Genre {
+                                name
+                            }
+                            ...on Movie {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(`
+                CREATE (m:Movie {title: "${movieTitle}"})-[:SEARCH]->(:Genre {name: "${genreName}"})
+                CREATE (m)-[:SEARCH]->(:Movie {title: "${nestedMovieTitle}"})
+            `);
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: mutation,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect((gqlResult.data as any).updateMovies.movies[0].title).toEqual(movieTitle);
+            expect((gqlResult.data as any).updateMovies.movies[0].search).toHaveLength(2);
+            expect((gqlResult.data as any).updateMovies.movies[0].search).toContainEqual({
+                __typename: "Genre",
+                name: newGenreName,
+            });
+            expect((gqlResult.data as any).updateMovies.movies[0].search).toContainEqual({
+                __typename: "Movie",
+                title: newNestedMovieTitle,
             });
         } finally {
             await session.close();
@@ -361,10 +644,12 @@ describe("unions", () => {
                 updateMovies(
                     where: { title: "${movieTitle}" },
                     update: {
-                        search_Genre: {
-                            disconnect: [{
-                                where: { name: "${genreName}" }
-                            }]
+                        search: {
+                            Genre: {
+                                disconnect: [{
+                                    where: { node: { name: "${genreName}" } }
+                                }]
+                            }
                         }
                     }
                 ) {
@@ -389,7 +674,7 @@ describe("unions", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();

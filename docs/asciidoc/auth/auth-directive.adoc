@@ -1,0 +1,84 @@
+[[auth-directive]]
+= `@auth` directive
+
+The `@auth` directive definition is dynamically generated on runtime based on user type definitions.
+
+== `rules`
+
+You can have many rules for many operations. Each rule is fallen through until a match is found against the corresponding operation. If no match is found, an error is thrown. You can think of rules as a big `OR`.
+
+[source, graphql]
+----
+@auth(rules: [
+    { operations: [CREATE, UPDATE], ... }, ## or
+    { operations: [READ, UPDATE], ...}, ## or
+    { operations: [DELETE, UPDATE], ... } ## or
+])
+----
+
+== `operations`
+
+`operations` is an array which allows you to re-use the same rule for many operations.
+
+[source, graphql]
+----
+@auth(rules: [
+    { operations: [CREATE, UPDATE, DELETE, CONNECT, DISCONNECT] },
+    { operations: [READ] }
+])
+----
+
+NOTE: Note that the absence of an `operations` argument will imply _all_ operations.
+
+Many different operations can be called at once, for example in the following Mutation:
+
+[source, graphql]
+----
+mutation {
+    createPosts(
+        input: [
+            {
+                content: "I like GraphQL",
+                creator: { connect: { where: { id: "user-01" } } }
+            }
+        ]
+    ) {
+        posts {
+            content
+        }
+    }
+}
+----
+
+In the above example, there is a `CREATE` operation followed by a `CONNECT`, so the auth rule must allow a user to perform both of these operations.
+
+The full list of operations and how they related to Cypher clauses are:
+
+|===
+|Operation |Cypher clause(s)
+
+|`READ`
+|`MATCH`
+
+|`CREATE`
+|`CREATE`
+
+|`UPDATE`
+|`SET`
+
+|`DELETE`
+|`DELETE`
+
+|`CONNECT`
+|`MATCH` and `MERGE`
+
+|`DISCONNECT`
+|`MATCH` and `DELETE`
+|===
+
+== Auth Value Plucking
+
+When using the `@auth` directive, you use the following prefixes to substitute in their relevant values:
+
+- `$jwt.` - pulls value from JWT
+- `$context.` - pulls value from context

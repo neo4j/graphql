@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DocumentNode, graphql, parse, print } from "graphql";
+import { DocumentNode, graphql, parse, print, SelectionSetNode } from "graphql";
 import pluralize from "pluralize";
 import camelCase from "camelcase";
 import { Neo4jGraphQL, upperFirst } from "@neo4j/graphql";
@@ -29,7 +29,7 @@ export interface ModelConstructor {
     neoSchema: Neo4jGraphQL;
 }
 
-function printSelectionSet(selectionSet: string | DocumentNode): string {
+function printSelectionSet(selectionSet: string | DocumentNode | SelectionSetNode): string {
     if (typeof selectionSet === "string") {
         return print(parse(selectionSet));
     }
@@ -70,7 +70,7 @@ class Model {
     }: {
         where?: GraphQLWhereArg;
         options?: GraphQLOptionsArg;
-        selectionSet?: string | DocumentNode;
+        selectionSet?: string | DocumentNode | SelectionSetNode;
         args?: any;
         context?: any;
         rootValue?: any;
@@ -108,6 +108,32 @@ class Model {
         return (result.data as any)[this.camelCaseName] as T;
     }
 
+    async count({
+        where,
+    }: {
+        where?: GraphQLWhereArg;
+    } = {}): Promise<number> {
+        const argDefinitions = [`${where ? `($where: ${this.name}Where)` : ""}`];
+
+        const argsApply = [`${where ? `(where: $where)` : ""}`];
+
+        const query = `
+            query ${argDefinitions.join(" ")}{
+                ${this.camelCaseName}Count${argsApply.join(" ")}
+            }
+        `;
+
+        const variableValues = { where };
+
+        const result = await graphql(this.neoSchema.schema, query, null, {}, variableValues);
+
+        if (result.errors?.length) {
+            throw new Error(result.errors[0].message);
+        }
+
+        return (result.data as any)[`${this.camelCaseName}Count`] as number;
+    }
+
     async create<T = any>({
         input,
         selectionSet,
@@ -116,7 +142,7 @@ class Model {
         rootValue = null,
     }: {
         input?: any;
-        selectionSet?: string | DocumentNode;
+        selectionSet?: string | DocumentNode | SelectionSetNode;
         args?: any;
         context?: any;
         rootValue?: any;
@@ -168,7 +194,7 @@ class Model {
         connect?: any;
         disconnect?: any;
         create?: any;
-        selectionSet?: string | DocumentNode;
+        selectionSet?: string | DocumentNode | SelectionSetNode;
         args?: any;
         context?: any;
         rootValue?: any;

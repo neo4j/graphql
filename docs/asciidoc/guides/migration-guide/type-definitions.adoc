@@ -3,8 +3,6 @@
 
 This page will walk through what needs to change in your type definitions before you can pass them into `@neo4j/graphql`.
 
-> An important discrepancy to note at this early stage is that relationship type definitions are not yet supported in `@neo4j/graphql`, and as such, neither are relationship properties. This is in the pipeline, so keep an eye out for any news relating to this!
-
 == Directives
 
 Both `neo4j-graphql-js` and `@neo4j/graphql` are highly driven by GraphQL directives. Each heading in this section will address how/if one or many directives available in `neo4j-graphql-js` can be migrated to `@neo4j/graphql`.
@@ -19,6 +17,55 @@ Migrating this directive is trivial:
 For example, `@relation(name: "ACTED_IN", direction: OUT)` becomes `@relationship(type: "ACTED_IN", direction: OUT)`.
 
 See <<type-definitions-relationships>> for more information on relationships in `@neo4j/graphql`.
+
+=== Relationship Properties
+
+If for instance using `neo4j-graphql-js`, you have the following type definitions defining an `ACTED_IN` relationship with a `roles` property:
+
+[source, graphql]
+----
+type Actor {
+    movies: [ActedIn!]!
+}
+
+type Movie {
+    actors: [ActedIn!]!
+}
+
+type ActedIn @relation(name: "ACTED_IN") {
+    from: Actor
+    to: Movie
+    roles: [String!]
+}
+----
+
+This will need to be refactored to the following in the new library:
+
+[source, graphql]
+----
+type Actor {
+    movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+}
+
+type Movie {
+    actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+}
+
+interface ActedIn {
+    roles: [String!]
+}
+----
+
+Note the following changes to the `ActedIn` type:
+
+* Changed from `type` to `interface`
+* Removed `@relation` directive
+* Removed `from` and `to` fields
+
+And note the following changes to the two node types:
+
+* Relationship field types changed from the relationship type to the neighbouring node type
+* Normal `@relationship` directive added to each relationship field, with an additional `properties` argument pointing to the relationship properties interface
 
 === `@cypher`
 
@@ -55,7 +102,7 @@ Supported as you would expect, with additional <<type-definitions-types-bigint>>
 
 === Temporal Types (`DateTime`, `Date`)
 
-Temporal Types have been massively simplified in `@neo4j/graphql`, down to `DateTime` and `Date`, which uses ISO 8601 and "yyyy-mm-dd" strings respectively for parsing and serialization.
+Temporal Types have been massively simplified in `@neo4j/graphql`, down to `DateTime` and `Date`, which use ISO 8601 and "yyyy-mm-dd" strings respectively for parsing and serialization.
 
 In terms of migrating from the old library, the `formatted` field of the old `DateTime` type now becomes the value itself. For example, used in a query:
 
@@ -79,9 +126,9 @@ Has become:
 }
 ----
 
-Due to the move to ISO 8601 strings, input types are no longer necessary for temporal instances, so `_Neo4jDateTimeInput` has simply become `DateTime` for input.
+Due to the move to ISO 8601 strings, input types are no longer necessary for temporal instances, so `_Neo4jDateTimeInput` has become `DateTime` and `_Neo4jDateInput` has become `Date` for input.
 
-See <<type-definitions-types-datetime>>.
+See <<type-definitions-types-temporal>>.
 
 === Spatial Types
 
@@ -104,3 +151,16 @@ Interface Types are not yet supported in `@neo4j/graphql`. `neo4j-graphql-js` le
 === Union Types
 
 Supported, queryable using inline fragments as per `neo4j-graphql-js`, but can also be created using Nested Mutations. See <<type-definitions-unions-and-interfaces-union-types>>.
+
+== Fields
+
+=== `_id`
+
+An `_id` field exposing the underlying node ID is not included in each type by default in `@neo4j/graphql` like it was in `neo4j-graphql-js`. If you require this functionality (however, it should be noted that underlying node IDs should not be relied on because they can be reused), you can include a field definition such as in the following type definition:
+
+[source, graphql]
+----
+type ExampleType {
+  _id: ID! @cypher(statement: "RETURN ID(this)")
+}
+----
