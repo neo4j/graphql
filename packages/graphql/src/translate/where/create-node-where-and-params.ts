@@ -169,55 +169,14 @@ function createNodeWhereAndParams({
         }
 
         if (operator === "IN") {
-            const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
-
-            if (relationField) {
-                const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-                const inStr = relationField.direction === "IN" ? "<-" : "-";
-                const outStr = relationField.direction === "OUT" ? "->" : "-";
-                const relTypeStr = `[:${relationField.type}]`;
-                const relatedNodeVariable = `${nodeVariable}_${relationField.fieldName}`;
-
-                let resultStr = [
-                    `EXISTS((${nodeVariable})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
-                    `AND ALL(${param} IN [(${nodeVariable})${inStr}${relTypeStr}${outStr}(${relatedNodeVariable}:${relationField.typeMeta.name}) | ${param}] INNER_WHERE `,
-                ].join(" ");
-
-                if (not) resultStr += "NOT(";
-
-                const inner: string[] = [];
-
-                const nestedParams: any[] = [];
-
-                (value as any[]).forEach((v, i) => {
-                    const recurse = createNodeWhereAndParams({
-                        whereInput: v,
-                        // chainStr: `${param}${i}`,
-                        node: refNode,
-                        nodeVariable: relatedNodeVariable,
-                        context,
-                        parameterPrefix: `${parameterPrefix}${fieldName}[${i}]`,
-                    });
-
-                    inner.push(recurse[0]);
-                    nestedParams.push(recurse[1]);
-                });
-
-                resultStr += inner.join(" OR ");
-                if (not) resultStr += ")"; // close NOT
-                resultStr += ")"; // close ALL
-                res.clauses.push(resultStr);
-                res.params = { ...res.params, fieldName: nestedParams };
-            } else {
-                const clause = createFilter({
-                    left: property,
-                    operator,
-                    right: pointField ? `[p in $${param} | point(p)]` : `$${param}`,
-                    not,
-                });
-                res.clauses.push(clause);
-                res.params[key] = value;
-            }
+            const clause = createFilter({
+                left: property,
+                operator,
+                right: pointField ? `[p in $${param} | point(p)]` : `$${param}`,
+                not,
+            });
+            res.clauses.push(clause);
+            res.params[key] = value;
 
             return res;
         }
