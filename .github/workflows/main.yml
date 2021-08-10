@@ -75,9 +75,6 @@ jobs:
 
       # Performs a clean installation of all dependencies in the `package.json` file
       # For more information, see https://docs.npmjs.com/cli/ci.html
-      - name: Install dependencies
-        run: npm ci
-
       - run: yarn --immutable
       - run: yarn build
       - name: Run @neo4j/graphql integration tests
