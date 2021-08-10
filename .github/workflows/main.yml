@@ -39,3 +39,51 @@ jobs:
         run: yarn --cwd packages/graphql run test:package-tests
       - name: Run @neo4j/graphql-ogm unit tests
         run: yarn --cwd packages/ogm run test:unit
+        
+  integration-test:
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+        neo4j-version: [4.1.5, 4.1, 4.2, 4.3]
+        
+    runs-on: ubuntu-latest
+    
+    # Service containers to run with `runner-job`
+    services:
+      # Label used to access the service container
+      neo4j:
+        # Docker Hub image
+        image: neo4j:${{ matrix.neo4j-version }}
+        # Provide the password for postgres
+        env:
+          NEO4J_AUTH: neo4j/testpassword
+          NEO4JLABS_PLUGINS: "[\"apoc\"]"
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 7687:7687
+        
+    steps:
+      # Downloads a copy of the code in your repository before running CI tests
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # Performs a clean installation of all dependencies in the `package.json` file
+      # For more information, see https://docs.npmjs.com/cli/ci.html
+      - name: Install dependencies
+        run: npm ci
+
+      - run: yarn --immutable
+      - run: yarn build
+      - name: Run @neo4j/graphql integration tests
+        run: yarn --cwd packages/graphql run test:int
+        # Environment variables used by the `client.js` script to create
+        # a new PostgreSQL table.
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: testpassword
+          NEO_URL: bolt://localhost:7687
