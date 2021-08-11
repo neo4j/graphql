@@ -1,0 +1,20 @@
+
+[[v2-migration]]
+= 2.0.0 Migration
+
+Version 2.0.0 of `@neo4j/graphql` adds support for relationship properties, with some breaking changes to facilitate these new features. All of the required changes will be on the client side, and this guide will walk through what has changed.
+
+== How to Upgrade
+
+Simply update `@neo4j/graphql` using npm or your package manager of choice:
+
+[source, bash, indent=0]
+----
+npm update @neo4j/graphql
+----
+
+From this point on, it is primarily Mutations which will form the bulk of the migration:
+
+1. xref::guides/v2-migration/mutations.adoc[Mutations] for how you need to change your Mutations to work with the new schema
+2. xref::guides/v2-migration/unions.adoc[Unions] for how querying union fields has changed in version 2.0.0
+3. xref::guides/v2-migration/miscellaneous.adoc[Miscellaneous] for other changes in version 2.0.0

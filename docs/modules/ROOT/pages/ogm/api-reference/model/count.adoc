@@ -1,0 +1,35 @@
+[[ogm-api-reference-model-count]]
+= `count`
+
+Returns a `Promise` that resolvers to the count of nodes based on the arguments passed in.
+
+== Example
+
+To query for all User nodes:
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("User");
+
+const usersCount = await User.count();
+----
+
+To query for User nodes where name starts with the letter "D":
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("User");
+
+const usersCount = await User.count({ where: { name_STARTS_WITH: "D" }});
+----
+
+== Arguments
+
+|===
+|Name and Type |Description
+
+|`where` +
+ +
+ Type: `GraphQLWhereArg`
+|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc[Filtering].
+|===

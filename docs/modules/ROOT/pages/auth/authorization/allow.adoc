@@ -1,0 +1,141 @@
+[[auth-authorization-allow]]
+= Allow
+
+Use `allow` to ensure that on matched nodes, there is equality between a value on the JWT and a property on each matched node. Taking a closer look, create two users in a hypothetical empty database:
+
+[source, cypher, indent=0]
+----
+CREATE (:User { id: "user1", name: "one" })
+CREATE (:User { id: "user2", name: "two" })
+----
+
+For the label and properties of the nodes created above, the corresponding GraphQL type definition would be:
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID!
+    name: String!
+}
+----
+
+Now that there are two users in the database, and a simple type definition - it might be desirable to restrict `user1` from accessing `user2`. This is where `allow` comes in:
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID!
+    name: String!
+}
+
+extend type User @auth(
+    rules: [
+        {
+            operations: [READ],
+            allow: { id: "$jwt.sub" }
+        }
+    ]
+)
+----
+
+After a match is made against a node, it is validated that the property `id` on the node is equal to the `jwt.sub` property.
+
+Given `user1` has the following decoded JWT:
+
+[source, json, indent=0]
+----
+{
+    "sub": "user1",
+    "iat": 1516239022
+}
+----
+
+If "user1" used this JWT in a request for "user2":
+
+[source, graphql, indent=0]
+----
+query {
+    users(where: { id: "user2" }) {
+        name
+    }
+}
+----
+
+The generated cypher for this query would look like the following and throw you out the operation:
+
+[source, cypher, indent=0]
+----
+MATCH (u:User { id: "user2" })
+CALL apoc.util.validate(NOT(u.id = "user1"), "Forbidden")
+RETURN u
+----
+
+Allow is available on the following operations:
+
+- `READ`
+- `UPDATE`
+- `CONNECT`
+- `DISCONNECT`
+- `DELETE`
+
+== `allow` across relationships
+
+There may be a reason where you need to traverse across relationships to satisfy your authorization implementation. One example use case could be "grant update access to all Moderators of a Post":
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+}
+
+extend type Post @auth(rules: [
+    { operations: [UPDATE], allow: { moderators: { id: "$jwt.sub" } } }
+])
+----
+
+When you specify allow on a relationship you can select fields on the referenced node. It's worth pointing out that allow on a relationship will perform an `ANY` on the matched nodes to see if there is a match.
+
+Given the above example - There may be a time when you need to give update access to either the creator of a post or a moderator, you can use `OR` and `AND` inside `allow`:
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+    creator: User @relationship(type: "HAS_POST", direction: IN)
+}
+
+extend type Post
+    @auth(
+        rules: [
+            {
+                operations: [UPDATE],
+                allow: { OR: [{ moderators: { id: "$jwt.sub" } }, { creator: { id: "$jwt.sub" } }] }
+            }
+        ]
+    )
+----
+
+== Field-level `allow`
+
+`allow` works the same as it does on Types although its context is the Field. So instead of enforcing auth rules when the node is matched and/or modified, it would instead be called when the Field is match and/or modified. Given the following, it is hiding the password to all users but the user themselves:
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID!
+    name: String!
+    password: String! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+}
+----
