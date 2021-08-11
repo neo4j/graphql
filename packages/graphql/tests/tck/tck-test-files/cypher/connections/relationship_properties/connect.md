@@ -71,8 +71,8 @@ CALL {
 }
 CALL {
     WITH this0
-    MATCH (this0)<-[this0_acted_in:ACTED_IN]-(this0_actor:Actor)
-    WITH collect({ screenTime: this0_acted_in.screenTime, node: { name: this0_actor.name } }) AS edges
+    MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
+    WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
 
@@ -151,8 +151,8 @@ CALL {
 }
 CALL {
     WITH this0
-    MATCH (this0)<-[this0_acted_in:ACTED_IN]-(this0_actor:Actor)
-    WITH collect({ screenTime: this0_acted_in.screenTime, node: { name: this0_actor.name } }) AS edges
+    MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
+    WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
 
@@ -218,8 +218,8 @@ CALL {
 WITH this
 CALL {
     WITH this
-    MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
+    MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+    WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } AS this
@@ -288,8 +288,8 @@ CALL {
 WITH this
 CALL {
     WITH this
-    MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-    WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name } }) AS edges
+    MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+    WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } AS this
