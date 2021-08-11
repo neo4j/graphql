@@ -48,16 +48,32 @@ describe("Connections -> Unions", () => {
         }
     `;
 
+    const authorName = "Charles Dickens";
+
+    const bookTitle = "Oliver Twist";
+    const bookWordCount = 167543;
+
+    const journalSubject = "Master Humphrey's Clock";
+    const journalWordCount = 3413;
+
     beforeAll(async () => {
         driver = await neo4j();
         const session = driver.session();
 
         try {
             await session.run(
-                "CREATE (:Author { name: 'Charles Dickens' })-[:WROTE { words: 167543 }]->(:Book { title: 'Oliver Twist'})"
-            );
-            await session.run(
-                `MATCH (a:Author) WHERE a.name = 'Charles Dickens' CREATE (a)-[:WROTE { words: 3413 }]->(:Journal { subject: "Master Humphrey's Clock" })`
+                `
+                    CREATE (author:Author {name: $authorName})
+                    CREATE (author)-[:WROTE {words: $bookWordCount}]->(:Book {title: $bookTitle})
+                    CREATE (author)-[:WROTE {words: $journalWordCount}]->(:Journal {subject: $journalSubject})
+                `,
+                {
+                    authorName,
+                    bookTitle,
+                    bookWordCount,
+                    journalSubject,
+                    journalWordCount,
+                }
             );
         } finally {
             await session.close();
@@ -68,9 +84,19 @@ describe("Connections -> Unions", () => {
         const session = driver.session();
 
         try {
-            await session.run("MATCH (a:Author) WHERE a.name = 'Charles Dickens' DETACH DELETE a");
-            await session.run("MATCH (b:Book) WHERE b.title = 'Oliver Twist' DETACH DELETE b");
-            await session.run(`MATCH (j:Journal) WHERE j.subject = "Master Humphrey's Clock" DETACH DELETE j`);
+            await session.run(
+                `
+                    MATCH (author:Author {name: $authorName})
+                    MATCH (book:Book {title: $bookTitle})
+                    MATCH (journal:Journal {subject: $journalSubject})
+                    DETACH DELETE author, book, journal
+                `,
+                {
+                    authorName,
+                    bookTitle,
+                    journalSubject,
+                }
+            );
         } finally {
             await session.close();
         }
@@ -84,8 +110,8 @@ describe("Connections -> Unions", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
-            query {
-                authors(where: { name: "Charles Dickens" }) {
+            query ($authorName: String) {
+                authors(where: { name: $authorName }) {
                     name
                     publicationsConnection {
                         edges {
@@ -111,25 +137,28 @@ describe("Connections -> Unions", () => {
                 schema: neoSchema.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                variableValues: {
+                    authorName,
+                },
             });
 
             expect(result.errors).toBeFalsy();
 
             expect(result?.data?.authors).toEqual([
                 {
-                    name: "Charles Dickens",
+                    name: authorName,
                     publicationsConnection: {
                         edges: [
                             {
-                                words: 167543,
+                                words: bookWordCount,
                                 node: {
-                                    title: "Oliver Twist",
+                                    title: bookTitle,
                                 },
                             },
                             {
-                                words: 3413,
+                                words: journalWordCount,
                                 node: {
-                                    subject: "Master Humphrey's Clock",
+                                    subject: journalSubject,
                                 },
                             },
                         ],
@@ -147,8 +176,8 @@ describe("Connections -> Unions", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
-            query {
-                authors(where: { name: "Charles Dickens" }) {
+            query ($authorName: String) {
+                authors(where: { name: $authorName }) {
                     name
                     publicationsConnection {
                         edges {
@@ -171,23 +200,26 @@ describe("Connections -> Unions", () => {
                 schema: neoSchema.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                variableValues: {
+                    authorName,
+                },
             });
 
             expect(result.errors).toBeFalsy();
 
             expect(result?.data?.authors).toEqual([
                 {
-                    name: "Charles Dickens",
+                    name: authorName,
                     publicationsConnection: {
                         edges: [
                             {
-                                words: 167543,
+                                words: bookWordCount,
                                 node: {
-                                    title: "Oliver Twist",
+                                    title: bookTitle,
                                 },
                             },
                             {
-                                words: 3413,
+                                words: journalWordCount,
                                 node: {},
                             },
                         ],
@@ -205,10 +237,10 @@ describe("Connections -> Unions", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
-        query {
-            authors(where: { name: "Charles Dickens" }) {
+            query ($authorName: String, $bookTitle: String) {
+                authors(where: { name: $authorName }) {
                 name
-                publicationsConnection(where: { Book: { node: { title: "Oliver Twist" } } }) {
+                    publicationsConnection(where: { Book: { node: { title: $bookTitle } } }) {
                     edges {
                         words
                         node {
@@ -229,19 +261,23 @@ describe("Connections -> Unions", () => {
                 schema: neoSchema.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                variableValues: {
+                    authorName,
+                    bookTitle,
+                },
             });
 
             expect(result.errors).toBeFalsy();
 
             expect(result?.data?.authors).toEqual([
                 {
-                    name: "Charles Dickens",
+                    name: authorName,
                     publicationsConnection: {
                         edges: [
                             {
-                                words: 167543,
+                                words: bookWordCount,
                                 node: {
-                                    title: "Oliver Twist",
+                                    title: bookTitle,
                                 },
                             },
                         ],
@@ -259,10 +295,10 @@ describe("Connections -> Unions", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
-        query {
-            authors(where: { name: "Charles Dickens" }) {
+            query ($authorName: String, $bookTitle: String) {
+                authors(where: { name: $authorName }) {
                 name
-                publicationsConnection(where: { Book: { node: { title_NOT: "Oliver Twist" } } }) {
+                    publicationsConnection(where: { Book: { node: { title_NOT: $bookTitle } } }) {
                     edges {
                         words
                         node {
@@ -283,13 +319,17 @@ describe("Connections -> Unions", () => {
                 schema: neoSchema.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                variableValues: {
+                    authorName,
+                    bookTitle,
+                },
             });
 
             expect(result.errors).toBeFalsy();
 
             expect(result?.data?.authors).toEqual([
                 {
-                    name: "Charles Dickens",
+                    name: authorName,
                     publicationsConnection: {
                         edges: [],
                     },
@@ -306,10 +346,10 @@ describe("Connections -> Unions", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
-        query {
-            authors(where: { name: "Charles Dickens" }) {
+            query ($authorName: String, $bookWordCount: Int) {
+                authors(where: { name: $authorName }) {
                 name
-                publicationsConnection(where: { Book: { edge: { words: 167543 } } }) {
+                    publicationsConnection(where: { Book: { edge: { words: $bookWordCount } } }) {
                     edges {
                         words
                         node {
@@ -330,19 +370,23 @@ describe("Connections -> Unions", () => {
                 schema: neoSchema.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                variableValues: {
+                    authorName,
+                    bookWordCount,
+                },
             });
 
             expect(result.errors).toBeFalsy();
 
             expect(result?.data?.authors).toEqual([
                 {
-                    name: "Charles Dickens",
+                    name: authorName,
                     publicationsConnection: {
                         edges: [
                             {
-                                words: 167543,
+                                words: bookWordCount,
                                 node: {
-                                    title: "Oliver Twist",
+                                    title: bookTitle,
                                 },
                             },
                         ],
@@ -360,10 +404,10 @@ describe("Connections -> Unions", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
-        query {
-            authors(where: { name: "Charles Dickens" }) {
+            query ($authorName: String, $bookWordCount: Int) {
+                authors(where: { name: $authorName }) {
                 name
-                publicationsConnection(where: { Book: { edge: { words_NOT: 167543 } } }) {
+                    publicationsConnection(where: { Book: { edge: { words_NOT: $bookWordCount } } }) {
                     edges {
                         words
                         node {
@@ -384,13 +428,17 @@ describe("Connections -> Unions", () => {
                 schema: neoSchema.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                variableValues: {
+                    authorName,
+                    bookWordCount,
+                },
             });
 
             expect(result.errors).toBeFalsy();
 
             expect(result?.data?.authors).toEqual([
                 {
-                    name: "Charles Dickens",
+                    name: authorName,
                     publicationsConnection: {
                         edges: [],
                     },
@@ -407,10 +455,17 @@ describe("Connections -> Unions", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
-        query {
-            authors(where: { name: "Charles Dickens" }) {
+            query ($authorName: String, $bookWordCount: Int, $bookTitle: String) {
+                authors(where: { name: $authorName }) {
                 name
-                publicationsConnection(where: { Book: { edge: { words: 167543 }, node: { title: "Oliver Twist" } } }) {
+                    publicationsConnection(
+                        where: {
+                            Book: {
+                                edge: { words: $bookWordCount }
+                                node: { title: $bookTitle }
+                            }
+                        }
+                    ) {
                     edges {
                         words
                         node {
@@ -431,19 +486,24 @@ describe("Connections -> Unions", () => {
                 schema: neoSchema.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                variableValues: {
+                    authorName,
+                    bookWordCount,
+                    bookTitle,
+                },
             });
 
             expect(result.errors).toBeFalsy();
 
             expect(result?.data?.authors).toEqual([
                 {
-                    name: "Charles Dickens",
+                    name: authorName,
                     publicationsConnection: {
                         edges: [
                             {
-                                words: 167543,
+                                words: bookWordCount,
                                 node: {
-                                    title: "Oliver Twist",
+                                    title: bookTitle,
                                 },
                             },
                         ],
