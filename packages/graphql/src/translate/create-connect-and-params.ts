@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
+import { Node, Relationship } from "../classes";
 import { RelationField, Context } from "../types";
 import createWhereAndParams from "./create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 
 interface Res {
     connects: string[];
@@ -54,10 +55,12 @@ function createConnectAndParams({
     insideDoWhen?: boolean;
 }): [string, any] {
     function reducer(res: Res, connect: any, index): Res {
-        const _varName = `${varName}${index}`;
+        const baseName = `${varName}${index}`;
+        const nodeName = `${baseName}_node`;
+        const relationshipName = `${baseName}_relationship`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
-        const relTypeStr = `[:${relationField.type}]`;
+        const relTypeStr = `[${connect.edge ? relationshipName : ""}:${relationField.type}]`;
 
         if (parentNode.auth && !fromCreate) {
             const whereAuth = createAuthAndParams({
@@ -77,13 +80,13 @@ function createConnectAndParams({
         res.connects.push("CALL {");
 
         res.connects.push(`WITH ${withVars.join(", ")}`);
-        res.connects.push(`OPTIONAL MATCH (${_varName}:${labelOverride || relationField.typeMeta.name})`);
+        res.connects.push(`OPTIONAL MATCH (${nodeName}:${labelOverride || relationField.typeMeta.name})`);
 
         const whereStrs: string[] = [];
         if (connect.where) {
             const where = createWhereAndParams({
-                varName: _varName,
-                whereInput: connect.where,
+                varName: nodeName,
+                whereInput: connect.where.node,
                 node: refNode,
                 context,
                 recursing: true,
@@ -98,7 +101,7 @@ function createConnectAndParams({
                 operation: "CONNECT",
                 entity: refNode,
                 context,
-                where: { varName: _varName, node: refNode },
+                where: { varName: nodeName, node: refNode },
             });
             if (whereAuth[0]) {
                 whereStrs.push(whereAuth[0]);
@@ -121,7 +124,7 @@ function createConnectAndParams({
                     operation: "CONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_allow` },
+                    allow: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}${i}_allow` },
                 });
 
                 if (!str) {
@@ -138,7 +141,7 @@ function createConnectAndParams({
 
         if (preAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            res.connects.push(`WITH ${[...withVars, _varName].join(", ")}`);
+            res.connects.push(`WITH ${[...withVars, nodeName].join(", ")}`);
             res.connects.push(
                 `CALL apoc.util.validate(NOT(${preAuth.connects.join(
                     " AND "
@@ -152,39 +155,59 @@ function createConnectAndParams({
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
-        res.connects.push(`FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END | `);
-        res.connects.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName})`);
+        res.connects.push(`FOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
+        res.connects.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+
+        if (connect.edge) {
+            const relationship = (context.neoSchema.relationships.find(
+                (x) => x.properties === relationField.properties
+            ) as unknown) as Relationship;
+
+            const setA = createSetRelationshipPropertiesAndParams({
+                properties: connect.edge,
+                varName: relationshipName,
+                relationship,
+                operation: "CREATE",
+            });
+            res.connects.push(setA[0]);
+            res.params = { ...res.params, ...setA[1] };
+        }
+
         res.connects.push(`)`); // close FOREACH
 
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
             connects.forEach((c) => {
                 const reduced = Object.entries(c).reduce(
-                    (r: Res, [k, v]) => {
-                        const relField = refNode.relationFields.find((x) => k.startsWith(x.fieldName));
-                        let newRefNode: Node;
+                    (r: Res, [k, v]: [string, any]) => {
+                        const relField = refNode.relationFields.find((x) => k === x.fieldName) as RelationField;
+                        const newRefNodes: Node[] = [];
 
-                        if (relationField.union) {
-                            const [modelName] = k.split(`${relationField.fieldName}_`).join("").split("_");
-                            newRefNode = context.neoSchema.nodes.find((x) => x.name === modelName) as Node;
+                        if (relField.union) {
+                            Object.keys(v).forEach((modelName) => {
+                                newRefNodes.push(context.neoSchema.nodes.find((x) => x.name === modelName) as Node);
+                            });
                         } else {
-                            newRefNode = context.neoSchema.nodes.find(
-                                (x) => x.name === (relField as RelationField).typeMeta.name
-                            ) as Node;
+                            newRefNodes.push(
+                                context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
+                            );
                         }
 
-                        const recurse = createConnectAndParams({
-                            withVars: [...withVars, _varName],
-                            value: v,
-                            varName: `${_varName}_${k}`,
-                            relationField: relField as RelationField,
-                            parentVar: _varName,
-                            context,
-                            refNode: newRefNode,
-                            parentNode: refNode,
+                        newRefNodes.forEach((newRefNode) => {
+                            const recurse = createConnectAndParams({
+                                withVars: [...withVars, nodeName],
+                                value: relField.union ? v[newRefNode.name] : v,
+                                varName: `${nodeName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
+                                relationField: relField,
+                                parentVar: nodeName,
+                                context,
+                                refNode: newRefNode,
+                                parentNode: refNode,
+                                labelOverride: relField.union ? newRefNode.name : "",
+                            });
+                            r.connects.push(recurse[0]);
+                            r.params = { ...r.params, ...recurse[1] };
                         });
-                        r.connects.push(recurse[0]);
-                        r.params = { ...r.params, ...recurse[1] };
 
                         return r;
                     },
@@ -209,7 +232,7 @@ function createConnectAndParams({
                     escapeQuotes: Boolean(insideDoWhen),
                     skipIsAuthenticated: true,
                     skipRoles: true,
-                    bind: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_bind` },
+                    bind: { parentNode: node, varName: nodeName, chainStr: `${nodeName}${node.name}${i}_bind` },
                 });
 
                 if (!str) {
@@ -226,7 +249,7 @@ function createConnectAndParams({
 
         if (postAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            res.connects.push(`WITH ${[...withVars, _varName].join(", ")}`);
+            res.connects.push(`WITH ${[...withVars, nodeName].join(", ")}`);
             res.connects.push(
                 `CALL apoc.util.validate(NOT(${postAuth.connects.join(
                     " AND "

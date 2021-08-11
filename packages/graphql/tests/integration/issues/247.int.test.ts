@@ -80,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
             mutation Connect($name: String, $title2: String, $title3: String) {
                 updateUsers(
                     where: { name: $name }
-                    connect: { movies: [{ where: { title_IN: [$title2, $title3] } }] }
+                    connect: { movies: [{ where: { node: { title_IN: [$title2, $title3] } } }] }
                 ) {
                     users {
                         name

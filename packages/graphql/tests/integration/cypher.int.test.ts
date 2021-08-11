@@ -95,7 +95,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver },
+                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                         variableValues: { title: movieTitle },
                     });
 
@@ -165,7 +165,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver },
+                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
@@ -248,7 +248,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver, req },
+                        contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
@@ -326,7 +326,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver },
+                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                         variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
                     });
 
@@ -344,6 +344,109 @@ describe("cypher", () => {
                     expect((gqlResult?.data as any).customMovies).toContainEqual({
                         title: movieTitle3,
                         actors: [{ name: actorName }],
+                    });
+                } finally {
+                    await session.close();
+                }
+            });
+
+            test("should query multiple connection fields on a type", async () => {
+                const session = driver.session();
+
+                const title = generate({
+                    charset: "alphabetic",
+                });
+
+                const actorName = generate({
+                    charset: "alphabetic",
+                });
+                const directorName = generate({
+                    charset: "alphabetic",
+                });
+
+                const typeDefs = `
+                    type Movie {
+                        title: String!
+                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        directors: [Director] @relationship(type: "DIRECTED", direction: IN)
+                    }
+
+                    type Actor {
+                        name: String!
+                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+
+                    type Director {
+                        name: String!
+                        movies: [Movie] @relationship(type: "DIRECTED", direction: OUT)
+                    }
+
+                    type Query {
+                        movie(title: String!): Movie
+                            @cypher(
+                                statement: """
+                                MATCH (m:Movie)
+                                WHERE m.title = $title
+                                RETURN m
+                                """
+                            )
+                    }
+                `;
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const source = `
+                    query($title: String!) {
+                        movie(title: $title) {
+                            title
+                            actorsConnection {
+                                edges {
+                                    node {
+                                        name
+                                    }
+                                }
+                            }
+                            directorsConnection {
+                                edges {
+                                    node {
+                                        name
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (m:Movie {title: $title})<-[:ACTED_IN]-(:Actor {name: $actorName})
+                            CREATE (m)<-[:DIRECTED]-(:Director {name: $directorName})
+                        `,
+                        {
+                            title,
+                            actorName,
+                            directorName,
+                        }
+                    );
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source,
+                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        variableValues: { title },
+                    });
+
+                    expect(gqlResult.errors).toBeFalsy();
+
+                    expect(gqlResult?.data?.movie).toEqual({
+                        title,
+                        actorsConnection: {
+                            edges: [{ node: { name: actorName } }],
+                        },
+                        directorsConnection: {
+                            edges: [{ node: { name: directorName } }],
+                        },
                     });
                 } finally {
                     await session.close();
@@ -408,7 +511,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver },
+                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                         variableValues: { title: movieTitle },
                     });
 
@@ -478,7 +581,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver },
+                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                         variableValues: { title: movieTitle },
                     });
 
@@ -548,7 +651,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver },
+                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                         variableValues: { title: movieTitle },
                     });
 
@@ -623,7 +726,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver },
+                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                         variableValues: { id: townId },
                     });
 

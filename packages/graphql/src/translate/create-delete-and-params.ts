@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
+import { Node, Relationship } from "../classes";
 import { Context } from "../types";
-import createWhereAndParams from "./create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
+import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 interface Res {
@@ -37,6 +37,8 @@ function createDeleteAndParams({
     withVars,
     context,
     insideDoWhen,
+    parameterPrefix,
+    recursing,
 }: {
     parentVar: string;
     deleteInput: any;
@@ -46,98 +48,117 @@ function createDeleteAndParams({
     withVars: string[];
     context: Context;
     insideDoWhen?: boolean;
+    parameterPrefix: string;
+    recursing?: boolean;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]) {
-        const relationField = node.relationFields.find((x) => key.startsWith(x.fieldName));
-        let unionTypeName = "";
+        const relationField = node.relationFields.find((x) => key === x.fieldName);
 
         if (relationField) {
-            let refNode: Node;
+            const refNodes: Node[] = [];
+
+            const relationship = (context.neoSchema.relationships.find(
+                (x) => x.properties === relationField.properties
+            ) as unknown) as Relationship;
 
             if (relationField.union) {
-                [unionTypeName] = key.split(`${relationField.fieldName}_`).join("").split("_");
-                refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
+                Object.keys(value).forEach((unionTypeName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                });
             } else {
-                refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const outStr = relationField.direction === "OUT" ? "->" : "-";
-            const relTypeStr = `[:${relationField.type}]`;
 
-            const deletes = relationField.typeMeta.array ? value : [value];
-            deletes.forEach((d, index) => {
-                const _varName = chainStr ? `${varName}${index}` : `${varName}_${key}${index}`;
+            refNodes.forEach((refNode) => {
+                const v = relationField.union ? value[refNode.name] : value;
+                const deletes = relationField.typeMeta.array ? v : [v];
+                deletes.forEach((d, index) => {
+                    const _varName = chainStr
+                        ? `${varName}${index}`
+                        : `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
+                    const relationshipVariable = `${_varName}_relationship`;
+                    const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
 
-                if (withVars) {
-                    res.strs.push(`WITH ${withVars.join(", ")}`);
-                }
-
-                res.strs.push(
-                    `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${refNode.name})`
-                );
-
-                const whereStrs: string[] = [];
-                if (d.where) {
-                    const whereAndParams = createWhereAndParams({
-                        varName: _varName,
-                        whereInput: d.where,
-                        node: refNode,
-                        context,
-                        recursing: true,
-                    });
-                    if (whereAndParams[0]) {
-                        whereStrs.push(whereAndParams[0]);
-                        res.params = { ...res.params, ...whereAndParams[1] };
+                    if (withVars) {
+                        res.strs.push(`WITH ${withVars.join(", ")}`);
                     }
-                }
-                const whereAuth = createAuthAndParams({
-                    operation: "DELETE",
-                    entity: refNode,
-                    context,
-                    where: { varName: _varName, node: refNode },
-                });
-                if (whereAuth[0]) {
-                    whereStrs.push(whereAuth[0]);
-                    res.params = { ...res.params, ...whereAuth[1] };
-                }
-                if (whereStrs.length) {
-                    res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
-                }
 
-                const allowAuth = createAuthAndParams({
-                    entity: refNode,
-                    operation: "DELETE",
-                    context,
-                    escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: refNode, varName: _varName },
-                });
-                if (allowAuth[0]) {
-                    const quote = insideDoWhen ? `\\"` : `"`;
-                    res.strs.push(`WITH ${[...withVars, _varName].join(", ")}`);
                     res.strs.push(
-                        `CALL apoc.util.validate(NOT(${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                        `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${refNode.name})`
                     );
-                    res.params = { ...res.params, ...allowAuth[1] };
-                }
 
-                if (d.delete) {
-                    const deleteAndParams = createDeleteAndParams({
+                    const whereStrs: string[] = [];
+                    if (d.where) {
+                        const whereAndParams = createConnectionWhereAndParams({
+                            nodeVariable: _varName,
+                            whereInput: d.where,
+                            node: refNode,
+                            context,
+                            relationshipVariable,
+                            relationship,
+                            parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
+                                relationField.union ? `.${refNode.name}` : ""
+                            }${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
+                        });
+                        if (whereAndParams[0]) {
+                            whereStrs.push(whereAndParams[0]);
+                        }
+                    }
+                    const whereAuth = createAuthAndParams({
+                        operation: "DELETE",
+                        entity: refNode,
                         context,
-                        node: refNode,
-                        deleteInput: d.delete,
-                        varName: _varName,
-                        withVars: [...withVars, _varName],
-                        parentVar: _varName,
+                        where: { varName: _varName, node: refNode },
                     });
-                    res.strs.push(deleteAndParams[0]);
-                    res.params = { ...res.params, ...deleteAndParams[1] };
-                }
+                    if (whereAuth[0]) {
+                        whereStrs.push(whereAuth[0]);
+                        res.params = { ...res.params, ...whereAuth[1] };
+                    }
+                    if (whereStrs.length) {
+                        res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
+                    }
 
-                res.strs.push(`
+                    const allowAuth = createAuthAndParams({
+                        entity: refNode,
+                        operation: "DELETE",
+                        context,
+                        escapeQuotes: Boolean(insideDoWhen),
+                        allow: { parentNode: refNode, varName: _varName },
+                    });
+                    if (allowAuth[0]) {
+                        const quote = insideDoWhen ? `\\"` : `"`;
+                        res.strs.push(`WITH ${[...withVars, _varName].join(", ")}`);
+                        res.strs.push(
+                            `CALL apoc.util.validate(NOT(${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                        );
+                        res.params = { ...res.params, ...allowAuth[1] };
+                    }
+
+                    if (d.delete) {
+                        const deleteAndParams = createDeleteAndParams({
+                            context,
+                            node: refNode,
+                            deleteInput: d.delete,
+                            varName: _varName,
+                            withVars: [...withVars, _varName],
+                            parentVar: _varName,
+                            parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
+                                relationField.union ? `.${refNode.name}` : ""
+                            }${relationField.typeMeta.array ? `[${index}]` : ""}.delete`,
+                            recursing: false,
+                        });
+                        res.strs.push(deleteAndParams[0]);
+                        res.params = { ...res.params, ...deleteAndParams[1] };
+                    }
+
+                    res.strs.push(`
                     FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END |
                         DETACH DELETE ${_varName}
                     )`);
+                });
             });
 
             return res;

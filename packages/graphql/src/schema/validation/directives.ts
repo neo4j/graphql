@@ -128,6 +128,10 @@ export const relationshipDirective = new GraphQLDirective({
         direction: {
             type: new GraphQLNonNull(RelationshipDirectionEnum),
         },
+        properties: {
+            type: GraphQLString,
+            description: "The name of the interface containing the properties for this relationship.",
+        },
     },
 });
 

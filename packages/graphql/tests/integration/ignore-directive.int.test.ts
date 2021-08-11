@@ -77,7 +77,7 @@ describe("@ignore directive", () => {
         const gqlResult = await graphql({
             schema: neoSchema.schema,
             source: usersQuery,
-            contextValue: { driver },
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             variableValues: { username },
         });
 
