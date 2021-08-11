@@ -1,0 +1,89 @@
+[[v2-migration-miscellaneous]]
+= Miscellaneous
+
+== `skip` renamed to `offset`
+
+In the release of Apollo Client 3.0, it became a bit more opinionated about pagination, favouring `offset` and `limit` over `skip` and `limit`. Acknowledging that the majority of users will be using Apollo Client 3.0, the page-based pagination arguments have been updated to align with this change.
+
+For example, fetching page 3 of pages of 10 movies would have looked like the following in version `1.x`:
+
+[source, graphql, indent=0]
+----
+query {
+    movies(options: { skip: 20, limit: 10 }) {
+        title
+    }
+}
+----
+
+This will now need to queried as follows:
+
+[source, graphql, indent=0]
+----
+query {
+    movies(options: { offset: 20, limit: 10 }) {
+        title
+    }
+}
+----
+
+== Count queries
+
+Whilst not a necessary migration step, if you are using page-based pagination, it's important to note the addition of count queries in version 2.0.0. These will allow you to calculate the total number of pages for a particular filter, allowing you to implement much more effective pagination.
+
+== Schema validation
+
+In version 2.0.0, there are greater levels of schema validation. However, upon upgrading, you might find that validation is too strict (for example if using certain generated types in your definitions). You can temporarily disable this new validation on construction:
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    config: {
+        skipValidateTypeDefs: true,
+    },
+})
+----
+
+If you need to do this, please report the scenario as an issue on GitHub.
+
+== `_IN` and `_NOT_IN` filters on relationships removed
+
+There were previously `_IN` and `_NOT_IN` filters for one-to-many and one-to-one relationships, but these were surplus to requirements, and didn't match for all cardinalities (many-to-many relationships don't have `_INCLUDES` and `_NOT_INCLUDES`). These may be added back in the future if and when we look more holistically at distinguishing between different relationship cardinalities.
+
+You can still achieve identical filters through different routes. For example, if you had the following schema:
+
+[source, graphql, indent=0]
+----
+type Movie {
+    title: String!
+    director: Director @relationship(type: "DIRECTED", direction: IN)
+}
+
+type Director {
+    name: String!
+    movies: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
+}
+----
+
+You would have been able to run the following query:
+
+[source, graphql, indent=0]
+----
+query {
+    movies(where: { director_IN: [{ name: "A" }, { name: "B" }] }) {
+        title
+    }
+}
+----
+
+You can still achieve exactly the same filter with the following:
+
+[source, graphql, indent=0]
+----
+query {
+    movies(where: { director: { OR: [{ name: "A" }, { name: "B" }]} }) {
+        title
+    }
+}
+----

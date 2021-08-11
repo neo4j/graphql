@@ -1,0 +1,225 @@
+[[getting-started]]
+= Getting Started
+
+This tutorial walks you through:
+
+- Installing the Neo4j GraphQL Library and its dependencies
+- Defining type definitions that represent the structure of your graph database
+- Instantiating an instance of the library, which will generate a GraphQL schema
+- Running an instance of a server which will let you execute queries and mutations against your schema
+
+This tutorial assumes familiarity with the command line and JavaScript, and also that you have a recent version of Node.js installed. These examples will use the default `npm` package manager, but feel free to use your package manager of choice.
+
+> This tutorial walks through creating a new project with the Neo4j GraphQL Library. If you are not familiar, it will be worthwhile reading up on https://neo4j.com/[Neo4j] and https://graphql.org/[GraphQL].
+
+== Create a new project
+
+. Create a new directory and `cd` into it:
++
+[source, bash, indent=0]
+----
+mkdir neo4j-graphql-example
+cd neo4j-graphql-example
+----
++
+. Create a new Node.js project:
+
+[source, bash, indent=0]
+----
+npm init --yes
+----
+
+Whilst you're there, create an empty `index.js` file which will contain all of the code for this example:
+
+[source, bash, indent=0]
+----
+touch index.js
+----
+
+== Install dependencies
+
+The Neo4j GraphQL Library and it's dependencies must be installed:
+
+- `@neo4j/graphql` is the official Neo4j GraphQL Library package, which takes your GraphQL type definitions and generates a schema backed by a Neo4j database for you.
+- `graphql` is the package used by the Neo4j GraphQL Library to generate a schema and execute queries and mutations.
+- `neo4j-driver` is the official Neo4j Driver package for JavaScript, of which an instance must be passed into the Neo4j GraphQL Library.
+
+Additionally, you will need to install a GraphQL server package which will host your schema and allow you to execute queries and mutations against it. For this example, use the popular https://www.apollographql.com/docs/apollo-server/[Apollo Server] package:
+
+- `apollo-server` is the default package for Apollo Server, which you will pass the Neo4j GraphQL Library generated schema into.
+
+[source, bash, indent=0]
+----
+npm install @neo4j/graphql graphql neo4j-driver apollo-server
+----
+
+== Define your GraphQL type definitions
+
+The Neo4j GraphQL Library is primarily driven by type definitions which map to the nodes and relationships in your Neo4j database. To get started, use a simple example with two node types, one with label "Actor" and the other "Movie".
+
+Open up the previously created `index.js` in your editor of choice and write out your type definitions. You should also add all of the necessary package imports at this stage:
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const { ApolloServer, gql } = require("apollo-server");
+const neo4j = require("neo4j-driver");
+
+const typeDefs = gql`
+    type Movie {
+        title: String
+        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+    }
+
+    type Actor {
+        name: String
+        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+    }
+`;
+----
+
+These type definitions are incredibly simple, defining the two previously described node labels, and a relationship "ACTED_IN" between the two. When generated, the schema will allow you to execute queries `actors` and `movies` to read data from the database.
+
+== Create an instance of `Neo4jGraphQL`
+
+Now that you have your type definitions, you need to create an instance of the Neo4j GraphQL Library. To do this, you also need a Neo4j driver to connect to your database. For a database located at "bolt://localhost:7687", with a username of "neo4j" and a password of "password", add the following to the bottom of your `index.js` file:
+
+[source, javascript, indent=0]
+----
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+----
+
+== Create an instance of `ApolloServer`
+
+The final section of code you need to add is to instantiate an Apollo Server instance using the generated schema, which will allow you to execute queries against it.
+
+Add the following to the bottom of `index.js`:
+
+[source, javascript, indent=0]
+----
+const server = new ApolloServer({
+    schema: neoSchema.schema,
+});
+
+server.listen().then(({ url }) => {
+    console.log(`🚀 Server ready at ${url}`);
+});
+----
+
+== Start the server
+
+Finally, you're ready to start up your GraphQL server! Back in the command line, run the following command:
+
+[source, bash, indent=0]
+----
+node index.js
+----
+
+All going well, you should see the following output:
+
+[source, bash, indent=0]
+----
+🚀 Server ready at http://localhost:4000/
+----
+
+Where http://localhost:4000/ is the default URL which Apollo Server starts at.
+
+== Create your first nodes in the database
+
+Now it's time to add some data to your Neo4j database using your GraphQL API!
+
+Visit http://localhost:4000/ in your web browser and you'll see the following landing page:
+
+image::apollo-server-landing-page.png[title="Apollo Server Landing Page"]
+
+Click "Query your server" which will open the Sandbox.
+
+image::first-mutation.png[title="First Mutation"]
+
+At the moment your database is empty! To get some data in there, you can create a movie and an actor in that movie, all in one Mutation. The Mutation in the screenshot above can also be found below:
+
+[source, graphql, indent=0]
+----
+mutation {
+  createMovies(
+    input: [
+      {
+        title: "Forrest Gump"
+        actors: { create: [{ node: { name: "Tom Hanks" } }] }
+      }
+    ]
+  ) {
+    movies {
+      title
+      actors {
+        name
+      }
+    }
+  }
+}
+----
+
+Put this Mutation into the Operations panel and hit the blue "Run" button in the top right. When you execute the Mutation, you'll receive the following response, confirmation that the data has been created in the database!
+
+[source, json, indent=0]
+----
+{
+  "data": {
+    "createMovies": {
+      "movies": [
+        {
+          "title": "Forrest Gump",
+          "actors": [
+            {
+              "name": "Tom Hanks"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+----
+
+You can now go back and query the data which you just added:
+
+image::first-query.png[title="First Query"]
+
+The query in the screenshot above is querying for all movies and their actors in the database:
+
+[source, graphql, indent=0]
+----
+query {
+  movies {
+    title
+    actors {
+      name
+    }
+  }
+}
+----
+
+Of course, you only have the one of each, so you will see the result below:
+
+[source, json, indent=0]
+----
+{
+  "data": {
+    "movies": [
+      {
+        "title": "Forrest Gump",
+        "actors": [
+          {
+            "name": "Tom Hanks"
+          }
+        ]
+      }
+    ]
+  }
+}
+----

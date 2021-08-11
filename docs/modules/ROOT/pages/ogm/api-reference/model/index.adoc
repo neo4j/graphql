@@ -1,0 +1,22 @@
+[[ogm-api-reference-model]]
+= `Model`
+
+== `create`
+
+See xref::ogm/api-reference/model/create.adoc[`create`].
+
+== `find`
+
+See xref::ogm/api-reference/model/find.adoc[`find`].
+
+== `update`
+
+See xref::ogm/api-reference/model/update.adoc[`update`].
+
+== `delete`
+
+See xref::ogm/api-reference/model/delete.adoc[`delete`].
+
+== `count`
+
+See xref::ogm/api-reference/model/count.adoc[`count`].

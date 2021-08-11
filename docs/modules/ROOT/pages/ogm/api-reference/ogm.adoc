@@ -1,0 +1,48 @@
+[[ogm-api-reference-ogm]]
+= `OGM`
+
+== `constructor`
+
+Returns an `OGM` instance.
+
+Takes an `input` object as a parameter, which is then passed to the `Neo4jGraphQL` constructor. Supported options are listed in the documentation for xref::api-reference/neo4jgraphql.adoc[`Neo4jGraphQL`].
+
+=== Example
+
+[source, javascript, indent=0]
+----
+const ogm = new OGM({
+    typeDefs,
+});
+----
+
+== `model`
+
+Returns a `Model` instance matching the passed in name, or throws an `Error` if one can't be found.
+
+Accepts a single argument `name` of type `string`.
+
+=== Example
+
+For the following type definitions:
+
+[source, graphql, indent=0]
+----
+type User {
+    username: String!
+}
+----
+
+The following would successfully return a `Model` instance:
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("User");
+----
+
+The following would throw an `Error`:
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("NotFound");
+----

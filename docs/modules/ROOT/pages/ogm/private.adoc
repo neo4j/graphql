@@ -1,0 +1,54 @@
+[[ogm-private]]
+= `@private` Directive
+
+The `@private` directive allows you to specify fields that should only be accessible through the OGM. This is very handy as you can hide fields such as passwords to the outside world. Simply put the `@private` directive on the field you wish to be inaccessible through the exposed API;
+
+== Definition
+
+=== Definition
+[source, graphql, indent=0]
+----
+"""Instructs @neo4j/graphql to only expose a field through the Neo4j GraphQL OGM."""
+directive @private on FIELD_DEFINITION
+----
+
+== Example use-case
+
+[source, graphql, indent=0]
+----
+type User {
+    username: String!
+    email: String!
+    password: String! @private
+}
+----
+
+Using the password field is a great example here. In your application, you would want to hash passwords and hide them from snoopers. You could have a custom resolver, using the OGM, to update and set passwords. This is more apparent when you want to use the same type definitions to drive a public-facing schema and an OGM:
+
+[source, javascript, indent=0]
+----
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const { OGM } = require("@neo4j/graphql-ogm");
+const neo4j = require("neo4j-driver");
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("admin", "password")
+);
+
+const typeDefs = `
+    type User {
+        username: String!
+        email: String!
+        password: String! @private
+    }
+`;
+
+// public without password
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+// private with access to password
+const ogm = new OGM({ typeDefs, driver });
+
+const apolloServer = new ApolloServer({ schema: neoSchema.schema });
+----

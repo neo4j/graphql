@@ -1,0 +1,62 @@
+[[ogm-api-reference-model-find]]
+= `find`
+
+This method can be used to find nodes, and maps to the underlying schema xref::queries.adoc[Queries].
+
+Returns a `Promise` which resolvers to an array of objects matching the type of the Model.
+
+== Example
+
+To find all user nodes in the database:
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("User");
+
+const users = await User.find();
+----
+
+To find users with name "Jane Smith":
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("User");
+
+const users = await User.find({ where: { name: "Jane Smith" }});
+----
+
+== Arguments
+
+|===
+|Name and Type |Description
+
+|`where` +
+ +
+ Type: `GraphQLWhereArg`
+|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc[Filtering].
+
+|`options` +
+ +
+ Type: `GraphQLOptionsArg`
+|A JavaScript object representation of the GraphQL `options` input type used for xref::sorting.adoc[Sorting] and xref::pagination/index.adoc[Pagination].
+
+|`selectionSet` +
+ +
+ Type: `string` or `DocumentNode` or `SelectionSetNode`
+|Selection set for the Mutation, see xref::ogm/selection-set.adoc[Selection Set] for more information.
+
+|`args` +
+ +
+ Type: `any`
+|The `args` value for the GraphQL Mutation.
+
+|`context` +
+ +
+ Type: `any`
+|The `context` value for the GraphQL Mutation.
+
+|`rootValue` +
+ +
+ Type: `any`
+|The `rootValue` value for the GraphQL Mutation.
+|===
