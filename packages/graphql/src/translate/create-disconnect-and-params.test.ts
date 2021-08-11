@@ -72,6 +72,7 @@ describe("createDisconnectAndParams", () => {
         // @ts-ignore
         const neoSchema: Neo4jGraphQL = {
             nodes: [node],
+            relationships: [],
         };
 
         // @ts-ignore
@@ -79,35 +80,38 @@ describe("createDisconnectAndParams", () => {
 
         const result = createDisconnectAndParams({
             withVars: ["this"],
-            value: [{ where: { title: "abc" }, disconnect: { similarMovies: [{ where: { title: "cba" } }] } }],
+            value: [
+                {
+                    where: { node: { title: "abc" } },
+                    disconnect: { similarMovies: [{ where: { node: { title: "cba" } } }] },
+                },
+            ],
             varName: "this",
             relationField: node.relationFields[0],
             parentVar: "this",
             context,
             refNode: node,
             parentNode: node,
+            parameterPrefix: "this", // TODO
         });
 
         expect(trimmer(result[0])).toEqual(
             trimmer(`
             WITH this
             OPTIONAL MATCH (this)-[this0_rel:SIMILAR]->(this0:Movie)
-            WHERE this0.title = $this0_title
+            WHERE this0.title = $this[0].where.node.title
             FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
                 DELETE this0_rel
             )
             WITH this, this0
             OPTIONAL MATCH (this0)-[this0_similarMovies0_rel:SIMILAR]->(this0_similarMovies0:Movie)
-            WHERE this0_similarMovies0.title = $this0_similarMovies0_title
+            WHERE this0_similarMovies0.title = $this[0].disconnect.similarMovies[0].where.node.title
             FOREACH(_ IN CASE this0_similarMovies0 WHEN NULL THEN [] ELSE [1] END |
                 DELETE this0_similarMovies0_rel
             )
             `)
         );
 
-        expect(result[1]).toMatchObject({
-            this0_title: "abc",
-            this0_similarMovies0_title: "cba",
-        });
+        expect(result[1]).toMatchObject({});
     });
 });

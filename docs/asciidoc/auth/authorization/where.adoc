@@ -1,7 +1,7 @@
 [[auth-authorization-where]]
 = Where
 
-Use the `where` argument, on Node definitions, to conceptually append predicates to the Cypher `WHERE` clause. Given the current user ID is "123" and the following the schema;
+Use the `where` argument on types to conceptually append predicates to the Cypher `WHERE` clause. Given the current user ID is "123" and the following schema:
 
 [source, graphql]
 ----
@@ -13,7 +13,7 @@ type User {
 extend type User @auth(rules: [{ where: { id: "$jwt.id" } }])
 ----
 
-Then issues a GraphQL query for users;
+Then the user executes a GraphQL query for all users:
 
 [source, graphql]
 ----
@@ -25,7 +25,7 @@ query {
 }
 ----
 
-Behind the scenes the user’s ID is **conceptually** prepended to the query;
+Behind the scenes the user’s ID is conceptually added to the query:
 
 [source, graphql]
 ----
@@ -39,8 +39,8 @@ query {
 
 Where is used on the following operations;
 
-1. read
-2. update
-3. connect
-4. disconnect
-5. delete
+- `READ`
+- `UPDATE`
+- `CONNECT`
+- `DISCONNECT`
+- `DELETE`

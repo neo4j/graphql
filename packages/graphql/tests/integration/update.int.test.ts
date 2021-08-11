@@ -71,7 +71,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id, name: updatedName },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -132,12 +132,87 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id, name: updatedName },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
 
             expect(gqlResult?.data?.updateMovies).toEqual({ movies: [{ id, name: updatedName }] });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should update a movie when matching on relationship property", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Actor {
+                name: String
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type Movie {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const initialMovieId = generate({
+            charset: "alphabetic",
+        });
+
+        const updatedMovieId = generate({
+            charset: "alphabetic",
+        });
+
+        const actorName = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+        mutation($updatedMovieId: ID, $actorName: String) {
+            updateMovies(
+              where: { actorsConnection: { node: { name: $actorName } } },
+              update: {
+                id: $updatedMovieId
+              }
+          ) {
+              movies {
+                id
+                actors {
+                    name
+                }
+              }
+            }
+          }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (m:Movie {id: $initialMovieId})<-[:ACTED_IN]-(a:Actor {name: $actorName})
+            `,
+                {
+                    initialMovieId,
+                    actorName,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: { updatedMovieId, actorName },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateMovies).toEqual({
+                movies: [{ id: updatedMovieId, actors: [{ name: actorName }] }],
+            });
         } finally {
             await session.close();
         }
@@ -192,7 +267,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id1, id2, name: updatedName },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -243,8 +318,8 @@ describe("update", () => {
               where: { id: $movieId },
               update: {
                 actors: [{
-                  where: { name: $initialName },
-                  update: { name: $updatedName }
+                  where: { node: { name: $initialName } },
+                  update: { node: { name: $updatedName } }
                 }]
               }
           ) {
@@ -275,7 +350,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { movieId, updatedName, initialName },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -288,7 +363,7 @@ describe("update", () => {
         }
     });
 
-    test("should delete a nested actor from a movie", async () => {
+    test("should delete a nested actor from a movie abc", async () => {
         const session = driver.session();
 
         const typeDefs = gql`
@@ -315,7 +390,7 @@ describe("update", () => {
 
         const mutation = `
             mutation($id: ID, $name: String) {
-                updateMovies(where: { id: $id }, delete: { actors: { where: { name: $name } } }) {
+                updateMovies(where: { id: $id }, delete: { actors: { where: { node: { name: $name } } } }) {
                     movies {
                         id
                         actors {
@@ -343,7 +418,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: mutation,
                 variableValues: { id, name },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -383,7 +458,7 @@ describe("update", () => {
 
         const mutation = `
             mutation($id: ID, $name: String) {
-                updateMovies(where: { id: $id }, update: { actors: { delete: { where: { name: $name } } } }) {
+                updateMovies(where: { id: $id }, update: { actors: { delete: { where: { node: { name: $name } } } } }) {
                     movies {
                         id
                         actors {
@@ -411,7 +486,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: mutation,
                 variableValues: { id, name },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -424,7 +499,7 @@ describe("update", () => {
         }
     });
 
-    test("should delete a nested actor and one of their nested movies, within an update block", async () => {
+    test("should delete a nested actor and one of their nested movies, within an update block abc", async () => {
         const session = driver.session();
 
         const typeDefs = gql`
@@ -458,7 +533,7 @@ describe("update", () => {
                 updateMovies(
                     where: { id: $id1 }
                     update: {
-                        actors: { delete: { where: { name: $name }, delete: { movies: { where: { id: $id2 } } } } }
+                        actors: { delete: { where: { node: { name: $name } }, delete: { movies: { where: { node: { id: $id2 } } } } } }
                     }
                 ) {
                     movies {
@@ -491,7 +566,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: mutation,
                 variableValues: { id1, name, id2 },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -551,7 +626,7 @@ describe("update", () => {
             mutation($id: ID, $name1: String, $name3: String) {
                 updateMovies(
                     where: { id: $id }
-                    delete: { actors: [{ where: { name: $name1 } }, { where: { name: $name3 } }] }
+                    delete: { actors: [{ where: { node: { name: $name1 } } }, { where: { node: { name: $name3 } } }] }
                 ) {
                     movies {
                         id
@@ -586,7 +661,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: mutation,
                 variableValues: { id, name1, name3 },
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -627,13 +702,15 @@ describe("update", () => {
               where: { id: "${movieId}" }
               update: {
                 actors: [{
-                  where: { name: "old actor name" }
+                  where: { node: { name: "old actor name" } }
                   update: {
-                    name: "new actor name"
-                    movies: [{
-                      where: { title: "old movie title" }
-                      update: { title: "new movie title" }
-                    }]
+                    node: {
+                        name: "new actor name"
+                        movies: [{
+                            where: { node: { title: "old movie title" } }
+                            update: { node: { title: "new movie title" } }
+                        }]
+                    }
                   }
                 }]
               }
@@ -663,7 +740,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -703,7 +780,7 @@ describe("update", () => {
 
         const query = `
         mutation {
-            updateMovies(where: { id: "${movieId}" }, connect: {actors: [{where: {id: "${actorId}"}}]}) {
+            updateMovies(where: { id: "${movieId}" }, connect: {actors: [{where: {node:{id: "${actorId}"}}}]}) {
                 movies {
                     id
                     actors {
@@ -730,7 +807,86 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.updateMovies).toEqual({ movies: [{ id: movieId, actors: [{ id: actorId }] }] });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should connect a single movie to a actor based on a connection predicate", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Actor {
+                id: ID
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                series: [Series] @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type Movie {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+
+            type Series {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const movieId = generate({
+            charset: "alphabetic",
+        });
+
+        const actorId = generate({
+            charset: "alphabetic",
+        });
+
+        const seriesId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            mutation($movieId: ID, $seriesId: ID) {
+                updateMovies(
+                    where: { id: $movieId }
+                    connect: { actors: [{ where: { node: { seriesConnection: { node: { id: $seriesId } } } } }] }
+                ) {
+                    movies {
+                        id
+                        actors {
+                            id
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (:Movie {id: $movieId})
+                CREATE (:Actor {id: $actorId})-[:ACTED_IN]->(:Series {id: $seriesId})
+            `,
+                {
+                    movieId,
+                    actorId,
+                    seriesId,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: { movieId, seriesId },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -768,7 +924,7 @@ describe("update", () => {
 
         const query = `
         mutation {
-            updateMovies(where: { id: "${movieId}" }, disconnect: {actors: [{where: {id: "${actorId}"}}]}) {
+            updateMovies(where: { id: "${movieId}" }, disconnect: {actors: [{where: { node: { id: "${actorId}"}}}]}) {
                 movies {
                     id
                     actors {
@@ -796,7 +952,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -846,9 +1002,11 @@ describe("update", () => {
               where: { id: "${productId}" }
               update: {
                 photos: [{
-                  where: { id: "${photoId}" }
+                  where: { node: { id: "${photoId}" } }
                   update: {
-                    color: { disconnect: { where: { id: "${colorId}" } } }
+                      node: {
+                        color: { disconnect: { where: { node: { id: "${colorId}" } } } }
+                      }
                   }
                 }]
               }
@@ -886,7 +1044,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -959,23 +1117,27 @@ describe("update", () => {
                   update: {
                     photos: [
                       {
-                        where: { name: "Green Photo", id: "${photo0Id}" }
+                        where: { node: { name: "Green Photo", id: "${photo0Id}" } }
                         update: {
-                          name: "Light Green Photo"
-                          color: {
-                            connect: { where: { name: "Light Green", id: "${photo0Color1Id}" } }
-                            disconnect: { where: { name: "Green", id: "${photo0Color0Id}" } }
-                          }
+                            node: {
+                                name: "Light Green Photo"
+                                color: {
+                                    connect: { where: { node: { name: "Light Green", id: "${photo0Color1Id}" } } }
+                                    disconnect: { where: { node: { name: "Green", id: "${photo0Color0Id}" } } }
+                                }
+                            }
                         }
                       }
                       {
-                        where: { name: "Yellow Photo", id: "${photo1Id}" }
+                        where: { node: { name: "Yellow Photo", id: "${photo1Id}" } }
                         update: {
-                          name: "Light Yellow Photo"
-                          color: {
-                            connect: { where: { name: "Light Yellow", id: "${photo1Color1Id}" } }
-                            disconnect: { where: { name: "Yellow", id: "${photo1Color0Id}" } }
-                          }
+                            node: {
+                                name: "Light Yellow Photo"
+                                color: {
+                                    connect: { where: { node: { name: "Light Yellow", id: "${photo1Color1Id}" } } }
+                                    disconnect: { where: { node: { name: "Yellow", id: "${photo1Color0Id}" } } }
+                                }
+                            }
                         }
                       }
                     ]
@@ -1028,7 +1190,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -1101,12 +1263,16 @@ describe("update", () => {
                   update: {
                       photos: [{
                           create: [{
-                            id: "${photoId}",
-                            name: "Green Photo",
-                            color: {
-                                create: {
-                                    id: "${colorId}",
-                                    name: "Green"
+                            node: {
+                                id: "${photoId}",
+                                name: "Green Photo",
+                                color: {
+                                    create: {
+                                        node: {
+                                            id: "${colorId}",
+                                            name: "Green"
+                                        }
+                                    }
                                 }
                             }
                          }]
@@ -1142,7 +1308,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -1199,12 +1365,16 @@ describe("update", () => {
                   where: { id: "${productId}" }
                   create: {
                     photos: [{
-                      id: "${photoId}",
-                      name: "Green Photo",
-                      color: {
-                          create: {
-                            id: "${colorId}",
-                            name: "Green"
+                      node: {
+                        id: "${photoId}",
+                        name: "Green Photo",
+                        color: {
+                            create: {
+                              node: {
+                                id: "${colorId}",
+                                name: "Green"
+                              }
+                            }
                         }
                       }
                     }]
@@ -1216,8 +1386,8 @@ describe("update", () => {
                             id
                             name
                             color {
-                            id
-                            name
+                                id
+                                name
                             }
                         }
                     }
@@ -1239,7 +1409,7 @@ describe("update", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: {},
-                contextValue: { driver },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();

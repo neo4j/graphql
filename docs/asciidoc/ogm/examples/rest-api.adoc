@@ -1,0 +1,85 @@
+[[ogm-examples-rest-api]]
+= REST API
+
+This example demonstrates how you might use the OGM without exposing a Neo4j GraphQL API endpoint. The example starts an https://expressjs.com/[Express] server and uses the OGM to interact with the Neo4j GraphQL Library, exposed over a REST endpoint.
+
+First, create your example application directory, create a new project and also the file which will contain yur application code:
+
+[source, bash]
+----
+mkdir ogm-rest-example
+cd ogm-rest-example
+npm init --yes
+touch index.js
+----
+
+Then you need to install your dependencies:
+
+[source, bash]
+----
+npm install @neo4j/graphql-ogm graphql neo4j-driver express
+----
+
+Assuming a running Neo4j database at "bolt://localhost:7687" with username "neo4j" and password "password", in your empty `index.js` file, add the following code:
+
+[source, javascript]
+----
+const express = require("express");
+const { OGM } = require("@neo4j/graphql-ogm");
+const neo4j = require("neo4j-driver");
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("neo4j", "password")
+);
+
+const typeDefs = `
+    type User {
+        id: ID
+        name: String
+    }
+`;
+
+const ogm = new OGM({ typeDefs, driver });
+const User = ogm.model("User");
+
+const app = express();
+
+app.get("/users", async (req, res) => {
+    const { search, offset, limit, sort } = req.query;
+
+    const regex = search ? `(?i).*${search}.*` : null;
+
+    const users = await User.find({
+        where: { name_REGEX: regex },
+        options: {
+            offset,
+            limit,
+            sort
+        }
+    });
+
+    return res.json(users).end();
+});
+
+const port = 4000;
+app.listen(port, () => {
+    console.log("Example app listening at http://localhost:${port}")
+});
+----
+
+In your application directory, you can run this application:
+
+[source, bash]
+----
+node index.js
+----
+
+Which should output:
+
+[source, bash]
+----
+Example app listening at http://localhost:4000
+----
+
+The REST API should now be ready to accept requests at the URL logged.

@@ -30,6 +30,7 @@ import {
 import { pluralize } from "graphql-compose";
 import makeAugmentedSchema from "./make-augmented-schema";
 import { Node } from "../classes";
+import * as constants from "../constants";
 
 describe("makeAugmentedSchema", () => {
     test("should be a function", () => {
@@ -104,24 +105,6 @@ describe("makeAugmentedSchema", () => {
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot have interface on relationship");
     });
 
-    test("should throw type X does not implement interface X correctly", () => {
-        const typeDefs = `
-            interface Node @auth(rules: [{operations: [READ]}]) {
-                id: ID
-                relation: [Movie] @relationship(type: "SOME_TYPE", direction: OUT)
-                cypher: [Movie] @cypher(statement: "MATCH (a) RETURN a")
-            }
-
-            type Movie implements Node {
-                title: String!
-            }
-            `;
-
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
-            "type Movie does not implement interface Node correctly"
-        );
-    });
-
     test("should throw cannot auto-generate a non ID field", () => {
         const typeDefs = `
             type Movie  {
@@ -152,33 +135,10 @@ describe("makeAugmentedSchema", () => {
         expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot auto-generate an array");
     });
 
-    /*
-        Removal of validateTypeDefs function
-    */
-    // test("should throw timestamp operations must be an array", () => {
-    //     const typeDefs = `
-    //             type Movie  {
-    //                 name: DateTime @timestamp(operations: "read")
-    //             }
-    //         `;
-
-    //     expect(() => makeAugmentedSchema({ typeDefs })).toThrow('Argument "operations" has invalid value "read".');
-    // });
-
-    // test("should throw timestamp operations[0] invalid", () => {
-    //     const typeDefs = `
-    //             type Movie  {
-    //                 name: DateTime @timestamp(operations: ["read"])
-    //             }
-    //         `;
-
-    //     expect(() => makeAugmentedSchema({ typeDefs })).toThrow('Argument "operations" has invalid value ["read"].');
-    // });
-
     test("should throw cannot have auth directive on a relationship", () => {
         const typeDefs = `
-                type Node {
-                    node: Node @relationship(type: "NODE", direction: OUT) @auth(rules: [{operations: [CREATE]}])
+                type Movie {
+                    movie: Movie @relationship(type: "NODE", direction: OUT) @auth(rules: [{operations: [CREATE]}])
                 }
             `;
 
@@ -188,7 +148,7 @@ describe("makeAugmentedSchema", () => {
     describe("REGEX", () => {
         test("should remove the MATCHES filter by default", () => {
             const typeDefs = `
-                    type Node {
+                    type Movie {
                         name: String
                     }
                 `;
@@ -198,7 +158,7 @@ describe("makeAugmentedSchema", () => {
             const document = parse(printSchema(neoSchema.schema));
 
             const nodeWhereInput = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "NodeWhere"
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "MovieWhere"
             ) as InputObjectTypeDefinitionNode;
 
             const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("_MATCHES"));
@@ -208,7 +168,7 @@ describe("makeAugmentedSchema", () => {
 
         test("should add the MATCHES filter when NEO4J_GRAPHQL_ENABLE_REGEX is set", () => {
             const typeDefs = `
-                    type Node {
+                    type User {
                         name: String
                     }
                 `;
@@ -218,7 +178,7 @@ describe("makeAugmentedSchema", () => {
             const document = parse(printSchema(neoSchema.schema));
 
             const nodeWhereInput = document.definitions.find(
-                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "NodeWhere"
+                (x) => x.kind === "InputObjectTypeDefinition" && x.name.value === "UserWhere"
             ) as InputObjectTypeDefinitionNode;
 
             const matchesField = nodeWhereInput.fields?.find((x) => x.name.value.endsWith("_MATCHES"));
@@ -232,12 +192,12 @@ describe("makeAugmentedSchema", () => {
             // https://github.com/neo4j/graphql/issues/158
 
             const typeDefs = `
-                type Node {
+                type Movie {
                     createdAt: DateTime
                 }
 
                 type Query {
-                  nodes: [Node] @cypher(statement: "")
+                  movies: [Movie] @cypher(statement: "")
                 }
             `;
 
@@ -247,6 +207,252 @@ describe("makeAugmentedSchema", () => {
 
             // make sure the schema constructs
             expect(document.kind).toEqual("Document");
+        });
+    });
+
+    test("should throw error if @auth is used on relationship properties interface", () => {
+        const typeDefs = `
+            type Movie {
+                actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type Actor {
+                name: String
+            }
+
+            interface ActedIn @auth(rules: [{ operations: [CREATE], roles: ["admin"] }]) {
+                screenTime: Int
+            }
+        `;
+
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+            "Cannot have @auth directive on relationship properties interface"
+        );
+    });
+
+    test("should throw error if @cypher is used on relationship properties interface", () => {
+        const typeDefs = `
+            type Movie {
+                actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type Actor {
+                name: String
+            }
+
+            interface ActedIn @cypher(statement: "RETURN rand()") {
+                screenTime: Int
+            }
+        `;
+
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow('Directive "@cypher" may not be used on INTERFACE.');
+    });
+
+    test("should throw error if @auth is used on relationship property", () => {
+        const typeDefs = `
+            type Movie {
+                actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type Actor {
+                name: String
+            }
+
+            interface ActedIn {
+                screenTime: Int @auth(rules: [{ operations: [CREATE], roles: ["admin"] }])
+            }
+        `;
+
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("Cannot have @auth directive on relationship property");
+    });
+
+    test("should throw error if @relationship is used on relationship property", () => {
+        const typeDefs = `
+            type Movie {
+                actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type Actor {
+                name: String
+            }
+
+            interface ActedIn {
+                actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+        `;
+
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+            "Cannot have @relationship directive on relationship property"
+        );
+    });
+
+    test("should throw error if @cypher is used on relationship property", () => {
+        const typeDefs = `
+            type Movie {
+                actors: Actor @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type Actor {
+                name: String
+            }
+
+            interface ActedIn {
+                id: ID @cypher(statement: "RETURN id(this)")
+                roles: [String]
+            }
+        `;
+
+        expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+            "Cannot have @cypher directive on relationship property"
+        );
+    });
+
+    describe("Reserved Names", () => {
+        describe("Node", () => {
+            test("should throw when using PageInfo as node name", () => {
+                const typeDefs = `
+                    type PageInfo {
+                        id: ID
+                    }
+                `;
+
+                expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "PageInfo") as string[])[1]
+                );
+            });
+
+            test("should throw when using Connection in a node name", () => {
+                const typeDefs = `
+                    type NodeConnection {
+                        id: ID
+                    }
+                `;
+
+                expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "Connection") as string[])[1]
+                );
+            });
+
+            test("should throw when using Node as node name", () => {
+                const typeDefs = `
+                    type Node {
+                        id: ID
+                    }
+                `;
+
+                expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "Node") as string[])[1]
+                );
+            });
+        });
+
+        describe("Interface", () => {
+            test("should throw when using PageInfo as relationship properties interface name", () => {
+                const typeDefs = `
+                    type Movie {
+                        id: ID
+                        actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "PageInfo")
+                    }
+
+                    interface PageInfo {
+                        screenTime: Int
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "PageInfo") as string[])[1]
+                );
+            });
+
+            test("should throw when using Connection in a properties interface name", () => {
+                const typeDefs = `
+                    type Movie {
+                        id: ID
+                        actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "NodeConnection")
+                    }
+
+                    interface NodeConnection {
+                        screenTime: Int
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "Connection") as string[])[1]
+                );
+            });
+
+            test("should throw when using Node as relationship properties interface name", () => {
+                const typeDefs = `
+                    type Movie {
+                        id: ID
+                        actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "Node")
+                    }
+
+                    interface Node {
+                        screenTime: Int
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `;
+
+                expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                    (constants.RESERVED_TYPE_NAMES.find((x) => x[0] === "Node") as string[])[1]
+                );
+            });
+
+            describe("Fields", () => {
+                test("should throw when using 'node' as a relationship property", () => {
+                    const typeDefs = `
+                        type Movie {
+                            id: ID
+                            actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                        }
+
+                        interface ActedIn {
+                            node: ID
+                        }
+
+                        type Actor {
+                            name: String
+                        }
+                    `;
+
+                    expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                        (constants.RESERVED_INTERFACE_FIELDS.find((x) => x[0] === "node") as string[])[1]
+                    );
+                });
+
+                test("should throw when using 'cursor' as a relationship property", () => {
+                    const typeDefs = `
+                        type Movie {
+                            id: ID
+                            actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                        }
+
+                        interface ActedIn {
+                            cursor: ID
+                        }
+
+                        type Actor {
+                            name: String
+                        }
+                    `;
+
+                    expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                        (constants.RESERVED_INTERFACE_FIELDS.find((x) => x[0] === "cursor") as string[])[1]
+                    );
+                });
+            });
         });
     });
 });

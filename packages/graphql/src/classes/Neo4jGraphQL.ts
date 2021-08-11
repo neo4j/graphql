@@ -21,9 +21,11 @@ import Debug from "debug";
 import { Driver } from "neo4j-driver";
 import { DocumentNode, GraphQLResolveInfo, GraphQLSchema, parse, printSchema, print } from "graphql";
 import { addResolversToSchema, addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
+import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
 import type { DriverConfig, CypherQueryOptions } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
+import Relationship from "./Relationship";
 import { checkNeo4jCompat } from "../utils";
 import { getJWT } from "../auth/index";
 import { DEBUG_GRAPHQL } from "../constants";
@@ -34,7 +36,7 @@ const debug = Debug(DEBUG_GRAPHQL);
 
 export interface Neo4jGraphQLJWT {
     secret: string;
-    noVerify?: string;
+    noVerify?: boolean;
     rolesPath?: string;
 }
 
@@ -42,18 +44,22 @@ export interface Neo4jGraphQLConfig {
     driverConfig?: DriverConfig;
     jwt?: Neo4jGraphQLJWT;
     enableRegex?: boolean;
+    skipValidateTypeDefs?: boolean;
     queryOptions?: CypherQueryOptions;
 }
 
-export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
+export interface Neo4jGraphQLConstructor extends Omit<IExecutableSchemaDefinition, "schemaDirectives"> {
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
+    schemaDirectives?: Record<string, typeof SchemaDirectiveVisitor>;
 }
 
 class Neo4jGraphQL {
     public schema: GraphQLSchema;
 
     public nodes: Node[];
+
+    public relationships: Relationship[];
 
     public document: DocumentNode;
 
@@ -62,15 +68,26 @@ class Neo4jGraphQL {
     public config?: Neo4jGraphQLConfig;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, resolvers, ...schemaDefinition } = input;
-        const { nodes, schema } = makeAugmentedSchema(schemaDefinition, { enableRegex: config.enableRegex });
+        const { config = {}, driver, resolvers, schemaDirectives, ...schemaDefinition } = input;
+        const { nodes, relationships, schema } = makeAugmentedSchema(schemaDefinition, {
+            enableRegex: config.enableRegex,
+            skipValidateTypeDefs: config.skipValidateTypeDefs,
+        });
 
         this.driver = driver;
         this.config = config;
         this.nodes = nodes;
+        this.relationships = relationships;
         this.schema = schema;
+
         /*
-            addResolversToSchema must be first, so that custom resolvers also get schema level resolvers
+            Order must be:
+
+                addResolversToSchema -> visitSchemaDirectives -> createWrappedSchema
+
+            addResolversToSchema breaks schema directives added before it
+
+            createWrappedSchema must come last so that all requests have context prepared correctly
         */
         if (resolvers) {
             if (Array.isArray(resolvers)) {
@@ -81,6 +98,11 @@ class Neo4jGraphQL {
                 this.schema = addResolversToSchema(this.schema, resolvers);
             }
         }
+
+        if (schemaDirectives) {
+            SchemaDirectiveVisitor.visitSchemaDirectives(this.schema, schemaDirectives);
+        }
+
         this.schema = this.createWrappedSchema({ schema: this.schema, config });
         this.document = parse(printSchema(schema));
     }
