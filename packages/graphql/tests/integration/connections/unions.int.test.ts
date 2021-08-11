@@ -239,19 +239,19 @@ describe("Connections -> Unions", () => {
         const query = `
             query ($authorName: String, $bookTitle: String) {
                 authors(where: { name: $authorName }) {
-                name
+                    name
                     publicationsConnection(where: { Book: { node: { title: $bookTitle } } }) {
-                    edges {
-                        words
-                        node {
-                            ... on Book {
-                                title
+                        edges {
+                            words
+                            node {
+                                ... on Book {
+                                    title
+                                }
                             }
                         }
                     }
                 }
             }
-        }
         `;
 
         try {
@@ -297,19 +297,19 @@ describe("Connections -> Unions", () => {
         const query = `
             query ($authorName: String, $bookTitle: String) {
                 authors(where: { name: $authorName }) {
-                name
+                    name
                     publicationsConnection(where: { Book: { node: { title_NOT: $bookTitle } } }) {
-                    edges {
-                        words
-                        node {
-                            ... on Book {
-                                title
+                        edges {
+                            words
+                            node {
+                                ... on Book {
+                                    title
+                                }
                             }
                         }
                     }
                 }
             }
-        }
         `;
 
         try {
@@ -340,6 +340,155 @@ describe("Connections -> Unions", () => {
         }
     });
 
+    test("With where argument on all nodes with all in database", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+            query ($authorName: String, $bookTitle: String, $journalSubject: String) {
+                authors(where: { name: $authorName }) {
+                    name
+                    publicationsConnection(
+                        where: {
+                            Book: { node: { title: $bookTitle } }
+                            Journal: { node: { subject: $journalSubject } }
+                        }
+                    ) {
+                        totalCount
+                        edges {
+                            words
+                            node {
+                                __typename
+                                ... on Book {
+                                    title
+                                }
+                                ... on Journal {
+                                    subject
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                variableValues: {
+                    authorName,
+                    bookTitle,
+                    journalSubject,
+                },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.authors).toEqual([
+                {
+                    name: authorName,
+                    publicationsConnection: {
+                        totalCount: 2,
+                        edges: [
+                            {
+                                words: bookWordCount,
+                                node: {
+                                    __typename: "Book",
+                                    title: bookTitle,
+                                },
+                            },
+                            {
+                                words: journalWordCount,
+                                node: {
+                                    __typename: "Journal",
+                                    subject: journalSubject,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("With where argument on all nodes with only one in database", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+            query ($authorName: String, $bookTitle: String, $journalSubject: String) {
+                authors(where: { name: $authorName }) {
+                    name
+                    publicationsConnection(
+                        where: {
+                            Book: { node: { title: $bookTitle } }
+                            Journal: { node: { subject_NOT: $journalSubject } }
+                        }
+                    ) {
+                        totalCount
+                        edges {
+                            words
+                            node {
+                                __typename
+                                ... on Book {
+                                    title
+                                }
+                                ... on Journal {
+                                    subject
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                variableValues: {
+                    authorName,
+                    bookTitle,
+                    journalSubject,
+                },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.authors).toEqual([
+                {
+                    name: authorName,
+                    publicationsConnection: {
+                        totalCount: 1,
+                        edges: [
+                            {
+                                words: bookWordCount,
+                                node: {
+                                    __typename: "Book",
+                                    title: bookTitle,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
     test("With where argument on relationship with relationship in database", async () => {
         const session = driver.session();
 
@@ -348,19 +497,19 @@ describe("Connections -> Unions", () => {
         const query = `
             query ($authorName: String, $bookWordCount: Int) {
                 authors(where: { name: $authorName }) {
-                name
+                    name
                     publicationsConnection(where: { Book: { edge: { words: $bookWordCount } } }) {
-                    edges {
-                        words
-                        node {
-                            ... on Book {
-                                title
+                        edges {
+                            words
+                            node {
+                                ... on Book {
+                                    title
+                                }
                             }
                         }
                     }
                 }
             }
-        }
         `;
 
         try {
@@ -406,19 +555,19 @@ describe("Connections -> Unions", () => {
         const query = `
             query ($authorName: String, $bookWordCount: Int) {
                 authors(where: { name: $authorName }) {
-                name
+                    name
                     publicationsConnection(where: { Book: { edge: { words_NOT: $bookWordCount } } }) {
-                    edges {
-                        words
-                        node {
-                            ... on Book {
-                                title
+                        edges {
+                            words
+                            node {
+                                ... on Book {
+                                    title
+                                }
                             }
                         }
                     }
                 }
             }
-        }
         `;
 
         try {
@@ -449,6 +598,155 @@ describe("Connections -> Unions", () => {
         }
     });
 
+    test("With where argument on all edges with all in database", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+            query ($authorName: String, $bookWordCount: Int, $journalWordCount: Int) {
+                authors(where: { name: $authorName }) {
+                    name
+                    publicationsConnection(
+                        where: {
+                            Book: { edge: { words: $bookWordCount } }
+                            Journal: { edge: { words: $journalWordCount } }
+                        }
+                    ) {
+                        totalCount
+                        edges {
+                            words
+                            node {
+                                __typename
+                                ... on Book {
+                                    title
+                                }
+                                ... on Journal {
+                                    subject
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                variableValues: {
+                    authorName,
+                    bookWordCount,
+                    journalWordCount,
+                },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.authors).toEqual([
+                {
+                    name: authorName,
+                    publicationsConnection: {
+                        totalCount: 2,
+                        edges: [
+                            {
+                                words: bookWordCount,
+                                node: {
+                                    __typename: "Book",
+                                    title: bookTitle,
+                                },
+                            },
+                            {
+                                words: journalWordCount,
+                                node: {
+                                    __typename: "Journal",
+                                    subject: journalSubject,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("With where argument on all edges with only one in database", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+            query ($authorName: String, $bookWordCount: Int, $journalWordCount: Int) {
+                authors(where: { name: $authorName }) {
+                    name
+                    publicationsConnection(
+                        where: {
+                            Book: { edge: { words: $bookWordCount } }
+                            Journal: { edge: { words_NOT: $journalWordCount } }
+                        }
+                    ) {
+                        totalCount
+                        edges {
+                            words
+                            node {
+                                __typename
+                                ... on Book {
+                                    title
+                                }
+                                ... on Journal {
+                                    subject
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                variableValues: {
+                    authorName,
+                    bookWordCount,
+                    journalWordCount,
+                },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.authors).toEqual([
+                {
+                    name: authorName,
+                    publicationsConnection: {
+                        totalCount: 1,
+                        edges: [
+                            {
+                                words: bookWordCount,
+                                node: {
+                                    __typename: "Book",
+                                    title: bookTitle,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
     test("With where argument on relationship and node", async () => {
         const session = driver.session();
 
@@ -457,7 +755,7 @@ describe("Connections -> Unions", () => {
         const query = `
             query ($authorName: String, $bookWordCount: Int, $bookTitle: String) {
                 authors(where: { name: $authorName }) {
-                name
+                    name
                     publicationsConnection(
                         where: {
                             Book: {
@@ -466,17 +764,17 @@ describe("Connections -> Unions", () => {
                             }
                         }
                     ) {
-                    edges {
-                        words
-                        node {
-                            ... on Book {
-                                title
+                        edges {
+                            words
+                            node {
+                                ... on Book {
+                                    title
+                                }
                             }
                         }
                     }
                 }
             }
-        }
         `;
 
         try {
