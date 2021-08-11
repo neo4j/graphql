@@ -60,7 +60,7 @@ CALL {
     WITH this
     CALL {
         WITH this
-        OPTIONAL MATCH (this)-[this_published:PUBLISHED]->(this_Post:Post)
+        MATCH (this)-[this_published:PUBLISHED]->(this_Post:Post)
         CALL apoc.util.validate(NOT(EXISTS((this_Post)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
         CALL {
             WITH this_Post
