@@ -63,13 +63,13 @@ CALL {
     WITH this
     CALL {
         WITH this
-        OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Book:Book)
-        WITH { words: this_wrote.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
+        OPTIONAL MATCH (this)-[this_wrote_relationship:WROTE]->(this_Book:Book)
+        WITH { words: this_wrote_relationship.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
         RETURN edge
     UNION
         WITH this
-        OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Journal:Journal)
-        WITH { words: this_wrote.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
+        OPTIONAL MATCH (this)-[this_wrote_relationship:WROTE]->(this_Journal:Journal)
+        WITH { words: this_wrote_relationship.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
         RETURN edge
     }
     WITH collect(edge) as edges, count(edge) as totalCount
@@ -124,15 +124,15 @@ CALL {
     WITH this
     CALL {
         WITH this
-        OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Book:Book)
+        OPTIONAL MATCH (this)-[this_wrote_relationship:WROTE]->(this_Book:Book)
         WHERE this_Book.title = $this_publicationsConnection.args.where.Book.node.title
-        WITH { words: this_wrote.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
+        WITH { words: this_wrote_relationship.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
         RETURN edge
     UNION
         WITH this
-        OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Journal:Journal)
+        OPTIONAL MATCH (this)-[this_wrote_relationship:WROTE]->(this_Journal:Journal)
         WHERE this_Journal.subject = $this_publicationsConnection.args.where.Journal.node.subject
-        WITH { words: this_wrote.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
+        WITH { words: this_wrote_relationship.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
         RETURN edge
     }
     WITH collect(edge) as edges, count(edge) as totalCount
@@ -204,15 +204,15 @@ CALL {
     WITH this
     CALL {
         WITH this
-        OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Book:Book)
-        WHERE this_wrote.words = $this_publicationsConnection.args.where.Book.edge.words
-        WITH { words: this_wrote.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
+        OPTIONAL MATCH (this)-[this_wrote_relationship:WROTE]->(this_Book:Book)
+        WHERE this_wrote_relationship.words = $this_publicationsConnection.args.where.Book.edge.words
+        WITH { words: this_wrote_relationship.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
         RETURN edge
     UNION
         WITH this
-        OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Journal:Journal)
-        WHERE this_wrote.words = $this_publicationsConnection.args.where.Journal.edge.words
-        WITH { words: this_wrote.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
+        OPTIONAL MATCH (this)-[this_wrote_relationship:WROTE]->(this_Journal:Journal)
+        WHERE this_wrote_relationship.words = $this_publicationsConnection.args.where.Journal.edge.words
+        WITH { words: this_wrote_relationship.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
         RETURN edge
     }
     WITH collect(edge) as edges, count(edge) as totalCount
@@ -293,15 +293,15 @@ CALL {
     WITH this
     CALL {
         WITH this
-        OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Book:Book)
-        WHERE this_Book.title = $this_publicationsConnection.args.where.Book.node.title AND this_wrote.words = $this_publicationsConnection.args.where.Book.edge.words
-        WITH { words: this_wrote.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
+        OPTIONAL MATCH (this)-[this_wrote_relationship:WROTE]->(this_Book:Book)
+        WHERE this_Book.title = $this_publicationsConnection.args.where.Book.node.title AND this_wrote_relationship.words = $this_publicationsConnection.args.where.Book.edge.words
+        WITH { words: this_wrote_relationship.words, node: { __resolveType: "Book", title: this_Book.title } } AS edge
         RETURN edge
     UNION
         WITH this
-        OPTIONAL MATCH (this)-[this_wrote:WROTE]->(this_Journal:Journal)
-        WHERE this_Journal.subject = $this_publicationsConnection.args.where.Journal.node.subject AND this_wrote.words = $this_publicationsConnection.args.where.Journal.edge.words
-        WITH { words: this_wrote.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
+        OPTIONAL MATCH (this)-[this_wrote_relationship:WROTE]->(this_Journal:Journal)
+        WHERE this_Journal.subject = $this_publicationsConnection.args.where.Journal.node.subject AND this_wrote_relationship.words = $this_publicationsConnection.args.where.Journal.edge.words
+        WITH { words: this_wrote_relationship.words, node: { __resolveType: "Journal", subject: this_Journal.subject } } AS edge
         RETURN edge
     }
     WITH collect(edge) as edges, count(edge) as totalCount
