@@ -61,14 +61,14 @@ class OGM {
         });
     }
 
-    model(name: string): Model {
+    model<M = Model>(name: string): M {
         const found = this.models.find((n) => n.name === name);
 
         if (!found) {
             throw new Error(`Could not find model ${name}`);
         }
 
-        return found;
+        return (found as unknown) as M;
     }
 }
 
