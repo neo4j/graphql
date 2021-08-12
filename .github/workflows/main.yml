@@ -1,0 +1,439 @@
+name: "@neo4j/graphql CI"
+
+on:
+  push:
+    branches:
+      - master
+      - release/*
+  pull_request:
+    branches:
+      - master
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  cla-check:
+    if: ${{ github.event_name == 'pull_request' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: neo-technology/whitelist-check
+          ssh-key: ${{ secrets.NEO4J_TEAM_GRAPHQL_SSH_PRIVATE_KEY }}
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - run: |
+          owner=$(echo $GITHUB_REPOSITORY | cut -d/ -f1)
+          repository=$(echo $GITHUB_REPOSITORY | cut -d/ -f2)
+
+          ./bin/examine-pull-request $owner $repository "${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}" $PULL_REQUEST_NUMBER cla-database.csv
+        env:
+          PULL_REQUEST_NUMBER: ${{ github.event.number }}
+
+  cache-dependencies:
+    needs: cla-check
+    if: |
+      always() &&
+      (needs.cla-check.result == 'success' || needs.cla-check.result == 'skipped')
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+
+  unit-tests:
+    needs: [cla-check, cache-dependencies]
+    if: |
+      always() &&
+      (needs.cla-check.result == 'success' || needs.cla-check.result == 'skipped') &&
+      (needs.cache-dependencies.result == 'success')
+
+    strategy:
+      matrix:
+        package: [graphql, ogm]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run packages/${{ matrix.package }} unit tests
+        run: yarn run test:unit --coverage
+        working-directory: packages/${{ matrix.package }}
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./packages/${{ matrix.package }}/coverage/
+          flags: ${{ matrix.package }},unit
+          fail_ci_if_error: true
+
+  tck-tests:
+    needs: [cla-check, cache-dependencies]
+    if: |
+      always() &&
+      (needs.cla-check.result == 'success' || needs.cla-check.result == 'skipped') &&
+      (needs.cache-dependencies.result == 'success')
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run TCK tests
+        run: yarn --cwd packages/graphql run test:tck --coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./packages/graphql/coverage/
+          flags: graphql,tck
+          fail_ci_if_error: true
+
+  package-tests:
+    needs: [cla-check, cache-dependencies]
+    if: |
+      always() &&
+      startsWith( github.ref, 'refs/heads/release') &&
+      (needs.cla-check.result == 'success' || needs.cla-check.result == 'skipped') &&
+      (needs.cache-dependencies.result == 'success')
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - run: yarn build
+      - name: Run @neo4j/graphql package tests
+        run: yarn --cwd packages/graphql run test:package-tests
+
+  integration-tests-on-prem:
+    needs: [cla-check, cache-dependencies]
+    if: |
+      always() &&
+      (needs.cla-check.result == 'success' || needs.cla-check.result == 'skipped') &&
+      (needs.cache-dependencies.result == 'success')
+
+    strategy:
+      matrix:
+        package: [graphql, ogm]
+        neo4j-version: [4.1.5, 4.1, 4.2, 4.3]
+
+    runs-on: ubuntu-latest
+
+    services:
+      neo4j:
+        image: neo4j:${{ matrix.neo4j-version }}
+        env:
+          NEO4J_AUTH: neo4j/testpassword
+          NEO4JLABS_PLUGINS: '["apoc"]'
+        ports:
+          - 7687:7687
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run @neo4j/graphql integration tests
+        run: yarn test:int --coverage
+        working-directory: packages/${{ matrix.package }}
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: testpassword
+          NEO_URL: bolt://localhost:7687
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./packages/${{ matrix.package }}/coverage/
+          flags: ${{ matrix.package }},integration,${{ matrix.neo4j-version }}
+          fail_ci_if_error: true
+          dry_run: true
+
+  aura-teardown:
+    needs: [cla-check, cache-dependencies]
+    if: |
+      always() &&
+      (needs.cla-check.result == 'success' || needs.cla-check.result == 'skipped') &&
+      (needs.cache-dependencies.result == 'success')
+
+    strategy:
+      matrix:
+        aura-instance: [free, professional]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Install ts-node and typescript
+        run: npm install -g ts-node typescript
+      - name: Uppercase instance name
+        run: |
+          lowercase_instance=${{ matrix.aura-instance }}
+          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>${GITHUB_ENV}
+          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>${GITHUB_ENV}
+      - name: Delete all data in instance
+        run: ts-node tests/integration/teardown.ts
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
+          NEO_URL: ${{ secrets[env.AURA_URI_SECRET] }}
+
+  integration-tests-aura:
+    needs: aura-teardown
+    if: |
+      always() &&
+      (needs.aura-teardown.result == 'success')
+
+    strategy:
+      matrix:
+        package: [graphql, ogm]
+        aura-instance: [free, professional]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Uppercase instance name
+        run: |
+          lowercase_instance=${{ matrix.aura-instance }}
+          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>${GITHUB_ENV}
+          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>${GITHUB_ENV}
+      - name: Run @neo4j/graphql integration tests
+        run: yarn test:int -t '^(?!delete should delete a movie, a single nested actor and another movie they act in|update should delete a nested actor and one of their nested movies, within an update block)' --coverage
+        working-directory: packages/${{ matrix.package }}
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
+          NEO_URL: ${{ secrets[env.AURA_URI_SECRET] }}
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./packages/${{ matrix.package }}/coverage/
+          flags: ${{ matrix.package }},integration,aura-${{ matrix.aura-instance }}
+          fail_ci_if_error: true
+          verbose: true
+
+  bump-version:
+    needs:
+      [
+        cla-check,
+        cache-dependencies,
+        unit-tests,
+        tck-tests,
+        package-tests,
+        integration-tests-on-prem,
+        integration-tests-aura,
+      ]
+    if: |
+      always() &&
+      startsWith( github.ref, 'refs/heads/release') &&
+      (needs.cla-check.result == 'success' || needs.cla-check.result == 'skipped') &&
+      (needs.cache-dependencies.result == 'success') &&
+      (needs.unit-tests.result == 'success') &&
+      (needs.tck-tests.result == 'success') &&
+      (needs.package-tests.result == 'success') &&
+      (needs.integration-tests-on-prem.result == 'success') &&
+      (needs.integration-tests-aura.result == 'success')
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Fetch all history so yarn version works
+          fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Extract version from branch name
+        id: get-version
+        run: |
+          version=$(echo ${{ github.ref }} | cut -d/ -f4)
+          echo "::set-output name=version::$version"
+      - name: Bump @neo4j/graphql version
+        run: yarn version "${{ steps.get-version.outputs.version }}"
+        working-directory: packages/graphql
+      - name: Bump @neo4j/graphql-ogm version
+        run: yarn version "${{ steps.get-version.outputs.version }}"
+        working-directory: packages/ogm
+      - name: Commit and push new version numbers
+        run: |
+          git config --global user.name 'Neo4j Team GraphQL'
+          git config --global user.email 'team-graphql@neotechnology.com'
+          git commit -am "Bump versions to ${{ steps.get-version.outputs.version }}"
+          git push
+
+  pack:
+    needs: bump-version
+    if: |
+      always() &&
+      startsWith( github.ref, 'refs/heads/release') &&
+      (needs.bump-version.result == 'success')
+
+    strategy:
+      matrix:
+        package: [graphql, ogm]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: release/${{ needs.bump-version.outputs.version }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - run: yarn build
+      - name: Pack ${{ matrix.package }}
+        run: npm pack
+        working-directory: packages/${{ matrix.package }}
+      - name: Archive release tarball
+        uses: actions/upload-artifact@v2
+        with:
+          name: release-tarballs
+          path: packages/${{ matrix.package }}/neo4j-graphql-*.tgz
+
+  npm-publish:
+    needs: [pack, bump-version]
+    if: |
+      always() &&
+      startsWith( github.ref, 'refs/heads/release') &&
+      (needs.pack.result == 'success') &&
+      (needs.bump-version.result == 'success')
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: npm
+
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: release-tarballs
+      - name: npm publish
+        run: |
+          npm config set @neo4j:registry https://registry.npmjs.org
+          npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
+
+          prerelease=$(echo ${{ needs.bump-version.outputs.version }} | cut -d- -f2)
+
+          if [[ "$prerelease" =~ ^(alpha|beta|rc)\..* ]]; then
+            tag="next"
+          else
+            tag="latest"
+          fi
+
+          npm publish *.tgz --tag=$tag --access=public --dry-run
+        env:
+          NPM_TOKEN: ${{ secrets.TOKEN }}
+
+  merge-tag-push:
+    needs: [npm-publish, bump-version]
+    if: |
+      always() &&
+      startsWith( github.ref, 'refs/heads/release') &&
+      (needs.npm-publish.result == 'success') &&
+      (needs.bump-version.result == 'success')
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: master
+          fetch-depth: 0
+      - name: git config
+        run: |
+          git config --global user.name 'Neo4j Team GraphQL'
+          git config --global user.email 'team-graphql@neotechnology.com'
+      - name: git merge
+        run: git merge --no-ff origin/release/${{ needs.bump-version.outputs.version }} --strategy-option theirs
+      - name: git tag
+        run: |
+          git tag -a @neo4j/graphql@${{ needs.bump-version.outputs.version }} -m "@neo4j/graphql@${{ needs.bump-version.outputs.version }}"
+          git tag -a @neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }} -m "@neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }}"
+      - name: git push
+        run: git push --follow-tags
+
+  delete-release-branch:
+    needs: [merge-tag-push, bump-version]
+    if: |
+      always() &&
+      startsWith( github.ref, 'refs/heads/release') &&
+      (needs.merge-tag-push.result == 'success') &&
+      (needs.bump-version.result == 'success')
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Delete release branch
+        run: |
+          git config --global user.name 'Neo4j Team GraphQL'
+          git config --global user.email 'team-graphql@neotechnology.com'
+          git push origin --delete release/${{ needs.bump-version.outputs.version }}
