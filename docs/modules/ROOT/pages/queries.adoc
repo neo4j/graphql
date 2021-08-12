@@ -1,0 +1,94 @@
+[[queries]]
+= Queries
+
+Each node defined in type definitions will have two Query fields generated for it - one for querying data and one for counting data.
+
+The examples in this chapter will use the following type definitions:
+
+[source, graphql, indent=0]
+----
+type Post {
+    id: ID! @id
+    content: String!
+    creator: User! @relationship(type: "HAS_POST", direction: IN)
+}
+
+type User {
+    id: ID! @id
+    name: String!
+    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+}
+----
+
+For which the following Query fields will be generated:
+
+[source, graphql, indent=0]
+----
+type Query {
+    posts(where: PostWhere, options: PostOptions): [Post!]!
+    postsCount(where: PostWhere): Int!
+    users(where: UserWhere, options: UserOptions): [User!]!
+    usersCount(where: UserWhere): Int!
+}
+----
+
+== Query
+
+Each field for querying data accepts two arguments:
+
+- `where` - used for xref::filtering.adoc[Filtering] data
+- `options` - used to specify xref::sorting.adoc[Sorting] and xref::pagination/index.adoc[Pagination] options
+
+=== Querying for all User nodes
+
+The following Query will return all User nodes, returning their ID and name.
+
+[source, graphql, indent=0]
+----
+query {
+    users {
+        id
+        name
+    }
+}
+----
+
+=== Query for user with name "Jane Smith" and their posts
+
+The following Query will return all Users, returning the content which they have posted.
+
+[source, graphql, indent=0]
+----
+query {
+    users(where: { name: "Jane Smith" }) {
+        id
+        name
+        posts {
+            content
+        }
+    }
+}
+----
+
+[[queries-count]]
+== Count
+
+=== Counting all User nodes
+
+The following Query will count all User nodes:
+
+[source, graphql, indent=0]
+----
+query {
+    usersCount
+}
+----
+
+=== Counting User nodes where name starts with "J"
+
+[source, graphql, indent=0]
+----
+query {
+    usersCount(where: { name_STARTS_WITH: "J" })
+}
+----

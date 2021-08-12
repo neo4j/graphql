@@ -1,0 +1,79 @@
+[[introduction]]
+= Introduction
+
+The Neo4j GraphQL Library is a highly flexible, low-code, open source JavaScript library that enables rapid API development for cross-platform and mobile applications by tapping into the power of connected data.
+
+With Neo4j as the graph database, the GraphQL Library makes it simple for applications to have application data treated as a graph natively from the front-end all the way to storage, avoiding duplicate schema work and ensuring flawless integration between front-end and backend developers.
+
+Written in TypeScript, the library's schema-first paradigm lets developers focus on the application data they need, while taking care of the heavy lifting involved in building the API.
+
+> Just want to get moving with the Neo4j GraphQL Library? Check out the xref::getting-started.adoc[Getting Started] guide!
+
+== How does it work?
+
+By supplying the Neo4j GraphQL Library with a set of type definitions describing the shape of your graph data, it can generate an entire executable schema with all of the additional types needed to execute queries and mutations to interact with your Neo4j database.
+
+For every query and mutation that is executed against this generated schema, the Neo4j GraphQL Library generates a single Cypher query which is executed against the database. This eliminates the infamous https://www.google.com/search?q=graphql+n%2B1[N+1 Problem] which can make GraphQL implementations slow and inefficient.
+
+== Features
+
+The Neo4j GraphQL Library presents a large feature set for interacting with a Neo4j database using GraphQL:
+
+- Automatic generation of xref::queries.adoc[Queries] and xref::mutations/index.adoc[Mutations] for CRUD interactions
+- Various xref::type-definitions/types.adoc[Types], including temporal and spatial types
+- Support for both node and relationship properties
+- Extensibility through the xref::type-definitions/cypher.adoc[`@cypher` directive] and/or xref::custom-resolvers.adoc[Custom Resolvers]
+- Extensive xref::filtering.adoc[Filtering] and xref::sorting.adoc[Sorting] options
+- Options for value xref::type-definitions/autogeneration.adoc[Autogeneration] and xref::type-definitions/default-values.adoc[Default Values]
+- Multiple xref::pagination/index.adoc[Pagination] options
+- Comprehensive authentication and authorisation options (xref::auth/index.adoc[Auth]), and additional xref::type-definitions/access-control.adoc[Access Control] options
+- An xref::ogm/index.adoc[OGM] (Object Graph Mapper) for programmatic interaction with your GraphQL API
+
+== Interaction
+
+In the xref::getting-started.adoc[Getting Started] guide, Apollo Server is used to host the GraphQL schema. This bundles Apollo Sandbox which can be used to interact directly with your GraphQL API with no front-end.
+
+There are a variety of front-end frameworks with clients for interacting with GraphQL APIs:
+
+- https://reactjs.org/[React] - support through https://www.apollographql.com/docs/react/[Apollo Client]
+- https://vuejs.org/[Vue.js] - support through https://apollo.vuejs.org/[Vue Apollo]
+- https://angularjs.org/[AngularJS] - support through https://apollo-angular.com/docs/[Apollo Angular]
+
+== Deployment
+
+There are a variety of methods for deploying GraphQL APIs, the details of which will not be in this documentation.
+
+However, Apollo has documented a subset in their https://www.apollographql.com/docs/apollo-server/deployment[Deployment] documentation, which will be a good starting point.
+
+== Versioning
+
+The Neo4j GraphQL Library uses https://semver.org/[Semantic Versioning]. Given a version number `MAJOR.MINOR.PATCH`, the increment is based on:
+
+- `MAJOR` - incompatible API changes compared to the previous `MAJOR` version, for which you will likely have to migrate.
+- `MINOR` - new features have been added in a backwards compatible manner.
+- `PATCH` - bug fixes have been added in a backwards compatible manner.
+
+Additionally, prerelease version numbers may have additional suffixes, for example `MAJOR.MINOR.PATCH-PRERELEASE.NUMBER`, where `PRERELEASE` is one of the following:
+
+- `alpha` - unstable prerelease artifacts, and the API may change between releases during this phase.
+- `beta` - feature complete prerelease artifacts, which will be more stable than `alpha` releases but will likely still contain bugs.
+- `rc` - release candidate release artifacts where each could be promoted to a stable release, in a last effort to find trailing bugs.
+
+`NUMBER` in the suffix is simply an incrementing release number in each phase.
+
+== Requirements
+
+1. https://neo4j.com/[Neo4j Database] 4.1.5+
+2. https://neo4j.com/developer/neo4j-apoc/[APOC] 4.1.0+
+3. https://nodejs.org/en/[Node.js] 12+
+
+== Resources
+
+1. https://github.com/neo4j/graphql[GitHub]
+2. https://github.com/neo4j/graphql/issues[Issue Tracker]
+3. https://www.npmjs.com/package/@neo4j/graphql[npm package]
+
+== Licence
+
+1. Documentation: link:{common-license-page-uri}[Creative Commons 4.0]
+2. Source: https://www.apache.org/licenses/LICENSE-2.0[Apache 2.0]

@@ -1,0 +1,161 @@
+[[type-definitions-unions-and-interfaces]]
+= Unions and Interfaces
+
+Unions and interfaces are abstract GraphQL types that enable a schema field to return one of multiple object types.
+
+[[type-definitions-unions-and-interfaces-union-types]]
+== Union Types
+
+The Neo4j GraphQL Library supports the use of unions on relationship fields. For example, the following schema defines a `User` type, that has a relationship `HAS_CONTENT`, of type `[Content]`. `Content` is of type `union` representing either a `Blog` or a `Post`.
+
+[source, graphql, indent=0]
+----
+union Content = Blog | Post
+
+type Blog {
+    title: String
+    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+}
+
+type Post {
+    content: String
+}
+
+type User {
+    name: String
+    content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+}
+----
+
+Below you can find some examples of how queries and mutations work with this example.
+
+[[type-definitions-unions-and-interfaces-union-types-querying]]
+=== Querying a union
+
+Which union members are returned by a Query are dictated by the `where` filter applied.
+
+For example, the following will return all user content, and you will specifically get the title of each blog.
+
+[source, graphql, indent=0]
+----
+query GetUsersWithBlogs {
+    users {
+        name
+        content {
+            ... on Blog {
+                title
+            }
+        }
+    }
+}
+----
+
+Whilst the query below will only return blogs. You could for instance use a filter to check that the title is not null to essentially return all blogs:
+
+[source, graphql, indent=0]
+----
+query GetUsersWithAllContent {
+    users {
+        name
+        content(where: { Blog: { title_NOT: null }}) {
+            ... on Blog {
+                title
+            }
+        }
+    }
+}
+----
+
+Conceptually, this maps to the `WHERE` clauses of the subquery unions in Cypher. Going back to the first example with no `where` argument, each subquery has a similar structure:
+
+[source, cypher, indent=0]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    RETURN { __resolveType: "Blog", title: blog.title }
+UNION
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(journal:Post)
+    RETURN { __resolveType: "Post" }
+}
+----
+
+Now if you were to leave both subqueries and add a `WHERE` clause for blogs, it would look like this:
+
+[source, cypher, indent=0]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    WHERE blog.title IS NOT NULL
+    RETURN { __resolveType: "Blog", title: blog.title }
+UNION
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(journal:Post)
+    RETURN { __resolveType: "Post" }
+}
+----
+
+As you can see, the subqueries are now "unbalanced", which could result in massive overfetching of `Post` nodes.
+
+So, when a `where` argument is passed in, only union members which are in the `where` object are fetched, so it is essentially acting as a logical OR gate, different from the rest of the `where` arguments in the schema:
+
+[source, cypher, indent=0]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    WHERE blog.title IS NOT NULL
+    RETURN { __resolveType: "Blog", title: blog.title }
+}
+----
+
+=== Creating a union
+
+The below mutation creates the user and their content:
+
+[source, graphql, indent=0]
+----
+mutation CreateUserAndContent {
+    createUsers(
+        input: [
+            {
+                name: "Dan"
+                content: {
+                    Blog: {
+                        create: [
+                            {
+                                node: {
+                                    title: "My Cool Blog"
+                                    posts: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    content: "My Cool Post"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    ) {
+        users {
+            name
+        }
+    }
+}
+
+----
+
+
+== Interface Types
+
+At the moment, the only support that the Neo4j GraphQL Library offers for interfaces is in the definition of relationship properties.
+
+Beyond this, feel free to use them in your implementation of node types, however the library will offer no database support for these - it will essentially ignore them and focus only on the implementing GraphQL object types.
