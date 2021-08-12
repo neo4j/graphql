@@ -1,0 +1,48 @@
+site:
+  title: GraphQL Manual
+  url: https://neo4j.com/docs
+  start_page: graphql-manual:ROOT:index.adoc
+
+content:
+  sources:
+  - url: ../
+    start_path: docs
+    branches: HEAD
+    edit_url: https://github.com/neo4j/graphql/tree/{refname}/{path}
+    include: docs/
+    exclude:
+    - '!**/_includes/*'
+    - '!**/readme.adoc'
+    - '!**/README.adoc'
+ui:
+  bundle:
+    url: https://s3-eu-west-1.amazonaws.com/static-content.neo4j.com/build/ui-bundle-latest.zip
+    snapshot: true
+  output_dir: /assets
+
+urls:
+  html_extension_style: indexify
+
+asciidoc:
+  extensions:
+  - "@neo4j-documentation/remote-include"
+  - "@neo4j-documentation/macros"
+  # - "@neo4j-antora/antora-add-notes"
+  attributes:
+    page-theme: docs
+    page-type: Docs
+    page-search-type: Docs
+    page-search-site: Reference Docs
+    page-canonical-root: /docs
+    page-pagination: true
+    page-no-canonical: true
+    page-origin-private: false
+    page-hide-toc: false
+    page-mixpanel: 4bfb2414ab973c741b6f067bf06d5575
+    # page-add-notes-module: notes@
+    # page-add-notes-tags: example@
+    includePDF: false
+    nonhtmloutput: ""
+    experimental: ''
+    copyright: 2021
+    common-license-page-uri: https://neo4j.com/docs/license/

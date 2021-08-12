@@ -1,0 +1,53 @@
+[[auth]]
+= Auth
+
+In this chapter you will learn more about how to secure your GraphQL API using the Neo4j GraphQL Library's built-in auth mechanics.
+
+- xref::auth/setup.adoc[Setup]
+- xref::auth/auth-directive.adoc[`@auth` directive]
+- xref::auth/authentication.adoc[Authentication]
+- xref::auth/authorization/index.adoc[Authorization]
+
+== Quickstart examples
+
+Only authenticated users can create Post nodes:
+
+[source, graphql, indent=0]
+----
+type Post @auth(rules: [
+    { operations: [CREATE], isAuthenticated: true }
+]) {
+    title: String!
+}
+----
+
+Use `extend` to avoid large and unwieldy type definitions:
+
+[source, graphql, indent=0]
+----
+type Post {
+    title: String!
+}
+
+extend type Post @auth(rules: [
+    { operations: [CREATE], isAuthenticated: true }
+])
+----
+
+You can use the directive types as seen in the example above, but you can also apply the directive on any field so as long as it's not decorated with `@relationship`. In the following example, the password field is only accessible to users with role "admin", or the user themselves:
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID!
+    name: String!
+}
+
+extend type User {
+    password: String! @auth(rules: [
+        {
+            OR: [{ roles: ["admin"] }, { allow: { id: "$jwt.sub" } }]
+        }
+    ])
+}
+----

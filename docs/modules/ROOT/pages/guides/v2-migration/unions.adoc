@@ -1,0 +1,134 @@
+[[v2-migration-unions]]
+= Unions
+
+In this release, the decision was made to take the opportunity to overhaul the existing support for unions on relationship fields, laying down the foundations for adding top-level union support in the future.
+
+All examples in this section will be based off the following type definitions:
+
+[source, graphql, indent=0]
+----
+type Actor {
+    name: String!
+    actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
+}
+
+type Movie {
+    title: String!
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+}
+
+type Series {
+    title: String!
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+}
+
+union Production = Movie | Series
+----
+
+== Input types
+
+The structure of input types for union queries and mutations have been changed for user friendliness, and a more consistent API.
+
+Essentially, field names which were previously of template `${unionFieldName}_${concreteType}` (for example, "actedIn_Movie") are now an object, with the field name at the top, and the member types under it.
+
+For example, a Mutation which would have previously been:
+
+[source, graphql, indent=0]
+----
+mutation {
+    createActors(
+        input: [
+            {
+                name: "Tom Hiddleston"
+                actedIn_Movie: {
+                    create: [
+                        {
+                            title: "The Avengers"
+                        }
+                    ]
+                }
+                actedIn_Series: {
+                    create: [
+                        {
+                            title: "Loki"
+                        }
+                    ]
+                }
+            }
+        ]
+    )
+}
+----
+
+Will now be:
+
+[source, graphql, indent=0]
+----
+mutation {
+    createActors(
+        input: [
+            {
+                name: "Tom Hiddleston"
+                actedIn: {
+                    Movie: {
+                        create: [
+                            {
+                                node: {
+                                    title: "The Avengers"
+                                }
+                            }
+                        ]
+                    }
+                    Series: {
+                        create: [
+                            {
+                                node: {
+                                    title: "Loki"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    )
+}
+----
+
+Note the change in structure for union input, but also the additional `node` level which enables the use of relationship properties. These changes are consistent across all operations, including `where`.
+
+== Filtering union fields
+
+There has been a slight change to how you filter union fields, adding a `where` level above each union member. For example, for a query which would have used to have looked like:
+
+[source, graphql, indent=0]
+----
+query {
+    actors {
+        name
+        actedIn(Movie: { "The Avengers" }) {
+            ... on Movie {
+                title
+            }
+        }
+    }
+}
+----
+
+This will now be written like:
+
+[source, graphql, indent=0]
+----
+query {
+    actors {
+        name
+        actedIn(where: { Movie: { "The Avengers" }}) {
+            ... on Movie {
+                title
+            }
+        }
+    }
+}
+----
+
+Furthermore, the where argument used now dictates which union members are returned from the database, to prevent overfetching. Please see xref::type-definitions/unions-and-interfaces.adoc[Querying a union] for background and explanation of this decision.

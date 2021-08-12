@@ -1,0 +1,194 @@
+[[api-reference-neo4jgraphql]]
+= `Neo4jGraphQL`
+
+== `constructor`
+
+Returns a `Neo4jGraphQL` instance.
+
+Takes an `input` object as a parameter, the supported fields of which are described below.
+
+=== Example
+
+[source, javascript, indent=0]
+----
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+});
+----
+
+[[api-reference-neo4jgraphql-input]]
+=== Input
+
+Accepts all of the options from https://github.com/ardatan/graphql-tools/blob/%40graphql-tools/schema%407.1.5/website/docs/generate-schema.md#makeexecutableschemaoptions[`makeExecutableSchema`], plus the additional arguments below:
+
+|===
+|Name and Type |Description
+
+|`driver` +
+ +
+ Type: https://neo4j.com/docs/javascript-manual/current/[`Driver`]
+|An instance of a Neo4j driver.
+
+|`config` +
+ +
+ Type: `Neo4jGraphQLConfig`
+|Additional Neo4j GraphQL configuration options.
+|===
+
+[[api-reference-neo4jgraphql-input-neo4jgraphqlconfig]]
+==== `Neo4jGraphQLConfig`
+
+|===
+|Name and Type |Description
+
+|`driverConfig` +
+ +
+ Type: xref::api-reference/neo4jgraphql.adoc[`DriverConfig`]
+|Additional driver configuration options.
+
+|`enableRegex` +
+ +
+ Type: `boolean`
+|Whether to enable RegEx filters, see xref::filtering.adoc[RegEx matching] for more information.
+
+|`jwt` +
+ +
+ Type: xref::api-reference/neo4jgraphql.adoc[`Neo4jGraphQLJWT`]
+|JWT options.
+
+|`queryOptions` +
+ +
+ Type: xref::api-reference/neo4jgraphql.adoc[`CypherQueryOptions`]
+|Cypher query options, see xref::troubleshooting/index.adoc#troubleshooting-query-tuning[Query Tuning] for more information.
+
+|`skipValidateTypeDefs` +
+ +
+ Type: `boolean`
+|Can be used to disable strict type definition validation if you are encountering unexpected errors.
+|===
+
+[[api-reference-neo4jgraphql-input-neo4jgraphqlconfig-driverconfig]]
+===== `DriverConfig`
+
+|===
+|Name and Type |Description
+
+|`database` +
+ +
+ Type: `string`
+|The name of the database within the DBMS to connect to.
+
+|`bookmarks` +
+ +
+ Type: `string` or `Array<string>`
+|One or more bookmarks to use for the connection.
+|===
+
+[[api-reference-neo4jgraphql-input-neo4jgraphqlconfig-neo4jgraphqljwt]]
+===== `Neo4jGraphQLJWT`
+
+|===
+|Name and Type |Description
+
+|`secret` +
+ +
+ Type: `string`
+|The secret used to encode JWT tokens. +
+ +
+ *Required* unless passing in decoded tokens.
+
+|`noVerify` +
+ +
+ Type: `boolean`
+|Disable verification of JWT signatures, only decode.
+
+|`rolesPath` +
+ +
+ Type: `string`
+|Dot path of location of roles within JWT token.
+|===
+
+[[api-reference-neo4jgraphql-input-neo4jgraphqlconfig-cypherqueryoptions]]
+===== `CypherQueryOptions`
+
+All options are enum types imported from `@neo4j/graphql`, for example:
+
+[source, javascript, indent=0]
+----
+const { CypherRuntime } = require("@neo4j/graphql");
+----
+
+|===
+|Name and Type |Description
+
+|`runtime` +
+ +
+ Type: `CypherRuntime`
+|Possible options: +
+ +
+ - `CypherRuntime.INTERPRETED` +
+ - `CypherRuntime.SLOTTED` +
+ - `CypherRuntime.PIPELINED`
+
+|`planner` +
+ +
+ Type: `CypherPlanner`
+|Possible options: +
+ +
+ - `CypherPlanner.COST` +
+ - `CypherPlanner.IDP` +
+ - `CypherPlanner.DP`
+
+|`connectComponentsPlanner` +
+ +
+ Type: `CypherConnectComponentsPlanner`
+|Possible options: +
+ +
+ - `CypherConnectComponentsPlanner.GREEDY` +
+ - `CypherConnectComponentsPlanner.IDP`
+
+|`updateStrategy` +
+ +
+ Type: `CypherUpdateStrategy`
+|Possible options: +
+ +
+ - `CypherUpdateStrategy.DEFAULT` +
+ - `CypherUpdateStrategy.EAGER`
+
+|`expressionEngine` +
+ +
+ Type: `CypherExpressionEngine`
+|Possible options: +
+ +
+ - `CypherExpressionEngine.DEFAULT` +
+ - `CypherExpressionEngine.INTERPRETED` +
+ - `CypherExpressionEngine.COMPILED`
+
+|`operatorEngine` +
+ +
+ Type: `CypherOperatorEngine`
+|Possible options: +
+ +
+ - `CypherOperatorEngine.DEFAULT` +
+ - `CypherOperatorEngine.INTERPRETED` +
+ - `CypherOperatorEngine.COMPILED`
+
+|`interpretedPipesFallback` +
+ +
+ Type: `CypherInterpretedPipesFallback`
+|Possible options: +
+ +
+ - `CypherInterpretedPipesFallback.DEFAULT` +
+ - `CypherInterpretedPipesFallback.DISABLED` +
+ - `CypherInterpretedPipesFallback.WHITELISTED_PLANS_ONLY` +
+ - `CypherInterpretedPipesFallback.ALL`
+
+|`replan` +
+ +
+ Type: `CypherReplanning`
+|Possible options: +
+ +
+ - `CypherReplanning.DEFAULT` +
+ - `CypherReplanning.FORCE` +
+ - `CypherReplanning.SKIP`
+|===
