@@ -1,0 +1,11 @@
+= Neo4j GraphQL Library
+
+To build the docs locally:
+
+1. Clone this repo
+2. `cd` into the _docs_ directory.
+3. Run `npm install`.
+4. Run `npm start`.
+5. Open http://localhost:8000 in a browser.
+
+The HTML is automatically rebuilt when you update and save any _.adoc_ file.

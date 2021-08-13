@@ -207,7 +207,7 @@ RETURN this {
 MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL {
-    WITH this MATCH (this)-[this_has_post:HAS_POST]->(this_post:Post)
+    WITH this MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_post:Post)
     WHERE EXISTS((this_post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_where0_creator_id)
     WITH collect({ node: { content: this_post.content } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS postsConnection
@@ -260,7 +260,7 @@ RETURN this { .id, postsConnection } as this
 MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL {
-    WITH this MATCH (this)-[this_has_post:HAS_POST]->(this_post:Post)
+    WITH this MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_post:Post)
     WHERE this_post.id = $this_postsConnection.args.where.node.id AND EXISTS((this_post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_where0_creator_id)
     WITH collect({ node: { content: this_post.content } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS postsConnection
@@ -423,7 +423,7 @@ CALL {
     WITH this
     CALL {
         WITH this
-        MATCH (this)-[this_has_post:HAS_POST]->(this_Post:Post)
+        MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_Post:Post)
         WHERE EXISTS((this_Post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)
         WITH { node: { __resolveType: "Post", id: this_Post.id } } AS edge
         RETURN edge
@@ -484,7 +484,7 @@ CALL {
     WITH this
     CALL {
         WITH this
-        MATCH (this)-[this_has_post:HAS_POST]->(this_Post:Post)
+        MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_Post:Post)
         WHERE this_Post.id = $this_contentConnection.args.where.Post.node.id AND EXISTS((this_Post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)
         WITH { node: { __resolveType: "Post", id: this_Post.id } } AS edge
         RETURN edge

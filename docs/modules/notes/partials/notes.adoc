@@ -1,0 +1,19 @@
+= Notes
+
+```
+# tag::example[]
+[TIP]
+====
+This is an example of content that can be included on every page.
+====
+# end::example[]
+```
+
+```
+# tag::second[]
+[WARNING]
+====
+This is a second example of content that can be included.
+====
+# end::second[]
+```
