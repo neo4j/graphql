@@ -55,7 +55,9 @@ jobs:
         run: yarn --immutable
 
   unit-tests:
-    needs: [cla-check, cache-dependencies]
+    needs:
+      - cla-check
+      - cache-dependencies
     if: |
       always() &&
       (needs.cla-check.result == 'success' || needs.cla-check.result == 'skipped') &&
@@ -63,7 +65,9 @@ jobs:
 
     strategy:
       matrix:
-        package: [graphql, ogm]
+        package:
+          - graphql
+          - ogm
 
     runs-on: ubuntu-latest
 
@@ -87,7 +91,9 @@ jobs:
           fail_ci_if_error: true
 
   tck-tests:
-    needs: [cla-check, cache-dependencies]
+    needs:
+      - cla-check
+      - cache-dependencies
     if: |
       always() &&
       (needs.cla-check.result == 'success' || needs.cla-check.result == 'skipped') &&
@@ -114,7 +120,9 @@ jobs:
           fail_ci_if_error: true
 
   package-tests:
-    needs: [cla-check, cache-dependencies]
+    needs:
+      - cla-check
+      - cache-dependencies
     if: |
       always() &&
       startsWith( github.ref, 'refs/heads/release') &&
@@ -136,7 +144,9 @@ jobs:
         run: yarn --cwd packages/graphql run test:package-tests
 
   integration-tests-on-prem:
-    needs: [cla-check, cache-dependencies]
+    needs:
+      - cla-check
+      - cache-dependencies
     if: |
       always() &&
       (needs.cla-check.result == 'success' || needs.cla-check.result == 'skipped') &&
@@ -144,8 +154,14 @@ jobs:
 
     strategy:
       matrix:
-        package: [graphql, ogm]
-        neo4j-version: [4.1.5, 4.1, 4.2, 4.3]
+        package:
+          - graphql
+          - ogm
+        neo4j-version:
+          - 4.1.5
+          - 4.1
+          - 4.2
+          - 4.3
 
     runs-on: ubuntu-latest
 
@@ -167,24 +183,25 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - name: Run @neo4j/graphql integration tests
-        run: yarn test:int --coverage
+      - name: Run @neo4j/graphql integration tests and move coverage
+        run: |
+          yarn test:int --coverage
+          mv coverage coverage-${{ matrix.neo4j-version }}
         working-directory: packages/${{ matrix.package }}
         env:
           NEO_USER: neo4j
           NEO_PASSWORD: testpassword
           NEO_URL: bolt://localhost:7687
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/${{ matrix.package }}/coverage/
-          flags: ${{ matrix.package }},integration,${{ matrix.neo4j-version }}
-          fail_ci_if_error: true
-          dry_run: true
+          name: integration-coverage-${{ matrix.package }}
+          path: packages/${{ matrix.package }}/coverage-${{ matrix.neo4j-version }}/
 
   aura-teardown:
-    needs: [cla-check, cache-dependencies]
+    needs:
+      - cla-check
+      - cache-dependencies
     if: |
       always() &&
       (needs.cla-check.result == 'success' || needs.cla-check.result == 'skipped') &&
@@ -192,7 +209,9 @@ jobs:
 
     strategy:
       matrix:
-        aura-instance: [free, professional]
+        aura-instance:
+          - free
+          - professional
 
     runs-on: ubuntu-latest
 
@@ -228,8 +247,12 @@ jobs:
 
     strategy:
       matrix:
-        package: [graphql, ogm]
-        aura-instance: [free, professional]
+        package:
+          - graphql
+          - ogm
+        aura-instance:
+          - free
+          - professional
 
     runs-on: ubuntu-latest
 
@@ -248,34 +271,63 @@ jobs:
           echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>${GITHUB_ENV}
           echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>${GITHUB_ENV}
       - name: Run @neo4j/graphql integration tests
-        run: yarn test:int -t '^(?!delete should delete a movie, a single nested actor and another movie they act in|update should delete a nested actor and one of their nested movies, within an update block)' --coverage
+        run: |
+          yarn test:int -t '^(?!delete should delete a movie, a single nested actor and another movie they act in|update should delete a nested actor and one of their nested movies, within an update block)' --coverage
+          mv coverage coverage-aura-${{ matrix.aura-instance }}
         working-directory: packages/${{ matrix.package }}
         env:
           NEO_USER: neo4j
           NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
           NEO_URL: ${{ secrets[env.AURA_URI_SECRET] }}
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: integration-coverage-${{ matrix.package }}
+          path: packages/${{ matrix.package }}/coverage-aura-${{ matrix.aura-instance }}/
+
+  upload-integration-coverage:
+    needs:
+      - integration-tests-on-prem
+      - aura-teardown
+      - integration-tests-aura
+    if: |
+      always() &&
+      (needs.integration-tests-on-prem.result == 'success') &&
+      (needs.aura-teardown.result == 'success') &&
+      (needs.integration-tests-aura.result == 'success')
+
+    strategy:
+      matrix:
+        package:
+          - graphql
+          - ogm
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: integration-coverage-${{ matrix.package }}
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/${{ matrix.package }}/coverage/
-          flags: ${{ matrix.package }},integration,aura-${{ matrix.aura-instance }}
+          flags: ${{ matrix.package }},integration
           fail_ci_if_error: true
           verbose: true
 
   bump-version:
     needs:
-      [
-        cla-check,
-        cache-dependencies,
-        unit-tests,
-        tck-tests,
-        package-tests,
-        integration-tests-on-prem,
-        integration-tests-aura,
-      ]
+      - cla-check
+      - cache-dependencies
+      - unit-tests
+      - tck-tests
+      - package-tests
+      - integration-tests-on-prem
+      - integration-tests-aura
     if: |
       always() &&
+      github.event_name != 'pull_request' &&
       startsWith( github.ref, 'refs/heads/release') &&
       (needs.cla-check.result == 'success' || needs.cla-check.result == 'skipped') &&
       (needs.cache-dependencies.result == 'success') &&
@@ -323,12 +375,15 @@ jobs:
     needs: bump-version
     if: |
       always() &&
+      github.event_name != 'pull_request' &&
       startsWith( github.ref, 'refs/heads/release') &&
       (needs.bump-version.result == 'success')
 
     strategy:
       matrix:
-        package: [graphql, ogm]
+        package:
+          - graphql
+          - ogm
 
     runs-on: ubuntu-latest
 
@@ -353,9 +408,12 @@ jobs:
           path: packages/${{ matrix.package }}/neo4j-graphql-*.tgz
 
   npm-publish:
-    needs: [pack, bump-version]
+    needs:
+      - pack
+      - bump-version
     if: |
       always() &&
+      github.event_name != 'pull_request' &&
       startsWith( github.ref, 'refs/heads/release') &&
       (needs.pack.result == 'success') &&
       (needs.bump-version.result == 'success')
@@ -371,9 +429,6 @@ jobs:
           name: release-tarballs
       - name: npm publish
         run: |
-          npm config set @neo4j:registry https://registry.npmjs.org
-          npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
-
           prerelease=$(echo ${{ needs.bump-version.outputs.version }} | cut -d- -f2)
 
           if [[ "$prerelease" =~ ^(alpha|beta|rc)\..* ]]; then
@@ -383,13 +438,14 @@ jobs:
           fi
 
           npm publish *.tgz --tag=$tag --access=public --dry-run
-        env:
-          NPM_TOKEN: ${{ secrets.TOKEN }}
 
   merge-tag-push:
-    needs: [npm-publish, bump-version]
+    needs:
+      - npm-publish
+      - bump-version
     if: |
       always() &&
+      github.event_name != 'pull_request' &&
       startsWith( github.ref, 'refs/heads/release') &&
       (needs.npm-publish.result == 'success') &&
       (needs.bump-version.result == 'success')
@@ -418,9 +474,12 @@ jobs:
         run: git push --follow-tags
 
   delete-release-branch:
-    needs: [merge-tag-push, bump-version]
+    needs:
+      - merge-tag-push
+      - bump-version
     if: |
       always() &&
+      github.event_name != 'pull_request' &&
       startsWith( github.ref, 'refs/heads/release') &&
       (needs.merge-tag-push.result == 'success') &&
       (needs.bump-version.result == 'success')
