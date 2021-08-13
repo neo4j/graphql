@@ -170,7 +170,7 @@ function createConnectionAndParams({
                 }
 
                 unionSubquery.push(`WITH ${nodeVariable}`);
-                unionSubquery.push(`OPTIONAL MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
+                unionSubquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 
                 const allowAndParams = createAuthAndParams({
                     operation: "READ",
