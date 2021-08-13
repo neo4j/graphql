@@ -47,7 +47,7 @@ MATCH (this:Movie)
 WHERE this.title = $this_title
 CALL {
     WITH this
-    MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+    MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
     WITH collect({ }) AS edges
     RETURN { totalCount: size(edges) } AS actorsConnection
 }
@@ -91,7 +91,7 @@ MATCH (this:Movie)
 WHERE this.title = $this_title
 CALL {
     WITH this
-    MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+    MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
     WITH collect({ }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -130,7 +130,7 @@ MATCH (this:Movie)
 WHERE this.title = $this_title
 CALL {
     WITH this
-    MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+    MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
     WITH collect({ }) AS edges
     WITH size(edges) AS totalCount, edges[..5] AS limitedSelection
     RETURN { edges: limitedSelection, totalCount: totalCount } AS actorsConnection
@@ -172,12 +172,12 @@ CALL {
     WITH this
     CALL {
         WITH this
-        MATCH (this)-[this_acted_in:ACTED_IN]->(this_Movie:Movie)
+        MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
         WITH { node: { __resolveType: "Movie" } } AS edge
         RETURN edge
         UNION
         WITH this
-        MATCH (this)-[this_acted_in:ACTED_IN]->(this_Series:Series)
+        MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
         WITH { node: { __resolveType: "Series" } } AS edge
         RETURN edge
     }
@@ -226,12 +226,12 @@ CALL {
     WITH this
     CALL {
         WITH this
-        MATCH (this)-[this_acted_in:ACTED_IN]->(this_Movie:Movie)
+        MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
         WITH { node: { __resolveType: "Movie" } } AS edge
         RETURN edge
         UNION
         WITH this
-        MATCH (this)-[this_acted_in:ACTED_IN]->(this_Series:Series)
+        MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
         WITH { node: { __resolveType: "Series" } } AS edge
         RETURN edge
     }
@@ -278,7 +278,7 @@ MATCH (this:Movie)
 WHERE this.title = $this_title
 CALL {
     WITH this
-    MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+    MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
     WITH collect({ node: { name: this_actor.name } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
@@ -322,7 +322,7 @@ MATCH (this:Movie)
 WHERE this.title = $this_title
 CALL {
     WITH this
-    MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+    MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
     WITH collect({ node: { name: this_actor.name } }) AS edges
     WITH size(edges) AS totalCount, edges[..5] AS limitedSelection
     RETURN { edges: limitedSelection, totalCount: totalCount } AS actorsConnection

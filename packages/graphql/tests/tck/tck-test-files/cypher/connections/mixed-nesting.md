@@ -52,10 +52,10 @@ MATCH (this:Movie)
 WHERE this.title = $this_title
 CALL {
     WITH this
-    MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+    MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
     WHERE this_actor.name = $this_actorsConnection.args.where.node.name
     WITH collect({
-        screenTime: this_acted_in.screenTime,
+        screenTime: this_acted_in_relationship.screenTime,
         node: {
             name: this_actor.name,
             movies: [ (this_actor)-[:ACTED_IN]->(this_actor_movies:Movie) WHERE (NOT this_actor_movies.title = $this_actor_movies_title_NOT) | this_actor_movies { .title } ]
@@ -125,11 +125,11 @@ MATCH (this:Movie)
 WHERE this.title = $this_title
 CALL {
     WITH this
-    MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+    MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
     WHERE this_actor.name = $this_actorsConnection.args.where.node.name
     CALL {
         WITH this_actor
-        MATCH (this_actor)-[this_actor_acted_in:ACTED_IN]->(this_actor_movie:Movie)
+        MATCH (this_actor)-[this_actor_acted_in_relationship:ACTED_IN]->(this_actor_movie:Movie)
         WHERE (NOT this_actor_movie.title = $this_actorsConnection.edges.node.moviesConnection.args.where.node.title_NOT)
         WITH collect({
             node: {
@@ -139,7 +139,7 @@ CALL {
         }) AS edges
         RETURN { edges: edges, totalCount: size(edges) } AS moviesConnection
     }
-    WITH collect({ screenTime: this_acted_in.screenTime, node: { name: this_actor.name, moviesConnection: moviesConnection } }) AS edges
+    WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, moviesConnection: moviesConnection } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
 }
 RETURN this { .title, actorsConnection } as this
@@ -212,9 +212,9 @@ RETURN this {
         .name,
         moviesConnection: apoc.cypher.runFirstColumn("CALL {
                     WITH this_actors
-                    MATCH (this_actors)-[this_actors_acted_in:ACTED_IN]->(this_actors_movie:Movie)
+                    MATCH (this_actors)-[this_actors_acted_in_relationship:ACTED_IN]->(this_actors_movie:Movie)
                     WHERE (NOT this_actors_movie.title = $this_actors_moviesConnection.args.where.node.title_NOT)
-                    WITH collect({ screenTime: this_actors_acted_in.screenTime, node: { title: this_actors_movie.title } }) AS edges
+                    WITH collect({ screenTime: this_actors_acted_in_relationship.screenTime, node: { title: this_actors_movie.title } }) AS edges
                     RETURN { edges: edges, totalCount: size(edges) } AS moviesConnection
                 } RETURN moviesConnection", { this_actors: this_actors, this_actors_moviesConnection: $this_actors_moviesConnection }, false)
         }

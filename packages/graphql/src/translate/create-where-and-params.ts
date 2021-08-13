@@ -78,6 +78,7 @@ function createWhereAndParams({
                     res.clauses.push(
                         `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`
                     );
+
                     return res;
                 }
 
@@ -95,10 +96,13 @@ function createWhereAndParams({
                     recursing: true,
                 });
 
-                resultStr += recurse[0];
-                resultStr += ")"; // close ALL
-                res.clauses.push(resultStr);
-                res.params = { ...res.params, ...recurse[1] };
+                if (recurse[0]) {
+                    resultStr += recurse[0];
+                    resultStr += ")"; // close ALL
+                    res.clauses.push(resultStr);
+                    res.params = { ...res.params, ...recurse[1] };
+                }
+
                 return res;
             }
 
@@ -274,6 +278,7 @@ function createWhereAndParams({
                 res.clauses.push(
                     `NOT EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${equalityRelation.typeMeta.name}))`
                 );
+
                 return res;
             }
 
@@ -291,10 +296,13 @@ function createWhereAndParams({
                 recursing: true,
             });
 
-            resultStr += recurse[0];
-            resultStr += ")"; // close ANY
-            res.clauses.push(resultStr);
-            res.params = { ...res.params, ...recurse[1] };
+            if (recurse[0]) {
+                resultStr += recurse[0];
+                resultStr += ")"; // close ANY
+                res.clauses.push(resultStr);
+                res.params = { ...res.params, ...recurse[1] };
+            }
+
             return res;
         }
 
