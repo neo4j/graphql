@@ -1,0 +1,5 @@
+graphql:
+  - packages/graphql/**/*
+
+ogm:
+  - packages/ogm/**/*
