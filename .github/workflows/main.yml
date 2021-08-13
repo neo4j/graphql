@@ -438,6 +438,8 @@ jobs:
           fi
 
           npm publish *.tgz --tag=$tag --access=public --dry-run
+        env:
+          NPM_TOKEN: ${{ secrets.TOKEN }}
 
   merge-tag-push:
     needs:
