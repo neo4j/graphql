@@ -34,7 +34,12 @@ export default function countResolver({ node }: { node: Node }) {
             raw: true,
         });
 
-        return result.records[0]._fields[0].toNumber();
+        const count: number | any = result.records[0]._fields[0];
+
+        if (typeof count === "number") {
+            return count;
+        }
+        return count.toNumber();
     }
 
     return {
