@@ -89,6 +89,96 @@ describe("create", () => {
         }
     });
 
+    test("should create movie and resolve connection with where clause on relationship field", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Actor {
+                name: String!
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type Movie {
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        const { schema } = new Neo4jGraphQL({ typeDefs });
+
+        const movieTitle = generate({ charset: "alphabetic" });
+        const actorName = generate({ charset: "alphabetic" });
+
+        const query = `
+            mutation ($movieTitle: String!, $actorName: String!) {
+                createActors(
+                    input: {
+                        name: $actorName
+                        movies: { connect: { where: { node: { title: $movieTitle } } } }
+                    }
+                ) {
+                    actors {
+                        name
+                        movies {
+                            title
+                            actorsConnection(where: { node: { name: $actorName } }) {
+                                totalCount
+                                edges {
+                                    node {
+                                        name
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+        try {
+            await session.run(
+                `
+                    CREATE (movie:Movie {title: $movieTitle})
+                `,
+                {
+                    movieTitle,
+                    actorName,
+                }
+            );
+
+            const result = await graphql({
+                schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                variableValues: { movieTitle, actorName },
+            });
+            expect(result.errors).toBeFalsy();
+            expect(result.data?.createActors).toEqual({
+                actors: [
+                    {
+                        name: actorName,
+                        movies: [
+                            {
+                                title: movieTitle,
+                                actorsConnection: {
+                                    totalCount: 1,
+                                    edges: [
+                                        {
+                                            node: {
+                                                name: actorName,
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                        ],
+                    },
+                ],
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
     test("should create 2 movies", async () => {
         const session = driver.session();
 
