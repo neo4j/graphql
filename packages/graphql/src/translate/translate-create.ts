@@ -127,6 +127,9 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
         .map(
             (_, i) =>
                 `\nthis${i} ${projection[0]
+                    // First look to see if projection param is being reassigned
+                    // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
+                    .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/, "projection")
                     .replace(/\$REPLACE_ME/g, "$projection")
                     .replace(/REPLACE_ME/g, `this${i}`)} AS this${i}`
         )
