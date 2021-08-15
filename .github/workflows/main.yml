@@ -442,7 +442,7 @@ jobs:
             npm publish $tarball --tag=$tag --access=public --dry-run
           done
         env:
-          NPM_TOKEN: ${{ secrets.TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   merge-tag-push:
     needs:
@@ -501,3 +501,53 @@ jobs:
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
           git push origin --delete release/${{ needs.bump-version.outputs.version }}
+
+  changelog:
+    needs:
+      - merge-tag-push
+      - bump-version
+    if: |
+      always() &&
+      github.event_name != 'pull_request' &&
+      startsWith( github.ref, 'refs/heads/release') &&
+      (needs.merge-tag-push.result == 'success') &&
+      (needs.bump-version.result == 'success')
+
+    strategy:
+      matrix:
+        package:
+          - graphql
+          - graphql-ogm
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract product label from tag
+        id: get-label
+        run: |
+          label=$(echo ${{ matrix.package }} | cut -d- -f2)
+          echo "::set-output name=label::$label"
+      - name: Extract prerelease from version
+        id: get-prerelease
+        run: |
+          prerelease=$(echo ${{ needs.bump-version.outputs.version }} | cut -d@ -f3 | cut -d- -f2)
+          echo "::set-output name=prerelease::$prerelease"
+      - name: Build Changelog
+        id: github-release
+        uses: mikepenz/release-changelog-builder-action@v1
+        with:
+          configuration: "config/release-changelog-builder-action/configuration-${{ steps.get-label.outputs.label }}.json"
+          toTag: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: ${{ steps.github-release.outputs.changelog }}
+          name: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
+          tag_name: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
+          prerelease: |
+            ${{ startsWith(steps.get-prerelease.outputs.prerelease, 'alpha') }} ||
+            ${{ startsWith(steps.get-prerelease.outputs.prerelease, 'beta') }} ||
+            ${{ startsWith(steps.get-prerelease.outputs.prerelease, 'rc') }}

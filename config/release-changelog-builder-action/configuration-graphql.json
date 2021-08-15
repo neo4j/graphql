@@ -1,0 +1,6 @@
+{
+    "ignore_labels": ["ogm"],
+    "tag_resolver": {
+        "method": "sort"
+    }
+}
