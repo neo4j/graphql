@@ -1,4 +1,4 @@
-name: "@neo4j/graphql CI"
+name: "CI/CD"
 
 on:
   push:
@@ -437,7 +437,10 @@ jobs:
             tag="latest"
           fi
 
-          npm publish *.tgz --tag=$tag --access=public --dry-run
+          for tarball in *.tgz
+          do
+            npm publish $tarball --tag=$tag --access=public --dry-run
+          done
         env:
           NPM_TOKEN: ${{ secrets.TOKEN }}
 
