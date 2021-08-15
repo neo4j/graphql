@@ -1,0 +1,7 @@
+{
+    "ignore_labels": ["graphql"],
+    "template": "Updates the `@neo4j/graphql` dependency, and introduces the changes listed below (if any).\n\n${{CHANGELOG}}",
+    "tag_resolver": {
+        "method": "sort"
+    }
+}
