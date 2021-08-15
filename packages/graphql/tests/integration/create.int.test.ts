@@ -89,7 +89,7 @@ describe("create", () => {
         }
     });
 
-    test("should create movie and resolve connection with where clause on relationship field", async () => {
+    test("should create actor and resolve actorsConnection with where clause on movie field", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -141,7 +141,6 @@ describe("create", () => {
                 `,
                 {
                     movieTitle,
-                    actorName,
                 }
             );
 
@@ -151,6 +150,7 @@ describe("create", () => {
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 variableValues: { movieTitle, actorName },
             });
+
             expect(result.errors).toBeFalsy();
             expect(result.data?.createActors).toEqual({
                 actors: [
