@@ -31,11 +31,11 @@ import { generate } = from "@neo4j/graphql-ogm-types";
 ## Quick Start
 
 ```ts
-import { OGM } = from "@neo4j/graphql-ogm";
-import { generate } = from "@neo4j/graphql-ogm-types";
+import { OGM } from "@neo4j/graphql-ogm";
+import { generate } from "@neo4j/graphql-ogm-types";
 import { MovieModel } from "./ogm-types"; // this file will be auto-generated using 'generate'
-import * as neo4j from "neo4j-driver"
-import * as path from "path"
+import * as neo4j from "neo4j-driver";
+import * as path from "path";
 
 const typeDefs = `
     type Movie {
@@ -72,7 +72,7 @@ async function main() {
     const [theMatrix] = await Movie.find({ where: { name: "The Matrix" } });
 }
 
-main()
+main();
 ```
 
 ## Licence

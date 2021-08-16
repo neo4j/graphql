@@ -23,8 +23,8 @@ Then, once you run this with the variable set, the types will be available and y
 
 [source, typescript, indent=0]
 ----
-import { OGM } = from "@neo4j/graphql-ogm";
-import { generate } = from "@neo4j/graphql-ogm-types";
+import { OGM } from "@neo4j/graphql-ogm";
+import { generate } from "@neo4j/graphql-ogm-types";
 import { MovieModel } from "./ogm-types"; // this file will be auto-generated using 'generate'
 import * as neo4j from "neo4j-driver"
 import * as path from "path"
