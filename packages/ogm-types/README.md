@@ -24,13 +24,13 @@ $ npm install @neo4j/graphql-ogm-types
 
 ## Importing
 
-```js
+```ts
 import { generate } = from "@neo4j/graphql-ogm-types";
 ```
 
 ## Quick Start
 
-```js
+```ts
 import { OGM } = from "@neo4j/graphql-ogm";
 import { generate } = from "@neo4j/graphql-ogm-types";
 import { MovieModel } from "./ogm-types"; // this file will be auto-generated using 'generate'
