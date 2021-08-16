@@ -31,6 +31,7 @@ This is a TypeScript Monorepo managed with [Yarn Workspaces](https://classic.yar
 
 1. [`@neo4j/graphql`](./packages/graphql) - Familiar GraphQL generation, for usage with an API such as [Apollo Server](https://www.apollographql.com/docs/apollo-server/)
 2. [`@neo4j/graphql-ogm`](./packages/ogm) - Use GraphQL Type Definitions to drive interactions with the database
+3. [`@neo4j/graphql-ogm-types`](./packages/ogm-types) - Generate Typescript types for the OGM.
 
 ## Media
 
