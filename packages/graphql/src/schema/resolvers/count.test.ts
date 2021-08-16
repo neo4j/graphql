@@ -17,8 +17,25 @@
  * limitations under the License.
  */
 
+const executeMock = jest.fn();
+
+/* eslint-disable import/first */
+import { int } from "neo4j-driver";
 import { Node } from "../../classes";
 import countResolver from "./count";
+/* eslint-enable import/first */
+
+jest.mock("../../translate", () => {
+    return {
+        translateCount: () => [],
+    };
+});
+
+jest.mock("../../utils", () => {
+    return {
+        execute: executeMock,
+    };
+});
 
 describe("Count resolver", () => {
     test("should return the correct; type, args and resolve", () => {
@@ -33,5 +50,47 @@ describe("Count resolver", () => {
         expect(result.args).toMatchObject({
             where: "MovieWhere",
         });
+    });
+
+    test("should resolve correctly for a plain number", async () => {
+        // @ts-ignore
+        const node: Node = {
+            name: "Movie",
+        };
+
+        const result = countResolver({ node });
+
+        executeMock.mockReturnValue({
+            records: [
+                {
+                    _fields: [42],
+                },
+            ],
+        });
+
+        const foo = await result.resolve(null, null, "mockContext");
+
+        expect(foo).toBe(42);
+    });
+
+    test("should resolve correctly for a Neo4j Integer", async () => {
+        // @ts-ignore
+        const node: Node = {
+            name: "Movie",
+        };
+
+        const result = countResolver({ node });
+
+        executeMock.mockReturnValue({
+            records: [
+                {
+                    _fields: [int(43)],
+                },
+            ],
+        });
+
+        const foo = await result.resolve(null, null, "mockContext");
+
+        expect(foo).toBe(43);
     });
 });
