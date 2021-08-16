@@ -25,11 +25,13 @@ import { GraphQLResolveInfo } from "graphql";
  */
 // eslint-disable-next-line consistent-return
 export default function defaultFieldResolver(source: any, args: any, context: unknown, info: GraphQLResolveInfo) {
-    const responseKey = info.fieldNodes[0].alias ? info.fieldNodes[0].alias.value : info.fieldNodes[0].name.value;
     if ((typeof source === "object" && source !== null) || typeof source === "function") {
-        const property = source[responseKey];
+        const property =
+            info.fieldNodes[0].alias && Object.prototype.hasOwnProperty.call(source, info.fieldNodes[0].alias.value)
+                ? source[info.fieldNodes[0].alias.value]
+                : source[info.fieldNodes[0].name.value];
         if (typeof property === "function") {
-            return source[responseKey](args, context, info);
+            return property(args, context, info);
         }
         return property;
     }

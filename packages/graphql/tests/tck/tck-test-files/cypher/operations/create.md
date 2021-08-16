@@ -311,3 +311,80 @@ RETURN this0 { .id } AS this0
 ```
 
 ---
+
+## Simple create -> relationship field -> connection(where)
+
+### GraphQL Input
+
+```graphql
+mutation {
+    createActors(
+        input: {
+            name: "Dan"
+            movies: { connect: { where: { node: { id: 1 } } } }
+        }
+    ) {
+        actors {
+            name
+            movies {
+                actorsConnection(where: { node: { name: "Dan" } }) {
+                    totalCount
+                    edges {
+                        node {
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+CALL {
+    CREATE (this0:Actor)
+    SET this0.name = $this0_name
+    WITH this0
+    CALL {
+        WITH this0
+        OPTIONAL MATCH (this0_movies_connect0_node:Movie)
+        WHERE this0_movies_connect0_node.id = $this0_movies_connect0_node_id
+        FOREACH(_ IN CASE this0_movies_connect0_node WHEN NULL THEN [] ELSE [1] END |
+        MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
+        )
+        RETURN count(*)
+    }
+    RETURN this0
+}
+
+RETURN this0 { .name, movies: [ (this0)-[:ACTED_IN]->(this0_movies:Movie) | this0_movies { actorsConnection: apoc.cypher.runFirstColumn("CALL {
+    WITH this0_movies
+    MATCH (this0_movies)<-[this0_movies_acted_in_relationship:ACTED_IN]-(this0_movies_actor:Actor)
+    WHERE this0_movies_actor.name = $projection_movies_actorsConnection.args.where.node.name
+    WITH collect({ node: { name: this0_movies_actor.name } }) AS edges
+    RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+} RETURN actorsConnection", { this0_movies: this0_movies, projection_movies_actorsConnection: $projection_movies_actorsConnection }, false) } ] } AS this0
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this0_name": "Dan",
+    "this0_movies_connect0_node_id": "1",
+    "projection_movies_actorsConnection": {
+        "args": {
+            "where": {
+                "node": {
+                    "name": "Dan"
+                }
+            }
+        }
+    }
+}
+```
+
+---

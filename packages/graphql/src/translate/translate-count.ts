@@ -57,6 +57,10 @@ function translateCount({ node, context }: { node: Node; context: Context }): [s
         cypherParams = { ...cypherParams, ...whereAuth[1] };
     }
 
+    if (whereStrs.length) {
+        cypherStrs.push(`WHERE ${whereStrs.join(" AND ")}`);
+    }
+
     const allowAuth = createAuthAndParams({
         operation: "READ",
         entity: node,
@@ -67,12 +71,8 @@ function translateCount({ node, context }: { node: Node; context: Context }): [s
         },
     });
     if (allowAuth[0]) {
-        cypherParams = { ...cypherParams, ...allowAuth[1] };
         cypherStrs.push(`CALL apoc.util.validate(NOT(${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-    }
-
-    if (whereStrs.length) {
-        cypherStrs.push(`WHERE ${whereStrs.join(" AND ")}`);
+        cypherParams = { ...cypherParams, ...allowAuth[1] };
     }
 
     cypherStrs.push(`RETURN count(${varName})`);
