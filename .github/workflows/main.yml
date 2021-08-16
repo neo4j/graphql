@@ -470,9 +470,12 @@ jobs:
             tag="latest"
           fi
 
+          npm config set @neo4j:registry https://registry.npmjs.org
+          npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
+
           for tarball in *.tgz
           do
-            npm publish $tarball --tag=$tag --access=public --dry-run
+            npm publish $tarball --tag=$tag --access=public
           done
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
