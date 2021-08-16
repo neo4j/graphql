@@ -91,3 +91,5 @@ packages/package-tests/**/package-lock.json
 .pnp.*
 
 tsconfig.tsbuildinfo
+
+*test-file.ts
