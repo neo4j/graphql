@@ -1,0 +1,69 @@
+[[ogm-api-type-generation]]
+= `@neo4j/graphql-ogm-types`
+
+== `generate`
+
+Either writes to specified `outFile` or returns a string - if `noWrite` is set. 
+
+
+=== Example with outFile
+
+Will write to outFile:
+
+[source, typescript, indent=0]
+----
+import { OGM } = from "@neo4j/graphql-ogm";
+import { generate } = from "@neo4j/graphql-ogm-types";
+
+const typeDefs = `
+    type Movie {
+        id: ID
+        name: String
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("admin", "password")
+);
+
+const ogm = new OGM({ typeDefs, driver });
+
+await generate({
+    ogm,
+    outFile: "path/to/my/file.ts",
+});
+
+console.log("Types Generated");
+----
+
+=== Example with noWrite
+
+Will return a string:
+
+[source, typescript, indent=0]
+----
+import { OGM } = from "@neo4j/graphql-ogm";
+import { generate } = from "@neo4j/graphql-ogm-types";
+
+const typeDefs = `
+    type Movie {
+        id: ID
+        name: String
+    }
+`;
+
+const driver = neo4j.driver(
+    "bolt://localhost:7687",
+    neo4j.auth.basic("admin", "password")
+);
+
+const ogm = new OGM({ typeDefs, driver });
+
+const source = await generate({
+    ogm,
+    noWrite: true,
+});
+
+console.log("Types Generated ", source);
+----

@@ -3,3 +3,4 @@
 
 - xref::ogm/api-reference/ogm.adoc[`OGM`]
 - xref::ogm/api-reference/model/index.adoc[`Model`]
+- xref::ogm/api-reference/type-generation.adoc[`Type Generation`]

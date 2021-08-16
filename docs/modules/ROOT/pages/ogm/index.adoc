@@ -7,6 +7,7 @@ Most applications won't just expose a single GraphQL API. There may also be sche
 - xref::ogm/examples/index.adoc[Examples]
 - xref::ogm/private.adoc[`@private` Directive]
 - xref::ogm/selection-set.adoc[Selection Set]
+- xref::ogm/type-generation.adoc[TypeScript Type Generation]
 - xref::ogm/api-reference/index.adoc[API Reference]
 
 > Before diving into the OGM, it's important to have a good understanding of the Neo4h GraphQL Library first. It's recommended to at least work through the xref::getting-started.adoc[Getting Started] guide.
