@@ -1421,13 +1421,15 @@ __metadata:
     "@graphql-codegen/core": 2.0.0
     "@graphql-codegen/plugin-helpers": 2.0.0
     "@graphql-codegen/typescript": 2.0.0
-    "@neo4j/graphql-ogm": ^2.0.0
+    "@neo4j/graphql-ogm": 2.0.0
     "@types/jest": 26.0.8
+    "@types/lodash.upperfirst": 4.3.6
     "@types/node": 14.0.27
-    camelcase: ^6.2.0
+    camelcase: 6.2.0
     jest: 26.2.2
-    pluralize: ^8.0.0
-    prettier: ^2.3.2
+    lodash.upperfirst: 4.3.1
+    pluralize: 8.0.0
+    prettier: 2.3.2
     randomstring: 1.1.5
     ts-jest: 26.1.4
     typescript: 3.9.7
@@ -1437,7 +1439,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql-ogm@^2.0.0, @neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@2.0.0, @neo4j/graphql-ogm@^2.0.0, @neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
@@ -2199,6 +2201,22 @@ __metadata:
     "@types/koa-compose": "*"
     "@types/node": "*"
   checksum: e63ff2f0f81c634fb75d1436f6102dda5fc5a332abb1d10af5780ea2d266f377fae79b50ced8a7ccc124feb36fe19011a9d4d402666bc7637a748f10bc31c24a
+  languageName: node
+  linkType: hard
+
+"@types/lodash.upperfirst@npm:4.3.6":
+  version: 4.3.6
+  resolution: "@types/lodash.upperfirst@npm:4.3.6"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 0f8c8120e62ba7a413527f7fa084fb67f4707ce1e3ad780bddad2e55ce36528c0174296a9f9ff8a4a430c1cc89dafd14f495c050781ba87480afdfbb95de3502
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
+  version: 4.14.172
+  resolution: "@types/lodash@npm:4.14.172"
+  checksum: d4b9c66aa1775ca9105f95fdaf92b8c7ee646fcb75fa8c0617020456470b140f9204335a66e152f269f9cd531634ac3d0caa3f85ce3acdad9bc6951aa6e89aae
   languageName: node
   linkType: hard
 
@@ -4550,17 +4568,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"camelcase@npm:6.2.0, camelcase@npm:^6.0.0, camelcase@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "camelcase@npm:6.2.0"
+  checksum: 654700600a80cb1f06ab85b3e2fe80333f94b441884d40826becdac549774f51b0317c6dcb6040416df26241fa9481eb58d0c1659d4d6d5627dcd4259be61beb
+  languageName: node
+  linkType: hard
+
 "camelcase@npm:^5.0.0, camelcase@npm:^5.3.1":
   version: 5.3.1
   resolution: "camelcase@npm:5.3.1"
   checksum: 6a3350c4ea8ab6e5109e0b443cfaf43dc40abfad7b2d79dcafbbafbe9b6b4059b4365b17ad822e24cf08e6627c1ffb65a9651d05cef9fcc6f64b6a0c2f327feb
-  languageName: node
-  linkType: hard
-
-"camelcase@npm:^6.0.0, camelcase@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "camelcase@npm:6.2.0"
-  checksum: 654700600a80cb1f06ab85b3e2fe80333f94b441884d40826becdac549774f51b0317c6dcb6040416df26241fa9481eb58d0c1659d4d6d5627dcd4259be61beb
   languageName: node
   linkType: hard
 
@@ -9771,6 +9789,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"lodash.upperfirst@npm:4.3.1":
+  version: 4.3.1
+  resolution: "lodash.upperfirst@npm:4.3.1"
+  checksum: 2d9fc60a1fadf41ac49220d0b0762c6ce493519470d7288d6b564779754a7eac85c496ccc23d4bfda35d279639ced2d71fe0a9c305b102d8cf57be56b9863b68
+  languageName: node
+  linkType: hard
+
 "lodash@npm:4.x, lodash@npm:^4.17.11, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.7.0, lodash@npm:~4.17.0":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
@@ -11497,7 +11522,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"pluralize@npm:^8.0.0":
+"pluralize@npm:8.0.0, pluralize@npm:^8.0.0":
   version: 8.0.0
   resolution: "pluralize@npm:8.0.0"
   checksum: 5251b470a0c8e5181ac7e1d61028553f90cb2c85c34b8e468cea269ae715499524546c2c3681029ef5697d86c54bfb12e49388f5cc6082051e84f5888588f4ec
@@ -11624,7 +11649,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.3.2":
+"prettier@npm:2.3.2":
   version: 2.3.2
   resolution: "prettier@npm:2.3.2"
   bin:

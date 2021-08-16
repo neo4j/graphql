@@ -27,10 +27,11 @@
         "@graphql-codegen/core": "2.0.0",
         "@graphql-codegen/plugin-helpers": "2.0.0",
         "@graphql-codegen/typescript": "2.0.0",
-        "@neo4j/graphql-ogm": "^2.0.0",
-        "camelcase": "^6.2.0",
-        "pluralize": "^8.0.0",
-        "prettier": "^2.3.2"
+        "@neo4j/graphql-ogm": "2.0.0",
+        "camelcase": "6.2.0",
+        "lodash.upperfirst": "4.3.1",
+        "pluralize": "8.0.0",
+        "prettier": "2.3.2"
     },
     "peerDependencies": {
         "graphql": "^15.0.0",
@@ -38,6 +39,7 @@
     },
     "devDependencies": {
         "@types/jest": "26.0.8",
+        "@types/lodash.upperfirst": "4.3.6",
         "@types/node": "14.0.27",
         "jest": "26.2.2",
         "randomstring": "1.1.5",
