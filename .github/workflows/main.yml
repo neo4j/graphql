@@ -37,6 +37,39 @@ jobs:
         env:
           PULL_REQUEST_NUMBER: ${{ github.event.number }}
 
+  sonarcloud:
+    needs: cla-check
+    if: |
+      always() &&
+      (needs.cla-check.result == 'success' || needs.cla-check.result == 'skipped')
+
+    strategy:
+      matrix:
+        package:
+          - graphql
+          - ogm
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: sonarcloud
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Uppercase package name
+        run: |
+          lowercase_package=${{ matrix.package }}
+          echo "SONAR_TOKEN_SECRET=SONAR_TOKEN_${lowercase_package^^}" >>${GITHUB_ENV}
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: packages/${{ matrix.package }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets[env.SONAR_TOKEN_SECRET] }}
+
   cache-dependencies:
     needs: cla-check
     if: |
