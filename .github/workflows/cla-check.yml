@@ -1,0 +1,30 @@
+name: "CLA Check"
+
+on:
+  pull_request_target:
+    branches:
+      - master
+
+jobs:
+  cla-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: neo-technology/whitelist-check
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - run: |
+          owner=$(echo $GITHUB_REPOSITORY | cut -d/ -f1)
+          repository=$(echo $GITHUB_REPOSITORY | cut -d/ -f2)
+
+          ./bin/examine-pull-request $owner $repository "${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}" $PULL_REQUEST_NUMBER cla-database.csv
+        env:
+          PULL_REQUEST_NUMBER: ${{ github.event.number }}
