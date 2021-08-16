@@ -1,0 +1,47 @@
+{
+    "name": "@neo4j/graphql-ogm-types",
+    "version": "2.0.0",
+    "description": "Typescript generation for @neo4j/graphql-ogm",
+    "keywords": [
+        "neo4j",
+        "graphql",
+        "ogm",
+        "types",
+        "typescript"
+    ],
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/neo4j/graphql/issues"
+    },
+    "homepage": "https://github.com/neo4j/graphql/tree/master/packages/ogm-types",
+    "exports": "./dist/index.js",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "build": "tsc --project src/",
+        "test": "jest",
+        "test:unit": "jest src/**/*.test.ts"
+    },
+    "author": "Neo4j Inc.",
+    "dependencies": {
+        "@graphql-codegen/core": "2.0.0",
+        "@graphql-codegen/plugin-helpers": "2.0.0",
+        "@graphql-codegen/typescript": "2.0.0",
+        "@neo4j/graphql-ogm": "^2.0.0",
+        "camelcase": "^6.2.0",
+        "pluralize": "^8.0.0",
+        "prettier": "^2.3.2"
+    },
+    "peerDependencies": {
+        "graphql": "^15.0.0",
+        "neo4j-driver": "^4.1.0"
+    },
+    "devDependencies": {
+        "@types/jest": "26.0.8",
+        "@types/node": "14.0.27",
+        "jest": "26.2.2",
+        "randomstring": "1.1.5",
+        "ts-jest": "26.1.4",
+        "typescript": "3.9.7"
+    }
+}

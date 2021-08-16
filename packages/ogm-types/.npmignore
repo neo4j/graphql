@@ -1,0 +1,8 @@
+src/
+tests/
+scripts/
+.npmrc
+.npmignore
+jest.config.js
+tsconfig.json
+dist/tsconfig.tsbuildinfo
