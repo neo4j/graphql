@@ -172,12 +172,12 @@ CALL {
     WITH this
     CALL {
         WITH this
-        OPTIONAL MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
+        MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
         WITH { node: { __resolveType: "Movie" } } AS edge
         RETURN edge
         UNION
         WITH this
-        OPTIONAL MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
+        MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
         WITH { node: { __resolveType: "Series" } } AS edge
         RETURN edge
     }
@@ -226,12 +226,12 @@ CALL {
     WITH this
     CALL {
         WITH this
-        OPTIONAL MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
+        MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
         WITH { node: { __resolveType: "Movie" } } AS edge
         RETURN edge
         UNION
         WITH this
-        OPTIONAL MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
+        MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
         WITH { node: { __resolveType: "Series" } } AS edge
         RETURN edge
     }
