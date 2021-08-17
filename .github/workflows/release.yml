@@ -3,392 +3,12 @@ name: "Release"
 on:
   push:
     branches:
-      - release/*
+      - release/2.0.1
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-  sonarcloud:
-    strategy:
-      matrix:
-        package:
-          - graphql
-          - ogm
-
-    runs-on: ubuntu-latest
-
-    environment:
-      name: sonarcloud
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Uppercase package name
-        run: |
-          lowercase_package=${{ matrix.package }}
-          echo "SONAR_TOKEN_SECRET=SONAR_TOKEN_${lowercase_package^^}" >>${GITHUB_ENV}
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        with:
-          projectBaseDir: packages/${{ matrix.package }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets[env.SONAR_TOKEN_SECRET] }}
-
-  cache-dependencies:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-
-  unit-tests:
-    needs:
-      - cache-dependencies
-
-    strategy:
-      matrix:
-        package:
-          - graphql
-          - ogm
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Run packages/${{ matrix.package }} unit tests
-        run: yarn run test:unit --coverage
-        working-directory: packages/${{ matrix.package }}
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/${{ matrix.package }}/coverage/
-          flags: ${{ matrix.package }},unit
-          fail_ci_if_error: true
-
-  tck-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Run TCK tests
-        run: yarn --cwd packages/graphql run test:tck --coverage
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/graphql/coverage/
-          flags: graphql,tck
-          fail_ci_if_error: true
-
-  package-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - run: yarn build
-      - name: Run @neo4j/graphql package tests
-        run: yarn --cwd packages/graphql run test:package-tests
-
-  integration-tests-on-prem:
-    needs:
-      - cache-dependencies
-
-    strategy:
-      matrix:
-        package:
-          - graphql
-          - ogm
-        neo4j-version:
-          - 4.1.5
-          - 4.1
-          - 4.2
-          - 4.3
-
-    runs-on: ubuntu-latest
-
-    services:
-      neo4j:
-        image: neo4j:${{ matrix.neo4j-version }}
-        env:
-          NEO4J_AUTH: neo4j/testpassword
-          NEO4JLABS_PLUGINS: '["apoc"]'
-        ports:
-          - 7687:7687
-
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Run @neo4j/graphql integration tests and move coverage
-        run: |
-          yarn test:int --coverage
-          mv coverage coverage-${{ matrix.neo4j-version }}
-        working-directory: packages/${{ matrix.package }}
-        env:
-          NEO_USER: neo4j
-          NEO_PASSWORD: testpassword
-          NEO_URL: bolt://localhost:7687
-      - name: Archive coverage report
-        uses: actions/upload-artifact@v2
-        with:
-          name: integration-coverage-${{ matrix.package }}
-          path: packages/${{ matrix.package }}/coverage-${{ matrix.neo4j-version }}/
-
-  aura-teardown:
-    needs:
-      - cache-dependencies
-
-    strategy:
-      matrix:
-        aura-instance:
-          - free
-          - professional
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Install ts-node and typescript
-        run: npm install -g ts-node typescript
-      - name: Uppercase instance name
-        run: |
-          lowercase_instance=${{ matrix.aura-instance }}
-          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>${GITHUB_ENV}
-          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>${GITHUB_ENV}
-      - name: Delete all data in instance
-        run: ts-node tests/integration/teardown.ts
-        working-directory: packages/graphql
-        env:
-          NEO_USER: neo4j
-          NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
-          NEO_URL: ${{ secrets[env.AURA_URI_SECRET] }}
-
-  integration-tests-aura:
-    needs:
-      - aura-teardown
-
-    strategy:
-      matrix:
-        package:
-          - graphql
-          - ogm
-        aura-instance:
-          - free
-          - professional
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Uppercase instance name
-        run: |
-          lowercase_instance=${{ matrix.aura-instance }}
-          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>${GITHUB_ENV}
-          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>${GITHUB_ENV}
-      - name: Run @neo4j/graphql integration tests
-        run: |
-          yarn test:int -t '^(?!delete should delete a movie, a single nested actor and another movie they act in|update should delete a nested actor and one of their nested movies, within an update block)' --coverage
-          mv coverage coverage-aura-${{ matrix.aura-instance }}
-        working-directory: packages/${{ matrix.package }}
-        env:
-          NEO_USER: neo4j
-          NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
-          NEO_URL: ${{ secrets[env.AURA_URI_SECRET] }}
-      - name: Archive coverage report
-        uses: actions/upload-artifact@v2
-        with:
-          name: integration-coverage-${{ matrix.package }}
-          path: packages/${{ matrix.package }}/coverage-aura-${{ matrix.aura-instance }}/
-
-  upload-integration-coverage:
-    needs:
-      - integration-tests-on-prem
-      # - aura-teardown
-      # - integration-tests-aura
-
-    strategy:
-      matrix:
-        package:
-          - graphql
-          - ogm
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: integration-coverage-${{ matrix.package }}
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          flags: ${{ matrix.package }},integration
-          fail_ci_if_error: true
-          verbose: true
-
-  bump-version:
-    needs:
-      - unit-tests
-      - tck-tests
-      - package-tests
-      - upload-integration-coverage
-
-    runs-on: ubuntu-latest
-
-    outputs:
-      version: ${{ steps.get-version.outputs.version }}
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          # Fetch all history so yarn version works
-          fetch-depth: 0
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Extract version from branch name
-        id: get-version
-        run: |
-          version=$(echo ${{ github.ref }} | cut -d/ -f4)
-          echo "::set-output name=version::$version"
-      - name: Bump @neo4j/graphql version
-        run: yarn version "${{ steps.get-version.outputs.version }}"
-        working-directory: packages/graphql
-      - name: Bump @neo4j/graphql-ogm version
-        run: yarn version "${{ steps.get-version.outputs.version }}"
-        working-directory: packages/ogm
-      - name: Commit and push new version numbers
-        run: |
-          git config --global user.name 'Neo4j Team GraphQL'
-          git config --global user.email 'team-graphql@neotechnology.com'
-          git commit -am "Bump versions to ${{ steps.get-version.outputs.version }}"
-          git push
-
-  pack:
-    needs:
-      - bump-version
-
-    strategy:
-      matrix:
-        package:
-          - graphql
-          - ogm
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: release/${{ needs.bump-version.outputs.version }}
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - run: yarn build
-      - name: Pack ${{ matrix.package }}
-        run: npm pack
-        working-directory: packages/${{ matrix.package }}
-      - name: Archive release tarball
-        uses: actions/upload-artifact@v2
-        with:
-          name: release-tarballs
-          path: packages/${{ matrix.package }}/neo4j-graphql-*.tgz
-
-  npm-publish:
-    needs:
-      - bump-version
-      - pack
-
-    runs-on: ubuntu-latest
-
-    environment:
-      name: npm
-
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: release-tarballs
-      - name: npm publish
-        run: |
-          prerelease=$(echo ${{ needs.bump-version.outputs.version }} | cut -d- -f2)
-
-          if [[ "$prerelease" =~ ^(alpha|beta|rc)\..* ]]; then
-            tag="next"
-          else
-            tag="latest"
-          fi
-
-          npm config set @neo4j:registry https://registry.npmjs.org
-          npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
-
-          for tarball in *.tgz
-          do
-            npm publish $tarball --tag=$tag --access=public
-          done
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
   merge-tag-push:
-    needs:
-      - bump-version
-      - npm-publish
-
     runs-on: ubuntu-latest
 
     environment:
@@ -404,17 +24,16 @@ jobs:
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
       - name: git merge
-        run: git merge --no-ff origin/release/${{ needs.bump-version.outputs.version }} --strategy-option theirs
+        run: git merge --no-ff origin/release/2.0.1 --strategy-option theirs
       - name: git tag
         run: |
-          git tag -a @neo4j/graphql@${{ needs.bump-version.outputs.version }} -m "@neo4j/graphql@${{ needs.bump-version.outputs.version }}"
-          git tag -a @neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }} -m "@neo4j/graphql-ogm@${{ needs.bump-version.outputs.version }}"
+          git tag -a @neo4j/graphql@2.0.1 -m "@neo4j/graphql@2.0.1"
+          git tag -a @neo4j/graphql-ogm@2.0.1 -m "@neo4j/graphql-ogm@2.0.1"
       - name: git push
         run: git push --follow-tags
 
   delete-release-branch:
     needs:
-      - bump-version
       - merge-tag-push
 
     runs-on: ubuntu-latest
@@ -428,11 +47,10 @@ jobs:
         run: |
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
-          git push origin --delete release/${{ needs.bump-version.outputs.version }}
+          git push origin --delete release/2.0.1
 
   changelog:
     needs:
-      - bump-version
       - merge-tag-push
 
     strategy:
@@ -453,22 +71,22 @@ jobs:
       - name: Extract prerelease from version
         id: get-prerelease
         run: |
-          prerelease=$(echo ${{ needs.bump-version.outputs.version }} | cut -d@ -f3 | cut -d- -f2)
+          prerelease=$(echo 2.0.1 | cut -d@ -f3 | cut -d- -f2)
           echo "::set-output name=prerelease::$prerelease"
       - name: Build Changelog
         id: github-release
         uses: mikepenz/release-changelog-builder-action@v1
         with:
           configuration: "config/release-changelog-builder-action/configuration-${{ steps.get-label.outputs.label }}.json"
-          toTag: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
+          toTag: "@neo4j/${{ matrix.package }}@2.0.1"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           body: ${{ steps.github-release.outputs.changelog }}
-          name: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
-          tag_name: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
+          name: "@neo4j/${{ matrix.package }}@2.0.1"
+          tag_name: "@neo4j/${{ matrix.package }}@2.0.1"
           prerelease: |
             ${{ startsWith(steps.get-prerelease.outputs.prerelease, 'alpha') }} ||
             ${{ startsWith(steps.get-prerelease.outputs.prerelease, 'beta') }} ||
