@@ -1,0 +1,56 @@
+name: "Documentation Publish"
+
+on:
+  workflow_run:
+    workflows: ["Documentation Build"]
+    types:
+      - completed
+
+jobs:
+  publish-docs:
+    if: github.event.workflow_run.conclusion == 'success'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Download built documentation"
+        uses: actions/github-script@v3.1.0
+        with:
+          script: |
+            var artifacts = await github.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: ${{ github.event.workflow_run.id }},
+            });
+            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "documentation"
+            })[0];
+            var download = await github.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            var fs = require('fs');
+            fs.writeFileSync('${{ github.workspace }}/documentation.zip', Buffer.from(download.data));
+      - run: unzip documentation.zip
+      - id: get-pr-number
+        run: |
+          number=$(<prnumber)
+          echo "::set-output name=pr-number::$number"
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+      - name: Publish documentation
+        run: |
+          npm install -g surge
+          surge ./site neo4j-graphql-docs-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          number: ${{ steps.get-pr-number.outputs.pr-number }}
+          message: |
+            Looks like you've updated the documentation!
+
+            Check out your changes at https://neo4j-graphql-docs-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh
+          GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}

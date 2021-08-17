@@ -1,0 +1,31 @@
+name: "Documentation Teardown"
+
+on:
+  pull_request_target:
+    branches:
+      - master
+    paths:
+      - "docs/**"
+    types:
+      - closed
+
+jobs:
+  teardown-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+      - name: Teardown documentation
+        run: |
+          npm install -g surge
+          surge teardown neo4j-graphql-docs-${{ github.event.pull_request.number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: |
+            Thanks for the documentation updates.
+
+            The preview documentation has now been torn down - reopening this PR will republish it.
+          GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
