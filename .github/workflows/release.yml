@@ -19,6 +19,7 @@ jobs:
         with:
           ref: master
           fetch-depth: 0
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
       - name: git config
         run: |
           git config --global user.name 'Neo4j Team GraphQL'
@@ -43,6 +44,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
       - name: Delete release branch
         run: |
           git config --global user.name 'Neo4j Team GraphQL'
