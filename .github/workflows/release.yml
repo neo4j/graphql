@@ -254,8 +254,8 @@ jobs:
   upload-integration-coverage:
     needs:
       - integration-tests-on-prem
-      - aura-teardown
-      - integration-tests-aura
+      # - aura-teardown
+      # - integration-tests-aura
 
     strategy:
       matrix:
