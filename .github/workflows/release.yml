@@ -8,34 +8,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  sonarcloud:
-    strategy:
-      matrix:
-        package:
-          - graphql
-          - ogm
-
-    runs-on: ubuntu-latest
-
-    environment:
-      name: sonarcloud
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Uppercase package name
-        run: |
-          lowercase_package=${{ matrix.package }}
-          echo "SONAR_TOKEN_SECRET=SONAR_TOKEN_${lowercase_package^^}" >>${GITHUB_ENV}
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        with:
-          projectBaseDir: packages/${{ matrix.package }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets[env.SONAR_TOKEN_SECRET] }}
-
   cache-dependencies:
     runs-on: ubuntu-latest
 
@@ -399,6 +371,7 @@ jobs:
         with:
           ref: master
           fetch-depth: 0
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
       - name: git config
         run: |
           git config --global user.name 'Neo4j Team GraphQL'
@@ -424,6 +397,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
       - name: Delete release branch
         run: |
           git config --global user.name 'Neo4j Team GraphQL'
