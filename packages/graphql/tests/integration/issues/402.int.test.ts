@@ -42,7 +42,7 @@ describe("402", () => {
                 id: ID!
                 area: Area @relationship(type: "HAPPENS_IN", direction: OUT)
             }
-         
+
             type Area {
                 id: ID!
             }
@@ -68,14 +68,14 @@ describe("402", () => {
                      id_IN: $area
                    }
                  }
-               ) 
+               )
                {
                  id
                  area {
                    id
                  }
-               }  
-            } 
+               }
+            }
         `;
 
         try {
@@ -92,7 +92,7 @@ describe("402", () => {
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
-            expect(gqlResult.errors).toEqual(undefined);
+            expect(gqlResult.errors).toBeUndefined();
 
             expect(gqlResult.data as any).toEqual({
                 events: [
