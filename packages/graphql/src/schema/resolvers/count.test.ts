@@ -20,7 +20,6 @@
 const executeMock = jest.fn();
 
 /* eslint-disable import/first */
-import { int } from "neo4j-driver";
 import { Node } from "../../classes";
 import countResolver from "./count";
 /* eslint-enable import/first */
@@ -61,11 +60,13 @@ describe("Count resolver", () => {
         const result = countResolver({ node });
 
         executeMock.mockReturnValue({
-            records: [
-                {
-                    _fields: [42],
-                },
-            ],
+            result: {
+                records: [
+                    {
+                        get: () => 42,
+                    },
+                ],
+            },
         });
 
         const foo = await result.resolve(null, null, "mockContext");
@@ -82,11 +83,13 @@ describe("Count resolver", () => {
         const result = countResolver({ node });
 
         executeMock.mockReturnValue({
-            records: [
-                {
-                    _fields: [int(43)],
-                },
-            ],
+            result: {
+                records: [
+                    {
+                        get: () => 43,
+                    },
+                ],
+            },
         });
 
         const foo = await result.resolve(null, null, "mockContext");
