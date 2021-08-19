@@ -30,7 +30,7 @@ export default function createResolver({ node }: { node: Node }) {
         const context = _context as Context;
         const [cypher, params] = translateCreate({ context, node });
 
-        const result = await execute({
+        const executeResult = await execute({
             cypher,
             params,
             defaultAccessMode: "WRITE",
@@ -44,7 +44,7 @@ export default function createResolver({ node }: { node: Node }) {
         const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
 
         return {
-            [responseKey]: Object.values(result[0] || {}),
+            [responseKey]: Object.values(executeResult.records[0] || {}),
         };
     }
 
