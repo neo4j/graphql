@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { SessionMode } from "neo4j-driver";
+import { SessionMode, Transaction, Result } from "neo4j-driver";
 import Debug from "debug";
 import { Neo4jGraphQLForbiddenError, Neo4jGraphQLAuthenticationError } from "../classes";
 import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR, DEBUG_EXECUTE } from "../constants";
@@ -84,19 +84,19 @@ async function execute(input: {
     try {
         debug("%s", `About to execute Cypher:\nCypher:\n${cypher}\nParams:\n${JSON.stringify(input.params, null, 2)}`);
 
-        const result = await session[`${input.defaultAccessMode.toLowerCase()}Transaction`]((tx) =>
+        const result: Result = await session[`${input.defaultAccessMode.toLowerCase()}Transaction`]((tx: Transaction) =>
             tx.run(cypher, input.params)
         );
 
         if (input.statistics) {
-            return result.summary.updateStatistics._stats; // eslint-disable-line no-underscore-dangle
+            return (await result).summary.counters.updates();
         }
 
         if (input.raw) {
             return result;
         }
 
-        const records = result.records.map((r) => r.toObject());
+        const records = (await result).records.map((r) => r.toObject());
 
         debug(`Execute successful, received ${records.length} records`);
 
