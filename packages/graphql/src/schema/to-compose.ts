@@ -23,6 +23,7 @@ import { isInt, Integer } from "neo4j-driver";
 import getFieldTypeMeta from "./get-field-type-meta";
 import parseValueNode from "./parse-value-node";
 import { BaseField } from "../types";
+import { defaultFieldResolver } from "./resolvers";
 
 export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
     return args.reduce((res, arg) => {
@@ -68,8 +69,8 @@ export function objectFieldsToComposeFields(
         }
 
         if (["Int", "Float"].includes(field.typeMeta.name)) {
-            newField.resolve = (source) => {
-                const value = source[field.fieldName];
+            newField.resolve = (source, args, context, info) => {
+                const value = defaultFieldResolver(source, args, context, info);
 
                 // @ts-ignore: outputValue is unknown, and to cast to object would be an antipattern
                 if (isInt(value)) {
@@ -81,8 +82,8 @@ export function objectFieldsToComposeFields(
         }
 
         if (field.typeMeta.name === "ID") {
-            newField.resolve = (source) => {
-                const value = source[field.fieldName];
+            newField.resolve = (source, args, context, info) => {
+                const value = defaultFieldResolver(source, args, context, info);
 
                 // @ts-ignore: outputValue is unknown, and to cast to object would be an antipattern
                 if (isInt(value)) {
