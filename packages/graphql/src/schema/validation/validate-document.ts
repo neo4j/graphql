@@ -25,7 +25,10 @@ import {
     validateSchema,
     ObjectTypeDefinitionNode,
     InputValueDefinitionNode,
+    FieldDefinitionNode,
+    TypeNode,
 } from "graphql";
+import pluralize from "pluralize";
 import * as scalars from "../scalars";
 import * as enums from "./enums";
 import * as directives from "./directives";
@@ -43,14 +46,20 @@ function filterDocument(document: DocumentNode): DocumentNode {
         })
         .map((definition) => (definition as ObjectTypeDefinitionNode).name.value);
 
+    const getArgumentType = (type: TypeNode) => {
+        if (type.kind === "ListType") {
+            return getArgumentType(type.type);
+        }
+
+        if (type.kind === "NonNullType") {
+            return getArgumentType(type.type);
+        }
+
+        return type.name.value;
+    };
+
     const filterInputTypes = (fields: readonly InputValueDefinitionNode[] | undefined) => {
         return fields?.filter((f) => {
-            const getArgumentType = (type) => {
-                if (["NonNullType", "ListType"].includes(type.kind)) {
-                    return getArgumentType(type.type);
-                }
-                return type.name.value;
-            };
             const type = getArgumentType(f.type);
             const match = /(?<nodeName>.+)(?:CreateInput|Sort|UpdateInput|Where)/gm.exec(type);
             if (match?.groups?.nodeName) {
@@ -62,30 +71,57 @@ function filterDocument(document: DocumentNode): DocumentNode {
         });
     };
 
+    const filterFields = (fields: readonly FieldDefinitionNode[] | undefined) => {
+        return fields
+            ?.filter((f) => {
+                const type = getArgumentType(f.type);
+                const match = /(?:Create|Update)(?<nodeName>.+)MutationResponse/gm.exec(type);
+                if (match?.groups?.nodeName) {
+                    if (nodeNames.map((nodeName) => pluralize(nodeName)).includes(match.groups.nodeName)) {
+                        return false;
+                    }
+                }
+                return true;
+            })
+            .map((f) => ({
+                ...f,
+                arguments: filterInputTypes(f.arguments),
+                directives: f.directives?.filter((x) => !["auth"].includes(x.name.value)),
+            }));
+    };
+
     return {
         ...document,
         definitions: document.definitions.reduce((res: DefinitionNode[], def) => {
             if (def.kind === "InputObjectTypeDefinition") {
+                const fields = filterInputTypes(def.fields);
+
+                if (!fields?.length) {
+                    return res;
+                }
+
                 return [
                     ...res,
                     {
                         ...def,
-                        fields: filterInputTypes(def.fields),
+                        fields,
                     },
                 ];
             }
 
             if (def.kind === "ObjectTypeDefinition" || def.kind === "InterfaceTypeDefinition") {
+                const fields = filterFields(def.fields);
+
+                if (!fields?.length) {
+                    return res;
+                }
+
                 return [
                     ...res,
                     {
                         ...def,
                         directives: def.directives?.filter((x) => !["auth"].includes(x.name.value)),
-                        fields: def.fields?.map((f) => ({
-                            ...f,
-                            arguments: filterInputTypes(f.arguments),
-                            directives: f.directives?.filter((x) => !["auth"].includes(x.name.value)),
-                        })),
+                        fields,
                     },
                 ];
             }
