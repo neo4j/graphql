@@ -26,14 +26,14 @@ export default function findResolver({ node }: { node: Node }) {
         const context = _context as Context;
         const [cypher, params] = translateRead({ context, node });
 
-        const result = await execute({
+        const executeResult = await execute({
             cypher,
             params,
             defaultAccessMode: "READ",
             context,
         });
 
-        return result.map((x) => x.this);
+        return executeResult.records.map((x) => x.this);
     }
 
     return {

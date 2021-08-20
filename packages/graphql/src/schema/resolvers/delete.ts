@@ -25,15 +25,14 @@ export default function deleteResolver({ node }: { node: Node }) {
     async function resolve(_root: any, _args: any, _context: unknown) {
         const context = _context as Context;
         const [cypher, params] = translateDelete({ context, node });
-        const result = await execute({
+        const executeResult = await execute({
             cypher,
             params,
             defaultAccessMode: "WRITE",
-            statistics: true,
             context,
         });
 
-        return result;
+        return executeResult.statistics;
     }
 
     return {
