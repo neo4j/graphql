@@ -29,7 +29,7 @@ export default function updateResolver({ node }: { node: Node }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         const [cypher, params] = translateUpdate({ context, node });
-        const result = await execute({
+        const executeResult = await execute({
             cypher,
             params,
             defaultAccessMode: "WRITE",
@@ -43,7 +43,7 @@ export default function updateResolver({ node }: { node: Node }) {
         const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
 
         return {
-            [responseKey]: result.map((x) => x.this),
+            [responseKey]: executeResult.records.map((x) => x.this),
         };
     }
 

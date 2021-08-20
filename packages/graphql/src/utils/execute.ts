@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { SessionMode } from "neo4j-driver";
+import { SessionMode, Transaction, QueryResult } from "neo4j-driver";
 import Debug from "debug";
 import { Neo4jGraphQLForbiddenError, Neo4jGraphQLAuthenticationError } from "../classes";
 import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR, DEBUG_EXECUTE } from "../constants";
@@ -27,14 +27,19 @@ import environment from "../environment";
 
 const debug = Debug(DEBUG_EXECUTE);
 
+interface ExecuteResult {
+    bookmark: string | null;
+    result: QueryResult;
+    statistics: Record<string, number>;
+    records: Record<PropertyKey, any>[];
+}
+
 async function execute(input: {
     cypher: string;
     params: any;
     defaultAccessMode: SessionMode;
-    statistics?: boolean;
-    raw?: boolean;
     context: Context;
-}): Promise<any> {
+}): Promise<ExecuteResult> {
     const sessionParams: {
         defaultAccessMode?: SessionMode;
         bookmarks?: string | string[];
@@ -84,23 +89,20 @@ async function execute(input: {
     try {
         debug("%s", `About to execute Cypher:\nCypher:\n${cypher}\nParams:\n${JSON.stringify(input.params, null, 2)}`);
 
-        const result = await session[`${input.defaultAccessMode.toLowerCase()}Transaction`]((tx) =>
-            tx.run(cypher, input.params)
-        );
-
-        if (input.statistics) {
-            return result.summary.updateStatistics._stats; // eslint-disable-line no-underscore-dangle
-        }
-
-        if (input.raw) {
-            return result;
-        }
+        const result: QueryResult = await session[
+            `${input.defaultAccessMode.toLowerCase()}Transaction`
+        ]((tx: Transaction) => tx.run(cypher, input.params));
 
         const records = result.records.map((r) => r.toObject());
 
         debug(`Execute successful, received ${records.length} records`);
 
-        return records;
+        return {
+            bookmark: session.lastBookmark(),
+            result,
+            statistics: result.summary.counters.updates(),
+            records: result.records.map((r) => r.toObject()),
+        };
     } catch (error) {
         if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_FORBIDDEN_ERROR}`)) {
             throw new Neo4jGraphQLForbiddenError("Forbidden");

@@ -135,17 +135,15 @@ export default function cypherResolver({
             cypherStrs.push(`RETURN this ${projectionStr} AS this`);
         }
 
-        const result = await execute({
+        const executeResult = await execute({
             cypher: cypherStrs.join("\n"),
             params,
             defaultAccessMode: "WRITE",
-            raw: true,
             context,
         });
 
-        const values = result.records.map((record) => {
-            // eslint-disable-next-line no-underscore-dangle
-            const value = record._fields[0];
+        const values = executeResult.result.records.map((record) => {
+            const value = record.get(0);
 
             if (["number", "string", "boolean"].includes(typeof value)) {
                 return value;
