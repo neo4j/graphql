@@ -123,9 +123,9 @@ function createNodeWhereAndParams({
                     `EXISTS((${nodeVariable})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
                     `AND ${
                         not ? "NONE" : "ANY"
-                    }(${param} IN [(${nodeVariable})${inStr}${relTypeStr}${outStr}(${relatedNodeVariable}:${
+                    }(${relatedNodeVariable} IN [(${nodeVariable})${inStr}${relTypeStr}${outStr}(${relatedNodeVariable}:${
                         relationField.typeMeta.name
-                    }) | ${param}] INNER_WHERE `,
+                    }) | ${relatedNodeVariable}] INNER_WHERE `,
                 ].join(" ");
 
                 const recurse = createNodeWhereAndParams({
