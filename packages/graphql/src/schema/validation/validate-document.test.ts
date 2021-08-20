@@ -308,6 +308,40 @@ describe("validateDocument", () => {
         });
     });
 
+    describe("https://github.com/neo4j/graphql/issues/442", () => {
+        test("should not throw error on validation of schema if MutationResponse used", () => {
+            const doc = parse(`
+                type Post {
+                    id: Int!
+                    text: String!
+                }
+
+                type Mutation {
+                    create_Post(text: String!): CreatePostsMutationResponse!
+                }
+            `);
+
+            const res = validateDocument(doc);
+            expect(res).toBeUndefined();
+        });
+
+        test("should not throw error on validation of schema if SortDirection used", () => {
+            const doc = parse(`
+                type Post {
+                    id: Int!
+                    text: String!
+                }
+
+                type Mutation {
+                    create_Post(direction: SortDirection!): CreatePostsMutationResponse!
+                }
+            `);
+
+            const res = validateDocument(doc);
+            expect(res).toBeUndefined();
+        });
+    });
+
     describe("Issue https://codesandbox.io/s/github/johnymontana/training-v3/tree/master/modules/graphql-apis/supplemental/code/03-graphql-apis-custom-logic/end?file=/schema.graphql:64-86", () => {
         test("should not throw error on validation of schema", () => {
             const doc = parse(`
