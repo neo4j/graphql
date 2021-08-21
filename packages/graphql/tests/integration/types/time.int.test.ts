@@ -42,8 +42,8 @@ describe("Time", () => {
 
             const typeDefs = `
                 type Movie {
-                  id: ID!
-                  time: Time!
+                    id: ID!
+                    time: Time!
                 }
             `;
 
@@ -60,6 +60,7 @@ describe("Time", () => {
                     mutation ($id: ID!, $time: Time!) {
                         createMovies(input: { id: $id, time: $time }) {
                             movies {
+                                id
                                 time
                             }
                         }
@@ -75,19 +76,20 @@ describe("Time", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { time: string } = graphqlResult.data?.createMovies.movies[0];
+                const graphqlMovie: { id: string; time: string } = graphqlResult.data?.createMovies.movies[0];
                 expect(graphqlMovie).toBeDefined();
+                expect(graphqlMovie.id).toBe(id);
                 expect(parseTime(graphqlMovie.time)).toStrictEqual(parsedTime);
 
                 const neo4jResult = await session.run(
                     `
-                      MATCH (movie:Movie {id: $id})
-                      RETURN movie {.id, .time} as movie
+                        MATCH (movie:Movie {id: $id})
+                        RETURN movie {.id, .time} as movie
                     `,
                     { id }
                 );
 
-                const neo4jMovie = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; time: any } = neo4jResult.records[0].toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jDriver.isTime(neo4jMovie.time)).toBe(true);
@@ -102,8 +104,8 @@ describe("Time", () => {
 
             const typeDefs = `
                 type Movie {
-                  id: ID!
-                  times: [Time!]!
+                    id: ID!
+                    times: [Time!]!
                 }
             `;
 
@@ -122,6 +124,7 @@ describe("Time", () => {
                     mutation ($id: ID!, $times: [Time!]!) {
                         createMovies(input: { id: $id, times: $times }) {
                             movies {
+                                id
                                 times
                             }
                         }
@@ -137,8 +140,9 @@ describe("Time", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { times: string[] } = graphqlResult.data?.createMovies.movies[0];
+                const graphqlMovie: { id: string; times: string[] } = graphqlResult.data?.createMovies.movies[0];
                 expect(graphqlMovie).toBeDefined();
+                expect(graphqlMovie.id).toBe(id);
                 expect(graphqlMovie.times).toHaveLength(times.length);
 
                 const parsedGraphQLTimes = graphqlMovie.times.map((time) => parseTime(time));
@@ -149,8 +153,8 @@ describe("Time", () => {
 
                 const neo4jResult = await session.run(
                     `
-                      MATCH (movie:Movie {id: $id})
-                      RETURN movie {.id, .times} as movie
+                        MATCH (movie:Movie {id: $id})
+                        RETURN movie {.id, .times} as movie
                     `,
                     { id }
                 );
@@ -181,8 +185,8 @@ describe("Time", () => {
 
             const typeDefs = `
                 type Movie {
-                  id: ID!
-                  time: Time
+                    id: ID!
+                    time: Time
                 }
             `;
 
@@ -197,9 +201,10 @@ describe("Time", () => {
             try {
                 await session.run(
                     `
-                        CREATE (movie:Movie {id: $id})
+                        CREATE (movie:Movie)
+                        SET movie = $movie
                     `,
-                    { id }
+                    { movie: { id } }
                 );
 
                 const mutation = `
@@ -270,10 +275,10 @@ describe("Time", () => {
             try {
                 await session.run(
                     `
-                        CREATE (movie:Movie {id: $id})
-                        SET movie.time = $neo4jTime
+                        CREATE (movie:Movie)
+                        SET movie = $movie
                     `,
-                    { id, neo4jTime }
+                    { movie: { id, time: neo4jTime } }
                 );
 
                 const query = `
@@ -352,11 +357,11 @@ describe("Time", () => {
                     try {
                         await session.run(
                             `
-                                CREATE (future:Movie:FINDTHIS)
+                                CREATE (future:Movie)
                                 SET future = $future
-                                CREATE (present:Movie:FINDTHIS)
+                                CREATE (present:Movie)
                                 SET present = $present
-                                CREATE (past:Movie:FINDTHIS)
+                                CREATE (past:Movie)
                                 SET past = $past
                             `,
                             {
@@ -481,11 +486,11 @@ describe("Time", () => {
                     try {
                         await session.run(
                             `
-                                CREATE (future:Movie:FINDTHIS)
+                                CREATE (future:Movie)
                                 SET future = $future
-                                CREATE (present:Movie:FINDTHIS)
+                                CREATE (present:Movie)
                                 SET present = $present
-                                CREATE (past:Movie:FINDTHIS)
+                                CREATE (past:Movie)
                                 SET past = $past
                             `,
                             {
@@ -498,8 +503,8 @@ describe("Time", () => {
                         const query = `
                             query ($futureId: ID!, $presentId: ID!, $pastId: ID!, $sort: SortDirection!) {
                                 movies(
-                                    where: { id_IN: [$futureId, $presentId, $pastId]}
-                                    options: { sort: [{ time: $sort }]}
+                                    where: { id_IN: [$futureId, $presentId, $pastId] }
+                                    options: { sort: [{ time: $sort }] }
                                 ) {
                                     id
                                     time
