@@ -204,7 +204,9 @@ function createConnectionAndParams({
                     });
                     const [whereClause] = where;
                     if (whereClause) {
-                        whereStrs.push(whereClause);
+                        if (whereClause) {
+                            whereStrs.push(whereClause);
+                        }
                     }
                 }
 
@@ -274,7 +276,9 @@ function createConnectionAndParams({
                 }.args.where`,
             });
             const [whereClause] = where;
-            whereStrs.push(`${whereClause}`);
+            if (whereClause) {
+                whereStrs.push(`${whereClause}`);
+            }
         }
 
         const whereAuth = createAuthAndParams({
