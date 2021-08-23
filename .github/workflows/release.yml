@@ -290,6 +290,21 @@ jobs:
           git commit -am "Bump versions to ${{ steps.get-version.outputs.version }}"
           git push
 
+  slack-release-notification:
+    needs:
+      - bump-version
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Slack notification of upcoming release
+        id: slack-notification
+        uses: slackapi/slack-github-action@v1.14.0
+        with:
+          payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_RELEASE_NOTIFICATION_WEBHOOK_URL }}
+
   pack:
     needs:
       - bump-version
@@ -448,3 +463,19 @@ jobs:
             ${{ startsWith(steps.get-prerelease.outputs.prerelease, 'alpha') }} ||
             ${{ startsWith(steps.get-prerelease.outputs.prerelease, 'beta') }} ||
             ${{ startsWith(steps.get-prerelease.outputs.prerelease, 'rc') }}
+
+  slack-release-announcement:
+    needs:
+      - bump-version
+      - changelog
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Slack announcement of release
+        id: slack-announcement
+        uses: slackapi/slack-github-action@v1.14.0
+        with:
+          payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_RELEASE_ANNOUNCEMENT_WEBHOOK_URL }}
