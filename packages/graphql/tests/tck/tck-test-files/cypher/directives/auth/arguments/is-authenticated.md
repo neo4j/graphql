@@ -627,9 +627,14 @@ OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
 WITH this, this_posts0
 CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
 
-FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_posts0
-)
+WITH this, this_posts0
+CALL {
+    WITH this_posts0
+    FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END |
+        DETACH DELETE this_posts0
+    )
+    RETURN count(*)
+}
 
 WITH this
 CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])

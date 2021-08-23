@@ -845,9 +845,14 @@ WITH this, this_posts0
 
 CALL apoc.util.validate(NOT(ANY(r IN ["super-admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), "@neo4j/graphql/FORBIDDEN", [0])
 
-FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_posts0
-)
+WITH this, this_posts0
+CALL {
+    WITH this_posts0
+    FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END |
+        DETACH DELETE this_posts0
+    )
+    RETURN count(*)
+}
 
 WITH this CALL apoc.util.validate(NOT(ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), "@neo4j/graphql/FORBIDDEN", [0])
 

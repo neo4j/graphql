@@ -793,7 +793,12 @@ WITH this
 OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
 WHERE EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_posts0 )
+WITH this, this_posts0
+CALL {
+    WITH this_posts0
+    FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_posts0 )
+    RETURN count(*)
+}
 
 DETACH DELETE this
 ```

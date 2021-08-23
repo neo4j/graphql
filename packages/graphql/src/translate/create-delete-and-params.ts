@@ -154,10 +154,14 @@ function createDeleteAndParams({
                         res.params = { ...res.params, ...deleteAndParams[1] };
                     }
 
-                    res.strs.push(`
-                    FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END |
-                        DETACH DELETE ${_varName}
-                    )`);
+                    res.strs.push(`WITH ${[...withVars, _varName].join(", ")}`);
+                    res.strs.push("CALL {");
+                    res.strs.push(`WITH ${_varName}`);
+                    res.strs.push(`FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END |`);
+                    res.strs.push(`DETACH DELETE ${_varName}`);
+                    res.strs.push(")");
+                    res.strs.push("RETURN count(*)");
+                    res.strs.push("}");
                 });
             });
 
