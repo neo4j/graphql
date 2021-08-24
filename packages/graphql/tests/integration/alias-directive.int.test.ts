@@ -70,6 +70,37 @@ describe("@alias directive", () => {
         await driver.close();
     });
 
+    test("Aliased fields on nodes through simple relationships", async () => {
+        const usersQuery = `
+            query UsersLikesMovies {
+                aliasDirectiveTestUsers {
+                    name
+                    likes {
+                        title
+                        year
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: usersQuery,
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any).aliasDirectiveTestUsers[0]).toEqual({
+            name: dbName,
+            likes: [
+                {
+                    title: dbTitle,
+                    year,
+                },
+            ],
+        });
+    });
     test("Aliased fields on nodes through connections", async () => {
         const usersQuery = `
             query UsersLikesMovies {
