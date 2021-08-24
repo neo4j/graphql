@@ -19,6 +19,14 @@ type User {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type User {
     id: ID!
     username: String!
@@ -105,10 +113,12 @@ input UserUpdateInput {
 }
 
 type CreateUsersMutationResponse {
+    info: CreateInfo!
     users: [User!]!
 }
 
 type UpdateUsersMutationResponse {
+    info: UpdateInfo!
     users: [User!]!
 }
 

@@ -25,11 +25,21 @@ type Movie {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type CreateGenresMutationResponse {
+    info: CreateInfo!
     genres: [Genre!]!
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
@@ -361,10 +371,12 @@ enum SortDirection {
 }
 
 type UpdateGenresMutationResponse {
+    info: UpdateInfo!
     genres: [Genre!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 ```

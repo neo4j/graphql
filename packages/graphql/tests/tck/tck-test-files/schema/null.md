@@ -29,7 +29,16 @@ type Movie {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
@@ -244,6 +253,7 @@ type Query {
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 ```

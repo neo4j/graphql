@@ -97,8 +97,11 @@ async function execute(input: {
 
         debug(`Execute successful, received ${records.length} records`);
 
+        const bookmark = session.lastBookmark();
+
         return {
-            bookmark: session.lastBookmark(),
+            // Despite being typed as `string | null`, seems to return `string[]`
+            bookmark: Array.isArray(bookmark) ? bookmark[0] : bookmark,
             result,
             statistics: result.summary.counters.updates(),
             records: result.records.map((r) => r.toObject()),

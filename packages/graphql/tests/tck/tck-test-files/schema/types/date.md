@@ -23,6 +23,14 @@ A date, represented as a 'yyyy-mm-dd' string
 """
 scalar Date
 
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type Movie {
     id: ID
     date: Date
@@ -95,10 +103,12 @@ input MovieUpdateInput {
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 

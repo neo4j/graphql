@@ -22,6 +22,14 @@ type Movie {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type Actor {
     name: String
 }
@@ -66,10 +74,12 @@ input ActorWhere {
 }
 
 type CreateActorsMutationResponse {
+    info: CreateInfo!
     actors: [Actor!]!
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
@@ -259,10 +269,12 @@ enum SortDirection {
 }
 
 type UpdateActorsMutationResponse {
+    info: UpdateInfo!
     actors: [Actor!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 ```
@@ -288,6 +300,14 @@ type Movie {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type Actor {
     name: String
     movies(where: MovieWhere, options: MovieOptions): [Movie]
@@ -424,10 +444,12 @@ input ActorWhere {
 }
 
 type CreateActorsMutationResponse {
+    info: CreateInfo!
     actors: [Actor!]!
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
@@ -584,10 +606,12 @@ enum SortDirection {
 }
 
 type UpdateActorsMutationResponse {
+    info: UpdateInfo!
     actors: [Actor!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 
