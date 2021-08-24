@@ -24,11 +24,17 @@ A BigInt value up to 64 bits in size, which can be a number or a string if used 
 scalar BigInt
 
 type CreateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
 }
 
 type UpdateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
 }
 
 type File {

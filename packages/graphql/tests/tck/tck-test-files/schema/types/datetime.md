@@ -24,11 +24,17 @@ A date and time, represented as an ISO-8601 string
 scalar DateTime
 
 type CreateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
 }
 
 type UpdateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
 }
 
 type Movie {

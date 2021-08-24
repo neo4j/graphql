@@ -23,11 +23,17 @@ type Node2 {
 
 ```graphql
 type CreateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
 }
 
 type UpdateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
 }
 
 type CreateNode1sMutationResponse {

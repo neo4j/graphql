@@ -37,11 +37,17 @@ A date, represented as a 'yyyy-mm-dd' string
 scalar Date
 
 type CreateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
 }
 
 type UpdateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
 }
 
 interface ActedIn {

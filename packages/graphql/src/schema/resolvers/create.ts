@@ -46,6 +46,7 @@ export default function createResolver({ node }: { node: Node }) {
         return {
             info: {
                 bookmark: executeResult.bookmark,
+                ...executeResult.statistics,
             },
             [responseKey]: Object.values(executeResult.records[0] || {}),
         };
