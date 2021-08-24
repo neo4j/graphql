@@ -104,6 +104,7 @@ export interface BaseField {
     readonly?: boolean;
     writeonly?: boolean;
     ignored?: boolean;
+    alias?: string;
 }
 
 /**
