@@ -19,7 +19,7 @@
         "clean": "cd src/ && tsc --build --clean",
         "test": "jest",
         "test:unit": "jest src/ --coverage=true",
-        "test:unit:watch": "jest unit --watch",
+        "test:unit:watch": "jest src/ --watch",
         "test:tck": "jest tests/tck",
         "test:tck:watch": "jest tck --watchAll",
         "test:int": "jest tests/integration",
