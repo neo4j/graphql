@@ -64,6 +64,7 @@ type Movie @preservedTopLevel {
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
