@@ -42,7 +42,12 @@ function createRelationshipPropertyElement({
         return createPointElement({ resolveTree, field: pointField, variable: relationshipVariable });
     }
 
-    return `${resolveTree.alias}: ${relationshipVariable}.${resolveTree.name}`;
+    let dbFieldName = resolveTree.name;
+    const relPropField = relationship.primitiveFields.find(({ fieldName }) => fieldName === resolveTree.name);
+    if (relPropField && relPropField.alias) {
+        dbFieldName = relPropField.alias;
+    }
+    return `${resolveTree.alias}: ${relationshipVariable}.${dbFieldName}`;
 }
 
 export default createRelationshipPropertyElement;
