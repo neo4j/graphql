@@ -171,11 +171,11 @@ describe("Duration", () => {
                     expect(neo4jDriver.isDuration(duration)).toBe(true);
                 });
 
-                // const parsedNeo4jDurations = neo4jMovie.durations.map((duration) => parseDuration(duration.toString()));
+                const parsedNeo4jDurations = neo4jMovie.durations.map((duration) => parseDuration(duration.toString()));
 
-                // parsedDurations.forEach((parsedDuration) => {
-                //     expect(parsedNeo4jDurations).toContainEqual(parsedDuration);
-                // });
+                parsedDurations.forEach((parsedDuration) => {
+                    expect(parsedNeo4jDurations).toContainEqual(parsedDuration);
+                });
             } finally {
                 await session.close();
             }
@@ -204,7 +204,7 @@ describe("Duration", () => {
             try {
                 await session.run(
                     `
-                        CREATE (movie:Movie:DURATIONFIND)
+                        CREATE (movie:Movie)
                         SET movie = $movie
                     `,
                     { movie: { id } }
