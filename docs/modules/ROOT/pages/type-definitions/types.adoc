@@ -71,6 +71,17 @@ type Movie {
 }
 ----
 
+=== `Duration`
+
+ISO 8601 duration string allowing for basic date time format stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/duration/[Duration] type.
+
+[source, graphql, indent=0]
+----
+type Movie {
+    runningTime: Duration!
+}
+----
+
 [[type-definitions-types-spatial]]
 == Spatial Types
 
