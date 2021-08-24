@@ -22,24 +22,19 @@ import neo4j from "neo4j-driver";
 
 export const RFC_3339_REGEX = /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?((?:[Zz])|((?<offsetDirection>[-|+])(?<offsetHour>[01]\d|2[0-3]):(?<offsetMinute>[0-5]\d)))?$/;
 
-export const validateTime = (value: any) => {
+export const parseTime = (value: any) => {
     if (typeof value !== "string") {
         throw new TypeError(`Value must be of type string: ${value}`);
     }
 
-    if (!RFC_3339_REGEX.test(value)) {
+    const match = RFC_3339_REGEX.exec(value);
+
+    if (!match) {
         throw new TypeError(`Value must be formatted as Time: ${value}`);
     }
 
-    return value;
-};
-
-export const parseTime = (value: any) => {
-    const validatedValue = validateTime(value);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { hour, minute, second, fraction, offsetDirection, offsetHour, offsetMinute } = RFC_3339_REGEX.exec(
-        validatedValue
-    )!.groups!;
+    const { hour, minute, second, fraction, offsetDirection, offsetHour, offsetMinute } = match.groups!;
 
     // Calculate the number of nanoseconds by padding the fraction of seconds with zeroes to nine digits
     let nanosecond = 0;
@@ -73,8 +68,18 @@ const parse = (value: any) => {
 export default new GraphQLScalarType({
     name: "Time",
     description: "A time, represented as an RFC3339 time string",
-    serialize: (value: typeof neo4j.types.Time) => {
-        return validateTime(value.toString());
+    serialize: (value) => {
+        if (typeof value !== "string" && !(value instanceof neo4j.types.Time)) {
+            throw new TypeError(`Value must be of type string: ${value}`);
+        }
+
+        const stringifiedValue = value.toString();
+
+        if (!RFC_3339_REGEX.test(stringifiedValue)) {
+            throw new TypeError(`Value must be formatted as Time: ${stringifiedValue}`);
+        }
+
+        return stringifiedValue;
     },
     parseValue: (value) => {
         return parse(value);
