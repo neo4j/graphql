@@ -34,29 +34,42 @@ describe("info", () => {
         await driver.close();
     });
 
-    test("should return bookmark from a create mutation", async () => {
+    test("should return info from a create mutation", async () => {
         const session = driver.session();
 
         const typeDefs = `
+            type Actor {
+                name: String!
+            }
+
             type Movie {
-                id: ID!
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const id = generate({
+        const title = generate({
+            charset: "alphabetic",
+        });
+        const name = generate({
             charset: "alphabetic",
         });
 
         const query = `
-            mutation($id: ID!) {
-                createMovies(input: [{ id: $id }]) {
+            mutation($title: String!, $name: String!) {
+                createMovies(input: [{ title: $title, actors: { create: [{ node: { name: $name } }] } }]) {
                     info {
                         bookmark
+                        nodesCreated
+                        relationshipsCreated
                     }
                     movies {
-                        id
+                        title
+                        actors {
+                            name
+                        }
                     }
                 }
             }
@@ -66,20 +79,22 @@ describe("info", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                variableValues: { id },
+                variableValues: { title, name },
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
 
             expect(typeof gqlResult?.data?.createMovies.info.bookmark).toBe("string");
-            expect(gqlResult?.data?.createMovies.movies).toEqual([{ id }]);
+            expect(gqlResult?.data?.createMovies.info.nodesCreated).toBe(2);
+            expect(gqlResult?.data?.createMovies.info.relationshipsCreated).toBe(1);
+            expect(gqlResult?.data?.createMovies.movies).toEqual([{ title, actors: [{ name }] }]);
         } finally {
             await session.close();
         }
     });
 
-    test("should return bookmark from an update mutation", async () => {
+    test("should return info from an update mutation", async () => {
         const session = driver.session();
 
         const typeDefs = `

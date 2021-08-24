@@ -95,13 +95,16 @@ function makeAugmentedSchema(
     composer.createObjectTC({
         name: "CreateInfo",
         fields: {
-            bookmark: new GraphQLNonNull(GraphQLString),
+            bookmark: GraphQLString,
+            nodesCreated: new GraphQLNonNull(GraphQLInt),
+            relationshipsCreated: new GraphQLNonNull(GraphQLInt),
         },
     });
 
     composer.createObjectTC({
         name: "DeleteInfo",
         fields: {
+            bookmark: GraphQLString,
             nodesDeleted: new GraphQLNonNull(GraphQLInt),
             relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
         },
@@ -110,7 +113,11 @@ function makeAugmentedSchema(
     composer.createObjectTC({
         name: "UpdateInfo",
         fields: {
-            bookmark: new GraphQLNonNull(GraphQLString),
+            bookmark: GraphQLString,
+            nodesCreated: new GraphQLNonNull(GraphQLInt),
+            nodesDeleted: new GraphQLNonNull(GraphQLInt),
+            relationshipsCreated: new GraphQLNonNull(GraphQLInt),
+            relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
         },
     });
 

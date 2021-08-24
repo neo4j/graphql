@@ -22,11 +22,17 @@ type Movie {
 
 ```graphql
 type CreateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
 }
 
 type UpdateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
 }
 
 type Actor {
@@ -172,7 +178,11 @@ type Actor @exclude(operations: [CREATE]) {
 
 ```graphql
 type UpdateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
 }
 
 type Actor {
@@ -269,11 +279,17 @@ type Movie {
 
 ```graphql
 type CreateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
 }
 
 type UpdateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
 }
 
 type DeleteInfo {
@@ -384,11 +400,17 @@ type Query {
 
 ```graphql
 type CreateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
 }
 
 type UpdateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
 }
 
 type Actor {
@@ -501,11 +523,17 @@ type Movie {
 
 ```graphql
 type CreateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
 }
 
 type UpdateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
 }
 
 type Actor {
@@ -755,11 +783,17 @@ type Actor @exclude(operations: []) {
 
 ```graphql
 type CreateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
 }
 
 type UpdateInfo {
-    bookmark: String!
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
 }
 
 enum SortDirection {

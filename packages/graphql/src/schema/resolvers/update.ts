@@ -45,6 +45,7 @@ export default function updateResolver({ node }: { node: Node }) {
         return {
             info: {
                 bookmark: executeResult.bookmark,
+                ...executeResult.statistics,
             },
             [responseKey]: executeResult.records.map((x) => x.this),
         };
