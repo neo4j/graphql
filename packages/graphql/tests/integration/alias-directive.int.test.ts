@@ -101,13 +101,14 @@ describe("@alias directive", () => {
             ],
         });
     });
-    test("Aliased fields on nodes through connections", async () => {
+    test("Aliased fields on nodes through connections (incl. rel props)", async () => {
         const usersQuery = `
             query UsersLikesMovies {
                 aliasDirectiveTestUsers {
                     name
                     likesConnection {
                         edges {
+                            comment
                             node {
                                 title
                                 year
@@ -131,6 +132,7 @@ describe("@alias directive", () => {
             likesConnection: {
                 edges: [
                     {
+                        comment: dbComment,
                         node: {
                             title: dbTitle,
                             year,
@@ -145,6 +147,11 @@ describe("@alias directive", () => {
             query UsersLikesMovies {
                 aliasDirectiveTestUsers {
                     myName: name
+                    likesConnection {
+                        edges {
+                            myComment: comment
+                        }
+                    }
                 }
             }
         `;
@@ -159,6 +166,7 @@ describe("@alias directive", () => {
 
         expect((gqlResult.data as any).aliasDirectiveTestUsers[0]).toEqual({
             myName: dbName,
+            likesConnection: { edges: [{ myComment: dbComment }] },
         });
     });
 });
