@@ -88,6 +88,70 @@ describe("TimeStamps", () => {
                 await session.close();
             }
         });
+
+        test("create timestamp on relationship property", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type Actor {
+                    name: String!
+                }
+
+                interface ActedIn {
+                    createdAt: DateTime! @timestamp(operations: [CREATE])
+                    screenTime: Int!
+                }
+
+                type Movie {
+                    title: String!
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const title = generate({
+                charset: "alphabetic",
+            });
+            const name = generate({
+                charset: "alphabetic",
+            });
+
+            const create = `
+                mutation($title: String!, $name: String!) {
+                    createMovies(
+                        input: [
+                            { title: $title, actors: { create: [{ node: { name: $name }, edge: { screenTime: 60 } }] } }
+                        ]
+                    ) {
+                        movies {
+                            actorsConnection {
+                                edges {
+                                    createdAt
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            try {
+                const result = await graphql({
+                    schema: neoSchema.schema,
+                    source: create,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    variableValues: { title, name },
+                });
+
+                expect(result.errors).toBeFalsy();
+
+                const { actorsConnection } = (result.data as any).createMovies.movies[0];
+
+                expect(new Date(actorsConnection.edges[0].createdAt)).toBeInstanceOf(Date);
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("update", () => {
