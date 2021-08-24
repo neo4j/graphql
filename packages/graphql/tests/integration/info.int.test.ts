@@ -94,6 +94,45 @@ describe("info", () => {
         }
     });
 
+    test("should return info from a delete mutation", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Movie {
+                id: ID!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            mutation($id: ID!) {
+                deleteMovies(where: { id: $id }) {
+                    bookmark
+                }
+            }
+        `;
+
+        try {
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                variableValues: { id },
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(typeof gqlResult?.data?.deleteMovies.bookmark).toBe("string");
+        } finally {
+            await session.close();
+        }
+    });
+
     test("should return info from an update mutation", async () => {
         const session = driver.session();
 

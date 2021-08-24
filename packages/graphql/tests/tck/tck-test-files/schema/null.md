@@ -54,6 +54,7 @@ A date and time, represented as an ISO-8601 string
 scalar DateTime
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
