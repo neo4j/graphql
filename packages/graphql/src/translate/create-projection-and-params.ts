@@ -447,7 +447,16 @@ function createProjectionAndParams({
                 aliasedProj = "";
             }
 
-            res.projection.push(`${aliasedProj}.${field.name}`);
+            // In the case of using the @alias directive (map a GraphQL field to a db prop)
+            // the output will be RETURN varName {GraphQLfield: varName.dbAlias}
+            let dbFieldName = field.name;
+            const nodeProp = node.primitiveFields.find(({ fieldName }) => fieldName === field.name);
+            if (nodeProp && nodeProp.alias) {
+                dbFieldName = nodeProp.alias;
+                aliasedProj = !aliasedProj ? `${key}: ${varName}` : aliasedProj;
+            }
+
+            res.projection.push(`${aliasedProj}.${dbFieldName}`);
         }
 
         return res;

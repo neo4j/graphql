@@ -33,6 +33,7 @@ import {
 import { upperFirst } from "graphql-compose";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
+import getAliasMeta from "./get-alias-meta";
 import getAuth from "./get-auth";
 import getRelationshipMeta from "./get-relationship-meta";
 import {
@@ -91,11 +92,13 @@ function getObjFieldMeta({
             const relationshipMeta = getRelationshipMeta(field);
             const cypherMeta = getCypherMeta(field);
             const typeMeta = getFieldTypeMeta(field);
+            const aliasMeta = getAliasMeta(field);
             const authDirective = field.directives?.find((x) => x.name.value === "auth");
             const idDirective = field?.directives?.find((x) => x.name.value === "id");
             const defaultDirective = field?.directives?.find((x) => x.name.value === "default");
             const coalesceDirective = field?.directives?.find((x) => x.name.value === "coalesce");
             const timestampDirective = field?.directives?.find((x) => x.name.value === "timestamp");
+            const aliasDirective = field?.directives?.find((x) => x.name.value === "alias");
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
             const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
@@ -118,6 +121,7 @@ function getObjFieldMeta({
                             "default",
                             "coalesce",
                             "timestamp",
+                            "alias",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
@@ -142,6 +146,10 @@ function getObjFieldMeta({
 
                 if (coalesceDirective) {
                     throw new Error("@coalesce directive can only be used on primitive type fields");
+                }
+
+                if (aliasDirective) {
+                    throw new Error("@alias directive can only be used on primitive type fields");
                 }
 
                 const relationField: RelationField = {
@@ -209,6 +217,10 @@ function getObjFieldMeta({
                     throw new Error("@coalesce directive can only be used on primitive type fields");
                 }
 
+                if (aliasDirective) {
+                    throw new Error("@alias directive can only be used on primitive type fields");
+                }
+
                 const cypherField: CypherField = {
                     ...baseField,
                     ...cypherMeta,
@@ -229,6 +241,10 @@ function getObjFieldMeta({
 
                 if (coalesceDirective) {
                     throw new Error("@coalesce directive can only be used on primitive type fields");
+                }
+
+                if (aliasDirective) {
+                    throw new Error("@alias directive can only be used on primitive type fields");
                 }
 
                 const enumField: CustomEnumField = {
@@ -258,6 +274,10 @@ function getObjFieldMeta({
                     throw new Error("@coalesce directive can only be used on primitive type fields");
                 }
 
+                if (aliasDirective) {
+                    throw new Error("@alias directive can only be used on primitive type fields");
+                }
+
                 const interfaceField: InterfaceField = {
                     ...baseField,
                 };
@@ -269,6 +289,10 @@ function getObjFieldMeta({
 
                 if (coalesceDirective) {
                     throw new Error("@coalesce directive can only be used on primitive type fields");
+                }
+
+                if (aliasDirective) {
+                    throw new Error("@alias directive can only be used on primitive type fields");
                 }
 
                 const objectField: ObjectField = {
@@ -419,6 +443,9 @@ function getObjFieldMeta({
                                     "@coalesce directive can only be used on types: Int | Float | String | Boolean | ID | DateTime"
                                 );
                         }
+                    }
+                    if (aliasDirective) {
+                        primitiveField.alias = aliasMeta?.property;
                     }
 
                     res.primitiveFields.push(primitiveField);
