@@ -27,6 +27,10 @@ describe("@alias directive", () => {
     let driver: Driver;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
+    const dbName = generate({ charset: "alphabetic" });
+    const dbComment = generate({ charset: "alphabetic" });
+    const dbTitle = generate({ charset: "alphabetic" });
+    const year = 2015;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -51,6 +55,10 @@ describe("@alias directive", () => {
     beforeEach(async () => {
         session = driver.session();
         await session.run(`MATCH (n:AliasDirectiveTestUser)-[]-(m:AliasDirectiveTestMovie) DETACH DELETE n, m`);
+        await session.run(
+            `CREATE (:AliasDirectiveTestUser {dbName: $dbName})-[:LIKES {dbComment: $dbComment}]->(:AliasDirectiveTestMovie {dbTitle: $dbTitle, year: $year})`,
+            { dbName, dbComment, dbTitle, year }
+        );
     });
 
     afterEach(async () => {
@@ -63,16 +71,6 @@ describe("@alias directive", () => {
     });
 
     test("Aliased fields on nodes through connections", async () => {
-        const dbName = generate({ charset: "alphabetic" });
-        const dbComment = generate({ charset: "alphabetic" });
-        const dbTitle = generate({ charset: "alphabetic" });
-        const year = 2015;
-
-        await session.run(
-            `CREATE (:AliasDirectiveTestUser {dbName: $dbName})-[:LIKES {dbComment: $dbComment}]->(:AliasDirectiveTestMovie {dbTitle: $dbTitle, year: $year})`,
-            { dbName, dbComment, dbTitle, year }
-        );
-
         const usersQuery = `
             query UsersLikesMovies {
                 aliasDirectiveTestUsers {
@@ -109,6 +107,27 @@ describe("@alias directive", () => {
                     },
                 ],
             },
+        });
+    });
+    test("Using GraphQL query alias with @alias", async () => {
+        const usersQuery = `
+            query UsersLikesMovies {
+                aliasDirectiveTestUsers {
+                    myName: name
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: usersQuery,
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any).aliasDirectiveTestUsers[0]).toEqual({
+            myName: dbName,
         });
     });
 });
