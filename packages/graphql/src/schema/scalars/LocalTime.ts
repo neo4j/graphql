@@ -22,22 +22,19 @@ import neo4j from "neo4j-driver";
 
 export const LOCAL_TIME_REGEX = /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?$/;
 
-export const validateLocalTime = (value: any) => {
+export const parseLocalTime = (value: any) => {
     if (typeof value !== "string") {
         throw new TypeError(`Value must be of type string: ${value}`);
     }
 
-    if (!LOCAL_TIME_REGEX.test(value)) {
+    const match = LOCAL_TIME_REGEX.exec(value);
+
+    if (!match) {
         throw new TypeError(`Value must be formatted as LocalTime: ${value}`);
     }
 
-    return value;
-};
-
-export const parseLocalTime = (value: any) => {
-    const validatedValue = validateLocalTime(value);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { hour, minute, second, fraction } = LOCAL_TIME_REGEX.exec(validatedValue)!.groups!;
+    const { hour, minute, second, fraction } = match.groups!;
 
     // Calculate the number of nanoseconds by padding the fraction of seconds with zeroes to nine digits
     let nanosecond = 0;
@@ -62,8 +59,18 @@ const parse = (value: any) => {
 export default new GraphQLScalarType({
     name: "LocalTime",
     description: "A local time, represented as a time string without timezone information",
-    serialize: (value: typeof neo4j.types.LocalTime) => {
-        return validateLocalTime(value.toString());
+    serialize: (value) => {
+        if (typeof value !== "string" && !(value instanceof neo4j.types.LocalTime)) {
+            throw new TypeError(`Value must be of type string: ${value}`);
+        }
+
+        const stringifiedValue = value.toString();
+
+        if (!LOCAL_TIME_REGEX.test(stringifiedValue)) {
+            throw new TypeError(`Value must be formatted as LocalTime: ${stringifiedValue}`);
+        }
+
+        return stringifiedValue;
     },
     parseValue: (value) => {
         return parse(value);
