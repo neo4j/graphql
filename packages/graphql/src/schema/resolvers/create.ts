@@ -44,6 +44,9 @@ export default function createResolver({ node }: { node: Node }) {
         const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
 
         return {
+            info: {
+                bookmark: executeResult.bookmark,
+            },
             [responseKey]: Object.values(executeResult.records[0] || {}),
         };
     }

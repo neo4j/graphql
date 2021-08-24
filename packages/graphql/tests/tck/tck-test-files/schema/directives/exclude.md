@@ -21,6 +21,14 @@ type Movie {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type Actor {
     name: String
 }
@@ -108,18 +116,22 @@ input MovieWhere {
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 
 type CreateActorsMutationResponse {
+    info: CreateInfo!
     actors: [Actor!]!
 }
 
 type UpdateActorsMutationResponse {
+    info: UpdateInfo!
     actors: [Actor!]!
 }
 
@@ -159,6 +171,10 @@ type Actor @exclude(operations: [CREATE]) {
 ### Output
 
 ```graphql
+type UpdateInfo {
+    bookmark: String!
+}
+
 type Actor {
     name: String
 }
@@ -215,6 +231,7 @@ enum SortDirection {
 }
 
 type UpdateActorsMutationResponse {
+    info: UpdateInfo!
     actors: [Actor!]!
 }
 
@@ -251,6 +268,14 @@ type Movie {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type DeleteInfo {
     nodesDeleted: Int!
     relationshipsDeleted: Int!
@@ -311,10 +336,12 @@ input MovieWhere {
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 
@@ -356,6 +383,14 @@ type Query {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type Actor {
     name: String
 }
@@ -420,10 +455,12 @@ input MovieWhere {
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 
@@ -463,6 +500,14 @@ type Movie {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type Actor {
     name: String
 }
@@ -515,6 +560,7 @@ input ActorWhere {
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
@@ -688,6 +734,7 @@ enum SortDirection {
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 ```
@@ -707,6 +754,14 @@ type Actor @exclude(operations: []) {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 enum SortDirection {
     """
     Sort by field values in ascending order.
@@ -767,10 +822,12 @@ type DeleteInfo {
 }
 
 type CreateActorsMutationResponse {
+    info: CreateInfo!
     actors: [Actor!]!
 }
 
 type UpdateActorsMutationResponse {
+    info: UpdateInfo!
     actors: [Actor!]!
 }
 

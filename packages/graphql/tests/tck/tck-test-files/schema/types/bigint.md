@@ -23,6 +23,14 @@ A BigInt value up to 64 bits in size, which can be a number or a string if used 
 """
 scalar BigInt
 
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type File {
     name: String!
     size: BigInt!
@@ -95,10 +103,12 @@ input FileUpdateInput {
 }
 
 type CreateFilesMutationResponse {
+    info: CreateInfo!
     files: [File!]!
 }
 
 type UpdateFilesMutationResponse {
+    info: UpdateInfo!
     files: [File!]!
 }
 

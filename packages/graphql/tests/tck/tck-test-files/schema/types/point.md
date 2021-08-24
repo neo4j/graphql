@@ -17,6 +17,14 @@ type Movie {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type Point {
     latitude: Float!
     longitude: Float!
@@ -98,10 +106,12 @@ input MovieUpdateInput {
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 
@@ -135,6 +145,14 @@ type Machine {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type CartesianPoint {
     x: Float!
     y: Float!
@@ -213,10 +231,12 @@ input MachineUpdateInput {
 }
 
 type CreateMachinesMutationResponse {
+    info: CreateInfo!
     machines: [Machine!]!
 }
 
 type UpdateMachinesMutationResponse {
+    info: UpdateInfo!
     machines: [Machine!]!
 }
 
@@ -252,6 +272,14 @@ type Movie {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type Point {
     latitude: Float!
     longitude: Float!
@@ -298,10 +326,12 @@ input MovieUpdateInput {
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 
@@ -335,6 +365,14 @@ type Machine {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type CartesianPoint {
     x: Float!
     y: Float!
@@ -381,10 +419,12 @@ input MachineUpdateInput {
 }
 
 type CreateMachinesMutationResponse {
+    info: CreateInfo!
     machines: [Machine!]!
 }
 
 type UpdateMachinesMutationResponse {
+    info: UpdateInfo!
     machines: [Machine!]!
 }
 

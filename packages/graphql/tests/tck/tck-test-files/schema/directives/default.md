@@ -27,6 +27,14 @@ A date and time, represented as an ISO-8601 string
 """
 scalar DateTime
 
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type User {
     id: ID!
     name: String!
@@ -143,10 +151,12 @@ input UserUpdateInput {
 }
 
 type CreateUsersMutationResponse {
+    info: CreateInfo!
     users: [User!]!
 }
 
 type UpdateUsersMutationResponse {
+    info: UpdateInfo!
     users: [User!]!
 }
 

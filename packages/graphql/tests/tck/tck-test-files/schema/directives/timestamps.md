@@ -24,6 +24,14 @@ A date and time, represented as an ISO-8601 string
 """
 scalar DateTime
 
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type Movie {
     id: ID
     createdAt: DateTime!
@@ -104,10 +112,12 @@ input MovieUpdateInput {
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 

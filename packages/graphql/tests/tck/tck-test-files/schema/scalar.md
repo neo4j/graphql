@@ -22,6 +22,14 @@ type Movie {
 ```graphql
 scalar CustomScalar
 
+type CreateInfo {
+    bookmark: String!
+}
+
+type UpdateInfo {
+    bookmark: String!
+}
+
 type Movie {
     id: ID
     myCustomScalar: CustomScalar
@@ -87,10 +95,12 @@ input MovieUpdateInput {
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 
