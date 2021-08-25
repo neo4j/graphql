@@ -106,8 +106,8 @@ describe("createConnectionAndParams", () => {
 
         expect(dedent(entry[0])).toEqual(dedent`CALL {
         WITH this
-        MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-        WITH collect({ screenTime: this_acted_in.screenTime }) AS edges
+        MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+        WITH collect({ screenTime: this_acted_in_relationship.screenTime }) AS edges
         RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
         }`);
     });
@@ -201,10 +201,10 @@ describe("createConnectionAndParams", () => {
 
         expect(dedent(entry[0])).toEqual(dedent`CALL {
             WITH this
-            MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-            WITH this_acted_in, this_actor
-            ORDER BY this_acted_in.screenTime DESC, this_actor.name ASC
-            WITH collect({ screenTime: this_acted_in.screenTime }) AS edges
+            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+            WITH this_acted_in_relationship, this_actor
+            ORDER BY this_acted_in_relationship.screenTime DESC, this_actor.name ASC
+            WITH collect({ screenTime: this_acted_in_relationship.screenTime }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }`);
     });
@@ -289,8 +289,8 @@ describe("createConnectionAndParams", () => {
 
         expect(dedent(entry[0])).toEqual(dedent`CALL {
             WITH this
-            MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
-            WITH collect({ screenTime: this_acted_in.screenTime }) AS edges
+            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+            WITH collect({ screenTime: this_acted_in_relationship.screenTime }) AS edges
             WITH size(edges) AS totalCount, edges[11..21] AS limitedSelection
             RETURN { edges: limitedSelection, totalCount: totalCount } AS actorsConnection
             }`);
