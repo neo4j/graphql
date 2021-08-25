@@ -228,4 +228,63 @@ describe("@alias directive", () => {
             },
         });
     });
+    test("E2E with connect mutation with @alias", async () => {
+        const name = "Stella";
+        const title = "Interstellar 2";
+        const comment = "Yes!";
+        await session.run(`CREATE (m:AliasDirectiveTestMovie {dbTitle: "${title}", year: toInteger(2015)})`);
+        const userMutation = `
+        mutation CreateUserConnectMovie {
+            createAliasDirectiveTestUsers(
+                input: [{ name: "${name}", likes: { connect: { where: {node: {title: "${title}"}}, edge: {comment: "${comment}"} } } }]
+            ) {
+                aliasDirectiveTestUsers {
+                    name
+                    likes {
+                        title
+                        year
+                    }
+                    likesConnection {
+                        edges {
+                            comment
+                            node {
+                                title
+                                year
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        `;
+
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: userMutation,
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any).createAliasDirectiveTestUsers.aliasDirectiveTestUsers[0]).toEqual({
+            name,
+            likes: [
+                {
+                    title,
+                    year: year.toNumber(),
+                },
+            ],
+            likesConnection: {
+                edges: [
+                    {
+                        comment,
+                        node: {
+                            title,
+                            year: year.toNumber(),
+                        },
+                    },
+                ],
+            },
+        });
+    });
 });
