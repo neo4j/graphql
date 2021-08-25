@@ -101,3 +101,41 @@ RETURN this { .name, city: this.cityPropInDb, actedInConnection } as this
 ```json
 {}
 ```
+
+---
+
+## Create mutation
+
+### GraphQL Input
+
+```graphql
+mutation {
+    createActors(input: [{ name: "Molly", city: "Sjömarken" }]) {
+        actors {
+            name
+            city
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+CALL {
+        CREATE (this0:Actor)
+        SET this0.name = $this0_name
+        SET this0.cityPropInDb = $this0_city
+        RETURN this0
+    }
+RETURN this0 { .name, city: this0.cityPropInDb } AS this0
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this0_city": "Sjömarken",
+    "this0_name": "Molly"
+}
+```

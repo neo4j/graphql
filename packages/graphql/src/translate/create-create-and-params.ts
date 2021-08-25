@@ -55,6 +55,14 @@ function createCreateAndParams({
         const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
         const pointField = node.pointFields.find((x) => key === x.fieldName);
 
+        // In the case of using the @alias directive (map a GraphQL field to a db prop)
+        // the output will be RETURN varName {GraphQLfield: varName.dbAlias}
+        let dbFieldName = key;
+        const nodeProp = node.primitiveFields.find(({ fieldName }) => fieldName === key);
+        if (nodeProp && nodeProp.alias) {
+            dbFieldName = nodeProp.alias;
+        }
+
         if (relationField) {
             const refNodes: Node[] = [];
             // let unionTypeName = "";
@@ -157,9 +165,9 @@ function createCreateAndParams({
 
         if (pointField) {
             if (pointField.typeMeta.array) {
-                res.creates.push(`SET ${varName}.${key} = [p in $${_varName} | point(p)]`);
+                res.creates.push(`SET ${varName}.${dbFieldName} = [p in $${_varName} | point(p)]`);
             } else {
-                res.creates.push(`SET ${varName}.${key} = point($${_varName})`);
+                res.creates.push(`SET ${varName}.${dbFieldName} = point($${_varName})`);
             }
 
             res.params[_varName] = value;
@@ -167,7 +175,7 @@ function createCreateAndParams({
             return res;
         }
 
-        res.creates.push(`SET ${varName}.${key} = $${_varName}`);
+        res.creates.push(`SET ${varName}.${dbFieldName} = $${_varName}`);
         res.params[_varName] = value;
 
         return res;
