@@ -627,14 +627,19 @@ mutation {
 MATCH (this:User)
 
 WITH this
-OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
 
-WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
-CALL apoc.util.validate(NOT(ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND ANY(r IN ["super-admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), "@neo4j/graphql/FORBIDDEN", [0])
+    WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
+    CALL apoc.util.validate(NOT(ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND ANY(r IN ["super-admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), "@neo4j/graphql/FORBIDDEN", [0])
 
-FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
-    DELETE this_disconnect_posts0_rel
-)
+    FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
+        DELETE this_disconnect_posts0_rel
+    )
+
+    RETURN count(*)
+}
 
 RETURN this { .id } AS this
 ```
@@ -707,6 +712,8 @@ WITH this
 OPTIONAL MATCH (this)<-[this_has_comment0_relationship:HAS_COMMENT]-(this_post0:Post)
 CALL apoc.do.when(this_post0 IS NOT NULL, "
     WITH this, this_post0
+    CALL {
+    WITH this, this_post0
     OPTIONAL MATCH (this_post0)-[this_post0_creator0_disconnect0_rel:HAS_POST]->(this_post0_creator0_disconnect0:User)
     WHERE this_post0_creator0_disconnect0.id = $updateComments.args.update.post.update.node.creator.disconnect.where.node.id
     WITH this, this_post0, this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel
@@ -715,6 +722,9 @@ CALL apoc.do.when(this_post0 IS NOT NULL, "
     FOREACH(_ IN CASE this_post0_creator0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
         DELETE this_post0_creator0_disconnect0_rel
     )
+
+        RETURN count(*)
+    }
 
     RETURN count(*)
 ",
