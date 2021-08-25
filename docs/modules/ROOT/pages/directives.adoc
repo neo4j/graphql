@@ -11,7 +11,7 @@ Reference: xref::auth/auth-directive.adoc[`@auth` directive]
 
 The `@coalesce` directive exposes a mechanism for querying against non-existent, `null` values on a node.
 
-Reference: xref::type-definitions/default-values.adoc[`@coalesce`]
+Reference: xref::type-definitions/default-values.adoc#type-definitions-default-values-coalesce[`@coalesce`]
 
 == `@cypher`
 
@@ -23,25 +23,25 @@ Reference: xref::type-definitions/cypher.adoc[`@cypher` directive]
 
 The `@default` directive allows for the setting of a default value for a field on object creation.
 
-Reference: xref::type-definitions/default-values.adoc[`@default`]
+Reference: xref::type-definitions/default-values.adoc#type-definitions-default-values-default[`@default`]
 
 == `@exclude`
 
 The `@exclude` directive is used on object types to instruct them to be skipped during Query and Mutation generation.
 
-Reference: xref::type-definitions/access-control.adoc[`@exclude`]
+Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-exclude[`@exclude`]
 
 == `@id`
 
 The `@id` directive marks a field as the unique ID for an object type, and allows for autogeneration of IDs.
 
-Reference: xref::type-definitions/autogeneration.adoc[`@id`]
+Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-id[`@id`]
 
 == `@ignore`
 
 The `@ignore` directive ignores a field, and it will need an alternative mechanism for resolution.
 
-Reference: xref::type-definitions/access-control.adoc[`@ignore`]
+Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-ignore[`@ignore`]
 
 == `@private`
 
@@ -53,7 +53,7 @@ Reference: xref::ogm/private.adoc[`@private` Directive]
 
 The `@readonly` directive marks fields as read-only.
 
-Reference: xref::type-definitions/access-control.adoc[`@readonly`]
+Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-readonly[`@readonly`]
 
 == `@relationship`
 
@@ -77,10 +77,10 @@ directive @relationshipProperties on INTERFACE
 
 The `@timestamp` directive flags fields to be used to store timestamps on create/update events.
 
-Reference: xref::type-definitions/autogeneration.adoc[`@timestamp`]
+Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-timestamp[`@timestamp`]
 
 == `@writeonly`
 
 The `@writeonly` directive marks fields as write-only.
 
-Reference: xref::type-definitions/access-control.adoc[`@writeonly`]
+Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-writeonly[`@writeonly`]
