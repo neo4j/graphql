@@ -5,7 +5,7 @@
 
 The `@auth` directive is used to define complex fine-grained and role-based access control for object types and fields.
 
-Reference: xref::auth/auth-directive.adoc#auth-directive[`@auth` directive]
+Reference: xref::auth/auth-directive.adoc[`@auth` directive]
 
 == `@coalesce`
 
@@ -17,7 +17,7 @@ Reference: xref::type-definitions/default-values.adoc#type-definitions-default-v
 
 The `@cypher` directive overrides field resolution (including `Query` and `Mutation` fields), instead resolving with the specified Cypher.
 
-Reference: xref::type-definitions/cypher.adoc#type-definitions-cypher[`@cypher` directive]
+Reference: xref::type-definitions/cypher.adoc[`@cypher` directive]
 
 == `@default`
 
@@ -47,7 +47,7 @@ Reference: xref::type-definitions/access-control.adoc#type-definitions-access-co
 
 The `@private` directive protects fields which should only be available through the xref::ogm/index.adoc[OGM].
 
-Reference: xref::ogm/private.adoc#ogm-private[`@private` Directive]
+Reference: xref::ogm/private.adoc[`@private` Directive]
 
 == `@readonly`
 
@@ -59,7 +59,7 @@ Reference: xref::type-definitions/access-control.adoc#type-definitions-access-co
 
 The `@relationship` directive is used to configure relationships between object types.
 
-Reference: xref::type-definitions/relationships.adoc#type-definitions-relationships[Relationships]
+Reference: xref::type-definitions/relationships.adoc[Relationships]
 
 == `@timestamp`
 

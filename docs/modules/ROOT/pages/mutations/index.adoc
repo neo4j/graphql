@@ -3,9 +3,9 @@
 
 Several Mutations are automatically generated for each type defined in type definitions, which are covered in the following chapters:
 
-- xref::mutations/create.adoc#mutations-create[Create] - create nodes, and recursively create or connect further nodes in the graph
-- xref::mutations/update.adoc#mutations-update[Update] - update nodes, and recursively perform any operations from there
-- xref::mutations/delete.adoc#mutations-delete[Delete] - delete nodes, and recursively delete or disconnect further nodes in the graph
+- xref::mutations/create.adoc[Create] - create nodes, and recursively create or connect further nodes in the graph
+- xref::mutations/update.adoc[Update] - update nodes, and recursively perform any operations from there
+- xref::mutations/delete.adoc[Delete] - delete nodes, and recursively delete or disconnect further nodes in the graph
 
 == A note on nested Mutations
 

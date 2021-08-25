@@ -3,7 +3,7 @@
 
 You specify authorization rules inside the `@auth` directive. This section looks at each option available and explains how to use it to implement authorization.
 
-- xref::auth/authorization/allow.adoc#auth-authorization-allow[Allow]
-- xref::auth/authorization/bind.adoc#auth-authorization-bind[Bind]
-- xref::auth/authorization/roles.adoc#auth-authorization-roles[Roles]
-- xref::auth/authorization/where.adoc#auth-authorization-where[Where]
+- xref::auth/authorization/allow.adoc[Allow]
+- xref::auth/authorization/bind.adoc[Bind]
+- xref::auth/authorization/roles.adoc[Roles]
+- xref::auth/authorization/where.adoc[Where]

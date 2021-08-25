@@ -7,7 +7,7 @@ With Neo4j as the graph database, the GraphQL Library makes it simple for applic
 
 Written in TypeScript, the library's schema-first paradigm lets developers focus on the application data they need, while taking care of the heavy lifting involved in building the API.
 
-> Just want to get moving with the Neo4j GraphQL Library? Check out the xref::getting-started.adoc#getting-started[Getting Started] guide!
+> Just want to get moving with the Neo4j GraphQL Library? Check out the xref::getting-started.adoc[Getting Started] guide!
 
 == How does it work?
 
@@ -19,19 +19,19 @@ For every query and mutation that is executed against this generated schema, the
 
 The Neo4j GraphQL Library presents a large feature set for interacting with a Neo4j database using GraphQL:
 
-- Automatic generation of xref::queries.adoc#queries[Queries] and xref::mutations/index.adoc[Mutations] for CRUD interactions
-- Various xref::type-definitions/types.adoc#type-definitions-types[Types], including temporal and spatial types
+- Automatic generation of xref::queries.adoc[Queries] and xref::mutations/index.adoc[Mutations] for CRUD interactions
+- Various xref::type-definitions/types.adoc[Types], including temporal and spatial types
 - Support for both node and relationship properties
-- Extensibility through the xref::type-definitions/cypher.adoc#type-definitions-cypher[`@cypher` directive] and/or xref::custom-resolvers.adoc#custom-resolvers[Custom Resolvers]
-- Extensive xref::filtering.adoc#filtering[Filtering] and xref::sorting.adoc#sorting[Sorting] options
-- Options for value xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration[Autogeneration] and xref::type-definitions/default-values.adoc#type-definitions-default-values[Default Values]
+- Extensibility through the xref::type-definitions/cypher.adoc[`@cypher` directive] and/or xref::custom-resolvers.adoc[Custom Resolvers]
+- Extensive xref::filtering.adoc[Filtering] and xref::sorting.adoc[Sorting] options
+- Options for value xref::type-definitions/autogeneration.adoc[Autogeneration] and xref::type-definitions/default-values.adoc[Default Values]
 - Multiple xref::pagination/index.adoc[Pagination] options
-- Comprehensive authentication and authorisation options (xref::auth/index.adoc[Auth]), and additional xref::type-definitions/access-control.adoc#type-definitions-access-control[Access Control] options
+- Comprehensive authentication and authorisation options (xref::auth/index.adoc[Auth]), and additional xref::type-definitions/access-control.adoc[Access Control] options
 - An xref::ogm/index.adoc[OGM] (Object Graph Mapper) for programmatic interaction with your GraphQL API
 
 == Interaction
 
-In the xref::getting-started.adoc#getting-started[Getting Started] guide, Apollo Server is used to host the GraphQL schema. This bundles Apollo Sandbox which can be used to interact directly with your GraphQL API with no front-end.
+In the xref::getting-started.adoc[Getting Started] guide, Apollo Server is used to host the GraphQL schema. This bundles Apollo Sandbox which can be used to interact directly with your GraphQL API with no front-end.
 
 There are a variety of front-end frameworks with clients for interacting with GraphQL APIs:
 

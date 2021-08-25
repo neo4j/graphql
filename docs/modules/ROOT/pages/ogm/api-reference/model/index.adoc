@@ -3,20 +3,20 @@
 
 == `create`
 
-See xref::ogm/api-reference/model/create.adoc#ogm-api-reference-model-create[`create`].
+See xref::ogm/api-reference/model/create.adoc[`create`].
 
 == `find`
 
-See xref::ogm/api-reference/model/find.adoc#ogm-api-reference-model-find[`find`].
+See xref::ogm/api-reference/model/find.adoc[`find`].
 
 == `update`
 
-See xref::ogm/api-reference/model/update.adoc#ogm-api-reference-model-update[`update`].
+See xref::ogm/api-reference/model/update.adoc[`update`].
 
 == `delete`
 
-See xref::ogm/api-reference/model/delete.adoc#ogm-api-reference-model-delete[`delete`].
+See xref::ogm/api-reference/model/delete.adoc[`delete`].
 
 == `count`
 
-See xref::ogm/api-reference/model/count.adoc#ogm-api-reference-model-count[`count`].
+See xref::ogm/api-reference/model/count.adoc[`count`].

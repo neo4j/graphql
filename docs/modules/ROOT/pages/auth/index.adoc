@@ -3,9 +3,9 @@
 
 In this chapter you will learn more about how to secure your GraphQL API using the Neo4j GraphQL Library's built-in auth mechanics.
 
-- xref::auth/setup.adoc#auth-setup[Setup]
-- xref::auth/auth-directive.adoc#auth-directive[`@auth` directive]
-- xref::auth/authentication.adoc#auth-authentication[Authentication]
+- xref::auth/setup.adoc[Setup]
+- xref::auth/auth-directive.adoc[`@auth` directive]
+- xref::auth/authentication.adoc[Authentication]
 - xref::auth/authorization/index.adoc[Authorization]
 
 == Quickstart examples
