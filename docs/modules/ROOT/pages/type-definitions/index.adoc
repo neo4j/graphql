@@ -1,14 +1,14 @@
 [[type-definitions]]
 = Type Definitions
 
-- xref::type-definitions/basics.adoc#type-definitions-basics[Basics] - Learn how to define your nodes and relationships using GraphQL type definitions.
-- xref::type-definitions/types.adoc#type-definitions-types[Types] - Learn about the various data types available in the Neo4j GraphQL Library.
-- xref::type-definitions/unions-and-interfaces.adoc#type-definitions-unions-and-interfaces[Unions and Interfaces] - Learn about two GraphQL concepts, unions and interfaces, and how they map to the Neo4j database.
-- xref::type-definitions/relationships.adoc#type-definitions-relationships[Relationships] - Learn more about defining relationships using the Neo4j GraphQL Library.
-- xref::type-definitions/access-control.adoc#type-definitions-access-control[Access Control] - Learn about how to restrict access to certain types or fields.
-- xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration[Autogeneration] - Learn about certain types which you can enable autogeneration of values for.
-- xref::type-definitions/cypher.adoc#type-definitions-cypher[`@cypher` directive] - Learn about how to add custom Cypher to your type definitions.
-- xref::type-definitions/default-values.adoc#type-definitions-default-values[Default Values] - Learn about different ways of setting default values for particular fields.
+- xref::type-definitions/basics.adoc[Basics] - Learn how to define your nodes and relationships using GraphQL type definitions.
+- xref::type-definitions/types.adoc[Types] - Learn about the various data types available in the Neo4j GraphQL Library.
+- xref::type-definitions/unions-and-interfaces.adoc[Unions and Interfaces] - Learn about two GraphQL concepts, unions and interfaces, and how they map to the Neo4j database.
+- xref::type-definitions/relationships.adoc[Relationships] - Learn more about defining relationships using the Neo4j GraphQL Library.
+- xref::type-definitions/access-control.adoc[Access Control] - Learn about how to restrict access to certain types or fields.
+- xref::type-definitions/autogeneration.adoc[Autogeneration] - Learn about certain types which you can enable autogeneration of values for.
+- xref::type-definitions/cypher.adoc[`@cypher` directive] - Learn about how to add custom Cypher to your type definitions.
+- xref::type-definitions/default-values.adoc[Default Values] - Learn about different ways of setting default values for particular fields.
 
 
 

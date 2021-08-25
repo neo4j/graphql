@@ -1,7 +1,7 @@
 [[ogm-api-reference-model-find]]
 = `find`
 
-This method can be used to find nodes, and maps to the underlying schema xref::queries.adoc#queries[Queries].
+This method can be used to find nodes, and maps to the underlying schema xref::queries.adoc[Queries].
 
 Returns a `Promise` which resolvers to an array of objects matching the type of the Model.
 
@@ -33,17 +33,17 @@ const users = await User.find({ where: { name: "Jane Smith" }});
 |`where` +
  +
  Type: `GraphQLWhereArg`
-|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc#filtering[Filtering].
+|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc[Filtering].
 
 |`options` +
  +
  Type: `GraphQLOptionsArg`
-|A JavaScript object representation of the GraphQL `options` input type used for xref::sorting.adoc#sorting[Sorting] and xref::pagination/index.adoc[Pagination].
+|A JavaScript object representation of the GraphQL `options` input type used for xref::sorting.adoc[Sorting] and xref::pagination/index.adoc[Pagination].
 
 |`selectionSet` +
  +
  Type: `string` or `DocumentNode` or `SelectionSetNode`
-|Selection set for the Mutation, see xref::ogm/selection-set.adoc#ogm-selection-set[Selection Set] for more information.
+|Selection set for the Mutation, see xref::ogm/selection-set.adoc[Selection Set] for more information.
 
 |`args` +
  +

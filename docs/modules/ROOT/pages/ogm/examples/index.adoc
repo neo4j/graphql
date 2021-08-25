@@ -3,5 +3,5 @@
 
 This chapter runs through some examples of how you might take advantage of the OGM.
 
-- xref::ogm/examples/custom-resolvers.adoc#ogm-examples-custom-resolvers[Custom Resolvers] - using the OGM in custom resolvers within your Neo4j GraphQL API
-- xref::ogm/examples/rest-api.adoc#ogm-examples-rest-api[REST API] - exposing your Neo4j GraphQL API through a REST API, using the OGM
+- xref::ogm/examples/custom-resolvers.adoc[Custom Resolvers] - using the OGM in custom resolvers within your Neo4j GraphQL API
+- xref::ogm/examples/rest-api.adoc[REST API] - exposing your Neo4j GraphQL API through a REST API, using the OGM

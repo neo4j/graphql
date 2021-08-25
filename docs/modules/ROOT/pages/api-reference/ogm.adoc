@@ -1,4 +1,4 @@
 [[api-reference-ogm]]
 = `@neo4j/graphql-ogm`
 
-See xref::ogm/api-reference/ogm.adoc#ogm-api-reference-ogm[`OGM`].
+See xref::ogm/api-reference/ogm.adoc[`OGM`].

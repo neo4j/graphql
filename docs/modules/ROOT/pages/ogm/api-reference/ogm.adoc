@@ -5,7 +5,7 @@
 
 Returns an `OGM` instance.
 
-Takes an `input` object as a parameter, which is then passed to the `Neo4jGraphQL` constructor. Supported options are listed in the documentation for xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql[`Neo4jGraphQL`].
+Takes an `input` object as a parameter, which is then passed to the `Neo4jGraphQL` constructor. Supported options are listed in the documentation for xref::api-reference/neo4jgraphql.adoc[`Neo4jGraphQL`].
 
 === Example
 

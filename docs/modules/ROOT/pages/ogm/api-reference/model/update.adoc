@@ -1,7 +1,7 @@
 [[ogm-api-reference-model-update]]
 = `update`
 
-This method can be used to update nodes, and maps to the underlying xref::mutations/update.adoc#mutations-update[Update] Mutation.
+This method can be used to update nodes, and maps to the underlying xref::mutations/update.adoc[Update] Mutation.
 
 Returns a `Promise` that resolves to the equivalent of the Mutation response for this operation.
 
@@ -27,37 +27,37 @@ const { users } = await User.update({
 |`where` +
  +
  Type: `GraphQLWhereArg`
-|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc#filtering[Filtering].
+|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc[Filtering].
 
 |`update` +
  +
  Type: `any`
-|A JavaScript object representation of the GraphQL `update` input type used for xref::mutations/update.adoc#mutations-update[Update] Mutations.
+|A JavaScript object representation of the GraphQL `update` input type used for xref::mutations/update.adoc[Update] Mutations.
 
 |`connect` +
  +
  Type: `any`
-|A JavaScript object representation of the GraphQL `connect` input type used for xref::mutations/update.adoc#mutations-update[Update] Mutations.
+|A JavaScript object representation of the GraphQL `connect` input type used for xref::mutations/update.adoc[Update] Mutations.
 
 |`disconnect` +
  +
  Type: `any`
-|A JavaScript object representation of the GraphQL `disconnect` input type used for xref::mutations/update.adoc#mutations-update[Update] Mutations.
+|A JavaScript object representation of the GraphQL `disconnect` input type used for xref::mutations/update.adoc[Update] Mutations.
 
 |`create` +
  +
  Type: `any`
-|A JavaScript object representation of the GraphQL `create` input type used for xref::mutations/update.adoc#mutations-update[Update] Mutations.
+|A JavaScript object representation of the GraphQL `create` input type used for xref::mutations/update.adoc[Update] Mutations.
 
 |`options` +
  +
  Type: `GraphQLOptionsArg`
-|A JavaScript object representation of the GraphQL `options` input type used for xref::sorting.adoc#sorting[Sorting] and xref::pagination/index.adoc[Pagination].
+|A JavaScript object representation of the GraphQL `options` input type used for xref::sorting.adoc[Sorting] and xref::pagination/index.adoc[Pagination].
 
 |`selectionSet` +
  +
  Type: `string` or `DocumentNode` or `SelectionSetNode`
-|Selection set for the Mutation, see xref::ogm/selection-set.adoc#ogm-selection-set[Selection Set] for more information.
+|Selection set for the Mutation, see xref::ogm/selection-set.adoc[Selection Set] for more information.
 
 |`args` +
  +

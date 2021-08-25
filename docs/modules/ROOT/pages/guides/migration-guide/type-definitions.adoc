@@ -16,7 +16,7 @@ Migrating this directive is trivial:
 
 For example, `@relation(name: "ACTED_IN", direction: OUT)` becomes `@relationship(type: "ACTED_IN", direction: OUT)`.
 
-See xref::type-definitions/relationships.adoc#type-definitions-relationships[Relationships] for more information on relationships in `@neo4j/graphql`.
+See xref::type-definitions/relationships.adoc[Relationships] for more information on relationships in `@neo4j/graphql`.
 
 === Relationship Properties
 
@@ -69,7 +69,7 @@ And note the following changes to the two node types:
 
 === `@cypher`
 
-No change. See xref::type-definitions/cypher.adoc#type-definitions-cypher[`@cypher` directive] for more details on this directive in `@neo4j/graphql`.
+No change. See xref::type-definitions/cypher.adoc[`@cypher` directive] for more details on this directive in `@neo4j/graphql`.
 
 === `@neo4j_ignore`
 

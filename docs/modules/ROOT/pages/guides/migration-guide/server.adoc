@@ -84,4 +84,4 @@ server.listen().then(({ url }) => {
 });
 ----
 
-Database bookmarks are also supported. See xref::driver-configuration.adoc#driver-configuration[Driver Configuration] for more information.
+Database bookmarks are also supported. See xref::driver-configuration.adoc[Driver Configuration] for more information.
