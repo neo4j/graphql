@@ -234,13 +234,22 @@ input ActorWhere {
 
 type CreateActorsMutationResponse {
     actors: [Actor!]!
+    info: CreateInfo!
+}
+
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -353,9 +362,19 @@ enum SortDirection {
 
 type UpdateActorsMutationResponse {
     actors: [Actor!]!
+    info: UpdateInfo!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 ```
