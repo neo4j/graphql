@@ -27,15 +27,14 @@ export default function countResolver({ node }: { node: Node }) {
         const context = _context as Context;
         const [cypher, params] = translateCount({ context, node });
 
-        const result = await execute({
+        const executeResult = await execute({
             cypher,
             params,
             defaultAccessMode: "READ",
             context,
-            raw: true,
         });
 
-        const count = result.records[0]._fields[0];
+        const count = executeResult.result.records[0].get(0);
 
         // @ts-ignore: count is unknown, and to cast to object would be an antipattern
         if (isInt(count)) {

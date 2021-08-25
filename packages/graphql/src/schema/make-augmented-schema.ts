@@ -29,6 +29,7 @@ import {
     GraphQLNonNull,
     GraphQLResolveInfo,
     GraphQLSchema,
+    GraphQLString,
     InputObjectTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
     NamedTypeNode,
@@ -92,9 +93,30 @@ function makeAugmentedSchema(
     const relationships: Relationship[] = [];
 
     composer.createObjectTC({
+        name: "CreateInfo",
+        fields: {
+            bookmark: GraphQLString,
+            nodesCreated: new GraphQLNonNull(GraphQLInt),
+            relationshipsCreated: new GraphQLNonNull(GraphQLInt),
+        },
+    });
+
+    composer.createObjectTC({
         name: "DeleteInfo",
         fields: {
+            bookmark: GraphQLString,
             nodesDeleted: new GraphQLNonNull(GraphQLInt),
+            relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
+        },
+    });
+
+    composer.createObjectTC({
+        name: "UpdateInfo",
+        fields: {
+            bookmark: GraphQLString,
+            nodesCreated: new GraphQLNonNull(GraphQLInt),
+            nodesDeleted: new GraphQLNonNull(GraphQLInt),
+            relationshipsCreated: new GraphQLNonNull(GraphQLInt),
             relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
         },
     });
@@ -568,6 +590,7 @@ function makeAugmentedSchema(
             composer.createObjectTC({
                 name: `${operation}${pluralize(node.name)}MutationResponse`,
                 fields: {
+                    info: `${operation}Info!`,
                     [pluralize(camelCase(node.name))]: `[${node.name}!]!`,
                 },
             })

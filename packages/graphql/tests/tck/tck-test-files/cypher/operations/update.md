@@ -385,12 +385,18 @@ mutation {
 ```cypher
 MATCH (this:Movie)
 WHERE this.id = $this_id
+
 WITH this
-OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
-WHERE this_disconnect_actors0.name = $updateMovies.args.disconnect.actors[0].where.node.name
-FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
-DELETE this_disconnect_actors0_rel
-)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
+    WHERE this_disconnect_actors0.name = $updateMovies.args.disconnect.actors[0].where.node.name
+    FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
+    DELETE this_disconnect_actors0_rel
+    )
+    RETURN count(*)
+}
+
 RETURN this { .id } AS this
 ```
 
@@ -446,18 +452,29 @@ mutation {
 ```cypher
 MATCH (this:Movie)
 WHERE this.id = $this_id
+
 WITH this
-OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
-WHERE this_disconnect_actors0.name = $updateMovies.args.disconnect.actors[0].where.node.name
-FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
-DELETE this_disconnect_actors0_rel
-)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
+    WHERE this_disconnect_actors0.name = $updateMovies.args.disconnect.actors[0].where.node.name
+    FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
+    DELETE this_disconnect_actors0_rel
+    )
+    RETURN count(*)
+}
+
 WITH this
-OPTIONAL MATCH (this)<-[this_disconnect_actors1_rel:ACTED_IN]-(this_disconnect_actors1:Actor)
-WHERE this_disconnect_actors1.name = $updateMovies.args.disconnect.actors[1].where.node.name
-FOREACH(_ IN CASE this_disconnect_actors1 WHEN NULL THEN [] ELSE [1] END |
-DELETE this_disconnect_actors1_rel
-)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)<-[this_disconnect_actors1_rel:ACTED_IN]-(this_disconnect_actors1:Actor)
+    WHERE this_disconnect_actors1.name = $updateMovies.args.disconnect.actors[1].where.node.name
+    FOREACH(_ IN CASE this_disconnect_actors1 WHEN NULL THEN [] ELSE [1] END |
+    DELETE this_disconnect_actors1_rel
+    )
+    RETURN count(*)
+}
+
 RETURN this { .id } AS this
 ```
 

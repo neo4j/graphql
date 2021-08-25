@@ -1,0 +1,252 @@
+name: "master"
+
+on:
+  push:
+    branches:
+      - master
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  cache-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+
+  unit-tests:
+    needs:
+      - cache-dependencies
+
+    strategy:
+      matrix:
+        package:
+          - graphql
+          - ogm
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run packages/${{ matrix.package }} unit tests
+        run: yarn run test:unit --coverage
+        working-directory: packages/${{ matrix.package }}
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./packages/${{ matrix.package }}/coverage/
+          flags: ${{ matrix.package }},unit
+          fail_ci_if_error: true
+
+  tck-tests:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run TCK tests
+        run: yarn --cwd packages/graphql run test:tck --coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./packages/graphql/coverage/
+          flags: graphql,tck
+          fail_ci_if_error: true
+
+  package-tests:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - run: yarn build
+      - name: Run @neo4j/graphql package tests
+        run: yarn --cwd packages/graphql run test:package-tests
+
+  integration-tests-on-prem:
+    needs:
+      - cache-dependencies
+
+    strategy:
+      matrix:
+        package:
+          - graphql
+          - ogm
+        neo4j-version:
+          - 4.1.5
+          - 4.1
+          - 4.2
+          - 4.3
+
+    runs-on: ubuntu-latest
+
+    services:
+      neo4j:
+        image: neo4j:${{ matrix.neo4j-version }}
+        env:
+          NEO4J_AUTH: neo4j/testpassword
+          NEO4JLABS_PLUGINS: '["apoc"]'
+        ports:
+          - 7687:7687
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run @neo4j/graphql integration tests and move coverage
+        run: |
+          yarn test:int --coverage
+          mv coverage coverage-${{ matrix.neo4j-version }}
+        working-directory: packages/${{ matrix.package }}
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: testpassword
+          NEO_URL: bolt://localhost:7687
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: integration-coverage-${{ matrix.package }}
+          path: packages/${{ matrix.package }}/coverage-${{ matrix.neo4j-version }}/
+
+  aura-teardown:
+    needs:
+      - cache-dependencies
+
+    strategy:
+      matrix:
+        aura-instance:
+          - free
+          - professional
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Install ts-node and typescript
+        run: npm install -g ts-node typescript
+      - name: Uppercase instance name
+        run: |
+          lowercase_instance=${{ matrix.aura-instance }}
+          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>${GITHUB_ENV}
+          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>${GITHUB_ENV}
+      - name: Delete all data in instance
+        run: ts-node tests/integration/teardown.ts
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
+          NEO_URL: ${{ secrets[env.AURA_URI_SECRET] }}
+
+  integration-tests-aura:
+    needs:
+      - cache-dependencies
+      - aura-teardown
+
+    strategy:
+      matrix:
+        package:
+          - graphql
+          - ogm
+        aura-instance:
+          - free
+          - professional
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Uppercase instance name
+        run: |
+          lowercase_instance=${{ matrix.aura-instance }}
+          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>${GITHUB_ENV}
+          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>${GITHUB_ENV}
+      - name: Run @neo4j/graphql integration tests
+        run: |
+          yarn test:int -t '^(?!delete should delete a movie, a single nested actor and another movie they act in|update should delete a nested actor and one of their nested movies, within an update block)' --coverage
+          mv coverage coverage-aura-${{ matrix.aura-instance }}
+        working-directory: packages/${{ matrix.package }}
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
+          NEO_URL: ${{ secrets[env.AURA_URI_SECRET] }}
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: integration-coverage-${{ matrix.package }}
+          path: packages/${{ matrix.package }}/coverage-aura-${{ matrix.aura-instance }}/
+
+  upload-integration-coverage:
+    needs:
+      - cache-dependencies
+      - integration-tests-on-prem
+      - aura-teardown
+      - integration-tests-aura
+
+    strategy:
+      matrix:
+        package:
+          - graphql
+          - ogm
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: integration-coverage-${{ matrix.package }}
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ${{ matrix.package }},integration
+          fail_ci_if_error: true
+          verbose: true
