@@ -152,7 +152,7 @@ function getObjFieldMeta({
                 }
 
                 if (aliasDirective) {
-                    throw new Error("@alias directive can only be used on primitive type fields");
+                    throw new Error("@alias directive cannot be used on relationship fields");
                 }
 
                 const relationField: RelationField = {
@@ -221,7 +221,7 @@ function getObjFieldMeta({
                 }
 
                 if (aliasDirective) {
-                    throw new Error("@alias directive can only be used on primitive type fields");
+                    throw new Error("@alias directive cannot be used on cypher fields");
                 }
 
                 const cypherField: CypherField = {
@@ -244,10 +244,6 @@ function getObjFieldMeta({
 
                 if (coalesceDirective) {
                     throw new Error("@coalesce directive can only be used on primitive type fields");
-                }
-
-                if (aliasDirective) {
-                    throw new Error("@alias directive can only be used on primitive type fields");
                 }
 
                 const enumField: CustomEnumField = {
@@ -277,10 +273,6 @@ function getObjFieldMeta({
                     throw new Error("@coalesce directive can only be used on primitive type fields");
                 }
 
-                if (aliasDirective) {
-                    throw new Error("@alias directive can only be used on primitive type fields");
-                }
-
                 const interfaceField: InterfaceField = {
                     ...baseField,
                 };
@@ -292,10 +284,6 @@ function getObjFieldMeta({
 
                 if (coalesceDirective) {
                     throw new Error("@coalesce directive can only be used on primitive type fields");
-                }
-
-                if (aliasDirective) {
-                    throw new Error("@alias directive can only be used on primitive type fields");
                 }
 
                 const objectField: ObjectField = {
