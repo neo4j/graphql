@@ -54,7 +54,7 @@ function createConnectionAndParams({
     const firstInput = resolveTree.args.first;
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
-    const relationshipVariable = `${nodeVariable}_${field.relationship.type.toLowerCase()}`;
+    const relationshipVariable = `${nodeVariable}_${field.relationship.type.toLowerCase()}_relationship`;
     const relationship = context.neoSchema.relationships.find(
         (r) => r.name === field.relationshipTypeName
     ) as Relationship;
@@ -170,7 +170,7 @@ function createConnectionAndParams({
                 }
 
                 unionSubquery.push(`WITH ${nodeVariable}`);
-                unionSubquery.push(`OPTIONAL MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
+                unionSubquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 
                 const allowAndParams = createAuthAndParams({
                     operation: "READ",
@@ -204,7 +204,9 @@ function createConnectionAndParams({
                     });
                     const [whereClause] = where;
                     if (whereClause) {
-                        whereStrs.push(whereClause);
+                        if (whereClause) {
+                            whereStrs.push(whereClause);
+                        }
                     }
                 }
 
@@ -274,7 +276,9 @@ function createConnectionAndParams({
                 }.args.where`,
             });
             const [whereClause] = where;
-            whereStrs.push(`${whereClause}`);
+            if (whereClause) {
+                whereStrs.push(`${whereClause}`);
+            }
         }
 
         const whereAuth = createAuthAndParams({

@@ -42,7 +42,7 @@ interface ActedIn {
 MATCH (this:Movie)
 CALL {
     WITH this
-    MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+    MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
     WITH collect({ }) AS edges
     RETURN {
         totalCount: size(edges)
@@ -94,10 +94,10 @@ MATCH (this:Movie)
 WHERE this.title = $this_title
 CALL {
     WITH this
-    MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+    MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
     WHERE this_actor.name = $this_hanks.args.where.node.name
     WITH collect({
-        screenTime: this_acted_in.screenTime,
+        screenTime: this_acted_in_relationship.screenTime,
         node: {
             name: this_actor.name
         }
@@ -106,10 +106,10 @@ CALL {
 }
 CALL {
     WITH this
-    MATCH (this)<-[this_acted_in:ACTED_IN]-(this_actor:Actor)
+    MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
     WHERE this_actor.name = $this_jenny.args.where.node.name
     WITH collect({
-        screenTime: this_acted_in.screenTime,
+        screenTime: this_acted_in_relationship.screenTime,
         node: {
             name: this_actor.name
         }

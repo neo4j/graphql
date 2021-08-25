@@ -23,12 +23,27 @@ A BigInt value up to 64 bits in size, which can be a number or a string if used 
 """
 scalar BigInt
 
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
 type File {
     name: String!
     size: BigInt!
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -95,10 +110,12 @@ input FileUpdateInput {
 }
 
 type CreateFilesMutationResponse {
+    info: CreateInfo!
     files: [File!]!
 }
 
 type UpdateFilesMutationResponse {
+    info: UpdateInfo!
     files: [File!]!
 }
 
