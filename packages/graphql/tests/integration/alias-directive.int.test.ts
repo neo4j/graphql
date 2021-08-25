@@ -169,4 +169,28 @@ describe("@alias directive", () => {
             likesConnection: { edges: [{ myComment: dbComment }] },
         });
     });
+    test.only("E2E with create mutation with @alias", async () => {
+        const name = "Stella";
+        const userMutation = `
+            mutation CreateUser {
+                createAliasDirectiveTestUsers(input: [{name: "${name}"}]) {
+                    aliasDirectiveTestUsers {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: userMutation,
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any).createAliasDirectiveTestUsers.aliasDirectiveTestUsers[0]).toEqual({
+            name,
+        });
+    });
 });
