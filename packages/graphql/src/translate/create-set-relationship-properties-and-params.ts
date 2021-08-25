@@ -58,9 +58,9 @@ function createSetRelationshipPropertiesAndParams({
         const pointField = relationship.pointFields.find((x) => x.fieldName === key);
         if (pointField) {
             if (pointField.typeMeta.array) {
-                strs.push(`SET ${varName}.${key} = [p in $${paramName} | point(p)]`);
+                strs.push(`SET ${varName}.${dbFieldName} = [p in $${paramName} | point(p)]`);
             } else {
-                strs.push(`SET ${varName}.${key} = point($${paramName})`);
+                strs.push(`SET ${varName}.${dbFieldName} = point($${paramName})`);
             }
 
             params[paramName] = value;
@@ -68,7 +68,7 @@ function createSetRelationshipPropertiesAndParams({
             return;
         }
 
-        strs.push(`SET ${varName}.${key} = $${paramName}`);
+        strs.push(`SET ${varName}.${dbFieldName} = $${paramName}`);
         params[paramName] = value;
     });
 

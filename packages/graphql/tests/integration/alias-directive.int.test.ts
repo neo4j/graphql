@@ -20,6 +20,7 @@
 import { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
+import * as neo4jDriver from "neo4j-driver";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
@@ -30,7 +31,7 @@ describe("@alias directive", () => {
     const dbName = generate({ charset: "alphabetic" });
     const dbComment = generate({ charset: "alphabetic" });
     const dbTitle = generate({ charset: "alphabetic" });
-    const year = 2015;
+    const year = neo4jDriver.int(2015);
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -96,7 +97,7 @@ describe("@alias directive", () => {
             likes: [
                 {
                     title: dbTitle,
-                    year,
+                    year: year.toNumber(),
                 },
             ],
         });
@@ -135,7 +136,7 @@ describe("@alias directive", () => {
                         comment: dbComment,
                         node: {
                             title: dbTitle,
-                            year,
+                            year: year.toNumber(),
                         },
                     },
                 ],
@@ -169,16 +170,33 @@ describe("@alias directive", () => {
             likesConnection: { edges: [{ myComment: dbComment }] },
         });
     });
-    test.only("E2E with create mutation with @alias", async () => {
+    test("E2E with create mutation with @alias", async () => {
         const name = "Stella";
+        const title = "Interstellar";
+        const comment = "Yes!";
         const userMutation = `
-            mutation CreateUser {
-                createAliasDirectiveTestUsers(input: [{name: "${name}"}]) {
-                    aliasDirectiveTestUsers {
-                        name
+        mutation CreateUser {
+            createAliasDirectiveTestUsers(
+                input: [{ name: "${name}", likes: { create: { edge: {comment: "${comment}"}, node: { title: "${title}", year: ${year} } } } }]
+            ) {
+                aliasDirectiveTestUsers {
+                    name
+                    likes {
+                        title
+                        year
+                    }
+                    likesConnection {
+                        edges {
+                            comment
+                            node {
+                                title
+                                year
+                            }
+                        }
                     }
                 }
             }
+        }
         `;
 
         const gqlResult = await graphql({
@@ -191,6 +209,23 @@ describe("@alias directive", () => {
 
         expect((gqlResult.data as any).createAliasDirectiveTestUsers.aliasDirectiveTestUsers[0]).toEqual({
             name,
+            likes: [
+                {
+                    title,
+                    year: year.toNumber(),
+                },
+            ],
+            likesConnection: {
+                edges: [
+                    {
+                        comment,
+                        node: {
+                            title,
+                            year: year.toNumber(),
+                        },
+                    },
+                ],
+            },
         });
     });
 });
