@@ -55,8 +55,7 @@ function createCreateAndParams({
         const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
         const pointField = node.pointFields.find((x) => key === x.fieldName);
 
-        // In the case of using the @alias directive (map a GraphQL field to a db prop)
-        // the output will be RETURN varName {GraphQLfield: varName.dbAlias}
+        // For the @alias directive to be used
         let dbFieldName = key;
         const nodeProp = node.primitiveFields.find(({ fieldName }) => fieldName === key);
         if (nodeProp && nodeProp.alias) {
