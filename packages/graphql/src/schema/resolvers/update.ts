@@ -43,6 +43,10 @@ export default function updateResolver({ node }: { node: Node }) {
         const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
 
         return {
+            info: {
+                bookmark: executeResult.bookmark,
+                ...executeResult.statistics,
+            },
             [responseKey]: executeResult.records.map((x) => x.this),
         };
     }
