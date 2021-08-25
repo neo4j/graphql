@@ -20,6 +20,10 @@
 import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
 import neo4j from "neo4j-driver";
 
+const DOCUMENTATION_ADDRESS = "https://neo4j.com/docs/graphql-manual/current/type-definitions/types/#_duration";
+
+export const DECIMAL_VALUE_ERROR = `Cannot specify decimal values in durations, please refer to ${DOCUMENTATION_ADDRESS}`;
+
 // Matching P[nY][nM][nD][T[nH][nM][nS]]  |  P[nW]  |  PYYYYMMDDTHHMMSS[.sss+]
 // For unit based duration a fractional value can only exist on the smallest unit(e.g. P2Y4.5M matches P2.5Y4M does not)
 // Similar constraint allows for only fractional seconds on date time based duration
@@ -53,6 +57,16 @@ export const parseDuration = (value: any) => {
         fractionDT,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     } = match.groups!;
+
+    // Check if any valid duration strings have fractional values unallowed by neo4j-driver@4.2.3
+    if (
+        !Number.isInteger(+(week ?? 0)) ||
+        !Number.isInteger(+(yearUnit?.split("Y")[0] ?? 0)) ||
+        !Number.isInteger(+(monthUnit?.split("M")[0] ?? 0)) ||
+        !Number.isInteger(+(dayUnit?.split("D")[0] ?? 0))
+    ) {
+        throw new Error(DECIMAL_VALUE_ERROR);
+    }
 
     let months = 0;
     let days = 0;
