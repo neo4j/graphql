@@ -3,7 +3,7 @@
 
 The Neo4j GraphQL Library expects an `authorization` header in the request object, which means you can authenticate users however you like. You could have a custom sign-in mutation, integrate with Auth0, or roll your own SSO server. The point here is that it’s just a JWT which the library decodes to make sure it’s valid - but it’s down to the user to issue tokens.
 
-> The example at xref::ogm/examples/custom-resolvers.adoc[Custom Resolvers] demonstrates a hypothetical sign-up/sign-in flow using the xref::ogm/index.adoc[OGM], which will be a good starting point for inspiration.
+> The example at xref::ogm/examples/custom-resolvers.adoc#ogm-examples-custom-resolvers[Custom Resolvers] demonstrates a hypothetical sign-up/sign-in flow using the xref::ogm/index.adoc[OGM], which will be a good starting point for inspiration.
 
 == `isAuthenticated`
 

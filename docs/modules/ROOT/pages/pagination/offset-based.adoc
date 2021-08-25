@@ -61,7 +61,7 @@ And so on, so forth.
 
 You can fetch the total number of records for a certain type using its count query, and then divide that number by your entries per page in order to calculate the total number of pages. This will allow to to determine what the last page is, and whether there is a next page.
 
-See xref::queries.adoc[Count] queries for details on how to execute these queries.
+See xref::queries.adoc#queries-count[Count] queries for details on how to execute these queries.
 
 == Paginating relationship fields
 

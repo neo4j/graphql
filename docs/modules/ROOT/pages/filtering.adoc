@@ -12,14 +12,14 @@ All types can be tested for either equality or non-equality. For the `Boolean` t
 [[filtering-numerical-operators]]
 === Numerical operators
 
-The following comparison operators are available for numeric types (`Int`, `Float`, xref::type-definitions/types.adoc[`BigInt`]), xref::type-definitions/types.adoc[Temporal Types] and xref::type-definitions/types.adoc[Spatial Types]:
+The following comparison operators are available for numeric types (`Int`, `Float`, xref::type-definitions/types.adoc#type-definitions-types-bigint[`BigInt`]), xref::type-definitions/types.adoc#type-definitions-types-temporal[Temporal Types] and xref::type-definitions/types.adoc#type-definitions-types-spatial[Spatial Types]:
 
 * `_LT`
 * `_LTE`
 * `_GTE`
 * `_GT`
 
-Filtering of spatial types is different to filtering of numerical types and also offers an additional filter - see xref::type-definitions/types.adoc[Spatial Types].
+Filtering of spatial types is different to filtering of numerical types and also offers an additional filter - see xref::type-definitions/types.adoc#type-definitions-types-spatial[Spatial Types].
 
 === String comparison
 
@@ -58,7 +58,7 @@ These four operators are available for all types apart from `Boolean`.
 
 == Usage
 
-Using the type definitions from xref::queries.adoc[Queries], below are some example of how filtering can be applied when querying for data.
+Using the type definitions from xref::queries.adoc#queries[Queries], below are some example of how filtering can be applied when querying for data.
 
 === At the root of a Query
 

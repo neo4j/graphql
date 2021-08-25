@@ -31,5 +31,5 @@ const usersCount = await User.count({ where: { name_STARTS_WITH: "D" }});
 |`where` +
  +
  Type: `GraphQLWhereArg`
-|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc[Filtering].
+|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc#filtering[Filtering].
 |===

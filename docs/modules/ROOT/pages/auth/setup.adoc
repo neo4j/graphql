@@ -23,7 +23,7 @@ const neoSchema = new Neo4jGraphQL({
 });
 ----
 
-It is also possible to pass in JWTs which have already been decoded, in which case the `jwt` option is _not necessary_. This is covered in the section xref::auth/setup.adoc[Passing in JWTs] below.
+It is also possible to pass in JWTs which have already been decoded, in which case the `jwt` option is _not necessary_. This is covered in the section xref::auth/setup.adoc#auth-setup-passing-in[Passing in JWTs] below.
 
 === Auth Roles Object Paths
 

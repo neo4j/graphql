@@ -36,8 +36,8 @@ type Query {
 
 Each field for querying data accepts two arguments:
 
-- `where` - used for xref::filtering.adoc[Filtering] data
-- `options` - used to specify xref::sorting.adoc[Sorting] and xref::pagination/index.adoc[Pagination] options
+- `where` - used for xref::filtering.adoc#filtering[Filtering] data
+- `options` - used to specify xref::sorting.adoc#sorting[Sorting] and xref::pagination/index.adoc[Pagination] options
 
 === Querying for all User nodes
 

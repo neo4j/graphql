@@ -15,9 +15,9 @@ npm install @neo4j/graphql graphql neo4j-driver
 
 From this point on, see each section within this guide:
 
-1. xref::guides/migration-guide/server.adoc[Server] for how to generate a schema and host it using Apollo Server, including database configuration
-2. xref::guides/migration-guide/type-definitions.adoc[Type Definitions] for the changes needed in your type definitions, including GraphQL types and directives
-3. xref::guides/migration-guide/queries.adoc[Queries] for how you need to change your queries to work with the new schema
-4. xref::guides/migration-guide/mutations.adoc[Mutations] for how you need to change your mutations to work with the new schema
+1. xref::guides/migration-guide/server.adoc#migration-guide-server[Server] for how to generate a schema and host it using Apollo Server, including database configuration
+2. xref::guides/migration-guide/type-definitions.adoc#migration-guide-type-definitions[Type Definitions] for the changes needed in your type definitions, including GraphQL types and directives
+3. xref::guides/migration-guide/queries.adoc#migration-guide-queries[Queries] for how you need to change your queries to work with the new schema
+4. xref::guides/migration-guide/mutations.adoc#migration-guide-mutations[Mutations] for how you need to change your mutations to work with the new schema
 
 Subscriptions are not supported at this stage.

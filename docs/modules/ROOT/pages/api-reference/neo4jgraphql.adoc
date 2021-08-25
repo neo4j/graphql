@@ -43,22 +43,22 @@ Accepts all of the options from https://github.com/ardatan/graphql-tools/blob/%4
 
 |`driverConfig` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc[`DriverConfig`]
+ Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-driverconfig[`DriverConfig`]
 |Additional driver configuration options.
 
 |`enableRegex` +
  +
  Type: `boolean`
-|Whether to enable RegEx filters, see xref::filtering.adoc[RegEx matching] for more information.
+|Whether to enable RegEx filters, see xref::filtering.adoc#filtering-regex[RegEx matching] for more information.
 
 |`jwt` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc[`Neo4jGraphQLJWT`]
+ Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-neo4jgraphqljwt[`Neo4jGraphQLJWT`]
 |JWT options.
 
 |`queryOptions` +
  +
- Type: xref::api-reference/neo4jgraphql.adoc[`CypherQueryOptions`]
+ Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig-cypherqueryoptions[`CypherQueryOptions`]
 |Cypher query options, see xref::troubleshooting/index.adoc#troubleshooting-query-tuning[Query Tuning] for more information.
 
 |`skipValidateTypeDefs` +

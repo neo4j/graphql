@@ -3,13 +3,13 @@
 
 Most applications won't just expose a single GraphQL API. There may also be scheduled jobs, authentication and migrations keeping an application ticking over. The OGM (Object Graph Mapper) can be used to programmatically interact with your Neo4j GraphQL API, which may help with achieving these goals.
 
-- xref::ogm/installation.adoc[Installation]
+- xref::ogm/installation.adoc#ogm-installation[Installation]
 - xref::ogm/examples/index.adoc[Examples]
-- xref::ogm/private.adoc[`@private` Directive]
-- xref::ogm/selection-set.adoc[Selection Set]
+- xref::ogm/private.adoc#ogm-private[`@private` Directive]
+- xref::ogm/selection-set.adoc#ogm-selection-set[Selection Set]
 - xref::ogm/api-reference/index.adoc[API Reference]
 
-> Before diving into the OGM, it's important to have a good understanding of the Neo4h GraphQL Library first. It's recommended to at least work through the xref::getting-started.adoc[Getting Started] guide.
+> Before diving into the OGM, it's important to have a good understanding of the Neo4h GraphQL Library first. It's recommended to at least work through the xref::getting-started.adoc#getting-started[Getting Started] guide.
 
 == Excluded directives
 
@@ -23,4 +23,4 @@ The following directives are excluded from the OGM's schema:
 
 This is because the OGM is only ever used programmatically, as opposed to an exposed API which needs these security measures.
 
-See also: xref::ogm/private.adoc[`@private` Directive]
+See also: xref::ogm/private.adoc#ogm-private[`@private` Directive]
