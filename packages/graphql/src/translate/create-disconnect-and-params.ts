@@ -75,6 +75,9 @@ function createDisconnectAndParams({
         }
 
         res.disconnects.push(`WITH ${withVars.join(", ")}`);
+        res.disconnects.push("CALL {");
+
+        res.disconnects.push(`WITH ${withVars.join(", ")}`);
         res.disconnects.push(
             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${
                 labelOverride || relationField.typeMeta.name
@@ -250,6 +253,9 @@ function createDisconnectAndParams({
             );
             res.params = { ...res.params, ...postAuth.params };
         }
+
+        res.disconnects.push("RETURN count(*)");
+        res.disconnects.push("}");
 
         return res;
     }
