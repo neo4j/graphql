@@ -71,6 +71,17 @@ type Movie {
 }
 ----
 
+=== `Time`
+
+RFC3339 time string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-time[Time] temporal type.
+
+[source, graphql, indent=0]
+----
+type Movie {
+    nextShowing: Time
+}
+----
+
 [[type-definitions-types-spatial]]
 == Spatial Types
 
