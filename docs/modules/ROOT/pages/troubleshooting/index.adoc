@@ -1,7 +1,7 @@
 [[troubleshooting]]
 = Troubleshooting
 
-This chapter contains common troubleshooting steps. Additionally, there is a section for xref::troubleshooting/faqs.adoc[FAQs] (Frequently Asked Questions) where you might find answers to your problems.
+This chapter contains common troubleshooting steps. Additionally, there is a section for xref::troubleshooting/faqs.adoc#troubleshooting-faqs[FAQs] (Frequently Asked Questions) where you might find answers to your problems.
 
 == Debug Logging
 

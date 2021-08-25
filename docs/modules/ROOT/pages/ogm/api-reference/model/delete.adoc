@@ -1,7 +1,7 @@
 [[ogm-api-reference-model-delete]]
 = `delete`
 
-This method can be used to delete nodes, and maps to the underlying xref::mutations/delete.adoc[Delete] Mutation.
+This method can be used to delete nodes, and maps to the underlying xref::mutations/delete.adoc#mutations-delete[Delete] Mutation.
 
 Returns a `Promise` which resolvers to a `DeleteInfo` object:
 
@@ -38,12 +38,12 @@ await User.delete({ where: { name: "Dan" }});
 |`where` +
  +
  Type: `GraphQLWhereArg`
-|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc[Filtering].
+|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc#filtering[Filtering].
 
 |`delete` +
  +
  Type: `string` or `DocumentNode` or `SelectionSetNode`
-|A JavaScript object representation of the GraphQL `delete` input type used for xref::mutations/delete.adoc[Delete] Mutations.
+|A JavaScript object representation of the GraphQL `delete` input type used for xref::mutations/delete.adoc#mutations-delete[Delete] Mutations.
 
 |`context` +
  +

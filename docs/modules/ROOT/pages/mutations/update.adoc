@@ -50,7 +50,7 @@ type Mutation {
 }
 ----
 
-> The `id` field not be update-able as the xref::type-definitions/autogeneration.adoc[`@id`] directive has been used.
+> The `id` field not be update-able as the xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-id[`@id`] directive has been used.
 
 == Single update
 
