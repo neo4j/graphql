@@ -356,11 +356,16 @@ MATCH (this:Movie)
 WHERE this.title = $this_title
 
 WITH this
-OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre)
-WHERE this_search_Genre0_disconnect0.name = $updateMovies.args.update.search.Genre[0].disconnect[0].where.node.name
-FOREACH(_ IN CASE this_search_Genre0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
-    DELETE this_search_Genre0_disconnect0_rel
-)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre)
+    WHERE this_search_Genre0_disconnect0.name = $updateMovies.args.update.search.Genre[0].disconnect[0].where.node.name
+    FOREACH(_ IN CASE this_search_Genre0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
+        DELETE this_search_Genre0_disconnect0_rel
+    )
+
+    RETURN count(*)
+}
 
 RETURN this { .title } AS this
 ```
@@ -422,11 +427,15 @@ MATCH (this:Movie)
 WHERE this.title = $this_title
 
 WITH this
-OPTIONAL MATCH (this)-[this_disconnect_search_Genre0_rel:SEARCH]->(this_disconnect_search_Genre0:Genre)
-WHERE this_disconnect_search_Genre0.name = $updateMovies.args.disconnect.search.Genre[0].where.node.name
-FOREACH(_ IN CASE this_disconnect_search_Genre0 WHEN NULL THEN [] ELSE [1] END |
-    DELETE this_disconnect_search_Genre0_rel
-)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[this_disconnect_search_Genre0_rel:SEARCH]->(this_disconnect_search_Genre0:Genre)
+    WHERE this_disconnect_search_Genre0.name = $updateMovies.args.disconnect.search.Genre[0].where.node.name
+    FOREACH(_ IN CASE this_disconnect_search_Genre0 WHEN NULL THEN [] ELSE [1] END |
+        DELETE this_disconnect_search_Genre0_rel
+    )
+    RETURN count(*)
+}
 
 RETURN this { .title } AS this
 ```
