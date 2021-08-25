@@ -82,6 +82,8 @@ type Movie {
 }
 ----
 
+_Note:_ Decimal values are not currently accepted on `[YMWD]`
+
 [[type-definitions-types-spatial]]
 == Spatial Types
 
