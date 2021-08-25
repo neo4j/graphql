@@ -245,7 +245,7 @@ describe("@alias directive", () => {
         const title = "Interstellar 2";
         const comment = "Yes!";
         await session.run(
-            `CREATE (m:AliasDirectiveTestMovie {dbTitle: "${title}", year: toInteger(2015), createdAd: "2021-08-25"})`
+            `CREATE (m:AliasDirectiveTestMovie {dbTitle: "${title}", year: toInteger(2015), dbCreatedAt: "2021-08-25"})`
         );
         const userMutation = `
         mutation CreateUserConnectMovie {
@@ -297,6 +297,93 @@ describe("@alias directive", () => {
                         node: {
                             title,
                             year: year.toNumber(),
+                        },
+                    },
+                ],
+            },
+        });
+    });
+    test("E2E with update mutation with @alias", async () => {
+        const name = "Stella";
+        const newName = "Molly";
+        const title = "Interstellar 2";
+        const newTitle = "Molly's game";
+        const comment = "Yes!";
+        const newComment = "Sick!";
+        const newYear = neo4jDriver.int(2010);
+
+        const create = `
+        mutation CreateGraph {
+            createAliasDirectiveTestUsers(
+                input: [{ name: "${name}", likes: { create: { edge: {comment: "${comment}"}, node: { title: "${title}", year: ${year} } } } }]
+            ) {
+                aliasDirectiveTestUsers {
+                    id
+                }
+                info {
+                    bookmark
+                }
+              
+            }
+          }
+        `;
+        const createResult = await graphql({
+            schema: neoSchema.schema,
+            source: create,
+            contextValue: { driver },
+        });
+        const { bookmark } = (createResult.data as any).createAliasDirectiveTestUsers.info;
+
+        const update = `
+        mutation UpdateAll {
+            updateAliasDirectiveTestUsers(
+                where: {name_CONTAINS: "${name}"}
+                update: {name: "${newName}", likes: {update: {edge: {comment: "${newComment}"}, node: {title: "${newTitle}", year: ${newYear}}}}}
+            ) {
+                aliasDirectiveTestUsers {
+                    id
+                    name
+                    likes {
+                        title
+                        year
+                    }
+                    likesConnection {
+                        edges {
+                            comment
+                            node {
+                                title
+                                year
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        `;
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: update,
+            contextValue: { driver, driverConfig: { bookmarks: [bookmark] } },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any).updateAliasDirectiveTestUsers.aliasDirectiveTestUsers[0]).toEqual({
+            id: expect.any(String),
+            name: newName,
+            likes: [
+                {
+                    title: newTitle,
+                    year: newYear.toNumber(),
+                },
+            ],
+            likesConnection: {
+                edges: [
+                    {
+                        comment: newComment,
+                        node: {
+                            title: newTitle,
+                            year: newYear.toNumber(),
                         },
                     },
                 ],
