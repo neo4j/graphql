@@ -77,7 +77,7 @@ type Movie {
     director: Person! @relationship(type: "DIRECTED", direction: IN)
 }
 
-interface ActedIn {
+interface ActedIn @relationshipProperties {
     roles: [String!]
 }
 ----
