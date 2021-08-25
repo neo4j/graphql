@@ -42,11 +42,9 @@ A single post can be deleted by executing the following GraphQL statement:
 [source, graphql, indent=0]
 ----
 mutation {
-    deletePosts(where: [
-        {
-            id: "6042E807-47AE-4857-B7FE-1AADF522DE8B"
-        }
-    ]) {
+    deletePosts(where: {
+        id: "6042E807-47AE-4857-B7FE-1AADF522DE8B"
+    }) {
         nodesDeleted
         relationshipsDeleted
     }
@@ -65,11 +63,9 @@ Say that if when you delete a User, you want to delete _all_ of their Posts as w
 ----
 mutation {
     deleteUsers(
-        where: [
-            {
-                name: "Jane Doe"
-            }
-        ],
+        where: {
+            name: "Jane Doe"
+        },
         delete: {
             posts: [
                 where: { }
@@ -88,11 +84,9 @@ You may look at that empty `where` argument and wonder what that's doing. By the
 ----
 mutation {
     deleteUsers(
-        where: [
-            {
-                name: "Jane Doe"
-            }
-        ],
+        where: {
+            name: "Jane Doe"
+        },
         delete: {
             posts: [
                 where: {
