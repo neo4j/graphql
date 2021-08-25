@@ -1,0 +1,121 @@
+name: "Pull Request"
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  cache-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+
+  unit-tests:
+    needs:
+      - cache-dependencies
+
+    strategy:
+      matrix:
+        package:
+          - graphql
+          - ogm
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run packages/${{ matrix.package }} unit tests
+        run: yarn run test:unit --coverage
+        working-directory: packages/${{ matrix.package }}
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: unit-coverage-${{ matrix.package }}
+          path: packages/${{ matrix.package }}/coverage/
+
+  tck-tests:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run TCK tests
+        run: yarn --cwd packages/graphql run test:tck --coverage
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: tck-coverage-graphql
+          path: packages/graphql/coverage/
+
+  integration-tests-on-prem:
+    needs:
+      - cache-dependencies
+
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - graphql
+          - ogm
+        neo4j-version:
+          - 4.1.5
+          - 4.1
+          - 4.2
+          - 4.3
+
+    runs-on: ubuntu-latest
+
+    services:
+      neo4j:
+        image: neo4j:${{ matrix.neo4j-version }}
+        env:
+          NEO4J_AUTH: neo4j/password
+          NEO4JLABS_PLUGINS: '["apoc"]'
+        ports:
+          - 7687:7687
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run @neo4j/graphql integration tests and move coverage
+        run: |
+          yarn test:int --coverage
+          mv coverage coverage-${{ matrix.neo4j-version }}
+        working-directory: packages/${{ matrix.package }}
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: integration-coverage-${{ matrix.package }}
+          path: packages/${{ matrix.package }}/coverage-${{ matrix.neo4j-version }}/

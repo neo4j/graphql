@@ -51,7 +51,7 @@ type Movie {
     actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
 }
 
-interface ActedIn {
+interface ActedIn @relationshipProperties {
     roles: [String!]
 }
 ----

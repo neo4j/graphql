@@ -16,6 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { isInt, Integer } from "neo4j-driver";
 import { execute } from "../../utils";
 import { translateCount } from "../../translate";
 import { Node } from "../../classes";
@@ -26,15 +27,21 @@ export default function countResolver({ node }: { node: Node }) {
         const context = _context as Context;
         const [cypher, params] = translateCount({ context, node });
 
-        const result = await execute({
+        const executeResult = await execute({
             cypher,
             params,
             defaultAccessMode: "READ",
             context,
-            raw: true,
         });
 
-        return result.records[0]._fields[0].toNumber();
+        const count = executeResult.result.records[0].get(0);
+
+        // @ts-ignore: count is unknown, and to cast to object would be an antipattern
+        if (isInt(count)) {
+            return (count as Integer).toNumber();
+        }
+
+        return count;
     }
 
     return {

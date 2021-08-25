@@ -1,8 +1,3 @@
-/* eslint-disable eslint-comments/disable-enable-pair */
-/* eslint-disable jest/no-conditional-expect */
-/* eslint-disable jest/no-try-expect */
-/* ^ so we can use toContain on the errors */
-
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
@@ -32,12 +27,7 @@ describe("validateDocument", () => {
             }
         `);
 
-        try {
-            validateDocument(doc);
-            throw new Error();
-        } catch (error) {
-            expect(error.message).toContain('Directive "@coalesce" may not be used on OBJECT.');
-        }
+        expect(() => validateDocument(doc)).toThrow('Directive "@coalesce" may not be used on OBJECT.');
     });
 
     test("should throw an error if a directive is missing an argument", () => {
@@ -47,14 +37,9 @@ describe("validateDocument", () => {
             }
         `);
 
-        try {
-            validateDocument(doc);
-            throw new Error();
-        } catch (error) {
-            expect(error.message).toContain(
-                'Directive "@coalesce" argument "value" of type "Scalar!" is required, but it was not provided.'
-            );
-        }
+        expect(() => validateDocument(doc)).toThrow(
+            'Directive "@coalesce" argument "value" of type "Scalar!" is required, but it was not provided.'
+        );
     });
 
     test("should throw a missing scalar error", () => {
@@ -64,12 +49,7 @@ describe("validateDocument", () => {
             }
         `);
 
-        try {
-            validateDocument(doc);
-            throw new Error();
-        } catch (error) {
-            expect(error.message).toContain('Unknown type "Unknown".');
-        }
+        expect(() => validateDocument(doc)).toThrow('Unknown type "Unknown".');
     });
 
     test("should throw an error if a user tries to pass in their own Point definition", () => {
@@ -84,14 +64,9 @@ describe("validateDocument", () => {
             }
         `);
 
-        try {
-            validateDocument(doc);
-            throw new Error();
-        } catch (error) {
-            expect(error.message).toContain(
-                'Type "Point" already exists in the schema. It cannot also be defined in this type definition.'
-            );
-        }
+        expect(() => validateDocument(doc)).toThrow(
+            'Type "Point" already exists in the schema. It cannot also be defined in this type definition.'
+        );
     });
 
     test("should throw an error if a user tries to pass in their own DateTime definition", () => {
@@ -103,14 +78,9 @@ describe("validateDocument", () => {
             }
         `);
 
-        try {
-            validateDocument(doc);
-            throw new Error();
-        } catch (error) {
-            expect(error.message).toContain(
-                'Type "DateTime" already exists in the schema. It cannot also be defined in this type definition.'
-            );
-        }
+        expect(() => validateDocument(doc)).toThrow(
+            'Type "DateTime" already exists in the schema. It cannot also be defined in this type definition.'
+        );
     });
 
     test("should throw an error if a user tries to pass in their own PointInput definition", () => {
@@ -125,14 +95,9 @@ describe("validateDocument", () => {
             }
         `);
 
-        try {
-            validateDocument(doc);
-            throw new Error();
-        } catch (error) {
-            expect(error.message).toContain(
-                'Type "PointInput" already exists in the schema. It cannot also be defined in this type definition.'
-            );
-        }
+        expect(() => validateDocument(doc)).toThrow(
+            'Type "PointInput" already exists in the schema. It cannot also be defined in this type definition.'
+        );
     });
 
     test("should throw an error if an interface is incorrectly implemented", () => {
@@ -146,12 +111,9 @@ describe("validateDocument", () => {
             }
         `);
 
-        try {
-            validateDocument(doc);
-            throw new Error();
-        } catch (error) {
-            expect(error.message).toContain("Interface field UserInterface.age expected but User does not provide it.");
-        }
+        expect(() => validateDocument(doc)).toThrow(
+            "Interface field UserInterface.age expected but User does not provide it."
+        );
     });
 
     test("should throw an error a user tries to redefine one of our directives", () => {
@@ -163,14 +125,9 @@ describe("validateDocument", () => {
             }
         `);
 
-        try {
-            validateDocument(doc);
-            throw new Error();
-        } catch (error) {
-            expect(error.message).toContain(
-                'Directive "@relationship" already exists in the schema. It cannot be redefined.'
-            );
-        }
+        expect(() => validateDocument(doc)).toThrow(
+            'Directive "@relationship" already exists in the schema. It cannot be redefined.'
+        );
     });
 
     test("should remove auth directive and pass validation", () => {
@@ -210,6 +167,53 @@ describe("validateDocument", () => {
 
         const res = validateDocument(doc);
         expect(res).toBeUndefined();
+    });
+
+    describe("relationshipProperties directive", () => {
+        test("should not throw when used correctly on an interface", () => {
+            const doc = parse(`
+                interface ActedIn @relationshipProperties {
+                    screenTime: Int!
+                }
+
+                type Actor {
+                    name: String!
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                }
+
+                type Movie {
+                    title: String!
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                }
+            `);
+
+            const res = validateDocument(doc);
+            expect(res).toBeUndefined();
+        });
+
+        test("should throw if used on an object type", () => {
+            const doc = parse(`
+                type ActedIn @relationshipProperties {
+                    screenTime: Int!
+                }
+            `);
+
+            expect(() => validateDocument(doc)).toThrow(
+                'Directive "@relationshipProperties" may not be used on OBJECT.'
+            );
+        });
+
+        test("should throw if used on a field", () => {
+            const doc = parse(`
+                type ActedIn {
+                    screenTime: Int! @relationshipProperties
+                }
+            `);
+
+            expect(() => validateDocument(doc)).toThrow(
+                'Directive "@relationshipProperties" may not be used on FIELD_DEFINITION.'
+            );
+        });
     });
 
     test("should not throw error on use of internal input types within input types", () => {
@@ -301,6 +305,40 @@ describe("validateDocument", () => {
               type Query {
                 nodes: [Node] @cypher(statement: "")
               }
+            `);
+
+            const res = validateDocument(doc);
+            expect(res).toBeUndefined();
+        });
+    });
+
+    describe("https://github.com/neo4j/graphql/issues/442", () => {
+        test("should not throw error on validation of schema if MutationResponse used", () => {
+            const doc = parse(`
+                type Post {
+                    id: Int!
+                    text: String!
+                }
+
+                type Mutation {
+                    create_Post(text: String!): CreatePostsMutationResponse!
+                }
+            `);
+
+            const res = validateDocument(doc);
+            expect(res).toBeUndefined();
+        });
+
+        test("should not throw error on validation of schema if SortDirection used", () => {
+            const doc = parse(`
+                type Post {
+                    id: Int!
+                    text: String!
+                }
+
+                type Mutation {
+                    create_Post(direction: SortDirection!): CreatePostsMutationResponse!
+                }
             `);
 
             const res = validateDocument(doc);

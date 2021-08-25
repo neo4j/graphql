@@ -207,7 +207,7 @@ RETURN this {
 MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL {
-    WITH this MATCH (this)-[this_has_post:HAS_POST]->(this_post:Post)
+    WITH this MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_post:Post)
     WHERE EXISTS((this_post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_where0_creator_id)
     WITH collect({ node: { content: this_post.content } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS postsConnection
@@ -260,7 +260,7 @@ RETURN this { .id, postsConnection } as this
 MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL {
-    WITH this MATCH (this)-[this_has_post:HAS_POST]->(this_post:Post)
+    WITH this MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_post:Post)
     WHERE this_post.id = $this_postsConnection.args.where.node.id AND EXISTS((this_post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_where0_creator_id)
     WITH collect({ node: { content: this_post.content } }) AS edges
     RETURN { edges: edges, totalCount: size(edges) } AS postsConnection
@@ -423,7 +423,7 @@ CALL {
     WITH this
     CALL {
         WITH this
-        OPTIONAL MATCH (this)-[this_has_post:HAS_POST]->(this_Post:Post)
+        MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_Post:Post)
         WHERE EXISTS((this_Post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)
         WITH { node: { __resolveType: "Post", id: this_Post.id } } AS edge
         RETURN edge
@@ -484,7 +484,7 @@ CALL {
     WITH this
     CALL {
         WITH this
-        OPTIONAL MATCH (this)-[this_has_post:HAS_POST]->(this_Post:Post)
+        MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_Post:Post)
         WHERE this_Post.id = $this_contentConnection.args.where.Post.node.id AND EXISTS((this_Post)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)
         WITH { node: { __resolveType: "Post", id: this_Post.id } } AS edge
         RETURN edge
@@ -1216,10 +1216,15 @@ WITH this
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 
 WITH this
-OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
-WHERE EXISTS((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
+    WHERE EXISTS((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | DELETE this_posts0_disconnect0_rel )
+    FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | DELETE this_posts0_disconnect0_rel )
+
+    RETURN count(*)
+}
 
 RETURN this { .id } AS this
 ```
@@ -1272,9 +1277,14 @@ WITH this
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 
 WITH this
-OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post) WHERE this_posts0_disconnect0.id = $updateUsers.args.update.posts[0].disconnect[0].where.node.id AND EXISTS((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id)
+CALL {
+WITH this
+    OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post) WHERE this_posts0_disconnect0.id = $updateUsers.args.update.posts[0].disconnect[0].where.node.id AND EXISTS((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | DELETE this_posts0_disconnect0_rel )
+    FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END | DELETE this_posts0_disconnect0_rel )
+
+    RETURN count(*)
+}
 
 RETURN this { .id } AS this
 ```
@@ -1339,11 +1349,18 @@ MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 
 WITH this
-WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id WITH this OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post) WHERE EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0_auth_where0_creator_id)
+WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 
-FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
-    DELETE this_disconnect_posts0_rel
-)
+WITH this
+CALL {
+    WITH this OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post) WHERE EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0_auth_where0_creator_id)
+
+    FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
+        DELETE this_disconnect_posts0_rel
+    )
+
+    RETURN count(*)
+}
 
 RETURN this { .id } AS this
 ```
@@ -1398,13 +1415,20 @@ mutation {
 ```cypher
 MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+
 WITH this
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
-WITH this OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post) WHERE this_disconnect_posts0.id = $updateUsers.args.disconnect.posts[0].where.node.id AND EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
-    DELETE this_disconnect_posts0_rel
-)
+WITH this
+CALL {
+    WITH this OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post) WHERE this_disconnect_posts0.id = $updateUsers.args.disconnect.posts[0].where.node.id AND EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0_auth_where0_creator_id)
+
+    FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
+        DELETE this_disconnect_posts0_rel
+    )
+
+    RETURN count(*)
+}
 
 RETURN this { .id } AS this
 ```
