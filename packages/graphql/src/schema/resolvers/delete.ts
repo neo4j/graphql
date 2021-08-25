@@ -32,7 +32,7 @@ export default function deleteResolver({ node }: { node: Node }) {
             context,
         });
 
-        return executeResult.statistics;
+        return { bookmark: executeResult.bookmark, ...executeResult.statistics };
     }
 
     return {
