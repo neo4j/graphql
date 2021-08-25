@@ -1,0 +1,122 @@
+name: "[Fallback] Changelog"
+
+on:
+  # This is a fallback workflow to replay parts of the release workflow
+  workflow_dispatch:
+
+jobs:
+  get-version:
+    if: startsWith(github.event.ref, 'refs/heads/release/')
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+
+    steps:
+      - id: get-version
+        run: |
+          version=$(echo $GITHUB_REF | cut -d/ -f4)
+          echo "::set-output name=version::$version"
+
+  merge-tag-push:
+    needs:
+      - get-version
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github
+
+    outputs:
+      version: ${{ needs.get-version.outputs.version }}
+
+    env:
+      VERSION: ${{ needs.get-version.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: master
+          fetch-depth: 0
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+      - name: git config
+        run: |
+          git config --global user.name 'Neo4j Team GraphQL'
+          git config --global user.email 'team-graphql@neotechnology.com'
+      - name: git merge
+        run: git merge --no-ff origin/release/$VERSION --strategy-option theirs
+      - name: git tag
+        run: |
+          git tag -a @neo4j/graphql@$VERSION -m "@neo4j/graphql@$VERSION"
+          git tag -a @neo4j/graphql-ogm@$VERSION -m "@neo4j/graphql-ogm@$VERSION"
+      - name: git push
+        run: git push --follow-tags
+
+  changelog:
+    needs:
+      - merge-tag-push
+
+    strategy:
+      matrix:
+        package:
+          - graphql
+          - graphql-ogm
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ needs.merge-tag-push.outputs.version }}
+
+    env:
+      VERSION: ${{ needs.merge-tag-push.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract product label from tag
+        id: get-label
+        run: |
+          label=$(echo ${{ matrix.package }} | cut -d- -f2)
+          echo "::set-output name=label::$label"
+      - name: Extract prerelease from version
+        id: get-prerelease
+        run: |
+          prerelease=$(echo $VERSION | cut -d@ -f3 | cut -d- -f2)
+          echo "::set-output name=prerelease::$prerelease"
+      - name: Build Changelog
+        id: github-release
+        uses: mikepenz/release-changelog-builder-action@v1
+        with:
+          configuration: "config/release-changelog-builder-action/configuration-${{ steps.get-label.outputs.label }}.json"
+          toTag: "@neo4j/${{ matrix.package }}@${{ env.VERSION }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: ${{ steps.github-release.outputs.changelog }}
+          name: "@neo4j/${{ matrix.package }}@${{ env.VERSION }}"
+          tag_name: "@neo4j/${{ matrix.package }}@${{ env.VERSION }}"
+          prerelease: |
+            ${{ startsWith(steps.get-prerelease.outputs.prerelease, 'alpha') }} ||
+            ${{ startsWith(steps.get-prerelease.outputs.prerelease, 'beta') }} ||
+            ${{ startsWith(steps.get-prerelease.outputs.prerelease, 'rc') }}
+
+  delete-release-branch:
+    needs:
+      - changelog
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+      - name: Delete release branch
+        run: |
+          git config --global user.name 'Neo4j Team GraphQL'
+          git config --global user.email 'team-graphql@neotechnology.com'
+          git push origin --delete release/${{ needs.changelog.outputs.version }}

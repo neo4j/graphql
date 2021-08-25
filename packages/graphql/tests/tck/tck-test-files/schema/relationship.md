@@ -22,6 +22,20 @@ type Movie {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
 type Actor {
     name: String
 }
@@ -66,14 +80,17 @@ input ActorWhere {
 }
 
 type CreateActorsMutationResponse {
+    info: CreateInfo!
     actors: [Actor!]!
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -259,10 +276,12 @@ enum SortDirection {
 }
 
 type UpdateActorsMutationResponse {
+    info: UpdateInfo!
     actors: [Actor!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 ```
@@ -288,6 +307,20 @@ type Movie {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
 type Actor {
     name: String
     movies(where: MovieWhere, options: MovieOptions): [Movie]
@@ -424,14 +457,17 @@ input ActorWhere {
 }
 
 type CreateActorsMutationResponse {
+    info: CreateInfo!
     actors: [Actor!]!
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -584,10 +620,12 @@ enum SortDirection {
 }
 
 type UpdateActorsMutationResponse {
+    info: UpdateInfo!
     actors: [Actor!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 

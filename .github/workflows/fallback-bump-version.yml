@@ -1,0 +1,38 @@
+name: "[Fallback] Bump Version"
+
+on:
+  # This is a fallback workflow to replay parts of the release workflow
+  workflow_dispatch:
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Fetch all history so yarn version works
+          fetch-depth: 0
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+      - id: get-version
+        run: |
+          version=$(echo $GITHUB_REF | cut -d/ -f4)
+          echo "::set-output name=version::$version"
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Bump @neo4j/graphql version
+        run: yarn version "${{ steps.get-version.outputs.version }}"
+        working-directory: packages/graphql
+      - name: Bump @neo4j/graphql-ogm version
+        run: yarn version "${{ steps.get-version.outputs.version }}"
+        working-directory: packages/ogm
+      - name: Commit and push new version numbers
+        run: |
+          git config --global user.name 'Neo4j Team GraphQL'
+          git config --global user.email 'team-graphql@neotechnology.com'
+          git commit -am "Bump versions to ${{ steps.get-version.outputs.version }}"
+          git push

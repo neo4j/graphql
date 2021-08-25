@@ -430,14 +430,19 @@ MATCH (this:Post)
 WHERE this.id = $this_id
 
 WITH this
-OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
-WHERE this_disconnect_creator0.id = $updatePosts.args.disconnect.creator.where.node.id
-FOREACH(_ IN CASE this_disconnect_creator0 WHEN NULL THEN [] ELSE [1] END |
-    DELETE this_disconnect_creator0_rel
-)
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
+    WHERE this_disconnect_creator0.id = $updatePosts.args.disconnect.creator.where.node.id
+    FOREACH(_ IN CASE this_disconnect_creator0 WHEN NULL THEN [] ELSE [1] END |
+        DELETE this_disconnect_creator0_rel
+    )
 
-WITH this, this_disconnect_creator0
-CALL apoc.util.validate(NOT(EXISTS((this_disconnect_creator0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_creator0Post0_bind_auth_bind0_creator_id) AND this_disconnect_creator0.id IS NOT NULL AND this_disconnect_creator0.id = $this_disconnect_creator0User1_bind_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+    WITH this, this_disconnect_creator0
+    CALL apoc.util.validate(NOT(EXISTS((this_disconnect_creator0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_creator0Post0_bind_auth_bind0_creator_id) AND this_disconnect_creator0.id IS NOT NULL AND this_disconnect_creator0.id = $this_disconnect_creator0User1_bind_auth_bind0_id), "@neo4j/graphql/FORBIDDEN", [0])
+
+    RETURN count(*)
+}
 
 RETURN this { .id } AS this
 ```

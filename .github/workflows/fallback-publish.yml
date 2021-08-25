@@ -1,0 +1,70 @@
+name: "[Fallback] Publish"
+
+on:
+  # This is a fallback workflow to replay parts of the release workflow
+  workflow_dispatch:
+
+jobs:
+  pack:
+    strategy:
+      matrix:
+        package:
+          - graphql
+          - ogm
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - run: yarn build
+      - name: Pack ${{ matrix.package }}
+        run: npm pack
+        working-directory: packages/${{ matrix.package }}
+      - name: Archive release tarball
+        uses: actions/upload-artifact@v2
+        with:
+          name: release-tarballs
+          path: packages/${{ matrix.package }}/neo4j-graphql-*.tgz
+
+  npm-publish:
+    needs:
+      - pack
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: npm
+
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: release-tarballs
+      - id: get-version
+        run: |
+          version=$(echo $GITHUB_REF | cut -d/ -f4)
+          echo "::set-output name=version::$version"
+      - name: npm publish
+        run: |
+          prerelease=$(echo ${{ steps.get-version.outputs.version }} | cut -d- -f2)
+
+          if [[ "$prerelease" =~ ^(alpha|beta|rc)\..* ]]; then
+            tag="next"
+          else
+            tag="latest"
+          fi
+
+          npm config set @neo4j:registry https://registry.npmjs.org
+          npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
+
+          for tarball in *.tgz
+          do
+            npm publish $tarball --tag=$tag --access=public
+          done
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
