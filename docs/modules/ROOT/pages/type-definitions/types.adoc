@@ -71,6 +71,17 @@ type Movie {
 }
 ----
 
+=== `LocalDateTime`
+
+"YYYY-MM-DDTHH:MM:SS" datetime string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-localdatetime[LocalDateTime] temporal type.
+
+[source, graphql, indent=0]
+----
+type Movie {
+    nextShowing: LocalDateTime
+}
+----
+
 [[type-definitions-types-spatial]]
 == Spatial Types
 
