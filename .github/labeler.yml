@@ -3,3 +3,6 @@ graphql:
 
 ogm:
   - packages/ogm/**/*
+  
+documentation:
+  - docs/modules/ROOT/**/*
