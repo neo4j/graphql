@@ -37,6 +37,14 @@ export const RelationshipDirectionEnum = new GraphQLEnumType({
     },
 });
 
+export const SortDirection = new GraphQLEnumType({
+    name: "SortDirection",
+    values: {
+        ASC: {},
+        DESC: {},
+    },
+});
+
 export const TimestampOperationEnum = new GraphQLEnumType({
     name: "TimestampOperation",
     values: {

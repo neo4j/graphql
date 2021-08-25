@@ -22,15 +22,32 @@ type Node2 {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
 type CreateNode1sMutationResponse {
+    info: CreateInfo!
     node1s: [Node1!]!
 }
 
 type CreateNode2sMutationResponse {
+    info: CreateInfo!
     node2s: [Node2!]!
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -319,10 +336,12 @@ enum SortDirection {
 }
 
 type UpdateNode1sMutationResponse {
+    info: UpdateInfo!
     node1s: [Node1!]!
 }
 
 type UpdateNode2sMutationResponse {
+    info: UpdateInfo!
     node2s: [Node2!]!
 }
 ```

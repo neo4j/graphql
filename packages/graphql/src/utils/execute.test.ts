@@ -62,7 +62,7 @@ describe("execute", () => {
                                 expect(paramCypher).toEqual(cypher);
                                 expect(paramParams).toEqual(params);
 
-                                return { records };
+                                return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                             },
                         };
 
@@ -75,6 +75,7 @@ describe("execute", () => {
                                 // @ts-ignore
                                 return fn(tx);
                             },
+                            lastBookmark: () => "bookmark",
                             close: () => true,
                         };
                     },
@@ -88,14 +89,14 @@ describe("execute", () => {
                     options: {},
                 };
 
-                const result = await execute({
+                const executeResult = await execute({
                     cypher,
                     params,
                     defaultAccessMode,
                     context: { driverConfig: { database, bookmarks }, neoSchema, driver } as Context,
                 });
 
-                expect(result).toEqual([{ title }]);
+                expect(executeResult.records).toEqual([{ title }]);
                 // @ts-ignore
                 expect(driver._userAgent).toEqual(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
                 // @ts-ignore
@@ -132,7 +133,7 @@ describe("execute", () => {
                             expect(trimmer(paramCypher)).toEqual(cypher);
                             expect(paramParams).toEqual(params);
 
-                            return { records };
+                            return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                         },
                     };
 
@@ -145,6 +146,7 @@ describe("execute", () => {
                             // @ts-ignore
                             return fn(tx);
                         },
+                        lastBookmark: () => "bookmark",
                         close: () => true,
                     };
                 },
@@ -158,7 +160,7 @@ describe("execute", () => {
                 options: {},
             };
 
-            const result = await execute({
+            const executeResult = await execute({
                 cypher,
                 params,
                 defaultAccessMode,
@@ -170,7 +172,7 @@ describe("execute", () => {
                 } as Context,
             });
 
-            expect(result).toEqual([{ title }]);
+            expect(executeResult.records).toEqual([{ title }]);
             // @ts-ignore
             expect(driver._userAgent).toEqual(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
             // @ts-ignore
@@ -210,7 +212,7 @@ describe("execute", () => {
                             expect(trimmer(paramCypher)).toEqual(expectedCypher);
                             expect(paramParams).toEqual(params);
 
-                            return { records };
+                            return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                         },
                     };
 
@@ -223,6 +225,7 @@ describe("execute", () => {
                             // @ts-ignore
                             return fn(tx);
                         },
+                        lastBookmark: () => "bookmark",
                         close: () => true,
                     };
                 },
@@ -236,7 +239,7 @@ describe("execute", () => {
                 options: {},
             };
 
-            const result = await execute({
+            const executeResult = await execute({
                 cypher: inputCypher,
                 params,
                 defaultAccessMode,
@@ -257,7 +260,7 @@ describe("execute", () => {
                 } as Context,
             });
 
-            expect(result).toEqual([{ title }]);
+            expect(executeResult.records).toEqual([{ title }]);
             // @ts-ignore
             expect(driver._userAgent).toEqual(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
             // @ts-ignore
