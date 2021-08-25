@@ -60,10 +60,12 @@ export const parseDuration = (value: any) => {
 
     // Check if any valid duration strings have fractional values unallowed by neo4j-driver@4.2.3
     if (
-        !Number.isInteger(+(week ?? 0)) ||
-        !Number.isInteger(+(yearUnit?.split("Y")[0] ?? 0)) ||
-        !Number.isInteger(+(monthUnit?.split("M")[0] ?? 0)) ||
-        !Number.isInteger(+(dayUnit?.split("D")[0] ?? 0))
+        !(
+            Number.isInteger(+(week ?? 0)) &&
+            Number.isInteger(+(yearUnit?.split("Y")[0] ?? 0)) &&
+            Number.isInteger(+(monthUnit?.split("M")[0] ?? 0)) &&
+            Number.isInteger(+(dayUnit?.split("D")[0] ?? 0))
+        )
     ) {
         throw new Error(DECIMAL_VALUE_ERROR);
     }
