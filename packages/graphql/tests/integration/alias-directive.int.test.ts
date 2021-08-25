@@ -71,10 +71,10 @@ describe("@alias directive", () => {
         await driver.close();
     });
 
-    test("Aliased fields on nodes through simple relationships", async () => {
+    test("Aliased fields on nodes through simple relationships (using STARTS_WITH filter)", async () => {
         const usersQuery = `
             query UsersLikesMovies {
-                aliasDirectiveTestUsers {
+                aliasDirectiveTestUsers(where: {name_STARTS_WITH: "${dbName.substring(0, 6)}"}) {
                     name
                     likes {
                         title
@@ -143,10 +143,10 @@ describe("@alias directive", () => {
             },
         });
     });
-    test("Using GraphQL query alias with @alias", async () => {
+    test("Using GraphQL query alias with @alias (using CONTAINS filter)", async () => {
         const usersQuery = `
             query UsersLikesMovies {
-                aliasDirectiveTestUsers {
+                aliasDirectiveTestUsers(where: {name_CONTAINS: "${dbName.substring(0, 6)}"}) {
                     myName: name
                     likesConnection {
                         edges {
