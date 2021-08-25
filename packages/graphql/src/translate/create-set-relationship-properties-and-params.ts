@@ -18,6 +18,7 @@
  */
 
 import { Relationship } from "../classes";
+import mapToDbProperty from "../utils/map-to-db-property";
 
 /*
     TODO - lets reuse this function for setting either node or rel properties.
@@ -41,19 +42,22 @@ function createSetRelationshipPropertiesAndParams({
     relationship.primitiveFields.forEach((primitiveField) => {
         if (primitiveField?.autogenerate) {
             if (operation === "CREATE") {
-                strs.push(`SET ${varName}.${primitiveField.fieldName} = randomUUID()`);
+                const dbFieldName = mapToDbProperty(relationship, primitiveField.fieldName);
+                strs.push(`SET ${varName}.${dbFieldName} = randomUUID()`);
             }
         }
     });
 
     relationship.dateTimeFields.forEach((dateTimeField) => {
         if (dateTimeField?.timestamps?.includes(operation)) {
-            strs.push(`SET ${varName}.${dateTimeField.fieldName} = datetime()`);
+            const dbFieldName = mapToDbProperty(relationship, dateTimeField.fieldName);
+            strs.push(`SET ${varName}.${dbFieldName} = datetime()`);
         }
     });
 
     Object.entries(properties).forEach(([key, value]) => {
         const paramName = `${varName}_${key}`;
+        const dbFieldName = mapToDbProperty(relationship, key);
 
         const pointField = relationship.pointFields.find((x) => x.fieldName === key);
         if (pointField) {
