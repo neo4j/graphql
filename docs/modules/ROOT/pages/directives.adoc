@@ -61,6 +61,18 @@ The `@relationship` directive is used to configure relationships between object 
 
 Reference: xref::type-definitions/relationships.adoc[Relationships]
 
+== `@relationshipProperties`
+
+Optional syntactic sugar to help you distinguish between interfaces which are used for relationship properties, and otherwise.
+
+Can only be used on interfaces, as per its definition:
+
+[source, graphql, indent=0]
+----
+"""Syntactic sugar to help differentiate between interfaces for relationship properties, and otherwise."""
+directive @relationshipProperties on INTERFACE
+----
+
 == `@timestamp`
 
 The `@timestamp` directive flags fields to be used to store timestamps on create/update events.

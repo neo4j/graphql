@@ -39,26 +39,22 @@ function createSetRelationshipProperties({
 }): string {
     const strs: string[] = [];
 
+    relationship.primitiveFields.forEach((primitiveField) => {
+        if (primitiveField?.autogenerate) {
+            if (operation === "CREATE") {
+                strs.push(`SET ${varName}.${primitiveField.fieldName} = randomUUID()`);
+            }
+        }
+    });
+
+    relationship.dateTimeFields.forEach((dateTimeField) => {
+        if (dateTimeField?.timestamps?.includes(operation)) {
+            strs.push(`SET ${varName}.${dateTimeField.fieldName} = datetime()`);
+        }
+    });
+
     Object.entries(properties).forEach(([key]) => {
         const paramName = `${parameterPrefix}.${key}`;
-
-        const dateTimeField = relationship.dateTimeFields.find((x) => x.fieldName === key);
-        if (dateTimeField && dateTimeField.timestamps?.length) {
-            (dateTimeField.timestamps || []).forEach((ts) => {
-                if (ts.includes(operation)) {
-                    strs.push(`SET ${varName}.${key} = datetime()`);
-                }
-            });
-
-            return;
-        }
-
-        const primitiveField = relationship.primitiveFields.find((x) => x.fieldName === key);
-        if (primitiveField?.autogenerate) {
-            strs.push(`SET ${varName}.${key} = randomUUID()`);
-
-            return;
-        }
 
         const pointField = relationship.pointFields.find((x) => x.fieldName === key);
         if (pointField) {
