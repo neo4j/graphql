@@ -5,7 +5,7 @@ Neo4j GraphQL supports all of the default GraphQL https://graphql.org/learn/sche
 
 == Int
 
-One of the default GraphQL scalar types. Supports up to 53-bit values - see xref::type-definitions/types.adoc[`BigInt`] for 64-bit value support.
+One of the default GraphQL scalar types. Supports up to 53-bit values - see xref::type-definitions/types.adoc#type-definitions-types-bigint[`BigInt`] for 64-bit value support.
 
 == Float
 
@@ -26,7 +26,7 @@ One of the default GraphQL scalar types. Stored as a string in the database and 
 [[type-definitions-types-bigint]]
 == `BigInt`
 
-Supports up to 64 bit integers, serialized as strings in variables and in data responses. Shares the same xref::filtering.adoc[Numerical operators] as the other numeric types.
+Supports up to 64 bit integers, serialized as strings in variables and in data responses. Shares the same xref::filtering.adoc#filtering-numerical-operators[Numerical operators] as the other numeric types.
 
 [source, graphql, indent=0]
 ----
@@ -189,7 +189,7 @@ mutation CreateUsers($name: String!, $longitude: Float!, $latitude: Float!) {
 
 ==== Filtering
 
-In addition to the xref::filtering.adoc[Numerical operators], the `Point` type has an additional `_DISTANCE` filter. All of the filters take the following type as an argument:
+In addition to the xref::filtering.adoc#filtering-numerical-operators[Numerical operators], the `Point` type has an additional `_DISTANCE` filter. All of the filters take the following type as an argument:
 
 [source, graphql, indent=0]
 ----
@@ -266,7 +266,7 @@ input CartesianPointInput {
 
 ==== Filtering
 
-In addition to the xref::filtering.adoc[Numerical operators], the `CartesianPoint` type has an additional `_DISTANCE` filter. All of the filters take the following type as an argument:
+In addition to the xref::filtering.adoc#filtering-numerical-operators[Numerical operators], the `CartesianPoint` type has an additional `_DISTANCE` filter. All of the filters take the following type as an argument:
 
 [source, graphql, indent=0]
 ----

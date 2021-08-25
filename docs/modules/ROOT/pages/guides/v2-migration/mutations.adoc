@@ -134,9 +134,9 @@ type Mutation {
 }
 ----
 
-The `create` and `connect` nested operations are primarily the same as in the `createMovies` Mutation, so please see the xref::guides/v2-migration/mutations.adoc[Create] section for the difference for these operations.
+The `create` and `connect` nested operations are primarily the same as in the `createMovies` Mutation, so please see the <<v2-migration-mutations-create>> section for the difference for these operations.
 
-The `delete` nested operation is primarily the same as in the `deleteMovies` Mutation, so please see the xref::guides/v2-migration/mutations.adoc[Delete] section for that.
+The `delete` nested operation is primarily the same as in the `deleteMovies` Mutation, so please see the <<v2-migration-mutations-delete>> section for that.
 
 === Update
 

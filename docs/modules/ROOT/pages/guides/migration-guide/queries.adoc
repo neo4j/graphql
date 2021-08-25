@@ -33,8 +33,8 @@ Changes to note for migration:
 
 * Query fields were previously named in the singular, and in _PascalCase_ - they are now pluralized and in _camelCase_
 * Query return types were previously in nullable lists of nullable types - they are now non-nullable lists of non-nullable types, _e.g._ `[Movie]` is now `[Movie!]!`; ensuring either an array of defined `Movie` objects or an empty array.
-* In this example, the `_MovieFilter` type has essentially been renamed to `MovieWhere`, the `filter` arguments renamed to `where`, and the top-level field arguments `title` and `averageRating` removed - see xref::guides/migration-guide/queries.adoc[Filtering (`where`)] below
-* The `first`, `offset` and `orderBy` have been collapsed into the `MovieOptions` type and renamed `limit`, `offset` and `sort`, respectively - see xref::guides/migration-guide/queries.adoc[Sorting and Pagination (`options`)] below
+* In this example, the `_MovieFilter` type has essentially been renamed to `MovieWhere`, the `filter` arguments renamed to `where`, and the top-level field arguments `title` and `averageRating` removed - see xref::guides/migration-guide/queries.adoc#migration-guide-queries-filtering[Filtering (`where`)] below
+* The `first`, `offset` and `orderBy` have been collapsed into the `MovieOptions` type and renamed `limit`, `offset` and `sort`, respectively - see xref::guides/migration-guide/queries.adoc#migration-guide-queries-options[Sorting and Pagination (`options`)] below
 
 [[migration-guide-queries-filtering]]
 == Filtering (`where`)

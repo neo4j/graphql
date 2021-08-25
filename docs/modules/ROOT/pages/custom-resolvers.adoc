@@ -9,7 +9,7 @@ The library will autogenerate Query and Mutation resolvers, so you don’t need 
 
 == Custom object type field resolver
 
-If you would like to add a field to an object type which is resolved from existing values in the type, rather than storing new values, you should mark it with an xref::type-definitions/access-control.adoc[`@ignore`] directive and define a custom resolver for it.
+If you would like to add a field to an object type which is resolved from existing values in the type, rather than storing new values, you should mark it with an xref::type-definitions/access-control.adoc#type-definitions-access-control-ignore[`@ignore`] directive and define a custom resolver for it.
 
 [source, javascript, indent=0]
 ----
