@@ -20,6 +20,7 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import isUUID from "is-uuid";
+import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
@@ -130,6 +131,72 @@ describe("autogenerate", () => {
             expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](id))).toEqual(true);
             expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](genres[0].id))).toEqual(true);
             expect(name).toEqual("dan");
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should autogenerate an ID for a relationship property", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Actor {
+                id: ID! @id
+                name: String!
+            }
+
+            interface ActedIn {
+                id: ID! @id
+                screenTime: Int!
+            }
+
+            type Movie {
+                id: ID! @id
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const title = generate({
+            charset: "alphabetic",
+        });
+        const name = generate({
+            charset: "alphabetic",
+        });
+
+        const create = `
+            mutation($title: String!, $name: String!) {
+                createMovies(
+                    input: [
+                        { title: $title, actors: { create: [{ node: { name: $name }, edge: { screenTime: 60 } }] } }
+                    ]
+                ) {
+                    movies {
+                        actorsConnection {
+                            edges {
+                                id
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: create,
+                contextValue: { driver },
+                variableValues: { title, name },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            const { actorsConnection } = (result.data as any).createMovies.movies[0];
+
+            expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](actorsConnection.edges[0].id))).toEqual(true);
         } finally {
             await session.close();
         }

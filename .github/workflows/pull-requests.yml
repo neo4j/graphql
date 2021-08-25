@@ -74,6 +74,7 @@ jobs:
       - cache-dependencies
 
     strategy:
+      fail-fast: false
       matrix:
         package:
           - graphql
