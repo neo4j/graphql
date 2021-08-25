@@ -130,6 +130,9 @@ function getObjFieldMeta({
                 readonly: field?.directives?.some((d) => d.name.value === "readonly"),
                 writeonly: field?.directives?.some((d) => d.name.value === "writeonly"),
             };
+            if (aliasDirective) {
+                baseField.alias = aliasMeta?.property;
+            }
 
             if (relationshipMeta) {
                 if (fieldInterface) {
@@ -443,9 +446,6 @@ function getObjFieldMeta({
                                     "@coalesce directive can only be used on types: Int | Float | String | Boolean | ID | DateTime"
                                 );
                         }
-                    }
-                    if (aliasDirective) {
-                        primitiveField.alias = aliasMeta?.property;
                     }
 
                     res.primitiveFields.push(primitiveField);
