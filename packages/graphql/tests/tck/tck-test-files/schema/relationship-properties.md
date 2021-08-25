@@ -21,7 +21,7 @@ type Movie {
         @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
 }
 
-interface ActedIn {
+interface ActedIn @relationshipProperties {
     screenTime: Int!
     startDate: Date!
     leadRole: Boolean!
