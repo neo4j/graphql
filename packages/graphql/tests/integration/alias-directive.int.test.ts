@@ -37,17 +37,21 @@ describe("@alias directive", () => {
         driver = await neo4j();
         const typeDefs = `
             type AliasDirectiveTestUser {
+                id: ID! @alias(property: "dbId") @id
                 name: String! @alias(property: "dbName")
                 likes: [AliasDirectiveTestMovie] @relationship(direction: OUT, type: "LIKES", properties: "AliasDirectiveTestLikesProps")
+                createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
 
             type AliasDirectiveTestMovie {
                 title: String! @alias(property: "dbTitle")
                 year: Int
+                createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
 
             interface AliasDirectiveTestLikesProps {
                 comment: String! @alias(property: "dbComment")
+                relationshipCreatedAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
         `;
         neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -57,13 +61,13 @@ describe("@alias directive", () => {
         session = driver.session();
         await session.run(`MATCH (n:AliasDirectiveTestUser)-[]-(m:AliasDirectiveTestMovie) DETACH DELETE n, m`);
         await session.run(
-            `CREATE (:AliasDirectiveTestUser {dbName: $dbName})-[:LIKES {dbComment: $dbComment}]->(:AliasDirectiveTestMovie {dbTitle: $dbTitle, year: $year})`,
+            `CREATE (:AliasDirectiveTestUser {dbName: $dbName, dbId: "stringId", dbCreatedAt: "1970-01-02"})-[:LIKES {dbComment: $dbComment, dbCreatedAt: "1970-01-02"}]->(:AliasDirectiveTestMovie {dbTitle: $dbTitle, year: $year, dbCreatedAt: "1970-01-02"})`,
             { dbName, dbComment, dbTitle, year }
         );
     });
 
     afterEach(async () => {
-        await session.run(`MATCH (n:AliasDirectiveTestUser)-[]-(m:AliasDirectiveTestMovie) DETACH DELETE n, m`);
+        await session.run(`MATCH (n:AliasDirectiveTestUser), (m:AliasDirectiveTestMovie) DETACH DELETE n, m`);
         await session.close();
     });
 
@@ -75,6 +79,7 @@ describe("@alias directive", () => {
         const usersQuery = `
             query UsersLikesMovies {
                 aliasDirectiveTestUsers(where: {name_STARTS_WITH: "${dbName.substring(0, 6)}"}) {
+                    id
                     name
                     likes {
                         title
@@ -94,6 +99,7 @@ describe("@alias directive", () => {
 
         expect((gqlResult.data as any).aliasDirectiveTestUsers[0]).toEqual({
             name: dbName,
+            id: expect.any(String),
             likes: [
                 {
                     title: dbTitle,
@@ -181,12 +187,15 @@ describe("@alias directive", () => {
             ) {
                 aliasDirectiveTestUsers {
                     name
+                    createdAt
                     likes {
+                        createdAt
                         title
                         year
                     }
                     likesConnection {
                         edges {
+                            relationshipCreatedAt
                             comment
                             node {
                                 title
@@ -209,15 +218,18 @@ describe("@alias directive", () => {
 
         expect((gqlResult.data as any).createAliasDirectiveTestUsers.aliasDirectiveTestUsers[0]).toEqual({
             name,
+            createdAt: expect.any(String),
             likes: [
                 {
                     title,
+                    createdAt: expect.any(String),
                     year: year.toNumber(),
                 },
             ],
             likesConnection: {
                 edges: [
                     {
+                        relationshipCreatedAt: expect.any(String),
                         comment,
                         node: {
                             title,
@@ -232,13 +244,16 @@ describe("@alias directive", () => {
         const name = "Stella";
         const title = "Interstellar 2";
         const comment = "Yes!";
-        await session.run(`CREATE (m:AliasDirectiveTestMovie {dbTitle: "${title}", year: toInteger(2015)})`);
+        await session.run(
+            `CREATE (m:AliasDirectiveTestMovie {dbTitle: "${title}", year: toInteger(2015), createdAd: "2021-08-25"})`
+        );
         const userMutation = `
         mutation CreateUserConnectMovie {
             createAliasDirectiveTestUsers(
                 input: [{ name: "${name}", likes: { connect: { where: {node: {title: "${title}"}}, edge: {comment: "${comment}"} } } }]
             ) {
                 aliasDirectiveTestUsers {
+                    id
                     name
                     likes {
                         title
@@ -267,6 +282,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeFalsy();
 
         expect((gqlResult.data as any).createAliasDirectiveTestUsers.aliasDirectiveTestUsers[0]).toEqual({
+            id: expect.any(String),
             name,
             likes: [
                 {
