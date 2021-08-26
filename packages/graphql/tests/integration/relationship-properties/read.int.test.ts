@@ -27,6 +27,8 @@ import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("Relationship properties - read", () => {
     let driver: Driver;
+    let bookmarks: string[];
+
     const typeDefs = gql`
         type Movie {
             title: String!
@@ -53,15 +55,13 @@ describe("Relationship properties - read", () => {
 
         try {
             await session.run(
-                `CREATE (:Actor { name: '${actorA}' })-[:ACTED_IN { screenTime: 105 }]->(:Movie { title: '${movieTitle}'})`
+                `
+                    CREATE (:Actor { name: '${actorA}' })-[:ACTED_IN { screenTime: 105 }]->(m:Movie { title: '${movieTitle}'})
+                    CREATE (m)<-[:ACTED_IN { screenTime: 105 }]-(:Actor { name: '${actorB}' })
+                    CREATE (m)<-[:ACTED_IN { screenTime: 5 }]-(:Actor { name: '${actorC}' })
+                `
             );
-            // Another couple of actors to test sorting and filtering
-            await session.run(
-                `MATCH (m:Movie) WHERE m.title = '${movieTitle}' CREATE (m)<-[:ACTED_IN { screenTime: 105 }]-(:Actor { name: '${actorB}' })`
-            );
-            await session.run(
-                `MATCH (m:Movie) WHERE m.title = '${movieTitle}' CREATE (m)<-[:ACTED_IN { screenTime: 5 }]-(:Actor { name: '${actorC}' })`
-            );
+            bookmarks = session.lastBookmark();
         } finally {
             await session.close();
         }
@@ -113,42 +113,35 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.movies).toEqual([
-                {
-                    title: movieTitle,
-                    actorsConnection: {
-                        totalCount: 3,
-                        edges: [
-                            {
-                                screenTime: 5,
-                                node: {
-                                    name: actorC,
-                                },
-                            },
-                            {
-                                screenTime: 105,
-                                node: {
-                                    name: actorB,
-                                },
-                            },
-                            {
-                                screenTime: 105,
-                                node: {
-                                    name: actorA,
-                                },
-                            },
-                        ],
-                        pageInfo: {
-                            hasNextPage: false,
-                        },
-                    },
+            expect(result?.data?.movies).toHaveLength(1);
+
+            expect(result?.data?.movies[0].actorsConnection.totalCount).toEqual(3);
+            expect(result?.data?.movies[0].actorsConnection.pageInfo).toEqual({ hasNextPage: false });
+
+            expect(result?.data?.movies[0].actorsConnection.edges).toHaveLength(3);
+            expect(result?.data?.movies[0].actorsConnection.edges).toContainEqual({
+                screenTime: 5,
+                node: {
+                    name: actorC,
                 },
-            ]);
+            });
+            expect(result?.data?.movies[0].actorsConnection.edges).toContainEqual({
+                screenTime: 105,
+                node: {
+                    name: actorB,
+                },
+            });
+            expect(result?.data?.movies[0].actorsConnection.edges).toContainEqual({
+                screenTime: 105,
+                node: {
+                    name: actorA,
+                },
+            });
         } finally {
             await session.close();
         }
@@ -188,7 +181,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -249,7 +242,7 @@ describe("Relationship properties - read", () => {
             const ascResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "ASC" },
             });
 
@@ -290,7 +283,7 @@ describe("Relationship properties - read", () => {
             const descResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "DESC" },
             });
 
@@ -366,7 +359,7 @@ describe("Relationship properties - read", () => {
             const ascResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "ASC" },
             });
 
@@ -401,7 +394,7 @@ describe("Relationship properties - read", () => {
             const descResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: { nameSort: "DESC" },
             });
 
@@ -467,43 +460,35 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.actors).toEqual([
-                {
-                    name: actorA,
-                    movies: [
-                        {
-                            title: movieTitle,
-                            actorsConnection: {
-                                edges: [
-                                    {
-                                        screenTime: 5,
-                                        node: {
-                                            name: actorC,
-                                        },
-                                    },
-                                    {
-                                        screenTime: 105,
-                                        node: {
-                                            name: actorB,
-                                        },
-                                    },
-                                    {
-                                        screenTime: 105,
-                                        node: {
-                                            name: actorA,
-                                        },
-                                    },
-                                ],
-                            },
-                        },
-                    ],
+            expect(result?.data?.actors).toHaveLength(1);
+            expect(result?.data?.actors[0].name).toEqual(actorA);
+
+            expect(result?.data?.actors[0].movies).toHaveLength(1);
+
+            expect(result?.data?.actors[0].movies[0].actorsConnection.edges).toHaveLength(3);
+            expect(result?.data?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+                screenTime: 5,
+                node: {
+                    name: actorC,
                 },
-            ]);
+            });
+            expect(result?.data?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+                screenTime: 105,
+                node: {
+                    name: actorB,
+                },
+            });
+            expect(result?.data?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+                screenTime: 105,
+                node: {
+                    name: actorA,
+                },
+            });
         } finally {
             await session.close();
         }
@@ -539,37 +524,29 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.actors).toEqual([
-                {
-                    name: actorA,
-                    movies: [
-                        {
-                            title: movieTitle,
-                            actorsConnection: {
-                                edges: [
-                                    {
-                                        screenTime: 5,
-                                        node: {
-                                            name: actorC,
-                                        },
-                                    },
-                                    {
-                                        screenTime: 105,
-                                        node: {
-                                            name: actorB,
-                                        },
-                                    },
-                                ],
-                            },
-                        },
-                    ],
+            expect(result?.data?.actors).toHaveLength(1);
+            expect(result?.data?.actors[0].name).toEqual(actorA);
+
+            expect(result?.data?.actors[0].movies).toHaveLength(1);
+
+            expect(result?.data?.actors[0].movies[0].actorsConnection.edges).toHaveLength(2);
+            expect(result?.data?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+                screenTime: 5,
+                node: {
+                    name: actorC,
                 },
-            ]);
+            });
+            expect(result?.data?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+                screenTime: 105,
+                node: {
+                    name: actorB,
+                },
+            });
         } finally {
             await session.close();
         }
