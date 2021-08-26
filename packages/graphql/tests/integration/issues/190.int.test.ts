@@ -25,6 +25,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("https://github.com/neo4j/graphql/issues/190", () => {
     let driver: Driver;
+    let bookmarks: string[];
     const typeDefs = gql`
         type User {
             client_id: String
@@ -46,26 +47,17 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
 
         try {
             await session.run(
-                "CREATE (:User {uid: 'user1'}),(:User {uid: 'user2'}),(:UserDemographics{type:'Gender',value:'Female'}),(:UserDemographics{type:'Gender',value:'Male'}),(:UserDemographics{type:'Age',value:'50+'}),(:UserDemographics{type:'State',value:'VIC'})"
+                `
+                    CREATE (user1:User {uid: 'user1'}),(user2:User {uid: 'user2'}),(female:UserDemographics{type:'Gender',value:'Female'}),(male:UserDemographics{type:'Gender',value:'Male'}),(age:UserDemographics{type:'Age',value:'50+'}),(state:UserDemographics{type:'State',value:'VIC'})
+                    CREATE (user1)-[:HAS_DEMOGRAPHIC]->(female)
+                    CREATE (user2)-[:HAS_DEMOGRAPHIC]->(male)
+                    CREATE (user1)-[:HAS_DEMOGRAPHIC]->(age)
+                    CREATE (user2)-[:HAS_DEMOGRAPHIC]->(age)
+                    CREATE (user1)-[:HAS_DEMOGRAPHIC]->(state)
+                    CREATE (user2)-[:HAS_DEMOGRAPHIC]->(state)
+                `
             );
-            await session.run(
-                "MATCH (u:User {uid: 'user1'}) MATCH (d:UserDemographics {type: 'Gender', value:'Female'}) CREATE (u)-[:HAS_DEMOGRAPHIC]->(d)"
-            );
-            await session.run(
-                "MATCH (u:User {uid: 'user2'}) MATCH (d:UserDemographics {type: 'Gender', value:'Male'}) CREATE (u)-[:HAS_DEMOGRAPHIC]->(d)"
-            );
-            await session.run(
-                "MATCH (u:User {uid: 'user1'}) MATCH (d:UserDemographics {type: 'Age', value:'50+'}) CREATE (u)-[:HAS_DEMOGRAPHIC]->(d)"
-            );
-            await session.run(
-                "MATCH (u:User {uid: 'user2'}) MATCH (d:UserDemographics {type: 'Age', value:'50+'}) CREATE (u)-[:HAS_DEMOGRAPHIC]->(d)"
-            );
-            await session.run(
-                "MATCH (u:User {uid: 'user1'}) MATCH (d:UserDemographics {type: 'State', value:'VIC'}) CREATE (u)-[:HAS_DEMOGRAPHIC]->(d)"
-            );
-            await session.run(
-                "MATCH (u:User {uid: 'user2'}) MATCH (d:UserDemographics {type: 'State', value:'VIC'}) CREATE (u)-[:HAS_DEMOGRAPHIC]->(d)"
-            );
+            bookmarks = session.lastBookmark();
         } finally {
             await session.close();
         }
@@ -109,30 +101,24 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
-
-            expect(result?.data?.users).toEqual([
-                {
-                    uid: "user1",
-                    demographics: [
-                        {
-                            type: "State",
-                            value: "VIC",
-                        },
-                        {
-                            type: "Age",
-                            value: "50+",
-                        },
-                        {
-                            type: "Gender",
-                            value: "Female",
-                        },
-                    ],
-                },
-            ]);
+            expect(result?.data?.users[0].uid).toEqual("user1");
+            expect(result?.data?.users[0].demographics).toHaveLength(3);
+            expect(result?.data?.users[0].demographics).toContainEqual({
+                type: "Age",
+                value: "50+",
+            });
+            expect(result?.data?.users[0].demographics).toContainEqual({
+                type: "Gender",
+                value: "Female",
+            });
+            expect(result?.data?.users[0].demographics).toContainEqual({
+                type: "State",
+                value: "VIC",
+            });
         } finally {
             await session.close();
         }
@@ -165,47 +151,40 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.users).toEqual([
-                {
-                    uid: "user1",
-                    demographics: [
-                        {
-                            type: "State",
-                            value: "VIC",
-                        },
-                        {
-                            type: "Age",
-                            value: "50+",
-                        },
-                        {
-                            type: "Gender",
-                            value: "Female",
-                        },
-                    ],
-                },
-                {
-                    uid: "user2",
-                    demographics: [
-                        {
-                            type: "State",
-                            value: "VIC",
-                        },
-                        {
-                            type: "Age",
-                            value: "50+",
-                        },
-                        {
-                            type: "Gender",
-                            value: "Male",
-                        },
-                    ],
-                },
-            ]);
+            expect(result?.data?.users).toHaveLength(2);
+
+            expect(result?.data?.users.filter((u) => u.uid === "user1")[0].demographics).toHaveLength(3);
+            expect(result?.data?.users.filter((u) => u.uid === "user1")[0].demographics).toContainEqual({
+                type: "Gender",
+                value: "Female",
+            });
+            expect(result?.data?.users.filter((u) => u.uid === "user1")[0].demographics).toContainEqual({
+                type: "State",
+                value: "VIC",
+            });
+            expect(result?.data?.users.filter((u) => u.uid === "user1")[0].demographics).toContainEqual({
+                type: "Age",
+                value: "50+",
+            });
+
+            expect(result?.data?.users.filter((u) => u.uid === "user2")[0].demographics).toHaveLength(3);
+            expect(result?.data?.users.filter((u) => u.uid === "user2")[0].demographics).toContainEqual({
+                type: "Gender",
+                value: "Male",
+            });
+            expect(result?.data?.users.filter((u) => u.uid === "user2")[0].demographics).toContainEqual({
+                type: "State",
+                value: "VIC",
+            });
+            expect(result?.data?.users.filter((u) => u.uid === "user2")[0].demographics).toContainEqual({
+                type: "Age",
+                value: "50+",
+            });
         } finally {
             await session.close();
         }
