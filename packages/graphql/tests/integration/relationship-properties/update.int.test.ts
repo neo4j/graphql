@@ -114,7 +114,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -187,7 +187,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -259,7 +259,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -335,7 +335,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeFalsy();

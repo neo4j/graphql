@@ -70,7 +70,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
@@ -109,7 +109,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
@@ -155,7 +155,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
@@ -199,7 +199,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
@@ -245,7 +245,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
@@ -289,7 +289,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
@@ -365,7 +365,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
@@ -441,7 +441,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
@@ -485,7 +485,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
@@ -545,7 +545,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
@@ -590,7 +590,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
@@ -633,7 +633,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
@@ -680,7 +680,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
