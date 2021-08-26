@@ -82,7 +82,7 @@ describe("Connections Alias", () => {
                         }
                     }
                 }
-            } 
+            }
         `;
 
         try {
@@ -102,7 +102,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeUndefined();
@@ -152,7 +152,7 @@ describe("Connections Alias", () => {
                         }
                     }
                 }
-            } 
+            }
         `;
 
         try {
@@ -172,7 +172,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeUndefined();
