@@ -21,3 +21,6 @@ export { default as BigInt } from "./BigInt";
 export { default as DateTime } from "./DateTime";
 export { default as Date } from "./Date";
 export { default as Duration } from "./Duration";
+export { default as LocalDateTime } from "./LocalDateTime";
+export { default as Time } from "./Time";
+export { default as LocalTime } from "./LocalTime";

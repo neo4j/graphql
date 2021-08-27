@@ -28,7 +28,6 @@ import createAuthParam from "./create-auth-param";
 import createAuthAndParams from "./create-auth-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
-import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 
 interface Res {
     strs: string[];
@@ -303,14 +302,16 @@ function createUpdateAndParams({
                             );
 
                             if (create.edge) {
-                                const setA = createSetRelationshipPropertiesAndParams({
+                                const setA = createSetRelationshipProperties({
                                     properties: create.edge,
                                     varName: propertiesName,
                                     relationship,
                                     operation: "CREATE",
+                                    parameterPrefix: `${parameterPrefix}.${key}${
+                                        relationField.union ? `.${refNode.name}` : ""
+                                    }[${index}].create[${i}].edge`,
                                 });
-                                res.strs.push(setA[0]);
-                                res.params = { ...res.params, ...setA[1] };
+                                res.strs.push(setA);
                             }
                         });
                     }

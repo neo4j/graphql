@@ -87,6 +87,39 @@ _Note:_
 - Decimal values are not currently accepted on `[YMWD]`
 - Comparisons are made according to the https://neo4j.com/developer/cypher/dates-datetimes-durations/#comparing-filtering-values[cypher developer guide]
 
+=== `LocalDateTime`
+
+"YYYY-MM-DDTHH:MM:SS" datetime string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-localdatetime[LocalDateTime] temporal type.
+
+[source, graphql, indent=0]
+----
+type Movie {
+    nextShowing: LocalDateTime
+}
+----
+
+=== `Time`
+
+RFC3339 time string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-time[Time] temporal type.
+
+[source, graphql, indent=0]
+----
+type Movie {
+    nextShowing: Time
+}
+----
+
+=== `LocalTime`
+
+"HH:MM:SS[.sss+]" time string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/#functions-localtime[LocalTime] temporal type.
+
+[source, graphql, indent=0]
+----
+type Movie {
+    nextShowing: LocalTime
+}
+----
+
 [[type-definitions-types-spatial]]
 == Spatial Types
 

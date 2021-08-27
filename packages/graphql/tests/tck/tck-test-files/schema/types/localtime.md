@@ -1,17 +1,17 @@
-# Schema Date
+# Schema LocalTime
 
 Tests that the provided typeDefs return the correct schema.
 
 ---
 
-## Date
+## LocalTime
 
 ### TypeDefs
 
 ```graphql
 type Movie {
     id: ID
-    date: Date
+    time: LocalTime
 }
 ```
 
@@ -19,9 +19,9 @@ type Movie {
 
 ```graphql
 """
-A date, represented as a 'yyyy-mm-dd' string
+A local time, represented as a time string without timezone information
 """
-scalar Date
+scalar LocalTime
 
 type CreateInfo {
     bookmark: String
@@ -39,7 +39,7 @@ type UpdateInfo {
 
 type Movie {
     id: ID
-    date: Date
+    time: LocalTime
 }
 
 type DeleteInfo {
@@ -61,7 +61,7 @@ enum SortDirection {
 
 input MovieCreateInput {
     id: ID
-    date: Date
+    time: LocalTime
 }
 
 input MovieOptions {
@@ -78,7 +78,7 @@ Fields to sort Movies by. The order in which sorts are applied is not guaranteed
 """
 input MovieSort {
     id: SortDirection
-    date: SortDirection
+    time: SortDirection
 }
 
 input MovieWhere {
@@ -92,21 +92,21 @@ input MovieWhere {
     id_NOT_STARTS_WITH: ID
     id_ENDS_WITH: ID
     id_NOT_ENDS_WITH: ID
-    date: Date
-    date_GT: Date
-    date_GTE: Date
-    date_IN: [Date]
-    date_NOT: Date
-    date_NOT_IN: [Date]
-    date_LT: Date
-    date_LTE: Date
+    time: LocalTime
+    time_GT: LocalTime
+    time_GTE: LocalTime
+    time_IN: [LocalTime]
+    time_NOT: LocalTime
+    time_NOT_IN: [LocalTime]
+    time_LT: LocalTime
+    time_LTE: LocalTime
     OR: [MovieWhere!]
     AND: [MovieWhere!]
 }
 
 input MovieUpdateInput {
     id: ID
-    date: Date
+    time: LocalTime
 }
 
 type CreateMoviesMutationResponse {
