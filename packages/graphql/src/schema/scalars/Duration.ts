@@ -24,10 +24,10 @@ const DOCUMENTATION_ADDRESS = "https://neo4j.com/docs/graphql-manual/current/typ
 
 export const DECIMAL_VALUE_ERROR = `Cannot specify decimal values in durations, please refer to ${DOCUMENTATION_ADDRESS}`;
 
-// Matching P[nY][nM][nD][T[nH][nM][nS]]  |  P[nW]  |  PYYYYMMDDTHHMMSS[.sss+]
-// For unit based duration a fractional value can only exist on the smallest unit(e.g. P2Y4.5M matches P2.5Y4M does not)
-// Similar constraint allows for only fractional seconds on date time based duration
-const DURATION_REGEX = /^P(?!$)((?<yearUnit>((\d+Y)|(\d+\.\d+Y$)))?(?<monthUnit>((\d+M)|(\d+\.\d+M$)))?(?<dayUnit>((\d+D)|(\d+\.\d+D$)))?(?:T(?=\d)(?<hourUnit>((\d+H)|(\d+\.\d+H$)))?(?<minuteUnit>((\d+M)|(\d+\.\d+M$)))?(?<secondUnit>((\d+S)|(\d+\.\d+S$)))?)?|(?<week>\d+(\.\d+)?)W|(?<yearDT>\d{4})(?<dateDelimiter>-?)(?<monthDT>[0]\d|1[0-2])\k<dateDelimiter>(?<dayDT>\d{2})T(?<hourDT>[01]\d|2[0-3])(?<timeDelimiter>((?<=-\w+?):)|(?<=^\w+))(?<minuteDT>[0-5]\d)\k<timeDelimiter>(?<secondDT>[0-5]\d)(\.(?<fractionDT>\d+))?)$/;
+// Matching P[nY][nM][nD][T[nH][nM][nS]]  |  PnW  |  PYYYYMMDDTHHMMSS | PYYYY-MM-DDTHH:MM:SS
+// For unit based duration a decimal value can only exist on the smallest unit(e.g. P2Y4.5M matches P2.5Y4M does not)
+// Similar constraint allows for only decimal seconds on date time based duration
+const DURATION_REGEX = /^P(?!$)(?:(?:(?<yearUnit>\d+(?:\.\d+(?=Y$))?)Y)?(?:(?<monthUnit>\d+(?:\.\d+(?=M$))?)M)?(?:(?<dayUnit>\d+(?:\.\d+(?=D$))?)D)?(?:T(?=\d)(?:(?<hourUnit>\d+(?:\.\d+(?=H$))?)H)?(?:(?<minuteUnit>\d+(?:\.\d+(?=M$))?)M)?(?:(?<secondUnit>\d+(?:\.\d+(?=S$))?)S)?)?|(?<week>\d+(?:\.\d+)?)W|(?<yearDT>\d{4})(?<dateDelimiter>-?)(?<monthDT>[0]\d|1[0-2])\k<dateDelimiter>(?<dayDT>\d{2})T(?<hourDT>[01]\d|2[0-3])(?<timeDelimiter>(?:(?<=-\w+?):)|(?<=^\w+))(?<minuteDT>[0-5]\d)\k<timeDelimiter>(?<secondDT>[0-5]\d(?:\.\d+)?))$/;
 
 export const parseDuration = (value: any) => {
     if (typeof value !== "string") {
@@ -41,83 +41,36 @@ export const parseDuration = (value: any) => {
     }
 
     const {
-        yearUnit,
-        monthUnit,
-        dayUnit,
-        hourUnit,
-        minuteUnit,
-        secondUnit,
-        week,
-        yearDT,
-        monthDT,
-        dayDT,
-        hourDT,
-        minuteDT,
-        secondDT,
-        fractionDT,
+        yearUnit = 0,
+        monthUnit = 0,
+        dayUnit = 0,
+        hourUnit = 0,
+        minuteUnit = 0,
+        secondUnit = 0,
+        week = 0,
+        yearDT = 0,
+        monthDT = 0,
+        dayDT = 0,
+        hourDT = 0,
+        minuteDT = 0,
+        secondDT = 0,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     } = match.groups!;
 
-    // Check if any valid duration strings have fractional values unallowed by neo4j-driver@4.2.3
+    // Check if any valid duration strings have decimal values unallowed by neo4j-driver
     if (
         !(
-            Number.isInteger(+(week ?? 0)) &&
-            Number.isInteger(+(yearUnit?.split("Y")[0] ?? 0)) &&
-            Number.isInteger(+(monthUnit?.split("M")[0] ?? 0)) &&
-            Number.isInteger(+(dayUnit?.split("D")[0] ?? 0))
+            Number.isInteger(+week) &&
+            Number.isInteger(+yearUnit) &&
+            Number.isInteger(+monthUnit) &&
+            Number.isInteger(+dayUnit)
         )
     ) {
         throw new Error(DECIMAL_VALUE_ERROR);
     }
 
-    let months = 0;
-    let days = 0;
-    let seconds = 0;
-    let nanoseconds = 0;
-
-    // DateTime Based
-    if (yearDT) {
-        months += +yearDT * 12;
-    }
-    if (monthDT) {
-        months += +monthDT;
-    }
-    if (dayDT) {
-        days += +dayDT;
-    }
-    if (hourDT) {
-        seconds += +hourDT * 3600; // 60 * 60 seconds per hour
-    }
-
-    if (minuteDT) {
-        seconds += +minuteDT * 60; // 60 seconds per minute
-    }
-    if (secondDT) {
-        seconds += +secondDT;
-    }
-    if (fractionDT) {
-        nanoseconds = +`${fractionDT}000000000`.substring(0, 9);
-    }
-
-    // Week based
-    if (week) {
-        days += +week * 7; // 7 days per week
-    }
-
-    // Unit based
-
-    if (yearUnit) {
-        months += +yearUnit.split("Y")[0] * 12; // 12 months per year
-    }
-    if (monthUnit) {
-        months += +monthUnit.split("M")[0];
-    }
-    if (dayUnit) {
-        days += +dayUnit.split("D")[0];
-    }
-
     // Splits a floating point second value into whole seconds and nanoseconds
-    function splitSeconds(number: number): [number, number] {
+    const splitSeconds = (number: number): [number, number] => {
         // Split on decimal point if needed
         const [second, fraction = 0] = `${number}`.split(".");
         // Take first nine digits if received more
@@ -127,27 +80,23 @@ export const parseDuration = (value: any) => {
             nanosecond = `${nanosecond}0`;
         }
         return [+second, +nanosecond];
-    }
+    };
 
-    // Calculate seconds and nanoseconds based off of hour, minute, and second with fractional values
-    if (hourUnit) {
-        const hourUnitInSeconds = +hourUnit.split("H")[0] * 3600; // 60 * 60 seconds per hour
-        const [wholeSeconds, wholeNanoseconds] = splitSeconds(hourUnitInSeconds);
-        seconds += wholeSeconds;
-        nanoseconds += wholeNanoseconds;
-    }
-    if (minuteUnit) {
-        const minuteUnitInSeconds = +minuteUnit.split("M")[0] * 60; // 60 seconds per minute
-        const [wholeSeconds, wholeNanoSeconds] = splitSeconds(minuteUnitInSeconds);
-        seconds += wholeSeconds;
-        nanoseconds += wholeNanoSeconds;
-    }
-    if (secondUnit) {
-        const secondUnitInSeconds = +secondUnit.split("S")[0]; // 1 second per second
-        const [wholeSeconds, wholeNanoSeconds] = splitSeconds(secondUnitInSeconds);
-        seconds += wholeSeconds;
-        nanoseconds += wholeNanoSeconds;
-    }
+    // NOTE: xDT and xUnit cannot both be nonzero by construction => (xDT + xUnit) = xDT | xUnit | 0
+
+    const [hourSeconds, hourNanoseconds] = splitSeconds((+hourDT + +hourUnit) * 3600); // 60 * 60 seconds per hour
+    const [minuteSeconds, minuteNanoseconds] = splitSeconds((+minuteDT + +minuteUnit) * 60); // 60 seconds per minute
+    const [secondSeconds, secondNanoseconds] = splitSeconds(+secondDT + +secondUnit); // 1 second per second
+
+    // Calculate seconds and nanoseconds based off of hour, minute, and second with decimal values
+    const nanoseconds = hourNanoseconds + minuteNanoseconds + secondNanoseconds;
+    const seconds = hourSeconds + minuteSeconds + secondSeconds;
+
+    // Calcuate days off of week and day
+    const days = (+dayDT + +dayUnit) * 1 + +week * 7; // 7 days per week
+
+    // Calculate months based off of year and month
+    const months = (+monthDT + +monthUnit) * 1 + (+yearDT + +yearUnit) * 12; // 12 months per year
 
     return {
         months,
