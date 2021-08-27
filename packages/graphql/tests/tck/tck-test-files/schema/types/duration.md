@@ -19,7 +19,7 @@ type Movie {
 
 ```graphql
 """
-A duration, represented as an ISO 8601 duration string allowing for basic date time format
+A duration, represented as an ISO 8601 duration
 """
 scalar Duration
 
@@ -29,6 +29,7 @@ type Movie {
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -94,11 +95,27 @@ input MovieUpdateInput {
     duration: Duration
 }
 
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 
