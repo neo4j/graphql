@@ -27,7 +27,7 @@ export const DECIMAL_VALUE_ERROR = `Cannot specify decimal values in durations, 
 // Matching P[nY][nM][nD][T[nH][nM][nS]]  |  P[nW]  |  PYYYYMMDDTHHMMSS[.sss+]
 // For unit based duration a fractional value can only exist on the smallest unit(e.g. P2Y4.5M matches P2.5Y4M does not)
 // Similar constraint allows for only fractional seconds on date time based duration
-const DURATION_REGEX = /^P(?!$)((?<yearUnit>((\d+Y)|(\d+\.\d+Y$)))?(?<monthUnit>((\d+M)|(\d+\.\d+M$)))?(?<dayUnit>((\d+D)|(\d+\.\d+D$)))?(?:T(?=\d)(?<hourUnit>((\d+H)|(\d+\.\d+H$)))?(?<minuteUnit>((\d+M)|(\d+\.\d+M$)))?(?<secondUnit>((\d+S)|(\d+\.\d+S$)))?)?|(?<week>\d+(\.\d+)?)W|(?<yearDT>\d{4})(?<monthDT>[0]\d|1[0-2])(?<dayDT>\d{2})T(?<hourDT>[01]\d|2[0-3])(?<minuteDT>[0-5]\d)(?<secondDT>[0-5]\d)(\.(?<fractionDT>\d+))?)$/;
+const DURATION_REGEX = /^P(?!$)((?<yearUnit>((\d+Y)|(\d+\.\d+Y$)))?(?<monthUnit>((\d+M)|(\d+\.\d+M$)))?(?<dayUnit>((\d+D)|(\d+\.\d+D$)))?(?:T(?=\d)(?<hourUnit>((\d+H)|(\d+\.\d+H$)))?(?<minuteUnit>((\d+M)|(\d+\.\d+M$)))?(?<secondUnit>((\d+S)|(\d+\.\d+S$)))?)?|(?<week>\d+(\.\d+)?)W|(?<yearDT>\d{4})(?<dateDelimiter>-?)(?<monthDT>[0]\d|1[0-2])\k<dateDelimiter>(?<dayDT>\d{2})T(?<hourDT>[01]\d|2[0-3])(?<timeDelimiter>((?<=-\w+?):)|(?<=^\w+))(?<minuteDT>[0-5]\d)\k<timeDelimiter>(?<secondDT>[0-5]\d)(\.(?<fractionDT>\d+))?)$/;
 
 export const parseDuration = (value: any) => {
     if (typeof value !== "string") {
@@ -165,7 +165,7 @@ const parse = (value: any) => {
 
 export default new GraphQLScalarType({
     name: "Duration",
-    description: "A duration, represented as an ISO 8601 duration string allowing for basic date time format",
+    description: "A duration, represented as an ISO 8601 duration",
     serialize: (value: any) => {
         if (typeof value !== "string" && !(value instanceof neo4j.types.Duration)) {
             throw new TypeError(`Value must be of type string: ${value}`);

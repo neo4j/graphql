@@ -22,15 +22,21 @@ import { DECIMAL_VALUE_ERROR, parseDuration } from "./Duration";
 type ParsedDuration = ReturnType<typeof parseDuration>;
 
 describe("Duration Scalar", () => {
-    test.each<any>([42, () => 5, { a: 3, b: 4 }, null, undefined])("should not match %p and throw error", (value) => {
-        expect(() => parseDuration(value)).toThrow(TypeError);
-    });
-    test.each<string>(["P", "PT", "P233WT4H", "P5.2Y4M"])("should not match %s and throw error", (duration) => {
-        expect(() => parseDuration(duration)).toThrow(TypeError);
-    });
-    test.each<string>(["P34.55Y", "P4Y5M5.4D", "P24.5W"])("should match %s but throw decimal error", (duration) => {
-        expect(() => parseDuration(duration)).toThrow(new Error(DECIMAL_VALUE_ERROR));
-    });
+    test.each<any>([42, () => 5, { a: 3, b: 4 }, null, undefined])("should not match %p and throw error", (value) =>
+        expect(() => parseDuration(value)).toThrow(TypeError)
+    );
+    test.each<string>([
+        "P",
+        "PT",
+        "P233WT4H",
+        "P5.2Y4M",
+        "P18871104T12:00:00",
+        "P1887-11-04T120000",
+    ])("should not match %s and throw error", (value) => expect(() => parseDuration(value)).toThrow(TypeError));
+    test.each<string>(["P34.55Y", "P4Y5M5.4D", "P24.5W", "P2Y5.5M"])(
+        "should match %s but throw decimal error",
+        (duration) => expect(() => parseDuration(duration)).toThrow(new Error(DECIMAL_VALUE_ERROR))
+    );
     test.each<[string, ParsedDuration]>([
         ["P2Y", { months: 2 * 12, days: 0, seconds: 0, nanoseconds: 0 }],
         ["P3M", { months: 3, days: 0, seconds: 0, nanoseconds: 0 }],
@@ -41,7 +47,8 @@ describe("Duration Scalar", () => {
         ["PT6.5S", { months: 0, days: 0, seconds: 6, nanoseconds: 500000000 }],
         ["P6Y30M16DT30M", { months: 6 * 12 + 30, days: 16, seconds: 30 * 60, nanoseconds: 0 }],
         ["P18870605T120000", { months: 1887 * 12 + 6, days: 5, seconds: 12 * 60 * 60, nanoseconds: 0 }],
-    ])("should match and parse %s correctly", (duration, parsed) => {
-        expect(parseDuration(duration)).toStrictEqual(parsed);
-    });
+        ["P1887-06-05T12:00:00", { months: 1887 * 12 + 6, days: 5, seconds: 12 * 60 * 60, nanoseconds: 0 }],
+    ])("should match and parse %s correctly", (duration, parsed) =>
+        expect(parseDuration(duration)).toStrictEqual(parsed)
+    );
 });
