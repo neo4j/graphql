@@ -73,7 +73,7 @@ type Movie {
 
 === `Duration`
 
-ISO 8601 duration string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/duration/[Duration] type.
+ISO 8601 duration string stored as a https://neo4j.com/docs/cypher-manual/current/functions/temporal/duration/[duration] type.
 
 [source, graphql, indent=0]
 ----
@@ -82,7 +82,10 @@ type Movie {
 }
 ----
 
-_Note:_ Decimal values are not currently accepted on `[YMWD]`
+_Note:_
+
+- Decimal values are not currently accepted on `[YMWD]`
+- Comparisons are made according to the https://neo4j.com/developer/cypher/dates-datetimes-durations/#comparing-filtering-values[cypher developer guide]
 
 [[type-definitions-types-spatial]]
 == Spatial Types

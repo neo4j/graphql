@@ -54,6 +54,11 @@ function createWhereAndParams({
         }
 
         const pointField = node.pointFields.find((x) => key.startsWith(x.fieldName));
+        // Comparison operations requires adding dates to durations
+        // See https://neo4j.com/developer/cypher/dates-datetimes-durations/#comparing-filtering-values
+        const durationField = node.primitiveFields.find(
+            (x) => key.startsWith(x.fieldName) && x.typeMeta.name === "Duration"
+        );
 
         if (key.endsWith("_NOT")) {
             const [fieldName] = key.split("_NOT");
@@ -477,11 +482,12 @@ function createWhereAndParams({
                     ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
                     : `${varName}.${fieldName}`;
 
-            res.clauses.push(
-                pointField
-                    ? `distance(${varName}.${fieldName}, point($${param}.point)) < $${param}.distance`
-                    : `${property} < $${param}`
-            );
+            let clause = `${property} < $${param}`;
+
+            if (pointField) clause = `distance(${varName}.${fieldName}, point($${param}.point)) < $${param}.distance`;
+            if (durationField) clause = `datetime() + ${property} < datetime() + $${param}`;
+
+            res.clauses.push(clause);
             res.params[param] = value;
 
             return res;
@@ -498,11 +504,12 @@ function createWhereAndParams({
                     ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
                     : `${varName}.${fieldName}`;
 
-            res.clauses.push(
-                pointField
-                    ? `distance(${varName}.${fieldName}, point($${param}.point)) <= $${param}.distance`
-                    : `${property} <= $${param}`
-            );
+            let clause = `${property} <= $${param}`;
+
+            if (pointField) clause = `distance(${varName}.${fieldName}, point($${param}.point)) <= $${param}.distance`;
+            if (durationField) clause = `datetime() + ${property} <= datetime() + $${param}`;
+
+            res.clauses.push(clause);
             res.params[param] = value;
 
             return res;
@@ -519,11 +526,12 @@ function createWhereAndParams({
                     ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
                     : `${varName}.${fieldName}`;
 
-            res.clauses.push(
-                pointField
-                    ? `distance(${varName}.${fieldName}, point($${param}.point)) > $${param}.distance`
-                    : `${property} > $${param}`
-            );
+            let clause = `${property} > $${param}`;
+
+            if (pointField) clause = `distance(${varName}.${fieldName}, point($${param}.point)) > $${param}.distance`;
+            if (durationField) clause = `datetime() + ${property} > datetime() + $${param}`;
+
+            res.clauses.push(clause);
             res.params[param] = value;
 
             return res;
@@ -540,11 +548,12 @@ function createWhereAndParams({
                     ? `coalesce(${varName}.${fieldName}, ${coalesceValue})`
                     : `${varName}.${fieldName}`;
 
-            res.clauses.push(
-                pointField
-                    ? `distance(${varName}.${fieldName}, point($${param}.point)) >= $${param}.distance`
-                    : `${property} >= $${param}`
-            );
+            let clause = `${property} >= $${param}`;
+
+            if (pointField) clause = `distance(${varName}.${fieldName}, point($${param}.point)) >= $${param}.distance`;
+            if (durationField) clause = `datetime() + ${property} >= datetime() + $${param}`;
+
+            res.clauses.push(clause);
             res.params[param] = value;
 
             return res;

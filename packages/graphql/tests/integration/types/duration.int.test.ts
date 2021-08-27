@@ -310,5 +310,128 @@ describe("Duration", () => {
                 await session.close();
             }
         });
+        test("should filter based on duration comparison", () =>
+            Promise.all(
+                ["LT", "LTE", "GT", "GTE"].map(async (filter) => {
+                    const session = driver.session();
+
+                    const typeDefs = `
+                        type Movie {
+                            id: ID!
+                            duration: Duration!
+                        }
+                    `;
+
+                    const { schema } = new Neo4jGraphQL({ typeDefs });
+
+                    const longId = generate({ readable: false });
+                    const long = "P2Y";
+                    const parsedLong = parseDuration(long);
+                    const neo4jLong = new neo4jDriver.types.Duration(
+                        parsedLong.months,
+                        parsedLong.days,
+                        parsedLong.seconds,
+                        parsedLong.nanoseconds
+                    );
+
+                    const mediumId = generate({ readable: false });
+                    const medium = "P2M";
+                    const parsedMedium = parseDuration(medium);
+                    const neo4jMedium = new neo4jDriver.types.Duration(
+                        parsedMedium.months,
+                        parsedMedium.days,
+                        parsedMedium.seconds,
+                        parsedMedium.nanoseconds
+                    );
+
+                    const shortId = generate({ readable: false });
+                    const short = "P2D";
+                    const parsedShort = parseDuration(short);
+                    const neo4jShort = new neo4jDriver.types.Duration(
+                        parsedShort.months,
+                        parsedShort.days,
+                        parsedShort.seconds,
+                        parsedShort.nanoseconds
+                    );
+
+                    try {
+                        await session.run(
+                            `
+                                CREATE (long:Movie)
+                                SET long = $long
+                                CREATE (medium:Movie)
+                                SET medium = $medium
+                                CREATE (short:Movie)
+                                SET short = $short
+                            `,
+                            {
+                                long: { id: longId, duration: neo4jLong },
+                                medium: { id: mediumId, duration: neo4jMedium },
+                                short: { id: shortId, duration: neo4jShort },
+                            }
+                        );
+
+                        const query = `
+                            query ($where: MovieWhere!) {
+                                movies(
+                                    where: $where
+                                    options: { sort: [{ duration: ASC }]}
+                                ) {
+                                    id
+                                    duration
+                                }
+                            }
+                        `;
+
+                        const graphqlResult = await graphql({
+                            schema,
+                            source: query,
+                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            variableValues: {
+                                where: { id_IN: [longId, mediumId, shortId], [`duration_${filter}`]: medium },
+                            },
+                        });
+
+                        expect(graphqlResult.errors).toBeUndefined();
+
+                        const graphqlMovies: { id: string; duration: string }[] = graphqlResult.data?.movies;
+                        expect(graphqlMovies).toBeDefined();
+
+                        /* eslint-disable jest/no-conditional-expect */
+                        if (filter === "LT") {
+                            expect(graphqlMovies).toHaveLength(1);
+                            expect(graphqlMovies[0].id).toBe(shortId);
+                            expect(parseDuration(graphqlMovies[0].duration)).toStrictEqual(parsedShort);
+                        }
+
+                        if (filter === "LTE") {
+                            expect(graphqlMovies).toHaveLength(2);
+                            expect(graphqlMovies[0].id).toBe(shortId);
+                            expect(parseDuration(graphqlMovies[0].duration)).toStrictEqual(parsedShort);
+
+                            expect(graphqlMovies[1].id).toBe(mediumId);
+                            expect(parseDuration(graphqlMovies[1].duration)).toStrictEqual(parsedMedium);
+                        }
+
+                        if (filter === "GT") {
+                            expect(graphqlMovies).toHaveLength(1);
+                            expect(graphqlMovies[0].id).toBe(longId);
+                            expect(parseDuration(graphqlMovies[0].duration)).toStrictEqual(parsedLong);
+                        }
+
+                        if (filter === "GTE") {
+                            expect(graphqlMovies).toHaveLength(2);
+                            expect(graphqlMovies[0].id).toBe(mediumId);
+                            expect(parseDuration(graphqlMovies[0].duration)).toStrictEqual(parsedMedium);
+
+                            expect(graphqlMovies[1].id).toBe(longId);
+                            expect(parseDuration(graphqlMovies[1].duration)).toStrictEqual(parsedLong);
+                        }
+                        /* eslint-enable jest/no-conditional-expect */
+                    } finally {
+                        await session.close();
+                    }
+                })
+            ));
     });
 });

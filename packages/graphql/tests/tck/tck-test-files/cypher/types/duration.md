@@ -54,6 +54,47 @@ RETURN this { .duration } as this
 
 ---
 
+## GTE Read
+
+### GraphQL Input
+
+```graphql
+query {
+    movies(where: { duration_GTE: "P3Y4M" }) {
+        duration
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Movie)
+WHERE datetime() + this.duration >= datetime() + $this_duration_GTE
+RETURN this { .duration } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_duration_GTE": {
+        "months": 40,
+        "days": 0,
+        "seconds": {
+            "low": 0,
+            "high": 0
+        },
+        "nanoseconds": {
+            "low": 0,
+            "high": 0
+        }
+    }
+}
+```
+
+---
+
 ## Simple Create
 
 ### GraphQL Input

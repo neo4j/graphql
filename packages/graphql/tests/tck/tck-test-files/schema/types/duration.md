@@ -78,9 +78,13 @@ input MovieWhere {
     id_ENDS_WITH: ID
     id_NOT_ENDS_WITH: ID
     duration: Duration
+    duration_GT: Duration
+    duration_GTE: Duration
     duration_IN: [Duration]
     duration_NOT: Duration
     duration_NOT_IN: [Duration]
+    duration_LT: Duration
+    duration_LTE: Duration
     OR: [MovieWhere!]
     AND: [MovieWhere!]
 }
