@@ -52,9 +52,9 @@ describe("Duration", () => {
             });
 
             const id = generate({ readable: false });
-            const years = faker.random.number({ min: 1, max: 6 });
-            const months = faker.random.number({ min: 5, max: 10 });
-            const days = faker.random.number({ min: 23, max: 50 });
+            const years = faker.random.number({ min: -6, max: 6 });
+            const months = faker.random.number({ min: -10, max: 10 });
+            const days = faker.random.number({ min: -50, max: 50 });
             const minutes = faker.random.float();
 
             const duration = `P${years}Y${months}M${days}DT${minutes}M`;
@@ -119,7 +119,7 @@ describe("Duration", () => {
             });
 
             const id = generate({ readable: false });
-            const durations = ["P34Y4M2DT23.44H", "P34W", "P19980314T120000"];
+            const durations = ["P34Y4M2DT23.44H", "P-34W", "P19980314T120000"];
             const parsedDurations = durations.map((duration) => parseDuration(duration));
 
             try {
@@ -198,7 +198,7 @@ describe("Duration", () => {
             });
 
             const id = generate({ readable: false });
-            const duration = "P5Y6M";
+            const duration = "-P5Y6M";
             const parsedDuration = parseDuration(duration);
 
             try {

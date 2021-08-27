@@ -35,14 +35,19 @@ describe("Duration Scalar", () => {
     ])("should not match %s and throw error", (value) => expect(() => parseDuration(value)).toThrow(TypeError));
     test.each<string>(["P34.55Y", "P4Y5M5.4D", "P24.5W", "P2Y5.5M"])(
         "should match %s but throw decimal error",
-        (duration) => expect(() => parseDuration(duration)).toThrow(new Error(DECIMAL_VALUE_ERROR))
+        (duration) => expect(() => parseDuration(duration)).toThrow(DECIMAL_VALUE_ERROR)
     );
     test.each<[string, ParsedDuration]>([
         ["P2Y", { months: 2 * 12, days: 0, seconds: 0, nanoseconds: 0 }],
+        ["P2Y-3M", { months: 2 * 12 - 3, days: 0, seconds: 0, nanoseconds: 0 }],
+        ["-P2Y-3M", { months: -2 * 12 + 3, days: 0, seconds: 0, nanoseconds: 0 }],
         ["P3M", { months: 3, days: 0, seconds: 0, nanoseconds: 0 }],
         ["P87D", { months: 0, days: 87, seconds: 0, nanoseconds: 0 }],
         ["P15W", { months: 0, days: 15 * 7, seconds: 0, nanoseconds: 0 }],
+        ["P-15W", { months: 0, days: -15 * 7, seconds: 0, nanoseconds: 0 }],
+        ["-P-15W", { months: 0, days: 15 * 7, seconds: 0, nanoseconds: 0 }],
         ["PT50H", { months: 0, days: 0, seconds: 50 * 60 * 60, nanoseconds: 0 }],
+        ["P4Y-5M-3DT5H", { months: 4 * 12 - 5, days: -3, seconds: 5 * 3600, nanoseconds: 0 }],
         ["PT30M", { months: 0, days: 0, seconds: 30 * 60, nanoseconds: 0 }],
         ["PT6.5S", { months: 0, days: 0, seconds: 6, nanoseconds: 500000000 }],
         ["P6Y30M16DT30M", { months: 6 * 12 + 30, days: 16, seconds: 30 * 60, nanoseconds: 0 }],

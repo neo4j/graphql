@@ -27,7 +27,7 @@ export const DECIMAL_VALUE_ERROR = `Cannot specify decimal values in durations, 
 // Matching P[nY][nM][nD][T[nH][nM][nS]]  |  PnW  |  PYYYYMMDDTHHMMSS | PYYYY-MM-DDTHH:MM:SS
 // For unit based duration a decimal value can only exist on the smallest unit(e.g. P2Y4.5M matches P2.5Y4M does not)
 // Similar constraint allows for only decimal seconds on date time based duration
-const DURATION_REGEX = /^P(?!$)(?:(?:(?<yearUnit>\d+(?:\.\d+(?=Y$))?)Y)?(?:(?<monthUnit>\d+(?:\.\d+(?=M$))?)M)?(?:(?<dayUnit>\d+(?:\.\d+(?=D$))?)D)?(?:T(?=\d)(?:(?<hourUnit>\d+(?:\.\d+(?=H$))?)H)?(?:(?<minuteUnit>\d+(?:\.\d+(?=M$))?)M)?(?:(?<secondUnit>\d+(?:\.\d+(?=S$))?)S)?)?|(?<week>\d+(?:\.\d+)?)W|(?<yearDT>\d{4})(?<dateDelimiter>-?)(?<monthDT>[0]\d|1[0-2])\k<dateDelimiter>(?<dayDT>\d{2})T(?<hourDT>[01]\d|2[0-3])(?<timeDelimiter>(?:(?<=-\w+?):)|(?<=^\w+))(?<minuteDT>[0-5]\d)\k<timeDelimiter>(?<secondDT>[0-5]\d(?:\.\d+)?))$/;
+const DURATION_REGEX = /^(?<negated>-?)P(?!$)(?:(?:(?<yearUnit>-?\d+(?:\.\d+(?=Y$))?)Y)?(?:(?<monthUnit>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<dayUnit>-?\d+(?:\.\d+(?=D$))?)D)?(?:T(?=\d)(?:(?<hourUnit>-?\d+(?:\.\d+(?=H$))?)H)?(?:(?<minuteUnit>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<secondUnit>-?\d+(?:\.\d+(?=S$))?)S)?)?|(?<week>-?\d+(?:\.\d+)?)W|(?<yearDT>\d{4})(?<dateDelimiter>-?)(?<monthDT>[0]\d|1[0-2])\k<dateDelimiter>(?<dayDT>\d{2})T(?<hourDT>[01]\d|2[0-3])(?<timeDelimiter>(?:(?<=-\w+?):)|(?<=^-?\w+))(?<minuteDT>[0-5]\d)\k<timeDelimiter>(?<secondDT>[0-5]\d(?:\.\d+)?))$/;
 
 export const parseDuration = (value: any) => {
     if (typeof value !== "string") {
@@ -41,6 +41,7 @@ export const parseDuration = (value: any) => {
     }
 
     const {
+        negated,
         yearUnit = 0,
         monthUnit = 0,
         dayUnit = 0,
@@ -69,6 +70,11 @@ export const parseDuration = (value: any) => {
         throw new Error(DECIMAL_VALUE_ERROR);
     }
 
+    // Whether total duration is negative
+    const coefficient = negated ? -1 : 1;
+    // coefficient signs each number including zero: converts -0 -> 0
+    const normalizeZero = (a: number) => (Object.is(a, -0) ? 0 : a);
+
     // Splits a floating point second value into whole seconds and nanoseconds
     const splitSeconds = (number: number): [number, number] => {
         // Split on decimal point if needed
@@ -89,20 +95,20 @@ export const parseDuration = (value: any) => {
     const [secondSeconds, secondNanoseconds] = splitSeconds(+secondDT + +secondUnit); // 1 second per second
 
     // Calculate seconds and nanoseconds based off of hour, minute, and second with decimal values
-    const nanoseconds = hourNanoseconds + minuteNanoseconds + secondNanoseconds;
-    const seconds = hourSeconds + minuteSeconds + secondSeconds;
+    const nanoseconds = coefficient * (hourNanoseconds + minuteNanoseconds + secondNanoseconds);
+    const seconds = coefficient * (hourSeconds + minuteSeconds + secondSeconds);
 
     // Calcuate days off of week and day
-    const days = (+dayDT + +dayUnit) * 1 + +week * 7; // 7 days per week
+    const days = coefficient * ((+dayDT + +dayUnit) * 1 + +week * 7); // 7 days per week
 
     // Calculate months based off of year and month
-    const months = (+monthDT + +monthUnit) * 1 + (+yearDT + +yearUnit) * 12; // 12 months per year
+    const months = coefficient * ((+monthDT + +monthUnit) * 1 + (+yearDT + +yearUnit) * 12); // 12 months per year
 
     return {
-        months,
-        days,
-        seconds,
-        nanoseconds,
+        months: normalizeZero(months),
+        days: normalizeZero(days),
+        seconds: normalizeZero(seconds),
+        nanoseconds: normalizeZero(nanoseconds),
     };
 };
 
