@@ -297,7 +297,7 @@ function getObjFieldMeta({
                 res.ignoredFields.push(baseField);
             } else {
                 // eslint-disable-next-line no-lonely-if
-                if (["DateTime"].includes(typeMeta.name)) {
+                if (["DateTime", "Date", "Time", "LocalDateTime", "LocalTime"].includes(typeMeta.name)) {
                     const temporalField: TemporalField = {
                         ...baseField,
                     };
