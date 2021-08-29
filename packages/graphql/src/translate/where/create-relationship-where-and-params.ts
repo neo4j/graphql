@@ -57,8 +57,7 @@ function createRelationshipWhereAndParams({
         const pointField = relationship.pointFields.find((f) => f.fieldName === fieldName);
 
         const coalesceValue = ([
-            ...relationship.dateTimeFields,
-            ...relationship.dateTimeFields,
+            ...relationship.temporalFields,
             ...relationship.enumFields,
             ...relationship.scalarFields,
             ...relationship.primitiveFields,

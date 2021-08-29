@@ -46,7 +46,7 @@ import {
     UnionField,
     InterfaceField,
     ObjectField,
-    DateTimeField,
+    TemporalField,
     PointField,
     TimeStampOperations,
     ConnectionField,
@@ -63,7 +63,7 @@ export interface ObjectFields {
     unionFields: UnionField[];
     interfaceFields: InterfaceField[];
     objectFields: ObjectField[];
-    dateTimeFields: DateTimeField[];
+    temporalFields: TemporalField[];
     pointFields: PointField[];
     ignoredFields: BaseField[];
 }
@@ -297,8 +297,8 @@ function getObjFieldMeta({
                 res.ignoredFields.push(baseField);
             } else {
                 // eslint-disable-next-line no-lonely-if
-                if (typeMeta.name === "DateTime") {
-                    const dateTimeField: DateTimeField = {
+                if (["DateTime"].includes(typeMeta.name)) {
+                    const temporalField: TemporalField = {
                         ...baseField,
                     };
 
@@ -314,7 +314,7 @@ function getObjFieldMeta({
                             ? (operations?.values.map((x) => parseValueNode(x)) as TimeStampOperations[])
                             : (["CREATE", "UPDATE"] as TimeStampOperations[]);
 
-                        dateTimeField.timestamps = timestamps;
+                        temporalField.timestamps = timestamps;
                     }
 
                     if (defaultDirective) {
@@ -322,18 +322,18 @@ function getObjFieldMeta({
 
                         if (Number.isNaN(Date.parse((value as StringValueNode).value))) {
                             throw new Error(
-                                `Default value for ${obj.name.value}.${dateTimeField.fieldName} is not a valid DateTime`
+                                `Default value for ${obj.name.value}.${temporalField.fieldName} is not a valid DateTime`
                             );
                         }
 
-                        dateTimeField.defaultValue = (value as StringValueNode).value;
+                        temporalField.defaultValue = (value as StringValueNode).value;
                     }
 
                     if (coalesceDirective) {
                         throw new Error("@coalesce is not supported by DateTime fields at this time");
                     }
 
-                    res.dateTimeFields.push(dateTimeField);
+                    res.temporalFields.push(temporalField);
                 } else if (["Point", "CartesianPoint"].includes(typeMeta.name)) {
                     if (defaultDirective) {
                         throw new Error("@default directive can only be used on primitive type fields");
@@ -455,7 +455,7 @@ function getObjFieldMeta({
             unionFields: [],
             interfaceFields: [],
             objectFields: [],
-            dateTimeFields: [],
+            temporalFields: [],
             pointFields: [],
             ignoredFields: [],
         }
