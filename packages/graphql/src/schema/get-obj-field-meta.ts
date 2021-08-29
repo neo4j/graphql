@@ -307,6 +307,10 @@ function getObjFieldMeta({
                             throw new Error("cannot auto-generate an array");
                         }
 
+                        if (!["DateTime", "Time"].includes(typeMeta.name)) {
+                            throw new Error("Cannot timestamp temporal fields lacking time zone information");
+                        }
+
                         const operations = timestampDirective?.arguments?.find((x) => x.name.value === "operations")
                             ?.value as ListValueNode;
 
