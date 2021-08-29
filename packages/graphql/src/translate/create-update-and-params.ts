@@ -324,13 +324,14 @@ function createUpdateAndParams({
         }
 
         if (!hasAppliedTimeStamps) {
-            const timestamps = node.temporalFields.filter(
+            const timestampedFields = node.temporalFields.filter(
                 (temporalField) =>
-                    ["DateTime"].includes(temporalField.typeMeta.name) && temporalField.timestamps?.includes("UPDATE")
+                    ["DateTime", "Time"].includes(temporalField.typeMeta.name) &&
+                    temporalField.timestamps?.includes("UPDATE")
             );
-            timestamps.forEach((ts) => {
-                // DateTime -> datetime()
-                res.strs.push(`SET ${varName}.${ts.dbPropertyName} = ${ts.typeMeta.name.toLowerCase()}()`);
+            timestampedFields.forEach((field) => {
+                // DateTime -> datetime(); Time -> time()
+                res.strs.push(`SET ${varName}.${field.dbPropertyName} = ${field.typeMeta.name.toLowerCase()}()`);
             });
 
             hasAppliedTimeStamps = true;
