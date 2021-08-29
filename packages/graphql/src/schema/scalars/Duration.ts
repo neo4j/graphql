@@ -27,7 +27,7 @@ export const DECIMAL_VALUE_ERROR = `Cannot specify decimal values in durations, 
 // Matching P[nY][nM][nD][T[nH][nM][nS]]  |  PnW  |  PYYYYMMDDTHHMMSS | PYYYY-MM-DDTHH:MM:SS
 // For unit based duration a decimal value can only exist on the smallest unit(e.g. P2Y4.5M matches P2.5Y4M does not)
 // Similar constraint allows for only decimal seconds on date time based duration
-const DURATION_REGEX = /^(?<negated>-?)P(?!$)(?:(?:(?<yearUnit>-?\d+(?:\.\d+(?=Y$))?)Y)?(?:(?<monthUnit>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<dayUnit>-?\d+(?:\.\d+(?=D$))?)D)?(?:T(?=\d)(?:(?<hourUnit>-?\d+(?:\.\d+(?=H$))?)H)?(?:(?<minuteUnit>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<secondUnit>-?\d+(?:\.\d+(?=S$))?)S)?)?|(?<week>-?\d+(?:\.\d+)?)W|(?<yearDT>\d{4})(?<dateDelimiter>-?)(?<monthDT>[0]\d|1[0-2])\k<dateDelimiter>(?<dayDT>\d{2})T(?<hourDT>[01]\d|2[0-3])(?<timeDelimiter>(?:(?<=-\w+?):)|(?<=^-?\w+))(?<minuteDT>[0-5]\d)\k<timeDelimiter>(?<secondDT>[0-5]\d(?:\.\d+)?))$/;
+const DURATION_REGEX = /^(?<negated>-?)P(?!$)(?:(?:(?<yearUnit>-?\d+(?:\.\d+(?=Y$))?)Y)?(?:(?<monthUnit>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<dayUnit>-?\d+(?:\.\d+(?=D$))?)D)?(?:T(?=\d)(?:(?<hourUnit>-?\d+(?:\.\d+(?=H$))?)H)?(?:(?<minuteUnit>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<secondUnit>-?\d+(?:\.\d+(?=S$))?)S)?)?|(?<weekUnit>-?\d+(?:\.\d+)?)W|(?<yearDT>\d{4})(?<dateDelimiter>-?)(?<monthDT>[0]\d|1[0-2])\k<dateDelimiter>(?<dayDT>\d{2})T(?<hourDT>[01]\d|2[0-3])(?<timeDelimiter>(?:(?<=-\w+?):)|(?<=^-?\w+))(?<minuteDT>[0-5]\d)\k<timeDelimiter>(?<secondDT>[0-5]\d(?:\.\d+)?))$/;
 
 export const parseDuration = (value: any) => {
     if (typeof value !== "string") {
@@ -42,13 +42,16 @@ export const parseDuration = (value: any) => {
 
     const {
         negated,
+        // P[nY][nM][nD][T[nH][nM][nS]]
         yearUnit = 0,
         monthUnit = 0,
         dayUnit = 0,
         hourUnit = 0,
         minuteUnit = 0,
         secondUnit = 0,
-        week = 0,
+        // PnW
+        weekUnit = 0,
+        // PYYYYMMDDTHHMMSS | PYYYY-MM-DDTHH:MM:SS
         yearDT = 0,
         monthDT = 0,
         dayDT = 0,
@@ -61,19 +64,17 @@ export const parseDuration = (value: any) => {
     // Check if any valid duration strings have decimal values unallowed by neo4j-driver
     if (
         !(
-            Number.isInteger(+week) &&
             Number.isInteger(+yearUnit) &&
             Number.isInteger(+monthUnit) &&
+            Number.isInteger(+weekUnit) &&
             Number.isInteger(+dayUnit)
         )
     ) {
         throw new Error(DECIMAL_VALUE_ERROR);
     }
 
-    // Whether total duration is negative
-    const coefficient = negated ? -1 : 1;
-    // coefficient signs each number including zero: converts -0 -> 0
-    const normalizeZero = (a: number) => (Object.is(a, -0) ? 0 : a);
+    // negated duration negates each number including zero: converts -0 -> 0
+    const unsignZero = (a: number) => (Object.is(a, -0) ? 0 : a);
 
     // Splits a floating point second value into whole seconds and nanoseconds
     const splitSeconds = (number: number): [number, number] => {
@@ -94,21 +95,24 @@ export const parseDuration = (value: any) => {
     const [minuteSeconds, minuteNanoseconds] = splitSeconds((+minuteDT + +minuteUnit) * 60); // 60 seconds per minute
     const [secondSeconds, secondNanoseconds] = splitSeconds(+secondDT + +secondUnit); // 1 second per second
 
+    // Whether total duration is negative
+    const coefficient = negated ? -1 : 1;
+
     // Calculate seconds and nanoseconds based off of hour, minute, and second with decimal values
     const nanoseconds = coefficient * (hourNanoseconds + minuteNanoseconds + secondNanoseconds);
     const seconds = coefficient * (hourSeconds + minuteSeconds + secondSeconds);
 
     // Calcuate days off of week and day
-    const days = coefficient * ((+dayDT + +dayUnit) * 1 + +week * 7); // 7 days per week
+    const days = coefficient * ((+dayDT + +dayUnit) * 1 + +weekUnit * 7); // 7 days per week
 
     // Calculate months based off of year and month
     const months = coefficient * ((+monthDT + +monthUnit) * 1 + (+yearDT + +yearUnit) * 12); // 12 months per year
 
     return {
-        months: normalizeZero(months),
-        days: normalizeZero(days),
-        seconds: normalizeZero(seconds),
-        nanoseconds: normalizeZero(nanoseconds),
+        months: unsignZero(months),
+        days: unsignZero(days),
+        seconds: unsignZero(seconds),
+        nanoseconds: unsignZero(nanoseconds),
     };
 };
 
@@ -120,7 +124,7 @@ const parse = (value: any) => {
 
 export default new GraphQLScalarType({
     name: "Duration",
-    description: "A duration, represented as an ISO 8601 duration",
+    description: "A duration, represented as an ISO 8601 duration string",
     serialize: (value: any) => {
         if (typeof value !== "string" && !(value instanceof neo4j.types.Duration)) {
             throw new TypeError(`Value must be of type string: ${value}`);

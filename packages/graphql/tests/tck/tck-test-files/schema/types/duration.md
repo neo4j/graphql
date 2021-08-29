@@ -19,7 +19,7 @@ type Movie {
 
 ```graphql
 """
-A duration, represented as an ISO 8601 duration
+A duration, represented as an ISO 8601 duration string
 """
 scalar Duration
 
