@@ -21,6 +21,9 @@ import { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
 import * as neo4jDriver from "neo4j-driver";
+import { IncomingMessage } from "http";
+import { Socket } from "net";
+import jsonwebtoken from "jsonwebtoken";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
@@ -32,6 +35,7 @@ describe("@alias directive", () => {
     const dbComment = generate({ charset: "alphabetic" });
     const dbTitle = generate({ charset: "alphabetic" });
     const year = neo4jDriver.int(2015);
+    const secret = "secret";
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -45,6 +49,7 @@ describe("@alias directive", () => {
 
             type AliasDirectiveTestMovie {
                 title: String! @alias(property: "dbTitle")
+                titleAuth: String @alias(property: "dbTitle") @auth(rules: [{roles: ["reader"]}])
                 year: Int
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
@@ -54,7 +59,7 @@ describe("@alias directive", () => {
                 relationshipCreatedAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
         `;
-        neoSchema = new Neo4jGraphQL({ typeDefs });
+        neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
     });
 
     beforeEach(async () => {
@@ -83,16 +88,25 @@ describe("@alias directive", () => {
                     name
                     likes {
                         title
+                        titleAuth
                         year
                     }
                 }
             }
         `;
 
+        // For the @auth
+
+        const token = jsonwebtoken.sign({ roles: ["reader"] }, secret);
+
+        const socket = new Socket({ readable: true });
+        const req = new IncomingMessage(socket);
+        req.headers.authorization = `Bearer ${token}`;
+
         const gqlResult = await graphql({
             schema: neoSchema.schema,
             source: usersQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] }, req },
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -103,6 +117,7 @@ describe("@alias directive", () => {
             likes: [
                 {
                     title: dbTitle,
+                    titleAuth: dbTitle,
                     year: year.toNumber(),
                 },
             ],
