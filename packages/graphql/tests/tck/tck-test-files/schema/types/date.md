@@ -58,6 +58,10 @@ input MovieOptions {
     offset: Int
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 """
 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
 """
@@ -113,6 +117,7 @@ type Mutation {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
 }
 ```

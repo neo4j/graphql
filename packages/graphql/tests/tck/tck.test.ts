@@ -36,7 +36,14 @@ import { IncomingMessage } from "http";
 import { Socket } from "net";
 // import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
 import { SchemaDirectiveVisitor, printSchemaWithDirectives } from "@graphql-tools/utils";
-import { translateCount, translateCreate, translateDelete, translateRead, translateUpdate } from "../../src/translate";
+import {
+    translateAggregate,
+    translateCount,
+    translateCreate,
+    translateDelete,
+    translateRead,
+    translateUpdate,
+} from "../../src/translate";
 import { Context } from "../../src/types";
 import { Neo4jGraphQL } from "../../src";
 import {
@@ -186,6 +193,34 @@ describe("TCK Generated tests", () => {
                                 );
 
                                 return 1;
+                            },
+                            [`${pluralize(camelCase(def.name.value))}Aggregate`]: (
+                                _root: any,
+                                _params: any,
+                                context: Context,
+                                info: GraphQLResolveInfo
+                            ) => {
+                                const resolveTree = getNeo4jResolveTree(info);
+
+                                context.neoSchema = neoSchema;
+                                context.resolveTree = resolveTree;
+
+                                const mergedContext = { ...context, ...defaultContext };
+
+                                const [cQuery, cQueryParams] = translateAggregate({
+                                    context: mergedContext,
+                                    node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                });
+
+                                compare(
+                                    { expected: cQuery, received: cypherQuery },
+                                    { expected: cQueryParams, received: cypherParams },
+                                    mergedContext
+                                );
+
+                                return {
+                                    count: 1,
+                                };
                             },
                         };
                     }, {});

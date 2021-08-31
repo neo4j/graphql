@@ -136,6 +136,7 @@ type Actor {
     id: ID!
     name: String!
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesConnection(
         where: ActorMoviesConnectionWhere
         sort: [ActorMoviesConnectionSort!]

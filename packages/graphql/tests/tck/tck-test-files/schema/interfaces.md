@@ -61,6 +61,10 @@ type Movie implements MovieNode {
     ): MovieMoviesConnection!
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 input MovieConnectInput {
     movies: [MovieMoviesConnectFieldInput!]
 }
@@ -216,6 +220,7 @@ type PageInfo {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
 }
 

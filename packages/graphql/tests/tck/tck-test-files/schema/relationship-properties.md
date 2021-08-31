@@ -54,6 +54,10 @@ input ActedInSort {
     leadRole: SortDirection
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 input ActedInUpdateInput {
     screenTime: Int
     startDate: Date
@@ -417,9 +421,15 @@ type PageInfo {
     endCursor: String
 }
 
+type ActorAggregateSelection {
+    count: Int!
+}
+
 type Query {
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
+    actorsAggregate(where: ActorWhere): ActorAggregateSelection!
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
     actorsCount(where: ActorWhere): Int!
 }

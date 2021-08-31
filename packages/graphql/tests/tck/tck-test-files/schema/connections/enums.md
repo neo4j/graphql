@@ -47,6 +47,10 @@ input ActedInCreateInput {
     roleType: RoleType!
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 input ActedInSort {
     roleType: SortDirection
 }
@@ -394,9 +398,15 @@ type PageInfo {
     endCursor: String
 }
 
+type ActorAggregateSelection {
+    count: Int!
+}
+
 type Query {
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
+    actorsAggregate(where: ActorWhere): ActorAggregateSelection!
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
     actorsCount(where: ActorWhere): Int!
 }

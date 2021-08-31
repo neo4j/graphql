@@ -624,10 +624,25 @@ input PublicationWhere {
     Journal: JournalWhere
 }
 
+type JournalAggregateSelection {
+    count: Int!
+}
+
+type BookAggregateSelection {
+    count: Int!
+}
+
+type AuthorAggregateSelection {
+    count: Int!
+}
+
 type Query {
     authors(where: AuthorWhere, options: AuthorOptions): [Author!]!
+    authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
     books(where: BookWhere, options: BookOptions): [Book!]!
+    booksAggregate(where: BookWhere): BookAggregateSelection!
     journals(where: JournalWhere, options: JournalOptions): [Journal!]!
+    journalsAggregate(where: JournalWhere): JournalAggregateSelection!
     authorsCount(where: AuthorWhere): Int!
     booksCount(where: BookWhere): Int!
     journalsCount(where: JournalWhere): Int!

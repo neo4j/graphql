@@ -75,6 +75,10 @@ input MovieCreateInput {
     filmedAts: [PointInput!]!
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 input MovieOptions {
     """
     Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
@@ -240,6 +244,7 @@ input PointInput {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
 }
 
