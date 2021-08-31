@@ -33,7 +33,7 @@ function createPointElement({
 
     const { crs, ...point } = resolveTree.fieldsByTypeName[field.typeMeta.name];
     const fields: string[] = [];
-    const dbFieldName = field.alias || resolveTree.name;
+    const dbFieldName = field.dbPropertyName || resolveTree.name;
 
     // Sadly need to select the whole point object due to the risk of height/z
     // being selected on a 2D point, to which the database will throw an error

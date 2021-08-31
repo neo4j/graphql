@@ -5,10 +5,7 @@ function mapToDbProperty(item: Node | Relationship, graphQLField: string): strin
     const itemProp = item.primitiveFields
         .concat(item.dateTimeFields, item.pointFields)
         .find(({ fieldName }) => fieldName === graphQLField);
-    if (itemProp && itemProp.alias) {
-        return itemProp.alias;
-    }
-    return graphQLField;
+    return itemProp?.dbPropertyName || graphQLField;
 }
 
 export default mapToDbProperty;

@@ -92,7 +92,6 @@ function getObjFieldMeta({
             const relationshipMeta = getRelationshipMeta(field);
             const cypherMeta = getCypherMeta(field);
             const typeMeta = getFieldTypeMeta(field);
-            const aliasMeta = getAliasMeta(field);
             const authDirective = field.directives?.find((x) => x.name.value === "auth");
             const idDirective = field?.directives?.find((x) => x.name.value === "id");
             const defaultDirective = field?.directives?.find((x) => x.name.value === "default");
@@ -107,6 +106,7 @@ function getObjFieldMeta({
 
             const baseField: BaseField = {
                 fieldName: field.name.value,
+                dbPropertyName: field.name.value,
                 typeMeta,
                 otherDirectives: (field.directives || []).filter(
                     (x) =>
@@ -131,7 +131,10 @@ function getObjFieldMeta({
                 writeonly: field?.directives?.some((d) => d.name.value === "writeonly"),
             };
             if (aliasDirective) {
-                baseField.alias = aliasMeta?.property;
+                const aliasMeta = getAliasMeta(field);
+                if (aliasMeta) {
+                    baseField.dbPropertyName = aliasMeta.property;
+                }
             }
 
             if (relationshipMeta) {
