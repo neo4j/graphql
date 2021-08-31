@@ -207,9 +207,10 @@ describe("TCK Generated tests", () => {
 
                                 const mergedContext = { ...context, ...defaultContext };
 
+                                const node = neoSchema.nodes.find((x) => x.name === def.name.value) as Node;
                                 const [cQuery, cQueryParams] = translateAggregate({
                                     context: mergedContext,
-                                    node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                    node,
                                 });
 
                                 compare(
@@ -218,8 +219,29 @@ describe("TCK Generated tests", () => {
                                     mergedContext
                                 );
 
+                                const aggregateFields = [
+                                    ...node.primitiveFields.filter((x) => ["String", "ID"].includes(x.typeMeta.name)),
+                                    ...node.dateTimeFields,
+                                ]
+                                    .filter((x) => !x.typeMeta.array)
+                                    .reduce((res, field) => ({ ...res, [field.fieldName]: { min: 1, max: 1 } }), {});
+
+                                const numericalAggregateFields = node.primitiveFields
+                                    .filter(
+                                        (x) => ["Float", "Int", "BigInt"].includes(x.typeMeta.name) && !x.typeMeta.array
+                                    )
+                                    .reduce(
+                                        (res, field) => ({
+                                            ...res,
+                                            [field.fieldName]: { min: 1, max: 1, average: 12 },
+                                        }),
+                                        {}
+                                    );
+
                                 return {
                                     count: 1,
+                                    ...aggregateFields,
+                                    ...numericalAggregateFields,
                                 };
                             },
                         };
