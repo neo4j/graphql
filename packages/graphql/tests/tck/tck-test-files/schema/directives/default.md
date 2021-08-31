@@ -152,6 +152,22 @@ type UpdateUsersMutationResponse {
 
 type UserAggregateSelection {
     count: Int!
+    id: AggregationSelection!
+    name: AggregationSelection!
+    numberOfFriends: NumericalAggregationSelection!
+    rating: NumericalAggregationSelection!
+    verifiedDate: AggregationSelection!
+}
+
+type AggregationSelection {
+    max: Int!
+    min: Int!
+}
+
+type NumericalAggregationSelection {
+    average: Float!
+    max: Int!
+    min: Int!
 }
 
 type Mutation {

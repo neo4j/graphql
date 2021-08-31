@@ -55,6 +55,12 @@ type DeleteInfo {
 
 type MovieAggregateSelection {
     count: Int!
+    title: AggregationSelection!
+}
+
+type AggregationSelection {
+    max: Int!
+    min: Int!
 }
 
 enum SortDirection {
@@ -225,6 +231,12 @@ type UpdateActorsMutationResponse {
 
 type ActorAggregateSelection {
     count: Int!
+    name: AggregationSelection!
+}
+
+type AggregationSelection {
+    max: Int!
+    min: Int!
 }
 
 type Mutation {
@@ -330,6 +342,12 @@ type UpdateMoviesMutationResponse {
 
 type MovieAggregateSelection {
     count: Int!
+    title: AggregationSelection!
+}
+
+type AggregationSelection {
+    max: Int!
+    min: Int!
 }
 
 type Mutation {
@@ -444,6 +462,12 @@ type UpdateMoviesMutationResponse {
 
 type MovieAggregateSelection {
     count: Int!
+    title: AggregationSelection!
+}
+
+type AggregationSelection {
+    max: Int!
+    min: Int!
 }
 
 type Mutation {
@@ -682,6 +706,12 @@ type Mutation {
 
 type MovieAggregateSelection {
     count: Int!
+    title: AggregationSelection!
+}
+
+type AggregationSelection {
+    max: Int!
+    min: Int!
 }
 
 """
@@ -801,6 +831,12 @@ type UpdateActorsMutationResponse {
 
 type ActorAggregateSelection {
     count: Int!
+    name: AggregationSelection!
+}
+
+type AggregationSelection {
+    max: Int!
+    min: Int!
 }
 
 type Mutation {

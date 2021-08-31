@@ -86,7 +86,21 @@ type DeleteInfo {
     relationshipsDeleted: Int!
 }
 
+type AggregationSelection {
+    max: Int!
+    min: Int!
+}
+
+type NumericalAggregationSelection {
+    average: Float!
+    max: Int!
+    min: Int!
+}
+
 type MovieAggregateSelection {
+    id: AggregationSelection!
+    actorCount: NumericalAggregationSelection!
+    averageRating: NumericalAggregationSelection!
     count: Int!
 }
 

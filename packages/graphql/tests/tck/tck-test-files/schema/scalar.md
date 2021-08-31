@@ -34,6 +34,12 @@ type DeleteInfo {
 
 type MovieAggregateSelection {
     count: Int!
+    id: AggregationSelection!
+}
+
+type AggregationSelection {
+    max: Int!
+    min: Int!
 }
 
 enum SortDirection {

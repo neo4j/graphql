@@ -55,6 +55,12 @@ input ActorSort {
 
 type MovieAggregateSelection {
     count: Int!
+    id: AggregationSelection!
+}
+
+type AggregationSelection {
+    max: Int!
+    min: Int!
 }
 
 input ActorUpdateInput {
@@ -154,6 +160,7 @@ type UpdateActorsMutationResponse {
 
 type ActorAggregateSelection {
     count: Int!
+    name: AggregationSelection!
 }
 
 type Mutation {

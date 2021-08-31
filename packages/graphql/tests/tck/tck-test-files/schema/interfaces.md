@@ -63,6 +63,12 @@ type Movie implements MovieNode {
 
 type MovieAggregateSelection {
     count: Int!
+    id: AggregationSelection!
+}
+
+type AggregationSelection {
+    max: Int!
+    min: Int!
 }
 
 input MovieConnectInput {

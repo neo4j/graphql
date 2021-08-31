@@ -39,8 +39,19 @@ input ActorOptions {
     sort: [ActorSort]
 }
 
+type AggregationSelection {
+    max: Int!
+    min: Int!
+}
+
 type MovieAggregateSelection {
     count: Int!
+    id: AggregationSelection!
+}
+
+type ActorAggregateSelection {
+    count: Int!
+    name: AggregationSelection!
 }
 
 """
@@ -241,10 +252,6 @@ type PageInfo {
     hasPreviousPage: Boolean!
     startCursor: String
     endCursor: String
-}
-
-type ActorAggregateSelection {
-    count: Int!
 }
 
 type Query {
@@ -626,10 +633,17 @@ type Mutation {
 
 type MovieAggregateSelection {
     count: Int!
+    id: AggregationSelection!
 }
 
 type ActorAggregateSelection {
     count: Int!
+    name: AggregationSelection!
+}
+
+type AggregationSelection {
+    max: Int!
+    min: Int!
 }
 
 """

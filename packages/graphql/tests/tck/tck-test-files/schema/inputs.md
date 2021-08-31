@@ -53,8 +53,14 @@ input MovieCreateInput {
     id: ID
 }
 
+type AggregationSelection {
+    max: Int!
+    min: Int!
+}
+
 type MovieAggregateSelection {
     count: Int!
+    id: AggregationSelection!
 }
 
 input MovieOptions {
