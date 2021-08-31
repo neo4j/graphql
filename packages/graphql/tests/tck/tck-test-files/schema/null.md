@@ -77,6 +77,22 @@ input MovieCreateInput {
 
 type MovieAggregateSelection {
     count: Int!
+    actorCount: NumericalAggregationSelection!
+    averageRating: NumericalAggregationSelection!
+    createdAt: AggregationSelection!
+    id: AggregationSelection!
+    name: AggregationSelection!
+}
+
+type AggregationSelection {
+    max: Int!
+    min: Int!
+}
+
+type NumericalAggregationSelection {
+    average: Float!
+    max: Int!
+    min: Int!
 }
 
 input MovieOptions {

@@ -303,8 +303,14 @@ type PageInfo {
     endCursor: String
 }
 
+type AggregationSelection {
+    max: Int!
+    min: Int!
+}
+
 type Node1AggregateSelection {
     count: Int!
+    property: AggregationSelection!
 }
 
 type Node2AggregateSelection {

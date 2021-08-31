@@ -53,6 +53,11 @@ input AuthorConnectWhere {
     node: AuthorWhere!
 }
 
+type AggregationSelection {
+    max: Int!
+    min: Int!
+}
+
 input AuthorCreateInput {
     name: String!
     publications: AuthorPublicationsCreateInput
@@ -626,14 +631,17 @@ input PublicationWhere {
 
 type JournalAggregateSelection {
     count: Int!
+    subject: AggregationSelection!
 }
 
 type BookAggregateSelection {
     count: Int!
+    title: AggregationSelection!
 }
 
 type AuthorAggregateSelection {
     count: Int!
+    name: AggregationSelection!
 }
 
 type Query {

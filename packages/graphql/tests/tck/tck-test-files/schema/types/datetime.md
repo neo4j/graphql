@@ -60,6 +60,13 @@ input MovieOptions {
 
 type MovieAggregateSelection {
     count: Int!
+    datetime: AggregationSelection!
+    id: AggregationSelection!
+}
+
+type AggregationSelection {
+    max: Int!
+    min: Int!
 }
 
 """

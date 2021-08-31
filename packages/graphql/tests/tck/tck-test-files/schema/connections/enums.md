@@ -47,8 +47,14 @@ input ActedInCreateInput {
     roleType: RoleType!
 }
 
+type AggregationSelection {
+    max: Int!
+    min: Int!
+}
+
 type MovieAggregateSelection {
     count: Int!
+    title: AggregationSelection!
 }
 
 input ActedInSort {
@@ -400,6 +406,7 @@ type PageInfo {
 
 type ActorAggregateSelection {
     count: Int!
+    name: AggregationSelection!
 }
 
 type Query {

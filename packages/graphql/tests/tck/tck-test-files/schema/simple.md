@@ -45,6 +45,20 @@ enum SortDirection {
 
 type MovieAggregateSelection {
     count: Int!
+    actorCount: NumericalAggregationSelection!
+    averageRating: NumericalAggregationSelection!
+    id: AggregationSelection!
+}
+
+type AggregationSelection {
+    max: Int!
+    min: Int!
+}
+
+type NumericalAggregationSelection {
+    average: Float!
+    max: Int!
+    min: Int!
 }
 
 input MovieCreateInput {
