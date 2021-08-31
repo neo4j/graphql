@@ -76,7 +76,7 @@ const resolvers = {
 
             return createJWT({ sub: user.id });
         },
-        signIn: async (_source, { email, password }) => {
+        signIn: async (_source, { username, password }) => {
             const [user] = await User.find({
                 where: {
                     username,
@@ -100,6 +100,7 @@ const resolvers = {
 
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
+    driver,
     resolvers,
     config: {
         jwt: {
