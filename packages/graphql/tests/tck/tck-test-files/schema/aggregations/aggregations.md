@@ -13,7 +13,7 @@ type Movie {
     createdAt: DateTime
     imdbRating: Float
     someInt: Int
-    someBigInt: Int
+    someBigInt: BigInt
 }
 ```
 
@@ -39,6 +39,11 @@ type Mutation {
 A date and time, represented as an ISO-8601 string
 """
 scalar DateTime
+
+"""
+A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
+"""
+scalar BigInt
 
 enum SortDirection {
     """
@@ -71,7 +76,7 @@ type Movie {
     title: String
     imdbRating: Float
     someInt: Int
-    someBigInt: Int
+    someBigInt: BigInt
     createdAt: DateTime
 }
 
@@ -100,7 +105,7 @@ input MovieCreateInput {
     title: String
     imdbRating: Float
     someInt: Int
-    someBigInt: Int
+    someBigInt: BigInt
     createdAt: DateTime
 }
 
@@ -130,7 +135,7 @@ input MovieUpdateInput {
     title: String
     imdbRating: Float
     someInt: Int
-    someBigInt: Int
+    someBigInt: BigInt
     createdAt: DateTime
 }
 
@@ -173,14 +178,14 @@ input MovieWhere {
     someInt_LTE: Int
     someInt_GT: Int
     someInt_GTE: Int
-    someBigInt: Int
-    someBigInt_NOT: Int
-    someBigInt_IN: [Int]
-    someBigInt_NOT_IN: [Int]
-    someBigInt_LT: Int
-    someBigInt_LTE: Int
-    someBigInt_GT: Int
-    someBigInt_GTE: Int
+    someBigInt: BigInt
+    someBigInt_NOT: BigInt
+    someBigInt_IN: [BigInt]
+    someBigInt_NOT_IN: [BigInt]
+    someBigInt_LT: BigInt
+    someBigInt_LTE: BigInt
+    someBigInt_GT: BigInt
+    someBigInt_GTE: BigInt
     createdAt: DateTime
     createdAt_NOT: DateTime
     createdAt_IN: [DateTime]
