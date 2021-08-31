@@ -87,12 +87,12 @@ type UpdateUsersMutationResponse {
 
 type UserAggregateSelection {
     count: Int!
-    id: AggregationSelection!
+    id: IDAggregationSelection!
 }
 
-type AggregationSelection {
-    max: Int!
-    min: Int!
+type IDAggregationSelection {
+    max: ID!
+    min: ID!
 }
 
 type Mutation {

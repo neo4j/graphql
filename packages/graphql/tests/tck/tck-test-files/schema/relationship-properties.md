@@ -56,7 +56,12 @@ input ActedInSort {
 
 type MovieAggregateSelection {
     count: Int!
-    title: AggregationSelection!
+    title: StringAggregationSelection!
+}
+
+type StringAggregationSelection {
+    max: Int!
+    min: Int!
 }
 
 input ActedInUpdateInput {
@@ -424,12 +429,7 @@ type PageInfo {
 
 type ActorAggregateSelection {
     count: Int!
-    name: AggregationSelection!
-}
-
-type AggregationSelection {
-    max: Int!
-    min: Int!
+    name: StringAggregationSelection!
 }
 
 type Query {

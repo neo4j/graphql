@@ -55,10 +55,10 @@ type DeleteInfo {
 
 type MovieAggregateSelection {
     count: Int!
-    title: AggregationSelection!
+    title: StringAggregationSelection!
 }
 
-type AggregationSelection {
+type StringAggregationSelection {
     max: Int!
     min: Int!
 }
@@ -231,10 +231,10 @@ type UpdateActorsMutationResponse {
 
 type ActorAggregateSelection {
     count: Int!
-    name: AggregationSelection!
+    name: StringAggregationSelection!
 }
 
-type AggregationSelection {
+type StringAggregationSelection {
     max: Int!
     min: Int!
 }
@@ -342,10 +342,10 @@ type UpdateMoviesMutationResponse {
 
 type MovieAggregateSelection {
     count: Int!
-    title: AggregationSelection!
+    title: StringAggregationSelection!
 }
 
-type AggregationSelection {
+type StringAggregationSelection {
     max: Int!
     min: Int!
 }
@@ -462,10 +462,10 @@ type UpdateMoviesMutationResponse {
 
 type MovieAggregateSelection {
     count: Int!
-    title: AggregationSelection!
+    title: StringAggregationSelection!
 }
 
-type AggregationSelection {
+type StringAggregationSelection {
     max: Int!
     min: Int!
 }
@@ -706,10 +706,10 @@ type Mutation {
 
 type MovieAggregateSelection {
     count: Int!
-    title: AggregationSelection!
+    title: StringAggregationSelection!
 }
 
-type AggregationSelection {
+type StringAggregationSelection {
     max: Int!
     min: Int!
 }
@@ -831,10 +831,10 @@ type UpdateActorsMutationResponse {
 
 type ActorAggregateSelection {
     count: Int!
-    name: AggregationSelection!
+    name: StringAggregationSelection!
 }
 
-type AggregationSelection {
+type StringAggregationSelection {
     max: Int!
     min: Int!
 }

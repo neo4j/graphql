@@ -104,17 +104,17 @@ type UpdateFilesMutationResponse {
 
 type FileAggregateSelection {
     count: Int!
-    name: AggregationSelection!
-    size: NumericalAggregationSelection!
+    name: StringAggregationSelection!
+    size: BigIntAggregationSelection!
 }
 
-type AggregationSelection {
-    max: Int!
-    min: Int!
-}
-
-type NumericalAggregationSelection {
+type BigIntAggregationSelection {
     average: Float!
+    max: BigInt!
+    min: BigInt!
+}
+
+type StringAggregationSelection {
     max: Int!
     min: Int!
 }

@@ -86,22 +86,28 @@ type DeleteInfo {
     relationshipsDeleted: Int!
 }
 
-type AggregationSelection {
-    max: Int!
-    min: Int!
+type FloatAggregationSelection {
+    average: Float!
+    max: Float!
+    min: Float!
 }
 
-type NumericalAggregationSelection {
+type IntAggregationSelection {
     average: Float!
     max: Int!
     min: Int!
 }
 
+type IDAggregationSelection {
+    max: ID!
+    min: ID!
+}
+
 type MovieAggregateSelection {
-    id: AggregationSelection!
-    actorCount: NumericalAggregationSelection!
-    averageRating: NumericalAggregationSelection!
+    actorCount: IntAggregationSelection!
+    averageRating: FloatAggregationSelection!
     count: Int!
+    id: IDAggregationSelection!
 }
 
 enum SortDirection {
