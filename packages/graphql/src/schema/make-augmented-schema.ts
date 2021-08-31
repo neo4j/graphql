@@ -58,6 +58,7 @@ import {
     deleteResolver,
     findResolver,
     updateResolver,
+    intResolver,
 } from "./resolvers";
 import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
@@ -70,7 +71,6 @@ import getWhereFields from "./get-where-fields";
 import { connectionFieldResolver } from "./pagination";
 import { validateDocument } from "./validation";
 import * as constants from "../constants";
-import { Integer, isInt } from "neo4j-driver";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -98,6 +98,29 @@ function makeAugmentedSchema(
         fields: {
             nodesDeleted: new GraphQLNonNull(GraphQLInt),
             relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
+        },
+    });
+
+    const aggregationInt = {
+        type: "Int!",
+        resolve: intResolver,
+        args: {},
+    };
+
+    const numericalAggregationSelection = composer.createObjectTC({
+        name: "NumericalAggregationSelection",
+        fields: {
+            max: aggregationInt,
+            min: aggregationInt,
+            average: "Float!",
+        },
+    });
+
+    const aggregationSelection = composer.createObjectTC({
+        name: "AggregationSelection",
+        fields: {
+            max: aggregationInt,
+            min: aggregationInt,
         },
     });
 
@@ -508,29 +531,25 @@ function makeAugmentedSchema(
             },
         });
 
-        // Without this if error - "ActorAggregateSelection" defined in resolvers, but not in schema
-        // Due to the custom resolver to cast the int
-        if (!node.exclude?.operations.includes("read")) {
-            composer.createObjectTC({
-                name: `${node.name}AggregateSelection`,
-                fields: {
-                    count: {
-                        type: "Int!",
-                        resolve: (source, args, context, info) => {
-                            const value = defaultFieldResolver(source, args, context, info);
+        const aggregateFields = [
+            ...node.primitiveFields.filter((x) => ["String", "ID"].includes(x.typeMeta.name)),
+            ...node.dateTimeFields,
+        ]
+            .filter((x) => !x.typeMeta.array)
+            .reduce((res, field) => ({ ...res, [field.fieldName]: aggregationSelection.NonNull }), {});
 
-                            // @ts-ignore: outputValue is unknown
-                            if (isInt(value)) {
-                                return (value as Integer).toNumber();
-                            }
+        const numericalAggregateFields = node.primitiveFields
+            .filter((x) => ["Float", "Int", "BigInt"].includes(x.typeMeta.name) && !x.typeMeta.array)
+            .reduce((res, field) => ({ ...res, [field.fieldName]: numericalAggregationSelection.NonNull }), {});
 
-                            return value;
-                        },
-                        args: {},
-                    },
-                },
-            });
-        }
+        composer.createObjectTC({
+            name: `${node.name}AggregateSelection`,
+            fields: {
+                count: aggregationInt,
+                ...numericalAggregateFields,
+                ...aggregateFields,
+            },
+        });
 
         const whereInput = composer.createInputTC({
             name: `${node.name}Where`,
@@ -1264,8 +1283,18 @@ function makeAugmentedSchema(
     }
 
     const generatedTypeDefs = composer.toSDL();
+    let parsedDoc = parse(generatedTypeDefs);
+    // @ts-ignore
+    const documentNames = parsedDoc.definitions.filter((x) => "name" in x).map((x) => x.name.value);
+
     const generatedResolvers = {
-        ...composer.getResolveMethods(),
+        ...Object.entries(composer.getResolveMethods()).reduce((res, [key, value]) => {
+            if (!documentNames.includes(key)) {
+                return res;
+            }
+
+            return { ...res, [key]: value };
+        }, {}),
         ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
             if (generatedTypeDefs.includes(`scalar ${name}\n`)) {
                 res[name] = scalar;
@@ -1282,7 +1311,6 @@ function makeAugmentedSchema(
     });
 
     const seen = {};
-    let parsedDoc = parse(generatedTypeDefs);
     parsedDoc = {
         ...parsedDoc,
         definitions: parsedDoc.definitions.filter((definition) => {
