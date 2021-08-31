@@ -58,7 +58,8 @@ import {
     deleteResolver,
     findResolver,
     updateResolver,
-    intResolver,
+    numericalResolver,
+    idResolver,
 } from "./resolvers";
 import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
@@ -101,26 +102,72 @@ function makeAugmentedSchema(
         },
     });
 
-    const aggregationInt = {
+    const composeInt = {
         type: "Int!",
-        resolve: intResolver,
+        resolve: numericalResolver,
         args: {},
     };
 
-    const numericalAggregationSelection = composer.createObjectTC({
-        name: "NumericalAggregationSelection",
+    const composeFloat = {
+        type: "Float!",
+        resolve: numericalResolver,
+        args: {},
+    };
+
+    const composeId = {
+        type: "ID!",
+        resolve: idResolver,
+        args: {},
+    };
+
+    const idNumericalAggregationSelection = composer.createObjectTC({
+        name: "IDAggregationSelection",
         fields: {
-            max: aggregationInt,
-            min: aggregationInt,
-            average: "Float!",
+            max: composeId,
+            min: composeId,
         },
     });
 
-    const aggregationSelection = composer.createObjectTC({
-        name: "AggregationSelection",
+    const stringNumericalAggregationSelection = composer.createObjectTC({
+        name: "StringAggregationSelection",
         fields: {
-            max: aggregationInt,
-            min: aggregationInt,
+            max: composeInt,
+            min: composeInt,
+        },
+    });
+
+    const intNumericalAggregationSelection = composer.createObjectTC({
+        name: "IntAggregationSelection",
+        fields: {
+            max: composeInt,
+            min: composeInt,
+            average: composeFloat,
+        },
+    });
+
+    const floatNumericalAggregationSelection = composer.createObjectTC({
+        name: "FloatAggregationSelection",
+        fields: {
+            max: composeFloat,
+            min: composeFloat,
+            average: composeFloat,
+        },
+    });
+
+    const bigIntNumericalAggregationSelection = composer.createObjectTC({
+        name: "BigIntAggregationSelection",
+        fields: {
+            max: "BigInt!",
+            min: "BigInt!",
+            average: composeFloat,
+        },
+    });
+
+    const dateTimeNumericalAggregationSelection = composer.createObjectTC({
+        name: "DateTimeAggregationSelection",
+        fields: {
+            max: "DateTime!",
+            min: "DateTime!",
         },
     });
 
@@ -531,23 +578,41 @@ function makeAugmentedSchema(
             },
         });
 
-        const aggregateFields = [
-            ...node.primitiveFields.filter((x) => ["String", "ID"].includes(x.typeMeta.name)),
-            ...node.dateTimeFields,
-        ]
-            .filter((x) => !x.typeMeta.array)
-            .reduce((res, field) => ({ ...res, [field.fieldName]: aggregationSelection.NonNull }), {});
-
-        const numericalAggregateFields = node.primitiveFields
-            .filter((x) => ["Float", "Int", "BigInt"].includes(x.typeMeta.name) && !x.typeMeta.array)
-            .reduce((res, field) => ({ ...res, [field.fieldName]: numericalAggregationSelection.NonNull }), {});
-
         composer.createObjectTC({
             name: `${node.name}AggregateSelection`,
             fields: {
-                count: aggregationInt,
-                ...numericalAggregateFields,
-                ...aggregateFields,
+                count: composeInt,
+                ...[...node.primitiveFields, ...node.dateTimeFields].reduce((res, field) => {
+                    if (field.typeMeta.array) {
+                        return res;
+                    }
+
+                    if (field.typeMeta.name === "ID") {
+                        res[field.fieldName] = idNumericalAggregationSelection.NonNull;
+                    }
+
+                    if (field.typeMeta.name === "String") {
+                        res[field.fieldName] = stringNumericalAggregationSelection.NonNull;
+                    }
+
+                    if (field.typeMeta.name === "Float") {
+                        res[field.fieldName] = floatNumericalAggregationSelection.NonNull;
+                    }
+
+                    if (field.typeMeta.name === "Int") {
+                        res[field.fieldName] = intNumericalAggregationSelection.NonNull;
+                    }
+
+                    if (field.typeMeta.name === "BigInt") {
+                        res[field.fieldName] = bigIntNumericalAggregationSelection.NonNull;
+                    }
+
+                    if (field.typeMeta.name === "DateTime") {
+                        res[field.fieldName] = dateTimeNumericalAggregationSelection.NonNull;
+                    }
+
+                    return res;
+                }, {}),
             },
         });
 

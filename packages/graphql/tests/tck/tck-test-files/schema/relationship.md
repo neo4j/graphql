@@ -39,19 +39,24 @@ input ActorOptions {
     sort: [ActorSort]
 }
 
-type AggregationSelection {
+type StringAggregationSelection {
     max: Int!
     min: Int!
 }
 
+type IDAggregationSelection {
+    max: ID!
+    min: ID!
+}
+
 type MovieAggregateSelection {
     count: Int!
-    id: AggregationSelection!
+    id: IDAggregationSelection!
 }
 
 type ActorAggregateSelection {
     count: Int!
-    name: AggregationSelection!
+    name: StringAggregationSelection!
 }
 
 """
@@ -633,17 +638,22 @@ type Mutation {
 
 type MovieAggregateSelection {
     count: Int!
-    id: AggregationSelection!
+    id: IDAggregationSelection!
 }
 
 type ActorAggregateSelection {
     count: Int!
-    name: AggregationSelection!
+    name: StringAggregationSelection!
 }
 
-type AggregationSelection {
+type StringAggregationSelection {
     max: Int!
     min: Int!
+}
+
+type IDAggregationSelection {
+    max: ID!
+    min: ID!
 }
 
 """

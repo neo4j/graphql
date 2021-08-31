@@ -45,13 +45,18 @@ input MovieCreateInput {
 
 type MovieAggregateSelection {
     count: Int!
-    id: AggregationSelection!
-    name: AggregationSelection!
+    id: IDAggregationSelection!
+    name: StringAggregationSelection!
 }
 
-type AggregationSelection {
+type StringAggregationSelection {
     max: Int!
     min: Int!
+}
+
+type IDAggregationSelection {
+    max: ID!
+    min: ID!
 }
 
 input MovieOptions {

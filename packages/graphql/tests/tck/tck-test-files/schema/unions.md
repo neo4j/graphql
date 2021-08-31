@@ -331,17 +331,17 @@ type PageInfo {
 
 type GenreAggregateSelection {
     count: Int!
-    id: AggregationSelection!
-}
-
-type AggregationSelection {
-    max: Int!
-    min: Int!
+    id: IDAggregationSelection!
 }
 
 type MovieAggregateSelection {
     count: Int!
-    id: AggregationSelection!
+    id: IDAggregationSelection!
+}
+
+type IDAggregationSelection {
+    max: ID!
+    min: ID!
 }
 
 type Query {

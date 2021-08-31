@@ -57,9 +57,47 @@ enum SortDirection {
     DESC
 }
 
-type AggregationSelection {
+type DateTimeAggregationSelection {
+    max: DateTime!
+    min: DateTime!
+}
+
+type FloatAggregationSelection {
+    average: Float!
+    max: Float!
+    min: Float!
+}
+
+type IntAggregationSelection {
+    average: Float!
     max: Int!
     min: Int!
+}
+
+type StringAggregationSelection {
+    max: Int!
+    min: Int!
+}
+
+type BigIntAggregationSelection {
+    average: Float!
+    max: BigInt!
+    min: BigInt!
+}
+
+type IDAggregationSelection {
+    max: ID!
+    min: ID!
+}
+
+type MovieAggregateSelection {
+    count: Int!
+    createdAt: DateTimeAggregationSelection!
+    id: IDAggregationSelection!
+    imdbRating: FloatAggregationSelection!
+    someBigInt: BigIntAggregationSelection!
+    someInt: IntAggregationSelection!
+    title: StringAggregationSelection!
 }
 
 type CreateMoviesMutationResponse {
@@ -78,22 +116,6 @@ type Movie {
     someInt: Int
     someBigInt: BigInt
     createdAt: DateTime
-}
-
-type MovieAggregateSelection {
-    count: Int!
-    imdbRating: NumericalAggregationSelection!
-    someInt: NumericalAggregationSelection!
-    someBigInt: NumericalAggregationSelection!
-    id: AggregationSelection!
-    title: AggregationSelection!
-    createdAt: AggregationSelection!
-}
-
-type NumericalAggregationSelection {
-    max: Int!
-    min: Int!
-    average: Float!
 }
 
 type UpdateMoviesMutationResponse {

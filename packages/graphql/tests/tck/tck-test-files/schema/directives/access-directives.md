@@ -114,14 +114,19 @@ type UpdateUsersMutationResponse {
 
 type UserAggregateSelection {
     count: Int!
-    id: AggregationSelection!
-    password: AggregationSelection!
-    username: AggregationSelection!
+    id: IDAggregationSelection!
+    password: StringAggregationSelection!
+    username: StringAggregationSelection!
 }
 
-type AggregationSelection {
+type StringAggregationSelection {
     max: Int!
     min: Int!
+}
+
+type IDAggregationSelection {
+    max: ID!
+    min: ID!
 }
 
 type Mutation {

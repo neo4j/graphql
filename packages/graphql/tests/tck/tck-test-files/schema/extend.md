@@ -44,11 +44,16 @@ enum SortDirection {
 
 type MovieAggregateSelection {
     count: Int!
-    id: AggregationSelection!
-    name: AggregationSelection!
+    id: IDAggregationSelection!
+    name: StringAggregationSelection!
 }
 
-type AggregationSelection {
+type IDAggregationSelection {
+    max: ID!
+    min: ID!
+}
+
+type StringAggregationSelection {
     max: Int!
     min: Int!
 }

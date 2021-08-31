@@ -53,7 +53,7 @@ input AuthorConnectWhere {
     node: AuthorWhere!
 }
 
-type AggregationSelection {
+type StringAggregationSelection {
     max: Int!
     min: Int!
 }
@@ -631,17 +631,17 @@ input PublicationWhere {
 
 type JournalAggregateSelection {
     count: Int!
-    subject: AggregationSelection!
+    subject: StringAggregationSelection!
 }
 
 type BookAggregateSelection {
     count: Int!
-    title: AggregationSelection!
+    title: StringAggregationSelection!
 }
 
 type AuthorAggregateSelection {
     count: Int!
-    name: AggregationSelection!
+    name: StringAggregationSelection!
 }
 
 type Query {
