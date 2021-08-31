@@ -78,7 +78,31 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
     const selections = fieldsByTypeName[`${node.name}AggregateSelection`];
     const projections: string[] = [];
-    const withStrs: string[] = [];
+    let withStrs: string[] = [];
+    const authStrs: string[] = [];
+
+    // Do auth first so we can throw out before aggregating
+    Object.entries(selections).forEach((selection) => {
+        const authField = node.authableFields.find((x) => x.fieldName === selection[0]);
+        if (authField) {
+            if (authField.auth) {
+                const allowAndParams = createAuthAndParams({
+                    entity: authField,
+                    operation: "READ",
+                    context,
+                    allow: { parentNode: node, varName, chainStr: authField.fieldName },
+                });
+                if (allowAndParams[0]) {
+                    authStrs.push(allowAndParams[0]);
+                    cypherParams = { ...cypherParams, ...allowAndParams[1] };
+                }
+            }
+        }
+    });
+
+    if (authStrs.length) {
+        cypherStrs.push(`CALL apoc.util.validate(NOT(${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+    }
 
     Object.entries(selections).forEach((selection) => {
         if (selection[0] === "count") {
@@ -86,6 +110,34 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
             withStrs.push(`thisCount`);
             projections.push(`count: thisCount`);
         }
+
+        const primitiveField = node.primitiveFields.find((x) => x.fieldName === selection[0]);
+        if (primitiveField) {
+            const isNumerical = ["Int", "Number", "Float"].includes(primitiveField.typeMeta.name);
+
+            if (isNumerical) {
+                const thisAggregations: string[] = [];
+                const thisVars: string[][] = [];
+
+                Object.entries(selection[1].fieldsByTypeName["NumericalAggregationSelection"]).forEach((entry) => {
+                    // "min" | "max"
+                    const operator = entry[0];
+                    const variableName = `${operator}${selection[0]}`;
+                    thisAggregations.push(`${operator}(this.${primitiveField.fieldName}) AS ${variableName}`);
+                    thisVars.push([entry[0], variableName]);
+                });
+
+                cypherStrs.push(`WITH ${thisAggregations.join(", ")}`);
+                projections.push(`${primitiveField.fieldName}: { ${thisVars.map((x) => `${x[0]}: ${x[1]}`)} }`);
+                withStrs = withStrs.concat(thisVars.map((x) => x[1]));
+            } else {
+                // TODO
+            }
+        }
+
+        // const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === selection[0]);
+        // if (dateTimeField) {
+        // }
     });
 
     cypherStrs.push(`WITH ${withStrs.join(", ")}`);
