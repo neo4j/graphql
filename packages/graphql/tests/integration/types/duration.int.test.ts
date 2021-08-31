@@ -119,7 +119,7 @@ describe("Duration", () => {
             });
 
             const id = generate({ readable: false });
-            const durations = ["P34Y4M2DT23.44H", "P-34W", "P19980314T120000"];
+            const durations = ["P34Y4M2DT23.44H", "P-34W", "P19980314T120000", "P4Y-5M-3.75D"];
             const parsedDurations = durations.map((duration) => parseDuration(duration));
 
             try {
