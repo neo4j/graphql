@@ -42,29 +42,26 @@ function createSetRelationshipPropertiesAndParams({
     relationship.primitiveFields.forEach((primitiveField) => {
         if (primitiveField?.autogenerate) {
             if (operation === "CREATE") {
-                const dbFieldName = mapToDbProperty(relationship, primitiveField.fieldName);
-                strs.push(`SET ${varName}.${dbFieldName} = randomUUID()`);
+                strs.push(`SET ${varName}.${primitiveField.dbPropertyName} = randomUUID()`);
             }
         }
     });
 
     relationship.dateTimeFields.forEach((dateTimeField) => {
         if (dateTimeField?.timestamps?.includes(operation)) {
-            const dbFieldName = mapToDbProperty(relationship, dateTimeField.fieldName);
-            strs.push(`SET ${varName}.${dbFieldName} = datetime()`);
+            strs.push(`SET ${varName}.${dateTimeField.dbPropertyName} = datetime()`);
         }
     });
 
     Object.entries(properties).forEach(([key, value]) => {
         const paramName = `${varName}_${key}`;
-        const dbFieldName = mapToDbProperty(relationship, key);
 
         const pointField = relationship.pointFields.find((x) => x.fieldName === key);
         if (pointField) {
             if (pointField.typeMeta.array) {
-                strs.push(`SET ${varName}.${dbFieldName} = [p in $${paramName} | point(p)]`);
+                strs.push(`SET ${varName}.${pointField.dbPropertyName} = [p in $${paramName} | point(p)]`);
             } else {
-                strs.push(`SET ${varName}.${dbFieldName} = point($${paramName})`);
+                strs.push(`SET ${varName}.${pointField.dbPropertyName} = point($${paramName})`);
             }
 
             params[paramName] = value;
@@ -72,6 +69,7 @@ function createSetRelationshipPropertiesAndParams({
             return;
         }
 
+        const dbFieldName = mapToDbProperty(relationship, key);
         strs.push(`SET ${varName}.${dbFieldName} = $${paramName}`);
         params[paramName] = value;
     });

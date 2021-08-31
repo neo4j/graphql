@@ -326,8 +326,7 @@ function createUpdateAndParams({
         if (!hasAppliedTimeStamps) {
             const timestamps = node.dateTimeFields.filter((x) => x.timestamps && x.timestamps.includes("UPDATE"));
             timestamps.forEach((ts) => {
-                const tsDbFieldName = mapToDbProperty(node, ts.fieldName);
-                res.strs.push(`SET ${varName}.${tsDbFieldName} = datetime()`);
+                res.strs.push(`SET ${varName}.${ts.dbPropertyName} = datetime()`);
             });
 
             hasAppliedTimeStamps = true;
