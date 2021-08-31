@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { FieldDefinitionNode } from "graphql";
+import { FieldDefinitionNode, StringValueNode } from "graphql";
 
 type AliasMeta = {
     property: string;
@@ -33,11 +33,8 @@ function getAliasMeta(field: FieldDefinitionNode): AliasMeta | undefined {
     if (!stmtArg) {
         throw new Error("@alias property argument is required");
     }
-    if (stmtArg.value.kind !== "StringValue") {
-        throw new Error("@alias property argument was not a string");
-    }
 
-    const property = stmtArg.value.value;
+    const property = (stmtArg.value as StringValueNode).value;
 
     return {
         property,
