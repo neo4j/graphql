@@ -43,6 +43,10 @@ enum SortDirection {
     DESC
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 input MovieCreateInput {
     id: ID
     actorCount: Int
@@ -128,6 +132,7 @@ type Mutation {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
 }
 ```

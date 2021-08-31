@@ -32,6 +32,10 @@ type DeleteInfo {
     relationshipsDeleted: Int!
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 enum SortDirection {
     """
     Sort by field values in ascending order.
@@ -105,6 +109,7 @@ type Mutation {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
 }
 ```

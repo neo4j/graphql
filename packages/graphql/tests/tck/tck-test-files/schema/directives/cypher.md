@@ -53,6 +53,10 @@ input ActorSort {
     name: SortDirection
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 input ActorUpdateInput {
     name: String
 }
@@ -148,6 +152,10 @@ type UpdateActorsMutationResponse {
     actors: [Actor!]!
 }
 
+type ActorAggregateSelection {
+    count: Int!
+}
+
 type Mutation {
     createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
     deleteActors(where: ActorWhere): DeleteInfo!
@@ -165,7 +173,9 @@ type Mutation {
 
 type Query {
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
+    actorsAggregate(where: ActorWhere): ActorAggregateSelection!
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
     actorsCount(where: ActorWhere): Int!
 }

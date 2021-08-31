@@ -319,6 +319,10 @@ type Mutation {
     ): UpdateMoviesMutationResponse!
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 """
 Pagination information (Relay)
 """
@@ -329,9 +333,15 @@ type PageInfo {
     endCursor: String
 }
 
+type GenreAggregateSelection {
+    count: Int!
+}
+
 type Query {
     genres(where: GenreWhere, options: GenreOptions): [Genre!]!
+    genresAggregate(where: GenreWhere): GenreAggregateSelection!
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
     genresCount(where: GenreWhere): Int!
 }

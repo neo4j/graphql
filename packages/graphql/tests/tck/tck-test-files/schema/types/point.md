@@ -72,6 +72,10 @@ input MovieOptions {
     offset: Int
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 """
 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
 """
@@ -116,6 +120,7 @@ type Mutation {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
 }
 ```
@@ -220,6 +225,10 @@ type UpdateMachinesMutationResponse {
     machines: [Machine!]!
 }
 
+type MachineAggregateSelection {
+    count: Int!
+}
+
 type Mutation {
     createMachines(
         input: [MachineCreateInput!]!
@@ -233,6 +242,7 @@ type Mutation {
 
 type Query {
     machines(where: MachineWhere, options: MachineOptions): [Machine!]!
+    machinesAggregate(where: MachineWhere): MachineAggregateSelection!
     machinesCount(where: MachineWhere): Int!
 }
 ```
@@ -305,6 +315,10 @@ type UpdateMoviesMutationResponse {
     movies: [Movie!]!
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 type Mutation {
     createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
     deleteMovies(where: MovieWhere): DeleteInfo!
@@ -316,6 +330,7 @@ type Mutation {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
 }
 ```
@@ -399,8 +414,13 @@ type Mutation {
     ): UpdateMachinesMutationResponse!
 }
 
+type MachineAggregateSelection {
+    count: Int!
+}
+
 type Query {
     machines(where: MachineWhere, options: MachineOptions): [Machine!]!
+    machinesAggregate(where: MachineWhere): MachineAggregateSelection!
     machinesCount(where: MachineWhere): Int!
 }
 ```

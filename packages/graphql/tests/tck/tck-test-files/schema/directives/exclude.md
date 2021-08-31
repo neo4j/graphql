@@ -53,6 +53,10 @@ type DeleteInfo {
     relationshipsDeleted: Int!
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 enum SortDirection {
     """
     Sort by field values in ascending order.
@@ -140,6 +144,7 @@ type Mutation {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
 }
 ```
@@ -218,6 +223,10 @@ type UpdateActorsMutationResponse {
     actors: [Actor!]!
 }
 
+type ActorAggregateSelection {
+    count: Int!
+}
+
 type Mutation {
     deleteActors(where: ActorWhere): DeleteInfo!
     updateActors(
@@ -229,6 +238,7 @@ type Mutation {
 type Query {
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
     actorsCount(where: ActorWhere): Int!
+    actorsAggregate(where: ActorWhere): ActorAggregateSelection!
 }
 ```
 
@@ -318,6 +328,10 @@ type UpdateMoviesMutationResponse {
     movies: [Movie!]!
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 type Mutation {
     createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
     deleteMovies(where: MovieWhere): DeleteInfo!
@@ -329,6 +343,7 @@ type Mutation {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
 }
 ```
@@ -427,6 +442,10 @@ type UpdateMoviesMutationResponse {
     movies: [Movie!]!
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 type Mutation {
     createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
     deleteMovies(where: MovieWhere): DeleteInfo!
@@ -439,6 +458,7 @@ type Mutation {
 type Query {
     customActorQuery: Actor
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
 }
 ```
@@ -660,6 +680,10 @@ type Mutation {
     ): UpdateMoviesMutationResponse!
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 """
 Pagination information (Relay)
 """
@@ -672,6 +696,7 @@ type PageInfo {
 
 type Query {
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
 }
 
@@ -774,6 +799,10 @@ type UpdateActorsMutationResponse {
     actors: [Actor!]!
 }
 
+type ActorAggregateSelection {
+    count: Int!
+}
+
 type Mutation {
     createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
     deleteActors(where: ActorWhere): DeleteInfo!
@@ -785,6 +814,7 @@ type Mutation {
 
 type Query {
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
+    actorsAggregate(where: ActorWhere): ActorAggregateSelection!
     actorsCount(where: ActorWhere): Int!
 }
 ```

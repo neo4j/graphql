@@ -39,6 +39,10 @@ input ActorOptions {
     sort: [ActorSort]
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
 """
 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
 """
@@ -239,9 +243,15 @@ type PageInfo {
     endCursor: String
 }
 
+type ActorAggregateSelection {
+    count: Int!
+}
+
 type Query {
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
+    actorsAggregate(where: ActorWhere): ActorAggregateSelection!
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     moviesCount(where: MovieWhere): Int!
     actorsCount(where: ActorWhere): Int!
 }
@@ -614,6 +624,14 @@ type Mutation {
     ): UpdateMoviesMutationResponse!
 }
 
+type MovieAggregateSelection {
+    count: Int!
+}
+
+type ActorAggregateSelection {
+    count: Int!
+}
+
 """
 Pagination information (Relay)
 """
@@ -626,7 +644,9 @@ type PageInfo {
 
 type Query {
     actors(where: ActorWhere, options: ActorOptions): [Actor!]!
+    actorsAggregate(where: ActorWhere): ActorAggregateSelection!
     movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+    moviesAggregate(where: MovieWhere): MovieAggregateSelection!
     actorsCount(where: ActorWhere): Int!
     moviesCount(where: MovieWhere): Int!
 }

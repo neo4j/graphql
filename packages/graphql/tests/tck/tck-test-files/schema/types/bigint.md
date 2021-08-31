@@ -102,6 +102,10 @@ type UpdateFilesMutationResponse {
     files: [File!]!
 }
 
+type FileAggregateSelection {
+    count: Int!
+}
+
 type Mutation {
     createFiles(input: [FileCreateInput!]!): CreateFilesMutationResponse!
     deleteFiles(where: FileWhere): DeleteInfo!
@@ -113,6 +117,7 @@ type Mutation {
 
 type Query {
     files(where: FileWhere, options: FileOptions): [File!]!
+    filesAggregate(where: FileWhere): FileAggregateSelection!
     filesCount(where: FileWhere): Int!
 }
 ```

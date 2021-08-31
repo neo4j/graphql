@@ -116,6 +116,10 @@ type UpdateUsersMutationResponse {
     users: [User!]!
 }
 
+type UserAggregateSelection {
+    count: Int!
+}
+
 type Mutation {
     createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
     deleteUsers(where: UserWhere): DeleteInfo!
@@ -127,6 +131,7 @@ type Mutation {
 
 type Query {
     users(where: UserWhere, options: UserOptions): [User!]!
+    usersAggregate(where: UserWhere): UserAggregateSelection!
     usersCount(where: UserWhere): Int!
 }
 ```
