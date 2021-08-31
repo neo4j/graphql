@@ -58,6 +58,10 @@ describe("@alias directive", () => {
                 comment: String! @alias(property: "dbComment")
                 relationshipCreatedAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
             }
+
+            type ProtectedUser @auth(rules: [{ allow: { name: "$jwt.sub" } }]) {
+                name: String! @alias(property: "dbName")
+            }
         `;
         neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
     });
@@ -66,13 +70,16 @@ describe("@alias directive", () => {
         session = driver.session();
         await session.run(`MATCH (n:AliasDirectiveTestUser)-[]-(m:AliasDirectiveTestMovie) DETACH DELETE n, m`);
         await session.run(
-            `CREATE (:AliasDirectiveTestUser {dbName: $dbName, dbId: "stringId", dbCreatedAt: "1970-01-02"})-[:LIKES {dbComment: $dbComment, dbCreatedAt: "1970-01-02"}]->(:AliasDirectiveTestMovie {dbTitle: $dbTitle, year: $year, dbCreatedAt: "1970-01-02"})`,
+            `CREATE (:AliasDirectiveTestUser {dbName: $dbName, dbId: "stringId", dbCreatedAt: "1970-01-02"})-[:LIKES {dbComment: $dbComment, dbCreatedAt: "1970-01-02"}]->(:AliasDirectiveTestMovie {dbTitle: $dbTitle, year: $year, dbCreatedAt: "1970-01-02"})
+            CREATE (:ProtectedUser {dbName: $dbName})`,
             { dbName, dbComment, dbTitle, year }
         );
     });
 
     afterEach(async () => {
-        await session.run(`MATCH (n:AliasDirectiveTestUser), (m:AliasDirectiveTestMovie) DETACH DELETE n, m`);
+        await session.run(
+            `MATCH (n:AliasDirectiveTestUser), (m:AliasDirectiveTestMovie), (o:ProtectedUser) DETACH DELETE n, m, o`
+        );
         await session.close();
     });
 
@@ -122,6 +129,32 @@ describe("@alias directive", () => {
                 },
             ],
         });
+    });
+    test("Works with type level auth", async () => {
+        const protectedUsersQuery = `
+            query ProtectedUsersQ {
+                protectedUsers {
+                    name
+                }
+            }
+        `;
+
+        // For the @auth
+        const tokenSub = dbName;
+        const token = jsonwebtoken.sign({ roles: ["reader"], sub: tokenSub }, secret);
+
+        const socket = new Socket({ readable: true });
+        const req = new IncomingMessage(socket);
+        req.headers.authorization = `Bearer ${token}`;
+
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: protectedUsersQuery,
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] }, req },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect((gqlResult.data as any).protectedUsers[0]).toEqual({ name: dbName });
     });
     test("Aliased fields on nodes through connections (incl. rel props)", async () => {
         const usersQuery = `
