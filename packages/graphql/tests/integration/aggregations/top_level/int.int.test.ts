@@ -158,7 +158,69 @@ describe("aggregations-top_level-int", () => {
         }
     });
 
-    test("should return the min and max of node properties", async () => {
+    test("should return the average of node properties", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            type Movie {
+                id: ID
+                imdbRating: Int
+            }
+        `;
+
+        const id = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        try {
+            await session.run(
+                `
+                    CREATE (:Movie {id: $id, imdbRating: 1})
+                    CREATE (:Movie {id: $id, imdbRating: 2})
+                    CREATE (:Movie {id: $id, imdbRating: 3})
+                    CREATE (:Movie {id: $id, imdbRating: 4})
+                `,
+                {
+                    id,
+                }
+            );
+
+            const query = `
+                {
+                    moviesAggregate(where: {id: "${id}"}) {
+                        imdbRating {
+                            average
+                        }
+                    }
+                }
+            `;
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
+            }
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
+                imdbRating: {
+                    average: 2.5,
+                },
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should return the min and max and average of node properties", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -194,6 +256,7 @@ describe("aggregations-top_level-int", () => {
                         imdbRating {
                             min
                             max
+                            average
                         }
                     }
                 }
@@ -215,6 +278,7 @@ describe("aggregations-top_level-int", () => {
                 imdbRating: {
                     min: 1,
                     max: 4,
+                    average: 2.5,
                 },
             });
         } finally {

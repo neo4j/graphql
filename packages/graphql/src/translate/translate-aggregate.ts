@@ -113,15 +113,19 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
         const primitiveField = node.primitiveFields.find((x) => x.fieldName === selection[0]);
         if (primitiveField) {
-            const isNumerical = ["Int", "Number", "Float"].includes(primitiveField.typeMeta.name);
+            const isNumerical = ["Int", "Float", "BigInt"].includes(primitiveField.typeMeta.name);
 
             if (isNumerical) {
                 const thisAggregations: string[] = [];
                 const thisVars: string[][] = [];
 
                 Object.entries(selection[1].fieldsByTypeName["NumericalAggregationSelection"]).forEach((entry) => {
-                    // "min" | "max"
-                    const operator = entry[0];
+                    // "min" | "max" | "average"
+                    let operator = entry[0];
+                    if (operator === "average") {
+                        operator = "avg";
+                    }
+
                     const variableName = `${operator}${selection[0]}`;
                     thisAggregations.push(`${operator}(this.${primitiveField.fieldName}) AS ${variableName}`);
                     thisVars.push([entry[0], variableName]);
