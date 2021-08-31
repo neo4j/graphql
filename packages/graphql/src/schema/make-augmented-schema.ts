@@ -50,6 +50,7 @@ import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
 import { PrimitiveField, Auth, ConnectionQueryArgs } from "../types";
 import {
+    aggregateResolver,
     countResolver,
     createResolver,
     cypherResolver,
@@ -69,6 +70,7 @@ import getWhereFields from "./get-where-fields";
 import { connectionFieldResolver } from "./pagination";
 import { validateDocument } from "./validation";
 import * as constants from "../constants";
+import { Integer, isInt } from "neo4j-driver";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -505,6 +507,30 @@ function makeAugmentedSchema(
                 scalarFields: node.scalarFields,
             },
         });
+
+        // Without this if error - "ActorAggregateSelection" defined in resolvers, but not in schema
+        // Due to the custom resolver to cast the int
+        if (!node.exclude?.operations.includes("read")) {
+            composer.createObjectTC({
+                name: `${node.name}AggregateSelection`,
+                fields: {
+                    count: {
+                        type: "Int!",
+                        resolve: (source, args, context, info) => {
+                            const value = defaultFieldResolver(source, args, context, info);
+
+                            // @ts-ignore: outputValue is unknown
+                            if (isInt(value)) {
+                                return (value as Integer).toNumber();
+                            }
+
+                            return value;
+                        },
+                        args: {},
+                    },
+                },
+            });
+        }
 
         const whereInput = composer.createInputTC({
             name: `${node.name}Where`,
@@ -1151,6 +1177,10 @@ function makeAugmentedSchema(
 
             composer.Query.addFields({
                 [`${pluralize(camelCase(node.name))}Count`]: countResolver({ node }),
+            });
+
+            composer.Query.addFields({
+                [`${pluralize(camelCase(node.name))}Aggregate`]: aggregateResolver({ node }),
             });
         }
 
