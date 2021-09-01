@@ -19,7 +19,7 @@
 
 import { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import { Context, GraphQLWhereArg } from "../types";
+import { BaseField, Context, DateTimeField, GraphQLWhereArg, PrimitiveField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createWhereAndParams from "./create-where-and-params";
 
@@ -112,16 +112,20 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         }
 
         const primitiveField = node.primitiveFields.find((x) => x.fieldName === selection[0]);
-        if (primitiveField) {
-            const isNumerical = ["Int", "Float", "BigInt"].includes(primitiveField.typeMeta.name);
+        const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === selection[0]);
+        let field: BaseField = (primitiveField as PrimitiveField) || (dateTimeField as DateTimeField);
+        let isDateTime = false;
 
-            if (isNumerical) {
-                const thisAggregations: string[] = [];
-                const thisVars: string[][] = [];
+        if (!primitiveField && dateTimeField) {
+            isDateTime = true;
+        }
 
-                Object.entries(
-                    selection[1].fieldsByTypeName[`${primitiveField.typeMeta.name}AggregationSelection`]
-                ).forEach((entry) => {
+        if (field) {
+            const thisAggregations: string[] = [];
+            const thisVars: string[][] = [];
+
+            Object.entries(selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregationSelection`]).forEach(
+                (entry) => {
                     // "min" | "max" | "average"
                     let operator = entry[0];
                     if (operator === "average") {
@@ -129,16 +133,14 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                     }
 
                     const variableName = `${operator}${selection[0]}`;
-                    thisAggregations.push(`${operator}(this.${primitiveField.fieldName}) AS ${variableName}`);
+                    thisAggregations.push(`${operator}(this.${field.fieldName}) AS ${variableName}`);
                     thisVars.push([entry[0], variableName]);
-                });
+                }
+            );
 
-                cypherStrs.push(`WITH ${thisAggregations.join(", ")}`);
-                projections.push(`${primitiveField.fieldName}: { ${thisVars.map((x) => `${x[0]}: ${x[1]}`)} }`);
-                withStrs = withStrs.concat(thisVars.map((x) => x[1]));
-            } else {
-                // TODO
-            }
+            cypherStrs.push(`WITH ${thisAggregations.join(", ")}`);
+            projections.push(`${field.fieldName}: { ${thisVars.map((x) => `${x[0]}: ${x[1]}`)} }`);
+            withStrs = withStrs.concat(thisVars.map((x) => x[1]));
         }
 
         // const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === selection[0]);
