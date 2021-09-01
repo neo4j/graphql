@@ -54,6 +54,7 @@ function createAuthPredicate({
     context,
     chainStr,
     kind,
+    predicate,
 }: {
     context: Context;
     varName: string;
@@ -61,6 +62,7 @@ function createAuthPredicate({
     rule: AuthRule;
     chainStr: string;
     kind: "allow" | "bind" | "where";
+    predicate?: "ANY" | "ALL";
 }): [string, any] {
     if (!rule[kind]) {
         return ["", {}];
@@ -85,6 +87,7 @@ function createAuthPredicate({
                         chainStr: `${chainStr}_${key}${i}`,
                         context,
                         kind,
+                        predicate,
                     });
 
                     inner.push(authPredicate[0]);
@@ -92,6 +95,24 @@ function createAuthPredicate({
                 });
 
                 res.strs.push(`(${inner.join(` ${key} `)})`);
+            }
+
+            if (key === "ANY" || key === "ALL") {
+                const authPredicate = createAuthPredicate({
+                    rule: {
+                        [kind]: value,
+                        allowUnauthenticated,
+                    } as AuthRule,
+                    varName,
+                    node,
+                    chainStr: `${chainStr}_${key}`,
+                    context,
+                    kind,
+                    predicate: key,
+                });
+
+                res.strs.push(authPredicate[0]);
+                res.params = { ...res.params, ...authPredicate[1] };
             }
 
             const authableField = node.authableFields.find((field) => field.fieldName === key);
@@ -132,7 +153,7 @@ function createAuthPredicate({
                 let resultStr = [
                     `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
                     `AND ${
-                        kind === "allow" ? "ANY" : "ALL"
+                        predicate ?? kind === "allow" ? "ANY" : "ALL"
                     }(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}:${
                         relationField.typeMeta.name
                     }) | ${relationVarName}] WHERE `,
