@@ -304,8 +304,8 @@ type PageInfo {
 }
 
 type StringAggregationSelection {
-    max: Int!
-    min: Int!
+    max: String!
+    min: String!
 }
 
 type Node1AggregateSelection {

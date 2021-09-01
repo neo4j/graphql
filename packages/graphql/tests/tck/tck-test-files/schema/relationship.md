@@ -40,8 +40,8 @@ input ActorOptions {
 }
 
 type StringAggregationSelection {
-    max: Int!
-    min: Int!
+    max: String!
+    min: String!
 }
 
 type IDAggregationSelection {
@@ -647,8 +647,8 @@ type ActorAggregateSelection {
 }
 
 type StringAggregationSelection {
-    max: Int!
-    min: Int!
+    max: String!
+    min: String!
 }
 
 type IDAggregationSelection {

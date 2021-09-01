@@ -131,8 +131,8 @@ function makeAugmentedSchema(
     const stringNumericalAggregationSelection = composer.createObjectTC({
         name: "StringAggregationSelection",
         fields: {
-            max: composeInt,
-            min: composeInt,
+            max: "String!",
+            min: "String!",
         },
     });
 

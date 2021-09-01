@@ -59,8 +59,8 @@ type MovieAggregateSelection {
 }
 
 type StringAggregationSelection {
-    max: Int!
-    min: Int!
+    max: String!
+    min: String!
 }
 
 enum SortDirection {
@@ -235,8 +235,8 @@ type ActorAggregateSelection {
 }
 
 type StringAggregationSelection {
-    max: Int!
-    min: Int!
+    max: String!
+    min: String!
 }
 
 type Mutation {
@@ -346,8 +346,8 @@ type MovieAggregateSelection {
 }
 
 type StringAggregationSelection {
-    max: Int!
-    min: Int!
+    max: String!
+    min: String!
 }
 
 type Mutation {
@@ -466,8 +466,8 @@ type MovieAggregateSelection {
 }
 
 type StringAggregationSelection {
-    max: Int!
-    min: Int!
+    max: String!
+    min: String!
 }
 
 type Mutation {
@@ -710,8 +710,8 @@ type MovieAggregateSelection {
 }
 
 type StringAggregationSelection {
-    max: Int!
-    min: Int!
+    max: String!
+    min: String!
 }
 
 """
@@ -835,8 +835,8 @@ type ActorAggregateSelection {
 }
 
 type StringAggregationSelection {
-    max: Int!
-    min: Int!
+    max: String!
+    min: String!
 }
 
 type Mutation {

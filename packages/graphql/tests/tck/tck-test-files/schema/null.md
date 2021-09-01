@@ -102,8 +102,8 @@ type IntAggregationSelection {
 }
 
 type StringAggregationSelection {
-    max: Int!
-    min: Int!
+    max: String!
+    min: String!
 }
 
 type IDAggregationSelection {
