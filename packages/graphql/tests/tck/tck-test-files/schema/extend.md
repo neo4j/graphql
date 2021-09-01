@@ -54,8 +54,8 @@ type IDAggregationSelection {
 }
 
 type StringAggregationSelection {
-    max: Int!
-    min: Int!
+    max: String!
+    min: String!
 }
 
 input MovieCreateInput {
