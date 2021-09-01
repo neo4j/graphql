@@ -8,7 +8,9 @@ Schema:
 type User {
     id: ID
     name: String!
-    imdbRating: Int! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+    imdbRatingInt: Int! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+    imdbRatingFloat: Float! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+    imdbRatingBigInt: BigInt! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
 }
 
 extend type User
@@ -109,7 +111,7 @@ RETURN { count: thisCount }
 ```graphql
 {
     usersAggregate {
-        imdbRating {
+        imdbRatingInt {
             min
             max
         }
@@ -123,17 +125,111 @@ RETURN { count: thisCount }
 MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $imdbRating_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-WITH min(this.imdbRating) AS minimdbRating, max(this.imdbRating) AS maximdbRating
-WITH minimdbRating, maximdbRating
-RETURN { imdbRating: { min: minimdbRating,max: maximdbRating } }
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $imdbRatingInt_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+WITH min(this.imdbRatingInt) AS minimdbRatingInt, max(this.imdbRatingInt) AS maximdbRatingInt
+WITH minimdbRatingInt, maximdbRatingInt
+RETURN { imdbRatingInt: { min: minimdbRatingInt,max: maximdbRatingInt } }
 ```
 
 ### Expected Cypher Params
 
 ```json
 {
-    "imdbRating_auth_allow0_id": "super_admin",
+    "imdbRatingInt_auth_allow0_id": "super_admin",
+    "this_auth_allow0_id": "super_admin",
+    "this_auth_where0_id": "super_admin"
+}
+```
+
+### JWT Object
+
+```json
+{
+    "sub": "super_admin"
+}
+```
+
+---
+
+## Field Float with auth
+
+### GraphQL Input
+
+```graphql
+{
+    usersAggregate {
+        imdbRatingFloat {
+            min
+            max
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:User)
+WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $imdbRatingFloat_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+WITH min(this.imdbRatingFloat) AS minimdbRatingFloat, max(this.imdbRatingFloat) AS maximdbRatingFloat
+WITH minimdbRatingFloat, maximdbRatingFloat
+RETURN { imdbRatingFloat: { min: minimdbRatingFloat,max: maximdbRatingFloat } }
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "imdbRatingFloat_auth_allow0_id": "super_admin",
+    "this_auth_allow0_id": "super_admin",
+    "this_auth_where0_id": "super_admin"
+}
+```
+
+### JWT Object
+
+```json
+{
+    "sub": "super_admin"
+}
+```
+
+---
+
+## Field BigInt with auth
+
+### GraphQL Input
+
+```graphql
+{
+    usersAggregate {
+        imdbRatingBigInt {
+            min
+            max
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:User)
+WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $imdbRatingBigInt_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+WITH min(this.imdbRatingBigInt) AS minimdbRatingBigInt, max(this.imdbRatingBigInt) AS maximdbRatingBigInt
+WITH minimdbRatingBigInt, maximdbRatingBigInt
+RETURN { imdbRatingBigInt: { min: minimdbRatingBigInt,max: maximdbRatingBigInt } }
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "imdbRatingBigInt_auth_allow0_id": "super_admin",
     "this_auth_allow0_id": "super_admin",
     "this_auth_where0_id": "super_admin"
 }
