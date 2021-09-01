@@ -6,8 +6,8 @@ Schema:
 
 ```graphql
 type User {
-    id: ID
-    name: String!
+    id: ID @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+    name: String! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
     imdbRatingInt: Int! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
     imdbRatingFloat: Float! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
     imdbRatingBigInt: BigInt! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
@@ -230,6 +230,99 @@ RETURN { imdbRatingBigInt: { min: minimdbRatingBigInt,max: maximdbRatingBigInt }
 ```json
 {
     "imdbRatingBigInt_auth_allow0_id": "super_admin",
+    "this_auth_allow0_id": "super_admin",
+    "this_auth_where0_id": "super_admin"
+}
+```
+
+### JWT Object
+
+```json
+{
+    "sub": "super_admin"
+}
+```
+
+---
+
+## Field ID with auth
+
+### GraphQL Input
+
+```graphql
+{
+    usersAggregate {
+        id {
+            min
+            max
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:User)
+WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+WITH min(this.id) AS minid, max(this.id) AS maxid
+WITH minid, maxid
+RETURN { id: { min: minid,max: maxid } }
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "id_auth_allow0_id": "super_admin",
+    "this_auth_allow0_id": "super_admin",
+    "this_auth_where0_id": "super_admin"
+}
+```
+
+### JWT Object
+
+```json
+{
+    "sub": "super_admin"
+}
+```
+
+---
+
+## Field String with auth
+
+### GraphQL Input
+
+```graphql
+{
+    usersAggregate {
+        name {
+            min
+            max
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:User)
+WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $name_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+WITH min(this.name) AS minname, max(this.name) AS maxname
+WITH minname, maxname
+RETURN { name: { min: minname,max: maxname } }
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "name_auth_allow0_id": "super_admin",
     "this_auth_allow0_id": "super_admin",
     "this_auth_where0_id": "super_admin"
 }
