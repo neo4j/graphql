@@ -370,4 +370,71 @@ describe("aggregations-top_level-auth", () => {
             await session.close();
         }
     });
+
+    test("should throw when invalid allow when aggregating a BigInt field", async () => {
+        const session = driver.session({ defaultAccessMode: "WRITE" });
+
+        const typeDefs = `
+            type Movie {
+                id: ID
+                director: Person @relationship(type: "DIRECTED", direction: IN)
+                createdAt: BigInt @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
+            }
+
+            type Person {
+                id: ID
+            }
+        `;
+
+        const movieId = generate({
+            charset: "alphabetic",
+        });
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            {
+                moviesAggregate(where: {id: "${movieId}"}) {
+                    createdAt {
+                        min
+                        max
+                    }
+                }
+            }
+        `;
+
+        const secret = "secret";
+
+        const token = jsonwebtoken.sign(
+            {
+                roles: [],
+                sub: "invalid",
+            },
+            secret
+        );
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+
+        try {
+            await session.run(`
+                CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", imdbRatingBigInt: rand()})
+            `);
+
+            const socket = new Socket({ readable: true });
+            const req = new IncomingMessage(socket);
+            req.headers.authorization = `Bearer ${token}`;
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, req },
+            });
+
+            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+        } finally {
+            await session.close();
+        }
+    });
 });

@@ -17,11 +17,13 @@
  * limitations under the License.
  */
 
+import { ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { BaseField, Context, DateTimeField, GraphQLWhereArg, PrimitiveField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createWhereAndParams from "./create-where-and-params";
+import createDatetimeElement from "./projection/elements/create-datetime-element";
 
 function translateAggregate({ node, context }: { node: Node; context: Context }): [string, any] {
     const whereInput = context.resolveTree.args.where as GraphQLWhereArg;
@@ -122,7 +124,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
         if (field) {
             const thisAggregations: string[] = [];
-            const thisVars: string[][] = [];
+            const thisVars: { fieldName: string; variableName: string; resolveTree: ResolveTree }[] = [];
 
             Object.entries(selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregationSelection`]).forEach(
                 (entry) => {
@@ -134,18 +136,29 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
                     const variableName = `${operator}${selection[0]}`;
                     thisAggregations.push(`${operator}(this.${field.fieldName}) AS ${variableName}`);
-                    thisVars.push([entry[0], variableName]);
+                    thisVars.push({ fieldName: entry[0], variableName, resolveTree: entry[1] });
                 }
             );
 
             cypherStrs.push(`WITH ${thisAggregations.join(", ")}`);
-            projections.push(`${field.fieldName}: { ${thisVars.map((x) => `${x[0]}: ${x[1]}`)} }`);
-            withStrs = withStrs.concat(thisVars.map((x) => x[1]));
-        }
 
-        // const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === selection[0]);
-        // if (dateTimeField) {
-        // }
+            if (isDateTime) {
+                projections.push(
+                    `${field.fieldName}: { ${thisVars.map((x) =>
+                        createDatetimeElement({
+                            resolveTree: x.resolveTree,
+                            field: field as DateTimeField,
+                            variable: x.variableName,
+                            variableOverride: x.variableName,
+                        })
+                    )} }`
+                );
+            } else {
+                projections.push(`${field.fieldName}: { ${thisVars.map((x) => `${x.fieldName}: ${x.variableName}`)} }`);
+            }
+
+            withStrs = withStrs.concat(thisVars.map((x) => x.variableName));
+        }
     });
 
     cypherStrs.push(`WITH ${withStrs.join(", ")}`);
