@@ -38,7 +38,7 @@ type Mutation {
 
 The `CreateInput` types closely mirror the object type definitions, allowing you to create not only the type in question, but to recurse down and perform further operations on related types in the same Mutation.
 
-> The `id` field will be absent from both create input types as the xref::type-definitions/autogeneration.adoc[`@id`] directive has been used.
+> The `id` field will be absent from both create input types as the xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-id[`@id`] directive has been used.
 
 == Single create
 

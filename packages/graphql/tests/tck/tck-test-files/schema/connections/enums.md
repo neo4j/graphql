@@ -34,6 +34,20 @@ interface ActedIn {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
 enum RoleType {
     LEADING
     SUPPORTING
@@ -217,14 +231,17 @@ input ActorWhere {
 }
 
 type CreateActorsMutationResponse {
+    info: CreateInfo!
     actors: [Actor!]!
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -431,10 +448,12 @@ enum SortDirection {
 }
 
 type UpdateActorsMutationResponse {
+    info: UpdateInfo!
     actors: [Actor!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 ```

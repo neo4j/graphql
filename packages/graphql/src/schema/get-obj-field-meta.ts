@@ -33,6 +33,7 @@ import {
 import { upperFirst } from "graphql-compose";
 import getFieldTypeMeta from "./get-field-type-meta";
 import getCypherMeta from "./get-cypher-meta";
+import getAliasMeta from "./get-alias-meta";
 import getAuth from "./get-auth";
 import getRelationshipMeta from "./get-relationship-meta";
 import {
@@ -96,6 +97,7 @@ function getObjFieldMeta({
             const defaultDirective = field?.directives?.find((x) => x.name.value === "default");
             const coalesceDirective = field?.directives?.find((x) => x.name.value === "coalesce");
             const timestampDirective = field?.directives?.find((x) => x.name.value === "timestamp");
+            const aliasDirective = field?.directives?.find((x) => x.name.value === "alias");
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
             const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
@@ -104,6 +106,7 @@ function getObjFieldMeta({
 
             const baseField: BaseField = {
                 fieldName: field.name.value,
+                dbPropertyName: field.name.value,
                 typeMeta,
                 otherDirectives: (field.directives || []).filter(
                     (x) =>
@@ -118,6 +121,7 @@ function getObjFieldMeta({
                             "default",
                             "coalesce",
                             "timestamp",
+                            "alias",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
@@ -126,6 +130,12 @@ function getObjFieldMeta({
                 readonly: field?.directives?.some((d) => d.name.value === "readonly"),
                 writeonly: field?.directives?.some((d) => d.name.value === "writeonly"),
             };
+            if (aliasDirective) {
+                const aliasMeta = getAliasMeta(field);
+                if (aliasMeta) {
+                    baseField.dbPropertyName = aliasMeta.property;
+                }
+            }
 
             if (relationshipMeta) {
                 if (fieldInterface) {
@@ -142,6 +152,10 @@ function getObjFieldMeta({
 
                 if (coalesceDirective) {
                     throw new Error("@coalesce directive can only be used on primitive type fields");
+                }
+
+                if (aliasDirective) {
+                    throw new Error("@alias directive cannot be used on relationship fields");
                 }
 
                 const relationField: RelationField = {
@@ -207,6 +221,10 @@ function getObjFieldMeta({
 
                 if (coalesceDirective) {
                     throw new Error("@coalesce directive can only be used on primitive type fields");
+                }
+
+                if (aliasDirective) {
+                    throw new Error("@alias directive cannot be used on cypher fields");
                 }
 
                 const cypherField: CypherField = {

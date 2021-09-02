@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql",
-    "version": "2.0.1",
+    "version": "2.1.0",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
@@ -18,8 +18,8 @@
     "scripts": {
         "clean": "cd src/ && tsc --build --clean",
         "test": "jest",
-        "test:unit": "jest src/ --coverage=true",
-        "test:unit:watch": "jest unit --watch",
+        "test:unit": "jest src --coverage=true",
+        "test:unit:watch": "jest src --watch",
         "test:tck": "jest tests/tck",
         "test:tck:watch": "jest tck --watchAll",
         "test:int": "jest tests/integration",

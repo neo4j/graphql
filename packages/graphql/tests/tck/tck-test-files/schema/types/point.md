@@ -17,6 +17,20 @@ type Movie {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
 type Point {
     latitude: Float!
     longitude: Float!
@@ -44,6 +58,7 @@ type Movie {
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -102,10 +117,12 @@ input MovieUpdateInput {
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 
@@ -140,6 +157,20 @@ type Machine {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
 type CartesianPoint {
     x: Float!
     y: Float!
@@ -164,6 +195,7 @@ type Machine {
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -218,10 +250,12 @@ input MachineUpdateInput {
 }
 
 type CreateMachinesMutationResponse {
+    info: CreateInfo!
     machines: [Machine!]!
 }
 
 type UpdateMachinesMutationResponse {
+    info: UpdateInfo!
     machines: [Machine!]!
 }
 
@@ -262,6 +296,20 @@ type Movie {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
 type Point {
     latitude: Float!
     longitude: Float!
@@ -281,6 +329,7 @@ type Movie {
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -308,10 +357,12 @@ input MovieUpdateInput {
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 
@@ -350,6 +401,20 @@ type Machine {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
 type CartesianPoint {
     x: Float!
     y: Float!
@@ -369,6 +434,7 @@ type Machine {
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -396,10 +462,12 @@ input MachineUpdateInput {
 }
 
 type CreateMachinesMutationResponse {
+    info: CreateInfo!
     machines: [Machine!]!
 }
 
 type UpdateMachinesMutationResponse {
+    info: UpdateInfo!
     machines: [Machine!]!
 }
 

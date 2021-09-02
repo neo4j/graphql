@@ -57,6 +57,12 @@ enum SortDirection {
     DESC
 }
 
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
 type DateTimeAggregationSelection {
     max: DateTime!
     min: DateTime!
@@ -101,11 +107,21 @@ type MovieAggregateSelection {
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
+    relationshipsDeleted: Int!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
     relationshipsDeleted: Int!
 }
 
@@ -119,6 +135,7 @@ type Movie {
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 

@@ -37,6 +37,20 @@ interface Wrote {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
 type Author {
     name: String!
     publications(options: QueryOptions, where: PublicationWhere): [Publication]
@@ -419,18 +433,22 @@ input BookWhere {
 }
 
 type CreateAuthorsMutationResponse {
+    info: CreateInfo!
     authors: [Author!]!
 }
 
 type CreateBooksMutationResponse {
+    info: CreateInfo!
     books: [Book!]!
 }
 
 type CreateJournalsMutationResponse {
+    info: CreateInfo!
     journals: [Journal!]!
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -674,14 +692,17 @@ enum SortDirection {
 }
 
 type UpdateAuthorsMutationResponse {
+    info: UpdateInfo!
     authors: [Author!]!
 }
 
 type UpdateBooksMutationResponse {
+    info: UpdateInfo!
     books: [Book!]!
 }
 
 type UpdateJournalsMutationResponse {
+    info: UpdateInfo!
     journals: [Journal!]!
 }
 

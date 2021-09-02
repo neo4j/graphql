@@ -14,3 +14,9 @@ WHERE apoc.meta.type(m.timestamp) = "STRING"
 SET m.timestamp = datetime(m.timestamp)
 RETURN m
 ----
+
+== I've created some data and then gone to query it, but it's not there
+
+If you use a causal cluster or an Aura Professional instance, there is a chance that the created data is not yet present on the server which gets connected to on the next GraphQL query.
+
+You can ensure that the data is available to query by passing a bookmark into your request - see xref::driver-configuration.adoc[Specifying Neo4j Bookmarks] for more information.
