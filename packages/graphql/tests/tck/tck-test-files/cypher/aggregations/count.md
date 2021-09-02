@@ -28,9 +28,7 @@ type Movie {
 
 ```cypher
 MATCH (this:Movie)
-WITH count(this) AS thisCount
-WITH thisCount
-RETURN { count: thisCount }
+RETURN { count: count(this) }
 ```
 
 ### Expected Cypher Params
@@ -58,9 +56,7 @@ RETURN { count: thisCount }
 ```cypher
 MATCH (this:Movie)
 WHERE this.title = $this_title
-WITH count(this) AS thisCount
-WITH thisCount
-RETURN { count: thisCount }
+RETURN { count: count(this) }
 ```
 
 ### Expected Cypher Params

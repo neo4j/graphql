@@ -38,9 +38,7 @@ extend type User
 MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-WITH count(this) AS thisCount
-WITH thisCount
-RETURN { count: thisCount }
+RETURN { count: count(this) }
 ```
 
 ### Expected Cypher Params
@@ -80,9 +78,7 @@ RETURN { count: thisCount }
 MATCH (this:User)
 WHERE this.name = $this_name AND this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-WITH count(this) AS thisCount
-WITH thisCount
-RETURN { count: thisCount }
+RETURN { count: count(this) }
 ```
 
 ### Expected Cypher Params
@@ -127,9 +123,7 @@ MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $imdbRatingInt_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-WITH min(this.imdbRatingInt) AS minimdbRatingInt, max(this.imdbRatingInt) AS maximdbRatingInt
-WITH minimdbRatingInt, maximdbRatingInt
-RETURN { imdbRatingInt: { min: minimdbRatingInt,max: maximdbRatingInt } }
+RETURN { imdbRatingInt: { min: min(this.imdbRatingInt), max: max(this.imdbRatingInt) } }
 ```
 
 ### Expected Cypher Params
@@ -174,9 +168,7 @@ MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $imdbRatingFloat_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-WITH min(this.imdbRatingFloat) AS minimdbRatingFloat, max(this.imdbRatingFloat) AS maximdbRatingFloat
-WITH minimdbRatingFloat, maximdbRatingFloat
-RETURN { imdbRatingFloat: { min: minimdbRatingFloat,max: maximdbRatingFloat } }
+RETURN { imdbRatingFloat: { min: min(this.imdbRatingFloat), max: max(this.imdbRatingFloat) } }
 ```
 
 ### Expected Cypher Params
@@ -220,10 +212,7 @@ RETURN { imdbRatingFloat: { min: minimdbRatingFloat,max: maximdbRatingFloat } }
 MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $imdbRatingBigInt_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-WITH min(this.imdbRatingBigInt) AS minimdbRatingBigInt, max(this.imdbRatingBigInt) AS maximdbRatingBigInt
-WITH minimdbRatingBigInt, maximdbRatingBigInt
-RETURN { imdbRatingBigInt: { min: minimdbRatingBigInt,max: maximdbRatingBigInt } }
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $imdbRatingBigInt_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0]) RETURN { imdbRatingBigInt: { min: min(this.imdbRatingBigInt), max: max(this.imdbRatingBigInt) } }
 ```
 
 ### Expected Cypher Params
@@ -268,9 +257,7 @@ MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-WITH min(this.id) AS minid, max(this.id) AS maxid
-WITH minid, maxid
-RETURN { id: { min: minid,max: maxid } }
+RETURN { id: { min: min(this.id), max: max(this.id) } }
 ```
 
 ### Expected Cypher Params
@@ -312,11 +299,10 @@ RETURN { id: { min: minid,max: maxid } }
 
 ```cypher
 MATCH (this:User)
-WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $name_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-WITH min(this.name) AS minname, max(this.name) AS maxname
-WITH minname, maxname
-RETURN { name: { min: minname,max: maxname } }
+RETURN { name: { min: min(this.name), max: max(this.name) } }
 ```
 
 ### Expected Cypher Params
@@ -361,9 +347,7 @@ MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $createdAt_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-WITH min(this.createdAt) AS mincreatedAt, max(this.createdAt) AS maxcreatedAt
-WITH mincreatedAt, maxcreatedAt
-RETURN { createdAt: { min: apoc.date.convertFormat(toString(mincreatedAt), "iso_zoned_date_time", "iso_offset_date_time"),max: apoc.date.convertFormat(toString(maxcreatedAt), "iso_zoned_date_time", "iso_offset_date_time") } }
+RETURN { createdAt: { min: apoc.date.convertFormat(toString(min(this.createdAt)), "iso_zoned_date_time", "iso_offset_date_time"), max: apoc.date.convertFormat(toString(max(this.createdAt)), "iso_zoned_date_time", "iso_offset_date_time") } }
 ```
 
 ### Expected Cypher Params

@@ -30,9 +30,7 @@ type Movie {
 
 ```cypher
 MATCH (this:Movie)
-WITH min(this.title) AS mintitle
-WITH mintitle
-RETURN { title: { min: mintitle } }
+RETURN { title: { min: min(this.title) } }
 ```
 
 ### Expected Cypher Params
@@ -61,9 +59,7 @@ RETURN { title: { min: mintitle } }
 
 ```cypher
 MATCH (this:Movie)
-WITH max(this.title) AS maxtitle
-WITH maxtitle
-RETURN { title: { max: maxtitle } }
+RETURN { title: { max: max(this.title) } }
 ```
 
 ### Expected Cypher Params
@@ -93,9 +89,7 @@ RETURN { title: { max: maxtitle } }
 
 ```cypher
 MATCH (this:Movie)
-WITH min(this.title) AS mintitle, max(this.title) AS maxtitle
-WITH mintitle, maxtitle
-RETURN { title: { min: mintitle,max: maxtitle } }
+RETURN { title: { min: min(this.title), max: max(this.title) } }
 ```
 
 ### Expected Cypher Params

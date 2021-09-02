@@ -30,9 +30,7 @@ type File {
 
 ```cypher
 MATCH (this:File)
-WITH min(this.size) AS minsize
-WITH minsize
-RETURN { size: { min: minsize } }
+RETURN { size: { min: min(this.size) } }
 ```
 
 ### Expected Cypher Params
@@ -61,9 +59,7 @@ RETURN { size: { min: minsize } }
 
 ```cypher
 MATCH (this:File)
-WITH max(this.size) AS maxsize
-WITH maxsize
-RETURN { size: { max: maxsize } }
+RETURN { size: { max: max(this.size) } }
 ```
 
 ### Expected Cypher Params
@@ -92,9 +88,7 @@ RETURN { size: { max: maxsize } }
 
 ```cypher
 MATCH (this:File)
-WITH avg(this.size) AS avgsize
-WITH avgsize
-RETURN { size: { average: avgsize } }
+RETURN { size: { average: avg(this.size) } }
 ```
 
 ### Expected Cypher Params
@@ -125,9 +119,7 @@ RETURN { size: { average: avgsize } }
 
 ```cypher
 MATCH (this:File)
-WITH min(this.size) AS minsize, max(this.size) AS maxsize, avg(this.size) AS avgsize
-WITH minsize, maxsize, avgsize
-RETURN { size: { min: minsize,max: maxsize,average: avgsize } }
+RETURN { size: { min: min(this.size), max: max(this.size), average: avg(this.size) } }
 ```
 
 ### Expected Cypher Params
