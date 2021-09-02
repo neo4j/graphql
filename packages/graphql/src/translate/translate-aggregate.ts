@@ -130,17 +130,19 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                         operator = "avg";
                     }
 
+                    const fieldName = field.dbPropertyName || field.fieldName;
+
                     if (isDateTime) {
                         thisProjections.push(
                             createDatetimeElement({
                                 resolveTree: entry[1],
                                 field: field as DateTimeField,
                                 variable: varName,
-                                valueOverride: `${operator}(this.${field.fieldName})`,
+                                valueOverride: `${operator}(this.${fieldName})`,
                             })
                         );
                     } else {
-                        thisProjections.push(`${entry[1].name}: ${operator}(this.${field.fieldName})`);
+                        thisProjections.push(`${entry[1].name}: ${operator}(this.${fieldName})`);
                     }
                 }
             );
