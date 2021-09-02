@@ -11,6 +11,7 @@ type User {
     imdbRatingInt: Int! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
     imdbRatingFloat: Float! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
     imdbRatingBigInt: BigInt! @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+    createdAt: DateTime @auth(rules: [{ allow: { id: "$jwt.sub" } }])
 }
 
 extend type User
@@ -323,6 +324,53 @@ RETURN { name: { min: minname,max: maxname } }
 ```json
 {
     "name_auth_allow0_id": "super_admin",
+    "this_auth_allow0_id": "super_admin",
+    "this_auth_where0_id": "super_admin"
+}
+```
+
+### JWT Object
+
+```json
+{
+    "sub": "super_admin"
+}
+```
+
+---
+
+## Field DateTime with auth
+
+### GraphQL Input
+
+```graphql
+{
+    usersAggregate {
+        createdAt {
+            min
+            max
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:User)
+WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $createdAt_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
+WITH min(this.createdAt) AS mincreatedAt, max(this.createdAt) AS maxcreatedAt
+WITH mincreatedAt, maxcreatedAt
+RETURN { createdAt: { min: apoc.date.convertFormat(toString(mincreatedAt), "iso_zoned_date_time", "iso_offset_date_time"),max: apoc.date.convertFormat(toString(maxcreatedAt), "iso_zoned_date_time", "iso_offset_date_time") } }
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "createdAt_auth_allow0_id": "super_admin",
     "this_auth_allow0_id": "super_admin",
     "this_auth_where0_id": "super_admin"
 }
