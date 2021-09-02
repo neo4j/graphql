@@ -1,6 +1,6 @@
-# Cypher Aggregations Count with Auth
+# Cypher Aggregations with Auth
 
-Tests for queries using count
+Tests for queries using aggregations and auth
 
 Schema:
 
