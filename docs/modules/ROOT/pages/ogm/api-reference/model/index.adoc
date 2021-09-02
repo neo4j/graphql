@@ -20,3 +20,7 @@ See xref::ogm/api-reference/model/delete.adoc[`delete`].
 == `count`
 
 See xref::ogm/api-reference/model/count.adoc[`count`].
+
+== `aggregate`
+
+See xref::ogm/api-reference/model/aggregate.adoc[`aggregate`].
