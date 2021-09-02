@@ -29,6 +29,20 @@ type Movie {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
 type Actor {
     name: String
 }
@@ -88,6 +102,7 @@ input ActorWhere {
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -148,18 +163,22 @@ input MovieWhere {
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 
 type CreateActorsMutationResponse {
+    info: CreateInfo!
     actors: [Actor!]!
 }
 
 type UpdateActorsMutationResponse {
+    info: UpdateInfo!
     actors: [Actor!]!
 }
 

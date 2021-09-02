@@ -39,11 +39,27 @@ type Movie implements MovieNode
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -243,6 +259,7 @@ enum SortDirection {
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 ```

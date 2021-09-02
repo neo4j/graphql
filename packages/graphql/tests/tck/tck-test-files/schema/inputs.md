@@ -25,6 +25,20 @@ type Query {
 ### Output
 
 ```graphql
+type CreateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    relationshipsCreated: Int!
+}
+
+type UpdateInfo {
+    bookmark: String
+    nodesCreated: Int!
+    nodesDeleted: Int!
+    relationshipsCreated: Int!
+    relationshipsDeleted: Int!
+}
+
 input NodeInput {
     id: ID
 }
@@ -34,6 +48,7 @@ type Movie {
 }
 
 type DeleteInfo {
+    bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
 }
@@ -99,10 +114,12 @@ input MovieUpdateInput {
 }
 
 type CreateMoviesMutationResponse {
+    info: CreateInfo!
     movies: [Movie!]!
 }
 
 type UpdateMoviesMutationResponse {
+    info: UpdateInfo!
     movies: [Movie!]!
 }
 

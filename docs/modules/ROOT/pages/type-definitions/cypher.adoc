@@ -49,7 +49,7 @@ Global variables are available for use within the Cypher statement.
 
 The value `this` is a reference to the currently resolved node, and it can be used to traverse the graph.
 
-This can be seen in the usage example xref::type-definitions/cypher.adoc[On an object type field] below.
+This can be seen in the usage example xref::type-definitions/cypher.adoc#type-definitions-cypher-object-usage[On an object type field] below.
 
 === `auth`
 

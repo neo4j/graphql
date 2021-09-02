@@ -10,6 +10,7 @@
 *** xref:type-definitions/autogeneration.adoc[]
 *** xref:type-definitions/cypher.adoc[]
 *** xref:type-definitions/default-values.adoc[]
+*** xref:type-definitions/database-mapping.adoc[]
 ** xref:queries.adoc[]
 ** xref:mutations/index.adoc[]
 *** xref:mutations/create.adoc[]
