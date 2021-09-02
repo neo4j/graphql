@@ -30,9 +30,7 @@ type Movie {
 
 ```cypher
 MATCH (this:Movie)
-WITH min(this.imdbRating) AS minimdbRating
-WITH minimdbRating
-RETURN { imdbRating: { min: minimdbRating } }
+RETURN { imdbRating: { min: min(this.imdbRating) } }
 ```
 
 ### Expected Cypher Params
@@ -61,9 +59,7 @@ RETURN { imdbRating: { min: minimdbRating } }
 
 ```cypher
 MATCH (this:Movie)
-WITH max(this.imdbRating) AS maximdbRating
-WITH maximdbRating
-RETURN { imdbRating: { max: maximdbRating } }
+RETURN { imdbRating: { max: max(this.imdbRating) } }
 ```
 
 ### Expected Cypher Params
@@ -92,9 +88,7 @@ RETURN { imdbRating: { max: maximdbRating } }
 
 ```cypher
 MATCH (this:Movie)
-WITH avg(this.imdbRating) AS avgimdbRating
-WITH avgimdbRating
-RETURN { imdbRating: { average: avgimdbRating } }
+RETURN { imdbRating: { average: avg(this.imdbRating) } }
 ```
 
 ### Expected Cypher Params
@@ -125,9 +119,7 @@ RETURN { imdbRating: { average: avgimdbRating } }
 
 ```cypher
 MATCH (this:Movie)
-WITH min(this.imdbRating) AS minimdbRating, max(this.imdbRating) AS maximdbRating, avg(this.imdbRating) AS avgimdbRating
-WITH minimdbRating, maximdbRating, avgimdbRating
-RETURN { imdbRating: { min: minimdbRating,max: maximdbRating,average: avgimdbRating } }
+RETURN { imdbRating: { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating) } }
 ```
 
 ### Expected Cypher Params

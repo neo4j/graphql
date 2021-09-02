@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { BaseField, Context, DateTimeField, GraphQLWhereArg, PrimitiveField } from "../types";
@@ -80,7 +79,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
     const selections = fieldsByTypeName[`${node.name}AggregateSelection`];
     const projections: string[] = [];
-    let withStrs: string[] = [];
+    let withStrs: string[] = [varName];
     const authStrs: string[] = [];
 
     // Do auth first so we can throw out before aggregating
@@ -108,9 +107,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
     Object.entries(selections).forEach((selection) => {
         if (selection[0] === "count") {
-            cypherStrs.push(`WITH count(${varName}) AS thisCount`);
-            withStrs.push(`thisCount`);
-            projections.push(`count: thisCount`);
+            projections.push(`count: count(${varName})`);
         }
 
         const primitiveField = node.primitiveFields.find((x) => x.fieldName === selection[0]);
@@ -123,8 +120,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         }
 
         if (field) {
-            const thisAggregations: string[] = [];
-            const thisVars: { fieldName: string; variableName: string; resolveTree: ResolveTree }[] = [];
+            const thisProjections: string[] = [];
 
             Object.entries(selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregationSelection`]).forEach(
                 (entry) => {
@@ -134,34 +130,25 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                         operator = "avg";
                     }
 
-                    const variableName = `${operator}${selection[0]}`;
-                    thisAggregations.push(`${operator}(this.${field.fieldName}) AS ${variableName}`);
-                    thisVars.push({ fieldName: entry[0], variableName, resolveTree: entry[1] });
+                    if (isDateTime) {
+                        thisProjections.push(
+                            createDatetimeElement({
+                                resolveTree: entry[1],
+                                field: field as DateTimeField,
+                                variable: varName,
+                                valueOverride: `${operator}(this.${field.fieldName})`,
+                            })
+                        );
+                    } else {
+                        thisProjections.push(`${entry[1].name}: ${operator}(this.${field.fieldName})`);
+                    }
                 }
             );
 
-            cypherStrs.push(`WITH ${thisAggregations.join(", ")}`);
-
-            if (isDateTime) {
-                projections.push(
-                    `${field.fieldName}: { ${thisVars.map((x) =>
-                        createDatetimeElement({
-                            resolveTree: x.resolveTree,
-                            field: field as DateTimeField,
-                            variable: x.variableName,
-                            variableOverride: x.variableName,
-                        })
-                    )} }`
-                );
-            } else {
-                projections.push(`${field.fieldName}: { ${thisVars.map((x) => `${x.fieldName}: ${x.variableName}`)} }`);
-            }
-
-            withStrs = withStrs.concat(thisVars.map((x) => x.variableName));
+            projections.push(`${field.fieldName}: { ${thisProjections.join(", ")} }`);
         }
     });
 
-    cypherStrs.push(`WITH ${withStrs.join(", ")}`);
     cypherStrs.push(`RETURN { ${projections.join(", ")} }`);
 
     return [cypherStrs.filter(Boolean).join("\n"), cypherParams];

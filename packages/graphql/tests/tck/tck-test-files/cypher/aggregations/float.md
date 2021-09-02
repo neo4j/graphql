@@ -30,9 +30,7 @@ type Movie {
 
 ```cypher
 MATCH (this:Movie)
-WITH min(this.actorCount) AS minactorCount
-WITH minactorCount
-RETURN { actorCount: { min: minactorCount } }
+RETURN { actorCount: { min: min(this.actorCount) } }
 ```
 
 ### Expected Cypher Params
@@ -61,9 +59,7 @@ RETURN { actorCount: { min: minactorCount } }
 
 ```cypher
 MATCH (this:Movie)
-WITH max(this.actorCount) AS maxactorCount
-WITH maxactorCount
-RETURN { actorCount: { max: maxactorCount } }
+RETURN { actorCount: { max: max(this.actorCount) } }
 ```
 
 ### Expected Cypher Params
@@ -92,8 +88,7 @@ RETURN { actorCount: { max: maxactorCount } }
 
 ```cypher
 MATCH (this:Movie)
-WITH avg(this.actorCount) AS avgactorCount WITH avgactorCount
-RETURN { actorCount: { average: avgactorCount } }
+RETURN { actorCount: { average: avg(this.actorCount) } }
 ```
 
 ### Expected Cypher Params
@@ -124,9 +119,7 @@ RETURN { actorCount: { average: avgactorCount } }
 
 ```cypher
 MATCH (this:Movie)
-WITH min(this.actorCount) AS minactorCount, max(this.actorCount) AS maxactorCount, avg(this.actorCount) AS avgactorCount
-WITH minactorCount, maxactorCount, avgactorCount
-RETURN { actorCount: { min: minactorCount,max: maxactorCount,average: avgactorCount } }
+RETURN { actorCount: { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount) } }
 ```
 
 ### Expected Cypher Params

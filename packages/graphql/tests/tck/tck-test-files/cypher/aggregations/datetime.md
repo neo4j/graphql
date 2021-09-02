@@ -30,9 +30,7 @@ type Movie {
 
 ```cypher
 MATCH (this:Movie)
-WITH min(this.createdAt) AS mincreatedAt
-WITH mincreatedAt
-RETURN { createdAt: { min: apoc.date.convertFormat(toString(mincreatedAt), "iso_zoned_date_time", "iso_offset_date_time") } }
+RETURN { createdAt: { min: apoc.date.convertFormat(toString(min(this.createdAt)), "iso_zoned_date_time", "iso_offset_date_time") } }
 ```
 
 ### Expected Cypher Params
@@ -61,9 +59,7 @@ RETURN { createdAt: { min: apoc.date.convertFormat(toString(mincreatedAt), "iso_
 
 ```cypher
 MATCH (this:Movie)
-WITH max(this.createdAt) AS maxcreatedAt
-WITH maxcreatedAt
-RETURN { createdAt: { max: apoc.date.convertFormat(toString(maxcreatedAt), "iso_zoned_date_time", "iso_offset_date_time") } }
+RETURN { createdAt: { max: apoc.date.convertFormat(toString(max(this.createdAt)), "iso_zoned_date_time", "iso_offset_date_time") } }
 ```
 
 ### Expected Cypher Params
@@ -93,9 +89,7 @@ RETURN { createdAt: { max: apoc.date.convertFormat(toString(maxcreatedAt), "iso_
 
 ```cypher
 MATCH (this:Movie)
-WITH min(this.createdAt) AS mincreatedAt, max(this.createdAt) AS maxcreatedAt
-WITH mincreatedAt, maxcreatedAt
-RETURN { createdAt: { min: apoc.date.convertFormat(toString(mincreatedAt), "iso_zoned_date_time", "iso_offset_date_time"),max: apoc.date.convertFormat(toString(maxcreatedAt), "iso_zoned_date_time", "iso_offset_date_time") } }
+RETURN { createdAt: { min: apoc.date.convertFormat(toString(min(this.createdAt)), "iso_zoned_date_time", "iso_offset_date_time"), max: apoc.date.convertFormat(toString(max(this.createdAt)), "iso_zoned_date_time", "iso_offset_date_time") } }
 ```
 
 ### Expected Cypher Params

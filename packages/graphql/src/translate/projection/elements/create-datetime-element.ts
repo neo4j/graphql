@@ -24,17 +24,17 @@ function createDatetimeElement({
     resolveTree,
     field,
     variable,
-    variableOverride,
+    valueOverride,
 }: {
     resolveTree: ResolveTree;
     field: DateTimeField;
     variable: string;
-    variableOverride?: string;
+    valueOverride?: string;
 }): string {
     return field.typeMeta.array
         ? `${resolveTree.alias}: [ dt in ${variable}.${resolveTree.name} | apoc.date.convertFormat(toString(dt), "iso_zoned_date_time", "iso_offset_date_time") ]`
         : `${resolveTree.alias}: apoc.date.convertFormat(toString(${
-              variableOverride || `${variable}.${resolveTree.name}`
+              valueOverride || `${variable}.${resolveTree.name}`
           }), "iso_zoned_date_time", "iso_offset_date_time")`;
 }
 
