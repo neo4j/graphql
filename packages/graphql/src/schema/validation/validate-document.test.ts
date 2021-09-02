@@ -474,4 +474,34 @@ describe("validateDocument", () => {
             expect(res).toBeUndefined();
         });
     });
+
+    describe("@alias directive", () => {
+        test("should throw an error if missing an argument", () => {
+            const doc = parse(`
+                type User {
+                    name: String @alias
+                }
+            `);
+            expect(() => validateDocument(doc)).toThrow(
+                'Directive "@alias" argument "property" of type "String!" is required, but it was not provided.'
+            );
+        });
+        test("should throw an error if a directive is in the wrong location", () => {
+            const doc = parse(`
+                type User @alias {
+                    name: String
+                }
+            `);
+            expect(() => validateDocument(doc)).toThrow('Directive "@alias" may not be used on OBJECT.');
+        });
+        test("should not throw when used correctly", () => {
+            const doc = parse(`
+                type User {
+                    name: String @alias(property: "dbName")
+                }
+            `);
+            const res = validateDocument(doc);
+            expect(res).toBeUndefined();
+        });
+    });
 });

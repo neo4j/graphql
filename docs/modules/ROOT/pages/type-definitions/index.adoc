@@ -9,6 +9,7 @@
 - xref::type-definitions/autogeneration.adoc[Autogeneration] - Learn about certain types which you can enable autogeneration of values for.
 - xref::type-definitions/cypher.adoc[`@cypher` directive] - Learn about how to add custom Cypher to your type definitions.
 - xref::type-definitions/default-values.adoc[Default Values] - Learn about different ways of setting default values for particular fields.
+- xref::type-definitions/database-mapping.adoc[Database Mapping] - Learn how to map the GraphQL Schema fields to custom Neo4j node and relationship properties.
 
 
 

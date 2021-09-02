@@ -161,3 +161,15 @@ export const writeonlyDirective = new GraphQLDirective({
         "Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
 });
+
+export const aliasDirective = new GraphQLDirective({
+    name: "alias",
+    description: "Instructs @neo4j/graphql to map a GraphQL field to a Neo4j node or relationship property.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        property: {
+            description: "The name of the Neo4j property",
+            type: new GraphQLNonNull(GraphQLString),
+        },
+    },
+});
