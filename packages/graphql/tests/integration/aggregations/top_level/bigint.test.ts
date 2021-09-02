@@ -40,7 +40,7 @@ describe("aggregations-top_level-bigint", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                imdbRatingBigInt: Float
+                imdbRatingBigInt: BigInt
             }
         `;
 
@@ -88,7 +88,7 @@ describe("aggregations-top_level-bigint", () => {
 
             expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
                 imdbRatingBigInt: {
-                    min: 1.1,
+                    min: "1.1",
                 },
             });
         } finally {
@@ -102,7 +102,7 @@ describe("aggregations-top_level-bigint", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                imdbRatingBigInt: Float
+                imdbRatingBigInt: BigInt
             }
         `;
 
@@ -150,7 +150,7 @@ describe("aggregations-top_level-bigint", () => {
 
             expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
                 imdbRatingBigInt: {
-                    max: 4.1,
+                    max: "4.1",
                 },
             });
         } finally {
@@ -164,7 +164,7 @@ describe("aggregations-top_level-bigint", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                imdbRatingBigInt: Float
+                imdbRatingBigInt: BigInt
             }
         `;
 
@@ -226,7 +226,7 @@ describe("aggregations-top_level-bigint", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                imdbRatingBigInt: Float
+                imdbRatingBigInt: BigInt
             }
         `;
 
@@ -276,8 +276,8 @@ describe("aggregations-top_level-bigint", () => {
 
             expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
                 imdbRatingBigInt: {
-                    min: 1.1,
-                    max: 4.1,
+                    min: "1.1",
+                    max: "4.1",
                     average: 2.6,
                 },
             });
