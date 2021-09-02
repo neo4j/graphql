@@ -371,14 +371,14 @@ describe("aggregations-top_level-auth", () => {
         }
     });
 
-    test("should throw when invalid allow when aggregating a BigInt field", async () => {
+    test("should throw when invalid allow when aggregating a DateTime field", async () => {
         const session = driver.session({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {
                 id: ID
                 director: Person @relationship(type: "DIRECTED", direction: IN)
-                createdAt: BigInt @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
+                createdAt: DateTime @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
             type Person {
@@ -419,7 +419,7 @@ describe("aggregations-top_level-auth", () => {
 
         try {
             await session.run(`
-                CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", imdbRatingBigInt: rand()})
+                CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", createdAt: datetime()})
             `);
 
             const socket = new Socket({ readable: true });
