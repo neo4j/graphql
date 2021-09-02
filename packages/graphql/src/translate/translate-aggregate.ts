@@ -110,8 +110,8 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
             projections.push(`count: count(${varName})`);
         }
 
-        const primitiveField = node.primitiveFields.find((x) => x.fieldName === selection[0]);
-        const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === selection[0]);
+        const primitiveField = node.primitiveFields.find((x) => x.fieldName === selection[1].name);
+        const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === selection[1].name);
         let field: BaseField = (primitiveField as PrimitiveField) || (dateTimeField as DateTimeField);
         let isDateTime = false;
 
@@ -125,7 +125,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
             Object.entries(selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregationSelection`]).forEach(
                 (entry) => {
                     // "min" | "max" | "average"
-                    let operator = entry[0];
+                    let operator = entry[1].name;
                     if (operator === "average") {
                         operator = "avg";
                     }
@@ -142,12 +142,12 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                             })
                         );
                     } else {
-                        thisProjections.push(`${entry[1].name}: ${operator}(this.${fieldName})`);
+                        thisProjections.push(`${entry[1].alias || entry[1].name}: ${operator}(this.${fieldName})`);
                     }
                 }
             );
 
-            projections.push(`${field.fieldName}: { ${thisProjections.join(", ")} }`);
+            projections.push(`${selection[1].alias || selection[1].name}: { ${thisProjections.join(", ")} }`);
         }
     });
 
