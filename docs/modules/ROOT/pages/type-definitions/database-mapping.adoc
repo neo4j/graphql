@@ -1,0 +1,45 @@
+[[type-definitions-database-mapping]]
+= Database Mapping
+
+[[type-definitions-alias]]
+== `@alias`
+
+This directive maps a GraphQL field to a Neo4j property on a node or 
+relationship.
+
+This can be used on any fields that are not `@cypher` or `@relationship` fields.
+
+=== Definition
+
+[source, graphql, indent=0]
+----
+"""Indicates that the field is the be mapped to the underlying Neo4j under a different property name."""
+directive @alias(property: String!) on FIELD_DEFINITION
+----
+
+=== Usage
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID! @id @alias(property: "dbId")
+    username: String!
+}
+----
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID! @id
+    username: String! @alias(property: "dbUserName")
+    livesIn: [City] @relationship(direction: OUT, type: "LIVES_IN", properties: "UserLivesInProperties")
+}
+
+type City {
+    name: String
+}
+
+interface UserLivesInProperties @relationshipProperties {
+    since: DateTime @alias(property: "moveInDate")
+}
+----
