@@ -34,6 +34,7 @@ import type {
     BaseField,
 } from "../types";
 import Exclude from "./Exclude";
+import NodeDirective from "./NodeDirective";
 
 export interface NodeConstructor {
     name: string;
@@ -53,6 +54,7 @@ export interface NodeConstructor {
     ignoredFields: BaseField[];
     auth?: Auth;
     exclude?: Exclude;
+    nodeDirective?: NodeDirective;
     description?: string;
 }
 
@@ -88,6 +90,8 @@ class Node {
     public ignoredFields: BaseField[];
 
     public exclude?: Exclude;
+
+    public nodeDirective?: NodeDirective;
 
     public auth?: Auth;
 
@@ -137,6 +141,7 @@ class Node {
         this.pointFields = input.pointFields;
         this.ignoredFields = input.ignoredFields;
         this.exclude = input.exclude;
+        this.nodeDirective = input.nodeDirective;
         this.auth = input.auth;
         this.description = input.description;
 
