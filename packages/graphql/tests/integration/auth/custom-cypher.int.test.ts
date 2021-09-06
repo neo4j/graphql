@@ -72,7 +72,7 @@ describe("should inject the auth into cypher directive", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query as string,
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -166,7 +166,7 @@ describe("should inject the auth into cypher directive", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query as string,
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -268,7 +268,7 @@ describe("should inject the auth into cypher directive", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(gqlResult.errors).toBeUndefined();
