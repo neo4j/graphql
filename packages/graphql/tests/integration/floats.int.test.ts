@@ -73,7 +73,7 @@ describe("floats", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -135,7 +135,7 @@ describe("floats", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
                     imdbRating_float: imdbRatingFloat,
                     imdbRating_int: imdbRatingInt,
@@ -206,7 +206,7 @@ describe("floats", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
                     float,
                     floats,
@@ -269,7 +269,7 @@ describe("floats", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(gqlResult.errors).toBeFalsy();

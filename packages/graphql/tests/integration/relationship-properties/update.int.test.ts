@@ -24,8 +24,9 @@ import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
-describe("Relationship properties - read", () => {
+describe("Relationship properties - update", () => {
     let driver: Driver;
+    let bookmarks: string[];
     const typeDefs = gql`
         type Movie {
             title: String!
@@ -55,11 +56,12 @@ describe("Relationship properties - read", () => {
 
         try {
             await session.run(
-                `CREATE (:Actor { name: '${actor1}' })-[:ACTED_IN { screenTime: 105 }]->(:Movie { title: '${movieTitle}'})`
+                `
+                    CREATE (:Actor { name: '${actor1}' })-[:ACTED_IN { screenTime: 105 }]->(m:Movie { title: '${movieTitle}'})
+                    CREATE (m)<-[:ACTED_IN { screenTime: 100 }]-(:Actor { name: '${actor2}' })
+                `
             );
-            await session.run(
-                `MATCH (m:Movie) WHERE m.title = '${movieTitle}' CREATE (m)<-[:ACTED_IN { screenTime: 105 }]-(:Actor { name: '${actor2}' })`
-            );
+            bookmarks = session.lastBookmark();
         } finally {
             await session.close();
         }
@@ -95,7 +97,7 @@ describe("Relationship properties - read", () => {
                 ) {
                     movies {
                         title
-                        actorsConnection {
+                        actorsConnection(sort: { edge: { screenTime: DESC }}) {
                             edges {
                                 screenTime
                                 node {
@@ -114,7 +116,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -125,7 +127,7 @@ describe("Relationship properties - read", () => {
                     actorsConnection: {
                         edges: [
                             {
-                                screenTime: 105,
+                                screenTime: 100,
                                 node: {
                                     name: actor2,
                                 },
@@ -168,7 +170,7 @@ describe("Relationship properties - read", () => {
                 ) {
                     movies {
                         title
-                        actorsConnection {
+                        actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
                                 screenTime
                                 node {
@@ -187,7 +189,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -240,7 +242,7 @@ describe("Relationship properties - read", () => {
                 ) {
                     movies {
                         title
-                        actorsConnection {
+                        actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
                                 screenTime
                                 node {
@@ -259,7 +261,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -276,7 +278,7 @@ describe("Relationship properties - read", () => {
                                 },
                             },
                             {
-                                screenTime: 105,
+                                screenTime: 100,
                                 node: {
                                     name: actor2,
                                 },
@@ -316,7 +318,7 @@ describe("Relationship properties - read", () => {
                 ) {
                     movies {
                         title
-                        actorsConnection {
+                        actorsConnection(sort: { edge: { screenTime: ASC }}) {
                             edges {
                                 screenTime
                                 node {
@@ -335,7 +337,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
             });
 
             expect(result.errors).toBeFalsy();
@@ -352,7 +354,7 @@ describe("Relationship properties - read", () => {
                                 },
                             },
                             {
-                                screenTime: 105,
+                                screenTime: 100,
                                 node: {
                                     name: actor2,
                                 },

@@ -68,7 +68,7 @@ describe("create", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id },
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -147,7 +147,7 @@ describe("create", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { movieTitle, actorName },
             });
 
@@ -216,7 +216,7 @@ describe("create", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id1, id2 },
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -374,7 +374,7 @@ describe("create", () => {
                     },
                 ],
             },
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
         });
 
         expect(gqlResult.errors).toBeFalsy();

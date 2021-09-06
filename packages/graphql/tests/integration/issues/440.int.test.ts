@@ -98,7 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             const mutationResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues,
             });
 

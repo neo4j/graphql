@@ -28,6 +28,7 @@ import createAuthParam from "./create-auth-param";
 import createAuthAndParams from "./create-auth-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
+import mapToDbProperty from "../utils/map-to-db-property";
 
 interface Res {
     strs: string[];
@@ -74,6 +75,7 @@ function createUpdateAndParams({
 
         const relationField = node.relationFields.find((x) => key === x.fieldName);
         const pointField = node.pointFields.find((x) => key === x.fieldName);
+        const dbFieldName = mapToDbProperty(node, key);
 
         if (relationField) {
             const refNodes: Node[] = [];
@@ -324,7 +326,7 @@ function createUpdateAndParams({
         if (!hasAppliedTimeStamps) {
             const timestamps = node.dateTimeFields.filter((x) => x.timestamps && x.timestamps.includes("UPDATE"));
             timestamps.forEach((ts) => {
-                res.strs.push(`SET ${varName}.${ts.fieldName} = datetime()`);
+                res.strs.push(`SET ${varName}.${ts.dbPropertyName} = datetime()`);
             });
 
             hasAppliedTimeStamps = true;
@@ -336,12 +338,12 @@ function createUpdateAndParams({
         if (settableField) {
             if (pointField) {
                 if (pointField.typeMeta.array) {
-                    res.strs.push(`SET ${varName}.${key} = [p in $${param} | point(p)]`);
+                    res.strs.push(`SET ${varName}.${dbFieldName} = [p in $${param} | point(p)]`);
                 } else {
-                    res.strs.push(`SET ${varName}.${key} = point($${param})`);
+                    res.strs.push(`SET ${varName}.${dbFieldName} = point($${param})`);
                 }
             } else {
-                res.strs.push(`SET ${varName}.${key} = $${param}`);
+                res.strs.push(`SET ${varName}.${dbFieldName} = $${param}`);
             }
 
             res.params[param] = value;

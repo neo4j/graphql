@@ -95,7 +95,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
                     });
 
@@ -165,7 +165,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
@@ -248,7 +248,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
@@ -326,7 +326,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
                     });
 
@@ -433,7 +433,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title },
                     });
 
@@ -511,7 +511,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
                     });
 
@@ -581,7 +581,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
                     });
 
@@ -651,7 +651,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
                     });
 
@@ -726,7 +726,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { id: townId },
                     });
 
