@@ -28,8 +28,10 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
     const { resolveTree } = context;
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const deleteInput = resolveTree.args.delete;
+    const labels = node.nodeDirective?.getLabelsString(node.name) || `:${node.name}`;
+
     const varName = "this";
-    const matchStr = `MATCH (${varName}:${node.name})`;
+    const matchStr = `MATCH (${varName}${labels})`;
     let whereStr = "";
     let allowStr = "";
     let deleteStr = "";
