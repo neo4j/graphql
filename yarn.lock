@@ -10026,7 +10026,7 @@ fsevents@^1.2.7:
     graphql: ^15.0.0
     jest: 26.6.3
     jsonwebtoken: 8.5.1
-    neo4j-driver: ^4.2.0
+    neo4j-driver: ^4.3.3
     nodemon: 2.0.6
     randomstring: 1.1.5
     ts-jest: 26.4.4
