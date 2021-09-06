@@ -50,7 +50,9 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
         const session = driver.session();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
         const videoID = generate({ charset: "alphabetic" });
-        const catIDs = Array(3).fill(0).map(() => generate({ charset: "alphabetic" }));
+        const catIDs = Array(3)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
 
         await session.run(
             `CREATE (v:Video {id: $videoID}),
@@ -62,17 +64,19 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
         const variableValues = {
             id: videoID,
             fields: {
-                categories: [{
-                    disconnect: [{
-                        where: {
-                            node: { id_IN: [catIDs[0], catIDs[1]] }
-                        }
-                    }],
-                    create: [
-                        { node: { id: catIDs[2] } }
-                    ]
-                }]
-            }
+                categories: [
+                    {
+                        disconnect: [
+                            {
+                                where: {
+                                    node: { id_IN: [catIDs[0], catIDs[1]] },
+                                },
+                            },
+                        ],
+                        create: [{ node: { id: catIDs[2] } }],
+                    },
+                ],
+            },
         };
 
         const mutation = `
@@ -94,7 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             const mutationResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues,
             });
 

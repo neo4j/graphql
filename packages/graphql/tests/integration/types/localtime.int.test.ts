@@ -70,7 +70,7 @@ describe("LocalTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { id, time },
                 });
 
@@ -134,7 +134,7 @@ describe("LocalTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { id, times },
                 });
 
@@ -221,7 +221,7 @@ describe("LocalTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { id, time },
                 });
 
@@ -293,7 +293,7 @@ describe("LocalTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { time },
                 });
 
@@ -383,7 +383,7 @@ describe("LocalTime", () => {
                         const graphqlResult = await graphql({
                             schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                             variableValues: {
                                 where: { id_IN: [futureId, presentId, pastId], [`time_${filter}`]: present },
                             },
@@ -509,7 +509,7 @@ describe("LocalTime", () => {
                         const graphqlResult = await graphql({
                             schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                             variableValues: {
                                 futureId,
                                 presentId,
