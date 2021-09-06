@@ -84,3 +84,9 @@ Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogener
 The `@writeonly` directive marks fields as write-only.
 
 Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-writeonly[`@writeonly`]
+
+== `@alias`
+
+The `@alias` directive will map a GraphQL schema field to a Neo4j property on a node or relationship.
+
+Reference: xref::type-definitions/database-mapping.adoc[`@alias`]
