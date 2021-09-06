@@ -374,3 +374,28 @@ DETACH DELETE this
 ```
 
 ---
+
+## Count movies with custom label
+
+### GraphQL Input
+
+```graphql
+{
+    moviesCount
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Film)
+RETURN count(this)
+```
+
+### Expected Cypher Params
+
+```json
+{}
+```
+
+---
