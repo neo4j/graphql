@@ -28,6 +28,7 @@ import createPointElement from "./projection/elements/create-point-element";
 // eslint-disable-next-line import/no-cycle
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import { createOffsetLimitStr } from "../schema/pagination";
+import mapToDbProperty from "../utils/map-to-db-property";
 
 interface Res {
     projection: string[];
@@ -447,7 +448,14 @@ function createProjectionAndParams({
                 aliasedProj = "";
             }
 
-            res.projection.push(`${aliasedProj}.${field.name}`);
+            // In the case of using the @alias directive (map a GraphQL field to a db prop)
+            // the output will be RETURN varName {GraphQLfield: varName.dbAlias}
+            const dbFieldName = mapToDbProperty(node, field.name);
+            if (dbFieldName !== field.name) {
+                aliasedProj = !aliasedProj ? `${key}: ${varName}` : aliasedProj;
+            }
+
+            res.projection.push(`${aliasedProj}.${dbFieldName}`);
         }
 
         return res;

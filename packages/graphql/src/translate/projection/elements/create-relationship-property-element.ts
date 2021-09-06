@@ -19,6 +19,7 @@
 
 import { ResolveTree } from "graphql-parse-resolve-info";
 import Relationship from "../../../classes/Relationship";
+import mapToDbProperty from "../../../utils/map-to-db-property";
 import createDatetimeElement from "./create-datetime-element";
 import createPointElement from "./create-point-element";
 
@@ -42,7 +43,8 @@ function createRelationshipPropertyElement({
         return createPointElement({ resolveTree, field: pointField, variable: relationshipVariable });
     }
 
-    return `${resolveTree.alias}: ${relationshipVariable}.${resolveTree.name}`;
+    const dbFieldName = mapToDbProperty(relationship, resolveTree.name);
+    return `${resolveTree.alias}: ${relationshipVariable}.${dbFieldName}`;
 }
 
 export default createRelationshipPropertyElement;
