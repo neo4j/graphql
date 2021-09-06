@@ -86,7 +86,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -148,7 +148,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -216,7 +216,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -290,7 +290,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -356,7 +356,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -425,7 +425,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -491,7 +491,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -562,7 +562,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -631,7 +631,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -700,7 +700,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -775,7 +775,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -855,7 +855,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -937,7 +937,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -1004,7 +1004,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -1071,7 +1071,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -1137,7 +1137,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -1204,7 +1204,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: neoSchema.schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
                         if (gqlResult.errors) {
@@ -1261,7 +1261,7 @@ describe("Advanced Filtering", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 if (gqlResult.errors) {
@@ -1314,7 +1314,7 @@ describe("Advanced Filtering", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 if (gqlResult.errors) {
@@ -1397,7 +1397,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
                     if (gqlResult.errors) {
@@ -1461,7 +1461,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
                     if (gqlResult.errors) {
@@ -1533,7 +1533,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
                     if (gqlResult.errors) {
@@ -1605,7 +1605,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
                     if (gqlResult.errors) {
@@ -1694,7 +1694,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
                     if (gqlResult.errors) {
@@ -1777,7 +1777,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
                     if (gqlResult.errors) {
@@ -1867,7 +1867,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
                         source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
                     if (gqlResult.errors) {
@@ -1951,7 +1951,7 @@ describe("Advanced Filtering", () => {
                 const nullResult = await graphql({
                     schema: neoSchema.schema,
                     source: nullQuery,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 if (nullResult.errors) {
@@ -1978,7 +1978,7 @@ describe("Advanced Filtering", () => {
                 const notNullResult = await graphql({
                     schema: neoSchema.schema,
                     source: notNullQuery,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 if (notNullResult.errors) {
@@ -2053,7 +2053,7 @@ describe("Advanced Filtering", () => {
                 const nullResult = await graphql({
                     schema: neoSchema.schema,
                     source: nullQuery,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 if (nullResult.errors) {
@@ -2079,7 +2079,7 @@ describe("Advanced Filtering", () => {
                 const notNullResult = await graphql({
                     schema: neoSchema.schema,
                     source: notNullQuery,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 if (notNullResult.errors) {

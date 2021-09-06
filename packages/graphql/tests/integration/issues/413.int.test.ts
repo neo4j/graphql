@@ -98,7 +98,7 @@ describe("413", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(result.errors).toBeFalsy();

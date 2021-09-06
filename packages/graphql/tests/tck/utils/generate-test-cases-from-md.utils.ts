@@ -96,7 +96,12 @@ function extractTests(contents: string, kind: string): Test[] {
                 const jwt = JSON.parse(captureOrEmptyString(t, jwtRe) || "{}");
                 const graphQlParams = JSON.parse(captureOrEmptyString(t, graphqlParamsRe) || "{}") as Params;
                 const cypherQuery = captureOrEmptyString(t, cypherQueryRe);
-                const cypherParams = JSON.parse(captureOrEmptyString(t, cypherParamsRe) || "{}") as Params;
+                const cypherParams = JSON.parse(captureOrEmptyString(t, cypherParamsRe) || "{}", (key, value) => {
+                    if (key === "timeZoneId" && value === null) {
+                        return undefined;
+                    }
+                    return value;
+                }) as Params;
 
                 return {
                     name,

@@ -104,7 +104,7 @@ describe("composite-where", () => {
                     schema: neoSchema.schema,
                     source: query,
                     variableValues: { movieId, actorName, screenTime },
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -186,7 +186,7 @@ describe("composite-where", () => {
                     schema: neoSchema.schema,
                     source: query,
                     variableValues: { movieId, actorName, screenTime },
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
