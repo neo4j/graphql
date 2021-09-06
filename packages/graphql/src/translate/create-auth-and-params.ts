@@ -21,6 +21,7 @@ import dotProp from "dot-prop";
 import { Neo4jGraphQLAuthenticationError, Node } from "../classes";
 import { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context } from "../types";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
+import mapToDbProperty from "../utils/map-to-db-property";
 
 interface Res {
     strs: string[];
@@ -131,14 +132,15 @@ function createAuthPredicate({
                     throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
                 }
 
+                const dbFieldName = mapToDbProperty(node, key);
                 if (paramValue === undefined) {
                     res.strs.push("false");
                 } else if (paramValue === null) {
-                    res.strs.push(`${varName}.${key} IS NULL`);
+                    res.strs.push(`${varName}.${dbFieldName} IS NULL`);
                 } else {
                     const param = `${chainStr}_${key}`;
                     res.params[param] = paramValue;
-                    res.strs.push(`${varName}.${key} IS NOT NULL AND ${varName}.${key} = $${param}`);
+                    res.strs.push(`${varName}.${dbFieldName} IS NOT NULL AND ${varName}.${dbFieldName} = $${param}`);
                 }
             }
 
