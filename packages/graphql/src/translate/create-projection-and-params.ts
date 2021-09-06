@@ -251,12 +251,14 @@ function createProjectionAndParams({
         }
 
         if (relationField) {
+            // WARN: In some test this node is undefined. If this is intended, we should update typings to reflect that
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const nodeMatchStr = `(${chainStr || varName})`;
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
             const outStr = relationField.direction === "OUT" ? "->" : "-";
-            const labels = referenceNode.nodeDirective?.getLabelsString(referenceNode.name) || `:${referenceNode.name}`;
+            const labels =
+                referenceNode?.nodeDirective?.getLabelsString(referenceNode.name) || `:${referenceNode?.name}`;
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
