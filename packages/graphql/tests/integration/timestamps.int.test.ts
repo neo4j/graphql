@@ -67,7 +67,7 @@ describe("TimeStamps", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -139,7 +139,7 @@ describe("TimeStamps", () => {
                 const result = await graphql({
                     schema: neoSchema.schema,
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title, name },
                 });
 
@@ -191,7 +191,7 @@ describe("TimeStamps", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -269,7 +269,7 @@ describe("TimeStamps", () => {
                 const result = await graphql({
                     schema: neoSchema.schema,
                     source: update,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title },
                 });
 
@@ -317,7 +317,7 @@ describe("TimeStamps", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -389,7 +389,7 @@ describe("TimeStamps", () => {
                 const result = await graphql({
                     schema: neoSchema.schema,
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title, name },
                 });
 
@@ -459,7 +459,7 @@ describe("TimeStamps", () => {
                 const result = await graphql({
                     schema: neoSchema.schema,
                     source: update,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title },
                 });
 
@@ -509,7 +509,7 @@ describe("TimeStamps", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -565,7 +565,7 @@ describe("TimeStamps", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -637,7 +637,7 @@ describe("TimeStamps", () => {
                 const result = await graphql({
                     schema: neoSchema.schema,
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title, name },
                 });
 
@@ -707,7 +707,7 @@ describe("TimeStamps", () => {
                 const result = await graphql({
                     schema: neoSchema.schema,
                     source: update,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     variableValues: { title },
                 });
 
@@ -757,7 +757,7 @@ describe("TimeStamps", () => {
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
