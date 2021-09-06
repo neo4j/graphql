@@ -47,6 +47,36 @@ RETURN this { .title } as this
 
 ---
 
+## Select movie and actor with custom labels
+
+### GraphQL Input
+
+```graphql
+{
+    movies {
+        title
+        actors {
+            name
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Film)
+RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Person) | this_actors { .name } ] } as this
+```
+
+### Expected Cypher Params
+
+```json
+{}
+```
+
+---
+
 ## Create Movie with label Film
 
 ### GraphQL Input
