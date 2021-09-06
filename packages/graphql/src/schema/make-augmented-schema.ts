@@ -218,7 +218,7 @@ function makeAugmentedSchema(
         });
 
         const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude"].includes(x.name.value)
+            (x) => !["auth", "exclude", "node"].includes(x.name.value)
         );
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
