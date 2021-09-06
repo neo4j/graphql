@@ -213,7 +213,7 @@ describe("https://github.com/neo4j/graphql/issues/388", () => {
             const mutationResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { input },
             });
 
@@ -230,7 +230,7 @@ describe("https://github.com/neo4j/graphql/issues/388", () => {
             const queryResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
                     userID,
                 },
