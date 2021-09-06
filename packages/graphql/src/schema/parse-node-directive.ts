@@ -25,11 +25,15 @@ function parseNodeDirective(nodeDirective: DirectiveNode) {
         throw new Error("Undefined or incorrect directive passed into parseNodeDirective function");
     }
 
-    const label = nodeDirective.arguments?.find((a) => a.name.value === "label") as ArgumentNode;
-    const additionalLabels = nodeDirective.arguments?.find((a) => a.name.value === "additionalLabels") as ArgumentNode;
+    const label = nodeDirective.arguments?.find((a) => a.name.value === "label") as ArgumentNode | undefined;
+    const additionalLabels = nodeDirective.arguments?.find((a) => a.name.value === "additionalLabels") as
+        | ArgumentNode
+        | undefined;
 
-    const labelValue: string = valueFromASTUntyped(label.value);
-    const additionalLabelsValue: string[] = valueFromASTUntyped(additionalLabels.value);
+    const labelValue: string | undefined = label ? valueFromASTUntyped(label.value) : undefined;
+    const additionalLabelsValue: string[] | undefined = additionalLabels
+        ? valueFromASTUntyped(additionalLabels.value)
+        : undefined;
 
     return new NodeDirective({ label: labelValue, additionalLabels: additionalLabelsValue });
 }

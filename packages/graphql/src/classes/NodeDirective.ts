@@ -23,9 +23,9 @@ export interface NodeDirectiveConstructor {
 }
 
 class NodeDirective {
-    public label: string | undefined;
+    private label: string | undefined;
 
-    public additionalLabels: string[];
+    private additionalLabels: string[];
 
     constructor(input: NodeDirectiveConstructor) {
         this.label = input.label;
