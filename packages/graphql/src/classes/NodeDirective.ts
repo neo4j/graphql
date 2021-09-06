@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLError } from "./Error";
+
 export interface NodeDirectiveConstructor {
     label?: string;
     additionalLabels?: string[];
@@ -33,6 +35,9 @@ class NodeDirective {
     }
 
     public getLabelsString(typeName: string): string {
+        if (!typeName) {
+            throw new Neo4jGraphQLError("Could not generate label string in @node directive due to empty typeName");
+        }
         const mainLabel = this.label || typeName;
         return `:${[mainLabel, ...this.additionalLabels].join(":")}`;
     }
