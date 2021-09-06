@@ -290,3 +290,87 @@ RETURN this { .id } AS this
 ```
 
 ---
+
+## Delete Movie with custom label
+
+### GraphQL Input
+
+```graphql
+mutation {
+    deleteMovies(where: { id: "123" }) {
+        nodesDeleted
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Film)
+WHERE this.id = $this_id
+DETACH DELETE this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_id": "123"
+}
+```
+
+---
+
+## Delete Movies and actors with custom labels
+
+### GraphQL Input
+
+```graphql
+mutation {
+    deleteMovies(
+        where: { id: 123 }
+        delete: { actors: { where: { node: { name: "Actor to delete" } } } }
+    ) {
+        nodesDeleted
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Film)
+WHERE this.id = $this_id
+WITH this
+OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Person)
+WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
+FOREACH(_ IN CASE this_actors0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_actors0
+)
+DETACH DELETE this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_id": "123",
+    "this_deleteMovies": {
+        "args": {
+            "delete": {
+                "actors": [
+                    {
+                        "where": {
+                            "node": {
+                                "name": "Actor to delete"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
+```
+
+---
