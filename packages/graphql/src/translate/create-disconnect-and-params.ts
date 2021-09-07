@@ -60,6 +60,10 @@ function createDisconnectAndParams({
         const relVarName = `${_varName}_rel`;
         const relTypeStr = `[${relVarName}:${relationField.type}]`;
 
+        const labels = refNode?.nodeDirective?.getLabelsString(refNode.name) || `:${refNode?.name}`;
+        // TODO: How should labelOverride be handled?
+        const label = labelOverride ? `:${labelOverride}` : labels;
+
         if (parentNode.auth) {
             const whereAuth = createAuthAndParams({
                 operation: "DISCONNECT",
@@ -78,11 +82,7 @@ function createDisconnectAndParams({
         res.disconnects.push("CALL {");
 
         res.disconnects.push(`WITH ${withVars.join(", ")}`);
-        res.disconnects.push(
-            `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${
-                labelOverride || relationField.typeMeta.name
-            })`
-        );
+        res.disconnects.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${label})`);
 
         const whereStrs: string[] = [];
 
