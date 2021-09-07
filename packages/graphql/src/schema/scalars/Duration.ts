@@ -35,11 +35,7 @@ const MINUTES_PER_HOUR = 60;
 const SECONDS_PER_MINUTE = 60;
 const SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
 
-export const parseDuration = (value: any) => {
-    if (typeof value !== "string") {
-        throw new TypeError(`Value must be of type string: ${value}`);
-    }
-
+export const parseDuration = (value: string) => {
     const match = DURATION_REGEX.exec(value);
 
     if (!match) {
@@ -137,7 +133,7 @@ export default new GraphQLScalarType({
 
         return value;
     },
-    parseValue: (value) => {
+    parseValue: (value: string) => {
         return parse(value);
     },
     parseLiteral: (ast) => {
