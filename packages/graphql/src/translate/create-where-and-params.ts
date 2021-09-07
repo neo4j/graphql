@@ -499,8 +499,13 @@ function createWhereAndParams({
 
             let clause = `${property} < $${param}`;
 
-            if (pointField) clause = `distance(${varName}.${fieldName}, point($${param}.point)) < $${param}.distance`;
-            if (durationField) clause = `datetime() + ${property} < datetime() + $${param}`;
+            if (pointField) {
+                clause = `distance(${varName}.${fieldName}, point($${param}.point)) < $${param}.distance`;
+            }
+            
+            if (durationField) {
+                clause = `datetime() + ${property} < datetime() + $${param}`;
+            }
 
             res.clauses.push(clause);
             res.params[param] = value;
@@ -522,8 +527,13 @@ function createWhereAndParams({
 
             let clause = `${property} <= $${param}`;
 
-            if (pointField) clause = `distance(${varName}.${fieldName}, point($${param}.point)) <= $${param}.distance`;
-            if (durationField) clause = `datetime() + ${property} <= datetime() + $${param}`;
+            if (pointField) {
+                clause = `distance(${varName}.${fieldName}, point($${param}.point)) <= $${param}.distance`;
+            }
+            
+            if (durationField) {
+                clause = `datetime() + ${property} <= datetime() + $${param}`;
+            }
 
             res.clauses.push(clause);
             res.params[param] = value;
@@ -545,8 +555,13 @@ function createWhereAndParams({
 
             let clause = `${property} > $${param}`;
 
-            if (pointField) clause = `distance(${varName}.${fieldName}, point($${param}.point)) > $${param}.distance`;
-            if (durationField) clause = `datetime() + ${property} > datetime() + $${param}`;
+            if (pointField) {
+                clause = `distance(${varName}.${fieldName}, point($${param}.point)) > $${param}.distance`;
+            }
+            
+            if (durationField) {
+                clause = `datetime() + ${property} > datetime() + $${param}`;
+            }
 
             res.clauses.push(clause);
             res.params[param] = value;
@@ -568,8 +583,13 @@ function createWhereAndParams({
 
             let clause = `${property} >= $${param}`;
 
-            if (pointField) clause = `distance(${varName}.${fieldName}, point($${param}.point)) >= $${param}.distance`;
-            if (durationField) clause = `datetime() + ${property} >= datetime() + $${param}`;
+            if (pointField) {
+                clause = `distance(${varName}.${fieldName}, point($${param}.point)) >= $${param}.distance`;
+            }
+            
+            if (durationField) {
+                clause = `datetime() + ${property} >= datetime() + $${param}`;
+            }
 
             res.clauses.push(clause);
             res.params[param] = value;
