@@ -273,14 +273,21 @@ function createProjectionAndParams({
                     `${key}: ${!isArray ? "head(" : ""} [(${
                         chainStr || varName
                     })${inStr}${relTypeStr}${outStr}(${param})`,
-                    `WHERE ${referenceNodes.map((x) => `"${x.name}" IN labels(${param})`).join(" OR ")}`,
+                    `WHERE ${referenceNodes
+                        .map((x) => {
+                            // TODO: additional labels?
+                            const label = x.nodeDirective?.label || x.name;
+                            return `"${label}" IN labels(${param})`;
+                        })
+                        .join(" OR ")}`,
                     `| head(`,
                 ];
 
                 const headStrs: string[] = referenceNodes.map((refNode) => {
-                    const innerHeadStr: string[] = [
-                        `[ ${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`,
-                    ];
+                    // TODO: additional labels?
+
+                    const label = refNode.nodeDirective?.label || refNode.name;
+                    const innerHeadStr: string[] = [`[ ${param} IN [${param}] WHERE "${label}" IN labels (${param})`];
 
                     if (field.fieldsByTypeName[refNode.name]) {
                         const recurse = createProjectionAndParams({
