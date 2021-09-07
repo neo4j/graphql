@@ -138,10 +138,6 @@ function getObjFieldMeta({
             }
 
             if (relationshipMeta) {
-                if (fieldInterface) {
-                    throw new Error("cannot have interface on relationship");
-                }
-
                 if (authDirective) {
                     throw new Error("cannot have auth directive on a relationship");
                 }
@@ -176,6 +172,10 @@ function getObjFieldMeta({
                     };
 
                     relationField.union = unionField;
+                }
+
+                if (fieldInterface) {
+                    relationField.interface = true;
                 }
 
                 res.relationFields.push(relationField);
@@ -279,6 +279,7 @@ function getObjFieldMeta({
                 const interfaceField: InterfaceField = {
                     ...baseField,
                 };
+
                 res.interfaceFields.push(interfaceField);
             } else if (fieldObject) {
                 if (defaultDirective) {

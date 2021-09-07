@@ -90,21 +90,6 @@ describe("makeAugmentedSchema", () => {
         });
     });
 
-    test("should throw cannot have interface on relationship", () => {
-        const typeDefs = `
-                interface Node {
-                    id: ID
-                }
-
-                type Movie {
-                    title: String!
-                    nodes: [Node] @relationship(type: "NODE", direction: IN)
-                }
-            `;
-
-        expect(() => makeAugmentedSchema({ typeDefs })).toThrow("cannot have interface on relationship");
-    });
-
     test("should throw cannot auto-generate a non ID field", () => {
         const typeDefs = `
             type Movie  {

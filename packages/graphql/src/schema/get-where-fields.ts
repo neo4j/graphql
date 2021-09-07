@@ -35,7 +35,7 @@ function getWhereFields({
     typeName: string;
     fields: Fields;
     enableRegex?: boolean;
-}) {
+}): { OR: string; AND: string; [k: string]: string } {
     return {
         OR: `[${typeName}Where!]`,
         AND: `[${typeName}Where!]`,

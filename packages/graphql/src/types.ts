@@ -115,6 +115,7 @@ export interface RelationField extends BaseField {
     type: string;
     properties?: string;
     union?: UnionField;
+    interface?: boolean;
 }
 
 export interface ConnectionField extends BaseField {

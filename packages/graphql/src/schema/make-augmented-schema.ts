@@ -179,6 +179,7 @@ function makeAugmentedSchema(
     const unions = document.definitions.filter((x) => x.kind === "UnionTypeDefinition") as UnionTypeDefinitionNode[];
 
     const relationshipPropertyInterfaceNames = new Set<string>();
+    const interfaceRelationshipNames = new Set<string>();
 
     const extraDefinitions = [
         ...enums,
@@ -192,6 +193,7 @@ function makeAugmentedSchema(
             customResolvers.customSubscription,
         ] as ObjectTypeDefinitionNode[]),
     ].filter(Boolean) as DefinitionNode[];
+
     if (extraDefinitions.length) {
         composer.addTypeDefs(print({ kind: "Document", definitions: extraDefinitions }));
     }
@@ -251,6 +253,9 @@ function makeAugmentedSchema(
                 }
                 relationshipPropertyInterfaceNames.add(relationship.properties);
             }
+            if (relationship.interface) {
+                interfaceRelationshipNames.add(relationship.typeMeta.name);
+            }
         });
 
         if (!pointInTypeDefs) {
@@ -276,7 +281,10 @@ function makeAugmentedSchema(
     });
 
     const relationshipProperties = interfaces.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
-    interfaces = interfaces.filter((i) => !relationshipPropertyInterfaceNames.has(i.name.value));
+    const interfaceRelationships = interfaces.filter((i) => interfaceRelationshipNames.has(i.name.value));
+    interfaces = interfaces.filter(
+        (i) => !(relationshipPropertyInterfaceNames.has(i.name.value) || interfaceRelationshipNames.has(i.name.value))
+    );
 
     const relationshipFields = new Map<string, ObjectFields>();
 
@@ -416,6 +424,183 @@ function makeAugmentedSchema(
                 return res;
             }, {}),
         });
+    });
+
+    interfaceRelationships.forEach((interfaceRelationship) => {
+        const implementations = objectNodes.filter((n) =>
+            n.interfaces?.some((i) => i.name.value === interfaceRelationship.name.value)
+        );
+
+        constants.RESERVED_TYPE_NAMES.forEach(([label, message]) => {
+            let toThrowError = false;
+
+            if (label === "Connection" && interfaceRelationship.name.value.endsWith("Connection")) {
+                toThrowError = true;
+            }
+
+            if (interfaceRelationship.name.value === label) {
+                toThrowError = true;
+            }
+
+            if (toThrowError) {
+                throw new Error(message);
+            }
+        });
+
+        // const authDirective = (relationship.directives || []).find((x) => x.name.value === "auth");
+        // if (authDirective) {
+        //     throw new Error("Cannot have @auth directive on relationship properties interface");
+        // }
+
+        // relationship.fields?.forEach((field) => {
+        //     const forbiddenDirectives = ["auth", "relationship", "cypher"];
+        //     forbiddenDirectives.forEach((directive) => {
+        //         const found = (field.directives || []).find((x) => x.name.value === directive);
+        //         if (found) {
+        //             throw new Error(`Cannot have @${directive} directive on relationship property`);
+        //         }
+        //     });
+        // });
+
+        const interfaceFields = getObjFieldMeta({
+            enums,
+            interfaces,
+            objects: objectNodes,
+            scalars,
+            unions,
+            obj: interfaceRelationship,
+        });
+
+        if (!pointInTypeDefs) {
+            pointInTypeDefs = interfaceFields.pointFields.some((field) => field.typeMeta.name === "Point");
+        }
+        if (!cartesianPointInTypeDefs) {
+            cartesianPointInTypeDefs = interfaceFields.pointFields.some(
+                (field) => field.typeMeta.name === "CartesianPoint"
+            );
+        }
+
+        // relationshipFields.set(relationship.name.value, relFields);
+
+        const objectComposeFields = objectFieldsToComposeFields(
+            Object.values(interfaceFields).reduce((acc, x) => [...acc, ...x], [])
+        );
+
+        composer.createInterfaceTC({
+            name: interfaceRelationship.name.value,
+            fields: objectComposeFields,
+        });
+
+        // composer.createInputTC({
+        //     name: `${relationship.name.value}Sort`,
+        //     fields: propertiesInterface.getFieldNames().reduce((res, f) => {
+        //         return { ...res, [f]: "SortDirection" };
+        //     }, {}),
+        // });
+
+        // composer.createInputTC({
+        //     name: `${relationship.name.value}UpdateInput`,
+        //     fields: [
+        //         ...relFields.primitiveFields,
+        //         ...relFields.scalarFields,
+        //         ...relFields.enumFields,
+        //         ...relFields.temporalFields.filter((field) => !field.timestamps),
+        //         ...relFields.pointFields,
+        //     ].reduce(
+        //         (res, f) =>
+        //             f.readonly || (f as PrimitiveField)?.autogenerate
+        //                 ? res
+        //                 : {
+        //                       ...res,
+        //                       [f.fieldName]: f.typeMeta.input.update.pretty,
+        //                   },
+        //         {}
+        //     ),
+        // });
+
+        const interfaceWhereFields = getWhereFields({
+            typeName: interfaceRelationship.name.value,
+            fields: {
+                scalarFields: interfaceFields.scalarFields,
+                enumFields: interfaceFields.enumFields,
+                temporalFields: interfaceFields.temporalFields,
+                pointFields: interfaceFields.pointFields,
+                primitiveFields: interfaceFields.primitiveFields,
+            },
+            enableRegex: enableRegex || false,
+        });
+
+        const whereInput = composer.createInputTC({
+            name: `${interfaceRelationship.name.value}Where`,
+            fields: interfaceWhereFields,
+        });
+
+        implementations.forEach((implementation) => {
+            const implementationFields = getObjFieldMeta({
+                enums,
+                interfaces,
+                objects: objectNodes,
+                scalars,
+                unions,
+                obj: implementation,
+            });
+
+            const implementationWhereFields = getWhereFields({
+                typeName: implementation.name.value,
+                fields: {
+                    scalarFields: implementationFields.scalarFields,
+                    enumFields: implementationFields.enumFields,
+                    temporalFields: implementationFields.temporalFields,
+                    pointFields: implementationFields.pointFields,
+                    primitiveFields: implementationFields.primitiveFields,
+                },
+                enableRegex: enableRegex || false,
+            });
+
+            const implementationWhere = composer.createInputTC({
+                name: `${interfaceRelationship.name.value}${implementation.name.value}Where`,
+                fields: Object.entries(implementationWhereFields).reduce((fields, [k, v]) => {
+                    if (!["AND", "OR"].includes(k) && interfaceWhereFields[k]) {
+                        return fields;
+                    }
+                    return { ...fields, [k]: v };
+                }, {}),
+            });
+
+            whereInput.addFields({
+                [implementation.name.value]: {
+                    type: implementationWhere,
+                },
+            });
+        });
+
+        // composer.createInputTC({
+        //     name: `${relationship.name.value}CreateInput`,
+        //     // TODO - This reduce duplicated when creating node CreateInput - put into shared function?
+        //     fields: [
+        //         ...relFields.primitiveFields,
+        //         ...relFields.scalarFields,
+        //         ...relFields.enumFields,
+        //         ...relFields.temporalFields.filter((field) => !field.timestamps),
+        //         ...relFields.pointFields,
+        //     ].reduce((res, f) => {
+        //         if ((f as PrimitiveField)?.autogenerate) {
+        //             return res;
+        //         }
+
+        //         if ((f as PrimitiveField)?.defaultValue !== undefined) {
+        //             const field: InputTypeComposerFieldConfigAsObjectDefinition = {
+        //                 type: f.typeMeta.input.create.pretty,
+        //                 defaultValue: (f as PrimitiveField)?.defaultValue,
+        //             };
+        //             res[f.fieldName] = field;
+        //         } else {
+        //             res[f.fieldName] = f.typeMeta.input.create.pretty;
+        //         }
+
+        //         return res;
+        //     }, {}),
+        // });
     });
 
     if (pointInTypeDefs) {
@@ -613,6 +798,20 @@ function makeAugmentedSchema(
         }
 
         node.relationFields.forEach((rel) => {
+            if (rel.interface) {
+                composeNode.addFields({
+                    [rel.fieldName]: {
+                        type: rel.typeMeta.pretty,
+                        args: {
+                            // options: queryOptions.getTypeName(),
+                            where: `${rel.typeMeta.name}Where`,
+                        },
+                    },
+                });
+
+                return;
+            }
+
             if (rel.union) {
                 const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
 
@@ -1046,7 +1245,12 @@ function makeAugmentedSchema(
                 where: connectionWhere,
             };
 
-            if (connectionField.relationship.union) {
+            if (connectionField.relationship.interface) {
+                connectionWhere.addFields({
+                    node: `${connectionField.relationship.typeMeta.name}Where`,
+                    node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
+                });
+            } else if (connectionField.relationship.union) {
                 const relatedNodes = nodes.filter((n) => connectionField.relationship.union?.nodes?.includes(n.name));
 
                 relatedNodes.forEach((n) => {
