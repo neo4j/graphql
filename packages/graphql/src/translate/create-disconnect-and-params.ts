@@ -61,7 +61,6 @@ function createDisconnectAndParams({
         const relTypeStr = `[${relVarName}:${relationField.type}]`;
 
         const labels = refNode?.nodeDirective?.getLabelsString(refNode.name) || `:${refNode?.name}`;
-        // TODO: How should labelOverride be handled?
         const label = labelOverride ? `:${labelOverride}` : labels;
 
         if (parentNode.auth) {

@@ -63,7 +63,6 @@ function createConnectAndParams({
         const relTypeStr = `[${connect.edge ? relationshipName : ""}:${relationField.type}]`;
 
         const labels = refNode?.nodeDirective?.getLabelsString(refNode.name) || `:${refNode?.name}`;
-        // TODO: How should labelOverride be handled?
         const label = labelOverride ? `:${labelOverride}` : labels;
 
         if (parentNode.auth && !fromCreate) {

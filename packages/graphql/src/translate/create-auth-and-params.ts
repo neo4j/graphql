@@ -135,9 +135,7 @@ function createAuthPredicate({
                     `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
                     `AND ${
                         kind === "allow" ? "ANY" : "ALL"
-                    }(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}:${
-                        relationField.typeMeta.name
-                    }) | ${relationVarName}] WHERE `,
+                    }(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}${labels}) | ${relationVarName}] WHERE `,
                 ].join(" ");
 
                 Object.entries(value as any).forEach(([k, v]: [string, any]) => {
