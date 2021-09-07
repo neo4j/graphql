@@ -94,14 +94,22 @@ mutation {
 ### Expected Cypher Output
 
 ```cypher
-MATCH (this:Comment) WHERE EXISTS((this)<-[:HAS_POST]-(:User)) AND ANY(this_creator IN [(this)<-[:HAS_POST]-(this_creator:User) | this_creator] WHERE this_creator.id = $this_creator_id) WITH this CALL apoc.util.validate(NOT(ANY(r IN [\"admin\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \"@neo4j/graphql/FORBIDDEN\", [0]) DETACH DELETE this
+MATCH (this:Comment) WHERE EXISTS((this)<-[:HAS_POST]-(:Person)) AND ANY(this_creator IN [(this)<-[:HAS_POST]-(this_creator:Person) | this_creator] WHERE this_creator.id = $this_creator_id) WITH this CALL apoc.util.validate(NOT(ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), "@neo4j/graphql/FORBIDDEN", [0]) DETACH DELETE this
 ```
 
 ### Expected Cypher Params
 
 ```json
 {
-    "this_auth_allow0_id": "id-01"
+    "this_creator_id": "123",
+    "auth": {
+        "isAuthenticated": true,
+        "roles": ["admin"],
+        "jwt": {
+            "roles": ["admin"],
+            "sub": "id-01"
+        }
+    }
 }
 ```
 
