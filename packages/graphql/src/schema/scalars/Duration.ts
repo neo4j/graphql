@@ -133,7 +133,11 @@ export default new GraphQLScalarType({
 
         return value;
     },
-    parseValue: (value: string) => {
+    parseValue: (value) => {
+        if (typeof value !== "string") {
+            throw new GraphQLError(`Only strings can be validated as Duration, but received: ${value}`);
+        }
+
         return parse(value);
     },
     parseLiteral: (ast) => {
