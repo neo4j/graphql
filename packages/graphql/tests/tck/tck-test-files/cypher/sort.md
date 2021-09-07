@@ -35,9 +35,8 @@ type Genre {
 
 ```cypher
 MATCH (this:Movie)
-WITH this
-ORDER BY this.id DESC
 RETURN this { .title } as this
+ORDER BY this.id DESC
 ```
 
 ### Expected Cypher Params
@@ -64,9 +63,8 @@ RETURN this { .title } as this
 
 ```cypher
 MATCH (this:Movie)
-WITH this
-ORDER BY this.id DESC, this.title ASC
 RETURN this { .title } as this
+ORDER BY this.id DESC, this.title ASC
 ```
 
 ### Expected Cypher Params
@@ -111,9 +109,8 @@ query($title: String, $offset: Int, $limit: Int) {
 ```cypher
 MATCH (this:Movie)
 WHERE this.title = $this_title
-WITH this
-ORDER BY this.id DESC, this.title ASC
 RETURN this { .title } as this
+ORDER BY this.id DESC, this.title ASC
 SKIP $this_offset
 LIMIT $this_limit
 ```

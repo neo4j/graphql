@@ -566,6 +566,21 @@ function makeAugmentedSchema(
             ...node.scalarFields,
             ...node.temporalFields,
             ...node.pointFields,
+            ...node.cypherFields.filter((field) =>
+                [
+                    "Boolean",
+                    "ID",
+                    "Int",
+                    "BigInt",
+                    "Float",
+                    "String",
+                    "DateTime",
+                    "LocalDateTime",
+                    "Time",
+                    "LocalTime",
+                    "Date",
+                ].includes(field.typeMeta.name)
+            ),
         ].reduce((res, f) => {
             return f.typeMeta.array
                 ? {
