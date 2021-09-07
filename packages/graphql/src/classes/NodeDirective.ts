@@ -25,7 +25,7 @@ export interface NodeDirectiveConstructor {
 }
 
 class NodeDirective {
-    private label: string | undefined;
+    public readonly label: string | undefined;
 
     private additionalLabels: string[];
 
