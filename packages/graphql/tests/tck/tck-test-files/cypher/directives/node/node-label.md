@@ -368,6 +368,65 @@ RETURN this { .id } AS this
 
 ---
 
+## Update disconnect in Movie with label film
+
+### GraphQL Input
+
+```graphql
+mutation {
+    updateMovies(
+        where: { id: "1" }
+        disconnect: { actors: [{ where: { node: { name: "Daniel" } } }] }
+    ) {
+        movies {
+            id
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Film)
+WHERE this.id = $this_id
+WITH this
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Person)
+    WHERE this_disconnect_actors0.name = $updateMovies.args.disconnect.actors[0].where.node.name
+    FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
+    DELETE this_disconnect_actors0_rel )
+    RETURN count(*)
+    }
+RETURN this { .id } AS this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_id": "1",
+    "updateMovies": {
+     "args": {
+       "disconnect": {
+         "actors": [{
+             "where": {
+               "node": {
+                 "name": "Daniel"
+               }
+             }
+           }
+         ]
+       }
+     }
+   }
+}
+```
+
+---
+
+
 ## Delete Movie with custom label
 
 ### GraphQL Input

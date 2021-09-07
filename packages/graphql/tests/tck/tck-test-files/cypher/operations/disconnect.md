@@ -1,6 +1,6 @@
 # Cypher Disconnect
 
-Tests connect operations.
+Tests connect operations. TODO: not properly tested
 
 Schema:
 
