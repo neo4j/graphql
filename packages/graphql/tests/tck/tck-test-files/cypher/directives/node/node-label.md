@@ -322,6 +322,52 @@ RETURN this { .id } AS this
 
 ---
 
+## Update connection in Movie with label film
+
+### GraphQL Input
+
+```graphql
+mutation {
+    updateMovies(
+        where: { id: "1" }
+        connect: { actors: [{ where: { node: { name: "Daniel" } } }] }
+    ) {
+        movies {
+            id
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Film)
+WHERE this.id = $this_id
+WITH this
+CALL {
+    WITH this
+    OPTIONAL MATCH (this_connect_actors0_node:Person)
+    WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
+    FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+    MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
+    )
+    RETURN count(*)
+}
+RETURN this { .id } AS this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_id": "1",
+    "this_connect_actors0_node_name": "Daniel"
+}
+```
+
+---
+
 ## Delete Movie with custom label
 
 ### GraphQL Input
