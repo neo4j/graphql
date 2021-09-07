@@ -21,6 +21,13 @@ type Movie {
 type Genre {
     id: ID
     name: String
+    totalMovies: Int!
+        @cypher(
+            statement: """
+            MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
+            RETURN count(DISTINCT movie)
+            """
+        )
 }
 ```
 
@@ -232,6 +239,44 @@ RETURN this {
 
 ```json
 {}
+```
+
+---
+
+## Nested Sort On Cypher Field ASC
+
+### GraphQL Input
+
+```graphql
+{
+    movies {
+        genres(options: { sort: [{ totalMovies: ASC }] }) {
+            name
+            totalMovies
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Movie)
+RETURN this {
+    genres: apoc.coll.sortMulti([ (this)-[:HAS_GENRE]->(this_genres:Genre) | this_genres { .name, totalMovies: apoc.cypher.runFirstColumn("MATCH (this)<-[:HAS_GENRE]-(movie:Movie) RETURN count(DISTINCT movie)", {this: this_genres, auth: $auth}, false) } ], ['^totalMovies'])
+} as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "auth": {
+        "isAuthenticated": true,
+        "jwt": {},
+        "roles": []
+    }
+}
 ```
 
 ---
