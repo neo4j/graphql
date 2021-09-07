@@ -48,9 +48,15 @@ function createSetRelationshipProperties({
         }
     });
 
-    relationship.dateTimeFields.forEach((dateTimeField) => {
-        if (dateTimeField?.timestamps?.includes(operation)) {
-            strs.push(`SET ${varName}.${dateTimeField.dbPropertyName} = datetime()`);
+    relationship.temporalFields.forEach((temporalField) => {
+        if (
+            ["DateTime", "Time"].includes(temporalField.typeMeta.name) &&
+            temporalField?.timestamps?.includes(operation)
+        ) {
+            // DateTime -> datetime(); Time -> time()
+            strs.push(
+                `SET ${varName}.${temporalField.dbPropertyName} = ${temporalField.typeMeta.name.toLowerCase()}()`
+            );
         }
     });
 

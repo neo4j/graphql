@@ -1,6 +1,6 @@
-# Cypher TimeStamps
+# Cypher TimeStamps On DateTime Fields
 
-Tests TimeStamps operations. ⚠ The string in params is actually an object but the test suite turns it into a string when calling `JSON.stringify`.
+Tests TimeStamps operations on DateTime fields. ⚠ The string in params is actually an object but the test suite turns it into a string when calling `JSON.stringify`.
 
 Schema:
 

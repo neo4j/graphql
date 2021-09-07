@@ -60,7 +60,7 @@ describe("createConnectAndParams", () => {
                 },
             ],
             cypherFields: [],
-            dateTimeFields: [],
+            temporalFields: [],
             interfaceFields: [],
             pointFields: [],
             objectFields: [],

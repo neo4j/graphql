@@ -19,7 +19,7 @@
 
 import { ResolveTree } from "graphql-parse-resolve-info";
 import Relationship from "../../../classes/Relationship";
-import { DateTimeField, PointField, PrimitiveField } from "../../../types";
+import { TemporalField, PointField, PrimitiveField } from "../../../types";
 import createRelationshipPropertyElement from "./create-relationship-property-element";
 
 describe("createRelationshipPropertyElement", () => {
@@ -91,7 +91,7 @@ describe("createRelationshipPropertyElement", () => {
                     writeonly: false,
                 } as PointField,
             ],
-            dateTimeFields: [
+            temporalFields: [
                 {
                     fieldName: "datetime",
                     typeMeta: {
@@ -120,7 +120,7 @@ describe("createRelationshipPropertyElement", () => {
                     description: undefined,
                     readonly: false,
                     writeonly: false,
-                } as DateTimeField,
+                } as TemporalField,
             ],
         });
     });

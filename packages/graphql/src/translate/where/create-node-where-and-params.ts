@@ -70,7 +70,7 @@ function createNodeWhereAndParams({
 
         const pointField = node.pointFields.find((x) => x.fieldName === fieldName);
 
-        const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find((f) => fieldName === f.fieldName)
+        const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find((f) => fieldName === f.fieldName)
             ?.coalesceValue;
 
         const property =

@@ -155,7 +155,7 @@ export type InterfaceField = BaseField;
 
 export type ObjectField = BaseField;
 
-export interface DateTimeField extends PrimitiveField {
+export interface TemporalField extends PrimitiveField {
     timestamps?: TimeStampOperations[];
 }
 

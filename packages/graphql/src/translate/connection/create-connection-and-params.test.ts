@@ -43,7 +43,7 @@ describe("createConnectionAndParams", () => {
             // @ts-ignore
             {
                 name: "MovieActorsRelationship",
-                dateTimeFields: [],
+                temporalFields: [],
                 enumFields: [],
                 ignoredFields: [],
                 pointFields: [],
@@ -127,7 +127,7 @@ describe("createConnectionAndParams", () => {
             // @ts-ignore
             {
                 name: "MovieActorsRelationship",
-                dateTimeFields: [],
+                temporalFields: [],
                 enumFields: [],
                 ignoredFields: [],
                 pointFields: [],
@@ -224,7 +224,7 @@ describe("createConnectionAndParams", () => {
             // @ts-ignore
             {
                 name: "MovieActorsRelationship",
-                dateTimeFields: [],
+                temporalFields: [],
                 enumFields: [],
                 ignoredFields: [],
                 pointFields: [],
