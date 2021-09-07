@@ -123,17 +123,19 @@ export default new GraphQLScalarType({
     name: "Duration",
     description: "A duration, represented as an ISO 8601 duration string",
     serialize: (value: any) => {
-        if (typeof value !== "string" && !(value instanceof neo4j.types.Duration)) {
+        if (!(typeof value === "string" || value instanceof neo4j.types.Duration)) {
             throw new TypeError(`Value must be of type string: ${value}`);
         }
 
-        const stringifiedValue = value.toString();
-
-        if (!DURATION_REGEX.test(stringifiedValue)) {
-            throw new TypeError(`Value must be formatted as Duration: ${stringifiedValue}`);
+        if (value instanceof neo4j.types.Duration) {
+            return value.toString();
         }
 
-        return stringifiedValue;
+        if (!DURATION_REGEX.test(value)) {
+            throw new TypeError(`Value must be formatted as Duration: ${value}`);
+        }
+
+        return value;
     },
     parseValue: (value) => {
         return parse(value);
