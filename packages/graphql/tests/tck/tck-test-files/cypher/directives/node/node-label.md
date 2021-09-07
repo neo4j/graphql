@@ -77,6 +77,39 @@ RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Person) | this_
 
 ---
 
+## Select movie and actor with custom labels using Relay connection
+
+### GraphQL Input
+
+```graphql
+{
+    movies {
+        title
+        actorsConnection {
+            edges {
+                node {
+                    name
+                }
+            }
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Film) CALL { WITH this MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Person) WITH collect({ node: { name: this_actor.name } }) AS edges RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection } RETURN this { .title, actorsConnection } as this
+```
+
+### Expected Cypher Params
+
+```json
+{}
+```
+
+---
+
 ## Create Movie with label Film
 
 ### GraphQL Input
@@ -372,6 +405,39 @@ DETACH DELETE this
 ```
 
 ---
+
+## Admin Deletes Post
+
+### GraphQL Input
+
+```graphql
+mutation {
+    deleteMovies(where: {
+        actors: {
+            name:"tom"
+        }
+    }) {
+        nodesDeleted
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Film) WHERE EXISTS((this)<-[:ACTED_IN]-(:Person)) AND ANY(this_actors IN [(this)<-[:ACTED_IN]-(this_actors:Person) | this_actors] WHERE this_actors.name = $this_actors_name) DETACH DELETE this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_actors_name": "tom"
+}
+```
+
+---
+
 
 ## Count movies with custom label
 

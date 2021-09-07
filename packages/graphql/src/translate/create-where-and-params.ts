@@ -78,17 +78,16 @@ function createWhereAndParams({
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
 
+                const labels = refNode.nodeDirective?.getLabelsString(refNode.name) || `:${refNode.name}`;
                 if (value === null) {
-                    res.clauses.push(
-                        `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`
-                    );
+                    res.clauses.push(`EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
 
                     return res;
                 }
 
                 let resultStr = [
-                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
-                    `AND NONE(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${relationField.typeMeta.name}) | ${param}] INNER_WHERE `,
+                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+                    `AND NONE(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
                 ].join(" ");
 
                 const recurse = createWhereAndParams({
@@ -123,9 +122,11 @@ function createWhereAndParams({
                 const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
                 const outStr = connectionField.relationship.direction === "OUT" ? "->" : "-";
 
+                const labels = refNode.nodeDirective?.getLabelsString(refNode.name) || `:${refNode.name}`;
+
                 if (value === null) {
                     res.clauses.push(
-                        `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(:${connectionField.relationship.typeMeta.name}))`
+                        `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`
                     );
                     return res;
                 }
@@ -133,8 +134,8 @@ function createWhereAndParams({
                 const collectedMap = `${param}_map`;
 
                 let resultStr = [
-                    `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(:${connectionField.relationship.typeMeta.name}))`,
-                    `AND NONE(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${param}:${connectionField.relationship.typeMeta.name})`,
+                    `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
+                    `AND NONE(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${param}${labels})`,
                     ` | { node: ${param}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
                 ].join(" ");
 
@@ -281,17 +282,17 @@ function createWhereAndParams({
             const outStr = equalityRelation.direction === "OUT" ? "->" : "-";
             const relTypeStr = `[:${equalityRelation.type}]`;
 
+            const labels = refNode.nodeDirective?.getLabelsString(refNode.name) || `:${refNode.name}`;
+
             if (value === null) {
-                res.clauses.push(
-                    `NOT EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${equalityRelation.typeMeta.name}))`
-                );
+                res.clauses.push(`NOT EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
 
                 return res;
             }
 
             let resultStr = [
-                `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${equalityRelation.typeMeta.name}))`,
-                `AND ANY(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${equalityRelation.typeMeta.name}) | ${param}] INNER_WHERE `,
+                `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+                `AND ANY(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
             ].join(" ");
 
             const recurse = createWhereAndParams({
@@ -327,9 +328,11 @@ function createWhereAndParams({
             const inStr = equalityConnection.relationship.direction === "IN" ? "<-" : "-";
             const outStr = equalityConnection.relationship.direction === "OUT" ? "->" : "-";
 
+            const labels = refNode.nodeDirective?.getLabelsString(refNode.name) || `:${refNode.name}`;
+
             if (value === null) {
                 res.clauses.push(
-                    `NOT EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(:${equalityConnection.typeMeta.name}))`
+                    `NOT EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(${labels}))`
                 );
                 return res;
             }
@@ -337,8 +340,8 @@ function createWhereAndParams({
             const collectedMap = `${param}_map`;
 
             let resultStr = [
-                `EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(:${equalityConnection.relationship.typeMeta.name}))`,
-                `AND ANY(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${equalityConnection.relationship.type}]${outStr}(${param}:${equalityConnection.relationship.typeMeta.name})`,
+                `EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(${labels}))`,
+                `AND ANY(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${equalityConnection.relationship.type}]${outStr}(${param}${labels})`,
                 ` | { node: ${param}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
             ].join(" ");
 
