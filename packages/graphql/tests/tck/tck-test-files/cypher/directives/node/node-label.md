@@ -1,6 +1,6 @@
 # Node Directive
 
-Custom labels using @node.
+Custom label using @node.
 
 Schema:
 
@@ -170,38 +170,6 @@ RETURN this0 { .id } AS this0, this1 { .id } AS this1
     "this0_actors0_node_name": "actor 1",
     "this1_id": "2",
     "this1_actors0_node_name": "actor 2"
-}
-```
-
----
-
-## Delete Movie with label Film
-
-### GraphQL Input
-
-### GraphQL Input
-
-```graphql
-mutation {
-    deleteMovies(where: { id: "123" }) {
-        nodesDeleted
-    }
-}
-```
-
-### Expected Cypher Output
-
-```cypher
-MATCH (this:Film)
-WHERE this.id = $this_id
-DETACH DELETE this
-```
-
-### Expected Cypher Params
-
-```json
-{
-    "this_id": "123"
 }
 ```
 
