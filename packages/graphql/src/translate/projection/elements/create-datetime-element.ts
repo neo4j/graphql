@@ -18,7 +18,7 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { DateTimeField } from "../../../types";
+import { TemporalField } from "../../../types";
 
 function createDatetimeElement({
     resolveTree,
@@ -26,7 +26,7 @@ function createDatetimeElement({
     variable,
 }: {
     resolveTree: ResolveTree;
-    field: DateTimeField;
+    field: TemporalField;
     variable: string;
 }): string {
     const dbFieldName = field.dbPropertyName || resolveTree.name;

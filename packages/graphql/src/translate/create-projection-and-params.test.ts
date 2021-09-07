@@ -68,7 +68,7 @@ describe("createProjectionAndParams", () => {
                     arguments: [],
                 },
             ],
-            dateTimeFields: [],
+            temporalFields: [],
             pointFields: [],
             interfaceFields: [],
             objectFields: [],

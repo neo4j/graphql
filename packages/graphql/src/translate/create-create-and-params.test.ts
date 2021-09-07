@@ -62,7 +62,7 @@ describe("createCreateAndParams", () => {
                     arguments: [],
                 },
             ],
-            dateTimeFields: [],
+            temporalFields: [],
             interfaceFields: [],
             objectFields: [],
             pointFields: [],
