@@ -176,4 +176,104 @@ describe("sort", () => {
             })
         );
     });
+
+    test("should sort on primitive cypher field", async () => {
+        await Promise.all(
+            ["ASC", "DESC"].map(async (type) => {
+                const session = driver.session();
+
+                const typeDefs = `
+                    type Movie {
+                        title: String!
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                    }
+                    type Actor {
+                        name: String!
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                        totalScreenTime: Int! @cypher(statement: """
+                            MATCH (this)-[r:ACTED_IN]->(:Movie)
+                            RETURN sum(r.screenTime)
+                        """)
+                    }
+                    interface ActedIn {
+                        screenTime: Int!
+                    }
+                `;
+
+                const { schema } = new Neo4jGraphQL({ typeDefs });
+
+                const title1 = generate({
+                    charset: "alphabetic",
+                });
+                const title2 = generate({
+                    charset: "alphabetic",
+                });
+                const name1 = generate({
+                    charset: "alphabetic",
+                });
+                const name2 = generate({
+                    charset: "alphabetic",
+                });
+
+                const query = `
+                    query ($actorNames: [String!]!, $direction: SortDirection!) {
+                        actors(where: {name_IN: $actorNames}, options: { sort: [{ totalScreenTime: $direction}]}) {
+                            name
+                            totalScreenTime
+                        }
+                    }
+                `;
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (m1:Movie {title: $title1})
+                            CREATE (m2:Movie {title: $title2})
+                            CREATE (a1:Actor {name: $name1})
+                            CREATE (a2:Actor {name: $name2})
+                            MERGE (a1)-[:ACTED_IN {screenTime: 1}]->(m1)<-[:ACTED_IN {screenTime: 1}]-(a2)
+                            MERGE (a1)-[:ACTED_IN {screenTime: 1}]->(m2)
+                        `,
+                        {
+                            title1,
+                            title2,
+                            name1,
+                            name2,
+                        }
+                    );
+
+                    const graphqlResult = await graphql({
+                        schema,
+                        source: query,
+                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        variableValues: { actorNames: [name1, name2], direction: type },
+                    });
+
+                    expect(graphqlResult.errors).toBeUndefined();
+
+                    const graphqlActors = graphqlResult.data?.actors;
+
+                    expect(graphqlActors).toHaveLength(2);
+
+                    /* eslint-disable jest/no-conditional-expect */
+                    if (type === "ASC") {
+                        expect(graphqlActors[0].name).toEqual(name2);
+                        expect(graphqlActors[0].totalScreenTime).toEqual(1);
+                        expect(graphqlActors[1].name).toEqual(name1);
+                        expect(graphqlActors[1].totalScreenTime).toEqual(2);
+                    }
+
+                    if (type === "DESC") {
+                        expect(graphqlActors[0].name).toEqual(name1);
+                        expect(graphqlActors[0].totalScreenTime).toEqual(2);
+                        expect(graphqlActors[1].name).toEqual(name2);
+                        expect(graphqlActors[1].totalScreenTime).toEqual(1);
+                    }
+                    /* eslint-enable jest/no-conditional-expect */
+                } finally {
+                    await session.close();
+                }
+            })
+        );
+    });
 });
