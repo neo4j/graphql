@@ -132,7 +132,7 @@ function createProjectionAndParams({
     resolveType?: boolean;
     inRelationshipProjection?: boolean;
 }): [string, any, ProjectionMeta?] {
-    function reducer(res: Res, [key, field]: [string, any]): Res {
+    function reducer(res: Res, [key, field]: [string, ResolveTree]): Res {
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
@@ -401,7 +401,7 @@ function createProjectionAndParams({
                     res.meta.connectionFields = [];
                 }
 
-                const f = field as ResolveTree;
+                const f = field;
 
                 res.meta.connectionFields.push(f);
                 res.projection.push(literalElements ? `${f.alias}: ${f.alias}` : `${f.alias}`);
