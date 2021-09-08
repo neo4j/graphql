@@ -132,7 +132,7 @@ The rest will only expose:
 2. `max`
 
 
-Aggregation queries accepts an `where` argument for xref::filtering.adoc[Filtering] data.
+Aggregation queries accepts a `where` argument for xref::filtering.adoc[Filtering] data.
 
 === Counting Using aggregation
 
