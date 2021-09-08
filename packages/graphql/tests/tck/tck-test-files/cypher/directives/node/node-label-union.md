@@ -7,11 +7,12 @@ Schema:
 ```graphql
 union Search = Movie | Genre
 
-type Genre @node(label:"Category") {
+type Genre
+    @node(label: "Category", additionalLabels: ["ExtraLabel1", "ExtraLabel2"]) {
     name: String
 }
 
-type Movie @node(label:"Film") {
+type Movie @node(label: "Film") {
     title: String
     search: [Search] @relationship(type: "SEARCH", direction: OUT)
 }
@@ -49,10 +50,21 @@ WHERE this.title = $this_title
 
 RETURN this {
     search: [(this)-[:SEARCH]->(this_search)
-        WHERE "Category" IN labels(this_search) OR "Film" IN labels(this_search) |
+        WHERE
+            (
+                "Category" IN labels(this_search) AND
+                "ExtraLabel1" IN labels(this_search) AND
+                "ExtraLabel2" IN labels(this_search)
+            ) OR "Film" IN labels(this_search) |
         head(
             [ this_search IN [this_search]
-                WHERE "Category" IN labels (this_search) AND
+                WHERE
+                    (
+                        "Category" IN labels (this_search) AND
+                        "ExtraLabel1" IN labels (this_search) AND
+                        "ExtraLabel2" IN labels (this_search)
+                     )
+                AND
                 this_search.name = $this_search_Genre_name |
                 this_search {
                     __resolveType: "Genre",
