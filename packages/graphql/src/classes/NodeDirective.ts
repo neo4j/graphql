@@ -27,7 +27,7 @@ export interface NodeDirectiveConstructor {
 class NodeDirective {
     public readonly label: string | undefined;
 
-    private additionalLabels: string[];
+    public readonly additionalLabels: string[];
 
     constructor(input: NodeDirectiveConstructor) {
         this.label = input.label;
@@ -38,8 +38,13 @@ class NodeDirective {
         if (!typeName) {
             throw new Neo4jGraphQLError("Could not generate label string in @node directive due to empty typeName");
         }
+        const labels = this.getLabels(typeName);
+        return `:${labels.join(":")}`;
+    }
+
+    public getLabels(typeName: string): string[] {
         const mainLabel = this.label || typeName;
-        return `:${[mainLabel, ...this.additionalLabels].join(":")}`;
+        return [mainLabel, ...this.additionalLabels];
     }
 }
 

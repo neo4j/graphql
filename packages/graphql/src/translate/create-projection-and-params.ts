@@ -275,9 +275,9 @@ function createProjectionAndParams({
                     })${inStr}${relTypeStr}${outStr}(${param})`,
                     `WHERE ${referenceNodes
                         .map((x) => {
-                            // TODO: additional labels?
-                            const label = x.nodeDirective?.label || x.name;
-                            return `"${label}" IN labels(${param})`;
+                            const labels = x.nodeDirective?.getLabels(x.name) || [x.name];
+                            const labelsStatements = labels.map((label) => `"${label}" IN labels(${param})`);
+                            return `(${labelsStatements.join(" AND ")})`;
                         })
                         .join(" OR ")}`,
                     `| head(`,
@@ -286,8 +286,11 @@ function createProjectionAndParams({
                 const headStrs: string[] = referenceNodes.map((refNode) => {
                     // TODO: additional labels?
 
-                    const label = refNode.nodeDirective?.label || refNode.name;
-                    const innerHeadStr: string[] = [`[ ${param} IN [${param}] WHERE "${label}" IN labels (${param})`];
+                    const labels = refNode.nodeDirective?.getLabels(refNode.name) || [refNode.name];
+                    const labelsStatements = labels.map((label) => `"${label}" IN labels(${param})`);
+                    const innerHeadStr: string[] = [
+                        `[ ${param} IN [${param}] WHERE (${labelsStatements.join(" AND ")})`,
+                    ];
 
                     if (field.fieldsByTypeName[refNode.name]) {
                         const recurse = createProjectionAndParams({

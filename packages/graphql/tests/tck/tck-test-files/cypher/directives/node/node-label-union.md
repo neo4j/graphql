@@ -51,19 +51,16 @@ WHERE this.title = $this_title
 RETURN this {
     search: [(this)-[:SEARCH]->(this_search)
         WHERE
-            (
-                "Category" IN labels(this_search) AND
+            ("Category" IN labels(this_search) AND
                 "ExtraLabel1" IN labels(this_search) AND
-                "ExtraLabel2" IN labels(this_search)
-            ) OR "Film" IN labels(this_search) |
+                "ExtraLabel2" IN labels(this_search))
+                OR ("Film" IN labels(this_search)) |
         head(
             [ this_search IN [this_search]
                 WHERE
-                    (
-                        "Category" IN labels (this_search) AND
-                        "ExtraLabel1" IN labels (this_search) AND
-                        "ExtraLabel2" IN labels (this_search)
-                     )
+                    ("Category" IN labels(this_search) AND
+                        "ExtraLabel1" IN labels(this_search) AND
+                        "ExtraLabel2" IN labels(this_search))
                 AND
                 this_search.name = $this_search_Genre_name |
                 this_search {
@@ -71,7 +68,7 @@ RETURN this {
                      .name
                 } ] +
             [ this_search IN [this_search]
-                WHERE "Film" IN labels (this_search) AND
+                WHERE ("Film" IN labels(this_search)) AND
                 this_search.title = $this_search_Movie_title |
                 this_search {
                     __resolveType: "Movie",

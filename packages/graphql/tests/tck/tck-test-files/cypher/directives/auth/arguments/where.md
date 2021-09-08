@@ -369,7 +369,7 @@ MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 RETURN this {
     .id,
-    content: [(this)-[:HAS_POST]->(this_content) WHERE "Post" IN labels(this_content) | head( [ this_content IN [this_content] WHERE "Post" IN labels (this_content) AND EXISTS((this_content)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_content)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content_Post_auth_where0_creator_id) | this_content { __resolveType: "Post", .id } ] ) ]
+    content: [(this)-[:HAS_POST]->(this_content) WHERE ("Post" IN labels(this_content)) | head( [ this_content IN [this_content] WHERE ("Post" IN labels(this_content)) AND EXISTS((this_content)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_content)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content_Post_auth_where0_creator_id) | this_content { __resolveType: "Post", .id } ] ) ]
 } as this
 ```
 
