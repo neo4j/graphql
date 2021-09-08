@@ -28,7 +28,7 @@ describe("Node", () => {
             enumFields: [],
             primitiveFields: [],
             scalarFields: [],
-            dateTimeFields: [],
+            temporalFields: [],
             unionFields: [],
             interfaceFields: [],
             objectFields: [],

@@ -60,7 +60,7 @@ describe("createDisconnectAndParams", () => {
             enumFields: [],
             scalarFields: [],
             primitiveFields: [],
-            dateTimeFields: [],
+            temporalFields: [],
             interfaceFields: [],
             unionFields: [],
             objectFields: [],

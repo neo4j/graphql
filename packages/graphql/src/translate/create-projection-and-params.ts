@@ -147,7 +147,7 @@ function createProjectionAndParams({
         const relationField = node.relationFields.find((x) => x.fieldName === field.name);
         const connectionField = node.connectionFields.find((x) => x.fieldName === field.name);
         const pointField = node.pointFields.find((x) => x.fieldName === field.name);
-        const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === field.name);
+        const temporalField = node.temporalFields.find((x) => x.fieldName === field.name);
         const authableField = node.authableFields.find((x) => x.fieldName === field.name);
 
         if (authableField) {
@@ -433,8 +433,8 @@ function createProjectionAndParams({
 
         if (pointField) {
             res.projection.push(createPointElement({ resolveTree: field, field: pointField, variable: varName }));
-        } else if (dateTimeField) {
-            res.projection.push(createDatetimeElement({ resolveTree: field, field: dateTimeField, variable: varName }));
+        } else if (temporalField?.typeMeta.name === "DateTime") {
+            res.projection.push(createDatetimeElement({ resolveTree: field, field: temporalField, variable: varName }));
         } else {
             // If field is aliased, rename projected field to alias and set to varName.fieldName
             // e.g. RETURN varname { .fieldName } -> RETURN varName { alias: varName.fieldName }
