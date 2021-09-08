@@ -73,12 +73,12 @@ describe("aggregations-top_level-many", () => {
                 {
                     moviesAggregate(where: { testId: "${testId}" }) {
                         id {
-                            min
-                            max
+                            shortest
+                            longest
                         }
                         title {
-                            min
-                            max
+                            shortest
+                            longest
                         }
                         imdbRating {
                             min
@@ -107,12 +107,12 @@ describe("aggregations-top_level-many", () => {
 
             expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
                 id: {
-                    min: "1",
-                    max: "4444",
+                    shortest: "1",
+                    longest: "4444",
                 },
                 title: {
-                    min: "1",
-                    max: "4444",
+                    shortest: "1",
+                    longest: "4444",
                 },
                 imdbRating: {
                     min: 1,

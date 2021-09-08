@@ -919,8 +919,8 @@ describe("OGM", () => {
                     where: { testId },
                     aggregate: {
                         title: {
-                            min: true,
-                            max: true,
+                            shortest: true,
+                            longest: true,
                         },
                         imdbRating: {
                             min: true,
@@ -931,7 +931,7 @@ describe("OGM", () => {
                 });
 
                 expect(result).toEqual({
-                    title: { min: "1", max: "4444" },
+                    title: { shortest: "1", longest: "4444" },
                     imdbRating: { min: 1, max: 4, average: 2.5 },
                 });
             } finally {

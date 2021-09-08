@@ -68,8 +68,8 @@ input AuthorConnectWhere {
 }
 
 type StringAggregationSelection {
-    max: String!
-    min: String!
+    shortest: String!
+    longest: String!
 }
 
 input AuthorCreateInput {

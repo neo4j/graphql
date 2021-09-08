@@ -93,8 +93,8 @@ type MovieAggregateSelection {
 }
 
 type IDAggregationSelection {
-    max: ID!
-    min: ID!
+    shortest: ID!
+    longest: ID!
 }
 
 """

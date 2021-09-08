@@ -52,8 +52,8 @@ type Actor {
 }
 
 type StringAggregationSelection {
-    min: String!
-    max: String!
+    shortest: String!
+    longest: String!
 }
 
 type ActorAggregateSelection {

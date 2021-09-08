@@ -108,8 +108,8 @@ query {
 
 Neo4j GraphQL supports aggregations on fields with type: 
 
-1. `ID`
-2. `String`
+1. `ID`- String
+2. `String` - String
 3. `Int` - Numerical
 4. `Float` - Numerical
 5. `BigInt` - Numerical
@@ -120,6 +120,11 @@ Numerical Fields will expose the following aggregation selections:
 1. `min`
 2. `max`
 3. `average`
+
+String fields will expose:
+
+1. `shortest`
+2. `longest`
 
 The rest will only expose:
 
@@ -160,7 +165,7 @@ query {
 query {
     usersAggregate {
         name {
-            max
+            longest
         }
     }
 }

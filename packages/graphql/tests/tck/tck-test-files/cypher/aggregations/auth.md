@@ -243,8 +243,8 @@ CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $imdbRatingBigInt_
 {
     usersAggregate {
         id {
-            min
-            max
+            shortest
+            longest
         }
     }
 }
@@ -257,7 +257,7 @@ MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $id_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-RETURN { id: { min: min(this.id), max: max(this.id) } }
+RETURN { id: { shortest: min(this.id), longest: max(this.id) } }
 ```
 
 ### Expected Cypher Params
@@ -288,8 +288,8 @@ RETURN { id: { min: min(this.id), max: max(this.id) } }
 {
     usersAggregate {
         name {
-            min
-            max
+            shortest
+            longest
         }
     }
 }
@@ -302,7 +302,7 @@ MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $name_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-RETURN { name: { min: min(this.name), max: max(this.name) } }
+RETURN { name: { shortest: min(this.name), longest: max(this.name) } }
 ```
 
 ### Expected Cypher Params

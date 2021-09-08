@@ -108,8 +108,8 @@ type UserAggregateSelection {
 }
 
 type IDAggregationSelection {
-    max: ID!
-    min: ID!
+    shortest: ID!
+    longest: ID!
 }
 
 type Mutation {

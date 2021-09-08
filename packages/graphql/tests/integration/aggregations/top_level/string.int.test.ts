@@ -34,7 +34,7 @@ describe("aggregations-top_level-string", () => {
         await driver.close();
     });
 
-    test("should return the min of node properties", async () => {
+    test("should return the shortest of node properties", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -68,7 +68,7 @@ describe("aggregations-top_level-string", () => {
                 {
                     moviesAggregate(where: {testId: "${id}"}) {
                         title {
-                            min
+                            shortest
                         }
                     }
                 }
@@ -88,7 +88,7 @@ describe("aggregations-top_level-string", () => {
 
             expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
                 title: {
-                    min: "1",
+                    shortest: "1",
                 },
             });
         } finally {
@@ -96,7 +96,7 @@ describe("aggregations-top_level-string", () => {
         }
     });
 
-    test("should return the max of node properties", async () => {
+    test("should return the longest of node properties", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -130,7 +130,7 @@ describe("aggregations-top_level-string", () => {
                 {
                     moviesAggregate(where: {testId: "${id}"}) {
                         title {
-                            max
+                            longest
                         }
                     }
                 }
@@ -150,7 +150,7 @@ describe("aggregations-top_level-string", () => {
 
             expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
                 title: {
-                    max: "4444",
+                    longest: "4444",
                 },
             });
         } finally {
@@ -158,7 +158,7 @@ describe("aggregations-top_level-string", () => {
         }
     });
 
-    test("should return the min and max of node properties", async () => {
+    test("should return the shortest and longest of node properties", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -192,8 +192,8 @@ describe("aggregations-top_level-string", () => {
                 {
                     moviesAggregate(where: {testId: "${id}"}) {
                         title {
-                            min
-                            max
+                            shortest
+                            longest
                         }
                     }
                 }
@@ -213,8 +213,8 @@ describe("aggregations-top_level-string", () => {
 
             expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
                 title: {
-                    min: "1",
-                    max: "4444",
+                    shortest: "1",
+                    longest: "4444",
                 },
             });
         } finally {

@@ -321,8 +321,8 @@ type PageInfo {
 }
 
 type StringAggregationSelection {
-    max: String!
-    min: String!
+    shortest: String!
+    longest: String!
 }
 
 type Node1AggregateSelection {

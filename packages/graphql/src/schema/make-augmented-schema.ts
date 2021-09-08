@@ -145,16 +145,16 @@ function makeAugmentedSchema(
     const idNumericalAggregationSelection = composer.createObjectTC({
         name: "IDAggregationSelection",
         fields: {
-            max: composeId,
-            min: composeId,
+            shortest: composeId,
+            longest: composeId,
         },
     });
 
     const stringNumericalAggregationSelection = composer.createObjectTC({
         name: "StringAggregationSelection",
         fields: {
-            max: "String!",
-            min: "String!",
+            shortest: "String!",
+            longest: "String!",
         },
     });
 

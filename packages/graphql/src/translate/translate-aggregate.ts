@@ -124,10 +124,19 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
             Object.entries(selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregationSelection`]).forEach(
                 (entry) => {
-                    // "min" | "max" | "average"
+                    // "min" | "max" | "average" | "shortest" | "longest"
                     let operator = entry[1].name;
+
                     if (operator === "average") {
                         operator = "avg";
+                    }
+
+                    if (operator === "shortest") {
+                        operator = "min";
+                    }
+
+                    if (operator === "longest") {
+                        operator = "max";
                     }
 
                     const fieldName = field.dbPropertyName || field.fieldName;
