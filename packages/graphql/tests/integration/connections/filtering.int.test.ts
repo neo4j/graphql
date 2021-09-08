@@ -83,7 +83,7 @@ describe("Connections Filtering", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: {
                     movieTitle,
                 },

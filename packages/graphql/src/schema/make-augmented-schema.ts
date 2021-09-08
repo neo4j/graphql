@@ -430,7 +430,7 @@ function makeAugmentedSchema(
                 ...relFields.primitiveFields,
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
-                ...relFields.dateTimeFields.filter((x) => !x.timestamps),
+                ...relFields.temporalFields.filter((field) => !field.timestamps),
                 ...relFields.pointFields,
             ].reduce(
                 (res, f) =>
@@ -449,7 +449,7 @@ function makeAugmentedSchema(
             fields: {
                 scalarFields: relFields.scalarFields,
                 enumFields: relFields.enumFields,
-                dateTimeFields: relFields.dateTimeFields,
+                temporalFields: relFields.temporalFields,
                 pointFields: relFields.pointFields,
                 primitiveFields: relFields.primitiveFields,
             },
@@ -468,7 +468,7 @@ function makeAugmentedSchema(
                 ...relFields.primitiveFields,
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
-                ...relFields.dateTimeFields.filter((x) => !x.timestamps),
+                ...relFields.temporalFields.filter((field) => !field.timestamps),
                 ...relFields.pointFields,
             ].reduce((res, f) => {
                 if ((f as PrimitiveField)?.autogenerate) {
@@ -529,7 +529,7 @@ function makeAugmentedSchema(
             ...node.interfaceFields,
             ...node.objectFields,
             ...node.unionFields,
-            ...node.dateTimeFields,
+            ...node.temporalFields,
             ...node.pointFields,
             ...node.ignoredFields,
         ]);
@@ -546,7 +546,7 @@ function makeAugmentedSchema(
             ...node.primitiveFields,
             ...node.enumFields,
             ...node.scalarFields,
-            ...node.dateTimeFields,
+            ...node.temporalFields,
             ...node.pointFields,
         ].reduce((res, f) => {
             return f.typeMeta.array
@@ -592,7 +592,7 @@ function makeAugmentedSchema(
             typeName: node.name,
             enableRegex,
             fields: {
-                dateTimeFields: node.dateTimeFields,
+                temporalFields: node.temporalFields,
                 enumFields: node.enumFields,
                 pointFields: node.pointFields,
                 primitiveFields: node.primitiveFields,
@@ -650,7 +650,7 @@ function makeAugmentedSchema(
                 ...node.primitiveFields,
                 ...node.scalarFields,
                 ...node.enumFields,
-                ...node.dateTimeFields.filter((x) => !x.timestamps),
+                ...node.temporalFields.filter((field) => !field.timestamps),
                 ...node.pointFields,
             ].reduce((res, f) => {
                 if ((f as PrimitiveField)?.autogenerate) {
@@ -677,7 +677,7 @@ function makeAugmentedSchema(
                 ...node.primitiveFields,
                 ...node.scalarFields,
                 ...node.enumFields,
-                ...node.dateTimeFields.filter((x) => !x.timestamps),
+                ...node.temporalFields.filter((field) => !field.timestamps),
                 ...node.pointFields,
             ].reduce(
                 (res, f) =>
@@ -965,7 +965,7 @@ function makeAugmentedSchema(
                         ...relFields.primitiveFields,
                         ...relFields.scalarFields,
                         ...relFields.enumFields,
-                        ...relFields.dateTimeFields,
+                        ...relFields.temporalFields,
                         ...relFields.pointFields,
                     ].some((field) => field.typeMeta.required);
                 }
@@ -1206,7 +1206,7 @@ function makeAugmentedSchema(
                     ...relatedNode.primitiveFields,
                     ...relatedNode.enumFields,
                     ...relatedNode.scalarFields,
-                    ...relatedNode.dateTimeFields,
+                    ...relatedNode.temporalFields,
                     ...relatedNode.pointFields,
                 ].filter((f) => !f.typeMeta.array);
 
@@ -1266,7 +1266,7 @@ function makeAugmentedSchema(
                 properties: connectionField.relationship.properties,
                 ...(relFields
                     ? {
-                          dateTimeFields: relFields.dateTimeFields,
+                          temporalFields: relFields.temporalFields,
                           scalarFields: relFields.scalarFields,
                           primitiveFields: relFields.primitiveFields,
                           pointFields: relFields.pointFields,
@@ -1332,7 +1332,7 @@ function makeAugmentedSchema(
                 ...objectFields.scalarFields,
                 ...objectFields.unionFields,
                 ...objectFields.objectFields,
-                ...objectFields.dateTimeFields,
+                ...objectFields.temporalFields,
             ]);
 
             objectComposer.addFields(objectComposeFields);

@@ -32,11 +32,11 @@ function createRelationshipPropertyElement({
     relationship: Relationship;
     relationshipVariable: string;
 }): string {
-    const datetimeField = relationship.dateTimeFields.find((f) => f.fieldName === resolveTree.name);
+    const temporalField = relationship.temporalFields.find((f) => f.fieldName === resolveTree.name);
     const pointField = relationship.pointFields.find((f) => f.fieldName === resolveTree.name);
 
-    if (datetimeField) {
-        return createDatetimeElement({ resolveTree, field: datetimeField, variable: relationshipVariable });
+    if (temporalField?.typeMeta.name === "DateTime") {
+        return createDatetimeElement({ resolveTree, field: temporalField, variable: relationshipVariable });
     }
 
     if (pointField) {
