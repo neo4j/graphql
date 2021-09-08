@@ -19,7 +19,7 @@
 
 import { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import { BaseField, Context, DateTimeField, GraphQLWhereArg, PrimitiveField } from "../types";
+import { BaseField, Context, GraphQLWhereArg, PrimitiveField, TemporalField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createWhereAndParams from "./create-where-and-params";
 import createDatetimeElement from "./projection/elements/create-datetime-element";
@@ -79,7 +79,6 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
     const selections = fieldsByTypeName[`${node.name}AggregateSelection`];
     const projections: string[] = [];
-    let withStrs: string[] = [varName];
     const authStrs: string[] = [];
 
     // Do auth first so we can throw out before aggregating
@@ -111,11 +110,11 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         }
 
         const primitiveField = node.primitiveFields.find((x) => x.fieldName === selection[1].name);
-        const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === selection[1].name);
-        let field: BaseField = (primitiveField as PrimitiveField) || (dateTimeField as DateTimeField);
+        const temporalField = node.temporalFields.find((x) => x.fieldName === selection[1].name);
+        let field: BaseField = (primitiveField as PrimitiveField) || (temporalField as TemporalField);
         let isDateTime = false;
 
-        if (!primitiveField && dateTimeField) {
+        if (!primitiveField && temporalField && temporalField.typeMeta.name === "DateTime") {
             isDateTime = true;
         }
 
@@ -145,7 +144,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                         thisProjections.push(
                             createDatetimeElement({
                                 resolveTree: entry[1],
-                                field: field as DateTimeField,
+                                field: field as TemporalField,
                                 variable: varName,
                                 valueOverride: `${operator}(this.${fieldName})`,
                             })

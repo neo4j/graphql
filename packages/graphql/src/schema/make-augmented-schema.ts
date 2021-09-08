@@ -185,11 +185,35 @@ function makeAugmentedSchema(
         },
     });
 
-    const dateTimeNumericalAggregationSelection = composer.createObjectTC({
+    const dateTimeAggregationSelection = composer.createObjectTC({
         name: "DateTimeAggregationSelection",
         fields: {
             max: "DateTime!",
             min: "DateTime!",
+        },
+    });
+
+    const timeAggregationSelection = composer.createObjectTC({
+        name: "TimeAggregationSelection",
+        fields: {
+            max: "Time!",
+            min: "Time!",
+        },
+    });
+
+    const localTimeAggregationSelection = composer.createObjectTC({
+        name: "LocalTimeAggregationSelection",
+        fields: {
+            max: "LocalTime!",
+            min: "LocalTime!",
+        },
+    });
+
+    const localDateTimeAggregationSelection = composer.createObjectTC({
+        name: "LocalDateTimeAggregationSelection",
+        fields: {
+            max: "LocalDateTime!",
+            min: "LocalDateTime!",
         },
     });
 
@@ -604,7 +628,7 @@ function makeAugmentedSchema(
             name: `${node.name}AggregateSelection`,
             fields: {
                 count: composeInt,
-                ...[...node.primitiveFields, ...node.dateTimeFields].reduce((res, field) => {
+                ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
                     if (field.typeMeta.array) {
                         return res;
                     }
@@ -630,7 +654,19 @@ function makeAugmentedSchema(
                     }
 
                     if (field.typeMeta.name === "DateTime") {
-                        res[field.fieldName] = dateTimeNumericalAggregationSelection.NonNull;
+                        res[field.fieldName] = dateTimeAggregationSelection.NonNull;
+                    }
+
+                    if (field.typeMeta.name === "LocalDateTime") {
+                        res[field.fieldName] = localDateTimeAggregationSelection.NonNull;
+                    }
+
+                    if (field.typeMeta.name === "LocalTime") {
+                        res[field.fieldName] = localTimeAggregationSelection.NonNull;
+                    }
+
+                    if (field.typeMeta.name === "Time") {
+                        res[field.fieldName] = timeAggregationSelection.NonNull;
                     }
 
                     return res;

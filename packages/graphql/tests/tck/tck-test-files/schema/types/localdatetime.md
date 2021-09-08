@@ -127,6 +127,12 @@ type IDAggregationSelection {
 type MovieAggregateSelection {
     count: Int!
     id: IDAggregationSelection!
+    localDT: LocalDateTimeAggregationSelection!
+}
+
+type LocalDateTimeAggregationSelection {
+    max: LocalDateTime!
+    min: LocalDateTime!
 }
 
 type Mutation {

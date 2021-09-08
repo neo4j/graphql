@@ -219,20 +219,62 @@ describe("TCK Generated tests", () => {
                                     mergedContext
                                 );
 
-                                const aggregateStringFields = [
-                                    ...node.primitiveFields.filter((x) => ["String", "ID"].includes(x.typeMeta.name)),
-                                    ...node.dateTimeFields,
-                                ]
-                                    .filter((x) => !x.typeMeta.array)
+                                const aggregateStringFields = node.primitiveFields
+                                    .filter((x) => ["String", "ID"].includes(x.typeMeta.name) && !x.typeMeta.array)
                                     .reduce(
                                         (res, field) => ({ ...res, [field.fieldName]: { shortest: 1, longest: 1 } }),
                                         {}
                                     );
 
-                                const dateTimeFields = node.dateTimeFields
-                                    .filter((x) => !x.typeMeta.array)
+                                const dateTimeFields = node.temporalFields
+                                    .filter((x) => !x.typeMeta.array && x.typeMeta.name === "DateTime")
                                     .reduce(
-                                        (res, field) => ({ ...res, [field.fieldName]: { min: "1", max: "1" } }),
+                                        (res, field) => ({
+                                            ...res,
+                                            [field.fieldName]: {
+                                                min: new Date().toISOString(),
+                                                max: new Date().toISOString(),
+                                            },
+                                        }),
+                                        {}
+                                    );
+
+                                const timeFields = node.temporalFields
+                                    .filter((x) => !x.typeMeta.array && x.typeMeta.name === "Time")
+                                    .reduce(
+                                        (res, field) => ({
+                                            ...res,
+                                            [field.fieldName]: {
+                                                min: new Date().toISOString().split("T")[1],
+                                                max: new Date().toISOString().split("T")[1],
+                                            },
+                                        }),
+                                        {}
+                                    );
+
+                                const localTimeFields = node.temporalFields
+                                    .filter((x) => !x.typeMeta.array && x.typeMeta.name === "LocalTime")
+                                    .reduce(
+                                        (res, field) => ({
+                                            ...res,
+                                            [field.fieldName]: {
+                                                min: new Date().toISOString().split("T")[1].split("Z")[0],
+                                                max: new Date().toISOString().split("T")[1].split("Z")[0],
+                                            },
+                                        }),
+                                        {}
+                                    );
+
+                                const localDateTimeFields = node.temporalFields
+                                    .filter((x) => !x.typeMeta.array && x.typeMeta.name === "LocalDateTime")
+                                    .reduce(
+                                        (res, field) => ({
+                                            ...res,
+                                            [field.fieldName]: {
+                                                min: new Date().toISOString().split("Z")[0],
+                                                max: new Date().toISOString().split("Z")[0],
+                                            },
+                                        }),
                                         {}
                                     );
 
@@ -252,7 +294,10 @@ describe("TCK Generated tests", () => {
                                     count: 1,
                                     ...aggregateStringFields,
                                     ...dateTimeFields,
+                                    ...timeFields,
                                     ...numericalAggregateFields,
+                                    ...localTimeFields,
+                                    ...localDateTimeFields,
                                 };
                             },
                         };
