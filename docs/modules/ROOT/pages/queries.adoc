@@ -114,6 +114,9 @@ Neo4j GraphQL supports aggregations on fields with type:
 4. `Float` - Numerical
 5. `BigInt` - Numerical
 6. `DateTime`
+7. `Time`
+8. `LocalTime`
+9. `LocalDateTime`
 
 Numerical Fields will expose the following aggregation selections: 
 

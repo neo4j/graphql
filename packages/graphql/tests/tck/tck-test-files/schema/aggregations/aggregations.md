@@ -11,6 +11,9 @@ type Movie {
     id: ID
     title: String
     createdAt: DateTime
+    someTime: Time
+    someLocalTime: LocalTime
+    someLocalDateTime: LocalDateTime
     imdbRating: Float
     someInt: Int
     someBigInt: BigInt
@@ -39,6 +42,21 @@ type Mutation {
 A date and time, represented as an ISO-8601 string
 """
 scalar DateTime
+
+"""
+A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'
+"""
+scalar LocalDateTime
+
+"""
+A local time, represented as a time string without timezone information
+"""
+scalar LocalTime
+
+"""
+A time, represented as an RFC3339 time string
+"""
+scalar Time
 
 """
 A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.
@@ -96,6 +114,21 @@ type IDAggregationSelection {
     longest: ID!
 }
 
+type LocalDateTimeAggregationSelection {
+    max: LocalDateTime!
+    min: LocalDateTime!
+}
+
+type LocalTimeAggregationSelection {
+    max: LocalTime!
+    min: LocalTime!
+}
+
+type TimeAggregationSelection {
+    max: Time!
+    min: Time!
+}
+
 type MovieAggregateSelection {
     count: Int!
     createdAt: DateTimeAggregationSelection!
@@ -104,6 +137,9 @@ type MovieAggregateSelection {
     someBigInt: BigIntAggregationSelection!
     someInt: IntAggregationSelection!
     title: StringAggregationSelection!
+    someLocalDateTime: LocalDateTimeAggregationSelection!
+    someLocalTime: LocalTimeAggregationSelection!
+    someTime: TimeAggregationSelection!
 }
 
 type CreateMoviesMutationResponse {
@@ -132,6 +168,9 @@ type Movie {
     someInt: Int
     someBigInt: BigInt
     createdAt: DateTime
+    someLocalDateTime: LocalDateTime
+    someLocalTime: LocalTime
+    someTime: Time
 }
 
 type UpdateMoviesMutationResponse {
@@ -146,6 +185,9 @@ input MovieCreateInput {
     someInt: Int
     someBigInt: BigInt
     createdAt: DateTime
+    someLocalDateTime: LocalDateTime
+    someLocalTime: LocalTime
+    someTime: Time
 }
 
 input MovieOptions {
@@ -167,6 +209,9 @@ input MovieSort {
     someInt: SortDirection
     someBigInt: SortDirection
     createdAt: SortDirection
+    someLocalDateTime: SortDirection
+    someLocalTime: SortDirection
+    someTime: SortDirection
 }
 
 input MovieUpdateInput {
@@ -176,6 +221,9 @@ input MovieUpdateInput {
     someInt: Int
     someBigInt: BigInt
     createdAt: DateTime
+    someLocalDateTime: LocalDateTime
+    someLocalTime: LocalTime
+    someTime: Time
 }
 
 input MovieWhere {
@@ -233,6 +281,30 @@ input MovieWhere {
     createdAt_LTE: DateTime
     createdAt_GT: DateTime
     createdAt_GTE: DateTime
+    someLocalDateTime: LocalDateTime
+    someLocalDateTime_GT: LocalDateTime
+    someLocalDateTime_GTE: LocalDateTime
+    someLocalDateTime_IN: [LocalDateTime]
+    someLocalDateTime_LT: LocalDateTime
+    someLocalDateTime_LTE: LocalDateTime
+    someLocalDateTime_NOT: LocalDateTime
+    someLocalDateTime_NOT_IN: [LocalDateTime]
+    someLocalTime: LocalTime
+    someLocalTime_GT: LocalTime
+    someLocalTime_GTE: LocalTime
+    someLocalTime_IN: [LocalTime]
+    someLocalTime_LT: LocalTime
+    someLocalTime_LTE: LocalTime
+    someLocalTime_NOT: LocalTime
+    someLocalTime_NOT_IN: [LocalTime]
+    someTime: Time
+    someTime_GT: Time
+    someTime_GTE: Time
+    someTime_IN: [Time]
+    someTime_LT: Time
+    someTime_LTE: Time
+    someTime_NOT: Time
+    someTime_NOT_IN: [Time]
 }
 ```
 
