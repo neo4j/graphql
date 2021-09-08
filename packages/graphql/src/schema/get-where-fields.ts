@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { CustomEnumField, CustomScalarField, DateTimeField, PointField, PrimitiveField } from "../types";
+import { CustomEnumField, CustomScalarField, PointField, PrimitiveField, TemporalField } from "../types";
 
 interface Fields {
     scalarFields: CustomScalarField[];
     enumFields: CustomEnumField[];
     primitiveFields: PrimitiveField[];
-    dateTimeFields: DateTimeField[];
+    temporalFields: TemporalField[];
     pointFields: PointField[];
 }
 
@@ -44,7 +44,7 @@ function getWhereFields({
             res[f.fieldName] = f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name;
             return res;
         }, {}),
-        ...[...fields.primitiveFields, ...fields.dateTimeFields, ...fields.enumFields, ...fields.pointFields].reduce(
+        ...[...fields.primitiveFields, ...fields.temporalFields, ...fields.enumFields, ...fields.pointFields].reduce(
             (res, f) => {
                 res[f.fieldName] = f.typeMeta.input.where.pretty;
                 res[`${f.fieldName}_NOT`] = f.typeMeta.input.where.pretty;

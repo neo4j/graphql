@@ -75,7 +75,7 @@ function createNodeWhereAndParams({
             (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
         );
 
-        const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find((f) => fieldName === f.fieldName)
+        const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find((f) => fieldName === f.fieldName)
             ?.coalesceValue;
 
         const property =
