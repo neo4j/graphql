@@ -23,12 +23,12 @@ type Movie {
 {
     moviesAggregate {
         id {
-            min
-            max
+            shortest
+            longest
         }
         title {
-            min
-            max
+            shortest
+            longest
         }
         imdbRating {
             min
@@ -47,7 +47,7 @@ type Movie {
 
 ```cypher
 MATCH (this:Movie)
-RETURN { id: { min: min(this._id), max: max(this._id) }, title: { min: min(this._title), max: max(this._title) }, imdbRating: { min: min(this._imdbRating), max: max(this._imdbRating), average: avg(this._imdbRating) }, createdAt: { min: apoc.date.convertFormat(toString(min(this._createdAt)), "iso_zoned_date_time", "iso_offset_date_time"), max: apoc.date.convertFormat(toString(max(this._createdAt)), "iso_zoned_date_time", "iso_offset_date_time") } }
+RETURN { id: { shortest: min(this._id), longest: max(this._id) }, title: { shortest: min(this._title), longest: max(this._title) }, imdbRating: { min: min(this._imdbRating), max: max(this._imdbRating), average: avg(this._imdbRating) }, createdAt: { min: apoc.date.convertFormat(toString(min(this._createdAt)), "iso_zoned_date_time", "iso_offset_date_time"), max: apoc.date.convertFormat(toString(max(this._createdAt)), "iso_zoned_date_time", "iso_offset_date_time") } }
 ```
 
 ### Expected Cypher Params

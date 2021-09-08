@@ -73,12 +73,12 @@ describe("aggregations-top_level-alias", () => {
                 {
                     moviesAggregate(where: { testId: "${testId}" }) {
                         _id: id {
-                            _min: min
-                            _max: max
+                            _shortest: shortest
+                            _longest: longest
                         }
                         _title: title {
-                            _min: min
-                            _max: max
+                            _shortest: shortest
+                            _longest: longest
                         }
                         _imdbRating: imdbRating {
                             _min: min
@@ -107,12 +107,12 @@ describe("aggregations-top_level-alias", () => {
 
             expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
                 _id: {
-                    _min: "1",
-                    _max: "4444",
+                    _shortest: "1",
+                    _longest: "4444",
                 },
                 _title: {
-                    _min: "1",
-                    _max: "4444",
+                    _shortest: "1",
+                    _longest: "4444",
                 },
                 _imdbRating: {
                     _min: 1,

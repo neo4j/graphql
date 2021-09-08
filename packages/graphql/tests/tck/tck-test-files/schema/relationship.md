@@ -54,13 +54,13 @@ input ActorOptions {
 }
 
 type StringAggregationSelection {
-    max: String!
-    min: String!
+    shortest: String!
+    longest: String!
 }
 
 type IDAggregationSelection {
-    max: ID!
-    min: ID!
+    shortest: ID!
+    longest: ID!
 }
 
 type MovieAggregateSelection {
@@ -685,13 +685,13 @@ type ActorAggregateSelection {
 }
 
 type StringAggregationSelection {
-    max: String!
-    min: String!
+    shortest: String!
+    longest: String!
 }
 
 type IDAggregationSelection {
-    max: ID!
-    min: ID!
+    shortest: ID!
+    longest: ID!
 }
 
 """

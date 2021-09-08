@@ -20,7 +20,7 @@ type Movie {
 {
     moviesAggregate {
         title {
-            min
+            shortest
         }
     }
 }
@@ -30,7 +30,7 @@ type Movie {
 
 ```cypher
 MATCH (this:Movie)
-RETURN { title: { min: min(this.title) } }
+RETURN { title: { shortest: min(this.title) } }
 ```
 
 ### Expected Cypher Params
@@ -49,7 +49,7 @@ RETURN { title: { min: min(this.title) } }
 {
     moviesAggregate {
         title {
-            max
+            longest
         }
     }
 }
@@ -59,7 +59,7 @@ RETURN { title: { min: min(this.title) } }
 
 ```cypher
 MATCH (this:Movie)
-RETURN { title: { max: max(this.title) } }
+RETURN { title: { longest: max(this.title) } }
 ```
 
 ### Expected Cypher Params
@@ -78,8 +78,8 @@ RETURN { title: { max: max(this.title) } }
 {
     moviesAggregate {
         title {
-            min
-            max
+            shortest
+            longest
         }
     }
 }
@@ -89,7 +89,7 @@ RETURN { title: { max: max(this.title) } }
 
 ```cypher
 MATCH (this:Movie)
-RETURN { title: { min: min(this.title), max: max(this.title) } }
+RETURN { title: { shortest: min(this.title), longest: max(this.title) } }
 ```
 
 ### Expected Cypher Params

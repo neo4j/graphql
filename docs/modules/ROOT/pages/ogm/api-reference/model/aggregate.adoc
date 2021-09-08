@@ -14,7 +14,7 @@ const User = ogm.model("User");
 const usersAggregate = await User.aggregate({
     aggregate: {
         name: {
-            max: true
+            longest: true
         }
     }
 });
@@ -32,7 +32,7 @@ const usersAggregate = await User.aggregate({
     },
     aggregate: {
         name: {
-            max: true
+            longest: true
         }
     }
 });

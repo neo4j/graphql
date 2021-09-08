@@ -114,8 +114,8 @@ type IntAggregationSelection {
 }
 
 type IDAggregationSelection {
-    max: ID!
-    min: ID!
+    shortest: ID!
+    longest: ID!
 }
 
 type MovieAggregateSelection {

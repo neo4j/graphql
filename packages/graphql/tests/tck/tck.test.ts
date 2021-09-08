@@ -219,12 +219,22 @@ describe("TCK Generated tests", () => {
                                     mergedContext
                                 );
 
-                                const aggregateFields = [
+                                const aggregateStringFields = [
                                     ...node.primitiveFields.filter((x) => ["String", "ID"].includes(x.typeMeta.name)),
                                     ...node.dateTimeFields,
                                 ]
                                     .filter((x) => !x.typeMeta.array)
-                                    .reduce((res, field) => ({ ...res, [field.fieldName]: { min: 1, max: 1 } }), {});
+                                    .reduce(
+                                        (res, field) => ({ ...res, [field.fieldName]: { shortest: 1, longest: 1 } }),
+                                        {}
+                                    );
+
+                                const dateTimeFields = node.dateTimeFields
+                                    .filter((x) => !x.typeMeta.array)
+                                    .reduce(
+                                        (res, field) => ({ ...res, [field.fieldName]: { min: "1", max: "1" } }),
+                                        {}
+                                    );
 
                                 const numericalAggregateFields = node.primitiveFields
                                     .filter(
@@ -240,7 +250,8 @@ describe("TCK Generated tests", () => {
 
                                 return {
                                     count: 1,
-                                    ...aggregateFields,
+                                    ...aggregateStringFields,
+                                    ...dateTimeFields,
                                     ...numericalAggregateFields,
                                 };
                             },

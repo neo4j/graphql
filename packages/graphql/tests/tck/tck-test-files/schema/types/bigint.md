@@ -132,8 +132,8 @@ type BigIntAggregationSelection {
 }
 
 type StringAggregationSelection {
-    max: String!
-    min: String!
+    shortest: String!
+    longest: String!
 }
 
 type Mutation {
