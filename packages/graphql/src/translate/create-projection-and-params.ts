@@ -284,8 +284,6 @@ function createProjectionAndParams({
                 ];
 
                 const headStrs: string[] = referenceNodes.map((refNode) => {
-                    // TODO: additional labels?
-
                     const labels = refNode.nodeDirective?.getLabels(refNode.name) || [refNode.name];
                     const labelsStatements = labels.map((label) => `"${label}" IN labels(${param})`);
                     const innerHeadStr: string[] = [
