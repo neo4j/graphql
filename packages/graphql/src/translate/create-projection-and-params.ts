@@ -461,14 +461,24 @@ function createProjectionAndParams({
         return res;
     }
 
-    const { projection, params, meta } = Object.entries(fieldsByTypeName[node.name] as { [k: string]: any }).reduce(
-        reducer,
-        {
-            projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
-            params: {},
-            meta: {},
-        }
-    );
+    // Include fields of implemented interfaces to allow for fragments on interfaces
+    // cf. https://github.com/neo4j/graphql/issues/476
+
+    const fields = (node.interfaces ?? [])
+        // Map over the implemented interfaces of the node and extract the names
+        .map((implementedInterface) => implementedInterface.name.value)
+        // Combine the fields of the interfaces...
+        .reduce(
+            (prevFields, interfaceName) => ({ ...prevFields, ...fieldsByTypeName[interfaceName] }),
+            // with the fields of the node
+            fieldsByTypeName[node.name]
+        );
+
+    const { projection, params, meta } = Object.entries(fields).reduce(reducer, {
+        projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
+        params: {},
+        meta: {},
+    });
 
     return [`{ ${projection.join(", ")} }`, params, meta];
 }
