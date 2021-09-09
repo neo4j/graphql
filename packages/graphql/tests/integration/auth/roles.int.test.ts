@@ -37,6 +37,21 @@ describe("auth/roles", () => {
         await driver.close();
     });
 
+    beforeAll(async () => {
+        const session = driver.session();
+
+        try {
+            await session.run(
+                `
+                    CREATE (:Product { name: 'p1', id:123 })
+                    CREATE (:User { id: 1234, password:'dontpanic' })
+                `
+            );
+        } finally {
+            await session.close();
+        }
+    });
+
     describe("read", () => {
         test("should throw if missing role on type definition", async () => {
             const session = driver.session();
