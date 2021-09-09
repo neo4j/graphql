@@ -175,7 +175,16 @@ function getObjFieldMeta({
                 }
 
                 if (fieldInterface) {
-                    relationField.interface = true;
+                    const implementations = objects
+                        .filter((n) => n.interfaces?.some((i) => i.name.value === fieldInterface.name.value))
+                        .map((n) => n.name.value);
+
+                    const interfaceField: InterfaceField = {
+                        ...baseField,
+                        implementations,
+                    };
+
+                    relationField.interface = interfaceField;
                 }
 
                 res.relationFields.push(relationField);

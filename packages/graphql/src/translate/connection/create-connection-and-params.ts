@@ -84,12 +84,29 @@ function createConnectionAndParams({
         elementsToCollect.push(relationshipPropertyEntries.join(", "));
     }
 
-    if (field.relationship.union) {
-        const unionNodes = context.neoSchema.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name));
+    if (field.relationship.union || field.relationship.interface) {
+        const unionNodes = field.relationship.union
+            ? context.neoSchema.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name))
+            : context.neoSchema.nodes.filter(
+                  (x) =>
+                      field.relationship.interface?.implementations?.includes(x.name) &&
+                      (!resolveTree.args.where ||
+                          Object.prototype.hasOwnProperty.call(resolveTree.args.where, x.name) ||
+                          !field.relationship.interface?.implementations?.some((i) =>
+                              Object.prototype.hasOwnProperty.call(resolveTree.args.where, i)
+                          ))
+              );
         const unionSubqueries: string[] = [];
 
         unionNodes.forEach((n) => {
-            if (!whereInput || Object.prototype.hasOwnProperty.call(whereInput, n.name)) {
+            if (
+                !whereInput ||
+                Object.prototype.hasOwnProperty.call(whereInput, n.name) ||
+                (field.relationship.interface &&
+                    !field.relationship.interface?.implementations?.some((i) =>
+                        Object.prototype.hasOwnProperty.call(resolveTree.args.where, i)
+                    ))
+            ) {
                 const relatedNodeVariable = `${nodeVariable}_${n.name}`;
                 const nodeOutStr = `(${relatedNodeVariable}:${n.name})`;
 
@@ -189,7 +206,7 @@ function createConnectionAndParams({
                 }
 
                 const whereStrs: string[] = [];
-                const unionWhere = (whereInput || {})[n.name];
+                const unionWhere = field.relationship.union ? (whereInput || {})[n.name] : whereInput || {};
                 if (unionWhere) {
                     const where = createConnectionWhereAndParams({
                         whereInput: unionWhere,
@@ -200,7 +217,7 @@ function createConnectionAndParams({
                         context,
                         parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                             resolveTree.alias
-                        }.args.where.${n.name}`,
+                        }.args.where${field.relationship.union ? `.${n.name}` : ""}`,
                     });
                     const [whereClause] = where;
                     if (whereClause) {

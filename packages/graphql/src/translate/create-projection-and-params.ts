@@ -39,6 +39,7 @@ interface Res {
 interface ProjectionMeta {
     authValidateStrs?: string[];
     connectionFields?: ResolveTree[];
+    interfaceFields?: ResolveTree[];
 }
 
 function createNodeWhereAndParams({
@@ -258,6 +259,134 @@ function createProjectionAndParams({
             const outStr = relationField.direction === "OUT" ? "->" : "-";
             const nodeOutStr = `(${param}:${referenceNode?.name})`;
             const isArray = relationField.typeMeta.array;
+
+            if (relationField.interface) {
+                // const referenceNodes = context.neoSchema.nodes.filter(
+                //     (x) =>
+                //         relationField.interface?.implementations?.includes(x.name) &&
+                //         (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
+                // );
+
+                // const subqueries = referenceNodes.map((refNode) => {
+                //     const nodeVariable = `${chainStr || varName}_${refNode.name}`;
+
+                //     const subquery = [
+                //         `WITH ${chainStr || varName}`,
+                //         `MATCH (${chainStr || varName})${inStr}${relTypeStr}${outStr}(${nodeVariable}:${refNode.name})`,
+                //     ];
+
+                //     if (field.fieldsByTypeName[refNode.name]) {
+                //         const recurse = createProjectionAndParams({
+                //             fieldsByTypeName: field.fieldsByTypeName,
+                //             node: refNode,
+                //             context,
+                //             varName: nodeVariable,
+                //             literalElements: true,
+                //             resolveType: true,
+                //         });
+
+                //         const nodeWhereAndParams = createNodeWhereAndParams({
+                //             whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
+                //             context,
+                //             node: refNode,
+                //             varName: nodeVariable,
+                //             // chainStr: `${param}_${refNode.name}`,
+                //             authValidateStrs: recurse[2]?.authValidateStrs,
+                //         });
+                //         if (nodeWhereAndParams[0]) {
+                //             subquery.push(`WHERE ${nodeWhereAndParams[0]}`);
+                //             res.params = { ...res.params, ...nodeWhereAndParams[1] };
+                //         }
+
+                //         subquery.push(`RETURN ${recurse[0]} AS ${relationField.fieldName}`);
+                //         res.params = { ...res.params, ...recurse[1] };
+                //     } else {
+                //         subquery.push(`RETURN { __resolveType: "${refNode.name}" } `);
+                //     }
+
+                //     return subquery.join("\n");
+                // });
+
+                // const interfaceProjection = ["CALL {", subqueries.join("\nUNION\n"), "}"];
+
+                // const unionStrs: string[] = [
+                //     `${key}: ${!isArray ? "head(" : ""} [(${
+                //         chainStr || varName
+                //     })${inStr}${relTypeStr}${outStr}(${param})`,
+                //     `WHERE ${referenceNodes.map((x) => `"${x.name}" IN labels(${param})`).join(" OR ")}`,
+                //     `| head(`,
+                // ];
+
+                // const headStrs: string[] = referenceNodes.map((refNode) => {
+                //     const innerHeadStr: string[] = [
+                //         `[ ${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`,
+                //     ];
+
+                //     if (field.fieldsByTypeName[refNode.name]) {
+                //         const recurse = createProjectionAndParams({
+                //             fieldsByTypeName: field.fieldsByTypeName,
+                //             node: refNode,
+                //             context,
+                //             varName: param,
+                //         });
+
+                //         const nodeWhereAndParams = createNodeWhereAndParams({
+                //             whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
+                //             context,
+                //             node: refNode,
+                //             varName: param,
+                //             chainStr: `${param}_${refNode.name}`,
+                //             authValidateStrs: recurse[2]?.authValidateStrs,
+                //         });
+                //         if (nodeWhereAndParams[0]) {
+                //             innerHeadStr.push(`AND ${nodeWhereAndParams[0]}`);
+                //             res.params = { ...res.params, ...nodeWhereAndParams[1] };
+                //         }
+
+                //         innerHeadStr.push(
+                //             [
+                //                 `| ${param} { __resolveType: "${refNode.name}", `,
+                //                 ...recurse[0].replace("{", "").split(""),
+                //             ].join("")
+                //         );
+                //         res.params = { ...res.params, ...recurse[1] };
+                //     } else {
+                //         innerHeadStr.push(`| ${param} { __resolveType: "${refNode.name}" } `);
+                //     }
+
+                //     innerHeadStr.push(`]`);
+
+                //     return innerHeadStr.join(" ");
+                // });
+                // unionStrs.push(headStrs.join(" + "));
+                // unionStrs.push(") ]");
+
+                // if (optionsInput) {
+                //     const offsetLimit = createOffsetLimitStr({
+                //         offset: optionsInput.offset,
+                //         limit: optionsInput.limit,
+                //     });
+                //     if (offsetLimit) {
+                //         unionStrs.push(offsetLimit);
+                //     }
+                // }
+
+                // unionStrs.push(`${!isArray ? ")" : ""}`);
+                // res.projection.push(interfaceProjection.join("\n"));
+
+                // return res;
+
+                if (!res.meta.interfaceFields) {
+                    res.meta.interfaceFields = [];
+                }
+
+                const f = field as ResolveTree;
+
+                res.meta.interfaceFields.push(f);
+                res.projection.push(literalElements ? `${f.alias}: ${f.alias}` : `${f.alias}`);
+
+                return res;
+            }
 
             if (relationField.union) {
                 const referenceNodes = context.neoSchema.nodes.filter(

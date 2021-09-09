@@ -718,7 +718,7 @@ function makeAugmentedSchema(
             fields: queryFields,
         });
 
-        const nodeInput = composer.createInputTC({
+        const nodeCreateInput = composer.createInputTC({
             name: `${node.name}CreateInput`,
             // TODO - This reduce duplicated when creating relationship CreateInput - put into shared function?
             fields: [
@@ -799,6 +799,24 @@ function makeAugmentedSchema(
 
         node.relationFields.forEach((rel) => {
             if (rel.interface) {
+                const refNodes = nodes.filter((x) => rel.interface?.implementations?.includes(x.name));
+
+                let anyNonNullRelProperties = false;
+
+                if (rel.properties) {
+                    const relFields = relationshipFields.get(rel.properties);
+
+                    if (relFields) {
+                        anyNonNullRelProperties = [
+                            ...relFields.primitiveFields,
+                            ...relFields.scalarFields,
+                            ...relFields.enumFields,
+                            ...relFields.temporalFields,
+                            ...relFields.pointFields,
+                        ].some((field) => field.typeMeta.required);
+                    }
+                }
+
                 composeNode.addFields({
                     [rel.fieldName]: {
                         type: rel.typeMeta.pretty,
@@ -807,6 +825,111 @@ function makeAugmentedSchema(
                             where: `${rel.typeMeta.name}Where`,
                         },
                     },
+                });
+
+                const upperFieldName = upperFirst(rel.fieldName);
+                const upperNodeName = upperFirst(node.name);
+                const typePrefix = `${upperNodeName}${upperFieldName}`;
+
+                const connectWhere = composer.getOrCreateITC(`${rel.typeMeta.name}ConnectWhere`, (tc) => {
+                    tc.addFields({
+                        node: `${rel.typeMeta.name}Where!`,
+                    });
+                });
+
+                const connectFieldInput = composer.getOrCreateITC(
+                    `${node.name}${upperFirst(rel.fieldName)}ConnectFieldInput`,
+                    (tc) => {
+                        tc.addFields({
+                            where: connectWhere,
+                            // ...(n.relationFields.length
+                            //     ? { connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput` }
+                            //     : {}),
+                            ...(rel.properties
+                                ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
+                                : {}),
+                        });
+                    }
+                );
+
+                const deleteFieldInput = composer.getOrCreateITC(
+                    `${node.name}${upperFirst(rel.fieldName)}DeleteFieldInput`,
+                    (tc) => {
+                        tc.addFields({
+                            where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
+                        });
+                    }
+                );
+
+                const disconnectFieldInput = composer.getOrCreateITC(
+                    `${node.name}${upperFirst(rel.fieldName)}DisconnectFieldInput`,
+                    (tc) => {
+                        tc.addFields({
+                            where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
+                        });
+                    }
+                );
+
+                const createFieldInput = composer.getOrCreateITC(
+                    `${node.name}${upperFirst(rel.fieldName)}CreateFieldInput`
+                );
+
+                refNodes.forEach((n) => {
+                    const unionPrefix = `${node.name}${upperFieldName}${n.name}`;
+                    const updateField = `${n.name}UpdateInput`;
+                    const nodeFieldInputName = `${unionPrefix}FieldInput`;
+                    const whereName = `${unionPrefix}ConnectionWhere`;
+
+                    const deleteName = `${unionPrefix}DeleteFieldInput`;
+                    const _delete = rel.typeMeta.array ? `[${deleteName}!]` : `${deleteName}`;
+
+                    const disconnectName = `${unionPrefix}DisconnectFieldInput`;
+                    const disconnect = rel.typeMeta.array ? `[${disconnectName}!]` : `${disconnectName}`;
+
+                    const connectionUpdateInputName = `${unionPrefix}UpdateConnectionInput`;
+
+                    const createName = `${node.name}${upperFirst(rel.fieldName)}${n.name}CreateFieldInput`;
+                    const create = rel.typeMeta.array ? `[${createName}!]` : createName;
+                    if (!composer.has(createName)) {
+                        composer.createInputTC({
+                            name: createName,
+                            fields: {
+                                node: `${n.name}CreateInput!`,
+                                ...(rel.properties ? { edge: `${rel.properties}CreateInput!` } : {}),
+                            },
+                        });
+
+                        // interfaceCreateInput.addFields({
+                        //     [n.name]: `[${createName}!]`,
+                        // });
+
+                        createFieldInput.addFields({
+                            [n.name]: create,
+                        });
+                    }
+
+                    if (n.relationFields.length) {
+                    }
+                });
+
+                nodeCreateInput.addFields({
+                    [rel.fieldName]: createFieldInput,
+                });
+
+                nodeConnectInput.addFields({
+                    [rel.fieldName]: connectFieldInput,
+                });
+
+                nodeDeleteInput.addFields({
+                    [rel.fieldName]: deleteFieldInput,
+                });
+
+                nodeDisconnectInput.addFields({
+                    [rel.fieldName]: disconnectFieldInput,
+                });
+
+                nodeRelationInput.addFields({
+                    [rel.fieldName]: createFieldInput,
                 });
 
                 return;
@@ -1003,7 +1126,7 @@ function makeAugmentedSchema(
                     }
                 });
 
-                nodeInput.addFields({
+                nodeCreateInput.addFields({
                     [rel.fieldName]: unionCreateInput,
                 });
 
@@ -1165,7 +1288,7 @@ function makeAugmentedSchema(
                 [rel.fieldName]: create,
             });
 
-            nodeInput.addFields({
+            nodeCreateInput.addFields({
                 [rel.fieldName]: nodeFieldInputName,
             });
 
@@ -1475,6 +1598,13 @@ function makeAugmentedSchema(
         if (!generatedResolvers[union.name.value]) {
             // eslint-disable-next-line no-underscore-dangle
             generatedResolvers[union.name.value] = { __resolveType: (root) => root.__resolveType };
+        }
+    });
+
+    interfaceRelationships.forEach((i) => {
+        if (!generatedResolvers[i.name.value]) {
+            // eslint-disable-next-line no-underscore-dangle
+            generatedResolvers[i.name.value] = { __resolveType: (root) => root.__resolveType };
         }
     });
 
