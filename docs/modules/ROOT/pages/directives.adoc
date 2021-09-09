@@ -89,4 +89,10 @@ Reference: xref::type-definitions/access-control.adoc#type-definitions-access-co
 
 The `@alias` directive will map a GraphQL schema field to a Neo4j property on a node or relationship.
 
-Reference: xref::type-definitions/database-mapping.adoc[`@alias`]
+Reference: xref::type-definitions/database-mapping.adoc#type-definitions-alias[`@alias`]
+
+== `@node`
+
+The `@node` directive maps a GraphQL type to one or more Neo4j labels.
+
+Reference: xref::type-definitions/database-mapping.adoc#type-definitions-node[`@node`]
