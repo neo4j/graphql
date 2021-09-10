@@ -51,6 +51,30 @@ jobs:
           flags: ${{ matrix.package }},unit
           fail_ci_if_error: true
 
+  schema-tests:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run Schema tests
+        run: yarn --cwd packages/graphql run test:schema --coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./packages/graphql/coverage/
+          flags: graphql,schema
+          fail_ci_if_error: true
+
   tck-tests:
     needs:
       - cache-dependencies
