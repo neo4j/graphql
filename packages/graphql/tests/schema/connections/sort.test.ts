@@ -19,19 +19,21 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Sort", () => {
     test("sort argument is not present when nothing to sort", () => {
-        const typeDefs = `
-type Node1 {
-    property: String!
-    relatedTo: [Node2!]! @relationship(type: "RELATED_TO", direction: OUT)
-}
+        const typeDefs = gql`
+            type Node1 {
+                property: String!
+                relatedTo: [Node2!]! @relationship(type: "RELATED_TO", direction: OUT)
+            }
 
-type Node2 {
-    relatedTo: [Node1!]! @relationship(type: "RELATED_TO", direction: OUT)
-}`;
+            type Node2 {
+                relatedTo: [Node1!]! @relationship(type: "RELATED_TO", direction: OUT)
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

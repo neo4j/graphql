@@ -19,31 +19,31 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Enums", () => {
     test("Enum Relationship Properties", () => {
-        const typeDefs = `
-type Actor {
-    name: String!
-    movies: [Movie]
-        @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-}
+        const typeDefs = gql`
+            type Actor {
+                name: String!
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
 
-type Movie {
-    title: String!
-    actors: [Actor]!
-        @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-}
+            type Movie {
+                title: String!
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
 
-enum RoleType {
-    LEADING
-    SUPPORTING
-}
+            enum RoleType {
+                LEADING
+                SUPPORTING
+            }
 
-interface ActedIn {
-    roleType: RoleType!
-}`;
+            interface ActedIn {
+                roleType: RoleType!
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

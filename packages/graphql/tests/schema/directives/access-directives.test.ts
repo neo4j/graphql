@@ -19,16 +19,18 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Access-directives", () => {
     test("Simple", () => {
-        const typeDefs = `
-type User {
-    id: ID! @readonly
-    username: String!
-    password: String! @writeonly
-}`;
+        const typeDefs = gql`
+            type User {
+                id: ID! @readonly
+                username: String!
+                password: String! @writeonly
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

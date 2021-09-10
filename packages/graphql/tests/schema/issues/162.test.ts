@@ -19,24 +19,26 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("162", () => {
     test("2 instances of DeleteInput type created", () => {
-        const typeDefs = `
-type Tiger {
-    x: Int
-}
+        const typeDefs = gql`
+            type Tiger {
+                x: Int
+            }
 
-type TigerJawLevel2 {
-    id: ID
-    part1: TigerJawLevel2Part1 @relationship(type: "REL1", direction: OUT)
-}
+            type TigerJawLevel2 {
+                id: ID
+                part1: TigerJawLevel2Part1 @relationship(type: "REL1", direction: OUT)
+            }
 
-type TigerJawLevel2Part1 {
-    id: ID
-    tiger: Tiger @relationship(type: "REL2", direction: OUT)
-}`;
+            type TigerJawLevel2Part1 {
+                id: ID
+                tiger: Tiger @relationship(type: "REL2", direction: OUT)
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

@@ -19,15 +19,17 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Bigint", () => {
     test("BigInt", () => {
-        const typeDefs = `
-type File {
-    name: String!
-    size: BigInt!
-}`;
+        const typeDefs = gql`
+            type File {
+                name: String!
+                size: BigInt!
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

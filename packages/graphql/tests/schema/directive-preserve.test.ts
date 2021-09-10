@@ -19,28 +19,19 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Directive-preserve", () => {
     test("Preserve Directives", () => {
-        const typeDefs = `
-directive @preservedTopLevel(
-    string: String
-    int: Int
-    float: Float
-    boolean: Boolean
-) on OBJECT
-directive @preservedFieldLevel(
-    string: String
-    int: Int
-    float: Float
-    boolean: Boolean
-) on FIELD_DEFINITION
+        const typeDefs = gql`
+            directive @preservedTopLevel(string: String, int: Int, float: Float, boolean: Boolean) on OBJECT
+            directive @preservedFieldLevel(string: String, int: Int, float: Float, boolean: Boolean) on FIELD_DEFINITION
 
-type Movie @preservedTopLevel {
-    id: ID
-        @preservedFieldLevel(string: "str", int: 12, float: 1.2, boolean: true)
-}`;
+            type Movie @preservedTopLevel {
+                id: ID @preservedFieldLevel(string: "str", int: 12, float: 1.2, boolean: true)
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

@@ -19,14 +19,16 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Point", () => {
     test("Point", () => {
-        const typeDefs = `
-type Movie {
-    filmedAt: Point!
-}`;
+        const typeDefs = gql`
+            type Movie {
+                filmedAt: Point!
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
@@ -146,10 +148,11 @@ type Movie {
     });
 
     test("CartesianPoint", () => {
-        const typeDefs = `
-type Machine {
-    partLocation: CartesianPoint!
-}`;
+        const typeDefs = gql`
+            type Machine {
+                partLocation: CartesianPoint!
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
@@ -268,10 +271,11 @@ type Machine {
     });
 
     test("Points", () => {
-        const typeDefs = `
-type Movie {
-    filmedAt: [Point!]!
-}`;
+        const typeDefs = gql`
+            type Movie {
+                filmedAt: [Point!]!
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
@@ -366,10 +370,11 @@ type Movie {
     });
 
     test("CartesianPoints", () => {
-        const typeDefs = `
-type Machine {
-    partLocations: [CartesianPoint!]!
-}`;
+        const typeDefs = gql`
+            type Machine {
+                partLocations: [CartesianPoint!]!
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

@@ -19,18 +19,20 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Exclude", () => {
     test("Using `@exclude` directive to skip generation of Query", () => {
-        const typeDefs = `
-type Actor @exclude(operations: [READ]) {
-    name: String
-}
+        const typeDefs = gql`
+            type Actor @exclude(operations: [READ]) {
+                name: String
+            }
 
-type Movie {
-    title: String
-}`;
+            type Movie {
+                title: String
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
@@ -171,10 +173,11 @@ type Movie {
     });
 
     test("Using `@exclude` directive to skip generator of Mutation", () => {
-        const typeDefs = `
-type Actor @exclude(operations: [CREATE]) {
-    name: String
-}`;
+        const typeDefs = gql`
+            type Actor @exclude(operations: [CREATE]) {
+                name: String
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
@@ -259,14 +262,15 @@ type Actor @exclude(operations: [CREATE]) {
     });
 
     test('Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations and removes the type itself if not referenced elsewhere', () => {
-        const typeDefs = `
-type Actor @exclude {
-    name: String
-}
+        const typeDefs = gql`
+            type Actor @exclude {
+                name: String
+            }
 
-type Movie {
-    title: String
-}`;
+            type Movie {
+                title: String
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
@@ -367,18 +371,19 @@ type Movie {
     });
 
     test('Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations but retains the type itself if referenced elsewhere', () => {
-        const typeDefs = `
-type Actor @exclude {
-    name: String
-}
+        const typeDefs = gql`
+            type Actor @exclude {
+                name: String
+            }
 
-type Movie {
-    title: String
-}
+            type Movie {
+                title: String
+            }
 
-type Query {
-    customActorQuery: Actor
-}`;
+            type Query {
+                customActorQuery: Actor
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
@@ -484,15 +489,16 @@ type Query {
     });
 
     test('Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations but retains the type itself if referenced in a `@relationship` directive', () => {
-        const typeDefs = `
-type Actor @exclude {
-    name: String
-}
+        const typeDefs = gql`
+            type Actor @exclude {
+                name: String
+            }
 
-type Movie {
-    title: String
-    actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
-}`;
+            type Movie {
+                title: String
+                actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
@@ -724,10 +730,11 @@ type Movie {
     });
 
     test("Ensure generation doesn't break if `@exclude` is provided with an empty array", () => {
-        const typeDefs = `
-type Actor @exclude(operations: []) {
-    name: String
-}`;
+        const typeDefs = gql`
+            type Actor @exclude(operations: []) {
+                name: String
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

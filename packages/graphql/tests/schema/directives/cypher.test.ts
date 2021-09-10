@@ -19,26 +19,28 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Cypher", () => {
     test("Custom Directive Simple", () => {
-        const typeDefs = `
-type Actor {
-    name: String
-}
+        const typeDefs = gql`
+            type Actor {
+                name: String
+            }
 
-type Movie {
-    id: ID
-    actors(title: String): [Actor]
-        @cypher(
-            statement: """
-            MATCH (a:Actor {title: $title})
-            RETURN a
-            LIMIT 1
-            """
-        )
-}`;
+            type Movie {
+                id: ID
+                actors(title: String): [Actor]
+                    @cypher(
+                        statement: """
+                        MATCH (a:Actor {title: $title})
+                        RETURN a
+                        LIMIT 1
+                        """
+                    )
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

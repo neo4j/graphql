@@ -19,34 +19,33 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Unions", () => {
     test("Relationship Properties", () => {
-        const typeDefs = `
-union Publication = Book | Journal
+        const typeDefs = gql`
+            union Publication = Book | Journal
 
-type Author {
-    name: String!
-    publications: [Publication]
-        @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
-}
+            type Author {
+                name: String!
+                publications: [Publication] @relationship(type: "WROTE", direction: OUT, properties: "Wrote")
+            }
 
-type Book {
-    title: String!
-    author: [Author!]!
-        @relationship(type: "WROTE", direction: IN, properties: "Wrote")
-}
+            type Book {
+                title: String!
+                author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
+            }
 
-type Journal {
-    subject: String!
-    author: [Author!]!
-        @relationship(type: "WROTE", direction: IN, properties: "Wrote")
-}
+            type Journal {
+                subject: String!
+                author: [Author!]! @relationship(type: "WROTE", direction: IN, properties: "Wrote")
+            }
 
-interface Wrote {
-    words: Int!
-}`;
+            interface Wrote {
+                words: Int!
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

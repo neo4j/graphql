@@ -19,19 +19,21 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Default", () => {
     test("Simple", () => {
-        const typeDefs = `
-type User {
-    id: ID! @default(value: "00000000-00000000-00000000-00000000")
-    name: String! @default(value: "Jane Smith")
-    verified: Boolean! @default(value: false)
-    numberOfFriends: Int! @default(value: 0)
-    rating: Float! @default(value: 0.0)
-    verifiedDate: DateTime! @default(value: "1970-01-01T00:00:00.000Z")
-}`;
+        const typeDefs = gql`
+            type User {
+                id: ID! @default(value: "00000000-00000000-00000000-00000000")
+                name: String! @default(value: "Jane Smith")
+                verified: Boolean! @default(value: false)
+                numberOfFriends: Int! @default(value: 0)
+                rating: Float! @default(value: 0.0)
+                verifiedDate: DateTime! @default(value: "1970-01-01T00:00:00.000Z")
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
