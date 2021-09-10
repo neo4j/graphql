@@ -19,41 +19,43 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Comments", () => {
     test("Simple", () => {
-        const typeDefs = `
-"A custom scalar."
-scalar CustomScalar
+        const typeDefs = gql`
+            "A custom scalar."
+            scalar CustomScalar
 
-"An enumeration of movie genres."
-enum Genre {
-    ACTION
-    DRAMA
-    ROMANCE
-}
+            "An enumeration of movie genres."
+            enum Genre {
+                ACTION
+                DRAMA
+                ROMANCE
+            }
 
-"""
-A type describing a movie.
-"""
-type Movie {
-    id: ID
-    "The number of actors who acted in the movie."
-    actorCount: Int
-    """
-    The average rating for the movie.
-    """
-    averageRating: Float
-    """
-    Is the movie active?
+            """
+            A type describing a movie.
+            """
+            type Movie {
+                id: ID
+                "The number of actors who acted in the movie."
+                actorCount: Int
+                """
+                The average rating for the movie.
+                """
+                averageRating: Float
+                """
+                Is the movie active?
 
-    This is measured based on annual profit.
-    """
-    isActive: Boolean
-    genre: Genre
-    customScalar: CustomScalar
-}`;
+                This is measured based on annual profit.
+                """
+                isActive: Boolean
+                genre: Genre
+                customScalar: CustomScalar
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

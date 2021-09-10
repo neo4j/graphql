@@ -19,22 +19,24 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Unions", () => {
     test("Unions", () => {
-        const typeDefs = `
-union Search = Movie | Genre
+        const typeDefs = gql`
+            union Search = Movie | Genre
 
-type Genre {
-    id: ID
-}
+            type Genre {
+                id: ID
+            }
 
-type Movie {
-    id: ID
-    search: [Search] @relationship(type: "SEARCH", direction: OUT)
-    searchNoDirective: Search
-}`;
+            type Movie {
+                id: ID
+                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+                searchNoDirective: Search
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

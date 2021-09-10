@@ -19,17 +19,19 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("200", () => {
     test("2 instances of DeleteInput type created", () => {
-        const typeDefs = `
-type Category {
-    categoryId: ID! @id
-    name: String!
-    description: String! @default(value: "")
-    exampleImageLocations: [String!]
-}`;
+        const typeDefs = gql`
+            type Category {
+                categoryId: ID! @id
+                name: String!
+                description: String! @default(value: "")
+                exampleImageLocations: [String!]
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

@@ -19,19 +19,21 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Relationship", () => {
     test("Single Relationship", () => {
-        const typeDefs = `
-type Actor {
-    name: String
-}
+        const typeDefs = gql`
+            type Actor {
+                name: String
+            }
 
-type Movie {
-    id: ID
-    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
-}`;
+            type Movie {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
@@ -278,16 +280,17 @@ type Movie {
     });
 
     test("Multi Relationship", () => {
-        const typeDefs = `
-type Actor {
-    name: String
-    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
-}
+        const typeDefs = gql`
+            type Actor {
+                name: String
+                movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+            }
 
-type Movie {
-    id: ID
-    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
-}`;
+            type Movie {
+                id: ID
+                actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

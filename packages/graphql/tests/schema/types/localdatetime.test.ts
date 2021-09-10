@@ -19,15 +19,17 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Localdatetime", () => {
     test("LocalDateTime", () => {
-        const typeDefs = `
-type Movie {
-    id: ID
-    localDT: LocalDateTime
-}`;
+        const typeDefs = gql`
+            type Movie {
+                id: ID
+                localDT: LocalDateTime
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

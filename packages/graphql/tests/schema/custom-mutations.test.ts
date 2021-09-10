@@ -19,32 +19,34 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Custom-mutations", () => {
     test("Custom Mutations", () => {
-        const typeDefs = `
-input ExampleInput {
-    id: ID
-}
+        const typeDefs = gql`
+            input ExampleInput {
+                id: ID
+            }
 
-type Movie {
-    id: ID
-}
+            type Movie {
+                id: ID
+            }
 
-type Query {
-    testQuery(input: ExampleInput): String
-    testCypherQuery(input: ExampleInput): String @cypher(statement: "")
-}
+            type Query {
+                testQuery(input: ExampleInput): String
+                testCypherQuery(input: ExampleInput): String @cypher(statement: "")
+            }
 
-type Mutation {
-    testMutation(input: ExampleInput): String
-    testCypherMutation(input: ExampleInput): String @cypher(statement: "")
-}
+            type Mutation {
+                testMutation(input: ExampleInput): String
+                testCypherMutation(input: ExampleInput): String @cypher(statement: "")
+            }
 
-type Subscription {
-    testSubscription(input: ExampleInput): String
-}`;
+            type Subscription {
+                testSubscription(input: ExampleInput): String
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

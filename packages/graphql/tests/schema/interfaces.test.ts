@@ -19,36 +19,37 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Interfaces", () => {
     test("Interfaces", () => {
-        const typeDefs = `
-interface MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
-    id: ID
-    movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
-    customQuery: [Movie]
-        @cypher(
-            statement: """
-            MATCH (m:Movie)
-            RETURN m
-            """
-        )
-}
+        const typeDefs = gql`
+            interface MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
+                id: ID
+                movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
+                customQuery: [Movie]
+                    @cypher(
+                        statement: """
+                        MATCH (m:Movie)
+                        RETURN m
+                        """
+                    )
+            }
 
-type Movie implements MovieNode
-    @auth(rules: [{ allow: "*", operations: [READ] }]) {
-    id: ID
-    nodes: [MovieNode]
-    movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
-    customQuery: [Movie]
-        @cypher(
-            statement: """
-            MATCH (m:Movie)
-            RETURN m
-            """
-        )
-}`;
+            type Movie implements MovieNode @auth(rules: [{ allow: "*", operations: [READ] }]) {
+                id: ID
+                nodes: [MovieNode]
+                movies: [Movie] @relationship(type: "HAS_MOVIE", direction: OUT)
+                customQuery: [Movie]
+                    @cypher(
+                        statement: """
+                        MATCH (m:Movie)
+                        RETURN m
+                        """
+                    )
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

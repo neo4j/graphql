@@ -19,20 +19,22 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Enum", () => {
     test("Enums", () => {
-        const typeDefs = `
-enum Status {
-    ACTIVE
-    INACTIVE
-    PENDING
-}
+        const typeDefs = gql`
+            enum Status {
+                ACTIVE
+                INACTIVE
+                PENDING
+            }
 
-type Movie {
-    status: Status
-}`;
+            type Movie {
+                status: Status
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

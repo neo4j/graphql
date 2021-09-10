@@ -19,17 +19,19 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Scalar", () => {
     test("Scalars", () => {
-        const typeDefs = `
-scalar CustomScalar
+        const typeDefs = gql`
+            scalar CustomScalar
 
-type Movie {
-    id: ID
-    myCustomScalar: CustomScalar
-}`;
+            type Movie {
+                id: ID
+                myCustomScalar: CustomScalar
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 

@@ -19,31 +19,28 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Alias", () => {
     test("Custom Directive Simple", () => {
-        const typeDefs = `
-type Actor {
-    name: String!
-    city: String @alias(property: "cityPropInDb")
-    actedIn: [Movie]
-        @relationship(
-            direction: OUT
-            type: "ACTED_IN"
-            properties: "ActorActedInProps"
-        )
-}
+        const typeDefs = gql`
+            type Actor {
+                name: String!
+                city: String @alias(property: "cityPropInDb")
+                actedIn: [Movie] @relationship(direction: OUT, type: "ACTED_IN", properties: "ActorActedInProps")
+            }
 
-type Movie {
-    title: String!
-    rating: Float @alias(property: "ratingPropInDb")
-}
+            type Movie {
+                title: String!
+                rating: Float @alias(property: "ratingPropInDb")
+            }
 
-interface ActorActedInProps {
-    character: String! @alias(property: "characterPropInDb")
-    screenTime: Int
-}`;
+            interface ActorActedInProps {
+                character: String! @alias(property: "characterPropInDb")
+                screenTime: Int
+            }
+        `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
