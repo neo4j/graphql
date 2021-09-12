@@ -401,10 +401,8 @@ function createProjectionAndParams({
                     res.meta.connectionFields = [];
                 }
 
-                const f = field;
-
-                res.meta.connectionFields.push(f);
-                res.projection.push(literalElements ? `${f.alias}: ${f.alias}` : `${f.alias}`);
+                res.meta.connectionFields.push(field);
+                res.projection.push(literalElements ? `${field.alias}: ${field.alias}` : `${field.alias}`);
 
                 return res;
             }
