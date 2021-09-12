@@ -27,6 +27,7 @@ import createDatetimeElement from "./projection/elements/create-datetime-element
 import createPointElement from "./projection/elements/create-point-element";
 // eslint-disable-next-line import/no-cycle
 import createConnectionAndParams from "./connection/create-connection-and-params";
+import getRelationshipFieldDefaultOptions from "../schema/get-relationship-field-default-options";
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 
@@ -258,6 +259,7 @@ function createProjectionAndParams({
             const outStr = relationField.direction === "OUT" ? "->" : "-";
             const nodeOutStr = `(${param}:${referenceNode?.name})`;
             const isArray = relationField.typeMeta.array;
+            const defaultOptions = getRelationshipFieldDefaultOptions({ node, field, referenceNode });
 
             if (relationField.union) {
                 const referenceNodes = context.neoSchema.nodes.filter(
@@ -318,10 +320,11 @@ function createProjectionAndParams({
                 unionStrs.push(headStrs.join(" + "));
                 unionStrs.push(") ]");
 
-                if (optionsInput) {
+                if (optionsInput || defaultOptions) {
+                    const options = optionsInput ?? defaultOptions;
                     const offsetLimit = createOffsetLimitStr({
-                        offset: optionsInput.offset,
-                        limit: optionsInput.limit,
+                        offset: options.offset,
+                        limit: options.limit,
                     });
                     if (offsetLimit) {
                         unionStrs.push(offsetLimit);
@@ -363,11 +366,12 @@ function createProjectionAndParams({
             const innerStr = `${pathStr}  ${whereStr} | ${param} ${projectionStr}`;
             let nestedQuery;
 
-            if (optionsInput) {
-                const offsetLimit = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
+            if (optionsInput || defaultOptions) {
+                const options = optionsInput ?? defaultOptions;
+                const offsetLimit = createOffsetLimitStr({ offset: options.offset, limit: options.limit });
 
-                if (optionsInput.sort) {
-                    const sorts = optionsInput.sort.reduce((s: string[], sort: GraphQLSortArg) => {
+                if (options.sort) {
+                    const sorts = options.sort.reduce((s: string[], sort: GraphQLSortArg) => {
                         return [
                             ...s,
                             ...Object.entries(sort).map(([fieldName, direction]) => {

@@ -61,9 +61,10 @@ function filterDocument(document: DocumentNode): DocumentNode {
     const filterInputTypes = (fields: readonly InputValueDefinitionNode[] | undefined) => {
         return fields?.filter((f) => {
             const type = getArgumentType(f.type);
-            const match = /(?<nodeName>.+)(?:CreateInput|Sort|UpdateInput|Where)/gm.exec(type);
+            const match = /(?<nodeName>.+)(?:CreateInput|Sort|UpdateInput|Where|Options)/gm.exec(type);
             if (match?.groups?.nodeName) {
-                if (nodeNames.includes(match.groups.nodeName)) {
+                // options on union relationships are called "QueryOptions" where Query is filtered from nodes
+                if ([...nodeNames, "Query"].includes(match.groups.nodeName)) {
                     return false;
                 }
             }
