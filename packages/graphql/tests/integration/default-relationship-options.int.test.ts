@@ -24,6 +24,8 @@ import { gql } from "apollo-server";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
+const testLabel = generate({ charset: "alphabetic" });
+
 describe("default relationship options", () => {
     let driver: Driver;
 
@@ -87,16 +89,16 @@ describe("default relationship options", () => {
         const session = driver.session();
         await session.run(
             `
-                CREATE (movie: Movie {title: $title})
-                CREATE (:Director {name: $director})<-[:HAS_PERSON]-(movie)
-                CREATE (:Actor {name: $actor1})<-[:HAS_PERSON]-(movie)
-                CREATE (:Actor {name: $actor2})<-[:HAS_PERSON]-(movie)
-                CREATE (genre1:Genre {name: $genreName1})<-[:IN_GENRE]-(movie)
-                CREATE (:Genre {name: $genreName2})<-[:IN_GENRE]-(movie)
-                CREATE (:Genre {name: $genreName3})<-[:IN_GENRE]-(movie)
-                CREATE (:Genre {name: $genreName4})<-[:IN_GENRE]-(movie)
-                CREATE (:Series {name: $series1})<-[:IN_SERIES]-(genre1)
-                CREATE (:Series {name: $series2})<-[:IN_SERIES]-(genre1)
+                CREATE (movie:Movie:${testLabel} {title: $title})
+                CREATE (:Director:${testLabel} {name: $director})<-[:HAS_PERSON]-(movie)
+                CREATE (:Actor:${testLabel} {name: $actor1})<-[:HAS_PERSON]-(movie)
+                CREATE (:Actor:${testLabel} {name: $actor2})<-[:HAS_PERSON]-(movie)
+                CREATE (genre1:Genre:${testLabel} {name: $genreName1})<-[:IN_GENRE]-(movie)
+                CREATE (:Genre:${testLabel} {name: $genreName2})<-[:IN_GENRE]-(movie)
+                CREATE (:Genre:${testLabel} {name: $genreName3})<-[:IN_GENRE]-(movie)
+                CREATE (:Genre:${testLabel} {name: $genreName4})<-[:IN_GENRE]-(movie)
+                CREATE (:Series:${testLabel} {name: $series1})<-[:IN_SERIES]-(genre1)
+                CREATE (:Series:${testLabel} {name: $series2})<-[:IN_SERIES]-(genre1)
             `,
             {
                 title,
@@ -111,9 +113,13 @@ describe("default relationship options", () => {
                 series2,
             }
         );
+        await session.close();
     });
 
     afterAll(async () => {
+        const session = driver.session();
+        await session.run(`MATCH (node:${testLabel}) DETACH DELETE node`, { testLabel });
+        await session.close();
         await driver.close();
     });
 
@@ -138,13 +144,11 @@ describe("default relationship options", () => {
 
         expect(graphqlResult.errors).toBeUndefined();
 
-        const graphqlMovie = graphqlResult.data?.movies[0];
+        const graphqlMovie: { genres: { name: string }[] } = graphqlResult.data?.movies[0];
 
         expect(graphqlMovie).toBeDefined();
-
-        expect(graphqlMovie).toEqual({
-            genres: [{ name: genreName1 }, { name: genreName2 }, { name: genreName3 }],
-        });
+        expect(graphqlMovie.genres).toHaveLength(3);
+        expect(graphqlMovie.genres).toEqual([{ name: genreName1 }, { name: genreName2 }, { name: genreName3 }]);
     });
 
     test("should override default options on field", async () => {
@@ -168,13 +172,16 @@ describe("default relationship options", () => {
 
         expect(graphqlResult.errors).toBeUndefined();
 
-        const graphqlMovie = graphqlResult.data?.movies[0];
+        const graphqlMovie: { genres: { name: string }[] } = graphqlResult.data?.movies[0];
 
         expect(graphqlMovie).toBeDefined();
-
-        expect(graphqlMovie).toEqual({
-            genres: [{ name: genreName4 }, { name: genreName3 }, { name: genreName2 }, { name: genreName1 }],
-        });
+        expect(graphqlMovie.genres).toHaveLength(4);
+        expect(graphqlMovie.genres).toEqual([
+            { name: genreName4 },
+            { name: genreName3 },
+            { name: genreName2 },
+            { name: genreName1 },
+        ]);
     });
 
     test("should use default options on union field", async () => {
@@ -200,10 +207,9 @@ describe("default relationship options", () => {
 
         expect(graphqlResult.errors).toBeUndefined();
 
-        const graphqlMovie = graphqlResult.data?.movies[0];
+        const graphqlMovie: { people: { name: string }[] } = graphqlResult.data?.movies[0];
 
         expect(graphqlMovie).toBeDefined();
-
         expect(graphqlMovie.people).toHaveLength(1);
     });
 
@@ -231,16 +237,21 @@ describe("default relationship options", () => {
 
         expect(graphqlResult.errors).toBeUndefined();
 
-        const graphqlMovie = graphqlResult.data?.movies[0];
+        const graphqlMovie: { genres: { name: string; series: { name: string }[] }[] } = graphqlResult.data?.movies[0];
 
         expect(graphqlMovie).toBeDefined();
+        expect(graphqlMovie.genres).toHaveLength(3);
 
-        expect(graphqlMovie).toEqual({
-            genres: [
-                { name: genreName1, series: [{ name: series2 }, { name: series1 }] },
-                { name: genreName2, series: [] },
-                { name: genreName3, series: [] },
-            ],
-        });
+        const graphqlMovieGenreA = graphqlMovie.genres.find((genre) => genre.name === genreName1);
+
+        expect(graphqlMovieGenreA?.series).toHaveLength(2);
+        // DESC series
+        expect(graphqlMovieGenreA?.series).toEqual([{ name: series2 }, { name: series1 }]);
+        // ASC genre
+        expect(graphqlMovie.genres).toEqual([
+            { name: genreName1, series: [{ name: series2 }, { name: series1 }] },
+            { name: genreName2, series: [] },
+            { name: genreName3, series: [] },
+        ]);
     });
 });
