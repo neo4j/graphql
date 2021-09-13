@@ -42,6 +42,12 @@ describe("Bigint", () => {
             \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
             scalar BigInt
 
+            type BigIntAggregationSelection {
+              average: Float!
+              max: BigInt!
+              min: BigInt!
+            }
+
             type CreateFilesMutationResponse {
               files: [File!]!
               info: CreateInfo!
@@ -62,6 +68,12 @@ describe("Bigint", () => {
             type File {
               name: String!
               size: BigInt!
+            }
+
+            type FileAggregateSelection {
+              count: Int!
+              name: StringAggregationSelection!
+              size: BigIntAggregationSelection!
             }
 
             input FileCreateInput {
@@ -116,27 +128,10 @@ describe("Bigint", () => {
               updateFiles(update: FileUpdateInput, where: FileWhere): UpdateFilesMutationResponse!
             }
 
-            type FileAggregateSelection {
-              count: Int!
-              name: StringAggregationSelection!
-              size: BigIntAggregationSelection!
-            }
-
-            type BigIntAggregationSelection {
-              average: Float!
-              max: BigInt!
-              min: BigInt!
-            }
-
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
             type Query {
               files(options: FileOptions, where: FileWhere): [File!]!
-              filesCount(where: FileWhere): Int!
               filesAggregate(where: FileWhere): FileAggregateSelection!
+              filesCount(where: FileWhere): Int!
             }
 
             enum SortDirection {
@@ -144,6 +139,11 @@ describe("Bigint", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateFilesMutationResponse {

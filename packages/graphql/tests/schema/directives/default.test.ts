@@ -57,36 +57,26 @@ describe("Default", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
+            type DateTimeAggregationSelection {
+              max: DateTime!
+              min: DateTime!
+            }
+
             type DeleteInfo {
               bookmark: String
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
 
-            type Mutation {
-              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
-              deleteUsers(where: UserWhere): DeleteInfo!
-              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              id: IDAggregationSelection!
-              name: StringAggregationSelection!
-              numberOfFriends: IntAggregationSelection!
-              rating: FloatAggregationSelection!
-              verifiedDate: DateTimeAggregationSelection!
-            }
-
-            type DateTimeAggregationSelection {
-              max: DateTime!
-              min: DateTime!
-            }
-
             type FloatAggregationSelection {
               average: Float!
               max: Float!
-                min: Float!
+              min: Float!
+            }
+
+            type IDAggregationSelection {
+              longest: ID!
+              shortest: ID!
             }
 
             type IntAggregationSelection {
@@ -95,20 +85,16 @@ describe("Default", () => {
               min: Int!
             }
 
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
-            type IDAggregationSelection {
-              shortest: ID!
-              longest: ID!
+            type Mutation {
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+              deleteUsers(where: UserWhere): DeleteInfo!
+              updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersCount(where: UserWhere): Int!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersCount(where: UserWhere): Int!
             }
 
             enum SortDirection {
@@ -116,6 +102,11 @@ describe("Default", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -138,6 +129,15 @@ describe("Default", () => {
               rating: Float!
               verified: Boolean!
               verifiedDate: DateTime!
+            }
+
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
+              name: StringAggregationSelection!
+              numberOfFriends: IntAggregationSelection!
+              rating: FloatAggregationSelection!
+              verifiedDate: DateTimeAggregationSelection!
             }
 
             input UserCreateInput {

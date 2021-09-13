@@ -95,6 +95,11 @@ describe("Exclude", () => {
               title: String
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregationSelection!
+            }
+
             input MovieCreateInput {
               title: String
             }
@@ -139,20 +144,10 @@ describe("Exclude", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregationSelection!
-            }
-
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -160,6 +155,11 @@ describe("Exclude", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {
@@ -200,6 +200,11 @@ describe("Exclude", () => {
 
             type Actor {
               name: String
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregationSelection!
             }
 
             input ActorOptions {
@@ -244,20 +249,10 @@ describe("Exclude", () => {
               updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregationSelection!
-            }
-
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsCount(where: ActorWhere): Int!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsCount(where: ActorWhere): Int!
             }
 
             enum SortDirection {
@@ -265,6 +260,11 @@ describe("Exclude", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {
@@ -323,6 +323,11 @@ describe("Exclude", () => {
               title: String
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregationSelection!
+            }
+
             input MovieCreateInput {
               title: String
             }
@@ -364,20 +369,10 @@ describe("Exclude", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregationSelection!
-            }
-
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -385,6 +380,11 @@ describe("Exclude", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -451,6 +451,11 @@ describe("Exclude", () => {
               title: String
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregationSelection!
+            }
+
             input MovieCreateInput {
               title: String
             }
@@ -492,21 +497,11 @@ describe("Exclude", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregationSelection!
-            }
-
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
             type Query {
               customActorQuery: Actor
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -514,6 +509,11 @@ describe("Exclude", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -674,6 +674,11 @@ describe("Exclude", () => {
               where: MovieActorsConnectionWhere
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregationSelection!
+            }
+
             input MovieConnectInput {
               actors: [MovieActorsConnectFieldInput!]
             }
@@ -745,20 +750,10 @@ describe("Exclude", () => {
               startCursor: String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregationSelection!
-            }
-
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -766,6 +761,11 @@ describe("Exclude", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -801,6 +801,11 @@ describe("Exclude", () => {
 
             type Actor {
               name: String
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregationSelection!
             }
 
             input ActorCreateInput {
@@ -861,20 +866,10 @@ describe("Exclude", () => {
               updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregationSelection!
-            }
-
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsCount(where: ActorWhere): Int!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsCount(where: ActorWhere): Int!
             }
 
             enum SortDirection {
@@ -882,6 +877,11 @@ describe("Exclude", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {

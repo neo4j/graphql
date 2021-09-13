@@ -56,9 +56,20 @@ describe("Time", () => {
               relationshipsDeleted: Int!
             }
 
+            type IDAggregationSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Movie {
               id: ID
               time: Time
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
+              time: TimeAggregationSelection!
             }
 
             input MovieCreateInput {
@@ -113,22 +124,6 @@ describe("Time", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
-            type IDAggregationSelection {
-              shortest: ID!
-              longest: ID!
-            }
-
-            type MovieAggregateSelection {
-                count: Int!
-                id: IDAggregationSelection!
-                time: TimeAggregationSelection!
-            }
-
-            type TimeAggregationSelection {
-                max: Time!
-                min: Time!
-            }
-
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -144,6 +139,11 @@ describe("Time", () => {
 
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
             scalar Time
+
+            type TimeAggregationSelection {
+              max: Time!
+              min: Time!
+            }
 
             type UpdateInfo {
               bookmark: String

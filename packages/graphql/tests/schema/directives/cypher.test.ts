@@ -54,6 +54,11 @@ describe("Cypher", () => {
               name: String
             }
 
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregationSelection!
+            }
+
             input ActorCreateInput {
               name: String
             }
@@ -111,9 +116,19 @@ describe("Cypher", () => {
               relationshipsDeleted: Int!
             }
 
+            type IDAggregationSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Movie {
               actors(title: String): [Actor]
               id: ID
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
             }
 
             input MovieCreateInput {
@@ -160,34 +175,13 @@ describe("Cypher", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregationSelection!
-            }
-
-            type IDAggregationSelection {
-              shortest: ID!
-              longest: ID!
-            }
-
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregationSelection!
-            }
-          
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsCount(where: ActorWhere): Int!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -195,6 +189,11 @@ describe("Cypher", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {

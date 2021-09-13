@@ -57,10 +57,27 @@ describe("Arrays", () => {
               relationshipsDeleted: Int!
             }
 
+            type FloatAggregationSelection {
+              average: Float!
+              max: Float!
+              min: Float!
+            }
+
+            type IDAggregationSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Movie {
               averageRating: Float!
               id: ID!
               ratings: [Float!]!
+            }
+
+            type MovieAggregateSelection {
+              averageRating: FloatAggregationSelection!
+              count: Int!
+              id: IDAggregationSelection!
             }
 
             input MovieCreateInput {
@@ -121,27 +138,10 @@ describe("Arrays", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
-            type IDAggregationSelection {
-              shortest: ID!
-              longest: ID!
-            }
-
-            type FloatAggregationSelection {
-              average: Float!
-              max: Float!
-              min: Float!
-            }
-
-            type MovieAggregateSelection {
-              averageRating: FloatAggregationSelection!
-              count: Int!
-              id: IDAggregationSelection!
-            }
-
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {

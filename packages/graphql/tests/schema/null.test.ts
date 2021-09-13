@@ -64,10 +64,32 @@ describe("Null", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
+            type DateTimeAggregationSelection {
+              max: DateTime!
+              min: DateTime!
+            }
+
             type DeleteInfo {
               bookmark: String
               nodesDeleted: Int!
               relationshipsDeleted: Int!
+            }
+
+            type FloatAggregationSelection {
+              average: Float!
+              max: Float!
+              min: Float!
+            }
+
+            type IDAggregationSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
+            type IntAggregationSelection {
+              average: Float!
+              max: Int!
+              min: Int!
             }
 
             type Movie {
@@ -84,6 +106,15 @@ describe("Null", () => {
               isActives: [Boolean!]!
               name: String!
               names: [String!]!
+            }
+
+            type MovieAggregateSelection {
+              actorCount: IntAggregationSelection!
+              averageRating: FloatAggregationSelection!
+              count: Int!
+              createdAt: DateTimeAggregationSelection!
+              id: IDAggregationSelection!
+              name: StringAggregationSelection!
             }
 
             input MovieCreateInput {
@@ -245,46 +276,10 @@ describe("Null", () => {
               longitude: Float!
             }
 
-            type MovieAggregateSelection {
-              actorCount: IntAggregationSelection!
-              averageRating: FloatAggregationSelection!
-              count: Int!
-              createdAt: DateTimeAggregationSelection!
-              id: IDAggregationSelection!
-              name: StringAggregationSelection!
-            }
-
-            type DateTimeAggregationSelection {
-                max: DateTime!
-                min: DateTime!
-            }
-
-            type FloatAggregationSelection {
-                average: Float!
-                max: Float!
-                min: Float!
-            }
-
-            type IntAggregationSelection {
-                average: Float!
-                max: Int!
-                min: Int!
-            }
-
-            type StringAggregationSelection {
-                shortest: String!
-                longest: String!
-            }
-
-            type IDAggregationSelection {
-                shortest: ID!
-                longest: ID!
-            }
-
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -292,6 +287,11 @@ describe("Null", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {

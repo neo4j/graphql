@@ -61,6 +61,11 @@ describe("Unions", () => {
               publicationsConnection(where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
+            type AuthorAggregateSelection {
+              count: Int!
+              name: StringAggregationSelection!
+            }
+
             input AuthorConnectInput {
               publications: AuthorPublicationsConnectInput
             }
@@ -289,6 +294,11 @@ describe("Unions", () => {
               title: String!
             }
 
+            type BookAggregateSelection {
+              count: Int!
+              title: StringAggregationSelection!
+            }
+
             input BookAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
@@ -449,6 +459,11 @@ describe("Unions", () => {
               subject: String!
             }
 
+            type JournalAggregateSelection {
+              count: Int!
+              subject: StringAggregationSelection!
+            }
+
             input JournalAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
@@ -603,36 +618,16 @@ describe("Unions", () => {
               Journal: JournalWhere
             }
 
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-          
-            type JournalAggregateSelection {
-              count: Int!
-              subject: StringAggregationSelection!
-            }
-
-            type BookAggregateSelection {
-              count: Int!
-              title: StringAggregationSelection!
-            }
-
-            type AuthorAggregateSelection {
-              count: Int!
-              name: StringAggregationSelection!
-            }
-
             type Query {
               authors(options: AuthorOptions, where: AuthorWhere): [Author!]!
-              authorsCount(where: AuthorWhere): Int!
               authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
+              authorsCount(where: AuthorWhere): Int!
               books(options: BookOptions, where: BookWhere): [Book!]!
-              booksCount(where: BookWhere): Int!
               booksAggregate(where: BookWhere): BookAggregateSelection!
+              booksCount(where: BookWhere): Int!
               journals(options: JournalOptions, where: JournalWhere): [Journal!]!
-              journalsCount(where: JournalWhere): Int!
               journalsAggregate(where: JournalWhere): JournalAggregateSelection!
+              journalsCount(where: JournalWhere): Int!
             }
 
             input QueryOptions {
@@ -645,6 +640,11 @@ describe("Unions", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateAuthorsMutationResponse {

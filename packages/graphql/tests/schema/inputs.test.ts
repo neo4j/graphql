@@ -63,8 +63,18 @@ describe("Inputs", () => {
               relationshipsDeleted: Int!
             }
 
+            type IDAggregationSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Movie {
               id: ID
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
             }
 
             input MovieCreateInput {
@@ -112,20 +122,10 @@ describe("Inputs", () => {
               id: ID
             }
 
-            type IDAggregationSelection {
-              shortest: ID!
-              longest: ID!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregationSelection!
-            }
-
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
               name(input: NodeInput): String
             }
 

@@ -65,6 +65,10 @@ describe("Enum", () => {
               status: Status
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+            }
+
             input MovieCreateInput {
               status: Status
             }
@@ -100,14 +104,10 @@ describe("Enum", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-            }
-
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {

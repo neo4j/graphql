@@ -47,6 +47,11 @@ describe("Relationship", () => {
               name: String
             }
 
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregationSelection!
+            }
+
             input ActorConnectWhere {
               node: ActorWhere!
             }
@@ -106,6 +111,11 @@ describe("Relationship", () => {
               bookmark: String
               nodesDeleted: Int!
               relationshipsDeleted: Int!
+            }
+
+            type IDAggregationSelection {
+              longest: ID!
+              shortest: ID!
             }
 
             type Movie {
@@ -168,6 +178,11 @@ describe("Relationship", () => {
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
               where: MovieActorsConnectionWhere
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
             }
 
             input MovieConnectInput {
@@ -244,33 +259,13 @@ describe("Relationship", () => {
               startCursor: String
             }
 
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
-            type IDAggregationSelection {
-                shortest: ID!
-                longest: ID!
-            }
-
-            type MovieAggregateSelection {
-                count: Int!
-                id: IDAggregationSelection!
-            }
-
-            type ActorAggregateSelection {
-                count: Int!
-                name: StringAggregationSelection!
-            }
-
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsCount(where: ActorWhere): Int!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -278,6 +273,11 @@ describe("Relationship", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {
@@ -326,6 +326,11 @@ describe("Relationship", () => {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregationSelection!
             }
 
             input ActorConnectInput {
@@ -470,6 +475,11 @@ describe("Relationship", () => {
               relationshipsDeleted: Int!
             }
 
+            type IDAggregationSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -533,6 +543,11 @@ describe("Relationship", () => {
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
               where: MovieActorsConnectionWhere
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
             }
 
             input MovieConnectInput {
@@ -613,33 +628,13 @@ describe("Relationship", () => {
               startCursor: String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregationSelection!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregationSelection!
-            }
-
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
-            type IDAggregationSelection {
-              shortest: ID!
-              longest: ID!
-            }
-
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsCount(where: ActorWhere): Int!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -647,6 +642,11 @@ describe("Relationship", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {
