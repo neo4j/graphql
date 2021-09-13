@@ -24,6 +24,8 @@
         "test:tck:watch": "jest tck --watchAll",
         "test:int": "jest tests/integration",
         "test:int:watch": "jest int --watch",
+        "test:schema": "jest tests/schema",
+        "test:schema:watch": "jest tests/schema --watch",
         "setup:package-tests": "yarn pack && mv *.tgz ../package-tests/ && cd ../package-tests/ && rimraf package && tar -xvzf *.tgz && yarn install && yarn run setup",
         "posttest:package-tests": "yarn run cleanup:package-tests",
         "test:package-tests": "yarn run setup:package-tests && cd ../package-tests/ && yarn run test:all",
