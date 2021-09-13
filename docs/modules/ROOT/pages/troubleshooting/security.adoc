@@ -1,0 +1,10 @@
+[[security]]
+= Security
+
+This chapter describes security considerations and known issues.
+
+== Authorization not triggered for empty match
+
+If a query yields no results, the xref::auth/auth-directive.adoc[Authorization] process will not be triggered.
+This means that the result will be empty, instead of throwing an authentication error. Unauthorized users may
+then discern whether or not a certain type exists in the database, even if data itself cannot be accessed.
