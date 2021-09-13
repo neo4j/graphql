@@ -54,16 +54,33 @@ describe("Timestamps", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
+            type DateTimeAggregationSelection {
+              max: DateTime!
+              min: DateTime!
+            }
+
             type DeleteInfo {
               bookmark: String
               nodesDeleted: Int!
               relationshipsDeleted: Int!
             }
 
+            type IDAggregationSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Movie {
               createdAt: DateTime!
               id: ID
               updatedAt: DateTime!
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              createdAt: DateTimeAggregationSelection!
+              id: IDAggregationSelection!
+              updatedAt: DateTimeAggregationSelection!
             }
 
             input MovieCreateInput {
@@ -125,27 +142,10 @@ describe("Timestamps", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
-            type DateTimeAggregationSelection {
-              max: DateTime!
-              min: DateTime!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              createdAt: DateTimeAggregationSelection!
-              id: IDAggregationSelection!
-              updatedAt: DateTimeAggregationSelection!
-            }
-
-            type IDAggregationSelection {
-                shortest: ID!
-                longest: ID!
-            }
-
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {

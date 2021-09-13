@@ -164,6 +164,12 @@ describe("Alias", () => {
               where: ActorActedInConnectionWhere
             }
 
+            type ActorAggregateSelection {
+              city: StringAggregationSelection!
+              count: Int!
+              name: StringAggregationSelection!
+            }
+
             input ActorConnectInput {
               actedIn: [ActorActedInConnectFieldInput!]
             }
@@ -256,9 +262,21 @@ describe("Alias", () => {
               relationshipsDeleted: Int!
             }
 
+            type FloatAggregationSelection {
+              average: Float!
+              max: Float!
+              min: Float!
+            }
+
             type Movie {
               rating: Float
               title: String!
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              rating: FloatAggregationSelection!
+              title: StringAggregationSelection!
             }
 
             input MovieConnectWhere {
@@ -328,36 +346,13 @@ describe("Alias", () => {
               startCursor: String
             }
 
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
-            type ActorAggregateSelection {
-              city: StringAggregationSelection!
-              count: Int!
-              name: StringAggregationSelection!
-            }
-
-            type FloatAggregationSelection {
-              average: Float!
-              max: Float!
-              min: Float!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              rating: FloatAggregationSelection!
-              title: StringAggregationSelection!
-            }
-          
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsCount(where: ActorWhere): Int!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -365,6 +360,11 @@ describe("Alias", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {

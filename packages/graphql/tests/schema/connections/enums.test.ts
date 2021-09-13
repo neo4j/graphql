@@ -84,6 +84,11 @@ describe("Enums", () => {
               name: String!
             }
 
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregationSelection!
+            }
+
             input ActorConnectInput {
               movies: [ActorMoviesConnectFieldInput!]
             }
@@ -305,6 +310,11 @@ describe("Enums", () => {
               where: MovieActorsConnectionWhere
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregationSelection!
+            }
+
             input MovieConnectInput {
               actors: [MovieActorsConnectFieldInput!]
             }
@@ -383,28 +393,13 @@ describe("Enums", () => {
               startCursor: String
             }
 
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregationSelection!
-            }
-          
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregationSelection!
-            }
-
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsCount(where: ActorWhere): Int!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum RoleType {
@@ -417,6 +412,11 @@ describe("Enums", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {

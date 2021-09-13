@@ -58,33 +58,21 @@ describe("Ignore", () => {
               relationshipsDeleted: Int!
             }
 
+            type IDAggregationSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(where: UserWhere): DeleteInfo!
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
-            type IDAggregationSelection {
-                shortest: ID!
-                longest: ID!
-            }
-
-            type UserAggregateSelection {
-                count: Int!
-                id: IDAggregationSelection!
-                password: StringAggregationSelection!
-                username: StringAggregationSelection!
-            }
-
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersCount(where: UserWhere): Int!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersCount(where: UserWhere): Int!
             }
 
             enum SortDirection {
@@ -92,6 +80,11 @@ describe("Ignore", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -112,6 +105,13 @@ describe("Ignore", () => {
               nickname: String!
               password: String!
               username: String!
+            }
+
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
+              password: StringAggregationSelection!
+              username: StringAggregationSelection!
             }
 
             input UserCreateInput {

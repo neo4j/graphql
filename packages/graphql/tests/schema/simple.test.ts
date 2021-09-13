@@ -58,11 +58,35 @@ describe("Simple", () => {
               relationshipsDeleted: Int!
             }
 
+            type FloatAggregationSelection {
+              average: Float!
+              max: Float!
+              min: Float!
+            }
+
+            type IDAggregationSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
+            type IntAggregationSelection {
+              average: Float!
+              max: Int!
+              min: Int!
+            }
+
             type Movie {
               actorCount: Int
               averageRating: Float
               id: ID
               isActive: Boolean
+            }
+
+            type MovieAggregateSelection {
+              actorCount: IntAggregationSelection!
+              averageRating: FloatAggregationSelection!
+              count: Int!
+              id: IDAggregationSelection!
             }
 
             input MovieCreateInput {
@@ -133,34 +157,10 @@ describe("Simple", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              actorCount: IntAggregationSelection!
-              averageRating: FloatAggregationSelection!
-              id: IDAggregationSelection!
-            }
-
-            type FloatAggregationSelection {
-              average: Float!
-              max: Float!
-              min: Float!
-            }
-
-            type IntAggregationSelection {
-              average: Float!
-              max: Int!
-              min: Int!
-            }
-
-            type IDAggregationSelection {
-              shortest: ID!
-              longest: ID!
-            }
-
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {

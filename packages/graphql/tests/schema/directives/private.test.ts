@@ -56,26 +56,21 @@ describe("Private", () => {
               relationshipsDeleted: Int!
             }
 
+            type IDAggregationSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(where: UserWhere): DeleteInfo!
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
-            type UserAggregateSelection {
-              count: Int!
-              id: IDAggregationSelection!
-            }
-
-            type IDAggregationSelection {
-              shortest: ID!
-              longest: ID!
-            }
-
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
-              usersCount(where: UserWhere): Int!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersCount(where: UserWhere): Int!
             }
 
             enum SortDirection {
@@ -100,6 +95,11 @@ describe("Private", () => {
 
             type User {
               id: ID
+            }
+
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
             }
 
             input UserCreateInput {

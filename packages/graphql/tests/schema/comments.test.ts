@@ -85,11 +85,28 @@ describe("Comments", () => {
               relationshipsDeleted: Int!
             }
 
+            type FloatAggregationSelection {
+              average: Float!
+              max: Float!
+              min: Float!
+            }
+
             \\"\\"\\"An enumeration of movie genres.\\"\\"\\"
             enum Genre {
               ACTION
               DRAMA
               ROMANCE
+            }
+
+            type IDAggregationSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
+            type IntAggregationSelection {
+              average: Float!
+              max: Int!
+              min: Int!
             }
 
             \\"\\"\\"A type describing a movie.\\"\\"\\"
@@ -107,6 +124,13 @@ describe("Comments", () => {
               This is measured based on annual profit.
               \\"\\"\\"
               isActive: Boolean
+            }
+
+            type MovieAggregateSelection {
+              actorCount: IntAggregationSelection!
+              averageRating: FloatAggregationSelection!
+              count: Int!
+              id: IDAggregationSelection!
             }
 
             input MovieCreateInput {
@@ -188,34 +212,10 @@ describe("Comments", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
-            type FloatAggregationSelection {
-              average: Float!
-              max: Float!
-              min: Float!
-            }
-
-            type IntAggregationSelection {
-              average: Float!
-              max: Int!
-              min: Int!
-            }
-
-            type IDAggregationSelection {
-              shortest: ID!
-              longest: ID!
-            }
-
-            type MovieAggregateSelection {
-              actorCount: IntAggregationSelection!
-              averageRating: FloatAggregationSelection!
-              count: Int!
-              id: IDAggregationSelection!
-            }
-
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {

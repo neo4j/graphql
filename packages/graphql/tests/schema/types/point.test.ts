@@ -59,6 +59,10 @@ describe("Point", () => {
               filmedAt: Point!
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+            }
+
             input MovieCreateInput {
               filmedAt: PointInput!
             }
@@ -119,14 +123,10 @@ describe("Point", () => {
               longitude: Float!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-            }
-
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
-              moviesCount(where: MovieWhere): Int!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
             }
 
             enum SortDirection {
@@ -207,6 +207,10 @@ describe("Point", () => {
               partLocation: CartesianPoint!
             }
 
+            type MachineAggregateSelection {
+              count: Int!
+            }
+
             input MachineCreateInput {
               partLocation: CartesianPointInput!
             }
@@ -241,10 +245,6 @@ describe("Point", () => {
               partLocation_NOT_IN: [CartesianPointInput]
             }
 
-            type MachineAggregateSelection {
-              count: Int!
-            }
-          
             type Mutation {
               createMachines(input: [MachineCreateInput!]!): CreateMachinesMutationResponse!
               deleteMachines(where: MachineWhere): DeleteInfo!
@@ -253,7 +253,7 @@ describe("Point", () => {
 
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
               machinesCount(where: MachineWhere): Int!
             }
 
@@ -316,6 +316,10 @@ describe("Point", () => {
               filmedAt: [Point!]!
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+            }
+
             input MovieCreateInput {
               filmedAt: [PointInput!]!
             }
@@ -358,14 +362,10 @@ describe("Point", () => {
               longitude: Float!
             }
 
-            type MachineAggregateSelection {
-              count: Int!
-            }
-            
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
             }
 
             type UpdateInfo {
@@ -434,6 +434,10 @@ describe("Point", () => {
               partLocations: [CartesianPoint!]!
             }
 
+            type MachineAggregateSelection {
+              count: Int!
+            }
+
             input MachineCreateInput {
               partLocations: [CartesianPointInput!]!
             }
@@ -464,6 +468,7 @@ describe("Point", () => {
 
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
+              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
               machinesCount(where: MachineWhere): Int!
             }
 

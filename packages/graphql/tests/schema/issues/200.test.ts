@@ -48,6 +48,13 @@ describe("200", () => {
               name: String!
             }
 
+            type CategoryAggregateSelection {
+              categoryId: IDAggregationSelection!
+              count: Int!
+              description: StringAggregationSelection!
+              name: StringAggregationSelection!
+            }
+
             input CategoryCreateInput {
               description: String! = \\"\\"
               exampleImageLocations: [String!]
@@ -130,33 +137,21 @@ describe("200", () => {
               relationshipsDeleted: Int!
             }
 
+            type IDAggregationSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Mutation {
               createCategories(input: [CategoryCreateInput!]!): CreateCategoriesMutationResponse!
               deleteCategories(where: CategoryWhere): DeleteInfo!
               updateCategories(update: CategoryUpdateInput, where: CategoryWhere): UpdateCategoriesMutationResponse!
             }
 
-            type CategoryAggregateSelection {
-              count: Int!
-              categoryId: IDAggregationSelection!
-              description: StringAggregationSelection!
-              name: StringAggregationSelection!
-            }
-
-            type StringAggregationSelection {
-              shortest: String!
-              longest: String!
-            }
-
-            type IDAggregationSelection {
-              shortest: ID!
-              longest: ID!
-            }
-
             type Query {
               categories(options: CategoryOptions, where: CategoryWhere): [Category!]!
-              categoriesCount(where: CategoryWhere): Int!
               categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
+              categoriesCount(where: CategoryWhere): Int!
             }
 
             enum SortDirection {
@@ -164,6 +159,11 @@ describe("200", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregationSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateCategoriesMutationResponse {
