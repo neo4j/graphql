@@ -1,6 +1,6 @@
 # Cypher Disconnect
 
-Tests connect operations.
+Tests disconnect operations.
 
 Schema:
 
@@ -34,26 +34,25 @@ type Photo {
 
 ---
 
-## Recursive Connect
+## Recursive Disconnect
 
 ### GraphQL Input
 
 ```graphql
 mutation {
-    createProducts(
-        input: [
-            {
+    updateProducts(
+        update: {
                 id: "123"
                 name: "Nested Connect"
                 colors: {
-                    connect: [
+                    disconnect: [
                         {
                             where: { node: { name: "Red" } }
-                            connect: {
+                            disconnect: {
                                 photos: [
                                     {
                                         where: { node: { id: "123" } }
-                                        connect: {
+                                        disconnect: {
                                             color: {
                                                 where: { node: { id: "134" } }
                                             }
@@ -65,23 +64,22 @@ mutation {
                     ]
                 }
                 photos: {
-                    connect: [
+                    disconnect: [
                         {
                             where: { node: { id: "321" } }
-                            connect: {
+                            disconnect: {
                                 color: { where: { node: { name: "Green" } } }
                             }
                         }
                         {
                             where: { node: { id: "33211" } }
-                            connect: {
+                            disconnect: {
                                 color: { where: { node: { name: "Red" } } }
                             }
                         }
                     ]
                 }
             }
-        ]
     ) {
         products {
             id
@@ -93,108 +91,152 @@ mutation {
 ### Expected Cypher Output
 
 ```cypher
+MATCH (this:Product)
+SET this.id = $this_update_id
+SET this.name = $this_update_name
+WITH this
 CALL {
-    CREATE (this0:Product)
-    SET this0.id = $this0_id
-    SET this0.name = $this0_name
-
-    WITH this0
-    CALL {
-        WITH this0
-        OPTIONAL MATCH (this0_colors_connect0_node:Color)
-        WHERE this0_colors_connect0_node.name = $this0_colors_connect0_node_name
-        FOREACH(_ IN CASE this0_colors_connect0_node WHEN NULL THEN [] ELSE [1] END |
-            MERGE (this0)-[:HAS_COLOR]->(this0_colors_connect0_node)
-        )
-
-        WITH this0, this0_colors_connect0_node
-        CALL {
-            WITH this0, this0_colors_connect0_node
-            OPTIONAL MATCH (this0_colors_connect0_node_photos0_node:Photo)
-            WHERE this0_colors_connect0_node_photos0_node.id = $this0_colors_connect0_node_photos0_node_id
-            FOREACH(_ IN CASE this0_colors_connect0_node_photos0_node WHEN NULL THEN [] ELSE [1] END |
-                MERGE (this0_colors_connect0_node)<-[:OF_COLOR]-(this0_colors_connect0_node_photos0_node)
-            )
-
-            WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node
-            CALL {
-                WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node
-                OPTIONAL MATCH (this0_colors_connect0_node_photos0_node_color0_node:Color)
-                WHERE this0_colors_connect0_node_photos0_node_color0_node.id = $this0_colors_connect0_node_photos0_node_color0_node_id
-                FOREACH(_ IN CASE this0_colors_connect0_node_photos0_node_color0_node WHEN NULL THEN [] ELSE [1] END |
-                    MERGE (this0_colors_connect0_node_photos0_node)-[:OF_COLOR]->(this0_colors_connect0_node_photos0_node_color0_node)
-                )
-                RETURN count(*)
-            }
-            RETURN count(*)
-        }
-        RETURN count(*)
-    }
-
-    WITH this0
-    CALL {
-        WITH this0
-        OPTIONAL MATCH (this0_photos_connect0_node:Photo)
-        WHERE this0_photos_connect0_node.id = $this0_photos_connect0_node_id
-        FOREACH(_ IN CASE this0_photos_connect0_node WHEN NULL THEN [] ELSE [1] END |
-            MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect0_node)
-        )
-
-        WITH this0, this0_photos_connect0_node
-        CALL {
-            WITH this0, this0_photos_connect0_node
-            OPTIONAL MATCH (this0_photos_connect0_node_color0_node:Color)
-            WHERE this0_photos_connect0_node_color0_node.name = $this0_photos_connect0_node_color0_node_name
-            FOREACH(_ IN CASE this0_photos_connect0_node_color0_node WHEN NULL THEN [] ELSE [1] END |
-                MERGE (this0_photos_connect0_node)-[:OF_COLOR]->(this0_photos_connect0_node_color0_node)
-            )
-            RETURN count(*)
-        }
-        RETURN count(*)
-    }
-
-    WITH this0
-    CALL {
-        WITH this0
-        OPTIONAL MATCH (this0_photos_connect1_node:Photo)
-        WHERE this0_photos_connect1_node.id = $this0_photos_connect1_node_id
-        FOREACH(_ IN CASE this0_photos_connect1_node WHEN NULL THEN [] ELSE [1] END |
-            MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect1_node)
-        )
-
-        WITH this0, this0_photos_connect1_node
-        CALL {
-            WITH this0, this0_photos_connect1_node
-            OPTIONAL MATCH (this0_photos_connect1_node_color0_node:Color)
-            WHERE this0_photos_connect1_node_color0_node.name = $this0_photos_connect1_node_color0_node_name
-            FOREACH(_ IN CASE this0_photos_connect1_node_color0_node WHEN NULL THEN [] ELSE [1] END |
-                MERGE (this0_photos_connect1_node)-[:OF_COLOR]->(this0_photos_connect1_node_color0_node)
-            )
-            RETURN count(*)
-        }
-        RETURN count(*)
-    }
-
-    RETURN this0
+  WITH this
+  OPTIONAL MATCH (this)-[this_colors0_disconnect0_rel:HAS_COLOR]->(this_colors0_disconnect0:Color)
+  WHERE this_colors0_disconnect0.name = $updateProducts.args.update.colors[0].disconnect[0].where.node.name
+  FOREACH(_ IN
+  CASE this_colors0_disconnect0
+  WHEN NULL
+  THEN []
+  ELSE [1]
+  END |
+  DELETE this_colors0_disconnect0_rel )
+  WITH this, this_colors0_disconnect0
+  CALL {
+  WITH this, this_colors0_disconnect0
+  OPTIONAL MATCH (this_colors0_disconnect0)<-[this_colors0_disconnect0_photos0_rel:OF_COLOR]-(this_colors0_disconnect0_photos0:Photo)
+  WHERE this_colors0_disconnect0_photos0.id = $updateProducts.args.update.colors[0].disconnect[0].disconnect.photos[0].where.node.id
+  FOREACH(_ IN
+  CASE this_colors0_disconnect0_photos0 WHEN NULL THEN [] ELSE [1] END |
+  DELETE this_colors0_disconnect0_photos0_rel )
+  WITH this, this_colors0_disconnect0, this_colors0_disconnect0_photos0 CALL {
+  WITH this, this_colors0_disconnect0, this_colors0_disconnect0_photos0
+  OPTIONAL MATCH (this_colors0_disconnect0_photos0)-[this_colors0_disconnect0_photos0_color0_rel:OF_COLOR]->(this_colors0_disconnect0_photos0_color0:Color)
+  WHERE this_colors0_disconnect0_photos0_color0.id = $updateProducts.args.update.colors[0].disconnect[0].disconnect.photos.disconnect.color.where.node.id
+  FOREACH(_ IN
+  CASE this_colors0_disconnect0_photos0_color0 WHEN NULL THEN [] ELSE [1] END |
+  DELETE this_colors0_disconnect0_photos0_color0_rel )
+  RETURN count(*)
 }
-
-RETURN
-this0 { .id } AS this0
+RETURN count(*) }
+RETURN count(*) }
+WITH this CALL {
+  WITH this
+  OPTIONAL MATCH (this)-[this_photos0_disconnect0_rel:HAS_PHOTO]->(this_photos0_disconnect0:Photo)
+  WHERE this_photos0_disconnect0.id = $updateProducts.args.update.photos[0].disconnect[0].where.node.id FOREACH(_ IN
+  CASE this_photos0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
+  DELETE this_photos0_disconnect0_rel )
+  WITH this, this_photos0_disconnect0 CALL {
+  WITH this, this_photos0_disconnect0
+  OPTIONAL MATCH (this_photos0_disconnect0)-[this_photos0_disconnect0_color0_rel:OF_COLOR]->(this_photos0_disconnect0_color0:Color)
+  WHERE this_photos0_disconnect0_color0.name = $updateProducts.args.update.photos[0].disconnect.disconnect.color.where.node.name FOREACH(_ IN
+  CASE this_photos0_disconnect0_color0 WHEN NULL THEN [] ELSE [1] END |
+  DELETE this_photos0_disconnect0_color0_rel )
+  RETURN count(*)
+}
+RETURN count(*) }
+WITH this CALL {
+WITH this
+OPTIONAL MATCH (this)-[this_photos0_disconnect1_rel:HAS_PHOTO]->(this_photos0_disconnect1:Photo)
+WHERE this_photos0_disconnect1.id = $updateProducts.args.update.photos[0].disconnect[1].where.node.id FOREACH(_ IN
+CASE this_photos0_disconnect1 WHEN NULL THEN [] ELSE [1] END |
+DELETE this_photos0_disconnect1_rel )
+WITH this, this_photos0_disconnect1
+CALL {
+  WITH this, this_photos0_disconnect1
+  OPTIONAL MATCH (this_photos0_disconnect1)-[this_photos0_disconnect1_color0_rel:OF_COLOR]->(this_photos0_disconnect1_color0:Color)
+  WHERE this_photos0_disconnect1_color0.name = $updateProducts.args.update.photos[0].disconnect.disconnect.color.where.node.name FOREACH(_ IN
+  CASE this_photos0_disconnect1_color0 WHEN NULL THEN [] ELSE [1] END |
+  DELETE this_photos0_disconnect1_color0_rel )
+  RETURN count(*)
+}
+RETURN count(*) }
+RETURN this {
+  .id
+} AS this
 ```
 
 ### Expected Cypher Params
 
 ```json
 {
-    "this0_id": "123",
-    "this0_name": "Nested Connect",
-    "this0_colors_connect0_node_name": "Red",
-    "this0_colors_connect0_node_photos0_node_id": "123",
-    "this0_colors_connect0_node_photos0_node_color0_node_id": "134",
-    "this0_photos_connect0_node_id": "321",
-    "this0_photos_connect0_node_color0_node_name": "Green",
-    "this0_photos_connect1_node_id": "33211",
-    "this0_photos_connect1_node_color0_node_name": "Red"
+    "this_update_id": "123",
+    "this_update_name": "Nested Connect",
+    "updateProducts": {
+        "args": {
+            "update": {
+                "colors": [{
+                    "disconnect": [{
+                        "disconnect": {
+                            "photos": [{
+                                "disconnect": {
+                                    "color": {
+                                        "where": {
+                                            "node": {
+                                                "id": "134"
+                                            }
+                                        }
+                                    }
+                                },
+                                "where": {
+                                    "node": {
+                                        "id": "123"
+                                    }
+                                }
+                            }]
+                        },
+                        "where": {
+                            "node": {
+                                "name": "Red"
+                            }
+                        }
+                    }]
+                }],
+                "id": "123",
+                "name": "Nested Connect",
+                "photos": [{
+                    "disconnect": [{
+                            "disconnect": {
+                                "color": {
+                                    "where": {
+                                        "node": {
+                                            "name": "Green"
+                                        }
+                                    }
+                                }
+                            },
+                            "where": {
+                                "node": {
+                                    "id": "321"
+                                }
+                            }
+                        },
+                        {
+                            "disconnect": {
+                                "color": {
+                                    "where": {
+                                        "node": {
+                                            "name": "Red"
+                                        }
+                                    }
+                                }
+                            },
+                            "where": {
+                                "node": {
+                                    "id": "33211"
+                                }
+                            }
+                        }
+                    ]
+                }]
+            }
+        }
+    }
 }
 ```
 
