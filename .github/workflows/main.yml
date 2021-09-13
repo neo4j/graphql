@@ -211,7 +211,7 @@ jobs:
           echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>${GITHUB_ENV}
       - name: Run @neo4j/graphql integration tests
         run: |
-          yarn test:int -t '^(?!delete should delete a movie, a single nested actor and another movie they act in|update should delete a nested actor and one of their nested movies, within an update block)' --coverage
+          yarn test:int --coverage
           mv coverage coverage-aura-${{ matrix.aura-instance }}
         working-directory: packages/${{ matrix.package }}
         env:
