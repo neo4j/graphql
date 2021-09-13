@@ -245,9 +245,46 @@ describe("Null", () => {
               longitude: Float!
             }
 
+            type MovieAggregateSelection {
+              actorCount: IntAggregationSelection!
+              averageRating: FloatAggregationSelection!
+              count: Int!
+              createdAt: DateTimeAggregationSelection!
+              id: IDAggregationSelection!
+              name: StringAggregationSelection!
+            }
+
+            type DateTimeAggregationSelection {
+                max: DateTime!
+                min: DateTime!
+            }
+
+            type FloatAggregationSelection {
+                average: Float!
+                max: Float!
+                min: Float!
+            }
+
+            type IntAggregationSelection {
+                average: Float!
+                max: Int!
+                min: Int!
+            }
+
+            type StringAggregationSelection {
+                shortest: String!
+                longest: String!
+            }
+
+            type IDAggregationSelection {
+                shortest: ID!
+                longest: ID!
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
             }
 
             enum SortDirection {

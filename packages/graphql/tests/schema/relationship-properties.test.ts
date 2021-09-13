@@ -409,11 +409,29 @@ describe("Relationship-properties", () => {
               startCursor: String
             }
 
+
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregationSelection!
+            }
+
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregationSelection!
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsCount(where: ActorWhere): Int!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
             }
 
             enum SortDirection {

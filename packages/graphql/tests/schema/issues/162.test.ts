@@ -95,13 +95,46 @@ describe("162", () => {
               startCursor: String
             }
 
+            type TigerAggregateSelection {
+              count: Int!
+              x: IntAggregationSelection!
+            }
+
+            type TigerJawLevel2AggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
+            }
+
+            type TigerJawLevel2Part1AggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
+            }
+
+            type IntAggregationSelection {
+              average: Float!
+              max: Int!
+              min: Int!
+            }
+
+            type IDAggregationSelection {
+              shortest: ID!
+              longest: ID!
+            }
+
             type Query {
               tigerJawLevel2Part1s(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
               tigerJawLevel2Part1sCount(where: TigerJawLevel2Part1Where): Int!
+              tigerJawLevel2Part1sAggregate(
+                where: TigerJawLevel2Part1Where
+              ): TigerJawLevel2Part1AggregateSelection!
               tigerJawLevel2s(options: TigerJawLevel2Options, where: TigerJawLevel2Where): [TigerJawLevel2!]!
               tigerJawLevel2sCount(where: TigerJawLevel2Where): Int!
+              tigerJawLevel2sAggregate(
+                where: TigerJawLevel2Where
+              ): TigerJawLevel2AggregateSelection!
               tigers(options: TigerOptions, where: TigerWhere): [Tiger!]!
               tigersCount(where: TigerWhere): Int!
+              tigersAggregate(where: TigerWhere): TigerAggregateSelection!
             }
 
             enum SortDirection {

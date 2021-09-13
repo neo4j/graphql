@@ -116,9 +116,26 @@ describe("Localdatetime", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            type IDAggregationSelection {
+              shortest: ID!
+              longest: ID!
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
+              localDT: LocalDateTimeAggregationSelection!
+            }
+
+            type LocalDateTimeAggregationSelection {
+              max: LocalDateTime!
+              min: LocalDateTime!
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
             }
 
             enum SortDirection {

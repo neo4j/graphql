@@ -69,9 +69,46 @@ describe("Default", () => {
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
+              name: StringAggregationSelection!
+              numberOfFriends: IntAggregationSelection!
+              rating: FloatAggregationSelection!
+              verifiedDate: DateTimeAggregationSelection!
+            }
+
+            type DateTimeAggregationSelection {
+              max: DateTime!
+              min: DateTime!
+            }
+
+            type FloatAggregationSelection {
+              average: Float!
+              max: Float!
+                min: Float!
+            }
+
+            type IntAggregationSelection {
+              average: Float!
+              max: Int!
+              min: Int!
+            }
+
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
+            type IDAggregationSelection {
+              shortest: ID!
+              longest: ID!
+            }
+
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersCount(where: UserWhere): Int!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
             }
 
             enum SortDirection {

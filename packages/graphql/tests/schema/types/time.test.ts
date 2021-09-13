@@ -113,8 +113,25 @@ describe("Time", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            type IDAggregationSelection {
+              shortest: ID!
+              longest: ID!
+            }
+
+            type MovieAggregateSelection {
+                count: Int!
+                id: IDAggregationSelection!
+                time: TimeAggregationSelection!
+            }
+
+            type TimeAggregationSelection {
+                max: Time!
+                min: Time!
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 

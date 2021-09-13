@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("200", () => {
-    test("2 instances of DeleteInput type created", () => {
+    test("Preserve schema array non null", () => {
         const typeDefs = gql`
             type Category {
                 categoryId: ID! @id
@@ -136,9 +136,27 @@ describe("200", () => {
               updateCategories(update: CategoryUpdateInput, where: CategoryWhere): UpdateCategoriesMutationResponse!
             }
 
+            type CategoryAggregateSelection {
+              count: Int!
+              categoryId: IDAggregationSelection!
+              description: StringAggregationSelection!
+              name: StringAggregationSelection!
+            }
+
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
+            type IDAggregationSelection {
+              shortest: ID!
+              longest: ID!
+            }
+
             type Query {
               categories(options: CategoryOptions, where: CategoryWhere): [Category!]!
               categoriesCount(where: CategoryWhere): Int!
+              categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
             }
 
             enum SortDirection {

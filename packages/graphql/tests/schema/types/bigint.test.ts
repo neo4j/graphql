@@ -116,9 +116,27 @@ describe("Bigint", () => {
               updateFiles(update: FileUpdateInput, where: FileWhere): UpdateFilesMutationResponse!
             }
 
+            type FileAggregateSelection {
+              count: Int!
+              name: StringAggregationSelection!
+              size: BigIntAggregationSelection!
+            }
+
+            type BigIntAggregationSelection {
+              average: Float!
+              max: BigInt!
+              min: BigInt!
+            }
+
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
             type Query {
               files(options: FileOptions, where: FileWhere): [File!]!
               filesCount(where: FileWhere): Int!
+              filesAggregate(where: FileWhere): FileAggregateSelection!
             }
 
             enum SortDirection {

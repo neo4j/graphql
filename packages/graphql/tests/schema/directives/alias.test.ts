@@ -328,11 +328,36 @@ describe("Alias", () => {
               startCursor: String
             }
 
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
+            type ActorAggregateSelection {
+              city: StringAggregationSelection!
+              count: Int!
+              name: StringAggregationSelection!
+            }
+
+            type FloatAggregationSelection {
+              average: Float!
+              max: Float!
+              min: Float!
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              rating: FloatAggregationSelection!
+              title: StringAggregationSelection!
+            }
+          
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsCount(where: ActorWhere): Int!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
             }
 
             enum SortDirection {

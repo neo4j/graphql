@@ -310,10 +310,26 @@ describe("Sort", () => {
               startCursor: String
             }
 
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
+            type Node1AggregateSelection {
+              count: Int!
+              property: StringAggregationSelection!
+            }
+
+            type Node2AggregateSelection {
+              count: Int!
+            }
+
             type Query {
               node1s(options: Node1Options, where: Node1Where): [Node1!]!
               node1sCount(where: Node1Where): Int!
+              node1sAggregate(where: Node1Where): Node1AggregateSelection!
               node2s(options: Node2Options, where: Node2Where): [Node2!]!
+              node2sAggregate(where: Node2Where): Node2AggregateSelection!
               node2sCount(where: Node2Where): Int!
             }
 

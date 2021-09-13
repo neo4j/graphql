@@ -113,9 +113,26 @@ describe("Autogenerate", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
+              name: StringAggregationSelection!
+            }
+
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
+            type IDAggregationSelection {
+              shortest: ID!
+              longest: ID!
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
             }
 
             enum SortDirection {

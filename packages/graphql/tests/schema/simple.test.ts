@@ -133,9 +133,34 @@ describe("Simple", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              actorCount: IntAggregationSelection!
+              averageRating: FloatAggregationSelection!
+              id: IDAggregationSelection!
+            }
+
+            type FloatAggregationSelection {
+              average: Float!
+              max: Float!
+              min: Float!
+            }
+
+            type IntAggregationSelection {
+              average: Float!
+              max: Int!
+              min: Int!
+            }
+
+            type IDAggregationSelection {
+              shortest: ID!
+              longest: ID!
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
             }
 
             enum SortDirection {
