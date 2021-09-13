@@ -136,6 +136,7 @@ describe("auth/roles", () => {
             }
         });
 
+        // This tests reproduces the security issue related to authorization without match #195
         test.skip("should throw if missing role on type definition and no nodes are matched", async () => {
             const session = driver.session();
 
