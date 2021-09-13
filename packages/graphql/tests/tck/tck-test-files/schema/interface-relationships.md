@@ -9,8 +9,15 @@ Tests that the provided typeDefs return the correct schema.
 ### TypeDefs
 
 ```graphql
+type Episode {
+    runtime: Int!
+    series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
+}
+
 interface Production {
     title: String!
+    actors: [Actor!]!
+        @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
 }
 
 type Movie implements Production {
@@ -22,7 +29,8 @@ type Movie implements Production {
 
 type Series implements Production {
     title: String!
-    episodes: Int!
+    episodeCount: Int!
+    episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
     actors: [Actor!]!
         @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
 }
@@ -78,9 +86,25 @@ type Actor {
     name: String!
 }
 
+input ProductionConnectInput {
+    Movie: [MovieConnectInput!]
+    Series: [SeriesConnectInput!]
+}
+
+input ProductionDeleteInput {
+    Movie: [MovieDeleteInput!]
+    Series: [SeriesDeleteInput!]
+}
+
+input ProductionDisconnectInput {
+    Movie: [MovieDisconnectInput!]
+    Series: [SeriesDisconnectInput!]
+}
+
 input ActorActedInConnectFieldInput {
     edge: ActedInCreateInput!
     where: ProductionConnectWhere
+    connect: ProductionConnectInput
 }
 
 type ActorActedInConnection {
@@ -105,10 +129,12 @@ input ActorActedInCreateFieldInput {
 
 input ActorActedInDeleteFieldInput {
     where: ActorActedInConnectionWhere
+    delete: ProductionDeleteInput
 }
 
 input ActorActedInDisconnectFieldInput {
     where: ActorActedInConnectionWhere
+    disconnect: ProductionDisconnectInput
 }
 
 input ActorActedInMovieCreateFieldInput {
@@ -168,8 +194,28 @@ input ActorSort {
     name: SortDirection
 }
 
+input ProductionUpdateInput {
+    title: String
+    Series: SeriesUpdateInput
+}
+
+input ActorActedInUpdateConnectionInput {
+    edge: ActedInUpdateInput
+    node: ProductionUpdateInput
+}
+
+input ActorActedInUpdateFieldInput {
+    connect: [ActorActedInConnectFieldInput!]
+    create: [ActorActedInCreateFieldInput!]
+    delete: [ActorActedInDeleteFieldInput!]
+    disconnect: [ActorActedInDisconnectFieldInput!]
+    update: ActorActedInUpdateConnectionInput
+    where: ActorActedInConnectionWhere
+}
+
 input ActorUpdateInput {
     name: String
+    actedIn: [ActorActedInUpdateFieldInput!]
 }
 
 input ActorWhere {
@@ -194,6 +240,11 @@ type CreateActorsMutationResponse {
     info: CreateInfo!
 }
 
+type CreateEpisodesMutationResponse {
+    episodes: [Episode!]!
+    info: CreateInfo!
+}
+
 type CreateInfo {
     bookmark: String
     nodesCreated: Int!
@@ -214,6 +265,139 @@ type DeleteInfo {
     bookmark: String
     nodesDeleted: Int!
     relationshipsDeleted: Int!
+}
+
+type Episode {
+    runtime: Int!
+    series(options: SeriesOptions, where: SeriesWhere): Series!
+    seriesConnection(
+        after: String
+        first: Int
+        sort: [EpisodeSeriesConnectionSort!]
+        where: EpisodeSeriesConnectionWhere
+    ): EpisodeSeriesConnection!
+}
+
+input EpisodeConnectInput {
+    series: EpisodeSeriesConnectFieldInput
+}
+
+input EpisodeConnectWhere {
+    node: EpisodeWhere!
+}
+
+input EpisodeCreateInput {
+    runtime: Int!
+    series: EpisodeSeriesFieldInput
+}
+
+input EpisodeDeleteInput {
+    series: EpisodeSeriesDeleteFieldInput
+}
+
+input EpisodeDisconnectInput {
+    series: EpisodeSeriesDisconnectFieldInput
+}
+
+input EpisodeOptions {
+    limit: Int
+    offset: Int
+    """
+    Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.
+    """
+    sort: [EpisodeSort]
+}
+
+input EpisodeRelationInput {
+    series: EpisodeSeriesCreateFieldInput
+}
+
+input EpisodeSeriesConnectFieldInput {
+    connect: SeriesConnectInput
+    where: SeriesConnectWhere
+}
+
+type EpisodeSeriesConnection {
+    edges: [EpisodeSeriesRelationship!]!
+    pageInfo: PageInfo!
+    totalCount: Int!
+}
+
+input EpisodeSeriesConnectionSort {
+    node: SeriesSort
+}
+
+input EpisodeSeriesConnectionWhere {
+    AND: [EpisodeSeriesConnectionWhere!]
+    OR: [EpisodeSeriesConnectionWhere!]
+    node: SeriesWhere
+    node_NOT: SeriesWhere
+}
+
+input EpisodeSeriesCreateFieldInput {
+    node: SeriesCreateInput!
+}
+
+input EpisodeSeriesDeleteFieldInput {
+    delete: SeriesDeleteInput
+    where: EpisodeSeriesConnectionWhere
+}
+
+input EpisodeSeriesDisconnectFieldInput {
+    disconnect: SeriesDisconnectInput
+    where: EpisodeSeriesConnectionWhere
+}
+
+input EpisodeSeriesFieldInput {
+    connect: EpisodeSeriesConnectFieldInput
+    create: EpisodeSeriesCreateFieldInput
+}
+
+type EpisodeSeriesRelationship {
+    cursor: String!
+    node: Series!
+}
+
+input EpisodeSeriesUpdateConnectionInput {
+    node: SeriesUpdateInput
+}
+
+input EpisodeSeriesUpdateFieldInput {
+    connect: EpisodeSeriesConnectFieldInput
+    create: EpisodeSeriesCreateFieldInput
+    delete: EpisodeSeriesDeleteFieldInput
+    disconnect: EpisodeSeriesDisconnectFieldInput
+    update: EpisodeSeriesUpdateConnectionInput
+    where: EpisodeSeriesConnectionWhere
+}
+
+"""
+Fields to sort Episodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one EpisodeSort object.
+"""
+input EpisodeSort {
+    runtime: SortDirection
+}
+
+input EpisodeUpdateInput {
+    runtime: Int
+    series: EpisodeSeriesUpdateFieldInput
+}
+
+input EpisodeWhere {
+    AND: [EpisodeWhere!]
+    OR: [EpisodeWhere!]
+    runtime: Int
+    runtime_GT: Int
+    runtime_GTE: Int
+    runtime_IN: [Int]
+    runtime_LT: Int
+    runtime_LTE: Int
+    runtime_NOT: Int
+    runtime_NOT_IN: [Int]
+    series: SeriesWhere
+    seriesConnection: EpisodeSeriesConnectionWhere
+    seriesConnection_NOT: EpisodeSeriesConnectionWhere
+    series_NOT: SeriesWhere
 }
 
 type Movie implements Production {
@@ -377,6 +561,7 @@ type PageInfo {
 }
 
 interface Production {
+    actors: [Actor!]!
     title: String!
 }
 
@@ -400,14 +585,14 @@ input ProductionMovieWhere {
 input ProductionSeriesWhere {
     AND: [SeriesWhere!]
     OR: [SeriesWhere!]
-    episodes: Int
-    episodes_GT: Int
-    episodes_GTE: Int
-    episodes_IN: [Int]
-    episodes_LT: Int
-    episodes_LTE: Int
-    episodes_NOT: Int
-    episodes_NOT_IN: [Int]
+    episodeCount: Int
+    episodeCount_GT: Int
+    episodeCount_GTE: Int
+    episodeCount_IN: [Int]
+    episodeCount_LT: Int
+    episodeCount_LTE: Int
+    episodeCount_NOT: Int
+    episodeCount_NOT_IN: [Int]
 }
 
 input ProductionWhere {
@@ -435,7 +620,14 @@ type Series implements Production {
         sort: [SeriesActorsConnectionSort!]
         where: SeriesActorsConnectionWhere
     ): SeriesActorsConnection!
-    episodes: Int!
+    episodeCount: Int!
+    episodes(options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
+    episodesConnection(
+        after: String
+        first: Int
+        sort: [SeriesEpisodesConnectionSort!]
+        where: SeriesEpisodesConnectionWhere
+    ): SeriesEpisodesConnection!
     title: String!
 }
 
@@ -507,20 +699,87 @@ input SeriesActorsUpdateFieldInput {
 
 input SeriesConnectInput {
     actors: [SeriesActorsConnectFieldInput!]
+    episodes: [SeriesEpisodesConnectFieldInput!]
+}
+
+input SeriesConnectWhere {
+    node: SeriesWhere!
 }
 
 input SeriesCreateInput {
     actors: SeriesActorsFieldInput
-    episodes: Int!
+    episodeCount: Int!
+    episodes: SeriesEpisodesFieldInput
     title: String!
 }
 
 input SeriesDeleteInput {
     actors: [SeriesActorsDeleteFieldInput!]
+    episodes: [SeriesEpisodesDeleteFieldInput!]
 }
 
 input SeriesDisconnectInput {
     actors: [SeriesActorsDisconnectFieldInput!]
+    episodes: [SeriesEpisodesDisconnectFieldInput!]
+}
+
+input SeriesEpisodesConnectFieldInput {
+    connect: [EpisodeConnectInput!]
+    where: EpisodeConnectWhere
+}
+
+type SeriesEpisodesConnection {
+    edges: [SeriesEpisodesRelationship!]!
+    pageInfo: PageInfo!
+    totalCount: Int!
+}
+
+input SeriesEpisodesConnectionSort {
+    node: EpisodeSort
+}
+
+input SeriesEpisodesConnectionWhere {
+    AND: [SeriesEpisodesConnectionWhere!]
+    OR: [SeriesEpisodesConnectionWhere!]
+    node: EpisodeWhere
+    node_NOT: EpisodeWhere
+}
+
+input SeriesEpisodesCreateFieldInput {
+    node: EpisodeCreateInput!
+}
+
+input SeriesEpisodesDeleteFieldInput {
+    delete: EpisodeDeleteInput
+    where: SeriesEpisodesConnectionWhere
+}
+
+input SeriesEpisodesDisconnectFieldInput {
+    disconnect: EpisodeDisconnectInput
+    where: SeriesEpisodesConnectionWhere
+}
+
+input SeriesEpisodesFieldInput {
+    connect: [SeriesEpisodesConnectFieldInput!]
+    create: [SeriesEpisodesCreateFieldInput!]
+}
+
+type SeriesEpisodesRelationship {
+    cursor: String!
+    node: Episode!
+}
+
+input SeriesEpisodesUpdateConnectionInput {
+    node: EpisodeUpdateInput
+}
+
+input SeriesEpisodesUpdateFieldInput {
+    connect: [SeriesEpisodesConnectFieldInput!]
+    create: [SeriesEpisodesCreateFieldInput!]
+    delete: [SeriesEpisodesDeleteFieldInput!]
+    disconnect: [SeriesEpisodesDisconnectFieldInput!]
+    update: SeriesEpisodesUpdateConnectionInput
+    where: SeriesEpisodesConnectionWhere
 }
 
 input SeriesOptions {
@@ -534,19 +793,21 @@ input SeriesOptions {
 
 input SeriesRelationInput {
     actors: [SeriesActorsCreateFieldInput!]
+    episodes: [SeriesEpisodesCreateFieldInput!]
 }
 
 """
 Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
 """
 input SeriesSort {
-    episodes: SortDirection
+    episodeCount: SortDirection
     title: SortDirection
 }
 
 input SeriesUpdateInput {
     actors: [SeriesActorsUpdateFieldInput!]
-    episodes: Int
+    episodeCount: Int
+    episodes: [SeriesEpisodesUpdateFieldInput!]
     title: String
 }
 
@@ -557,14 +818,18 @@ input SeriesWhere {
     actorsConnection: SeriesActorsConnectionWhere
     actorsConnection_NOT: SeriesActorsConnectionWhere
     actors_NOT: ActorWhere
-    episodes: Int
-    episodes_GT: Int
-    episodes_GTE: Int
-    episodes_IN: [Int]
-    episodes_LT: Int
-    episodes_LTE: Int
-    episodes_NOT: Int
-    episodes_NOT_IN: [Int]
+    episodeCount: Int
+    episodeCount_GT: Int
+    episodeCount_GTE: Int
+    episodeCount_IN: [Int]
+    episodeCount_LT: Int
+    episodeCount_LTE: Int
+    episodeCount_NOT: Int
+    episodeCount_NOT_IN: [Int]
+    episodes: EpisodeWhere
+    episodesConnection: SeriesEpisodesConnectionWhere
+    episodesConnection_NOT: SeriesEpisodesConnectionWhere
+    episodes_NOT: EpisodeWhere
     title: String
     title_CONTAINS: String
     title_ENDS_WITH: String
@@ -593,6 +858,11 @@ type UpdateActorsMutationResponse {
     info: UpdateInfo!
 }
 
+type UpdateEpisodesMutationResponse {
+    episodes: [Episode!]!
+    info: UpdateInfo!
+}
+
 type UpdateInfo {
     bookmark: String
     nodesCreated: Int!
@@ -614,6 +884,8 @@ type UpdateSeriesMutationResponse {
 type Query {
     actors(options: ActorOptions, where: ActorWhere): [Actor!]!
     actorsCount(where: ActorWhere): Int!
+    episodes(options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
+    episodesCount(where: EpisodeWhere): Int!
     movies(options: MovieOptions, where: MovieWhere): [Movie!]!
     moviesCount(where: MovieWhere): Int!
     series(options: SeriesOptions, where: SeriesWhere): [Series!]!
@@ -622,9 +894,13 @@ type Query {
 
 type Mutation {
     createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
+    createEpisodes(
+        input: [EpisodeCreateInput!]!
+    ): CreateEpisodesMutationResponse!
     createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
     createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
     deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
+    deleteEpisodes(delete: EpisodeDeleteInput, where: EpisodeWhere): DeleteInfo!
     deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
     deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
     updateActors(
@@ -635,6 +911,14 @@ type Mutation {
         update: ActorUpdateInput
         where: ActorWhere
     ): UpdateActorsMutationResponse!
+    updateEpisodes(
+        connect: EpisodeConnectInput
+        create: EpisodeRelationInput
+        delete: EpisodeDeleteInput
+        disconnect: EpisodeDisconnectInput
+        update: EpisodeUpdateInput
+        where: EpisodeWhere
+    ): UpdateEpisodesMutationResponse!
     updateMovies(
         connect: MovieConnectInput
         create: MovieRelationInput
