@@ -27,6 +27,7 @@ const testLabel = generate({ charset: "alphabetic" });
 
 describe("Alias", () => {
     let driver: Driver;
+    let bookmarks: string[];
 
     const typeDefs = `
         type Movie {
@@ -60,6 +61,7 @@ describe("Alias", () => {
                     },
                 }
             );
+            bookmarks = session.lastBookmark();
         } finally {
             await session.close();
         }
@@ -94,7 +96,7 @@ describe("Alias", () => {
         const gqlResult = await graphql({
             schema,
             source: query,
-            contextValue: { driver },
+            contextValue: { driver, driverConfig: { bookmarks } },
             variableValues: { id },
         });
 
@@ -120,7 +122,7 @@ describe("Alias", () => {
         const gqlResult = await graphql({
             schema,
             source: query,
-            contextValue: { driver },
+            contextValue: { driver, driverConfig: { bookmarks } },
             variableValues: { id },
         });
 
@@ -146,7 +148,7 @@ describe("Alias", () => {
         const gqlResult = await graphql({
             schema,
             source: query,
-            contextValue: { driver },
+            contextValue: { driver, driverConfig: { bookmarks } },
             variableValues: { id },
         });
 

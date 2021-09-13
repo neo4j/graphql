@@ -97,7 +97,7 @@ describe("326", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id },
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
@@ -166,7 +166,7 @@ describe("326", () => {
                 schema: neoSchema.schema,
                 source: query,
                 variableValues: { id },
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");

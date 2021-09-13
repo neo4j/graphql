@@ -25,6 +25,8 @@ import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("Connections -> Unions", () => {
     let driver: Driver;
+    let bookmarks: string[];
+
     const typeDefs = gql`
         union Publication = Book | Journal
 
@@ -75,6 +77,7 @@ describe("Connections -> Unions", () => {
                     journalWordCount,
                 }
             );
+            bookmarks = session.lastBookmark();
         } finally {
             await session.close();
         }
@@ -136,7 +139,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
                 },
@@ -199,7 +202,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
                 },
@@ -260,7 +263,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
                     bookTitle,
@@ -318,7 +321,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
                     bookTitle,
@@ -379,7 +382,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
                     bookTitle,
@@ -457,7 +460,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
                     bookTitle,
@@ -518,7 +521,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
                     bookWordCount,
@@ -576,7 +579,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
                     bookWordCount,
@@ -637,7 +640,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
                     bookWordCount,
@@ -715,7 +718,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
                     bookWordCount,
@@ -783,7 +786,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks } },
                 variableValues: {
                     authorName,
                     bookWordCount,

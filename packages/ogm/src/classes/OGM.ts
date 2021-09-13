@@ -46,7 +46,7 @@ class OGM {
         this.models = neoSchema.nodes.map((n) => {
             const selectionSet = `
                 {
-                    ${[n.primitiveFields, n.scalarFields, n.enumFields, n.dateTimeFields].reduce(
+                    ${[n.primitiveFields, n.scalarFields, n.enumFields, n.temporalFields].reduce(
                         (res: string[], v) => [...res, ...v.map((x) => x.fieldName)],
                         []
                     )}
