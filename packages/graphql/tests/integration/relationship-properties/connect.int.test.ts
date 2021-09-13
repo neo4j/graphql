@@ -102,7 +102,7 @@ describe("Relationship properties - connect", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { movieTitle, actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();
@@ -194,7 +194,7 @@ describe("Relationship properties - connect", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { movieTitle, actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();
@@ -282,7 +282,7 @@ describe("Relationship properties - connect", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { movieTitle, actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();
@@ -367,7 +367,7 @@ describe("Relationship properties - connect", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { movieTitle, actorName, screenTime },
             });
             expect(gqlResult.errors).toBeFalsy();

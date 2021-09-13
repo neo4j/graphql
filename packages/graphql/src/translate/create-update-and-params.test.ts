@@ -59,7 +59,7 @@ describe("createUpdateAndParams", () => {
             unionFields: [],
             scalarFields: [],
             primitiveFields: [idField],
-            dateTimeFields: [],
+            temporalFields: [],
             interfaceFields: [],
             objectFields: [],
             pointFields: [],

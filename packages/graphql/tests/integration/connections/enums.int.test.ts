@@ -112,7 +112,7 @@ describe("Enum Relationship Properties", () => {
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues: { title, name },
             });
 

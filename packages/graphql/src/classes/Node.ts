@@ -28,7 +28,7 @@ import type {
     UnionField,
     InterfaceField,
     ObjectField,
-    DateTimeField,
+    TemporalField,
     PointField,
     Auth,
     BaseField,
@@ -49,7 +49,7 @@ export interface NodeConstructor {
     interfaceFields: InterfaceField[];
     interfaces: NamedTypeNode[];
     objectFields: ObjectField[];
-    dateTimeFields: DateTimeField[];
+    temporalFields: TemporalField[];
     pointFields: PointField[];
     ignoredFields: BaseField[];
     auth?: Auth;
@@ -83,7 +83,7 @@ class Node {
 
     public objectFields: ObjectField[];
 
-    public dateTimeFields: DateTimeField[];
+    public temporalFields: TemporalField[];
 
     public pointFields: PointField[];
 
@@ -106,7 +106,7 @@ class Node {
         | CustomEnumField
         | UnionField
         | ObjectField
-        | DateTimeField
+        | TemporalField
         | PointField
         | CypherField
     )[];
@@ -120,7 +120,7 @@ class Node {
         | CustomEnumField
         | UnionField
         | ObjectField
-        | DateTimeField
+        | TemporalField
         | PointField
     )[];
 
@@ -137,7 +137,7 @@ class Node {
         this.interfaceFields = input.interfaceFields;
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
-        this.dateTimeFields = input.dateTimeFields;
+        this.temporalFields = input.temporalFields;
         this.pointFields = input.pointFields;
         this.ignoredFields = input.ignoredFields;
         this.exclude = input.exclude;
@@ -151,13 +151,13 @@ class Node {
             ...input.enumFields,
             ...input.unionFields,
             ...input.objectFields,
-            ...input.dateTimeFields,
+            ...input.temporalFields,
             ...input.pointFields,
             ...input.cypherFields,
         ];
 
         this.mutableFields = [
-            ...input.dateTimeFields,
+            ...input.temporalFields,
             ...input.enumFields,
             ...input.objectFields,
             ...input.scalarFields,

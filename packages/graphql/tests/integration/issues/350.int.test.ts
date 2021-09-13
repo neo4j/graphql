@@ -118,7 +118,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
             const result = await graphql({
                 schema: neoSchema.schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
             expect(result.errors).toBeFalsy();
             expect(result?.data?.posts[0].flaggedComments).toContainEqual({

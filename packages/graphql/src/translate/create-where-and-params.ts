@@ -64,7 +64,7 @@ function createWhereAndParams({
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
             const connectionField = node.connectionFields.find((x) => fieldName === x.fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -188,7 +188,7 @@ function createWhereAndParams({
             const [fieldName] = key.split("_NOT_IN");
             dbFieldName = mapToDbProperty(node, fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -210,7 +210,8 @@ function createWhereAndParams({
         if (key.endsWith("_IN")) {
             const [fieldName] = key.split("_IN");
             dbFieldName = mapToDbProperty(node, fieldName);
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -233,7 +234,7 @@ function createWhereAndParams({
             const [fieldName] = key.split("_NOT_INCLUDES");
             dbFieldName = mapToDbProperty(node, fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -256,7 +257,7 @@ function createWhereAndParams({
             const [fieldName] = key.split("_INCLUDES");
             dbFieldName = mapToDbProperty(node, fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -487,7 +488,7 @@ function createWhereAndParams({
             const [fieldName] = key.split("_LT");
             dbFieldName = mapToDbProperty(node, fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -509,7 +510,7 @@ function createWhereAndParams({
             const [fieldName] = key.split("_LTE");
             dbFieldName = mapToDbProperty(node, fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -531,7 +532,7 @@ function createWhereAndParams({
             const [fieldName] = key.split("_GT");
             dbFieldName = mapToDbProperty(node, fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -553,7 +554,7 @@ function createWhereAndParams({
             const [fieldName] = key.split("_GTE");
             dbFieldName = mapToDbProperty(node, fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -618,7 +619,7 @@ function createWhereAndParams({
                 res.clauses.push(`${varName}.${dbFieldName} = point($${param})`);
             }
         } else {
-            const field = [...node.primitiveFields, ...node.dateTimeFields].find((f) => key === f.fieldName);
+            const field = [...node.primitiveFields, ...node.temporalFields].find((f) => key === f.fieldName);
             const property =
                 field?.coalesceValue !== undefined
                     ? `coalesce(${varName}.${field.fieldName}, ${field.coalesceValue})`
