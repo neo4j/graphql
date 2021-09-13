@@ -224,9 +224,20 @@ describe("Interfaces", () => {
               startCursor: String
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
+            }
+
+            type IDAggregationSelection {
+              shortest: ID!
+              longest: ID!
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
             }
 
             enum SortDirection {

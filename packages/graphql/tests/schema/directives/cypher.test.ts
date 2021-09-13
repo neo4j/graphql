@@ -160,11 +160,34 @@ describe("Cypher", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
+            }
+
+            type IDAggregationSelection {
+              shortest: ID!
+              longest: ID!
+            }
+
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregationSelection!
+            }
+          
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsCount(where: ActorWhere): Int!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
             }
 
             enum SortDirection {

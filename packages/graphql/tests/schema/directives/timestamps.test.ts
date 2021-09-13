@@ -125,9 +125,27 @@ describe("Timestamps", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            type DateTimeAggregationSelection {
+              max: DateTime!
+              min: DateTime!
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              createdAt: DateTimeAggregationSelection!
+              id: IDAggregationSelection!
+              updatedAt: DateTimeAggregationSelection!
+            }
+
+            type IDAggregationSelection {
+                shortest: ID!
+                longest: ID!
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
             }
 
             enum SortDirection {

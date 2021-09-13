@@ -64,9 +64,27 @@ describe("Ignore", () => {
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
+            type IDAggregationSelection {
+                shortest: ID!
+                longest: ID!
+            }
+
+            type UserAggregateSelection {
+                count: Int!
+                id: IDAggregationSelection!
+                password: StringAggregationSelection!
+                username: StringAggregationSelection!
+            }
+
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersCount(where: UserWhere): Int!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
             }
 
             enum SortDirection {

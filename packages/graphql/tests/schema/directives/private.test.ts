@@ -62,9 +62,20 @@ describe("Private", () => {
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
+            }
+
+            type IDAggregationSelection {
+              shortest: ID!
+              longest: ID!
+            }
+
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersCount(where: UserWhere): Int!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
             }
 
             enum SortDirection {

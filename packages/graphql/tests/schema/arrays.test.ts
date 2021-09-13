@@ -121,9 +121,27 @@ describe("Arrays", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            type IDAggregationSelection {
+              shortest: ID!
+              longest: ID!
+            }
+
+            type FloatAggregationSelection {
+              average: Float!
+              max: Float!
+              min: Float!
+            }
+
+            type MovieAggregateSelection {
+              averageRating: FloatAggregationSelection!
+              count: Int!
+              id: IDAggregationSelection!
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
             }
 
             enum SortDirection {

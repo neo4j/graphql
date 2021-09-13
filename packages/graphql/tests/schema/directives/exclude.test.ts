@@ -139,9 +139,20 @@ describe("Exclude", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregationSelection!
+            }
+
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
             }
 
             enum SortDirection {
@@ -233,9 +244,20 @@ describe("Exclude", () => {
               updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
             }
 
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregationSelection!
+            }
+
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsCount(where: ActorWhere): Int!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
             }
 
             enum SortDirection {
@@ -342,9 +364,20 @@ describe("Exclude", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregationSelection!
+            }
+
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
             }
 
             enum SortDirection {
@@ -459,10 +492,21 @@ describe("Exclude", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregationSelection!
+            }
+
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
             type Query {
               customActorQuery: Actor
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
             }
 
             enum SortDirection {
@@ -701,9 +745,20 @@ describe("Exclude", () => {
               startCursor: String
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregationSelection!
+            }
+
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
             }
 
             enum SortDirection {
@@ -806,9 +861,20 @@ describe("Exclude", () => {
               updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
             }
 
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregationSelection!
+            }
+
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsCount(where: ActorWhere): Int!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
             }
 
             enum SortDirection {

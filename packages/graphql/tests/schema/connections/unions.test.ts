@@ -603,13 +603,36 @@ describe("Unions", () => {
               Journal: JournalWhere
             }
 
+            type StringAggregationSelection {
+              shortest: String!
+              longest: String!
+            }
+          
+            type JournalAggregateSelection {
+              count: Int!
+              subject: StringAggregationSelection!
+            }
+
+            type BookAggregateSelection {
+              count: Int!
+              title: StringAggregationSelection!
+            }
+
+            type AuthorAggregateSelection {
+              count: Int!
+              name: StringAggregationSelection!
+            }
+
             type Query {
               authors(options: AuthorOptions, where: AuthorWhere): [Author!]!
               authorsCount(where: AuthorWhere): Int!
+              authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
               books(options: BookOptions, where: BookWhere): [Book!]!
               booksCount(where: BookWhere): Int!
+              booksAggregate(where: BookWhere): BookAggregateSelection!
               journals(options: JournalOptions, where: JournalWhere): [Journal!]!
               journalsCount(where: JournalWhere): Int!
+              journalsAggregate(where: JournalWhere): JournalAggregateSelection!
             }
 
             input QueryOptions {

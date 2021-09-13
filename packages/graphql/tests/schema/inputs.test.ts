@@ -112,9 +112,20 @@ describe("Inputs", () => {
               id: ID
             }
 
+            type IDAggregationSelection {
+              shortest: ID!
+              longest: ID!
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregationSelection!
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesCount(where: MovieWhere): Int!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               name(input: NodeInput): String
             }
 
