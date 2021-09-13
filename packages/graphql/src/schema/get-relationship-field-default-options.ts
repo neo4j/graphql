@@ -46,9 +46,19 @@ function getRelationshipFieldDefaultOptions({
     // Ensure key is one of the options key since validation is skipped
     const isOptionsField = (fn: ObjectFieldNode) => ["sort", "limit", "options"].includes(fn.name.value);
 
-    // Ensure field is in set of primitive fields of reference node
+    // Ensure field is in set of sortable fields of reference node
+    // Taken from definition of sortInput in makeAugmentedSchema
     const isSortableField = (fn: ObjectFieldNode) =>
-        referenceNode.primitiveFields.map((rnpf) => rnpf.fieldName).includes(fn.name.value);
+        [
+            ...referenceNode.primitiveFields,
+            ...referenceNode.enumFields,
+            ...referenceNode.scalarFields,
+            ...referenceNode.temporalFields,
+            ...referenceNode.pointFields,
+        ]
+            .filter((rnpf) => !rnpf.typeMeta.array)
+            .map((rnpf) => rnpf.fieldName)
+            .includes(fn.name.value);
 
     // Ensure value is either ASC or DESC
     const isSortDirection = (fn: ObjectFieldNode) =>
