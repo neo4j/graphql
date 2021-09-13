@@ -36,7 +36,6 @@ export type Test = {
 };
 
 export type TestCase = {
-    kind: string;
     schema?: string;
     tests: Test[];
     file: string;
@@ -56,33 +55,13 @@ const graphqlQueryRe = /### GraphQL Input\s+```graphql(?<capture>(.|\s)*?)```/;
 const graphqlParamsRe = /### GraphQL Params Input\s+```json(?<capture>(.|\s)*?)```/;
 const cypherQueryRe = /### Expected Cypher Output\s+```cypher(?<capture>(.|\s)*?)```/;
 const cypherParamsRe = /### Expected Cypher Params\s+```json(?<capture>(.|\s)*?)```/;
-const typeDefsInputRe = /### TypeDefs\s+```graphql(?<capture>(.|\s)*?)```/;
-const schemaOutputRe = /### Output\s+```graphql(?<capture>(.|\s)*?)```/;
 const jwtRe = /### JWT Object\s+```json(?<capture>(.|\s)*?)```/;
 const envVarsRe = /```env(?<capture>(.|\s)*?)```/;
 
-function extractTests(contents: string, kind: string): Test[] {
+function extractTests(contents: string): Test[] {
     // Strip head of file
     const testParts = contents.split("---").slice(1);
     const generatedTests = testParts.map((t) => t.trim());
-
-    if (kind === "schema") {
-        return generatedTests
-            .map(
-                (t): Test => {
-                    const name = captureOrEmptyString(t, nameRe).trim();
-                    if (!name) {
-                        return {} as Test;
-                    }
-
-                    const typeDefs = captureOrEmptyString(t, typeDefsInputRe);
-                    const schemaOutPut = captureOrEmptyString(t, schemaOutputRe);
-
-                    return { schemaOutPut, typeDefs, name };
-                }
-            )
-            .filter((t) => t.name);
-    }
 
     return generatedTests
         .map(
@@ -121,37 +100,38 @@ function extractSchema(contents: string): string {
     return captureOrEmptyString(contents, re);
 }
 
-function generateTests(filePath, kind: string): TestCase {
+function generateTests(filePath): TestCase {
     const data = fs.readFileSync(filePath, { encoding: "utf8" });
     const file = path.basename(filePath);
     const dataStr = data.toString();
 
     const out: TestCase = {
-        kind,
-        tests: extractTests(dataStr, kind),
-        file: `${file} (${kind})`,
+        tests: extractTests(dataStr),
+        file: `${file}`,
     };
 
-    if (kind === "cypher") {
-        out.schema = extractSchema(dataStr);
-        out.envVars = captureOrEmptyString(dataStr, envVarsRe);
-    }
+    out.schema = extractSchema(dataStr);
+    out.envVars = captureOrEmptyString(dataStr, envVarsRe);
 
     return out;
 }
 
-export function generateTestCasesFromMd(dir: string, kind = ""): TestCase[] {
+export function generateTestCasesFromMd(dir: string): TestCase[] {
     const files = fs.readdirSync(dir, { withFileTypes: true }).reduce((res: TestCase[], item) => {
         if (item.isFile()) {
+            const isMd = item.name.split(".").pop() === "md";
+            if (!isMd) {
+                return res;
+            }
             try {
-                return [...res, generateTests(path.join(dir, item.name), kind)];
+                return [...res, generateTests(path.join(dir, item.name))];
             } catch {
                 throw new Error(`Error generating test ${path.join(dir, item.name)}`);
             }
         }
 
         if (item.isDirectory()) {
-            return [...res, ...generateTestCasesFromMd(path.join(dir, item.name), kind === "" ? item.name : kind)];
+            return [...res, ...generateTestCasesFromMd(path.join(dir, item.name))];
         }
 
         return res;
