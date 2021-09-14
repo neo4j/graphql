@@ -81,7 +81,7 @@ query {
 [[queries-count]]
 == Count
 
-Count queries accepts an `where` argument for xref::filtering.adoc[Filtering] data.
+Count queries accepts a `where` argument for xref::filtering.adoc[Filtering] data.
 
 === Counting all User nodes
 
@@ -117,6 +117,7 @@ Neo4j GraphQL supports aggregations on fields with type:
 7. `Time`
 8. `LocalTime`
 9. `LocalDateTime`
+10. `Duration`
 
 Numerical Fields will expose the following aggregation selections: 
 

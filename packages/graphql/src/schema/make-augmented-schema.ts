@@ -217,6 +217,14 @@ function makeAugmentedSchema(
         },
     });
 
+    const durationTimeAggregationSelection = composer.createObjectTC({
+        name: "DurationAggregationSelection",
+        fields: {
+            max: "Duration!",
+            min: "Duration!",
+        },
+    });
+
     const queryOptions = composer.createInputTC({
         name: "QueryOptions",
         fields: {
@@ -667,6 +675,10 @@ function makeAugmentedSchema(
 
                     if (field.typeMeta.name === "Time") {
                         res[field.fieldName] = timeAggregationSelection.NonNull;
+                    }
+
+                    if (field.typeMeta.name === "Duration") {
+                        res[field.fieldName] = durationTimeAggregationSelection.NonNull;
                     }
 
                     return res;
