@@ -54,10 +54,10 @@ describe("aggregations-top_level-id", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testId: $id, id: 1})
-                    CREATE (:Movie {testId: $id, id: 2})
-                    CREATE (:Movie {testId: $id, id: 3})
-                    CREATE (:Movie {testId: $id, id: 4})
+                    CREATE (:Movie {testId: $id, id: "1"})
+                    CREATE (:Movie {testId: $id, id: "22"})
+                    CREATE (:Movie {testId: $id, id: "333"})
+                    CREATE (:Movie {testId: $id, id: "4444"})
                 `,
                 {
                     id,
@@ -116,10 +116,10 @@ describe("aggregations-top_level-id", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testId: $id, id: 1})
-                    CREATE (:Movie {testId: $id, id: 2})
-                    CREATE (:Movie {testId: $id, id: 3})
-                    CREATE (:Movie {testId: $id, id: 4})
+                    CREATE (:Movie {testId: $id, id: "1"})
+                    CREATE (:Movie {testId: $id, id: "22"})
+                    CREATE (:Movie {testId: $id, id: "333"})
+                    CREATE (:Movie {testId: $id, id: "4444"})
                 `,
                 {
                     id,
@@ -150,7 +150,7 @@ describe("aggregations-top_level-id", () => {
 
             expect((gqlResult.data as any).moviesAggregate).toEqual({
                 id: {
-                    longest: "4",
+                    longest: "4444",
                 },
             });
         } finally {
@@ -178,10 +178,10 @@ describe("aggregations-top_level-id", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testId: $id, id: 1})
-                    CREATE (:Movie {testId: $id, id: 2})
-                    CREATE (:Movie {testId: $id, id: 3})
-                    CREATE (:Movie {testId: $id, id: 4})
+                    CREATE (:Movie {testId: $id, id: "1"})
+                    CREATE (:Movie {testId: $id, id: "22"})
+                    CREATE (:Movie {testId: $id, id: "333"})
+                    CREATE (:Movie {testId: $id, id: "4444"})
                 `,
                 {
                     id,
@@ -214,7 +214,7 @@ describe("aggregations-top_level-id", () => {
             expect((gqlResult.data as any).moviesAggregate).toEqual({
                 id: {
                     shortest: "1",
-                    longest: "4",
+                    longest: "4444",
                 },
             });
         } finally {
