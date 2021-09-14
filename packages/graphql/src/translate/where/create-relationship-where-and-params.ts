@@ -55,6 +55,11 @@ function createRelationshipWhereAndParams({
         const operator = match?.groups?.operator;
 
         const pointField = relationship.pointFields.find((f) => f.fieldName === fieldName);
+        // Comparison operations requires adding dates to durations
+        // See https://neo4j.com/developer/cypher/dates-datetimes-durations/#comparing-filtering-values
+        const durationField = relationship.primitiveFields.find(
+            (f) => f.fieldName === fieldName && f.typeMeta.name === "Duration"
+        );
 
         const coalesceValue = ([
             ...relationship.temporalFields,
@@ -157,10 +162,20 @@ function createRelationshipWhereAndParams({
         }
 
         if (operator && ["DISTANCE", "LT", "LTE", "GTE", "GT"].includes(operator)) {
+            let left = property;
+            let right = `$${param}`;
+            if (pointField) {
+                left = `distance(${property}, point($${param}.point))`;
+                right = `$${param}.distance`;
+            }
+            if (durationField) {
+                left = `datetime() + ${property}`;
+                right = `datetime() + $${param}`;
+            }
             const clause = createFilter({
-                left: pointField ? `distance(${property}, point($${param}.point))` : property,
+                left,
                 operator,
-                right: pointField ? `$${param}.distance` : `$${param}`,
+                right,
             });
             res.clauses.push(clause);
             res.params[key] = value;
