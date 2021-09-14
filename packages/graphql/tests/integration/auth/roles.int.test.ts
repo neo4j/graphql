@@ -37,6 +37,23 @@ describe("auth/roles", () => {
         await driver.close();
     });
 
+    beforeAll(async () => {
+        const session = driver.session();
+
+        try {
+            await session.run(`
+                    CREATE (:Product { name: 'p1', id:123 })
+                    CREATE (:User { id: 1234, password:'dontpanic' })
+                `);
+            await session.run(`
+                    MATCH(N:NotANode)
+                    DETACH DELETE(N)
+                `);
+        } finally {
+            await session.close();
+        }
+    });
+
     describe("read", () => {
         test("should throw if missing role on type definition", async () => {
             const session = driver.session();
@@ -96,6 +113,48 @@ describe("auth/roles", () => {
                         password
                     }
                 }
+            `;
+
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+
+            try {
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        // This tests reproduces the security issue related to authorization without match #195
+        test.skip("should throw if missing role on type definition and no nodes are matched", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type NotANode @auth(rules: [{
+                    operations: [READ],
+                    roles: ["admin"]
+                }]) {
+                    name: String
+                }
+            `;
+
+            const query = `
+            {
+                notANodes {
+                    name
+                }
+            }
             `;
 
             const secret = "secret";
