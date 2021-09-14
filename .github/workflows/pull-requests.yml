@@ -47,6 +47,28 @@ jobs:
           name: unit-coverage-${{ matrix.package }}
           path: packages/${{ matrix.package }}/coverage/
 
+  schema-tests:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run Schema tests
+        run: yarn --cwd packages/graphql run test:schema --coverage
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: schema-coverage-graphql
+          path: packages/graphql/coverage/
+
   tck-tests:
     needs:
       - cache-dependencies
