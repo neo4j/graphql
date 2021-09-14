@@ -39,12 +39,12 @@ describe("aggregations-top_level-bigint", () => {
 
         const typeDefs = `
             type Movie {
-                id: ID
+                testString: String
                 imdbRatingBigInt: BigInt
             }
         `;
 
-        const id = generate({
+        const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
@@ -54,19 +54,19 @@ describe("aggregations-top_level-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 1.1})
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 2.1})
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 3.1})
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 4.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 1.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 2.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 3.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 4.1})
                 `,
                 {
-                    id,
+                    testString,
                 }
             );
 
             const query = `
                 {
-                    moviesAggregate(where: {id: "${id}"}) {
+                    moviesAggregate(where: {testString: "${testString}"}) {
                         imdbRatingBigInt {
                             min
                         }
@@ -86,7 +86,7 @@ describe("aggregations-top_level-bigint", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
+            expect((gqlResult.data as any).moviesAggregate).toEqual({
                 imdbRatingBigInt: {
                     min: "1.1",
                 },
@@ -101,12 +101,12 @@ describe("aggregations-top_level-bigint", () => {
 
         const typeDefs = `
             type Movie {
-                id: ID
+                testString: String
                 imdbRatingBigInt: BigInt
             }
         `;
 
-        const id = generate({
+        const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
@@ -116,19 +116,19 @@ describe("aggregations-top_level-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 1.1})
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 2.1})
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 3.1})
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 4.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 1.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 2.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 3.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 4.1})
                 `,
                 {
-                    id,
+                    testString,
                 }
             );
 
             const query = `
                 {
-                    moviesAggregate(where: {id: "${id}"}) {
+                    moviesAggregate(where: {testString: "${testString}"}) {
                         imdbRatingBigInt {
                             max
                         }
@@ -148,7 +148,7 @@ describe("aggregations-top_level-bigint", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
+            expect((gqlResult.data as any).moviesAggregate).toEqual({
                 imdbRatingBigInt: {
                     max: "4.1",
                 },
@@ -163,12 +163,12 @@ describe("aggregations-top_level-bigint", () => {
 
         const typeDefs = `
             type Movie {
-                id: ID
+                testString: String
                 imdbRatingBigInt: BigInt
             }
         `;
 
-        const id = generate({
+        const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
@@ -178,19 +178,19 @@ describe("aggregations-top_level-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 1.1})
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 2.1})
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 3.1})
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 4.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 1.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 2.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 3.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 4.1})
                 `,
                 {
-                    id,
+                    testString,
                 }
             );
 
             const query = `
                 {
-                    moviesAggregate(where: {id: "${id}"}) {
+                    moviesAggregate(where: {testString: "${testString}"}) {
                         imdbRatingBigInt {
                             average
                         }
@@ -210,7 +210,7 @@ describe("aggregations-top_level-bigint", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
+            expect((gqlResult.data as any).moviesAggregate).toEqual({
                 imdbRatingBigInt: {
                     average: 2.6,
                 },
@@ -225,12 +225,12 @@ describe("aggregations-top_level-bigint", () => {
 
         const typeDefs = `
             type Movie {
-                id: ID
+                testString: String
                 imdbRatingBigInt: BigInt
             }
         `;
 
-        const id = generate({
+        const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
@@ -240,19 +240,19 @@ describe("aggregations-top_level-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 1.1})
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 2.1})
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 3.1})
-                    CREATE (:Movie {id: $id, imdbRatingBigInt: 4.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 1.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 2.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 3.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 4.1})
                 `,
                 {
-                    id,
+                    testString,
                 }
             );
 
             const query = `
                 {
-                    moviesAggregate(where: {id: "${id}"}) {
+                    moviesAggregate(where: {testString: "${testString}"}) {
                         imdbRatingBigInt {
                             min
                             max
@@ -274,7 +274,7 @@ describe("aggregations-top_level-bigint", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
+            expect((gqlResult.data as any).moviesAggregate).toEqual({
                 imdbRatingBigInt: {
                     min: "1.1",
                     max: "4.1",

@@ -39,7 +39,7 @@ describe("aggregations-top_level-alias", () => {
 
         const typeDefs = `
             type Movie {
-                testId: ID!
+                testString: ID!
                 id: ID!
                 title: String!
                 imdbRating: Int!
@@ -47,7 +47,7 @@ describe("aggregations-top_level-alias", () => {
             }
         `;
 
-        const testId = generate({
+        const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
@@ -62,16 +62,16 @@ describe("aggregations-top_level-alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testId: "${testId}", id: "1", title: "1", imdbRating: 1, createdAt: datetime("${minDate.toISOString()}")})
-                    CREATE (:Movie {testId: "${testId}", id: "22", title: "22", imdbRating: 2, createdAt: datetime()})
-                    CREATE (:Movie {testId: "${testId}", id: "333", title: "333", imdbRating: 3, createdAt: datetime()})
-                    CREATE (:Movie {testId: "${testId}", id: "4444", title: "4444", imdbRating: 4, createdAt: datetime("${maxDate.toISOString()}")})
+                    CREATE (:Movie {testString: "${testString}", id: "1", title: "1", imdbRating: 1, createdAt: datetime("${minDate.toISOString()}")})
+                    CREATE (:Movie {testString: "${testString}", id: "22", title: "22", imdbRating: 2, createdAt: datetime()})
+                    CREATE (:Movie {testString: "${testString}", id: "333", title: "333", imdbRating: 3, createdAt: datetime()})
+                    CREATE (:Movie {testString: "${testString}", id: "4444", title: "4444", imdbRating: 4, createdAt: datetime("${maxDate.toISOString()}")})
                 `
             );
 
             const query = `
                 {
-                    moviesAggregate(where: { testId: "${testId}" }) {
+                    moviesAggregate(where: { testString: "${testString}" }) {
                         _id: id {
                             _shortest: shortest
                             _longest: longest
@@ -105,7 +105,7 @@ describe("aggregations-top_level-alias", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
+            expect((gqlResult.data as any).moviesAggregate).toEqual({
                 _id: {
                     _shortest: "1",
                     _longest: "4444",

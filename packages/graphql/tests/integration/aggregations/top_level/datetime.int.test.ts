@@ -39,12 +39,12 @@ describe("aggregations-top_level-datetime", () => {
 
         const typeDefs = `
             type Movie {
-                id: ID
+                testString: String
                 createdAt: DateTime
             }
         `;
 
-        const id = generate({
+        const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
@@ -56,19 +56,19 @@ describe("aggregations-top_level-datetime", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {id: $id, createdAt: datetime("${minDate.toISOString()}")})
-                    CREATE (:Movie {id: $id, createdAt: datetime()})
-                    CREATE (:Movie {id: $id, createdAt: datetime()})
-                    CREATE (:Movie {id: $id, createdAt: datetime()})
+                    CREATE (:Movie {testString: $testString, createdAt: datetime("${minDate.toISOString()}")})
+                    CREATE (:Movie {testString: $testString, createdAt: datetime()})
+                    CREATE (:Movie {testString: $testString, createdAt: datetime()})
+                    CREATE (:Movie {testString: $testString, createdAt: datetime()})
                 `,
                 {
-                    id,
+                    testString,
                 }
             );
 
             const query = `
                 {
-                    moviesAggregate(where: {id: "${id}"}) {
+                    moviesAggregate(where: {testString: "${testString}"}) {
                         createdAt {
                             min
                         }
@@ -88,7 +88,7 @@ describe("aggregations-top_level-datetime", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
+            expect((gqlResult.data as any).moviesAggregate).toEqual({
                 createdAt: {
                     min: minDate.toISOString(),
                 },
@@ -103,12 +103,12 @@ describe("aggregations-top_level-datetime", () => {
 
         const typeDefs = `
             type Movie {
-                id: ID
+                testString: String
                 createdAt: DateTime
             }
         `;
 
-        const id = generate({
+        const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
@@ -123,19 +123,19 @@ describe("aggregations-top_level-datetime", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {id: $id, createdAt: datetime("${minDate.toISOString()}")})
-                    CREATE (:Movie {id: $id, createdAt: datetime()})
-                    CREATE (:Movie {id: $id, createdAt: datetime()})
-                    CREATE (:Movie {id: $id, createdAt: datetime("${maxDate.toISOString()}")})
+                    CREATE (:Movie {testString: $testString, createdAt: datetime("${minDate.toISOString()}")})
+                    CREATE (:Movie {testString: $testString, createdAt: datetime()})
+                    CREATE (:Movie {testString: $testString, createdAt: datetime()})
+                    CREATE (:Movie {testString: $testString, createdAt: datetime("${maxDate.toISOString()}")})
                 `,
                 {
-                    id,
+                    testString,
                 }
             );
 
             const query = `
                 {
-                    moviesAggregate(where: {id: "${id}"}) {
+                    moviesAggregate(where: {testString: "${testString}"}) {
                         createdAt {
                             max
                         }
@@ -155,7 +155,7 @@ describe("aggregations-top_level-datetime", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
+            expect((gqlResult.data as any).moviesAggregate).toEqual({
                 createdAt: {
                     max: maxDate.toISOString(),
                 },
@@ -170,12 +170,12 @@ describe("aggregations-top_level-datetime", () => {
 
         const typeDefs = `
             type Movie {
-                id: ID
+                testString: String
                 createdAt: DateTime
             }
         `;
 
-        const id = generate({
+        const testString = generate({
             charset: "alphabetic",
             readable: true,
         });
@@ -190,19 +190,19 @@ describe("aggregations-top_level-datetime", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {id: $id, createdAt: datetime("${minDate.toISOString()}")})
-                    CREATE (:Movie {id: $id, createdAt: datetime()})
-                    CREATE (:Movie {id: $id, createdAt: datetime()})
-                    CREATE (:Movie {id: $id, createdAt: datetime("${maxDate.toISOString()}")})
+                    CREATE (:Movie {testString: $testString, createdAt: datetime("${minDate.toISOString()}")})
+                    CREATE (:Movie {testString: $testString, createdAt: datetime()})
+                    CREATE (:Movie {testString: $testString, createdAt: datetime()})
+                    CREATE (:Movie {testString: $testString, createdAt: datetime("${maxDate.toISOString()}")})
                 `,
                 {
-                    id,
+                    testString,
                 }
             );
 
             const query = `
                 {
-                    moviesAggregate(where: {id: "${id}"}) {
+                    moviesAggregate(where: {testString: "${testString}"}) {
                         createdAt {
                             min
                             max
@@ -223,7 +223,7 @@ describe("aggregations-top_level-datetime", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
+            expect((gqlResult.data as any).moviesAggregate).toEqual({
                 createdAt: {
                     min: minDate.toISOString(),
                     max: maxDate.toISOString(),
