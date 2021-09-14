@@ -59,9 +59,25 @@ describe("Duration", () => {
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
             scalar Duration
 
+            type DurationAggregateSelection {
+              max: Duration!
+              min: Duration!
+            }
+
+            type IDAggregateSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Movie {
               duration: Duration
               id: ID
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              duration: DurationAggregateSelection!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -118,6 +134,7 @@ describe("Duration", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 

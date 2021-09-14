@@ -103,6 +103,11 @@ describe("Relationship-properties", () => {
               name: String!
             }
 
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             input ActorConnectInput {
               movies: [ActorMoviesConnectFieldInput!]
             }
@@ -331,6 +336,11 @@ describe("Relationship-properties", () => {
               where: MovieActorsConnectionWhere
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             input MovieConnectInput {
               actors: [MovieActorsConnectFieldInput!]
             }
@@ -411,8 +421,10 @@ describe("Relationship-properties", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 
@@ -421,6 +433,11 @@ describe("Relationship-properties", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {

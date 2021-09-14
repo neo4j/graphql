@@ -95,6 +95,11 @@ describe("Exclude", () => {
               title: String
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             input MovieCreateInput {
               title: String
             }
@@ -141,6 +146,7 @@ describe("Exclude", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 
@@ -149,6 +155,11 @@ describe("Exclude", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {
@@ -189,6 +200,11 @@ describe("Exclude", () => {
 
             type Actor {
               name: String
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
             }
 
             input ActorOptions {
@@ -235,6 +251,7 @@ describe("Exclude", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsCount(where: ActorWhere): Int!
             }
 
@@ -243,6 +260,11 @@ describe("Exclude", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {
@@ -301,6 +323,11 @@ describe("Exclude", () => {
               title: String
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             input MovieCreateInput {
               title: String
             }
@@ -344,6 +371,7 @@ describe("Exclude", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 
@@ -352,6 +380,11 @@ describe("Exclude", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -418,6 +451,11 @@ describe("Exclude", () => {
               title: String
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             input MovieCreateInput {
               title: String
             }
@@ -462,6 +500,7 @@ describe("Exclude", () => {
             type Query {
               customActorQuery: Actor
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 
@@ -470,6 +509,11 @@ describe("Exclude", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -630,6 +674,11 @@ describe("Exclude", () => {
               where: MovieActorsConnectionWhere
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             input MovieConnectInput {
               actors: [MovieActorsConnectFieldInput!]
             }
@@ -703,6 +752,7 @@ describe("Exclude", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 
@@ -711,6 +761,11 @@ describe("Exclude", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -746,6 +801,11 @@ describe("Exclude", () => {
 
             type Actor {
               name: String
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
             }
 
             input ActorCreateInput {
@@ -808,6 +868,7 @@ describe("Exclude", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsCount(where: ActorWhere): Int!
             }
 
@@ -816,6 +877,11 @@ describe("Exclude", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {

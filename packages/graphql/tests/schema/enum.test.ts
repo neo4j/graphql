@@ -65,6 +65,10 @@ describe("Enum", () => {
               status: Status
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+            }
+
             input MovieCreateInput {
               status: Status
             }
@@ -102,6 +106,7 @@ describe("Enum", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 
