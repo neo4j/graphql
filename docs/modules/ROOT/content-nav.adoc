@@ -64,3 +64,4 @@
 **** xref:guides/v2-migration/miscellaneous.adoc[]
 ** xref:troubleshooting/index.adoc[]
 *** xref:troubleshooting/faqs.adoc[]
+*** xref:troubleshooting/security.adoc[]
