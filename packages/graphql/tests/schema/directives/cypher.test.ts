@@ -56,7 +56,7 @@ describe("Cypher", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregationSelection!
+              name: StringAggregateSelection!
             }
 
             input ActorCreateInput {
@@ -116,7 +116,7 @@ describe("Cypher", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregationSelection {
+            type IDAggregateSelection {
               longest: ID!
               shortest: ID!
             }
@@ -128,7 +128,7 @@ describe("Cypher", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregationSelection!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -191,7 +191,7 @@ describe("Cypher", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }

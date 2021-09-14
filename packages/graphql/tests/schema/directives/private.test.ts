@@ -56,7 +56,7 @@ describe("Private", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregationSelection {
+            type IDAggregateSelection {
               longest: ID!
               shortest: ID!
             }
@@ -99,7 +99,7 @@ describe("Private", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregationSelection!
+              id: IDAggregateSelection!
             }
 
             input UserCreateInput {

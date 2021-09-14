@@ -105,7 +105,7 @@ describe("Relationship-properties", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregationSelection!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -338,7 +338,7 @@ describe("Relationship-properties", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregationSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -435,7 +435,7 @@ describe("Relationship-properties", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }

@@ -165,9 +165,9 @@ describe("Alias", () => {
             }
 
             type ActorAggregateSelection {
-              city: StringAggregationSelection!
+              city: StringAggregateSelection!
               count: Int!
-              name: StringAggregationSelection!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -262,7 +262,7 @@ describe("Alias", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregationSelection {
+            type FloatAggregateSelection {
               average: Float!
               max: Float!
               min: Float!
@@ -275,8 +275,8 @@ describe("Alias", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              rating: FloatAggregationSelection!
-              title: StringAggregationSelection!
+              rating: FloatAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectWhere {
@@ -362,7 +362,7 @@ describe("Alias", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }

@@ -57,7 +57,7 @@ describe("Access-directives", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregationSelection {
+            type IDAggregateSelection {
               longest: ID!
               shortest: ID!
             }
@@ -81,7 +81,7 @@ describe("Access-directives", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }
@@ -106,9 +106,9 @@ describe("Access-directives", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregationSelection!
-              password: StringAggregationSelection!
-              username: StringAggregationSelection!
+              id: IDAggregateSelection!
+              password: StringAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             input UserCreateInput {

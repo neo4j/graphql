@@ -63,7 +63,7 @@ describe("Unions", () => {
 
             type AuthorAggregateSelection {
               count: Int!
-              name: StringAggregationSelection!
+              name: StringAggregateSelection!
             }
 
             input AuthorConnectInput {
@@ -296,7 +296,7 @@ describe("Unions", () => {
 
             type BookAggregateSelection {
               count: Int!
-              title: StringAggregationSelection!
+              title: StringAggregateSelection!
             }
 
             input BookAuthorConnectFieldInput {
@@ -461,7 +461,7 @@ describe("Unions", () => {
 
             type JournalAggregateSelection {
               count: Int!
-              subject: StringAggregationSelection!
+              subject: StringAggregateSelection!
             }
 
             input JournalAuthorConnectFieldInput {
@@ -642,7 +642,7 @@ describe("Unions", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }

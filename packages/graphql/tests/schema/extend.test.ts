@@ -59,7 +59,7 @@ describe("Extend", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregationSelection {
+            type IDAggregateSelection {
               longest: ID!
               shortest: ID!
             }
@@ -71,8 +71,8 @@ describe("Extend", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregationSelection!
-              name: StringAggregationSelection!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -142,7 +142,7 @@ describe("Extend", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }

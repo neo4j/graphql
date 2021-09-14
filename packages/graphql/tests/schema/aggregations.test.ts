@@ -50,8 +50,8 @@ describe("Aggregations", () => {
             \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
             scalar BigInt
 
-            type BigIntAggregationSelection {
-              average: Float!
+            type BigIntAggregateSelection {
+              average: BigInt!
               max: BigInt!
               min: BigInt!
             }
@@ -70,7 +70,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregationSelection {
+            type DateTimeAggregateSelection {
               max: DateTime!
               min: DateTime!
             }
@@ -84,23 +84,23 @@ describe("Aggregations", () => {
             \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
             scalar Duration
 
-            type DurationAggregationSelection {
+            type DurationAggregateSelection {
               max: Duration!
               min: Duration!
             }
 
-            type FloatAggregationSelection {
+            type FloatAggregateSelection {
               average: Float!
               max: Float!
               min: Float!
             }
 
-            type IDAggregationSelection {
+            type IDAggregateSelection {
               longest: ID!
               shortest: ID!
             }
 
-            type IntAggregationSelection {
+            type IntAggregateSelection {
               average: Float!
               max: Int!
               min: Int!
@@ -109,7 +109,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
             scalar LocalDateTime
 
-            type LocalDateTimeAggregationSelection {
+            type LocalDateTimeAggregateSelection {
               max: LocalDateTime!
               min: LocalDateTime!
             }
@@ -117,7 +117,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A local time, represented as a time string without timezone information\\"\\"\\"
             scalar LocalTime
 
-            type LocalTimeAggregationSelection {
+            type LocalTimeAggregateSelection {
               max: LocalTime!
               min: LocalTime!
             }
@@ -137,16 +137,16 @@ describe("Aggregations", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              createdAt: DateTimeAggregationSelection!
-              id: IDAggregationSelection!
-              imdbRating: FloatAggregationSelection!
-              screenTime: DurationAggregationSelection!
-              someBigInt: BigIntAggregationSelection!
-              someInt: IntAggregationSelection!
-              someLocalDateTime: LocalDateTimeAggregationSelection!
-              someLocalTime: LocalTimeAggregationSelection!
-              someTime: TimeAggregationSelection!
-              title: StringAggregationSelection!
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection!
+              imdbRating: FloatAggregateSelection!
+              screenTime: DurationAggregateSelection!
+              someBigInt: BigIntAggregateSelection!
+              someInt: IntAggregateSelection!
+              someLocalDateTime: LocalDateTimeAggregateSelection!
+              someLocalTime: LocalTimeAggregateSelection!
+              someTime: TimeAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -304,7 +304,7 @@ describe("Aggregations", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }
@@ -312,7 +312,7 @@ describe("Aggregations", () => {
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
             scalar Time
 
-            type TimeAggregationSelection {
+            type TimeAggregateSelection {
               max: Time!
               min: Time!
             }
