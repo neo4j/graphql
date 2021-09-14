@@ -35,6 +35,7 @@ describe("Aggregations", () => {
                 imdbRating: Float
                 someInt: Int
                 someBigInt: BigInt
+                screenTime: Duration
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -80,6 +81,14 @@ describe("Aggregations", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"A duration, represented as an ISO 8601 duration string\\"\\"\\"
+            scalar Duration
+
+            type DurationAggregationSelection {
+              max: Duration!
+              min: Duration!
+            }
+
             type FloatAggregationSelection {
               average: Float!
               max: Float!
@@ -117,6 +126,7 @@ describe("Aggregations", () => {
               createdAt: DateTime
               id: ID
               imdbRating: Float
+              screenTime: Duration
               someBigInt: BigInt
               someInt: Int
               someLocalDateTime: LocalDateTime
@@ -130,6 +140,7 @@ describe("Aggregations", () => {
               createdAt: DateTimeAggregationSelection!
               id: IDAggregationSelection!
               imdbRating: FloatAggregationSelection!
+              screenTime: DurationAggregationSelection!
               someBigInt: BigIntAggregationSelection!
               someInt: IntAggregationSelection!
               someLocalDateTime: LocalDateTimeAggregationSelection!
@@ -142,6 +153,7 @@ describe("Aggregations", () => {
               createdAt: DateTime
               id: ID
               imdbRating: Float
+              screenTime: Duration
               someBigInt: BigInt
               someInt: Int
               someLocalDateTime: LocalDateTime
@@ -162,6 +174,7 @@ describe("Aggregations", () => {
               createdAt: SortDirection
               id: SortDirection
               imdbRating: SortDirection
+              screenTime: SortDirection
               someBigInt: SortDirection
               someInt: SortDirection
               someLocalDateTime: SortDirection
@@ -174,6 +187,7 @@ describe("Aggregations", () => {
               createdAt: DateTime
               id: ID
               imdbRating: Float
+              screenTime: Duration
               someBigInt: BigInt
               someInt: Int
               someLocalDateTime: LocalDateTime
@@ -211,6 +225,14 @@ describe("Aggregations", () => {
               imdbRating_LTE: Float
               imdbRating_NOT: Float
               imdbRating_NOT_IN: [Float]
+              screenTime: Duration
+              screenTime_GT: Duration
+              screenTime_GTE: Duration
+              screenTime_IN: [Duration]
+              screenTime_LT: Duration
+              screenTime_LTE: Duration
+              screenTime_NOT: Duration
+              screenTime_NOT_IN: [Duration]
               someBigInt: BigInt
               someBigInt_GT: BigInt
               someBigInt_GTE: BigInt

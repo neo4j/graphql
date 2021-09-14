@@ -284,6 +284,17 @@ describe("TCK Generated tests", () => {
                                     {}
                                 );
 
+                            const durationAggregateFields = node.primitiveFields
+                                .filter((x) => x.typeMeta.name === "Duration" && !x.typeMeta.array)
+                                .reduce((r, field) => {
+                                    const duration = `P1Y1M1DT1M`;
+
+                                    return {
+                                        ...r,
+                                        [field.fieldName]: { min: duration, max: duration },
+                                    };
+                                }, {});
+
                             return {
                                 count: 1,
                                 ...aggregateStringFields,
@@ -292,6 +303,7 @@ describe("TCK Generated tests", () => {
                                 ...numericalAggregateFields,
                                 ...localTimeFields,
                                 ...localDateTimeFields,
+                                ...durationAggregateFields,
                             };
                         },
                     };
