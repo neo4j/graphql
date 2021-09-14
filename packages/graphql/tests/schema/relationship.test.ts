@@ -49,7 +49,7 @@ describe("Relationship", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregationSelection!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectWhere {
@@ -113,7 +113,7 @@ describe("Relationship", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregationSelection {
+            type IDAggregateSelection {
               longest: ID!
               shortest: ID!
             }
@@ -182,7 +182,7 @@ describe("Relationship", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregationSelection!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -275,7 +275,7 @@ describe("Relationship", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }
@@ -330,7 +330,7 @@ describe("Relationship", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregationSelection!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -475,7 +475,7 @@ describe("Relationship", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregationSelection {
+            type IDAggregateSelection {
               longest: ID!
               shortest: ID!
             }
@@ -547,7 +547,7 @@ describe("Relationship", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregationSelection!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -644,7 +644,7 @@ describe("Relationship", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }

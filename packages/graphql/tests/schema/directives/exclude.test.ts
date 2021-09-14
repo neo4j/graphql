@@ -97,7 +97,7 @@ describe("Exclude", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregationSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -157,7 +157,7 @@ describe("Exclude", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }
@@ -204,7 +204,7 @@ describe("Exclude", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregationSelection!
+              name: StringAggregateSelection!
             }
 
             input ActorOptions {
@@ -262,7 +262,7 @@ describe("Exclude", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }
@@ -325,7 +325,7 @@ describe("Exclude", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregationSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -382,7 +382,7 @@ describe("Exclude", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }
@@ -453,7 +453,7 @@ describe("Exclude", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregationSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -511,7 +511,7 @@ describe("Exclude", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }
@@ -676,7 +676,7 @@ describe("Exclude", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              title: StringAggregationSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -763,7 +763,7 @@ describe("Exclude", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }
@@ -805,7 +805,7 @@ describe("Exclude", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              name: StringAggregationSelection!
+              name: StringAggregateSelection!
             }
 
             input ActorCreateInput {
@@ -879,7 +879,7 @@ describe("Exclude", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }

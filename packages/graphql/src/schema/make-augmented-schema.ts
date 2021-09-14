@@ -142,88 +142,64 @@ function makeAugmentedSchema(
         args: {},
     };
 
-    const idNumericalAggregationSelection = composer.createObjectTC({
-        name: "IDAggregationSelection",
-        fields: {
-            shortest: composeId,
-            longest: composeId,
-        },
-    });
+    // Foreach i if i[1] is ? then we will assume it takes on type { min, max }
+    const aggregationSelectionTypeMatrix: [string, any?][] = [
+        [
+            "ID",
+            {
+                shortest: composeId,
+                longest: composeId,
+            },
+        ],
+        [
+            "String",
+            {
+                shortest: "String!",
+                longest: "String!",
+            },
+        ],
+        [
+            "Float",
+            {
+                max: composeFloat,
+                min: composeFloat,
+                average: composeFloat,
+            },
+        ],
+        [
+            "Int",
+            {
+                max: composeInt,
+                min: composeInt,
+                average: composeFloat,
+            },
+        ],
+        [
+            "BigInt",
+            {
+                max: "BigInt!",
+                min: "BigInt!",
+                average: "BigInt!",
+            },
+        ],
+        ["DateTime"],
+        ["LocalDateTime"],
+        ["LocalTime"],
+        ["Time"],
+        ["Duration"],
+    ];
 
-    const stringNumericalAggregationSelection = composer.createObjectTC({
-        name: "StringAggregationSelection",
-        fields: {
-            shortest: "String!",
-            longest: "String!",
-        },
-    });
+    const aggregationSelectionTypeNames = aggregationSelectionTypeMatrix.map(([name]) => name);
 
-    const intNumericalAggregationSelection = composer.createObjectTC({
-        name: "IntAggregationSelection",
-        fields: {
-            max: composeInt,
-            min: composeInt,
-            average: composeFloat,
-        },
-    });
-
-    const floatNumericalAggregationSelection = composer.createObjectTC({
-        name: "FloatAggregationSelection",
-        fields: {
-            max: composeFloat,
-            min: composeFloat,
-            average: composeFloat,
-        },
-    });
-
-    const bigIntNumericalAggregationSelection = composer.createObjectTC({
-        name: "BigIntAggregationSelection",
-        fields: {
-            max: "BigInt!",
-            min: "BigInt!",
-            average: composeFloat,
-        },
-    });
-
-    const dateTimeAggregationSelection = composer.createObjectTC({
-        name: "DateTimeAggregationSelection",
-        fields: {
-            max: "DateTime!",
-            min: "DateTime!",
-        },
-    });
-
-    const timeAggregationSelection = composer.createObjectTC({
-        name: "TimeAggregationSelection",
-        fields: {
-            max: "Time!",
-            min: "Time!",
-        },
-    });
-
-    const localTimeAggregationSelection = composer.createObjectTC({
-        name: "LocalTimeAggregationSelection",
-        fields: {
-            max: "LocalTime!",
-            min: "LocalTime!",
-        },
-    });
-
-    const localDateTimeAggregationSelection = composer.createObjectTC({
-        name: "LocalDateTimeAggregationSelection",
-        fields: {
-            max: "LocalDateTime!",
-            min: "LocalDateTime!",
-        },
-    });
-
-    const durationTimeAggregationSelection = composer.createObjectTC({
-        name: "DurationAggregationSelection",
-        fields: {
-            max: "Duration!",
-            min: "Duration!",
-        },
-    });
+    const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce((res, [name, fields]) => {
+        return {
+            ...res,
+            [name]: composer.createObjectTC({
+                name: `${name}AggregateSelection`,
+                fields: fields ? fields : { min: `${name}!`, max: `${name}!` },
+            }),
+        };
+    }, {});
 
     const queryOptions = composer.createInputTC({
         name: "QueryOptions",
@@ -641,45 +617,15 @@ function makeAugmentedSchema(
                         return res;
                     }
 
-                    if (field.typeMeta.name === "ID") {
-                        res[field.fieldName] = idNumericalAggregationSelection.NonNull;
+                    if (!aggregationSelectionTypeNames.includes(field.typeMeta.name)) {
+                        return res;
                     }
 
-                    if (field.typeMeta.name === "String") {
-                        res[field.fieldName] = stringNumericalAggregationSelection.NonNull;
-                    }
+                    const objectTypeComposer = (aggregationSelectionTypes[
+                        field.typeMeta.name
+                    ] as unknown) as ObjectTypeComposer<unknown, unknown>;
 
-                    if (field.typeMeta.name === "Float") {
-                        res[field.fieldName] = floatNumericalAggregationSelection.NonNull;
-                    }
-
-                    if (field.typeMeta.name === "Int") {
-                        res[field.fieldName] = intNumericalAggregationSelection.NonNull;
-                    }
-
-                    if (field.typeMeta.name === "BigInt") {
-                        res[field.fieldName] = bigIntNumericalAggregationSelection.NonNull;
-                    }
-
-                    if (field.typeMeta.name === "DateTime") {
-                        res[field.fieldName] = dateTimeAggregationSelection.NonNull;
-                    }
-
-                    if (field.typeMeta.name === "LocalDateTime") {
-                        res[field.fieldName] = localDateTimeAggregationSelection.NonNull;
-                    }
-
-                    if (field.typeMeta.name === "LocalTime") {
-                        res[field.fieldName] = localTimeAggregationSelection.NonNull;
-                    }
-
-                    if (field.typeMeta.name === "Time") {
-                        res[field.fieldName] = timeAggregationSelection.NonNull;
-                    }
-
-                    if (field.typeMeta.name === "Duration") {
-                        res[field.fieldName] = durationTimeAggregationSelection.NonNull;
-                    }
+                    res[field.fieldName] = objectTypeComposer.NonNull;
 
                     return res;
                 }, {}),

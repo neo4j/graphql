@@ -59,7 +59,7 @@ describe("Date", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregationSelection {
+            type IDAggregateSelection {
               longest: ID!
               shortest: ID!
             }
@@ -71,7 +71,7 @@ describe("Date", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregationSelection!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {

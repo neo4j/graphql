@@ -64,7 +64,7 @@ describe("Null", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregationSelection {
+            type DateTimeAggregateSelection {
               max: DateTime!
               min: DateTime!
             }
@@ -75,18 +75,18 @@ describe("Null", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregationSelection {
+            type FloatAggregateSelection {
               average: Float!
               max: Float!
               min: Float!
             }
 
-            type IDAggregationSelection {
+            type IDAggregateSelection {
               longest: ID!
               shortest: ID!
             }
 
-            type IntAggregationSelection {
+            type IntAggregateSelection {
               average: Float!
               max: Int!
               min: Int!
@@ -109,12 +109,12 @@ describe("Null", () => {
             }
 
             type MovieAggregateSelection {
-              actorCount: IntAggregationSelection!
-              averageRating: FloatAggregationSelection!
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
               count: Int!
-              createdAt: DateTimeAggregationSelection!
-              id: IDAggregationSelection!
-              name: StringAggregationSelection!
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -289,7 +289,7 @@ describe("Null", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }

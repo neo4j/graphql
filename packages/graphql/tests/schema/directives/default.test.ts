@@ -57,7 +57,7 @@ describe("Default", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
-            type DateTimeAggregationSelection {
+            type DateTimeAggregateSelection {
               max: DateTime!
               min: DateTime!
             }
@@ -68,18 +68,18 @@ describe("Default", () => {
               relationshipsDeleted: Int!
             }
 
-            type FloatAggregationSelection {
+            type FloatAggregateSelection {
               average: Float!
               max: Float!
               min: Float!
             }
 
-            type IDAggregationSelection {
+            type IDAggregateSelection {
               longest: ID!
               shortest: ID!
             }
 
-            type IntAggregationSelection {
+            type IntAggregateSelection {
               average: Float!
               max: Int!
               min: Int!
@@ -104,7 +104,7 @@ describe("Default", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }
@@ -133,11 +133,11 @@ describe("Default", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregationSelection!
-              name: StringAggregationSelection!
-              numberOfFriends: IntAggregationSelection!
-              rating: FloatAggregationSelection!
-              verifiedDate: DateTimeAggregationSelection!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
+              numberOfFriends: IntAggregateSelection!
+              rating: FloatAggregateSelection!
+              verifiedDate: DateTimeAggregateSelection!
             }
 
             input UserCreateInput {

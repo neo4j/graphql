@@ -34,7 +34,7 @@ describe("aggregations-top_level-alias", () => {
         await driver.close();
     });
 
-    test("should preform many aggregations while aliasing each field and return correct data", async () => {
+    test("should perform many aggregations while aliasing each field and return correct data", async () => {
         const session = driver.session();
 
         const typeDefs = `

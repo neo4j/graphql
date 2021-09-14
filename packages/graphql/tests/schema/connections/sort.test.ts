@@ -82,7 +82,7 @@ describe("Sort", () => {
 
             type Node1AggregateSelection {
               count: Int!
-              property: StringAggregationSelection!
+              property: StringAggregateSelection!
             }
 
             input Node1ConnectInput {
@@ -335,7 +335,7 @@ describe("Sort", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }

@@ -42,8 +42,8 @@ describe("Bigint", () => {
             \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
             scalar BigInt
 
-            type BigIntAggregationSelection {
-              average: Float!
+            type BigIntAggregateSelection {
+              average: BigInt!
               max: BigInt!
               min: BigInt!
             }
@@ -72,8 +72,8 @@ describe("Bigint", () => {
 
             type FileAggregateSelection {
               count: Int!
-              name: StringAggregationSelection!
-              size: BigIntAggregationSelection!
+              name: StringAggregateSelection!
+              size: BigIntAggregateSelection!
             }
 
             input FileCreateInput {
@@ -141,7 +141,7 @@ describe("Bigint", () => {
               DESC
             }
 
-            type StringAggregationSelection {
+            type StringAggregateSelection {
               longest: String!
               shortest: String!
             }

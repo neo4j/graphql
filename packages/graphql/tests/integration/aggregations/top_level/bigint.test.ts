@@ -26,6 +26,8 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 describe("aggregations-top_level-bigint", () => {
     let driver: Driver;
 
+    const bigInt = "2147483647";
+
     beforeAll(async () => {
         driver = await neo4j();
     });
@@ -54,10 +56,10 @@ describe("aggregations-top_level-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 1.1})
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 2.1})
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 3.1})
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 4.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.2})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.3})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.4})
                 `,
                 {
                     testString,
@@ -88,7 +90,7 @@ describe("aggregations-top_level-bigint", () => {
 
             expect((gqlResult.data as any).moviesAggregate).toEqual({
                 imdbRatingBigInt: {
-                    min: "1.1",
+                    min: `${bigInt}.1`,
                 },
             });
         } finally {
@@ -116,10 +118,10 @@ describe("aggregations-top_level-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 1.1})
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 2.1})
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 3.1})
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 4.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.2})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.3})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.4})
                 `,
                 {
                     testString,
@@ -150,7 +152,7 @@ describe("aggregations-top_level-bigint", () => {
 
             expect((gqlResult.data as any).moviesAggregate).toEqual({
                 imdbRatingBigInt: {
-                    max: "4.1",
+                    max: `${bigInt}.4`,
                 },
             });
         } finally {
@@ -178,10 +180,10 @@ describe("aggregations-top_level-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 1.1})
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 2.1})
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 3.1})
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 4.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.2})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.3})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.4})
                 `,
                 {
                     testString,
@@ -212,7 +214,7 @@ describe("aggregations-top_level-bigint", () => {
 
             expect((gqlResult.data as any).moviesAggregate).toEqual({
                 imdbRatingBigInt: {
-                    average: 2.6,
+                    average: `${bigInt}.25`,
                 },
             });
         } finally {
@@ -240,10 +242,10 @@ describe("aggregations-top_level-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 1.1})
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 2.1})
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 3.1})
-                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: 4.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.1})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.2})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.3})
+                    CREATE (:Movie {testString: $testString, imdbRatingBigInt: ${bigInt}.4})
                 `,
                 {
                     testString,
@@ -276,9 +278,9 @@ describe("aggregations-top_level-bigint", () => {
 
             expect((gqlResult.data as any).moviesAggregate).toEqual({
                 imdbRatingBigInt: {
-                    min: "1.1",
-                    max: "4.1",
-                    average: 2.6,
+                    min: `${bigInt}.1`,
+                    max: `${bigInt}.4`,
+                    average: `${bigInt}.25`,
                 },
             });
         } finally {

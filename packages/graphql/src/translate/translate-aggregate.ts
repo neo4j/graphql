@@ -121,7 +121,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         if (field) {
             const thisProjections: string[] = [];
 
-            Object.entries(selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregationSelection`]).forEach(
+            Object.entries(selection[1].fieldsByTypeName[`${field.typeMeta.name}AggregateSelection`]).forEach(
                 (entry) => {
                     // "min" | "max" | "average" | "shortest" | "longest"
                     let operator = entry[1].name;
