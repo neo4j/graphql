@@ -86,7 +86,7 @@ describe("aggregations-top_level-string", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
+            expect((gqlResult.data as any).moviesAggregate).toEqual({
                 title: {
                     shortest: "1",
                 },
@@ -148,7 +148,7 @@ describe("aggregations-top_level-string", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
+            expect((gqlResult.data as any).moviesAggregate).toEqual({
                 title: {
                     longest: "4444",
                 },
@@ -211,7 +211,7 @@ describe("aggregations-top_level-string", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
+            expect((gqlResult.data as any).moviesAggregate).toEqual({
                 title: {
                     shortest: "1",
                     longest: "4444",

@@ -105,7 +105,7 @@ describe("aggregations-top_level-many", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any)[`moviesAggregate`]).toEqual({
+            expect((gqlResult.data as any).moviesAggregate).toEqual({
                 id: {
                     shortest: "1",
                     longest: "4444",
