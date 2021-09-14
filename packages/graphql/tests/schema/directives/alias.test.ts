@@ -164,6 +164,12 @@ describe("Alias", () => {
               where: ActorActedInConnectionWhere
             }
 
+            type ActorAggregateSelection {
+              city: StringAggregateSelection!
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             input ActorConnectInput {
               actedIn: [ActorActedInConnectFieldInput!]
             }
@@ -256,9 +262,21 @@ describe("Alias", () => {
               relationshipsDeleted: Int!
             }
 
+            type FloatAggregateSelection {
+              average: Float!
+              max: Float!
+              min: Float!
+            }
+
             type Movie {
               rating: Float
               title: String!
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              rating: FloatAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectWhere {
@@ -330,8 +348,10 @@ describe("Alias", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 
@@ -340,6 +360,11 @@ describe("Alias", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {

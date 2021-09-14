@@ -24,3 +24,6 @@ export { default as defaultFieldResolver } from "./defaultField";
 export { default as deleteResolver } from "./delete";
 export { default as findResolver } from "./read";
 export { default as updateResolver } from "./update";
+export { default as aggregateResolver } from "./aggregate";
+export { default as numericalResolver } from "./numerical";
+export { default as idResolver } from "./id";

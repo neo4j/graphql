@@ -59,6 +59,10 @@ describe("Point", () => {
               filmedAt: Point!
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+            }
+
             input MovieCreateInput {
               filmedAt: PointInput!
             }
@@ -121,6 +125,7 @@ describe("Point", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 
@@ -202,6 +207,10 @@ describe("Point", () => {
               partLocation: CartesianPoint!
             }
 
+            type MachineAggregateSelection {
+              count: Int!
+            }
+
             input MachineCreateInput {
               partLocation: CartesianPointInput!
             }
@@ -244,6 +253,7 @@ describe("Point", () => {
 
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
+              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
               machinesCount(where: MachineWhere): Int!
             }
 
@@ -306,6 +316,10 @@ describe("Point", () => {
               filmedAt: [Point!]!
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+            }
+
             input MovieCreateInput {
               filmedAt: [PointInput!]!
             }
@@ -350,6 +364,7 @@ describe("Point", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 
@@ -419,6 +434,10 @@ describe("Point", () => {
               partLocations: [CartesianPoint!]!
             }
 
+            type MachineAggregateSelection {
+              count: Int!
+            }
+
             input MachineCreateInput {
               partLocations: [CartesianPointInput!]!
             }
@@ -449,6 +468,7 @@ describe("Point", () => {
 
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
+              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
               machinesCount(where: MachineWhere): Int!
             }
 

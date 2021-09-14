@@ -22,3 +22,4 @@ export { default as translateRead } from "./translate-read";
 export { default as translateUpdate } from "./translate-update";
 export { default as translateDelete } from "./translate-delete";
 export { default as translateCount } from "./translate-count";
+export { default as translateAggregate } from "./translate-aggregate";

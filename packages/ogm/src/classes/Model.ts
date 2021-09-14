@@ -301,6 +301,64 @@ class Model {
 
         return (result.data as any)[mutationName] as DeleteInfo;
     }
+
+    async aggregate<T = any>({
+        where,
+        aggregate,
+        context = {},
+        rootValue = null,
+    }: {
+        where?: GraphQLWhereArg;
+        aggregate: any;
+        context?: any;
+        rootValue?: any;
+    }): Promise<T> {
+        const queryName = `${pluralize(camelCase(this.name))}Aggregate`;
+
+        let selections: string[] = [];
+
+        Object.entries(aggregate).forEach((entry) => {
+            // Must be count
+            if (!Object.keys(entry).length) {
+                selections.push(entry[0]);
+
+                return;
+            }
+
+            const thisSelections: string[] = [];
+            Object.entries(entry[1] as any).forEach((e) => {
+                if (Boolean(e[1]) === false) {
+                    return false;
+                }
+
+                thisSelections.push(e[0]);
+            });
+
+            if (thisSelections.length) {
+                selections.push(`${entry[0]} {\n`);
+                selections.push(thisSelections.join("\n"));
+                selections.push(`}\n`);
+            }
+        });
+
+        const query = `
+            query ${where ? `($where: ${this.name}Where)` : ""}{
+               ${queryName}${where ? `(where: $where)` : ""} {
+                   ${selections.join("\n")}
+               }
+            }
+        `;
+
+        const variableValues = { where };
+
+        const result = await graphql(this.neoSchema.schema, query, rootValue, context, variableValues);
+
+        if (result.errors?.length) {
+            throw new Error(result.errors[0].message);
+        }
+
+        return (result.data as any)[queryName] as T;
+    }
 }
 
 export default Model;
