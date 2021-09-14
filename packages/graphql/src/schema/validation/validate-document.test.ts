@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 import { parse } from "graphql";
+import { RESERVED_INTERFACE_FIELDS, RESERVED_TYPE_NAMES } from "../../constants";
 import validateDocument from "./validate-document";
 
 describe("validateDocument", () => {
@@ -298,12 +299,12 @@ describe("validateDocument", () => {
     describe("Github Issue 158", () => {
         test("should not throw error on validation of schema", () => {
             const doc = parse(`
-                type Node {
+                type Test {
                     createdAt: DateTime
                 }
 
               type Query {
-                nodes: [Node] @cypher(statement: "")
+                nodes: [Test] @cypher(statement: "")
               }
             `);
 
@@ -502,6 +503,111 @@ describe("validateDocument", () => {
             `);
             const res = validateDocument(doc);
             expect(res).toBeUndefined();
+        });
+    });
+
+    describe("Reserved Names", () => {
+        describe("Node", () => {
+            test("should throw when using PageInfo as node name", () => {
+                const doc = parse(`
+                    type PageInfo {
+                        id: ID
+                    }
+                `);
+
+                expect(() => validateDocument(doc)).toThrow(
+                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error
+                );
+            });
+
+            test("should throw when using Connection in a node name", () => {
+                const doc = parse(`
+                    type NodeConnection {
+                        id: ID
+                    }
+                `);
+
+                expect(() => validateDocument(doc)).toThrow(
+                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error
+                );
+            });
+
+            test("should throw when using Node as node name", () => {
+                const doc = parse(`
+                    type Node {
+                        id: ID
+                    }
+                `);
+
+                expect(() => validateDocument(doc)).toThrow(
+                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error
+                );
+            });
+        });
+
+        describe("Interface", () => {
+            test("should throw when using PageInfo as relationship properties interface name", () => {
+                const doc = parse(`
+                    type Movie {
+                        id: ID
+                        actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "PageInfo")
+                    }
+
+                    interface PageInfo {
+                        screenTime: Int
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `);
+
+                expect(() => validateDocument(doc)).toThrow(
+                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error
+                );
+            });
+
+            test("should throw when using Connection in a properties interface name", () => {
+                const doc = parse(`
+                    type Movie {
+                        id: ID
+                        actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "NodeConnection")
+                    }
+
+                    interface NodeConnection {
+                        screenTime: Int
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `);
+
+                expect(() => validateDocument(doc)).toThrow(
+                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error
+                );
+            });
+
+            test("should throw when using Node as relationship properties interface name", () => {
+                const doc = parse(`
+                    type Movie {
+                        id: ID
+                        actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT, properties: "Node")
+                    }
+
+                    interface Node {
+                        screenTime: Int
+                    }
+
+                    type Actor {
+                        name: String
+                    }
+                `);
+
+                expect(() => validateDocument(doc)).toThrow(
+                    RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error
+                );
+            });
         });
     });
 });

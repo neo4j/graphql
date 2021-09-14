@@ -201,22 +201,6 @@ function makeAugmentedSchema(
     Object.keys(Scalars).forEach((scalar) => composer.addTypeDefs(`scalar ${scalar}`));
 
     const nodes = objectNodes.map((definition) => {
-        constants.RESERVED_TYPE_NAMES.forEach(([label, message]) => {
-            let toThrowError = false;
-
-            if (label === "Connection" && definition.name.value.endsWith("Connection")) {
-                toThrowError = true;
-            }
-
-            if (definition.name.value === label) {
-                toThrowError = true;
-            }
-
-            if (toThrowError) {
-                throw new Error(message);
-            }
-        });
-
         const otherDirectives = (definition.directives || []).filter(
             (x) => !["auth", "exclude"].includes(x.name.value)
         );
@@ -289,22 +273,6 @@ function makeAugmentedSchema(
     const relationshipFields = new Map<string, ObjectFields>();
 
     relationshipProperties.forEach((relationship) => {
-        constants.RESERVED_TYPE_NAMES.forEach(([label, message]) => {
-            let toThrowError = false;
-
-            if (label === "Connection" && relationship.name.value.endsWith("Connection")) {
-                toThrowError = true;
-            }
-
-            if (relationship.name.value === label) {
-                toThrowError = true;
-            }
-
-            if (toThrowError) {
-                throw new Error(message);
-            }
-        });
-
         const authDirective = (relationship.directives || []).find((x) => x.name.value === "auth");
         if (authDirective) {
             throw new Error("Cannot have @auth directive on relationship properties interface");
@@ -431,22 +399,6 @@ function makeAugmentedSchema(
             n.interfaces?.some((i) => i.name.value === interfaceRelationship.name.value)
         );
 
-        constants.RESERVED_TYPE_NAMES.forEach(([label, message]) => {
-            let toThrowError = false;
-
-            if (label === "Connection" && interfaceRelationship.name.value.endsWith("Connection")) {
-                toThrowError = true;
-            }
-
-            if (interfaceRelationship.name.value === label) {
-                toThrowError = true;
-            }
-
-            if (toThrowError) {
-                throw new Error(message);
-            }
-        });
-
         // const authDirective = (relationship.directives || []).find((x) => x.name.value === "auth");
         // if (authDirective) {
         //     throw new Error("Cannot have @auth directive on relationship properties interface");
@@ -535,6 +487,41 @@ function makeAugmentedSchema(
             fields: interfaceWhereFields,
         });
 
+        const [interfaceConnectInput, interfaceDeleteInput, interfaceDisconnectInput] = [
+            "Connect",
+            "Delete",
+            "Disconnect",
+        ].map((operation) =>
+            composer.getOrCreateITC(`${interfaceRelationship.name.value}${operation}Input`, (tc) => {
+                // interfaceFields.relationFields.forEach((relationshipField) => {
+                //     tc.addFields({
+                //         [relationshipField.fieldName]: `${interfaceRelationship.name.value}${relationshipField.typeMeta.name}${operation}FieldInput`,
+                //     });
+                // });
+            })
+        );
+
+        const interfaceUpdateInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}UpdateInput`, (tc) => {
+            tc.addFields(
+                [
+                    ...interfaceFields.primitiveFields,
+                    ...interfaceFields.scalarFields,
+                    ...interfaceFields.enumFields,
+                    ...interfaceFields.temporalFields.filter((field) => !field.timestamps),
+                    ...interfaceFields.pointFields,
+                ].reduce(
+                    (res, f) =>
+                        f.readonly || (f as PrimitiveField)?.autogenerate
+                            ? res
+                            : {
+                                  ...res,
+                                  [f.fieldName]: f.typeMeta.input.update.pretty,
+                              },
+                    {}
+                )
+            );
+        });
+
         implementations.forEach((implementation) => {
             const implementationFields = getObjFieldMeta({
                 enums,
@@ -570,6 +557,24 @@ function makeAugmentedSchema(
             whereInput.addFields({
                 [implementation.name.value]: {
                     type: implementationWhere,
+                },
+            });
+
+            interfaceConnectInput.addFields({
+                [implementation.name.value]: {
+                    type: `[${implementation.name.value}ConnectInput!]`,
+                },
+            });
+
+            interfaceDeleteInput.addFields({
+                [implementation.name.value]: {
+                    type: `[${implementation.name.value}DeleteInput!]`,
+                },
+            });
+
+            interfaceDisconnectInput.addFields({
+                [implementation.name.value]: {
+                    type: `[${implementation.name.value}DisconnectInput!]`,
                 },
             });
         });
@@ -841,13 +846,16 @@ function makeAugmentedSchema(
                     `${node.name}${upperFirst(rel.fieldName)}ConnectFieldInput`,
                     (tc) => {
                         tc.addFields({
+                            ...(composer.has(`${rel.typeMeta.name}ConnectInput`)
+                                ? { connect: `${rel.typeMeta.name}ConnectInput` }
+                                : {}),
+                            ...(rel.properties
+                                ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
+                                : {}),
                             where: connectWhere,
                             // ...(n.relationFields.length
                             //     ? { connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput` }
                             //     : {}),
-                            ...(rel.properties
-                                ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
-                                : {}),
                         });
                     }
                 );
@@ -856,6 +864,9 @@ function makeAugmentedSchema(
                     `${node.name}${upperFirst(rel.fieldName)}DeleteFieldInput`,
                     (tc) => {
                         tc.addFields({
+                            ...(composer.has(`${rel.typeMeta.name}DeleteInput`)
+                                ? { delete: `${rel.typeMeta.name}DeleteInput` }
+                                : {}),
                             where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
                         });
                     }
@@ -865,6 +876,9 @@ function makeAugmentedSchema(
                     `${node.name}${upperFirst(rel.fieldName)}DisconnectFieldInput`,
                     (tc) => {
                         tc.addFields({
+                            ...(composer.has(`${rel.typeMeta.name}DisconnectInput`)
+                                ? { disconnect: `${rel.typeMeta.name}DisconnectInput` }
+                                : {}),
                             where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
                         });
                     }
@@ -872,6 +886,30 @@ function makeAugmentedSchema(
 
                 const createFieldInput = composer.getOrCreateITC(
                     `${node.name}${upperFirst(rel.fieldName)}CreateFieldInput`
+                );
+
+                const updateConnectionInput = composer.getOrCreateITC(
+                    `${node.name}${upperFirst(rel.fieldName)}UpdateConnectionInput`,
+                    (tc) => {
+                        tc.addFields({
+                            ...(rel.properties ? { edge: `${rel.properties}UpdateInput` } : {}),
+                            node: `${rel.typeMeta.name}UpdateInput`,
+                        });
+                    }
+                );
+
+                const updateFieldInput = composer.getOrCreateITC(
+                    `${node.name}${upperFirst(rel.fieldName)}UpdateFieldInput`,
+                    (tc) => {
+                        tc.addFields({
+                            connect: `${node.name}${upperFirst(rel.fieldName)}ConnectFieldInput`,
+                            create: `${node.name}${upperFirst(rel.fieldName)}CreateFieldInput`,
+                            delete: `${node.name}${upperFirst(rel.fieldName)}DeleteFieldInput`,
+                            disconnect: `${node.name}${upperFirst(rel.fieldName)}DisconnectFieldInput`,
+                            update: `${node.name}${upperFirst(rel.fieldName)}UpdateConnectionInput`,
+                            where: `${node.name}${upperFirst(rel.fieldName)}ConnectionWhere`,
+                        });
+                    }
                 );
 
                 refNodes.forEach((n) => {
@@ -930,6 +968,10 @@ function makeAugmentedSchema(
 
                 nodeRelationInput.addFields({
                     [rel.fieldName]: createFieldInput,
+                });
+
+                nodeUpdateInput.addFields({
+                    [rel.fieldName]: updateFieldInput,
                 });
 
                 return;

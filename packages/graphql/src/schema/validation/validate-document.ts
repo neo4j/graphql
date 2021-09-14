@@ -33,10 +33,26 @@ import * as scalars from "../scalars";
 import * as enums from "./enums";
 import * as directives from "./directives";
 import * as point from "../point";
+import { RESERVED_TYPE_NAMES } from "../../constants";
 
 function filterDocument(document: DocumentNode): DocumentNode {
     const nodeNames = document.definitions
         .filter((definition) => {
+            if (
+                definition.kind === "ObjectTypeDefinition" ||
+                definition.kind === "ScalarTypeDefinition" ||
+                definition.kind === "InterfaceTypeDefinition" ||
+                definition.kind === "UnionTypeDefinition" ||
+                definition.kind === "EnumTypeDefinition" ||
+                definition.kind === "InputObjectTypeDefinition"
+            ) {
+                RESERVED_TYPE_NAMES.forEach((reservedName) => {
+                    if (reservedName.regex.test(definition.name.value)) {
+                        throw new Error(reservedName.error);
+                    }
+                });
+            }
+
             if (definition.kind === "ObjectTypeDefinition") {
                 if (!["Query", "Mutation", "Subscription"].includes(definition.name.value)) {
                     return true;
