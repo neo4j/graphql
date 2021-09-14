@@ -168,6 +168,14 @@ class Node {
             ...input.pointFields,
         ];
     }
+
+    get labelString(): string {
+        return this.nodeDirective?.getLabelsString(this.name) || `:${this.name}`;
+    }
+
+    get labels(): string[] {
+        return this.nodeDirective?.getLabels(this.name) || [this.name];
+    }
 }
 
 export default Node;
