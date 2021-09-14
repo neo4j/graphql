@@ -62,7 +62,7 @@ function createConnectAndParams({
         const outStr = relationField.direction === "OUT" ? "->" : "-";
         const relTypeStr = `[${connect.edge ? relationshipName : ""}:${relationField.type}]`;
 
-        const labels = refNode?.nodeDirective?.getLabelsString(refNode.name) || `:${refNode?.name}`;
+        const labels = refNode.labelString;
         const label = labelOverride ? `:${labelOverride}` : labels;
 
         if (parentNode.auth && !fromCreate) {

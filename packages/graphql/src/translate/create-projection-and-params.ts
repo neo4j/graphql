@@ -257,8 +257,7 @@ function createProjectionAndParams({
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
             const outStr = relationField.direction === "OUT" ? "->" : "-";
-            const labels =
-                referenceNode?.nodeDirective?.getLabelsString(referenceNode.name) || `:${referenceNode?.name}`;
+            const labels = referenceNode?.labelString;
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
@@ -275,8 +274,7 @@ function createProjectionAndParams({
                     })${inStr}${relTypeStr}${outStr}(${param})`,
                     `WHERE ${referenceNodes
                         .map((x) => {
-                            const labels = x.nodeDirective?.getLabels(x.name) || [x.name];
-                            const labelsStatements = labels.map((label) => `"${label}" IN labels(${param})`);
+                            const labelsStatements = x.labels.map((label) => `"${label}" IN labels(${param})`);
                             return `(${labelsStatements.join(" AND ")})`;
                         })
                         .join(" OR ")}`,
@@ -284,8 +282,7 @@ function createProjectionAndParams({
                 ];
 
                 const headStrs: string[] = referenceNodes.map((refNode) => {
-                    const labels = refNode.nodeDirective?.getLabels(refNode.name) || [refNode.name];
-                    const labelsStatements = labels.map((label) => `"${label}" IN labels(${param})`);
+                    const labelsStatements = refNode.labels.map((label) => `"${label}" IN labels(${param})`);
                     const innerHeadStr: string[] = [
                         `[ ${param} IN [${param}] WHERE (${labelsStatements.join(" AND ")})`,
                     ];

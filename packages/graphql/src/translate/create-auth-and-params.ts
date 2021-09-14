@@ -130,7 +130,7 @@ function createAuthPredicate({
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
                 const relationVarName = relationField.fieldName;
-                const labels = refNode?.nodeDirective?.getLabelsString(refNode.name) || `:${refNode?.name}`;
+                const labels = refNode.labelString;
                 let resultStr = [
                     `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
                     `AND ${
