@@ -551,7 +551,33 @@ describe("Interface Relationships", () => {
               title: String!
             }
 
+            input ProductionActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ActedInCreateInput!
+              where: ActorConnectWhere
+            }
+
+            input ProductionActorsConnectionWhere {
+              AND: [ProductionActorsConnectionWhere!]
+              OR: [ProductionActorsConnectionWhere!]
+              edge: ActedInWhere
+              edge_NOT: ActedInWhere
+              node: ActorWhere
+              node_NOT: ActorWhere
+            }
+
+            input ProductionActorsDeleteFieldInput {
+              delete: ActorDeleteInput
+              where: ProductionActorsConnectionWhere
+            }
+
+            input ProductionActorsDisconnectFieldInput {
+              disconnect: ActorDisconnectInput
+              where: ProductionActorsConnectionWhere
+            }
+
             input ProductionConnectInput {
+              actors: [ProductionActorsConnectFieldInput!]
               Movie: [MovieConnectInput!]
               Series: [SeriesConnectInput!]
             }
@@ -561,11 +587,13 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionDeleteInput {
+              actors: [ProductionActorsDeleteFieldInput!]
               Movie: [MovieDeleteInput!]
               Series: [SeriesDeleteInput!]
             }
 
             input ProductionDisconnectInput {
+              actors: [ProductionActorsDisconnectFieldInput!]
               Movie: [MovieDisconnectInput!]
               Series: [SeriesDisconnectInput!]
             }

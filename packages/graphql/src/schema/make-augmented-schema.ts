@@ -495,7 +495,9 @@ function makeAugmentedSchema(
             composer.getOrCreateITC(`${interfaceRelationship.name.value}${operation}Input`, (tc) => {
                 // interfaceFields.relationFields.forEach((relationshipField) => {
                 //     tc.addFields({
-                //         [relationshipField.fieldName]: `${interfaceRelationship.name.value}${relationshipField.typeMeta.name}${operation}FieldInput`,
+                //         [relationshipField.fieldName]: `${interfaceRelationship.name.value}${upperFirst(
+                //             relationshipField.fieldName
+                //         )}${operation}FieldInput`,
                 //     });
                 // });
             })
@@ -559,6 +561,14 @@ function makeAugmentedSchema(
                     type: implementationWhere,
                 },
             });
+
+            const uniqueRelationshipFields = implementationFields.relationFields.filter(
+                (relationshipField) =>
+                    !interfaceFields.relationFields.some(
+                        (interfaceRelationshipField) =>
+                            interfaceRelationshipField.fieldName === relationshipField.fieldName
+                    )
+            );
 
             interfaceConnectInput.addFields({
                 [implementation.name.value]: {
