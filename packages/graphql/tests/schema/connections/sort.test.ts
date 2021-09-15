@@ -80,6 +80,11 @@ describe("Sort", () => {
               relatedToConnection(after: String, first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
             }
 
+            type Node1AggregateSelection {
+              count: Int!
+              property: StringAggregateSelection!
+            }
+
             input Node1ConnectInput {
               relatedTo: [Node1RelatedToConnectFieldInput!]
             }
@@ -201,6 +206,10 @@ describe("Sort", () => {
               relatedToConnection(after: String, first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
             }
 
+            type Node2AggregateSelection {
+              count: Int!
+            }
+
             input Node2ConnectInput {
               relatedTo: [Node2RelatedToConnectFieldInput!]
             }
@@ -312,8 +321,10 @@ describe("Sort", () => {
 
             type Query {
               node1s(options: Node1Options, where: Node1Where): [Node1!]!
+              node1sAggregate(where: Node1Where): Node1AggregateSelection!
               node1sCount(where: Node1Where): Int!
               node2s(options: Node2Options, where: Node2Where): [Node2!]!
+              node2sAggregate(where: Node2Where): Node2AggregateSelection!
               node2sCount(where: Node2Where): Int!
             }
 
@@ -322,6 +333,11 @@ describe("Sort", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {

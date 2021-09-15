@@ -56,6 +56,11 @@ describe("Private", () => {
               relationshipsDeleted: Int!
             }
 
+            type IDAggregateSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(where: UserWhere): DeleteInfo!
@@ -64,6 +69,7 @@ describe("Private", () => {
 
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersCount(where: UserWhere): Int!
             }
 
@@ -89,6 +95,11 @@ describe("Private", () => {
 
             type User {
               id: ID
+            }
+
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
             }
 
             input UserCreateInput {

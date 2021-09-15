@@ -75,6 +75,17 @@ describe("162", () => {
               relationshipsDeleted: Int!
             }
 
+            type IDAggregateSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
+            type IntAggregateSelection {
+              average: Float!
+              max: Int!
+              min: Int!
+            }
+
             type Mutation {
               createTigerJawLevel2Part1s(input: [TigerJawLevel2Part1CreateInput!]!): CreateTigerJawLevel2Part1sMutationResponse!
               createTigerJawLevel2s(input: [TigerJawLevel2CreateInput!]!): CreateTigerJawLevel2sMutationResponse!
@@ -97,10 +108,13 @@ describe("162", () => {
 
             type Query {
               tigerJawLevel2Part1s(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
+              tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection!
               tigerJawLevel2Part1sCount(where: TigerJawLevel2Part1Where): Int!
               tigerJawLevel2s(options: TigerJawLevel2Options, where: TigerJawLevel2Where): [TigerJawLevel2!]!
+              tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection!
               tigerJawLevel2sCount(where: TigerJawLevel2Where): Int!
               tigers(options: TigerOptions, where: TigerWhere): [Tiger!]!
+              tigersAggregate(where: TigerWhere): TigerAggregateSelection!
               tigersCount(where: TigerWhere): Int!
             }
 
@@ -115,6 +129,11 @@ describe("162", () => {
               x: Int
             }
 
+            type TigerAggregateSelection {
+              count: Int!
+              x: IntAggregateSelection!
+            }
+
             input TigerConnectWhere {
               node: TigerWhere!
             }
@@ -127,6 +146,11 @@ describe("162", () => {
               id: ID
               part1(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1
               part1Connection(after: String, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
+            }
+
+            type TigerJawLevel2AggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
             }
 
             input TigerJawLevel2ConnectInput {
@@ -157,6 +181,11 @@ describe("162", () => {
               id: ID
               tiger(options: TigerOptions, where: TigerWhere): Tiger
               tigerConnection(after: String, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
+            }
+
+            type TigerJawLevel2Part1AggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
             }
 
             input TigerJawLevel2Part1ConnectFieldInput {

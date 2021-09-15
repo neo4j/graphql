@@ -42,6 +42,12 @@ describe("Bigint", () => {
             \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
             scalar BigInt
 
+            type BigIntAggregateSelection {
+              average: BigInt!
+              max: BigInt!
+              min: BigInt!
+            }
+
             type CreateFilesMutationResponse {
               files: [File!]!
               info: CreateInfo!
@@ -62,6 +68,12 @@ describe("Bigint", () => {
             type File {
               name: String!
               size: BigInt!
+            }
+
+            type FileAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+              size: BigIntAggregateSelection!
             }
 
             input FileCreateInput {
@@ -118,6 +130,7 @@ describe("Bigint", () => {
 
             type Query {
               files(options: FileOptions, where: FileWhere): [File!]!
+              filesAggregate(where: FileWhere): FileAggregateSelection!
               filesCount(where: FileWhere): Int!
             }
 
@@ -126,6 +139,11 @@ describe("Bigint", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateFilesMutationResponse {

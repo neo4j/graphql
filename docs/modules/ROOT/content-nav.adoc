@@ -50,6 +50,7 @@
 ***** xref:ogm/api-reference/model/update.adoc[]
 ***** xref:ogm/api-reference/model/delete.adoc[]
 ***** xref:ogm/api-reference/model/count.adoc[]
+***** xref:ogm/api-reference/model/aggregate.adoc[]
 ** xref:driver-configuration.adoc[]
 ** xref:guides/index.adoc[]
 *** xref:guides/migration-guide/index.adoc[]
@@ -63,3 +64,4 @@
 **** xref:guides/v2-migration/miscellaneous.adoc[]
 ** xref:troubleshooting/index.adoc[]
 *** xref:troubleshooting/faqs.adoc[]
+*** xref:troubleshooting/security.adoc[]

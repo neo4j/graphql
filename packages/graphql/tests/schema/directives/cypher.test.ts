@@ -54,6 +54,11 @@ describe("Cypher", () => {
               name: String
             }
 
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             input ActorCreateInput {
               name: String
             }
@@ -111,9 +116,19 @@ describe("Cypher", () => {
               relationshipsDeleted: Int!
             }
 
+            type IDAggregateSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Movie {
               actors(title: String): [Actor]
               id: ID
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -162,8 +177,10 @@ describe("Cypher", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 
@@ -172,6 +189,11 @@ describe("Cypher", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {

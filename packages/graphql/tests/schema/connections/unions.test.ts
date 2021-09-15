@@ -61,6 +61,11 @@ describe("Unions", () => {
               publicationsConnection(where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
+            type AuthorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             input AuthorConnectInput {
               publications: AuthorPublicationsConnectInput
             }
@@ -289,6 +294,11 @@ describe("Unions", () => {
               title: String!
             }
 
+            type BookAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             input BookAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
@@ -449,6 +459,11 @@ describe("Unions", () => {
               subject: String!
             }
 
+            type JournalAggregateSelection {
+              count: Int!
+              subject: StringAggregateSelection!
+            }
+
             input JournalAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
@@ -605,10 +620,13 @@ describe("Unions", () => {
 
             type Query {
               authors(options: AuthorOptions, where: AuthorWhere): [Author!]!
+              authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
               authorsCount(where: AuthorWhere): Int!
               books(options: BookOptions, where: BookWhere): [Book!]!
+              booksAggregate(where: BookWhere): BookAggregateSelection!
               booksCount(where: BookWhere): Int!
               journals(options: JournalOptions, where: JournalWhere): [Journal!]!
+              journalsAggregate(where: JournalWhere): JournalAggregateSelection!
               journalsCount(where: JournalWhere): Int!
             }
 
@@ -622,6 +640,11 @@ describe("Unions", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateAuthorsMutationResponse {

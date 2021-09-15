@@ -57,10 +57,32 @@ describe("Default", () => {
             \\"\\"\\"A date and time, represented as an ISO-8601 string\\"\\"\\"
             scalar DateTime
 
+            type DateTimeAggregateSelection {
+              max: DateTime!
+              min: DateTime!
+            }
+
             type DeleteInfo {
               bookmark: String
               nodesDeleted: Int!
               relationshipsDeleted: Int!
+            }
+
+            type FloatAggregateSelection {
+              average: Float!
+              max: Float!
+              min: Float!
+            }
+
+            type IDAggregateSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
+            type IntAggregateSelection {
+              average: Float!
+              max: Int!
+              min: Int!
             }
 
             type Mutation {
@@ -71,6 +93,7 @@ describe("Default", () => {
 
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersCount(where: UserWhere): Int!
             }
 
@@ -79,6 +102,11 @@ describe("Default", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -101,6 +129,15 @@ describe("Default", () => {
               rating: Float!
               verified: Boolean!
               verifiedDate: DateTime!
+            }
+
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
+              numberOfFriends: IntAggregateSelection!
+              rating: FloatAggregateSelection!
+              verifiedDate: DateTimeAggregateSelection!
             }
 
             input UserCreateInput {

@@ -132,7 +132,7 @@ function createProjectionAndParams({
     resolveType?: boolean;
     inRelationshipProjection?: boolean;
 }): [string, any, ProjectionMeta?] {
-    function reducer(res: Res, [key, field]: [string, any]): Res {
+    function reducer(res: Res, [key, field]: [string, ResolveTree]): Res {
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
@@ -409,10 +409,8 @@ function createProjectionAndParams({
                     res.meta.connectionFields = [];
                 }
 
-                const f = field as ResolveTree;
-
-                res.meta.connectionFields.push(f);
-                res.projection.push(literalElements ? `${f.alias}: ${f.alias}` : `${f.alias}`);
+                res.meta.connectionFields.push(field);
+                res.projection.push(literalElements ? `${field.alias}: ${field.alias}` : `${field.alias}`);
 
                 return res;
             }
@@ -469,14 +467,24 @@ function createProjectionAndParams({
         return res;
     }
 
-    const { projection, params, meta } = Object.entries(fieldsByTypeName[node.name] as { [k: string]: any }).reduce(
-        reducer,
-        {
-            projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
-            params: {},
-            meta: {},
-        }
-    );
+    // Include fields of implemented interfaces to allow for fragments on interfaces
+    // cf. https://github.com/neo4j/graphql/issues/476
+
+    const fields = (node.interfaces ?? [])
+        // Map over the implemented interfaces of the node and extract the names
+        .map((implementedInterface) => implementedInterface.name.value)
+        // Combine the fields of the interfaces...
+        .reduce(
+            (prevFields, interfaceName) => ({ ...prevFields, ...fieldsByTypeName[interfaceName] }),
+            // with the fields of the node
+            fieldsByTypeName[node.name]
+        );
+
+    const { projection, params, meta } = Object.entries(fields).reduce(reducer, {
+        projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
+        params: {},
+        meta: {},
+    });
 
     return [`{ ${projection.join(", ")} }`, params, meta];
 }
