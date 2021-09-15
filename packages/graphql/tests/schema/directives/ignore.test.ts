@@ -58,6 +58,11 @@ describe("Ignore", () => {
               relationshipsDeleted: Int!
             }
 
+            type IDAggregateSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Mutation {
               createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
               deleteUsers(where: UserWhere): DeleteInfo!
@@ -66,6 +71,7 @@ describe("Ignore", () => {
 
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersCount(where: UserWhere): Int!
             }
 
@@ -74,6 +80,11 @@ describe("Ignore", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateInfo {
@@ -94,6 +105,13 @@ describe("Ignore", () => {
               nickname: String!
               password: String!
               username: String!
+            }
+
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
+              password: StringAggregateSelection!
+              username: StringAggregateSelection!
             }
 
             input UserCreateInput {

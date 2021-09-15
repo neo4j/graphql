@@ -62,8 +62,18 @@ describe("Directive-preserve", () => {
               relationshipsDeleted: Int!
             }
 
+            type IDAggregateSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Movie @preservedTopLevel {
               id: ID @preservedFieldLevel(string: \\"str\\", int: 12, float: 1.2, boolean: true)
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -109,6 +119,7 @@ describe("Directive-preserve", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 

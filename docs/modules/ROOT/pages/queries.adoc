@@ -1,7 +1,11 @@
 [[queries]]
 = Queries
 
-Each node defined in type definitions will have two Query fields generated for it - one for querying data and one for counting data.
+Each node defined in type definitions will have three Query fields generated for it: 
+
+1. One for querying data 
+2. One for counting data
+3. One for aggregating data
 
 The examples in this chapter will use the following type definitions:
 
@@ -11,6 +15,7 @@ type Post {
     id: ID! @id
     content: String!
     creator: User! @relationship(type: "HAS_POST", direction: IN)
+    createdAt: DateTime!
 }
 
 type User {
@@ -27,8 +32,11 @@ For which the following Query fields will be generated:
 type Query {
     posts(where: PostWhere, options: PostOptions): [Post!]!
     postsCount(where: PostWhere): Int!
+    postsAggregate(where: PostWhere): PostAggregationSelection!
+
     users(where: UserWhere, options: UserOptions): [User!]!
     usersCount(where: UserWhere): Int!
+    usersAggregate(where: UserWhere): UserAggregationSelection!
 }
 ----
 
@@ -73,6 +81,8 @@ query {
 [[queries-count]]
 == Count
 
+Count queries accepts a `where` argument for xref::filtering.adoc[Filtering] data.
+
 === Counting all User nodes
 
 The following Query will count all User nodes:
@@ -90,5 +100,90 @@ query {
 ----
 query {
     usersCount(where: { name_STARTS_WITH: "J" })
+}
+----
+
+[[queries-aggregate]]
+== Aggregate
+
+Neo4j GraphQL supports aggregations on fields with type: 
+
+1. `ID`- String
+2. `String` - String
+3. `Int` - Numerical
+4. `Float` - Numerical
+5. `BigInt` - Numerical
+6. `DateTime`
+7. `Time`
+8. `LocalTime`
+9. `LocalDateTime`
+10. `Duration`
+
+Numerical Fields will expose the following aggregation selections: 
+
+1. `min`
+2. `max`
+3. `average`
+
+String fields will expose:
+
+1. `shortest`
+2. `longest`
+
+The rest will only expose:
+
+1. `min`
+2. `max`
+
+
+Aggregation queries accepts a `where` argument for xref::filtering.adoc[Filtering] data.
+
+=== Counting Using aggregation
+
+The following Query will count all User nodes:
+
+[source, graphql, indent=0]
+----
+query {
+    usersAggregate {
+        count
+    }
+}
+----
+
+=== Counting User nodes where name starts with "J"
+
+[source, graphql, indent=0]
+----
+query {
+    usersAggregate(where: { name_STARTS_WITH: "J" }) {
+        count
+    }
+}
+----
+
+=== Querying for the longest User name
+
+[source, graphql, indent=0]
+----
+query {
+    usersAggregate {
+        name {
+            longest
+        }
+    }
+}
+----
+
+=== Querying for first Post date
+
+[source, graphql, indent=0]
+----
+query {
+    postsAggregate {
+        createdAt {
+            min
+        }
+    }
 }
 ----

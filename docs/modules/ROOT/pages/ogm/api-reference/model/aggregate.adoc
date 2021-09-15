@@ -1,0 +1,50 @@
+[[ogm-api-reference-model-aggregate]]
+= `aggregate`
+
+This method can be used to aggregate nodes, and maps to the underlying schema xref::queries.adoc#queries-aggregate[Aggregate].
+
+== Example
+
+Find the longest User name:
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("User");
+
+const usersAggregate = await User.aggregate({
+    aggregate: {
+        name: {
+            longest: true
+        }
+    }
+});
+----
+
+Find the longest User name where name starts with the letter "D":
+
+[source, javascript, indent=0]
+----
+const User = ogm.model("User");
+
+const usersAggregate = await User.aggregate({
+    where: {
+        name_STARTS_WITH: "D"
+    },
+    aggregate: {
+        name: {
+            longest: true
+        }
+    }
+});
+----
+
+== Arguments
+
+|===
+|Name and Type |Description
+
+|`where` +
+ +
+ Type: `GraphQLWhereArg`
+|A JavaScript object representation of the GraphQL `where` input type used for xref::filtering.adoc[Filtering].
+|===

@@ -85,11 +85,28 @@ describe("Comments", () => {
               relationshipsDeleted: Int!
             }
 
+            type FloatAggregateSelection {
+              average: Float!
+              max: Float!
+              min: Float!
+            }
+
             \\"\\"\\"An enumeration of movie genres.\\"\\"\\"
             enum Genre {
               ACTION
               DRAMA
               ROMANCE
+            }
+
+            type IDAggregateSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
+            type IntAggregateSelection {
+              average: Float!
+              max: Int!
+              min: Int!
             }
 
             \\"\\"\\"A type describing a movie.\\"\\"\\"
@@ -107,6 +124,13 @@ describe("Comments", () => {
               This is measured based on annual profit.
               \\"\\"\\"
               isActive: Boolean
+            }
+
+            type MovieAggregateSelection {
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              count: Int!
+              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -190,6 +214,7 @@ describe("Comments", () => {
 
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 
