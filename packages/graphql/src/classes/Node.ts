@@ -120,6 +120,8 @@ class Node {
         | PointField
     )[];
 
+    public sortableFields: (PrimitiveField | CustomEnumField | CustomScalarField | TemporalField | PointField)[];
+
     constructor(input: NodeConstructor) {
         this.name = input.name;
         this.relationFields = input.relationFields;
@@ -162,6 +164,14 @@ class Node {
             ...input.unionFields,
             ...input.pointFields,
         ];
+
+        this.sortableFields = [
+            ...input.primitiveFields,
+            ...input.enumFields,
+            ...input.scalarFields,
+            ...input.temporalFields,
+            ...input.pointFields,
+        ].filter((field) => !field.typeMeta.array);
     }
 }
 
