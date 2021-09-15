@@ -93,6 +93,6 @@ Reference: xref::type-definitions/database-mapping.adoc#type-definitions-alias[`
 
 == `@node`
 
-The `@node` directive maps a GraphQL type to one or more Neo4j labels.
+The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
 
 Reference: xref::type-definitions/database-mapping.adoc#type-definitions-node[`@node`]
