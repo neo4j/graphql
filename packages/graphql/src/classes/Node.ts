@@ -61,41 +61,23 @@ export interface NodeConstructor {
 
 class Node {
     public name: string;
-
     public relationFields: RelationField[];
-
     public connectionFields: ConnectionField[];
-
     public cypherFields: CypherField[];
-
     public primitiveFields: PrimitiveField[];
-
     public scalarFields: CustomScalarField[];
-
     public enumFields: CustomEnumField[];
-
     public otherDirectives: DirectiveNode[];
-
     public unionFields: UnionField[];
-
     public interfaceFields: InterfaceField[];
-
     public interfaces: NamedTypeNode[];
-
     public objectFields: ObjectField[];
-
     public temporalFields: TemporalField[];
-
     public pointFields: PointField[];
-
     public ignoredFields: BaseField[];
-
     public exclude?: Exclude;
-
     public nodeDirective?: NodeDirective;
-
     public auth?: Auth;
-
     public description?: string;
 
     /*
