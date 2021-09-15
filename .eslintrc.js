@@ -61,6 +61,7 @@ const baseTypeScriptRules = {
     /* end of @typescript-eslint/recommended-requiring-type-checking rules */
     "@typescript-eslint/indent": "off",
     "@typescript-eslint/quotes": "off",
+    "@typescript-eslint/lines-between-class-members": "off",
 };
 
 module.exports = {
