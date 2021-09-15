@@ -51,6 +51,7 @@ import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
 import { PrimitiveField, Auth, ConnectionQueryArgs } from "../types";
 import {
+    aggregateResolver,
     countResolver,
     createResolver,
     cypherResolver,
@@ -58,6 +59,8 @@ import {
     deleteResolver,
     findResolver,
     updateResolver,
+    numericalResolver,
+    idResolver,
 } from "./resolvers";
 import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
@@ -122,6 +125,83 @@ function makeAugmentedSchema(
             relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
         },
     });
+
+    const composeInt = {
+        type: "Int!",
+        resolve: numericalResolver,
+        args: {},
+    };
+
+    const composeFloat = {
+        type: "Float!",
+        resolve: numericalResolver,
+        args: {},
+    };
+
+    const composeId = {
+        type: "ID!",
+        resolve: idResolver,
+        args: {},
+    };
+
+    // Foreach i if i[1] is ? then we will assume it takes on type { min, max }
+    const aggregationSelectionTypeMatrix: [string, any?][] = [
+        [
+            "ID",
+            {
+                shortest: composeId,
+                longest: composeId,
+            },
+        ],
+        [
+            "String",
+            {
+                shortest: "String!",
+                longest: "String!",
+            },
+        ],
+        [
+            "Float",
+            {
+                max: composeFloat,
+                min: composeFloat,
+                average: composeFloat,
+            },
+        ],
+        [
+            "Int",
+            {
+                max: composeInt,
+                min: composeInt,
+                average: composeFloat,
+            },
+        ],
+        [
+            "BigInt",
+            {
+                max: "BigInt!",
+                min: "BigInt!",
+                average: "BigInt!",
+            },
+        ],
+        ["DateTime"],
+        ["LocalDateTime"],
+        ["LocalTime"],
+        ["Time"],
+        ["Duration"],
+    ];
+
+    const aggregationSelectionTypeNames = aggregationSelectionTypeMatrix.map(([name]) => name);
+
+    const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<Record<string, ObjectTypeComposer<unknown, unknown>>>((res, [name, fields]) => {
+        return {
+            ...res,
+            [name]: composer.createObjectTC({
+                name: `${name}AggregateSelection`,
+                fields: fields ? fields : { min: `${name}!`, max: `${name}!` },
+            }),
+        };
+    }, {});
 
     const queryOptions = composer.createInputTC({
         name: "QueryOptions",
@@ -535,6 +615,30 @@ function makeAugmentedSchema(
                 pointFields: node.pointFields,
                 primitiveFields: node.primitiveFields,
                 scalarFields: node.scalarFields,
+            },
+        });
+
+        composer.createObjectTC({
+            name: `${node.name}AggregateSelection`,
+            fields: {
+                count: composeInt,
+                ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
+                    if (field.typeMeta.array) {
+                        return res;
+                    }
+
+                    if (!aggregationSelectionTypeNames.includes(field.typeMeta.name)) {
+                        return res;
+                    }
+
+                    const objectTypeComposer = (aggregationSelectionTypes[
+                        field.typeMeta.name
+                    ] as unknown) as ObjectTypeComposer<unknown, unknown>;
+
+                    res[field.fieldName] = objectTypeComposer.NonNull;
+
+                    return res;
+                }, {}),
             },
         });
 
@@ -1185,6 +1289,10 @@ function makeAugmentedSchema(
             composer.Query.addFields({
                 [`${pluralize(camelCase(node.name))}Count`]: countResolver({ node }),
             });
+
+            composer.Query.addFields({
+                [`${pluralize(camelCase(node.name))}Aggregate`]: aggregateResolver({ node }),
+            });
         }
 
         if (!node.exclude?.operations.includes("create")) {
@@ -1267,8 +1375,18 @@ function makeAugmentedSchema(
     }
 
     const generatedTypeDefs = composer.toSDL();
+    let parsedDoc = parse(generatedTypeDefs);
+    // @ts-ignore
+    const documentNames = parsedDoc.definitions.filter((x) => "name" in x).map((x) => x.name.value);
+
     const generatedResolvers = {
-        ...composer.getResolveMethods(),
+        ...Object.entries(composer.getResolveMethods()).reduce((res, [key, value]) => {
+            if (!documentNames.includes(key)) {
+                return res;
+            }
+
+            return { ...res, [key]: value };
+        }, {}),
         ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
             if (generatedTypeDefs.includes(`scalar ${name}\n`)) {
                 res[name] = scalar;
@@ -1285,7 +1403,6 @@ function makeAugmentedSchema(
     });
 
     const seen = {};
-    let parsedDoc = parse(generatedTypeDefs);
     parsedDoc = {
         ...parsedDoc,
         definitions: parsedDoc.definitions.filter((definition) => {

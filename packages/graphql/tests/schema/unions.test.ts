@@ -72,6 +72,11 @@ describe("Unions", () => {
               id: ID
             }
 
+            type GenreAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
+            }
+
             input GenreConnectWhere {
               node: GenreWhere!
             }
@@ -111,11 +116,21 @@ describe("Unions", () => {
               id_STARTS_WITH: ID
             }
 
+            type IDAggregateSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
             type Movie {
               id: ID
               search(options: QueryOptions, where: SearchWhere): [Search]
               searchConnection(where: MovieSearchConnectionWhere): MovieSearchConnection!
               searchNoDirective: Search
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -341,8 +356,10 @@ describe("Unions", () => {
 
             type Query {
               genres(options: GenreOptions, where: GenreWhere): [Genre!]!
+              genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresCount(where: GenreWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 

@@ -84,6 +84,11 @@ describe("Enums", () => {
               name: String!
             }
 
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             input ActorConnectInput {
               movies: [ActorMoviesConnectFieldInput!]
             }
@@ -305,6 +310,11 @@ describe("Enums", () => {
               where: MovieActorsConnectionWhere
             }
 
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             input MovieConnectInput {
               actors: [MovieActorsConnectFieldInput!]
             }
@@ -385,8 +395,10 @@ describe("Enums", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsCount(where: ActorWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
             }
 
@@ -400,6 +412,11 @@ describe("Enums", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {

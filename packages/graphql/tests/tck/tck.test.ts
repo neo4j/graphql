@@ -33,9 +33,15 @@ import pluralize from "pluralize";
 import jsonwebtoken from "jsonwebtoken";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
-// import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
+import {
+    translateAggregate,
+    translateCount,
+    translateCreate,
+    translateDelete,
+    translateRead,
+    translateUpdate,
+} from "../../src/translate";
 import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
-import { translateCount, translateCreate, translateDelete, translateRead, translateUpdate } from "../../src/translate";
 import { Context } from "../../src/types";
 import { Neo4jGraphQL } from "../../src";
 import {
@@ -184,6 +190,121 @@ describe("TCK Generated tests", () => {
                             );
 
                             return 1;
+                        },
+                        [`${pluralize(camelCase(def.name.value))}Aggregate`]: (
+                            _root: any,
+                            _params: any,
+                            context: Context,
+                            info: GraphQLResolveInfo
+                        ) => {
+                            const resolveTree = getNeo4jResolveTree(info);
+
+                            context.neoSchema = neoSchema;
+                            context.resolveTree = resolveTree;
+
+                            const mergedContext = { ...context, ...defaultContext };
+
+                            const node = neoSchema.nodes.find((x) => x.name === def.name.value) as Node;
+                            const [cQuery, cQueryParams] = translateAggregate({
+                                context: mergedContext,
+                                node,
+                            });
+
+                            compare(
+                                { expected: cQuery, received: cypherQuery },
+                                { expected: cQueryParams, received: cypherParams },
+                                mergedContext
+                            );
+
+                            const aggregateStringFields = node.primitiveFields
+                                .filter((x) => ["String", "ID"].includes(x.typeMeta.name) && !x.typeMeta.array)
+                                .reduce((r, field) => ({ ...r, [field.fieldName]: { shortest: 1, longest: 1 } }), {});
+
+                            const dateTimeFields = node.temporalFields
+                                .filter((x) => !x.typeMeta.array && x.typeMeta.name === "DateTime")
+                                .reduce(
+                                    (r, field) => ({
+                                        ...r,
+                                        [field.fieldName]: {
+                                            min: new Date().toISOString(),
+                                            max: new Date().toISOString(),
+                                        },
+                                    }),
+                                    {}
+                                );
+
+                            const timeFields = node.temporalFields
+                                .filter((x) => !x.typeMeta.array && x.typeMeta.name === "Time")
+                                .reduce(
+                                    (r, field) => ({
+                                        ...r,
+                                        [field.fieldName]: {
+                                            min: new Date().toISOString().split("T")[1],
+                                            max: new Date().toISOString().split("T")[1],
+                                        },
+                                    }),
+                                    {}
+                                );
+
+                            const localTimeFields = node.temporalFields
+                                .filter((x) => !x.typeMeta.array && x.typeMeta.name === "LocalTime")
+                                .reduce(
+                                    (r, field) => ({
+                                        ...r,
+                                        [field.fieldName]: {
+                                            min: new Date().toISOString().split("T")[1].split("Z")[0],
+                                            max: new Date().toISOString().split("T")[1].split("Z")[0],
+                                        },
+                                    }),
+                                    {}
+                                );
+
+                            const localDateTimeFields = node.temporalFields
+                                .filter((x) => !x.typeMeta.array && x.typeMeta.name === "LocalDateTime")
+                                .reduce(
+                                    (r, field) => ({
+                                        ...r,
+                                        [field.fieldName]: {
+                                            min: new Date().toISOString().split("Z")[0],
+                                            max: new Date().toISOString().split("Z")[0],
+                                        },
+                                    }),
+                                    {}
+                                );
+
+                            const numericalAggregateFields = node.primitiveFields
+                                .filter(
+                                    (x) => ["Float", "Int", "BigInt"].includes(x.typeMeta.name) && !x.typeMeta.array
+                                )
+                                .reduce(
+                                    (r, field) => ({
+                                        ...r,
+                                        [field.fieldName]: { min: 1, max: 1, average: 12 },
+                                    }),
+                                    {}
+                                );
+
+                            const durationAggregateFields = node.primitiveFields
+                                .filter((x) => x.typeMeta.name === "Duration" && !x.typeMeta.array)
+                                .reduce((r, field) => {
+                                    const duration = `P1Y1M1DT1M`;
+
+                                    return {
+                                        ...r,
+                                        [field.fieldName]: { min: duration, max: duration },
+                                    };
+                                }, {});
+
+                            return {
+                                count: 1,
+                                ...aggregateStringFields,
+                                ...dateTimeFields,
+                                ...timeFields,
+                                ...numericalAggregateFields,
+                                ...localTimeFields,
+                                ...localDateTimeFields,
+                                ...durationAggregateFields,
+                            };
                         },
                     };
                 }, {});

@@ -886,4 +886,57 @@ describe("OGM", () => {
             }
         });
     });
+
+    describe("aggregations", () => {
+        test("should return aggregated fields", async () => {
+            const session = driver.session();
+
+            const typeDefs = gql`
+                type Movie {
+                    testId: ID
+                    title: String
+                    imdbRating: Int
+                }
+            `;
+
+            const ogm = new OGM({ typeDefs, driver });
+
+            const testId = generate({
+                charset: "alphabetic",
+            });
+
+            try {
+                await session.run(`
+                    CREATE (:Movie {testId: "${testId}", title: "1", imdbRating: 1})
+                    CREATE (:Movie {testId: "${testId}", title: "22", imdbRating: 2})
+                    CREATE (:Movie {testId: "${testId}", title: "333", imdbRating: 3})
+                    CREATE (:Movie {testId: "${testId}", title: "4444", imdbRating: 4})
+                `);
+
+                const Movie = ogm.model("Movie");
+
+                const result = await Movie?.aggregate({
+                    where: { testId },
+                    aggregate: {
+                        title: {
+                            shortest: true,
+                            longest: true,
+                        },
+                        imdbRating: {
+                            min: true,
+                            max: true,
+                            average: true,
+                        },
+                    },
+                });
+
+                expect(result).toEqual({
+                    title: { shortest: "1", longest: "4444" },
+                    imdbRating: { min: 1, max: 4, average: 2.5 },
+                });
+            } finally {
+                await session.close();
+            }
+        });
+    });
 });
