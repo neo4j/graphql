@@ -18,6 +18,7 @@
  */
 
 import { DirectiveNode, NamedTypeNode } from "graphql";
+import pluralize from "pluralize";
 import type {
     RelationField,
     ConnectionField,
@@ -175,6 +176,10 @@ class Node {
 
     get labels(): string[] {
         return this.nodeDirective?.getLabels(this.name) || [this.name];
+    }
+
+    get plural(): string {
+        return this.nodeDirective?.plural || pluralize(this.name);
     }
 }
 
