@@ -46,7 +46,7 @@ interface UserLivesInProperties @relationshipProperties {
 [[type-definitions-node]]
 == `@node`
 
-The `@node` directive maps a GraphQL type to one or more Neo4j labels.
+The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
 
 === Definition
 
@@ -60,7 +60,7 @@ directive @node(label: String, additionalLabels: [String]) on OBJECT
 `@node` can be used with the optional parameters `label` and `additionalLabels`.
 
 ==== `Label`
-The parameter `label` defines the label to be used in Neo4j instead of the GraphQL type:
+The parameter `label` defines the label to be used in Neo4j instead of the GraphQL type name:
 
 [source, graphql, indent=0]
 ----
