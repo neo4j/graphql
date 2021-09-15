@@ -108,7 +108,7 @@ function createUpdateAndParams({
                             res.strs.push(`WITH ${withVars.join(", ")}`);
                         }
 
-                        const labels = refNode.nodeDirective?.getLabelsString(refNode.name) || `:${refNode.name}`;
+                        const labels = refNode.labelString;
                         res.strs.push(
                             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`
                         );

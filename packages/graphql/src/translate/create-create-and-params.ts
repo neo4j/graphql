@@ -176,7 +176,7 @@ function createCreateAndParams({
         return res;
     }
 
-    const labels = node.nodeDirective?.getLabelsString(node.name) || `:${node.name}`;
+    const labels = node.labelString;
     const initial = [`CREATE (${varName}${labels})`];
 
     const timestampedFields = node.temporalFields.filter(
