@@ -42,7 +42,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const createInput = resolveTree.args.create;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
-    const labels = node.nodeDirective?.getLabelsString(node.name) || `:${node.name}`;
+    const labels = node.labelString;
     const matchStr = `MATCH (${varName}${labels})`;
     let whereStr = "";
     let updateStr = "";
