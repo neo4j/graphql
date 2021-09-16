@@ -62,6 +62,7 @@ const baseTypeScriptRules = {
     "@typescript-eslint/indent": "off",
     "@typescript-eslint/quotes": "off",
     "@typescript-eslint/lines-between-class-members": ["error", "always", { exceptAfterSingleLine: true }],
+    "@typescript-eslint/no-unnecessary-type-assertion": ["off"],
 };
 
 module.exports = {
@@ -95,7 +96,6 @@ module.exports = {
             extends: ["airbnb-typescript"],
             rules: {
                 "import/prefer-default-export": "off",
-                "@typescript-eslint/no-unnecessary-type-assertion": ["off"],
                 "@typescript-eslint/indent": "off",
                 "@typescript-eslint/quotes": "off",
                 "react/jsx-indent": "off",
@@ -111,7 +111,6 @@ module.exports = {
                 "@typescript-eslint/no-floating-promises": ["off"],
                 "import/prefer-default-export": "off",
                 "import/no-extraneous-dependencies": "off",
-                "@typescript-eslint/no-unnecessary-type-assertion": ["off"],
                 "@typescript-eslint/no-use-before-define": ["off"],
             },
         },

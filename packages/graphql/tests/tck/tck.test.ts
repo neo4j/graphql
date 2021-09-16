@@ -28,6 +28,7 @@ import {
     GraphQLResolveInfo,
 } from "graphql";
 import { makeExecutableSchema } from "@graphql-tools/schema";
+import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
 import path from "path";
 import pluralize from "pluralize";
 import jsonwebtoken from "jsonwebtoken";
@@ -41,7 +42,6 @@ import {
     translateRead,
     translateUpdate,
 } from "../../src/translate";
-import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
 import { Context } from "../../src/types";
 import { Neo4jGraphQL } from "../../src";
 import {
@@ -137,9 +137,10 @@ describe("TCK Generated tests", () => {
                         return res;
                     }
 
+                    const node = neoSchema.nodes.find((x) => x.name === def.name.value) as Node;
                     return {
                         ...res,
-                        [pluralize(camelCase(def.name.value))]: (
+                        [node.getPlural(true)]: (
                             _root: any,
                             _params: any,
                             context: Context,
@@ -154,7 +155,7 @@ describe("TCK Generated tests", () => {
 
                             const [cQuery, cQueryParams] = translateRead({
                                 context: mergedContext,
-                                node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                node,
                             });
 
                             compare(
@@ -204,7 +205,6 @@ describe("TCK Generated tests", () => {
 
                             const mergedContext = { ...context, ...defaultContext };
 
-                            const node = neoSchema.nodes.find((x) => x.name === def.name.value) as Node;
                             const [cQuery, cQueryParams] = translateAggregate({
                                 context: mergedContext,
                                 node,
