@@ -251,7 +251,7 @@ function createProjectionAndParams({
         }
 
         if (relationField) {
-            // WARN: In some test this node is undefined. If this is intended, we should update typings to reflect that
+            // WARN: In some tests referenceNode is undefined. If this is intended, we should update typings to reflect that
             const referenceNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const nodeMatchStr = `(${chainStr || varName})`;
             const inStr = relationField.direction === "IN" ? "<-" : "-";

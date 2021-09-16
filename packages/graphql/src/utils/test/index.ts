@@ -17,5 +17,5 @@
  * limitations under the License.
  */
 
+// eslint-disable-next-line import/prefer-default-export
 export { default as NodeBuilder } from "./node-builder";
-export const dummy = null; // To avoid linter prefer-default
