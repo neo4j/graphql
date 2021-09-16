@@ -115,6 +115,14 @@ describe("Interfaces", () => {
               movies: [MovieMoviesDisconnectFieldInput!]
             }
 
+            input MovieMoviesAggregateInput {
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+            }
+
             input MovieMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               where: MovieConnectWhere
@@ -215,6 +223,7 @@ describe("Interfaces", () => {
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               movies: MovieWhere
+              moviesAggregate: MovieMoviesAggregateInput
               moviesConnection: MovieMoviesConnectionWhere
               moviesConnection_NOT: MovieMoviesConnectionWhere
               movies_NOT: MovieWhere

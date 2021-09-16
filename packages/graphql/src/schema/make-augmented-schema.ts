@@ -191,7 +191,9 @@ function makeAugmentedSchema(
 
     const aggregationSelectionTypeNames = aggregationSelectionTypeMatrix.map(([name]) => name);
 
-    const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<Record<string, ObjectTypeComposer<unknown, unknown>>>((res, [name, fields]) => {
+    const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<
+        Record<string, ObjectTypeComposer<unknown, unknown>>
+    >((res, [name, fields]) => {
         return {
             ...res,
             [name]: composer.createObjectTC({
@@ -942,11 +944,24 @@ function makeAugmentedSchema(
             const nodeFieldUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateFieldInput`;
             const nodeFieldDeleteInputName = `${node.name}${upperFirst(rel.fieldName)}DeleteFieldInput`;
             const nodeFieldDisconnectInputName = `${node.name}${upperFirst(rel.fieldName)}DisconnectFieldInput`;
-
             const connectionUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateConnectionInput`;
+            const relationshipWhereTypeInputName = `${node.name}${upperFirst(rel.fieldName)}AggregateInput`;
+
+            const whereAggregateInput = composer.createInputTC({
+                name: relationshipWhereTypeInputName,
+                fields: {
+                    count: "Int",
+                    count_LT: "Int",
+                    count_LTE: "Int",
+                    count_GT: "Int",
+                    count_GTE: "Int",
+                },
+            });
 
             whereInput.addFields({
-                ...{ [rel.fieldName]: `${n.name}Where`, [`${rel.fieldName}_NOT`]: `${n.name}Where` },
+                [rel.fieldName]: `${n.name}Where`,
+                [`${rel.fieldName}_NOT`]: `${n.name}Where`,
+                [`${rel.fieldName}Aggregate`]: whereAggregateInput,
             });
 
             let anyNonNullRelProperties = false;

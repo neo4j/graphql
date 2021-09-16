@@ -183,6 +183,14 @@ describe("162", () => {
               tigerConnection(after: String, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
             }
 
+            input TigerJawLevel2Part1AggregateInput {
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+            }
+
             type TigerJawLevel2Part1AggregateSelection {
               count: Int!
               id: IDAggregateSelection!
@@ -269,6 +277,14 @@ describe("162", () => {
             \\"\\"\\"Fields to sort TigerJawLevel2Part1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Part1Sort object.\\"\\"\\"
             input TigerJawLevel2Part1Sort {
               id: SortDirection
+            }
+
+            input TigerJawLevel2Part1TigerAggregateInput {
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
             }
 
             input TigerJawLevel2Part1TigerConnectFieldInput {
@@ -359,6 +375,7 @@ describe("162", () => {
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               tiger: TigerWhere
+              tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
               tigerConnection: TigerJawLevel2Part1TigerConnectionWhere
               tigerConnection_NOT: TigerJawLevel2Part1TigerConnectionWhere
               tiger_NOT: TigerWhere
@@ -392,6 +409,7 @@ describe("162", () => {
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               part1: TigerJawLevel2Part1Where
+              part1Aggregate: TigerJawLevel2Part1AggregateInput
               part1Connection: TigerJawLevel2Part1ConnectionWhere
               part1Connection_NOT: TigerJawLevel2Part1ConnectionWhere
               part1_NOT: TigerJawLevel2Part1Where

@@ -124,6 +124,14 @@ describe("Relationship", () => {
               id: ID
             }
 
+            input MovieActorsAggregateInput {
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+            }
+
             input MovieActorsConnectFieldInput {
               where: ActorConnectWhere
             }
@@ -227,6 +235,7 @@ describe("Relationship", () => {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
               actors: ActorWhere
+              actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
               actors_NOT: ActorWhere
@@ -354,6 +363,14 @@ describe("Relationship", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
+            input ActorMoviesAggregateInput {
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+            }
+
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               where: MovieConnectWhere
@@ -438,6 +455,7 @@ describe("Relationship", () => {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
               movies: MovieWhere
+              moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
               movies_NOT: MovieWhere
@@ -484,6 +502,14 @@ describe("Relationship", () => {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
+            }
+
+            input MovieActorsAggregateInput {
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
             }
 
             input MovieActorsConnectFieldInput {
@@ -596,6 +622,7 @@ describe("Relationship", () => {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
               actors: ActorWhere
+              actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
               actors_NOT: ActorWhere

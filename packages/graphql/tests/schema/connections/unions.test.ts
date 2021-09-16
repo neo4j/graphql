@@ -299,6 +299,14 @@ describe("Unions", () => {
               title: StringAggregateSelection!
             }
 
+            input BookAuthorAggregateInput {
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+            }
+
             input BookAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
@@ -411,6 +419,7 @@ describe("Unions", () => {
               AND: [BookWhere!]
               OR: [BookWhere!]
               author: AuthorWhere
+              authorAggregate: BookAuthorAggregateInput
               authorConnection: BookAuthorConnectionWhere
               authorConnection_NOT: BookAuthorConnectionWhere
               author_NOT: AuthorWhere
@@ -462,6 +471,14 @@ describe("Unions", () => {
             type JournalAggregateSelection {
               count: Int!
               subject: StringAggregateSelection!
+            }
+
+            input JournalAuthorAggregateInput {
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
             }
 
             input JournalAuthorConnectFieldInput {
@@ -576,6 +593,7 @@ describe("Unions", () => {
               AND: [JournalWhere!]
               OR: [JournalWhere!]
               author: AuthorWhere
+              authorAggregate: JournalAuthorAggregateInput
               authorConnection: JournalAuthorConnectionWhere
               authorConnection_NOT: JournalAuthorConnectionWhere
               author_NOT: AuthorWhere

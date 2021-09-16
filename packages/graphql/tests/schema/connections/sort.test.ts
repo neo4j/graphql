@@ -113,6 +113,14 @@ describe("Sort", () => {
               sort: [Node1Sort]
             }
 
+            input Node1RelatedToAggregateInput {
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+            }
+
             input Node1RelatedToConnectFieldInput {
               connect: [Node2ConnectInput!]
               where: Node2ConnectWhere
@@ -196,6 +204,7 @@ describe("Sort", () => {
               property_NOT_STARTS_WITH: String
               property_STARTS_WITH: String
               relatedTo: Node2Where
+              relatedToAggregate: Node1RelatedToAggregateInput
               relatedToConnection: Node1RelatedToConnectionWhere
               relatedToConnection_NOT: Node1RelatedToConnectionWhere
               relatedTo_NOT: Node2Where
@@ -233,6 +242,14 @@ describe("Sort", () => {
             input Node2Options {
               limit: Int
               offset: Int
+            }
+
+            input Node2RelatedToAggregateInput {
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
             }
 
             input Node2RelatedToConnectFieldInput {
@@ -306,6 +323,7 @@ describe("Sort", () => {
               AND: [Node2Where!]
               OR: [Node2Where!]
               relatedTo: Node1Where
+              relatedToAggregate: Node2RelatedToAggregateInput
               relatedToConnection: Node2RelatedToConnectionWhere
               relatedToConnection_NOT: Node2RelatedToConnectionWhere
               relatedTo_NOT: Node1Where

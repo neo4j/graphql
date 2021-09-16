@@ -618,6 +618,14 @@ describe("Exclude", () => {
               title: String
             }
 
+            input MovieActorsAggregateInput {
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+            }
+
             input MovieActorsConnectFieldInput {
               where: ActorConnectWhere
             }
@@ -721,6 +729,7 @@ describe("Exclude", () => {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
               actors: ActorWhere
+              actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
               actors_NOT: ActorWhere

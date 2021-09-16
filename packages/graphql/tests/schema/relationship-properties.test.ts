@@ -129,6 +129,14 @@ describe("Relationship-properties", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
+            input ActorMoviesAggregateInput {
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+            }
+
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               edge: ActedInCreateInput!
@@ -222,6 +230,7 @@ describe("Relationship-properties", () => {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
               movies: MovieWhere
+              moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
               movies_NOT: MovieWhere
@@ -266,6 +275,14 @@ describe("Relationship-properties", () => {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
+            }
+
+            input MovieActorsAggregateInput {
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
             }
 
             input MovieActorsConnectFieldInput {
@@ -387,6 +404,7 @@ describe("Relationship-properties", () => {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
               actors: ActorWhere
+              actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
               actors_NOT: ActorWhere

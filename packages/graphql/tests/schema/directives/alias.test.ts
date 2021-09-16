@@ -57,6 +57,14 @@ describe("Alias", () => {
               name: String!
             }
 
+            input ActorActedInAggregateInput {
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+            }
+
             input ActorActedInConnectFieldInput {
               edge: ActorActedInPropsCreateInput!
               where: MovieConnectWhere
@@ -215,6 +223,7 @@ describe("Alias", () => {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
               actedIn: MovieWhere
+              actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionWhere
               actedInConnection_NOT: ActorActedInConnectionWhere
               actedIn_NOT: MovieWhere
