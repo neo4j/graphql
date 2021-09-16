@@ -18,6 +18,7 @@
  */
 
 import { DirectiveNode, NamedTypeNode } from "graphql";
+import camelCase from "camelcase";
 import pluralize from "pluralize";
 import type {
     RelationField,
@@ -160,8 +161,8 @@ class Node {
         return this.nodeDirective?.getLabels(this.name) || [this.name];
     }
 
-    get plural(): string {
-        return this.nodeDirective?.plural || pluralize(this.name);
+    getPlural(camelcase = false): string {
+        return this.nodeDirective?.plural || pluralize(camelcase ? camelCase(this.name) : this.name);
     }
 }
 

@@ -193,12 +193,14 @@ function makeAugmentedSchema(
 
     const aggregationSelectionTypeNames = aggregationSelectionTypeMatrix.map(([name]) => name);
 
-    const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<Record<string, ObjectTypeComposer<unknown, unknown>>>((res, [name, fields]) => {
+    const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<
+        Record<string, ObjectTypeComposer<unknown, unknown>>
+    >((res, [name, fields]) => {
         return {
             ...res,
             [name]: composer.createObjectTC({
                 name: `${name}AggregateSelection`,
-                fields: fields ? fields : { min: `${name}!`, max: `${name}!` },
+                fields: fields || { min: `${name}!`, max: `${name}!` },
             }),
         };
     }, {});
@@ -1283,7 +1285,7 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
-                [pluralize(camelCase(node.name))]: findResolver({ node }),
+                [node.getPlural(true)]: findResolver({ node }),
             });
 
             composer.Query.addFields({
