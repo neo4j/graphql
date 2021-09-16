@@ -73,6 +73,8 @@ import getWhereFields from "./get-where-fields";
 import { connectionFieldResolver } from "./pagination";
 import { validateDocument } from "./validation";
 import * as constants from "../constants";
+import NodeDirective from "../classes/NodeDirective";
+import parseNodeDirective from "./parse-node-directive";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -296,10 +298,11 @@ function makeAugmentedSchema(
         });
 
         const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude"].includes(x.name.value)
+            (x) => !["auth", "exclude", "node"].includes(x.name.value)
         );
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
+        const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
         let auth: Auth;
@@ -310,6 +313,11 @@ function makeAugmentedSchema(
         let exclude: Exclude;
         if (excludeDirective) {
             exclude = parseExcludeDirective(excludeDirective);
+        }
+
+        let nodeDirective: NodeDirective;
+        if (nodeDirectiveDefinition) {
+            nodeDirective = parseNodeDirective(nodeDirectiveDefinition);
         }
 
         const nodeFields = getObjFieldMeta({
@@ -349,6 +357,8 @@ function makeAugmentedSchema(
             auth,
             // @ts-ignore we can be sure it's defined
             exclude,
+            // @ts-ignore we can be sure it's defined
+            nodeDirective,
             description: definition.description?.value,
         });
 
