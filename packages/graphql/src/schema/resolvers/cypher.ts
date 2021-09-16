@@ -18,8 +18,11 @@
  */
 
 import { isInt } from "neo4j-driver";
-import { execute } from "../../utils";
+import { UnionTypeDefinitionNode } from "graphql/language/ast";
+import { ResolveTree } from "graphql-parse-resolve-info";
 import { BaseField, ConnectionField, Context } from "../../types";
+import { Node } from "../../classes";
+import { execute } from "../../utils";
 import { graphqlArgsToCompose } from "../to-compose";
 import createAuthAndParams from "../../translate/create-auth-and-params";
 import createAuthParam from "../../translate/create-auth-param";
@@ -36,65 +39,58 @@ export default function cypherResolver({
     statement: string;
     type: "Query" | "Mutation";
 }) {
-    async function resolve(_root: any, args: any, _context: unknown) {
-        const context = _context as Context;
-        const { resolveTree } = context;
-        const cypherStrs: string[] = [];
-        let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
-        let projectionStr = "";
-        const connectionProjectionStrs: string[] = [];
+    // Separate previos logic to reuse in simple and union node
+    function getNodeProjection(referenceNode: Node, resolveTree: ResolveTree, context: Context, resolveType: boolean) {
         let projectionAuthStr = "";
-        const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
-            field.typeMeta.name
-        );
-        const isEnum = context.neoSchema.document.definitions.find(
-            (x) => x.kind === "EnumTypeDefinition" && x.name.value === field.typeMeta.name
-        );
-        const isScalar = context.neoSchema.document.definitions.find(
-            (x) => x.kind === "ScalarTypeDefinition" && x.name.value === field.typeMeta.name
-        );
+        const connectionProjectionStrs: string[] = [];
+        let params = {};
+        const recurse = createProjectionAndParams({
+            fieldsByTypeName: resolveTree.fieldsByTypeName,
+            node: referenceNode,
+            resolveType,
+            context,
+            varName: `this`,
+        });
 
-        const preAuth = createAuthAndParams({ entity: field, context });
-        if (preAuth[0]) {
-            params = { ...params, ...preAuth[1] };
-            cypherStrs.push(`CALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        const [str, p, meta] = recurse;
+        const projectionStr = str;
+        params = { ...params, ...p };
+
+        if (meta?.authValidateStrs?.length) {
+            projectionAuthStr = meta.authValidateStrs.join(" AND ");
         }
 
-        const referenceNode = context.neoSchema.nodes.find((x) => x.name === field.typeMeta.name);
-        if (referenceNode) {
-            const recurse = createProjectionAndParams({
-                fieldsByTypeName: resolveTree.fieldsByTypeName,
-                node: referenceNode,
-                context,
-                varName: `this`,
-            });
-            const [str, p, meta] = recurse;
-            projectionStr = str;
-            params = { ...params, ...p };
+        if (meta?.connectionFields?.length) {
+            meta.connectionFields.forEach((connectionResolveTree) => {
+                const connectionField = referenceNode.connectionFields.find(
+                    (x) => x.fieldName === connectionResolveTree.name
+                ) as ConnectionField;
 
-            if (meta?.authValidateStrs?.length) {
-                projectionAuthStr = meta.authValidateStrs.join(" AND ");
-            }
-
-            if (meta?.connectionFields?.length) {
-                meta.connectionFields.forEach((connectionResolveTree) => {
-                    const connectionField = referenceNode.connectionFields.find(
-                        (x) => x.fieldName === connectionResolveTree.name
-                    ) as ConnectionField;
-
-                    const nestedConnection = createConnectionAndParams({
-                        resolveTree: connectionResolveTree,
-                        field: connectionField,
-                        context,
-                        nodeVariable: "this",
-                    });
-                    const [nestedStr, nestedP] = nestedConnection;
-                    connectionProjectionStrs.push(nestedStr);
-                    params = { ...params, ...nestedP };
+                const nestedConnection = createConnectionAndParams({
+                    resolveTree: connectionResolveTree,
+                    field: connectionField,
+                    context,
+                    nodeVariable: "this",
                 });
-            }
+                const [nestedStr, nestedP] = nestedConnection;
+                connectionProjectionStrs.push(nestedStr);
+                params = { ...params, ...nestedP };
+            });
         }
+        return { projectionStr, params, connectionProjectionStrs, projectionAuthStr };
+    }
 
+    function addSecurityAndConnection(
+        context: Context,
+        args: any,
+        params: any,
+        projectionAuthStr: string,
+        connectionProjectionStrs: string[],
+        isPrimitive: boolean,
+        isScalar: boolean,
+        isEnum: boolean
+    ) {
+        const cypherStrs: string[] = [];
         const initApocParamsStrs = ["auth: $auth", ...(context.cypherParams ? ["cypherParams: $cypherParams"] : [])];
         const apocParams = Object.entries(args).reduce(
             (r: { strs: string[]; params: any }, entry) => {
@@ -129,10 +125,132 @@ export default function cypherResolver({
 
         cypherStrs.push(connectionProjectionStrs.join("\n"));
 
-        if (isPrimitive || isEnum || isScalar) {
-            cypherStrs.push(`RETURN this`);
+        return cypherStrs;
+    }
+
+    async function resolve(_root: any, args: any, _context: unknown) {
+        const context = _context as Context;
+        const { resolveTree } = context;
+        const cypherStrs: string[] = [];
+        let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
+        let projectionStr = "";
+        let connectionProjectionStrs: string[] = [];
+        let projectionAuthStr = "";
+
+        const isPrimitive = ["ID", "String", "Boolean", "Float", "Int", "DateTime", "BigInt"].includes(
+            field.typeMeta.name
+        );
+        const isEnum = context.neoSchema.document.definitions.find(
+            (x) => x.kind === "EnumTypeDefinition" && x.name.value === field.typeMeta.name
+        );
+        const isScalar = context.neoSchema.document.definitions.find(
+            (x) => x.kind === "ScalarTypeDefinition" && x.name.value === field.typeMeta.name
+        );
+
+        const preAuth = createAuthAndParams({ entity: field, context });
+        if (preAuth[0]) {
+            params = { ...params, ...preAuth[1] };
+            cypherStrs.push(`CALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        }
+
+        const referenceNode = context.neoSchema.nodes.find((x) => x.name === field.typeMeta.name);
+        const unions = context.neoSchema.document.definitions.filter(
+            (x) => x.kind === "UnionTypeDefinition"
+        ) as UnionTypeDefinitionNode[];
+        const referenceUnion = unions.find((u) => u.name.value === field.typeMeta.name);
+        const subresolves: {
+            projectionStr: string;
+            params: any;
+            connectionProjectionStrs: string[];
+            projectionAuthStr: string;
+            nodeName: string;
+            cypherStrs: string[];
+        }[] = [];
+
+        if (referenceNode) {
+            const {
+                projectionStr: ps,
+                params: p,
+                connectionProjectionStrs: cps,
+                projectionAuthStr: pas,
+            } = getNodeProjection(referenceNode, resolveTree, context, false);
+            projectionAuthStr = pas;
+            params = { ...p, ...params };
+            connectionProjectionStrs = [...connectionProjectionStrs, ...cps];
+            projectionStr = ps;
+        }
+
+        if (referenceUnion) {
+            const referencedNodes = referenceUnion?.types?.map((u) =>
+                context.neoSchema.nodes.find((n) => n.name === u.name.value)
+            );
+            if (referencedNodes) {
+                referencedNodes
+                    .filter((b) => b !== undefined)
+                    .filter((n) => Object.keys(resolveTree.fieldsByTypeName).includes(n?.name ?? ""))
+                    .forEach((node) => {
+                        // Build cypher for every node in union type
+                        if (node) {
+                            const clonests = JSON.parse(JSON.stringify(cypherStrs)); // clone original sentence array to each child node union type
+                            const unionNodeProjection = getNodeProjection(
+                                node,
+                                {
+                                    fieldsByTypeName: { [node.name]: resolveTree.fieldsByTypeName[node.name] },
+                                } as ResolveTree,
+                                context,
+                                true
+                            );
+                            addSecurityAndConnection(
+                                context,
+                                args,
+                                (params = { ...unionNodeProjection.params, ...params }),
+                                unionNodeProjection.projectionAuthStr,
+                                unionNodeProjection.connectionProjectionStrs,
+                                isPrimitive,
+                                !!isScalar,
+                                !!isEnum
+                            ).forEach((a) => clonests.push(a));
+
+                            subresolves.push({
+                                ...unionNodeProjection,
+                                nodeName: node.name,
+                                cypherStrs: clonests,
+                            });
+                        }
+                    });
+            }
         } else {
+            addSecurityAndConnection(
+                context,
+                args,
+                params,
+                projectionAuthStr,
+                connectionProjectionStrs,
+                isPrimitive,
+                !!isScalar,
+                !!isEnum
+            ).forEach((a) => cypherStrs.push(a));
+        }
+        if (referenceUnion) {
+            cypherStrs.splice(0, cypherStrs.length);
+            cypherStrs.push("call {\n");
+            const subquerys = subresolves.map(
+                (sub) => `${sub.cypherStrs.join("\n")}
+            match(thisnode:${sub.nodeName})
+
+            where thisnode=this or apoc.map.merge(properties(thisnode), { __resolveType: '${
+                sub.nodeName
+            }' })=properties(this)
+            return thisnode ${sub.projectionStr} as this`
+            );
+            cypherStrs.push(subquerys.join("\nunion\n"));
+            cypherStrs.push("}");
+            cypherStrs.push(`with this AS this
+            RETURN this`);
+        } else if (!isPrimitive && !isScalar && !isEnum) {
             cypherStrs.push(`RETURN this ${projectionStr} AS this`);
+        } else {
+            cypherStrs.push(`RETURN this`);
         }
 
         const executeResult = await execute({

@@ -258,6 +258,98 @@ describe("cypher", () => {
                 }
             });
 
+            test("should query custom query and return union type", async () => {
+                const session = driver.session();
+
+                const movieTitle = generate({
+                    charset: "alphabetic",
+                });
+                const actorName = generate({
+                    charset: "alphabetic",
+                });
+                const directorName = generate({
+                    charset: "alphabetic",
+                });
+                const directorLastName = generate({
+                    charset: "alphabetic",
+                });
+
+                const typeDefs = `
+                    type Movie {
+                        title: String!
+                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        directors: [Actor] @relationship(type: "DIRECTED", direction: IN)
+                    }
+                    type Director {
+                        name: String!
+                        lastName: String!
+                        movies: [Movie] @relationship(type: "DIRECTED", direction: OUT)
+                    }
+                    type Actor {
+                        name: String!
+                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+                    union Person = Director | Actor
+                    type Query {
+
+                        personInMovie(title: String!): [Person] @cypher(statement: """
+                            MATCH (m:Movie {title: $title})<-[:ACTED_IN|DIRECTED]-(p)
+                            RETURN p
+                        """)
+                    }
+                `;
+
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+                const source = `
+                    query($title: String!) {
+                        personInMovie(title: $title) {
+                            ... on Actor {
+                                name
+                            }
+                            ... on Director{
+                                name
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    await session.run(
+                        `
+                            CREATE (:Movie {title: $title})<-[:ACTED_IN]-(:Actor {name: $name})
+                        `,
+                        {
+                            title: movieTitle,
+                            name: actorName,
+                        }
+                    );
+                    await session.run(
+                        `
+                            CREATE (:Movie {title: $title})<-[:DIRECTED]-(:Director {name: $name, lastName:$lastName})
+                        `,
+                        {
+                            title: movieTitle,
+                            name: directorName,
+                            lastName: directorLastName,
+                        }
+                    );
+
+                    const gqlResult = await graphql({
+                        schema: neoSchema.schema,
+                        source,
+                        contextValue: { driver },
+                        variableValues: { title: movieTitle },
+                    });
+
+                    expect(gqlResult.errors).toBeFalsy();
+                    expect(gqlResult?.data?.personInMovie).toContainEqual({ name: actorName });
+                    expect(gqlResult?.data?.personInMovie).toContainEqual({ name: directorName });
+                } finally {
+                    await session.close();
+                }
+            });
+
             test("should query multiple nodes and return relationship data", async () => {
                 const session = driver.session();
 
