@@ -57,10 +57,10 @@ WHERE this.title = $this_title
 
 RETURN this {
     search: [(this)-[:SEARCH]->(this_search)
-        WHERE "Genre" IN labels(this_search) OR "Movie" IN labels(this_search) |
+        WHERE ("Genre" IN labels(this_search)) OR ("Movie" IN labels(this_search)) |
         head(
             [ this_search IN [this_search]
-                WHERE "Genre" IN labels (this_search) AND
+                WHERE ("Genre" IN labels(this_search)) AND
                 this_search.name = $this_search_Genre_name AND
                 apoc.util.validatePredicate(NOT(this_search.name IS NOT NULL AND this_search.name = $this_search_Genre_auth_allow0_name), "@neo4j/graphql/FORBIDDEN", [0])  |
                 this_search {
@@ -68,7 +68,7 @@ RETURN this {
                      .name
                 } ] +
             [ this_search IN [this_search]
-                WHERE "Movie" IN labels (this_search) AND
+                WHERE ("Movie" IN labels(this_search)) AND
                 this_search.title = $this_search_Movie_title |
                 this_search {
                     __resolveType: "Movie",

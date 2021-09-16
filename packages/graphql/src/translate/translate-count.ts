@@ -30,7 +30,9 @@ function translateCount({ node, context }: { node: Node; context: Context }): [s
     const whereStrs: string[] = [];
     const cypherStrs: string[] = [];
 
-    cypherStrs.push(`MATCH (${varName}:${node.name})`);
+    const labels = node.labelString;
+
+    cypherStrs.push(`MATCH (${varName}${labels})`);
 
     if (whereInput) {
         const where = createWhereAndParams({
