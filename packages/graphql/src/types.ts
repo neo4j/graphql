@@ -113,6 +113,9 @@ export interface BaseField {
 export interface RelationField extends BaseField {
     direction: "OUT" | "IN";
     type: string;
+    connectionPrefix?: string;
+    // TODO: choose a better name
+    inherited: boolean;
     properties?: string;
     union?: UnionField;
     interface?: InterfaceField;

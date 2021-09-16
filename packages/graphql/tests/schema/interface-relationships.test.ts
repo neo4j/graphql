@@ -123,8 +123,8 @@ describe("Interface Relationships", () => {
             }
 
             input ActorActedInCreateFieldInput {
-              Movie: [ActorActedInMovieCreateFieldInput!]
-              Series: [ActorActedInSeriesCreateFieldInput!]
+              edge: ActedInCreateInput!
+              node: ProductionCreateInput!
             }
 
             input ActorActedInDeleteFieldInput {
@@ -137,20 +137,10 @@ describe("Interface Relationships", () => {
               where: ActorActedInConnectionWhere
             }
 
-            input ActorActedInMovieCreateFieldInput {
-              edge: ActedInCreateInput!
-              node: MovieCreateInput!
-            }
-
             type ActorActedInRelationship implements ActedIn {
               cursor: String!
               node: Production!
               screenTime: Int!
-            }
-
-            input ActorActedInSeriesCreateFieldInput {
-              edge: ActedInCreateInput!
-              node: SeriesCreateInput!
             }
 
             input ActorActedInUpdateConnectionInput {
@@ -165,6 +155,11 @@ describe("Interface Relationships", () => {
               disconnect: ActorActedInDisconnectFieldInput
               update: ActorActedInUpdateConnectionInput
               where: ActorActedInConnectionWhere
+            }
+
+            type ActorAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
             }
 
             input ActorConnectInput {
@@ -191,7 +186,7 @@ describe("Interface Relationships", () => {
             input ActorOptions {
               limit: Int
               offset: Int
-              """Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array."""
+              \\"\\"\\"Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [ActorSort]
             }
 
@@ -199,7 +194,7 @@ describe("Interface Relationships", () => {
               actedIn: ActorActedInCreateFieldInput
             }
 
-            """Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object."""
+            \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
             }
@@ -264,6 +259,11 @@ describe("Interface Relationships", () => {
               seriesConnection(after: String, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
             }
 
+            type EpisodeAggregateSelection {
+              count: Int!
+              runtime: IntAggregateSelection!
+            }
+
             input EpisodeConnectInput {
               series: EpisodeSeriesConnectFieldInput
             }
@@ -288,7 +288,7 @@ describe("Interface Relationships", () => {
             input EpisodeOptions {
               limit: Int
               offset: Int
-              """Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array."""
+              \\"\\"\\"Specify one or more EpisodeSort objects to sort Episodes by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [EpisodeSort]
             }
 
@@ -355,7 +355,7 @@ describe("Interface Relationships", () => {
               where: EpisodeSeriesConnectionWhere
             }
 
-            """Fields to sort Episodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one EpisodeSort object."""
+            \\"\\"\\"Fields to sort Episodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one EpisodeSort object.\\"\\"\\"
             input EpisodeSort {
               runtime: SortDirection
             }
@@ -382,116 +382,62 @@ describe("Interface Relationships", () => {
               series_NOT: SeriesWhere
             }
 
+            type IntAggregateSelection {
+              average: Float!
+              max: Int!
+              min: Int!
+            }
+
             type Movie implements Production {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               runtime: Int!
               title: String!
             }
 
-            input MovieActorsConnectFieldInput {
-              connect: [ActorConnectInput!]
-              edge: ActedInCreateInput!
-              where: ActorConnectWhere
-            }
-
-            type MovieActorsConnection {
-              edges: [MovieActorsRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input MovieActorsConnectionSort {
-              edge: ActedInSort
-              node: ActorSort
-            }
-
-            input MovieActorsConnectionWhere {
-              AND: [MovieActorsConnectionWhere!]
-              OR: [MovieActorsConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
-              node: ActorWhere
-              node_NOT: ActorWhere
-            }
-
-            input MovieActorsCreateFieldInput {
-              edge: ActedInCreateInput!
-              node: ActorCreateInput!
-            }
-
-            input MovieActorsDeleteFieldInput {
-              delete: ActorDeleteInput
-              where: MovieActorsConnectionWhere
-            }
-
-            input MovieActorsDisconnectFieldInput {
-              disconnect: ActorDisconnectInput
-              where: MovieActorsConnectionWhere
-            }
-
-            input MovieActorsFieldInput {
-              connect: [MovieActorsConnectFieldInput!]
-              create: [MovieActorsCreateFieldInput!]
-            }
-
-            type MovieActorsRelationship implements ActedIn {
-              cursor: String!
-              node: Actor!
-              screenTime: Int!
-            }
-
-            input MovieActorsUpdateConnectionInput {
-              edge: ActedInUpdateInput
-              node: ActorUpdateInput
-            }
-
-            input MovieActorsUpdateFieldInput {
-              connect: [MovieActorsConnectFieldInput!]
-              create: [MovieActorsCreateFieldInput!]
-              delete: [MovieActorsDeleteFieldInput!]
-              disconnect: [MovieActorsDisconnectFieldInput!]
-              update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
+            type MovieAggregateSelection {
+              count: Int!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input MovieConnectInput {
-              actors: [MovieActorsConnectFieldInput!]
+              actors: [ProductionActorsConnectFieldInput!]
             }
 
             input MovieCreateInput {
-              actors: MovieActorsFieldInput
+              actors: ProductionActorsFieldInput
               runtime: Int!
               title: String!
             }
 
             input MovieDeleteInput {
-              actors: [MovieActorsDeleteFieldInput!]
+              actors: [ProductionActorsDeleteFieldInput!]
             }
 
             input MovieDisconnectInput {
-              actors: [MovieActorsDisconnectFieldInput!]
+              actors: [ProductionActorsDisconnectFieldInput!]
             }
 
             input MovieOptions {
               limit: Int
               offset: Int
-              """Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array."""
+              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [MovieSort]
             }
 
             input MovieRelationInput {
-              actors: [MovieActorsCreateFieldInput!]
+              actors: [ProductionActorsCreateFieldInput!]
             }
 
-            """Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object."""
+            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
             input MovieSort {
               runtime: SortDirection
               title: SortDirection
             }
 
             input MovieUpdateInput {
-              actors: [MovieActorsUpdateFieldInput!]
+              actors: [ProductionActorsUpdateFieldInput!]
               runtime: Int
               title: String
             }
@@ -500,8 +446,8 @@ describe("Interface Relationships", () => {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
               actors: ActorWhere
-              actorsConnection: MovieActorsConnectionWhere
-              actorsConnection_NOT: MovieActorsConnectionWhere
+              actorsConnection: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere
               actors_NOT: ActorWhere
               runtime: Int
               runtime_GT: Int
@@ -538,7 +484,7 @@ describe("Interface Relationships", () => {
               updateSeries(connect: SeriesConnectInput, create: SeriesRelationInput, delete: SeriesDeleteInput, disconnect: SeriesDisconnectInput, update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
             }
 
-            """Pagination information (Relay)"""
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
             type PageInfo {
               endCursor: String
               hasNextPage: Boolean!
@@ -547,7 +493,8 @@ describe("Interface Relationships", () => {
             }
 
             interface Production {
-              actors: [Actor!]!
+              actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               title: String!
             }
 
@@ -557,6 +504,17 @@ describe("Interface Relationships", () => {
               where: ActorConnectWhere
             }
 
+            type ProductionActorsConnection {
+              edges: [ProductionActorsRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ProductionActorsConnectionSort {
+              edge: ActedInSort
+              node: ActorSort
+            }
+
             input ProductionActorsConnectionWhere {
               AND: [ProductionActorsConnectionWhere!]
               OR: [ProductionActorsConnectionWhere!]
@@ -564,6 +522,11 @@ describe("Interface Relationships", () => {
               edge_NOT: ActedInWhere
               node: ActorWhere
               node_NOT: ActorWhere
+            }
+
+            input ProductionActorsCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: ActorCreateInput!
             }
 
             input ProductionActorsDeleteFieldInput {
@@ -576,64 +539,74 @@ describe("Interface Relationships", () => {
               where: ProductionActorsConnectionWhere
             }
 
+            input ProductionActorsFieldInput {
+              connect: [ProductionActorsConnectFieldInput!]
+              create: [ProductionActorsCreateFieldInput!]
+            }
+
+            type ProductionActorsRelationship implements ActedIn {
+              cursor: String!
+              node: Actor!
+              screenTime: Int!
+            }
+
+            input ProductionActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: ActorUpdateInput
+            }
+
+            input ProductionActorsUpdateFieldInput {
+              connect: [ProductionActorsConnectFieldInput!]
+              create: [ProductionActorsCreateFieldInput!]
+              delete: [ProductionActorsDeleteFieldInput!]
+              disconnect: [ProductionActorsDisconnectFieldInput!]
+              update: ProductionActorsUpdateConnectionInput
+              where: ProductionActorsConnectionWhere
+            }
+
             input ProductionConnectInput {
-              actors: [ProductionActorsConnectFieldInput!]
               Movie: [MovieConnectInput!]
               Series: [SeriesConnectInput!]
+              actors: [ProductionActorsConnectFieldInput!]
             }
 
             input ProductionConnectWhere {
               node: ProductionWhere!
             }
 
+            input ProductionCreateInput {
+              Movie: MovieCreateInput
+              Series: SeriesCreateInput
+            }
+
             input ProductionDeleteInput {
-              actors: [ProductionActorsDeleteFieldInput!]
               Movie: [MovieDeleteInput!]
               Series: [SeriesDeleteInput!]
+              actors: [ProductionActorsDeleteFieldInput!]
             }
 
             input ProductionDisconnectInput {
-              actors: [ProductionActorsDisconnectFieldInput!]
               Movie: [MovieDisconnectInput!]
               Series: [SeriesDisconnectInput!]
-            }
-
-            input ProductionMovieWhere {
-              AND: [MovieWhere!]
-              OR: [MovieWhere!]
-              runtime: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int]
-              runtime_LT: Int
-              runtime_LTE: Int
-              runtime_NOT: Int
-              runtime_NOT_IN: [Int]
-            }
-
-            input ProductionSeriesWhere {
-              AND: [SeriesWhere!]
-              OR: [SeriesWhere!]
-              episodeCount: Int
-              episodeCount_GT: Int
-              episodeCount_GTE: Int
-              episodeCount_IN: [Int]
-              episodeCount_LT: Int
-              episodeCount_LTE: Int
-              episodeCount_NOT: Int
-              episodeCount_NOT_IN: [Int]
+              actors: [ProductionActorsDisconnectFieldInput!]
             }
 
             input ProductionUpdateInput {
-              title: String
+              Movie: MovieUpdateInput
               Series: SeriesUpdateInput
+              actors: [ProductionActorsUpdateFieldInput!]
+              title: String
             }
 
             input ProductionWhere {
               AND: [ProductionWhere!]
-              Movie: ProductionMovieWhere
+              Movie: MovieWhere
               OR: [ProductionWhere!]
-              Series: ProductionSeriesWhere
+              Series: SeriesWhere
+              actors: ActorWhere
+              actorsConnection: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere
+              actors_NOT: ActorWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -648,92 +621,36 @@ describe("Interface Relationships", () => {
 
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsCount(where: ActorWhere): Int!
               episodes(options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
+              episodesAggregate(where: EpisodeWhere): EpisodeAggregateSelection!
               episodesCount(where: EpisodeWhere): Int!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
+              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesCount(where: SeriesWhere): Int!
             }
 
             type Series implements Production {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsConnection(after: String, first: Int, sort: [SeriesActorsConnectionSort!], where: SeriesActorsConnectionWhere): SeriesActorsConnection!
+              actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               episodeCount: Int!
               episodes(options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
               episodesConnection(after: String, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
               title: String!
             }
 
-            input SeriesActorsConnectFieldInput {
-              connect: [ActorConnectInput!]
-              edge: ActedInCreateInput!
-              where: ActorConnectWhere
-            }
-
-            type SeriesActorsConnection {
-              edges: [SeriesActorsRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input SeriesActorsConnectionSort {
-              edge: ActedInSort
-              node: ActorSort
-            }
-
-            input SeriesActorsConnectionWhere {
-              AND: [SeriesActorsConnectionWhere!]
-              OR: [SeriesActorsConnectionWhere!]
-              edge: ActedInWhere
-              edge_NOT: ActedInWhere
-              node: ActorWhere
-              node_NOT: ActorWhere
-            }
-
-            input SeriesActorsCreateFieldInput {
-              edge: ActedInCreateInput!
-              node: ActorCreateInput!
-            }
-
-            input SeriesActorsDeleteFieldInput {
-              delete: ActorDeleteInput
-              where: SeriesActorsConnectionWhere
-            }
-
-            input SeriesActorsDisconnectFieldInput {
-              disconnect: ActorDisconnectInput
-              where: SeriesActorsConnectionWhere
-            }
-
-            input SeriesActorsFieldInput {
-              connect: [SeriesActorsConnectFieldInput!]
-              create: [SeriesActorsCreateFieldInput!]
-            }
-
-            type SeriesActorsRelationship implements ActedIn {
-              cursor: String!
-              node: Actor!
-              screenTime: Int!
-            }
-
-            input SeriesActorsUpdateConnectionInput {
-              edge: ActedInUpdateInput
-              node: ActorUpdateInput
-            }
-
-            input SeriesActorsUpdateFieldInput {
-              connect: [SeriesActorsConnectFieldInput!]
-              create: [SeriesActorsCreateFieldInput!]
-              delete: [SeriesActorsDeleteFieldInput!]
-              disconnect: [SeriesActorsDisconnectFieldInput!]
-              update: SeriesActorsUpdateConnectionInput
-              where: SeriesActorsConnectionWhere
+            type SeriesAggregateSelection {
+              count: Int!
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input SeriesConnectInput {
-              actors: [SeriesActorsConnectFieldInput!]
+              actors: [ProductionActorsConnectFieldInput!]
               episodes: [SeriesEpisodesConnectFieldInput!]
             }
 
@@ -742,19 +659,19 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesCreateInput {
-              actors: SeriesActorsFieldInput
+              actors: ProductionActorsFieldInput
               episodeCount: Int!
               episodes: SeriesEpisodesFieldInput
               title: String!
             }
 
             input SeriesDeleteInput {
-              actors: [SeriesActorsDeleteFieldInput!]
+              actors: [ProductionActorsDeleteFieldInput!]
               episodes: [SeriesEpisodesDeleteFieldInput!]
             }
 
             input SeriesDisconnectInput {
-              actors: [SeriesActorsDisconnectFieldInput!]
+              actors: [ProductionActorsDisconnectFieldInput!]
               episodes: [SeriesEpisodesDisconnectFieldInput!]
             }
 
@@ -820,23 +737,23 @@ describe("Interface Relationships", () => {
             input SeriesOptions {
               limit: Int
               offset: Int
-              """Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array."""
+              \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [SeriesSort]
             }
 
             input SeriesRelationInput {
-              actors: [SeriesActorsCreateFieldInput!]
+              actors: [ProductionActorsCreateFieldInput!]
               episodes: [SeriesEpisodesCreateFieldInput!]
             }
 
-            """Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object."""
+            \\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"
             input SeriesSort {
               episodeCount: SortDirection
               title: SortDirection
             }
 
             input SeriesUpdateInput {
-              actors: [SeriesActorsUpdateFieldInput!]
+              actors: [ProductionActorsUpdateFieldInput!]
               episodeCount: Int
               episodes: [SeriesEpisodesUpdateFieldInput!]
               title: String
@@ -846,8 +763,8 @@ describe("Interface Relationships", () => {
               AND: [SeriesWhere!]
               OR: [SeriesWhere!]
               actors: ActorWhere
-              actorsConnection: SeriesActorsConnectionWhere
-              actorsConnection_NOT: SeriesActorsConnectionWhere
+              actorsConnection: ProductionActorsConnectionWhere
+              actorsConnection_NOT: ProductionActorsConnectionWhere
               actors_NOT: ActorWhere
               episodeCount: Int
               episodeCount_GT: Int
@@ -874,10 +791,15 @@ describe("Interface Relationships", () => {
             }
 
             enum SortDirection {
-              """Sort by field values in ascending order."""
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
               ASC
-              """Sort by field values in descending order."""
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
             }
 
             type UpdateActorsMutationResponse {

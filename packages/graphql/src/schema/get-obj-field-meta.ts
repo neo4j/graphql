@@ -25,6 +25,7 @@ import {
     IntValueNode,
     Kind,
     ListValueNode,
+    NamedTypeNode,
     ObjectTypeDefinitionNode,
     ScalarTypeDefinitionNode,
     StringValueNode,
@@ -157,6 +158,7 @@ function getObjFieldMeta({
                 const relationField: RelationField = {
                     ...baseField,
                     ...relationshipMeta,
+                    inherited: false,
                 };
 
                 if (fieldUnion) {
@@ -187,42 +189,59 @@ function getObjFieldMeta({
                     relationField.interface = interfaceField;
                 }
 
-                res.relationFields.push(relationField);
+                // if (obj.kind !== "InterfaceTypeDefinition") {
 
-                if (obj.kind !== "InterfaceTypeDefinition") {
-                    const connectionTypeName = `${obj.name.value}${upperFirst(`${baseField.fieldName}Connection`)}`;
-                    const relationshipTypeName = `${obj.name.value}${upperFirst(`${baseField.fieldName}Relationship`)}`;
+                // TODO: This will be brittle if more than one interface
 
-                    const connectionField: ConnectionField = {
-                        fieldName: `${baseField.fieldName}Connection`,
-                        relationshipTypeName,
-                        typeMeta: {
-                            name: connectionTypeName,
-                            required: true,
-                            pretty: `${connectionTypeName}!`,
-                            input: {
-                                where: {
-                                    type: `${connectionTypeName}Where`,
-                                    pretty: `${connectionTypeName}Where`,
-                                },
-                                create: {
-                                    type: "",
-                                    pretty: "",
-                                },
-                                update: {
-                                    type: "",
-                                    pretty: "",
-                                },
+                let connectionPrefix = obj.name.value;
+
+                if (obj.interfaces && obj.interfaces.length) {
+                    const inter = interfaces.find(
+                        (i) => i.name.value === (obj.interfaces as NamedTypeNode[])[0].name.value
+                    ) as InterfaceTypeDefinitionNode;
+
+                    if (inter.fields?.some((f) => f.name.value === baseField.fieldName)) {
+                        connectionPrefix = obj.interfaces[0].name.value;
+                        relationField.inherited = true;
+                    }
+                }
+
+                relationField.connectionPrefix = connectionPrefix;
+
+                const connectionTypeName = `${connectionPrefix}${upperFirst(`${baseField.fieldName}Connection`)}`;
+                const relationshipTypeName = `${connectionPrefix}${upperFirst(`${baseField.fieldName}Relationship`)}`;
+
+                const connectionField: ConnectionField = {
+                    fieldName: `${baseField.fieldName}Connection`,
+                    relationshipTypeName,
+                    typeMeta: {
+                        name: connectionTypeName,
+                        required: true,
+                        pretty: `${connectionTypeName}!`,
+                        input: {
+                            where: {
+                                type: `${connectionTypeName}Where`,
+                                pretty: `${connectionTypeName}Where`,
+                            },
+                            create: {
+                                type: "",
+                                pretty: "",
+                            },
+                            update: {
+                                type: "",
+                                pretty: "",
                             },
                         },
-                        otherDirectives: [],
-                        arguments: [...(field.arguments || [])],
-                        description: field.description?.value,
-                        relationship: relationField,
-                    };
+                    },
+                    otherDirectives: [],
+                    arguments: [...(field.arguments || [])],
+                    description: field.description?.value,
+                    relationship: relationField,
+                };
 
-                    res.connectionFields.push(connectionField);
-                }
+                res.relationFields.push(relationField);
+                res.connectionFields.push(connectionField);
+                // }
             } else if (cypherMeta) {
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
