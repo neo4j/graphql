@@ -147,7 +147,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActorConnectInput {
-              actedIn: ActorActedInConnectFieldInput
+              actedIn: [ActorActedInConnectFieldInput!]
             }
 
             input ActorCreateInput {
@@ -156,11 +156,11 @@ describe("Interface Relationships", () => {
             }
 
             input ActorDeleteInput {
-              actedIn: ActorActedInDeleteFieldInput
+              actedIn: [ActorActedInDeleteFieldInput!]
             }
 
             input ActorDisconnectInput {
-              actedIn: ActorActedInDisconnectFieldInput
+              actedIn: [ActorActedInDisconnectFieldInput!]
             }
 
             input ActorOptions {
@@ -594,7 +594,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActorConnectInput {
-              actedIn: ActorActedInConnectFieldInput
+              actedIn: [ActorActedInConnectFieldInput!]
             }
 
             input ActorConnectWhere {
@@ -607,11 +607,11 @@ describe("Interface Relationships", () => {
             }
 
             input ActorDeleteInput {
-              actedIn: ActorActedInDeleteFieldInput
+              actedIn: [ActorActedInDeleteFieldInput!]
             }
 
             input ActorDisconnectInput {
-              actedIn: ActorActedInDisconnectFieldInput
+              actedIn: [ActorActedInDisconnectFieldInput!]
             }
 
             input ActorOptions {

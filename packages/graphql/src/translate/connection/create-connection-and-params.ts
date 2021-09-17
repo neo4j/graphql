@@ -107,6 +107,7 @@ function createConnectionAndParams({
                         Object.prototype.hasOwnProperty.call(resolveTree.args.where, i)
                     ))
             ) {
+                const labels = n.labelString;
                 const relatedNodeVariable = `${nodeVariable}_${n.name}`;
                 const nodeOutStr = `(${relatedNodeVariable}${labels})`;
 
