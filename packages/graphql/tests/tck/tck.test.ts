@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import camelCase from "camelcase";
 import {
     graphql,
     printSchema,
@@ -344,7 +343,7 @@ describe("TCK Generated tests", () => {
                                 [node.getPlural(true)]: [],
                             };
                         },
-                        [`update${pluralize(def.name.value)}`]: (
+                        [`update${node.getPlural(false)}`]: (
                             _root: any,
                             _params: any,
                             context: any,
@@ -369,7 +368,7 @@ describe("TCK Generated tests", () => {
                             );
 
                             return {
-                                [pluralize(camelCase(def.name.value))]: [],
+                                [node.getPlural(true)]: [],
                             };
                         },
                         [`delete${pluralize(def.name.value)}`]: (_root: any, _params: any, context: any, info) => {

@@ -125,3 +125,35 @@ RETURN this0 { .title } AS this0
 ```
 
 ---
+
+## Update Movie with plural films using aggregation
+
+### GraphQL Input
+
+```graphql
+mutation {
+    updatefilms(update: { title: "Matrix" }) {
+        films {
+            title
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Movie)
+SET this.title = $this_update_title
+RETURN this { .title } AS this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_update_title": "Matrix"
+}
+```
+
+---

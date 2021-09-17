@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-import camelCase from "camelcase";
-import pluralize from "pluralize";
 import { FieldNode, GraphQLResolveInfo } from "graphql";
 import { execute } from "../../utils";
 import { translateUpdate } from "../../translate";
@@ -37,7 +35,7 @@ export default function updateResolver({ node }: { node: Node }) {
         });
 
         const responseField = info.fieldNodes[0].selectionSet?.selections.find(
-            (selection) => selection.kind === "Field" && selection.name.value === pluralize(camelCase(node.name))
+            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural(true)
         ) as FieldNode; // Field exist by construction and must be selected as it is the only field.
 
         const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
