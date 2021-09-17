@@ -29,7 +29,6 @@ import {
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
 import path from "path";
-import pluralize from "pluralize";
 import jsonwebtoken from "jsonwebtoken";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
@@ -371,7 +370,7 @@ describe("TCK Generated tests", () => {
                                 [node.getPlural(true)]: [],
                             };
                         },
-                        [`delete${pluralize(def.name.value)}`]: (_root: any, _params: any, context: any, info) => {
+                        [`delete${node.getPlural(false)}`]: (_root: any, _params: any, context: any, info) => {
                             const resolveTree = getNeo4jResolveTree(info);
 
                             context.neoSchema = neoSchema;

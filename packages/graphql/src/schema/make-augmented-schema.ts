@@ -1304,7 +1304,7 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
-                [`delete${pluralize(node.name)}`]: deleteResolver({ node }),
+                [`delete${node.getPlural(false)}`]: deleteResolver({ node }),
             });
         }
 
