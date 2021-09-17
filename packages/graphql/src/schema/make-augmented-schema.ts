@@ -1289,11 +1289,11 @@ function makeAugmentedSchema(
             });
 
             composer.Query.addFields({
-                [`${pluralize(camelCase(node.name))}Count`]: countResolver({ node }),
+                [`${node.getPlural(true)}Count`]: countResolver({ node }),
             });
 
             composer.Query.addFields({
-                [`${pluralize(camelCase(node.name))}Aggregate`]: aggregateResolver({ node }),
+                [`${node.getPlural(true)}Aggregate`]: aggregateResolver({ node }),
             });
         }
 
