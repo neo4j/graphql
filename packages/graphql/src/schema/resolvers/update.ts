@@ -52,7 +52,7 @@ export default function updateResolver({ node }: { node: Node }) {
     }
 
     return {
-        type: `Update${pluralize(node.name)}MutationResponse!`,
+        type: `Update${node.getPlural(false)}MutationResponse!`,
         resolve,
         args: {
             where: `${node.name}Where`,

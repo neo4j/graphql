@@ -313,10 +313,10 @@ describe("TCK Generated tests", () => {
                     if (def.kind !== "ObjectTypeDefinition") {
                         return res;
                     }
-
+                    const node = neoSchema.nodes.find((x) => x.name === def.name.value) as Node;
                     return {
                         ...res,
-                        [`create${pluralize(def.name.value)}`]: (
+                        [`create${node.getPlural(false)}`]: (
                             _root: any,
                             _params: any,
                             context: any,
@@ -331,7 +331,7 @@ describe("TCK Generated tests", () => {
 
                             const [cQuery, cQueryParams] = translateCreate({
                                 context: mergedContext,
-                                node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                node,
                             });
 
                             compare(
@@ -341,7 +341,7 @@ describe("TCK Generated tests", () => {
                             );
 
                             return {
-                                [pluralize(camelCase(def.name.value))]: [],
+                                [node.getPlural(true)]: [],
                             };
                         },
                         [`update${pluralize(def.name.value)}`]: (
@@ -359,7 +359,7 @@ describe("TCK Generated tests", () => {
 
                             const [cQuery, cQueryParams] = translateUpdate({
                                 context: mergedContext,
-                                node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                node,
                             });
 
                             compare(
@@ -382,7 +382,7 @@ describe("TCK Generated tests", () => {
 
                             const [cQuery, cQueryParams] = translateDelete({
                                 context: mergedContext,
-                                node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                node,
                             });
 
                             compare(

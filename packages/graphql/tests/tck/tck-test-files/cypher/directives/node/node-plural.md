@@ -90,3 +90,38 @@ RETURN { count: count(this) }
 ```
 
 ---
+
+## Create Movie with plural films using aggregation
+
+### GraphQL Input
+
+```graphql
+mutation {
+    createfilms(input: [{ title: "Highlander" }]) {
+        films {
+            title
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+CALL {
+    CREATE (this0:Movie)
+    SET this0.title = $this0_title
+    RETURN this0
+}
+RETURN this0 { .title } AS this0
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this0_title": "Highlander"
+}
+```
+
+---
