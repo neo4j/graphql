@@ -184,6 +184,8 @@ describe("162", () => {
             }
 
             input TigerJawLevel2Part1AggregateInput {
+              AND: [TigerJawLevel2Part1AggregateInput!]
+              OR: [TigerJawLevel2Part1AggregateInput!]
               count: Int
               count_GT: Int
               count_GTE: Int
@@ -280,6 +282,8 @@ describe("162", () => {
             }
 
             input TigerJawLevel2Part1TigerAggregateInput {
+              AND: [TigerJawLevel2Part1TigerAggregateInput!]
+              OR: [TigerJawLevel2Part1TigerAggregateInput!]
               count: Int
               count_GT: Int
               count_GTE: Int

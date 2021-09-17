@@ -116,6 +116,8 @@ describe("Interfaces", () => {
             }
 
             input MovieMoviesAggregateInput {
+              AND: [MovieMoviesAggregateInput!]
+              OR: [MovieMoviesAggregateInput!]
               count: Int
               count_GT: Int
               count_GTE: Int

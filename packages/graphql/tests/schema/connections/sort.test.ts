@@ -114,6 +114,8 @@ describe("Sort", () => {
             }
 
             input Node1RelatedToAggregateInput {
+              AND: [Node1RelatedToAggregateInput!]
+              OR: [Node1RelatedToAggregateInput!]
               count: Int
               count_GT: Int
               count_GTE: Int
@@ -245,6 +247,8 @@ describe("Sort", () => {
             }
 
             input Node2RelatedToAggregateInput {
+              AND: [Node2RelatedToAggregateInput!]
+              OR: [Node2RelatedToAggregateInput!]
               count: Int
               count_GT: Int
               count_GTE: Int

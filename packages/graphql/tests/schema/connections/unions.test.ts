@@ -300,6 +300,8 @@ describe("Unions", () => {
             }
 
             input BookAuthorAggregateInput {
+              AND: [BookAuthorAggregateInput!]
+              OR: [BookAuthorAggregateInput!]
               count: Int
               count_GT: Int
               count_GTE: Int
@@ -474,6 +476,8 @@ describe("Unions", () => {
             }
 
             input JournalAuthorAggregateInput {
+              AND: [JournalAuthorAggregateInput!]
+              OR: [JournalAuthorAggregateInput!]
               count: Int
               count_GT: Int
               count_GTE: Int

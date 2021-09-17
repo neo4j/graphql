@@ -20,36 +20,53 @@
 import { Node } from "../classes";
 import { RelationField, Context } from "../types";
 
-// Do not try to use WITH to 'optimize' this function by calculating the `count()` and
-// `avg()`... only once, it will break the flow of the query.
-function createAggregateWhereAndParams({
+function createPredicate({
     node,
+    aggregation,
+    context,
+    chainStr,
     field,
     varName,
-    chainStr,
-    context,
-    aggregation,
+    nodeVariable,
 }: {
+    aggregation: any;
     node: Node;
+    context: Context;
+    chainStr: string;
     field: RelationField;
     varName: string;
-    chainStr: string;
-    context: Context;
-    aggregation: any;
+    nodeVariable: string;
 }): [string, any] {
     let cyphers: string[] = [];
     let params = {};
 
-    const inStr = field.direction === "IN" ? "<-" : "-";
-    const outStr = field.direction === "OUT" ? "->" : "-";
-    const relTypeStr = `[:${field.type}]`;
-    const nodeVariable = `${chainStr}_node`;
-    const predicates: string[] = [];
-
-    const matchStr = `MATCH (${varName})${inStr}${relTypeStr}${outStr}(${nodeVariable}:${field.typeMeta.name})`;
-    cyphers.push(`apoc.cypher.runFirstColumn(\" ${matchStr}`);
-
     Object.entries(aggregation).forEach((entry) => {
+        if (["AND", "OR"].includes(entry[0])) {
+            const innerClauses: string[] = [];
+
+            ((entry[1] as unknown) as any[]).forEach((v: any, i) => {
+                const recurse = createPredicate({
+                    node,
+                    chainStr: `${chainStr}_${entry[0]}_${i}`,
+                    context,
+                    field,
+                    varName,
+                    aggregation: v,
+                    nodeVariable,
+                });
+                if (recurse[0]) {
+                    innerClauses.push(recurse[0]);
+                    params = { ...params, ...recurse[1] };
+                }
+            });
+
+            if (innerClauses.length) {
+                cyphers.push(`(${innerClauses.join(` ${entry[0]} `)})`);
+            }
+
+            return;
+        }
+
         ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"].forEach((countType) => {
             if (entry[0] === countType) {
                 const paramName = `${chainStr}_${entry[0]}`;
@@ -75,12 +92,53 @@ function createAggregateWhereAndParams({
                         break;
                 }
 
-                predicates.push(`count(${nodeVariable}) ${operator} $${paramName}`);
+                cyphers.push(`count(${nodeVariable}) ${operator} $${paramName}`);
             }
         });
     });
 
-    cyphers.push(`RETURN ${predicates.join(" AND ")}`);
+    return [cyphers.join(" AND "), params];
+}
+
+function createAggregateWhereAndParams({
+    node,
+    field,
+    varName,
+    chainStr,
+    context,
+    aggregation,
+}: {
+    node: Node;
+    field: RelationField;
+    varName: string;
+    chainStr: string;
+    context: Context;
+    aggregation: any;
+}): [string, any] {
+    let cyphers: string[] = [];
+    let params = {};
+
+    const inStr = field.direction === "IN" ? "<-" : "-";
+    const outStr = field.direction === "OUT" ? "->" : "-";
+    const relTypeStr = `[:${field.type}]`;
+    const nodeVariable = `${chainStr}_node`;
+
+    const matchStr = `MATCH (${varName})${inStr}${relTypeStr}${outStr}(${nodeVariable}:${field.typeMeta.name})`;
+    cyphers.push(`apoc.cypher.runFirstColumn(\" ${matchStr}`);
+
+    const predicate = createPredicate({
+        aggregation,
+        chainStr,
+        context,
+        field,
+        node,
+        nodeVariable,
+        varName,
+    });
+    if (predicate[0]) {
+        params = { ...params, ...predicate[1] };
+        cyphers.push(`RETURN ${predicate[0]}`);
+    }
 
     const apocParams = Object.keys(params).length
         ? `, ${Object.keys(params)

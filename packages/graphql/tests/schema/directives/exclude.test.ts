@@ -619,6 +619,8 @@ describe("Exclude", () => {
             }
 
             input MovieActorsAggregateInput {
+              AND: [MovieActorsAggregateInput!]
+              OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
               count_GTE: Int

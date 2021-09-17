@@ -58,6 +58,8 @@ describe("Alias", () => {
             }
 
             input ActorActedInAggregateInput {
+              AND: [ActorActedInAggregateInput!]
+              OR: [ActorActedInAggregateInput!]
               count: Int
               count_GT: Int
               count_GTE: Int

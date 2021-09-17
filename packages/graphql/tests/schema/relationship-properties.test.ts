@@ -130,6 +130,8 @@ describe("Relationship-properties", () => {
             }
 
             input ActorMoviesAggregateInput {
+              AND: [ActorMoviesAggregateInput!]
+              OR: [ActorMoviesAggregateInput!]
               count: Int
               count_GT: Int
               count_GTE: Int
@@ -278,6 +280,8 @@ describe("Relationship-properties", () => {
             }
 
             input MovieActorsAggregateInput {
+              AND: [MovieActorsAggregateInput!]
+              OR: [MovieActorsAggregateInput!]
               count: Int
               count_GT: Int
               count_GTE: Int

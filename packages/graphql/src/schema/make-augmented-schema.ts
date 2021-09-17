@@ -955,6 +955,8 @@ function makeAugmentedSchema(
                     count_LTE: "Int",
                     count_GT: "Int",
                     count_GTE: "Int",
+                    AND: `[${relationshipWhereTypeInputName}!]`,
+                    OR: `[${relationshipWhereTypeInputName}!]`,
                 },
             });
 
