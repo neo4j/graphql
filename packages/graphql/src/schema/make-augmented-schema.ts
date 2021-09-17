@@ -1310,7 +1310,7 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${pluralize(node.name)}`]: updateResolver({ node }),
+                [`update${node.getPlural(false)}`]: updateResolver({ node }),
             });
         }
     });
