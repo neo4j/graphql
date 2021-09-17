@@ -572,21 +572,19 @@ function makeAugmentedSchema(
             fields: interfaceWhereFields,
         });
 
-        const [interfaceConnectInput, interfaceDeleteInput, interfaceDisconnectInput] = [
-            "Connect",
-            "Delete",
-            "Disconnect",
-        ].map((operation) =>
-            composer.getOrCreateITC(`${interfaceRelationship.name.value}${operation}Input`, (tc) => {
-                // interfaceFields.relationFields.forEach((relationshipField) => {
-                //     tc.addFields({
-                //         [relationshipField.fieldName]: `${interfaceRelationship.name.value}${upperFirst(
-                //             relationshipField.fieldName
-                //         )}${operation}FieldInput`,
-                //     });
-                // });
-            })
-        );
+        // if (interfaceFields.relationFields.length) {
+        //     ["Connect", "Delete", "Disconnect"].map((operation) =>
+        //         composer.getOrCreateITC(`${interfaceRelationship.name.value}${operation}Input`, (tc) => {
+        //             // interfaceFields.relationFields.forEach((relationshipField) => {
+        //             //     tc.addFields({
+        //             //         [relationshipField.fieldName]: `${interfaceRelationship.name.value}${upperFirst(
+        //             //             relationshipField.fieldName
+        //             //         )}${operation}FieldInput`,
+        //             //     });
+        //             // });
+        //         })
+        //     );
+        // }
 
         // composer.createInputTC({
         //     name: `${interfaceRelationship.name.value}CreateInput`,
@@ -660,6 +658,7 @@ function makeAugmentedSchema(
         ];
 
         implementations.forEach((implementation) => {
+            const node = nodes.find((n) => n.name === implementation.name.value) as Node;
             // const implementationFields = getObjFieldMeta({
             //     enums,
             //     interfaces,
@@ -697,31 +696,41 @@ function makeAugmentedSchema(
                 },
             });
 
-            // const uniqueRelationshipFields = implementationFields.relationFields.filter(
-            //     (relationshipField) =>
-            //         !interfaceFields.relationFields.some(
-            //             (interfaceRelationshipField) =>
-            //                 interfaceRelationshipField.fieldName === relationshipField.fieldName
-            //         )
-            // );
+            if (node.relationFields.length) {
+                const [interfaceConnectInput, interfaceDeleteInput, interfaceDisconnectInput] = [
+                    "Connect",
+                    "Delete",
+                    "Disconnect",
+                ].map((operation) =>
+                    composer.getOrCreateITC(`${interfaceRelationship.name.value}${operation}Input`, (tc) => {
+                        // interfaceFields.relationFields.forEach((relationshipField) => {
+                        //     tc.addFields({
+                        //         [relationshipField.fieldName]: `${interfaceRelationship.name.value}${upperFirst(
+                        //             relationshipField.fieldName
+                        //         )}${operation}FieldInput`,
+                        //     });
+                        // });
+                    })
+                );
 
-            interfaceConnectInput.addFields({
-                [implementation.name.value]: {
-                    type: `[${implementation.name.value}ConnectInput!]`,
-                },
-            });
+                interfaceConnectInput.addFields({
+                    [implementation.name.value]: {
+                        type: `[${implementation.name.value}ConnectInput!]`,
+                    },
+                });
 
-            interfaceDeleteInput.addFields({
-                [implementation.name.value]: {
-                    type: `[${implementation.name.value}DeleteInput!]`,
-                },
-            });
+                interfaceDeleteInput.addFields({
+                    [implementation.name.value]: {
+                        type: `[${implementation.name.value}DeleteInput!]`,
+                    },
+                });
 
-            interfaceDisconnectInput.addFields({
-                [implementation.name.value]: {
-                    type: `[${implementation.name.value}DisconnectInput!]`,
-                },
-            });
+                interfaceDisconnectInput.addFields({
+                    [implementation.name.value]: {
+                        type: `[${implementation.name.value}DisconnectInput!]`,
+                    },
+                });
+            }
 
             interfaceCreateInput.addFields({
                 [implementation.name.value]: {
@@ -924,10 +933,10 @@ function makeAugmentedSchema(
             ),
         });
 
-        const nodeDeleteInput = composer.createInputTC({
-            name: `${node.name}DeleteInput`,
-            fields: {},
-        });
+        // const nodeDeleteInput = composer.createInputTC({
+        //     name: `${node.name}DeleteInput`,
+        //     fields: {},
+        // });
 
         ["Create", "Update"].map((operation) =>
             composer.createObjectTC({

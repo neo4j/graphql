@@ -35,7 +35,7 @@ function createConnectAndParams({
     varName,
     relationField,
     parentVar,
-    refNode,
+    refNodes,
     context,
     labelOverride,
     parentNode,
@@ -48,13 +48,19 @@ function createConnectAndParams({
     relationField: RelationField;
     parentVar: string;
     context: Context;
-    refNode: Node;
+    refNodes: Node[];
     labelOverride?: string;
     parentNode: Node;
     fromCreate?: boolean;
     insideDoWhen?: boolean;
 }): [string, any] {
-    function reducer(res: Res, connect: any, index): Res {
+    function createSubqueryContents(
+        relatedNode: Node,
+        connect: any,
+        index: number
+    ): { subquery: string; params: Record<string, any> } {
+        let params = {};
+
         const baseName = `${varName}${index}`;
         const nodeName = `${baseName}_node`;
         const relationshipName = `${baseName}_relationship`;
@@ -62,64 +68,49 @@ function createConnectAndParams({
         const outStr = relationField.direction === "OUT" ? "->" : "-";
         const relTypeStr = `[${connect.edge ? relationshipName : ""}:${relationField.type}]`;
 
-        if (parentNode.auth && !fromCreate) {
-            const whereAuth = createAuthAndParams({
-                operation: "CONNECT",
-                entity: parentNode,
-                context,
-                where: { varName: parentVar, node: parentNode },
-            });
-            if (whereAuth[0]) {
-                res.connects.push(`WITH ${withVars.join(", ")}`);
-                res.connects.push(`WHERE ${whereAuth[0]}`);
-                res.params = { ...res.params, ...whereAuth[1] };
-            }
-        }
+        const subquery: string[] = [];
 
-        res.connects.push(`WITH ${withVars.join(", ")}`);
-        res.connects.push("CALL {");
-
-        res.connects.push(`WITH ${withVars.join(", ")}`);
-        res.connects.push(`OPTIONAL MATCH (${nodeName}:${labelOverride || relationField.typeMeta.name})`);
+        subquery.push(`WITH ${withVars.join(", ")}`);
+        subquery.push(`OPTIONAL MATCH (${nodeName}:${labelOverride || relatedNode.name})`);
 
         const whereStrs: string[] = [];
         if (connect.where) {
             const where = createWhereAndParams({
                 varName: nodeName,
                 whereInput: connect.where.node,
-                node: refNode,
+                node: relatedNode,
                 context,
                 recursing: true,
             });
             if (where[0]) {
                 whereStrs.push(where[0]);
-                res.params = { ...res.params, ...where[1] };
+                params = { ...params, ...where[1] };
             }
         }
-        if (refNode.auth) {
+        if (relatedNode.auth) {
             const whereAuth = createAuthAndParams({
                 operation: "CONNECT",
-                entity: refNode,
+                entity: relatedNode,
                 context,
-                where: { varName: nodeName, node: refNode },
+                where: { varName: nodeName, node: relatedNode },
             });
             if (whereAuth[0]) {
                 whereStrs.push(whereAuth[0]);
-                res.params = { ...res.params, ...whereAuth[1] };
+                params = { ...params, ...whereAuth[1] };
             }
         }
 
         if (whereStrs.length) {
-            res.connects.push(`WHERE ${whereStrs.join(" AND ")}`);
+            subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
         }
 
-        const preAuth = [...(!fromCreate ? [parentNode] : []), refNode].reduce(
+        const preAuth = [...(!fromCreate ? [parentNode] : []), relatedNode].reduce(
             (result: Res, node, i) => {
                 if (!node.auth) {
                     return result;
                 }
 
-                const [str, params] = createAuthAndParams({
+                const [str, p] = createAuthAndParams({
                     entity: node,
                     operation: "CONNECT",
                     context,
@@ -132,7 +123,7 @@ function createConnectAndParams({
                 }
 
                 result.connects.push(str);
-                result.params = { ...result.params, ...params };
+                result.params = { ...result.params, ...p };
 
                 return result;
             },
@@ -141,13 +132,13 @@ function createConnectAndParams({
 
         if (preAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            res.connects.push(`WITH ${[...withVars, nodeName].join(", ")}`);
-            res.connects.push(
+            subquery.push(`WITH ${[...withVars, nodeName].join(", ")}`);
+            subquery.push(
                 `CALL apoc.util.validate(NOT(${preAuth.connects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
-            res.params = { ...res.params, ...preAuth.params };
+            params = { ...params, ...preAuth.params };
         }
 
         /*
@@ -155,8 +146,8 @@ function createConnectAndParams({
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
-        res.connects.push(`FOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
-        res.connects.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        subquery.push(`FOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
+        subquery.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         if (connect.edge) {
             const relationship = (context.neoSchema.relationships.find(
@@ -169,18 +160,18 @@ function createConnectAndParams({
                 relationship,
                 operation: "CREATE",
             });
-            res.connects.push(setA[0]);
-            res.params = { ...res.params, ...setA[1] };
+            subquery.push(setA[0]);
+            params = { ...params, ...setA[1] };
         }
 
-        res.connects.push(`)`); // close FOREACH
+        subquery.push(`)`); // close FOREACH
 
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
             connects.forEach((c) => {
                 const reduced = Object.entries(c).reduce(
                     (r: Res, [k, v]: [string, any]) => {
-                        const relField = refNode.relationFields.find((x) => k === x.fieldName) as RelationField;
+                        const relField = relatedNode.relationFields.find((x) => k === x.fieldName) as RelationField;
                         const newRefNodes: Node[] = [];
 
                         if (relField.union) {
@@ -201,8 +192,8 @@ function createConnectAndParams({
                                 relationField: relField,
                                 parentVar: nodeName,
                                 context,
-                                refNode: newRefNode,
-                                parentNode: refNode,
+                                refNodes: [newRefNode],
+                                parentNode: relatedNode,
                                 labelOverride: relField.union ? newRefNode.name : "",
                             });
                             r.connects.push(recurse[0]);
@@ -214,18 +205,18 @@ function createConnectAndParams({
                     { connects: [], params: {} }
                 );
 
-                res.connects.push(reduced.connects.join("\n"));
-                res.params = { ...res.params, ...reduced.params };
+                subquery.push(reduced.connects.join("\n"));
+                params = { ...params, ...reduced.params };
             });
         }
 
-        const postAuth = [...(!fromCreate ? [parentNode] : []), refNode].reduce(
+        const postAuth = [...(!fromCreate ? [parentNode] : []), relatedNode].reduce(
             (result: Res, node, i) => {
                 if (!node.auth) {
                     return result;
                 }
 
-                const [str, params] = createAuthAndParams({
+                const [str, p] = createAuthAndParams({
                     entity: node,
                     operation: "CONNECT",
                     context,
@@ -240,7 +231,7 @@ function createConnectAndParams({
                 }
 
                 result.connects.push(str);
-                result.params = { ...result.params, ...params };
+                result.params = { ...result.params, ...p };
 
                 return result;
             },
@@ -249,16 +240,52 @@ function createConnectAndParams({
 
         if (postAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            res.connects.push(`WITH ${[...withVars, nodeName].join(", ")}`);
-            res.connects.push(
+            subquery.push(`WITH ${[...withVars, nodeName].join(", ")}`);
+            subquery.push(
                 `CALL apoc.util.validate(NOT(${postAuth.connects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
-            res.params = { ...res.params, ...postAuth.params };
+            params = { ...params, ...postAuth.params };
         }
 
-        res.connects.push("RETURN count(*)");
+        subquery.push("RETURN count(*)");
+
+        return { subquery: subquery.join("\n"), params };
+    }
+
+    function reducer(res: Res, connect: any, index): Res {
+        if (parentNode.auth && !fromCreate) {
+            const whereAuth = createAuthAndParams({
+                operation: "CONNECT",
+                entity: parentNode,
+                context,
+                where: { varName: parentVar, node: parentNode },
+            });
+            if (whereAuth[0]) {
+                res.connects.push(`WITH ${withVars.join(", ")}`);
+                res.connects.push(`WHERE ${whereAuth[0]}`);
+                res.params = { ...res.params, ...whereAuth[1] };
+            }
+        }
+
+        res.connects.push(`WITH ${withVars.join(", ")}`);
+        res.connects.push("CALL {");
+
+        if (relationField.interface) {
+            const subqueries: string[] = [];
+            refNodes.forEach((refNode) => {
+                const subquery = createSubqueryContents(refNode, connect, index);
+                subqueries.push(subquery.subquery);
+                res.params = { ...res.params, ...subquery.params };
+            });
+            res.connects.push(subqueries.join("\nUNION\n"));
+        } else {
+            const subquery = createSubqueryContents(refNodes[0], connect, index);
+            res.connects.push(subquery.subquery);
+            res.params = { ...res.params, ...subquery.params };
+        }
+
         res.connects.push("}");
 
         return res;

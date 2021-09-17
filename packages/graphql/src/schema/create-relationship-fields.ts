@@ -28,14 +28,15 @@ function createRelationshipFields({
     const whereInput = schemaComposer.getITC(`${sourceName}Where`);
     const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
     const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);
-    const nodeDeleteInput = schemaComposer.getITC(`${sourceName}DeleteInput`);
 
     let nodeConnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
+    let nodeDeleteInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
     let nodeDisconnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
     let nodeRelationInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
     if (relationshipFields.length) {
-        [nodeConnectInput, nodeDisconnectInput, nodeRelationInput] = [
+        [nodeConnectInput, nodeDeleteInput, nodeDisconnectInput, nodeRelationInput] = [
             "ConnectInput",
+            "DeleteInput",
             "DisconnectInput",
             "RelationInput",
         ].map((type) => schemaComposer.getOrCreateITC(`${sourceName}${type}`));
@@ -200,15 +201,15 @@ function createRelationshipFields({
             });
 
             nodeConnectInput.addFields({
-                [rel.fieldName]: connectFieldInput,
+                [rel.fieldName]: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput,
             });
 
             nodeDeleteInput.addFields({
-                [rel.fieldName]: deleteFieldInput,
+                [rel.fieldName]: rel.typeMeta.array ? deleteFieldInput.NonNull.List : deleteFieldInput,
             });
 
             nodeDisconnectInput.addFields({
-                [rel.fieldName]: disconnectFieldInput,
+                [rel.fieldName]: rel.typeMeta.array ? disconnectFieldInput.NonNull.List : disconnectFieldInput,
             });
 
             nodeRelationInput.addFields({

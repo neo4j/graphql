@@ -127,7 +127,7 @@ function createCreateAndParams({
                         parentVar: varName,
                         relationField,
                         context,
-                        refNode,
+                        refNodes: [refNode],
                         labelOverride: unionTypeName,
                         parentNode: node,
                         fromCreate: true,

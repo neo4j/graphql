@@ -221,7 +221,7 @@ function createUpdateAndParams({
                     if (update.disconnect) {
                         const disconnectAndParams = createDisconnectAndParams({
                             context,
-                            refNode,
+                            refNodes: [refNode],
                             value: update.disconnect,
                             varName: `${_varName}_disconnect`,
                             withVars,
@@ -241,7 +241,7 @@ function createUpdateAndParams({
                     if (update.connect) {
                         const connectAndParams = createConnectAndParams({
                             context,
-                            refNode,
+                            refNodes: [refNode],
                             value: update.connect,
                             varName: `${_varName}_connect`,
                             withVars,

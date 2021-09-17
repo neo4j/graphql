@@ -122,27 +122,49 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 Object.keys(entry[1]).forEach((unionTypeName) => {
                     refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
             } else {
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
-            refNodes.forEach((refNode) => {
+
+            if (relationField.interface) {
                 const disconnectAndParams = createDisconnectAndParams({
                     context,
                     parentVar: varName,
-                    refNode,
+                    refNodes,
                     relationField,
-                    value: relationField.union ? entry[1][refNode.name] : entry[1],
-                    varName: `${varName}_disconnect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
+                    value: entry[1],
+                    varName: `${varName}_disconnect_${entry[0]}`,
                     withVars: [varName],
                     parentNode: node,
-                    parameterPrefix: `${resolveTree.name}.args.disconnect.${entry[0]}${
-                        relationField.union ? `.${refNode.name}` : ""
-                    }`,
-                    labelOverride: relationField.union ? refNode.name : "",
+                    parameterPrefix: `${resolveTree.name}.args.disconnect.${entry[0]}`,
+                    labelOverride: "",
                 });
                 disconnectStrs.push(disconnectAndParams[0]);
                 cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
-            });
+            } else {
+                refNodes.forEach((refNode) => {
+                    const disconnectAndParams = createDisconnectAndParams({
+                        context,
+                        parentVar: varName,
+                        refNodes: [refNode],
+                        relationField,
+                        value: relationField.union ? entry[1][refNode.name] : entry[1],
+                        varName: `${varName}_disconnect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
+                        withVars: [varName],
+                        parentNode: node,
+                        parameterPrefix: `${resolveTree.name}.args.disconnect.${entry[0]}${
+                            relationField.union ? `.${refNode.name}` : ""
+                        }`,
+                        labelOverride: relationField.union ? refNode.name : "",
+                    });
+                    disconnectStrs.push(disconnectAndParams[0]);
+                    cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
+                });
+            }
         });
 
         updateArgs = {
@@ -161,24 +183,45 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 Object.keys(entry[1]).forEach((unionTypeName) => {
                     refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
             } else {
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
-            refNodes.forEach((refNode) => {
+
+            if (relationField.interface) {
                 const connectAndParams = createConnectAndParams({
                     context,
                     parentVar: varName,
-                    refNode,
+                    refNodes,
                     relationField,
-                    value: relationField.union ? entry[1][refNode.name] : entry[1],
-                    varName: `${varName}_connect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
+                    value: entry[1],
+                    varName: `${varName}_connect_${entry[0]}`,
                     withVars: [varName],
                     parentNode: node,
-                    labelOverride: relationField.union ? refNode.name : "",
+                    labelOverride: "",
                 });
                 connectStrs.push(connectAndParams[0]);
                 cypherParams = { ...cypherParams, ...connectAndParams[1] };
-            });
+            } else {
+                refNodes.forEach((refNode) => {
+                    const connectAndParams = createConnectAndParams({
+                        context,
+                        parentVar: varName,
+                        refNodes: [refNode],
+                        relationField,
+                        value: relationField.union ? entry[1][refNode.name] : entry[1],
+                        varName: `${varName}_connect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
+                        withVars: [varName],
+                        parentNode: node,
+                        labelOverride: relationField.union ? refNode.name : "",
+                    });
+                    connectStrs.push(connectAndParams[0]);
+                    cypherParams = { ...cypherParams, ...connectAndParams[1] };
+                });
+            }
         });
     }
 

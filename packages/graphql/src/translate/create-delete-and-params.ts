@@ -65,6 +65,10 @@ function createDeleteAndParams({
                 Object.keys(value).forEach((unionTypeName) => {
                     refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
+            } else if (relationField.interface) {
+                relationField.interface.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
             } else {
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }

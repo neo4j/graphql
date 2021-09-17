@@ -90,7 +90,7 @@ describe("createDisconnectAndParams", () => {
             relationField: node.relationFields[0],
             parentVar: "this",
             context,
-            refNode: node,
+            refNodes: [node],
             parentNode: node,
             parameterPrefix: "this", // TODO
         });
