@@ -1,6 +1,6 @@
 # Cypher Aggregations where with count
 
-Tests for queries using aggregations and auth
+Tests for queries inside the relationship where aggregation arg using the count key.
 
 Schema:
 
