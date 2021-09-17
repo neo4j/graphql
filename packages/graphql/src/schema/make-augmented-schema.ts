@@ -20,7 +20,6 @@
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
 import { forEachField } from "@graphql-tools/utils";
-import camelCase from "camelcase";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
@@ -704,10 +703,10 @@ function makeAugmentedSchema(
 
         ["Create", "Update"].map((operation) =>
             composer.createObjectTC({
-                name: `${operation}${pluralize(node.name)}MutationResponse`,
+                name: `${operation}${node.getPlural(false)}MutationResponse`,
                 fields: {
                     info: `${operation}Info!`,
-                    [pluralize(camelCase(node.name))]: `[${node.name}!]!`,
+                    [node.getPlural(true)]: `[${node.name}!]!`,
                 },
             })
         );
@@ -1299,7 +1298,7 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
-                [`create${pluralize(node.name)}`]: createResolver({ node }),
+                [`create${node.getPlural(false)}`]: createResolver({ node }),
             });
         }
 
