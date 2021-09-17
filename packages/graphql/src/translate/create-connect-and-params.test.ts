@@ -18,14 +18,15 @@
  */
 
 import createConnectAndParams from "./create-connect-and-params";
-import { Neo4jGraphQL, Node } from "../classes";
+import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
+import { NodeBuilder } from "../utils/test";
 
 describe("createConnectAndParams", () => {
     test("should return the correct connection", () => {
         // @ts-ignore
-        const node: Node = {
+        const node = new NodeBuilder({
             name: "Movie",
             enumFields: [],
             scalarFields: [],
@@ -65,7 +66,7 @@ describe("createConnectAndParams", () => {
             interfaceFields: [],
             pointFields: [],
             objectFields: [],
-        };
+        }).instance();
 
         // @ts-ignore
         const neoSchema: Neo4jGraphQL = {

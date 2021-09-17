@@ -67,8 +67,11 @@ function createDisconnectAndParams({
         const subquery: string[] = [];
         let params;
 
+        const labels = relatedNode.labelString;
+        const label = labelOverride ? `:${labelOverride}` : labels;
+
         subquery.push(`WITH ${withVars.join(", ")}`);
-        subquery.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${relatedNode.name})`);
+        subquery.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${label})`);
 
         const whereStrs: string[] = [];
 

@@ -4,8 +4,7 @@
 [[type-definitions-alias]]
 == `@alias`
 
-This directive maps a GraphQL field to a Neo4j property on a node or 
-relationship.
+This directive maps a GraphQL field to a Neo4j property on a node or relationship.
 
 This can be used on any fields that are not `@cypher` or `@relationship` fields.
 
@@ -13,7 +12,7 @@ This can be used on any fields that are not `@cypher` or `@relationship` fields.
 
 [source, graphql, indent=0]
 ----
-"""Indicates that the field is the be mapped to the underlying Neo4j under a different property name."""
+"""Indicates that the field is to be mapped to the underlying Neo4j under a different property name."""
 directive @alias(property: String!) on FIELD_DEFINITION
 ----
 
@@ -42,4 +41,100 @@ type City {
 interface UserLivesInProperties @relationshipProperties {
     since: DateTime @alias(property: "moveInDate")
 }
+----
+
+[[type-definitions-node]]
+== `@node`
+
+The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
+
+=== Definition
+
+[source, graphql, indent=0]
+----
+"""Informs @neo4j/graphql of node metadata"""
+directive @node(
+    """Map the GraphQL type to a custom Neo4j node label"""
+    label: String
+    """Map the GraphQL type to match additional Neo4j node labels"""
+    additionalLabels: [String]
+) on OBJECT
+----
+
+=== Usage
+`@node` can be used with the optional parameters `label` and `additionalLabels`.
+
+==== `label`
+The parameter `label` defines the label to be used in Neo4j instead of the GraphQL type name:
+
+[source, graphql, indent=0]
+----
+type Movie @node(label: "Film") {
+    title: String!
+}
+----
+
+This way, the following query:
+
+[source, graphql, indent=0]
+----
+{
+  movies {
+    title
+  }
+}
+----
+
+Generates the cypher query:
+
+[source, cypher, indent=0]
+----
+MATCH (this: Film)
+RETURN this { .title } as this
+----
+
+==== `additionalLabels`
+
+`additionalLabels` lets you define extra Neo4j labels that need to exist on the node for that GraphQL type.
+
+[source, graphql, indent=0]
+----
+type Actor @node(additionalLabels: ["Person", "User"]) {
+    name: String!
+}
+----
+
+The following query:
+
+[source, graphql, indent=0]
+----
+{
+  Actor {
+    name
+  }
+}
+----
+
+Generates the following cypher query, with the labels `Actor`, `Person` and `User`:
+
+[source, cypher, indent=0]
+----
+MATCH (this:Actor:Person:User)
+RETURN this { .name } as this
+----
+
+Note that both parameters can be used at the same time:
+
+[source, graphql, indent=0]
+----
+type Actor @node(label: "ActorDB", additionalLabels: ["Person"]) {
+    name: String!
+}
+----
+
+In this case, the resulting Cypher query will use the labels `ActorDB` and `Person` instead of `Actor`:
+
+----
+MATCH (this:ActorDB:Person)
+RETURN this { .name } as this
 ----

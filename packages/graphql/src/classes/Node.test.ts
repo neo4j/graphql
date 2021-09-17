@@ -18,6 +18,7 @@
  */
 
 import Node, { NodeConstructor } from "./Node";
+import { NodeBuilder } from "../utils/test";
 
 describe("Node", () => {
     test("should construct", () => {
@@ -40,5 +41,21 @@ describe("Node", () => {
 
         // @ts-ignore
         expect(new Node(input)).toMatchObject({ name: "Movie" });
+    });
+
+    it("should return labelString from node name", () => {
+        const node = new NodeBuilder({
+            name: "Movie",
+        }).instance();
+
+        expect(node.labelString).toEqual(":Movie");
+    });
+
+    it("should return labels from node name", () => {
+        const node = new NodeBuilder({
+            name: "Movie",
+        }).instance();
+
+        expect(node.labels).toEqual(["Movie"]);
     });
 });

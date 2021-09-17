@@ -257,7 +257,8 @@ function createProjectionAndParams({
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
             const outStr = relationField.direction === "OUT" ? "->" : "-";
-            const nodeOutStr = `(${param}:${referenceNode?.name})`;
+            const labels = referenceNode?.labelString;
+            const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
             if (relationField.interface) {
@@ -399,13 +400,19 @@ function createProjectionAndParams({
                     `${key}: ${!isArray ? "head(" : ""} [(${
                         chainStr || varName
                     })${inStr}${relTypeStr}${outStr}(${param})`,
-                    `WHERE ${referenceNodes.map((x) => `"${x.name}" IN labels(${param})`).join(" OR ")}`,
+                    `WHERE ${referenceNodes
+                        .map((x) => {
+                            const labelsStatements = x.labels.map((label) => `"${label}" IN labels(${param})`);
+                            return `(${labelsStatements.join(" AND ")})`;
+                        })
+                        .join(" OR ")}`,
                     `| head(`,
                 ];
 
                 const headStrs: string[] = referenceNodes.map((refNode) => {
+                    const labelsStatements = refNode.labels.map((label) => `"${label}" IN labels(${param})`);
                     const innerHeadStr: string[] = [
-                        `[ ${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`,
+                        `[ ${param} IN [${param}] WHERE (${labelsStatements.join(" AND ")})`,
                     ];
 
                     if (field.fieldsByTypeName[refNode.name]) {

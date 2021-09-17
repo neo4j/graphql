@@ -176,7 +176,8 @@ function createCreateAndParams({
         return res;
     }
 
-    const initial = [`CREATE (${varName}:${node.name})`];
+    const labels = node.labelString;
+    const initial = [`CREATE (${varName}${labels})`];
 
     const timestampedFields = node.temporalFields.filter(
         (x) => ["DateTime", "Time"].includes(x.typeMeta.name) && x.timestamps?.includes("CREATE")

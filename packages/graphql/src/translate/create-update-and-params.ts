@@ -108,8 +108,9 @@ function createUpdateAndParams({
                             res.strs.push(`WITH ${withVars.join(", ")}`);
                         }
 
+                        const labels = refNode.labelString;
                         res.strs.push(
-                            `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}:${refNode.name})`
+                            `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`
                         );
 
                         const whereStrs: string[] = [];

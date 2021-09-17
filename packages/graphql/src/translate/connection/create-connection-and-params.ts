@@ -108,7 +108,7 @@ function createConnectionAndParams({
                     ))
             ) {
                 const relatedNodeVariable = `${nodeVariable}_${n.name}`;
-                const nodeOutStr = `(${relatedNodeVariable}:${n.name})`;
+                const nodeOutStr = `(${relatedNodeVariable}${labels})`;
 
                 const unionSubquery: string[] = [];
                 const unionSubqueryElementsToCollect = [...elementsToCollect];
@@ -273,9 +273,9 @@ function createConnectionAndParams({
         subquery.push(unionSubqueryCypher.join("\n"));
     } else {
         const relatedNodeVariable = `${nodeVariable}_${field.relationship.typeMeta.name.toLowerCase()}`;
-        const nodeOutStr = `(${relatedNodeVariable}:${field.relationship.typeMeta.name})`;
         const relatedNode = context.neoSchema.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
-
+        const labels = relatedNode.labelString;
+        const nodeOutStr = `(${relatedNodeVariable}${labels})`;
         subquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 
         const whereStrs: string[] = [];

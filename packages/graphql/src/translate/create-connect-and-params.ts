@@ -70,8 +70,11 @@ function createConnectAndParams({
 
         const subquery: string[] = [];
 
+        const labels = relatedNode.labelString;
+        const label = labelOverride ? `:${labelOverride}` : labels;
+
         subquery.push(`WITH ${withVars.join(", ")}`);
-        subquery.push(`OPTIONAL MATCH (${nodeName}:${labelOverride || relatedNode.name})`);
+        subquery.push(`OPTIONAL MATCH (${nodeName}${label})`);
 
         const whereStrs: string[] = [];
         if (connect.where) {
