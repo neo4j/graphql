@@ -5,7 +5,7 @@ Custom plural using @node.
 Schema:
 
 ```graphql
-type Movie @node(plural: "films") {
+type Movie @node(plural: "Films") {
     title: String
 }
 ```
@@ -97,7 +97,7 @@ RETURN { count: count(this) }
 
 ```graphql
 mutation {
-    createfilms(input: [{ title: "Highlander" }]) {
+    createFilms(input: [{ title: "Highlander" }]) {
         films {
             title
         }
@@ -132,7 +132,7 @@ RETURN this0 { .title } AS this0
 
 ```graphql
 mutation {
-    updatefilms(update: { title: "Matrix" }) {
+    updateFilms(update: { title: "Matrix" }) {
         films {
             title
         }
@@ -164,7 +164,7 @@ RETURN this { .title } AS this
 
 ```graphql
 mutation {
-    deletefilms(where: { title: "Matrix" }) {
+    deleteFilms(where: { title: "Matrix" }) {
         nodesDeleted
     }
 }

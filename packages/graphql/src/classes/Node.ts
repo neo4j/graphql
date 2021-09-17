@@ -162,10 +162,10 @@ class Node {
     }
 
     getPlural(camelcase: boolean): string {
-        if (this.nodeDirective?.plural) {
-            return this.nodeDirective.plural;
-        }
         // camelCase is optional in this case to maintain backward compatibility
+        if (this.nodeDirective?.plural) {
+            return camelcase ? camelCase(this.nodeDirective.plural) : this.nodeDirective.plural;
+        }
         return pluralize(camelcase ? camelCase(this.name) : this.name);
     }
 }

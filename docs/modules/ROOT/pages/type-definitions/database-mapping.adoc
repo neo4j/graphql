@@ -62,7 +62,7 @@ directive @node(
 ----
 
 === Usage
-`@node` can be used with the optional parameters `label` and `additionalLabels`.
+`@node` can be used with the following optional parameters.
 
 ==== `label`
 The parameter `label` defines the label to be used in Neo4j instead of the GraphQL type name:
@@ -123,7 +123,7 @@ MATCH (this:Actor:Person:User)
 RETURN this { .name } as this
 ----
 
-Note that both parameters can be used at the same time:
+Note that `additionalLabels` can be used along with `label`:
 
 [source, graphql, indent=0]
 ----
@@ -138,3 +138,27 @@ In this case, the resulting Cypher query will use the labels `ActorDB` and `Pers
 MATCH (this:ActorDB:Person)
 RETURN this { .name } as this
 ----
+
+==== `plural`
+The parameter `plural` redefines how to compose the plural of the type for the generated operations. This is particularly
+useful for types that are not correctly pluralized or are non-english words.
+
+[source, graphql, indent=0]
+----
+type Tech @node(plural: "Techs") {
+  name: String
+}
+----
+
+This way, instead of the wrongly generated `teches`, the type is properly written as `techs`:
+
+[source, graphql, indent=0]
+----
+{
+  techs {
+    title
+  }
+}
+----
+
+The same is applied to other operations such as `createTechs`. Note that database labels will not change.
