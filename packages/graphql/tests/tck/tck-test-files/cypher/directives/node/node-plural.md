@@ -157,3 +157,33 @@ RETURN this { .title } AS this
 ```
 
 ---
+
+## Delete Movie with plural films using aggregation
+
+### GraphQL Input
+
+```graphql
+mutation {
+    deletefilms(where: { title: "Matrix" }) {
+        nodesDeleted
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Movie)
+WHERE this.title = $this_title
+DETACH DELETE this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_title": "Matrix"
+}
+```
+
+---
