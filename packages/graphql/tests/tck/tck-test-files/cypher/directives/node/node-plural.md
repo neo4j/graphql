@@ -5,21 +5,21 @@ Custom plural using @node.
 Schema:
 
 ```graphql
-type Movie @node(plural: "Films") {
-    title: String
+type Tech @node(plural: "Techs") {
+    name: String
 }
 ```
 
 ---
 
-## Select Movie with plural films
+## Select Tech with plural techs
 
 ### GraphQL Input
 
 ```graphql
 {
-    films {
-        title
+    techs {
+        name
     }
 }
 ```
@@ -27,8 +27,8 @@ type Movie @node(plural: "Films") {
 ### Expected Cypher Output
 
 ```cypher
-MATCH (this:Movie)
-RETURN this { .title } as this
+MATCH (this:Tech)
+RETURN this { .name } as this
 ```
 
 ### Expected Cypher Params
@@ -39,20 +39,20 @@ RETURN this { .title } as this
 
 ---
 
-## Count Movie with plural films
+## Count Tech with plural techs
 
 ### GraphQL Input
 
 ```graphql
 {
-    filmsCount
+    techsCount
 }
 ```
 
 ### Expected Cypher Output
 
 ```cypher
-MATCH (this:Movie)
+MATCH (this:Tech)
 RETURN count(this)
 ```
 
@@ -64,13 +64,13 @@ RETURN count(this)
 
 ---
 
-## Count Movie with plural films using aggregation
+## Count Tech with plural techs using aggregation
 
 ### GraphQL Input
 
 ```graphql
 {
-    filmsAggregate {
+    techsAggregate {
         count
     }
 }
@@ -79,7 +79,7 @@ RETURN count(this)
 ### Expected Cypher Output
 
 ```cypher
-MATCH (this:Movie)
+MATCH (this:Tech)
 RETURN { count: count(this) }
 ```
 
@@ -91,15 +91,15 @@ RETURN { count: count(this) }
 
 ---
 
-## Create Movie with plural films using aggregation
+## Create Tech with plural techs using aggregation
 
 ### GraphQL Input
 
 ```graphql
 mutation {
-    createFilms(input: [{ title: "Highlander" }]) {
-        films {
-            title
+    createTechs(input: [{ name: "Highlander" }]) {
+        techs {
+            name
         }
     }
 }
@@ -109,32 +109,32 @@ mutation {
 
 ```cypher
 CALL {
-    CREATE (this0:Movie)
-    SET this0.title = $this0_title
+    CREATE (this0:Tech)
+    SET this0.name = $this0_name
     RETURN this0
 }
-RETURN this0 { .title } AS this0
+RETURN this0 { .name } AS this0
 ```
 
 ### Expected Cypher Params
 
 ```json
 {
-    "this0_title": "Highlander"
+    "this0_name": "Highlander"
 }
 ```
 
 ---
 
-## Update Movie with plural films using aggregation
+## Update Tech with plural techs using aggregation
 
 ### GraphQL Input
 
 ```graphql
 mutation {
-    updateFilms(update: { title: "Matrix" }) {
-        films {
-            title
+    updateTechs(update: { name: "Matrix" }) {
+        techs {
+            name
         }
     }
 }
@@ -143,28 +143,28 @@ mutation {
 ### Expected Cypher Output
 
 ```cypher
-MATCH (this:Movie)
-SET this.title = $this_update_title
-RETURN this { .title } AS this
+MATCH (this:Tech)
+SET this.name = $this_update_name
+RETURN this { .name } AS this
 ```
 
 ### Expected Cypher Params
 
 ```json
 {
-    "this_update_title": "Matrix"
+    "this_update_name": "Matrix"
 }
 ```
 
 ---
 
-## Delete Movie with plural films using aggregation
+## Delete Tech with plural techs using aggregation
 
 ### GraphQL Input
 
 ```graphql
 mutation {
-    deleteFilms(where: { title: "Matrix" }) {
+    deleteTechs(where: { name: "Matrix" }) {
         nodesDeleted
     }
 }
@@ -173,8 +173,8 @@ mutation {
 ### Expected Cypher Output
 
 ```cypher
-MATCH (this:Movie)
-WHERE this.title = $this_title
+MATCH (this:Tech)
+WHERE this.name = $this_name
 DETACH DELETE this
 ```
 
@@ -182,7 +182,7 @@ DETACH DELETE this
 
 ```json
 {
-    "this_title": "Matrix"
+    "this_name": "Matrix"
 }
 ```
 
