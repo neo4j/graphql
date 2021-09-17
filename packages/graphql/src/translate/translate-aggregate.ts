@@ -26,13 +26,15 @@ import createDatetimeElement from "./projection/elements/create-datetime-element
 
 function translateAggregate({ node, context }: { node: Node; context: Context }): [string, any] {
     const whereInput = context.resolveTree.args.where as GraphQLWhereArg;
-    const fieldsByTypeName = context.resolveTree.fieldsByTypeName;
+    const { fieldsByTypeName } = context.resolveTree;
     const varName = "this";
     let cypherParams: { [k: string]: any } = {};
     const whereStrs: string[] = [];
     const cypherStrs: string[] = [];
 
-    cypherStrs.push(`MATCH (${varName}:${node.name})`);
+    const labels = node.labelString;
+
+    cypherStrs.push(`MATCH (${varName}${labels})`);
 
     if (whereInput) {
         const where = createWhereAndParams({
@@ -111,7 +113,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
         const primitiveField = node.primitiveFields.find((x) => x.fieldName === selection[1].name);
         const temporalField = node.temporalFields.find((x) => x.fieldName === selection[1].name);
-        let field: BaseField = (primitiveField as PrimitiveField) || (temporalField as TemporalField);
+        const field: BaseField = (primitiveField as PrimitiveField) || (temporalField as TemporalField);
         let isDateTime = false;
 
         if (!primitiveField && temporalField && temporalField.typeMeta.name === "DateTime") {
