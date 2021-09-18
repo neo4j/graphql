@@ -176,7 +176,7 @@ export default function cypherResolver({
         }
 
         if (unionWhere.length) {
-            cypherStrs.push(``);
+            cypherStrs.push(`WHERE ${unionWhere.join(" OR ")}`);
         }
 
         if (projectionAuthStrs.length) {
