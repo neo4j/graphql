@@ -103,6 +103,94 @@ describe("createAuthAndParams", () => {
                 this_auth_allow0_id: sub,
             });
         });
+
+        test("should combine roles with where across rules", () => {
+            const idField = {
+                fieldName: "id",
+                typeMeta: {
+                    name: "ID",
+                    array: false,
+                    required: false,
+                    pretty: "String",
+                    input: {
+                        where: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        create: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        update: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                    },
+                },
+                otherDirectives: [],
+                arguments: [],
+            };
+
+            // @ts-ignore
+            const node: Node = {
+                name: "Movie",
+                relationFields: [],
+                cypherFields: [],
+                enumFields: [],
+                scalarFields: [],
+                primitiveFields: [idField],
+                temporalFields: [],
+                interfaceFields: [],
+                objectFields: [],
+                pointFields: [],
+                authableFields: [idField],
+                auth: {
+                    rules: [
+                        {
+                            operations: ["READ"],
+                            roles: ["admin"],
+                        },
+                        {
+                            operations: ["READ"],
+                            roles: ["member"],
+                            where: { id: "$jwt.sub" },
+                        },
+                    ],
+                    type: "JWT",
+                },
+            };
+
+            // @ts-ignore
+            const neoSchema: Neo4jGraphQL = {
+                nodes: [node],
+            };
+
+            const sub = generate({
+                charset: "alphabetic",
+            });
+
+            // @ts-ignore
+            const context: Context = { neoSchema };
+            context.jwt = {
+                sub,
+            };
+
+            const result = createAuthAndParams({
+                context,
+                entity: node,
+                where: { node, varName: "this" },
+            });
+
+            expect(trimmer(result[0])).toEqual(
+                trimmer(`
+                    ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) OR ANY(r IN ["member"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_where1_id
+                `)
+            );
+
+            expect(result[1]).toMatchObject({
+                this_auth_where1_id: sub,
+            });
+        });
     });
 
     describe("rules", () => {
