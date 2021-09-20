@@ -19,11 +19,10 @@
 
 import { InputValueDefinitionNode, DirectiveNode } from "graphql";
 import { DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition, Directive } from "graphql-compose";
-import { isInt, Integer } from "neo4j-driver";
 import getFieldTypeMeta from "./get-field-type-meta";
 import parseValueNode from "./parse-value-node";
 import { BaseField } from "../types";
-import { defaultFieldResolver } from "./resolvers";
+import { numericalResolver, idResolver } from "./resolvers";
 
 export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
     return args.reduce((res, arg) => {
@@ -69,33 +68,11 @@ export function objectFieldsToComposeFields(
         }
 
         if (["Int", "Float"].includes(field.typeMeta.name)) {
-            newField.resolve = (source, args, context, info) => {
-                const value = defaultFieldResolver(source, args, context, info);
-
-                // @ts-ignore: outputValue is unknown, and to cast to object would be an antipattern
-                if (isInt(value)) {
-                    return (value as Integer).toNumber();
-                }
-
-                return value;
-            };
+            newField.resolve = numericalResolver;
         }
 
         if (field.typeMeta.name === "ID") {
-            newField.resolve = (source, args, context, info) => {
-                const value = defaultFieldResolver(source, args, context, info);
-
-                // @ts-ignore: outputValue is unknown, and to cast to object would be an antipattern
-                if (isInt(value)) {
-                    return (value as Integer).toNumber();
-                }
-
-                if (typeof value === "number") {
-                    return value.toString(10);
-                }
-
-                return value;
-            };
+            newField.resolve = idResolver;
         }
 
         if (field.arguments) {

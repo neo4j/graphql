@@ -173,3 +173,19 @@ export const aliasDirective = new GraphQLDirective({
         },
     },
 });
+
+export const nodeDirective = new GraphQLDirective({
+    name: "node",
+    description: "Informs @neo4j/graphql of node metadata",
+    locations: [DirectiveLocation.OBJECT],
+    args: {
+        label: {
+            description: "Map the GraphQL type to a custom Neo4j node label",
+            type: GraphQLString,
+        },
+        additionalLabels: {
+            description: "Map the GraphQL type to match additional Neo4j node labels",
+            type: GraphQLList(new GraphQLNonNull(GraphQLString)),
+        },
+    },
+});

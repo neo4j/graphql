@@ -62,6 +62,9 @@ function createConnectAndParams({
         const outStr = relationField.direction === "OUT" ? "->" : "-";
         const relTypeStr = `[${connect.edge ? relationshipName : ""}:${relationField.type}]`;
 
+        const labels = refNode.labelString;
+        const label = labelOverride ? `:${labelOverride}` : labels;
+
         if (parentNode.auth && !fromCreate) {
             const whereAuth = createAuthAndParams({
                 operation: "CONNECT",
@@ -80,7 +83,7 @@ function createConnectAndParams({
         res.connects.push("CALL {");
 
         res.connects.push(`WITH ${withVars.join(", ")}`);
-        res.connects.push(`OPTIONAL MATCH (${nodeName}:${labelOverride || relationField.typeMeta.name})`);
+        res.connects.push(`OPTIONAL MATCH (${nodeName}${label})`);
 
         const whereStrs: string[] = [];
         if (connect.where) {

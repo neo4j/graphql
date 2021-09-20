@@ -2,7 +2,7 @@
 
 💡 Welcome to the Monorepo for [Neo4j](https://neo4j.com/) + [GraphQL](https://graphql.org/).
 
-![Neo4j + GraphQL](./docs/images/banner.png)
+![Neo4j + GraphQL](./docs/modules/ROOT/images/banner.png)
 
 <p align="center">
   <a href="https://discord.gg/neo4j">
