@@ -1,7 +1,7 @@
 [[auth-directive]]
 = `@auth` directive
 
-The `@auth` directive definition is dynamically generated on runtime based on user type definitions.
+The `@auth` directive definition is dynamically generated at runtime based on user type definitions.
 
 == `rules`
 
@@ -15,6 +15,49 @@ You can have many rules for many operations. Each rule is fallen through until a
     { operations: [DELETE, UPDATE], ... } ## or
 ])
 ----
+
+An auth rule can contain one of the four different kinds of check explained on the xref::auth/authorization/index.adoc[Authorization] documentation.
+
+Different checks within a single rule can be combined together and all must succeed, or evaluate to true for an action to be allowed.  You can think of types of check within a rule as being combined with an `AND`.
+
+[source, graphql, indent=0]
+----
+@auth(rules: [
+    { 
+        operations: [READ],
+        roles: ["user"], ## and
+        allow: { id: $jwt.sub }
+    }, ## or
+    { 
+        operations: [READ],
+        roles: ["admin"],
+    }
+])
+----
+
+In this example, for a caller to be allowed to see the data, they must have a JWT role of "user", or "admin", and if they have a role of "user", they are only permitted to read nodes with an id field matching their JWT subject.
+
+You can also combine checks within a single rule using `OR`, or `AND` explicity and passing a list of sub-rules for example,
+
+[source, graphql, indent=0]
+----
+@auth(rules: [
+    { 
+        operations: [READ],
+        OR: [
+            {
+                roles: ["user"], ## and
+                allow: { id: $jwt.sub }
+            }, ## or
+            {
+                roles: ["admin"],
+            }
+        ]
+    }
+])
+----
+
+This rule has the same behavior as when the rules are specified separately.
 
 == `operations`
 

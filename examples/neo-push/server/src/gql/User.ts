@@ -24,8 +24,16 @@ export const typeDefs = gql`
                     allow: {
                         OR: [
                             { id: "$jwt.sub" }
-                            { createdBlogs: { OR: [{ creator: { id: "$jwt.sub" } }, { authors: { id: "$jwt.sub" } }] } }
-                            { authorsBlogs: { OR: [{ creator: { id: "$jwt.sub" } }, { authors: { id: "$jwt.sub" } }] } }
+                            {
+                                createdBlogs: {
+                                    OR: [{ creator: { id: "$jwt.sub" } }, { authors_INCLUDES: { id: "$jwt.sub" } }]
+                                }
+                            }
+                            {
+                                authorsBlogs: {
+                                    OR: [{ creator: { id: "$jwt.sub" } }, { authors_INCLUDES: { id: "$jwt.sub" } }]
+                                }
+                            }
                         ]
                     }
                 }

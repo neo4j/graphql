@@ -127,6 +127,10 @@ extend type Post
     )
 ----
 
+== Field modifiers
+
+You can combine fields in `allow` rules with the provided field modifiers to customize the allow rules checked, see the xref::auth/authorization/modifiers.adoc[Modifiers] documentation.
+
 == Field-level `allow`
 
 `allow` works the same as it does on Types although its context is the Field. So instead of enforcing auth rules when the node is matched and/or modified, it would instead be called when the Field is match and/or modified. Given the following, it is hiding the password to all users but the user themselves:

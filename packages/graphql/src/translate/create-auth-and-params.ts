@@ -23,6 +23,18 @@ import { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context } from "../t
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import mapToDbProperty from "../utils/map-to-db-property";
 
+type AuthFieldModifier = "_NOT" | "_IN" | "_NOT_IN" | "_INCLUDES" | "_NOT_INCLUDES" | "_EVERY" | "_NOT_EVERY";
+
+const AUTH_FIELD_MODIFIERS: AuthFieldModifier[] = [
+    "_NOT",
+    "_IN",
+    "_NOT_IN",
+    "_INCLUDES",
+    "_NOT_INCLUDES",
+    "_EVERY",
+    "_NOT_EVERY",
+];
+
 interface Res {
     strs: string[];
     params: any;
@@ -95,7 +107,16 @@ function createAuthPredicate({
                 res.strs.push(`(${inner.join(` ${key} `)})`);
             }
 
-            const authableField = node.authableFields.find((field) => field.fieldName === key);
+            let fieldName = key;
+            let fieldModifier: AuthFieldModifier | undefined;
+            AUTH_FIELD_MODIFIERS.forEach((modifier) => {
+                if (key.endsWith(modifier)) {
+                    [fieldName] = key.split(modifier);
+                    fieldModifier = modifier;
+                }
+            });
+
+            const authableField = node.authableFields.find((field) => field.fieldName === fieldName);
             if (authableField) {
                 const [, jwtPath] = (value as string)?.split?.("$jwt.") || [];
                 const [, ctxPath] = (value as string)?.split?.("$context.") || [];
@@ -111,19 +132,31 @@ function createAuthPredicate({
                     throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
                 }
 
-                const dbFieldName = mapToDbProperty(node, key);
+                const dbFieldName = mapToDbProperty(node, fieldName);
                 if (paramValue === undefined) {
                     res.strs.push("false");
                 } else if (paramValue === null) {
-                    res.strs.push(`${varName}.${dbFieldName} IS NULL`);
+                    res.strs.push(`${varName}.${dbFieldName} IS ${fieldModifier === "_NOT" ? "NOT" : ""} NULL`);
+                } else if (fieldModifier && ["_IN", "_NOT_IN"].includes(fieldModifier)) {
+                    const param = `${chainStr}_${key}`;
+                    res.params[param] = paramValue;
+                    res.strs.push(
+                        `${varName}.${dbFieldName} IS NOT NULL AND ${
+                            fieldModifier === "_NOT_IN" ? "NOT" : ""
+                        } ${varName}.${dbFieldName} IN $${param}`
+                    );
                 } else {
                     const param = `${chainStr}_${key}`;
                     res.params[param] = paramValue;
-                    res.strs.push(`${varName}.${dbFieldName} IS NOT NULL AND ${varName}.${dbFieldName} = $${param}`);
+                    res.strs.push(
+                        `${varName}.${dbFieldName} IS NOT NULL AND ${varName}.${dbFieldName} ${
+                            fieldModifier === "_NOT" ? "<>" : "="
+                        } $${param}`
+                    );
                 }
             }
 
-            const relationField = node.relationFields.find((x) => key === x.fieldName);
+            const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
             if (relationField) {
                 const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
                 const inStr = relationField.direction === "IN" ? "<-" : "-";
@@ -131,12 +164,40 @@ function createAuthPredicate({
                 const relTypeStr = `[:${relationField.type}]`;
                 const relationVarName = relationField.fieldName;
                 const labels = refNode.labelString;
+
+                if (value === null) {
+                    res.strs.push(
+                        `${
+                            fieldModifier === "_NOT" ? "" : "NOT"
+                        } EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`
+                    );
+                    return res;
+                }
+
                 let resultStr = [
                     `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
-                    `AND ${
+                    `AND ${fieldModifier === "_NOT" ? "NOT" : ""} ${
                         kind === "allow" ? "ANY" : "ALL"
                     }(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}${labels}) | ${relationVarName}] WHERE `,
                 ].join(" ");
+
+                if (fieldModifier && ["_INCLUDES", "_NOT_INCLUDES"].includes(fieldModifier)) {
+                    resultStr = [
+                        `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+                        `AND ${
+                            fieldModifier === "_NOT_INCLUDES" ? "NOT" : ""
+                        } ANY(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}${labels}) | ${relationVarName}] WHERE `,
+                    ].join(" ");
+                }
+
+                if (fieldModifier && ["_EVERY", "_NOT_EVERY"].includes(fieldModifier)) {
+                    resultStr = [
+                        `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+                        `AND ${
+                            fieldModifier === "_NOT_EVERY" ? "NOT" : ""
+                        } ALL(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}${labels}) | ${relationVarName}] WHERE `,
+                    ].join(" ");
+                }
 
                 Object.entries(value as any).forEach(([k, v]: [string, any]) => {
                     const authPredicate = createAuthPredicate({

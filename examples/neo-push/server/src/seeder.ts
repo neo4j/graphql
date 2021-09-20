@@ -45,6 +45,7 @@ async function main() {
                 posts: {
                     create: new Array(3).fill(null).map(() => ({
                         title: faker.lorem.word(),
+                        isPublic: true,
                         content: faker.lorem.paragraphs(4),
                         author: {
                             connect: { where: { node: { id: user.id } } },

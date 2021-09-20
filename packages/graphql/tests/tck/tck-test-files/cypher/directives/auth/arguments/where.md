@@ -7,9 +7,16 @@ Schema:
 ```graphql
 union Search = Post
 
+type Group {
+    id: ID
+    name: String
+    members: [User] @relationship(type: "MEMBER_OF", direction: IN)
+}
+
 type User {
     id: ID
     name: String
+    groups: [Group] @relationship(type: "MEMBER_OF", direction: OUT)
     posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
     content: [Search] @relationship(type: "HAS_POST", direction: OUT) # something to test unions
 }
@@ -19,6 +26,16 @@ type Post {
     content: String
     creator: User @relationship(type: "HAS_POST", direction: IN)
 }
+
+extend type Group
+    @auth(
+        rules: [
+            {
+                operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT]
+                where: { members_INCLUDES: { id: "$jwt.sub" } }
+            }
+        ]
+    )
 
 extend type User
     @auth(
@@ -168,6 +185,55 @@ RETURN this {
 {
     "this_auth_where0_id": "id-01",
     "this_posts_auth_where0_creator_id": "id-01"
+}
+```
+
+### JWT Object
+
+```json
+{
+    "sub": "id-01",
+    "roles": ["admin"]
+}
+```
+
+---
+
+## Read Relationship Any
+
+### GraphQL Input
+
+```graphql
+{
+    groups {
+        id
+        members {
+            id
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Group)
+WHERE 
+    EXISTS((this)<-[:MEMBER_OF]-(:User))
+AND
+    ANY(members IN [(this)<-[:MEMBER_OF]-(members:User) | members] WHERE members.id IS NOT NULL AND members.id = $this_auth_where0_members_INCLUDES_id)
+RETURN this {
+    .id,
+    members: [ (this)<-[:MEMBER_OF]-(this_members:User) WHERE this_members.id IS NOT NULL AND this_members.id = $this_members_auth_where0_id | this_members { .id } ] 
+} as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_auth_where0_members_INCLUDES_id": "id-01",
+    "this_members_auth_where0_id": "id-01"
 }
 ```
 

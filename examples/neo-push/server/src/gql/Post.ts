@@ -4,6 +4,7 @@ export const typeDefs = gql`
     type Post {
         id: ID! @id
         title: String!
+        isPublic: Boolean!
         content: String!
         blog: Blog @relationship(type: "HAS_POST", direction: IN)
         comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
@@ -43,17 +44,57 @@ export const typeDefs = gql`
     extend type Post
         @auth(
             rules: [
+                {
+                    operations: [READ]
+                    where: {
+                        OR: [
+                            { isPublic: true }
+                            { author: { id: "$jwt.sub" } }
+                            {
+                                blog: {
+                                    OR: [
+                                        { creator: { id: "$jwt.sub" } }
+                                        { authors_INCLUDES: { id: "$jwt.sub" } }
+                                        { subscribers_INCLUDES: { id: "$jwt.sub" } }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
                 { operations: [CREATE], bind: { author: { id: "$jwt.sub" } } }
                 {
                     operations: [UPDATE]
                     allow: {
                         OR: [
                             { author: { id: "$jwt.sub" } }
-                            { blog: { OR: [{ creator: { id: "$jwt.sub" } }, { authors: { id: "$jwt.sub" } }] } }
+                            {
+                                blog: {
+                                    OR: [{ creator: { id: "$jwt.sub" } }, { authors_INCLUDES: { id: "$jwt.sub" } }]
+                                }
+                            }
                         ]
                     }
                 }
-                { operations: [CONNECT], isAuthenticated: true }
+                {
+                    operations: [CONNECT]
+                    isAuthenticated: true
+                    allow: {
+                        OR: [
+                            { isPublic: true }
+                            { author: { id: "$jwt.sub" } }
+                            {
+                                blog: {
+                                    OR: [
+                                        { creator: { id: "$jwt.sub" } }
+                                        { authors_INCLUDES: { id: "$jwt.sub" } }
+                                        { subscribers_INCLUDES: { id: "$jwt.sub" } }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
                 {
                     operations: [DELETE, DISCONNECT]
                     allow: { OR: [{ author: { id: "$jwt.sub" } }, { blog: { creator: { id: "$jwt.sub" } } }] }

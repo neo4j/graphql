@@ -44,3 +44,30 @@ Where is used on the following operations;
 - `CONNECT`
 - `DISCONNECT`
 - `DELETE`
+
+== `where` on relationships
+
+You can use a `where` clause with a relationship on a type to filter the results that will be returned to a caller.
+
+In the following schema, the `where` clause allows the caller to see the `Post` nodes where all of the moderators have an id matching the provided JWT subject.
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+}
+
+extend type Post @auth(rules: [
+    { operations: [READ], where: { moderators: { id: "$jwt.sub" } } }
+])
+----
+
+== Field modifiers
+
+You can combine fields in `where` clauses with supported field modifiers to customize the filtering that is performed, see the xref::auth/authorization/modifiers.adoc[Modifiers] documentation.

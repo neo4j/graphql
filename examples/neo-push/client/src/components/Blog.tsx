@@ -66,7 +66,7 @@ function CreatePost({ close, blog }: { close: () => void; blog: BlogInterface })
             try {
                 const response = await mutate({
                     mutation: CREATE_POST,
-                    variables: { title, content, user: getId(), blog: blog.id },
+                    variables: { title, isPublic: true, content, user: getId(), blog: blog.id },
                 });
 
                 history.push(constants.POST_PAGE + "/" + response.createPosts.posts[0].id);

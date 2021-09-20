@@ -134,6 +134,7 @@ describe("workflow", () => {
                             input: [
                                 {
                                     content: "cool post"
+                                    isPublic: true
                                     title: "${post.initialTitle}"
                                     author: {
                                         connect: {

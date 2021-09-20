@@ -1,0 +1,324 @@
+[[auth-authorization-modifiers]]
+= Auth rule modifiers
+
+By default, on primitive fields, auth rules will do an equality comparison.
+
+On relationships, the default match depends on the type of rule.  For `allow`, *any* connected node can match the specified pattern, for `bind`, and `allow`, *all* must match.
+
+There are a number of modifiers which can be applied to field names to customize the behavior of the auth checks performed to suit your needs.  The modifiers are designed to be similar in look and feel to the `where` filters generated in the GraphQL schema queries and mutations.
+
+== Primitive modifiers
+
+On primitive fields, the default behavior is to perform an equality check.
+
+In the following example the allow rule permits callers to perform `UPDATE` operations on `User` nodes where the id of the node matches the provided JWT subject, else a forbidden error will be raised.
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+    deletedDate: DateTime
+    publishedDate: DateTime
+    contentType: String
+}
+
+extend type User @auth(rules: [
+    { operations: [UPDATE], allow: { id: "$jwt.sub" } }
+])
+----
+
+=== Equals `null`
+
+As well as checking for an equality, you can also check that a value is `null`, in this case, that there is no date the `User` was deleted
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+    deletedDate: DateTime
+    publishedDate: DateTime
+    contentType: String
+}
+
+extend type User @auth(rules: [
+    { operations: [UPDATE], allow: { deletedDate: null } }
+])
+----
+
+=== Not equals `null`
+
+Or not null, verifying that the publishedDate field on the `User` is not null
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+    deletedDate: DateTime
+    publishedDate: DateTime
+    contentType: String
+}
+
+extend type User @auth(rules: [
+    { operations: [UPDATE], allow: { publishedDate_NOT: null } }
+])
+----
+
+=== Value in list
+
+You can also check that a value exists within a provided list of values such that only those with a contentType in the list can be updated
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+    deletedDate: DateTime
+    publishedDate: DateTime
+    contentType: String
+}
+
+extend type User @auth(rules: [
+    { operations: [UPDATE], allow: { contentType_IN: ["updateable", "new"] } }
+])
+----
+
+=== Value not in list
+
+Or that the value does not exist within the specified list, preventing update to nodes with one of the specified content types
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+    deletedDate: DateTime
+    publishedDate: DateTime
+    contentType: String
+}
+
+extend type User @auth(rules: [
+    { operations: [UPDATE], allow: { contentType_NOT_IN: ["unmodifyable", "deleted"] } }
+])
+----
+
+== Relationship modifiers
+
+The default behavior for a check on a related node depends on the type of rule.  In `allow` clauses, the default behavior is that *any* connected node can match for an operation to be allowed, but in `bind` and `where` clauses, *all* connected nodes must match.
+
+For example the following `allow` clause allows a caller to update any `Post` where any moderator has an id matching the provided JWT subject
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+}
+
+extend type Post @auth(rules: [
+    { operations: [UPDATE], allow: { moderators: { id: "$jwt.sub" } } }
+])
+----
+
+Conversely, the following `where` clause requires all moderators to have an id matching the provided JWT subject
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+}
+
+extend type Post @auth(rules: [
+    { operations: [READ], where: { moderators: { id: "$jwt.sub" } } }
+])
+----
+
+
+=== Not
+
+Using the `_NOT` modifier you can invert the default behavior of the clause
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+}
+
+extend type Post @auth(rules: [
+    { operations: [UPDATE], allow: { moderators_NOT: { id: "$jwt.sub" } } }
+])
+----
+
+For `allow`, this permits a `Post` to be updated where there is *no* moderator (`NOT ALL`) with an id matching the provided JWT subject.
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+}
+
+extend type Post @auth(rules: [
+    { operations: [READ], where: { moderators_NOT: { id: "$jwt.sub" } } }
+])
+----
+
+For `where` and `bind`, this permits a `Post` to be read where *no* moderator (`NOT ANY`) exists with an id that matches the provided JWT subject.
+
+=== No connection exists
+
+If the value for a relationship clause is `null`, the query will check that no edge exists
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+}
+
+extend type Post @auth(rules: [
+    { operations: [UPDATE], allow: { moderators: null } }
+])
+----
+
+=== Connection exists
+
+You can also require the existence of an edge by using the `_NOT` modifier with a value of `null`
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+}
+
+extend type Post @auth(rules: [
+    { operations: [UPDATE], allow: { moderators_NOT: null } }
+])
+----
+
+=== Any connection matches
+
+You can use the `_INCLUDES` modifier to check that any connected node matches the specified pattern.  Here we allow a caller to read all `Post` nodes where a moderator has an id matching the provided JWT subject.
+
+**Note that this is the default behavior for the `allow` rule**
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+}
+
+extend type Post @auth(rules: [
+    { operations: [READ], where: { moderators_INCLUDES: { id: "$jwt.sub" } } }
+])
+----
+
+=== No connection matches
+
+You can use the `_NOT_INCLUDES` modifier to check that there are not any connected nodes matching the specified pattern.  Here we allow a caller to read all `Post` nodes where no moderator has an id matching the provided JWT subject.
+
+**Note that this is the default behavior for the `allow` rule**
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+}
+
+extend type Post @auth(rules: [
+    { operations: [READ], where: { moderators_NOT_INCLUDES: { id: "$jwt.sub" } } }
+])
+----
+
+=== Every connection matches
+
+You can use the `_EVERY` modifier to check that all connected nodes match the specified pattern.  Here we allow a caller to read `Post` nodes where all moderators have an id matching the provided JWT subject.
+
+**Note that this is the default behavior for the `allow` rule**
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+}
+
+extend type Post @auth(rules: [
+    { operations: [READ], where: { moderators_EVERY_: { id: "$jwt.sub" } } }
+])
+----
+
+=== Not every connection matches
+
+You can use the `_NOT_EVERY` modifier to check that all connected nodes match the specified pattern.  Here we allow a caller to read `Post` nodes where any moderator exists that has an id which doesn't match the provided JWT subject.
+
+**Note that this is the default behavior for the `allow` rule**
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+type Post {
+    content: String
+    moderators: [User] @relationship(type: "MODERATES_POST", direction: IN)
+}
+
+extend type Post @auth(rules: [
+    { operations: [READ], where: { moderators_NOT_EVERY: { id: "$jwt.sub" } } }
+])
+----

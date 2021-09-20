@@ -117,11 +117,12 @@ export const DELETE_BLOG = gql`
 `;
 
 export const CREATE_POST = gql`
-    mutation createPost($title: String!, $content: String!, $user: ID, $blog: ID) {
+    mutation createPost($title: String!, $isPublic: Boolean!, $content: String!, $user: ID, $blog: ID) {
         createPosts(
             input: [
                 {
                     title: $title
+                    isPublic: $isPublic
                     content: $content
                     blog: { connect: { where: { node: { id: $blog } } } }
                     author: { connect: { where: { node: { id: $user } } } }
