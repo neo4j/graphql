@@ -138,7 +138,7 @@ describe("TCK Generated tests", () => {
                     const node = neoSchema.nodes.find((x) => x.name === def.name.value) as Node;
                     return {
                         ...res,
-                        [node.getPlural(true)]: (
+                        [node.getPlural({ camelCase: true })]: (
                             _root: any,
                             _params: any,
                             context: Context,
@@ -164,7 +164,7 @@ describe("TCK Generated tests", () => {
 
                             return [];
                         },
-                        [`${node.getPlural(true)}Count`]: (
+                        [`${node.getPlural({ camelCase: true })}Count`]: (
                             _root: any,
                             _params: any,
                             context: Context,
@@ -190,7 +190,7 @@ describe("TCK Generated tests", () => {
 
                             return 1;
                         },
-                        [`${node.getPlural(true)}Aggregate`]: (
+                        [`${node.getPlural({ camelCase: true })}Aggregate`]: (
                             _root: any,
                             _params: any,
                             context: Context,
@@ -314,7 +314,7 @@ describe("TCK Generated tests", () => {
                     const node = neoSchema.nodes.find((x) => x.name === def.name.value) as Node;
                     return {
                         ...res,
-                        [`create${node.getPlural(false)}`]: (
+                        [`create${node.getPlural({ camelCase: false })}`]: (
                             _root: any,
                             _params: any,
                             context: any,
@@ -339,10 +339,10 @@ describe("TCK Generated tests", () => {
                             );
 
                             return {
-                                [node.getPlural(true)]: [],
+                                [node.getPlural({ camelCase: true })]: [],
                             };
                         },
-                        [`update${node.getPlural(false)}`]: (
+                        [`update${node.getPlural({ camelCase: false })}`]: (
                             _root: any,
                             _params: any,
                             context: any,
@@ -367,10 +367,15 @@ describe("TCK Generated tests", () => {
                             );
 
                             return {
-                                [node.getPlural(true)]: [],
+                                [node.getPlural({ camelCase: true })]: [],
                             };
                         },
-                        [`delete${node.getPlural(false)}`]: (_root: any, _params: any, context: any, info) => {
+                        [`delete${node.getPlural({ camelCase: false })}`]: (
+                            _root: any,
+                            _params: any,
+                            context: any,
+                            info
+                        ) => {
                             const resolveTree = getNeo4jResolveTree(info);
 
                             context.neoSchema = neoSchema;
