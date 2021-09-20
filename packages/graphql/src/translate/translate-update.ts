@@ -209,7 +209,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     }${index}`;
                     const nodeName = `${baseName}_node`;
                     const propertiesName = `${baseName}_relationship`;
-                    const relTypeStr = `[${create.edge ? propertiesName : ""}:${relationField.type}]`;
+                    const relTypeStr = `[${relationField.properties ? propertiesName : ""}:${relationField.type}]`;
 
                     const createAndParams = createCreateAndParams({
                         context,
@@ -222,13 +222,13 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     cypherParams = { ...cypherParams, ...createAndParams[1] };
                     createStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
-                    if (create.edge) {
+                    if (relationField.properties) {
                         const relationship = (context.neoSchema.relationships.find(
                             (x) => x.properties === relationField.properties
                         ) as unknown) as Relationship;
 
                         const setA = createSetRelationshipPropertiesAndParams({
-                            properties: create.edge,
+                            properties: create.edge ?? {},
                             varName: propertiesName,
                             relationship,
                             operation: "CREATE",

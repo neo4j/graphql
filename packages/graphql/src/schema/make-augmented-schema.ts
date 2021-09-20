@@ -193,12 +193,14 @@ function makeAugmentedSchema(
 
     const aggregationSelectionTypeNames = aggregationSelectionTypeMatrix.map(([name]) => name);
 
-    const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<Record<string, ObjectTypeComposer<unknown, unknown>>>((res, [name, fields]) => {
+    const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<
+        Record<string, ObjectTypeComposer<unknown, unknown>>
+    >((res, [name, fields]) => {
         return {
             ...res,
             [name]: composer.createObjectTC({
                 name: `${name}AggregateSelection`,
-                fields: fields ? fields : { min: `${name}!`, max: `${name}!` },
+                fields: fields ?? { min: `${name}!`, max: `${name}!` },
             }),
         };
     }, {});
@@ -445,19 +447,16 @@ function makeAugmentedSchema(
         composer.createInputTC({
             name: `${relationship.name.value}UpdateInput`,
             fields: [
-                ...relFields.primitiveFields,
+                ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.readonly),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields.filter((field) => !field.timestamps),
                 ...relFields.pointFields,
             ].reduce(
-                (res, f) =>
-                    f.readonly || (f as PrimitiveField)?.autogenerate
-                        ? res
-                        : {
-                              ...res,
-                              [f.fieldName]: f.typeMeta.input.update.pretty,
-                          },
+                (res, f) => ({
+                    ...res,
+                    [f.fieldName]: f.typeMeta.input.update.pretty,
+                }),
                 {}
             ),
         });
@@ -483,16 +482,12 @@ function makeAugmentedSchema(
             name: `${relationship.name.value}CreateInput`,
             // TODO - This reduce duplicated when creating node CreateInput - put into shared function?
             fields: [
-                ...relFields.primitiveFields,
+                ...relFields.primitiveFields.filter((field) => !field.autogenerate),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields.filter((field) => !field.timestamps),
                 ...relFields.pointFields,
             ].reduce((res, f) => {
-                if ((f as PrimitiveField)?.autogenerate) {
-                    return res;
-                }
-
                 if ((f as PrimitiveField)?.defaultValue !== undefined) {
                     const field: InputTypeComposerFieldConfigAsObjectDefinition = {
                         type: f.typeMeta.input.create.pretty,
@@ -727,6 +722,24 @@ function makeAugmentedSchema(
         }
 
         node.relationFields.forEach((rel) => {
+            let hasNonGeneratedProperties = false;
+            let hasNonNullNonGeneratedProperties = false;
+            if (rel.properties) {
+                const relFields = relationshipFields.get(rel.properties);
+
+                if (relFields) {
+                    const nonGeneratedProperties = [
+                        ...relFields.primitiveFields.filter((field) => !field.autogenerate),
+                        ...relFields.scalarFields,
+                        ...relFields.enumFields,
+                        ...relFields.temporalFields.filter((field) => !field.timestamps),
+                        ...relFields.pointFields,
+                    ];
+                    hasNonGeneratedProperties = nonGeneratedProperties.length > 0;
+                    hasNonNullNonGeneratedProperties = nonGeneratedProperties.some((field) => field.typeMeta.required);
+                }
+            }
+
             if (rel.union) {
                 const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
 
@@ -783,7 +796,13 @@ function makeAugmentedSchema(
                             name: createName,
                             fields: {
                                 node: `${n.name}CreateInput!`,
-                                ...(rel.properties ? { edge: `${rel.properties}CreateInput!` } : {}),
+                                ...(hasNonGeneratedProperties
+                                    ? {
+                                          edge: `${rel.properties}CreateInput${
+                                              hasNonNullNonGeneratedProperties ? `!` : ""
+                                          }`,
+                                      }
+                                    : {}),
                             },
                         });
 
@@ -820,7 +839,13 @@ function makeAugmentedSchema(
                                               : `${n.name}ConnectInput`,
                                       }
                                     : {}),
-                                ...(rel.properties ? { edge: `${rel.properties}CreateInput!` } : {}),
+                                ...(hasNonGeneratedProperties
+                                    ? {
+                                          edge: `${rel.properties}CreateInput${
+                                              hasNonNullNonGeneratedProperties ? `!` : ""
+                                          }`,
+                                      }
+                                    : {}),
                             },
                         });
 
@@ -852,7 +877,7 @@ function makeAugmentedSchema(
                     composer.createInputTC({
                         name: connectionUpdateInputName,
                         fields: {
-                            ...(rel.properties ? { edge: `${rel.properties}UpdateInput` } : {}),
+                            ...(hasNonGeneratedProperties ? { edge: `${rel.properties}UpdateInput` } : {}),
                             node: updateField,
                         },
                     });
@@ -959,22 +984,6 @@ function makeAugmentedSchema(
                 ...{ [rel.fieldName]: `${n.name}Where`, [`${rel.fieldName}_NOT`]: `${n.name}Where` },
             });
 
-            let anyNonNullRelProperties = false;
-
-            if (rel.properties) {
-                const relFields = relationshipFields.get(rel.properties);
-
-                if (relFields) {
-                    anyNonNullRelProperties = [
-                        ...relFields.primitiveFields,
-                        ...relFields.scalarFields,
-                        ...relFields.enumFields,
-                        ...relFields.temporalFields,
-                        ...relFields.pointFields,
-                    ].some((field) => field.typeMeta.required);
-                }
-            }
-
             const createName = `${node.name}${upperFirst(rel.fieldName)}CreateFieldInput`;
             const create = rel.typeMeta.array ? `[${createName}!]` : createName;
             if (!composer.has(createName)) {
@@ -982,8 +991,8 @@ function makeAugmentedSchema(
                     name: createName,
                     fields: {
                         node: `${n.name}CreateInput!`,
-                        ...(rel.properties
-                            ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
+                        ...(hasNonGeneratedProperties
+                            ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
                             : {}),
                     },
                 });
@@ -1009,8 +1018,8 @@ function makeAugmentedSchema(
                         ...(n.relationFields.length
                             ? { connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput` }
                             : {}),
-                        ...(rel.properties
-                            ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
+                        ...(hasNonGeneratedProperties
+                            ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
                             : {}),
                     },
                 });
@@ -1030,7 +1039,7 @@ function makeAugmentedSchema(
                 name: connectionUpdateInputName,
                 fields: {
                     node: updateField,
-                    ...(rel.properties ? { edge: `${rel.properties}UpdateInput` } : {}),
+                    ...(hasNonGeneratedProperties ? { edge: `${rel.properties}UpdateInput` } : {}),
                 },
             });
 
