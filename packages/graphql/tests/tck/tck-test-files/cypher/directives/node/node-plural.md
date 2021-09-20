@@ -1,4 +1,4 @@
-# Node Directive
+# Plural in Node directive
 
 Custom plural using @node.
 
@@ -184,6 +184,33 @@ DETACH DELETE this
 {
     "this_name": "Matrix"
 }
+```
+
+---
+
+## Query with aliases
+
+### GraphQL Input
+
+```graphql
+query {
+    technologies: techs {
+        name
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Tech)
+RETURN this { .name } as this
+```
+
+### Expected Cypher Params
+
+```json
+{}
 ```
 
 ---
