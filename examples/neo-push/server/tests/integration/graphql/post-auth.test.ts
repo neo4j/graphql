@@ -32,6 +32,7 @@ describe("post-auth", () => {
                         {
                             title: "some post"
                             content: "content"
+                            isPublic: true
                             author: { connect: { where: { node: { id: "invalid" } } } }
                         }
                     ]

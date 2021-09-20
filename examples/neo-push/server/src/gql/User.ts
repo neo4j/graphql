@@ -8,6 +8,7 @@ export const typeDefs = gql`
         email: String!
         createdBlogs: [Blog] @relationship(type: "HAS_BLOG", direction: OUT)
         authorsBlogs: [Blog] @relationship(type: "CAN_POST", direction: OUT)
+        subscribedToBlog: [Blog] @relationship(type: "SUBSCRIBED_TO", direction: OUT)
         password: String! @private
         createdAt: DateTime @timestamp(operations: [CREATE])
         updatedAt: DateTime @timestamp(operations: [UPDATE])
@@ -24,8 +25,16 @@ export const typeDefs = gql`
                     allow: {
                         OR: [
                             { id: "$jwt.sub" }
-                            { createdBlogs: { OR: [{ creator: { id: "$jwt.sub" } }, { authors: { id: "$jwt.sub" } }] } }
-                            { authorsBlogs: { OR: [{ creator: { id: "$jwt.sub" } }, { authors: { id: "$jwt.sub" } }] } }
+                            {
+                                createdBlogs: {
+                                    OR: [{ creator: { id: "$jwt.sub" } }, { ANY: { authors: { id: "$jwt.sub" } } }]
+                                }
+                            }
+                            {
+                                authorsBlogs: {
+                                    OR: [{ creator: { id: "$jwt.sub" } }, { ANY: { authors: { id: "$jwt.sub" } } }]
+                                }
+                            }
                         ]
                     }
                 }

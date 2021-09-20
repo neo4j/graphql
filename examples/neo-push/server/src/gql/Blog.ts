@@ -6,6 +6,7 @@ export const typeDefs = gql`
         name: String!
         creator: User @relationship(type: "HAS_BLOG", direction: IN)
         authors: [User] @relationship(type: "CAN_POST", direction: IN)
+        subscribers: [User] @relationship(type: "SUBSCRIBED_TO", direction: IN)
         posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
         isCreator: Boolean
             @cypher(

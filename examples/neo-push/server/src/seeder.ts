@@ -46,6 +46,7 @@ async function main() {
                     create: new Array(3).fill(null).map(() => ({
                         title: faker.lorem.word(),
                         content: faker.lorem.paragraphs(4),
+                        isPublic: true,
                         author: {
                             connect: { where: { node: { id: user.id } } },
                         },

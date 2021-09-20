@@ -135,6 +135,7 @@ describe("workflow", () => {
                                 {
                                     content: "cool post"
                                     title: "${post.initialTitle}"
+                                    isPublic: true,
                                     author: {
                                         connect: {
                                             where: { node: { id: "${user.id}" } }
