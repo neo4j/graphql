@@ -59,8 +59,8 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     // and find field where field.name ~ node.name which exists by construction
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { fieldsByTypeName } = Object.values(
-        resolveTree.fieldsByTypeName[`Update${node.getPlural(false)}MutationResponse`]
-    ).find((field) => field.name === node.getPlural(true))!;
+        resolveTree.fieldsByTypeName[`Update${node.getPlural({ camelCase: false })}MutationResponse`]
+    ).find((field) => field.name === node.getPlural({ camelCase: true }))!;
 
     if (whereInput) {
         const where = createWhereAndParams({

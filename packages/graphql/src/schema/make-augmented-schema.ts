@@ -703,10 +703,10 @@ function makeAugmentedSchema(
 
         ["Create", "Update"].map((operation) =>
             composer.createObjectTC({
-                name: `${operation}${node.getPlural(false)}MutationResponse`,
+                name: `${operation}${node.getPlural({ camelCase: false })}MutationResponse`,
                 fields: {
                     info: `${operation}Info!`,
-                    [node.getPlural(true)]: `[${node.name}!]!`,
+                    [node.getPlural({ camelCase: true })]: `[${node.name}!]!`,
                 },
             })
         );
@@ -1284,33 +1284,33 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
-                [node.getPlural(true)]: findResolver({ node }),
+                [node.getPlural({ camelCase: true })]: findResolver({ node }),
             });
 
             composer.Query.addFields({
-                [`${node.getPlural(true)}Count`]: countResolver({ node }),
+                [`${node.getPlural({ camelCase: true })}Count`]: countResolver({ node }),
             });
 
             composer.Query.addFields({
-                [`${node.getPlural(true)}Aggregate`]: aggregateResolver({ node }),
+                [`${node.getPlural({ camelCase: true })}Aggregate`]: aggregateResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
-                [`create${node.getPlural(false)}`]: createResolver({ node }),
+                [`create${node.getPlural({ camelCase: false })}`]: createResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
-                [`delete${node.getPlural(false)}`]: deleteResolver({ node }),
+                [`delete${node.getPlural({ camelCase: false })}`]: deleteResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${node.getPlural(false)}`]: updateResolver({ node }),
+                [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node }),
             });
         }
     });

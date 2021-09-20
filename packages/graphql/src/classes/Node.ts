@@ -161,12 +161,12 @@ class Node {
         return this.nodeDirective?.getLabels(this.name) || [this.name];
     }
 
-    getPlural(camelcase: boolean): string {
+    getPlural(options: { camelCase: boolean }): string {
         // camelCase is optional in this case to maintain backward compatibility
         if (this.nodeDirective?.plural) {
-            return camelcase ? camelCase(this.nodeDirective.plural) : this.nodeDirective.plural;
+            return options.camelCase ? camelCase(this.nodeDirective.plural) : this.nodeDirective.plural;
         }
-        return pluralize(camelcase ? camelCase(this.name) : this.name);
+        return pluralize(options.camelCase ? camelCase(this.name) : this.name);
     }
 }
 

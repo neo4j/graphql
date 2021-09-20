@@ -36,7 +36,7 @@ export default function createResolver({ node }: { node: Node }) {
         });
 
         const responseField = info.fieldNodes[0].selectionSet?.selections.find(
-            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural(true)
+            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({ camelCase: true })
         ) as FieldNode; // Field exist by construction and must be selected as it is the only field.
 
         const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
@@ -51,7 +51,7 @@ export default function createResolver({ node }: { node: Node }) {
     }
 
     return {
-        type: `Create${node.getPlural(false)}MutationResponse!`,
+        type: `Create${node.getPlural({ camelCase: false })}MutationResponse!`,
         resolve,
         args: { input: `[${node.name}CreateInput!]!` },
     };
