@@ -44,3 +44,34 @@ Where is used on the following operations;
 - `CONNECT`
 - `DISCONNECT`
 - `DELETE`
+
+
+== `where` on relationships
+
+By default, a `where` argument, when specifying a relationship property, requires that *all* connected nodes satisfy the `where` predicate to be returned.
+
+You can explicitly specify either `ALL`, or `ANY` before a relationship in a `where` argument, to indicate whether all, or any of the connected nodes must satisfy the provided condition.
+
+Consider the schema:
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+    groups: [Group!] @relationship(type: "MEMBER_OF", direction: OUT)
+}
+
+type Group {
+    id: ID
+    name: String
+    members: [User!] @relationship(type: "MEMBER_OF", direction: IN)
+}
+
+extend type User @auth(rules: [{ where: { id: "$jwt.id" } }])
+extend type Group @auth(rules: [{ where: { ANY: { members: { id: "$jwt.id" } } } }])
+----
+
+Here we are specifying that a caller can see groups where *ANY* `User` in the list of connected `members` has an `id` matching the provided jwt id property.  If `ANY` were omitted from this rule, then only groups where *all* members have an id matching the provided jwt id property would be returned.
+
+`ANY` and `ALL` *only* modify the behavior of the relationship immediately following.  Subsequent relationships, if unspecified, will default to requiring `ALL` connected nodes to match.

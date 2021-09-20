@@ -217,7 +217,15 @@ RETURN this {
 ### Expected Cypher Output
 
 ```cypher
-MATCH (this:Group) WHERE EXISTS((this)<-[:MEMBER_OF]-(:User)) AND ANY(members IN [(this)<-[:MEMBER_OF]-(members:User) | members] WHERE members.id IS NOT NULL AND members.id = $this_auth_where0_ANY_members_id) RETURN this { .id, members: [ (this)<-[:MEMBER_OF]-(this_members:User) WHERE this_members.id IS NOT NULL AND this_members.id = $this_members_auth_where0_id | this_members { .id } ] } as this
+MATCH (this:Group)
+WHERE
+    EXISTS((this)<-[:MEMBER_OF]-(:User))
+AND
+    ANY(members IN [(this)<-[:MEMBER_OF]-(members:User) | members] WHERE members.id IS NOT NULL AND members.id = $this_auth_where0_ANY_members_id)
+RETURN this {
+    .id,
+    members: [ (this)<-[:MEMBER_OF]-(this_members:User) WHERE this_members.id IS NOT NULL AND this_members.id = $this_members_auth_where0_id | this_members { .id } ]
+} as this
 ```
 
 ### Expected Cypher Params
