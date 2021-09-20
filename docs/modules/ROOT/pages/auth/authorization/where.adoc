@@ -44,3 +44,56 @@ Where is used on the following operations;
 - `CONNECT`
 - `DISCONNECT`
 - `DELETE`
+
+
+== Combining `where` with `roles`
+
+The `where` argument can be combined with `roles` within auth rules to support rule based filtering of results.
+
+Revising the early example schema, if we update the auth rules to instead provide two sets of rules for two different roles, we can specify that jwts with the `user` role can only see their own `User` node, as before, but now, those with the `admin` role can see all users:
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+extend type User @auth(rules: [
+    { 
+        roles: ["user"]
+        where: { id: "$jwt.id" } 
+    }
+    {
+        roles: ["admin"]
+    }
+])
+----
+
+For those with an admin role, there is a conceptual `where: "*"` rule which is applied, allowing admins to see all `User` nodes.
+
+These rules can alternatively be expressed using an `OR` within the top parent of a single auth rule, for example:
+
+[source, graphql, indent=0]
+----
+type User {
+    id: ID
+    name: String
+}
+
+extend type User @auth(rules: [
+    {
+        OR: [
+            {
+                roles: ["user"]
+                where: { id: "$jwt.id" } 
+            },
+            {
+                roles: ["admin"]
+            }
+        ]
+    }
+])
+----
+
+Both ways of expressing the rules are valid, and will return the same results.
