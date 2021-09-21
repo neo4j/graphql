@@ -48,21 +48,42 @@ yarn install
 
 [Visual Studio Code](https://code.visualstudio.com/) comes highly recommended for working in this repository, and we additionally recommend the following extensions:
 
--   [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
--   [Jest](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest)
--   [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Jest](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest)
+- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
 The Jest extension should automatically detect the tests for this repository and watch them in the Status Bar.
 
 ## Testing
 
-Tests are run using Jest, which has been configured to allow for execution of test suites at any level in the project. To run all of the tests in the repository, simply run the following command from the root of the project:
+In order to run all of the tests, you will need to have a local instance of Neo4j running! We highly recommend [Neo4j Desktop](https://neo4j.com/download/) to easily get up and running with a local Neo4j instance.
+
+1. Create and start a new DBMS with a database named neo4j (default).
+2. Install APOC plugin for that DB.
+3. Create appropriate user by running the following command in the DB:
+
+   ```cypher
+   CREATE USER admin
+   SET PASSWORD "password"
+   SET PASSWORD CHANGE NOT REQUIRED
+   SET STATUS ACTIVE
+   ```
+
+4. Grant roles to admin user:
+
+   ```cypher
+   GRANT ROLE admin to admin
+   ```
+
+5. Run tests with `yarn test`.
+
+Tests are run using Jest, which has been configured to allow for execution of test suites at any level in the project.
+
+You can execute tests with a different database, user and password with the following command:
 
 ```bash
 NEO_URL=neo4j://localhost:7687 NEO_USER=admin NEO_PASSWORD=password yarn test
 ```
-
-> In order to run all of the tests, you will need to have a local instance of Neo4j running! We highly recommend [Neo4j Desktop](https://neo4j.com/download/) to easily get up and running with a local Neo4j instance.
 
 The above command can additionally be run from `packages/graphql`, `packages/ogm`, or any directory where there is a `jest.config.js` file!
 
