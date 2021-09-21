@@ -123,15 +123,15 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable && yarn build
       - name: Setup Nextjs app
-        run: chmod +x docs/code-partials/nextjs/create-app.sh && cd packages && ../docs/code-partials/nextjs/create-app.sh
+        run: chmod +x docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh && cd packages && ../docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh
       - name: Install dependencies
         run: |
           cd packages/neo4j-graphql-nextjs
-          chmod +x ../../docs/code-partials/nextjs/add-dependencies.sh && ../../docs/code-partials/nextjs/add-dependencies.sh
+          chmod +x ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh && ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh
       - name: Copy .env file
-        run: cp docs/code-partials/nextjs/.env.example packages/neo4j-graphql-nextjs/.env.local
+        run: cp docs/modules/ROOT/examples/code-partials/nextjs/env.example packages/neo4j-graphql-nextjs/.env.local
       - name: Create GraphQL endpoint
-        run: cp docs/code-partials/nextjs/graphql.js packages/neo4j-graphql-nextjs/pages/api/graphql.js
+        run: cp docs/modules/ROOT/examples/code-partials/nextjs/graphql.js packages/neo4j-graphql-nextjs/pages/api/graphql.js
       - name: Start server
         run: cd packages/neo4j-graphql-nextjs && yarn dev &
       - name: Query the API and assert that there are no errors

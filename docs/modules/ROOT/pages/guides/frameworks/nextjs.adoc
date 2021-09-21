@@ -1,6 +1,6 @@
 [[usage-nextjs]]
 
-:sourcedir: ../../../../../code-partials/nextjs
+:sourcedir: example$code-partials/nextjs
 
 = Usage with Next.js
 
@@ -38,7 +38,7 @@ Make sure you have a Neo4j DBMS running on the configured URI below. Download ht
 
 [source, bash, indent=0]
 ----
-include::{sourcedir}/.env.example[]
+include::{sourcedir}/env.example[]
 ----
 
 === Set up the GraphQL API endpoint
