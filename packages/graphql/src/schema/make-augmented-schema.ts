@@ -193,12 +193,14 @@ function makeAugmentedSchema(
 
     const aggregationSelectionTypeNames = aggregationSelectionTypeMatrix.map(([name]) => name);
 
-    const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<Record<string, ObjectTypeComposer<unknown, unknown>>>((res, [name, fields]) => {
+    const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<
+        Record<string, ObjectTypeComposer<unknown, unknown>>
+    >((res, [name, fields]) => {
         return {
             ...res,
             [name]: composer.createObjectTC({
                 name: `${name}AggregateSelection`,
-                fields: fields ? fields : { min: `${name}!`, max: `${name}!` },
+                fields: fields ?? { min: `${name}!`, max: `${name}!` },
             }),
         };
     }, {});
@@ -560,37 +562,13 @@ function makeAugmentedSchema(
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
-        const sortFields = [
-            ...node.primitiveFields,
-            ...node.enumFields,
-            ...node.scalarFields,
-            ...node.temporalFields,
-            ...node.pointFields,
-            ...node.cypherFields.filter((field) =>
-                [
-                    "Boolean",
-                    "ID",
-                    "Int",
-                    "BigInt",
-                    "Float",
-                    "String",
-                    "DateTime",
-                    "LocalDateTime",
-                    "Time",
-                    "LocalTime",
-                    "Date",
-                ].includes(field.typeMeta.name)
-            ),
-        ].reduce((res, f) => {
-            return f.typeMeta.array
-                ? {
-                      ...res,
-                  }
-                : {
-                      ...res,
-                      [f.fieldName]: sortDirection.getTypeName(),
-                  };
-        }, {});
+        const sortFields = node.sortableFields.reduce(
+            (res, f) => ({
+                ...res,
+                [f.fieldName]: sortDirection.getTypeName(),
+            }),
+            {}
+        );
 
         if (Object.keys(sortFields).length) {
             const sortInput = composer.createInputTC({
@@ -1221,15 +1199,7 @@ function makeAugmentedSchema(
                     fields: {},
                 });
 
-                const nodeSortFields = [
-                    ...relatedNode.primitiveFields,
-                    ...relatedNode.enumFields,
-                    ...relatedNode.scalarFields,
-                    ...relatedNode.temporalFields,
-                    ...relatedNode.pointFields,
-                ].filter((f) => !f.typeMeta.array);
-
-                if (nodeSortFields.length) {
+                if (relatedNode.sortableFields.length) {
                     connectionSort.addFields({
                         node: `${connectionField.relationship.typeMeta.name}Sort`,
                     });
@@ -1252,7 +1222,7 @@ function makeAugmentedSchema(
                 };
 
                 // If any sortable fields, add sort argument to connection field
-                if (nodeSortFields.length || connectionField.relationship.properties) {
+                if (relatedNode.sortableFields.length || connectionField.relationship.properties) {
                     composeNodeArgs = {
                         ...composeNodeArgs,
                         sort: connectionSort.NonNull.List,

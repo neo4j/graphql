@@ -124,6 +124,18 @@ class Node {
         | PointField
     )[];
 
+    /*
+        Fields you can set in a create or update mutation
+    */
+    public sortableFields: (
+        | PrimitiveField
+        | CustomScalarField
+        | CustomEnumField
+        | TemporalField
+        | PointField
+        | CypherField
+    )[];
+
     constructor(input: NodeConstructor) {
         this.name = input.name;
         this.relationFields = input.relationFields;
@@ -167,6 +179,30 @@ class Node {
             ...input.unionFields,
             ...input.pointFields,
         ];
+
+        this.sortableFields = [
+            ...input.primitiveFields,
+            ...input.scalarFields,
+            ...input.enumFields,
+            ...input.temporalFields,
+            ...input.pointFields,
+            ...input.cypherFields.filter((field) =>
+                [
+                    "Boolean",
+                    "ID",
+                    "Int",
+                    "BigInt",
+                    "Float",
+                    "String",
+                    "DateTime",
+                    "LocalDateTime",
+                    "Time",
+                    "LocalTime",
+                    "Date",
+                    "Duration",
+                ].includes(field.typeMeta.name)
+            ),
+        ].filter((field) => !field.typeMeta.array);
     }
 
     get labelString(): string {
