@@ -48,7 +48,7 @@ import {
 import pluralize from "pluralize";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth, ConnectionQueryArgs } from "../types";
+import { PrimitiveField, Auth, ConnectionQueryArgs, BaseField } from "../types";
 import {
     aggregateResolver,
     countResolver,
@@ -956,6 +956,55 @@ function makeAugmentedSchema(
             const connectionUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateConnectionInput`;
             const relationshipWhereTypeInputName = `${node.name}${upperFirst(rel.fieldName)}AggregateInput`;
 
+            const aggregationSelectionTypeMatrix: [string, any?][] = [
+                [
+                    "ID",
+                    {
+                        shortest: "ID!",
+                        longest: "ID!",
+                    },
+                ],
+            ];
+
+            const nodeWhereAggregationInputFields = aggregationSelectionTypeMatrix.reduce<BaseField[]>((res, x) => {
+                const field = [...n.primitiveFields, ...n.temporalFields].find(
+                    (y) => !y.typeMeta.array && y.typeMeta.name === x[0]
+                );
+
+                if (!field) {
+                    return res;
+                }
+
+                return res.concat(field);
+            }, []);
+
+            let nodeWhereAggregationInput: InputTypeComposer<any> | undefined;
+
+            if (nodeWhereAggregationInputFields.length) {
+                const name = "relationshipWhereTypeInputName";
+
+                nodeWhereAggregationInput = composer.createInputTC({
+                    name,
+                    fields: {},
+                });
+
+                nodeWhereAggregationInputFields.forEach((field) => {
+                    const matrixItem = aggregationSelectionTypeMatrix.find((x) => x[0] === field.typeMeta.name) as [
+                        string,
+                        any
+                    ];
+
+                    // TODO average?
+                    const operators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+
+                    // create an input here with more operators
+                    nodeWhereAggregationInput?.addFields({
+                        // append the input here
+                        ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: matrixItem[0] }), {}),
+                    });
+                });
+            }
+
             const whereAggregateInput = composer.createInputTC({
                 name: relationshipWhereTypeInputName,
                 fields: {
@@ -966,6 +1015,7 @@ function makeAugmentedSchema(
                     count_GTE: "Int",
                     AND: `[${relationshipWhereTypeInputName}!]`,
                     OR: `[${relationshipWhereTypeInputName}!]`,
+                    ...(nodeWhereAggregationInput ? { node: nodeWhereAggregationInput } : {}),
                 },
             });
 

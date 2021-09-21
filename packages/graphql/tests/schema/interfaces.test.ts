@@ -123,6 +123,7 @@ describe("Interfaces", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              node: relationshipWhereTypeInputName
             }
 
             input MovieMoviesConnectFieldInput {
@@ -269,6 +270,14 @@ describe("Interfaces", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            input relationshipWhereTypeInputName {
+              id_EQUAL: ID
+              id_GT: ID
+              id_GTE: ID
+              id_LT: ID
+              id_LTE: ID
             }
             "
         `);

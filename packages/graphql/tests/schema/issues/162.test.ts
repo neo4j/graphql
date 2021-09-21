@@ -191,6 +191,7 @@ describe("162", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              node: relationshipWhereTypeInputName
             }
 
             type TigerJawLevel2Part1AggregateSelection {
@@ -469,6 +470,14 @@ describe("162", () => {
             type UpdateTigersMutationResponse {
               info: UpdateInfo!
               tigers: [Tiger!]!
+            }
+
+            input relationshipWhereTypeInputName {
+              id_EQUAL: ID
+              id_GT: ID
+              id_GTE: ID
+              id_LT: ID
+              id_LTE: ID
             }
             "
         `);

@@ -20,6 +20,8 @@
 import { Node } from "../classes";
 import { RelationField, Context } from "../types";
 
+const fieldOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+
 function createPredicate({
     node,
     aggregation,
@@ -95,6 +97,48 @@ function createPredicate({
                 cyphers.push(`count(${nodeVariable}) ${operator} $${paramName}`);
             }
         });
+
+        if (entry[0] === "node") {
+            const nodeValue = entry[1] as any;
+
+            Object.entries(nodeValue).forEach((e) => {
+                const f = [...node.primitiveFields, ...node.temporalFields].find((field) =>
+                    fieldOperators.some((op) => e[0].split(`_${op}`)[0] === field.fieldName)
+                );
+
+                if (!f) {
+                    return;
+                }
+
+                let operator = "=";
+
+                const [, operatorString] = e[0].split(`${f.fieldName}_`);
+                switch (operatorString) {
+                    case "LT":
+                        operator = "<";
+                        break;
+                    case "LTE":
+                        operator = "<=";
+                        break;
+                    case "GT":
+                        operator = ">";
+                        break;
+                    case "GTE":
+                        operator = ">=";
+                        break;
+                    case "EQUAL":
+                        operator = "=";
+                        break;
+                    default:
+                        operator = "=";
+                        break;
+                }
+
+                const paramName = `${chainStr}_${entry[0]}_${e[0]}`;
+                params[paramName] = e[1];
+                cyphers.push(`${nodeVariable}.${f.fieldName} ${operator} $${paramName}`);
+            });
+        }
     });
 
     return [cyphers.join(" AND "), params];
