@@ -1,0 +1,98 @@
+[[usage-nextjs]]
+= Usage with Next.js
+
+This page describes the basics on how to use `@neo4j/graphql` as part of a https://nextjs.org[Next.js] fullstack application.  
+
+The official documentation on how to setup a GraphQL in Next.js is located https://github.com/vercel/next.js/tree/canary/examples/api-routes-graphql[here].
+
+== Creating a Next.js application
+
+The recommended way to create a Next.js application is to use the Next.js CLI.
+
+[source, bash, indent=0]
+----
+npx create-next-app neo4j-graphql-nextjs && cd neo4j-graphql-nextjs
+----
+
+With the command to start the development server `yarn dev` an index page should now be available on http://localhost:3000.
+
+== Create and configure the API route
+To have a GraphQL API started when the application starts, dependencies are needed and a file `pages/api/graphql.js` should be created and configured.
+
+=== Add dependencies
+
+At this point it's time to add the dependencies needed to run `@neo4j/graphql` inside Next.js.
+
+[source, bash, indent=0]
+----
+yarn add apollo-server-micro micro graphql @neo4j/graphql neo4j-driver
+----
+
+=== Configure secrets (Neo4j credentials)
+Next.js supports `.env` files for storing secrets secrurely, so create a `.env.local` file with the following contents to set it up.
+
+Make sure you have a Neo4j DBMS running on the configured URI below. Download https://neo4j.com/download[Neo4j Desktop] for easy management of local Neo4j DBMS:s.
+
+[source, bash, indent=0]
+----
+NEO4J_URI=<your-neo4j-bolt-uri>
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=<your-neo4j-password>
+----
+
+=== Set up the GraphQL API endpoint
+
+Place all of the following in a new file `pages/api/graphql.js`.
+[source, javascript, indent=0]
+----
+import { gql, ApolloServer } from "apollo-server-micro";
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import neo4j from "neo4j-driver";
+
+const typeDefs = gql`
+    type Movie @exclude(operations: [CREATE, UPDATE, DELETE]) {
+        title: String!
+        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+    }
+    type Actor @exclude(operations: [CREATE, UPDATE, DELETE]) {
+        name: String!
+        actedIn: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+    }
+`;
+
+const driver = neo4j.driver(
+    process.env.NEO4J_URI,
+    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
+);
+
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+const apolloServer = new ApolloServer({ schema: neoSchema.schema });
+
+const startServer = apolloServer.start();
+
+export default async function handler(req, res) {
+    // Headers for Apollo Studio to be able to access the API.
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Origin", "https://studio.apollographql.com");
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    if (req.method === "OPTIONS") {
+        res.end();
+        return false;
+    }
+
+    await startServer;
+    await apolloServer.createHandler({
+        path: "/api/graphql",
+    })(req, res);
+}
+
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+};
+----
+
+== Start the server
+That is all that needs to be done for `@neo4j/graphql` to work in a Next.js application. The dev server starts wtih `yarn dev` and Apollo Studio should be loaded on http://localhost:3000 and the front-end part of the Nextjs application should be able to query the API.
