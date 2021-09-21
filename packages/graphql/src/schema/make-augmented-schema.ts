@@ -20,7 +20,6 @@
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
 import { forEachField } from "@graphql-tools/utils";
-import camelCase from "camelcase";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
@@ -200,7 +199,7 @@ function makeAugmentedSchema(
             ...res,
             [name]: composer.createObjectTC({
                 name: `${name}AggregateSelection`,
-                fields: fields ? fields : { min: `${name}!`, max: `${name}!` },
+                fields: fields || { min: `${name}!`, max: `${name}!` },
             }),
         };
     }, {});
@@ -704,10 +703,10 @@ function makeAugmentedSchema(
 
         ["Create", "Update"].map((operation) =>
             composer.createObjectTC({
-                name: `${operation}${pluralize(node.name)}MutationResponse`,
+                name: `${operation}${node.getPlural({ camelCase: false })}MutationResponse`,
                 fields: {
                     info: `${operation}Info!`,
-                    [pluralize(camelCase(node.name))]: `[${node.name}!]!`,
+                    [node.getPlural({ camelCase: true })]: `[${node.name}!]!`,
                 },
             })
         );
@@ -1300,33 +1299,33 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
-                [pluralize(camelCase(node.name))]: findResolver({ node }),
+                [node.getPlural({ camelCase: true })]: findResolver({ node }),
             });
 
             composer.Query.addFields({
-                [`${pluralize(camelCase(node.name))}Count`]: countResolver({ node }),
+                [`${node.getPlural({ camelCase: true })}Count`]: countResolver({ node }),
             });
 
             composer.Query.addFields({
-                [`${pluralize(camelCase(node.name))}Aggregate`]: aggregateResolver({ node }),
+                [`${node.getPlural({ camelCase: true })}Aggregate`]: aggregateResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
-                [`create${pluralize(node.name)}`]: createResolver({ node }),
+                [`create${node.getPlural({ camelCase: false })}`]: createResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
-                [`delete${pluralize(node.name)}`]: deleteResolver({ node }),
+                [`delete${node.getPlural({ camelCase: false })}`]: deleteResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${pluralize(node.name)}`]: updateResolver({ node }),
+                [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node }),
             });
         }
     });
