@@ -141,7 +141,7 @@ RETURN this { .name } as this
 
 ==== `plural`
 The parameter `plural` redefines how to compose the plural of the type for the generated operations. This is particularly
-useful for types that are not correctly pluralized or are non-english words.
+useful for types that are not correctly pluralized or are non-English words.
 
 [source, graphql, indent=0]
 ----
