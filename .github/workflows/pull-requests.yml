@@ -69,6 +69,44 @@ jobs:
           name: schema-coverage-graphql
           path: packages/graphql/coverage/
 
+  nextjs-app-setup:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    services:
+      neo4j:
+        image: neo4j:latest
+        env:
+          NEO4J_AUTH: neo4j/mypassword
+          NEO4JLABS_PLUGINS: '["apoc"]'
+        ports:
+          - 7687:7687
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Setup Nextjs app
+        run: chmod +x docs/code-partials/nextjs/create-app.sh && docs/code-partials/nextjs/create-app.sh
+      - name: Install dependencies
+        run: chmod +x docs/code-partials/nextjs/add-dependencies.sh && docs/code-partials/nextjs/add-dependencies.sh
+      - name: Copy .env file
+        run: cp docs/code-partials/nextjs/.env.example ./env.local
+      - name: Create GraphQL endpoint
+        run: cp docs/code-partials/nextjs/graphql.js ./pages/api/
+      - name: Start server
+        run: yarn dev &
+      - name: Query the API
+        run: |
+          sleep 10 &&
+          curl 'http://localhost:3000/api/graphql' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: http://localhost:3000' --data-binary '{"query":"{\n  movies {\n    title\n  }\n}"}' --compressed
+
   tck-tests:
     needs:
       - cache-dependencies
