@@ -31,7 +31,6 @@ describe("parseNodeDirective", () => {
 
         // @ts-ignore
         const directive = parse(typeDefs).definitions[0].directives[0];
-
         expect(() => parseNodeDirective(directive)).toThrow(
             "Undefined or incorrect directive passed into parseNodeDirective function"
         );
@@ -46,7 +45,6 @@ describe("parseNodeDirective", () => {
 
         // @ts-ignore
         const directive = parse(typeDefs).definitions[0].directives[0];
-
         const expected = new NodeDirective({ label: "MyLabel" });
 
         expect(parseNodeDirective(directive)).toMatchObject(expected);
@@ -61,13 +59,12 @@ describe("parseNodeDirective", () => {
 
         // @ts-ignore
         const directive = parse(typeDefs).definitions[0].directives[0];
-
         const expected = new NodeDirective({ additionalLabels: ["Label", "AnotherLabel"] });
 
         expect(parseNodeDirective(directive)).toMatchObject(expected);
     });
 
-    test("should return a node directive witha label and additional labels", () => {
+    test("should return a node directive with a label and additional labels", () => {
         const typeDefs = `
             type TestType @node(label:"MyLabel", additionalLabels:["Label", "AnotherLabel"]) {
                 name: String
@@ -76,8 +73,21 @@ describe("parseNodeDirective", () => {
 
         // @ts-ignore
         const directive = parse(typeDefs).definitions[0].directives[0];
-
         const expected = new NodeDirective({ label: "MyLabel", additionalLabels: ["Label", "AnotherLabel"] });
+
+        expect(parseNodeDirective(directive)).toMatchObject(expected);
+    });
+
+    test("should return a node directive with custom plural", () => {
+        const typeDefs = `
+            type TestType @node(plural: "testTypes") {
+                name: String
+            }
+        `;
+
+        // @ts-ignore
+        const directive = parse(typeDefs).definitions[0].directives[0];
+        const expected = new NodeDirective({ plural: "testTypes" });
 
         expect(parseNodeDirective(directive)).toMatchObject(expected);
     });
