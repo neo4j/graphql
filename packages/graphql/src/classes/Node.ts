@@ -97,9 +97,9 @@ class Node {
 
     public description?: string;
 
-    /*
-        Fields you can apply auth allow and bind to
-    */
+    /**
+     * Fields you can apply auth allow and bind to
+     */
     public authableFields: (
         | PrimitiveField
         | CustomScalarField
@@ -111,9 +111,9 @@ class Node {
         | CypherField
     )[];
 
-    /*
-        Fields you can set in a create or update mutation
-    */
+    /**
+     * Fields you can set in a create or update mutation
+     */
     public mutableFields: (
         | PrimitiveField
         | CustomScalarField
@@ -124,9 +124,9 @@ class Node {
         | PointField
     )[];
 
-    /*
-        Fields you can set in a create or update mutation
-    */
+    /**
+     * Fields you can sort on
+     */
     public sortableFields: (
         | PrimitiveField
         | CustomScalarField
