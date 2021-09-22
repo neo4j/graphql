@@ -34,7 +34,7 @@ include::{sourcedir}/add-dependencies.sh[]
 === Configure secrets (Neo4j credentials)
 Next.js supports `.env` files for storing secrets secrurely, so create a `.env.local` file with the following contents to set it up.
 
-Make sure you have a Neo4j DBMS running on the configured URI below. Download https://neo4j.com/download[Neo4j Desktop] for easy management of local Neo4j DBMS:s.
+Make sure you have a Neo4j DBMS running on the configured URI below. Download https://neo4j.com/download[Neo4j Desktop] for easy local Neo4j DBMS management.
 
 [source, bash, indent=0]
 ----
