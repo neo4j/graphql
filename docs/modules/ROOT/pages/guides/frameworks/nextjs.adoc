@@ -4,7 +4,7 @@
 
 = Usage with Next.js
 
-This page describes the basics on how to use `@neo4j/graphql` as part of a https://nextjs.org[Next.js] fullstack application.  
+This page describes the basics on how to use `@neo4j/graphql` as part of a https://nextjs.org[Next.js] application.  
 
 The official documentation on how to setup a GraphQL in Next.js is located https://github.com/vercel/next.js/tree/canary/examples/api-routes-graphql[here].
 
