@@ -81,6 +81,7 @@ e2e/fixtures/cache/
 
 test-api.ts
 packages/package-tests/**/package-lock.json
+scratchpad/
 
 .yarn/*
 !.yarn/patches
