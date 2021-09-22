@@ -7,15 +7,13 @@ Schema:
 ```graphql
 type Actor {
     name: String
-    movies: [Movie]
-        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+    movies: [Movie] @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
 
 type Movie {
     id: ID
     title: String
-    actors: [Actor]!
-        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+    actors: [Actor]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
 }
 
 interface ActedIn {
@@ -68,14 +66,7 @@ RETURN this { .id } AS this
 mutation {
     updateMovies(
         where: { id: "1" }
-        update: {
-            actors: [
-                {
-                    where: { node: { name: "old name" } }
-                    update: { node: { name: "new name" } }
-                }
-            ]
-        }
+        update: { actors: [{ where: { node: { name: "old name" } }, update: { node: { name: "new name" } } }] }
     ) {
         movies {
             id
@@ -157,9 +148,7 @@ mutation {
                             movies: [
                                 {
                                     where: { node: { id: "old movie title" } }
-                                    update: {
-                                        node: { title: "new movie title" }
-                                    }
+                                    update: { node: { title: "new movie title" } }
                                 }
                             ]
                         }
@@ -261,10 +250,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateMovies(
-        where: { id: "1" }
-        connect: { actors: [{ where: { node: { name: "Daniel" } } }] }
-    ) {
+    updateMovies(where: { id: "1" }, connect: { actors: [{ where: { node: { name: "Daniel" } } }] }) {
         movies {
             id
         }
@@ -283,7 +269,7 @@ CALL {
     OPTIONAL MATCH (this_connect_actors0_node:Actor)
     WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
     FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
-    MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
+    MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
     )
     RETURN count(*)
 }
@@ -309,12 +295,7 @@ RETURN this { .id } AS this
 mutation {
     updateMovies(
         where: { id: "1" }
-        connect: {
-            actors: [
-                { where: { node: { name: "Daniel" } } }
-                { where: { node: { name: "Darrell" } } }
-            ]
-        }
+        connect: { actors: [{ where: { node: { name: "Daniel" } } }, { where: { node: { name: "Darrell" } } }] }
     ) {
         movies {
             id
@@ -334,7 +315,7 @@ CALL {
     OPTIONAL MATCH (this_connect_actors0_node:Actor)
     WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
     FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
-    MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
+    MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
     )
     RETURN count(*)
 }
@@ -344,7 +325,7 @@ CALL {
     OPTIONAL MATCH (this_connect_actors1_node:Actor)
     WHERE this_connect_actors1_node.name = $this_connect_actors1_node_name
     FOREACH(_ IN CASE this_connect_actors1_node WHEN NULL THEN [] ELSE [1] END |
-    MERGE (this)<-[:ACTED_IN]-(this_connect_actors1_node)
+    MERGE (this)<-[this_connect_actors1_relationship:ACTED_IN]-(this_connect_actors1_node)
     )
     RETURN count(*)
 }
@@ -369,10 +350,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateMovies(
-        where: { id: "1" }
-        disconnect: { actors: [{ where: { node: { name: "Daniel" } } }] }
-    ) {
+    updateMovies(where: { id: "1" }, disconnect: { actors: [{ where: { node: { name: "Daniel" } } }] }) {
         movies {
             id
         }
@@ -433,12 +411,7 @@ RETURN this { .id } AS this
 mutation {
     updateMovies(
         where: { id: "1" }
-        disconnect: {
-            actors: [
-                { where: { node: { name: "Daniel" } } }
-                { where: { node: { name: "Darrell" } } }
-            ]
-        }
+        disconnect: { actors: [{ where: { node: { name: "Daniel" } } }, { where: { node: { name: "Darrell" } } }] }
     ) {
         movies {
             id
@@ -518,13 +491,7 @@ RETURN this { .id } AS this
 mutation {
     updateActors(
         where: { name: "Dan" }
-        update: {
-            movies: {
-                create: [
-                    { node: { id: "dan_movie_id", title: "The Story of Beer" } }
-                ]
-            }
-        }
+        update: { movies: { create: [{ node: { id: "dan_movie_id", title: "The Story of Beer" } }] } }
     ) {
         actors {
             name
@@ -572,11 +539,7 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)  | this_m
 mutation {
     updateActors(
         where: { name: "Dan" }
-        create: {
-            movies: [
-                { node: { id: "dan_movie_id", title: "The Story of Beer" } }
-            ]
-        }
+        create: { movies: [{ node: { id: "dan_movie_id", title: "The Story of Beer" } }] }
     ) {
         actors {
             name
@@ -598,7 +561,7 @@ WHERE this.name = $this_name
 CREATE (this_create_movies0_node:Movie)
 SET this_create_movies0_node.id = $this_create_movies0_node_id
 SET this_create_movies0_node.title = $this_create_movies0_node_title
-MERGE (this)-[:ACTED_IN]->(this_create_movies0_node)
+MERGE (this)-[this_create_movies0_relationship:ACTED_IN]->(this_create_movies0_node)
 
 RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_movies { .id, .title } ] } AS this
 ```
@@ -650,12 +613,12 @@ WHERE this.name = $this_name
 CREATE (this_create_movies0_node:Movie)
 SET this_create_movies0_node.id = $this_create_movies0_node_id
 SET this_create_movies0_node.title = $this_create_movies0_node_title
-MERGE (this)-[:ACTED_IN]->(this_create_movies0_node)
+MERGE (this)-[this_create_movies0_relationship:ACTED_IN]->(this_create_movies0_node)
 
 CREATE (this_create_movies1_node:Movie)
 SET this_create_movies1_node.id = $this_create_movies1_node_id
 SET this_create_movies1_node.title = $this_create_movies1_node_title
-MERGE (this)-[:ACTED_IN]->(this_create_movies1_node)
+MERGE (this)-[this_create_movies1_relationship:ACTED_IN]->(this_create_movies1_node)
 
 RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_movies { .id, .title } ] } AS this
 ```
@@ -682,14 +645,7 @@ RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_mo
 mutation {
     updateMovies(
         where: { id: "1" }
-        delete: {
-            actors: {
-                where: {
-                    node: { name: "Actor to delete" }
-                    edge: { screenTime: 60 }
-                }
-            }
-        }
+        delete: { actors: { where: { node: { name: "Actor to delete" }, edge: { screenTime: 60 } } } }
     ) {
         movies {
             id
@@ -751,12 +707,7 @@ RETURN this { .id } AS this
 mutation {
     updateMovies(
         where: { id: "1" }
-        update: {
-            actors: {
-                where: { node: { name: "Actor to update" } }
-                update: { node: { name: "Updated name" } }
-            }
-        }
+        update: { actors: { where: { node: { name: "Actor to update" } }, update: { node: { name: "Updated name" } } } }
         delete: { actors: { where: { node: { name: "Actor to delete" } } } }
     ) {
         movies {
@@ -842,12 +793,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateMovies(
-        where: { id: "1" }
-        update: {
-            actors: { delete: { where: { node: { name: "Actor to delete" } } } }
-        }
-    ) {
+    updateMovies(where: { id: "1" }, update: { actors: { delete: { where: { node: { name: "Actor to delete" } } } } }) {
         movies {
             id
         }

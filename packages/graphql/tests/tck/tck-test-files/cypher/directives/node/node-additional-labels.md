@@ -1,17 +1,16 @@
-# Node Directive
+# Node directive with additionalLabels
 
 Additional labels using @node.
 
 Schema:
 
 ```graphql
-
-type Actor @node(additionalLabels:["Person"]) {
+type Actor @node(additionalLabels: ["Person"]) {
     name: String
     movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
 }
 
-type Movie @node(label:"Film", additionalLabels:["Multimedia"]) {
+type Movie @node(label: "Film", additionalLabels: ["Multimedia"]) {
     id: ID
     title: String
     actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
@@ -42,7 +41,7 @@ RETURN this { .title } as this
 ### Expected Cypher Params
 
 ```json
-{ }
+{}
 ```
 
 ---
@@ -201,6 +200,7 @@ RETURN this { .id } AS this
     "this_update_id": "2"
 }
 ```
+
 ---
 
 ## Count movies with additional labels

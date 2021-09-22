@@ -19,8 +19,9 @@
 
 import { generate } from "randomstring";
 import createAuthAndParams from "./create-auth-and-params";
-import { Neo4jGraphQL, Node } from "../classes";
+import { Neo4jGraphQL } from "../classes";
 import { trimmer } from "../utils";
+import { NodeBuilder } from "../utils/test";
 
 describe("createAuthAndParams", () => {
     describe("operations", () => {
@@ -51,19 +52,9 @@ describe("createAuthAndParams", () => {
                 arguments: [],
             };
 
-            // @ts-ignore
-            const node: Node = {
+            const node = new NodeBuilder({
                 name: "Movie",
-                relationFields: [],
-                cypherFields: [],
-                enumFields: [],
-                scalarFields: [],
                 primitiveFields: [idField],
-                temporalFields: [],
-                interfaceFields: [],
-                objectFields: [],
-                pointFields: [],
-                authableFields: [idField],
                 auth: {
                     rules: [
                         { allow: { id: "$jwt.sub" } },
@@ -72,7 +63,7 @@ describe("createAuthAndParams", () => {
                     ],
                     type: "JWT",
                 },
-            };
+            }).instance();
 
             // @ts-ignore
             const neoSchema: Neo4jGraphQL = {
@@ -133,24 +124,14 @@ describe("createAuthAndParams", () => {
                 arguments: [],
             };
 
-            // @ts-ignore
-            const node: Node = {
+            const node = new NodeBuilder({
                 name: "Movie",
-                relationFields: [],
-                cypherFields: [],
-                enumFields: [],
-                scalarFields: [],
                 primitiveFields: [idField],
-                temporalFields: [],
-                interfaceFields: [],
-                objectFields: [],
-                pointFields: [],
-                authableFields: [idField],
                 auth: {
                     rules: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }],
                     type: "JWT",
                 },
-            };
+            }).instance();
 
             // @ts-ignore
             const neoSchema: Neo4jGraphQL = {
@@ -211,24 +192,14 @@ describe("createAuthAndParams", () => {
                 arguments: [],
             };
 
-            // @ts-ignore
-            const node: Node = {
+            const node = new NodeBuilder({
                 name: "Movie",
-                relationFields: [],
-                cypherFields: [],
-                enumFields: [],
-                scalarFields: [],
                 primitiveFields: [idField],
-                temporalFields: [],
-                interfaceFields: [],
-                objectFields: [],
-                pointFields: [],
-                authableFields: [idField],
                 auth: {
                     rules: [{ allow: { id: "$jwt.sub" }, roles: ["admin"] }],
                     type: "JWT",
                 },
-            };
+            }).instance();
 
             // @ts-ignore
             const neoSchema: Neo4jGraphQL = {
@@ -292,24 +263,14 @@ describe("createAuthAndParams", () => {
                     arguments: [],
                 };
 
-                // @ts-ignore
-                const node: Node = {
+                const node = new NodeBuilder({
                     name: "Movie",
-                    relationFields: [],
-                    cypherFields: [],
-                    enumFields: [],
-                    scalarFields: [],
                     primitiveFields: [idField],
-                    temporalFields: [],
-                    interfaceFields: [],
-                    objectFields: [],
-                    pointFields: [],
-                    authableFields: [idField],
                     auth: {
                         rules: [{ [key]: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }] }],
                         type: "JWT",
                     },
-                };
+                }).instance();
 
                 // @ts-ignore
                 const neoSchema: Neo4jGraphQL = {
@@ -371,19 +332,9 @@ describe("createAuthAndParams", () => {
                 arguments: [],
             };
 
-            // @ts-ignore
-            const node: Node = {
+            const node = new NodeBuilder({
                 name: "Movie",
-                relationFields: [],
-                cypherFields: [],
-                enumFields: [],
-                scalarFields: [],
                 primitiveFields: [idField],
-                temporalFields: [],
-                interfaceFields: [],
-                objectFields: [],
-                pointFields: [],
-                authableFields: [idField],
                 auth: {
                     rules: [
                         {
@@ -395,7 +346,7 @@ describe("createAuthAndParams", () => {
                     ],
                     type: "JWT",
                 },
-            };
+            }).instance();
 
             // @ts-ignore
             const neoSchema: Neo4jGraphQL = {
@@ -467,13 +418,8 @@ describe("createAuthAndParams", () => {
                     arguments: [],
                 };
 
-                // @ts-ignore
-                const node: Node = {
+                const node = new NodeBuilder({
                     name: "Movie",
-                    relationFields: [],
-                    cypherFields: [],
-                    enumFields: [],
-                    scalarFields: [],
                     primitiveFields: [
                         idField,
                         {
@@ -502,16 +448,11 @@ describe("createAuthAndParams", () => {
                             arguments: [],
                         },
                     ],
-                    temporalFields: [],
-                    interfaceFields: [],
-                    objectFields: [],
-                    pointFields: [],
-                    authableFields: [idField],
                     auth: {
                         rules: [{ allow: { [key]: [{ id: "$jwt.sub" }, { id: "$jwt.sub" }, { id: "$jwt.sub" }] } }],
                         type: "JWT",
                     },
-                };
+                }).instance();
 
                 // @ts-ignore
                 const neoSchema: Neo4jGraphQL = {
@@ -577,19 +518,9 @@ describe("createAuthAndParams", () => {
                 arguments: [],
             };
 
-            // @ts-ignore
-            const node: Node = {
+            const node = new NodeBuilder({
                 name: "Movie",
-                relationFields: [],
-                cypherFields: [],
-                enumFields: [],
-                scalarFields: [],
                 primitiveFields: [idField],
-                temporalFields: [],
-                interfaceFields: [],
-                objectFields: [],
-                pointFields: [],
-                authableFields: [idField],
                 auth: {
                     rules: [
                         { allow: { id: "$jwt.sub" } },
@@ -598,7 +529,7 @@ describe("createAuthAndParams", () => {
                     ],
                     type: "JWT",
                 },
-            };
+            }).instance();
 
             // @ts-ignore
             const neoSchema: Neo4jGraphQL = {
@@ -645,19 +576,9 @@ describe("createAuthAndParams", () => {
                 arguments: [],
             };
 
-            // @ts-ignore
-            const node: Node = {
+            const node = new NodeBuilder({
                 name: "Movie",
-                relationFields: [],
-                cypherFields: [],
-                enumFields: [],
-                scalarFields: [],
                 primitiveFields: [idField],
-                temporalFields: [],
-                interfaceFields: [],
-                objectFields: [],
-                pointFields: [],
-                authableFields: [idField],
                 auth: {
                     rules: [
                         { allow: { id: "$context.nop" } },
@@ -666,7 +587,7 @@ describe("createAuthAndParams", () => {
                     ],
                     type: "JWT",
                 },
-            };
+            }).instance();
 
             // @ts-ignore
             const neoSchema: Neo4jGraphQL = {
@@ -713,19 +634,9 @@ describe("createAuthAndParams", () => {
                 arguments: [],
             };
 
-            // @ts-ignore
-            const node: Node = {
+            const node = new NodeBuilder({
                 name: "Movie",
-                relationFields: [],
-                cypherFields: [],
-                enumFields: [],
-                scalarFields: [],
                 primitiveFields: [idField],
-                temporalFields: [],
-                interfaceFields: [],
-                objectFields: [],
-                pointFields: [],
-                authableFields: [idField],
                 auth: {
                     rules: [
                         { allow: { id: "$jwt.sub" }, allowUnauthenticated: true },
@@ -734,7 +645,7 @@ describe("createAuthAndParams", () => {
                     ],
                     type: "JWT",
                 },
-            };
+            }).instance();
 
             // @ts-ignore
             const neoSchema: Neo4jGraphQL = {
@@ -784,19 +695,9 @@ describe("createAuthAndParams", () => {
                 arguments: [],
             };
 
-            // @ts-ignore
-            const node: Node = {
+            const node = new NodeBuilder({
                 name: "Movie",
-                relationFields: [],
-                cypherFields: [],
-                enumFields: [],
-                scalarFields: [],
                 primitiveFields: [idField],
-                temporalFields: [],
-                interfaceFields: [],
-                objectFields: [],
-                pointFields: [],
-                authableFields: [idField],
                 auth: {
                     rules: [
                         { allow: { id: "$context.nop" }, allowUnauthenticated: true },
@@ -805,7 +706,7 @@ describe("createAuthAndParams", () => {
                     ],
                     type: "JWT",
                 },
-            };
+            }).instance();
 
             // @ts-ignore
             const neoSchema: Neo4jGraphQL = {
