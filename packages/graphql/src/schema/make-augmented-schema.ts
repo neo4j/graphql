@@ -956,15 +956,7 @@ function makeAugmentedSchema(
             const connectionUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateConnectionInput`;
             const relationshipWhereTypeInputName = `${node.name}${upperFirst(rel.fieldName)}AggregateInput`;
 
-            const aggregationSelectionTypeMatrix: [string, any?][] = [
-                [
-                    "ID",
-                    {
-                        shortest: "ID!",
-                        longest: "ID!",
-                    },
-                ],
-            ];
+            const aggregationSelectionTypeMatrix: [string, any?][] = [["ID"], ["String"]];
 
             const nodeWhereAggregationInputFields = aggregationSelectionTypeMatrix.reduce<BaseField[]>((res, x) => {
                 const field = [...n.primitiveFields, ...n.temporalFields].find(
@@ -989,19 +981,32 @@ function makeAugmentedSchema(
                 });
 
                 nodeWhereAggregationInputFields.forEach((field) => {
-                    const matrixItem = aggregationSelectionTypeMatrix.find((x) => x[0] === field.typeMeta.name) as [
-                        string,
-                        any
-                    ];
+                    // const matrixItem = aggregationSelectionTypeMatrix.find((x) => x[0] === field.typeMeta.name) as [
+                    //     string,
+                    //     any
+                    // ];
 
                     // TODO average?
                     const operators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
 
-                    // create an input here with more operators
-                    nodeWhereAggregationInput?.addFields({
-                        // append the input here
-                        ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: matrixItem[0] }), {}),
-                    });
+                    if (field.typeMeta.name === "ID") {
+                        nodeWhereAggregationInput?.addFields({
+                            [`${field.fieldName}_EQUAL`]: "ID",
+                        });
+                    }
+
+                    if (field.typeMeta.name === "String") {
+                        nodeWhereAggregationInput?.addFields({
+                            [`${field.fieldName}_EQUAL`]: "ID",
+                            ...operators.reduce((r, o) => {
+                                if (o === "EQUAL") {
+                                    return r;
+                                }
+
+                                return { ...r, [`${field.fieldName}_${o}`]: "Int" };
+                            }, {}),
+                        });
+                    }
                 });
             }
 

@@ -132,6 +132,7 @@ describe("Relationship", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              node: relationshipWhereTypeInputName
             }
 
             input MovieActorsConnectFieldInput {
@@ -307,6 +308,14 @@ describe("Relationship", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            input relationshipWhereTypeInputName {
+              name_EQUAL: ID
+              name_GT: Int
+              name_GTE: Int
+              name_LT: Int
+              name_LTE: Int
             }
             "
         `);
@@ -517,6 +526,7 @@ describe("Relationship", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              node: relationshipWhereTypeInputName
             }
 
             input MovieActorsConnectFieldInput {
@@ -702,11 +712,11 @@ describe("Relationship", () => {
             }
 
             input relationshipWhereTypeInputName {
-              id_EQUAL: ID
-              id_GT: ID
-              id_GTE: ID
-              id_LT: ID
-              id_LTE: ID
+              name_EQUAL: ID
+              name_GT: Int
+              name_GTE: Int
+              name_LT: Int
+              name_LTE: Int
             }
             "
         `);

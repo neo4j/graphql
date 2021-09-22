@@ -307,6 +307,7 @@ describe("Unions", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              node: relationshipWhereTypeInputName
             }
 
             input BookAuthorConnectFieldInput {
@@ -483,6 +484,7 @@ describe("Unions", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              node: relationshipWhereTypeInputName
             }
 
             input JournalAuthorConnectFieldInput {
@@ -719,6 +721,14 @@ describe("Unions", () => {
               words_LTE: Int
               words_NOT: Int
               words_NOT_IN: [Int]
+            }
+
+            input relationshipWhereTypeInputName {
+              name_EQUAL: ID
+              name_GT: Int
+              name_GTE: Int
+              name_LT: Int
+              name_LTE: Int
             }
             "
         `);

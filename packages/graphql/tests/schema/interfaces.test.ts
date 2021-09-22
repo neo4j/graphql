@@ -274,10 +274,6 @@ describe("Interfaces", () => {
 
             input relationshipWhereTypeInputName {
               id_EQUAL: ID
-              id_GT: ID
-              id_GTE: ID
-              id_LT: ID
-              id_LTE: ID
             }
             "
         `);

@@ -254,6 +254,7 @@ describe("Sort", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              node: relationshipWhereTypeInputName
             }
 
             input Node2RelatedToConnectFieldInput {
@@ -378,6 +379,14 @@ describe("Sort", () => {
             type UpdateNode2sMutationResponse {
               info: UpdateInfo!
               node2s: [Node2!]!
+            }
+
+            input relationshipWhereTypeInputName {
+              property_EQUAL: ID
+              property_GT: Int
+              property_GTE: Int
+              property_LT: Int
+              property_LTE: Int
             }
             "
         `);

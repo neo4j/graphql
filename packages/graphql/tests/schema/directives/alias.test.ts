@@ -65,6 +65,7 @@ describe("Alias", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              node: relationshipWhereTypeInputName
             }
 
             input ActorActedInConnectFieldInput {
@@ -394,6 +395,14 @@ describe("Alias", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            input relationshipWhereTypeInputName {
+              title_EQUAL: ID
+              title_GT: Int
+              title_GTE: Int
+              title_LT: Int
+              title_LTE: Int
             }
             "
         `);

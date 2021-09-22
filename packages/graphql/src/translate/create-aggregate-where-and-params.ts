@@ -18,11 +18,11 @@
  */
 
 import { Node } from "../classes";
-import { RelationField, Context } from "../types";
+import { RelationField, Context, BaseField } from "../types";
 
 const fieldOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
 
-type Operator = "=" | "<"| "<=" | ">" | ">=";
+type Operator = "=" | "<" | "<=" | ">" | ">=";
 
 function createOperator(input): Operator {
     let operator: Operator = "=";
@@ -47,7 +47,6 @@ function createOperator(input): Operator {
 
     return operator;
 }
-
 
 function createPredicate({
     node,
@@ -113,7 +112,7 @@ function createPredicate({
             Object.entries(nodeValue).forEach((e) => {
                 const f = [...node.primitiveFields, ...node.temporalFields].find((field) =>
                     fieldOperators.some((op) => e[0].split(`_${op}`)[0] === field.fieldName)
-                );
+                ) as BaseField;
 
                 if (!f) {
                     return;
@@ -124,6 +123,15 @@ function createPredicate({
 
                 const paramName = `${chainStr}_${entry[0]}_${e[0]}`;
                 params[paramName] = e[1];
+
+                if (f.typeMeta.name === "String") {
+                    if (operator !== "=") {
+                        cyphers.push(`size(${nodeVariable}.${f.fieldName}) ${operator} $${paramName}`);
+
+                        return;
+                    }
+                }
+
                 cyphers.push(`${nodeVariable}.${f.fieldName} ${operator} $${paramName}`);
             });
         }
