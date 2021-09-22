@@ -17,16 +17,28 @@
  * limitations under the License.
  */
 
-export default function joinPredicates(predicates: string[], joinType: "AND" | "OR"): string {
-    if (predicates.length === 0) {
+
+export const PREDICATE_JOINS = ["AND", "OR"] as const;
+export type PredicateJoin = typeof PREDICATE_JOINS[number];
+
+export function isPredicateJoin(value: string): value is PredicateJoin {
+    return ["AND", "OR"].includes(value);
+}
+
+export default function joinPredicates(predicates: string[], joinType: PredicateJoin): string {
+    const filteredPredicates = predicates.filter(Boolean);
+
+    if (filteredPredicates.length === 0) {
         return "";
     }
 
-    if (predicates.length === 1) {
-        return predicates[0];
+    if (filteredPredicates.length === 1) {
+        return filteredPredicates[0];
     }
 
     return `(${
-        joinType === "AND" ? predicates.join(" AND ") : predicates.map((predicate) => `(${predicate})`).join(" OR ")
+        joinType === "AND" 
+            ? filteredPredicates.join(" AND ") 
+            : filteredPredicates.map((predicate) => `(${predicate})`).join(" OR ")
     })`;
 }

@@ -22,6 +22,26 @@ import trimmer from "./trimmer";
 
 describe("join predicates", () => {
     describe("AND", () => {
+        test("it should return empty for an empty predicate list", () => {
+            expect(joinPredicates([], "AND")).toBe("");
+        });
+
+        test("it should filter singular empty predicates", () => {
+            expect(joinPredicates([""], "AND")).toBe("");
+        });
+
+        test("it should filter multiple non-empty predicates", () => {
+            expect(joinPredicates(["", ""], "AND")).toBe("");
+        });
+
+        test("it should return singular non-empty predicates", () => {
+            expect(joinPredicates(["", "true", ""], "AND")).toBe("true");
+        });
+
+        test("it should join non-empty predicates", () => {
+            expect(joinPredicates(["", "true", "", "false"], "AND")).toBe("(true AND false)");
+        });
+
         test("it should return a single predicate as-is", () => {
             expect(joinPredicates(["true"], "AND")).toBe(trimmer("true"));
         });
@@ -36,6 +56,26 @@ describe("join predicates", () => {
     });
 
     describe("OR", () => {
+        test("it should return empty for an empty predicate list", () => {
+            expect(joinPredicates([], "OR")).toBe("");
+        });
+
+        test("it should filter singular empty predicates", () => {
+            expect(joinPredicates([""], "OR")).toBe("");
+        });
+
+        test("it should filter multiple non-empty predicates", () => {
+            expect(joinPredicates(["", ""], "OR")).toBe("");
+        });
+
+        test("it should return singular non-empty predicates", () => {
+            expect(joinPredicates(["", "true", ""], "OR")).toBe("true");
+        });
+
+        test("it should join non-empty predicates", () => {
+            expect(joinPredicates(["", "true", "", "false"], "OR")).toBe("((true) OR (false))");
+        });
+
         test("it should return a single predicate as-is", () => {
             expect(joinPredicates(["true"], "OR")).toBe(trimmer("true"));
         });
