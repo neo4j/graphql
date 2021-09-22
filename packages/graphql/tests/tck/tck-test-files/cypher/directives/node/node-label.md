@@ -1,17 +1,16 @@
-# Node Directive
+# Label in Node directive
 
 Custom label using @node.
 
 Schema:
 
 ```graphql
-
-type Actor @node(label:"Person") {
+type Actor @node(label: "Person") {
     name: String
     movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
 }
 
-type Movie @node(label:"Film") {
+type Movie @node(label: "Film") {
     id: ID
     title: String
     actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
@@ -42,7 +41,7 @@ RETURN this { .title } as this
 ### Expected Cypher Params
 
 ```json
-{ }
+{}
 ```
 
 ---
@@ -251,14 +250,7 @@ RETURN this { .id } AS this
 mutation {
     updateMovies(
         where: { id: "1" }
-        update: {
-            actors: [
-                {
-                    where: { node: { name: "old name" } }
-                    update: { node: { name: "new name" } }
-                }
-            ]
-        }
+        update: { actors: [{ where: { node: { name: "old name" } }, update: { node: { name: "new name" } } }] }
     ) {
         movies {
             id
@@ -328,10 +320,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateMovies(
-        where: { id: "1" }
-        connect: { actors: [{ where: { node: { name: "Daniel" } } }] }
-    ) {
+    updateMovies(where: { id: "1" }, connect: { actors: [{ where: { node: { name: "Daniel" } } }] }) {
         movies {
             id
         }
@@ -374,10 +363,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateMovies(
-        where: { id: "1" }
-        disconnect: { actors: [{ where: { node: { name: "Daniel" } } }] }
-    ) {
+    updateMovies(where: { id: "1" }, disconnect: { actors: [{ where: { node: { name: "Daniel" } } }] }) {
         movies {
             id
         }
@@ -408,24 +394,24 @@ RETURN this { .id } AS this
 {
     "this_id": "1",
     "updateMovies": {
-     "args": {
-       "disconnect": {
-         "actors": [{
-             "where": {
-               "node": {
-                 "name": "Daniel"
-               }
-             }
-           }
-         ]
-       }
-     }
-   }
+        "args": {
+            "disconnect": {
+                "actors": [
+                    {
+                        "where": {
+                            "node": {
+                                "name": "Daniel"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
 }
 ```
 
 ---
-
 
 ## Delete Movie with custom label
 
@@ -463,10 +449,7 @@ DETACH DELETE this
 
 ```graphql
 mutation {
-    deleteMovies(
-        where: { id: 123 }
-        delete: { actors: { where: { node: { name: "Actor to delete" } } } }
-    ) {
+    deleteMovies(where: { id: 123 }, delete: { actors: { where: { node: { name: "Actor to delete" } } } }) {
         nodesDeleted
     }
 }
@@ -517,11 +500,7 @@ DETACH DELETE this
 
 ```graphql
 mutation {
-    deleteMovies(where: {
-        actors: {
-            name:"tom"
-        }
-    }) {
+    deleteMovies(where: { actors: { name: "tom" } }) {
         nodesDeleted
     }
 }
@@ -542,7 +521,6 @@ MATCH (this:Film) WHERE EXISTS((this)<-[:ACTED_IN]-(:Person)) AND ANY(this_actor
 ```
 
 ---
-
 
 ## Count movies with custom label
 
