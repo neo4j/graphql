@@ -459,15 +459,7 @@ OR
 CALL apoc.util.validate(NOT(ANY(r IN ["user"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), "@neo4j/graphql/FORBIDDEN", [0])
 RETURN this {
     .id,
-    content: [(this)-[:HAS_POST]->(this_content)
-        WHERE ("Post" IN labels(this_content)) | head( [ this_content IN [this_content] WHERE ("Post" IN labels(this_content)) 
-        AND
-                ANY(r IN ["user"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND EXISTS((this_content)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_content)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content_Post_auth_where0_creator_id) 
-            OR 
-                ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
-        AND apoc.util.validatePredicate(NOT(ANY(r IN ["user"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), "@neo4j/graphql/FORBIDDEN", [0])
-        | this_content { __resolveType: "Post", .id } ] ) 
-    ] 
+    content: [this_content IN [(this)-[:HAS_POST]->(this_content) WHERE ("Post" IN labels(this_content)) | head( [ this_content IN [this_content] WHERE ("Post" IN labels(this_content)) AND ANY(r IN ["user"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND EXISTS((this_content)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_content)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content_Post_auth_where0_creator_id) OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND apoc.util.validatePredicate(NOT(ANY(r IN ["user"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), "@neo4j/graphql/FORBIDDEN", [0]) | this_content { __resolveType: "Post", .id } ] ) ] WHERE this_content IS NOT NULL] 
 } as this
 ```
 

@@ -122,8 +122,7 @@ describe("createAuthAndParams", () => {
                 arguments: [],
             };
 
-            // @ts-ignore
-            const node: Node = {
+            const node = new NodeBuilder({
                 name: "Movie",
                 relationFields: [],
                 cypherFields: [],
@@ -134,7 +133,6 @@ describe("createAuthAndParams", () => {
                 interfaceFields: [],
                 objectFields: [],
                 pointFields: [],
-                authableFields: [idField],
                 auth: {
                     rules: [
                         {
@@ -149,7 +147,7 @@ describe("createAuthAndParams", () => {
                     ],
                     type: "JWT",
                 },
-            };
+            }).instance();
 
             // @ts-ignore
             const neoSchema: Neo4jGraphQL = {
