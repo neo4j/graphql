@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import camelCase from "camelcase";
 import {
     graphql,
     printSchema,
@@ -28,8 +27,8 @@ import {
     GraphQLResolveInfo,
 } from "graphql";
 import { makeExecutableSchema } from "@graphql-tools/schema";
+import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
 import path from "path";
-import pluralize from "pluralize";
 import jsonwebtoken from "jsonwebtoken";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
@@ -41,7 +40,6 @@ import {
     translateRead,
     translateUpdate,
 } from "../../src/translate";
-import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
 import { Context } from "../../src/types";
 import { Neo4jGraphQL } from "../../src";
 import {
@@ -137,9 +135,10 @@ describe("TCK Generated tests", () => {
                         return res;
                     }
 
+                    const node = neoSchema.nodes.find((x) => x.name === def.name.value) as Node;
                     return {
                         ...res,
-                        [pluralize(camelCase(def.name.value))]: (
+                        [node.getPlural({ camelCase: true })]: (
                             _root: any,
                             _params: any,
                             context: Context,
@@ -154,7 +153,7 @@ describe("TCK Generated tests", () => {
 
                             const [cQuery, cQueryParams] = translateRead({
                                 context: mergedContext,
-                                node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                node,
                             });
 
                             compare(
@@ -165,7 +164,7 @@ describe("TCK Generated tests", () => {
 
                             return [];
                         },
-                        [`${pluralize(camelCase(def.name.value))}Count`]: (
+                        [`${node.getPlural({ camelCase: true })}Count`]: (
                             _root: any,
                             _params: any,
                             context: Context,
@@ -191,7 +190,7 @@ describe("TCK Generated tests", () => {
 
                             return 1;
                         },
-                        [`${pluralize(camelCase(def.name.value))}Aggregate`]: (
+                        [`${node.getPlural({ camelCase: true })}Aggregate`]: (
                             _root: any,
                             _params: any,
                             context: Context,
@@ -204,7 +203,6 @@ describe("TCK Generated tests", () => {
 
                             const mergedContext = { ...context, ...defaultContext };
 
-                            const node = neoSchema.nodes.find((x) => x.name === def.name.value) as Node;
                             const [cQuery, cQueryParams] = translateAggregate({
                                 context: mergedContext,
                                 node,
@@ -313,10 +311,10 @@ describe("TCK Generated tests", () => {
                     if (def.kind !== "ObjectTypeDefinition") {
                         return res;
                     }
-
+                    const node = neoSchema.nodes.find((x) => x.name === def.name.value) as Node;
                     return {
                         ...res,
-                        [`create${pluralize(def.name.value)}`]: (
+                        [`create${node.getPlural({ camelCase: false })}`]: (
                             _root: any,
                             _params: any,
                             context: any,
@@ -331,7 +329,7 @@ describe("TCK Generated tests", () => {
 
                             const [cQuery, cQueryParams] = translateCreate({
                                 context: mergedContext,
-                                node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                node,
                             });
 
                             compare(
@@ -341,10 +339,10 @@ describe("TCK Generated tests", () => {
                             );
 
                             return {
-                                [pluralize(camelCase(def.name.value))]: [],
+                                [node.getPlural({ camelCase: true })]: [],
                             };
                         },
-                        [`update${pluralize(def.name.value)}`]: (
+                        [`update${node.getPlural({ camelCase: false })}`]: (
                             _root: any,
                             _params: any,
                             context: any,
@@ -359,7 +357,7 @@ describe("TCK Generated tests", () => {
 
                             const [cQuery, cQueryParams] = translateUpdate({
                                 context: mergedContext,
-                                node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                node,
                             });
 
                             compare(
@@ -369,10 +367,15 @@ describe("TCK Generated tests", () => {
                             );
 
                             return {
-                                [pluralize(camelCase(def.name.value))]: [],
+                                [node.getPlural({ camelCase: true })]: [],
                             };
                         },
-                        [`delete${pluralize(def.name.value)}`]: (_root: any, _params: any, context: any, info) => {
+                        [`delete${node.getPlural({ camelCase: false })}`]: (
+                            _root: any,
+                            _params: any,
+                            context: any,
+                            info
+                        ) => {
                             const resolveTree = getNeo4jResolveTree(info);
 
                             context.neoSchema = neoSchema;
@@ -382,7 +385,7 @@ describe("TCK Generated tests", () => {
 
                             const [cQuery, cQueryParams] = translateDelete({
                                 context: mergedContext,
-                                node: neoSchema.nodes.find((x) => x.name === def.name.value) as Node,
+                                node,
                             });
 
                             compare(
