@@ -398,6 +398,11 @@ describe("Alias", () => {
             }
 
             input relationshipWhereTypeInputName {
+              rating_EQUAL: Float
+              rating_GT: Float
+              rating_GTE: Float
+              rating_LT: Float
+              rating_LTE: Float
               title_EQUAL: ID
               title_GT: Int
               title_GTE: Int
