@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import { Context } from "../types";
+import { NodeBuilder } from "../utils/test";
 
 describe("createWhereAndParams", () => {
     test("should be a function", () => {
@@ -33,21 +33,7 @@ describe("createWhereAndParams", () => {
 
         const varName = "this";
 
-        // @ts-ignore
-        const node: Node = {
-            relationFields: [],
-            cypherFields: [],
-            enumFields: [],
-            scalarFields: [],
-            primitiveFields: [],
-            temporalFields: [],
-            interfaceFields: [],
-            unionFields: [],
-            objectFields: [],
-            pointFields: [],
-            otherDirectives: [],
-            interfaces: [],
-        };
+        const node = new NodeBuilder().instance();
 
         // @ts-ignore
         const context: Context = { neoSchema: { nodes: [] } };
