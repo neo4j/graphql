@@ -956,7 +956,13 @@ function makeAugmentedSchema(
             const connectionUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateConnectionInput`;
             const relationshipWhereTypeInputName = `${node.name}${upperFirst(rel.fieldName)}AggregateInput`;
 
-            const aggregationSelectionTypeMatrix: [string, any?][] = [["ID"], ["String"], ["Float"], ["Int"]];
+            const aggregationSelectionTypeMatrix: [string, any?][] = [
+                ["ID"],
+                ["String"],
+                ["Float"],
+                ["Int"],
+                ["BigInt"],
+            ];
 
             const nodeWhereAggregationInputFields = aggregationSelectionTypeMatrix.reduce<BaseField[]>((res, x) => {
                 const field = [...n.primitiveFields, ...n.temporalFields].find(
@@ -1017,6 +1023,12 @@ function makeAugmentedSchema(
                     if (field.typeMeta.name === "Int") {
                         nodeWhereAggregationInput?.addFields({
                             ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Int" }), {}),
+                        });
+                    }
+
+                    if (field.typeMeta.name === "BigInt") {
+                        nodeWhereAggregationInput?.addFields({
+                            ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "BigInt" }), {}),
                         });
                     }
                 });
