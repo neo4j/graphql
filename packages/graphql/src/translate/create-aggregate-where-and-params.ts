@@ -22,6 +22,33 @@ import { RelationField, Context } from "../types";
 
 const fieldOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
 
+type Operator = "=" | "<"| "<=" | ">" | ">=";
+
+function createOperator(input): Operator {
+    let operator: Operator = "=";
+
+    switch (input) {
+        case "LT":
+            operator = "<";
+            break;
+        case "LTE":
+            operator = "<=";
+            break;
+        case "GT":
+            operator = ">";
+            break;
+        case "GTE":
+            operator = ">=";
+            break;
+        default:
+            operator = "=";
+            break;
+    }
+
+    return operator;
+}
+
+
 function createPredicate({
     node,
     aggregation,
@@ -39,7 +66,7 @@ function createPredicate({
     varName: string;
     nodeVariable: string;
 }): [string, any] {
-    let cyphers: string[] = [];
+    const cyphers: string[] = [];
     let params = {};
 
     Object.entries(aggregation).forEach((entry) => {
@@ -74,25 +101,7 @@ function createPredicate({
                 const paramName = `${chainStr}_${entry[0]}`;
                 params[paramName] = entry[1];
 
-                let operator = "=";
-
-                switch (countType.split("_")[1]) {
-                    case "LT":
-                        operator = "<";
-                        break;
-                    case "LTE":
-                        operator = "<=";
-                        break;
-                    case "GT":
-                        operator = ">";
-                        break;
-                    case "GTE":
-                        operator = ">=";
-                        break;
-                    default:
-                        operator = "=";
-                        break;
-                }
+                const operator = createOperator(countType.split("_")[1]);
 
                 cyphers.push(`count(${nodeVariable}) ${operator} $${paramName}`);
             }
@@ -110,29 +119,8 @@ function createPredicate({
                     return;
                 }
 
-                let operator = "=";
-
                 const [, operatorString] = e[0].split(`${f.fieldName}_`);
-                switch (operatorString) {
-                    case "LT":
-                        operator = "<";
-                        break;
-                    case "LTE":
-                        operator = "<=";
-                        break;
-                    case "GT":
-                        operator = ">";
-                        break;
-                    case "GTE":
-                        operator = ">=";
-                        break;
-                    case "EQUAL":
-                        operator = "=";
-                        break;
-                    default:
-                        operator = "=";
-                        break;
-                }
+                const operator = createOperator(operatorString);
 
                 const paramName = `${chainStr}_${entry[0]}_${e[0]}`;
                 params[paramName] = e[1];
@@ -159,7 +147,7 @@ function createAggregateWhereAndParams({
     context: Context;
     aggregation: any;
 }): [string, any] {
-    let cyphers: string[] = [];
+    const cyphers: string[] = [];
     let params = {};
 
     const inStr = field.direction === "IN" ? "<-" : "-";
