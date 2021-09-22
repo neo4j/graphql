@@ -22,13 +22,16 @@ import pluralize from "pluralize";
 import { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { Context, ConnectionField } from "../types";
+import { Context, ConnectionField, RelationField } from "../types";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
+import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 
 function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
     const connectionStrs: string[] = [];
+    const interfaceStrs: string[] = [];
     let connectionParams: any;
+    let interfaceParams: any;
 
     const { resolveTree } = context;
 
@@ -102,6 +105,23 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
         });
     }
 
+    if (projection[2]?.interfaceFields?.length) {
+        projection[2].interfaceFields.forEach((interfaceResolveTree) => {
+            const relationshipField = node.relationFields.find(
+                (x) => x.fieldName === interfaceResolveTree.name
+            ) as RelationField;
+            const interfaceProjection = createInterfaceProjectionAndParams({
+                resolveTree: interfaceResolveTree,
+                field: relationshipField,
+                context,
+                nodeVariable: "REPLACE_ME",
+            });
+            interfaceStrs.push(interfaceProjection.cypher);
+            if (!interfaceParams) interfaceParams = {};
+            interfaceParams = { ...interfaceParams, ...interfaceProjection.params };
+        });
+    }
+
     const replacedConnectionStrs = connectionStrs.length
         ? createStrs.map((_, i) => {
               return connectionStrs
@@ -112,11 +132,32 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
           })
         : [];
 
+    const replacedInterfaceStrs = interfaceStrs.length
+        ? createStrs.map((_, i) => {
+              return interfaceStrs
+                  .map((interfaceStr) => {
+                      return interfaceStr.replace(/REPLACE_ME/g, `this${i}`);
+                  })
+                  .join("\n");
+          })
+        : [];
+
     const replacedConnectionParams = connectionParams
         ? createStrs.reduce((res1, _, i) => {
               return {
                   ...res1,
                   ...Object.entries(connectionParams).reduce((res2, [key, value]) => {
+                      return { ...res2, [key.replace("REPLACE_ME", `this${i}`)]: value };
+                  }, {}),
+              };
+          }, {})
+        : {};
+
+    const replacedInterfaceParams = interfaceParams
+        ? createStrs.reduce((res1, _, i) => {
+              return {
+                  ...res1,
+                  ...Object.entries(interfaceParams).reduce((res2, [key, value]) => {
                       return { ...res2, [key.replace("REPLACE_ME", `this${i}`)]: value };
                   }, {}),
               };
@@ -139,9 +180,18 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
         .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
         .join("\n");
 
-    const cypher = [`${createStrs.join("\n")}`, authCalls, ...replacedConnectionStrs, `\nRETURN ${projectionStr}`];
+    const cypher = [
+        `${createStrs.join("\n")}`,
+        authCalls,
+        ...replacedConnectionStrs,
+        ...replacedInterfaceStrs,
+        `\nRETURN ${projectionStr}`,
+    ];
 
-    return [cypher.filter(Boolean).join("\n"), { ...params, ...replacedProjectionParams, ...replacedConnectionParams }];
+    return [
+        cypher.filter(Boolean).join("\n"),
+        { ...params, ...replacedProjectionParams, ...replacedConnectionParams, ...replacedInterfaceParams },
+    ];
 }
 
 export default translateCreate;

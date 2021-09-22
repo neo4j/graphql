@@ -158,6 +158,16 @@ function createRelationshipFields({
                 }
             );
 
+            const nodeFieldInput = schemaComposer.getOrCreateITC(
+                `${rel.connectionPrefix}${upperFirst(rel.fieldName)}FieldInput`,
+                (tc) => {
+                    tc.addFields({
+                        create: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput,
+                        connect: rel.typeMeta.array ? connectFieldInput.NonNull.List : connectFieldInput,
+                    });
+                }
+            );
+
             refNodes.forEach((n) => {
                 const unionPrefix = `${sourceName}${upperFieldName}${n.name}`;
                 const updateField = `${n.name}UpdateInput`;
@@ -197,7 +207,7 @@ function createRelationshipFields({
             });
 
             nodeCreateInput.addFields({
-                [rel.fieldName]: createFieldInput,
+                [rel.fieldName]: nodeFieldInput,
             });
 
             nodeConnectInput.addFields({
@@ -213,11 +223,11 @@ function createRelationshipFields({
             });
 
             nodeRelationInput.addFields({
-                [rel.fieldName]: createFieldInput,
+                [rel.fieldName]: rel.typeMeta.array ? createFieldInput.NonNull.List : createFieldInput,
             });
 
             nodeUpdateInput.addFields({
-                [rel.fieldName]: updateFieldInput,
+                [rel.fieldName]: rel.typeMeta.array ? updateFieldInput.NonNull.List : updateFieldInput,
             });
 
             return;

@@ -25,8 +25,7 @@ interface ActedIn @relationshipProperties {
 
 type Actor {
     name: String!
-    actedIn: [Production!]!
-        @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+    actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
 }
 ```
 
@@ -56,6 +55,7 @@ query {
 
 ```cypher
 MATCH (this:Actor)
+WITH this
 CALL {
   WITH this
   MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
@@ -65,7 +65,7 @@ UNION
   MATCH (this)-[:ACTED_IN]->(this_Series:Series)
   RETURN { __resolveType: "Series", title: this_Series.title, episodes: this_Series.episodes } AS actedIn
 }
-RETURN this { actedIn } as this
+RETURN this { actedIn: collect(actedIn) } as this
 ```
 
 ### Expected Cypher Params
@@ -100,6 +100,7 @@ query {
 
 ```cypher
 MATCH (this:Actor)
+WITH this
 CALL {
   WITH this
   MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
@@ -111,7 +112,7 @@ UNION
   WHERE this_Series.title STARTS WITH $this_actedIn.args.where.title_STARTS_WITH
   RETURN { __resolveType: "Series", title: this_Series.title, episodes: this_Series.episodes } AS actedIn
 }
-RETURN this { actedIn } as this
+RETURN this { actedIn: collect(actedIn) } as this
 ```
 
 ### Expected Cypher Params
@@ -193,12 +194,7 @@ RETURN this { actedInConnection } as this
 ```graphql
 query {
     actors {
-        actedInConnection(
-            where: {
-                node: { title_STARTS_WITH: "The " }
-                edge: { screenTime_GT: 60 }
-            }
-        ) {
+        actedInConnection(where: { node: { title_STARTS_WITH: "The " }, edge: { screenTime_GT: 60 } }) {
             edges {
                 screenTime
                 node {

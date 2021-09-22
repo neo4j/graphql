@@ -1,4 +1,4 @@
-# Interface Relationships - Disconnect
+# Interface Relationships - Update delete
 
 Tests Cypher output for interface relationship fields
 
@@ -25,24 +25,19 @@ interface ActedIn @relationshipProperties {
 
 type Actor {
     name: String!
-    actedIn: [Production!]!
-        @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+    actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
 }
 ```
 
 ---
 
-## Disconnect from an interface relationship
+## Update delete an interface relationship
 
 ### GraphQL Input
 
 ```graphql
 mutation {
-    updateActors(
-        disconnect: {
-            actedIn: { where: { node: { title_STARTS_WITH: "The " } } }
-        }
-    ) {
+    updateActors(delete: { actedIn: { where: { node: { title_STARTS_WITH: "The " } } } }) {
         actors {
             name
         }
@@ -57,23 +52,22 @@ MATCH (this:Actor)
 WITH this
 CALL {
     WITH this
-    OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
-    WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors.args.disconnect.actedIn[0].where.node.title_STARTS_WITH
-    FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
-        DELETE this_disconnect_actedIn0_rel
+    OPTIONAL MATCH (this)-[this_delete_actedIn0_relationship:ACTED_IN]->(this_delete_actedIn0:Movie)
+    WHERE this_delete_actedIn0.title STARTS WITH $updateActors.args.delete.actedIn[0].where.node.title_STARTS_WITH
+    FOREACH(_ IN CASE this_delete_actedIn0 WHEN NULL THEN [] ELSE [1] END |
+        DETACH DELETE this_delete_actedIn0
     )
     RETURN count(*)
 UNION
     WITH this
-    OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
-    WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors.args.disconnect.actedIn[0].where.node.title_STARTS_WITH
-    FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
-        DELETE this_disconnect_actedIn0_rel
+    OPTIONAL MATCH (this)-[this_delete_actedIn0_relationship:ACTED_IN]->(this_delete_actedIn0:Series)
+    WHERE this_delete_actedIn0.title STARTS WITH $updateActors.args.delete.actedIn[0].where.node.title_STARTS_WITH
+    FOREACH(_ IN CASE this_delete_actedIn0 WHEN NULL THEN [] ELSE [1] END |
+        DETACH DELETE this_delete_actedIn0
     )
     RETURN count(*)
 }
 RETURN this { .name } AS this
-
 ```
 
 ### Expected Cypher Params

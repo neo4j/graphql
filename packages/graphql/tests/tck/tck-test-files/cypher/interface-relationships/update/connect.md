@@ -1,4 +1,4 @@
-# Interface Relationships - Connect
+# Interface Relationships - Update connect
 
 Tests Cypher output for interface relationship fields
 
@@ -25,27 +25,19 @@ interface ActedIn @relationshipProperties {
 
 type Actor {
     name: String!
-    actedIn: [Production!]!
-        @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+    actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
 }
 ```
 
 ---
 
-## Connect to an interface relationship
+## Update connect to an interface relationship
 
 ### GraphQL Input
 
 ```graphql
 mutation {
-    updateActors(
-        connect: {
-            actedIn: {
-                edge: { screenTime: 90 }
-                where: { node: { title_STARTS_WITH: "The " } }
-            }
-        }
-    ) {
+    updateActors(connect: { actedIn: { edge: { screenTime: 90 }, where: { node: { title_STARTS_WITH: "The " } } } }) {
         actors {
             name
         }

@@ -381,10 +381,10 @@ function createProjectionAndParams({
                     res.meta.interfaceFields = [];
                 }
 
-                const f = field as ResolveTree;
+                const f = field;
 
                 res.meta.interfaceFields.push(f);
-                res.projection.push(literalElements ? `${f.alias}: ${f.alias}` : `${f.alias}`);
+                res.projection.push(`${f.alias}: collect(${f.alias})`);
 
                 return res;
             }

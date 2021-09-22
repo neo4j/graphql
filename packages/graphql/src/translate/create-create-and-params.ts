@@ -70,17 +70,25 @@ function createCreateAndParams({
                 });
 
                 // refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
             } else {
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             refNodes.forEach((refNode) => {
                 const v = relationField.union ? value[refNode.name] : value;
-                const unionTypeName = relationField.union ? refNode.name : "";
+                const unionTypeName = relationField.union || relationField.interface ? refNode.name : "";
 
                 if (v.create) {
                     const creates = relationField.typeMeta.array ? v.create : [v.create];
                     creates.forEach((create, index) => {
+                        if (relationField.interface && !create.node[refNode.name]) {
+                            return;
+                        }
+
                         res.creates.push(`\nWITH ${withVars.join(", ")}`);
 
                         const baseName = `${_varName}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
@@ -88,7 +96,7 @@ function createCreateAndParams({
                         const propertiesName = `${baseName}_relationship`;
 
                         const recurse = createCreateAndParams({
-                            input: create.node,
+                            input: relationField.interface ? create.node[refNode.name] : create.node,
                             context,
                             node: refNode,
                             varName: nodeName,
@@ -119,7 +127,7 @@ function createCreateAndParams({
                     });
                 }
 
-                if (v.connect) {
+                if (!relationField.interface && v.connect) {
                     const connectAndParams = createConnectAndParams({
                         withVars,
                         value: v.connect,
@@ -136,6 +144,23 @@ function createCreateAndParams({
                     res.params = { ...res.params, ...connectAndParams[1] };
                 }
             });
+
+            if (relationField.interface && value.connect) {
+                const connectAndParams = createConnectAndParams({
+                    withVars,
+                    value: value.connect,
+                    varName: `${_varName}${relationField.union ? "_" : ""}_connect`,
+                    parentVar: varName,
+                    relationField,
+                    context,
+                    refNodes,
+                    labelOverride: "",
+                    parentNode: node,
+                    fromCreate: true,
+                });
+                res.creates.push(connectAndParams[0]);
+                res.params = { ...res.params, ...connectAndParams[1] };
+            }
 
             return res;
         }

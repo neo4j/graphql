@@ -121,6 +121,11 @@ describe("Interface Relationships", () => {
               where: ActorActedInConnectionWhere
             }
 
+            input ActorActedInFieldInput {
+              connect: ActorActedInConnectFieldInput
+              create: ActorActedInCreateFieldInput
+            }
+
             type ActorActedInRelationship implements ActedIn {
               cursor: String!
               node: Production!
@@ -151,7 +156,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActorCreateInput {
-              actedIn: ActorActedInCreateFieldInput
+              actedIn: ActorActedInFieldInput
               name: String!
             }
 
@@ -171,7 +176,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActorRelationInput {
-              actedIn: ActorActedInCreateFieldInput
+              actedIn: [ActorActedInCreateFieldInput!]
             }
 
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
@@ -180,7 +185,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActorUpdateInput {
-              actedIn: ActorActedInUpdateFieldInput
+              actedIn: [ActorActedInUpdateFieldInput!]
               name: String
             }
 
@@ -568,6 +573,11 @@ describe("Interface Relationships", () => {
               where: ActorActedInConnectionWhere
             }
 
+            input ActorActedInFieldInput {
+              connect: [ActorActedInConnectFieldInput!]
+              create: [ActorActedInCreateFieldInput!]
+            }
+
             type ActorActedInRelationship implements ActedIn {
               cursor: String!
               node: Production!
@@ -602,7 +612,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActorCreateInput {
-              actedIn: ActorActedInCreateFieldInput
+              actedIn: ActorActedInFieldInput
               name: String!
             }
 
@@ -622,7 +632,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActorRelationInput {
-              actedIn: ActorActedInCreateFieldInput
+              actedIn: [ActorActedInCreateFieldInput!]
             }
 
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
@@ -631,7 +641,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActorUpdateInput {
-              actedIn: ActorActedInUpdateFieldInput
+              actedIn: [ActorActedInUpdateFieldInput!]
               name: String
             }
 

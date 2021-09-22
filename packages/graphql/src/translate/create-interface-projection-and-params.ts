@@ -91,7 +91,7 @@ function createInterfaceProjectionAndParams({
         }
         return subquery.join("\n");
     });
-    const interfaceProjection = ["CALL {", subqueries.join("\nUNION\n"), "}"];
+    const interfaceProjection = [`WITH ${nodeVariable}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
     // const unionStrs: string[] = [
     //     `${key}: ${!isArray ? "head(" : ""} [(${
     //         chainStr || varName

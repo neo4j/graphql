@@ -88,6 +88,10 @@ function createUpdateAndParams({
                 Object.keys(value).forEach((unionTypeName) => {
                     refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
             } else {
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
@@ -95,9 +99,13 @@ function createUpdateAndParams({
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const outStr = relationField.direction === "OUT" ? "->" : "-";
 
+            const subqueries: string[] = [];
+
             refNodes.forEach((refNode) => {
                 const v = relationField.union ? value[refNode.name] : value;
                 const updates = relationField.typeMeta.array ? v : [v];
+                const subquery: string[] = [];
+
                 updates.forEach((update, index) => {
                     const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
@@ -105,11 +113,11 @@ function createUpdateAndParams({
 
                     if (update.update) {
                         if (withVars) {
-                            res.strs.push(`WITH ${withVars.join(", ")}`);
+                            subquery.push(`WITH ${withVars.join(", ")}`);
                         }
 
                         const labels = refNode.labelString;
-                        res.strs.push(
+                        subquery.push(
                             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`
                         );
 
@@ -144,11 +152,11 @@ function createUpdateAndParams({
                             }
                         }
                         if (whereStrs.length) {
-                            res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
+                            subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
                         }
 
                         if (update.update.node) {
-                            res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
+                            subquery.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
 
                             const auth = createAuthParam({ context });
                             let innerApocParams = { auth };
@@ -186,11 +194,11 @@ function createUpdateAndParams({
                                 .join(",");
 
                             const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
-                            res.strs.push(updateStr);
+                            subquery.push(updateStr);
                         }
 
                         if (update.update.edge) {
-                            res.strs.push(
+                            subquery.push(
                                 `CALL apoc.do.when(${relationshipVariable} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`
                             );
 
@@ -215,7 +223,7 @@ function createUpdateAndParams({
                                 updateStrs.push(`", "", ${apocArgs})`);
                             }
                             updateStrs.push(`YIELD value as ${relationshipVariable}_${key}${index}_edge`);
-                            res.strs.push(updateStrs.join("\n"));
+                            subquery.push(updateStrs.join("\n"));
                         }
                     }
 
@@ -235,7 +243,7 @@ function createUpdateAndParams({
                                 relationField.union ? `.${refNode.name}` : ""
                             }${relationField.typeMeta.array ? `[${index}]` : ""}.disconnect`,
                         });
-                        res.strs.push(disconnectAndParams[0]);
+                        subquery.push(disconnectAndParams[0]);
                         res.params = { ...res.params, ...disconnectAndParams[1] };
                     }
 
@@ -252,7 +260,7 @@ function createUpdateAndParams({
                             parentNode: node,
                             insideDoWhen,
                         });
-                        res.strs.push(connectAndParams[0]);
+                        subquery.push(connectAndParams[0]);
                         res.params = { ...res.params, ...connectAndParams[1] };
                     }
 
@@ -273,13 +281,13 @@ function createUpdateAndParams({
                             }.delete`, // its use here
                             recursing: true,
                         });
-                        res.strs.push(deleteAndParams[0]);
+                        subquery.push(deleteAndParams[0]);
                         res.params = { ...res.params, ...deleteAndParams[1] };
                     }
 
                     if (update.create) {
                         if (withVars) {
-                            res.strs.push(`WITH ${withVars.join(", ")}`);
+                            subquery.push(`WITH ${withVars.join(", ")}`);
                         }
 
                         const creates = relationField.typeMeta.array ? update.create : [update.create];
@@ -296,9 +304,9 @@ function createUpdateAndParams({
                                 withVars: [...withVars, nodeName],
                                 insideDoWhen,
                             });
-                            res.strs.push(createAndParams[0]);
+                            subquery.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
-                            res.strs.push(
+                            subquery.push(
                                 `MERGE (${parentVar})${inStr}[${create.edge ? propertiesName : ""}:${
                                     relationField.type
                                 }]${outStr}(${nodeName})`
@@ -314,12 +322,27 @@ function createUpdateAndParams({
                                         relationField.union ? `.${refNode.name}` : ""
                                     }[${index}].create[${i}].edge`,
                                 });
-                                res.strs.push(setA);
+                                subquery.push(setA);
                             }
                         });
                     }
+
+                    if (relationField.interface) {
+                        subquery.push("RETURN count(*)");
+                    }
                 });
+
+                subqueries.push(subquery.join("\n"));
             });
+
+            if (relationField.interface) {
+                res.strs.push(`WITH ${withVars.join(", ")}`);
+                res.strs.push("CALL {");
+                res.strs.push(subqueries.join("\nUNION\n"));
+                res.strs.push("}");
+            } else {
+                res.strs.push(subqueries.join("\n"));
+            }
 
             return res;
         }
