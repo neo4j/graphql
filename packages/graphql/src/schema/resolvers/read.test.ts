@@ -17,16 +17,14 @@
  * limitations under the License.
  */
 
-import { Node } from "../../classes";
+import { NodeBuilder } from "../../utils/test";
 import findResolver from "./read";
 
 describe("Read resolver", () => {
     test("should return the correct; type, args and resolve", () => {
-        // @ts-ignore
-        const node: Node = {
-            // @ts-ignore
+        const node = new NodeBuilder({
             name: "Movie",
-        };
+        }).instance();
 
         const result = findResolver({ node });
         expect(result.type).toEqual(`[Movie!]!`);
