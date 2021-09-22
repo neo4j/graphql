@@ -17,17 +17,15 @@
  * limitations under the License.
  */
 
-import { Node } from "../../classes";
 import deleteResolver from "./delete";
+import { NodeBuilder } from "../../utils/test";
 
 describe("Delete resolver", () => {
     test("should return the correct; type, args and resolve", () => {
-        // @ts-ignore
-        const node: Node = {
-            // @ts-ignore
+        const node = new NodeBuilder({
             name: "Movie",
             relationFields: [],
-        };
+        }).instance();
 
         const result = deleteResolver({ node });
         expect(result.type).toEqual(`DeleteInfo!`);
