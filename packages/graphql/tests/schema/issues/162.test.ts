@@ -290,6 +290,7 @@ describe("162", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              node: relationshipWhereTypeInputName
             }
 
             input TigerJawLevel2Part1TigerConnectFieldInput {
@@ -473,7 +474,11 @@ describe("162", () => {
             }
 
             input relationshipWhereTypeInputName {
-              id_EQUAL: ID
+              x_EQUAL: Int
+              x_GT: Int
+              x_GTE: Int
+              x_LT: Int
+              x_LTE: Int
             }
             "
         `);

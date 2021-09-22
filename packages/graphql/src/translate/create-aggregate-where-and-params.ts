@@ -132,6 +132,7 @@ function createPredicate({
                     }
                 }
 
+                // Default
                 cyphers.push(`${nodeVariable}.${f.fieldName} ${operator} $${paramName}`);
             });
         }
