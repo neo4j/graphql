@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { Node } from "../../classes";
 import updateResolver from "./update";
+import { NodeBuilder } from "../../utils/test";
 
 describe("Update resolver", () => {
     test("should return the correct; type, args and resolve", () => {
-        // @ts-ignore
-        const node: Node = {
+        const node = new NodeBuilder({
             name: "Movie",
             // @ts-ignore
             relationFields: [{}, {}],
-        };
+        }).instance();
 
         const result = updateResolver({ node });
         expect(result.type).toEqual("UpdateMoviesMutationResponse!");
