@@ -95,7 +95,7 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                    this.id IS NOT NULL AND this.id = $this_auth_allow0_id OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                    ((this.id IS NOT NULL AND this.id = $this_auth_allow0_id) OR (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))
                 `)
             );
 
@@ -175,7 +175,7 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                    this.id IS NOT NULL AND this.id = $this_auth_allow0_id OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                    ((this.id IS NOT NULL AND this.id = $this_auth_allow0_id) OR (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))
                 `)
             );
 
@@ -253,7 +253,7 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                     ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_allow0_id
+                     (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_allow0_id)
                 `)
             );
 
@@ -264,83 +264,159 @@ describe("createAuthAndParams", () => {
     });
 
     describe("top-level keys", () => {
-        test("AND OR", () => {
-            ["AND", "OR"].forEach((key) => {
-                const idField = {
-                    fieldName: "id",
-                    typeMeta: {
-                        name: "ID",
-                        array: false,
-                        required: false,
-                        pretty: "String",
-                        input: {
-                            where: {
-                                type: "String",
-                                pretty: "String",
-                            },
-                            create: {
-                                type: "String",
-                                pretty: "String",
-                            },
-                            update: {
-                                type: "String",
-                                pretty: "String",
-                            },
+        test("AND", () => {
+            const idField = {
+                fieldName: "id",
+                typeMeta: {
+                    name: "ID",
+                    array: false,
+                    required: false,
+                    pretty: "String",
+                    input: {
+                        where: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        create: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        update: {
+                            type: "String",
+                            pretty: "String",
                         },
                     },
-                    otherDirectives: [],
-                    arguments: [],
-                };
+                },
+                otherDirectives: [],
+                arguments: [],
+            };
 
-                // @ts-ignore
-                const node: Node = {
-                    name: "Movie",
-                    relationFields: [],
-                    cypherFields: [],
-                    enumFields: [],
-                    scalarFields: [],
-                    primitiveFields: [idField],
-                    temporalFields: [],
-                    interfaceFields: [],
-                    objectFields: [],
-                    pointFields: [],
-                    authableFields: [idField],
-                    auth: {
-                        rules: [{ [key]: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }] }],
-                        type: "JWT",
-                    },
-                };
+            // @ts-ignore
+            const node: Node = {
+                name: "Movie",
+                relationFields: [],
+                cypherFields: [],
+                enumFields: [],
+                scalarFields: [],
+                primitiveFields: [idField],
+                temporalFields: [],
+                interfaceFields: [],
+                objectFields: [],
+                pointFields: [],
+                authableFields: [idField],
+                auth: {
+                    rules: [{ AND: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }] }],
+                    type: "JWT",
+                },
+            };
 
-                // @ts-ignore
-                const neoSchema: Neo4jGraphQL = {
-                    nodes: [node],
-                };
+            // @ts-ignore
+            const neoSchema: Neo4jGraphQL = {
+                nodes: [node],
+            };
 
-                const sub = generate({
-                    charset: "alphabetic",
-                });
+            const sub = generate({
+                charset: "alphabetic",
+            });
 
-                // @ts-ignore
-                const context: Context = { neoSchema };
-                context.jwt = {
-                    sub,
-                };
+            // @ts-ignore
+            const context: Context = { neoSchema };
+            context.jwt = {
+                sub,
+            };
 
-                const result = createAuthAndParams({
-                    context,
-                    entity: node,
-                    allow: { parentNode: node, varName: "this" },
-                });
+            const result = createAuthAndParams({
+                context,
+                entity: node,
+                allow: { parentNode: node, varName: "this" },
+            });
 
-                expect(trimmer(result[0])).toEqual(
-                    trimmer(`
-                        this.id IS NOT NULL AND this.id = $this${key}0_auth_allow0_id ${key} ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+            expect(trimmer(result[0])).toEqual(
+                trimmer(`
+                        (this.id IS NOT NULL AND this.id = $thisAND0_auth_allow0_id AND ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)))
                     `)
-                );
+            );
 
-                expect(result[1]).toMatchObject({
-                    [`this${key}0_auth_allow0_id`]: sub,
-                });
+            expect(result[1]).toMatchObject({
+                [`thisAND0_auth_allow0_id`]: sub,
+            });
+        });
+
+        test("OR", () => {
+            const idField = {
+                fieldName: "id",
+                typeMeta: {
+                    name: "ID",
+                    array: false,
+                    required: false,
+                    pretty: "String",
+                    input: {
+                        where: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        create: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        update: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                    },
+                },
+                otherDirectives: [],
+                arguments: [],
+            };
+
+            // @ts-ignore
+            const node: Node = {
+                name: "Movie",
+                relationFields: [],
+                cypherFields: [],
+                enumFields: [],
+                scalarFields: [],
+                primitiveFields: [idField],
+                temporalFields: [],
+                interfaceFields: [],
+                objectFields: [],
+                pointFields: [],
+                authableFields: [idField],
+                auth: {
+                    rules: [{ OR: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }] }],
+                    type: "JWT",
+                },
+            };
+
+            // @ts-ignore
+            const neoSchema: Neo4jGraphQL = {
+                nodes: [node],
+            };
+
+            const sub = generate({
+                charset: "alphabetic",
+            });
+
+            // @ts-ignore
+            const context: Context = { neoSchema };
+            context.jwt = {
+                sub,
+            };
+
+            const result = createAuthAndParams({
+                context,
+                entity: node,
+                allow: { parentNode: node, varName: "this" },
+            });
+
+            expect(trimmer(result[0])).toEqual(
+                trimmer(`
+                    ((this.id IS NOT NULL AND this.id = $thisOR0_auth_allow0_id) OR (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))
+                `)
+            );
+
+            expect(result[1]).toMatchObject({
+                [`thisOR0_auth_allow0_id`]: sub,
             });
         });
 
@@ -420,13 +496,13 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                    ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                    (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
                 AND
                     this.id IS NOT NULL AND this.id = $this_auth_allow0_id
                 AND
-                    this.id IS NOT NULL AND this.id = $thisAND0_auth_allow0_id AND ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                    (this.id IS NOT NULL AND this.id = $thisAND0_auth_allow0_id AND ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)))
                 AND
-                    this.id IS NOT NULL AND this.id = $thisOR0_auth_allow0_id OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                    ((this.id IS NOT NULL AND this.id = $thisOR0_auth_allow0_id) OR (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)))))
                 `)
             );
 
@@ -439,112 +515,217 @@ describe("createAuthAndParams", () => {
     });
 
     describe("allow", () => {
-        test("AND OR", () => {
-            ["AND", "OR"].forEach((key) => {
-                const idField = {
-                    fieldName: "id",
-                    typeMeta: {
-                        name: "ID",
-                        array: false,
-                        required: false,
-                        pretty: "String",
-                        input: {
-                            where: {
-                                type: "String",
-                                pretty: "String",
-                            },
-                            create: {
-                                type: "String",
-                                pretty: "String",
-                            },
-                            update: {
-                                type: "String",
-                                pretty: "String",
-                            },
+        test("AND", () => {
+            const idField = {
+                fieldName: "id",
+                typeMeta: {
+                    name: "ID",
+                    array: false,
+                    required: false,
+                    pretty: "String",
+                    input: {
+                        where: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        create: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        update: {
+                            type: "String",
+                            pretty: "String",
                         },
                     },
-                    otherDirectives: [],
-                    arguments: [],
-                };
+                },
+                otherDirectives: [],
+                arguments: [],
+            };
 
-                // @ts-ignore
-                const node: Node = {
-                    name: "Movie",
-                    relationFields: [],
-                    cypherFields: [],
-                    enumFields: [],
-                    scalarFields: [],
-                    primitiveFields: [
-                        idField,
-                        {
-                            fieldName: "title",
-                            typeMeta: {
-                                name: "String",
-                                array: false,
-                                required: false,
-                                pretty: "String",
-                                input: {
-                                    where: {
-                                        type: "String",
-                                        pretty: "String",
-                                    },
-                                    create: {
-                                        type: "String",
-                                        pretty: "String",
-                                    },
-                                    update: {
-                                        type: "String",
-                                        pretty: "String",
-                                    },
+            // @ts-ignore
+            const node: Node = {
+                name: "Movie",
+                relationFields: [],
+                cypherFields: [],
+                enumFields: [],
+                scalarFields: [],
+                primitiveFields: [
+                    idField,
+                    {
+                        fieldName: "title",
+                        typeMeta: {
+                            name: "String",
+                            array: false,
+                            required: false,
+                            pretty: "String",
+                            input: {
+                                where: {
+                                    type: "String",
+                                    pretty: "String",
+                                },
+                                create: {
+                                    type: "String",
+                                    pretty: "String",
+                                },
+                                update: {
+                                    type: "String",
+                                    pretty: "String",
                                 },
                             },
-                            otherDirectives: [],
-                            arguments: [],
                         },
-                    ],
-                    temporalFields: [],
-                    interfaceFields: [],
-                    objectFields: [],
-                    pointFields: [],
-                    authableFields: [idField],
-                    auth: {
-                        rules: [{ allow: { [key]: [{ id: "$jwt.sub" }, { id: "$jwt.sub" }, { id: "$jwt.sub" }] } }],
-                        type: "JWT",
+                        otherDirectives: [],
+                        arguments: [],
                     },
-                };
+                ],
+                temporalFields: [],
+                interfaceFields: [],
+                objectFields: [],
+                pointFields: [],
+                authableFields: [idField],
+                auth: {
+                    rules: [{ allow: { AND: [{ id: "$jwt.sub" }, { id: "$jwt.sub" }, { id: "$jwt.sub" }] } }],
+                    type: "JWT",
+                },
+            };
 
-                // @ts-ignore
-                const neoSchema: Neo4jGraphQL = {
-                    nodes: [node],
-                };
+            // @ts-ignore
+            const neoSchema: Neo4jGraphQL = {
+                nodes: [node],
+            };
 
-                const sub = generate({
-                    charset: "alphabetic",
-                });
+            const sub = generate({
+                charset: "alphabetic",
+            });
 
-                // @ts-ignore
-                const context: Context = { neoSchema };
-                context.jwt = {
-                    sub,
-                };
+            // @ts-ignore
+            const context: Context = { neoSchema };
+            context.jwt = {
+                sub,
+            };
 
-                const result = createAuthAndParams({
-                    context,
-                    entity: node,
-                    allow: { parentNode: node, varName: "this" },
-                });
+            const result = createAuthAndParams({
+                context,
+                entity: node,
+                allow: { parentNode: node, varName: "this" },
+            });
 
-                expect(trimmer(result[0])).toEqual(
-                    trimmer(`
-                        (this.id IS NOT NULL AND this.id = $this_auth_allow0_${key}0_id ${key} this.id IS NOT NULL AND this.id = $this_auth_allow0_${key}1_id ${key} this.id IS NOT NULL AND this.id = $this_auth_allow0_${key}2_id)
-                    `)
-                );
+            expect(trimmer(result[0])).toEqual(
+                trimmer(`
+                    (this.id IS NOT NULL AND this.id = $this_auth_allow0_AND0_id AND this.id IS NOT NULL AND this.id = $this_auth_allow0_AND1_id AND this.id IS NOT NULL AND this.id = $this_auth_allow0_AND2_id)
+                `)
+            );
 
-                expect(result[1]).toMatchObject({
-                    [`this_auth_allow0_${key}0_id`]: sub,
-                    [`this_auth_allow0_${key}1_id`]: sub,
-                    [`this_auth_allow0_${key}2_id`]: sub,
-                });
+            expect(result[1]).toMatchObject({
+                [`this_auth_allow0_AND0_id`]: sub,
+                [`this_auth_allow0_AND1_id`]: sub,
+                [`this_auth_allow0_AND2_id`]: sub,
+            });
+        });
+
+        test("OR", () => {
+            const idField = {
+                fieldName: "id",
+                typeMeta: {
+                    name: "ID",
+                    array: false,
+                    required: false,
+                    pretty: "String",
+                    input: {
+                        where: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        create: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                        update: {
+                            type: "String",
+                            pretty: "String",
+                        },
+                    },
+                },
+                otherDirectives: [],
+                arguments: [],
+            };
+
+            // @ts-ignore
+            const node: Node = {
+                name: "Movie",
+                relationFields: [],
+                cypherFields: [],
+                enumFields: [],
+                scalarFields: [],
+                primitiveFields: [
+                    idField,
+                    {
+                        fieldName: "title",
+                        typeMeta: {
+                            name: "String",
+                            array: false,
+                            required: false,
+                            pretty: "String",
+                            input: {
+                                where: {
+                                    type: "String",
+                                    pretty: "String",
+                                },
+                                create: {
+                                    type: "String",
+                                    pretty: "String",
+                                },
+                                update: {
+                                    type: "String",
+                                    pretty: "String",
+                                },
+                            },
+                        },
+                        otherDirectives: [],
+                        arguments: [],
+                    },
+                ],
+                temporalFields: [],
+                interfaceFields: [],
+                objectFields: [],
+                pointFields: [],
+                authableFields: [idField],
+                auth: {
+                    rules: [{ allow: { OR: [{ id: "$jwt.sub" }, { id: "$jwt.sub" }, { id: "$jwt.sub" }] } }],
+                    type: "JWT",
+                },
+            };
+
+            // @ts-ignore
+            const neoSchema: Neo4jGraphQL = {
+                nodes: [node],
+            };
+
+            const sub = generate({
+                charset: "alphabetic",
+            });
+
+            // @ts-ignore
+            const context: Context = { neoSchema };
+            context.jwt = {
+                sub,
+            };
+
+            const result = createAuthAndParams({
+                context,
+                entity: node,
+                allow: { parentNode: node, varName: "this" },
+            });
+
+            expect(trimmer(result[0])).toEqual(
+                trimmer(`
+                    ((this.id IS NOT NULL AND this.id = $this_auth_allow0_OR0_id) OR (this.id IS NOT NULL AND this.id = $this_auth_allow0_OR1_id) OR (this.id IS NOT NULL AND this.id = $this_auth_allow0_OR2_id))
+                `)
+            );
+
+            expect(result[1]).toMatchObject({
+                [`this_auth_allow0_OR0_id`]: sub,
+                [`this_auth_allow0_OR1_id`]: sub,
+                [`this_auth_allow0_OR2_id`]: sub,
             });
         });
     });
@@ -752,7 +933,7 @@ describe("createAuthAndParams", () => {
             });
 
             expect(trimmer(result[0])).toEqual(
-                trimmer('false OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))')
+                trimmer('((false) OR (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))')
             );
             expect(result[1]).toEqual({});
         });
@@ -823,7 +1004,7 @@ describe("createAuthAndParams", () => {
             });
 
             expect(trimmer(result[0])).toEqual(
-                trimmer('false OR ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))')
+                trimmer('((false) OR (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))')
             );
             expect(result[1]).toEqual({});
         });
