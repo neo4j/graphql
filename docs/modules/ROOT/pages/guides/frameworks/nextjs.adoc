@@ -51,4 +51,4 @@ include::{sourcedir}/graphql.js[]
 ----
 
 == Start the server
-That is all that needs to be done for `@neo4j/graphql` to work in a Next.js application. The dev server starts wtih `yarn dev` and Apollo Studio should be loaded on http://localhost:3000 and the front-end part of the Nextjs application should be able to query the API.
+That is all that needs to be done for `@neo4j/graphql` to work in a Next.js application. The dev server starts wtih `yarn dev` and Apollo Studio should be loaded on http://localhost:3000 and the front-end part of the Next.js application should be able to query the API.
