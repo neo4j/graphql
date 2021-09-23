@@ -73,8 +73,8 @@ function createConnectAndParams({
         const labels = relatedNode.labelString;
         const label = labelOverride ? `:${labelOverride}` : labels;
 
-        subquery.push(`WITH ${withVars.join(", ")}`);
-        subquery.push(`OPTIONAL MATCH (${nodeName}${label})`);
+        subquery.push(`\tWITH ${withVars.join(", ")}`);
+        subquery.push(`\tOPTIONAL MATCH (${nodeName}${label})`);
 
         const whereStrs: string[] = [];
         if (connect.where) {
@@ -104,7 +104,7 @@ function createConnectAndParams({
         }
 
         if (whereStrs.length) {
-            subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
+            subquery.push(`\tWHERE ${whereStrs.join(" AND ")}`);
         }
 
         const preAuth = [...(!fromCreate ? [parentNode] : []), relatedNode].reduce(
@@ -135,9 +135,9 @@ function createConnectAndParams({
 
         if (preAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            subquery.push(`WITH ${[...withVars, nodeName].join(", ")}`);
+            subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
             subquery.push(
-                `CALL apoc.util.validate(NOT(${preAuth.connects.join(
+                `\tCALL apoc.util.validate(NOT(${preAuth.connects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
@@ -149,8 +149,9 @@ function createConnectAndParams({
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
-        subquery.push(`FOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
-        subquery.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        subquery.push(`\tFOREACH(_ IN CASE ${parentVar} WHEN NULL THEN [] ELSE [1] END | `);
+        subquery.push(`\t\tFOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
+        subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         if (relationField.properties) {
             const relationship = (context.neoSchema.relationships.find(
@@ -167,7 +168,8 @@ function createConnectAndParams({
             params = { ...params, ...setA[1] };
         }
 
-        subquery.push(`)`); // close FOREACH
+        subquery.push(`\t\t)`); // close FOREACH
+        subquery.push(`\t)`); // close FOREACH
 
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
@@ -243,16 +245,16 @@ function createConnectAndParams({
 
         if (postAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            subquery.push(`WITH ${[...withVars, nodeName].join(", ")}`);
+            subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
             subquery.push(
-                `CALL apoc.util.validate(NOT(${postAuth.connects.join(
+                `\tCALL apoc.util.validate(NOT(${postAuth.connects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
             params = { ...params, ...postAuth.params };
         }
 
-        subquery.push("RETURN count(*)");
+        subquery.push("\tRETURN count(*)");
 
         return { subquery: subquery.join("\n"), params };
     }

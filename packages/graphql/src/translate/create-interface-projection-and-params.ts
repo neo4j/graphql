@@ -46,49 +46,49 @@ function createInterfaceProjectionAndParams({
             },
         };
 
-        if (resolveTree.fieldsByTypeName[refNode.name]) {
-            const recurse = createProjectionAndParams({
-                fieldsByTypeName,
-                node: refNode,
+        // if (resolveTree.fieldsByTypeName[refNode.name]) {
+        const recurse = createProjectionAndParams({
+            fieldsByTypeName,
+            node: refNode,
+            context,
+            varName: param,
+            literalElements: true,
+            resolveType: true,
+        });
+        if (resolveTree.args.where) {
+            const nodeWhereAndParams = createNodeWhereAndParams({
+                whereInput: {
+                    ...Object.entries(resolveTree.args.where).reduce((args, [k, v]) => {
+                        if (!field.interface?.implementations?.includes(k)) {
+                            return { ...args, [k]: v };
+                        }
+
+                        if (k === refNode.name) {
+                            return { ...args, ...v };
+                        }
+
+                        return args;
+                    }, {}),
+                },
                 context,
-                varName: param,
-                literalElements: true,
-                resolveType: true,
+                node: refNode,
+                nodeVariable: param,
+                // chainStr: `${param}_${refNode.name}`,
+                // authValidateStrs: recurse[2]?.authValidateStrs,
+                parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
+                    resolveTree.alias
+                }.args.where`,
             });
-            if (resolveTree.args.where) {
-                const nodeWhereAndParams = createNodeWhereAndParams({
-                    whereInput: {
-                        ...Object.entries(resolveTree.args.where).reduce((args, [k, v]) => {
-                            if (!field.interface?.implementations?.includes(k)) {
-                                return { ...args, [k]: v };
-                            }
-
-                            if (k === refNode.name) {
-                                return { ...args, ...v };
-                            }
-
-                            return args;
-                        }, {}),
-                    },
-                    context,
-                    node: refNode,
-                    nodeVariable: param,
-                    // chainStr: `${param}_${refNode.name}`,
-                    // authValidateStrs: recurse[2]?.authValidateStrs,
-                    parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
-                        resolveTree.alias
-                    }.args.where`,
-                });
-                if (nodeWhereAndParams[0]) {
-                    subquery.push(`WHERE ${nodeWhereAndParams[0]}`);
-                    params = { ...params, ...{ args: { where: nodeWhereAndParams[1] } } };
-                }
+            if (nodeWhereAndParams[0]) {
+                subquery.push(`WHERE ${nodeWhereAndParams[0]}`);
+                params = { ...params, ...{ args: { where: nodeWhereAndParams[1] } } };
             }
-            subquery.push(`RETURN ${recurse[0]} AS ${field.fieldName}`);
-            // res.params = { ...res.params, ...recurse[1] };
-        } else {
-            subquery.push(`RETURN { __resolveType: "${refNode.name}" } `);
         }
+        subquery.push(`RETURN ${recurse[0]} AS ${field.fieldName}`);
+        // res.params = { ...res.params, ...recurse[1] };
+        // } else {
+        //     subquery.push(`RETURN { __resolveType: "${refNode.name}" } AS ${field.fieldName}`);
+        // }
         return subquery.join("\n");
     });
     const interfaceProjection = [`WITH ${nodeVariable}`, "CALL {", subqueries.join("\nUNION\n"), "}"];

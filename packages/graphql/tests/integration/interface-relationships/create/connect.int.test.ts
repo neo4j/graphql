@@ -32,18 +32,26 @@ describe("interface relationships", () => {
         driver = await neo4j();
 
         const typeDefs = gql`
+            type Episode {
+                runtime: Int!
+                series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
+            }
+
             interface Production {
                 title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type Movie implements Production {
                 title: String!
                 runtime: Int!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type Series implements Production {
                 title: String!
-                episodes: Int!
+                episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             interface ActedIn @relationshipProperties {
@@ -65,23 +73,30 @@ describe("interface relationships", () => {
         await driver.close();
     });
 
-    test("should create connect using interface relationship fields", async () => {
+    test("should nested create connect using interface relationship fields", async () => {
         const session = driver.session();
 
-        const actorName = faker.random.word();
+        const actorName1 = faker.random.word();
+        const actorName2 = faker.random.word();
 
         const movieTitle = faker.random.word();
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
 
         const query = `
-            mutation CreateActorConnectMovie($name: String!, $title: String, $screenTime: Int!) {
+            mutation CreateActorConnectMovie($name1: String!, $title: String, $screenTime: Int!, $name2: String) {
                 createActors(
                     input: [
                         {
-                            name: $name
+                            name: $name1
                             actedIn: {
-                                connect: { edge: { screenTime: $screenTime }, where: { node: { title: $title } } }
+                                connect: {
+                                    edge: { screenTime: $screenTime }
+                                    where: { node: { title: $title } }
+                                    connect: {
+                                        actors: { edge: { screenTime: $screenTime }, where: { node: { name: $name2 } } }
+                                    }
+                                }
                             }
                         }
                     ]
@@ -90,11 +105,11 @@ describe("interface relationships", () => {
                         name
                         actedIn {
                             title
+                            actors {
+                                name
+                            }
                             ... on Movie {
                                 runtime
-                            }
-                            ... on Series {
-                                episodes
                             }
                         }
                     }
@@ -106,15 +121,21 @@ describe("interface relationships", () => {
             await session.run(
                 `
                 CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (:Actor { name: $name })
             `,
-                { movieTitle, movieRuntime }
+                { movieTitle, movieRuntime, name: actorName2 }
             );
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-                variableValues: { name: actorName, title: movieTitle, screenTime: movieScreenTime },
+                variableValues: {
+                    name1: actorName1,
+                    title: movieTitle,
+                    screenTime: movieScreenTime,
+                    name2: actorName2,
+                },
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -127,9 +148,10 @@ describe("interface relationships", () => {
                                 {
                                     runtime: movieRuntime,
                                     title: movieTitle,
+                                    actors: [{ name: actorName2 }, { name: actorName1 }],
                                 },
                             ],
-                            name: actorName,
+                            name: actorName1,
                         },
                     ],
                 },

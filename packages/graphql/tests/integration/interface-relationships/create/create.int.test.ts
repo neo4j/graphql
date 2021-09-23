@@ -32,18 +32,26 @@ describe("interface relationships", () => {
         driver = await neo4j();
 
         const typeDefs = gql`
+            type Episode {
+                runtime: Int!
+                series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
+            }
+
             interface Production {
                 title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type Movie implements Production {
                 title: String!
                 runtime: Int!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type Series implements Production {
                 title: String!
-                episodes: Int!
+                episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             interface ActedIn @relationshipProperties {
@@ -96,9 +104,6 @@ describe("interface relationships", () => {
                             ... on Movie {
                                 runtime
                             }
-                            ... on Series {
-                                episodes
-                            }
                         }
                     }
                 }
@@ -131,6 +136,130 @@ describe("interface relationships", () => {
                                 },
                             ],
                             name: actorName,
+                        },
+                    ],
+                },
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should create create nested nodes using interface relationship fields", async () => {
+        const session = driver.session();
+
+        const name1 = faker.random.word();
+        const name2 = faker.random.word();
+
+        const movieTitle = faker.random.word();
+        const movieRuntime = faker.random.number();
+        const screenTime = faker.random.number();
+
+        const seriesTitle = faker.random.word();
+
+        const episodeRuntime = faker.random.number();
+
+        const query = `
+            mutation CreateActorConnectMovie(
+                $name1: String!
+                $name2: String!
+                $movieTitle: String!
+                $movieRuntime: Int!
+                $screenTime: Int!
+                $seriesTitle: String!
+                $episodeRuntime: Int!
+            ) {
+                createActors(
+                    input: [
+                        {
+                            name: $name1
+                            actedIn: {
+                                create: [
+                                    {
+                                        edge: { screenTime: $screenTime }
+                                        node: {
+                                            Movie: {
+                                                title: $movieTitle
+                                                runtime: $movieRuntime
+                                                actors: {
+                                                    create: {
+                                                        edge: { screenTime: $screenTime }
+                                                        node: { name: $name2 }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    {
+                                        edge: { screenTime: $screenTime }
+                                        node: {
+                                            Series: {
+                                                title: $seriesTitle
+                                                episodes: { create: { node: { runtime: $episodeRuntime } } }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                ) {
+                    actors {
+                        name
+                        actedIn {
+                            title
+                            actors {
+                                name
+                            }
+                            ... on Movie {
+                                runtime
+                            }
+                            ... on Series {
+                                episodes {
+                                    runtime
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: {
+                    name1,
+                    name2,
+                    movieTitle,
+                    movieRuntime,
+                    screenTime,
+                    seriesTitle,
+                    episodeRuntime,
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult.data).toEqual({
+                createActors: {
+                    actors: [
+                        {
+                            actedIn: [
+                                {
+                                    runtime: movieRuntime,
+                                    title: movieTitle,
+                                    actors: [{ name: name2 }, { name: name1 }],
+                                },
+                                {
+                                    title: seriesTitle,
+                                    actors: [{ name: name1 }],
+                                    episodes: [{ runtime: episodeRuntime }],
+                                },
+                            ],
+                            name: name1,
                         },
                     ],
                 },

@@ -32,18 +32,26 @@ describe("interface relationships", () => {
         driver = await neo4j();
 
         const typeDefs = gql`
+            type Episode {
+                runtime: Int!
+                series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
+            }
+
             interface Production {
                 title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type Movie implements Production {
                 title: String!
                 runtime: Int!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type Series implements Production {
                 title: String!
-                episodes: Int!
+                episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             interface ActedIn @relationshipProperties {
@@ -75,7 +83,6 @@ describe("interface relationships", () => {
         const movieScreenTime = faker.random.number();
 
         const seriesTitle = faker.random.word();
-        const seriesEpisodes = faker.random.number();
         const seriesScreenTime = faker.random.number();
 
         const query = `
@@ -85,7 +92,6 @@ describe("interface relationships", () => {
                 $movieRuntime: Int!
                 $movieScreenTime: Int!
                 $seriesTitle: String!
-                $seriesEpisodes: Int!
                 $seriesScreenTime: Int!
             ) {
                 updateActors(
@@ -98,7 +104,7 @@ describe("interface relationships", () => {
                             }
                             {
                                 edge: { screenTime: $seriesScreenTime }
-                                node: { Series: { title: $seriesTitle, episodes: $seriesEpisodes } }
+                                node: { Series: { title: $seriesTitle } }
                             }
                         ]
                     }
@@ -109,9 +115,6 @@ describe("interface relationships", () => {
                             title
                             ... on Movie {
                                 runtime
-                            }
-                            ... on Series {
-                                episodes
                             }
                         }
                     }
@@ -137,7 +140,6 @@ describe("interface relationships", () => {
                     movieRuntime,
                     movieScreenTime,
                     seriesTitle,
-                    seriesEpisodes,
                     seriesScreenTime,
                 },
             });
@@ -153,11 +155,124 @@ describe("interface relationships", () => {
                                 title: movieTitle,
                             },
                             {
-                                episodes: seriesEpisodes,
                                 title: seriesTitle,
                             },
                         ],
                         name: actorName,
+                    },
+                ],
+            });
+
+            // const movies = (gqlResult.data as any).movies[0];
+
+            // const movieSearch = movies.search.find((x) => x.__typename === "Movie"); // eslint-disable-line no-underscore-dangle
+            // expect(movieSearch.title).toEqual(movieTitle);
+            // const genreSearch = movies.search.find((x) => x.__typename === "Genre"); // eslint-disable-line no-underscore-dangle
+            // expect(genreSearch.name).toEqual(genreName);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("update nested create through relationship field", async () => {
+        const session = driver.session();
+
+        const actorName1 = faker.random.word();
+        const actorName2 = faker.random.word();
+
+        const movieTitle = faker.random.word();
+        const movieRuntime = faker.random.number();
+        const movieScreenTime = faker.random.number();
+
+        const seriesTitle = faker.random.word();
+        const seriesScreenTime = faker.random.number();
+
+        const query = `
+            mutation UpdateCreate(
+                $name1: String
+                $name2: String!
+                $movieTitle: String!
+                $movieRuntime: Int!
+                $movieScreenTime: Int!
+                $seriesTitle: String!
+                $seriesScreenTime: Int!
+            ) {
+                updateActors(
+                    where: { name: $name1 }
+                    create: {
+                        actedIn: [
+                            {
+                                edge: { screenTime: $movieScreenTime }
+                                node: {
+                                    Movie: {
+                                        title: $movieTitle
+                                        runtime: $movieRuntime
+                                        actors: {
+                                            create: { edge: { screenTime: $movieScreenTime }, node: { name: $name2 } }
+                                        }
+                                    }
+                                }
+                            }
+                            { edge: { screenTime: $seriesScreenTime }, node: { Series: { title: $seriesTitle } } }
+                        ]
+                    }
+                ) {
+                    actors {
+                        name
+                        actedIn {
+                            title
+                            actors {
+                                name
+                            }
+                            ... on Movie {
+                                runtime
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (a:Actor { name: $actorName1 })
+            `,
+                { actorName1 }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: {
+                    name1: actorName1,
+                    name2: actorName2,
+                    movieTitle,
+                    movieRuntime,
+                    movieScreenTime,
+                    seriesTitle,
+                    seriesScreenTime,
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult.data?.updateActors).toEqual({
+                actors: [
+                    {
+                        actedIn: [
+                            {
+                                runtime: movieRuntime,
+                                title: movieTitle,
+                                actors: [{ name: actorName1 }, { name: actorName2 }],
+                            },
+                            {
+                                title: seriesTitle,
+                                actors: [{ name: actorName1 }],
+                            },
+                        ],
+                        name: actorName1,
                     },
                 ],
             });
