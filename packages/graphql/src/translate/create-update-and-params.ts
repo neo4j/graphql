@@ -108,7 +108,7 @@ function createUpdateAndParams({
                             res.strs.push(`WITH ${withVars.join(", ")}`);
                         }
 
-                        const labels = refNode.labelString;
+                        const labels = refNode.getLabelString();
                         res.strs.push(
                             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`
                         );

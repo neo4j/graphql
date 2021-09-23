@@ -43,6 +43,7 @@ const baseTypeScriptExtends = [
 const baseTypeScriptRules = {
     ...baseRules,
     "no-unused-vars": "off", // Must be disabled to allow @typescript-eslint/no-unused-vars to work
+    "class-methods-use-this": "off",
     "@typescript-eslint/naming-convention": "warn", // TODO Rename instances of _varName, and delete this line (also fixes no-underscore-dangle)
     "@typescript-eslint/no-explicit-any": "off", // Long term goal should be to have this rule on
     "@typescript-eslint/no-use-before-define": "warn", // Unavoidable in some places, but a refactor should potentially happen and this rule switched on

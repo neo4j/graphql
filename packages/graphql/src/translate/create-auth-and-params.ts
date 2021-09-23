@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import dotProp from "dot-prop";
 import { Neo4jGraphQLAuthenticationError, Node } from "../classes";
 import { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context } from "../types";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import mapToDbProperty from "../utils/map-to-db-property";
+import ContextParser from "../utils/context-parser";
 
 interface Res {
     strs: string[];
@@ -67,7 +67,6 @@ function createAuthPredicate({
         return ["", {}];
     }
 
-    const { jwt } = context;
     const { allowUnauthenticated } = rule;
 
     const result = Object.entries(rule[kind] as any).reduce(
@@ -97,14 +96,14 @@ function createAuthPredicate({
 
             const authableField = node.authableFields.find((field) => field.fieldName === key);
             if (authableField) {
-                const [, jwtPath] = (value as string)?.split?.("$jwt.") || [];
-                const [, ctxPath] = (value as string)?.split?.("$context.") || [];
-                let paramValue: string | null = value as string;
+                const jwtPath = ContextParser.parseTag(value, "jwt");
+                const ctxPath = ContextParser.parseTag(value, "context");
+                let paramValue: string | undefined = value as string;
 
                 if (jwtPath) {
-                    paramValue = dotProp.get({ value: jwt }, `value.${jwtPath}`) as string;
+                    paramValue = ContextParser.getJwtPropery(jwtPath, context);
                 } else if (ctxPath) {
-                    paramValue = dotProp.get({ value: context }, `value.${ctxPath}`) as string;
+                    paramValue = ContextParser.getContextProperty(ctxPath, context);
                 }
 
                 if (paramValue === undefined && allowUnauthenticated !== true) {
@@ -130,7 +129,7 @@ function createAuthPredicate({
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
                 const relationVarName = relationField.fieldName;
-                const labels = refNode.labelString;
+                const labels = refNode.getLabelString();
                 let resultStr = [
                     `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
                     `AND ${

@@ -18,6 +18,8 @@
  */
 
 import { Neo4jGraphQLError } from "./Error";
+import { Context } from "../types";
+import ContextParser from "../utils/context-parser";
 
 export interface NodeDirectiveConstructor {
     label?: string;
@@ -46,7 +48,24 @@ class NodeDirective {
 
     public getLabels(typeName: string): string[] {
         const mainLabel = this.label || typeName;
-        return [mainLabel, ...this.additionalLabels];
+        const labels = [mainLabel, ...this.additionalLabels];
+        return labels;
+        // return this.mapLabelsWithContext(labels, context);
+    }
+
+    public mapLabelsWithContext(labels: string[], context: Context): string[] {
+        return labels.map((label) => {
+            const jwtPath = ContextParser.parseTag(label, "jwt");
+            const ctxPath = ContextParser.parseTag(label, "context");
+            let paramValue: string = label as string;
+
+            if (jwtPath) {
+                paramValue = ContextParser.getJwtPropery(jwtPath, context) || paramValue;
+            } else if (ctxPath) {
+                paramValue = ContextParser.getContextProperty(ctxPath, context) || paramValue;
+            }
+            return paramValue;
+        });
     }
 }
 

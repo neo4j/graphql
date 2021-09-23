@@ -48,7 +48,7 @@ describe("Node", () => {
             name: "Movie",
         }).instance();
 
-        expect(node.labelString).toEqual(":Movie");
+        expect(node.getLabelString()).toEqual(":Movie");
     });
 
     it("should return labels from node name", () => {

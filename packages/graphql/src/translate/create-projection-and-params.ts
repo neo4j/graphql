@@ -256,7 +256,7 @@ function createProjectionAndParams({
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
             const outStr = relationField.direction === "OUT" ? "->" : "-";
-            const labels = referenceNode?.labelString;
+            const labels = referenceNode?.getLabelString();
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 

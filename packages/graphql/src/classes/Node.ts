@@ -153,7 +153,7 @@ class Node {
         ];
     }
 
-    get labelString(): string {
+    getLabelString(): string {
         return this.nodeDirective?.getLabelsString(this.name) || `:${this.name}`;
     }
 
