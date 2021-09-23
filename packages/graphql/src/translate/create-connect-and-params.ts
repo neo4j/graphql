@@ -66,7 +66,7 @@ function createConnectAndParams({
         const relationshipName = `${baseName}_relationship`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
-        const relTypeStr = `[${connect.edge ? relationshipName : ""}:${relationField.type}]`;
+        const relTypeStr = `[${relationField.properties ? relationshipName : ""}:${relationField.type}]`;
 
         const subquery: string[] = [];
 
@@ -152,13 +152,13 @@ function createConnectAndParams({
         subquery.push(`FOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
         subquery.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
-        if (connect.edge) {
+        if (relationField.properties) {
             const relationship = (context.neoSchema.relationships.find(
                 (x) => x.properties === relationField.properties
             ) as unknown) as Relationship;
 
             const setA = createSetRelationshipPropertiesAndParams({
-                properties: connect.edge,
+                properties: connect.edge ?? {},
                 varName: relationshipName,
                 relationship,
                 operation: "CREATE",

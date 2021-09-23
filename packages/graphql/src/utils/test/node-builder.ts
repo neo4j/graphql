@@ -22,7 +22,7 @@ import { NodeConstructor, Node } from "../../classes";
 export default class NodeBuilder {
     private options: NodeConstructor;
 
-    constructor(newOptions: Partial<NodeConstructor>) {
+    constructor(newOptions: Partial<NodeConstructor> = {}) {
         this.options = {
             name: "",
             relationFields: [],

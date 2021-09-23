@@ -397,7 +397,7 @@ function createProjectionAndParams({
                 );
 
                 const unionStrs: string[] = [
-                    `${key}: ${!isArray ? "head(" : ""} [(${
+                    `${key}: ${!isArray ? "head(" : ""} [${param} IN [(${
                         chainStr || varName
                     })${inStr}${relTypeStr}${outStr}(${param})`,
                     `WHERE ${referenceNodes
@@ -452,7 +452,7 @@ function createProjectionAndParams({
                     return innerHeadStr.join(" ");
                 });
                 unionStrs.push(headStrs.join(" + "));
-                unionStrs.push(") ]");
+                unionStrs.push(`) ] WHERE ${param} IS NOT NULL]`);
 
                 if (optionsInput) {
                     const offsetLimit = createOffsetLimitStr({

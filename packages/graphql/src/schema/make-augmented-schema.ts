@@ -20,7 +20,6 @@
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
 import { forEachField } from "@graphql-tools/utils";
-import camelCase from "camelcase";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
@@ -202,7 +201,7 @@ function makeAugmentedSchema(
             ...res,
             [name]: composer.createObjectTC({
                 name: `${name}AggregateSelection`,
-                fields: fields || { min: `${name}!`, max: `${name}!` },
+                fields: fields ?? { min: `${name}!`, max: `${name}!` },
             }),
         };
     }, {});
@@ -425,19 +424,16 @@ function makeAugmentedSchema(
         composer.createInputTC({
             name: `${relationship.name.value}UpdateInput`,
             fields: [
-                ...relFields.primitiveFields,
+                ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.readonly),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields.filter((field) => !field.timestamps),
                 ...relFields.pointFields,
             ].reduce(
-                (res, f) =>
-                    f.readonly || (f as PrimitiveField)?.autogenerate
-                        ? res
-                        : {
-                              ...res,
-                              [f.fieldName]: f.typeMeta.input.update.pretty,
-                          },
+                (res, f) => ({
+                    ...res,
+                    [f.fieldName]: f.typeMeta.input.update.pretty,
+                }),
                 {}
             ),
         });
@@ -463,16 +459,12 @@ function makeAugmentedSchema(
             name: `${relationship.name.value}CreateInput`,
             // TODO - This reduce duplicated when creating node CreateInput - put into shared function?
             fields: [
-                ...relFields.primitiveFields,
+                ...relFields.primitiveFields.filter((field) => !field.autogenerate),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
                 ...relFields.temporalFields.filter((field) => !field.timestamps),
                 ...relFields.pointFields,
             ].reduce((res, f) => {
-                if ((f as PrimitiveField)?.autogenerate) {
-                    return res;
-                }
-
                 if ((f as PrimitiveField)?.defaultValue !== undefined) {
                     const field: InputTypeComposerFieldConfigAsObjectDefinition = {
                         type: f.typeMeta.input.create.pretty,
@@ -860,10 +852,10 @@ function makeAugmentedSchema(
 
         ["Create", "Update"].map((operation) =>
             composer.createObjectTC({
-                name: `${operation}${pluralize(node.name)}MutationResponse`,
+                name: `${operation}${node.getPlural({ camelCase: false })}MutationResponse`,
                 fields: {
                     info: `${operation}Info!`,
-                    [pluralize(camelCase(node.name))]: `[${node.name}!]!`,
+                    [node.getPlural({ camelCase: true })]: `[${node.name}!]!`,
                 },
             })
         );
@@ -890,33 +882,33 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
-                [pluralize(camelCase(node.name))]: findResolver({ node }),
+                [node.getPlural({ camelCase: true })]: findResolver({ node }),
             });
 
             composer.Query.addFields({
-                [`${pluralize(camelCase(node.name))}Count`]: countResolver({ node }),
+                [`${node.getPlural({ camelCase: true })}Count`]: countResolver({ node }),
             });
 
             composer.Query.addFields({
-                [`${pluralize(camelCase(node.name))}Aggregate`]: aggregateResolver({ node }),
+                [`${node.getPlural({ camelCase: true })}Aggregate`]: aggregateResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
-                [`create${pluralize(node.name)}`]: createResolver({ node }),
+                [`create${node.getPlural({ camelCase: false })}`]: createResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
-                [`delete${pluralize(node.name)}`]: deleteResolver({ node }),
+                [`delete${node.getPlural({ camelCase: false })}`]: deleteResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${pluralize(node.name)}`]: updateResolver({ node }),
+                [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node }),
             });
         }
     });
