@@ -20,6 +20,7 @@
 import Debug from "debug";
 import { Driver } from "neo4j-driver";
 import { DocumentNode, GraphQLResolveInfo, GraphQLSchema, parse, printSchema, print } from "graphql";
+import { PubSub, PubSubEngine } from "graphql-subscriptions";
 import { addResolversToSchema, addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
 import type { DriverConfig, CypherQueryOptions } from "../types";
@@ -51,6 +52,20 @@ export interface Neo4jGraphQLConfig {
 export interface Neo4jGraphQLConstructor extends Omit<IExecutableSchemaDefinition, "schemaDirectives"> {
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
+
+    /**
+     * A PubSub instance as defined in graphql-subscriptions.
+     * If this is not provided, the @neo4j/graphql will default to a local
+     * PubSub provider. If you plan on running more than one instance of your application
+     * in parallel it is suggested that you connect a subscriptions manager such as Redis.
+     * 
+     * More information on graphql-subscriptions:  
+     * https://github.com/apollographql/graphql-subscriptions
+     * 
+     * List of pubsub implementations:  
+     * https://github.com/apollographql/graphql-subscriptions#pubsub-implementations
+     */
+    pubsub?: PubSubEngine;
     schemaDirectives?: Record<string, typeof SchemaDirectiveVisitor>;
 }
 
@@ -65,16 +80,19 @@ class Neo4jGraphQL {
 
     private driver?: Driver;
 
+    public pubsub: PubSubEngine;
+
     public config?: Neo4jGraphQLConfig;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, resolvers, schemaDirectives, ...schemaDefinition } = input;
+        const { config = {}, driver, pubsub, resolvers, schemaDirectives, ...schemaDefinition } = input;
         const { nodes, relationships, schema } = makeAugmentedSchema(schemaDefinition, {
             enableRegex: config.enableRegex,
             skipValidateTypeDefs: config.skipValidateTypeDefs,
         });
 
         this.driver = driver;
+        this.pubsub = pubsub ||  new PubSub();
         this.config = config;
         this.nodes = nodes;
         this.relationships = relationships;
@@ -144,6 +162,10 @@ class Neo4jGraphQL {
                     );
                 }
                 context.driver = this.driver;
+            }
+
+            if (!context?.pubsub) {
+                context.pubsub = this.pubsub;
             }
 
             if (!context?.driverConfig) {

@@ -18,6 +18,7 @@
  */
 
 import { InputValueDefinitionNode, DirectiveNode } from "graphql";
+import { PubSubEngine } from "graphql-subscriptions";
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { JwtPayload } from "jsonwebtoken";
 import { Driver, Integer } from "neo4j-driver";
@@ -36,6 +37,7 @@ interface AuthContext {
 
 export interface Context {
     driver: Driver;
+    pubsub: PubSubEngine;
     driverConfig?: DriverConfig;
     resolveTree: ResolveTree;
     neoSchema: Neo4jGraphQL;
