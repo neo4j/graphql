@@ -22,6 +22,7 @@ import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../utils/test";
+import WithProjector from "../classes/WithProjector";
 
 describe("createUpdateAndParams", () => {
     test("should return the correct update and params", () => {
@@ -63,6 +64,7 @@ describe("createUpdateAndParams", () => {
 
         // @ts-ignore
         const context: Context = { neoSchema };
+        const withProjector = new WithProjector({ variables: [ 'this' ] });
 
         const result = createUpdateAndParams({
             updateInput: { id: "new" },
@@ -70,7 +72,7 @@ describe("createUpdateAndParams", () => {
             context,
             varName: "this",
             parentVar: "this",
-            withVars: ["this"],
+            withProjector,
             parameterPrefix: "this",
         });
 

@@ -30,6 +30,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
+import WithProjector from "../classes/WithProjector";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
@@ -54,6 +55,8 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const whereStrs: string[] = [];
     const connectionStrs: string[] = [];
     let updateArgs = {};
+
+    const withProjector = new WithProjector({ variables: [ varName ] });
 
     // Due to potential aliasing of returned object in response we look through fields of UpdateMutationResponse
     // and find field where field.name ~ node.name which exists by construction
@@ -91,6 +94,13 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         whereStr = `WHERE ${whereStrs.join(" AND ")}`;
     }
 
+    withProjector.markMutationMeta({
+        nodeOrEdge: 'node',
+        type: 'updated',
+        idVar: 'id(this)',
+        name: node.name,
+    });
+
     if (updateInput) {
         const updateAndParams = createUpdateAndParams({
             context,
@@ -98,7 +108,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             updateInput,
             varName,
             parentVar: varName,
-            withVars: [varName],
+            withProjector,
             parameterPrefix: `${resolveTree.name}.args.update`,
         });
         [updateStr] = updateAndParams;
@@ -290,6 +300,15 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         });
     }
 
+    const returnStrs = [
+        `${varName} ${projStr} AS ${varName}`
+    ];
+
+    const nextReturn = withProjector.nextReturn();
+    if (nextReturn) {
+        returnStrs.push(nextReturn);
+    }
+
     const cypher = [
         matchStr,
         whereStr,
@@ -301,7 +320,8 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         ...(connectionStrs.length || projAuth ? [`WITH ${varName}`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
         ...(projAuth ? [projAuth] : []),
         ...connectionStrs,
-        `RETURN ${varName} ${projStr} AS ${varName}`,
+
+        `RETURN ${ returnStrs.join(', ') }`,
     ];
 
     return [

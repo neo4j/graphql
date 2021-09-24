@@ -18,17 +18,18 @@
  */
 
 import { Node, Relationship } from "../classes";
-import { Context } from "../types";
-import createConnectAndParams from "./create-connect-and-params";
-import createDisconnectAndParams from "./create-disconnect-and-params";
-import createCreateAndParams from "./create-create-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createDeleteAndParams from "./create-delete-and-params";
-import createAuthParam from "./create-auth-param";
+import { Context } from "../types";
+import WithProjector from "../classes/WithProjector";
+import mapToDbProperty from "../utils/map-to-db-property";
 import createAuthAndParams from "./create-auth-and-params";
+import createAuthParam from "./create-auth-param";
+import createConnectAndParams from "./create-connect-and-params";
+import createCreateAndParams from "./create-create-and-params";
+import createDeleteAndParams from "./create-delete-and-params";
+import createDisconnectAndParams from "./create-disconnect-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
-import mapToDbProperty from "../utils/map-to-db-property";
 
 interface Res {
     strs: string[];
@@ -48,7 +49,7 @@ function createUpdateAndParams({
     parentVar,
     chainStr,
     insideDoWhen,
-    withVars,
+    withProjector,
     context,
     parameterPrefix,
 }: {
@@ -57,7 +58,7 @@ function createUpdateAndParams({
     varName: string;
     chainStr?: string;
     node: Node;
-    withVars: string[];
+    withProjector: WithProjector,
     insideDoWhen?: boolean;
     context: Context;
     parameterPrefix: string;
@@ -65,6 +66,8 @@ function createUpdateAndParams({
     let hasAppliedTimeStamps = false;
 
     function reducer(res: Res, [key, value]: [string, any]) {
+
+
         let param;
 
         if (chainStr) {
@@ -104,9 +107,7 @@ function createUpdateAndParams({
                     const _varName = `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
 
                     if (update.update) {
-                        if (withVars) {
-                            res.strs.push(`WITH ${withVars.join(", ")}`);
-                        }
+                        res.strs.push(withProjector.nextWith());
 
                         const labels = refNode.labelString;
                         res.strs.push(
@@ -150,6 +151,9 @@ function createUpdateAndParams({
                         if (update.update.node) {
                             res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
 
+                            const childWithProjector = withProjector.createChild();
+                            childWithProjector.addVariable(_varName);
+
                             const auth = createAuthParam({ context });
                             let innerApocParams = { auth };
 
@@ -158,7 +162,7 @@ function createUpdateAndParams({
                                 node: refNode,
                                 updateInput: update.update.node,
                                 varName: _varName,
-                                withVars: [...withVars, _varName],
+                                withProjector: childWithProjector,
                                 parentVar: _varName,
                                 chainStr: `${param}${relationField.union ? `_${refNode.name}` : ""}${index}`,
                                 insideDoWhen: true,
@@ -169,8 +173,8 @@ function createUpdateAndParams({
                             res.params = { ...res.params, ...updateAndParams[1], auth };
                             innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
 
-                            const updateStrs = [updateAndParams[0], "RETURN count(*)"];
-                            const apocArgs = `{${withVars.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
+                            const updateStrs = [updateAndParams[0], `RETURN id(${ _varName }) as _id`];
+                            const apocArgs = `{${withProjector.variables.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}, ${_varName}:${_varName}REPLACE_ME}`;
 
@@ -179,7 +183,13 @@ function createUpdateAndParams({
                             } else {
                                 updateStrs.push(`", "", ${apocArgs})`);
                             }
-                            updateStrs.push("YIELD value as _");
+                            updateStrs.push("YIELD value");
+                            withProjector.markMutationMeta({
+                                nodeOrEdge: 'node',
+                                type: 'updated',
+                                idVar: 'value._id',
+                                name: refNode.name,
+                            });
 
                             const paramsString = Object.keys(innerApocParams)
                                 .reduce((r: string[], k) => [...r, `${k}:$${k}`], [])
@@ -204,7 +214,7 @@ function createUpdateAndParams({
                                 }[${index}].update.edge`,
                             });
 
-                            const updateStrs = [setProperties, "RETURN count(*)"];
+                            const updateStrs = [setProperties, `RETURN id(${ varName }) as _id`];
                             const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}}`;
@@ -214,7 +224,14 @@ function createUpdateAndParams({
                             } else {
                                 updateStrs.push(`", "", ${apocArgs})`);
                             }
-                            updateStrs.push(`YIELD value as ${relationshipVariable}_${key}${index}_edge`);
+                            updateStrs.push(`YIELD value`);
+                            // updateStrs.push(`YIELD value as ${relationshipVariable}_${key}${index}_edge`);
+                            withProjector.markMutationMeta({
+                                nodeOrEdge: 'edge',
+                                type: 'updated',
+                                idVar: 'value._id',
+                                name: relationship.name,
+                            });
                             res.strs.push(updateStrs.join("\n"));
                         }
                     }
@@ -225,7 +242,7 @@ function createUpdateAndParams({
                             refNode,
                             value: update.disconnect,
                             varName: `${_varName}_disconnect`,
-                            withVars,
+                            withVars: withProjector.variables, // TODO: use withProjector
                             parentVar,
                             relationField,
                             labelOverride: relationField.union ? refNode.name : "",
@@ -245,7 +262,7 @@ function createUpdateAndParams({
                             refNode,
                             value: update.connect,
                             varName: `${_varName}_connect`,
-                            withVars,
+                            withVars: withProjector.variables, // TODO: use withProjector
                             parentVar,
                             relationField,
                             labelOverride: relationField.union ? refNode.name : "",
@@ -266,7 +283,7 @@ function createUpdateAndParams({
                             varName: innerVarName,
                             chainStr: innerVarName,
                             parentVar,
-                            withVars,
+                            withVars: withProjector.variables, // TODO: use withProjector
                             insideDoWhen,
                             parameterPrefix: `${parameterPrefix}.${key}${
                                 relationField.typeMeta.array ? `[${index}]` : ``
@@ -278,22 +295,22 @@ function createUpdateAndParams({
                     }
 
                     if (update.create) {
-                        if (withVars) {
-                            res.strs.push(`WITH ${withVars.join(", ")}`);
-                        }
+                        res.strs.push(withProjector.nextWith());
 
                         const creates = relationField.typeMeta.array ? update.create : [update.create];
                         creates.forEach((create, i) => {
                             const baseName = `${_varName}_create${i}`;
                             const nodeName = `${baseName}_node`;
                             const propertiesName = `${baseName}_relationship`;
+                            const withProjectorChild = withProjector.createChild();
+                            withProjectorChild.addVariable(nodeName);
 
                             const createAndParams = createCreateAndParams({
                                 context,
                                 node: refNode,
                                 input: create.node,
                                 varName: nodeName,
-                                withVars: [...withVars, nodeName],
+                                withVars: withProjectorChild.variables,
                                 insideDoWhen,
                             });
                             res.strs.push(createAndParams[0]);
@@ -393,6 +410,10 @@ function createUpdateAndParams({
         return res;
     }
 
+    // Must be generated before reducers are called
+    // const preAuthWithStr = withProjector.nextWith();
+    const preAuthWithStr = '';
+
     // eslint-disable-next-line prefer-const
     let { strs, params, meta = { preAuthStrs: [], postAuthStrs: [] } } = Object.entries(updateInput).reduce(reducer, {
         strs: [],
@@ -401,7 +422,6 @@ function createUpdateAndParams({
 
     let preAuthStrs: string[] = [];
     let postAuthStrs: string[] = [];
-    const withStr = `WITH ${withVars.join(", ")}`;
 
     const preAuth = createAuthAndParams({
         entity: node,
@@ -441,12 +461,13 @@ function createUpdateAndParams({
 
     if (preAuthStrs.length) {
         const apocStr = `CALL apoc.util.validate(NOT(${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
-        preAuthStr = `${withStr}\n${apocStr}`;
+        preAuthStr = `${preAuthWithStr}\n${apocStr}`;
     }
 
     if (postAuthStrs.length) {
         const apocStr = `CALL apoc.util.validate(NOT(${postAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
-        postAuthStr = `${withStr}\n${apocStr}`;
+        // TODO: postAuthStrs with updated node ids
+        postAuthStr = `${ withProjector.nextWith() }\n${apocStr}`;
     }
 
     const str = `${preAuthStr}\n${strs.join("\n")}\n${postAuthStr}`;
