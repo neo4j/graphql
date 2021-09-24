@@ -27,6 +27,7 @@ export default function updateResolver({ node }: { node: Node }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         const [cypher, params] = translateUpdate({ context, node });
+
         const executeResult = await execute({
             cypher,
             params,
@@ -39,6 +40,11 @@ export default function updateResolver({ node }: { node: Node }) {
         ) as FieldNode; // Field exist by construction and must be selected as it is the only field.
 
         const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
+
+        context.pubsub.publish(`${ node.name }.updated`, {
+            args: _args,
+            result: executeResult.records,
+        });
 
         return {
             info: {

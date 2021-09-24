@@ -71,6 +71,7 @@
         "graphql-compose": "^9.0.2",
         "graphql-parse-resolve-info": "^4.12.0",
         "graphql-relay": "^0.8.0",
+        "graphql-subscriptions": "1.2.1",
         "jsonwebtoken": "^8.5.1",
         "pluralize": "^8.0.0",
         "semver": "^7.3.5"
