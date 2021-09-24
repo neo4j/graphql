@@ -23,7 +23,7 @@ import { DocumentNode, GraphQLResolveInfo, GraphQLSchema, parse, printSchema, pr
 import { PubSub, PubSubEngine } from "graphql-subscriptions";
 import { addResolversToSchema, addSchemaLevelResolver, IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
-import type { DriverConfig, CypherQueryOptions } from "../types";
+import type { DriverConfig, CypherQueryOptions, Context } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
@@ -125,6 +125,37 @@ class Neo4jGraphQL {
         this.document = parse(printSchema(schema));
     }
 
+    // Mutates context with variables from this Neo4jGraphql instance
+    public populateContext(context: Partial<Context>) {
+        if (!context?.driver) {
+            if (!this.driver) {
+                throw new Error(
+                    "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
+                );
+            }
+            context.driver = this.driver;
+        }
+
+        if (!context?.pubsub) {
+            context.pubsub = this.pubsub;
+        }
+
+        context.neoSchema = this;
+
+        return context as Context;
+    }
+
+    // Mutates context to add authentication information (.jwt and .auth)
+    public authenticateContext(context: Context) {
+
+        if (!context.jwt) {
+            context.jwt = getJWT(context);
+        }
+
+        // temporary cast to as any, remove when type is fixed
+        context.auth = createAuthParam({ context }) as any;
+    }
+
     private createWrappedSchema({
         schema,
         config,
@@ -148,6 +179,8 @@ class Neo4jGraphQL {
                 );
             }
 
+            this.populateContext(context);
+
             /*
                 Deleting this property ensures that we call this function more than once,
                 See https://github.com/ardatan/graphql-tools/issues/353#issuecomment-499569711
@@ -155,32 +188,12 @@ class Neo4jGraphQL {
             // @ts-ignore: Deleting private property from object
             delete resolveInfo.operation.__runAtMostOnce; // eslint-disable-line no-param-reassign,no-underscore-dangle
 
-            if (!context?.driver) {
-                if (!this.driver) {
-                    throw new Error(
-                        "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
-                    );
-                }
-                context.driver = this.driver;
-            }
-
-            if (!context?.pubsub) {
-                context.pubsub = this.pubsub;
-            }
-
             if (!context?.driverConfig) {
                 context.driverConfig = driverConfig;
             }
 
-            context.neoSchema = this;
-
             context.resolveTree = getNeo4jResolveTree(resolveInfo);
-
-            if (!context.jwt) {
-                context.jwt = getJWT(context);
-            }
-
-            context.auth = createAuthParam({ context });
+            this.authenticateContext(context);
 
             context.queryOptions = config.queryOptions;
             return obj;
