@@ -74,6 +74,7 @@ import { validateDocument } from "./validation";
 import * as constants from "../constants";
 import NodeDirective from "../classes/NodeDirective";
 import parseNodeDirective from "./parse-node-directive";
+import subscribeToUpdatesResolver from "./resolvers/subscribeToUpdates";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -1320,6 +1321,11 @@ function makeAugmentedSchema(
                 [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node }),
             });
         }
+
+        // TODO: exclude subscriptions somehow
+        composer.Subscription.addFields({
+            [`subscribeTo${ node.name }Updates`]: subscribeToUpdatesResolver({ node })
+        });
     });
 
     ["Mutation", "Query"].forEach((type) => {
