@@ -19,7 +19,8 @@
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
-import { forEachField } from "@graphql-tools/utils";
+import { forEachField, visitSchema } from "@graphql-tools/utils";
+import { visitSchema as composeVisitSchema } from 'graphql-compose/lib/utils/schemaVisitor';
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
@@ -44,6 +45,7 @@ import {
     InputTypeComposer,
     ObjectTypeComposer,
     InputTypeComposerFieldConfigAsObjectDefinition,
+    forEachKey,
 } from "graphql-compose";
 import pluralize from "pluralize";
 import { Node, Exclude } from "../classes";
@@ -1324,7 +1326,7 @@ function makeAugmentedSchema(
 
         // TODO: exclude subscriptions somehow
         composer.Subscription.addFields({
-            [`subscribeTo${ node.name }Updates`]: subscribeToUpdatesResolver({ node })
+            [`subscribeTo${ node.name }Updates`]: subscribeToUpdatesResolver({ node }),
         });
     });
 
@@ -1393,6 +1395,17 @@ function makeAugmentedSchema(
     // @ts-ignore
     const documentNames = parsedDoc.definitions.filter((x) => "name" in x).map((x) => x.name.value);
 
+    const Subscription = {};
+    forEachKey(composer.Subscription.getFields(), (fc, fieldName) => {
+        // const typename = composer.Subscription.getTypeName();
+        if (!fc.subscribe) return;
+        // if (!Subscription[typename]) resolveMethods[typename] = {};
+        Subscription[fieldName] = {
+            resolve: fc.resolve,
+            subscribe: fc.subscribe,
+        };
+    });
+
     const generatedResolvers = {
         ...Object.entries(composer.getResolveMethods()).reduce((res, [key, value]) => {
             if (!documentNames.includes(key)) {
@@ -1401,6 +1414,7 @@ function makeAugmentedSchema(
 
             return { ...res, [key]: value };
         }, {}),
+        Subscription,
         ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
             if (generatedTypeDefs.includes(`scalar ${name}\n`)) {
                 res[name] = scalar;
