@@ -17,39 +17,14 @@
  * limitations under the License.
  */
 
-import { FieldNode, GraphQLResolveInfo } from "graphql";
-import { PubSub, withFilter } from "graphql-subscriptions";
+import { withFilter } from "graphql-subscriptions";
 import { Node } from "../../classes";
+import translateRead from "../../translate/translate-read";
 import { Context } from "../../types";
+import execute from "../../utils/execute";
+import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 
 export default function subscribeToUpdatesResolver({ node }: { node: Node }) {
-    async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
-        console.log(_context);
-        const context = _context as Context;
-
-        const responseField = info.fieldNodes[0].selectionSet?.selections.find(
-            (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({ camelCase: true })
-        ) as FieldNode; // Field exist by construction and must be selected as it is the only field.
-
-        const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
-
-        const updated = {};
-
-        return updated;
-
-        // return {
-            // info: {
-                // bookmark: executeResult.bookmark,
-                // ...executeResult.statistics,
-            // },
-            // [ responseKey ]: [],
-            // [responseKey]: executeResult.records.map((x) => x.this),
-        // };
-    }
-
-    const ps = new PubSub();
-    // const iterator = ps.asyncIterator
-
     return {
         // type: `Update${node.getPlural({ camelCase: false })}MutationResponse!`,
         type: `${ node.name }!`,
@@ -57,23 +32,31 @@ export default function subscribeToUpdatesResolver({ node }: { node: Node }) {
         args: {
             where: `${node.name}Where`,
         },
-        description: "Subscribe to messageAdded",
-        resolve,
-        subscribe: () => ps.asyncIterator('test'),
-        
-        
-        // {
-        //     subscribe: withFilter(
-        //         () => ps.asyncIterator("messageAdded"),
-        //         (payload, variables) =>
-        //             payload.channelId === variables.channelId
-        //         ),
-        // },
-        // resolve,
-        // // subscribe: (root, args, context) => context.pubsub.asyncIterator('updatePost'),
-        // subscribe: (root, args, context) => {
-        //     console.log(root, args, context);
-        //     return ps.asyncIterator('TEST');
-        // },
+        description: `Subscribe to updates from ${ node.name }`,
+        resolve: async (payload) =>  payload,
+        subscribe: withFilter(
+            (root, args, context, info) => context.pubsub.asyncIterator(`node.${ node.name }.updated`),
+            async (payload, args, context: Context, info) => {
+                context.resolveTree = getNeo4jResolveTree(info);
+                context.neoSchema.authenticateContext(context);
+
+                const [cypher, params] = translateRead({ context, node });
+    
+                const executeResult = await execute({
+                    cypher,
+                    params,
+                    defaultAccessMode: "READ",
+                    context,
+                });
+
+    
+                const [ record ] = executeResult.records;
+                if (record?.this) {
+                    Object.assign(payload, record.this);
+                }
+
+                return Boolean(record?.this);
+            }
+        )
     };
 }
