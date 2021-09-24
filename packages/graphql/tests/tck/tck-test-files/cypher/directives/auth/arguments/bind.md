@@ -16,25 +16,9 @@ type User {
     posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
 }
 
-extend type User
-    @auth(
-        rules: [
-            {
-                operations: [CREATE, UPDATE, CONNECT, DISCONNECT]
-                bind: { id: "$jwt.sub" }
-            }
-        ]
-    )
+extend type User @auth(rules: [{ operations: [CREATE, UPDATE, CONNECT, DISCONNECT], bind: { id: "$jwt.sub" } }])
 
-extend type Post
-    @auth(
-        rules: [
-            {
-                operations: [CREATE, CONNECT, DISCONNECT]
-                bind: { creator: { id: "$jwt.sub" } }
-            }
-        ]
-    )
+extend type Post @auth(rules: [{ operations: [CREATE, CONNECT, DISCONNECT], bind: { creator: { id: "$jwt.sub" } } }])
 ```
 
 ---
@@ -100,16 +84,7 @@ mutation {
                 id: "user-id"
                 name: "bob"
                 posts: {
-                    create: [
-                        {
-                            node: {
-                                id: "post-id-1"
-                                creator: {
-                                    create: { node: { id: "some-user-id" } }
-                                }
-                            }
-                        }
-                    ]
+                    create: [{ node: { id: "post-id-1", creator: { create: { node: { id: "some-user-id" } } } } }]
                 }
             }
         ]
@@ -240,9 +215,7 @@ mutation {
         update: {
             posts: {
                 where: { node: { id: "post-id" } }
-                update: {
-                    node: { creator: { update: { node: { id: "not bound" } } } }
-                }
+                update: { node: { creator: { update: { node: { id: "not bound" } } } } }
             }
         }
     ) {
@@ -349,10 +322,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updatePosts(
-        where: { id: "post-id" }
-        connect: { creator: { where: { node: { id: "user-id" } } } }
-    ) {
+    updatePosts(where: { id: "post-id" }, connect: { creator: { where: { node: { id: "user-id" } } } }) {
         posts {
             id
         }
@@ -371,8 +341,10 @@ CALL {
     WITH this
     OPTIONAL MATCH (this_connect_creator0_node:User)
     WHERE this_connect_creator0_node.id = $this_connect_creator0_node_id
-    FOREACH(_ IN CASE this_connect_creator0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this)<-[:HAS_POST]-(this_connect_creator0_node)
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_creator0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)<-[:HAS_POST]-(this_connect_creator0_node)
+        )
     )
 
     WITH this, this_connect_creator0_node
@@ -412,10 +384,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updatePosts(
-        where: { id: "post-id" }
-        disconnect: { creator: { where: { node: { id: "user-id" } } } }
-    ) {
+    updatePosts(where: { id: "post-id" }, disconnect: { creator: { where: { node: { id: "user-id" } } } }) {
         posts {
             id
         }

@@ -25,47 +25,17 @@ type User {
     posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
 }
 
-extend type User
-    @auth(
-        rules: [
-            {
-                operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT]
-                allow: { id: "$jwt.sub" }
-            }
-        ]
-    )
+extend type User @auth(rules: [{ operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT], allow: { id: "$jwt.sub" } }])
 
 extend type User {
-    password: String!
-        @auth(
-            rules: [
-                {
-                    operations: [READ, UPDATE, DELETE]
-                    allow: { id: "$jwt.sub" }
-                }
-            ]
-        )
+    password: String! @auth(rules: [{ operations: [READ, UPDATE, DELETE], allow: { id: "$jwt.sub" } }])
 }
 
 extend type Post
-    @auth(
-        rules: [
-            {
-                operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT]
-                allow: { creator: { id: "$jwt.sub" } }
-            }
-        ]
-    )
+    @auth(rules: [{ operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT], allow: { creator: { id: "$jwt.sub" } } }])
 
 extend type Comment
-    @auth(
-        rules: [
-            {
-                operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT]
-                allow: { creator: { id: "$jwt.sub" } }
-            }
-        ]
-    )
+    @auth(rules: [{ operations: [READ, UPDATE, DELETE, DISCONNECT, CONNECT], allow: { creator: { id: "$jwt.sub" } } }])
 ```
 
 ---
@@ -407,10 +377,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updatePosts(
-        where: { id: "post-id" }
-        update: { creator: { update: { node: { id: "new-id" } } } }
-    ) {
+    updatePosts(where: { id: "post-id" }, update: { creator: { update: { node: { id: "new-id" } } } }) {
         posts {
             id
         }
@@ -489,10 +456,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updatePosts(
-        where: { id: "post-id" }
-        update: { creator: { update: { node: { password: "new-password" } } } }
-    ) {
+    updatePosts(where: { id: "post-id" }, update: { creator: { update: { node: { password: "new-password" } } } }) {
         posts {
             id
         }
@@ -612,10 +576,7 @@ DETACH DELETE this
 
 ```graphql
 mutation {
-    deleteUsers(
-        where: { id: "user-id" }
-        delete: { posts: { where: { node: { id: "post-id" } } } }
-    ) {
+    deleteUsers(where: { id: "user-id" }, delete: { posts: { where: { node: { id: "post-id" } } } }) {
         nodesDeleted
     }
 }
@@ -682,10 +643,7 @@ DETACH DELETE this
 
 ```graphql
 mutation {
-    updateUsers(
-        where: { id: "user-id" }
-        disconnect: { posts: { where: { node: { id: "post-id" } } } }
-    ) {
+    updateUsers(where: { id: "user-id" }, disconnect: { posts: { where: { node: { id: "post-id" } } } }) {
         users {
             id
         }
@@ -762,15 +720,7 @@ RETURN this { .id } AS this
 mutation {
     updateComments(
         where: { id: "comment-id" }
-        update: {
-            post: {
-                disconnect: {
-                    disconnect: {
-                        creator: { where: { node: { id: "user-id" } } }
-                    }
-                }
-            }
-        }
+        update: { post: { disconnect: { disconnect: { creator: { where: { node: { id: "user-id" } } } } } } }
     ) {
         comments {
             id
@@ -871,10 +821,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateUsers(
-        where: { id: "user-id" }
-        connect: { posts: { where: { node: { id: "post-id" } } } }
-    ) {
+    updateUsers(where: { id: "user-id" }, connect: { posts: { where: { node: { id: "post-id" } } } }) {
         users {
             id
         }
@@ -896,8 +843,10 @@ CALL {
     WITH this, this_connect_posts0_node
     CALL apoc.util.validate(NOT(this_connect_posts0_node.id IS NOT NULL AND this_connect_posts0_node.id = $this_connect_posts0_nodeUser0_allow_auth_allow0_id AND EXISTS((this_connect_posts0_node)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_connect_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_posts0_nodePost1_allow_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
 
-    FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+        )
     )
     RETURN count(*)
 }

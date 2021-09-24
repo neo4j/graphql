@@ -20,39 +20,18 @@ type Post {
     creator: User @relationship(type: "HAS_POST", direction: IN)
 }
 
-extend type User
-    @auth(
-        rules: [
-            {
-                operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT]
-                where: { id: "$jwt.sub" }
-            }
-        ]
-    )
+extend type User @auth(rules: [{ operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT], where: { id: "$jwt.sub" } }])
 
 extend type User {
-    password: String!
-        @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
+    password: String! @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
 }
 
 extend type Post {
-    secretKey: String!
-        @auth(
-            rules: [
-                { operations: [READ], where: { creator: { id: "$jwt.sub" } } }
-            ]
-        )
+    secretKey: String! @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
 }
 
 extend type Post
-    @auth(
-        rules: [
-            {
-                operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT]
-                where: { creator: { id: "$jwt.sub" } }
-            }
-        ]
-    )
+    @auth(rules: [{ operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT], where: { creator: { id: "$jwt.sub" } } }])
 ```
 
 ---
@@ -825,14 +804,7 @@ DETACH DELETE this
 ```graphql
 mutation {
     createUsers(
-        input: [
-            {
-                id: "123"
-                name: "Bob"
-                password: "password"
-                posts: { connect: { where: { node: {} } } }
-            }
-        ]
+        input: [{ id: "123", name: "Bob", password: "password", posts: { connect: { where: { node: {} } } } }]
     ) {
         users {
             id
@@ -856,7 +828,11 @@ CALL {
         OPTIONAL MATCH (this0_posts_connect0_node:Post)
         WHERE EXISTS((this0_posts_connect0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_posts_connect0_node_auth_where0_creator_id)
 
-        FOREACH(_ IN CASE this0_posts_connect0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node) )
+        FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_posts_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            )
+        )
 
         RETURN count(*)
     }
@@ -897,12 +873,7 @@ RETURN this0 { .id } AS this0
 mutation {
     createUsers(
         input: [
-            {
-                id: "123"
-                name: "Bob"
-                password: "password"
-                posts: { connect: { where: { node: { id: "post-id" } } } }
-            }
+            { id: "123", name: "Bob", password: "password", posts: { connect: { where: { node: { id: "post-id" } } } } }
         ]
     ) {
         users {
@@ -926,7 +897,11 @@ CALL {
         OPTIONAL MATCH (this0_posts_connect0_node:Post)
         WHERE this0_posts_connect0_node.id = $this0_posts_connect0_node_id AND EXISTS((this0_posts_connect0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_posts_connect0_node_auth_where0_creator_id)
 
-        FOREACH(_ IN CASE this0_posts_connect0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node) )
+        FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_posts_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            )
+        )
 
         RETURN count(*)
     }
@@ -989,7 +964,11 @@ CALL {
     OPTIONAL MATCH (this_posts0_connect0_node:Post)
     WHERE EXISTS((this_posts0_connect0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_connect0_node_auth_where0_creator_id)
 
-    FOREACH(_ IN CASE this_posts0_connect0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node) )
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_posts0_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+        )
+    )
 
     RETURN count(*)
 }
@@ -1023,9 +1002,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateUsers(
-        update: { posts: { connect: { where: { node: { id: "new-id" } } } } }
-    ) {
+    updateUsers(update: { posts: { connect: { where: { node: { id: "new-id" } } } } }) {
         users {
             id
         }
@@ -1048,7 +1025,11 @@ CALL {
     OPTIONAL MATCH (this_posts0_connect0_node:Post)
     WHERE this_posts0_connect0_node.id = $this_posts0_connect0_node_id AND EXISTS((this_posts0_connect0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_connect0_node_auth_where0_creator_id)
 
-    FOREACH(_ IN CASE this_posts0_connect0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node) )
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_posts0_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+        )
+    )
 
     RETURN count(*)
 }
@@ -1106,7 +1087,11 @@ CALL {
     OPTIONAL MATCH (this_connect_posts0_node:Post)
     WHERE EXISTS((this_connect_posts0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_posts0_node_auth_where0_creator_id)
 
-    FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0_node) )
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+        )
+    )
 
     RETURN count(*)
 }
@@ -1163,7 +1148,11 @@ CALL {
     OPTIONAL MATCH (this_connect_posts0_node:Post)
     WHERE this_connect_posts0_node.id = $this_connect_posts0_node_id AND EXISTS((this_connect_posts0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_posts0_node_auth_where0_creator_id)
 
-    FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:HAS_POST]->(this_connect_posts0_node) )
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+        )
+    )
 
     RETURN count(*)
 }
@@ -1255,11 +1244,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateUsers(
-        update: {
-            posts: [{ disconnect: { where: { node: { id: "new-id" } } } }]
-        }
-    ) {
+    updateUsers(update: { posts: [{ disconnect: { where: { node: { id: "new-id" } } } }] }) {
         users {
             id
         }

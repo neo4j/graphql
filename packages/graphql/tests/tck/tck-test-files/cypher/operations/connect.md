@@ -53,11 +53,7 @@ mutation {
                                 photos: [
                                     {
                                         where: { node: { id: "123" } }
-                                        connect: {
-                                            color: {
-                                                where: { node: { id: "134" } }
-                                            }
-                                        }
+                                        connect: { color: { where: { node: { id: "134" } } } }
                                     }
                                 ]
                             }
@@ -66,18 +62,8 @@ mutation {
                 }
                 photos: {
                     connect: [
-                        {
-                            where: { node: { id: "321" } }
-                            connect: {
-                                color: { where: { node: { name: "Green" } } }
-                            }
-                        }
-                        {
-                            where: { node: { id: "33211" } }
-                            connect: {
-                                color: { where: { node: { name: "Red" } } }
-                            }
-                        }
+                        { where: { node: { id: "321" } }, connect: { color: { where: { node: { name: "Green" } } } } }
+                        { where: { node: { id: "33211" } }, connect: { color: { where: { node: { name: "Red" } } } } }
                     ]
                 }
             }
@@ -103,8 +89,10 @@ CALL {
         WITH this0
         OPTIONAL MATCH (this0_colors_connect0_node:Color)
         WHERE this0_colors_connect0_node.name = $this0_colors_connect0_node_name
-        FOREACH(_ IN CASE this0_colors_connect0_node WHEN NULL THEN [] ELSE [1] END |
-            MERGE (this0)-[:HAS_COLOR]->(this0_colors_connect0_node)
+        FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_colors_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0)-[:HAS_COLOR]->(this0_colors_connect0_node)
+            )
         )
 
         WITH this0, this0_colors_connect0_node
@@ -112,8 +100,10 @@ CALL {
             WITH this0, this0_colors_connect0_node
             OPTIONAL MATCH (this0_colors_connect0_node_photos0_node:Photo)
             WHERE this0_colors_connect0_node_photos0_node.id = $this0_colors_connect0_node_photos0_node_id
-            FOREACH(_ IN CASE this0_colors_connect0_node_photos0_node WHEN NULL THEN [] ELSE [1] END |
-                MERGE (this0_colors_connect0_node)<-[:OF_COLOR]-(this0_colors_connect0_node_photos0_node)
+            FOREACH(_ IN CASE this0_colors_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                FOREACH(_ IN CASE this0_colors_connect0_node_photos0_node WHEN NULL THEN [] ELSE [1] END |
+                    MERGE (this0_colors_connect0_node)<-[:OF_COLOR]-(this0_colors_connect0_node_photos0_node)
+                )
             )
 
             WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node
@@ -121,8 +111,10 @@ CALL {
                 WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node
                 OPTIONAL MATCH (this0_colors_connect0_node_photos0_node_color0_node:Color)
                 WHERE this0_colors_connect0_node_photos0_node_color0_node.id = $this0_colors_connect0_node_photos0_node_color0_node_id
-                FOREACH(_ IN CASE this0_colors_connect0_node_photos0_node_color0_node WHEN NULL THEN [] ELSE [1] END |
-                    MERGE (this0_colors_connect0_node_photos0_node)-[:OF_COLOR]->(this0_colors_connect0_node_photos0_node_color0_node)
+                FOREACH(_ IN CASE this0_colors_connect0_node_photos0_node WHEN NULL THEN [] ELSE [1] END |
+                    FOREACH(_ IN CASE this0_colors_connect0_node_photos0_node_color0_node WHEN NULL THEN [] ELSE [1] END |
+                        MERGE (this0_colors_connect0_node_photos0_node)-[:OF_COLOR]->(this0_colors_connect0_node_photos0_node_color0_node)
+                    )
                 )
                 RETURN count(*)
             }
@@ -137,8 +129,10 @@ CALL {
         WITH this0
         OPTIONAL MATCH (this0_photos_connect0_node:Photo)
         WHERE this0_photos_connect0_node.id = $this0_photos_connect0_node_id
-        FOREACH(_ IN CASE this0_photos_connect0_node WHEN NULL THEN [] ELSE [1] END |
-            MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect0_node)
+        FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_photos_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect0_node)
+            )
         )
 
         WITH this0, this0_photos_connect0_node
@@ -146,8 +140,10 @@ CALL {
             WITH this0, this0_photos_connect0_node
             OPTIONAL MATCH (this0_photos_connect0_node_color0_node:Color)
             WHERE this0_photos_connect0_node_color0_node.name = $this0_photos_connect0_node_color0_node_name
-            FOREACH(_ IN CASE this0_photos_connect0_node_color0_node WHEN NULL THEN [] ELSE [1] END |
-                MERGE (this0_photos_connect0_node)-[:OF_COLOR]->(this0_photos_connect0_node_color0_node)
+            FOREACH(_ IN CASE this0_photos_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                FOREACH(_ IN CASE this0_photos_connect0_node_color0_node WHEN NULL THEN [] ELSE [1] END |
+                    MERGE (this0_photos_connect0_node)-[:OF_COLOR]->(this0_photos_connect0_node_color0_node)
+                )
             )
             RETURN count(*)
         }
@@ -158,8 +154,10 @@ CALL {
         WITH this0
         OPTIONAL MATCH (this0_photos_connect1_node:Photo)
         WHERE this0_photos_connect1_node.id = $this0_photos_connect1_node_id
-        FOREACH(_ IN CASE this0_photos_connect1_node WHEN NULL THEN [] ELSE [1] END |
-            MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect1_node)
+        FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_photos_connect1_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect1_node)
+            )
         )
 
         WITH this0, this0_photos_connect1_node
@@ -167,8 +165,10 @@ CALL {
             WITH this0, this0_photos_connect1_node
             OPTIONAL MATCH (this0_photos_connect1_node_color0_node:Color)
             WHERE this0_photos_connect1_node_color0_node.name = $this0_photos_connect1_node_color0_node_name
-            FOREACH(_ IN CASE this0_photos_connect1_node_color0_node WHEN NULL THEN [] ELSE [1] END |
-                MERGE (this0_photos_connect1_node)-[:OF_COLOR]->(this0_photos_connect1_node_color0_node)
+            FOREACH(_ IN CASE this0_photos_connect1_node WHEN NULL THEN [] ELSE [1] END |
+                FOREACH(_ IN CASE this0_photos_connect1_node_color0_node WHEN NULL THEN [] ELSE [1] END |
+                    MERGE (this0_photos_connect1_node)-[:OF_COLOR]->(this0_photos_connect1_node_color0_node)
+                )
             )
             RETURN count(*)
         }

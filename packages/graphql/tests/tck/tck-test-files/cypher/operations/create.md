@@ -170,29 +170,11 @@ mutation {
         input: [
             {
                 id: "1"
-                actors: {
-                    create: [
-                        {
-                            node: {
-                                name: "actor 1"
-                                movies: { create: [{ node: { id: "10" } }] }
-                            }
-                        }
-                    ]
-                }
+                actors: { create: [{ node: { name: "actor 1", movies: { create: [{ node: { id: "10" } }] } } }] }
             }
             {
                 id: "2"
-                actors: {
-                    create: [
-                        {
-                            node: {
-                                name: "actor 2"
-                                movies: { create: [{ node: { id: "20" } }] }
-                            }
-                        }
-                    ]
-                }
+                actors: { create: [{ node: { name: "actor 2", movies: { create: [{ node: { id: "20" } }] } } }] }
             }
         ]
     ) {
@@ -262,14 +244,7 @@ RETURN this0 { .id } AS this0, this1 { .id } AS this1
 
 ```graphql
 mutation {
-    createMovies(
-        input: [
-            {
-                id: 1
-                actors: { connect: [{ where: { node: { name: "Dan" } } }] }
-            }
-        ]
-    ) {
+    createMovies(input: [{ id: 1, actors: { connect: [{ where: { node: { name: "Dan" } } }] } }]) {
         movies {
             id
         }
@@ -289,8 +264,10 @@ CALL {
         WITH this0
         OPTIONAL MATCH (this0_actors_connect0_node:Actor)
         WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_name
-        FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
+        FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
+            )
         )
         RETURN count(*)
     }
@@ -318,12 +295,7 @@ RETURN this0 { .id } AS this0
 
 ```graphql
 mutation {
-    createActors(
-        input: {
-            name: "Dan"
-            movies: { connect: { where: { node: { id: 1 } } } }
-        }
-    ) {
+    createActors(input: { name: "Dan", movies: { connect: { where: { node: { id: 1 } } } } }) {
         actors {
             name
             movies {
@@ -352,8 +324,10 @@ CALL {
         WITH this0
         OPTIONAL MATCH (this0_movies_connect0_node:Movie)
         WHERE this0_movies_connect0_node.id = $this0_movies_connect0_node_id
-        FOREACH(_ IN CASE this0_movies_connect0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
+        FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_movies_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
+            )
         )
         RETURN count(*)
     }

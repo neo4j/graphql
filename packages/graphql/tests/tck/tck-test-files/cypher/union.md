@@ -7,15 +7,7 @@ Schema:
 ```graphql
 union Search = Movie | Genre
 
-type Genre
-    @auth(
-        rules: [
-            {
-                operations: [READ]
-                allow: { name: "$jwt.jwtAllowedNamesExample" }
-            }
-        ]
-    ) {
+type Genre @auth(rules: [{ operations: [READ], allow: { name: "$jwt.jwtAllowedNamesExample" } }]) {
     name: String
 }
 
@@ -106,16 +98,7 @@ RETURN this {
 
 ```graphql
 mutation {
-    createMovies(
-        input: [
-            {
-                title: "some movie"
-                search: {
-                    Genre: { create: [{ node: { name: "some genre" } }] }
-                }
-            }
-        ]
-    ) {
+    createMovies(input: [{ title: "some movie", search: { Genre: { create: [{ node: { name: "some genre" } }] } } }]) {
         movies {
             title
         }
@@ -160,9 +143,7 @@ RETURN this0 {
 
 ```graphql
 mutation {
-    updateMovies(
-        create: { search: { Genre: [{ node: { name: "some genre" } }] } }
-    ) {
+    updateMovies(create: { search: { Genre: [{ node: { name: "some genre" } }] } }) {
         movies {
             title
         }
@@ -197,16 +178,7 @@ RETURN this { .title } AS this
 ```graphql
 mutation {
     createMovies(
-        input: [
-            {
-                title: "some movie"
-                search: {
-                    Genre: {
-                        connect: [{ where: { node: { name: "some genre" } } }]
-                    }
-                }
-            }
-        ]
+        input: [{ title: "some movie", search: { Genre: { connect: [{ where: { node: { name: "some genre" } } }] } } }]
     ) {
         movies {
             title
@@ -227,8 +199,10 @@ CALL {
         WITH this0
         OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
         WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_name
-        FOREACH(_ IN CASE this0_search_Genre_connect0_node WHEN NULL THEN [] ELSE [1] END |
-            MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
+        FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_search_Genre_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
+            )
         )
         RETURN count(*)
     }
@@ -259,12 +233,7 @@ mutation {
     updateMovies(
         where: { title: "some movie" }
         update: {
-            search: {
-                Genre: {
-                    where: { node: { name: "some genre" } }
-                    update: { node: { name: "some new genre" } }
-                }
-            }
+            search: { Genre: { where: { node: { name: "some genre" } }, update: { node: { name: "some new genre" } } } }
         }
     ) {
         movies {
@@ -334,13 +303,7 @@ RETURN this { .title } AS this
 mutation {
     updateMovies(
         where: { title: "some movie" }
-        update: {
-            search: {
-                Genre: {
-                    disconnect: [{ where: { node: { name: "some genre" } } }]
-                }
-            }
-        }
+        update: { search: { Genre: { disconnect: [{ where: { node: { name: "some genre" } } }] } } }
     ) {
         movies {
             title
@@ -409,9 +372,7 @@ RETURN this { .title } AS this
 mutation {
     updateMovies(
         where: { title: "some movie" }
-        disconnect: {
-            search: { Genre: { where: { node: { name: "some genre" } } } }
-        }
+        disconnect: { search: { Genre: { where: { node: { name: "some genre" } } } } }
     ) {
         movies {
             title
@@ -475,9 +436,7 @@ RETURN this { .title } AS this
 mutation {
     updateMovies(
         where: { title: "some movie" }
-        connect: {
-            search: { Genre: { where: { node: { name: "some genre" } } } }
-        }
+        connect: { search: { Genre: { where: { node: { name: "some genre" } } } } }
     ) {
         movies {
             title
@@ -496,7 +455,11 @@ CALL {
     WITH this
     OPTIONAL MATCH (this_connect_search_Genre0_node:Genre)
     WHERE this_connect_search_Genre0_node.name = $this_connect_search_Genre0_node_name
-    FOREACH(_ IN CASE this_connect_search_Genre0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node) )
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_search_Genre0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
+        )
+    )
     RETURN count(*)
 }
 RETURN this { .title } AS this
@@ -521,9 +484,7 @@ RETURN this { .title } AS this
 mutation {
     updateMovies(
         where: { title: "some movie" }
-        delete: {
-            search: { Genre: { where: { node: { name: "some genre" } } } }
-        }
+        delete: { search: { Genre: { where: { node: { name: "some genre" } } } } }
     ) {
         movies {
             title

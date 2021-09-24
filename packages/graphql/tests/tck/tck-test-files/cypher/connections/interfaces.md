@@ -294,7 +294,7 @@ RETURN this { .name, actedInConnection } as this
         "args": {
             "where": {
                 "edge": {
-                    "screenTime": {
+                    "screenTime_GT": {
                         "low": 60,
                         "high": 0
                     }

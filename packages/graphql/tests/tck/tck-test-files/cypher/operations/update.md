@@ -268,8 +268,10 @@ CALL {
     WITH this
     OPTIONAL MATCH (this_connect_actors0_node:Actor)
     WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
-    FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
-    MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+        )
     )
     RETURN count(*)
 }
@@ -314,8 +316,10 @@ CALL {
     WITH this
     OPTIONAL MATCH (this_connect_actors0_node:Actor)
     WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
-    FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
-    MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+        )
     )
     RETURN count(*)
 }
@@ -324,8 +328,10 @@ CALL {
     WITH this
     OPTIONAL MATCH (this_connect_actors1_node:Actor)
     WHERE this_connect_actors1_node.name = $this_connect_actors1_node_name
-    FOREACH(_ IN CASE this_connect_actors1_node WHEN NULL THEN [] ELSE [1] END |
-    MERGE (this)<-[this_connect_actors1_relationship:ACTED_IN]-(this_connect_actors1_node)
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_actors1_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)<-[this_connect_actors1_relationship:ACTED_IN]-(this_connect_actors1_node)
+        )
     )
     RETURN count(*)
 }

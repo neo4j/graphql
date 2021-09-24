@@ -72,19 +72,24 @@ CALL {
         WITH this0
         OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)
         WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_title_STARTS_WITH
-        FOREACH(_ IN CASE this0_actedIn_connect0_node WHEN NULL THEN [] ELSE [1] END |
-            MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
-            SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
+        FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_actedIn_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
+                SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
+            )
         )
         RETURN count(*)
     UNION
         WITH this0
         OPTIONAL MATCH (this0_actedIn_connect0_node:Series)
         WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_title_STARTS_WITH
-        FOREACH(_ IN CASE this0_actedIn_connect0_node WHEN NULL THEN [] ELSE [1] END |
-            MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
-            SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
-        ) RETURN count(*)
+        FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_actedIn_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
+                SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
+            )
+        )
+        RETURN count(*)
     }
     RETURN this0
 }
