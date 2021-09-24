@@ -86,7 +86,7 @@ interface GetNeo4jResolveTreeOptions {
 
 function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4jResolveTreeOptions) {
     const resolveTree = options?.resolveTree || (parseResolveInfo(resolveInfo) as ResolveTree);
-
+    
     let field: GraphQLField<any, any>;
 
     if (options?.field) {
@@ -94,8 +94,13 @@ function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4j
     } else {
         const queryType = resolveInfo.schema.getQueryType();
         const mutationType = resolveInfo.schema.getMutationType();
+        const subscriptionType = resolveInfo.schema.getSubscriptionType();
 
-        field = Object.values({ ...queryType?.getFields(), ...mutationType?.getFields() }).find(
+        field = Object.values({
+            ...queryType?.getFields(),
+            ...mutationType?.getFields(),
+            ...subscriptionType?.getFields(),
+        }).find(
             (f) => f.name === resolveTree.name
         ) as GraphQLField<any, any>;
     }
