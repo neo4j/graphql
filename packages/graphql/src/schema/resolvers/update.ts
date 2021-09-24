@@ -18,10 +18,12 @@
  */
 
 import { FieldNode, GraphQLResolveInfo } from "graphql";
-import { execute } from "../../utils";
-import { translateUpdate } from "../../translate";
+import { Integer } from "neo4j-driver";
 import { Node } from "../../classes";
+import { MutationMeta } from "../../classes/WithProjector";
+import { translateUpdate } from "../../translate";
 import { Context } from "../../types";
+import { execute, publishMutateMeta } from "../../utils";
 
 export default function updateResolver({ node }: { node: Node }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
@@ -41,9 +43,9 @@ export default function updateResolver({ node }: { node: Node }) {
 
         const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
 
-        context.pubsub.publish(`${ node.name }.updated`, {
-            args: _args,
-            result: executeResult.records,
+        publishMutateMeta({
+            context,
+            executeResult,
         });
 
         return {

@@ -20,3 +20,4 @@
 export { default as trimmer } from "./trimmer";
 export { default as execute } from "./execute";
 export { default as checkNeo4jCompat } from "./verify-database";
+export { default as publishMutateMeta } from "./publish-mutate-meta";

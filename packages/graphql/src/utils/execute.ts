@@ -27,7 +27,7 @@ import environment from "../environment";
 
 const debug = Debug(DEBUG_EXECUTE);
 
-interface ExecuteResult {
+export interface ExecuteResult {
     bookmark: string | null;
     result: QueryResult;
     statistics: Record<string, number>;

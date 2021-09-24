@@ -34,6 +34,7 @@ export const REQUIRED_APOC_PROCEDURES = ["apoc.util.validate", "apoc.do.when", "
 export const DEBUG_AUTH = `${DEBUG_PREFIX}:auth`;
 export const DEBUG_GRAPHQL = `${DEBUG_PREFIX}:graphql`;
 export const DEBUG_EXECUTE = `${DEBUG_PREFIX}:execute`;
+export const DEBUG_PUBLISH = `${DEBUG_PREFIX}:publish`;
 
 // [0]Name [1]Error
 export const RESERVED_TYPE_NAMES = [
