@@ -1395,6 +1395,8 @@ function makeAugmentedSchema(
     // @ts-ignore
     const documentNames = parsedDoc.definitions.filter((x) => "name" in x).map((x) => x.name.value);
 
+    // getResolveMethods() does not return subscribe() property so we need to build
+    // getSubscriptionResolveMethods() ourselves:
     const Subscription = {};
     forEachKey(composer.Subscription.getFields(), (fc, fieldName) => {
         // const typename = composer.Subscription.getTypeName();
