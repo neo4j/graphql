@@ -63,6 +63,13 @@ function createWhereAndParams({
             (x) => key.startsWith(x.fieldName) && x.typeMeta.name === "Duration"
         );
 
+        if (key === '__id') {
+            // internal ID resolver
+            res.clauses.push(`(id(${varName}) = $${param})`);
+            res.params[param] = value;
+            return res;
+        }
+
         if (key.endsWith("_NOT")) {
             const [fieldName] = key.split("_NOT");
             dbFieldName = mapToDbProperty(node, fieldName);

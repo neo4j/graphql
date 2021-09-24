@@ -199,6 +199,8 @@ export interface GraphQLWhereArg {
     [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
     AND?: GraphQLWhereArg[];
     OR?: GraphQLWhereArg[];
+    // Internal ID used to limit results to a single ID
+    __id?: number;
 }
 
 export interface ConnectionWhereArg {
