@@ -33,12 +33,18 @@ export default function subscribeToUpdatesResolver({ node }: { node: Node }) {
             where: `${node.name}Where`,
         },
         description: `Subscribe to updates from ${ node.name }`,
-        resolve: async (payload) =>  payload,
+        resolve: (payload) => payload,
         subscribe: withFilter(
             (root, args, context, info) => context.pubsub.asyncIterator(`node.${ node.name }.updated`),
             async (payload, args, context: Context, info) => {
+                if (!payload || !payload.id) { return false; }
+
                 context.resolveTree = getNeo4jResolveTree(info);
                 context.neoSchema.authenticateContext(context);
+                context.resolveTree.args = context.resolveTree.args || {};
+                context.resolveTree.args.where = context.resolveTree.args.where || {};
+                // eslint-disable-next-line @typescript-eslint/dot-notation
+                context.resolveTree.args.where['__id'] = payload.id;
 
                 const [cypher, params] = translateRead({ context, node });
     
