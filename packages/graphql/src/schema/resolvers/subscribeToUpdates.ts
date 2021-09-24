@@ -18,11 +18,13 @@
  */
 
 import { FieldNode, GraphQLResolveInfo } from "graphql";
+import { PubSub, withFilter } from "graphql-subscriptions";
 import { Node } from "../../classes";
 import { Context } from "../../types";
 
 export default function subscribeToUpdatesResolver({ node }: { node: Node }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
+        console.log(_context);
         const context = _context as Context;
 
         const responseField = info.fieldNodes[0].selectionSet?.selections.find(
@@ -45,13 +47,33 @@ export default function subscribeToUpdatesResolver({ node }: { node: Node }) {
         // };
     }
 
+    const ps = new PubSub();
+    // const iterator = ps.asyncIterator
+
     return {
         // type: `Update${node.getPlural({ camelCase: false })}MutationResponse!`,
         type: `${ node.name }!`,
+        kind: 'subscription',
         args: {
             where: `${node.name}Where`,
         },
+        description: "Subscribe to messageAdded",
         resolve,
-        subscribe: () => context.pubsub.asyncIterator('updatePost'),
+        subscribe: () => ps.asyncIterator('test'),
+        
+        
+        // {
+        //     subscribe: withFilter(
+        //         () => ps.asyncIterator("messageAdded"),
+        //         (payload, variables) =>
+        //             payload.channelId === variables.channelId
+        //         ),
+        // },
+        // resolve,
+        // // subscribe: (root, args, context) => context.pubsub.asyncIterator('updatePost'),
+        // subscribe: (root, args, context) => {
+        //     console.log(root, args, context);
+        //     return ps.asyncIterator('TEST');
+        // },
     };
 }
