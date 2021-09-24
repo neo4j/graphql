@@ -112,6 +112,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
                 resolveTree: interfaceResolveTree,
                 field: relationshipField,
                 context,
+                node,
                 nodeVariable: "REPLACE_ME",
             });
             interfaceStrs.push(interfaceProjection.cypher);

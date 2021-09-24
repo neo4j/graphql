@@ -87,6 +87,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
                 resolveTree: interfaceResolveTree,
                 field: relationshipField,
                 context,
+                node,
                 nodeVariable: varName,
             });
             interfaceStrs.push(interfaceProjection.cypher);

@@ -83,7 +83,7 @@ describe("Interface Relationships", () => {
             }
 
             type Actor {
-              actedIn(where: ProductionWhere): [Production!]!
+              actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
               actedInConnection(where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -122,8 +122,8 @@ describe("Interface Relationships", () => {
             }
 
             input ActorActedInFieldInput {
-              connect: ActorActedInConnectFieldInput
-              create: ActorActedInCreateFieldInput
+              connect: [ActorActedInConnectFieldInput!]
+              create: [ActorActedInCreateFieldInput!]
             }
 
             type ActorActedInRelationship implements ActedIn {
@@ -364,6 +364,11 @@ describe("Interface Relationships", () => {
               seriesCount(where: SeriesWhere): Int!
             }
 
+            input QueryOptions {
+              limit: Int
+              offset: Int
+            }
+
             type Series implements Production {
               episodes: Int!
               title: String!
@@ -532,7 +537,7 @@ describe("Interface Relationships", () => {
             }
 
             type Actor {
-              actedIn(where: ProductionWhere): [Production!]!
+              actedIn(options: QueryOptions, where: ProductionWhere): [Production!]!
               actedInConnection(where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -1073,6 +1078,11 @@ describe("Interface Relationships", () => {
               series(options: SeriesOptions, where: SeriesWhere): [Series!]!
               seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesCount(where: SeriesWhere): Int!
+            }
+
+            input QueryOptions {
+              limit: Int
+              offset: Int
             }
 
             type Series implements Production {

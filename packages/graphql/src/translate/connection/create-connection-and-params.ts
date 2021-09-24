@@ -208,6 +208,7 @@ function createConnectionAndParams({
 
                 const whereStrs: string[] = [];
                 const unionWhere = field.relationship.union ? (whereInput || {})[n.name] : whereInput || {};
+
                 if (unionWhere) {
                     const where = createConnectionWhereAndParams({
                         whereInput: unionWhere,
