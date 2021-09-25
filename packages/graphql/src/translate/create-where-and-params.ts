@@ -74,6 +74,9 @@ function createWhereAndParams({
 
             const relationField = node.relationFields.find((x) => x.fieldName === fieldName) as RelationField;
             const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const relationship = (context.neoSchema.relationships.find(
+                (x) => x.properties === relationField.properties
+            ) as unknown) as Relationship;
 
             const aggregateWhereAndParams = createAggregateWhereAndParams({
                 node: refNode,
@@ -82,6 +85,7 @@ function createWhereAndParams({
                 field: relationField,
                 varName,
                 aggregation: value,
+                relationship,
             });
             if (aggregateWhereAndParams[0]) {
                 res.clauses.push(aggregateWhereAndParams[0]);

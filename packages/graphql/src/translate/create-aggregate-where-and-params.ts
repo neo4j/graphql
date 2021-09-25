@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
+import { Node, Relationship } from "../classes";
 import { RelationField, Context, BaseField } from "../types";
 
 const fieldOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
@@ -48,6 +48,50 @@ function createOperator(input): Operator {
     return operator;
 }
 
+function idkWhatToCallThisYet({
+    inputValue,
+    nodeOrRelationship,
+    chainStr,
+    variable,
+}: {
+    inputValue: any;
+    nodeOrRelationship: Node | Relationship;
+    chainStr: string;
+    variable: string;
+}): [string, any] {
+    const cyphers: string[] = [];
+    let params = {};
+
+    Object.entries(inputValue).forEach((e) => {
+        const f = [...nodeOrRelationship.primitiveFields, ...nodeOrRelationship.temporalFields].find((field) =>
+            fieldOperators.some((op) => e[0].split(`_${op}`)[0] === field.fieldName)
+        ) as BaseField;
+
+        if (!f) {
+            return;
+        }
+
+        const [, operatorString] = e[0].split(`${f.fieldName}_`);
+        const operator = createOperator(operatorString);
+
+        const paramName = `${chainStr}_${e[0]}`;
+        params[paramName] = e[1];
+
+        if (f.typeMeta.name === "String") {
+            if (operator !== "=") {
+                cyphers.push(`size(${variable}.${f.fieldName}) ${operator} $${paramName}`);
+
+                return;
+            }
+        }
+
+        // Default
+        cyphers.push(`${variable}.${f.fieldName} ${operator} $${paramName}`);
+    });
+
+    return [cyphers.join(" AND "), params];
+}
+
 function createPredicate({
     node,
     aggregation,
@@ -56,6 +100,8 @@ function createPredicate({
     field,
     varName,
     nodeVariable,
+    edgeVariable,
+    relationship,
 }: {
     aggregation: any;
     node: Node;
@@ -64,6 +110,8 @@ function createPredicate({
     field: RelationField;
     varName: string;
     nodeVariable: string;
+    edgeVariable: string;
+    relationship: Relationship;
 }): [string, any] {
     const cyphers: string[] = [];
     let params = {};
@@ -81,6 +129,8 @@ function createPredicate({
                     varName,
                     aggregation: v,
                     nodeVariable,
+                    edgeVariable,
+                    relationship,
                 });
                 if (recurse[0]) {
                     innerClauses.push(recurse[0]);
@@ -109,32 +159,33 @@ function createPredicate({
         if (entry[0] === "node") {
             const nodeValue = entry[1] as any;
 
-            Object.entries(nodeValue).forEach((e) => {
-                const f = [...node.primitiveFields, ...node.temporalFields].find((field) =>
-                    fieldOperators.some((op) => e[0].split(`_${op}`)[0] === field.fieldName)
-                ) as BaseField;
-
-                if (!f) {
-                    return;
-                }
-
-                const [, operatorString] = e[0].split(`${f.fieldName}_`);
-                const operator = createOperator(operatorString);
-
-                const paramName = `${chainStr}_${entry[0]}_${e[0]}`;
-                params[paramName] = e[1];
-
-                if (f.typeMeta.name === "String") {
-                    if (operator !== "=") {
-                        cyphers.push(`size(${nodeVariable}.${f.fieldName}) ${operator} $${paramName}`);
-
-                        return;
-                    }
-                }
-
-                // Default
-                cyphers.push(`${nodeVariable}.${f.fieldName} ${operator} $${paramName}`);
+            const nodeThingy = idkWhatToCallThisYet({
+                chainStr: `${chainStr}_${entry[0]}`,
+                inputValue: nodeValue,
+                nodeOrRelationship: node,
+                variable: nodeVariable,
             });
+
+            if (nodeThingy[0]) {
+                cyphers.push(nodeThingy[0]);
+                params = { ...params, ...nodeThingy[1] };
+            }
+        }
+
+        if (entry[0] === "edge") {
+            const edgeValue = entry[1] as any;
+
+            const edgeThingy = idkWhatToCallThisYet({
+                chainStr: `${chainStr}_${entry[0]}`,
+                inputValue: edgeValue,
+                nodeOrRelationship: relationship,
+                variable: edgeVariable,
+            });
+
+            if (edgeThingy[0]) {
+                cyphers.push(edgeThingy[0]);
+                params = { ...params, ...edgeThingy[1] };
+            }
         }
     });
 
@@ -148,6 +199,7 @@ function createAggregateWhereAndParams({
     chainStr,
     context,
     aggregation,
+    relationship,
 }: {
     node: Node;
     field: RelationField;
@@ -155,14 +207,16 @@ function createAggregateWhereAndParams({
     chainStr: string;
     context: Context;
     aggregation: any;
+    relationship: Relationship;
 }): [string, any] {
     const cyphers: string[] = [];
     let params = {};
 
     const inStr = field.direction === "IN" ? "<-" : "-";
     const outStr = field.direction === "OUT" ? "->" : "-";
-    const relTypeStr = `[:${field.type}]`;
     const nodeVariable = `${chainStr}_node`;
+    const edgeVariable = `${chainStr}_edge`;
+    const relTypeStr = `[${edgeVariable}:${field.type}]`;
 
     const matchStr = `MATCH (${varName})${inStr}${relTypeStr}${outStr}(${nodeVariable}:${field.typeMeta.name})`;
     cyphers.push(`apoc.cypher.runFirstColumn(\" ${matchStr}`);
@@ -174,7 +228,9 @@ function createAggregateWhereAndParams({
         field,
         node,
         nodeVariable,
+        edgeVariable,
         varName,
+        relationship,
     });
     if (predicate[0]) {
         params = { ...params, ...predicate[1] };
