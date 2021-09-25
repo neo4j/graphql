@@ -69,6 +69,48 @@ jobs:
           name: schema-coverage-graphql
           path: packages/graphql/coverage/
 
+  nextjs-app-setup:
+    needs:
+      - cache-dependencies
+
+    runs-on: ubuntu-latest
+
+    services:
+      neo4j:
+        image: neo4j:latest
+        env:
+          NEO4J_AUTH: neo4j/mypassword
+          NEO4JLABS_PLUGINS: '["apoc"]'
+        ports:
+          - 7687:7687
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable && yarn build
+      - name: Setup Nextjs app
+        run: chmod +x docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh && cd packages && ../docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh
+      - name: Install dependencies
+        run: |
+          cd packages/neo4j-graphql-nextjs
+          chmod +x ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh && ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh
+      - name: Copy .env file
+        run: cp docs/modules/ROOT/examples/code-partials/nextjs/env.example packages/neo4j-graphql-nextjs/.env.local
+      - name: Create GraphQL endpoint
+        run: cp docs/modules/ROOT/examples/code-partials/nextjs/graphql.js packages/neo4j-graphql-nextjs/pages/api/graphql.js
+      - name: Start server
+        run: cd packages/neo4j-graphql-nextjs && yarn dev &
+      - name: Query the API and assert that there are no errors
+        run: |
+          sleep 10 &&
+          RES=$(curl 'http://localhost:3000/api/graphql' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: http://localhost:3000' --data-binary '{"query":"{\n  movies {\n    title\n  }\n}"}' --compressed --silent)
+          echo "$RES"
+          echo "$RES" | grep -qv "error"
+
   tck-tests:
     needs:
       - cache-dependencies
