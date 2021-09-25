@@ -24,7 +24,7 @@ import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
-describe("https://github.com/neo4j/graphql/issues/550", () => {
+describe.skip("https://github.com/neo4j/graphql/issues/550", () => {
     let driver: Driver;
     // Update to use _INCLUDES once https://github.com/neo4j/graphql/pull/500 is merged
     const typeDefs = gql`
