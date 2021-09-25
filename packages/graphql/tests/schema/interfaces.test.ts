@@ -123,7 +123,7 @@ describe("Interfaces", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              node: MovieMoviesNodeAggregationWhereInput
             }
 
             input MovieMoviesConnectFieldInput {
@@ -165,6 +165,10 @@ describe("Interfaces", () => {
             input MovieMoviesFieldInput {
               connect: [MovieMoviesConnectFieldInput!]
               create: [MovieMoviesCreateFieldInput!]
+            }
+
+            input MovieMoviesNodeAggregationWhereInput {
+              id_EQUAL: ID
             }
 
             type MovieMoviesRelationship {
@@ -270,10 +274,6 @@ describe("Interfaces", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-
-            input relationshipWhereTypeInputName {
-              id_EQUAL: ID
             }
             "
         `);

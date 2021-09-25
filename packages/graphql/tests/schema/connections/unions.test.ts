@@ -307,7 +307,8 @@ describe("Unions", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              edge: BookAuthorEdgeAggregationWhereInput
+              node: BookAuthorNodeAggregationWhereInput
             }
 
             input BookAuthorConnectFieldInput {
@@ -351,9 +352,25 @@ describe("Unions", () => {
               where: BookAuthorConnectionWhere
             }
 
+            input BookAuthorEdgeAggregationWhereInput {
+              words_EQUAL: Int
+              words_GT: Int
+              words_GTE: Int
+              words_LT: Int
+              words_LTE: Int
+            }
+
             input BookAuthorFieldInput {
               connect: [BookAuthorConnectFieldInput!]
               create: [BookAuthorCreateFieldInput!]
+            }
+
+            input BookAuthorNodeAggregationWhereInput {
+              name_EQUAL: ID
+              name_GT: Int
+              name_GTE: Int
+              name_LT: Int
+              name_LTE: Int
             }
 
             type BookAuthorRelationship implements Wrote {
@@ -484,7 +501,8 @@ describe("Unions", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              edge: JournalAuthorEdgeAggregationWhereInput
+              node: JournalAuthorNodeAggregationWhereInput
             }
 
             input JournalAuthorConnectFieldInput {
@@ -528,9 +546,25 @@ describe("Unions", () => {
               where: JournalAuthorConnectionWhere
             }
 
+            input JournalAuthorEdgeAggregationWhereInput {
+              words_EQUAL: Int
+              words_GT: Int
+              words_GTE: Int
+              words_LT: Int
+              words_LTE: Int
+            }
+
             input JournalAuthorFieldInput {
               connect: [JournalAuthorConnectFieldInput!]
               create: [JournalAuthorCreateFieldInput!]
+            }
+
+            input JournalAuthorNodeAggregationWhereInput {
+              name_EQUAL: ID
+              name_GT: Int
+              name_GTE: Int
+              name_LT: Int
+              name_LTE: Int
             }
 
             type JournalAuthorRelationship implements Wrote {
@@ -721,14 +755,6 @@ describe("Unions", () => {
               words_LTE: Int
               words_NOT: Int
               words_NOT_IN: [Int]
-            }
-
-            input relationshipWhereTypeInputName {
-              name_EQUAL: ID
-              name_GT: Int
-              name_GTE: Int
-              name_LT: Int
-              name_LTE: Int
             }
             "
         `);

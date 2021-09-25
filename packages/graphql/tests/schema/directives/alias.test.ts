@@ -65,7 +65,7 @@ describe("Alias", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              node: ActorActedInNodeAggregationWhereInput
             }
 
             input ActorActedInConnectFieldInput {
@@ -109,6 +109,19 @@ describe("Alias", () => {
             input ActorActedInFieldInput {
               connect: [ActorActedInConnectFieldInput!]
               create: [ActorActedInCreateFieldInput!]
+            }
+
+            input ActorActedInNodeAggregationWhereInput {
+              rating_EQUAL: Float
+              rating_GT: Float
+              rating_GTE: Float
+              rating_LT: Float
+              rating_LTE: Float
+              title_EQUAL: ID
+              title_GT: Int
+              title_GTE: Int
+              title_LT: Int
+              title_LTE: Int
             }
 
             interface ActorActedInProps {
@@ -395,19 +408,6 @@ describe("Alias", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-
-            input relationshipWhereTypeInputName {
-              rating_EQUAL: Float
-              rating_GT: Float
-              rating_GTE: Float
-              rating_LT: Float
-              rating_LTE: Float
-              title_EQUAL: ID
-              title_GT: Int
-              title_GTE: Int
-              title_LT: Int
-              title_LTE: Int
             }
             "
         `);

@@ -254,7 +254,7 @@ describe("Sort", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              node: Node2RelatedToNodeAggregationWhereInput
             }
 
             input Node2RelatedToConnectFieldInput {
@@ -296,6 +296,14 @@ describe("Sort", () => {
             input Node2RelatedToFieldInput {
               connect: [Node2RelatedToConnectFieldInput!]
               create: [Node2RelatedToCreateFieldInput!]
+            }
+
+            input Node2RelatedToNodeAggregationWhereInput {
+              property_EQUAL: ID
+              property_GT: Int
+              property_GTE: Int
+              property_LT: Int
+              property_LTE: Int
             }
 
             type Node2RelatedToRelationship {
@@ -379,14 +387,6 @@ describe("Sort", () => {
             type UpdateNode2sMutationResponse {
               info: UpdateInfo!
               node2s: [Node2!]!
-            }
-
-            input relationshipWhereTypeInputName {
-              property_EQUAL: ID
-              property_GT: Int
-              property_GTE: Int
-              property_LT: Int
-              property_LTE: Int
             }
             "
         `);

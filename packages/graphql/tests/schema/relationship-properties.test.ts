@@ -137,7 +137,8 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              edge: ActorMoviesEdgeAggregationWhereInput
+              node: ActorMoviesNodeAggregationWhereInput
             }
 
             input ActorMoviesConnectFieldInput {
@@ -181,9 +182,25 @@ describe("Relationship-properties", () => {
               where: ActorMoviesConnectionWhere
             }
 
+            input ActorMoviesEdgeAggregationWhereInput {
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+            }
+
             input ActorMoviesFieldInput {
               connect: [ActorMoviesConnectFieldInput!]
               create: [ActorMoviesCreateFieldInput!]
+            }
+
+            input ActorMoviesNodeAggregationWhereInput {
+              title_EQUAL: ID
+              title_GT: Int
+              title_GTE: Int
+              title_LT: Int
+              title_LTE: Int
             }
 
             type ActorMoviesRelationship implements ActedIn {
@@ -288,7 +305,8 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              edge: MovieActorsEdgeAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
             }
 
             input MovieActorsConnectFieldInput {
@@ -332,9 +350,25 @@ describe("Relationship-properties", () => {
               where: MovieActorsConnectionWhere
             }
 
+            input MovieActorsEdgeAggregationWhereInput {
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+            }
+
             input MovieActorsFieldInput {
               connect: [MovieActorsConnectFieldInput!]
               create: [MovieActorsCreateFieldInput!]
+            }
+
+            input MovieActorsNodeAggregationWhereInput {
+              name_EQUAL: ID
+              name_GT: Int
+              name_GTE: Int
+              name_LT: Int
+              name_LTE: Int
             }
 
             type MovieActorsRelationship implements ActedIn {
@@ -480,14 +514,6 @@ describe("Relationship-properties", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-
-            input relationshipWhereTypeInputName {
-              name_EQUAL: ID
-              name_GT: Int
-              name_GTE: Int
-              name_LT: Int
-              name_LTE: Int
             }
             "
         `);
@@ -611,7 +637,7 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              node: ActorMoviesNodeAggregationWhereInput
             }
 
             input ActorMoviesConnectFieldInput {
@@ -658,6 +684,14 @@ describe("Relationship-properties", () => {
             input ActorMoviesFieldInput {
               connect: [ActorMoviesConnectFieldInput!]
               create: [ActorMoviesCreateFieldInput!]
+            }
+
+            input ActorMoviesNodeAggregationWhereInput {
+              title_EQUAL: ID
+              title_GT: Int
+              title_GTE: Int
+              title_LT: Int
+              title_LTE: Int
             }
 
             type ActorMoviesRelationship implements ActedIn {
@@ -762,7 +796,7 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              node: MovieActorsNodeAggregationWhereInput
             }
 
             input MovieActorsConnectFieldInput {
@@ -809,6 +843,14 @@ describe("Relationship-properties", () => {
             input MovieActorsFieldInput {
               connect: [MovieActorsConnectFieldInput!]
               create: [MovieActorsCreateFieldInput!]
+            }
+
+            input MovieActorsNodeAggregationWhereInput {
+              name_EQUAL: ID
+              name_GT: Int
+              name_GTE: Int
+              name_LT: Int
+              name_LTE: Int
             }
 
             type MovieActorsRelationship implements ActedIn {
@@ -954,14 +996,6 @@ describe("Relationship-properties", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-
-            input relationshipWhereTypeInputName {
-              name_EQUAL: ID
-              name_GT: Int
-              name_GTE: Int
-              name_LT: Int
-              name_LTE: Int
             }
             "
         `);
@@ -1066,7 +1100,7 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              node: ActorMoviesNodeAggregationWhereInput
             }
 
             input ActorMoviesConnectFieldInput {
@@ -1111,6 +1145,14 @@ describe("Relationship-properties", () => {
             input ActorMoviesFieldInput {
               connect: [ActorMoviesConnectFieldInput!]
               create: [ActorMoviesCreateFieldInput!]
+            }
+
+            input ActorMoviesNodeAggregationWhereInput {
+              title_EQUAL: ID
+              title_GT: Int
+              title_GTE: Int
+              title_LT: Int
+              title_LTE: Int
             }
 
             type ActorMoviesRelationship implements ActedIn {
@@ -1213,7 +1255,7 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              node: MovieActorsNodeAggregationWhereInput
             }
 
             input MovieActorsConnectFieldInput {
@@ -1258,6 +1300,14 @@ describe("Relationship-properties", () => {
             input MovieActorsFieldInput {
               connect: [MovieActorsConnectFieldInput!]
               create: [MovieActorsCreateFieldInput!]
+            }
+
+            input MovieActorsNodeAggregationWhereInput {
+              name_EQUAL: ID
+              name_GT: Int
+              name_GTE: Int
+              name_LT: Int
+              name_LTE: Int
             }
 
             type MovieActorsRelationship implements ActedIn {
@@ -1401,14 +1451,6 @@ describe("Relationship-properties", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-
-            input relationshipWhereTypeInputName {
-              name_EQUAL: ID
-              name_GT: Int
-              name_GTE: Int
-              name_LT: Int
-              name_LTE: Int
             }
             "
         `);

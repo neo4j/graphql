@@ -118,7 +118,7 @@ describe("Enums", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              node: ActorMoviesNodeAggregationWhereInput
             }
 
             input ActorMoviesConnectFieldInput {
@@ -165,6 +165,14 @@ describe("Enums", () => {
             input ActorMoviesFieldInput {
               connect: [ActorMoviesConnectFieldInput!]
               create: [ActorMoviesCreateFieldInput!]
+            }
+
+            input ActorMoviesNodeAggregationWhereInput {
+              title_EQUAL: ID
+              title_GT: Int
+              title_GTE: Int
+              title_LT: Int
+              title_LTE: Int
             }
 
             type ActorMoviesRelationship implements ActedIn {
@@ -264,7 +272,7 @@ describe("Enums", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              node: MovieActorsNodeAggregationWhereInput
             }
 
             input MovieActorsConnectFieldInput {
@@ -311,6 +319,14 @@ describe("Enums", () => {
             input MovieActorsFieldInput {
               connect: [MovieActorsConnectFieldInput!]
               create: [MovieActorsCreateFieldInput!]
+            }
+
+            input MovieActorsNodeAggregationWhereInput {
+              name_EQUAL: ID
+              name_GT: Int
+              name_GTE: Int
+              name_LT: Int
+              name_LTE: Int
             }
 
             type MovieActorsRelationship implements ActedIn {
@@ -459,14 +475,6 @@ describe("Enums", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-
-            input relationshipWhereTypeInputName {
-              name_EQUAL: ID
-              name_GT: Int
-              name_GTE: Int
-              name_LT: Int
-              name_LTE: Int
             }
             "
         `);

@@ -191,7 +191,7 @@ describe("162", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              node: TigerJawLevel2Part1NodeAggregationWhereInput
             }
 
             type TigerJawLevel2Part1AggregateSelection {
@@ -261,6 +261,10 @@ describe("162", () => {
               create: TigerJawLevel2Part1CreateFieldInput
             }
 
+            input TigerJawLevel2Part1NodeAggregationWhereInput {
+              id_EQUAL: ID
+            }
+
             input TigerJawLevel2Part1Options {
               limit: Int
               offset: Int
@@ -290,7 +294,7 @@ describe("162", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: relationshipWhereTypeInputName
+              node: TigerJawLevel2Part1TigerNodeAggregationWhereInput
             }
 
             input TigerJawLevel2Part1TigerConnectFieldInput {
@@ -329,6 +333,14 @@ describe("162", () => {
             input TigerJawLevel2Part1TigerFieldInput {
               connect: TigerJawLevel2Part1TigerConnectFieldInput
               create: TigerJawLevel2Part1TigerCreateFieldInput
+            }
+
+            input TigerJawLevel2Part1TigerNodeAggregationWhereInput {
+              x_EQUAL: Int
+              x_GT: Int
+              x_GTE: Int
+              x_LT: Int
+              x_LTE: Int
             }
 
             type TigerJawLevel2Part1TigerRelationship {
@@ -471,14 +483,6 @@ describe("162", () => {
             type UpdateTigersMutationResponse {
               info: UpdateInfo!
               tigers: [Tiger!]!
-            }
-
-            input relationshipWhereTypeInputName {
-              x_EQUAL: Int
-              x_GT: Int
-              x_GTE: Int
-              x_LT: Int
-              x_LTE: Int
             }
             "
         `);
