@@ -1,4 +1,4 @@
-# Cypher Aggregations where with DateTime
+# Cypher Aggregations where node with DateTime
 
 Tests for queries inside the relationship where aggregation arg using an DateTime type.
 

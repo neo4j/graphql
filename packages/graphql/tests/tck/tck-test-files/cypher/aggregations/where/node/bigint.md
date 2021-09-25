@@ -1,4 +1,4 @@
-# Cypher Aggregations where with BigInt
+# Cypher Aggregations where node with BigInt
 
 Tests for queries inside the relationship where aggregation arg using an BigInt type.
 

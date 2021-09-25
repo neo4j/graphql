@@ -1,4 +1,4 @@
-# Cypher Aggregations where with Float
+# Cypher Aggregations where node with Float
 
 Tests for queries inside the relationship where aggregation arg using an Float type.
 

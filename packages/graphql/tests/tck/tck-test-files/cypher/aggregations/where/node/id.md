@@ -1,4 +1,4 @@
-# Cypher Aggregations where with ID
+# Cypher Aggregations where node with ID
 
 Tests for queries inside the relationship where aggregation arg using an ID type.
 

@@ -1,4 +1,4 @@
-# Cypher Aggregations where with Int
+# Cypher Aggregations where node with Int
 
 Tests for queries inside the relationship where aggregation arg using an Int type.
 

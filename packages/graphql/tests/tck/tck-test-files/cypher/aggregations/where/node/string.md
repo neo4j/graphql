@@ -1,4 +1,4 @@
-# Cypher Aggregations where with String
+# Cypher Aggregations where node with String
 
 Tests for queries inside the relationship where aggregation arg using an String type.
 

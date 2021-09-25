@@ -20,11 +20,13 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src/classes";
+import neo4j from "../../../neo4j";
+import { Neo4jGraphQL } from "../../../../../src/classes";
 
-describe("aggregations-where-string", () => {
+describe("aggregations-where-node-bigint", () => {
     let driver: Driver;
+
+    const bigInt = "2147483647";
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -34,12 +36,13 @@ describe("aggregations-where-string", () => {
         await driver.close();
     });
 
-    test("should return posts where a like String is EQUAL to", async () => {
+    test("should return posts where a like BigInt is EQUAL to", async () => {
         const session = driver.session();
 
         const typeDefs = `
             type User {
                 testString: String!
+                someBigInt: BigInt
             }
           
             type Post {
@@ -58,17 +61,18 @@ describe("aggregations-where-string", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
+                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: ${bigInt}})
                     CREATE (:Post {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { node: { testString_EQUAL: "${testString}" } } }) {
+                    posts(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_EQUAL: ${bigInt} } } }) {
                         testString
                         likes {
                             testString
+                            someBigInt
                         }
                     }
                 }
@@ -89,7 +93,7 @@ describe("aggregations-where-string", () => {
             expect((gqlResult.data as any).posts).toEqual([
                 {
                     testString,
-                    likes: [{ testString }],
+                    likes: [{ testString, someBigInt: bigInt }],
                 },
             ]);
         } finally {
@@ -97,12 +101,13 @@ describe("aggregations-where-string", () => {
         }
     });
 
-    test("should return posts where a like String is GT than", async () => {
+    test("should return posts where a like BigInt is GT than", async () => {
         const session = driver.session();
 
         const typeDefs = `
             type User {
                 testString: String!
+                someBigInt: BigInt
             }
           
             type Post {
@@ -111,31 +116,31 @@ describe("aggregations-where-string", () => {
             }
         `;
 
-        const length = 5;
-        const gtLength = length - 1;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
-            length,
         });
+
+        const someBigInt = `${bigInt}1`;
+        const someBigIntGt = bigInt.substring(0, bigInt.length - 1);
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
+                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: ${someBigInt}})
                     CREATE (:Post {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { node: { testString_GT: ${gtLength} } } }) {
+                    posts(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GT: ${someBigIntGt} } } }) {
                         testString
                         likes {
                             testString
+                            someBigInt
                         }
                     }
                 }
@@ -156,7 +161,7 @@ describe("aggregations-where-string", () => {
             expect((gqlResult.data as any).posts).toEqual([
                 {
                     testString,
-                    likes: [{ testString }],
+                    likes: [{ testString, someBigInt }],
                 },
             ]);
         } finally {
@@ -164,12 +169,13 @@ describe("aggregations-where-string", () => {
         }
     });
 
-    test("should return posts where a like String is GTE than", async () => {
+    test("should return posts where a like BigInt is GTE than", async () => {
         const session = driver.session();
 
         const typeDefs = `
             type User {
                 testString: String!
+                someBigInt: BigInt
             }
           
             type Post {
@@ -178,12 +184,9 @@ describe("aggregations-where-string", () => {
             }
         `;
 
-        const length = 5;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
-            length,
         });
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -191,17 +194,18 @@ describe("aggregations-where-string", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
+                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: ${bigInt}})
                     CREATE (:Post {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { node: { testString_GTE: ${length} } } }) {
+                    posts(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_GTE: ${bigInt} } } }) {
                         testString
                         likes {
                             testString
+                            someBigInt
                         }
                     }
                 }
@@ -222,7 +226,7 @@ describe("aggregations-where-string", () => {
             expect((gqlResult.data as any).posts).toEqual([
                 {
                     testString,
-                    likes: [{ testString }],
+                    likes: [{ testString, someBigInt: bigInt }],
                 },
             ]);
         } finally {
@@ -230,12 +234,13 @@ describe("aggregations-where-string", () => {
         }
     });
 
-    test("should return posts where a like String is LT than", async () => {
+    test("should return posts where a like BigInt is LT than", async () => {
         const session = driver.session();
 
         const typeDefs = `
             type User {
                 testString: String!
+                someBigInt: BigInt
             }
           
             type Post {
@@ -244,30 +249,30 @@ describe("aggregations-where-string", () => {
             }
         `;
 
-        const length = 5;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
-            length: length - 1,
         });
+
+        const someBigIntLT = `${bigInt}1`;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
+                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: ${bigInt}})
                     CREATE (:Post {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { node: { testString_LT: ${length} } } }) {
+                    posts(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LT: ${someBigIntLT} } } }) {
                         testString
                         likes {
                             testString
+                            someBigInt
                         }
                     }
                 }
@@ -288,7 +293,7 @@ describe("aggregations-where-string", () => {
             expect((gqlResult.data as any).posts).toEqual([
                 {
                     testString,
-                    likes: [{ testString }],
+                    likes: [{ testString, someBigInt: bigInt }],
                 },
             ]);
         } finally {
@@ -296,12 +301,13 @@ describe("aggregations-where-string", () => {
         }
     });
 
-    test("should return posts where a like String is LTE than", async () => {
+    test("should return posts where a like BigInt is LTE than", async () => {
         const session = driver.session();
 
         const typeDefs = `
             type User {
                 testString: String!
+                someBigInt: BigInt
             }
           
             type Post {
@@ -310,12 +316,9 @@ describe("aggregations-where-string", () => {
             }
         `;
 
-        const length = 5;
-
         const testString = generate({
             charset: "alphabetic",
             readable: true,
-            length,
         });
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -323,17 +326,18 @@ describe("aggregations-where-string", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}"})
+                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: ${bigInt}})
                     CREATE (:Post {testString: "${testString}"})
                 `
             );
 
             const query = `
                 {
-                    posts(where: { testString: "${testString}", likesAggregate: { node: { testString_LTE: ${length} } } }) {
+                    posts(where: { testString: "${testString}", likesAggregate: { node: { someBigInt_LTE: ${bigInt} } } }) {
                         testString
                         likes {
                             testString
+                            someBigInt
                         }
                     }
                 }
@@ -354,7 +358,7 @@ describe("aggregations-where-string", () => {
             expect((gqlResult.data as any).posts).toEqual([
                 {
                     testString,
-                    likes: [{ testString }],
+                    likes: [{ testString, someBigInt: bigInt }],
                 },
             ]);
         } finally {
