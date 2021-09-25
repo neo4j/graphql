@@ -989,6 +989,7 @@ function makeAugmentedSchema(
                 ["LocalDateTime"],
                 ["LocalTime"],
                 ["Time"],
+                ["Duration"],
             ];
 
             const nodeWhereAggregationInputFields = aggregationSelectionTypeMatrix.reduce<BaseField[]>((res, x) => {
@@ -1080,6 +1081,12 @@ function makeAugmentedSchema(
                     if (field.typeMeta.name === "Time") {
                         nodeWhereAggregationInput?.addFields({
                             ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Time" }), {}),
+                        });
+                    }
+
+                    if (field.typeMeta.name === "Duration") {
+                        nodeWhereAggregationInput?.addFields({
+                            ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Duration" }), {}),
                         });
                     }
                 });
