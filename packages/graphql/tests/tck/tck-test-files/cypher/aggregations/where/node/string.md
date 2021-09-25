@@ -34,7 +34,7 @@ type Post {
 ```cypher
 MATCH (this:Post)
 WHERE apoc.cypher.runFirstColumn("
-    MATCH (this)<-[:LIKES]-(this_likesAggregate_node:User)
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
     RETURN this_likesAggregate_node.name = $this_likesAggregate_node_name_EQUAL ",
     { this: this, this_likesAggregate_node_name_EQUAL: $this_likesAggregate_node_name_EQUAL },
     false
@@ -69,7 +69,7 @@ RETURN this { .content } as this
 ```cypher
 MATCH (this:Post)
 WHERE apoc.cypher.runFirstColumn("
-    MATCH (this)<-[:LIKES]-(this_likesAggregate_node:User)
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
     RETURN size(this_likesAggregate_node.name) > $this_likesAggregate_node_name_GT ",
     { this: this, this_likesAggregate_node_name_GT: $this_likesAggregate_node_name_GT },
     false
@@ -107,7 +107,7 @@ RETURN this { .content } as this
 ```cypher
 MATCH (this:Post)
 WHERE apoc.cypher.runFirstColumn("
-    MATCH (this)<-[:LIKES]-(this_likesAggregate_node:User)
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
     RETURN size(this_likesAggregate_node.name) >= $this_likesAggregate_node_name_GTE ",
     { this: this, this_likesAggregate_node_name_GTE: $this_likesAggregate_node_name_GTE },
     false
@@ -145,7 +145,7 @@ RETURN this { .content } as this
 ```cypher
 MATCH (this:Post)
 WHERE apoc.cypher.runFirstColumn("
-    MATCH (this)<-[:LIKES]-(this_likesAggregate_node:User)
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
     RETURN size(this_likesAggregate_node.name) < $this_likesAggregate_node_name_LT ",
     { this: this, this_likesAggregate_node_name_LT: $this_likesAggregate_node_name_LT },
     false
@@ -183,7 +183,7 @@ RETURN this { .content } as this
 ```cypher
 MATCH (this:Post)
 WHERE apoc.cypher.runFirstColumn("
-    MATCH (this)<-[:LIKES]-(this_likesAggregate_node:User)
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
     RETURN size(this_likesAggregate_node.name) <= $this_likesAggregate_node_name_LTE ",
     { this: this, this_likesAggregate_node_name_LTE: $this_likesAggregate_node_name_LTE },
     false

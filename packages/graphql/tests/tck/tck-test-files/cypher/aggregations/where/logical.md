@@ -23,9 +23,7 @@ type Post {
 
 ```graphql
 {
-    posts(
-        where: { likesAggregate: { AND: [{ count_GT: 10 }, { count_LT: 20 }] } }
-    ) {
+    posts(where: { likesAggregate: { AND: [{ count_GT: 10 }, { count_LT: 20 }] } }) {
         content
     }
 }
@@ -36,7 +34,7 @@ type Post {
 ```cypher
 MATCH (this:Post)
 WHERE apoc.cypher.runFirstColumn("
-    MATCH (this)<-[:LIKES]-(this_likesAggregate_node:User) RETURN (count(this_likesAggregate_node) > $this_likesAggregate_AND_0_count_GT AND count(this_likesAggregate_node) < $this_likesAggregate_AND_1_count_LT) ",
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User) RETURN (count(this_likesAggregate_node) > $this_likesAggregate_AND_0_count_GT AND count(this_likesAggregate_node) < $this_likesAggregate_AND_1_count_LT) ",
     { this: this, this_likesAggregate_AND_0_count_GT: $this_likesAggregate_AND_0_count_GT, this_likesAggregate_AND_1_count_LT: $this_likesAggregate_AND_1_count_LT },
     false
 )
@@ -66,9 +64,7 @@ RETURN this { .content } as this
 
 ```graphql
 {
-    posts(
-        where: { likesAggregate: { OR: [{ count_GT: 10 }, { count_LT: 20 }] } }
-    ) {
+    posts(where: { likesAggregate: { OR: [{ count_GT: 10 }, { count_LT: 20 }] } }) {
         content
     }
 }
@@ -79,7 +75,7 @@ RETURN this { .content } as this
 ```cypher
 MATCH (this:Post)
 WHERE apoc.cypher.runFirstColumn("
-    MATCH (this)<-[:LIKES]-(this_likesAggregate_node:User)
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
     RETURN (count(this_likesAggregate_node) > $this_likesAggregate_OR_0_count_GT OR count(this_likesAggregate_node) < $this_likesAggregate_OR_1_count_LT) ",
     { this: this, this_likesAggregate_OR_0_count_GT: $this_likesAggregate_OR_0_count_GT, this_likesAggregate_OR_1_count_LT: $this_likesAggregate_OR_1_count_LT },
     false
@@ -112,10 +108,7 @@ RETURN this { .content } as this
 {
     posts(
         where: {
-            likesAggregate: {
-                AND: [{ count_GT: 10 }, { count_LT: 20 }]
-                OR: [{ count_GT: 10 }, { count_LT: 20 }]
-            }
+            likesAggregate: { AND: [{ count_GT: 10 }, { count_LT: 20 }], OR: [{ count_GT: 10 }, { count_LT: 20 }] }
         }
     ) {
         content
@@ -128,7 +121,7 @@ RETURN this { .content } as this
 ```cypher
 MATCH (this:Post)
 WHERE apoc.cypher.runFirstColumn("
-    MATCH (this)<-[:LIKES]-(this_likesAggregate_node:User)
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
     RETURN (count(this_likesAggregate_node) > $this_likesAggregate_AND_0_count_GT AND count(this_likesAggregate_node) < $this_likesAggregate_AND_1_count_LT) AND (count(this_likesAggregate_node) > $this_likesAggregate_OR_0_count_GT OR count(this_likesAggregate_node) < $this_likesAggregate_OR_1_count_LT) ",
     { this: this, this_likesAggregate_AND_0_count_GT: $this_likesAggregate_AND_0_count_GT, this_likesAggregate_AND_1_count_LT: $this_likesAggregate_AND_1_count_LT, this_likesAggregate_OR_0_count_GT: $this_likesAggregate_OR_0_count_GT, this_likesAggregate_OR_1_count_LT: $this_likesAggregate_OR_1_count_LT },
     false

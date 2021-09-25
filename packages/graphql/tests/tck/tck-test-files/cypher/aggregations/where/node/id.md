@@ -35,7 +35,7 @@ type Post {
 ```cypher
 MATCH (this:Post)
 WHERE apoc.cypher.runFirstColumn("
-    MATCH (this)<-[:LIKES]-(this_likesAggregate_node:User)
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
     RETURN this_likesAggregate_node.id = $this_likesAggregate_node_id_EQUAL ",
     { this: this, this_likesAggregate_node_id_EQUAL: $this_likesAggregate_node_id_EQUAL },
     false

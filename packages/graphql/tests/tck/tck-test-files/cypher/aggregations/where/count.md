@@ -34,7 +34,7 @@ type Post {
 ```cypher
 MATCH (this:Post)
 WHERE apoc.cypher.runFirstColumn("
-    MATCH (this)<-[:LIKES]-(this_likesAggregate_node:User)
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
     RETURN count(this_likesAggregate_node) = $this_likesAggregate_count ",
     { this: this, this_likesAggregate_count: $this_likesAggregate_count },
     false
@@ -72,7 +72,7 @@ RETURN this { .content } as this
 ```cypher
 MATCH (this:Post)
 WHERE apoc.cypher.runFirstColumn("
-    MATCH (this)<-[:LIKES]-(this_likesAggregate_node:User)
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
     RETURN count(this_likesAggregate_node) < $this_likesAggregate_count_LT ",
     { this: this, this_likesAggregate_count_LT: $this_likesAggregate_count_LT },
     false
@@ -110,7 +110,7 @@ RETURN this { .content } as this
 ```cypher
 MATCH (this:Post)
 WHERE apoc.cypher.runFirstColumn("
-    MATCH (this)<-[:LIKES]-(this_likesAggregate_node:User)
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
     RETURN count(this_likesAggregate_node) <= $this_likesAggregate_count_LTE ",
     { this: this, this_likesAggregate_count_LTE: $this_likesAggregate_count_LTE },
     false
@@ -148,7 +148,7 @@ RETURN this { .content } as this
 ```cypher
 MATCH (this:Post)
 WHERE apoc.cypher.runFirstColumn("
-    MATCH (this)<-[:LIKES]-(this_likesAggregate_node:User)
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
     RETURN count(this_likesAggregate_node) > $this_likesAggregate_count_GT ",
     { this: this, this_likesAggregate_count_GT: $this_likesAggregate_count_GT },
     false
@@ -186,7 +186,7 @@ RETURN this { .content } as this
 ```cypher
 MATCH (this:Post)
 WHERE apoc.cypher.runFirstColumn("
-    MATCH (this)<-[:LIKES]-(this_likesAggregate_node:User)
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
     RETURN count(this_likesAggregate_node) >= $this_likesAggregate_count_GTE ",
     { this: this, this_likesAggregate_count_GTE: $this_likesAggregate_count_GTE },
     false
