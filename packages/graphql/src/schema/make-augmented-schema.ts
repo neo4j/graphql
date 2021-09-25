@@ -962,6 +962,7 @@ function makeAugmentedSchema(
                 ["Float"],
                 ["Int"],
                 ["BigInt"],
+                ["DateTime"],
             ];
 
             const nodeWhereAggregationInputFields = aggregationSelectionTypeMatrix.reduce<BaseField[]>((res, x) => {
@@ -1029,6 +1030,12 @@ function makeAugmentedSchema(
                     if (field.typeMeta.name === "BigInt") {
                         nodeWhereAggregationInput?.addFields({
                             ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "BigInt" }), {}),
+                        });
+                    }
+
+                    if (field.typeMeta.name === "DateTime") {
+                        nodeWhereAggregationInput?.addFields({
+                            ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "DateTime" }), {}),
                         });
                     }
                 });
