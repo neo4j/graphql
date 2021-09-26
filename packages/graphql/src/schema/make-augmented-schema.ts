@@ -1100,7 +1100,8 @@ function makeAugmentedSchema(
                 const edgeWhereAggregationInputFields = thisAggregationSelectionTypeMatrix.reduce<BaseField[]>(
                     (res, x) => {
                         // @ts-ignore - Go home TypeScript your drunk
-                        const field = [...relFields.primitiveFields, ...relFields.temporalFields].find(
+                        // ...relFields.temporalFields
+                        const field = [...relFields.primitiveFields].find(
                             (y) => !y.typeMeta.array && y.typeMeta.name === x[0]
                         );
 
@@ -1113,10 +1114,7 @@ function makeAugmentedSchema(
                     []
                 );
 
-                if (
-                    edgeWhereAggregationInputFields.length &&
-                    edgeWhereAggregationInputFields.every((f) => f.typeMeta.name === "Int")
-                ) {
+                if (edgeWhereAggregationInputFields.length) {
                     const name = `${node.name}${upperFirst(rel.fieldName)}EdgeAggregationWhereInput`;
 
                     edgeWhereAggregationInput = composer.createInputTC({
@@ -1127,6 +1125,12 @@ function makeAugmentedSchema(
                     edgeWhereAggregationInputFields.forEach((field) => {
                         // TODO average?
                         const operators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+
+                        if (field.typeMeta.name === "ID") {
+                            edgeWhereAggregationInput?.addFields({
+                                [`${field.fieldName}_EQUAL`]: "ID",
+                            });
+                        }
 
                         if (field.typeMeta.name === "Int") {
                             edgeWhereAggregationInput?.addFields({
