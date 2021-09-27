@@ -723,8 +723,9 @@ function makeAugmentedSchema(
         node.relationFields.forEach((rel) => {
             let hasNonGeneratedProperties = false;
             let hasNonNullNonGeneratedProperties = false;
+            let relFields: ObjectFields | undefined;
             if (rel.properties) {
-                const relFields = relationshipFields.get(rel.properties);
+                relFields = relationshipFields.get(rel.properties);
 
                 if (relFields) {
                     const nonGeneratedProperties = [
@@ -1027,6 +1028,73 @@ function makeAugmentedSchema(
             composeNode.addFields({
                 [rel.fieldName]: {
                     type: rel.typeMeta.pretty,
+                    args: {
+                        where: `${rel.typeMeta.name}Where`,
+                        options: `${rel.typeMeta.name}Options`,
+                    },
+                },
+            });
+
+            const aggregateSelectionNode = composer.createObjectTC({
+                name: `${node.name + n.name + rel.fieldName}AggregateSelection`,
+                fields: {
+                    ...[...n.primitiveFields, ...n.temporalFields].reduce((res, field) => {
+                        if (field.typeMeta.array) {
+                            return res;
+                        }
+
+                        if (!aggregationSelectionTypeNames.includes(field.typeMeta.name)) {
+                            return res;
+                        }
+
+                        const objectTypeComposer = (aggregationSelectionTypes[
+                            field.typeMeta.name
+                        ] as unknown) as ObjectTypeComposer<unknown, unknown>;
+
+                        res[field.fieldName] = objectTypeComposer.NonNull;
+
+                        return res;
+                    }, {}),
+                },
+            });
+
+            let aggregateSelectionEdge: ObjectTypeComposer | undefined;
+            if (relFields) {
+                aggregateSelectionEdge = composer.createObjectTC({
+                    name: `${node.name}${n.name}${rel.fieldName}EdgeAggregateSelection`,
+                    fields: {
+                        ...[...relFields.primitiveFields, ...relFields.temporalFields].reduce((res, field) => {
+                            if (field.typeMeta.array) {
+                                return res;
+                            }
+
+                            if (!aggregationSelectionTypeNames.includes(field.typeMeta.name)) {
+                                return res;
+                            }
+
+                            const objectTypeComposer = (aggregationSelectionTypes[
+                                field.typeMeta.name
+                            ] as unknown) as ObjectTypeComposer<unknown, unknown>;
+
+                            res[field.fieldName] = objectTypeComposer.NonNull;
+
+                            return res;
+                        }, {}),
+                    },
+                });
+            }
+            const dummy = composer.createObjectTC({
+                name: `${node.name}${n.name}${rel.fieldName}AggregationResult`,
+                fields: {
+                    count: composeInt,
+                    node: aggregateSelectionNode,
+                    ...(aggregateSelectionEdge ? { edge: aggregateSelectionEdge } : {}),
+                },
+            });
+
+            composeNode.addFields({
+                [`${rel.fieldName}Aggregate`]: {
+                    type: dummy,
                     args: {
                         where: `${rel.typeMeta.name}Where`,
                         options: `${rel.typeMeta.name}Options`,

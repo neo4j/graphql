@@ -149,6 +149,9 @@ function createProjectionAndParams({
         const pointField = node.pointFields.find((x) => x.fieldName === field.name);
         const temporalField = node.temporalFields.find((x) => x.fieldName === field.name);
         const authableField = node.authableFields.find((x) => x.fieldName === field.name);
+        const relationAggregationField = node.relationFields.find((x) => {
+            return `${x.fieldName}Aggregate` === field.name;
+        });
 
         if (authableField) {
             if (authableField.auth) {
@@ -399,6 +402,33 @@ function createProjectionAndParams({
 
             res.projection.push(nestedQuery);
 
+            return res;
+        }
+
+        if (relationAggregationField) {
+            const referenceNode = context.neoSchema.nodes.find(
+                (x) => x.name === relationAggregationField.typeMeta.name
+            ) as Node;
+
+            const nodeLabel = chainStr || varName;
+            const nodeMatchStr = `(${nodeLabel})`;
+            const inStr = relationAggregationField.direction === "IN" ? "<-" : "-";
+            const relTypeStr = `[:${relationAggregationField.type}]`;
+            const outStr = relationAggregationField.direction === "OUT" ? "->" : "-";
+            const labels = referenceNode?.labelString;
+            const nodeOutStr = `(x${labels})`;
+
+            const aggregationField =
+                field.fieldsByTypeName[
+                    `${node.name}${referenceNode.name}${relationAggregationField.fieldName}AggregationResult`
+                ];
+            let projectionStr = "{}";
+            const pathStr = `MATCH ${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
+            if (aggregationField.count) {
+                projectionStr = `head(apoc.cypher.runFirstColumnMany("${pathStr} RETURN {count:COUNT(x), max: MAX(x.name)}", {this:${nodeLabel}}))`;
+            }
+
+            res.projection.push(`${key}: ${projectionStr}`);
             return res;
         }
 
