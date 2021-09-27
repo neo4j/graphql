@@ -1035,11 +1035,38 @@ function makeAugmentedSchema(
                 },
             });
 
-            const aggregateSelectionNode = composer.createObjectTC({
-                name: `${node.name + n.name + rel.fieldName}AggregateSelection`,
-                fields: {
-                    count: composeInt,
-                    ...[...n.primitiveFields, ...n.temporalFields].reduce((res, field) => {
+            const aggregateSelectionNodeFields = [...n.primitiveFields, ...n.temporalFields].reduce((res, field) => {
+                if (field.typeMeta.array) {
+                    return res;
+                }
+
+                if (!aggregationSelectionTypeNames.includes(field.typeMeta.name)) {
+                    return res;
+                }
+
+                const objectTypeComposer = (aggregationSelectionTypes[
+                    field.typeMeta.name
+                ] as unknown) as ObjectTypeComposer<unknown, unknown>;
+
+                res[field.fieldName] = objectTypeComposer.NonNull;
+
+                return res;
+            }, {});
+
+            let aggregateSelectionNode: ObjectTypeComposer | undefined;
+            if (Object.keys(aggregateSelectionNodeFields).length > 0) {
+                aggregateSelectionNode = composer.createObjectTC({
+                    name: `${node.name + n.name + rel.fieldName}AggregateSelection`,
+                    fields: {
+                        ...aggregateSelectionNodeFields,
+                    },
+                });
+            }
+
+            let aggregateSelectionEdge: ObjectTypeComposer | undefined;
+            if (relFields) {
+                const aggregateSelectionEdgeFields = [...relFields.primitiveFields, ...relFields.temporalFields].reduce(
+                    (res, field) => {
                         if (field.typeMeta.array) {
                             return res;
                         }
@@ -1055,41 +1082,23 @@ function makeAugmentedSchema(
                         res[field.fieldName] = objectTypeComposer.NonNull;
 
                         return res;
-                    }, {}),
-                },
-            });
-
-            let aggregateSelectionEdge: ObjectTypeComposer | undefined;
-            if (relFields) {
-                aggregateSelectionEdge = composer.createObjectTC({
-                    name: `${node.name}${n.name}${rel.fieldName}EdgeAggregateSelection`,
-                    fields: {
-                        count: composeInt,
-                        ...[...relFields.primitiveFields, ...relFields.temporalFields].reduce((res, field) => {
-                            if (field.typeMeta.array) {
-                                return res;
-                            }
-
-                            if (!aggregationSelectionTypeNames.includes(field.typeMeta.name)) {
-                                return res;
-                            }
-
-                            const objectTypeComposer = (aggregationSelectionTypes[
-                                field.typeMeta.name
-                            ] as unknown) as ObjectTypeComposer<unknown, unknown>;
-
-                            res[field.fieldName] = objectTypeComposer.NonNull;
-
-                            return res;
-                        }, {}),
                     },
-                });
+                    {}
+                );
+                if (Object.keys(aggregateSelectionEdgeFields).length > 0) {
+                    aggregateSelectionEdge = composer.createObjectTC({
+                        name: `${node.name}${n.name}${rel.fieldName}EdgeAggregateSelection`,
+                        fields: {
+                            ...aggregateSelectionEdgeFields,
+                        },
+                    });
+                }
             }
             const dummy = composer.createObjectTC({
                 name: `${node.name}${n.name}${rel.fieldName}AggregationResult`,
                 fields: {
                     count: composeInt,
-                    node: aggregateSelectionNode,
+                    ...(aggregateSelectionNode ? { node: aggregateSelectionNode } : {}),
                     ...(aggregateSelectionEdge ? { edge: aggregateSelectionEdge } : {}),
                 },
             });

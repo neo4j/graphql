@@ -107,13 +107,8 @@ describe("Sort", () => {
               relatedTo: [Node1RelatedToDisconnectFieldInput!]
             }
 
-            type Node1Node2relatedToAggregateSelection {
-              count: Int!
-            }
-
             type Node1Node2relatedToAggregationResult {
               count: Int!
-              node: Node1Node2relatedToAggregateSelection
             }
 
             input Node1Options {
@@ -242,7 +237,6 @@ describe("Sort", () => {
             }
 
             type Node2Node1relatedToAggregateSelection {
-              count: Int!
               property: StringAggregateSelection!
             }
 

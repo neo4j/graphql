@@ -367,7 +367,6 @@ describe("Unions", () => {
             }
 
             type BookAuthorauthorAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -378,7 +377,6 @@ describe("Unions", () => {
             }
 
             type BookAuthorauthorEdgeAggregateSelection {
-              count: Int!
               words: IntAggregateSelection!
             }
 
@@ -555,7 +553,6 @@ describe("Unions", () => {
             }
 
             type JournalAuthorauthorAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -566,7 +563,6 @@ describe("Unions", () => {
             }
 
             type JournalAuthorauthorEdgeAggregateSelection {
-              count: Int!
               words: IntAggregateSelection!
             }
 

@@ -126,7 +126,6 @@ describe("Relationship", () => {
             }
 
             type MovieActoractorsAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -367,7 +366,6 @@ describe("Relationship", () => {
             }
 
             type ActorMoviemoviesAggregateSelection {
-              count: Int!
               id: IDAggregateSelection!
             }
 
@@ -510,7 +508,6 @@ describe("Relationship", () => {
             }
 
             type MovieActoractorsAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 

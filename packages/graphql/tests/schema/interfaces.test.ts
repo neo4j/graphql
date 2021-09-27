@@ -117,7 +117,6 @@ describe("Interfaces", () => {
             }
 
             type MovieMoviemoviesAggregateSelection {
-              count: Int!
               id: IDAggregateSelection!
             }
 

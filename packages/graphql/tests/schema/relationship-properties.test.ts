@@ -131,7 +131,6 @@ describe("Relationship-properties", () => {
             }
 
             type ActorMoviemoviesAggregateSelection {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -142,7 +141,6 @@ describe("Relationship-properties", () => {
             }
 
             type ActorMoviemoviesEdgeAggregateSelection {
-              count: Int!
               screenTime: IntAggregateSelection!
             }
 
@@ -293,7 +291,6 @@ describe("Relationship-properties", () => {
             }
 
             type MovieActoractorsAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -304,7 +301,6 @@ describe("Relationship-properties", () => {
             }
 
             type MovieActoractorsEdgeAggregateSelection {
-              count: Int!
               screenTime: IntAggregateSelection!
             }
 
@@ -613,7 +609,6 @@ describe("Relationship-properties", () => {
             }
 
             type ActorMoviemoviesAggregateSelection {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -624,7 +619,6 @@ describe("Relationship-properties", () => {
             }
 
             type ActorMoviemoviesEdgeAggregateSelection {
-              count: Int!
               id: IDAggregateSelection!
               screenTime: IntAggregateSelection!
               timestamp: DateTimeAggregateSelection!
@@ -787,7 +781,6 @@ describe("Relationship-properties", () => {
             }
 
             type MovieActoractorsAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -798,7 +791,6 @@ describe("Relationship-properties", () => {
             }
 
             type MovieActoractorsEdgeAggregateSelection {
-              count: Int!
               id: IDAggregateSelection!
               screenTime: IntAggregateSelection!
               timestamp: DateTimeAggregateSelection!
@@ -1090,7 +1082,6 @@ describe("Relationship-properties", () => {
             }
 
             type ActorMoviemoviesAggregateSelection {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -1101,7 +1092,6 @@ describe("Relationship-properties", () => {
             }
 
             type ActorMoviemoviesEdgeAggregateSelection {
-              count: Int!
               id: IDAggregateSelection!
               timestamp: DateTimeAggregateSelection!
             }
@@ -1253,7 +1243,6 @@ describe("Relationship-properties", () => {
             }
 
             type MovieActoractorsAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -1264,7 +1253,6 @@ describe("Relationship-properties", () => {
             }
 
             type MovieActoractorsEdgeAggregateSelection {
-              count: Int!
               id: IDAggregateSelection!
               timestamp: DateTimeAggregateSelection!
             }

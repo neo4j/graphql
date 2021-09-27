@@ -330,7 +330,6 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1TigertigerAggregateSelection {
-              count: Int!
               x: IntAggregateSelection!
             }
 
@@ -386,7 +385,6 @@ describe("162", () => {
             }
 
             type TigerJawLevel2TigerJawLevel2Part1part1AggregateSelection {
-              count: Int!
               id: IDAggregateSelection!
             }
 

@@ -190,7 +190,6 @@ describe("Alias", () => {
             }
 
             type ActorMovieactedInAggregateSelection {
-              count: Int!
               rating: FloatAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -203,7 +202,6 @@ describe("Alias", () => {
 
             type ActorMovieactedInEdgeAggregateSelection {
               character: StringAggregateSelection!
-              count: Int!
               screenTime: IntAggregateSelection!
             }
 

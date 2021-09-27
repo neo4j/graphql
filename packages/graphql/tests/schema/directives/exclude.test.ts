@@ -620,7 +620,6 @@ describe("Exclude", () => {
             }
 
             type MovieActoractorsAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
