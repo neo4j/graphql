@@ -1038,6 +1038,7 @@ function makeAugmentedSchema(
             const aggregateSelectionNode = composer.createObjectTC({
                 name: `${node.name + n.name + rel.fieldName}AggregateSelection`,
                 fields: {
+                    count: composeInt,
                     ...[...n.primitiveFields, ...n.temporalFields].reduce((res, field) => {
                         if (field.typeMeta.array) {
                             return res;
@@ -1063,6 +1064,7 @@ function makeAugmentedSchema(
                 aggregateSelectionEdge = composer.createObjectTC({
                     name: `${node.name}${n.name}${rel.fieldName}EdgeAggregateSelection`,
                     fields: {
+                        count: composeInt,
                         ...[...relFields.primitiveFields, ...relFields.temporalFields].reduce((res, field) => {
                             if (field.typeMeta.array) {
                                 return res;

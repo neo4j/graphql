@@ -120,8 +120,19 @@ describe("Relationship", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
+              actorsAggregate(options: ActorOptions, where: ActorWhere): MovieActoractorsAggregationResult
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
+            }
+
+            type MovieActoractorsAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
+            type MovieActoractorsAggregationResult {
+              count: Int!
+              node: MovieActoractorsAggregateSelection
             }
 
             input MovieActorsConnectFieldInput {
@@ -324,6 +335,7 @@ describe("Relationship", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
+              moviesAggregate(options: MovieOptions, where: MovieWhere): ActorMoviemoviesAggregationResult
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String
             }
@@ -352,6 +364,16 @@ describe("Relationship", () => {
 
             input ActorDisconnectInput {
               movies: [ActorMoviesDisconnectFieldInput!]
+            }
+
+            type ActorMoviemoviesAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
+            }
+
+            type ActorMoviemoviesAggregationResult {
+              count: Int!
+              node: ActorMoviemoviesAggregateSelection
             }
 
             input ActorMoviesConnectFieldInput {
@@ -482,8 +504,19 @@ describe("Relationship", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
+              actorsAggregate(options: ActorOptions, where: ActorWhere): MovieActoractorsAggregationResult
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
+            }
+
+            type MovieActoractorsAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
+            type MovieActoractorsAggregationResult {
+              count: Int!
+              node: MovieActoractorsAggregateSelection
             }
 
             input MovieActorsConnectFieldInput {

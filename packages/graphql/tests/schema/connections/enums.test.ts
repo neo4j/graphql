@@ -80,6 +80,7 @@ describe("Enums", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
+              moviesAggregate(options: MovieOptions, where: MovieWhere): ActorMoviemoviesAggregationResult
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -108,6 +109,21 @@ describe("Enums", () => {
 
             input ActorDisconnectInput {
               movies: [ActorMoviesDisconnectFieldInput!]
+            }
+
+            type ActorMoviemoviesAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
+            type ActorMoviemoviesAggregationResult {
+              count: Int!
+              edge: ActorMoviemoviesEdgeAggregateSelection
+              node: ActorMoviemoviesAggregateSelection
+            }
+
+            type ActorMoviemoviesEdgeAggregateSelection {
+              count: Int!
             }
 
             input ActorMoviesConnectFieldInput {
@@ -240,8 +256,24 @@ describe("Enums", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
+              actorsAggregate(options: ActorOptions, where: ActorWhere): MovieActoractorsAggregationResult
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
+            }
+
+            type MovieActoractorsAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
+            type MovieActoractorsAggregationResult {
+              count: Int!
+              edge: MovieActoractorsEdgeAggregateSelection
+              node: MovieActoractorsAggregateSelection
+            }
+
+            type MovieActoractorsEdgeAggregateSelection {
+              count: Int!
             }
 
             input MovieActorsConnectFieldInput {

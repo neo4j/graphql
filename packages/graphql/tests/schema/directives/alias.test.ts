@@ -52,6 +52,7 @@ describe("Alias", () => {
 
             type Actor {
               actedIn(options: MovieOptions, where: MovieWhere): [Movie]
+              actedInAggregate(options: MovieOptions, where: MovieWhere): ActorMovieactedInAggregationResult
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               city: String
               name: String!
@@ -188,6 +189,24 @@ describe("Alias", () => {
               actedIn: [ActorActedInDisconnectFieldInput!]
             }
 
+            type ActorMovieactedInAggregateSelection {
+              count: Int!
+              rating: FloatAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
+            type ActorMovieactedInAggregationResult {
+              count: Int!
+              edge: ActorMovieactedInEdgeAggregateSelection
+              node: ActorMovieactedInAggregateSelection
+            }
+
+            type ActorMovieactedInEdgeAggregateSelection {
+              character: StringAggregateSelection!
+              count: Int!
+              screenTime: IntAggregateSelection!
+            }
+
             input ActorOptions {
               limit: Int
               offset: Int
@@ -266,6 +285,12 @@ describe("Alias", () => {
               average: Float!
               max: Float!
               min: Float!
+            }
+
+            type IntAggregateSelection {
+              average: Float!
+              max: Int!
+              min: Int!
             }
 
             type Movie {

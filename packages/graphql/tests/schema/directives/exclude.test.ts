@@ -614,8 +614,19 @@ describe("Exclude", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]
+              actorsAggregate(options: ActorOptions, where: ActorWhere): MovieActoractorsAggregationResult
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String
+            }
+
+            type MovieActoractorsAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
+            type MovieActoractorsAggregationResult {
+              count: Int!
+              node: MovieActoractorsAggregateSelection
             }
 
             input MovieActorsConnectFieldInput {
