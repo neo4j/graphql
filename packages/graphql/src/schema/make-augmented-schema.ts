@@ -1132,6 +1132,19 @@ function makeAugmentedSchema(
                             });
                         }
 
+                        if (field.typeMeta.name === "String") {
+                            edgeWhereAggregationInput?.addFields({
+                                [`${field.fieldName}_EQUAL`]: "ID",
+                                ...operators.reduce((r, o) => {
+                                    if (o === "EQUAL") {
+                                        return r;
+                                    }
+
+                                    return { ...r, [`${field.fieldName}_${o}`]: "Int" };
+                                }, {}),
+                            });
+                        }
+
                         if (field.typeMeta.name === "Int") {
                             edgeWhereAggregationInput?.addFields({
                                 ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Int" }), {}),
