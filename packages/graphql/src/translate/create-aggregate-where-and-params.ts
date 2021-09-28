@@ -48,7 +48,7 @@ function createOperator(input): Operator {
     return operator;
 }
 
-function idkWhatToCallThisYet({
+function aggregate({
     inputValue,
     nodeOrRelationship,
     chainStr,
@@ -156,37 +156,23 @@ function createPredicate({
             }
         });
 
-        if (entry[0] === "node") {
-            const nodeValue = entry[1] as any;
+        ["node", "edge"].forEach((nOrE) => {
+            if (entry[0] !== nOrE) {
+                return;
+            }
 
-            const nodeThingy = idkWhatToCallThisYet({
+            const aggregation = aggregate({
                 chainStr: `${chainStr}_${entry[0]}`,
-                inputValue: nodeValue,
-                nodeOrRelationship: node,
-                variable: nodeVariable,
+                inputValue: entry[1],
+                nodeOrRelationship: nOrE === "node" ? node : relationship,
+                variable: nOrE === "node" ? nodeVariable : edgeVariable,
             });
 
-            if (nodeThingy[0]) {
-                cyphers.push(nodeThingy[0]);
-                params = { ...params, ...nodeThingy[1] };
+            if (aggregation[0]) {
+                cyphers.push(aggregation[0]);
+                params = { ...params, ...aggregation[1] };
             }
-        }
-
-        if (entry[0] === "edge") {
-            const edgeValue = entry[1] as any;
-
-            const edgeThingy = idkWhatToCallThisYet({
-                chainStr: `${chainStr}_${entry[0]}`,
-                inputValue: edgeValue,
-                nodeOrRelationship: relationship,
-                variable: edgeVariable,
-            });
-
-            if (edgeThingy[0]) {
-                cyphers.push(edgeThingy[0]);
-                params = { ...params, ...edgeThingy[1] };
-            }
-        }
+        });
     });
 
     return [cyphers.join(" AND "), params];
