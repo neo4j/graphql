@@ -1156,6 +1156,12 @@ function makeAugmentedSchema(
                                 ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "BigInt" }), {}),
                             });
                         }
+
+                        if (field.typeMeta.name === "Float") {
+                            edgeWhereAggregationInput?.addFields({
+                                ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Float" }), {}),
+                            });
+                        }
                     });
                 }
             }
