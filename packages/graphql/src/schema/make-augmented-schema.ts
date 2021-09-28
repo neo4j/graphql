@@ -1167,6 +1167,12 @@ function makeAugmentedSchema(
                                 ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "DateTime" }), {}),
                             });
                         }
+
+                        if (field.typeMeta.name === "Time") {
+                            edgeWhereAggregationInput?.addFields({
+                                ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Time" }), {}),
+                            });
+                        }
                     });
                 }
             }
