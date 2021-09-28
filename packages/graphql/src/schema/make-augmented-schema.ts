@@ -1100,8 +1100,7 @@ function makeAugmentedSchema(
                 const edgeWhereAggregationInputFields = thisAggregationSelectionTypeMatrix.reduce<BaseField[]>(
                     (res, x) => {
                         // @ts-ignore - Go home TypeScript your drunk
-                        // ...relFields.temporalFields
-                        const field = [...relFields.primitiveFields].find(
+                        const field = [...relFields.primitiveFields, ...relFields.temporalFields].find(
                             (y) => !y.typeMeta.array && y.typeMeta.name === x[0]
                         );
 
@@ -1160,6 +1159,12 @@ function makeAugmentedSchema(
                         if (field.typeMeta.name === "Float") {
                             edgeWhereAggregationInput?.addFields({
                                 ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Float" }), {}),
+                            });
+                        }
+
+                        if (field.typeMeta.name === "DateTime") {
+                            edgeWhereAggregationInput?.addFields({
+                                ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "DateTime" }), {}),
                             });
                         }
                     });
