@@ -1066,7 +1066,8 @@ function makeAugmentedSchema(
                                 (r, o) => ({
                                     ...r,
                                     [`${field.fieldName}_${o}`]: field.typeMeta.name,
-                                    [`${field.fieldName}_AVERAGE_${o}`]: "Float",
+                                    [`${field.fieldName}_AVERAGE_${o}`]:
+                                        field.typeMeta.name === "BigInt" ? "BigInt" : "Float",
                                 }),
                                 {}
                             ),
