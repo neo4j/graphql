@@ -1062,15 +1062,23 @@ function makeAugmentedSchema(
 
                     if (whereAggregationAverageTypes.includes(field.typeMeta.name)) {
                         aggregationInput.addFields({
-                            ...aggregationOperators.reduce(
-                                (r, o) => ({
+                            ...aggregationOperators.reduce((r, o) => {
+                                let averageType = "Float";
+
+                                if (field.typeMeta.name === "BigInt") {
+                                    averageType = "BigInt";
+                                }
+
+                                if (field.typeMeta.name === "Duration") {
+                                    averageType = "Duration";
+                                }
+
+                                return {
                                     ...r,
                                     [`${field.fieldName}_${o}`]: field.typeMeta.name,
-                                    [`${field.fieldName}_AVERAGE_${o}`]:
-                                        field.typeMeta.name === "BigInt" ? "BigInt" : "Float",
-                                }),
-                                {}
-                            ),
+                                    [`${field.fieldName}_AVERAGE_${o}`]: averageType,
+                                };
+                            }, {}),
                         });
 
                         return;

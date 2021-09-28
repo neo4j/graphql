@@ -246,3 +246,233 @@ RETURN this { .content } as this
 ```
 
 ---
+
+## AVERAGE_EQUAL
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someDuration_AVERAGE_EQUAL: "P1Y" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN avg(this_likesAggregate_node.someDuration) = $this_likesAggregate_node_someDuration_AVERAGE_EQUAL ",
+    { this: this, this_likesAggregate_node_someDuration_AVERAGE_EQUAL: $this_likesAggregate_node_someDuration_AVERAGE_EQUAL },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someDuration_AVERAGE_EQUAL": {
+        "months": 12,
+        "days": 0,
+        "seconds": {
+            "high": 0,
+            "low": 0
+        },
+        "nanoseconds": {
+            "high": 0,
+            "low": 0
+        }
+    }
+}
+```
+
+---
+
+## AVERAGE_GT
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someDuration_AVERAGE_GT: "P1Y" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN avg(this_likesAggregate_node.someDuration) > $this_likesAggregate_node_someDuration_AVERAGE_GT ",
+    { this: this, this_likesAggregate_node_someDuration_AVERAGE_GT: $this_likesAggregate_node_someDuration_AVERAGE_GT },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someDuration_AVERAGE_GT": {
+        "months": 12,
+        "days": 0,
+        "seconds": {
+            "high": 0,
+            "low": 0
+        },
+        "nanoseconds": {
+            "high": 0,
+            "low": 0
+        }
+    }
+}
+```
+
+---
+
+## AVERAGE_GTE
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someDuration_AVERAGE_GTE: "P1Y" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN avg(this_likesAggregate_node.someDuration) >= $this_likesAggregate_node_someDuration_AVERAGE_GTE ",
+    { this: this, this_likesAggregate_node_someDuration_AVERAGE_GTE: $this_likesAggregate_node_someDuration_AVERAGE_GTE },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someDuration_AVERAGE_GTE": {
+        "months": 12,
+        "days": 0,
+        "seconds": {
+            "high": 0,
+            "low": 0
+        },
+        "nanoseconds": {
+            "high": 0,
+            "low": 0
+        }
+    }
+}
+```
+
+---
+
+## AVERAGE_LT
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someDuration_AVERAGE_LT: "P1Y" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN avg(this_likesAggregate_node.someDuration) < $this_likesAggregate_node_someDuration_AVERAGE_LT ",
+    { this: this, this_likesAggregate_node_someDuration_AVERAGE_LT: $this_likesAggregate_node_someDuration_AVERAGE_LT },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someDuration_AVERAGE_LT": {
+        "months": 12,
+        "days": 0,
+        "seconds": {
+            "high": 0,
+            "low": 0
+        },
+        "nanoseconds": {
+            "high": 0,
+            "low": 0
+        }
+    }
+}
+```
+
+---
+
+## AVERAGE_LTE
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someDuration_AVERAGE_LTE: "P1Y" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN avg(this_likesAggregate_node.someDuration) <= $this_likesAggregate_node_someDuration_AVERAGE_LTE ",
+    { this: this, this_likesAggregate_node_someDuration_AVERAGE_LTE: $this_likesAggregate_node_someDuration_AVERAGE_LTE },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someDuration_AVERAGE_LTE": {
+        "months": 12,
+        "days": 0,
+        "seconds": {
+            "high": 0,
+            "low": 0
+        },
+        "nanoseconds": {
+            "high": 0,
+            "low": 0
+        }
+    }
+}
+```
+
+---
