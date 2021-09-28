@@ -370,4 +370,363 @@ describe("aggregations-where-node-float", () => {
             await session.close();
         }
     });
+
+    describe("AVERAGE", () => {
+        test("should return posts where the average of like Floats is EQUAL to", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    testString: String!
+                    someFloat: Float!
+                }
+              
+                type Post {
+                  testString: String!
+                  likes: [User] @relationship(type: "LIKES", direction: IN)
+                }
+            `;
+
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
+
+            const someFloat1 = Math.random() * Math.random();
+            const someFloat2 = Math.random() * Math.random();
+            const someFloat3 = Math.random() * Math.random();
+
+            const avg = (someFloat1 + someFloat2 + someFloat3) / 3;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (p:Post {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat1}})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat2}})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat3}})
+                        CREATE (:Post {testString: "${testString}"})
+                    `
+                );
+
+                const query = `
+                    {
+                        posts(where: { testString: "${testString}", likesAggregate: { node: { someFloat_AVERAGE_EQUAL: ${avg} } } }) {
+                            testString
+                            likes {
+                                testString
+                                someFloat
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const [post] = (gqlResult.data as any).posts as any[];
+                expect(post.testString).toEqual(testString);
+                expect(post.likes).toHaveLength(3);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should return posts where the average of like Floats is GT than", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    testString: String!
+                    someFloat: Float!
+                }
+              
+                type Post {
+                  testString: String!
+                  likes: [User] @relationship(type: "LIKES", direction: IN)
+                }
+            `;
+
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
+
+            const someFloat1 = Math.random() * Math.random();
+            const someFloat2 = Math.random() * Math.random();
+            const someFloat3 = Math.random() * Math.random();
+
+            const avg = (someFloat1 + someFloat2 + someFloat3) / 3;
+            const avgGT = avg - 1;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (p:Post {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat1}})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat2}})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat3}})
+                        CREATE (:Post {testString: "${testString}"})
+                    `
+                );
+
+                const query = `
+                    {
+                        posts(where: { testString: "${testString}", likesAggregate: { node: { someFloat_AVERAGE_GT: ${avgGT} } } }) {
+                            testString
+                            likes {
+                                testString
+                                someFloat
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const [post] = (gqlResult.data as any).posts as any[];
+                expect(post.testString).toEqual(testString);
+                expect(post.likes).toHaveLength(3);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should return posts where the average of like Floats is GTE than", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    testString: String!
+                    someFloat: Float!
+                }
+              
+                type Post {
+                  testString: String!
+                  likes: [User] @relationship(type: "LIKES", direction: IN)
+                }
+            `;
+
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
+
+            const someFloat1 = Math.random() * Math.random();
+            const someFloat2 = Math.random() * Math.random();
+            const someFloat3 = Math.random() * Math.random();
+
+            const avg = (someFloat1 + someFloat2 + someFloat3) / 3;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (p:Post {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat1}})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat2}})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat3}})
+                        CREATE (:Post {testString: "${testString}"})
+                    `
+                );
+
+                const query = `
+                    {
+                        posts(where: { testString: "${testString}", likesAggregate: { node: { someFloat_AVERAGE_GTE: ${avg} } } }) {
+                            testString
+                            likes {
+                                testString
+                                someFloat
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const [post] = (gqlResult.data as any).posts as any[];
+                expect(post.testString).toEqual(testString);
+                expect(post.likes).toHaveLength(3);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should return posts where the average of like Floats is LT than", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    testString: String!
+                    someFloat: Float!
+                }
+              
+                type Post {
+                  testString: String!
+                  likes: [User] @relationship(type: "LIKES", direction: IN)
+                }
+            `;
+
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
+
+            const someFloat1 = Math.random() * Math.random();
+            const someFloat2 = Math.random() * Math.random();
+            const someFloat3 = Math.random() * Math.random();
+
+            const avg = (someFloat1 + someFloat2 + someFloat3) / 3;
+            const avgLT = avg + 1;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (p:Post {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat1}})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat2}})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat3}})
+                        CREATE (:Post {testString: "${testString}"})
+                    `
+                );
+
+                const query = `
+                    {
+                        posts(where: { testString: "${testString}", likesAggregate: { node: { someFloat_AVERAGE_LT: ${avgLT} } } }) {
+                            testString
+                            likes {
+                                testString
+                                someFloat
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const [post] = (gqlResult.data as any).posts as any[];
+                expect(post.testString).toEqual(testString);
+                expect(post.likes).toHaveLength(3);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should return posts where the average of like Floats is LTE than", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    testString: String!
+                    someFloat: Float!
+                }
+              
+                type Post {
+                  testString: String!
+                  likes: [User] @relationship(type: "LIKES", direction: IN)
+                }
+            `;
+
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
+
+            const someFloat1 = Math.random() * Math.random();
+            const someFloat2 = Math.random() * Math.random();
+            const someFloat3 = Math.random() * Math.random();
+
+            const avg = (someFloat1 + someFloat2 + someFloat3) / 3;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (p:Post {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat1}})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat2}})
+                        CREATE (p)<-[:LIKES]-(:User {testString: "${testString}", someFloat: ${someFloat3}})
+                        CREATE (:Post {testString: "${testString}"})
+                    `
+                );
+
+                const query = `
+                    {
+                        posts(where: { testString: "${testString}", likesAggregate: { node: { someFloat_AVERAGE_LTE: ${avg} } } }) {
+                            testString
+                            likes {
+                                testString
+                                someFloat
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const [post] = (gqlResult.data as any).posts as any[];
+                expect(post.testString).toEqual(testString);
+                expect(post.likes).toHaveLength(3);
+            } finally {
+                await session.close();
+            }
+        });
+    });
 });
