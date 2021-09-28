@@ -108,6 +108,8 @@ describe("Alias", () => {
             }
 
             input ActorActedInEdgeAggregationWhereInput {
+              AND: [ActorActedInEdgeAggregationWhereInput!]
+              OR: [ActorActedInEdgeAggregationWhereInput!]
               character_AVERAGE_EQUAL: Float
               character_AVERAGE_GT: Float
               character_AVERAGE_GTE: Float
@@ -136,6 +138,8 @@ describe("Alias", () => {
             }
 
             input ActorActedInNodeAggregationWhereInput {
+              AND: [ActorActedInNodeAggregationWhereInput!]
+              OR: [ActorActedInNodeAggregationWhereInput!]
               rating_AVERAGE_EQUAL: Float
               rating_AVERAGE_GT: Float
               rating_AVERAGE_GTE: Float

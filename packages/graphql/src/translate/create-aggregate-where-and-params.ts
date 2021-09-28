@@ -60,10 +60,38 @@ function aggregate({
     variable: string;
 }): { aggregations: string[]; params: any; withStrs: string[] } {
     const aggregations: string[] = [];
-    const withStrs: string[] = [];
+    let withStrs: string[] = [];
     let params = {};
 
     Object.entries(inputValue).forEach((e) => {
+        if (["AND", "OR"].includes(e[0])) {
+            const innerClauses: string[] = [];
+
+            ((e[1] as unknown) as any[]).forEach((v: any, i) => {
+                const recurse = aggregate({
+                    chainStr: `${chainStr}_${e[0]}_${i}`,
+                    inputValue: v,
+                    nodeOrRelationship,
+                    variable,
+                });
+
+                if (recurse.aggregations.length) {
+                    innerClauses.push(recurse.aggregations.join(" AND "));
+                    params = { ...params, ...recurse.params };
+                }
+
+                if (recurse.withStrs.length) {
+                    withStrs = [...withStrs, ...recurse.withStrs];
+                }
+            });
+
+            if (innerClauses.length) {
+                aggregations.push(`(${innerClauses.join(` ${e[0]} `)})`);
+            }
+
+            return;
+        }
+
         const field = [...nodeOrRelationship.primitiveFields, ...nodeOrRelationship.temporalFields].find((field) =>
             fieldOperators.some(
                 (op) =>

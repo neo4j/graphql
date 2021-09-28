@@ -174,6 +174,8 @@ describe("Relationship", () => {
             }
 
             input MovieActorsNodeAggregationWhereInput {
+              AND: [MovieActorsNodeAggregationWhereInput!]
+              OR: [MovieActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
               name_AVERAGE_GTE: Float
@@ -432,6 +434,8 @@ describe("Relationship", () => {
             }
 
             input ActorMoviesNodeAggregationWhereInput {
+              AND: [ActorMoviesNodeAggregationWhereInput!]
+              OR: [ActorMoviesNodeAggregationWhereInput!]
               id_EQUAL: ID
             }
 
@@ -580,6 +584,8 @@ describe("Relationship", () => {
             }
 
             input MovieActorsNodeAggregationWhereInput {
+              AND: [MovieActorsNodeAggregationWhereInput!]
+              OR: [MovieActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
               name_AVERAGE_GTE: Float

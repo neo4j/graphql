@@ -262,6 +262,8 @@ describe("162", () => {
             }
 
             input TigerJawLevel2Part1NodeAggregationWhereInput {
+              AND: [TigerJawLevel2Part1NodeAggregationWhereInput!]
+              OR: [TigerJawLevel2Part1NodeAggregationWhereInput!]
               id_EQUAL: ID
             }
 
@@ -336,6 +338,8 @@ describe("162", () => {
             }
 
             input TigerJawLevel2Part1TigerNodeAggregationWhereInput {
+              AND: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
+              OR: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
               x_AVERAGE_EQUAL: Float
               x_AVERAGE_GT: Float
               x_AVERAGE_GTE: Float

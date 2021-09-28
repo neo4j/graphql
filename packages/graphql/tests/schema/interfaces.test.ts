@@ -168,6 +168,8 @@ describe("Interfaces", () => {
             }
 
             input MovieMoviesNodeAggregationWhereInput {
+              AND: [MovieMoviesNodeAggregationWhereInput!]
+              OR: [MovieMoviesNodeAggregationWhereInput!]
               id_EQUAL: ID
             }
 

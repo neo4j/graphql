@@ -1028,7 +1028,10 @@ function makeAugmentedSchema(
 
                 const aggregationInput = composer.createInputTC({
                     name,
-                    fields: {},
+                    fields: {
+                        AND: `[${name}!]`,
+                        OR: `[${name}!]`,
+                    },
                 });
 
                 fields.forEach((field) => {

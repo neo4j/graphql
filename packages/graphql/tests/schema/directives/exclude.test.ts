@@ -668,6 +668,8 @@ describe("Exclude", () => {
             }
 
             input MovieActorsNodeAggregationWhereInput {
+              AND: [MovieActorsNodeAggregationWhereInput!]
+              OR: [MovieActorsNodeAggregationWhereInput!]
               name_AVERAGE_EQUAL: Float
               name_AVERAGE_GT: Float
               name_AVERAGE_GTE: Float
