@@ -143,6 +143,19 @@ function makeAugmentedSchema(
         args: {},
     };
 
+    const whereAggregationTypes: string[] = [
+        "ID",
+        "String",
+        "Float",
+        "Int",
+        "BigInt",
+        "DateTime",
+        "LocalDateTime",
+        "LocalTime",
+        "Time",
+        "Duration",
+    ];
+
     // Foreach i if i[1] is ? then we will assume it takes on type { min, max }
     const aggregationSelectionTypeMatrix: [string, any?][] = [
         [
@@ -973,7 +986,6 @@ function makeAugmentedSchema(
 
             const n = nodes.find((x) => x.name === rel.typeMeta.name) as Node;
             const updateField = `${n.name}UpdateInput`;
-
             const nodeFieldInputName = `${node.name}${upperFirst(rel.fieldName)}FieldInput`;
             const nodeFieldUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateFieldInput`;
             const nodeFieldDeleteInputName = `${node.name}${upperFirst(rel.fieldName)}DeleteFieldInput`;
@@ -981,58 +993,50 @@ function makeAugmentedSchema(
             const connectionUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateConnectionInput`;
             const relationshipWhereTypeInputName = `${node.name}${upperFirst(rel.fieldName)}AggregateInput`;
 
-            const thisAggregationSelectionTypeMatrix: [string, any?][] = [
-                ["ID"],
-                ["String"],
-                ["Float"],
-                ["Int"],
-                ["BigInt"],
-                ["DateTime"],
-                ["LocalDateTime"],
-                ["LocalTime"],
-                ["Time"],
-                ["Duration"],
-            ];
-
-            const nodeWhereAggregationInputFields = thisAggregationSelectionTypeMatrix.reduce<BaseField[]>((res, x) => {
-                const field = [...n.primitiveFields, ...n.temporalFields].find(
-                    (y) => !y.typeMeta.array && y.typeMeta.name === x[0]
-                );
-
-                if (!field) {
-                    return res;
+            const [nodeWhereAggregationInput, edgeWhereAggregationInput] = [n, relFields].map((nodeOrRelFields) => {
+                if (!nodeOrRelFields) {
+                    return;
                 }
 
-                return res.concat(field);
-            }, []);
+                const fields = whereAggregationTypes.reduce<BaseField[]>((r, t) => {
+                    const field = [...nodeOrRelFields.primitiveFields, ...nodeOrRelFields.temporalFields].find(
+                        (y) => !y.typeMeta.array && y.typeMeta.name === t
+                    );
 
-            let nodeWhereAggregationInput: InputTypeComposer<any> | undefined;
+                    if (!field) {
+                        return r;
+                    }
 
-            if (nodeWhereAggregationInputFields.length) {
-                const name = `${node.name}${upperFirst(rel.fieldName)}NodeAggregationWhereInput`;
+                    return r.concat(field);
+                }, []);
 
-                nodeWhereAggregationInput = composer.createInputTC({
+                if (!fields.length) {
+                    return;
+                }
+
+                const name = `${node.name}${upperFirst(rel.fieldName)}${
+                    nodeOrRelFields instanceof Node ? `Node` : `Edge`
+                }AggregationWhereInput`;
+
+                const aggregationInput = composer.createInputTC({
                     name,
                     fields: {},
                 });
 
-                nodeWhereAggregationInputFields.forEach((field) => {
-                    // const matrixItem = thisAggregationSelectionTypeMatrix.find((x) => x[0] === field.typeMeta.name) as [
-                    //     string,
-                    //     any
-                    // ];
-
+                fields.forEach((field) => {
                     // TODO average?
                     const operators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
 
                     if (field.typeMeta.name === "ID") {
-                        nodeWhereAggregationInput?.addFields({
+                        aggregationInput.addFields({
                             [`${field.fieldName}_EQUAL`]: "ID",
                         });
+
+                        return;
                     }
 
                     if (field.typeMeta.name === "String") {
-                        nodeWhereAggregationInput?.addFields({
+                        aggregationInput.addFields({
                             [`${field.fieldName}_EQUAL`]: "ID",
                             ...operators.reduce((r, o) => {
                                 if (o === "EQUAL") {
@@ -1042,161 +1046,17 @@ function makeAugmentedSchema(
                                 return { ...r, [`${field.fieldName}_${o}`]: "Int" };
                             }, {}),
                         });
+
+                        return;
                     }
 
-                    if (field.typeMeta.name === "Float") {
-                        nodeWhereAggregationInput?.addFields({
-                            ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Float" }), {}),
-                        });
-                    }
-
-                    if (field.typeMeta.name === "Int") {
-                        nodeWhereAggregationInput?.addFields({
-                            ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Int" }), {}),
-                        });
-                    }
-
-                    if (field.typeMeta.name === "BigInt") {
-                        nodeWhereAggregationInput?.addFields({
-                            ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "BigInt" }), {}),
-                        });
-                    }
-
-                    if (field.typeMeta.name === "DateTime") {
-                        nodeWhereAggregationInput?.addFields({
-                            ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "DateTime" }), {}),
-                        });
-                    }
-
-                    if (field.typeMeta.name === "LocalDateTime") {
-                        nodeWhereAggregationInput?.addFields({
-                            ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "LocalDateTime" }), {}),
-                        });
-                    }
-
-                    if (field.typeMeta.name === "LocalTime") {
-                        nodeWhereAggregationInput?.addFields({
-                            ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "LocalTime" }), {}),
-                        });
-                    }
-
-                    if (field.typeMeta.name === "Time") {
-                        nodeWhereAggregationInput?.addFields({
-                            ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Time" }), {}),
-                        });
-                    }
-
-                    if (field.typeMeta.name === "Duration") {
-                        nodeWhereAggregationInput?.addFields({
-                            ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Duration" }), {}),
-                        });
-                    }
+                    aggregationInput.addFields({
+                        ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: field.typeMeta.name }), {}),
+                    });
                 });
-            }
 
-            let edgeWhereAggregationInput: InputTypeComposer<any> | undefined;
-
-            if (relFields !== undefined) {
-                const edgeWhereAggregationInputFields = thisAggregationSelectionTypeMatrix.reduce<BaseField[]>(
-                    (res, x) => {
-                        // @ts-ignore - Go home TypeScript your drunk
-                        const field = [...relFields.primitiveFields, ...relFields.temporalFields].find(
-                            (y) => !y.typeMeta.array && y.typeMeta.name === x[0]
-                        );
-
-                        if (!field) {
-                            return res;
-                        }
-
-                        return res.concat(field);
-                    },
-                    []
-                );
-
-                if (edgeWhereAggregationInputFields.length) {
-                    const name = `${node.name}${upperFirst(rel.fieldName)}EdgeAggregationWhereInput`;
-
-                    edgeWhereAggregationInput = composer.createInputTC({
-                        name,
-                        fields: {},
-                    });
-
-                    edgeWhereAggregationInputFields.forEach((field) => {
-                        // TODO average?
-                        const operators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
-
-                        if (field.typeMeta.name === "ID") {
-                            edgeWhereAggregationInput?.addFields({
-                                [`${field.fieldName}_EQUAL`]: "ID",
-                            });
-                        }
-
-                        if (field.typeMeta.name === "String") {
-                            edgeWhereAggregationInput?.addFields({
-                                [`${field.fieldName}_EQUAL`]: "ID",
-                                ...operators.reduce((r, o) => {
-                                    if (o === "EQUAL") {
-                                        return r;
-                                    }
-
-                                    return { ...r, [`${field.fieldName}_${o}`]: "Int" };
-                                }, {}),
-                            });
-                        }
-
-                        if (field.typeMeta.name === "Int") {
-                            edgeWhereAggregationInput?.addFields({
-                                ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Int" }), {}),
-                            });
-                        }
-
-                        if (field.typeMeta.name === "BigInt") {
-                            edgeWhereAggregationInput?.addFields({
-                                ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "BigInt" }), {}),
-                            });
-                        }
-
-                        if (field.typeMeta.name === "Float") {
-                            edgeWhereAggregationInput?.addFields({
-                                ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Float" }), {}),
-                            });
-                        }
-
-                        if (field.typeMeta.name === "DateTime") {
-                            edgeWhereAggregationInput?.addFields({
-                                ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "DateTime" }), {}),
-                            });
-                        }
-
-                        if (field.typeMeta.name === "Time") {
-                            edgeWhereAggregationInput?.addFields({
-                                ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Time" }), {}),
-                            });
-                        }
-
-                        if (field.typeMeta.name === "LocalTime") {
-                            edgeWhereAggregationInput?.addFields({
-                                ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "LocalTime" }), {}),
-                            });
-                        }
-
-                        if (field.typeMeta.name === "LocalDateTime") {
-                            edgeWhereAggregationInput?.addFields({
-                                ...operators.reduce(
-                                    (r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "LocalDateTime" }),
-                                    {}
-                                ),
-                            });
-                        }
-
-                        if (field.typeMeta.name === "Duration") {
-                            edgeWhereAggregationInput?.addFields({
-                                ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Duration" }), {}),
-                            });
-                        }
-                    });
-                }
-            }
+                return aggregationInput;
+            });
 
             const whereAggregateInput = composer.createInputTC({
                 name: relationshipWhereTypeInputName,
