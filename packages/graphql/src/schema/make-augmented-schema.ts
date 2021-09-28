@@ -1188,6 +1188,12 @@ function makeAugmentedSchema(
                                 ),
                             });
                         }
+
+                        if (field.typeMeta.name === "Duration") {
+                            edgeWhereAggregationInput?.addFields({
+                                ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Duration" }), {}),
+                            });
+                        }
                     });
                 }
             }
