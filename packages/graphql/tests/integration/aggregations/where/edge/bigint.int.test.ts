@@ -36,7 +36,7 @@ describe("aggregations-where-edge-bigint", () => {
         await driver.close();
     });
 
-    test("should return posts where a like BigInt is EQUAL to", async () => {
+    test("should return posts where a edge like BigInt is EQUAL to", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -103,7 +103,7 @@ describe("aggregations-where-edge-bigint", () => {
         }
     });
 
-    test("should return posts where a like BigInt is GT than", async () => {
+    test("should return posts where a edge like BigInt is GT than", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -173,7 +173,7 @@ describe("aggregations-where-edge-bigint", () => {
         }
     });
 
-    test("should return posts where a like BigInt is GTE than", async () => {
+    test("should return posts where a edge like BigInt is GTE than", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -240,7 +240,7 @@ describe("aggregations-where-edge-bigint", () => {
         }
     });
 
-    test("should return posts where a like BigInt is LT than", async () => {
+    test("should return posts where a edge like BigInt is LT than", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -309,7 +309,7 @@ describe("aggregations-where-edge-bigint", () => {
         }
     });
 
-    test("should return posts where a like BigInt is LTE than", async () => {
+    test("should return posts where a edge like BigInt is LTE than", async () => {
         const session = driver.session();
 
         const typeDefs = `
