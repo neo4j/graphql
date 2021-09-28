@@ -223,7 +223,7 @@ describe("interface relationships", () => {
             query Actors($name: String, $title: String) {
                 actors(where: { name: $name }) {
                     name
-                    actedIn(where: { _onType: { Movie: { title: $title } } }) {
+                    actedIn(where: { _on: { Movie: { title: $title } } }) {
                         title
                         ... on Movie {
                             runtime
@@ -287,7 +287,7 @@ describe("interface relationships", () => {
             query Actors($name: String, $title: String, $movieTitle: String) {
                 actors(where: { name: $name }) {
                     name
-                    actedIn(where: { title: $title, _onType: { Movie: { title: $movieTitle } } }) {
+                    actedIn(where: { title: $title, _on: { Movie: { title: $movieTitle } } }) {
                         title
                         ... on Movie {
                             runtime

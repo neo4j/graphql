@@ -41,7 +41,7 @@ extend type User {
 }
 ```
 
---
+---
 
 ## read allow protected interface relationship
 
@@ -64,10 +64,19 @@ extend type User {
 ```cypher
 MATCH (this:User)
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-RETURN this {
-    .id,
-    posts: [ (this)-[:HAS_POST]->(this_posts:Post) WHERE apoc.util.validatePredicate(NOT(EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0]) | this_posts { .content } ]
-} as this
+WITH this
+CALL {
+    WITH this
+    MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
+    CALL apoc.util.validate(NOT(EXISTS((this_Comment)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_Comment)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Comment_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+    RETURN { __resolveType: "Comment", id: this_Comment.id, content: this_Comment.content } AS content
+UNION
+    WITH this
+    MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
+    CALL apoc.util.validate(NOT(EXISTS((this_Post)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+    RETURN { __resolveType: "Post", id: this_Post.id, content: this_Post.content } AS content
+}
+RETURN this { .id, content: collect(content) } as this
 ```
 
 ### Expected Cypher Params
@@ -108,11 +117,11 @@ RETURN this {
 
 ```cypher
 MATCH (this:Post)
-CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
 
 RETURN this {
     creator: head([
-        (this)<-[:HAS_POST]-(this_creator:User)
+        (this)<-[:HAS_CONTENT]-(this_creator:User)
         WHERE apoc.util.validatePredicate(NOT(this_creator.id IS NOT NULL AND this_creator.id = $this_creator_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0]) AND apoc.util.validatePredicate(NOT(this_creator.id IS NOT NULL AND this_creator.id = $this_creator_password_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0]) | this_creator {
             .password
         } ])
@@ -148,9 +157,11 @@ RETURN this {
 {
     users(where: { id: "1" }) {
         id
-        posts(where: { id: "1" }) {
-            comments(where: { id: "1" }) {
-                content
+        content(where: { id: "1" }) {
+            ... on Post {
+                comments(where: { id: "1" }) {
+                    content
+                }
             }
         }
     }
@@ -163,12 +174,24 @@ RETURN this {
 MATCH (this:User)
 WHERE this.id = $this_id
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-RETURN this {
-    .id,
-    posts: [ (this)-[:HAS_POST]->(this_posts:Post) WHERE this_posts.id = $this_posts_id AND apoc.util.validatePredicate(NOT(EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0]) | this_posts { comments: [ (this_posts)-[:HAS_COMMENT]->(this_posts_comments:Comment) WHERE this_posts_comments.id = $this_posts_comments_id AND apoc.util.validatePredicate(NOT(EXISTS((this_posts_comments)<-[:HAS_COMMENT]-(:User)) AND ANY(creator IN [(this_posts_comments)<-[:HAS_COMMENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_comments_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0]) | this_posts_comments {
-        .content
-    } ] } ]
-} as this
+WITH this
+CALL {
+    WITH this
+    MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
+    CALL apoc.util.validate(NOT(EXISTS((this_Comment)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_Comment)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Comment_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+    WHERE this_Comment.id = $this_content.args.where.id
+    RETURN { __resolveType: "Comment" } AS content
+UNION
+    WITH this
+    MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
+    CALL apoc.util.validate(NOT(EXISTS((this_Post)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+    WHERE this_Post.id = $this_content.args.where.id
+    RETURN {
+        __resolveType: "Post",
+        comments: [ (this_Post)-[:HAS_COMMENT]->(this_Post_comments:Comment) WHERE this_Post_comments.id = $this_Post_comments_id AND apoc.util.validatePredicate(NOT(EXISTS((this_Post_comments)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_Post_comments)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_comments_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0]) | this_Post_comments { .content } ]
+    } AS content
+}
+RETURN this { .id, content: collect(content) } as this
 ```
 
 ### Expected Cypher Params
@@ -216,9 +239,9 @@ MATCH (this:Post)
 WHERE this.id = $this_id
 
 WITH this
-CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
 WITH this
-OPTIONAL MATCH (this)<-[this_has_post0_relationship:HAS_POST]-(this_creator0:User)
+OPTIONAL MATCH (this)<-[this_has_content0_relationship:HAS_CONTENT]-(this_creator0:User)
 CALL apoc.do.when(this_creator0 IS NOT NULL, "
     WITH this, this_creator0
     CALL apoc.util.validate(NOT(this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0_auth_allow0_id), \"@neo4j/graphql/FORBIDDEN\", [0])
@@ -295,8 +318,8 @@ MATCH (this:Post)
 WHERE this.id = $this_id
 
 WITH this
-CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
-WITH this OPTIONAL MATCH (this)<-[this_has_post0_relationship:HAS_POST]-(this_creator0:User)
+CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+WITH this OPTIONAL MATCH (this)<-[this_has_content0_relationship:HAS_CONTENT]-(this_creator0:User)
 
 CALL apoc.do.when(this_creator0 IS NOT NULL, "
     WITH this, this_creator0
@@ -359,7 +382,7 @@ CALL apoc.do.when(this_creator0 IS NOT NULL, "
 
 ```graphql
 mutation {
-    deleteUsers(where: { id: "user-id" }, delete: { posts: { where: { node: { id: "post-id" } } } }) {
+    deleteUsers(where: { id: "user-id" }, delete: { content: { where: { node: { id: "post-id" } } } }) {
         nodesDeleted
     }
 }
@@ -371,14 +394,24 @@ mutation {
 MATCH (this:User)
 WHERE this.id = $this_id
 WITH this
-OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-WHERE this_posts0.id = $this_deleteUsers.args.delete.posts[0].where.node.id
-WITH this, this_posts0
-CALL apoc.util.validate(NOT(EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
 
-FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_posts0
+OPTIONAL MATCH (this)-[this_comment0_relationship:HAS_CONTENT]->(this_comment0:Comment)
+WHERE this_comment0.id = $this_deleteUsers.args.delete.content[0].where.node.id
+WITH this, this_comment0
+CALL apoc.util.validate(NOT(EXISTS((this_comment0)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_comment0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_comment0_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+FOREACH(_ IN CASE this_comment0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_comment0
 )
+WITH this
+
+OPTIONAL MATCH (this)-[this_post0_relationship:HAS_CONTENT]->(this_post0:Post)
+WHERE this_post0.id = $this_deleteUsers.args.delete.content[0].where.node.id
+WITH this, this_post0
+CALL apoc.util.validate(NOT(EXISTS((this_post0)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_post0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post0_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
+FOREACH(_ IN CASE this_post0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_post0
+)
+
 WITH this
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 DETACH DELETE this
@@ -426,7 +459,7 @@ DETACH DELETE this
 
 ```graphql
 mutation {
-    updateUsers(where: { id: "user-id" }, disconnect: { posts: { where: { node: { id: "post-id" } } } }) {
+    updateUsers(where: { id: "user-id" }, disconnect: { content: { where: { node: { id: "post-id" } } } }) {
         users {
             id
         }
@@ -437,25 +470,28 @@ mutation {
 ### Expected Cypher Output
 
 ```cypher
-MATCH (this:User)
-WHERE this.id = $this_id
-
-WITH this
-CALL {
-    WITH this
-    OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
-    WHERE this_disconnect_posts0.id = $updateUsers.args.disconnect.posts[0].where.node.id
-    WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
-
-    CALL apoc.util.validate(NOT(this_disconnect_posts0.id IS NOT NULL AND this_disconnect_posts0.id = $this_disconnect_posts0User0_allow_auth_allow0_id AND EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0Post1_allow_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
-
-    FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
-        DELETE this_disconnect_posts0_rel
-    )
-
-    RETURN count(*)
-}
-
+MATCH (this:User) 
+WHERE this.id = $this_id 
+WITH this 
+CALL { 
+    WITH this 
+    OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment) 
+    WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id WITH this, this_disconnect_content0, this_disconnect_content0_rel 
+    CALL apoc.util.validate(NOT(this_disconnect_content0.id IS NOT NULL AND this_disconnect_content0.id = $this_disconnect_content0User0_allow_auth_allow0_id AND EXISTS((this_disconnect_content0)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_content0Comment1_allow_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0]) 
+    FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END | 
+        DELETE this_disconnect_content0_rel 
+    ) 
+    RETURN count(*) 
+UNION 
+    WITH this 
+    OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post) 
+    WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id WITH this, this_disconnect_content0, this_disconnect_content0_rel 
+    CALL apoc.util.validate(NOT(this_disconnect_content0.id IS NOT NULL AND this_disconnect_content0.id = $this_disconnect_content0User0_allow_auth_allow0_id AND EXISTS((this_disconnect_content0)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_content0Post1_allow_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0]) 
+    FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END | 
+        DELETE this_disconnect_content0_rel 
+    ) 
+    RETURN count(*) 
+} 
 RETURN this { .id } AS this
 ```
 
@@ -501,11 +537,8 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateComments(
-        where: { id: "comment-id" }
-        update: { post: { disconnect: { disconnect: { creator: { where: { node: { id: "user-id" } } } } } } }
-    ) {
-        comments {
+    updateUsers(where: { id: "user-id" }, disconnect: { content: { where: { node: { id: "post-id" } }, disconnect: { } } }) {
+        users {
             id
         }
     }
@@ -604,7 +637,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateUsers(where: { id: "user-id" }, connect: { posts: { where: { node: { id: "post-id" } } } }) {
+    updateUsers(where: { id: "user-id" }, connect: { content: { where: { node: { id: "post-id" } } } }) {
         users {
             id
         }

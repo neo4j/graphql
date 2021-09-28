@@ -89,6 +89,7 @@ describe("Interface Relationships", () => {
             }
 
             input ActorActedInConnectFieldInput {
+              connect: ProductionConnectInput
               edge: ActedInCreateInput!
               where: ProductionConnectWhere
             }
@@ -114,10 +115,12 @@ describe("Interface Relationships", () => {
             }
 
             input ActorActedInDeleteFieldInput {
+              delete: ProductionDeleteInput
               where: ActorActedInConnectionWhere
             }
 
             input ActorActedInDisconnectFieldInput {
+              disconnect: ProductionDisconnectInput
               where: ActorActedInConnectionWhere
             }
 
@@ -320,6 +323,10 @@ describe("Interface Relationships", () => {
               title: String!
             }
 
+            input ProductionConnectInput {
+              _on: ProductionImplementationsConnectInput
+            }
+
             input ProductionConnectWhere {
               node: ProductionWhere!
             }
@@ -329,21 +336,39 @@ describe("Interface Relationships", () => {
               Series: SeriesCreateInput
             }
 
+            input ProductionDeleteInput {
+              _on: ProductionImplementationsDeleteInput
+            }
+
+            input ProductionDisconnectInput {
+              _on: ProductionImplementationsDisconnectInput
+            }
+
+            input ProductionImplementationsConnectInput
+
+            input ProductionImplementationsDeleteInput
+
+            input ProductionImplementationsDisconnectInput
+
+            input ProductionImplementationsUpdateInput {
+              Movie: MovieUpdateInput
+              Series: SeriesUpdateInput
+            }
+
             input ProductionImplementationsWhere {
               Movie: MovieWhere
               Series: SeriesWhere
             }
 
             input ProductionUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
+              _on: ProductionImplementationsUpdateInput
               title: String
             }
 
             input ProductionWhere {
               AND: [ProductionWhere!]
               OR: [ProductionWhere!]
-              _onType: ProductionImplementationsWhere
+              _on: ProductionImplementationsWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -1015,8 +1040,7 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionConnectInput {
-              Movie: [MovieConnectInput!]
-              Series: [SeriesConnectInput!]
+              _on: ProductionImplementationsConnectInput
               actors: [ProductionActorsConnectFieldInput!]
             }
 
@@ -1030,15 +1054,33 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionDeleteInput {
-              Movie: [MovieDeleteInput!]
-              Series: [SeriesDeleteInput!]
+              _on: ProductionImplementationsDeleteInput
               actors: [ProductionActorsDeleteFieldInput!]
             }
 
             input ProductionDisconnectInput {
+              _on: ProductionImplementationsDisconnectInput
+              actors: [ProductionActorsDisconnectFieldInput!]
+            }
+
+            input ProductionImplementationsConnectInput {
+              Movie: [MovieConnectInput!]
+              Series: [SeriesConnectInput!]
+            }
+
+            input ProductionImplementationsDeleteInput {
+              Movie: [MovieDeleteInput!]
+              Series: [SeriesDeleteInput!]
+            }
+
+            input ProductionImplementationsDisconnectInput {
               Movie: [MovieDisconnectInput!]
               Series: [SeriesDisconnectInput!]
-              actors: [ProductionActorsDisconnectFieldInput!]
+            }
+
+            input ProductionImplementationsUpdateInput {
+              Movie: MovieUpdateInput
+              Series: SeriesUpdateInput
             }
 
             input ProductionImplementationsWhere {
@@ -1047,8 +1089,7 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionUpdateInput {
-              Movie: MovieUpdateInput
-              Series: SeriesUpdateInput
+              _on: ProductionImplementationsUpdateInput
               actors: [ProductionActorsUpdateFieldInput!]
               title: String
             }
@@ -1056,7 +1097,7 @@ describe("Interface Relationships", () => {
             input ProductionWhere {
               AND: [ProductionWhere!]
               OR: [ProductionWhere!]
-              _onType: ProductionImplementationsWhere
+              _on: ProductionImplementationsWhere
               actors: ActorWhere
               actorsConnection: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere
@@ -1364,6 +1405,724 @@ describe("Interface Relationships", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
 
-        expect(printedSchema).toMatchInlineSnapshot();
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            type Comment implements Content {
+              content: String
+              creator(options: UserOptions, where: UserWhere): User
+              creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              id: ID
+              post(options: PostOptions, where: PostWhere): Post
+              postConnection(after: String, first: Int, sort: [CommentPostConnectionSort!], where: CommentPostConnectionWhere): CommentPostConnection!
+            }
+
+            type CommentAggregateSelection {
+              content: StringAggregateSelection!
+              count: Int!
+              id: IDAggregateSelection!
+            }
+
+            input CommentConnectInput {
+              creator: ContentCreatorConnectFieldInput
+              post: CommentPostConnectFieldInput
+            }
+
+            input CommentConnectWhere {
+              node: CommentWhere!
+            }
+
+            input CommentCreateInput {
+              content: String
+              creator: ContentCreatorFieldInput
+              id: ID
+              post: CommentPostFieldInput
+            }
+
+            input CommentDeleteInput {
+              creator: ContentCreatorDeleteFieldInput
+              post: CommentPostDeleteFieldInput
+            }
+
+            input CommentDisconnectInput {
+              creator: ContentCreatorDisconnectFieldInput
+              post: CommentPostDisconnectFieldInput
+            }
+
+            input CommentOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more CommentSort objects to sort Comments by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [CommentSort]
+            }
+
+            input CommentPostConnectFieldInput {
+              connect: PostConnectInput
+              where: PostConnectWhere
+            }
+
+            type CommentPostConnection {
+              edges: [CommentPostRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input CommentPostConnectionSort {
+              node: PostSort
+            }
+
+            input CommentPostConnectionWhere {
+              AND: [CommentPostConnectionWhere!]
+              OR: [CommentPostConnectionWhere!]
+              node: PostWhere
+              node_NOT: PostWhere
+            }
+
+            input CommentPostCreateFieldInput {
+              node: PostCreateInput!
+            }
+
+            input CommentPostDeleteFieldInput {
+              delete: PostDeleteInput
+              where: CommentPostConnectionWhere
+            }
+
+            input CommentPostDisconnectFieldInput {
+              disconnect: PostDisconnectInput
+              where: CommentPostConnectionWhere
+            }
+
+            input CommentPostFieldInput {
+              connect: CommentPostConnectFieldInput
+              create: CommentPostCreateFieldInput
+            }
+
+            type CommentPostRelationship {
+              cursor: String!
+              node: Post!
+            }
+
+            input CommentPostUpdateConnectionInput {
+              node: PostUpdateInput
+            }
+
+            input CommentPostUpdateFieldInput {
+              connect: CommentPostConnectFieldInput
+              create: CommentPostCreateFieldInput
+              delete: CommentPostDeleteFieldInput
+              disconnect: CommentPostDisconnectFieldInput
+              update: CommentPostUpdateConnectionInput
+              where: CommentPostConnectionWhere
+            }
+
+            input CommentRelationInput {
+              creator: ContentCreatorCreateFieldInput
+              post: CommentPostCreateFieldInput
+            }
+
+            \\"\\"\\"Fields to sort Comments by. The order in which sorts are applied is not guaranteed when specifying many fields in one CommentSort object.\\"\\"\\"
+            input CommentSort {
+              content: SortDirection
+              id: SortDirection
+            }
+
+            input CommentUpdateInput {
+              content: String
+              creator: ContentCreatorUpdateFieldInput
+              id: ID
+              post: CommentPostUpdateFieldInput
+            }
+
+            input CommentWhere {
+              AND: [CommentWhere!]
+              OR: [CommentWhere!]
+              content: String
+              content_CONTAINS: String
+              content_ENDS_WITH: String
+              content_IN: [String]
+              content_NOT: String
+              content_NOT_CONTAINS: String
+              content_NOT_ENDS_WITH: String
+              content_NOT_IN: [String]
+              content_NOT_STARTS_WITH: String
+              content_STARTS_WITH: String
+              creator: UserWhere
+              creatorConnection: ContentCreatorConnectionWhere
+              creatorConnection_NOT: ContentCreatorConnectionWhere
+              creator_NOT: UserWhere
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+              post: PostWhere
+              postConnection: CommentPostConnectionWhere
+              postConnection_NOT: CommentPostConnectionWhere
+              post_NOT: PostWhere
+            }
+
+            interface Content {
+              content: String
+              creator(options: UserOptions, where: UserWhere): User
+              creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              id: ID
+            }
+
+            input ContentConnectInput {
+              _on: ContentImplementationsConnectInput
+              creator: ContentCreatorConnectFieldInput
+            }
+
+            input ContentConnectWhere {
+              node: ContentWhere!
+            }
+
+            input ContentCreateInput {
+              Comment: CommentCreateInput
+              Post: PostCreateInput
+            }
+
+            input ContentCreatorConnectFieldInput {
+              connect: UserConnectInput
+              where: UserConnectWhere
+            }
+
+            type ContentCreatorConnection {
+              edges: [ContentCreatorRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ContentCreatorConnectionSort {
+              node: UserSort
+            }
+
+            input ContentCreatorConnectionWhere {
+              AND: [ContentCreatorConnectionWhere!]
+              OR: [ContentCreatorConnectionWhere!]
+              node: UserWhere
+              node_NOT: UserWhere
+            }
+
+            input ContentCreatorCreateFieldInput {
+              node: UserCreateInput!
+            }
+
+            input ContentCreatorDeleteFieldInput {
+              delete: UserDeleteInput
+              where: ContentCreatorConnectionWhere
+            }
+
+            input ContentCreatorDisconnectFieldInput {
+              disconnect: UserDisconnectInput
+              where: ContentCreatorConnectionWhere
+            }
+
+            input ContentCreatorFieldInput {
+              connect: ContentCreatorConnectFieldInput
+              create: ContentCreatorCreateFieldInput
+            }
+
+            type ContentCreatorRelationship {
+              cursor: String!
+              node: User!
+            }
+
+            input ContentCreatorUpdateConnectionInput {
+              node: UserUpdateInput
+            }
+
+            input ContentCreatorUpdateFieldInput {
+              connect: ContentCreatorConnectFieldInput
+              create: ContentCreatorCreateFieldInput
+              delete: ContentCreatorDeleteFieldInput
+              disconnect: ContentCreatorDisconnectFieldInput
+              update: ContentCreatorUpdateConnectionInput
+              where: ContentCreatorConnectionWhere
+            }
+
+            input ContentDeleteInput {
+              _on: ContentImplementationsDeleteInput
+              creator: ContentCreatorDeleteFieldInput
+            }
+
+            input ContentDisconnectInput {
+              _on: ContentImplementationsDisconnectInput
+              creator: ContentCreatorDisconnectFieldInput
+            }
+
+            input ContentImplementationsConnectInput {
+              Comment: [CommentConnectInput!]
+              Post: [PostConnectInput!]
+            }
+
+            input ContentImplementationsDeleteInput {
+              Comment: [CommentDeleteInput!]
+              Post: [PostDeleteInput!]
+            }
+
+            input ContentImplementationsDisconnectInput {
+              Comment: [CommentDisconnectInput!]
+              Post: [PostDisconnectInput!]
+            }
+
+            input ContentImplementationsUpdateInput {
+              Comment: CommentUpdateInput
+              Post: PostUpdateInput
+            }
+
+            input ContentImplementationsWhere {
+              Comment: CommentWhere
+              Post: PostWhere
+            }
+
+            input ContentUpdateInput {
+              _on: ContentImplementationsUpdateInput
+              content: String
+              creator: ContentCreatorUpdateFieldInput
+              id: ID
+            }
+
+            input ContentWhere {
+              AND: [ContentWhere!]
+              OR: [ContentWhere!]
+              _on: ContentImplementationsWhere
+              content: String
+              content_CONTAINS: String
+              content_ENDS_WITH: String
+              content_IN: [String]
+              content_NOT: String
+              content_NOT_CONTAINS: String
+              content_NOT_ENDS_WITH: String
+              content_NOT_IN: [String]
+              content_NOT_STARTS_WITH: String
+              content_STARTS_WITH: String
+              creator: UserWhere
+              creatorConnection: ContentCreatorConnectionWhere
+              creatorConnection_NOT: ContentCreatorConnectionWhere
+              creator_NOT: UserWhere
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+            }
+
+            type CreateCommentsMutationResponse {
+              comments: [Comment!]!
+              info: CreateInfo!
+            }
+
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreatePostsMutationResponse {
+              info: CreateInfo!
+              posts: [Post!]!
+            }
+
+            type CreateUsersMutationResponse {
+              info: CreateInfo!
+              users: [User!]!
+            }
+
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type IDAggregateSelection {
+              longest: ID!
+              shortest: ID!
+            }
+
+            type Mutation {
+              createComments(input: [CommentCreateInput!]!): CreateCommentsMutationResponse!
+              createPosts(input: [PostCreateInput!]!): CreatePostsMutationResponse!
+              createUsers(input: [UserCreateInput!]!): CreateUsersMutationResponse!
+              deleteComments(delete: CommentDeleteInput, where: CommentWhere): DeleteInfo!
+              deletePosts(delete: PostDeleteInput, where: PostWhere): DeleteInfo!
+              deleteUsers(delete: UserDeleteInput, where: UserWhere): DeleteInfo!
+              updateComments(connect: CommentConnectInput, create: CommentRelationInput, delete: CommentDeleteInput, disconnect: CommentDisconnectInput, update: CommentUpdateInput, where: CommentWhere): UpdateCommentsMutationResponse!
+              updatePosts(connect: PostConnectInput, create: PostRelationInput, delete: PostDeleteInput, disconnect: PostDisconnectInput, update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
+              updateUsers(connect: UserConnectInput, create: UserRelationInput, delete: UserDeleteInput, disconnect: UserDisconnectInput, update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Post implements Content {
+              comments(options: CommentOptions, where: CommentWhere): [Comment]
+              commentsConnection(after: String, first: Int, sort: [PostCommentsConnectionSort!], where: PostCommentsConnectionWhere): PostCommentsConnection!
+              content: String
+              creator(options: UserOptions, where: UserWhere): User
+              creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
+              id: ID
+            }
+
+            type PostAggregateSelection {
+              content: StringAggregateSelection!
+              count: Int!
+              id: IDAggregateSelection!
+            }
+
+            input PostCommentsConnectFieldInput {
+              connect: [CommentConnectInput!]
+              where: CommentConnectWhere
+            }
+
+            type PostCommentsConnection {
+              edges: [PostCommentsRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input PostCommentsConnectionSort {
+              node: CommentSort
+            }
+
+            input PostCommentsConnectionWhere {
+              AND: [PostCommentsConnectionWhere!]
+              OR: [PostCommentsConnectionWhere!]
+              node: CommentWhere
+              node_NOT: CommentWhere
+            }
+
+            input PostCommentsCreateFieldInput {
+              node: CommentCreateInput!
+            }
+
+            input PostCommentsDeleteFieldInput {
+              delete: CommentDeleteInput
+              where: PostCommentsConnectionWhere
+            }
+
+            input PostCommentsDisconnectFieldInput {
+              disconnect: CommentDisconnectInput
+              where: PostCommentsConnectionWhere
+            }
+
+            input PostCommentsFieldInput {
+              connect: [PostCommentsConnectFieldInput!]
+              create: [PostCommentsCreateFieldInput!]
+            }
+
+            type PostCommentsRelationship {
+              cursor: String!
+              node: Comment!
+            }
+
+            input PostCommentsUpdateConnectionInput {
+              node: CommentUpdateInput
+            }
+
+            input PostCommentsUpdateFieldInput {
+              connect: [PostCommentsConnectFieldInput!]
+              create: [PostCommentsCreateFieldInput!]
+              delete: [PostCommentsDeleteFieldInput!]
+              disconnect: [PostCommentsDisconnectFieldInput!]
+              update: PostCommentsUpdateConnectionInput
+              where: PostCommentsConnectionWhere
+            }
+
+            input PostConnectInput {
+              comments: [PostCommentsConnectFieldInput!]
+              creator: ContentCreatorConnectFieldInput
+            }
+
+            input PostConnectWhere {
+              node: PostWhere!
+            }
+
+            input PostCreateInput {
+              comments: PostCommentsFieldInput
+              content: String
+              creator: ContentCreatorFieldInput
+              id: ID
+            }
+
+            input PostDeleteInput {
+              comments: [PostCommentsDeleteFieldInput!]
+              creator: ContentCreatorDeleteFieldInput
+            }
+
+            input PostDisconnectInput {
+              comments: [PostCommentsDisconnectFieldInput!]
+              creator: ContentCreatorDisconnectFieldInput
+            }
+
+            input PostOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [PostSort]
+            }
+
+            input PostRelationInput {
+              comments: [PostCommentsCreateFieldInput!]
+              creator: ContentCreatorCreateFieldInput
+            }
+
+            \\"\\"\\"Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.\\"\\"\\"
+            input PostSort {
+              content: SortDirection
+              id: SortDirection
+            }
+
+            input PostUpdateInput {
+              comments: [PostCommentsUpdateFieldInput!]
+              content: String
+              creator: ContentCreatorUpdateFieldInput
+              id: ID
+            }
+
+            input PostWhere {
+              AND: [PostWhere!]
+              OR: [PostWhere!]
+              comments: CommentWhere
+              commentsConnection: PostCommentsConnectionWhere
+              commentsConnection_NOT: PostCommentsConnectionWhere
+              comments_NOT: CommentWhere
+              content: String
+              content_CONTAINS: String
+              content_ENDS_WITH: String
+              content_IN: [String]
+              content_NOT: String
+              content_NOT_CONTAINS: String
+              content_NOT_ENDS_WITH: String
+              content_NOT_IN: [String]
+              content_NOT_STARTS_WITH: String
+              content_STARTS_WITH: String
+              creator: UserWhere
+              creatorConnection: ContentCreatorConnectionWhere
+              creatorConnection_NOT: ContentCreatorConnectionWhere
+              creator_NOT: UserWhere
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+            }
+
+            type Query {
+              comments(options: CommentOptions, where: CommentWhere): [Comment!]!
+              commentsAggregate(where: CommentWhere): CommentAggregateSelection!
+              commentsCount(where: CommentWhere): Int!
+              posts(options: PostOptions, where: PostWhere): [Post!]!
+              postsAggregate(where: PostWhere): PostAggregateSelection!
+              postsCount(where: PostWhere): Int!
+              users(options: UserOptions, where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersCount(where: UserWhere): Int!
+            }
+
+            input QueryOptions {
+              limit: Int
+              offset: Int
+            }
+
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
+            }
+
+            type UpdateCommentsMutationResponse {
+              comments: [Comment!]!
+              info: UpdateInfo!
+            }
+
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdatePostsMutationResponse {
+              info: UpdateInfo!
+              posts: [Post!]!
+            }
+
+            type UpdateUsersMutationResponse {
+              info: UpdateInfo!
+              users: [User!]!
+            }
+
+            type User {
+              content(options: QueryOptions, where: ContentWhere): [Content!]!
+              contentConnection(where: UserContentConnectionWhere): UserContentConnection!
+              id: ID
+              name: String
+            }
+
+            type UserAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
+            }
+
+            input UserConnectInput {
+              content: [UserContentConnectFieldInput!]
+            }
+
+            input UserConnectWhere {
+              node: UserWhere!
+            }
+
+            input UserContentConnectFieldInput {
+              connect: ContentConnectInput
+              where: ContentConnectWhere
+            }
+
+            type UserContentConnection {
+              edges: [UserContentRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input UserContentConnectionWhere {
+              AND: [UserContentConnectionWhere!]
+              OR: [UserContentConnectionWhere!]
+              node: ContentWhere
+              node_NOT: ContentWhere
+            }
+
+            input UserContentCreateFieldInput {
+              node: ContentCreateInput!
+            }
+
+            input UserContentDeleteFieldInput {
+              delete: ContentDeleteInput
+              where: UserContentConnectionWhere
+            }
+
+            input UserContentDisconnectFieldInput {
+              disconnect: ContentDisconnectInput
+              where: UserContentConnectionWhere
+            }
+
+            input UserContentFieldInput {
+              connect: [UserContentConnectFieldInput!]
+              create: [UserContentCreateFieldInput!]
+            }
+
+            type UserContentRelationship {
+              cursor: String!
+              node: Content!
+            }
+
+            input UserContentUpdateConnectionInput {
+              node: ContentUpdateInput
+            }
+
+            input UserContentUpdateFieldInput {
+              connect: UserContentConnectFieldInput
+              create: UserContentCreateFieldInput
+              delete: UserContentDeleteFieldInput
+              disconnect: UserContentDisconnectFieldInput
+              update: UserContentUpdateConnectionInput
+              where: UserContentConnectionWhere
+            }
+
+            input UserCreateInput {
+              content: UserContentFieldInput
+              id: ID
+              name: String
+            }
+
+            input UserDeleteInput {
+              content: [UserContentDeleteFieldInput!]
+            }
+
+            input UserDisconnectInput {
+              content: [UserContentDisconnectFieldInput!]
+            }
+
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [UserSort]
+            }
+
+            input UserRelationInput {
+              content: [UserContentCreateFieldInput!]
+            }
+
+            \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+            input UserSort {
+              id: SortDirection
+              name: SortDirection
+            }
+
+            input UserUpdateInput {
+              content: [UserContentUpdateFieldInput!]
+              id: ID
+              name: String
+            }
+
+            input UserWhere {
+              AND: [UserWhere!]
+              OR: [UserWhere!]
+              contentConnection: UserContentConnectionWhere
+              contentConnection_NOT: UserContentConnectionWhere
+              id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
+              name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String
+              name_NOT_CONTAINS: String
+              name_NOT_ENDS_WITH: String
+              name_NOT_IN: [String]
+              name_NOT_STARTS_WITH: String
+              name_STARTS_WITH: String
+            }
+            "
+        `);
     });
 });

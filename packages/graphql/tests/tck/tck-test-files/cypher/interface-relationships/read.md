@@ -181,7 +181,7 @@ RETURN this { actedIn: collect(actedIn) } as this
 ```graphql
 query {
     actors {
-        actedIn(where: { _onType: { Movie: { title_STARTS_WITH: "The " } } }) {
+        actedIn(where: { _on: { Movie: { title_STARTS_WITH: "The " } } }) {
             title
             ... on Movie {
                 runtime
@@ -199,7 +199,7 @@ WITH this
 CALL {
   WITH this
   MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-  WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._onType.Movie.title_STARTS_WITH
+  WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._on.Movie.title_STARTS_WITH
   RETURN { __resolveType: "Movie", title: this_Movie.title, runtime: this_Movie.runtime } AS actedIn
 }
 RETURN this { actedIn: collect(actedIn) } as this
@@ -212,7 +212,7 @@ RETURN this { actedIn: collect(actedIn) } as this
     "this_actedIn": {
         "args": {
             "where": {
-                "_onType": {
+                "_on": {
                     "Movie": {
                         "title_STARTS_WITH": "The "
                     }
@@ -232,7 +232,7 @@ RETURN this { actedIn: collect(actedIn) } as this
 ```graphql
 query {
     actors {
-        actedIn(where: { title_STARTS_WITH: "A ", _onType: { Movie: { title_STARTS_WITH: "The " } } }) {
+        actedIn(where: { title_STARTS_WITH: "A ", _on: { Movie: { title_STARTS_WITH: "The " } } }) {
             title
             ... on Movie {
                 runtime
@@ -253,7 +253,7 @@ WITH this
 CALL {
   WITH this
   MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-  WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._onType.Movie.title_STARTS_WITH
+  WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._on.Movie.title_STARTS_WITH
   RETURN { __resolveType: "Movie", title: this_Movie.title, runtime: this_Movie.runtime } AS actedIn
 UNION
   WITH this
@@ -272,7 +272,7 @@ RETURN this { actedIn: collect(actedIn) } as this
         "args": {
             "where": {
                 "title_STARTS_WITH": "A ",
-                "_onType": {
+                "_on": {
                     "Movie": {
                         "title_STARTS_WITH": "The "
                     }
@@ -423,7 +423,7 @@ RETURN this { actedInConnection } as this
 query {
     actors {
         actedInConnection(
-            where: { node: { _onType: { Movie: { title_STARTS_WITH: "The " } } }, edge: { screenTime_GT: 60 } }
+            where: { node: { _on: { Movie: { title_STARTS_WITH: "The " } } }, edge: { screenTime_GT: 60 } }
         ) {
             edges {
                 screenTime
@@ -448,7 +448,7 @@ CALL {
   CALL {
     WITH this
     MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-    WHERE this_acted_in_relationship.screenTime > $this_actedInConnection.args.where.edge.screenTime_GT AND this_Movie.title STARTS WITH $this_actedInConnection.args.where.node._onType.Movie.title_STARTS_WITH
+    WHERE this_acted_in_relationship.screenTime > $this_actedInConnection.args.where.edge.screenTime_GT AND this_Movie.title STARTS WITH $this_actedInConnection.args.where.node._on.Movie.title_STARTS_WITH
     WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: "Movie", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
     RETURN edge
   }
@@ -472,7 +472,7 @@ RETURN this { actedInConnection } as this
                     }
                 },
                 "node": {
-                    "_onType": {
+                    "_on": {
                         "Movie": {
                             "title_STARTS_WITH": "The "
                         }
@@ -495,7 +495,7 @@ query {
     actors {
         actedInConnection(
             where: {
-                node: { title_STARTS_WITH: "The ", _onType: { Movie: { title_STARTS_WITH: "A " } } }
+                node: { title_STARTS_WITH: "The ", _on: { Movie: { title_STARTS_WITH: "A " } } }
                 edge: { screenTime_GT: 60 }
             }
         ) {
@@ -525,7 +525,7 @@ CALL {
   CALL {
     WITH this
     MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-    WHERE this_acted_in_relationship.screenTime > $this_actedInConnection.args.where.edge.screenTime_GT AND this_Movie.title STARTS WITH $this_actedInConnection.args.where.node._onType.Movie.title_STARTS_WITH
+    WHERE this_acted_in_relationship.screenTime > $this_actedInConnection.args.where.edge.screenTime_GT AND this_Movie.title STARTS WITH $this_actedInConnection.args.where.node._on.Movie.title_STARTS_WITH
     WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: "Movie", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
     RETURN edge
   UNION
@@ -556,7 +556,7 @@ RETURN this { actedInConnection } as this
                 },
                 "node": {
                     "title_STARTS_WITH": "The ",
-                    "_onType": {
+                    "_on": {
                         "Movie": {
                             "title_STARTS_WITH": "A "
                         }

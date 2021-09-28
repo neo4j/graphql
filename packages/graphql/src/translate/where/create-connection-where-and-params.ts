@@ -91,11 +91,11 @@ function createConnectionWhereAndParams({
                 const rootNodeWhere = createNodeWhereAndParams({
                     whereInput: {
                         ...Object.entries(v).reduce((args, [key, value]) => {
-                            if (key !== "_onType") {
+                            if (key !== "_on") {
                                 if (
-                                    v._onType &&
-                                    Object.prototype.hasOwnProperty.call(v._onType, node.name) &&
-                                    Object.prototype.hasOwnProperty.call(v._onType[node.name], key)
+                                    v._on &&
+                                    Object.prototype.hasOwnProperty.call(v._on, node.name) &&
+                                    Object.prototype.hasOwnProperty.call(v._on[node.name], key)
                                 ) {
                                     return args;
                                 }
@@ -117,11 +117,11 @@ function createConnectionWhereAndParams({
                     res = { whereStrs, params };
                 }
 
-                if (v._onType && Object.prototype.hasOwnProperty.call(v._onType, node.name)) {
+                if (v._on && Object.prototype.hasOwnProperty.call(v._on, node.name)) {
                     const onTypeNodeWhere = createNodeWhereAndParams({
                         whereInput: {
                             ...Object.entries(v).reduce((args, [key, value]) => {
-                                if (key !== "_onType") {
+                                if (key !== "_on") {
                                     return { ...args, [key]: value };
                                 }
 
@@ -135,7 +135,7 @@ function createConnectionWhereAndParams({
                         node,
                         nodeVariable,
                         context,
-                        parameterPrefix: `${parameterPrefix}.${k}._onType.${node.name}`,
+                        parameterPrefix: `${parameterPrefix}.${k}._on.${node.name}`,
                     });
 
                     whereStrs = [...whereStrs, k.endsWith("_NOT") ? `(NOT ${onTypeNodeWhere[0]})` : onTypeNodeWhere[0]];

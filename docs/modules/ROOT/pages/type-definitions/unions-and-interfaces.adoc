@@ -175,7 +175,7 @@ Whilst the query below will only return the movies with title starting with "The
 query GetMoviesStartingWithThe {
     actors {
         name
-        actedIn(where: { node: { _onType: { Movie: { title_STARTS_WITH: "The " } } } }) {
+        actedIn(where: { node: { _on: { Movie: { title_STARTS_WITH: "The " } } } }) {
             title
             ... on Movie {
                 runtime
@@ -194,7 +194,7 @@ Alternatively, these implementation specific filters can be used to override fil
 query GetProductionsStartingWith {
     actors {
         name
-        actedIn(where: { node: { title_STARTS_WITH: "The ", _onType: { Movie: { title_STARTS_WITH: "A " } } } }) {
+        actedIn(where: { node: { title_STARTS_WITH: "The ", _on: { Movie: { title_STARTS_WITH: "A " } } } }) {
             title
             ... on Movie {
                 runtime

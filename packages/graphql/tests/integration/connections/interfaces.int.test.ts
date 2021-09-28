@@ -255,7 +255,7 @@ describe("Connections -> Interfaces", () => {
             query Actors($name: String) {
                 actors(where: { name: $name }) {
                     name
-                    actedInConnection(where: { node: { title: "Game of Thrones", _onType: { Movie: { title: "Dune" } } } }) {
+                    actedInConnection(where: { node: { title: "Game of Thrones", _on: { Movie: { title: "Dune" } } } }) {
                         edges {
                             screenTime
                             node {

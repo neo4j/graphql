@@ -215,7 +215,7 @@ export interface ConnectionWhereArg {
 }
 
 export interface InterfaceWhereArg {
-    _onType?: GraphQLWhereArg[];
+    _on?: GraphQLWhereArg[];
     [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
 }
 

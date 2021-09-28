@@ -92,9 +92,9 @@ function createConnectionAndParams({
                       field.relationship.interface?.implementations?.includes(x.name) &&
                       (!whereInput?.node ||
                           Object.keys(whereInput.node).length > 1 ||
-                          !Object.prototype.hasOwnProperty.call(whereInput.node, "_onType") ||
+                          !Object.prototype.hasOwnProperty.call(whereInput.node, "_on") ||
                           (Object.keys(whereInput.node).length === 1 &&
-                              Object.prototype.hasOwnProperty.call(whereInput?.node?._onType, x.name)))
+                              Object.prototype.hasOwnProperty.call(whereInput?.node?._on, x.name)))
               );
         const unionSubqueries: string[] = [];
 

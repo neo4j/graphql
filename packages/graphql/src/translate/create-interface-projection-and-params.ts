@@ -35,12 +35,11 @@ function createInterfaceProjectionAndParams({
             field.interface?.implementations?.includes(x.name) &&
             (!whereInput ||
                 Object.keys(whereInput).length > 1 ||
-                !Object.prototype.hasOwnProperty.call(whereInput, "_onType") ||
-                (Object.keys(whereInput).length === 1 &&
-                    Object.prototype.hasOwnProperty.call(whereInput._onType, x.name)))
+                !Object.prototype.hasOwnProperty.call(whereInput, "_on") ||
+                (Object.keys(whereInput).length === 1 && Object.prototype.hasOwnProperty.call(whereInput._on, x.name)))
     );
 
-    let whereArgs: { _onType?: any; [str: string]: any } = {};
+    let whereArgs: { _on?: any; [str: string]: any } = {};
 
     const subqueries = referenceNodes.map((refNode) => {
         const param = `${nodeVariable}_${refNode.name}`;
@@ -77,11 +76,11 @@ function createInterfaceProjectionAndParams({
             const rootNodeWhereAndParams = createNodeWhereAndParams({
                 whereInput: {
                     ...Object.entries(whereInput).reduce((args, [k, v]) => {
-                        if (k !== "_onType") {
+                        if (k !== "_on") {
                             if (
-                                whereInput._onType &&
-                                Object.prototype.hasOwnProperty.call(whereInput._onType, refNode.name) &&
-                                Object.prototype.hasOwnProperty.call(whereInput._onType[refNode.name], k)
+                                whereInput._on &&
+                                Object.prototype.hasOwnProperty.call(whereInput._on, refNode.name) &&
+                                Object.prototype.hasOwnProperty.call(whereInput._on[refNode.name], k)
                             ) {
                                 return args;
                             }
@@ -106,12 +105,12 @@ function createInterfaceProjectionAndParams({
                 whereArgs = { ...whereArgs, ...rootNodeWhereAndParams[1] };
             }
 
-            // For _onType filters
-            if (whereInput._onType && Object.prototype.hasOwnProperty.call(whereInput._onType, refNode.name)) {
+            // For _on filters
+            if (whereInput._on && Object.prototype.hasOwnProperty.call(whereInput._on, refNode.name)) {
                 const onTypeNodeWhereAndParams = createNodeWhereAndParams({
                     whereInput: {
                         ...Object.entries(whereInput).reduce((args, [k, v]) => {
-                            if (k !== "_onType") {
+                            if (k !== "_on") {
                                 return { ...args, [k]: v };
                             }
 
@@ -129,19 +128,19 @@ function createInterfaceProjectionAndParams({
                     // authValidateStrs: recurse[2]?.authValidateStrs,
                     parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                         resolveTree.alias
-                    }.args.where._onType.${refNode.name}`,
+                    }.args.where._on.${refNode.name}`,
                 });
                 if (onTypeNodeWhereAndParams[0]) {
                     whereStrs.push(onTypeNodeWhereAndParams[0]);
                     // params = {
                     //     ...params,
-                    //     ...{ args: { where: { _onType: { [refNode.name]: onTypeNodeWhereAndParams[1] } } } },
+                    //     ...{ args: { where: { _on: { [refNode.name]: onTypeNodeWhereAndParams[1] } } } },
                     // };
-                    if (whereArgs._onType) {
+                    if (whereArgs._on) {
                         // eslint-disable-next-line prefer-destructuring
-                        whereArgs._onType[refNode.name] = onTypeNodeWhereAndParams[1];
+                        whereArgs._on[refNode.name] = onTypeNodeWhereAndParams[1];
                     } else {
-                        whereArgs._onType = { [refNode.name]: onTypeNodeWhereAndParams[1] };
+                        whereArgs._on = { [refNode.name]: onTypeNodeWhereAndParams[1] };
                     }
                 }
             }

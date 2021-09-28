@@ -145,9 +145,13 @@ function createRelationshipFields({
                 `${sourceName}${upperFirst(rel.fieldName)}CreateFieldInput`,
                 (tc) => {
                     tc.addFields({
-                        edge: `${rel.properties}CreateInput!`,
                         node: `${rel.typeMeta.name}CreateInput!`,
                     });
+                    if (rel.properties) {
+                        tc.addFields({
+                            edge: `${rel.properties}CreateInput!`,
+                        });
+                    }
                 }
             );
 
