@@ -168,6 +168,11 @@ describe("Enums", () => {
             }
 
             input ActorMoviesNodeAggregationWhereInput {
+              title_AVERAGE_EQUAL: Float
+              title_AVERAGE_GT: Float
+              title_AVERAGE_GTE: Float
+              title_AVERAGE_LT: Float
+              title_AVERAGE_LTE: Float
               title_EQUAL: ID
               title_GT: Int
               title_GTE: Int
@@ -322,6 +327,11 @@ describe("Enums", () => {
             }
 
             input MovieActorsNodeAggregationWhereInput {
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
               name_EQUAL: ID
               name_GT: Int
               name_GTE: Int

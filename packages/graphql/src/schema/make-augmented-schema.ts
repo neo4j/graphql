@@ -143,6 +143,14 @@ function makeAugmentedSchema(
         args: {},
     };
 
+    const aggregationOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+
+    // Types that you can average
+    // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg
+    // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg-duration
+    // String uses avg(size())
+    const whereAggregationAverageTypes = ["String", "Int", "Float", "BigInt", "Duration"];
+
     const whereAggregationTypes: string[] = [
         "ID",
         "String",
@@ -1024,9 +1032,6 @@ function makeAugmentedSchema(
                 });
 
                 fields.forEach((field) => {
-                    // TODO average?
-                    const operators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
-
                     if (field.typeMeta.name === "ID") {
                         aggregationInput.addFields({
                             [`${field.fieldName}_EQUAL`]: "ID",
@@ -1038,20 +1043,43 @@ function makeAugmentedSchema(
                     if (field.typeMeta.name === "String") {
                         aggregationInput.addFields({
                             [`${field.fieldName}_EQUAL`]: "ID",
-                            ...operators.reduce((r, o) => {
+                            [`${field.fieldName}_AVERAGE_EQUAL`]: "Float",
+                            ...aggregationOperators.reduce((r, o) => {
                                 if (o === "EQUAL") {
                                     return r;
                                 }
 
-                                return { ...r, [`${field.fieldName}_${o}`]: "Int" };
+                                return {
+                                    ...r,
+                                    [`${field.fieldName}_${o}`]: "Int",
+                                    [`${field.fieldName}_AVERAGE_${o}`]: "Float",
+                                };
                             }, {}),
                         });
 
                         return;
                     }
 
+                    if (whereAggregationAverageTypes.includes(field.typeMeta.name)) {
+                        aggregationInput.addFields({
+                            ...aggregationOperators.reduce(
+                                (r, o) => ({
+                                    ...r,
+                                    [`${field.fieldName}_${o}`]: field.typeMeta.name,
+                                    [`${field.fieldName}_AVERAGE_${o}`]: "Float",
+                                }),
+                                {}
+                            ),
+                        });
+
+                        return;
+                    }
+
                     aggregationInput.addFields({
-                        ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: field.typeMeta.name }), {}),
+                        ...aggregationOperators.reduce(
+                            (r, o) => ({ ...r, [`${field.fieldName}_${o}`]: field.typeMeta.name }),
+                            {}
+                        ),
                     });
                 });
 

@@ -58,38 +58,61 @@ function aggregate({
     nodeOrRelationship: Node | Relationship;
     chainStr: string;
     variable: string;
-}): [string, any] {
-    const cyphers: string[] = [];
+}): { aggregations: string[]; params: any; withStrs: string[] } {
+    const aggregations: string[] = [];
+    const withStrs: string[] = [];
     let params = {};
 
     Object.entries(inputValue).forEach((e) => {
-        const f = [...nodeOrRelationship.primitiveFields, ...nodeOrRelationship.temporalFields].find((field) =>
-            fieldOperators.some((op) => e[0].split(`_${op}`)[0] === field.fieldName)
+        const field = [...nodeOrRelationship.primitiveFields, ...nodeOrRelationship.temporalFields].find((field) =>
+            fieldOperators.some(
+                (op) =>
+                    e[0].split(`_${op}`)[0] === field.fieldName || e[0].split(`_AVERAGE_${op}`)[0] === field.fieldName
+            )
         ) as BaseField;
 
-        if (!f) {
+        if (!field) {
             return;
         }
 
-        const [, operatorString] = e[0].split(`${f.fieldName}_`);
-        const operator = createOperator(operatorString);
-
+        const [, operatorString] = e[0].split(`${field.fieldName}_`);
         const paramName = `${chainStr}_${e[0]}`;
         params[paramName] = e[1];
 
-        if (f.typeMeta.name === "String") {
+        if (fieldOperators.some((fO) => operatorString.split(`AVERAGE_`)[1] === fO)) {
+            const [, averageOperatorString] = operatorString.split("AVERAGE_");
+            const averageOperator = createOperator(averageOperatorString);
+
+            if (field.typeMeta.name === "String") {
+                const hoistedVariable = `${paramName}_SIZE`;
+                withStrs.push(`size(${variable}.${field.fieldName}) AS ${hoistedVariable}`);
+                aggregations.push(`avg(${hoistedVariable}) ${averageOperator} toFloat($${paramName})`);
+
+                return;
+            }
+
+            return;
+        }
+
+        const operator = createOperator(operatorString);
+
+        if (field.typeMeta.name === "String") {
             if (operator !== "=") {
-                cyphers.push(`size(${variable}.${f.fieldName}) ${operator} $${paramName}`);
+                aggregations.push(`size(${variable}.${field.fieldName}) ${operator} $${paramName}`);
 
                 return;
             }
         }
 
         // Default
-        cyphers.push(`${variable}.${f.fieldName} ${operator} $${paramName}`);
+        aggregations.push(`${variable}.${field.fieldName} ${operator} $${paramName}`);
     });
 
-    return [cyphers.join(" AND "), params];
+    return {
+        aggregations,
+        params,
+        withStrs,
+    };
 }
 
 function createPredicate({
@@ -112,8 +135,9 @@ function createPredicate({
     nodeVariable: string;
     edgeVariable: string;
     relationship: Relationship;
-}): [string, any] {
-    const cyphers: string[] = [];
+}): { aggregations: string[]; params: any; withStrs: string[] } {
+    const aggregations: string[] = [];
+    let withStrs: string[] = [];
     let params = {};
 
     Object.entries(aggregation).forEach((entry) => {
@@ -132,14 +156,19 @@ function createPredicate({
                     edgeVariable,
                     relationship,
                 });
-                if (recurse[0]) {
-                    innerClauses.push(recurse[0]);
-                    params = { ...params, ...recurse[1] };
+
+                if (recurse.aggregations.length) {
+                    innerClauses.push(recurse.aggregations.join(" AND "));
+                    params = { ...params, ...recurse.params };
+                }
+
+                if (recurse.withStrs.length) {
+                    withStrs = [...withStrs, ...recurse.withStrs];
                 }
             });
 
             if (innerClauses.length) {
-                cyphers.push(`(${innerClauses.join(` ${entry[0]} `)})`);
+                aggregations.push(`(${innerClauses.join(` ${entry[0]} `)})`);
             }
 
             return;
@@ -149,10 +178,8 @@ function createPredicate({
             if (entry[0] === countType) {
                 const paramName = `${chainStr}_${entry[0]}`;
                 params[paramName] = entry[1];
-
                 const operator = createOperator(countType.split("_")[1]);
-
-                cyphers.push(`count(${nodeVariable}) ${operator} $${paramName}`);
+                aggregations.push(`count(${nodeVariable}) ${operator} $${paramName}`);
             }
         });
 
@@ -168,14 +195,22 @@ function createPredicate({
                 variable: nOrE === "node" ? nodeVariable : edgeVariable,
             });
 
-            if (aggregation[0]) {
-                cyphers.push(aggregation[0]);
-                params = { ...params, ...aggregation[1] };
+            if (aggregation.aggregations.length) {
+                aggregations.push(aggregation.aggregations.join(" AND "));
+                params = { ...params, ...aggregation.params };
+            }
+
+            if (aggregation.withStrs.length) {
+                withStrs = [...withStrs, ...aggregation.withStrs];
             }
         });
     });
 
-    return [cyphers.join(" AND "), params];
+    return {
+        aggregations,
+        params,
+        withStrs,
+    };
 }
 
 function createAggregateWhereAndParams({
@@ -196,18 +231,16 @@ function createAggregateWhereAndParams({
     relationship: Relationship;
 }): [string, any] {
     const cyphers: string[] = [];
-    let params = {};
-
     const inStr = field.direction === "IN" ? "<-" : "-";
     const outStr = field.direction === "OUT" ? "->" : "-";
     const nodeVariable = `${chainStr}_node`;
     const edgeVariable = `${chainStr}_edge`;
     const relTypeStr = `[${edgeVariable}:${field.type}]`;
-
     const matchStr = `MATCH (${varName})${inStr}${relTypeStr}${outStr}(${nodeVariable}:${field.typeMeta.name})`;
+
     cyphers.push(`apoc.cypher.runFirstColumn(\" ${matchStr}`);
 
-    const predicate = createPredicate({
+    const { aggregations, params, withStrs } = createPredicate({
         aggregation,
         chainStr,
         context,
@@ -218,9 +251,14 @@ function createAggregateWhereAndParams({
         varName,
         relationship,
     });
-    if (predicate[0]) {
-        params = { ...params, ...predicate[1] };
-        cyphers.push(`RETURN ${predicate[0]}`);
+
+    if (withStrs.length) {
+        const uniqueWithList = [nodeVariable, edgeVariable, ...new Set(withStrs)];
+        cyphers.push(`WITH ${uniqueWithList.join(", ")}`);
+    }
+
+    if (aggregations.length) {
+        cyphers.push(`RETURN ${aggregations.join(" AND ")}`);
     }
 
     const apocParams = Object.keys(params).length

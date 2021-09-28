@@ -299,6 +299,11 @@ describe("Sort", () => {
             }
 
             input Node2RelatedToNodeAggregationWhereInput {
+              property_AVERAGE_EQUAL: Float
+              property_AVERAGE_GT: Float
+              property_AVERAGE_GTE: Float
+              property_AVERAGE_LT: Float
+              property_AVERAGE_LTE: Float
               property_EQUAL: ID
               property_GT: Int
               property_GTE: Int

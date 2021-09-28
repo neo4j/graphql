@@ -353,6 +353,11 @@ describe("Unions", () => {
             }
 
             input BookAuthorEdgeAggregationWhereInput {
+              words_AVERAGE_EQUAL: Float
+              words_AVERAGE_GT: Float
+              words_AVERAGE_GTE: Float
+              words_AVERAGE_LT: Float
+              words_AVERAGE_LTE: Float
               words_EQUAL: Int
               words_GT: Int
               words_GTE: Int
@@ -366,6 +371,11 @@ describe("Unions", () => {
             }
 
             input BookAuthorNodeAggregationWhereInput {
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
               name_EQUAL: ID
               name_GT: Int
               name_GTE: Int
@@ -547,6 +557,11 @@ describe("Unions", () => {
             }
 
             input JournalAuthorEdgeAggregationWhereInput {
+              words_AVERAGE_EQUAL: Float
+              words_AVERAGE_GT: Float
+              words_AVERAGE_GTE: Float
+              words_AVERAGE_LT: Float
+              words_AVERAGE_LTE: Float
               words_EQUAL: Int
               words_GT: Int
               words_GTE: Int
@@ -560,6 +575,11 @@ describe("Unions", () => {
             }
 
             input JournalAuthorNodeAggregationWhereInput {
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
               name_EQUAL: ID
               name_GT: Int
               name_GTE: Int

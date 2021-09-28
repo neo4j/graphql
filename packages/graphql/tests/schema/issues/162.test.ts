@@ -336,6 +336,11 @@ describe("162", () => {
             }
 
             input TigerJawLevel2Part1TigerNodeAggregationWhereInput {
+              x_AVERAGE_EQUAL: Float
+              x_AVERAGE_GT: Float
+              x_AVERAGE_GTE: Float
+              x_AVERAGE_LT: Float
+              x_AVERAGE_LTE: Float
               x_EQUAL: Int
               x_GT: Int
               x_GTE: Int

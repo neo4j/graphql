@@ -34,7 +34,7 @@ describe("aggregations-where-edge-string", () => {
         await driver.close();
     });
 
-    test("should return posts where a edge edge like String is EQUAL to", async () => {
+    test("should return posts where a edge like String is EQUAL to", async () => {
         const session = driver.session();
 
         const typeDefs = `
@@ -380,5 +380,444 @@ describe("aggregations-where-edge-string", () => {
         } finally {
             await session.close();
         }
+    });
+
+    describe("AVERAGE", () => {
+        test("should return posts where the average of edge like Strings is EQUAL to", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    testString: String!
+                }
+              
+                type Post {
+                  testString: String!
+                  likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+                }
+    
+                interface Likes {
+                    testString: String
+                }
+            `;
+
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
+
+            const testString1 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 10,
+            });
+
+            const testString2 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 11,
+            });
+
+            const testString3 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 12,
+            });
+
+            const avg = (10 + 11 + 12) / 3;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (p:Post {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString1}" }]-(:User {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString3}" }]-(:User {testString: "${testString}"})
+                        CREATE (:Post {testString: "${testString}"})
+                    `
+                );
+
+                const query = `
+                    {
+                        posts(where: { testString: "${testString}", likesAggregate: { edge: { testString_AVERAGE_EQUAL: ${avg} } } }) {
+                            testString
+                            likes {
+                                testString
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const [post] = (gqlResult.data as any).posts as any[];
+                expect(post.testString).toEqual(testString);
+                expect(post.likes).toHaveLength(3);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should return posts where the average of edge like Strings is GT than", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    testString: String!
+                }
+              
+                type Post {
+                  testString: String!
+                  likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+                }
+    
+                interface Likes {
+                    testString: String
+                }
+            `;
+
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
+
+            const testString1 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 10,
+            });
+
+            const testString2 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 11,
+            });
+
+            const testString3 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 12,
+            });
+
+            const avg = (10 + 11 + 12) / 3;
+            const avgGT = avg - 1;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (p:Post {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString1}" }]-(:User {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString3}" }]-(:User {testString: "${testString}"})
+                        CREATE (:Post {testString: "${testString}"})
+                    `
+                );
+
+                const query = `
+                    {
+                        posts(where: { testString: "${testString}", likesAggregate: { edge: { testString_AVERAGE_GT: ${avgGT} } } }) {
+                            testString
+                            likes {
+                                testString
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const [post] = (gqlResult.data as any).posts as any[];
+                expect(post.testString).toEqual(testString);
+                expect(post.likes).toHaveLength(3);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should return posts where the average of edge like Strings is GTE than", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    testString: String!
+                }
+              
+                type Post {
+                  testString: String!
+                  likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+                }
+    
+                interface Likes {
+                    testString: String
+                }
+            `;
+
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
+
+            const testString1 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 10,
+            });
+
+            const testString2 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 11,
+            });
+
+            const testString3 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 12,
+            });
+
+            const avg = (10 + 11 + 12) / 3;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (p:Post {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString1}" }]-(:User {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString3}" }]-(:User {testString: "${testString}"})
+                        CREATE (:Post {testString: "${testString}"})
+                    `
+                );
+
+                const query = `
+                    {
+                        posts(where: { testString: "${testString}", likesAggregate: { edge: { testString_AVERAGE_GTE: ${avg} } } }) {
+                            testString
+                            likes {
+                                testString
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const [post] = (gqlResult.data as any).posts as any[];
+                expect(post.testString).toEqual(testString);
+                expect(post.likes).toHaveLength(3);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should return posts where the average of edge like Strings is LT than", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    testString: String!
+                }
+              
+                type Post {
+                  testString: String!
+                  likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+                }
+    
+                interface Likes {
+                    testString: String
+                }
+            `;
+
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
+
+            const testString1 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 10,
+            });
+
+            const testString2 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 11,
+            });
+
+            const testString3 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 12,
+            });
+
+            const avg = (10 + 11 + 12) / 3;
+            const avgLT = avg + 1;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (p:Post {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString1}" }]-(:User {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString3}" }]-(:User {testString: "${testString}"})
+                        CREATE (:Post {testString: "${testString}"})
+                    `
+                );
+
+                const query = `
+                    {
+                        posts(where: { testString: "${testString}", likesAggregate: { edge: { testString_AVERAGE_LT: ${avgLT} } } }) {
+                            testString
+                            likes {
+                                testString
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const [post] = (gqlResult.data as any).posts as any[];
+                expect(post.testString).toEqual(testString);
+                expect(post.likes).toHaveLength(3);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should return posts where the average of edge like Strings is LTE than", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    testString: String!
+                }
+              
+                type Post {
+                  testString: String!
+                  likes: [User] @relationship(type: "LIKES", direction: IN, properties: "Likes")
+                }
+    
+                interface Likes {
+                    testString: String
+                }
+            `;
+
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
+
+            const testString1 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 10,
+            });
+
+            const testString2 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 11,
+            });
+
+            const testString3 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 12,
+            });
+
+            const avg = (10 + 11 + 12) / 3;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (p:Post {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString1}" }]-(:User {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString2}" }]-(:User {testString: "${testString}"})
+                        CREATE(p)<-[:LIKES { testString: "${testString3}" }]-(:User {testString: "${testString}"})
+                        CREATE (:Post {testString: "${testString}"})
+                    `
+                );
+
+                const query = `
+                    {
+                        posts(where: { testString: "${testString}", likesAggregate: { edge: { testString_AVERAGE_LTE: ${avg} } } }) {
+                            testString
+                            likes {
+                                testString
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                const [post] = (gqlResult.data as any).posts as any[];
+                expect(post.testString).toEqual(testString);
+                expect(post.likes).toHaveLength(3);
+            } finally {
+                await session.close();
+            }
+        });
     });
 });

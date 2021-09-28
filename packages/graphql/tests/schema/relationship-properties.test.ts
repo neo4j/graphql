@@ -183,6 +183,11 @@ describe("Relationship-properties", () => {
             }
 
             input ActorMoviesEdgeAggregationWhereInput {
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
               screenTime_EQUAL: Int
               screenTime_GT: Int
               screenTime_GTE: Int
@@ -196,6 +201,11 @@ describe("Relationship-properties", () => {
             }
 
             input ActorMoviesNodeAggregationWhereInput {
+              title_AVERAGE_EQUAL: Float
+              title_AVERAGE_GT: Float
+              title_AVERAGE_GTE: Float
+              title_AVERAGE_LT: Float
+              title_AVERAGE_LTE: Float
               title_EQUAL: ID
               title_GT: Int
               title_GTE: Int
@@ -351,6 +361,11 @@ describe("Relationship-properties", () => {
             }
 
             input MovieActorsEdgeAggregationWhereInput {
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
               screenTime_EQUAL: Int
               screenTime_GT: Int
               screenTime_GTE: Int
@@ -364,6 +379,11 @@ describe("Relationship-properties", () => {
             }
 
             input MovieActorsNodeAggregationWhereInput {
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
               name_EQUAL: ID
               name_GT: Int
               name_GTE: Int
@@ -684,6 +704,11 @@ describe("Relationship-properties", () => {
 
             input ActorMoviesEdgeAggregationWhereInput {
               id_EQUAL: ID
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
               screenTime_EQUAL: Int
               screenTime_GT: Int
               screenTime_GTE: Int
@@ -702,6 +727,11 @@ describe("Relationship-properties", () => {
             }
 
             input ActorMoviesNodeAggregationWhereInput {
+              title_AVERAGE_EQUAL: Float
+              title_AVERAGE_GT: Float
+              title_AVERAGE_GTE: Float
+              title_AVERAGE_LT: Float
+              title_AVERAGE_LTE: Float
               title_EQUAL: ID
               title_GT: Int
               title_GTE: Int
@@ -858,6 +888,11 @@ describe("Relationship-properties", () => {
 
             input MovieActorsEdgeAggregationWhereInput {
               id_EQUAL: ID
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
               screenTime_EQUAL: Int
               screenTime_GT: Int
               screenTime_GTE: Int
@@ -876,6 +911,11 @@ describe("Relationship-properties", () => {
             }
 
             input MovieActorsNodeAggregationWhereInput {
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
               name_EQUAL: ID
               name_GT: Int
               name_GTE: Int
@@ -1188,6 +1228,11 @@ describe("Relationship-properties", () => {
             }
 
             input ActorMoviesNodeAggregationWhereInput {
+              title_AVERAGE_EQUAL: Float
+              title_AVERAGE_GT: Float
+              title_AVERAGE_GTE: Float
+              title_AVERAGE_LT: Float
+              title_AVERAGE_LTE: Float
               title_EQUAL: ID
               title_GT: Int
               title_GTE: Int
@@ -1353,6 +1398,11 @@ describe("Relationship-properties", () => {
             }
 
             input MovieActorsNodeAggregationWhereInput {
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
               name_EQUAL: ID
               name_GT: Int
               name_GTE: Int

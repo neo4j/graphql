@@ -108,11 +108,21 @@ describe("Alias", () => {
             }
 
             input ActorActedInEdgeAggregationWhereInput {
+              character_AVERAGE_EQUAL: Float
+              character_AVERAGE_GT: Float
+              character_AVERAGE_GTE: Float
+              character_AVERAGE_LT: Float
+              character_AVERAGE_LTE: Float
               character_EQUAL: ID
               character_GT: Int
               character_GTE: Int
               character_LT: Int
               character_LTE: Int
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
               screenTime_EQUAL: Int
               screenTime_GT: Int
               screenTime_GTE: Int
@@ -126,11 +136,21 @@ describe("Alias", () => {
             }
 
             input ActorActedInNodeAggregationWhereInput {
+              rating_AVERAGE_EQUAL: Float
+              rating_AVERAGE_GT: Float
+              rating_AVERAGE_GTE: Float
+              rating_AVERAGE_LT: Float
+              rating_AVERAGE_LTE: Float
               rating_EQUAL: Float
               rating_GT: Float
               rating_GTE: Float
               rating_LT: Float
               rating_LTE: Float
+              title_AVERAGE_EQUAL: Float
+              title_AVERAGE_GT: Float
+              title_AVERAGE_GTE: Float
+              title_AVERAGE_LT: Float
+              title_AVERAGE_LTE: Float
               title_EQUAL: ID
               title_GT: Int
               title_GTE: Int
