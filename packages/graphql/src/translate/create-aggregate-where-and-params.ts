@@ -91,6 +91,8 @@ function aggregate({
                 return;
             }
 
+            aggregations.push(`avg(${variable}.${field.fieldName}) ${averageOperator} $${paramName}`);
+
             return;
         }
 
