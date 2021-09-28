@@ -1173,6 +1173,12 @@ function makeAugmentedSchema(
                                 ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "Time" }), {}),
                             });
                         }
+
+                        if (field.typeMeta.name === "LocalTime") {
+                            edgeWhereAggregationInput?.addFields({
+                                ...operators.reduce((r, o) => ({ ...r, [`${field.fieldName}_${o}`]: "LocalTime" }), {}),
+                            });
+                        }
                     });
                 }
             }
