@@ -637,6 +637,7 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              edge: ActorMoviesEdgeAggregationWhereInput
               node: ActorMoviesNodeAggregationWhereInput
             }
 
@@ -679,6 +680,20 @@ describe("Relationship-properties", () => {
             input ActorMoviesDisconnectFieldInput {
               disconnect: MovieDisconnectInput
               where: ActorMoviesConnectionWhere
+            }
+
+            input ActorMoviesEdgeAggregationWhereInput {
+              id_EQUAL: ID
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              timestamp_EQUAL: DateTime
+              timestamp_GT: DateTime
+              timestamp_GTE: DateTime
+              timestamp_LT: DateTime
+              timestamp_LTE: DateTime
             }
 
             input ActorMoviesFieldInput {
@@ -796,6 +811,7 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              edge: MovieActorsEdgeAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
@@ -838,6 +854,20 @@ describe("Relationship-properties", () => {
             input MovieActorsDisconnectFieldInput {
               disconnect: ActorDisconnectInput
               where: MovieActorsConnectionWhere
+            }
+
+            input MovieActorsEdgeAggregationWhereInput {
+              id_EQUAL: ID
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              timestamp_EQUAL: DateTime
+              timestamp_GT: DateTime
+              timestamp_GTE: DateTime
+              timestamp_LT: DateTime
+              timestamp_LTE: DateTime
             }
 
             input MovieActorsFieldInput {
@@ -1100,6 +1130,7 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              edge: ActorMoviesEdgeAggregationWhereInput
               node: ActorMoviesNodeAggregationWhereInput
             }
 
@@ -1140,6 +1171,15 @@ describe("Relationship-properties", () => {
             input ActorMoviesDisconnectFieldInput {
               disconnect: MovieDisconnectInput
               where: ActorMoviesConnectionWhere
+            }
+
+            input ActorMoviesEdgeAggregationWhereInput {
+              id_EQUAL: ID
+              timestamp_EQUAL: DateTime
+              timestamp_GT: DateTime
+              timestamp_GTE: DateTime
+              timestamp_LT: DateTime
+              timestamp_LTE: DateTime
             }
 
             input ActorMoviesFieldInput {
@@ -1255,6 +1295,7 @@ describe("Relationship-properties", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              edge: MovieActorsEdgeAggregationWhereInput
               node: MovieActorsNodeAggregationWhereInput
             }
 
@@ -1295,6 +1336,15 @@ describe("Relationship-properties", () => {
             input MovieActorsDisconnectFieldInput {
               disconnect: ActorDisconnectInput
               where: MovieActorsConnectionWhere
+            }
+
+            input MovieActorsEdgeAggregationWhereInput {
+              id_EQUAL: ID
+              timestamp_EQUAL: DateTime
+              timestamp_GT: DateTime
+              timestamp_GTE: DateTime
+              timestamp_LT: DateTime
+              timestamp_LTE: DateTime
             }
 
             input MovieActorsFieldInput {

@@ -65,6 +65,7 @@ describe("Alias", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
+              edge: ActorActedInEdgeAggregationWhereInput
               node: ActorActedInNodeAggregationWhereInput
             }
 
@@ -104,6 +105,19 @@ describe("Alias", () => {
 
             input ActorActedInDisconnectFieldInput {
               where: ActorActedInConnectionWhere
+            }
+
+            input ActorActedInEdgeAggregationWhereInput {
+              character_EQUAL: ID
+              character_GT: Int
+              character_GTE: Int
+              character_LT: Int
+              character_LTE: Int
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
             }
 
             input ActorActedInFieldInput {
