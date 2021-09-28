@@ -90,11 +90,11 @@ function createConnectionAndParams({
             : context.neoSchema.nodes.filter(
                   (x) =>
                       field.relationship.interface?.implementations?.includes(x.name) &&
-                      (!resolveTree.args.where ||
-                          Object.prototype.hasOwnProperty.call(resolveTree.args.where, x.name) ||
-                          !field.relationship.interface?.implementations?.some((i) =>
-                              Object.prototype.hasOwnProperty.call(resolveTree.args.where, i)
-                          ))
+                      (!whereInput?.node ||
+                          Object.keys(whereInput.node).length > 1 ||
+                          !Object.prototype.hasOwnProperty.call(whereInput.node, "_onType") ||
+                          (Object.keys(whereInput.node).length === 1 &&
+                              Object.prototype.hasOwnProperty.call(whereInput?.node?._onType, x.name)))
               );
         const unionSubqueries: string[] = [];
 

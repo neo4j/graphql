@@ -269,7 +269,13 @@ function createProjectionAndParams({
                 const f = field;
 
                 res.meta.interfaceFields.push(f);
-                res.projection.push(`${f.alias}: collect(${f.alias})`);
+
+                let offsetLimitStr = "";
+                if (optionsInput) {
+                    offsetLimitStr = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
+                }
+
+                res.projection.push(`${f.alias}: collect(${f.alias})${offsetLimitStr}`);
 
                 return res;
             }

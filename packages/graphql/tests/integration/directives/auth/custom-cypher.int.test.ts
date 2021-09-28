@@ -23,8 +23,8 @@ import { generate } from "randomstring";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import jsonwebtoken from "jsonwebtoken";
-import { Neo4jGraphQL } from "../../../src/classes";
-import neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../../src/classes";
+import neo4j from "../../neo4j";
 
 describe("should inject the auth into cypher directive", () => {
     let driver: Driver;

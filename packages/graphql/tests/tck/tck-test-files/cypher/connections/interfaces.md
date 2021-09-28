@@ -163,7 +163,7 @@ RETURN this { .name, actedInConnection } as this
 query {
     actors {
         name
-        actedInConnection(where: { node: { Movie: { runtime_GT: 90 }, Series: { episodes_GT: 50 } } }) {
+        actedInConnection(where: { node: { _onType: { Movie: { runtime_GT: 90 }, Series: { episodes_GT: 50 } } } }) {
             edges {
                 screenTime
                 node {
@@ -190,14 +190,14 @@ CALL {
     CALL {
         WITH this
         MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-        WHERE this_Movie.runtime > $this_actedInConnection.args.where.node.Movie.runtime_GT
+        WHERE this_Movie.runtime > $this_actedInConnection.args.where.node._onType.Movie.runtime_GT
         WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: "Movie", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
         RETURN edge
     UNION
         WITH this
         MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-        WHERE this_Series.episodes > $this_actedInConnection.args.where.node.Series.episodes_GT
-        WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \"Series\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+        WHERE this_Series.episodes > $this_actedInConnection.args.where.node._onType.Series.episodes_GT
+        WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: "Series", episodes: this_Series.episodes, title: this_Series.title } } AS edge
         RETURN edge
     }
     WITH collect(edge) as edges, count(edge) as totalCount
@@ -214,16 +214,18 @@ RETURN this { .name, actedInConnection } as this
         "args": {
             "where": {
                 "node": {
-                    "Movie": {
-                        "runtime_GT": {
-                            "low": 60,
-                            "high": 0
-                        }
-                    },
-                    "Series": {
-                        "episodes_GT": {
-                            "low": 50,
-                            "high": 0
+                    "_onType": {
+                        "Movie": {
+                            "runtime_GT": {
+                                "low": 60,
+                                "high": 0
+                            }
+                        },
+                        "Series": {
+                            "episodes_GT": {
+                                "low": 50,
+                                "high": 0
+                            }
                         }
                     }
                 }

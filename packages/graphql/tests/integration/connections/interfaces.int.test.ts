@@ -184,6 +184,137 @@ describe("Connections -> Interfaces", () => {
         }
     });
 
+    test("Projecting node and relationship properties with shared where argument", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+            query Actors($name: String) {
+                actors(where: { name: $name }) {
+                    name
+                    actedInConnection(where: { node: { title: "Game of Thrones" } }) {
+                        edges {
+                            screenTime
+                            node {
+                                title
+                                ... on Movie {
+                                    runtime
+                                }
+                                ... on Series {
+                                    episodes
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks } },
+                variableValues: {
+                    name: actorName,
+                },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.actors).toEqual([
+                {
+                    name: actorName,
+                    actedInConnection: {
+                        edges: [
+                            {
+                                screenTime: seriesScreenTime,
+                                node: {
+                                    title: seriesTitle,
+                                    episodes: seriesEpisodes,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("Projecting node and relationship properties with shared where override", async () => {
+        const session = driver.session();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+            query Actors($name: String) {
+                actors(where: { name: $name }) {
+                    name
+                    actedInConnection(where: { node: { title: "Game of Thrones", _onType: { Movie: { title: "Dune" } } } }) {
+                        edges {
+                            screenTime
+                            node {
+                                title
+                                ... on Movie {
+                                    runtime
+                                }
+                                ... on Series {
+                                    episodes
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            const result = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks } },
+                variableValues: {
+                    name: actorName,
+                },
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.actors).toEqual([
+                {
+                    name: actorName,
+                    actedInConnection: {
+                        edges: [
+                            {
+                                screenTime: movieScreenTime,
+                                node: {
+                                    title: movieTitle,
+                                    runtime: movieRuntime,
+                                },
+                            },
+                            {
+                                screenTime: seriesScreenTime,
+                                node: {
+                                    title: seriesTitle,
+                                    episodes: seriesEpisodes,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
     // test("Projecting node and relationship properties for one union member with no arguments", async () => {
     //     const session = driver.session();
 

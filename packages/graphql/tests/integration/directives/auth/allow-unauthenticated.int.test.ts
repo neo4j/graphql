@@ -23,8 +23,8 @@ import { Driver } from "neo4j-driver";
 import { IncomingMessage } from "http";
 import { generate } from "randomstring";
 
-import neo4j from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
+import neo4j from "../../neo4j";
+import { Neo4jGraphQL } from "../../../../src/classes";
 
 // Reference: https://github.com/neo4j/graphql/pull/355
 // Reference: https://github.com/neo4j/graphql/issues/345

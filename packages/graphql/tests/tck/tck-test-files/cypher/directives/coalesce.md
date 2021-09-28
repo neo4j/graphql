@@ -5,12 +5,19 @@ Tests for queries where queried fields are decorated with @coalesce
 Schema:
 
 ```graphql
-type User {
+interface UserInterface {
+    fromInterface: String! @coalesce(value: "From Interface")
+    toBeOverridden: String! @coalesce(value: "To Be Overridden")
+}
+
+type User implements UserInterface {
     id: ID! @coalesce(value: "00000000-00000000-00000000-00000000")
     name: String! @coalesce(value: "Jane Smith")
     verified: Boolean! @coalesce(value: false)
     numberOfFriends: Int! @coalesce(value: 0)
     rating: Float! @coalesce(value: 2.5)
+    fromInterface: String!
+    toBeOverridden: String! @coalesce(value: "Overridden")
 }
 ```
 
@@ -20,7 +27,7 @@ NEO4J_GRAPHQL_ENABLE_REGEX=1
 
 ---
 
-## Simple
+## Simple coalesce
 
 ### GraphQL Input
 
@@ -31,6 +38,8 @@ query(
     $verified: Boolean
     $numberOfFriends: Int
     $rating: Float
+    $fromInterface: String
+    $toBeOverridden: String
 ) {
     users(
         where: {
@@ -39,6 +48,8 @@ query(
             verified_NOT: $verified
             numberOfFriends_GT: $numberOfFriends
             rating_LT: $rating
+            fromInterface: $fromInterface
+            toBeOverridden: $toBeOverridden
         }
     ) {
         name
@@ -54,7 +65,9 @@ query(
     "name": "Some name",
     "verified": true,
     "numberOfFriends": 10,
-    "rating": 3.5
+    "rating": 3.5,
+    "fromInterface": "Some string",
+    "toBeOverridden": "Some string"
 }
 ```
 
@@ -67,6 +80,8 @@ AND coalesce(this.name, "Jane Smith") =~ $this_name_MATCHES
 AND (NOT coalesce(this.verified, false) = $this_verified_NOT)
 AND coalesce(this.numberOfFriends, 0) > $this_numberOfFriends_GT
 AND coalesce(this.rating, 2.5) < $this_rating_LT
+AND coalesce(this.fromInterface, "From Interface") = $this_fromInterface
+AND coalesce(this.toBeOverridden, "Overridden") = $this_toBeOverridden
 RETURN this { .name } as this
 ```
 
@@ -81,7 +96,9 @@ RETURN this { .name } as this
         "high": 0,
         "low": 10
     },
-    "this_rating_LT": 3.5
+    "this_rating_LT": 3.5,
+    "this_fromInterface": "Some string",
+    "this_toBeOverridden": "Some string"
 }
 ```
 

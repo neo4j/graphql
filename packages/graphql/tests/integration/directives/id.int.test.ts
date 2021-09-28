@@ -21,10 +21,10 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import isUUID from "is-uuid";
 import { generate } from "randomstring";
-import neo4j from "./neo4j";
-import { Neo4jGraphQL } from "../../src/classes";
+import neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
 
-describe("autogenerate", () => {
+describe("@id directive", () => {
     let driver: Driver;
 
     beforeAll(async () => {
@@ -41,6 +41,51 @@ describe("autogenerate", () => {
         const typeDefs = `
             type Movie {
               id: ID! @id
+              name: String
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const create = `
+            mutation {
+                createMovies(input:[{name: "dan"}]) {
+                    movies {
+                        id
+                        name
+                    }
+                }
+            }
+        `;
+
+        try {
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: create,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            const { id, name } = (gqlResult.data as any).createMovies.movies[0];
+
+            expect(["v1", "v2", "v3", "v4", "v5"].some((t) => isUUID[t](id))).toEqual(true);
+            expect(name).toEqual("dan");
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should create a movie with autogenerate id when field inherited from interface", async () => {
+        const session = driver.session();
+
+        const typeDefs = `
+            interface MovieInterface {
+                id: ID! @id
+            }
+
+            type Movie implements MovieInterface {
+              id: ID!
               name: String
             }
         `;

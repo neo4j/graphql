@@ -21,11 +21,12 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
+import jsonwebtoken from "jsonwebtoken";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
+import neo4j from "../../neo4j";
+import { Neo4jGraphQL } from "../../../../src/classes";
 
-describe("auth/is-authenticated", () => {
+describe("auth/roles", () => {
     let driver: Driver;
 
     beforeAll(async () => {
@@ -36,31 +37,48 @@ describe("auth/is-authenticated", () => {
         await driver.close();
     });
 
+    beforeAll(async () => {
+        const session = driver.session();
+
+        try {
+            await session.run(`
+                    CREATE (:Product { name: 'p1', id:123 })
+                    CREATE (:User { id: 1234, password:'dontpanic' })
+                `);
+            await session.run(`
+                    MATCH(N:NotANode)
+                    DETACH DELETE(N)
+                `);
+        } finally {
+            await session.close();
+        }
+    });
+
     describe("read", () => {
-        test("should throw if not authenticated type definition", async () => {
-            const session = driver.session({ defaultAccessMode: "READ" });
+        test("should throw if missing role on type definition", async () => {
+            const session = driver.session();
 
             const typeDefs = `
                 type Product @auth(rules: [{
                     operations: [READ],
-                    isAuthenticated: true
+                    roles: ["admin"]
                 }]) {
                     id: ID
                     name: String
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
-
             const query = `
-                {
-                    products {
-                        id
-                    }
+            {
+                products {
+                    id
                 }
+            }
             `;
 
-            const token = "not valid token";
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -73,23 +91,21 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
             } finally {
                 await session.close();
             }
         });
 
-        test("should throw if not authenticated on field definition", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+        test("should throw if missing role on field definition", async () => {
+            const session = driver.session();
 
             const typeDefs = `
                 type User  {
                     id: ID
-                    password: String @auth(rules: [{ operations: [READ], isAuthenticated: true }])
+                    password: String @auth(rules: [{ operations: [READ], roles: ["admin"] }])
                 }
             `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 {
@@ -99,7 +115,9 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -112,7 +130,49 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        // This tests reproduces the security issue related to authorization without match #195
+        test.skip("should throw if missing role on type definition and no nodes are matched", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type NotANode @auth(rules: [{
+                    operations: [READ],
+                    roles: ["admin"]
+                }]) {
+                    name: String
+                }
+            `;
+
+            const query = `
+            {
+                notANodes {
+                    name
+                }
+            }
+            `;
+
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+
+            try {
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
             } finally {
                 await session.close();
             }
@@ -120,20 +180,18 @@ describe("auth/is-authenticated", () => {
     });
 
     describe("create", () => {
-        test("should throw if not authenticated on type definition", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+        test("should throw if missing role on type definition", async () => {
+            const session = driver.session();
 
             const typeDefs = `
                 type User @auth(rules: [{
-                    operations: [CREATE],
-                    isAuthenticated: true
+                    operations: [CREATE]
+                    roles: ["admin"]
                 }]) {
                     id: ID
                     name: String
                 }
             `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -145,7 +203,9 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -158,26 +218,24 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
             } finally {
                 await session.close();
             }
         });
 
-        test("should throw if not authenticated on field definition", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+        test("should throw if missing role on field definition", async () => {
+            const session = driver.session();
 
             const typeDefs = `
                 type User {
                     id: ID
                     password: String @auth(rules: [{
                         operations: [CREATE],
-                        isAuthenticated: true
+                        roles: ["admin"]
                     }])
                 }
             `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -189,7 +247,9 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -202,7 +262,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
             } finally {
                 await session.close();
             }
@@ -210,20 +270,18 @@ describe("auth/is-authenticated", () => {
     });
 
     describe("update", () => {
-        test("should throw if not authenticated on type definition", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+        test("should throw if missing role on type definition", async () => {
+            const session = driver.session();
 
             const typeDefs = `
                 type User @auth(rules: [{
                     operations: [UPDATE],
-                    isAuthenticated: true
+                    roles: ["admin"]
                 }]) {
                     id: ID
                     name: String
                 }
             `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -235,7 +293,9 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -248,26 +308,24 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
             } finally {
                 await session.close();
             }
         });
 
-        test("should throw if not authenticated on field definition", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+        test("should throw if missing role on field definition", async () => {
+            const session = driver.session();
 
             const typeDefs = `
                 type User {
                     id: ID
                     password: String @auth(rules: [{
                         operations: [UPDATE],
-                        isAuthenticated: true
+                        roles: ["admin"]
                     }])
                 }
             `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -279,7 +337,9 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -292,7 +352,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
             } finally {
                 await session.close();
             }
@@ -300,8 +360,8 @@ describe("auth/is-authenticated", () => {
     });
 
     describe("connect", () => {
-        test("should throw if not authenticated", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+        test("should throw if missing role", async () => {
+            const session = driver.session();
 
             const typeDefs = `
                 type Post {
@@ -321,12 +381,12 @@ describe("auth/is-authenticated", () => {
                         rules: [
                             {
                                 operations: [CONNECT]
-                                isAuthenticated: true
+                                roles: ["admin"]
                             }
                         ]
                     )
 
-                extend type Post @auth(rules: [{ operations: [CONNECT], isAuthenticated: true }])
+                extend type Post @auth(rules: [{ operations: [CONNECT], roles: ["super-admin"] }])
             `;
 
             const userId = generate({
@@ -337,11 +397,9 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
-
             const query = `
                 mutation {
-                    updateUsers(where: { id: "${userId}" }, connect: { posts: { where: { node: { id: "${postId}" } } } }) {
+                    updateUsers(update: { id: "${userId}" }, connect: { posts: { where: { node: { id: "${postId}" } } } }) {
                         users {
                             id
                         }
@@ -349,8 +407,10 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
+            const secret = "secret";
             // missing super-admin
-            const token = "not valid token";
+            const token = jsonwebtoken.sign({ roles: ["admin"] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -368,7 +428,100 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw if missing role on nested connect", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type Comment {
+                    id: String
+                    content: String
+                    post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+                }
+
+                type Post {
+                    id: String
+                    content: String
+                    creator: User @relationship(type: "HAS_POST", direction: OUT)
+                    comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+                }
+
+                type User {
+                    id: ID
+                    name: String
+                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                extend type User
+                    @auth(
+                        rules: [
+                            {
+                                operations: [CONNECT]
+                                roles: ["admin"]
+                            }
+                        ]
+                    )
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const commentId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    updateComments(
+                        where: { id: "${commentId}" }
+                        update: {
+                            post: {
+                                update: {
+                                    node: {
+                                        creator: { connect: { where: { node: { id: "${userId}" } } } }
+                                    }
+                                }
+                            }
+                        }
+                    ) {
+                        comments {
+                            content
+                        }
+                    }
+                }
+            `;
+
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [""] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+
+            try {
+                await session.run(`
+                    CREATE (:Comment {id: "${commentId}"})<-[:HAS_COMMENT]-(:Post {id: "${postId}"})
+                    CREATE (:User {id: "${userId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
             } finally {
                 await session.close();
             }
@@ -376,8 +529,8 @@ describe("auth/is-authenticated", () => {
     });
 
     describe("disconnect", () => {
-        test("should throw if not authenticated", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+        test("should throw if missing role", async () => {
+            const session = driver.session();
 
             const typeDefs = `
                 type Post {
@@ -397,12 +550,12 @@ describe("auth/is-authenticated", () => {
                         rules: [
                             {
                                 operations: [DISCONNECT]
-                                isAuthenticated: true
+                                roles: ["admin"]
                             }
                         ]
                     )
 
-                extend type Post @auth(rules: [{ operations: [DISCONNECT], isAuthenticated: true }])
+                extend type Post @auth(rules: [{ operations: [DISCONNECT], roles: ["super-admin"] }])
             `;
 
             const userId = generate({
@@ -413,11 +566,9 @@ describe("auth/is-authenticated", () => {
                 charset: "alphabetic",
             });
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
-
             const query = `
                 mutation {
-                    updateUsers(where: { id: "${userId}" }, disconnect: { posts: { where: { node: { id: "${postId}" } } } }) {
+                    updateUsers(update: { id: "${userId}" }, disconnect: { posts: { where: { node: { id: "${postId}" } } } }) {
                         users {
                             id
                         }
@@ -425,8 +576,10 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
+            const secret = "secret";
             // missing super-admin
-            const token = "not valid token";
+            const token = jsonwebtoken.sign({ roles: ["admin"] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 await session.run(`
@@ -444,7 +597,99 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should throw if missing role on nested disconnect", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type Comment {
+                    id: String
+                    content: String
+                    post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+                }
+
+                type Post {
+                    id: String
+                    content: String
+                    creator: User @relationship(type: "HAS_POST", direction: OUT)
+                    comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+                }
+
+                type User {
+                    id: ID
+                    name: String
+                    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                extend type User
+                    @auth(
+                        rules: [
+                            {
+                                operations: [DISCONNECT]
+                                roles: ["admin"]
+                            }
+                        ]
+                    )
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const commentId = generate({
+                charset: "alphabetic",
+            });
+
+            const postId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    updateComments(
+                        where: { id: "${commentId}" }
+                        update: {
+                            post: {
+                                update: {
+                                    node: {
+                                        creator: { disconnect: { where: { node: { id: "${userId}" } } } }
+                                    }
+                                }
+                            }
+                        }
+                    ) {
+                        comments {
+                            content
+                        }
+                    }
+                }
+            `;
+
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [""] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+
+            try {
+                await session.run(`
+                    CREATE (:Comment {id: "${commentId}"})<-[:HAS_COMMENT]-(:Post {id: "${postId}"})-[:HAS_POST]->(:User {id: "${userId}"})
+                `);
+
+                const socket = new Socket({ readable: true });
+                const req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
             } finally {
                 await session.close();
             }
@@ -452,20 +697,18 @@ describe("auth/is-authenticated", () => {
     });
 
     describe("delete", () => {
-        test("should throw if not authenticated on type definition", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+        test("should throw if missing role on type definition", async () => {
+            const session = driver.session();
 
             const typeDefs = `
                 type User @auth(rules: [{
                     operations: [DELETE],
-                    isAuthenticated: true
+                    roles: ["admin"]
                 }]) {
                     id: ID
                     name: String
                 }
             `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -475,7 +718,9 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -488,14 +733,14 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
             } finally {
                 await session.close();
             }
         });
 
-        test("should throw if not authenticated on type definition (with nested delete)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+        test("should throw if missing role on type definition (with nested delete)", async () => {
+            const session = driver.session();
 
             const typeDefs = `
                 type User {
@@ -506,14 +751,12 @@ describe("auth/is-authenticated", () => {
 
                 type Post @auth(rules: [{
                     operations: [DELETE],
-                    isAuthenticated: true
+                    roles: ["admin"]
                 }]) {
                     id: ID
                     name: String
                 }
             `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const userId = generate({
                 charset: "alphabetic",
@@ -525,14 +768,15 @@ describe("auth/is-authenticated", () => {
 
             const query = `
                 mutation {
-                    deleteUsers(where: {id: "${userId}"}, delete:{posts: {where:{node: { id: "${postId}"}}} }) {
+                    deleteUsers(where: {id: "${userId}"}, delete:{posts: {where:{node: { id: "${postId}"}}}}) {
                         nodesDeleted
                     }
                 }
             `;
 
-            const token = "not valid token";
-
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
             try {
                 await session.run(`
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
@@ -548,7 +792,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
             } finally {
                 await session.close();
             }
@@ -556,8 +800,8 @@ describe("auth/is-authenticated", () => {
     });
 
     describe("custom-resolvers", () => {
-        it("should throw if not authenticated on custom Query with @cypher", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+        it("should throw if missing role on custom Query with @cypher", async () => {
+            const session = driver.session();
 
             const typeDefs = `
                 type User @exclude {
@@ -566,11 +810,9 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Query {
-                    users: [User] @cypher(statement: "MATCH (u:User) RETURN u") @auth(rules: [{ isAuthenticated: true }])
+                    users: [User] @cypher(statement: "MATCH (u:User) RETURN u") @auth(rules: [{ roles: ["admin"] }])
                 }
             `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 query {
@@ -580,7 +822,9 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -593,14 +837,14 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
             } finally {
                 await session.close();
             }
         });
 
-        it("should throw if not authenticated on custom Mutation with @cypher", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+        it("should throw if missing role on custom Mutation with @cypher", async () => {
+            const session = driver.session();
 
             const typeDefs = `
                 type User {
@@ -609,11 +853,9 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Mutation {
-                    createUser: User @cypher(statement: "CREATE (u:User) RETURN u") @auth(rules: [{ isAuthenticated: true }])
+                    createUser: User @cypher(statement: "CREATE (u:User) RETURN u") @auth(rules: [{ roles: ["admin"] }])
                 }
             `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 mutation {
@@ -623,7 +865,9 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -636,14 +880,14 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
             } finally {
                 await session.close();
             }
         });
 
-        test("should throw if not authenticated on Field definition @cypher", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+        test("should throw if missing role on Field definition @cypher", async () => {
+            const session = driver.session();
 
             const typeDefs = `
                 type History {
@@ -654,11 +898,9 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     history: [History]
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
-                        @auth(rules: [{ operations: [READ], isAuthenticated: true }])
+                        @auth(rules: [{ operations: [READ], roles: ["admin"] }])
                 }
             `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret: "secret" } } });
 
             const query = `
                 {
@@ -670,7 +912,9 @@ describe("auth/is-authenticated", () => {
                 }
             `;
 
-            const token = "not valid token";
+            const secret = "secret";
+            const token = jsonwebtoken.sign({ roles: [] }, secret);
+            const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
                 const socket = new Socket({ readable: true });
@@ -683,49 +927,7 @@ describe("auth/is-authenticated", () => {
                     contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
-            } finally {
-                await session.close();
-            }
-        });
-
-        test("should not throw if decoded JWT passed in context", async () => {
-            const session = driver.session({ defaultAccessMode: "READ" });
-
-            const typeDefs = `
-                type Product @auth(rules: [{
-                    operations: [READ],
-                    isAuthenticated: true
-                }]) {
-                    id: ID
-                    name: String
-                }
-            `;
-
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-            const query = `
-                {
-                    products {
-                        id
-                    }
-                }
-            `;
-
-            const jwt = {
-                sub: "1234567890",
-                name: "John Doe",
-                iat: 1516239022,
-            };
-
-            try {
-                const gqlResult = await graphql({
-                    schema: neoSchema.schema,
-                    source: query,
-                    contextValue: { driver, jwt },
-                });
-
-                expect(gqlResult.errors).toBeFalsy();
+                expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
             } finally {
                 await session.close();
             }

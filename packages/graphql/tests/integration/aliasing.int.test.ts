@@ -25,7 +25,7 @@ import { Neo4jGraphQL } from "../../src/classes";
 
 const testLabel = generate({ charset: "alphabetic" });
 
-describe("Alias", () => {
+describe("Aliasing", () => {
     let driver: Driver;
     let bookmarks: string[];
 

@@ -131,13 +131,212 @@ describe("interface relationships", () => {
                     },
                 ],
             });
+        } finally {
+            await session.close();
+        }
+    });
 
-            // const movies = (gqlResult.data as any).movies[0];
+    test("should read and return interface relationship fields with shared where", async () => {
+        const session = driver.session();
 
-            // const movieSearch = movies.search.find((x) => x.__typename === "Movie"); // eslint-disable-line no-underscore-dangle
-            // expect(movieSearch.title).toEqual(movieTitle);
-            // const genreSearch = movies.search.find((x) => x.__typename === "Genre"); // eslint-disable-line no-underscore-dangle
-            // expect(genreSearch.name).toEqual(genreName);
+        const actorName = faker.random.word();
+
+        const movieTitle = faker.random.word();
+        const movieRuntime = faker.random.number();
+        const movieScreenTime = faker.random.number();
+
+        const seriesEpisodes = faker.random.number();
+        const seriesScreenTime = faker.random.number();
+
+        const query = `
+            query Actors($name: String, $title: String) {
+                actors(where: { name: $name }) {
+                    name
+                    actedIn(where: { title: $title }) {
+                        title
+                        ... on Movie {
+                            runtime
+                        }
+                        ... on Series {
+                            episodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (a:Actor { name: $actorName })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: "Apple", runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: "Apple", episodes: $seriesEpisodes })
+            `,
+                { actorName, movieTitle, movieRuntime, movieScreenTime, seriesEpisodes, seriesScreenTime }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: { name: actorName, title: "Apple" },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult.data).toEqual({
+                actors: [
+                    {
+                        actedIn: [
+                            {
+                                runtime: movieRuntime,
+                                title: "Apple",
+                            },
+                            {
+                                episodes: seriesEpisodes,
+                                title: "Apple",
+                            },
+                        ],
+                        name: actorName,
+                    },
+                ],
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should read and return interface relationship fields with type specific where", async () => {
+        const session = driver.session();
+
+        const actorName = faker.random.word();
+
+        const movieTitle = faker.random.word();
+        const movieRuntime = faker.random.number();
+        const movieScreenTime = faker.random.number();
+
+        const seriesEpisodes = faker.random.number();
+        const seriesScreenTime = faker.random.number();
+
+        const query = `
+            query Actors($name: String, $title: String) {
+                actors(where: { name: $name }) {
+                    name
+                    actedIn(where: { _onType: { Movie: { title: $title } } }) {
+                        title
+                        ... on Movie {
+                            runtime
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (a:Actor { name: $actorName })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: "Apple", runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: "Apple", episodes: $seriesEpisodes })
+            `,
+                { actorName, movieTitle, movieRuntime, movieScreenTime, seriesEpisodes, seriesScreenTime }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: { name: actorName, title: "Apple" },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult.data).toEqual({
+                actors: [
+                    {
+                        actedIn: [
+                            {
+                                runtime: movieRuntime,
+                                title: "Apple",
+                            },
+                        ],
+                        name: actorName,
+                    },
+                ],
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should read and return interface relationship fields with where override", async () => {
+        const session = driver.session();
+
+        const actorName = faker.random.word();
+
+        const movieTitle = faker.random.word();
+        const movieRuntime = faker.random.number();
+        const movieScreenTime = faker.random.number();
+
+        const seriesEpisodes = faker.random.number();
+        const seriesScreenTime = faker.random.number();
+
+        const query = `
+            query Actors($name: String, $title: String, $movieTitle: String) {
+                actors(where: { name: $name }) {
+                    name
+                    actedIn(where: { title: $title, _onType: { Movie: { title: $movieTitle } } }) {
+                        title
+                        ... on Movie {
+                            runtime
+                        }
+                        ... on Series {
+                            episodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (a:Actor { name: $actorName })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: "Pear", runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: "Apple", episodes: $seriesEpisodes })
+            `,
+                { actorName, movieTitle, movieRuntime, movieScreenTime, seriesEpisodes, seriesScreenTime }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: { name: actorName, title: "Apple", movieTitle: "Pear" },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult.data).toEqual({
+                actors: [
+                    {
+                        actedIn: [
+                            {
+                                runtime: movieRuntime,
+                                title: "Pear",
+                            },
+                            {
+                                episodes: seriesEpisodes,
+                                title: "Apple",
+                            },
+                        ],
+                        name: actorName,
+                    },
+                ],
+            });
         } finally {
             await session.close();
         }

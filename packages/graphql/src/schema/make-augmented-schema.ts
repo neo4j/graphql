@@ -23,6 +23,7 @@ import { forEachField } from "@graphql-tools/utils";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
+    DirectiveNode,
     EnumTypeDefinitionNode,
     GraphQLInt,
     GraphQLNonNull,
@@ -294,14 +295,51 @@ function makeAugmentedSchema(
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
+        const { interfaceAuthDirectives, interfaceExcludeDirectives } = nodeInterfaces.reduce<{
+            interfaceAuthDirectives: DirectiveNode[];
+            interfaceExcludeDirectives: DirectiveNode[];
+        }>(
+            (res, interfaceName) => {
+                const iface = interfaces.find((i) => i.name.value === interfaceName.name.value);
+
+                if (iface) {
+                    const interfaceAuthDirective = (iface.directives || []).find((x) => x.name.value === "auth");
+                    const interfaceExcludeDirective = (iface.directives || []).find((x) => x.name.value === "exclude");
+
+                    if (interfaceAuthDirective) {
+                        res.interfaceAuthDirectives.push(interfaceAuthDirective);
+                    }
+
+                    if (interfaceExcludeDirective) {
+                        res.interfaceExcludeDirectives.push(interfaceExcludeDirective);
+                    }
+                }
+
+                return res;
+            },
+            { interfaceAuthDirectives: [], interfaceExcludeDirectives: [] }
+        );
+
+        if (interfaceAuthDirectives.length > 1) {
+            throw new Error(
+                `Multiple interfaces of ${definition.name.value} have @auth directive - cannot determine directive to use`
+            );
+        }
+
+        if (interfaceExcludeDirectives.length > 1) {
+            throw new Error(
+                `Multiple interfaces of ${definition.name.value} have @exclude directive - cannot determine directive to use`
+            );
+        }
+
         let auth: Auth;
-        if (authDirective) {
-            auth = getAuth(authDirective);
+        if (authDirective || interfaceAuthDirectives.length) {
+            auth = getAuth(authDirective || interfaceAuthDirectives[0]);
         }
 
         let exclude: Exclude;
-        if (excludeDirective) {
-            exclude = parseExcludeDirective(excludeDirective);
+        if (excludeDirective || interfaceExcludeDirectives.length) {
+            exclude = parseExcludeDirective(excludeDirective || interfaceExcludeDirectives[0]);
         }
 
         let nodeDirective: NodeDirective;
@@ -487,7 +525,7 @@ function makeAugmentedSchema(
 
         const interfaceFields = getObjFieldMeta({
             enums,
-            interfaces,
+            interfaces: [...interfaces, ...interfaceRelationships],
             objects: objectNodes,
             scalars,
             unions,
@@ -503,7 +541,12 @@ function makeAugmentedSchema(
             );
         }
 
-        // relationshipFields.set(relationship.name.value, relFields);
+        const nestedInterfaceField = interfaceFields.relationFields.find((r) => r.interface);
+        if (nestedInterfaceField) {
+            throw new Error(
+                `Nested interface relationship fields are not supported: ${interfaceRelationship.name.value}.${nestedInterfaceField.fieldName}`
+            );
+        }
 
         const objectComposeFields = objectFieldsToComposeFields(
             Object.values(interfaceFields).reduce((acc, x) => [...acc, ...x], [])
@@ -526,9 +569,14 @@ function makeAugmentedSchema(
             enableRegex: enableRegex || false,
         });
 
+        const implementationsWhereInput = composer.createInputTC({
+            name: `${interfaceRelationship.name.value}ImplementationsWhere`,
+            fields: {},
+        });
+
         const whereInput = composer.createInputTC({
             name: `${interfaceRelationship.name.value}Where`,
-            fields: interfaceWhereFields,
+            fields: { ...interfaceWhereFields, _onType: implementationsWhereInput },
         });
 
         const interfaceCreateInput = composer.createInputTC(`${interfaceRelationship.name.value}CreateInput`);
@@ -576,38 +624,8 @@ function makeAugmentedSchema(
 
         implementations.forEach((implementation) => {
             const node = nodes.find((n) => n.name === implementation.name.value) as Node;
-            // const implementationFields = getObjFieldMeta({
-            //     enums,
-            //     interfaces,
-            //     objects: objectNodes,
-            //     scalars,
-            //     unions,
-            //     obj: implementation,
-            // });
 
-            // const implementationWhereFields = getWhereFields({
-            //     typeName: implementation.name.value,
-            //     fields: {
-            //         scalarFields: implementationFields.scalarFields,
-            //         enumFields: implementationFields.enumFields,
-            //         temporalFields: implementationFields.temporalFields,
-            //         pointFields: implementationFields.pointFields,
-            //         primitiveFields: implementationFields.primitiveFields,
-            //     },
-            //     enableRegex: enableRegex || false,
-            // });
-
-            // const implementationWhere = composer.createInputTC({
-            //     name: `${interfaceRelationship.name.value}${implementation.name.value}Where`,
-            //     fields: Object.entries(implementationWhereFields).reduce((fields, [k, v]) => {
-            //         if (!["AND", "OR"].includes(k) && interfaceWhereFields[k]) {
-            //             return fields;
-            //         }
-            //         return { ...fields, [k]: v };
-            //     }, {}),
-            // });
-
-            whereInput.addFields({
+            implementationsWhereInput.addFields({
                 [implementation.name.value]: {
                     type: `${implementation.name.value}Where`,
                 },
@@ -618,17 +636,7 @@ function makeAugmentedSchema(
                     "Connect",
                     "Delete",
                     "Disconnect",
-                ].map((operation) =>
-                    composer.getOrCreateITC(`${interfaceRelationship.name.value}${operation}Input`, (tc) => {
-                        // interfaceFields.relationFields.forEach((relationshipField) => {
-                        //     tc.addFields({
-                        //         [relationshipField.fieldName]: `${interfaceRelationship.name.value}${upperFirst(
-                        //             relationshipField.fieldName
-                        //         )}${operation}FieldInput`,
-                        //     });
-                        // });
-                    })
-                );
+                ].map((operation) => composer.getOrCreateITC(`${interfaceRelationship.name.value}${operation}Input`));
 
                 interfaceConnectInput.addFields({
                     [implementation.name.value]: {
@@ -965,7 +973,9 @@ function makeAugmentedSchema(
             name: inter.name.value,
             description: inter.description?.value,
             fields: objectComposeFields,
-            directives: graphqlDirectivesToCompose((inter.directives || []).filter((x) => x.name.value !== "auth")),
+            directives: graphqlDirectivesToCompose(
+                (inter.directives || []).filter((x) => !["auth", "exclude"].includes(x.name.value))
+            ),
         });
     });
 

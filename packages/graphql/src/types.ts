@@ -214,6 +214,11 @@ export interface ConnectionWhereArg {
     OR?: ConnectionWhereArg[];
 }
 
+export interface InterfaceWhereArg {
+    _onType?: GraphQLWhereArg[];
+    [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
+}
+
 export type AuthOperations = "CREATE" | "READ" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT";
 
 export type AuthOrders = "pre" | "post";

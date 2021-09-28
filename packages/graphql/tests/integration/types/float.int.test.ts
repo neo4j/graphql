@@ -20,10 +20,10 @@
 import { Driver, int } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "./neo4j";
-import { Neo4jGraphQL } from "../../src/classes";
+import neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
 
-describe("floats", () => {
+describe("Float", () => {
     let driver: Driver;
     const imdbRatingFloat = 4.0;
     const imdbRatingInt = 4;

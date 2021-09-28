@@ -24,8 +24,8 @@ import * as neo4jDriver from "neo4j-driver";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import jsonwebtoken from "jsonwebtoken";
-import neo4j from "./neo4j";
-import { Neo4jGraphQL } from "../../src/classes";
+import neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("@alias directive", () => {
     let driver: Driver;
@@ -40,8 +40,13 @@ describe("@alias directive", () => {
     beforeAll(async () => {
         driver = await neo4j();
         const typeDefs = `
-            type AliasDirectiveTestUser {
-                id: ID! @alias(property: "dbId") @id
+            interface AliasInterface {
+                id: ID! @alias(property: "dbId")
+                name: String! @alias(property: "toBeOverridden")
+            }
+
+            type AliasDirectiveTestUser implements AliasInterface {
+                id: ID! @id
                 name: String! @alias(property: "dbName")
                 likes: [AliasDirectiveTestMovie] @relationship(direction: OUT, type: "LIKES", properties: "AliasDirectiveTestLikesProps")
                 createdAt: DateTime! @timestamp(operations: [CREATE]) @alias(property: "dbCreatedAt")
@@ -371,7 +376,7 @@ describe("@alias directive", () => {
                 info {
                     bookmark
                 }
-              
+
             }
           }
         `;

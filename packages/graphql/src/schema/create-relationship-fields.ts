@@ -92,7 +92,6 @@ function createRelationshipFields({
 
             const upperFieldName = upperFirst(rel.fieldName);
             const upperNodeName = upperFirst(sourceName);
-            const typePrefix = `${upperNodeName}${upperFieldName}`;
 
             const connectWhere = schemaComposer.getOrCreateITC(`${rel.typeMeta.name}ConnectWhere`, (tc) => {
                 tc.addFields({
@@ -152,15 +151,12 @@ function createRelationshipFields({
                 }
             );
 
-            const updateConnectionInput = schemaComposer.getOrCreateITC(
-                `${sourceName}${upperFirst(rel.fieldName)}UpdateConnectionInput`,
-                (tc) => {
-                    tc.addFields({
-                        ...(rel.properties ? { edge: `${rel.properties}UpdateInput` } : {}),
-                        node: `${rel.typeMeta.name}UpdateInput`,
-                    });
-                }
-            );
+            schemaComposer.getOrCreateITC(`${sourceName}${upperFirst(rel.fieldName)}UpdateConnectionInput`, (tc) => {
+                tc.addFields({
+                    ...(rel.properties ? { edge: `${rel.properties}UpdateInput` } : {}),
+                    node: `${rel.typeMeta.name}UpdateInput`,
+                });
+            });
 
             const updateFieldInput = schemaComposer.getOrCreateITC(
                 `${sourceName}${upperFirst(rel.fieldName)}UpdateFieldInput`,
@@ -188,20 +184,8 @@ function createRelationshipFields({
 
             refNodes.forEach((n) => {
                 const unionPrefix = `${sourceName}${upperFieldName}${n.name}`;
-                const updateField = `${n.name}UpdateInput`;
-                const nodeFieldInputName = `${unionPrefix}FieldInput`;
-                const whereName = `${unionPrefix}ConnectionWhere`;
-
-                const deleteName = `${unionPrefix}DeleteFieldInput`;
-                const _delete = rel.typeMeta.array ? `[${deleteName}!]` : `${deleteName}`;
-
-                const disconnectName = `${unionPrefix}DisconnectFieldInput`;
-                const disconnect = rel.typeMeta.array ? `[${disconnectName}!]` : `${disconnectName}`;
-
-                const connectionUpdateInputName = `${unionPrefix}UpdateConnectionInput`;
 
                 const createName = `${sourceName}${upperFirst(rel.fieldName)}${n.name}CreateFieldInput`;
-                const create = rel.typeMeta.array ? `[${createName}!]` : createName;
                 if (!schemaComposer.has(createName)) {
                     schemaComposer.createInputTC({
                         name: createName,
@@ -210,17 +194,6 @@ function createRelationshipFields({
                             ...(rel.properties ? { edge: `${rel.properties}CreateInput!` } : {}),
                         },
                     });
-
-                    // interfaceCreateInput.addFields({
-                    //     [n.name]: `[${createName}!]`,
-                    // });
-
-                    // createFieldInput.addFields({
-                    //     [n.name]: create,
-                    // });
-                }
-
-                if (n.relationFields.length) {
                 }
             });
 

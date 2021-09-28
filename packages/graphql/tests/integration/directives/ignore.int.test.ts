@@ -20,8 +20,8 @@
 import { Driver, Session } from "neo4j-driver";
 import faker from "faker";
 import { graphql } from "graphql";
-import neo4j from "./neo4j";
-import { Neo4jGraphQL } from "../../src/classes";
+import neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("@ignore directive", () => {
     let driver: Driver;

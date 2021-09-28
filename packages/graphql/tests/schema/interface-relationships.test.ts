@@ -329,6 +329,11 @@ describe("Interface Relationships", () => {
               Series: SeriesCreateInput
             }
 
+            input ProductionImplementationsWhere {
+              Movie: MovieWhere
+              Series: SeriesWhere
+            }
+
             input ProductionUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
@@ -337,9 +342,8 @@ describe("Interface Relationships", () => {
 
             input ProductionWhere {
               AND: [ProductionWhere!]
-              Movie: MovieWhere
               OR: [ProductionWhere!]
-              Series: SeriesWhere
+              _onType: ProductionImplementationsWhere
               title: String
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -464,7 +468,7 @@ describe("Interface Relationships", () => {
         `);
     });
 
-    test("Interface Relationships - nested", () => {
+    test("Interface Relationships - multiple", () => {
         const typeDefs = gql`
             type Episode {
                 runtime: Int!
@@ -1037,6 +1041,11 @@ describe("Interface Relationships", () => {
               actors: [ProductionActorsDisconnectFieldInput!]
             }
 
+            input ProductionImplementationsWhere {
+              Movie: MovieWhere
+              Series: SeriesWhere
+            }
+
             input ProductionUpdateInput {
               Movie: MovieUpdateInput
               Series: SeriesUpdateInput
@@ -1046,9 +1055,8 @@ describe("Interface Relationships", () => {
 
             input ProductionWhere {
               AND: [ProductionWhere!]
-              Movie: MovieWhere
               OR: [ProductionWhere!]
-              Series: SeriesWhere
+              _onType: ProductionImplementationsWhere
               actors: ActorWhere
               actorsConnection: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere
@@ -1282,5 +1290,80 @@ describe("Interface Relationships", () => {
             }
             "
         `);
+    });
+
+    test("Interface Relationships - nested interface relationships", () => {
+        const typeDefs = gql`
+            interface Interface1 {
+                field1: String!
+                interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT)
+            }
+
+            interface Interface2 {
+                field2: String
+            }
+
+            type Type1Interface1 implements Interface1 {
+                field1: String!
+                interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT)
+            }
+
+            type Type2Interface1 implements Interface1 {
+                field1: String!
+                interface2: [Interface2!]! @relationship(type: "INTERFACE_TWO", direction: OUT)
+            }
+
+            type Type1Interface2 implements Interface2 {
+                field2: String!
+            }
+
+            type Type2Interface2 implements Interface2 {
+                field2: String!
+            }
+
+            type Type1 {
+                field1: String!
+                interface1: [Interface1!]! @relationship(type: "INTERFACE_ONE", direction: OUT)
+            }
+        `;
+        expect(() => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+        }).toThrowError("Nested interface relationship fields are not supported: Interface1.interface2");
+    });
+
+    test("Interface Relationships - nested relationships", () => {
+        const typeDefs = gql`
+            interface Content {
+                id: ID
+                content: String
+                creator: User @relationship(type: "HAS_CONTENT", direction: IN)
+            }
+
+            type Comment implements Content {
+                id: ID
+                content: String
+                creator: User
+                post: Post @relationship(type: "HAS_COMMENT", direction: IN)
+            }
+
+            type Post implements Content {
+                id: ID
+                content: String
+                creator: User
+                comments: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+            }
+
+            type User {
+                id: ID
+                name: String
+                content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+
+        expect(printedSchema).toMatchInlineSnapshot();
     });
 });

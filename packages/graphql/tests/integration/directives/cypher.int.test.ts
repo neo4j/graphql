@@ -23,8 +23,8 @@ import { graphql } from "graphql";
 import { Socket } from "net";
 import { IncomingMessage } from "http";
 import { generate } from "randomstring";
-import neo4j from "./neo4j";
-import { Neo4jGraphQL } from "../../src/classes";
+import neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("cypher", () => {
     let driver: Driver;

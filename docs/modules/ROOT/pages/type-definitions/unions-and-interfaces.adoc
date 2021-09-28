@@ -66,50 +66,7 @@ query GetUsersWithAllContent {
 }
 ----
 
-Conceptually, this maps to the `WHERE` clauses of the subquery unions in Cypher. Going back to the first example with no `where` argument, each subquery has a similar structure:
-
-[source, cypher, indent=0]
-----
-CALL {
-    WITH this
-    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
-    RETURN { __resolveType: "Blog", title: blog.title }
-UNION
-    WITH this
-    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(journal:Post)
-    RETURN { __resolveType: "Post" }
-}
-----
-
-Now if you were to leave both subqueries and add a `WHERE` clause for blogs, it would look like this:
-
-[source, cypher, indent=0]
-----
-CALL {
-    WITH this
-    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
-    WHERE blog.title IS NOT NULL
-    RETURN { __resolveType: "Blog", title: blog.title }
-UNION
-    WITH this
-    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(journal:Post)
-    RETURN { __resolveType: "Post" }
-}
-----
-
-As you can see, the subqueries are now "unbalanced", which could result in massive overfetching of `Post` nodes.
-
-So, when a `where` argument is passed in, only union members which are in the `where` object are fetched, so it is essentially acting as a logical OR gate, different from the rest of the `where` arguments in the schema:
-
-[source, cypher, indent=0]
-----
-CALL {
-    WITH this
-    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
-    WHERE blog.title IS NOT NULL
-    RETURN { __resolveType: "Blog", title: blog.title }
-}
-----
+This is to prevent overfetching, and you can find an explanation of this xref::type-definitions/unions-and-interfaces.adoc#type-definitions-unions-and-interfaces-preventing-overfetching[below].
 
 === Creating a union
 
@@ -153,9 +110,209 @@ mutation CreateUserAndContent {
 
 ----
 
-
+[[type-definitions-unions-and-interfaces-interface-types]]
 == Interface Types
 
-At the moment, the only support that the Neo4j GraphQL Library offers for interfaces is in the definition of relationship properties.
+The Neo4j GraphQL Library supports the use of interfaces on relationship fields. For example, the following schema defines a `Actor` type, that has a relationship `ACTED_IN`, of type `[Production]`. `Production` is an interface type with `Movie` and `Series` implementations. Note in this example that relationship properties have also been used with the `@relationshipProperties` directive as syntactic sugar, so that interfaces representing relationship properties can be easily distinguished.
 
-Beyond this, feel free to use them in your implementation of node types, however the library will offer no database support for these - it will essentially ignore them and focus only on the implementing GraphQL object types.
+[source, graphql, indent=0]
+----
+interface Production {
+    title: String!
+}
+
+type Movie implements Production {
+    title: String!
+    runtime: Int!
+}
+
+type Series implements Production {
+    title: String!
+    episodes: Int!
+}
+
+interface ActedIn @relationshipProperties {
+    role: String!
+}
+
+type Actor {
+    name: String!
+    actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+}
+----
+
+Below you can find some examples of how queries and mutations work with this example.
+
+[[type-definitions-unions-and-interfaces-interfaced-types-querying]]
+=== Querying an interface
+
+Which implementations are returned by a Query are dictated by the `where` filter applied.
+
+For example, the following will return all productions with title starting "The " for every actor:
+
+[source, graphql, indent=0]
+----
+query GetProductionsStartingWithThe {
+    actors {
+        name
+        actedIn(where: { node: { title_STARTS_WITH: "The " } }) {
+            title
+            ... on Movie {
+                runtime
+            }
+            ... on Series {
+                episodes
+            }
+        }
+    }
+}
+----
+
+Whilst the query below will only return the movies with title starting with "The " for each actor.
+
+[source, graphql, indent=0]
+----
+query GetMoviesStartingWithThe {
+    actors {
+        name
+        actedIn(where: { node: { _onType: { Movie: { title_STARTS_WITH: "The " } } } }) {
+            title
+            ... on Movie {
+                runtime
+            }
+        }
+    }
+}
+----
+
+Similarly to unions, this is to prevent overfetching, and you can find an explanation of this xref::type-definitions/unions-and-interfaces.adoc#type-definitions-unions-and-interfaces-preventing-overfetching[below].
+
+Alternatively, these implementation specific filters can be used to override filtering for a specific implementation. For example, if you wanted all productions with title starting with "The ", but movies with title starting with "A ", you could achieve this using the following:
+
+[source, graphql, indent=0]
+----
+query GetProductionsStartingWith {
+    actors {
+        name
+        actedIn(where: { node: { title_STARTS_WITH: "The ", _onType: { Movie: { title_STARTS_WITH: "A " } } } }) {
+            title
+            ... on Movie {
+                runtime
+            }
+            ... on Series {
+                episodes
+            }
+        }
+    }
+}
+----
+
+=== Creating using an interface field
+
+The below mutation creates an actor and some productions they've acted in:
+
+[source, graphql, indent=0]
+----
+mutation CreateActorAndProductions {
+    createActors(
+        input: [
+            {
+                name: "Chris Pratt"
+                actedIn: {
+                    create: [
+                        {
+                            edge: {
+                                role: "Mario"
+                            }
+                            node: {
+                                Movie: {
+                                    title: "Super Mario Bros"
+                                    runtime: 90
+                                }
+                            }
+                        }
+                        {
+                            edge: {
+                                role: "Starlord"
+                            }
+                            node: {
+                                Movie: {
+                                    title: "Guardians of the Galaxy"
+                                    runtime: 122
+                                }
+                            }
+                        }
+                        {
+                            edge: {
+                                role: "Andy"
+                            }
+                            node: {
+                                Movie: {
+                                    title: "Parks and Recreation"
+                                    episodes: 126
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    ) {
+        actors {
+            name
+            actedIn {
+                title
+            }
+        }
+    }
+}
+
+----
+
+[[type-definitions-unions-and-interfaces-preventing-overfetching]]
+== Preventing Overfetching
+
+When querying for unions and interfaces in Cypher, each union member/interface implementation is broken out into a subquery and joined with `UNION`. For example, using one of the examples above, when we query with no `where` argument, each subquery has a similar structure:
+
+[source, cypher, indent=0]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    RETURN { __resolveType: "Blog", title: blog.title }
+UNION
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(journal:Post)
+    RETURN { __resolveType: "Post" }
+}
+----
+
+Now if you were to leave both subqueries and add a `WHERE` clause for blogs, it would look like this:
+
+[source, cypher, indent=0]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    WHERE blog.title IS NOT NULL
+    RETURN { __resolveType: "Blog", title: blog.title }
+UNION
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(journal:Post)
+    RETURN { __resolveType: "Post" }
+}
+----
+
+As you can see, the subqueries are now "unbalanced", which could result in massive overfetching of `Post` nodes.
+
+So, when a `where` argument is passed in, only union members which are in the `where` object are fetched, so it is essentially acting as a logical OR gate, different from the rest of the `where` arguments in the schema:
+
+[source, cypher, indent=0]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    WHERE blog.title IS NOT NULL
+    RETURN { __resolveType: "Blog", title: blog.title }
+}
+----

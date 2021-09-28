@@ -76,9 +76,22 @@ function createConnectionFields({
 
         if (connectionField.relationship.interface) {
             connectionWhere.addFields({
+                OR: connectionWhere.NonNull.List,
+                AND: connectionWhere.NonNull.List,
                 node: `${connectionField.relationship.typeMeta.name}Where`,
                 node_NOT: `${connectionField.relationship.typeMeta.name}Where`,
             });
+
+            if (connectionField.relationship.properties) {
+                const propertiesInterface = schemaComposer.getIFTC(connectionField.relationship.properties);
+                relationship.addInterface(propertiesInterface);
+                relationship.addFields(propertiesInterface.getFields());
+
+                connectionWhere.addFields({
+                    edge: `${connectionField.relationship.properties}Where`,
+                    edge_NOT: `${connectionField.relationship.properties}Where`,
+                });
+            }
         } else if (connectionField.relationship.union) {
             const relatedNodes = nodes.filter((n) => connectionField.relationship.union?.nodes?.includes(n.name));
 

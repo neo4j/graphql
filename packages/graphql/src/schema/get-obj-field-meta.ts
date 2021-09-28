@@ -19,6 +19,7 @@
 
 import {
     BooleanValueNode,
+    DirectiveNode,
     EnumTypeDefinitionNode,
     FloatValueNode,
     InterfaceTypeDefinitionNode,
@@ -84,21 +85,43 @@ function getObjFieldMeta({
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
 }) {
+    const objInterfaceNames = [...(obj.interfaces || [])] as NamedTypeNode[];
+    const objInterfaces = interfaces.filter((i) => objInterfaceNames.map((n) => n.name.value).includes(i.name.value));
+
     return obj?.fields?.reduce(
         (res: ObjectFields, field) => {
-            if (field?.directives?.some((x) => x.name.value === "private")) {
+            const interfaceField = objInterfaces
+                .find((i) => i.fields?.map((f) => f.name.value).includes(field.name.value))
+                ?.fields?.find((f) => f.name.value === field.name.value);
+
+            if (
+                field?.directives?.some((x) => x.name.value === "private") ||
+                interfaceField?.directives?.some((x) => x.name.value === "private")
+            ) {
                 return res;
             }
 
-            const relationshipMeta = getRelationshipMeta(field);
-            const cypherMeta = getCypherMeta(field);
+            const relationshipMeta = getRelationshipMeta(field, interfaceField);
+            const cypherMeta = getCypherMeta(field, interfaceField);
             const typeMeta = getFieldTypeMeta(field);
-            const authDirective = field.directives?.find((x) => x.name.value === "auth");
-            const idDirective = field?.directives?.find((x) => x.name.value === "id");
-            const defaultDirective = field?.directives?.find((x) => x.name.value === "default");
-            const coalesceDirective = field?.directives?.find((x) => x.name.value === "coalesce");
-            const timestampDirective = field?.directives?.find((x) => x.name.value === "timestamp");
-            const aliasDirective = field?.directives?.find((x) => x.name.value === "alias");
+            const authDirective =
+                field.directives?.find((x) => x.name.value === "auth") ||
+                interfaceField?.directives?.find((x) => x.name.value === "auth");
+            const idDirective =
+                field?.directives?.find((x) => x.name.value === "id") ||
+                interfaceField?.directives?.find((x) => x.name.value === "id");
+            const defaultDirective =
+                field?.directives?.find((x) => x.name.value === "default") ||
+                interfaceField?.directives?.find((x) => x.name.value === "default");
+            const coalesceDirective =
+                field?.directives?.find((x) => x.name.value === "coalesce") ||
+                interfaceField?.directives?.find((x) => x.name.value === "coalesce");
+            const timestampDirective =
+                field?.directives?.find((x) => x.name.value === "timestamp") ||
+                interfaceField?.directives?.find((x) => x.name.value === "timestamp");
+            const aliasDirective =
+                field?.directives?.find((x) => x.name.value === "alias") ||
+                interfaceField?.directives?.find((x) => x.name.value === "alias");
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
             const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
@@ -128,11 +151,15 @@ function getObjFieldMeta({
                 arguments: [...(field.arguments || [])],
                 ...(authDirective ? { auth: getAuth(authDirective) } : {}),
                 description: field.description?.value,
-                readonly: field?.directives?.some((d) => d.name.value === "readonly"),
-                writeonly: field?.directives?.some((d) => d.name.value === "writeonly"),
+                readonly:
+                    field?.directives?.some((d) => d.name.value === "readonly") ||
+                    interfaceField?.directives?.some((x) => x.name.value === "readonly"),
+                writeonly:
+                    field?.directives?.some((d) => d.name.value === "writeonly") ||
+                    interfaceField?.directives?.some((x) => x.name.value === "writeonly"),
             };
             if (aliasDirective) {
-                const aliasMeta = getAliasMeta(field);
+                const aliasMeta = getAliasMeta(aliasDirective);
                 if (aliasMeta) {
                     baseField.dbPropertyName = aliasMeta.property;
                 }
@@ -181,12 +208,10 @@ function getObjFieldMeta({
                         .filter((n) => n.interfaces?.some((i) => i.name.value === fieldInterface.name.value))
                         .map((n) => n.name.value);
 
-                    const interfaceField: InterfaceField = {
+                    relationField.interface = {
                         ...baseField,
                         implementations,
                     };
-
-                    relationField.interface = interfaceField;
                 }
 
                 // if (obj.kind !== "InterfaceTypeDefinition") {
@@ -304,11 +329,9 @@ function getObjFieldMeta({
                     throw new Error("@coalesce directive can only be used on primitive type fields");
                 }
 
-                const interfaceField: InterfaceField = {
+                res.interfaceFields.push({
                     ...baseField,
-                };
-
-                res.interfaceFields.push(interfaceField);
+                });
             } else if (fieldObject) {
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
@@ -322,7 +345,10 @@ function getObjFieldMeta({
                     ...baseField,
                 };
                 res.objectFields.push(objectField);
-            } else if (field.directives?.some((d) => d.name.value === "ignore")) {
+            } else if (
+                field.directives?.some((d) => d.name.value === "ignore") ||
+                interfaceField?.directives?.some((d) => d.name.value === "ignore")
+            ) {
                 res.ignoredFields.push(baseField);
             } else {
                 // eslint-disable-next-line no-lonely-if

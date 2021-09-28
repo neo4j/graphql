@@ -20,8 +20,8 @@
 import { Driver, isTime, Integer } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
-import { Neo4jGraphQL } from "../../../src/classes";
+import neo4j from "../../neo4j";
+import { Neo4jGraphQL } from "../../../../src/classes";
 
 describe("timestamp/time", () => {
     let driver: Driver;
@@ -96,12 +96,12 @@ describe("timestamp/time", () => {
                     type Actor {
                         name: String!
                     }
-    
+
                     interface ActedIn {
                         createdAt: Time! @timestamp(operations: [CREATE])
                         screenTime: Int!
                     }
-    
+
                     type Movie {
                         title: String!
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
@@ -229,12 +229,12 @@ describe("timestamp/time", () => {
                     type Actor {
                         name: String!
                     }
-    
+
                     interface ActedIn {
                         updatedAt: Time! @timestamp(operations: [UPDATE])
                         screenTime: Int!
                     }
-    
+
                     type Movie {
                         title: String!
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
@@ -363,12 +363,12 @@ describe("timestamp/time", () => {
                     type Actor {
                         name: String!
                     }
-    
+
                     interface ActedIn {
                         createdAt: Time! @timestamp(operations: [CREATE, UPDATE])
                         screenTime: Int!
                     }
-    
+
                     type Movie {
                         title: String!
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
@@ -438,12 +438,12 @@ describe("timestamp/time", () => {
                     type Actor {
                         name: String!
                     }
-    
+
                     interface ActedIn {
                         updatedAt: Time! @timestamp(operations: [CREATE, UPDATE])
                         screenTime: Int!
                     }
-    
+
                     type Movie {
                         title: String!
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
@@ -628,12 +628,12 @@ describe("timestamp/time", () => {
                     type Actor {
                         name: String!
                     }
-    
+
                     interface ActedIn {
                         createdAt: Time! @timestamp
                         screenTime: Int!
                     }
-    
+
                     type Movie {
                         title: String!
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
@@ -703,12 +703,12 @@ describe("timestamp/time", () => {
                     type Actor {
                         name: String!
                     }
-    
+
                     interface ActedIn {
                         updatedAt: Time! @timestamp
                         screenTime: Int!
                     }
-    
+
                     type Movie {
                         title: String!
                         actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")

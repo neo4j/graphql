@@ -1,7 +1,7 @@
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import { ConnectionField, Context, RelationField } from "../types";
+import { ConnectionField, Context, InterfaceWhereArg, RelationField } from "../types";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
@@ -22,21 +22,25 @@ function createInterfaceProjectionAndParams({
     nodeVariable: string;
     parameterPrefix?: string;
 }): { cypher: string; params: Record<string, any> } {
-    let params = {};
+    let params: { args?: any } = {};
 
     const inStr = field.direction === "IN" ? "<-" : "-";
     const relTypeStr = `[:${field.type}]`;
     const outStr = field.direction === "OUT" ? "->" : "-";
 
+    const whereInput = resolveTree.args.where as InterfaceWhereArg;
+
     const referenceNodes = context.neoSchema.nodes.filter(
         (x) =>
             field.interface?.implementations?.includes(x.name) &&
-            (!resolveTree.args.where ||
-                Object.prototype.hasOwnProperty.call(resolveTree.args.where, x.name) ||
-                !field.interface?.implementations?.some((i) =>
-                    Object.prototype.hasOwnProperty.call(resolveTree.args.where, i)
-                ))
+            (!whereInput ||
+                Object.keys(whereInput).length > 1 ||
+                !Object.prototype.hasOwnProperty.call(whereInput, "_onType") ||
+                (Object.keys(whereInput).length === 1 &&
+                    Object.prototype.hasOwnProperty.call(whereInput._onType, x.name)))
     );
+
+    let whereArgs: { _onType?: any; [str: string]: any } = {};
 
     const subqueries = referenceNodes.map((refNode) => {
         const param = `${nodeVariable}_${refNode.name}`;
@@ -69,15 +73,19 @@ function createInterfaceProjectionAndParams({
         const whereStrs: string[] = [];
 
         if (resolveTree.args.where) {
-            const nodeWhereAndParams = createNodeWhereAndParams({
+            // For root filters
+            const rootNodeWhereAndParams = createNodeWhereAndParams({
                 whereInput: {
-                    ...Object.entries(resolveTree.args.where).reduce((args, [k, v]) => {
-                        if (!field.interface?.implementations?.includes(k)) {
+                    ...Object.entries(whereInput).reduce((args, [k, v]) => {
+                        if (k !== "_onType") {
+                            if (
+                                whereInput._onType &&
+                                Object.prototype.hasOwnProperty.call(whereInput._onType, refNode.name) &&
+                                Object.prototype.hasOwnProperty.call(whereInput._onType[refNode.name], k)
+                            ) {
+                                return args;
+                            }
                             return { ...args, [k]: v };
-                        }
-
-                        if (k === refNode.name) {
-                            return { ...args, ...v };
                         }
 
                         return args;
@@ -92,9 +100,50 @@ function createInterfaceProjectionAndParams({
                     resolveTree.alias
                 }.args.where`,
             });
-            if (nodeWhereAndParams[0]) {
-                whereStrs.push(nodeWhereAndParams[0]);
-                params = { ...params, ...{ args: { where: nodeWhereAndParams[1] } } };
+            if (rootNodeWhereAndParams[0]) {
+                whereStrs.push(rootNodeWhereAndParams[0]);
+                // params = { ...params, ...{ args: { where: rootNodeWhereAndParams[1] } } };
+                whereArgs = { ...whereArgs, ...rootNodeWhereAndParams[1] };
+            }
+
+            // For _onType filters
+            if (whereInput._onType && Object.prototype.hasOwnProperty.call(whereInput._onType, refNode.name)) {
+                const onTypeNodeWhereAndParams = createNodeWhereAndParams({
+                    whereInput: {
+                        ...Object.entries(whereInput).reduce((args, [k, v]) => {
+                            if (k !== "_onType") {
+                                return { ...args, [k]: v };
+                            }
+
+                            if (Object.prototype.hasOwnProperty.call(v, refNode.name)) {
+                                return { ...args, ...v[refNode.name] };
+                            }
+
+                            return args;
+                        }, {}),
+                    },
+                    context,
+                    node: refNode,
+                    nodeVariable: param,
+                    // chainStr: `${param}_${refNode.name}`,
+                    // authValidateStrs: recurse[2]?.authValidateStrs,
+                    parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
+                        resolveTree.alias
+                    }.args.where._onType.${refNode.name}`,
+                });
+                if (onTypeNodeWhereAndParams[0]) {
+                    whereStrs.push(onTypeNodeWhereAndParams[0]);
+                    // params = {
+                    //     ...params,
+                    //     ...{ args: { where: { _onType: { [refNode.name]: onTypeNodeWhereAndParams[1] } } } },
+                    // };
+                    if (whereArgs._onType) {
+                        // eslint-disable-next-line prefer-destructuring
+                        whereArgs._onType[refNode.name] = onTypeNodeWhereAndParams[1];
+                    } else {
+                        whereArgs._onType = { [refNode.name]: onTypeNodeWhereAndParams[1] };
+                    }
+                }
             }
         }
 
@@ -160,6 +209,9 @@ function createInterfaceProjectionAndParams({
         return subquery.join("\n");
     });
     const interfaceProjection = [`WITH ${nodeVariable}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
+    if (Object.keys(whereArgs).length) {
+        params.args = { where: whereArgs };
+    }
 
     // if (optionsInput) {
     //     const offsetLimit = createOffsetLimitStr({
