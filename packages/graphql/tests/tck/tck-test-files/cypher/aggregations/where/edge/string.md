@@ -403,6 +403,201 @@ RETURN this { .content } as this
 
 ---
 
+## LONGEST_EQUAL
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someString_LONGEST_EQUAL: 10 } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    WITH this_likesAggregate_node, this_likesAggregate_edge, size(this_likesAggregate_edge.someString) AS this_likesAggregate_edge_someString_LONGEST_EQUAL_SIZE
+    RETURN max(this_likesAggregate_edge_someString_LONGEST_EQUAL_SIZE) = $this_likesAggregate_edge_someString_LONGEST_EQUAL ",
+    { this: this, this_likesAggregate_edge_someString_LONGEST_EQUAL: $this_likesAggregate_edge_someString_LONGEST_EQUAL },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someString_LONGEST_EQUAL": {
+        "high": 0,
+        "low": 10
+    }
+}
+```
+
+---
+
+## LONGEST_GT
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someString_LONGEST_GT: 10 } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    WITH this_likesAggregate_node, this_likesAggregate_edge, size(this_likesAggregate_edge.someString) AS this_likesAggregate_edge_someString_LONGEST_GT_SIZE
+    RETURN max(this_likesAggregate_edge_someString_LONGEST_GT_SIZE) > $this_likesAggregate_edge_someString_LONGEST_GT ",
+    { this: this, this_likesAggregate_edge_someString_LONGEST_GT: $this_likesAggregate_edge_someString_LONGEST_GT },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someString_LONGEST_GT": {
+        "high": 0,
+        "low": 10
+    }
+}
+```
+
+---
+
+## LONGEST_GTE
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someString_LONGEST_GTE: 10 } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    WITH this_likesAggregate_node, this_likesAggregate_edge, size(this_likesAggregate_edge.someString) AS this_likesAggregate_edge_someString_LONGEST_GTE_SIZE
+    RETURN max(this_likesAggregate_edge_someString_LONGEST_GTE_SIZE) >= $this_likesAggregate_edge_someString_LONGEST_GTE ",
+    { this: this, this_likesAggregate_edge_someString_LONGEST_GTE: $this_likesAggregate_edge_someString_LONGEST_GTE },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someString_LONGEST_GTE": {
+        "high": 0,
+        "low": 10
+    }
+}
+```
+
+---
+
+## LONGEST_LT
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someString_LONGEST_LT: 10 } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    WITH this_likesAggregate_node, this_likesAggregate_edge, size(this_likesAggregate_edge.someString) AS this_likesAggregate_edge_someString_LONGEST_LT_SIZE
+    RETURN max(this_likesAggregate_edge_someString_LONGEST_LT_SIZE) < $this_likesAggregate_edge_someString_LONGEST_LT ",
+    { this: this, this_likesAggregate_edge_someString_LONGEST_LT: $this_likesAggregate_edge_someString_LONGEST_LT },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someString_LONGEST_LT": {
+        "high": 0,
+        "low": 10
+    }
+}
+```
+
+---
+
+## LONGEST_LTE
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someString_LONGEST_LTE: 10 } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    WITH this_likesAggregate_node, this_likesAggregate_edge, size(this_likesAggregate_edge.someString) AS this_likesAggregate_edge_someString_LONGEST_LTE_SIZE
+    RETURN max(this_likesAggregate_edge_someString_LONGEST_LTE_SIZE) <= $this_likesAggregate_edge_someString_LONGEST_LTE ",
+    { this: this, this_likesAggregate_edge_someString_LONGEST_LTE: $this_likesAggregate_edge_someString_LONGEST_LTE },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someString_LONGEST_LTE": {
+        "high": 0,
+        "low": 10
+    }
+}
+```
+
+---
+
 ## AVERAGE_EQUAL
 
 ### GraphQL Input
