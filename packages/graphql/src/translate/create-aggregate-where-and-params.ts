@@ -296,7 +296,8 @@ function createAggregateWhereAndParams({
     const nodeVariable = `${chainStr}_node`;
     const edgeVariable = `${chainStr}_edge`;
     const relTypeStr = `[${edgeVariable}:${field.type}]`;
-    const matchStr = `MATCH (${varName})${inStr}${relTypeStr}${outStr}(${nodeVariable}:${field.typeMeta.name})`;
+    const labels = node.labelString;
+    const matchStr = `MATCH (${varName})${inStr}${relTypeStr}${outStr}(${nodeVariable}${labels})`;
 
     cyphers.push(`apoc.cypher.runFirstColumn(\" ${matchStr}`);
 
