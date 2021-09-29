@@ -365,6 +365,16 @@ describe("Unions", () => {
               words_GTE: Int
               words_LT: Int
               words_LTE: Int
+              words_MAX_EQUAL: Int
+              words_MAX_GT: Int
+              words_MAX_GTE: Int
+              words_MAX_LT: Int
+              words_MAX_LTE: Int
+              words_MIN_EQUAL: Int
+              words_MIN_GT: Int
+              words_MIN_GTE: Int
+              words_MIN_LT: Int
+              words_MIN_LTE: Int
             }
 
             input BookAuthorFieldInput {
@@ -380,11 +390,21 @@ describe("Unions", () => {
               name_AVERAGE_GTE: Float
               name_AVERAGE_LT: Float
               name_AVERAGE_LTE: Float
-              name_EQUAL: ID
+              name_EQUAL: String
               name_GT: Int
               name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
               name_LT: Int
               name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
             }
 
             type BookAuthorRelationship implements Wrote {
@@ -573,6 +593,16 @@ describe("Unions", () => {
               words_GTE: Int
               words_LT: Int
               words_LTE: Int
+              words_MAX_EQUAL: Int
+              words_MAX_GT: Int
+              words_MAX_GTE: Int
+              words_MAX_LT: Int
+              words_MAX_LTE: Int
+              words_MIN_EQUAL: Int
+              words_MIN_GT: Int
+              words_MIN_GTE: Int
+              words_MIN_LT: Int
+              words_MIN_LTE: Int
             }
 
             input JournalAuthorFieldInput {
@@ -588,11 +618,21 @@ describe("Unions", () => {
               name_AVERAGE_GTE: Float
               name_AVERAGE_LT: Float
               name_AVERAGE_LTE: Float
-              name_EQUAL: ID
+              name_EQUAL: String
               name_GT: Int
               name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
               name_LT: Int
               name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
             }
 
             type JournalAuthorRelationship implements Wrote {

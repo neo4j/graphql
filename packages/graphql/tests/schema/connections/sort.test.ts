@@ -306,11 +306,21 @@ describe("Sort", () => {
               property_AVERAGE_GTE: Float
               property_AVERAGE_LT: Float
               property_AVERAGE_LTE: Float
-              property_EQUAL: ID
+              property_EQUAL: String
               property_GT: Int
               property_GTE: Int
+              property_LONGEST_EQUAL: Int
+              property_LONGEST_GT: Int
+              property_LONGEST_GTE: Int
+              property_LONGEST_LT: Int
+              property_LONGEST_LTE: Int
               property_LT: Int
               property_LTE: Int
+              property_SHORTEST_EQUAL: Int
+              property_SHORTEST_GT: Int
+              property_SHORTEST_GTE: Int
+              property_SHORTEST_LT: Int
+              property_SHORTEST_LTE: Int
             }
 
             type Node2RelatedToRelationship {

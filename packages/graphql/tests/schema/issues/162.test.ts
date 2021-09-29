@@ -350,6 +350,16 @@ describe("162", () => {
               x_GTE: Int
               x_LT: Int
               x_LTE: Int
+              x_MAX_EQUAL: Int
+              x_MAX_GT: Int
+              x_MAX_GTE: Int
+              x_MAX_LT: Int
+              x_MAX_LTE: Int
+              x_MIN_EQUAL: Int
+              x_MIN_GT: Int
+              x_MIN_GTE: Int
+              x_MIN_LT: Int
+              x_MIN_LTE: Int
             }
 
             type TigerJawLevel2Part1TigerRelationship {

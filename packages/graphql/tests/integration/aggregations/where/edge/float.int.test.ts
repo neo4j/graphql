@@ -57,7 +57,7 @@ describe("aggregations-where-edge-float", () => {
             readable: true,
         });
 
-        const someFloat = Math.random() * Math.random();
+        const someFloat = Math.random() * Math.random() + 10;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -126,7 +126,7 @@ describe("aggregations-where-edge-float", () => {
             readable: true,
         });
 
-        const someFloat = Math.random() * Math.random();
+        const someFloat = Math.random() * Math.random() + 10;
         const someFloatGt = someFloat - 0.1;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -196,7 +196,7 @@ describe("aggregations-where-edge-float", () => {
             readable: true,
         });
 
-        const someFloat = Math.random() * Math.random();
+        const someFloat = Math.random() * Math.random() + 10;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -265,7 +265,7 @@ describe("aggregations-where-edge-float", () => {
             readable: true,
         });
 
-        const someFloat = Math.random() * Math.random();
+        const someFloat = Math.random() * Math.random() + 10;
         const someFloatLT = someFloat + 0.1;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -335,7 +335,7 @@ describe("aggregations-where-edge-float", () => {
             readable: true,
         });
 
-        const someFloat = Math.random() * Math.random();
+        const someFloat = Math.random() * Math.random() + 10;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 

@@ -115,11 +115,21 @@ describe("Alias", () => {
               character_AVERAGE_GTE: Float
               character_AVERAGE_LT: Float
               character_AVERAGE_LTE: Float
-              character_EQUAL: ID
+              character_EQUAL: String
               character_GT: Int
               character_GTE: Int
+              character_LONGEST_EQUAL: Int
+              character_LONGEST_GT: Int
+              character_LONGEST_GTE: Int
+              character_LONGEST_LT: Int
+              character_LONGEST_LTE: Int
               character_LT: Int
               character_LTE: Int
+              character_SHORTEST_EQUAL: Int
+              character_SHORTEST_GT: Int
+              character_SHORTEST_GTE: Int
+              character_SHORTEST_LT: Int
+              character_SHORTEST_LTE: Int
               screenTime_AVERAGE_EQUAL: Float
               screenTime_AVERAGE_GT: Float
               screenTime_AVERAGE_GTE: Float
@@ -130,6 +140,16 @@ describe("Alias", () => {
               screenTime_GTE: Int
               screenTime_LT: Int
               screenTime_LTE: Int
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
             }
 
             input ActorActedInFieldInput {
@@ -150,16 +170,36 @@ describe("Alias", () => {
               rating_GTE: Float
               rating_LT: Float
               rating_LTE: Float
+              rating_MAX_EQUAL: Float
+              rating_MAX_GT: Float
+              rating_MAX_GTE: Float
+              rating_MAX_LT: Float
+              rating_MAX_LTE: Float
+              rating_MIN_EQUAL: Float
+              rating_MIN_GT: Float
+              rating_MIN_GTE: Float
+              rating_MIN_LT: Float
+              rating_MIN_LTE: Float
               title_AVERAGE_EQUAL: Float
               title_AVERAGE_GT: Float
               title_AVERAGE_GTE: Float
               title_AVERAGE_LT: Float
               title_AVERAGE_LTE: Float
-              title_EQUAL: ID
+              title_EQUAL: String
               title_GT: Int
               title_GTE: Int
+              title_LONGEST_EQUAL: Int
+              title_LONGEST_GT: Int
+              title_LONGEST_GTE: Int
+              title_LONGEST_LT: Int
+              title_LONGEST_LTE: Int
               title_LT: Int
               title_LTE: Int
+              title_SHORTEST_EQUAL: Int
+              title_SHORTEST_GT: Int
+              title_SHORTEST_GTE: Int
+              title_SHORTEST_LT: Int
+              title_SHORTEST_LTE: Int
             }
 
             interface ActorActedInProps {

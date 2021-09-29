@@ -675,11 +675,21 @@ describe("Exclude", () => {
               name_AVERAGE_GTE: Float
               name_AVERAGE_LT: Float
               name_AVERAGE_LTE: Float
-              name_EQUAL: ID
+              name_EQUAL: String
               name_GT: Int
               name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
               name_LT: Int
               name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
             }
 
             type MovieActorsRelationship {
