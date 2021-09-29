@@ -396,3 +396,383 @@ RETURN this { .content } as this
 ```
 
 ---
+
+## MIN_EQUAL
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someBigInt_MIN_EQUAL: "2147483648" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN min(this_likesAggregate_node.someBigInt) = $this_likesAggregate_node_someBigInt_MIN_EQUAL ",
+    { this: this, this_likesAggregate_node_someBigInt_MIN_EQUAL: $this_likesAggregate_node_someBigInt_MIN_EQUAL },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someBigInt_MIN_EQUAL": {
+        "high": 0,
+        "low": -2147483648
+    }
+}
+```
+
+---
+
+## MIN_GT
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someBigInt_MIN_GT: "2147483648" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN min(this_likesAggregate_node.someBigInt) > $this_likesAggregate_node_someBigInt_MIN_GT ",
+    { this: this, this_likesAggregate_node_someBigInt_MIN_GT: $this_likesAggregate_node_someBigInt_MIN_GT },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someBigInt_MIN_GT": {
+        "high": 0,
+        "low": -2147483648
+    }
+}
+```
+
+---
+
+## MIN_GTE
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someBigInt_MIN_GTE: "2147483648" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN min(this_likesAggregate_node.someBigInt) >= $this_likesAggregate_node_someBigInt_MIN_GTE ",
+    { this: this, this_likesAggregate_node_someBigInt_MIN_GTE: $this_likesAggregate_node_someBigInt_MIN_GTE },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someBigInt_MIN_GTE": {
+        "high": 0,
+        "low": -2147483648
+    }
+}
+```
+
+---
+
+## MIN_LT
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someBigInt_MIN_LT: "2147483648" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN min(this_likesAggregate_node.someBigInt) < $this_likesAggregate_node_someBigInt_MIN_LT ",
+    { this: this, this_likesAggregate_node_someBigInt_MIN_LT: $this_likesAggregate_node_someBigInt_MIN_LT },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someBigInt_MIN_LT": {
+        "high": 0,
+        "low": -2147483648
+    }
+}
+```
+
+---
+
+## MIN_LTE
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someBigInt_MIN_LTE: "2147483648" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN min(this_likesAggregate_node.someBigInt) <= $this_likesAggregate_node_someBigInt_MIN_LTE ",
+    { this: this, this_likesAggregate_node_someBigInt_MIN_LTE: $this_likesAggregate_node_someBigInt_MIN_LTE },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someBigInt_MIN_LTE": {
+        "high": 0,
+        "low": -2147483648
+    }
+}
+```
+
+---
+
+## MAX_EQUAL
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someBigInt_MAX_EQUAL: "2147483648" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN max(this_likesAggregate_node.someBigInt) = $this_likesAggregate_node_someBigInt_MAX_EQUAL ",
+    { this: this, this_likesAggregate_node_someBigInt_MAX_EQUAL: $this_likesAggregate_node_someBigInt_MAX_EQUAL },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someBigInt_MAX_EQUAL": {
+        "high": 0,
+        "low": -2147483648
+    }
+}
+```
+
+---
+
+## MAX_GT
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someBigInt_MAX_GT: "2147483648" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN max(this_likesAggregate_node.someBigInt) > $this_likesAggregate_node_someBigInt_MAX_GT ",
+    { this: this, this_likesAggregate_node_someBigInt_MAX_GT: $this_likesAggregate_node_someBigInt_MAX_GT },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someBigInt_MAX_GT": {
+        "high": 0,
+        "low": -2147483648
+    }
+}
+```
+
+---
+
+## MAX_GTE
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someBigInt_MAX_GTE: "2147483648" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN max(this_likesAggregate_node.someBigInt) >= $this_likesAggregate_node_someBigInt_MAX_GTE ",
+    { this: this, this_likesAggregate_node_someBigInt_MAX_GTE: $this_likesAggregate_node_someBigInt_MAX_GTE },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someBigInt_MAX_GTE": {
+        "high": 0,
+        "low": -2147483648
+    }
+}
+```
+
+---
+
+## MAX_LT
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someBigInt_MAX_LT: "2147483648" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN max(this_likesAggregate_node.someBigInt) < $this_likesAggregate_node_someBigInt_MAX_LT ",
+    { this: this, this_likesAggregate_node_someBigInt_MAX_LT: $this_likesAggregate_node_someBigInt_MAX_LT },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someBigInt_MAX_LT": {
+        "high": 0,
+        "low": -2147483648
+    }
+}
+```
+
+---
+
+## MAX_LTE
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someBigInt_MAX_LTE: "2147483648" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN max(this_likesAggregate_node.someBigInt) <= $this_likesAggregate_node_someBigInt_MAX_LTE ",
+    { this: this, this_likesAggregate_node_someBigInt_MAX_LTE: $this_likesAggregate_node_someBigInt_MAX_LTE },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someBigInt_MAX_LTE": {
+        "high": 0,
+        "low": -2147483648
+    }
+}
+```
+
+---
