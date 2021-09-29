@@ -143,7 +143,7 @@ function makeAugmentedSchema(
         args: {},
     };
 
-    const aggregationOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+    const whereAggregationOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
 
     // Types that you can average
     // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg
@@ -1044,24 +1044,24 @@ function makeAugmentedSchema(
                     }
 
                     if (field.typeMeta.name === "String") {
-                        aggregationInput.addFields({
-                            ...aggregationOperators.reduce((r, o) => {
+                        aggregationInput.addFields(
+                            whereAggregationOperators.reduce((res, operator) => {
                                 return {
-                                    ...r,
-                                    [`${field.fieldName}_${o}`]: `${o === "EQUAL" ? "String" : "Int"}`,
-                                    [`${field.fieldName}_AVERAGE_${o}`]: "Float",
-                                    [`${field.fieldName}_LONGEST_${o}`]: "Int",
-                                    [`${field.fieldName}_SHORTEST_${o}`]: "Int",
+                                    ...res,
+                                    [`${field.fieldName}_${operator}`]: `${operator === "EQUAL" ? "String" : "Int"}`,
+                                    [`${field.fieldName}_AVERAGE_${operator}`]: "Float",
+                                    [`${field.fieldName}_LONGEST_${operator}`]: "Int",
+                                    [`${field.fieldName}_SHORTEST_${operator}`]: "Int",
                                 };
-                            }, {}),
-                        });
+                            }, {})
+                        );
 
                         return;
                     }
 
                     if (whereAggregationAverageTypes.includes(field.typeMeta.name)) {
                         aggregationInput.addFields(
-                            aggregationOperators.reduce((r, o) => {
+                            whereAggregationOperators.reduce((res, operator) => {
                                 let averageType = "Float";
 
                                 if (field.typeMeta.name === "BigInt") {
@@ -1073,11 +1073,11 @@ function makeAugmentedSchema(
                                 }
 
                                 return {
-                                    ...r,
-                                    [`${field.fieldName}_${o}`]: field.typeMeta.name,
-                                    [`${field.fieldName}_AVERAGE_${o}`]: averageType,
-                                    [`${field.fieldName}_MIN_${o}`]: field.typeMeta.name,
-                                    [`${field.fieldName}_MAX_${o}`]: field.typeMeta.name,
+                                    ...res,
+                                    [`${field.fieldName}_${operator}`]: field.typeMeta.name,
+                                    [`${field.fieldName}_AVERAGE_${operator}`]: averageType,
+                                    [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
+                                    [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
                                 };
                             }, {})
                         );
@@ -1086,12 +1086,12 @@ function makeAugmentedSchema(
                     }
 
                     aggregationInput.addFields(
-                        aggregationOperators.reduce(
-                            (r, o) => ({
-                                ...r,
-                                [`${field.fieldName}_${o}`]: field.typeMeta.name,
-                                [`${field.fieldName}_MIN_${o}`]: field.typeMeta.name,
-                                [`${field.fieldName}_MAX_${o}`]: field.typeMeta.name,
+                        whereAggregationOperators.reduce(
+                            (res, operator) => ({
+                                ...res,
+                                [`${field.fieldName}_${operator}`]: field.typeMeta.name,
+                                [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
+                                [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
                             }),
                             {}
                         )

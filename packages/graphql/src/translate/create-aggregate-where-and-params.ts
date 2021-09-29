@@ -20,10 +20,11 @@
 import { Node, Relationship } from "../classes";
 import { RelationField, Context, BaseField } from "../types";
 
-const fieldOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
-const theaseOperators = ["SHORTEST", "LONGEST", "MIN", "MAX"];
-
 type Operator = "=" | "<" | "<=" | ">" | ">=";
+
+const logicalOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+
+const aggregationOperators = ["SHORTEST", "LONGEST", "MIN", "MAX"];
 
 function createOperator(input): Operator {
     let operator: Operator = "=";
@@ -94,11 +95,11 @@ function aggregate({
         }
 
         const field = [...nodeOrRelationship.primitiveFields, ...nodeOrRelationship.temporalFields].find((field) =>
-            fieldOperators.some(
+            logicalOperators.some(
                 (op) =>
                     e[0].split(`_${op}`)[0] === field.fieldName ||
                     e[0].split(`_AVERAGE_${op}`)[0] === field.fieldName ||
-                    theaseOperators.some((x) => e[0].split(`_${x}_${op}`)[0] === field.fieldName)
+                    aggregationOperators.some((x) => e[0].split(`_${x}_${op}`)[0] === field.fieldName)
             )
         ) as BaseField;
 
@@ -112,13 +113,15 @@ function aggregate({
         const paramName = `${chainStr}_${e[0]}`;
         params[paramName] = e[1];
 
-        if (fieldOperators.some((fO) => operatorString.split(`AVERAGE_`)[1] === fO)) {
+        if (logicalOperators.some((fO) => operatorString.split(`AVERAGE_`)[1] === fO)) {
             const [, averageOperatorString] = operatorString.split("AVERAGE_");
             const averageOperator = createOperator(averageOperatorString);
 
             if (field.typeMeta.name === "String") {
                 const hoistedVariable = `${paramName}_SIZE`;
+
                 withStrs.push(`size(${variable}.${dbPropertyName}) AS ${hoistedVariable}`);
+
                 aggregations.push(`avg(${hoistedVariable}) ${averageOperator} toFloat($${paramName})`);
 
                 return;
@@ -129,13 +132,11 @@ function aggregate({
             return;
         }
 
-        if (theaseOperators.some((fO) => fieldOperators.includes(operatorString.split(`${fO}_`)[1]))) {
-            // MIN, MAX, SHORTEST, LONGEST
+        if (aggregationOperators.some((fO) => logicalOperators.includes(operatorString.split(`${fO}_`)[1]))) {
             if (field.typeMeta.name === "String") {
+                const hoistedVariable = `${paramName}_SIZE`;
                 let isShortest = operatorString.startsWith("SHORTEST_");
                 const [, stringOperator] = operatorString.split(`${isShortest ? `SHORTEST` : "LONGEST"}_`);
-
-                const hoistedVariable = `${paramName}_SIZE`;
 
                 withStrs.push(`size(${variable}.${dbPropertyName}) AS ${hoistedVariable}`);
 
@@ -206,14 +207,14 @@ function createPredicate({
         if (["AND", "OR"].includes(entry[0])) {
             const innerClauses: string[] = [];
 
-            ((entry[1] as unknown) as any[]).forEach((v: any, i) => {
+            ((entry[1] as unknown) as any[]).forEach((value: any, i) => {
                 const recurse = createPredicate({
                     node,
                     chainStr: `${chainStr}_${entry[0]}_${i}`,
                     context,
                     field,
                     varName,
-                    aggregation: v,
+                    aggregation: value,
                     nodeVariable,
                     edgeVariable,
                     relationship,
