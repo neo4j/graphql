@@ -16,6 +16,7 @@ type Post {
 
 interface Likes {
     someLocalTime: LocalTime
+    someLocalTimeAlias: LocalTime @alias(property: "_someLocalTimeAlias")
 }
 ```
 
@@ -51,6 +52,46 @@ RETURN this { .content } as this
 ```json
 {
     "this_likesAggregate_edge_someLocalTime_EQUAL": {
+        "hour": 12,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0
+    }
+}
+```
+
+---
+
+## EQUAL with alias
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someLocalTimeAlias_EQUAL: "12:00:00" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN this_likesAggregate_edge._someLocalTimeAlias = $this_likesAggregate_edge_someLocalTimeAlias_EQUAL ",
+    { this: this, this_likesAggregate_edge_someLocalTimeAlias_EQUAL: $this_likesAggregate_edge_someLocalTimeAlias_EQUAL },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someLocalTimeAlias_EQUAL": {
         "hour": 12,
         "minute": 0,
         "second": 0,

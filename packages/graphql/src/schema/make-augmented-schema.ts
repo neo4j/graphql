@@ -1007,15 +1007,15 @@ function makeAugmentedSchema(
                 }
 
                 const fields = whereAggregationTypes.reduce<BaseField[]>((r, t) => {
-                    const field = [...nodeOrRelFields.primitiveFields, ...nodeOrRelFields.temporalFields].find(
+                    const fields = [...nodeOrRelFields.primitiveFields, ...nodeOrRelFields.temporalFields].filter(
                         (y) => !y.typeMeta.array && y.typeMeta.name === t
                     );
 
-                    if (!field) {
+                    if (!fields.length) {
                         return r;
                     }
 
-                    return r.concat(field);
+                    return r.concat(fields);
                 }, []);
 
                 if (!fields.length) {

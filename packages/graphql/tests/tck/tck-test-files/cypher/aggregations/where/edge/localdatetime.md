@@ -16,6 +16,7 @@ type Post {
 
 interface Likes {
     someLocalDateTime: LocalDateTime
+    someLocalDateTimeAlias: LocalDateTime @alias(property: "_someLocalDateTimeAlias")
 }
 ```
 
@@ -51,6 +52,49 @@ RETURN this { .content } as this
 ```json
 {
     "this_likesAggregate_edge_someLocalDateTime_EQUAL": {
+        "year": 2003,
+        "month": 9,
+        "day": 14,
+        "hour": 12,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0
+    }
+}
+```
+
+---
+
+## EQUAL with alias
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someLocalDateTimeAlias_EQUAL: "2003-09-14T12:00:00" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN this_likesAggregate_edge._someLocalDateTimeAlias = $this_likesAggregate_edge_someLocalDateTimeAlias_EQUAL ",
+    { this: this, this_likesAggregate_edge_someLocalDateTimeAlias_EQUAL: $this_likesAggregate_edge_someLocalDateTimeAlias_EQUAL },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someLocalDateTimeAlias_EQUAL": {
         "year": 2003,
         "month": 9,
         "day": 14,

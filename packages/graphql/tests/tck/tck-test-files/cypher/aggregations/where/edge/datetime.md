@@ -16,6 +16,7 @@ type Post {
 
 interface Likes {
     someDateTime: DateTime
+    someDateTimeAlias: DateTime @alias(property: "_someDateTimeAlias")
 }
 ```
 
@@ -51,6 +52,50 @@ RETURN this { .content } as this
 ```json
 {
     "this_likesAggregate_edge_someDateTime_EQUAL": {
+        "day": 25,
+        "hour": 12,
+        "minute": 51,
+        "month": 9,
+        "nanosecond": 37000000,
+        "second": 24,
+        "timeZoneOffsetSeconds": 0,
+        "year": 2021
+    }
+}
+```
+
+---
+
+## EQUAL with alias
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someDateTimeAlias_EQUAL: "2021-09-25T12:51:24.037Z" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN this_likesAggregate_edge._someDateTimeAlias = $this_likesAggregate_edge_someDateTimeAlias_EQUAL ",
+    { this: this, this_likesAggregate_edge_someDateTimeAlias_EQUAL: $this_likesAggregate_edge_someDateTimeAlias_EQUAL },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someDateTimeAlias_EQUAL": {
         "day": 25,
         "hour": 12,
         "minute": 51,

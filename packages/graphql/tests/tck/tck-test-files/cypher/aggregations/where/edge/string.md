@@ -16,6 +16,7 @@ type Post {
 
 interface Likes {
     someString: String
+    someStringAlias: String @alias(property: "_someStringAlias")
 }
 ```
 
@@ -51,6 +52,41 @@ RETURN this { .content } as this
 ```json
 {
     "this_likesAggregate_edge_someString_EQUAL": "10"
+}
+```
+
+---
+
+## EQUAL with alias
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someStringAlias_EQUAL: "10" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN this_likesAggregate_edge._someStringAlias = $this_likesAggregate_edge_someStringAlias_EQUAL ",
+    { this: this, this_likesAggregate_edge_someStringAlias_EQUAL: $this_likesAggregate_edge_someStringAlias_EQUAL },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someStringAlias_EQUAL": "10"
 }
 ```
 

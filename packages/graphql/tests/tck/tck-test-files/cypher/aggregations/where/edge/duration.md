@@ -16,6 +16,7 @@ type Post {
 
 interface Likes {
     someDuration: Duration
+    someDurationAlias: Duration @alias(property: "_someDurationAlias")
 }
 ```
 
@@ -51,6 +52,52 @@ RETURN this { .content } as this
 ```json
 {
     "this_likesAggregate_edge_someDuration_EQUAL": {
+        "months": 12,
+        "days": 0,
+        "seconds": {
+            "high": 0,
+            "low": 0
+        },
+        "nanoseconds": {
+            "high": 0,
+            "low": 0
+        }
+    }
+}
+```
+
+---
+
+## EQUAL with alias
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someDurationAlias_EQUAL: "P1Y" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN this_likesAggregate_edge._someDurationAlias = $this_likesAggregate_edge_someDurationAlias_EQUAL ",
+    { this: this, this_likesAggregate_edge_someDurationAlias_EQUAL: $this_likesAggregate_edge_someDurationAlias_EQUAL },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someDurationAlias_EQUAL": {
         "months": 12,
         "days": 0,
         "seconds": {

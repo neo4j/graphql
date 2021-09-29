@@ -7,6 +7,7 @@ Schema:
 ```graphql
 type User {
     someFloat: Float
+    someFloatAlias: Float @alias(property: "_someFloatAlias")
 }
 
 type Post {
@@ -47,6 +48,41 @@ RETURN this { .content } as this
 ```json
 {
     "this_likesAggregate_node_someFloat_EQUAL": 10
+}
+```
+
+---
+
+## EQUAL with alias
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someFloatAlias_EQUAL: 10 } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN this_likesAggregate_node._someFloatAlias = $this_likesAggregate_node_someFloatAlias_EQUAL ",
+    { this: this, this_likesAggregate_node_someFloatAlias_EQUAL: $this_likesAggregate_node_someFloatAlias_EQUAL },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someFloatAlias_EQUAL": 10
 }
 ```
 

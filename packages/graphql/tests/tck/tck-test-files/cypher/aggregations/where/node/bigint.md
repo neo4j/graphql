@@ -7,6 +7,7 @@ Schema:
 ```graphql
 type User {
     someBigInt: BigInt
+    someBigIntAlias: BigInt @alias(property: "_someBigIntAlias")
 }
 
 type Post {
@@ -47,6 +48,44 @@ RETURN this { .content } as this
 ```json
 {
     "this_likesAggregate_node_someBigInt_EQUAL": {
+        "high": 0,
+        "low": -2147483648
+    }
+}
+```
+
+---
+
+## EQUAL with alias
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someBigIntAlias_EQUAL: "2147483648" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN this_likesAggregate_node._someBigIntAlias = $this_likesAggregate_node_someBigIntAlias_EQUAL ",
+    { this: this, this_likesAggregate_node_someBigIntAlias_EQUAL: $this_likesAggregate_node_someBigIntAlias_EQUAL },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someBigIntAlias_EQUAL": {
         "high": 0,
         "low": -2147483648
     }

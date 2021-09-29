@@ -102,6 +102,8 @@ function aggregate({
             )
         ) as BaseField;
 
+        const dbPropertyName = field.dbPropertyName || field.fieldName;
+
         if (!field) {
             return;
         }
@@ -116,13 +118,13 @@ function aggregate({
 
             if (field.typeMeta.name === "String") {
                 const hoistedVariable = `${paramName}_SIZE`;
-                withStrs.push(`size(${variable}.${field.fieldName}) AS ${hoistedVariable}`);
+                withStrs.push(`size(${variable}.${dbPropertyName}) AS ${hoistedVariable}`);
                 aggregations.push(`avg(${hoistedVariable}) ${averageOperator} toFloat($${paramName})`);
 
                 return;
             }
 
-            aggregations.push(`avg(${variable}.${field.fieldName}) ${averageOperator} $${paramName}`);
+            aggregations.push(`avg(${variable}.${dbPropertyName}) ${averageOperator} $${paramName}`);
 
             return;
         }
@@ -135,7 +137,7 @@ function aggregate({
 
                 const hoistedVariable = `${paramName}_SIZE`;
 
-                withStrs.push(`size(${variable}.${field.fieldName}) AS ${hoistedVariable}`);
+                withStrs.push(`size(${variable}.${dbPropertyName}) AS ${hoistedVariable}`);
 
                 aggregations.push(
                     `${isShortest ? `min` : "max"}(${hoistedVariable}) ${createOperator(stringOperator)} $${paramName}`
@@ -148,7 +150,7 @@ function aggregate({
             const [, opString] = operatorString.split(`${isMin ? `MIN` : "MAX"}_`);
 
             aggregations.push(
-                ` ${isMin ? `min` : "max"}(${variable}.${field.fieldName}) ${createOperator(opString)} $${paramName}`
+                ` ${isMin ? `min` : "max"}(${variable}.${dbPropertyName}) ${createOperator(opString)} $${paramName}`
             );
 
             return;
@@ -158,14 +160,14 @@ function aggregate({
 
         if (field.typeMeta.name === "String") {
             if (operator !== "=") {
-                aggregations.push(`size(${variable}.${field.fieldName}) ${operator} $${paramName}`);
+                aggregations.push(`size(${variable}.${dbPropertyName}) ${operator} $${paramName}`);
 
                 return;
             }
         }
 
         // Default
-        aggregations.push(`${variable}.${field.fieldName} ${operator} $${paramName}`);
+        aggregations.push(`${variable}.${dbPropertyName} ${operator} $${paramName}`);
     });
 
     return {
