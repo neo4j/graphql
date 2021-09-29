@@ -21,6 +21,7 @@ import { Node, Relationship } from "../classes";
 import { RelationField, Context, BaseField } from "../types";
 
 const fieldOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+const theaseOperators = ["SHORTEST", "LONGEST", "MIN", "MAX"];
 
 type Operator = "=" | "<" | "<=" | ">" | ">=";
 
@@ -95,7 +96,9 @@ function aggregate({
         const field = [...nodeOrRelationship.primitiveFields, ...nodeOrRelationship.temporalFields].find((field) =>
             fieldOperators.some(
                 (op) =>
-                    e[0].split(`_${op}`)[0] === field.fieldName || e[0].split(`_AVERAGE_${op}`)[0] === field.fieldName
+                    e[0].split(`_${op}`)[0] === field.fieldName ||
+                    e[0].split(`_AVERAGE_${op}`)[0] === field.fieldName ||
+                    theaseOperators.some((x) => e[0].split(`_${x}_${op}`)[0] === field.fieldName)
             )
         ) as BaseField;
 
@@ -120,6 +123,24 @@ function aggregate({
             }
 
             aggregations.push(`avg(${variable}.${field.fieldName}) ${averageOperator} $${paramName}`);
+
+            return;
+        }
+
+        if (theaseOperators.some((fO) => fieldOperators.includes(operatorString.split(`${fO}_`)[1]))) {
+            // MIN, MAX, SHORTEST, LONGEST
+            if (field.typeMeta.name === "String") {
+                let isShortest = operatorString.startsWith("SHORTEST_");
+                const [, stringOperator] = operatorString.split(`${isShortest ? `SHORTEST` : "LONGEST"}_`);
+
+                const hoistedVariable = `${paramName}_SIZE`;
+
+                withStrs.push(`size(${variable}.${field.fieldName}) AS ${hoistedVariable}`);
+
+                aggregations.push(
+                    `${isShortest ? `min` : "max"}(${hoistedVariable}) ${createOperator(stringOperator)} $${paramName}`
+                );
+            }
 
             return;
         }

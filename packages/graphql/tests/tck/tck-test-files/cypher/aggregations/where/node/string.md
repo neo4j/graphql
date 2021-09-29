@@ -204,6 +204,201 @@ RETURN this { .content } as this
 
 ---
 
+## SHORTEST_EQUAL
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { name_SHORTEST_EQUAL: 10 } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    WITH this_likesAggregate_node, this_likesAggregate_edge, size(this_likesAggregate_node.name) AS this_likesAggregate_node_name_SHORTEST_EQUAL_SIZE
+    RETURN min(this_likesAggregate_node_name_SHORTEST_EQUAL_SIZE) = $this_likesAggregate_node_name_SHORTEST_EQUAL ",
+    { this: this, this_likesAggregate_node_name_SHORTEST_EQUAL: $this_likesAggregate_node_name_SHORTEST_EQUAL },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_name_SHORTEST_EQUAL": {
+        "high": 0,
+        "low": 10
+    }
+}
+```
+
+---
+
+## SHORTEST_GT
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { name_SHORTEST_GT: 10 } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    WITH this_likesAggregate_node, this_likesAggregate_edge, size(this_likesAggregate_node.name) AS this_likesAggregate_node_name_SHORTEST_GT_SIZE
+    RETURN min(this_likesAggregate_node_name_SHORTEST_GT_SIZE) > $this_likesAggregate_node_name_SHORTEST_GT ",
+    { this: this, this_likesAggregate_node_name_SHORTEST_GT: $this_likesAggregate_node_name_SHORTEST_GT },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_name_SHORTEST_GT": {
+        "high": 0,
+        "low": 10
+    }
+}
+```
+
+---
+
+## SHORTEST_GTE
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { name_SHORTEST_GTE: 10 } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    WITH this_likesAggregate_node, this_likesAggregate_edge, size(this_likesAggregate_node.name) AS this_likesAggregate_node_name_SHORTEST_GTE_SIZE
+    RETURN min(this_likesAggregate_node_name_SHORTEST_GTE_SIZE) >= $this_likesAggregate_node_name_SHORTEST_GTE ",
+    { this: this, this_likesAggregate_node_name_SHORTEST_GTE: $this_likesAggregate_node_name_SHORTEST_GTE },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_name_SHORTEST_GTE": {
+        "high": 0,
+        "low": 10
+    }
+}
+```
+
+---
+
+## SHORTEST_LT
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { name_SHORTEST_LT: 10 } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    WITH this_likesAggregate_node, this_likesAggregate_edge, size(this_likesAggregate_node.name) AS this_likesAggregate_node_name_SHORTEST_LT_SIZE
+    RETURN min(this_likesAggregate_node_name_SHORTEST_LT_SIZE) < $this_likesAggregate_node_name_SHORTEST_LT ",
+    { this: this, this_likesAggregate_node_name_SHORTEST_LT: $this_likesAggregate_node_name_SHORTEST_LT },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_name_SHORTEST_LT": {
+        "high": 0,
+        "low": 10
+    }
+}
+```
+
+---
+
+## SHORTEST_LTE
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { name_SHORTEST_LTE: 10 } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    WITH this_likesAggregate_node, this_likesAggregate_edge, size(this_likesAggregate_node.name) AS this_likesAggregate_node_name_SHORTEST_LTE_SIZE
+    RETURN min(this_likesAggregate_node_name_SHORTEST_LTE_SIZE) <= $this_likesAggregate_node_name_SHORTEST_LTE ",
+    { this: this, this_likesAggregate_node_name_SHORTEST_LTE: $this_likesAggregate_node_name_SHORTEST_LTE },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_name_SHORTEST_LTE": {
+        "high": 0,
+        "low": 10
+    }
+}
+```
+
+---
+
 ## AVERAGE_EQUAL
 
 ### GraphQL Input

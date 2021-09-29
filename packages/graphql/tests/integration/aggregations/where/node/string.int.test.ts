@@ -362,6 +362,174 @@ describe("aggregations-where-node-string", () => {
         }
     });
 
+    describe("SHORTEST", () => {
+        test("should return posts where the shortest like String is EQUAL to", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    testString: String!
+                }
+              
+                type Post {
+                  testString: String!
+                  likes: [User] @relationship(type: "LIKES", direction: IN)
+                }
+            `;
+
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
+
+            const shortestTestString = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 10,
+            });
+
+            const testString2 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 11,
+            });
+
+            const longestTestString = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 12,
+            });
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${shortestTestString}"})
+                        CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString2}"})
+                        CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${longestTestString}"})
+                    `
+                );
+
+                const query = `
+                    {
+                        posts(where: { testString: "${testString}", likesAggregate: { node: { testString_SHORTEST_EQUAL: ${shortestTestString.length} } } }) {
+                            testString
+                            likes {
+                                testString
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                expect((gqlResult.data as any).posts).toEqual([
+                    {
+                        testString,
+                        likes: [{ testString: shortestTestString }],
+                    },
+                ]);
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
+    describe("LONGEST", () => {
+        test("should return posts where the longest like String is EQUAL to", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type User {
+                    testString: String!
+                }
+              
+                type Post {
+                  testString: String!
+                  likes: [User] @relationship(type: "LIKES", direction: IN)
+                }
+            `;
+
+            const testString = generate({
+                charset: "alphabetic",
+                readable: true,
+            });
+
+            const shortestTestString = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 10,
+            });
+
+            const testString2 = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 11,
+            });
+
+            const longestTestString = generate({
+                charset: "alphabetic",
+                readable: true,
+                length: 12,
+            });
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            try {
+                await session.run(
+                    `
+                        CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${shortestTestString}"})
+                        CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString2}"})
+                        CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${longestTestString}"})
+                    `
+                );
+
+                const query = `
+                    {
+                        posts(where: { testString: "${testString}", likesAggregate: { node: { testString_LONGEST_EQUAL: ${longestTestString.length} } } }) {
+                            testString
+                            likes {
+                                testString
+                            }
+                        }
+                    }
+                `;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                expect((gqlResult.data as any).posts).toEqual([
+                    {
+                        testString,
+                        likes: [{ testString: longestTestString }],
+                    },
+                ]);
+            } finally {
+                await session.close();
+            }
+        });
+    });
+
     describe("AVERAGE", () => {
         test("should return posts where the average of like Strings is EQUAL to", async () => {
             const session = driver.session();

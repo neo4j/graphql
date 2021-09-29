@@ -1045,17 +1045,13 @@ function makeAugmentedSchema(
 
                     if (field.typeMeta.name === "String") {
                         aggregationInput.addFields({
-                            [`${field.fieldName}_EQUAL`]: "ID",
-                            [`${field.fieldName}_AVERAGE_EQUAL`]: "Float",
                             ...aggregationOperators.reduce((r, o) => {
-                                if (o === "EQUAL") {
-                                    return r;
-                                }
-
                                 return {
                                     ...r,
-                                    [`${field.fieldName}_${o}`]: "Int",
+                                    [`${field.fieldName}_${o}`]: `${o === "EQUAL" ? "String" : "Int"}`,
                                     [`${field.fieldName}_AVERAGE_${o}`]: "Float",
+                                    [`${field.fieldName}_LONGEST_${o}`]: "Int",
+                                    [`${field.fieldName}_SHORTEST_${o}`]: "Int",
                                 };
                             }, {}),
                         });
@@ -1064,8 +1060,8 @@ function makeAugmentedSchema(
                     }
 
                     if (whereAggregationAverageTypes.includes(field.typeMeta.name)) {
-                        aggregationInput.addFields({
-                            ...aggregationOperators.reduce((r, o) => {
+                        aggregationInput.addFields(
+                            aggregationOperators.reduce((r, o) => {
                                 let averageType = "Float";
 
                                 if (field.typeMeta.name === "BigInt") {
@@ -1080,19 +1076,26 @@ function makeAugmentedSchema(
                                     ...r,
                                     [`${field.fieldName}_${o}`]: field.typeMeta.name,
                                     [`${field.fieldName}_AVERAGE_${o}`]: averageType,
+                                    [`${field.fieldName}_MIN_${o}`]: field.typeMeta.name,
+                                    [`${field.fieldName}_MAX_${o}`]: field.typeMeta.name,
                                 };
-                            }, {}),
-                        });
+                            }, {})
+                        );
 
                         return;
                     }
 
-                    aggregationInput.addFields({
-                        ...aggregationOperators.reduce(
-                            (r, o) => ({ ...r, [`${field.fieldName}_${o}`]: field.typeMeta.name }),
+                    aggregationInput.addFields(
+                        aggregationOperators.reduce(
+                            (r, o) => ({
+                                ...r,
+                                [`${field.fieldName}_${o}`]: field.typeMeta.name,
+                                [`${field.fieldName}_MIN_${o}`]: field.typeMeta.name,
+                                [`${field.fieldName}_MAX_${o}`]: field.typeMeta.name,
+                            }),
                             {}
-                        ),
-                    });
+                        )
+                    );
                 });
 
                 return aggregationInput;
