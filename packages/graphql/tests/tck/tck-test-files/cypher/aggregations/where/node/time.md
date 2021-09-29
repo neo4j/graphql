@@ -426,3 +426,208 @@ RETURN this { .content } as this
 ```
 
 ---
+
+## MAX_EQUAL
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someTime_MAX_EQUAL: "12:00:00" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN max(this_likesAggregate_node.someTime) = $this_likesAggregate_node_someTime_MAX_EQUAL ",
+    { this: this, this_likesAggregate_node_someTime_MAX_EQUAL: $this_likesAggregate_node_someTime_MAX_EQUAL },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someTime_MAX_EQUAL": {
+        "hour": 12,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0
+    }
+}
+```
+
+---
+
+## MAX_GT
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someTime_MAX_GT: "12:00:00" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN max(this_likesAggregate_node.someTime) > $this_likesAggregate_node_someTime_MAX_GT ",
+    { this: this, this_likesAggregate_node_someTime_MAX_GT: $this_likesAggregate_node_someTime_MAX_GT },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someTime_MAX_GT": {
+        "hour": 12,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0
+    }
+}
+```
+
+---
+
+## MAX_GTE
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someTime_MAX_GTE: "12:00:00" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN max(this_likesAggregate_node.someTime) >= $this_likesAggregate_node_someTime_MAX_GTE ",
+    { this: this, this_likesAggregate_node_someTime_MAX_GTE: $this_likesAggregate_node_someTime_MAX_GTE },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someTime_MAX_GTE": {
+        "hour": 12,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0
+    }
+}
+```
+
+---
+
+## MAX_LT
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someTime_MAX_LT: "12:00:00" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN max(this_likesAggregate_node.someTime) < $this_likesAggregate_node_someTime_MAX_LT ",
+    { this: this, this_likesAggregate_node_someTime_MAX_LT: $this_likesAggregate_node_someTime_MAX_LT },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someTime_MAX_LT": {
+        "hour": 12,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0
+    }
+}
+```
+
+---
+
+## MAX_LTE
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { node: { someTime_MAX_LTE: "12:00:00" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN max(this_likesAggregate_node.someTime) <= $this_likesAggregate_node_someTime_MAX_LTE ",
+    { this: this, this_likesAggregate_node_someTime_MAX_LTE: $this_likesAggregate_node_someTime_MAX_LTE },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_node_someTime_MAX_LTE": {
+        "hour": 12,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0
+    }
+}
+```
+
+---
