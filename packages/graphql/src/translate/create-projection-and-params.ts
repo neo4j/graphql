@@ -29,6 +29,7 @@ import createPointElement from "./projection/elements/create-point-element";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
+import { createFieldAggregation } from "./aggregations/create-field-aggregation";
 
 interface Res {
     projection: string[];
@@ -149,9 +150,6 @@ function createProjectionAndParams({
         const pointField = node.pointFields.find((x) => x.fieldName === field.name);
         const temporalField = node.temporalFields.find((x) => x.fieldName === field.name);
         const authableField = node.authableFields.find((x) => x.fieldName === field.name);
-        const relationAggregationField = node.relationFields.find((x) => {
-            return `${x.fieldName}Aggregate` === field.name;
-        });
 
         if (authableField) {
             if (authableField.auth) {
@@ -405,29 +403,9 @@ function createProjectionAndParams({
             return res;
         }
 
-        if (relationAggregationField) {
-            const referenceNode = context.neoSchema.nodes.find(
-                (x) => x.name === relationAggregationField.typeMeta.name
-            ) as Node;
-
-            const nodeLabel = chainStr || varName;
-            const nodeMatchStr = `(${nodeLabel})`;
-            const inStr = relationAggregationField.direction === "IN" ? "<-" : "-";
-            const relTypeStr = `[:${relationAggregationField.type}]`;
-            const outStr = relationAggregationField.direction === "OUT" ? "->" : "-";
-            const labels = referenceNode?.labelString;
-            const nodeOutStr = `(x${labels})`;
-
-            const aggregationField =
-                field.fieldsByTypeName[
-                    `${node.name}${referenceNode.name}${relationAggregationField.fieldName}AggregationResult`
-                ];
-            let projectionStr = "{}";
-            const pathStr = `MATCH ${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
-            if (aggregationField.count) {
-                projectionStr = `head(apoc.cypher.runFirstColumnMany("${pathStr} RETURN {count:COUNT(x), max: MAX(x.name)}", {this:${nodeLabel}}))`;
-            }
-
+        const nodeLabel = chainStr || varName;
+        const projectionStr = createFieldAggregation(context, nodeLabel, node, field);
+        if (projectionStr) {
             res.projection.push(`${key}: ${projectionStr}`);
             return res;
         }

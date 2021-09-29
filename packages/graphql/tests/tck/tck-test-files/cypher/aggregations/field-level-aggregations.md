@@ -12,6 +12,7 @@ type Movie {
 
 type Actor {
     name: String
+    age: Int
     movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
 }
 ```
@@ -36,7 +37,107 @@ query {
 ### Expected Cypher Output
 
 ```cypher
-MATCH (this:Movie) RETURN this { .title, actorsAggregate: head(apoc.cypher.runFirstColumnMany("MATCH (this)<-[:ACTED_IN]-(x:Actor) RETURN {count:COUNT(x), max: MAX(x.name)}", {this:this})) } as this
+MATCH (this:Movie)
+RETURN this { .title,
+        actorsAggregate: {
+            count: head(apoc.cypher.runFirstColumn("MATCH (this)<-[:ACTED_IN]-(n:Actor) RETURN COUNT(n)", {this:this}))
+        }
+} as this
+```
+
+### Expected Cypher Params
+
+```json
+{}
+```
+
+---
+
+## Node Aggregations
+
+### GraphQL Input
+
+```graphql
+query {
+    movies {
+        title
+        actorsAggregate {
+            node {
+                name {
+                    longest
+                    shortest
+                }
+            }
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Movie)
+RETURN this { .title,
+        actorsAggregate: {
+            node: {
+                name: head(apoc.cypher.runFirstColumn("
+                    MATCH (this)<-[:ACTED_IN]-(n:Actor)
+                    WITH n as n
+                    ORDER BY size(n.name) DESC
+                    WITH collect(n.name) as list
+                    RETURN {longest: head(list), shortest: last(list)}
+                ", {this:this}))
+            }
+        }
+} as this
+```
+
+### Expected Cypher Params
+
+```json
+{}
+```
+
+---
+
+## Node Aggregations and Count
+
+### GraphQL Input
+
+```graphql
+query {
+    movies {
+        actorsAggregate {
+            count
+            node {
+                name {
+                    longest
+                    shortest
+                }
+            }
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Movie)
+RETURN this {
+        actorsAggregate: {
+            count: head(apoc.cypher.runFirstColumn("MATCH (this)<-[:ACTED_IN]-(n:Actor) RETURN COUNT(n)", {this:this})),
+            node: {
+                name: head(apoc.cypher.runFirstColumn("
+                    MATCH (this)<-[:ACTED_IN]-(n:Actor)
+                    WITH n as n
+                    ORDER BY size(n.name) DESC
+                    WITH collect(n.name) as list
+                    RETURN {longest: head(list), shortest: last(list)}
+                ", {this:this}))
+            }
+        }
+} as this
 ```
 
 ### Expected Cypher Params
