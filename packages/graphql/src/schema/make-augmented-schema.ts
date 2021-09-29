@@ -582,16 +582,6 @@ function makeAugmentedSchema(
             })
         );
 
-        const [interfaceConnectInput, interfaceDeleteInput, interfaceDisconnectInput] = [
-            "Connect",
-            "Delete",
-            "Disconnect",
-        ].map((operation) =>
-            composer.getOrCreateITC(`${interfaceRelationship.name.value}${operation}Input`, (tc) => {
-                tc.addFields({ _on: `${interfaceRelationship.name.value}Implementations${operation}Input` });
-            })
-        );
-
         const whereInput = composer.createInputTC({
             name: `${interfaceRelationship.name.value}Where`,
             fields: { ...interfaceWhereFields, _on: implementationsWhereInput },
@@ -682,6 +672,24 @@ function makeAugmentedSchema(
                 },
             });
         });
+
+        if (implementationsConnectInput.getFieldNames().length) {
+            composer.getOrCreateITC(`${interfaceRelationship.name.value}ConnectInput`, (tc) => {
+                tc.addFields({ _on: implementationsConnectInput });
+            });
+        }
+
+        if (implementationsDeleteInput.getFieldNames().length) {
+            composer.getOrCreateITC(`${interfaceRelationship.name.value}DeleteInput`, (tc) => {
+                tc.addFields({ _on: implementationsDeleteInput });
+            });
+        }
+
+        if (implementationsDisconnectInput.getFieldNames().length) {
+            composer.getOrCreateITC(`${interfaceRelationship.name.value}DisconnectInput`, (tc) => {
+                tc.addFields({ _on: implementationsDisconnectInput });
+            });
+        }
     });
 
     if (pointInTypeDefs) {

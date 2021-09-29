@@ -22,6 +22,7 @@ function createInterfaceProjectionAndParams({
     nodeVariable: string;
     parameterPrefix?: string;
 }): { cypher: string; params: Record<string, any> } {
+    let globalParams = {};
     let params: { args?: any } = {};
 
     const inStr = field.direction === "IN" ? "<-" : "-";
@@ -65,7 +66,7 @@ function createInterfaceProjectionAndParams({
             },
         });
         if (allowAndParams[0]) {
-            params = { ...params, ...allowAndParams[1] };
+            globalParams = { ...globalParams, ...allowAndParams[1] };
             subquery.push(`CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
@@ -226,7 +227,10 @@ function createInterfaceProjectionAndParams({
     // return res;
     return {
         cypher: interfaceProjection.join("\n"),
-        params: Object.keys(params).length ? { [`${nodeVariable}_${resolveTree.alias}`]: params } : {},
+        params: {
+            ...globalParams,
+            ...(Object.keys(params).length ? { [`${nodeVariable}_${resolveTree.alias}`]: params } : {}),
+        },
     };
 }
 

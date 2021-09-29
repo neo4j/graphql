@@ -83,6 +83,7 @@ WHERE this.id = $this_id
 WITH this
 OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
 WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
+
 CALL apoc.do.when(this_actors0 IS NOT NULL,
   "
     SET this_actors0.name = $this_update_actors0_name

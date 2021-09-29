@@ -75,9 +75,7 @@ RETURN this { actedIn: collect(actedIn) } as this
 
 ```json
 {
-    "this_actedIn": {
-        "this_Series_auth_allow0_episodes": "super_admin"
-    }
+    "this_Series_auth_allow0_episodes": "super_admin"
 }
 ```
 
