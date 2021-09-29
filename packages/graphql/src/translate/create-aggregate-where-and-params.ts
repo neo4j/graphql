@@ -140,7 +140,16 @@ function aggregate({
                 aggregations.push(
                     `${isShortest ? `min` : "max"}(${hoistedVariable}) ${createOperator(stringOperator)} $${paramName}`
                 );
+
+                return;
             }
+
+            let isMin = operatorString.startsWith("MIN_");
+            const [, opString] = operatorString.split(`${isMin ? `MIN` : "MAX"}_`);
+
+            aggregations.push(
+                ` ${isMin ? `min` : "max"}(${variable}.${field.fieldName}) ${createOperator(opString)} $${paramName}`
+            );
 
             return;
         }

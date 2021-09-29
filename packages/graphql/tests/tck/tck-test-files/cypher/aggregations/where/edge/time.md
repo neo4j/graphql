@@ -225,3 +225,208 @@ RETURN this { .content } as this
 ```
 
 ---
+
+## MIN_EQUAL
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someTime_MIN_EQUAL: "12:00:00" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN min(this_likesAggregate_edge.someTime) = $this_likesAggregate_edge_someTime_MIN_EQUAL ",
+    { this: this, this_likesAggregate_edge_someTime_MIN_EQUAL: $this_likesAggregate_edge_someTime_MIN_EQUAL },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someTime_MIN_EQUAL": {
+        "hour": 12,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0
+    }
+}
+```
+
+---
+
+## MIN_GT
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someTime_MIN_GT: "12:00:00" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN min(this_likesAggregate_edge.someTime) > $this_likesAggregate_edge_someTime_MIN_GT ",
+    { this: this, this_likesAggregate_edge_someTime_MIN_GT: $this_likesAggregate_edge_someTime_MIN_GT },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someTime_MIN_GT": {
+        "hour": 12,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0
+    }
+}
+```
+
+---
+
+## MIN_GTE
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someTime_MIN_GTE: "12:00:00" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN min(this_likesAggregate_edge.someTime) >= $this_likesAggregate_edge_someTime_MIN_GTE ",
+    { this: this, this_likesAggregate_edge_someTime_MIN_GTE: $this_likesAggregate_edge_someTime_MIN_GTE },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someTime_MIN_GTE": {
+        "hour": 12,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0
+    }
+}
+```
+
+---
+
+## MIN_LT
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someTime_MIN_LT: "12:00:00" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN min(this_likesAggregate_edge.someTime) < $this_likesAggregate_edge_someTime_MIN_LT ",
+    { this: this, this_likesAggregate_edge_someTime_MIN_LT: $this_likesAggregate_edge_someTime_MIN_LT },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someTime_MIN_LT": {
+        "hour": 12,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0
+    }
+}
+```
+
+---
+
+## MIN_LTE
+
+### GraphQL Input
+
+```graphql
+{
+    posts(where: { likesAggregate: { edge: { someTime_MIN_LTE: "12:00:00" } } }) {
+        content
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Post)
+WHERE apoc.cypher.runFirstColumn("
+    MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
+    RETURN min(this_likesAggregate_edge.someTime) <= $this_likesAggregate_edge_someTime_MIN_LTE ",
+    { this: this, this_likesAggregate_edge_someTime_MIN_LTE: $this_likesAggregate_edge_someTime_MIN_LTE },
+    false
+)
+RETURN this { .content } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_likesAggregate_edge_someTime_MIN_LTE": {
+        "hour": 12,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0
+    }
+}
+```
+
+---
