@@ -1,24 +1,21 @@
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../../classes";
 import { Context, RelationField } from "../../types";
+import { generateResultObject, getFieldType, AggregationType } from "./utils";
 
 const subQueryNodeAlias = "n";
-
-enum AggregationType {
-    Int = "IntAggregateSelection",
-    String = "StringAggregateSelection",
-    BigInt = "BigIntAggregateSelection",
-    Float = "FloatAggregateSelection",
-    Id = "IDAggregateSelection",
-}
-
 // eslint-disable-next-line import/prefer-default-export
-export function createFieldAggregation(
-    context: Context,
-    nodeLabel: string,
-    node: Node,
-    field: ResolveTree
-): string | undefined {
+export function createFieldAggregation({
+    context,
+    nodeLabel,
+    node,
+    field,
+}: {
+    context: Context;
+    nodeLabel: string;
+    node: Node;
+    field: ResolveTree;
+}): string | undefined {
     const relationAggregationField = node.relationFields.find((x) => {
         return `${x.fieldName}Aggregate` === field.name;
     });
@@ -29,16 +26,14 @@ export function createFieldAggregation(
     if (!referenceNode) return undefined;
 
     const pathStr = generatePathString(nodeLabel, relationAggregationField, referenceNode);
+    const fieldPathBase = `${node.name}${referenceNode.name}${relationAggregationField.fieldName}`;
+    const aggregationField = field.fieldsByTypeName[`${fieldPathBase}AggregationResult`];
 
-    const aggregationField =
-        field.fieldsByTypeName[
-            `${node.name}${referenceNode.name}${relationAggregationField.fieldName}AggregationResult`
-        ];
     let projectionStr = "{}";
     let nodeQuery: string | undefined;
 
     if (aggregationField.node) {
-        const resultFieldName = `${node.name}${referenceNode.name}${relationAggregationField.fieldName}AggregateSelection`;
+        const resultFieldName = `${fieldPathBase}AggregateSelection`;
         const nodeField = aggregationField.node.fieldsByTypeName[resultFieldName];
         nodeQuery = createNodeQuery(pathStr, nodeField);
     }
@@ -46,6 +41,7 @@ export function createFieldAggregation(
     // if (aggregationField.edge) {
     //     const resultFieldName = `${node.name}${referenceNode.name}${relationAggregationField.fieldName}EdgeAggregateSelection`;
     // }
+
     projectionStr = generateResultObject({
         count: aggregationField.count ? createCountQuery(pathStr) : undefined,
         node: nodeQuery,
@@ -122,20 +118,4 @@ function generateDefaultAggregationQuery(pathStr: string, fieldName: string) {
     const fieldPath = `${subQueryNodeAlias}.${fieldName}`;
     return `MATCH ${pathStr}
             RETURN {min: MIN(${fieldPath}), max: MAX(${fieldPath})}`;
-}
-
-function generateResultObject(fields: Record<string, string | undefined>): string {
-    return `{ ${Object.entries(fields)
-        .map(([key, value]: [string, string | undefined]): string | undefined => {
-            if (!value) return undefined;
-            return `${key}: ${value}`;
-        })
-        .filter(Boolean)
-        .join(", ")} }`;
-}
-
-function getFieldType(field: ResolveTree): AggregationType | undefined {
-    if (field.fieldsByTypeName[AggregationType.Int]) return AggregationType.Int;
-    if (field.fieldsByTypeName[AggregationType.String]) return AggregationType.String;
-    return undefined;
 }

@@ -403,8 +403,13 @@ function createProjectionAndParams({
             return res;
         }
 
-        const nodeLabel = chainStr || varName;
-        const projectionStr = createFieldAggregation(context, nodeLabel, node, field);
+        const projectionStr = createFieldAggregation({
+            context,
+            nodeLabel: chainStr || varName,
+            node,
+            field,
+        });
+
         if (projectionStr) {
             res.projection.push(`${key}: ${projectionStr}`);
             return res;
