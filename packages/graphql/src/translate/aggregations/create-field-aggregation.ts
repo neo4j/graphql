@@ -2,6 +2,16 @@ import { ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../../classes";
 import { Context, RelationField } from "../../types";
 
+const subQueryNodeAlias = "n";
+
+enum AggregationType {
+    Int = "IntAggregateSelection",
+    String = "StringAggregateSelection",
+    BigInt = "BigIntAggregateSelection",
+    Float = "FloatAggregateSelection",
+    Id = "IDAggregateSelection",
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export function createFieldAggregation(
     context: Context,
@@ -44,44 +54,74 @@ export function createFieldAggregation(
 }
 
 function generatePathString(nodeLabel: string, relationField: RelationField, referenceNode: Node): string {
-    const nodeMatchStr = `(${nodeLabel})`;
     const inStr = relationField.direction === "IN" ? "<-" : "-";
-    const relTypeStr = `[:${relationField.type}]`;
     const outStr = relationField.direction === "OUT" ? "->" : "-";
-    const labels = referenceNode?.labelString;
-    const nodeOutStr = `(n${labels})`;
+    const nodeOutStr = `(${subQueryNodeAlias}${referenceNode.labelString})`;
 
-    return `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
+    return `(${nodeLabel})${inStr}[:${relationField.type}]${outStr}${nodeOutStr}`;
 }
 
 function getReferenceNode(context: Context, relationField: RelationField): Node | undefined {
     return context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name);
 }
 
-function createNodeQuery(pathStr: string, field: Record<string, ResolveTree>): string | undefined {
-    if (!field) return undefined;
+function createNodeQuery(pathStr: string, fields: Record<string, ResolveTree>): string | undefined {
+    if (!fields) return undefined;
 
-    const aggregationNodeField = "name";
     return generateResultObject(
-        Object.keys(field).reduce((acc, fieldName) => {
-            acc[fieldName] = createNodeFieldSubQuery(pathStr, aggregationNodeField);
+        Object.entries(fields).reduce((acc, [fieldName, field]) => {
+            const fieldType = getFieldType(field);
+            if (fieldType) {
+                acc[fieldName] = createNodeFieldSubQuery(pathStr, fieldName, fieldType);
+            }
             return acc;
         }, {} as Record<string, string>)
     );
 }
 
 function createCountQuery(pathStr: string): string {
-    return `head(apoc.cypher.runFirstColumn("MATCH ${pathStr} RETURN COUNT(n)", {this:this}))`;
+    return `head(apoc.cypher.runFirstColumn("MATCH ${pathStr} RETURN COUNT(${subQueryNodeAlias})", {this:this}))`;
 }
 
-function createNodeFieldSubQuery(pathStr: string, fieldName: string) {
+function createNodeFieldSubQuery(pathStr: string, fieldName: string, type: AggregationType) {
     return `head(apoc.cypher.runFirstColumn("
-            MATCH ${pathStr}
-            WITH n as n
-            ORDER BY size(n.${fieldName}) DESC
-            WITH collect(n.${fieldName}) as list
-            RETURN {longest: head(list), shortest: last(list)}
+            ${getAggregationQuery(pathStr, fieldName, type)}
         ", {this:this}))`;
+}
+
+function getAggregationQuery(pathStr: string, fieldName: string, type: AggregationType): string {
+    switch (type) {
+        case AggregationType.String:
+        case AggregationType.Id:
+            return generateStringAggregationQuery(pathStr, fieldName);
+        case AggregationType.Int:
+        case AggregationType.BigInt:
+        case AggregationType.Float:
+            return generateNumberAggregationQuery(pathStr, fieldName);
+        default:
+            return generateDefaultAggregationQuery(pathStr, fieldName);
+    }
+}
+
+function generateStringAggregationQuery(pathStr: string, fieldName: string) {
+    const fieldPath = `${subQueryNodeAlias}.${fieldName}`;
+    return `MATCH ${pathStr}
+            WITH ${subQueryNodeAlias} as ${subQueryNodeAlias}
+            ORDER BY size(${fieldPath}) DESC
+            WITH collect(${fieldPath}) as list
+            RETURN {longest: head(list), shortest: last(list)}`;
+}
+
+function generateNumberAggregationQuery(pathStr: string, fieldName: string) {
+    const fieldPath = `${subQueryNodeAlias}.${fieldName}`;
+    return `MATCH ${pathStr}
+            RETURN {min: MIN(${fieldPath}), max: MAX(${fieldPath}), average: AVG(${fieldPath})}`;
+}
+
+function generateDefaultAggregationQuery(pathStr: string, fieldName: string) {
+    const fieldPath = `${subQueryNodeAlias}.${fieldName}`;
+    return `MATCH ${pathStr}
+            RETURN {min: MIN(${fieldPath}), max: MAX(${fieldPath})}`;
 }
 
 function generateResultObject(fields: Record<string, string | undefined>): string {
@@ -92,4 +132,10 @@ function generateResultObject(fields: Record<string, string | undefined>): strin
         })
         .filter(Boolean)
         .join(", ")} }`;
+}
+
+function getFieldType(field: ResolveTree): AggregationType | undefined {
+    if (field.fieldsByTypeName[AggregationType.Int]) return AggregationType.Int;
+    if (field.fieldsByTypeName[AggregationType.String]) return AggregationType.String;
+    return undefined;
 }

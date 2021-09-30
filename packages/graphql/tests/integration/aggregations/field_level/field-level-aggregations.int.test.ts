@@ -44,29 +44,23 @@ describe("aggregations-field-level-basic", () => {
 
         type ${typeActor.name} {
             name: String
+            age: Int
             ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT)
         }
         `;
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
-    });
-
-    beforeEach(() => {
         session = driver.session();
-    });
-
-    afterEach(async () => {
-        await session.close();
+        await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold", age: 54})
+        CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", age:37})`);
     });
 
     afterAll(async () => {
+        await session.close();
         await driver.close();
     });
 
-    test("should count nodes", async () => {
-        await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold"})
-             CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda"})`);
-
+    test("count nodes", async () => {
         const query = `
             query {
               ${typeMovie.plural} {
@@ -89,39 +83,75 @@ describe("aggregations-field-level-basic", () => {
         });
     });
 
-    test("shortest and longest node string", async () => {
-        await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold"})
-             CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda"})`);
-
-        const query = `
+    describe("node aggregation", () => {
+        test("shortest and longest node string", async () => {
+            const query = `
             query {
-              ${typeMovie.plural} {
-                ${typeActor.plural}Aggregate {
-                  node {
-                    name {
-                      longest
-                      shortest
+                ${typeMovie.plural} {
+                    ${typeActor.plural}Aggregate {
+                        node {
+                            name {
+                                longest
+                                shortest
+                            }
+                        }
                     }
-                  }
                 }
-              }
             }
             `;
 
-        const gqlResult = await graphql({
-            schema: neoSchema.schema,
-            source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+            expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+                node: {
+                    name: {
+                        longest: "Arnold",
+                        shortest: "Linda",
+                    },
+                },
+            });
         });
 
-        expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
-            node: {
-                name: {
-                    longest: "Arnold",
-                    shortest: "Linda",
+        test("max, min and avg integers", async () => {
+            const query = `
+            query {
+                ${typeMovie.plural} {
+                    ${typeActor.plural}Aggregate {
+                        node {
+                            age {
+                                max
+                                min
+                                average
+                            }
+                        }
+                    }
+                }
+            }
+            `;
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+            expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+                node: {
+                    age: {
+                        max: 54,
+                        min: 37,
+                        average: 45.5,
+                    },
                 },
-            },
+            });
         });
     });
+
+    describe("Edge aggregations", () => {});
 });
