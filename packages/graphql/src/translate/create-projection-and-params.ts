@@ -29,7 +29,7 @@ import createPointElement from "./projection/elements/create-point-element";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
-import { createFieldAggregation } from "./aggregations/create-field-aggregation";
+import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 
 interface Res {
     projection: string[];

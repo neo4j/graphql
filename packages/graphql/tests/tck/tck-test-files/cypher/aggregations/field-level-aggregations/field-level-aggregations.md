@@ -40,7 +40,9 @@ query {
 MATCH (this:Movie)
 RETURN this { .title,
         actorsAggregate: {
-            count: head(apoc.cypher.runFirstColumn("MATCH (this)<-[r:ACTED_IN]-(n:Actor) RETURN COUNT(n)", {this:this}))
+            count: head(apoc.cypher.runFirstColumn("
+            MATCH (this)<-[r:ACTED_IN]-(n:Actor) RETURN COUNT(n)
+            ", {this:this}))
         }
 } as this
 ```
@@ -79,7 +81,7 @@ query {
 MATCH (this:Movie)
 RETURN this {
         actorsAggregate: {
-            count: head(apoc.cypher.runFirstColumn("MATCH (this)<-[r:ACTED_IN]-(n:Actor) RETURN COUNT(n)", {this:this})),
+            count: head(apoc.cypher.runFirstColumn(" MATCH (this)<-[r:ACTED_IN]-(n:Actor) RETURN COUNT(n) ", {this:this})),
             node: {
                 name: head(apoc.cypher.runFirstColumn("
                     MATCH (this)<-[r:ACTED_IN]-(n:Actor)
