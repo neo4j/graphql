@@ -392,9 +392,9 @@ describe("aggregations-where-node-float", () => {
                 readable: true,
             });
 
-            const someFloat1 = Math.random() * Math.random() + 10;
-            const someFloat2 = Math.random() * Math.random() + 10;
-            const someFloat3 = Math.random() * Math.random() + 10;
+            const someFloat1 = Math.random() * Math.random() + 10.123;
+            const someFloat2 = Math.random() * Math.random() + 11.123;
+            const someFloat3 = Math.random() * Math.random() + 12.123;
 
             const avg = (someFloat1 + someFloat2 + someFloat3) / 3;
 
@@ -463,9 +463,9 @@ describe("aggregations-where-node-float", () => {
                 readable: true,
             });
 
-            const someFloat1 = Math.random() * Math.random() + 10;
-            const someFloat2 = Math.random() * Math.random() + 10;
-            const someFloat3 = Math.random() * Math.random() + 10;
+            const someFloat1 = Math.random() * Math.random() + 10.123;
+            const someFloat2 = Math.random() * Math.random() + 11.123;
+            const someFloat3 = Math.random() * Math.random() + 12.123;
 
             const avg = (someFloat1 + someFloat2 + someFloat3) / 3;
             const avgGT = avg - 1;
@@ -535,9 +535,9 @@ describe("aggregations-where-node-float", () => {
                 readable: true,
             });
 
-            const someFloat1 = Math.random() * Math.random() + 10;
-            const someFloat2 = Math.random() * Math.random() + 10;
-            const someFloat3 = Math.random() * Math.random() + 10;
+            const someFloat1 = Math.random() * Math.random() + 10.123;
+            const someFloat2 = Math.random() * Math.random() + 11.123;
+            const someFloat3 = Math.random() * Math.random() + 12.123;
 
             const avg = (someFloat1 + someFloat2 + someFloat3) / 3;
 
@@ -606,9 +606,9 @@ describe("aggregations-where-node-float", () => {
                 readable: true,
             });
 
-            const someFloat1 = Math.random() * Math.random() + 10;
-            const someFloat2 = Math.random() * Math.random() + 10;
-            const someFloat3 = Math.random() * Math.random() + 10;
+            const someFloat1 = Math.random() * Math.random() + 10.123;
+            const someFloat2 = Math.random() * Math.random() + 11.123;
+            const someFloat3 = Math.random() * Math.random() + 12.123;
 
             const avg = (someFloat1 + someFloat2 + someFloat3) / 3;
             const avgLT = avg + 1;
@@ -678,9 +678,9 @@ describe("aggregations-where-node-float", () => {
                 readable: true,
             });
 
-            const someFloat1 = Math.random() * Math.random() + 10;
-            const someFloat2 = Math.random() * Math.random() + 10;
-            const someFloat3 = Math.random() * Math.random() + 10;
+            const someFloat1 = Math.random() * Math.random() + 10.123;
+            const someFloat2 = Math.random() * Math.random() + 11.123;
+            const someFloat3 = Math.random() * Math.random() + 12.123;
 
             const avg = (someFloat1 + someFloat2 + someFloat3) / 3;
 
