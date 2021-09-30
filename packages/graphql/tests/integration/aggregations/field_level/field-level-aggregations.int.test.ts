@@ -39,20 +39,24 @@ describe("aggregations-field-level-basic", () => {
         typeDefs = `
         type ${typeMovie.name} {
             title: String
-            ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN)
+            ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
         }
 
         type ${typeActor.name} {
             name: String
             age: Int
-            ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT)
+            ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
+        }
+
+        interface ActedIn {
+            screentime: Int
         }
         `;
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
         session = driver.session();
-        await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold", age: 54})
-        CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", age:37})`);
+        await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60 }]-(:${typeActor.name} { name: "Arnold", age: 54})
+        CREATE (m)<-[:ACTED_IN { screentime: 120 }]-(:${typeActor.name} {name: "Linda", age:37})`);
     });
 
     afterAll(async () => {
@@ -153,5 +157,40 @@ describe("aggregations-field-level-basic", () => {
         });
     });
 
-    describe("Edge aggregations", () => {});
+    describe("Edge aggregations", () => {
+        test("max, min and avg integers", async () => {
+            const query = `
+            query {
+                ${typeMovie.plural} {
+                    ${typeActor.plural}Aggregate {
+                        edge {
+                            screentime {
+                                max
+                                min
+                                average
+                            }
+                        }
+                    }
+                }
+            }
+            `;
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+            expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+                edge: {
+                    screentime: {
+                        max: 120,
+                        min: 60,
+                        average: 90,
+                    },
+                },
+            });
+        });
+    });
 });
