@@ -39,7 +39,11 @@ export class FieldAggregationComposer {
         this.aggregationSelectionTypeNames = Object.keys(aggregationSelectionTypes);
     }
 
-    public createAggregationTypeObject(baseTypeName: string, relFields: ObjectFields | undefined, refNode: Node) {
+    public createAggregationTypeObject(
+        baseTypeName: string,
+        refNode: Node,
+        relFields: ObjectFields | undefined
+    ): ObjectTypeComposer {
         let aggregateSelectionEdge: ObjectTypeComposer | undefined;
 
         const aggregateSelectionNodeFields = this.getAggregationFields(refNode);

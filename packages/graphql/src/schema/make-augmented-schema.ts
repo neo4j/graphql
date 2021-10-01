@@ -1040,8 +1040,8 @@ function makeAugmentedSchema(
             const fieldAggregationComposer = new FieldAggregationComposer(composer, aggregationSelectionTypes);
             const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
                 baseTypeName,
-                relFields,
-                n
+                n,
+                relFields
             );
 
             composeNode.addFields({
@@ -1053,7 +1053,6 @@ function makeAugmentedSchema(
                     },
                 },
             });
-            // END
 
             composer.createInputTC({
                 name: connectionUpdateInputName,
