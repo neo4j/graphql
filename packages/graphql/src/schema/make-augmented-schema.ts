@@ -74,6 +74,7 @@ import { validateDocument } from "./validation";
 import * as constants from "../constants";
 import NodeDirective from "../classes/NodeDirective";
 import parseNodeDirective from "./parse-node-directive";
+import { createAggregationTypeObject } from "./compose-field-aggregations";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -1035,83 +1036,25 @@ function makeAugmentedSchema(
                 },
             });
 
-            const aggregateSelectionNodeFields = [...n.primitiveFields, ...n.temporalFields].reduce((res, field) => {
-                if (field.typeMeta.array) {
-                    return res;
-                }
-
-                if (!aggregationSelectionTypeNames.includes(field.typeMeta.name)) {
-                    return res;
-                }
-
-                const objectTypeComposer = (aggregationSelectionTypes[
-                    field.typeMeta.name
-                ] as unknown) as ObjectTypeComposer<unknown, unknown>;
-
-                res[field.fieldName] = objectTypeComposer.NonNull;
-
-                return res;
-            }, {});
-
-            let aggregateSelectionNode: ObjectTypeComposer | undefined;
-            if (Object.keys(aggregateSelectionNodeFields).length > 0) {
-                aggregateSelectionNode = composer.createObjectTC({
-                    name: `${node.name + n.name + rel.fieldName}AggregateSelection`,
-                    fields: {
-                        ...aggregateSelectionNodeFields,
-                    },
-                });
-            }
-
-            let aggregateSelectionEdge: ObjectTypeComposer | undefined;
-            if (relFields) {
-                const aggregateSelectionEdgeFields = [...relFields.primitiveFields, ...relFields.temporalFields].reduce(
-                    (res, field) => {
-                        if (field.typeMeta.array) {
-                            return res;
-                        }
-
-                        if (!aggregationSelectionTypeNames.includes(field.typeMeta.name)) {
-                            return res;
-                        }
-
-                        const objectTypeComposer = (aggregationSelectionTypes[
-                            field.typeMeta.name
-                        ] as unknown) as ObjectTypeComposer<unknown, unknown>;
-
-                        res[field.fieldName] = objectTypeComposer.NonNull;
-
-                        return res;
-                    },
-                    {}
-                );
-                if (Object.keys(aggregateSelectionEdgeFields).length > 0) {
-                    aggregateSelectionEdge = composer.createObjectTC({
-                        name: `${node.name}${n.name}${rel.fieldName}EdgeAggregateSelection`,
-                        fields: {
-                            ...aggregateSelectionEdgeFields,
-                        },
-                    });
-                }
-            }
-            const dummy = composer.createObjectTC({
-                name: `${node.name}${n.name}${rel.fieldName}AggregationResult`,
-                fields: {
-                    count: composeInt,
-                    ...(aggregateSelectionNode ? { node: aggregateSelectionNode } : {}),
-                    ...(aggregateSelectionEdge ? { edge: aggregateSelectionEdge } : {}),
-                },
+            const baseTypeName = `${node.name}${n.name}${rel.fieldName}`;
+            const aggregationTypeObject = createAggregationTypeObject({
+                composer,
+                baseTypeName,
+                relFields,
+                refNode: n,
+                aggregationSelectionTypes,
             });
 
             composeNode.addFields({
                 [`${rel.fieldName}Aggregate`]: {
-                    type: dummy,
+                    type: aggregationTypeObject,
                     args: {
                         where: `${rel.typeMeta.name}Where`,
                         options: `${rel.typeMeta.name}Options`,
                     },
                 },
             });
+            // END
 
             composer.createInputTC({
                 name: connectionUpdateInputName,
