@@ -60,11 +60,13 @@ mutation {
 
 ```cypher
 MATCH (this:Actor)
-CREATE (this_create_actedIn0_node_Movie:Movie)
-SET this_create_actedIn0_node_Movie.title = $this_create_actedIn0_node_Movie_title
-SET this_create_actedIn0_node_Movie.runtime = $this_create_actedIn0_node_Movie_runtime
-MERGE (this)-[this_create_actedIn0_relationship:ACTED_IN]->(this_create_actedIn0_node_Movie)
-SET this_create_actedIn0_relationship.screenTime = $this_create_actedIn0_relationship_screenTime
+
+CREATE (this_create_actedIn_Movie0_node_Movie:Movie)
+SET this_create_actedIn_Movie0_node_Movie.title = $this_create_actedIn_Movie0_node_Movie_title
+SET this_create_actedIn_Movie0_node_Movie.runtime = $this_create_actedIn_Movie0_node_Movie_runtime
+MERGE (this)-[this_create_actedIn_Movie0_relationship:ACTED_IN]->(this_create_actedIn_Movie0_node_Movie)
+SET this_create_actedIn_Movie0_relationship.screenTime = $this_create_actedIn_Movie0_relationship_screenTime
+
 WITH this
 CALL {
     WITH this
@@ -82,12 +84,12 @@ RETURN this { .name, actedIn: collect(actedIn) } AS this
 
 ```json
 {
-    "this_create_actedIn0_node_Movie_runtime": {
+    "this_create_actedIn_Movie0_node_Movie_runtime": {
         "high": 0,
         "low": 90
     },
-    "this_create_actedIn0_node_Movie_title": "Example Film",
-    "this_create_actedIn0_relationship_screenTime": {
+    "this_create_actedIn_Movie0_node_Movie_title": "Example Film",
+    "this_create_actedIn_Movie0_relationship_screenTime": {
         "high": 0,
         "low": 90
     }

@@ -89,7 +89,6 @@ describe("Interface Relationships", () => {
             }
 
             input ActorActedInConnectFieldInput {
-              connect: ProductionConnectInput
               edge: ActedInCreateInput!
               where: ProductionConnectWhere
             }
@@ -115,12 +114,10 @@ describe("Interface Relationships", () => {
             }
 
             input ActorActedInDeleteFieldInput {
-              delete: ProductionDeleteInput
               where: ActorActedInConnectionWhere
             }
 
             input ActorActedInDisconnectFieldInput {
-              disconnect: ProductionDisconnectInput
               where: ActorActedInConnectionWhere
             }
 
@@ -141,10 +138,10 @@ describe("Interface Relationships", () => {
             }
 
             input ActorActedInUpdateFieldInput {
-              connect: ActorActedInConnectFieldInput
-              create: ActorActedInCreateFieldInput
-              delete: ActorActedInDeleteFieldInput
-              disconnect: ActorActedInDisconnectFieldInput
+              connect: [ActorActedInConnectFieldInput!]
+              create: [ActorActedInCreateFieldInput!]
+              delete: [ActorActedInDeleteFieldInput!]
+              disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
               where: ActorActedInConnectionWhere
             }
@@ -323,10 +320,6 @@ describe("Interface Relationships", () => {
               title: String!
             }
 
-            input ProductionConnectInput {
-              _on: ProductionImplementationsConnectInput
-            }
-
             input ProductionConnectWhere {
               node: ProductionWhere!
             }
@@ -335,20 +328,6 @@ describe("Interface Relationships", () => {
               Movie: MovieCreateInput
               Series: SeriesCreateInput
             }
-
-            input ProductionDeleteInput {
-              _on: ProductionImplementationsDeleteInput
-            }
-
-            input ProductionDisconnectInput {
-              _on: ProductionImplementationsDisconnectInput
-            }
-
-            input ProductionImplementationsConnectInput
-
-            input ProductionImplementationsDeleteInput
-
-            input ProductionImplementationsDisconnectInput
 
             input ProductionImplementationsUpdateInput {
               Movie: MovieUpdateInput
@@ -624,10 +603,10 @@ describe("Interface Relationships", () => {
             }
 
             input ActorActedInUpdateFieldInput {
-              connect: ActorActedInConnectFieldInput
-              create: ActorActedInCreateFieldInput
-              delete: ActorActedInDeleteFieldInput
-              disconnect: ActorActedInDisconnectFieldInput
+              connect: [ActorActedInConnectFieldInput!]
+              create: [ActorActedInCreateFieldInput!]
+              delete: [ActorActedInDeleteFieldInput!]
+              disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
               where: ActorActedInConnectionWhere
             }
@@ -1367,10 +1346,728 @@ describe("Interface Relationships", () => {
                 interface1: [Interface1!]! @relationship(type: "INTERFACE_ONE", direction: OUT)
             }
         `;
-        expect(() => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-        }).toThrowError("Nested interface relationship fields are not supported: Interface1.interface2");
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateType1Interface1sMutationResponse {
+              info: CreateInfo!
+              type1Interface1s: [Type1Interface1!]!
+            }
+
+            type CreateType1Interface2sMutationResponse {
+              info: CreateInfo!
+              type1Interface2s: [Type1Interface2!]!
+            }
+
+            type CreateType1sMutationResponse {
+              info: CreateInfo!
+              type1s: [Type1!]!
+            }
+
+            type CreateType2Interface1sMutationResponse {
+              info: CreateInfo!
+              type2Interface1s: [Type2Interface1!]!
+            }
+
+            type CreateType2Interface2sMutationResponse {
+              info: CreateInfo!
+              type2Interface2s: [Type2Interface2!]!
+            }
+
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            interface Interface1 {
+              field1: String!
+              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
+              interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+            }
+
+            input Interface1ConnectInput {
+              _on: Interface1ImplementationsConnectInput
+              interface2: [Interface1Interface2ConnectFieldInput!]
+            }
+
+            input Interface1ConnectWhere {
+              node: Interface1Where!
+            }
+
+            input Interface1CreateInput {
+              Type1Interface1: Type1Interface1CreateInput
+              Type2Interface1: Type2Interface1CreateInput
+              interface2: Interface1Interface2FieldInput
+            }
+
+            input Interface1DeleteInput {
+              _on: Interface1ImplementationsDeleteInput
+              interface2: [Interface1Interface2DeleteFieldInput!]
+            }
+
+            input Interface1DisconnectInput {
+              _on: Interface1ImplementationsDisconnectInput
+              interface2: [Interface1Interface2DisconnectFieldInput!]
+            }
+
+            input Interface1ImplementationsConnectInput {
+              Type1Interface1: [Type1Interface1ConnectInput!]
+              Type2Interface1: [Type2Interface1ConnectInput!]
+            }
+
+            input Interface1ImplementationsDeleteInput {
+              Type1Interface1: [Type1Interface1DeleteInput!]
+              Type2Interface1: [Type2Interface1DeleteInput!]
+            }
+
+            input Interface1ImplementationsDisconnectInput {
+              Type1Interface1: [Type1Interface1DisconnectInput!]
+              Type2Interface1: [Type2Interface1DisconnectInput!]
+            }
+
+            input Interface1ImplementationsUpdateInput {
+              Type1Interface1: Type1Interface1UpdateInput
+              Type2Interface1: Type2Interface1UpdateInput
+            }
+
+            input Interface1ImplementationsWhere {
+              Type1Interface1: Type1Interface1Where
+              Type2Interface1: Type2Interface1Where
+            }
+
+            input Interface1Interface2ConnectFieldInput {
+              where: Interface2ConnectWhere
+            }
+
+            type Interface1Interface2Connection {
+              edges: [Interface1Interface2Relationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input Interface1Interface2ConnectionWhere {
+              AND: [Interface1Interface2ConnectionWhere!]
+              OR: [Interface1Interface2ConnectionWhere!]
+              node: Interface2Where
+              node_NOT: Interface2Where
+            }
+
+            input Interface1Interface2CreateFieldInput {
+              node: Interface2CreateInput!
+            }
+
+            input Interface1Interface2DeleteFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Interface1Interface2DisconnectFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Interface1Interface2FieldInput {
+              connect: [Interface1Interface2ConnectFieldInput!]
+              create: [Interface1Interface2CreateFieldInput!]
+            }
+
+            type Interface1Interface2Relationship {
+              cursor: String!
+              node: Interface2!
+            }
+
+            input Interface1Interface2UpdateConnectionInput {
+              node: Interface2UpdateInput
+            }
+
+            input Interface1Interface2UpdateFieldInput {
+              connect: [Interface1Interface2ConnectFieldInput!]
+              create: [Interface1Interface2CreateFieldInput!]
+              delete: [Interface1Interface2DeleteFieldInput!]
+              disconnect: [Interface1Interface2DisconnectFieldInput!]
+              update: Interface1Interface2UpdateConnectionInput
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Interface1UpdateInput {
+              _on: Interface1ImplementationsUpdateInput
+              field1: String
+              interface2: [Interface1Interface2UpdateFieldInput!]
+            }
+
+            input Interface1Where {
+              AND: [Interface1Where!]
+              OR: [Interface1Where!]
+              _on: Interface1ImplementationsWhere
+              field1: String
+              field1_CONTAINS: String
+              field1_ENDS_WITH: String
+              field1_IN: [String]
+              field1_NOT: String
+              field1_NOT_CONTAINS: String
+              field1_NOT_ENDS_WITH: String
+              field1_NOT_IN: [String]
+              field1_NOT_STARTS_WITH: String
+              field1_STARTS_WITH: String
+              interface2Connection: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere
+            }
+
+            interface Interface2 {
+              field2: String
+            }
+
+            input Interface2ConnectWhere {
+              node: Interface2Where!
+            }
+
+            input Interface2CreateInput {
+              Type1Interface2: Type1Interface2CreateInput
+              Type2Interface2: Type2Interface2CreateInput
+            }
+
+            input Interface2ImplementationsUpdateInput {
+              Type1Interface2: Type1Interface2UpdateInput
+              Type2Interface2: Type2Interface2UpdateInput
+            }
+
+            input Interface2ImplementationsWhere {
+              Type1Interface2: Type1Interface2Where
+              Type2Interface2: Type2Interface2Where
+            }
+
+            input Interface2UpdateInput {
+              _on: Interface2ImplementationsUpdateInput
+              field2: String
+            }
+
+            input Interface2Where {
+              AND: [Interface2Where!]
+              OR: [Interface2Where!]
+              _on: Interface2ImplementationsWhere
+              field2: String
+              field2_CONTAINS: String
+              field2_ENDS_WITH: String
+              field2_IN: [String]
+              field2_NOT: String
+              field2_NOT_CONTAINS: String
+              field2_NOT_ENDS_WITH: String
+              field2_NOT_IN: [String]
+              field2_NOT_STARTS_WITH: String
+              field2_STARTS_WITH: String
+            }
+
+            type Mutation {
+              createType1Interface1s(input: [Type1Interface1CreateInput!]!): CreateType1Interface1sMutationResponse!
+              createType1Interface2s(input: [Type1Interface2CreateInput!]!): CreateType1Interface2sMutationResponse!
+              createType1s(input: [Type1CreateInput!]!): CreateType1sMutationResponse!
+              createType2Interface1s(input: [Type2Interface1CreateInput!]!): CreateType2Interface1sMutationResponse!
+              createType2Interface2s(input: [Type2Interface2CreateInput!]!): CreateType2Interface2sMutationResponse!
+              deleteType1Interface1s(delete: Type1Interface1DeleteInput, where: Type1Interface1Where): DeleteInfo!
+              deleteType1Interface2s(where: Type1Interface2Where): DeleteInfo!
+              deleteType1s(delete: Type1DeleteInput, where: Type1Where): DeleteInfo!
+              deleteType2Interface1s(delete: Type2Interface1DeleteInput, where: Type2Interface1Where): DeleteInfo!
+              deleteType2Interface2s(where: Type2Interface2Where): DeleteInfo!
+              updateType1Interface1s(connect: Type1Interface1ConnectInput, create: Type1Interface1RelationInput, delete: Type1Interface1DeleteInput, disconnect: Type1Interface1DisconnectInput, update: Type1Interface1UpdateInput, where: Type1Interface1Where): UpdateType1Interface1sMutationResponse!
+              updateType1Interface2s(update: Type1Interface2UpdateInput, where: Type1Interface2Where): UpdateType1Interface2sMutationResponse!
+              updateType1s(connect: Type1ConnectInput, create: Type1RelationInput, delete: Type1DeleteInput, disconnect: Type1DisconnectInput, update: Type1UpdateInput, where: Type1Where): UpdateType1sMutationResponse!
+              updateType2Interface1s(connect: Type2Interface1ConnectInput, create: Type2Interface1RelationInput, delete: Type2Interface1DeleteInput, disconnect: Type2Interface1DisconnectInput, update: Type2Interface1UpdateInput, where: Type2Interface1Where): UpdateType2Interface1sMutationResponse!
+              updateType2Interface2s(update: Type2Interface2UpdateInput, where: Type2Interface2Where): UpdateType2Interface2sMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Query {
+              type1Interface1s(options: Type1Interface1Options, where: Type1Interface1Where): [Type1Interface1!]!
+              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection!
+              type1Interface1sCount(where: Type1Interface1Where): Int!
+              type1Interface2s(options: Type1Interface2Options, where: Type1Interface2Where): [Type1Interface2!]!
+              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection!
+              type1Interface2sCount(where: Type1Interface2Where): Int!
+              type1s(options: Type1Options, where: Type1Where): [Type1!]!
+              type1sAggregate(where: Type1Where): Type1AggregateSelection!
+              type1sCount(where: Type1Where): Int!
+              type2Interface1s(options: Type2Interface1Options, where: Type2Interface1Where): [Type2Interface1!]!
+              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection!
+              type2Interface1sCount(where: Type2Interface1Where): Int!
+              type2Interface2s(options: Type2Interface2Options, where: Type2Interface2Where): [Type2Interface2!]!
+              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection!
+              type2Interface2sCount(where: Type2Interface2Where): Int!
+            }
+
+            input QueryOptions {
+              limit: Int
+              offset: Int
+            }
+
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
+            }
+
+            type Type1 {
+              field1: String!
+              interface1(options: QueryOptions, where: Interface1Where): [Interface1!]!
+              interface1Connection(where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
+            }
+
+            type Type1AggregateSelection {
+              count: Int!
+              field1: StringAggregateSelection!
+            }
+
+            input Type1ConnectInput {
+              interface1: [Type1Interface1ConnectFieldInput!]
+            }
+
+            input Type1CreateInput {
+              field1: String!
+              interface1: Type1Interface1FieldInput
+            }
+
+            input Type1DeleteInput {
+              interface1: [Type1Interface1DeleteFieldInput!]
+            }
+
+            input Type1DisconnectInput {
+              interface1: [Type1Interface1DisconnectFieldInput!]
+            }
+
+            type Type1Interface1 implements Interface1 {
+              field1: String!
+              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
+              interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+            }
+
+            type Type1Interface1AggregateSelection {
+              count: Int!
+              field1: StringAggregateSelection!
+            }
+
+            input Type1Interface1ConnectFieldInput {
+              connect: Interface1ConnectInput
+              where: Interface1ConnectWhere
+            }
+
+            input Type1Interface1ConnectInput {
+              interface2: [Type1Interface1Interface2ConnectFieldInput!]
+            }
+
+            type Type1Interface1Connection {
+              edges: [Type1Interface1Relationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input Type1Interface1ConnectionWhere {
+              AND: [Type1Interface1ConnectionWhere!]
+              OR: [Type1Interface1ConnectionWhere!]
+              node: Interface1Where
+              node_NOT: Interface1Where
+            }
+
+            input Type1Interface1CreateFieldInput {
+              node: Interface1CreateInput!
+            }
+
+            input Type1Interface1CreateInput {
+              field1: String!
+              interface2: Interface1Interface2FieldInput
+            }
+
+            input Type1Interface1DeleteFieldInput {
+              delete: Interface1DeleteInput
+              where: Type1Interface1ConnectionWhere
+            }
+
+            input Type1Interface1DeleteInput {
+              interface2: [Type1Interface1Interface2DeleteFieldInput!]
+            }
+
+            input Type1Interface1DisconnectFieldInput {
+              disconnect: Interface1DisconnectInput
+              where: Type1Interface1ConnectionWhere
+            }
+
+            input Type1Interface1DisconnectInput {
+              interface2: [Type1Interface1Interface2DisconnectFieldInput!]
+            }
+
+            input Type1Interface1FieldInput {
+              connect: [Type1Interface1ConnectFieldInput!]
+              create: [Type1Interface1CreateFieldInput!]
+            }
+
+            input Type1Interface1Interface2ConnectFieldInput {
+              where: Interface2ConnectWhere
+            }
+
+            input Type1Interface1Interface2CreateFieldInput {
+              node: Interface2CreateInput!
+            }
+
+            input Type1Interface1Interface2DeleteFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type1Interface1Interface2DisconnectFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type1Interface1Interface2UpdateConnectionInput {
+              node: Interface2UpdateInput
+            }
+
+            input Type1Interface1Interface2UpdateFieldInput {
+              connect: [Type1Interface1Interface2ConnectFieldInput!]
+              create: [Type1Interface1Interface2CreateFieldInput!]
+              delete: [Type1Interface1Interface2DeleteFieldInput!]
+              disconnect: [Type1Interface1Interface2DisconnectFieldInput!]
+              update: Type1Interface1Interface2UpdateConnectionInput
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type1Interface1Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more Type1Interface1Sort objects to sort Type1Interface1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [Type1Interface1Sort]
+            }
+
+            input Type1Interface1RelationInput {
+              interface2: [Type1Interface1Interface2CreateFieldInput!]
+            }
+
+            type Type1Interface1Relationship {
+              cursor: String!
+              node: Interface1!
+            }
+
+            \\"\\"\\"Fields to sort Type1Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface1Sort object.\\"\\"\\"
+            input Type1Interface1Sort {
+              field1: SortDirection
+            }
+
+            input Type1Interface1UpdateConnectionInput {
+              node: Interface1UpdateInput
+            }
+
+            input Type1Interface1UpdateFieldInput {
+              connect: [Type1Interface1ConnectFieldInput!]
+              create: [Type1Interface1CreateFieldInput!]
+              delete: [Type1Interface1DeleteFieldInput!]
+              disconnect: [Type1Interface1DisconnectFieldInput!]
+              update: Type1Interface1UpdateConnectionInput
+              where: Type1Interface1ConnectionWhere
+            }
+
+            input Type1Interface1UpdateInput {
+              field1: String
+              interface2: [Type1Interface1Interface2UpdateFieldInput!]
+            }
+
+            input Type1Interface1Where {
+              AND: [Type1Interface1Where!]
+              OR: [Type1Interface1Where!]
+              field1: String
+              field1_CONTAINS: String
+              field1_ENDS_WITH: String
+              field1_IN: [String]
+              field1_NOT: String
+              field1_NOT_CONTAINS: String
+              field1_NOT_ENDS_WITH: String
+              field1_NOT_IN: [String]
+              field1_NOT_STARTS_WITH: String
+              field1_STARTS_WITH: String
+              interface2Connection: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere
+            }
+
+            type Type1Interface2 implements Interface2 {
+              field2: String!
+            }
+
+            type Type1Interface2AggregateSelection {
+              count: Int!
+              field2: StringAggregateSelection!
+            }
+
+            input Type1Interface2CreateInput {
+              field2: String!
+            }
+
+            input Type1Interface2Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more Type1Interface2Sort objects to sort Type1Interface2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [Type1Interface2Sort]
+            }
+
+            \\"\\"\\"Fields to sort Type1Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface2Sort object.\\"\\"\\"
+            input Type1Interface2Sort {
+              field2: SortDirection
+            }
+
+            input Type1Interface2UpdateInput {
+              field2: String
+            }
+
+            input Type1Interface2Where {
+              AND: [Type1Interface2Where!]
+              OR: [Type1Interface2Where!]
+              field2: String
+              field2_CONTAINS: String
+              field2_ENDS_WITH: String
+              field2_IN: [String]
+              field2_NOT: String
+              field2_NOT_CONTAINS: String
+              field2_NOT_ENDS_WITH: String
+              field2_NOT_IN: [String]
+              field2_NOT_STARTS_WITH: String
+              field2_STARTS_WITH: String
+            }
+
+            input Type1Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more Type1Sort objects to sort Type1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [Type1Sort]
+            }
+
+            input Type1RelationInput {
+              interface1: [Type1Interface1CreateFieldInput!]
+            }
+
+            \\"\\"\\"Fields to sort Type1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Sort object.\\"\\"\\"
+            input Type1Sort {
+              field1: SortDirection
+            }
+
+            input Type1UpdateInput {
+              field1: String
+              interface1: [Type1Interface1UpdateFieldInput!]
+            }
+
+            input Type1Where {
+              AND: [Type1Where!]
+              OR: [Type1Where!]
+              field1: String
+              field1_CONTAINS: String
+              field1_ENDS_WITH: String
+              field1_IN: [String]
+              field1_NOT: String
+              field1_NOT_CONTAINS: String
+              field1_NOT_ENDS_WITH: String
+              field1_NOT_IN: [String]
+              field1_NOT_STARTS_WITH: String
+              field1_STARTS_WITH: String
+              interface1Connection: Type1Interface1ConnectionWhere
+              interface1Connection_NOT: Type1Interface1ConnectionWhere
+            }
+
+            type Type2Interface1 implements Interface1 {
+              field1: String!
+              interface2(options: QueryOptions, where: Interface2Where): [Interface2!]!
+              interface2Connection(where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+            }
+
+            type Type2Interface1AggregateSelection {
+              count: Int!
+              field1: StringAggregateSelection!
+            }
+
+            input Type2Interface1ConnectInput {
+              interface2: [Type2Interface1Interface2ConnectFieldInput!]
+            }
+
+            input Type2Interface1CreateInput {
+              field1: String!
+              interface2: Interface1Interface2FieldInput
+            }
+
+            input Type2Interface1DeleteInput {
+              interface2: [Type2Interface1Interface2DeleteFieldInput!]
+            }
+
+            input Type2Interface1DisconnectInput {
+              interface2: [Type2Interface1Interface2DisconnectFieldInput!]
+            }
+
+            input Type2Interface1Interface2ConnectFieldInput {
+              where: Interface2ConnectWhere
+            }
+
+            input Type2Interface1Interface2CreateFieldInput {
+              node: Interface2CreateInput!
+            }
+
+            input Type2Interface1Interface2DeleteFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type2Interface1Interface2DisconnectFieldInput {
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type2Interface1Interface2UpdateConnectionInput {
+              node: Interface2UpdateInput
+            }
+
+            input Type2Interface1Interface2UpdateFieldInput {
+              connect: [Type2Interface1Interface2ConnectFieldInput!]
+              create: [Type2Interface1Interface2CreateFieldInput!]
+              delete: [Type2Interface1Interface2DeleteFieldInput!]
+              disconnect: [Type2Interface1Interface2DisconnectFieldInput!]
+              update: Type2Interface1Interface2UpdateConnectionInput
+              where: Interface1Interface2ConnectionWhere
+            }
+
+            input Type2Interface1Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more Type2Interface1Sort objects to sort Type2Interface1s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [Type2Interface1Sort]
+            }
+
+            input Type2Interface1RelationInput {
+              interface2: [Type2Interface1Interface2CreateFieldInput!]
+            }
+
+            \\"\\"\\"Fields to sort Type2Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface1Sort object.\\"\\"\\"
+            input Type2Interface1Sort {
+              field1: SortDirection
+            }
+
+            input Type2Interface1UpdateInput {
+              field1: String
+              interface2: [Type2Interface1Interface2UpdateFieldInput!]
+            }
+
+            input Type2Interface1Where {
+              AND: [Type2Interface1Where!]
+              OR: [Type2Interface1Where!]
+              field1: String
+              field1_CONTAINS: String
+              field1_ENDS_WITH: String
+              field1_IN: [String]
+              field1_NOT: String
+              field1_NOT_CONTAINS: String
+              field1_NOT_ENDS_WITH: String
+              field1_NOT_IN: [String]
+              field1_NOT_STARTS_WITH: String
+              field1_STARTS_WITH: String
+              interface2Connection: Interface1Interface2ConnectionWhere
+              interface2Connection_NOT: Interface1Interface2ConnectionWhere
+            }
+
+            type Type2Interface2 implements Interface2 {
+              field2: String!
+            }
+
+            type Type2Interface2AggregateSelection {
+              count: Int!
+              field2: StringAggregateSelection!
+            }
+
+            input Type2Interface2CreateInput {
+              field2: String!
+            }
+
+            input Type2Interface2Options {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more Type2Interface2Sort objects to sort Type2Interface2s by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [Type2Interface2Sort]
+            }
+
+            \\"\\"\\"Fields to sort Type2Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type2Interface2Sort object.\\"\\"\\"
+            input Type2Interface2Sort {
+              field2: SortDirection
+            }
+
+            input Type2Interface2UpdateInput {
+              field2: String
+            }
+
+            input Type2Interface2Where {
+              AND: [Type2Interface2Where!]
+              OR: [Type2Interface2Where!]
+              field2: String
+              field2_CONTAINS: String
+              field2_ENDS_WITH: String
+              field2_IN: [String]
+              field2_NOT: String
+              field2_NOT_CONTAINS: String
+              field2_NOT_ENDS_WITH: String
+              field2_NOT_IN: [String]
+              field2_NOT_STARTS_WITH: String
+              field2_STARTS_WITH: String
+            }
+
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateType1Interface1sMutationResponse {
+              info: UpdateInfo!
+              type1Interface1s: [Type1Interface1!]!
+            }
+
+            type UpdateType1Interface2sMutationResponse {
+              info: UpdateInfo!
+              type1Interface2s: [Type1Interface2!]!
+            }
+
+            type UpdateType1sMutationResponse {
+              info: UpdateInfo!
+              type1s: [Type1!]!
+            }
+
+            type UpdateType2Interface1sMutationResponse {
+              info: UpdateInfo!
+              type2Interface1s: [Type2Interface1!]!
+            }
+
+            type UpdateType2Interface2sMutationResponse {
+              info: UpdateInfo!
+              type2Interface2s: [Type2Interface2!]!
+            }
+            "
+        `);
+
+        // expect(() => {
+        //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        //     const neoSchema = new Neo4jGraphQL({ typeDefs });
+        // }).toThrowError("Nested interface relationship fields are not supported: Interface1.interface2");
     });
 
     test("Interface Relationships - nested relationships", () => {
@@ -2051,10 +2748,10 @@ describe("Interface Relationships", () => {
             }
 
             input UserContentUpdateFieldInput {
-              connect: UserContentConnectFieldInput
-              create: UserContentCreateFieldInput
-              delete: UserContentDeleteFieldInput
-              disconnect: UserContentDisconnectFieldInput
+              connect: [UserContentConnectFieldInput!]
+              create: [UserContentCreateFieldInput!]
+              delete: [UserContentDeleteFieldInput!]
+              disconnect: [UserContentDisconnectFieldInput!]
               update: UserContentUpdateConnectionInput
               where: UserContentConnectionWhere
             }

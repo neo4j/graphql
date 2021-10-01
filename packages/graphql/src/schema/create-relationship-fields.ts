@@ -166,10 +166,18 @@ function createRelationshipFields({
                 `${sourceName}${upperFirst(rel.fieldName)}UpdateFieldInput`,
                 (tc) => {
                     tc.addFields({
-                        connect: `${sourceName}${upperFirst(rel.fieldName)}ConnectFieldInput`,
-                        create: `${sourceName}${upperFirst(rel.fieldName)}CreateFieldInput`,
-                        delete: `${sourceName}${upperFirst(rel.fieldName)}DeleteFieldInput`,
-                        disconnect: `${sourceName}${upperFirst(rel.fieldName)}DisconnectFieldInput`,
+                        connect: rel.typeMeta.array
+                            ? `[${sourceName}${upperFirst(rel.fieldName)}ConnectFieldInput!]`
+                            : `${sourceName}${upperFirst(rel.fieldName)}ConnectFieldInput`,
+                        create: rel.typeMeta.array
+                            ? `[${sourceName}${upperFirst(rel.fieldName)}CreateFieldInput!]`
+                            : `${sourceName}${upperFirst(rel.fieldName)}CreateFieldInput`,
+                        delete: rel.typeMeta.array
+                            ? `[${sourceName}${upperFirst(rel.fieldName)}DeleteFieldInput!]`
+                            : `${sourceName}${upperFirst(rel.fieldName)}DeleteFieldInput`,
+                        disconnect: rel.typeMeta.array
+                            ? `[${sourceName}${upperFirst(rel.fieldName)}DisconnectFieldInput!]`
+                            : `${sourceName}${upperFirst(rel.fieldName)}DisconnectFieldInput`,
                         update: `${sourceName}${upperFirst(rel.fieldName)}UpdateConnectionInput`,
                         where: `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectionWhere`,
                     });

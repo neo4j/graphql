@@ -31,19 +31,6 @@ type User {
     password: String
     content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
 }
-
-extend type User
-    @auth(rules: [{ operations: [READ, CREATE, UPDATE, CONNECT, DISCONNECT, DELETE], isAuthenticated: true }])
-
-extend type User {
-    password: String @auth(rules: [{ operations: [READ, CREATE, UPDATE], isAuthenticated: true }])
-}
-
-extend type User {
-    history: [History]
-        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
-        @auth(rules: [{ operations: [READ], isAuthenticated: true }])
-}
 ```
 
 ---
@@ -272,7 +259,6 @@ WITH this
 CALL {
     WITH this
     OPTIONAL MATCH (this_connect_content0_node:Comment)
-    WITH this, this_connect_content0_node
     FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
         FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
             MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
@@ -282,7 +268,7 @@ CALL {
 UNION
     WITH this
     OPTIONAL MATCH (this_connect_content0_node:Post) WITH this, this_connect_content0_node
-    CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0]) AND apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
+    CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
     FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
         FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
             MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
@@ -341,7 +327,6 @@ WITH this
 CALL {
     WITH this
     OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
-    WITH this, this_disconnect_content0, this_disconnect_content0_rel
     FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
         DELETE this_disconnect_content0_rel
     )
@@ -349,7 +334,8 @@ CALL {
 UNION
     WITH this
     OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
-    WITH this, this_disconnect_content0, this_disconnect_content0_rel CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0]) AND apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
+    WITH this, this_disconnect_content0, this_disconnect_content0_rel
+    CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
     FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
         DELETE this_disconnect_content0_rel
     )
@@ -373,7 +359,7 @@ RETURN this { .id } AS this
     "updateUsers": {
         "args": {
             "disconnect": {
-                "posts": [{}]
+                "content": [{}]
             }
         }
     }
@@ -495,20 +481,19 @@ mutation {
 MATCH (this:User)
 
 WITH this
-OPTIONAL MATCH (this)-[this_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
-FOREACH(_ IN CASE this_content0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_content0
+OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
+FOREACH(_ IN CASE this_content_Comment0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_content_Comment0
 )
 
 WITH this
-OPTIONAL MATCH (this)-[this_content0_relationship:HAS_CONTENT]->(this_content0:Post)
-WITH this, this_content0
+OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
+WITH this, this_content_Post0
 CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
-FOREACH(_ IN CASE this_content0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_content0
+FOREACH(_ IN CASE this_content_Post0 WHEN NULL THEN [] ELSE [1] END |
+    DETACH DELETE this_content_Post0
 )
 
-WITH this CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), "@neo4j/graphql/UNAUTHENTICATED", [0])), "@neo4j/graphql/FORBIDDEN", [0])
 DETACH DELETE this
 ```
 

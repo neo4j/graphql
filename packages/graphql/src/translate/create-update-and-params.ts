@@ -161,10 +161,33 @@ function createUpdateAndParams({
                             const auth = createAuthParam({ context });
                             let innerApocParams = { auth };
 
+                            const nestedUpdateInput = Object.entries(update.update.node)
+                                .filter(([k]) => {
+                                    if (k === "_on") {
+                                        return false;
+                                    }
+
+                                    if (
+                                        relationField.interface &&
+                                        update.update.node._on &&
+                                        Object.prototype.hasOwnProperty.call(update.update.node._on, refNode.name)
+                                    ) {
+                                        const onArray = Array.isArray(update.update.node._on[refNode.name])
+                                            ? update.update.node._on[refNode.name]
+                                            : [update.update.node._on[refNode.name]];
+                                        if (onArray.some((onKey) => Object.prototype.hasOwnProperty.call(onKey, k))) {
+                                            return false;
+                                        }
+                                    }
+
+                                    return true;
+                                })
+                                .reduce((d1, [k1, v1]) => ({ ...d1, [k1]: v1 }), {});
+
                             const updateAndParams = createUpdateAndParams({
                                 context,
                                 node: refNode,
-                                updateInput: update.update.node,
+                                updateInput: nestedUpdateInput,
                                 varName: _varName,
                                 withVars: [...withVars, _varName],
                                 parentVar: _varName,
@@ -176,8 +199,36 @@ function createUpdateAndParams({
                             });
                             res.params = { ...res.params, ...updateAndParams[1], auth };
                             innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
+                            const updateStrs = [updateAndParams[0]];
 
-                            const updateStrs = [updateAndParams[0], "RETURN count(*)"];
+                            if (
+                                relationField.interface &&
+                                update.update.node._on &&
+                                Object.prototype.hasOwnProperty.call(update.update.node._on, refNode.name)
+                            ) {
+                                const onUpdateAndParams = createUpdateAndParams({
+                                    context,
+                                    node: refNode,
+                                    updateInput: update.update.node._on[refNode.name],
+                                    varName: _varName,
+                                    withVars: [...withVars, _varName],
+                                    parentVar: _varName,
+                                    chainStr: `${param}${relationField.union ? `_${refNode.name}` : ""}${index}_on_${
+                                        refNode.name
+                                    }`,
+                                    insideDoWhen: true,
+                                    parameterPrefix: `${parameterPrefix}.${key}${
+                                        relationField.union ? `.${refNode.name}` : ""
+                                    }${relationField.typeMeta.array ? `[${index}]` : ``}.update.node._on.${
+                                        refNode.name
+                                    }`,
+                                });
+                                res.params = { ...res.params, ...onUpdateAndParams[1], auth };
+                                innerApocParams = { ...innerApocParams, ...onUpdateAndParams[1] };
+                                updateStrs.push(onUpdateAndParams[0]);
+                            }
+
+                            updateStrs.push("RETURN count(*)");
                             const apocArgs = `{${withVars.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}, ${_varName}:${_varName}REPLACE_ME}`;

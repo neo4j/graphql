@@ -174,44 +174,116 @@ function createConnectAndParams({
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
             connects.forEach((c) => {
-                const reduced = Object.entries(c).reduce(
-                    (r: Res, [k, v]: [string, any]) => {
-                        const relField = relatedNode.relationFields.find((x) => k === x.fieldName) as RelationField;
-                        const newRefNodes: Node[] = [];
-
-                        if (relField.union) {
-                            Object.keys(v).forEach((modelName) => {
-                                newRefNodes.push(context.neoSchema.nodes.find((x) => x.name === modelName) as Node);
-                            });
-                        } else {
-                            newRefNodes.push(
-                                context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
-                            );
+                const reduced = Object.entries(c)
+                    .filter(([k]) => {
+                        if (k === "_on") {
+                            return false;
                         }
 
-                        newRefNodes.forEach((newRefNode) => {
-                            const recurse = createConnectAndParams({
-                                withVars: [...withVars, nodeName],
-                                value: relField.union ? v[newRefNode.name] : v,
-                                varName: `${nodeName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
-                                relationField: relField,
-                                parentVar: nodeName,
-                                context,
-                                refNodes: [newRefNode],
-                                parentNode: relatedNode,
-                                labelOverride: relField.union ? newRefNode.name : "",
-                            });
-                            r.connects.push(recurse[0]);
-                            r.params = { ...r.params, ...recurse[1] };
-                        });
+                        if (
+                            relationField.interface &&
+                            c._on &&
+                            Object.prototype.hasOwnProperty.call(c._on, relatedNode.name)
+                        ) {
+                            const onArray = Array.isArray(c._on[relatedNode.name])
+                                ? c._on[relatedNode.name]
+                                : [c._on[relatedNode.name]];
+                            if (onArray.some((onKey) => Object.prototype.hasOwnProperty.call(onKey, k))) {
+                                return false;
+                            }
+                        }
 
-                        return r;
-                    },
-                    { connects: [], params: {} }
-                );
+                        return true;
+                    })
+                    .reduce(
+                        (r: Res, [k, v]: [string, any]) => {
+                            const relField = relatedNode.relationFields.find((x) => k === x.fieldName) as RelationField;
+                            const newRefNodes: Node[] = [];
+
+                            if (relField.union) {
+                                Object.keys(v).forEach((modelName) => {
+                                    newRefNodes.push(context.neoSchema.nodes.find((x) => x.name === modelName) as Node);
+                                });
+                            } else {
+                                newRefNodes.push(
+                                    context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
+                                );
+                            }
+
+                            newRefNodes.forEach((newRefNode) => {
+                                const recurse = createConnectAndParams({
+                                    withVars: [...withVars, nodeName],
+                                    value: relField.union ? v[newRefNode.name] : v,
+                                    varName: `${nodeName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
+                                    relationField: relField,
+                                    parentVar: nodeName,
+                                    context,
+                                    refNodes: [newRefNode],
+                                    parentNode: relatedNode,
+                                    labelOverride: relField.union ? newRefNode.name : "",
+                                });
+                                r.connects.push(recurse[0]);
+                                r.params = { ...r.params, ...recurse[1] };
+                            });
+
+                            return r;
+                        },
+                        { connects: [], params: {} }
+                    );
 
                 subquery.push(reduced.connects.join("\n"));
                 params = { ...params, ...reduced.params };
+
+                if (relationField.interface && c._on && Object.prototype.hasOwnProperty.call(c._on, relatedNode.name)) {
+                    const onConnects = Array.isArray(c._on[relatedNode.name])
+                        ? c._on[relatedNode.name]
+                        : [c._on[relatedNode.name]];
+
+                    onConnects.forEach((onConnect, onConnectIndex) => {
+                        const onReduced = Object.entries(onConnect).reduce(
+                            (r: Res, [k, v]: [string, any]) => {
+                                const relField = relatedNode.relationFields.find((x) =>
+                                    k.startsWith(x.fieldName)
+                                ) as RelationField;
+                                const newRefNodes: Node[] = [];
+
+                                if (relField.union) {
+                                    Object.keys(v).forEach((modelName) => {
+                                        newRefNodes.push(
+                                            context.neoSchema.nodes.find((x) => x.name === modelName) as Node
+                                        );
+                                    });
+                                } else {
+                                    newRefNodes.push(
+                                        context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
+                                    );
+                                }
+
+                                newRefNodes.forEach((newRefNode) => {
+                                    const recurse = createConnectAndParams({
+                                        withVars: [...withVars, nodeName],
+                                        value: relField.union ? v[newRefNode.name] : v,
+                                        varName: `${nodeName}_on_${relatedNode.name}${onConnectIndex}_${k}`,
+                                        relationField: relField,
+                                        parentVar: nodeName,
+                                        context,
+                                        refNodes: [newRefNode],
+                                        parentNode: relatedNode,
+                                        labelOverride: relField.union ? newRefNode.name : "",
+                                    });
+                                    r.connects.push(recurse[0]);
+                                    r.params = { ...r.params, ...recurse[1] };
+                                });
+
+                                return r;
+                            },
+                            { connects: [], params: {} }
+                        );
+
+                        subquery.push(onReduced.connects.join("\n"));
+                        params = { ...params, ...onReduced.params };
+                    });
+                }
             });
         }
 

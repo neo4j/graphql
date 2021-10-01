@@ -155,7 +155,7 @@ function createInterfaceProjectionAndParams({
         });
         if (whereAuth[0]) {
             whereStrs.push(whereAuth[0]);
-            params = { ...params, ...whereAuth[1] };
+            globalParams = { ...globalParams, ...whereAuth[1] };
         }
 
         if (whereStrs.length) {
@@ -205,6 +205,10 @@ function createInterfaceProjectionAndParams({
         }
 
         subquery.push(`RETURN ${recurse[0]} AS ${field.fieldName}`);
+        globalParams = {
+            ...globalParams,
+            ...recurse[1],
+        };
 
         return subquery.join("\n");
     });

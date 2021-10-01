@@ -541,12 +541,12 @@ function makeAugmentedSchema(
             );
         }
 
-        const nestedInterfaceField = interfaceFields.relationFields.find((r) => r.interface);
-        if (nestedInterfaceField) {
-            throw new Error(
-                `Nested interface relationship fields are not supported: ${interfaceRelationship.name.value}.${nestedInterfaceField.fieldName}`
-            );
-        }
+        // const nestedInterfaceField = interfaceFields.relationFields.find((r) => r.interface);
+        // if (nestedInterfaceField) {
+        //     throw new Error(
+        //         `Nested interface relationship fields are not supported: ${interfaceRelationship.name.value}.${nestedInterfaceField.fieldName}`
+        //     );
+        // }
 
         const objectComposeFields = objectFieldsToComposeFields(
             Object.values(interfaceFields).reduce((acc, x) => [...acc, ...x], [])
@@ -674,21 +674,33 @@ function makeAugmentedSchema(
         });
 
         if (implementationsConnectInput.getFieldNames().length) {
-            composer.getOrCreateITC(`${interfaceRelationship.name.value}ConnectInput`, (tc) => {
-                tc.addFields({ _on: implementationsConnectInput });
-            });
+            const interfaceConnectInput = composer.getOrCreateITC(
+                `${interfaceRelationship.name.value}ConnectInput`,
+                (tc) => {
+                    tc.addFields({ _on: implementationsConnectInput });
+                }
+            );
+            interfaceConnectInput.setField("_on", implementationsConnectInput);
         }
 
         if (implementationsDeleteInput.getFieldNames().length) {
-            composer.getOrCreateITC(`${interfaceRelationship.name.value}DeleteInput`, (tc) => {
-                tc.addFields({ _on: implementationsDeleteInput });
-            });
+            const interfaceDeleteInput = composer.getOrCreateITC(
+                `${interfaceRelationship.name.value}DeleteInput`,
+                (tc) => {
+                    tc.addFields({ _on: implementationsDeleteInput });
+                }
+            );
+            interfaceDeleteInput.setField("_on", implementationsDeleteInput);
         }
 
         if (implementationsDisconnectInput.getFieldNames().length) {
-            composer.getOrCreateITC(`${interfaceRelationship.name.value}DisconnectInput`, (tc) => {
-                tc.addFields({ _on: implementationsDisconnectInput });
-            });
+            const interfaceDisconnectInput = composer.getOrCreateITC(
+                `${interfaceRelationship.name.value}DisconnectInput`,
+                (tc) => {
+                    tc.addFields({ _on: implementationsDisconnectInput });
+                }
+            );
+            interfaceDisconnectInput.setField("_on", implementationsDisconnectInput);
         }
     });
 
