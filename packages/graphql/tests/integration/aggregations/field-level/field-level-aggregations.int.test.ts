@@ -50,13 +50,14 @@ describe("aggregations-field-level-basic", () => {
 
         interface ActedIn {
             screentime: Int
+            character: String
         }
         `;
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
         session = driver.session();
-        await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60 }]-(:${typeActor.name} { name: "Arnold", age: 54})
-        CREATE (m)<-[:ACTED_IN { screentime: 120 }]-(:${typeActor.name} {name: "Linda", age:37})`);
+        await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typeActor.name} { name: "Arnold", age: 54})
+        CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37})`);
     });
 
     afterAll(async () => {
@@ -188,6 +189,39 @@ describe("aggregations-field-level-basic", () => {
                         max: 120,
                         min: 60,
                         average: 90,
+                    },
+                },
+            });
+        });
+
+        test("longest and shortest strings", async () => {
+            const query = `
+            query {
+                ${typeMovie.plural} {
+                    ${typeActor.plural}Aggregate {
+                        edge {
+                            character {
+                                longest,
+                                shortest
+                            }
+                        }
+                    }
+                }
+            }
+            `;
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+            expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+                edge: {
+                    character: {
+                        longest: "Terminator",
+                        shortest: "Sarah",
                     },
                 },
             });
