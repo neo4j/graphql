@@ -22,11 +22,11 @@ import { Node } from "../../classes";
 import { Context, RelationField } from "../../types";
 import { generateResultObject, getFieldType, AggregationType, wrapApocRun, getReferenceNode } from "./utils";
 import * as AggregationQueryGenerators from "./aggregation-sub-queries";
+import { createFieldAggregationAuth } from "./field-aggregations-auth";
 
 const subQueryNodeAlias = "n";
 const subQueryRelationAlias = "r";
 
-// eslint-disable-next-line import/prefer-default-export
 export function createFieldAggregation({
     context,
     nodeLabel,
@@ -37,7 +37,7 @@ export function createFieldAggregation({
     nodeLabel: string;
     node: Node;
     field: ResolveTree;
-}): string | undefined {
+}): { query: string; params: Record<string, any> } | undefined {
     const relationAggregationField = node.relationFields.find((x) => {
         return `${x.fieldName}Aggregate` === field.name;
     });
@@ -56,11 +56,16 @@ export function createFieldAggregation({
     const edgeField: Record<string, ResolveTree> | undefined =
         aggregationField.edge?.fieldsByTypeName[`${fieldPathBase}EdgeAggregateSelection`];
 
-    return generateResultObject({
-        count: aggregationField.count ? createCountQuery(targetPattern, subQueryNodeAlias) : undefined,
-        node: createAggregationQuery(targetPattern, nodeField, subQueryNodeAlias),
-        edge: createAggregationQuery(targetPattern, edgeField, subQueryRelationAlias),
-    });
+    const authData = createFieldAggregationAuth({ node: referenceNode, context, subQueryNodeAlias });
+
+    return {
+        query: generateResultObject({
+            count: aggregationField.count ? createCountQuery(targetPattern, subQueryNodeAlias, authData) : undefined,
+            node: createAggregationQuery(targetPattern, nodeField, subQueryNodeAlias),
+            edge: createAggregationQuery(targetPattern, edgeField, subQueryRelationAlias),
+        }),
+        params: authData.cypherParams,
+    };
 }
 
 function generateTargetPattern(nodeLabel: string, relationField: RelationField, referenceNode: Node): string {
@@ -71,8 +76,13 @@ function generateTargetPattern(nodeLabel: string, relationField: RelationField, 
     return `(${nodeLabel})${inStr}[${subQueryRelationAlias}:${relationField.type}]${outStr}${nodeOutStr}`;
 }
 
-function createCountQuery(targetPattern: string, targetAlias: string): string {
-    return wrapApocRun(AggregationQueryGenerators.countQuery(targetPattern, targetAlias));
+function createCountQuery(targetPattern: string, targetAlias: string, { cypherStrs, cypherParams }): string {
+    const authParams: Record<string, string> = Object.keys(cypherParams).reduce((acc, key) => {
+        acc[key] = `$${key}`;
+        return acc;
+    }, {});
+    if (cypherStrs.length > 0) authParams.auth = "$auth";
+    return wrapApocRun(AggregationQueryGenerators.countQuery(targetPattern, targetAlias, cypherStrs), authParams);
 }
 
 function createAggregationQuery(

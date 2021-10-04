@@ -38,6 +38,8 @@ export function defaultAggregationQuery(matchPattern: string, fieldName: string,
         RETURN {min: MIN(${fieldPath}), max: MAX(${fieldPath})}`;
 }
 
-export function countQuery(matchPattern: string, targetAlias: string): string {
-    return `MATCH ${matchPattern} RETURN COUNT(${targetAlias})`;
+export function countQuery(matchPattern: string, targetAlias: string, cypherStrs: string[]): string {
+    return `MATCH ${matchPattern}
+    ${cypherStrs.join("\n")}
+    RETURN COUNT(${targetAlias})`;
 }

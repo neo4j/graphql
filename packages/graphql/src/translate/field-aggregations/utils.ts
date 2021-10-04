@@ -45,8 +45,10 @@ export function getFieldType(field: ResolveTree): AggregationType | undefined {
     return undefined;
 }
 
-export function wrapApocRun(query: string): string {
-    return `head(apoc.cypher.runFirstColumn(" ${query} ", {this:this}))`;
+export function wrapApocRun(query: string, extraParams: Record<string, string> = {}): string {
+    const params = generateResultObject({ this: "this", ...extraParams });
+
+    return `head(apoc.cypher.runFirstColumn(" ${query} ", ${params}))`;
 }
 
 export function getReferenceNode(context: Context, relationField: RelationField): Node | undefined {
