@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, valueFromASTUntyped, ArgumentNode } from "graphql";
+import { DirectiveNode, valueFromASTUntyped } from "graphql";
 import NodeDirective from "../classes/NodeDirective";
 
 function parseNodeDirective(nodeDirective: DirectiveNode) {
@@ -25,17 +25,16 @@ function parseNodeDirective(nodeDirective: DirectiveNode) {
         throw new Error("Undefined or incorrect directive passed into parseNodeDirective function");
     }
 
-    const label = nodeDirective.arguments?.find((a) => a.name.value === "label") as ArgumentNode | undefined;
-    const additionalLabels = nodeDirective.arguments?.find((a) => a.name.value === "additionalLabels") as
-        | ArgumentNode
-        | undefined;
+    return new NodeDirective({
+        label: getArgumentValue<string>(nodeDirective, "label"),
+        additionalLabels: getArgumentValue<string[]>(nodeDirective, "additionalLabels"),
+        plural: getArgumentValue<string>(nodeDirective, "plural"),
+    });
+}
 
-    const labelValue: string | undefined = label ? valueFromASTUntyped(label.value) : undefined;
-    const additionalLabelsValue: string[] | undefined = additionalLabels
-        ? valueFromASTUntyped(additionalLabels.value)
-        : undefined;
-
-    return new NodeDirective({ label: labelValue, additionalLabels: additionalLabelsValue });
+function getArgumentValue<T>(directive: DirectiveNode, name: string): T | undefined {
+    const argument = directive.arguments?.find((a) => a.name.value === name);
+    return argument ? valueFromASTUntyped(argument.value) : undefined;
 }
 
 export default parseNodeDirective;

@@ -20,8 +20,8 @@
 const executeMock = jest.fn();
 
 /* eslint-disable import/first */
-import { Node } from "../../classes";
 import countResolver from "./count";
+import { NodeBuilder } from "../../utils/test";
 /* eslint-enable import/first */
 
 jest.mock("../../translate", () => {
@@ -38,10 +38,9 @@ jest.mock("../../utils", () => {
 
 describe("Count resolver", () => {
     test("should return the correct; type, args and resolve", () => {
-        // @ts-ignore
-        const node: Node = {
+        const node = new NodeBuilder({
             name: "Movie",
-        };
+        }).instance();
 
         const result = countResolver({ node });
         expect(result.type).toEqual("Int!");
@@ -52,10 +51,9 @@ describe("Count resolver", () => {
     });
 
     test("should resolve correctly for a plain number", async () => {
-        // @ts-ignore
-        const node: Node = {
+        const node = new NodeBuilder({
             name: "Movie",
-        };
+        }).instance();
 
         const result = countResolver({ node });
 
@@ -75,10 +73,9 @@ describe("Count resolver", () => {
     });
 
     test("should resolve correctly for a Neo4j Integer", async () => {
-        // @ts-ignore
-        const node: Node = {
+        const node = new NodeBuilder({
             name: "Movie",
-        };
+        }).instance();
 
         const result = countResolver({ node });
 
