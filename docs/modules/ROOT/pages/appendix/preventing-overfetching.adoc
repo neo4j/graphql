@@ -1,0 +1,47 @@
+[[appendix-preventing-overfetching]]
+== Preventing overfetching
+
+When querying for unions and interfaces in Cypher, each union member/interface implementation is broken out into a subquery and joined with `UNION`. For example, using one of the examples above, when we query with no `where` argument, each subquery has a similar structure:
+
+[source, cypher, indent=0]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    RETURN { __resolveType: "Blog", title: blog.title }
+UNION
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(journal:Post)
+    RETURN { __resolveType: "Post" }
+}
+----
+
+Now if you were to leave both subqueries and add a `WHERE` clause for blogs, it would look like this:
+
+[source, cypher, indent=0]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    WHERE blog.title IS NOT NULL
+    RETURN { __resolveType: "Blog", title: blog.title }
+UNION
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(journal:Post)
+    RETURN { __resolveType: "Post" }
+}
+----
+
+As you can see, the subqueries are now "unbalanced", which could result in massive overfetching of `Post` nodes.
+
+So, when a `where` argument is passed in, only union members which are in the `where` object are fetched, so it is essentially acting as a logical OR gate, different from the rest of the `where` arguments in the schema:
+
+[source, cypher, indent=0]
+----
+CALL {
+    WITH this
+    OPTIONAL MATCH (this)-[has_content:HAS_CONTENT]->(blog:Blog)
+    WHERE blog.title IS NOT NULL
+    RETURN { __resolveType: "Blog", title: blog.title }
+}
+----

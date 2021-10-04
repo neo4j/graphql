@@ -1,0 +1,105 @@
+[[type-definitions-union-types]]
+== Union Types
+
+The Neo4j GraphQL Library supports the use of unions on relationship fields. For example, the following schema defines a `User` type, that has a relationship `HAS_CONTENT`, of type `[Content]`. `Content` is of type `union` representing either a `Blog` or a `Post`.
+
+[source, graphql, indent=0]
+----
+union Content = Blog | Post
+
+type Blog {
+    title: String
+    posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
+}
+
+type Post {
+    content: String
+}
+
+type User {
+    name: String
+    content: [Content] @relationship(type: "HAS_CONTENT", direction: OUT)
+}
+----
+
+Below you can find some examples of how queries and mutations work with this example.
+
+[[type-definitions-union-types-querying]]
+=== Querying a union
+
+Which union members are returned by a Query are dictated by the `where` filter applied.
+
+For example, the following will return all user content, and you will specifically get the title of each blog.
+
+[source, graphql, indent=0]
+----
+query GetUsersWithBlogs {
+    users {
+        name
+        content {
+            ... on Blog {
+                title
+            }
+        }
+    }
+}
+----
+
+Whilst the query below will only return blogs. You could for instance use a filter to check that the title is not null to essentially return all blogs:
+
+[source, graphql, indent=0]
+----
+query GetUsersWithAllContent {
+    users {
+        name
+        content(where: { Blog: { title_NOT: null }}) {
+            ... on Blog {
+                title
+            }
+        }
+    }
+}
+----
+
+This is to prevent overfetching, and you can find an explanation of this xref::appendix/preventing-overfetching.adoc[here].
+
+=== Creating a union
+
+The below mutation creates the user and their content:
+
+[source, graphql, indent=0]
+----
+mutation CreateUserAndContent {
+    createUsers(
+        input: [
+            {
+                name: "Dan"
+                content: {
+                    Blog: {
+                        create: [
+                            {
+                                node: {
+                                    title: "My Cool Blog"
+                                    posts: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    content: "My Cool Post"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    ) {
+        users {
+            name
+        }
+    }
+}
+----
