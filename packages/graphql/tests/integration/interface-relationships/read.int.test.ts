@@ -21,6 +21,7 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import faker from "faker";
 import { gql } from "apollo-server";
+import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
@@ -68,13 +69,22 @@ describe("interface relationships", () => {
     test("should read and return interface relationship fields", async () => {
         const session = driver.session();
 
-        const actorName = faker.random.word();
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const movieTitle = faker.random.word();
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
 
-        const seriesTitle = faker.random.word();
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const seriesEpisodes = faker.random.number();
         const seriesScreenTime = faker.random.number();
 
@@ -114,10 +124,11 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
+            expect(gqlResult.data?.actors[0].actedIn).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 actors: [
                     {
-                        actedIn: [
+                        actedIn: expect.arrayContaining([
                             {
                                 runtime: movieRuntime,
                                 title: movieTitle,
@@ -126,7 +137,7 @@ describe("interface relationships", () => {
                                 episodes: seriesEpisodes,
                                 title: seriesTitle,
                             },
-                        ],
+                        ]),
                         name: actorName,
                     },
                 ],
@@ -139,9 +150,15 @@ describe("interface relationships", () => {
     test("should read and return interface relationship fields with shared where", async () => {
         const session = driver.session();
 
-        const actorName = faker.random.word();
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const movieTitle = faker.random.word();
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
 
@@ -185,10 +202,11 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
+            expect(gqlResult.data?.actors[0].actedIn).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 actors: [
                     {
-                        actedIn: [
+                        actedIn: expect.arrayContaining([
                             {
                                 runtime: movieRuntime,
                                 title: "Apple",
@@ -197,7 +215,7 @@ describe("interface relationships", () => {
                                 episodes: seriesEpisodes,
                                 title: "Apple",
                             },
-                        ],
+                        ]),
                         name: actorName,
                     },
                 ],
@@ -210,9 +228,15 @@ describe("interface relationships", () => {
     test("should read and return interface relationship fields with type specific where", async () => {
         const session = driver.session();
 
-        const actorName = faker.random.word();
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const movieTitle = faker.random.word();
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
 
@@ -274,9 +298,15 @@ describe("interface relationships", () => {
     test("should read and return interface relationship fields with where override", async () => {
         const session = driver.session();
 
-        const actorName = faker.random.word();
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const movieTitle = faker.random.word();
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
 
@@ -320,10 +350,11 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
+            expect(gqlResult.data?.actors[0].actedIn).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 actors: [
                     {
-                        actedIn: [
+                        actedIn: expect.arrayContaining([
                             {
                                 runtime: movieRuntime,
                                 title: "Pear",
@@ -332,7 +363,7 @@ describe("interface relationships", () => {
                                 episodes: seriesEpisodes,
                                 title: "Apple",
                             },
-                        ],
+                        ]),
                         name: actorName,
                     },
                 ],

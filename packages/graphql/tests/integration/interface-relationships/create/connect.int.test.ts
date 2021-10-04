@@ -21,6 +21,7 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import faker from "faker";
 import { gql } from "apollo-server";
+import { generate } from "randomstring";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 
@@ -76,10 +77,19 @@ describe("interface relationships", () => {
     test("should nested create connect using interface relationship fields", async () => {
         const session = driver.session();
 
-        const actorName1 = faker.random.word();
-        const actorName2 = faker.random.word();
+        const actorName1 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const movieTitle = faker.random.word();
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
 
@@ -140,6 +150,7 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
+            expect(gqlResult.data?.createActors.actors[0].actedIn[0].actors).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 createActors: {
                     actors: [
@@ -148,7 +159,7 @@ describe("interface relationships", () => {
                                 {
                                     runtime: movieRuntime,
                                     title: movieTitle,
-                                    actors: [{ name: actorName2 }, { name: actorName1 }],
+                                    actors: expect.arrayContaining([{ name: actorName2 }, { name: actorName1 }]),
                                 },
                             ],
                             name: actorName1,

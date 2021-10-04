@@ -21,6 +21,7 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import faker from "faker";
 import { gql } from "apollo-server";
+import { generate } from "randomstring";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 
@@ -76,13 +77,22 @@ describe("interface relationships", () => {
     test("should disconnect using interface relationship fields", async () => {
         const session = driver.session();
 
-        const actorName = faker.random.word();
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const movieTitle = faker.random.word();
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
 
-        const seriesTitle = faker.random.word();
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const seriesScreenTime = faker.random.number();
 
         const query = `
@@ -152,14 +162,26 @@ describe("interface relationships", () => {
     test("should nested disconnect using interface relationship fields", async () => {
         const session = driver.session();
 
-        const actorName1 = faker.random.word();
-        const actorName2 = faker.random.word();
+        const actorName1 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const movieTitle = faker.random.word();
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
 
-        const seriesTitle = faker.random.word();
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const seriesScreenTime = faker.random.number();
 
         const query = `
@@ -219,6 +241,7 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
+            expect(gqlResult.data?.updateActors.actors[0].actedIn[0].actors).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 updateActors: {
                     actors: [
@@ -226,7 +249,7 @@ describe("interface relationships", () => {
                             actedIn: [
                                 {
                                     title: seriesTitle,
-                                    actors: [{ name: actorName1 }, { name: actorName2 }],
+                                    actors: expect.arrayContaining([{ name: actorName1 }, { name: actorName2 }]),
                                 },
                             ],
                             name: actorName1,

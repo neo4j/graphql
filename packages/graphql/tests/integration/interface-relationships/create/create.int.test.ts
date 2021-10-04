@@ -21,6 +21,7 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import faker from "faker";
 import { gql } from "apollo-server";
+import { generate } from "randomstring";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 
@@ -76,9 +77,15 @@ describe("interface relationships", () => {
     test("should create create using interface relationship fields", async () => {
         const session = driver.session();
 
-        const actorName = faker.random.word();
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const movieTitle = faker.random.word();
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
 
@@ -148,14 +155,26 @@ describe("interface relationships", () => {
     test("should create create nested nodes using interface relationship fields", async () => {
         const session = driver.session();
 
-        const name1 = faker.random.word();
-        const name2 = faker.random.word();
+        const name1 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const name2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const movieTitle = faker.random.word();
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const movieRuntime = faker.random.number();
         const screenTime = faker.random.number();
 
-        const seriesTitle = faker.random.word();
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
         const episodeRuntime = faker.random.number();
 
@@ -243,22 +262,26 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
+            expect(gqlResult.data?.createActors.actors[0].actedIn).toHaveLength(2);
+            expect(
+                gqlResult.data?.createActors.actors[0].actedIn.find((actedIn) => actedIn.title === movieTitle).actors
+            ).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 createActors: {
                     actors: [
                         {
-                            actedIn: [
+                            actedIn: expect.arrayContaining([
                                 {
                                     runtime: movieRuntime,
                                     title: movieTitle,
-                                    actors: [{ name: name2 }, { name: name1 }],
+                                    actors: expect.arrayContaining([{ name: name2 }, { name: name1 }]),
                                 },
                                 {
                                     title: seriesTitle,
                                     actors: [{ name: name1 }],
                                     episodes: [{ runtime: episodeRuntime }],
                                 },
-                            ],
+                            ]),
                             name: name1,
                         },
                     ],

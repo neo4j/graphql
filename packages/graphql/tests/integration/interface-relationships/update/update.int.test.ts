@@ -21,6 +21,7 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import faker from "faker";
 import { gql } from "apollo-server";
+import { generate } from "randomstring";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 
@@ -76,15 +77,27 @@ describe("interface relationships", () => {
     test("update through relationship field", async () => {
         const session = driver.session();
 
-        const actorName = faker.random.word();
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const movieTitle = faker.random.word();
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
 
-        const movieNewTitle = faker.random.word();
+        const movieNewTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const seriesTitle = faker.random.word();
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const seriesScreenTime = faker.random.number();
 
         const query = `
@@ -138,21 +151,24 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.updateActors).toEqual({
-                actors: [
-                    {
-                        actedIn: [
-                            {
-                                runtime: movieRuntime,
-                                title: movieNewTitle,
-                            },
-                            {
-                                title: seriesTitle,
-                            },
-                        ],
-                        name: actorName,
-                    },
-                ],
+            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
+            expect(gqlResult.data).toEqual({
+                updateActors: {
+                    actors: [
+                        {
+                            actedIn: expect.arrayContaining([
+                                {
+                                    runtime: movieRuntime,
+                                    title: movieNewTitle,
+                                },
+                                {
+                                    title: seriesTitle,
+                                },
+                            ]),
+                            name: actorName,
+                        },
+                    ],
+                },
             });
         } finally {
             await session.close();
@@ -162,16 +178,31 @@ describe("interface relationships", () => {
     test("nested update through relationship field", async () => {
         const session = driver.session();
 
-        const actorName = faker.random.word();
-        const actorNewName = faker.random.word();
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const actorNewName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const movieTitle = faker.random.word();
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
 
-        const movieNewTitle = faker.random.word();
+        const movieNewTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const seriesTitle = faker.random.word();
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const seriesScreenTime = faker.random.number();
 
         const query = `
@@ -229,21 +260,24 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect(gqlResult.data?.updateActors).toEqual({
-                actors: [
-                    {
-                        actedIn: [
-                            {
-                                runtime: movieRuntime,
-                                title: movieNewTitle,
-                            },
-                            {
-                                title: seriesTitle,
-                            },
-                        ],
-                        name: actorNewName,
-                    },
-                ],
+            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
+            expect(gqlResult.data).toEqual({
+                updateActors: {
+                    actors: [
+                        {
+                            actedIn: expect.arrayContaining([
+                                {
+                                    runtime: movieRuntime,
+                                    title: movieNewTitle,
+                                },
+                                {
+                                    title: seriesTitle,
+                                },
+                            ]),
+                            name: actorNewName,
+                        },
+                    ],
+                },
             });
         } finally {
             await session.close();

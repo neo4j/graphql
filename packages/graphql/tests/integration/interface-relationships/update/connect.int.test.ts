@@ -21,6 +21,7 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import faker from "faker";
 import { gql } from "apollo-server";
+import { generate } from "randomstring";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 
@@ -76,13 +77,22 @@ describe("interface relationships", () => {
     test("should connect using interface relationship fields", async () => {
         const session = driver.session();
 
-        const actorName = faker.random.word();
+        const actorName = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const movieTitle = faker.random.word();
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
 
-        const seriesTitle = faker.random.word();
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const seriesScreenTime = faker.random.number();
 
         const query = `
@@ -123,11 +133,12 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
+            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 updateActors: {
                     actors: [
                         {
-                            actedIn: [
+                            actedIn: expect.arrayContaining([
                                 {
                                     runtime: movieRuntime,
                                     title: movieTitle,
@@ -135,7 +146,7 @@ describe("interface relationships", () => {
                                 {
                                     title: seriesTitle,
                                 },
-                            ],
+                            ]),
                             name: actorName,
                         },
                     ],
@@ -149,14 +160,26 @@ describe("interface relationships", () => {
     test("should nested connect using interface relationship fields", async () => {
         const session = driver.session();
 
-        const actorName1 = faker.random.word();
-        const actorName2 = faker.random.word();
+        const actorName1 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
 
-        const movieTitle = faker.random.word();
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
 
-        const seriesTitle = faker.random.word();
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
         const seriesScreenTime = faker.random.number();
 
         const query = `
@@ -214,21 +237,25 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
+            expect(gqlResult.data?.updateActors.actors[0].actedIn).toHaveLength(2);
+            expect(
+                gqlResult.data?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.title === movieTitle).actors
+            ).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 updateActors: {
                     actors: [
                         {
-                            actedIn: [
+                            actedIn: expect.arrayContaining([
                                 {
                                     runtime: movieRuntime,
                                     title: movieTitle,
-                                    actors: [{ name: actorName2 }, { name: actorName1 }],
+                                    actors: expect.arrayContaining([{ name: actorName2 }, { name: actorName1 }]),
                                 },
                                 {
                                     title: seriesTitle,
                                     actors: [{ name: actorName1 }],
                                 },
-                            ],
+                            ]),
                             name: actorName1,
                         },
                     ],
