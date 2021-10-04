@@ -171,4 +171,211 @@ describe("interface relationships", () => {
             await session.close();
         }
     });
+
+    test("should nested create connect using interface relationship fields and only connect from one type", async () => {
+        const session = driver.session();
+
+        const actorName1 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieRuntime = faker.random.number();
+        const movieScreenTime = faker.random.number();
+
+        const query = `
+            mutation CreateActorConnectMovie($name1: String!, $title: String, $screenTime: Int!, $name2: String) {
+                createActors(
+                    input: [
+                        {
+                            name: $name1
+                            actedIn: {
+                                connect: {
+                                    edge: { screenTime: $screenTime }
+                                    where: { node: { title: $title } }
+                                    connect: {
+                                        _on: {
+                                            Movie: {
+                                                actors: {
+                                                    edge: { screenTime: $screenTime }
+                                                    where: { node: { name: $name2 } }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                ) {
+                    actors {
+                        name
+                        actedIn {
+                            __typename
+                            title
+                            actors {
+                                name
+                            }
+                            ... on Movie {
+                                runtime
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (:Series { title: $movieTitle, episodes:$movieRuntime })
+                CREATE (:Actor { name: $name })
+            `,
+                { movieTitle, movieRuntime, name: actorName2 }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: {
+                    name1: actorName1,
+                    title: movieTitle,
+                    screenTime: movieScreenTime,
+                    name2: actorName2,
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult.data?.createActors.actors[0].actedIn).toHaveLength(2);
+            expect(
+                gqlResult.data?.createActors.actors[0].actedIn.find((actedIn) => actedIn.__typename === "Movie").actors
+            ).toHaveLength(2);
+            expect(gqlResult.data?.createActors.actors[0].actedIn).toHaveLength(2);
+
+            expect(gqlResult.data).toEqual({
+                createActors: {
+                    actors: [
+                        {
+                            actedIn: expect.arrayContaining([
+                                {
+                                    __typename: "Movie",
+                                    runtime: movieRuntime,
+                                    title: movieTitle,
+                                    actors: expect.arrayContaining([{ name: actorName2 }, { name: actorName1 }]),
+                                },
+                                {
+                                    __typename: "Series",
+                                    title: movieTitle,
+                                    actors: [{ name: actorName1 }],
+                                },
+                            ]),
+                            name: actorName1,
+                        },
+                    ],
+                },
+            });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should only connect to one type when only _on used", async () => {
+        const session = driver.session();
+
+        const actorName1 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieRuntime = faker.random.number();
+        const movieScreenTime = faker.random.number();
+
+        const query = `
+            mutation CreateActorConnectMovie($name1: String!, $title: String, $screenTime: Int!) {
+                createActors(
+                    input: [
+                        {
+                            name: $name1
+                            actedIn: {
+                                connect: {
+                                    edge: { screenTime: $screenTime }
+                                    where: { node: { _on: { Movie: { title: $title } } } }
+                                }
+                            }
+                        }
+                    ]
+                ) {
+                    actors {
+                        name
+                        actedIn {
+                            title
+                            actors {
+                                name
+                            }
+                            ... on Movie {
+                                runtime
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (:Movie { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (:Series { title: $movieTitle, episodes:$movieRuntime })
+            `,
+                { movieTitle, movieRuntime }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: {
+                    name1: actorName1,
+                    title: movieTitle,
+                    screenTime: movieScreenTime,
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult.data).toEqual({
+                createActors: {
+                    actors: [
+                        {
+                            actedIn: [
+                                {
+                                    runtime: movieRuntime,
+                                    title: movieTitle,
+                                    actors: [{ name: actorName1 }],
+                                },
+                            ],
+                            name: actorName1,
+                        },
+                    ],
+                },
+            });
+        } finally {
+            await session.close();
+        }
+    });
 });

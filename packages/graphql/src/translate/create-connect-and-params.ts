@@ -78,18 +78,86 @@ function createConnectAndParams({
 
         const whereStrs: string[] = [];
         if (connect.where) {
-            const where = createWhereAndParams({
-                varName: nodeName,
-                whereInput: connect.where.node,
-                node: relatedNode,
+            if (
+                connect.where.node._on &&
+                Object.keys(connect.where.node).length === 1 &&
+                !Object.prototype.hasOwnProperty.call(connect.where.node._on, relatedNode.name)
+            ) {
+                return { subquery: "", params: {} };
+            }
+
+            // const where = createWhereAndParams({
+            //     varName: nodeName,
+            //     whereInput: connect.where.node,
+            //     node: relatedNode,
+            //     context,
+            //     recursing: true,
+            // });
+            // if (where[0]) {
+            //     whereStrs.push(where[0]);
+            //     params = { ...params, ...where[1] };
+            // }
+
+            const rootNodeWhereAndParams = createWhereAndParams({
+                whereInput: {
+                    ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
+                        if (k !== "_on") {
+                            if (
+                                connect.where.node._on &&
+                                Object.prototype.hasOwnProperty.call(connect.where.node._on, relatedNode.name) &&
+                                Object.prototype.hasOwnProperty.call(connect.where.node._on[relatedNode.name], k)
+                            ) {
+                                return args;
+                            }
+                            return { ...args, [k]: v };
+                        }
+
+                        return args;
+                    }, {}),
+                },
                 context,
+                node: relatedNode,
+                varName: nodeName,
                 recursing: true,
             });
-            if (where[0]) {
-                whereStrs.push(where[0]);
-                params = { ...params, ...where[1] };
+            if (rootNodeWhereAndParams[0]) {
+                whereStrs.push(rootNodeWhereAndParams[0]);
+                // params = { ...params, ...{ args: { where: rootNodeWhereAndParams[1] } } };
+                params = { ...params, ...rootNodeWhereAndParams[1] };
+            }
+
+            // For _on filters
+            if (
+                connect.where.node._on &&
+                Object.prototype.hasOwnProperty.call(connect.where.node._on, relatedNode.name)
+            ) {
+                const onTypeNodeWhereAndParams = createWhereAndParams({
+                    whereInput: {
+                        ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
+                            if (k !== "_on") {
+                                return { ...args, [k]: v };
+                            }
+
+                            if (Object.prototype.hasOwnProperty.call(v, relatedNode.name)) {
+                                return { ...args, ...(v as any)[relatedNode.name] };
+                            }
+
+                            return args;
+                        }, {}),
+                    },
+                    context,
+                    node: relatedNode,
+                    varName: `${nodeName}`,
+                    chainStr: `${nodeName}_on_${relatedNode.name}`,
+                    recursing: true,
+                });
+                if (onTypeNodeWhereAndParams[0]) {
+                    whereStrs.push(onTypeNodeWhereAndParams[0]);
+                    params = { ...params, ...onTypeNodeWhereAndParams[1] };
+                }
             }
         }
+
         if (relatedNode.auth) {
             const whereAuth = createAuthAndParams({
                 operation: "CONNECT",
@@ -353,8 +421,10 @@ function createConnectAndParams({
             const subqueries: string[] = [];
             refNodes.forEach((refNode) => {
                 const subquery = createSubqueryContents(refNode, connect, index);
-                subqueries.push(subquery.subquery);
-                res.params = { ...res.params, ...subquery.params };
+                if (subquery.subquery) {
+                    subqueries.push(subquery.subquery);
+                    res.params = { ...res.params, ...subquery.params };
+                }
             });
             res.connects.push(subqueries.join("\nUNION\n"));
         } else {
