@@ -23,7 +23,7 @@ import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { generateUniqueType } from "../../../../src/utils/test/graphql-types";
 
-describe("aggregations-field-level-basic", () => {
+describe("Field Level Aggregations", () => {
     let driver: Driver;
     let session: Session;
     let typeDefs: string;
@@ -45,6 +45,7 @@ describe("aggregations-field-level-basic", () => {
         type ${typeActor.name} {
             name: String
             age: Int
+            born: DateTime
             ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
         }
 
@@ -56,8 +57,8 @@ describe("aggregations-field-level-basic", () => {
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
         session = driver.session();
-        await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typeActor.name} { name: "Arnold", age: 54})
-        CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37})`);
+        await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
+        CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37, born: datetime('2000-02-02')})`);
     });
 
     afterAll(async () => {
@@ -152,6 +153,39 @@ describe("aggregations-field-level-basic", () => {
                         max: 54,
                         min: 37,
                         average: 45.5,
+                    },
+                },
+            });
+        });
+
+        test("max and min in datetime", async () => {
+            const query = `
+            query {
+                ${typeMovie.plural} {
+                    ${typeActor.plural}Aggregate {
+                        node {
+                            born {
+                                max
+                                min
+                            }
+                        }
+                    }
+                }
+            }
+            `;
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+            expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+                node: {
+                    born: {
+                        max: "2000-02-02T00:00:00.000Z",
+                        min: "1980-07-02T00:00:00.000Z",
                     },
                 },
             });

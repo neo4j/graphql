@@ -14,8 +14,7 @@ type User {
     createdAt: DateTime @auth(rules: [{ allow: { id: "$jwt.sub" } }])
 }
 
-extend type User
-    @auth(rules: [{ allow: { id: "$jwt.sub" }, where: { id: "$jwt.sub" } }])
+extend type User @auth(rules: [{ allow: { id: "$jwt.sub" }, where: { id: "$jwt.sub" } }])
 ```
 
 ---

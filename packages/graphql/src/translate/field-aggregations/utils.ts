@@ -27,6 +27,7 @@ export enum AggregationType {
     BigInt = "BigIntAggregateSelection",
     Float = "FloatAggregateSelection",
     Id = "IDAggregateSelection",
+    DateTime = "DateTimeAggregateSelection",
 }
 
 export function generateResultObject(fields: Record<string, string | undefined>): string {
@@ -40,13 +41,16 @@ export function generateResultObject(fields: Record<string, string | undefined>)
 }
 
 export function getFieldType(field: ResolveTree): AggregationType | undefined {
-    if (field.fieldsByTypeName[AggregationType.Int]) return AggregationType.Int;
-    if (field.fieldsByTypeName[AggregationType.String]) return AggregationType.String;
+    for (const candidateField of Object.values(AggregationType)) {
+        if (field.fieldsByTypeName[candidateField]) return candidateField;
+    }
     return undefined;
 }
 
-export function wrapApocRun(query: string): string {
-    return `head(apoc.cypher.runFirstColumn(" ${query} ", {this:this}))`;
+export function wrapApocRun(query: string, extraParams: Record<string, string> = {}): string {
+    const params = generateResultObject({ this: "this", ...extraParams });
+
+    return `head(apoc.cypher.runFirstColumn(" ${query} ", ${params}))`;
 }
 
 export function getReferenceNode(context: Context, relationField: RelationField): Node | undefined {

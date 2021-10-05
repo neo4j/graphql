@@ -403,15 +403,16 @@ function createProjectionAndParams({
             return res;
         }
 
-        const projectionStr = createFieldAggregation({
+        const projection = createFieldAggregation({
             context,
             nodeLabel: chainStr || varName,
             node,
             field,
         });
 
-        if (projectionStr) {
-            res.projection.push(`${key}: ${projectionStr}`);
+        if (projection) {
+            res.projection.push(`${key}: ${projection.query}`);
+            res.params = { ...res.params, ...projection.params };
             return res;
         }
 

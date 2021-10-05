@@ -1,6 +1,6 @@
 # Field Level Aggregations
 
-Should preform many aggregations while using an alias on each field
+Field level aggregations
 
 Schema:
 
@@ -42,7 +42,7 @@ RETURN this { .title,
         actorsAggregate: {
             count: head(apoc.cypher.runFirstColumn("
             MATCH (this)<-[r:ACTED_IN]-(n:Actor) RETURN COUNT(n)
-            ", {this:this}))
+            ", { this: this }))
         }
 } as this
 ```
@@ -81,7 +81,7 @@ query {
 MATCH (this:Movie)
 RETURN this {
         actorsAggregate: {
-            count: head(apoc.cypher.runFirstColumn(" MATCH (this)<-[r:ACTED_IN]-(n:Actor) RETURN COUNT(n) ", {this:this})),
+            count: head(apoc.cypher.runFirstColumn(" MATCH (this)<-[r:ACTED_IN]-(n:Actor) RETURN COUNT(n) ", { this: this })),
             node: {
                 name: head(apoc.cypher.runFirstColumn("
                     MATCH (this)<-[r:ACTED_IN]-(n:Actor)
@@ -89,7 +89,7 @@ RETURN this {
                     ORDER BY size(n.name) DESC
                     WITH collect(n.name) as list
                     RETURN {longest: head(list), shortest: last(list)}
-                ", {this:this}))
+                ", { this: this }))
             }
         }
 } as this
@@ -133,7 +133,7 @@ RETURN this {
                 age: head(apoc.cypher.runFirstColumn("
                     MATCH (this)<-[r:ACTED_IN]-(n:Actor)
                     RETURN {min: MIN(n.age), max: MAX(n.age), average: AVG(n.age)}
-                ", {this:this}))
+                ", { this: this }))
             }
         }
 } as this
@@ -180,7 +180,7 @@ RETURN this { .title,
                     ORDER BY size(n.name) DESC
                     WITH collect(n.name) as list
                     RETURN {longest: head(list), shortest: last(list)}
-                ", {this:this}))
+                ", { this: this }))
             }
         }
 } as this

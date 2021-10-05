@@ -1,6 +1,6 @@
 # Field Level Aggregations
 
-Should preform many aggregations while using an alias on each field
+Field level aggregations with relations
 
 Schema:
 
@@ -50,7 +50,7 @@ MATCH (this:Movie)
 RETURN this { actorsAggregate: { edge: { screentime: head(apoc.cypher.runFirstColumn("
             MATCH (this)<-[r:ACTED_IN]-(n:Actor)
             RETURN {min: MIN(r.screentime), max: MAX(r.screentime), average: AVG(r.screentime)}
-        ", {this:this})) } } } as this
+        ", { this: this })) } } } as this
 ```
 
 ### Expected Cypher Params
