@@ -17,47 +17,35 @@
  * limitations under the License.
  */
 
-export function stringAggregationQuery(
-    matchPattern: string,
-    fieldName: string,
-    targetAlias: string,
-    authQuery: string
-): string {
-    const fieldPath = `${targetAlias}.${fieldName}`;
+import { AggregationAuth } from "./field-aggregations-auth";
+
+export function createMatchWherePattern(matchPattern: string, auth: AggregationAuth): string {
     return `MATCH ${matchPattern}
-        ${authQuery}
+        ${auth.whereQuery ? `WHERE ${auth.whereQuery}` : ""}${auth.query}`;
+}
+
+export function stringAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
+    const fieldPath = `${targetAlias}.${fieldName}`;
+    return `${matchWherePattern}
         WITH ${targetAlias} as ${targetAlias}
         ORDER BY size(${fieldPath}) DESC
         WITH collect(${fieldPath}) as list
         RETURN {longest: head(list), shortest: last(list)}`;
 }
 
-export function numberAggregationQuery(
-    matchPattern: string,
-    fieldName: string,
-    targetAlias: string,
-    authQuery: string
-): string {
+export function numberAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
     const fieldPath = `${targetAlias}.${fieldName}`;
-    return `MATCH ${matchPattern}
-        ${authQuery}
+    return `${matchWherePattern}
         RETURN {min: MIN(${fieldPath}), max: MAX(${fieldPath}), average: AVG(${fieldPath})}`;
 }
 
-export function defaultAggregationQuery(
-    matchPattern: string,
-    fieldName: string,
-    targetAlias: string,
-    authQuery: string
-): string {
+export function defaultAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
     const fieldPath = `${targetAlias}.${fieldName}`;
-    return `MATCH ${matchPattern}
-        ${authQuery}
+    return `${matchWherePattern}
         RETURN {min: MIN(${fieldPath}), max: MAX(${fieldPath})}`;
 }
 
-export function countQuery(matchPattern: string, targetAlias: string, authQuery: string): string {
-    return `MATCH ${matchPattern}
-    ${authQuery}
+export function countQuery(matchWherePattern: string, targetAlias: string): string {
+    return `${matchWherePattern}
     RETURN COUNT(${targetAlias})`;
 }

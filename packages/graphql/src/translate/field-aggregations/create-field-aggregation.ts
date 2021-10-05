@@ -18,11 +18,12 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { Node } from "../../classes";
+import { Node, Relationship } from "../../classes";
 import { Context, RelationField } from "../../types";
 import { generateResultObject, getFieldType, AggregationType, wrapApocRun, getReferenceNode } from "./utils";
 import * as AggregationQueryGenerators from "./aggregation-sub-queries";
 import { createFieldAggregationAuth, AggregationAuth } from "./field-aggregations-auth";
+import { createMatchWherePattern } from "./aggregation-sub-queries";
 
 const subQueryNodeAlias = "n";
 const subQueryRelationAlias = "r";
@@ -51,18 +52,32 @@ export function createFieldAggregation({
     const fieldPathBase = `${node.name}${referenceNode.name}${relationAggregationField.fieldName}`;
     const aggregationField = field.fieldsByTypeName[`${fieldPathBase}AggregationResult`];
 
-    const nodeField: Record<string, ResolveTree> | undefined =
+    const nodeFields: Record<string, ResolveTree> | undefined =
         aggregationField.node?.fieldsByTypeName[`${fieldPathBase}AggregateSelection`];
-    const edgeField: Record<string, ResolveTree> | undefined =
+    const edgeFields: Record<string, ResolveTree> | undefined =
         aggregationField.edge?.fieldsByTypeName[`${fieldPathBase}EdgeAggregateSelection`];
 
-    const authData = createFieldAggregationAuth({ node: referenceNode, context, subQueryNodeAlias });
+    const relationship = (context.neoSchema.relationships.find(
+        (x) => x.properties === relationAggregationField.properties
+    ) as unknown) as Relationship;
+
+    const authData = createFieldAggregationAuth({
+        node: referenceNode,
+        context,
+        subQueryNodeAlias,
+        nodeFields,
+        relationship,
+    });
+
+    const matchWherePattern = createMatchWherePattern(targetPattern, authData);
 
     return {
         query: generateResultObject({
-            count: aggregationField.count ? createCountQuery(targetPattern, subQueryNodeAlias, authData) : undefined,
-            node: createAggregationQuery(targetPattern, nodeField, subQueryNodeAlias, authData),
-            edge: createAggregationQuery(targetPattern, edgeField, subQueryRelationAlias, authData),
+            count: aggregationField.count
+                ? createCountQuery(matchWherePattern, subQueryNodeAlias, authData)
+                : undefined,
+            node: createAggregationQuery(matchWherePattern, nodeFields, subQueryNodeAlias, authData),
+            edge: createAggregationQuery(matchWherePattern, edgeFields, subQueryRelationAlias, authData),
         }),
         params: authData.params,
     };
@@ -76,13 +91,13 @@ function generateTargetPattern(nodeLabel: string, relationField: RelationField, 
     return `(${nodeLabel})${inStr}[${subQueryRelationAlias}:${relationField.type}]${outStr}${nodeOutStr}`;
 }
 
-function createCountQuery(targetPattern: string, targetAlias: string, auth: AggregationAuth): string {
+function createCountQuery(matchWherePattern: string, targetAlias: string, auth: AggregationAuth): string {
     const authParams = getAuthApocParams(auth);
-    return wrapApocRun(AggregationQueryGenerators.countQuery(targetPattern, targetAlias, auth.query), authParams);
+    return wrapApocRun(AggregationQueryGenerators.countQuery(matchWherePattern, targetAlias), authParams);
 }
 
 function createAggregationQuery(
-    targetPattern: string,
+    matchWherePattern: string,
     fields: Record<string, ResolveTree> | undefined,
     fieldAlias: string,
     auth: AggregationAuth
@@ -94,7 +109,7 @@ function createAggregationQuery(
         Object.entries(fields).reduce((acc, [fieldName, field]) => {
             const fieldType = getFieldType(field);
             acc[fieldName] = wrapApocRun(
-                getAggregationSubQuery(targetPattern, fieldName, fieldType, fieldAlias, auth.query),
+                getAggregationSubQuery(matchWherePattern, fieldName, fieldType, fieldAlias),
                 authParams
             );
             return acc;
@@ -103,23 +118,22 @@ function createAggregationQuery(
 }
 
 function getAggregationSubQuery(
-    targetPattern: string,
+    matchWherePattern: string,
     fieldName: string,
     type: AggregationType | undefined,
-    targetAlias: string,
-    authQuery: string
+    targetAlias: string
 ): string {
     switch (type) {
         case AggregationType.String:
         case AggregationType.Id:
-            return AggregationQueryGenerators.stringAggregationQuery(targetPattern, fieldName, targetAlias, authQuery);
+            return AggregationQueryGenerators.stringAggregationQuery(matchWherePattern, fieldName, targetAlias);
         case AggregationType.Int:
         case AggregationType.BigInt:
         case AggregationType.Float:
-            return AggregationQueryGenerators.numberAggregationQuery(targetPattern, fieldName, targetAlias, authQuery);
+            return AggregationQueryGenerators.numberAggregationQuery(matchWherePattern, fieldName, targetAlias);
         default:
             // TODO: take datetime into account
-            return AggregationQueryGenerators.defaultAggregationQuery(targetPattern, fieldName, targetAlias, authQuery);
+            return AggregationQueryGenerators.defaultAggregationQuery(matchWherePattern, fieldName, targetAlias);
     }
 }
 

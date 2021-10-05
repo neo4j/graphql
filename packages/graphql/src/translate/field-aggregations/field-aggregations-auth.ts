@@ -17,24 +17,29 @@
  * limitations under the License.
  */
 
+import { ResolveTree } from "graphql-parse-resolve-info";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import createAuthAndParams from "../create-auth-and-params";
 import { Context } from "../../types";
-import { Node } from "../../classes";
+import { Node, Relationship } from "../../classes";
 
 export type AggregationAuth = {
     query: string;
     params: Record<string, string>;
+    whereQuery: string;
 };
 
 export function createFieldAggregationAuth({
     node,
     context,
     subQueryNodeAlias,
+    nodeFields,
 }: {
     node: Node;
     context: Context;
     subQueryNodeAlias: string;
+    nodeFields: Record<string, ResolveTree> | undefined;
+    relationship: Relationship;
 }): AggregationAuth {
     const varName = subQueryNodeAlias;
     let cypherParams: { [k: string]: any } = {};
@@ -48,13 +53,10 @@ export function createFieldAggregationAuth({
         where: { varName, node },
         escapeQuotes: true,
     });
+
     if (whereAuth[0]) {
         whereStrs.push(whereAuth[0]);
         cypherParams = { ...cypherParams, ...whereAuth[1] };
-    }
-
-    if (whereStrs.length) {
-        cypherStrs.push(`WHERE ${whereStrs.join(" AND ")}`);
     }
 
     const allowAuth = createAuthAndParams({
@@ -73,34 +75,51 @@ export function createFieldAggregationAuth({
         cypherParams = { ...cypherParams, ...allowAuth[1] };
     }
 
-    // const selections = fieldsByTypeName[`${node.name}AggregateSelection`];
-    // const projections: string[] = [];
-    // const authStrs: string[] = [];
+    const nodeAuth = getFieldAuthQueries(nodeFields, node, context, node, varName);
 
-    // Do auth first so we can throw out before aggregating
-    // Object.entries(selections).forEach((selection) => {
-    //     const authField = node.authableFields.find((x) => x.fieldName === selection[0]);
-    //     if (authField) {
-    //         if (authField.auth) {
-    //             const allowAndParams = createAuthAndParams({
-    //                 entity: authField,
-    //                 operation: "READ",
-    //                 context,
-    //                 allow: { parentNode: node, varName, chainStr: authField.fieldName },
-    //             });
-    //             if (allowAndParams[0]) {
-    //                 authStrs.push(allowAndParams[0]);
-    //                 cypherParams = { ...cypherParams, ...allowAndParams[1] };
-    //             }
-    //         }
-    //     }
-    // });
-
-    // if (authStrs.length) {
-    //     cypherStrs.push(`CALL apoc.util.validate(NOT(${authStrs.join(" AND ")}), \\"${AUTH_FORBIDDEN_ERROR}\\", [0])`);
-    // }
-    if (cypherStrs.length > 0) {
-        return { query: cypherStrs.join("\n"), params: cypherParams };
+    const authStrs = [...nodeAuth.query];
+    cypherParams = { ...cypherParams, ...nodeAuth.params };
+    if (authStrs.length) {
+        cypherStrs.push(`CALL apoc.util.validate(NOT(${authStrs.join(" AND ")}), \\"${AUTH_FORBIDDEN_ERROR}\\", [0])`);
     }
-    return { query: "", params: {} };
+    if (cypherStrs.length > 0 || whereStrs.length > 0) {
+        return { query: cypherStrs.join("\n"), params: cypherParams, whereQuery: whereStrs.join("\n") };
+    }
+    return { query: "", params: {}, whereQuery: "" };
+}
+
+function getFieldAuthQueries(
+    fields: Record<string, ResolveTree> | undefined,
+    nodeOrRelation: Node,
+    context: Context,
+    parentNode: Node,
+    varName: string
+): { query: string[]; params: Record<string, string> } {
+    const authStrs: string[] = [];
+    let authParams: Record<string, string> = {};
+    if (fields) {
+        Object.entries(fields).forEach((selection) => {
+            const authField = nodeOrRelation.authableFields.find((x) => x.fieldName === selection[0]);
+            if (authField) {
+                if (authField.auth) {
+                    const allowAndParams = createAuthAndParams({
+                        entity: authField,
+                        operation: "READ",
+                        context,
+                        allow: { parentNode, varName, chainStr: authField.fieldName },
+                        escapeQuotes: true,
+                    });
+                    if (allowAndParams[0]) {
+                        authStrs.push(allowAndParams[0]);
+                        authParams = { ...authParams, ...allowAndParams[1] };
+                    }
+                }
+            }
+        });
+    }
+
+    return {
+        query: authStrs,
+        params: authParams,
+    };
 }

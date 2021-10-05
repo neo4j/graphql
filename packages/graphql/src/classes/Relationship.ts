@@ -43,23 +43,14 @@ export interface RelationshipConstructor {
 
 class Relationship {
     public name: string;
-
     public type: string;
-
     public description?: string;
-
     public properties?: string;
-
     public primitiveFields: PrimitiveField[];
-
     public scalarFields: CustomScalarField[];
-
     public enumFields: CustomEnumField[];
-
     public temporalFields: TemporalField[];
-
     public pointFields: PointField[];
-
     public ignoredFields: BaseField[];
 
     constructor(input: RelationshipConstructor) {
