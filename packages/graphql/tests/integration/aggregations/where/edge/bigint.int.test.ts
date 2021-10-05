@@ -64,7 +64,7 @@ describe("aggregations-where-edge-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES {someBigInt: ${bigInt}}]-(:User {testString: "${testString}"})
+                    CREATE (:Post {testString: "${testString}"})<-[:LIKES {someBigInt: toInteger(${bigInt})}]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
                 `
             );
@@ -201,7 +201,7 @@ describe("aggregations-where-edge-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES {someBigInt: ${bigInt}}]-(:User {testString: "${testString}"})
+                    CREATE (:Post {testString: "${testString}"})<-[:LIKES {someBigInt: toInteger(${bigInt})}]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
                 `
             );
@@ -270,7 +270,7 @@ describe("aggregations-where-edge-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES {someBigInt: ${bigInt}}]-(:User {testString: "${testString}"})
+                    CREATE (:Post {testString: "${testString}"})<-[:LIKES {someBigInt: toInteger(${bigInt})}]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
                 `
             );
@@ -337,7 +337,7 @@ describe("aggregations-where-edge-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES {someBigInt: ${bigInt}}]-(:User {testString: "${testString}"})
+                    CREATE (:Post {testString: "${testString}"})<-[:LIKES {someBigInt: toInteger(${bigInt})}]-(:User {testString: "${testString}"})
                     CREATE (:Post {testString: "${testString}"})
                 `
             );

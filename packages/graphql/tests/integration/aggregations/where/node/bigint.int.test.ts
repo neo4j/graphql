@@ -61,7 +61,7 @@ describe("aggregations-where-node-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: ${bigInt}})
+                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:Post {testString: "${testString}"})
                 `
             );
@@ -194,7 +194,7 @@ describe("aggregations-where-node-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: ${bigInt}})
+                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:Post {testString: "${testString}"})
                 `
             );
@@ -261,7 +261,7 @@ describe("aggregations-where-node-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: ${bigInt}})
+                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:Post {testString: "${testString}"})
                 `
             );
@@ -326,7 +326,7 @@ describe("aggregations-where-node-bigint", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: ${bigInt}})
+                    CREATE (:Post {testString: "${testString}"})<-[:LIKES]-(:User {testString: "${testString}", someBigInt: toInteger(${bigInt})})
                     CREATE (:Post {testString: "${testString}"})
                 `
             );
