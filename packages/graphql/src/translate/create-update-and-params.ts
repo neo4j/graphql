@@ -112,6 +112,30 @@ function createUpdateAndParams({
                     const _varName = `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
 
                     if (update.update) {
+                        const whereStrs: string[] = [];
+
+                        if (update.where) {
+                            try {
+                                const where = createConnectionWhereAndParams({
+                                    whereInput: update.where,
+                                    node: refNode,
+                                    nodeVariable: _varName,
+                                    relationship,
+                                    relationshipVariable,
+                                    context,
+                                    parameterPrefix: `${parameterPrefix}.${key}${
+                                        relationField.union ? `.${refNode.name}` : ""
+                                    }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
+                                });
+                                const [whereClause] = where;
+                                if (whereClause) {
+                                    whereStrs.push(whereClause);
+                                }
+                            } catch {
+                                return;
+                            }
+                        }
+
                         if (withVars) {
                             subquery.push(`WITH ${withVars.join(", ")}`);
                         }
@@ -120,24 +144,6 @@ function createUpdateAndParams({
                         subquery.push(
                             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`
                         );
-
-                        const whereStrs: string[] = [];
-
-                        if (update.where) {
-                            const where = createConnectionWhereAndParams({
-                                whereInput: update.where,
-                                node: refNode,
-                                nodeVariable: _varName,
-                                relationship,
-                                relationshipVariable,
-                                context,
-                                parameterPrefix: `${parameterPrefix}.${key}${
-                                    relationField.union ? `.${refNode.name}` : ""
-                                }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
-                            });
-                            const [whereClause] = where;
-                            whereStrs.push(whereClause);
-                        }
 
                         if (node.auth) {
                             const whereAuth = createAuthAndParams({
@@ -383,7 +389,9 @@ function createUpdateAndParams({
                     }
                 });
 
-                subqueries.push(subquery.join("\n"));
+                if (subquery.length) {
+                    subqueries.push(subquery.join("\n"));
+                }
             });
 
             if (relationField.interface) {

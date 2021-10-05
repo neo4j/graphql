@@ -88,6 +88,28 @@ function createDeleteAndParams({
                     const relationshipVariable = `${_varName}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
 
+                    const whereStrs: string[] = [];
+                    if (d.where) {
+                        try {
+                            const whereAndParams = createConnectionWhereAndParams({
+                                nodeVariable: _varName,
+                                whereInput: d.where,
+                                node: refNode,
+                                context,
+                                relationshipVariable,
+                                relationship,
+                                parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
+                                    relationField.union ? `.${refNode.name}` : ""
+                                }${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
+                            });
+                            if (whereAndParams[0]) {
+                                whereStrs.push(whereAndParams[0]);
+                            }
+                        } catch {
+                            return;
+                        }
+                    }
+
                     if (withVars) {
                         res.strs.push(`WITH ${withVars.join(", ")}`);
                     }
@@ -95,23 +117,6 @@ function createDeleteAndParams({
                     const labels = refNode.labelString;
                     res.strs.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`);
 
-                    const whereStrs: string[] = [];
-                    if (d.where) {
-                        const whereAndParams = createConnectionWhereAndParams({
-                            nodeVariable: _varName,
-                            whereInput: d.where,
-                            node: refNode,
-                            context,
-                            relationshipVariable,
-                            relationship,
-                            parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
-                                relationField.union ? `.${refNode.name}` : ""
-                            }${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
-                        });
-                        if (whereAndParams[0]) {
-                            whereStrs.push(whereAndParams[0]);
-                        }
-                    }
                     const whereAuth = createAuthAndParams({
                         operation: "DELETE",
                         entity: refNode,

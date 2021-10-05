@@ -88,6 +88,10 @@ function createConnectionWhereAndParams({
                 let { whereStrs } = res;
                 let { params } = res;
 
+                if (Object.keys(v).length === 1 && v._on && !Object.prototype.hasOwnProperty.call(v._on, node.name)) {
+                    throw new Error("_on is used as the only argument and node is not present within");
+                }
+
                 const rootNodeWhere = createNodeWhereAndParams({
                     whereInput: {
                         ...Object.entries(v).reduce((args, [key, value]) => {

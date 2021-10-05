@@ -261,4 +261,104 @@ describe("interface relationships", () => {
             await session.close();
         }
     });
+
+    test("should nested disconnect using interface relationship fields using where _on to only disconnect certain types", async () => {
+        const session = driver.session();
+
+        const actorName1 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieRuntime = faker.random.number();
+        const movieScreenTime = faker.random.number();
+
+        const seriesScreenTime = faker.random.number();
+
+        const query = `
+            mutation DisconnectMovie($name1: String, $name2: String, $title: String) {
+                updateActors(
+                    where: { name: $name1 }
+                    disconnect: {
+                        actedIn: {
+                            where: { node: { _on: { Movie: { title: $title } } } }
+                            disconnect: { actors: { where: { node: { name: $name2 } } } }
+                        }
+                    }
+                ) {
+                    actors {
+                        name
+                        actedIn {
+                            __typename
+                            title
+                            actors {
+                                name
+                            }
+                            ... on Movie {
+                                runtime
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (a:Actor { name: $actorName1 })
+                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })<-[:ACTED_IN]-(aa:Actor { name: $actorName2 })
+                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $movieTitle })<-[:ACTED_IN]-(aa)
+            `,
+                {
+                    actorName1,
+                    actorName2,
+                    movieTitle,
+                    movieRuntime,
+                    movieScreenTime,
+                    seriesScreenTime,
+                }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: {
+                    driver,
+                    driverConfig: { bookmarks: session.lastBookmark() },
+                },
+                variableValues: { name1: actorName1, name2: actorName2, title: movieTitle },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult.data?.updateActors.actors[0].actedIn[0].actors).toHaveLength(2);
+            expect(gqlResult.data).toEqual({
+                updateActors: {
+                    actors: [
+                        {
+                            actedIn: [
+                                {
+                                    __typename: "Series",
+                                    title: movieTitle,
+                                    actors: expect.arrayContaining([{ name: actorName1 }, { name: actorName2 }]),
+                                },
+                            ],
+                            name: actorName1,
+                        },
+                    ],
+                },
+            });
+        } finally {
+            await session.close();
+        }
+    });
 });

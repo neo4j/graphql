@@ -73,24 +73,28 @@ function createDisconnectAndParams({
         subquery.push(`WITH ${withVars.join(", ")}`);
         subquery.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${label})`);
 
-        const whereStrs: string[] = [];
-
         const relationship = (context.neoSchema.relationships.find(
             (x) => x.properties === relationField.properties
         ) as unknown) as Relationship;
 
+        const whereStrs: string[] = [];
+
         if (disconnect.where) {
-            const whereAndParams = createConnectionWhereAndParams({
-                nodeVariable: _varName,
-                whereInput: disconnect.where,
-                node: relatedNode,
-                context,
-                relationshipVariable: relVarName,
-                relationship,
-                parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
-            });
-            if (whereAndParams[0]) {
-                whereStrs.push(whereAndParams[0]);
+            try {
+                const whereAndParams = createConnectionWhereAndParams({
+                    nodeVariable: _varName,
+                    whereInput: disconnect.where,
+                    node: relatedNode,
+                    context,
+                    relationshipVariable: relVarName,
+                    relationship,
+                    parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where`,
+                });
+                if (whereAndParams[0]) {
+                    whereStrs.push(whereAndParams[0]);
+                }
+            } catch {
+                return { subquery: "", params: {} };
             }
         }
 
@@ -117,7 +121,7 @@ function createDisconnectAndParams({
                     return result;
                 }
 
-                const [str, params] = createAuthAndParams({
+                const [str, p] = createAuthAndParams({
                     entity: node,
                     operation: "DISCONNECT",
                     context,
@@ -130,7 +134,7 @@ function createDisconnectAndParams({
                 }
 
                 result.disconnects.push(str);
-                result.params = { ...result.params, ...params };
+                result.params = { ...result.params, ...p };
 
                 return result;
             },
@@ -349,8 +353,10 @@ function createDisconnectAndParams({
             const subqueries: string[] = [];
             refNodes.forEach((refNode) => {
                 const subquery = createSubqueryContents(refNode, disconnect, index);
-                subqueries.push(subquery.subquery);
-                res.params = { ...res.params, ...subquery.params };
+                if (subquery.subquery) {
+                    subqueries.push(subquery.subquery);
+                    res.params = { ...res.params, ...subquery.params };
+                }
             });
             res.disconnects.push(subqueries.join("\nUNION\n"));
         } else {
