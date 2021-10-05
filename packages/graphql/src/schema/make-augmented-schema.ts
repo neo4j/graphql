@@ -48,7 +48,7 @@ import {
 import pluralize from "pluralize";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth, ConnectionQueryArgs } from "../types";
+import { PrimitiveField, Auth, ConnectionQueryArgs, BaseField } from "../types";
 import {
     aggregateResolver,
     countResolver,
@@ -142,6 +142,27 @@ function makeAugmentedSchema(
         resolve: idResolver,
         args: {},
     };
+
+    const whereAggregationOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+
+    // Types that you can average
+    // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg
+    // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg-duration
+    // String uses avg(size())
+    const whereAggregationAverageTypes = ["String", "Int", "Float", "BigInt", "Duration"];
+
+    const whereAggregationTypes: string[] = [
+        "ID",
+        "String",
+        "Float",
+        "Int",
+        "BigInt",
+        "DateTime",
+        "LocalDateTime",
+        "LocalTime",
+        "Time",
+        "Duration",
+    ];
 
     // Foreach i if i[1] is ? then we will assume it takes on type { min, max }
     const aggregationSelectionTypeMatrix: [string, any?][] = [
@@ -723,8 +744,10 @@ function makeAugmentedSchema(
         node.relationFields.forEach((rel) => {
             let hasNonGeneratedProperties = false;
             let hasNonNullNonGeneratedProperties = false;
+            let relFields: ObjectFields | undefined;
+
             if (rel.properties) {
-                const relFields = relationshipFields.get(rel.properties);
+                relFields = relationshipFields.get(rel.properties);
 
                 if (relFields) {
                     const nonGeneratedProperties = [
@@ -971,16 +994,132 @@ function makeAugmentedSchema(
 
             const n = nodes.find((x) => x.name === rel.typeMeta.name) as Node;
             const updateField = `${n.name}UpdateInput`;
-
             const nodeFieldInputName = `${node.name}${upperFirst(rel.fieldName)}FieldInput`;
             const nodeFieldUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateFieldInput`;
             const nodeFieldDeleteInputName = `${node.name}${upperFirst(rel.fieldName)}DeleteFieldInput`;
             const nodeFieldDisconnectInputName = `${node.name}${upperFirst(rel.fieldName)}DisconnectFieldInput`;
-
             const connectionUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateConnectionInput`;
+            const relationshipWhereTypeInputName = `${node.name}${upperFirst(rel.fieldName)}AggregateInput`;
+
+            const [nodeWhereAggregationInput, edgeWhereAggregationInput] = [n, relFields].map((nodeOrRelFields) => {
+                if (!nodeOrRelFields) {
+                    return;
+                }
+
+                const fields = whereAggregationTypes.reduce<BaseField[]>((r, t) => {
+                    const fields = [...nodeOrRelFields.primitiveFields, ...nodeOrRelFields.temporalFields].filter(
+                        (y) => !y.typeMeta.array && y.typeMeta.name === t
+                    );
+
+                    if (!fields.length) {
+                        return r;
+                    }
+
+                    return r.concat(fields);
+                }, []);
+
+                if (!fields.length) {
+                    return;
+                }
+
+                const name = `${node.name}${upperFirst(rel.fieldName)}${
+                    nodeOrRelFields instanceof Node ? `Node` : `Edge`
+                }AggregationWhereInput`;
+
+                const aggregationInput = composer.createInputTC({
+                    name,
+                    fields: {
+                        AND: `[${name}!]`,
+                        OR: `[${name}!]`,
+                    },
+                });
+
+                fields.forEach((field) => {
+                    if (field.typeMeta.name === "ID") {
+                        aggregationInput.addFields({
+                            [`${field.fieldName}_EQUAL`]: "ID",
+                        });
+
+                        return;
+                    }
+
+                    if (field.typeMeta.name === "String") {
+                        aggregationInput.addFields(
+                            whereAggregationOperators.reduce((res, operator) => {
+                                return {
+                                    ...res,
+                                    [`${field.fieldName}_${operator}`]: `${operator === "EQUAL" ? "String" : "Int"}`,
+                                    [`${field.fieldName}_AVERAGE_${operator}`]: "Float",
+                                    [`${field.fieldName}_LONGEST_${operator}`]: "Int",
+                                    [`${field.fieldName}_SHORTEST_${operator}`]: "Int",
+                                };
+                            }, {})
+                        );
+
+                        return;
+                    }
+
+                    if (whereAggregationAverageTypes.includes(field.typeMeta.name)) {
+                        aggregationInput.addFields(
+                            whereAggregationOperators.reduce((res, operator) => {
+                                let averageType = "Float";
+
+                                if (field.typeMeta.name === "BigInt") {
+                                    averageType = "BigInt";
+                                }
+
+                                if (field.typeMeta.name === "Duration") {
+                                    averageType = "Duration";
+                                }
+
+                                return {
+                                    ...res,
+                                    [`${field.fieldName}_${operator}`]: field.typeMeta.name,
+                                    [`${field.fieldName}_AVERAGE_${operator}`]: averageType,
+                                    [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
+                                    [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
+                                };
+                            }, {})
+                        );
+
+                        return;
+                    }
+
+                    aggregationInput.addFields(
+                        whereAggregationOperators.reduce(
+                            (res, operator) => ({
+                                ...res,
+                                [`${field.fieldName}_${operator}`]: field.typeMeta.name,
+                                [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
+                                [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
+                            }),
+                            {}
+                        )
+                    );
+                });
+
+                return aggregationInput;
+            });
+
+            const whereAggregateInput = composer.createInputTC({
+                name: relationshipWhereTypeInputName,
+                fields: {
+                    count: "Int",
+                    count_LT: "Int",
+                    count_LTE: "Int",
+                    count_GT: "Int",
+                    count_GTE: "Int",
+                    AND: `[${relationshipWhereTypeInputName}!]`,
+                    OR: `[${relationshipWhereTypeInputName}!]`,
+                    ...(nodeWhereAggregationInput ? { node: nodeWhereAggregationInput } : {}),
+                    ...(edgeWhereAggregationInput ? { edge: edgeWhereAggregationInput } : {}),
+                },
+            });
 
             whereInput.addFields({
-                ...{ [rel.fieldName]: `${n.name}Where`, [`${rel.fieldName}_NOT`]: `${n.name}Where` },
+                [rel.fieldName]: `${n.name}Where`,
+                [`${rel.fieldName}_NOT`]: `${n.name}Where`,
+                [`${rel.fieldName}Aggregate`]: whereAggregateInput,
             });
 
             const createName = `${node.name}${upperFirst(rel.fieldName)}CreateFieldInput`;
