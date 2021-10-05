@@ -87,14 +87,14 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
         const query = `
-        {
-            movie_tags(tagName: "T1", limit: 25) {
-              title
-              tags {
-                name
-              }
+            {
+                movie_tags(tagName: "T1", limit: 25) {
+                    title
+                    tags {
+                        name
+                    }
+                }
             }
-          }
         `;
 
         await neoSchema.checkNeo4jCompat();
