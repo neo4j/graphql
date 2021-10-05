@@ -26,7 +26,7 @@ import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { generateUniqueType } from "../../../../src/utils/test/graphql-types";
 
-describe("aggregations-field-level-basic", () => {
+describe("Field Level Aggregations Auth", () => {
     let driver: Driver;
     let session: Session;
     const typeMovie = generateUniqueType("Movie");
