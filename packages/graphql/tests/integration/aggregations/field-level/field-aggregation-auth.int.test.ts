@@ -29,10 +29,43 @@ import { generateUniqueType } from "../../../../src/utils/test/graphql-types";
 describe("aggregations-field-level-basic", () => {
     let driver: Driver;
     let session: Session;
+    const testCases = ["count", `node {name {longest, shortest}}`];
+    const typeMovie = generateUniqueType("Movie");
+    const typeActor = generateUniqueType("Actor");
+    const typeDefs = `
+    type ${typeMovie.name} @auth(rules: [{ isAuthenticated: true }]){
+        name: String
+        ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN)
+    }
+
+    type ${typeActor.name} {
+        name: String
+        age: Int
+        ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT)
+    }`;
+    const secret = "secret";
+    let token: string;
+    let invalidToken: string;
 
     beforeAll(async () => {
         driver = await neo4j();
         session = driver.session();
+
+        token = jsonwebtoken.sign(
+            {
+                roles: [],
+                sub: 1234,
+            },
+            secret
+        );
+
+        invalidToken = jsonwebtoken.sign(
+            {
+                roles: [],
+                sub: 2222,
+            },
+            secret
+        );
     });
 
     afterAll(async () => {
@@ -40,229 +73,178 @@ describe("aggregations-field-level-basic", () => {
         await driver.close();
     });
 
-    describe("authenticated requests", () => {
-        let req: IncomingMessage;
-        let token: string;
-        let neoSchema: Neo4jGraphQL;
+    testCases.forEach((testCase) => {
+        describe(`isAuthenticated auth requests ~ ${testCase}`, () => {
+            let req: IncomingMessage;
+            let neoSchema: Neo4jGraphQL;
 
-        const typeMovie = generateUniqueType("Movie");
-        const typeActor = generateUniqueType("Actor");
-        const typeDefs = `
-        type ${typeMovie.name} @auth(rules: [{ isAuthenticated: true }]){
-            title: String
-            ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN)
-        }
-
-        type ${typeActor.name} {
-            name: String
-            age: Int
-            ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT)
-        }`;
-
-        beforeAll(async () => {
-            const secret = "secret";
-
-            token = jsonwebtoken.sign(
-                {
-                    roles: [],
-                    sub: "invalid",
-                },
-                secret
-            );
-
-            neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                config: {
-                    jwt: {
-                        secret,
+            beforeAll(async () => {
+                neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    config: {
+                        jwt: {
+                            secret,
+                        },
                     },
-                },
+                });
+
+                const socket = new Socket({ readable: true });
+                req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${invalidToken}`;
+                await session.run(`CREATE (m:${typeMovie.name} { name: "Terminator"})<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold", age: 54})
+                CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", age:37})`);
             });
 
-            const socket = new Socket({ readable: true });
-            req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-            await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold", age: 54})
-            CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", age:37})`);
-        });
-
-        it("accepts authenticated requests to movie -> actorAggregate", async () => {
-            const query = `query {
-            ${typeMovie.plural} {
-                ${typeActor.plural}Aggregate {
-                    count
+            it("accepts authenticated requests to movie -> actorAggregate", async () => {
+                const query = `query {
+                ${typeMovie.plural} {
+                    ${typeActor.plural}Aggregate {
+                        count
+                        }
                     }
-                }
-            }`;
+                }`;
 
-            const gqlResult = await graphql({
-                schema: neoSchema.schema,
-                source: query,
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+                expect(gqlResult.errors).toBeUndefined();
             });
-            expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
-                count: 2,
-            });
-        });
 
-        it("accepts authenticated requests to actor -> movieAggregate", async () => {
-            const query = `query {
-            ${typeActor.plural} {
-                ${typeMovie.plural}Aggregate {
-                    count
+            it("accepts authenticated requests to actor -> movieAggregate", async () => {
+                const query = `query {
+                ${typeActor.plural} {
+                    ${typeMovie.plural}Aggregate {
+                        ${testCase}
+                        }
                     }
-                }
-            }`;
+                }`;
 
-            const gqlResult = await graphql({
-                schema: neoSchema.schema,
-                source: query,
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+                expect(gqlResult.errors).toBeUndefined();
             });
-            expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
-                count: 1,
+
+            it("rejects unauthenticated requests to movie -> actorAggregate", async () => {
+                const query = `query {
+                ${typeMovie.plural} {
+                    ${typeActor.plural}Aggregate {
+                        ${testCase}
+                        }
+                    }
+                }`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+            });
+
+            it("rejects unauthenticated requests to actor -> movieAggregate", async () => {
+                const query = `query {
+                ${typeActor.plural} {
+                    ${typeMovie.plural}Aggregate {
+                        ${testCase}
+                        }
+                    }
+                }`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+                await session.run(`CREATE (m:${typeMovie.name} { name: "Terminator"})<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold", age: 54})
+                CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", age:37})`);
             });
         });
-    });
 
-    describe("unauthenticated requests", () => {
-        let neoSchema: Neo4jGraphQL;
+        describe(`allow requests ~ ${testCase}`, () => {
+            let req: IncomingMessage;
+            let neoSchema: Neo4jGraphQL;
 
-        const typeMovie = generateUniqueType("Movie");
-        const typeActor = generateUniqueType("Actor");
-        const typeDefs = `
-        type ${typeMovie.name} @auth(rules: [{ isAuthenticated: true }]){
-            title: String
-            ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN)
-        }
+            const extendedTypeDefs = `${typeDefs}
 
-        type ${typeActor.name} {
-            name: String
-            age: Int
-            ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT)
-        }`;
+            extend type ${typeMovie.name} @auth(rules: [{ allow: { testId: "$jwt.sub" }}])`;
 
-        beforeAll(async () => {
-            const secret = "secret";
-
-            neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                config: {
-                    jwt: {
-                        secret,
+            beforeAll(async () => {
+                neoSchema = new Neo4jGraphQL({
+                    typeDefs: extendedTypeDefs,
+                    config: {
+                        jwt: {
+                            secret,
+                        },
                     },
-                },
-            });
-            await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold", age: 54})
-            CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", age:37})`);
-        });
+                });
 
-        it("rejects unauthenticated requests to movie -> actorAggregate", async () => {
-            const query = `query {
-            ${typeMovie.plural} {
-                ${typeActor.plural}Aggregate {
-                    count
-                    }
-                }
-            }`;
+                const socket = new Socket({ readable: true });
+                req = new IncomingMessage(socket);
+                req.headers.authorization = `Bearer ${token}`;
 
-            const gqlResult = await graphql({
-                schema: neoSchema.schema,
-                source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
-            });
-            expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
-        });
-
-        it("rejects unauthenticated requests to actor -> movieAggregate", async () => {
-            const query = `query {
-            ${typeActor.plural} {
-                ${typeMovie.plural}Aggregate {
-                    count
-                    }
-                }
-            }`;
-
-            const gqlResult = await graphql({
-                schema: neoSchema.schema,
-                source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
-            });
-            expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
-            await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold", age: 54})
-            CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", age:37})`);
-        });
-    });
-
-    describe("authenticated with allow requests", () => {
-        let req: IncomingMessage;
-        let token: string;
-        let neoSchema: Neo4jGraphQL;
-
-        const typeMovie = generateUniqueType("Movie");
-        const typeActor = generateUniqueType("Actor");
-        const typeDefs = `
-        type ${typeMovie.name} @auth(rules: [{ allow: { testId: "$jwt.sub" }}]){
-            testId: Int!
-            title: String
-            ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN)
-        }
-
-        type ${typeActor.name} {
-            name: String
-            age: Int
-            ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT)
-        }
-        `;
-
-        beforeAll(async () => {
-            const secret = "secret";
-
-            token = jsonwebtoken.sign(
-                {
-                    roles: [],
-                    sub: 1234,
-                },
-                secret
-            );
-
-            neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                config: {
-                    jwt: {
-                        secret,
-                    },
-                },
+                await session.run(`
+                CREATE (m:${typeMovie.name} { name: "Terminator", testId: 1234})<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold", age: 54})
+                CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", age:37})`);
             });
 
-            const socket = new Socket({ readable: true });
-            req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
+            it("authenticated query", async () => {
+                const query = `query {
+                    ${typeActor.plural} {
+                        ${typeMovie.plural}Aggregate {
+                            ${testCase}
+                            }
+                        }
+                    }`;
 
-            await session.run(`
-            CREATE (m:${typeMovie.name} { title: "Terminator", testId: 1234})<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold", age: 54})
-            CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", age:37})`);
-        });
-
-        it("authenticated query", async () => {
-            const query = `query {
-            ${typeActor.plural} {
-                ${typeMovie.plural}Aggregate {
-                    count
-                    }
-                }
-            }`;
-
-            const gqlResult = await graphql({
-                schema: neoSchema.schema,
-                source: query,
-                contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+                expect(gqlResult.errors).toBeUndefined();
             });
-            expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
-                count: 1,
+
+            it("unauthenticated query", async () => {
+                const query = `query {
+                    ${typeActor.plural} {
+                        ${typeMovie.plural}Aggregate {
+                            ${testCase}
+                            }
+                        }
+                    }`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
+            });
+
+            it("authenticated query with wrong credentials", async () => {
+                const query = `query {
+                    ${typeActor.plural} {
+                        ${typeMovie.plural}Aggregate {
+                            ${testCase}
+                            }
+                        }
+                    }`;
+                const socket = new Socket({ readable: true });
+                const invalidReq = new IncomingMessage(socket);
+                invalidReq.headers.authorization = `Bearer ${invalidToken}`;
+
+                const gqlResult = await graphql({
+                    schema: neoSchema.schema,
+                    source: query,
+                    contextValue: { driver, invalidReq, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                });
+                expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             });
         });
     });

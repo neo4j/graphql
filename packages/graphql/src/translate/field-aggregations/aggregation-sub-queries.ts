@@ -17,29 +17,47 @@
  * limitations under the License.
  */
 
-export function stringAggregationQuery(matchPattern: string, fieldName: string, targetAlias: string): string {
+export function stringAggregationQuery(
+    matchPattern: string,
+    fieldName: string,
+    targetAlias: string,
+    authQuery: string
+): string {
     const fieldPath = `${targetAlias}.${fieldName}`;
     return `MATCH ${matchPattern}
+        ${authQuery}
         WITH ${targetAlias} as ${targetAlias}
         ORDER BY size(${fieldPath}) DESC
         WITH collect(${fieldPath}) as list
         RETURN {longest: head(list), shortest: last(list)}`;
 }
 
-export function numberAggregationQuery(matchPattern: string, fieldName: string, targetAlias: string): string {
+export function numberAggregationQuery(
+    matchPattern: string,
+    fieldName: string,
+    targetAlias: string,
+    authQuery: string
+): string {
     const fieldPath = `${targetAlias}.${fieldName}`;
     return `MATCH ${matchPattern}
+        ${authQuery}
         RETURN {min: MIN(${fieldPath}), max: MAX(${fieldPath}), average: AVG(${fieldPath})}`;
 }
 
-export function defaultAggregationQuery(matchPattern: string, fieldName: string, targetAlias: string): string {
+export function defaultAggregationQuery(
+    matchPattern: string,
+    fieldName: string,
+    targetAlias: string,
+    authQuery: string
+): string {
     const fieldPath = `${targetAlias}.${fieldName}`;
     return `MATCH ${matchPattern}
+        ${authQuery}
         RETURN {min: MIN(${fieldPath}), max: MAX(${fieldPath})}`;
 }
 
-export function countQuery(matchPattern: string, targetAlias: string, cypherStrs: string[]): string {
+export function countQuery(matchPattern: string, targetAlias: string, authQuery: string): string {
     return `MATCH ${matchPattern}
-    ${cypherStrs.join("\n")}
+    ${authQuery}
     RETURN COUNT(${targetAlias})`;
 }

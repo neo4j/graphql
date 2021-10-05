@@ -22,6 +22,11 @@ import createAuthAndParams from "../create-auth-and-params";
 import { Context } from "../../types";
 import { Node } from "../../classes";
 
+export type AggregationAuth = {
+    query: string;
+    params: Record<string, string>;
+};
+
 export function createFieldAggregationAuth({
     node,
     context,
@@ -30,7 +35,7 @@ export function createFieldAggregationAuth({
     node: Node;
     context: Context;
     subQueryNodeAlias: string;
-}) {
+}): AggregationAuth {
     const varName = subQueryNodeAlias;
     let cypherParams: { [k: string]: any } = {};
     const whereStrs: string[] = [];
@@ -95,7 +100,7 @@ export function createFieldAggregationAuth({
     //     cypherStrs.push(`CALL apoc.util.validate(NOT(${authStrs.join(" AND ")}), \\"${AUTH_FORBIDDEN_ERROR}\\", [0])`);
     // }
     if (cypherStrs.length > 0) {
-        return { cypherStrs, cypherParams };
+        return { query: cypherStrs.join("\n"), params: cypherParams };
     }
-    return { cypherStrs: [], cypherParams: {} };
+    return { query: "", params: {} };
 }

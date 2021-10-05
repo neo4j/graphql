@@ -22,7 +22,7 @@ import { Node } from "../../classes";
 import { Context, RelationField } from "../../types";
 import { generateResultObject, getFieldType, AggregationType, wrapApocRun, getReferenceNode } from "./utils";
 import * as AggregationQueryGenerators from "./aggregation-sub-queries";
-import { createFieldAggregationAuth } from "./field-aggregations-auth";
+import { createFieldAggregationAuth, AggregationAuth } from "./field-aggregations-auth";
 
 const subQueryNodeAlias = "n";
 const subQueryRelationAlias = "r";
@@ -61,10 +61,10 @@ export function createFieldAggregation({
     return {
         query: generateResultObject({
             count: aggregationField.count ? createCountQuery(targetPattern, subQueryNodeAlias, authData) : undefined,
-            node: createAggregationQuery(targetPattern, nodeField, subQueryNodeAlias),
-            edge: createAggregationQuery(targetPattern, edgeField, subQueryRelationAlias),
+            node: createAggregationQuery(targetPattern, nodeField, subQueryNodeAlias, authData),
+            edge: createAggregationQuery(targetPattern, edgeField, subQueryRelationAlias, authData),
         }),
-        params: authData.cypherParams,
+        params: authData.params,
     };
 }
 
@@ -76,27 +76,28 @@ function generateTargetPattern(nodeLabel: string, relationField: RelationField, 
     return `(${nodeLabel})${inStr}[${subQueryRelationAlias}:${relationField.type}]${outStr}${nodeOutStr}`;
 }
 
-function createCountQuery(targetPattern: string, targetAlias: string, { cypherStrs, cypherParams }): string {
-    const authParams: Record<string, string> = Object.keys(cypherParams).reduce((acc, key) => {
-        acc[key] = `$${key}`;
-        return acc;
-    }, {});
-    if (cypherStrs.length > 0) authParams.auth = "$auth";
-    return wrapApocRun(AggregationQueryGenerators.countQuery(targetPattern, targetAlias, cypherStrs), authParams);
+function createCountQuery(targetPattern: string, targetAlias: string, auth: AggregationAuth): string {
+    const authParams = getAuthApocParams(auth);
+    return wrapApocRun(AggregationQueryGenerators.countQuery(targetPattern, targetAlias, auth.query), authParams);
 }
 
 function createAggregationQuery(
     targetPattern: string,
     fields: Record<string, ResolveTree> | undefined,
-    fieldAlias: string
+    fieldAlias: string,
+    auth: AggregationAuth
 ): string | undefined {
     if (!fields) return undefined;
+    const authParams = getAuthApocParams(auth);
 
     return generateResultObject(
         Object.entries(fields).reduce((acc, [fieldName, field]) => {
             const fieldType = getFieldType(field);
             if (fieldType) {
-                acc[fieldName] = wrapApocRun(getAggregationSubQuery(targetPattern, fieldName, fieldType, fieldAlias));
+                acc[fieldName] = wrapApocRun(
+                    getAggregationSubQuery(targetPattern, fieldName, fieldType, fieldAlias, auth.query),
+                    authParams
+                );
             }
             return acc;
         }, {} as Record<string, string>)
@@ -107,17 +108,27 @@ function getAggregationSubQuery(
     targetPattern: string,
     fieldName: string,
     type: AggregationType,
-    targetAlias: string
+    targetAlias: string,
+    authQuery: string
 ): string {
     switch (type) {
         case AggregationType.String:
         case AggregationType.Id:
-            return AggregationQueryGenerators.stringAggregationQuery(targetPattern, fieldName, targetAlias);
+            return AggregationQueryGenerators.stringAggregationQuery(targetPattern, fieldName, targetAlias, authQuery);
         case AggregationType.Int:
         case AggregationType.BigInt:
         case AggregationType.Float:
-            return AggregationQueryGenerators.numberAggregationQuery(targetPattern, fieldName, targetAlias);
+            return AggregationQueryGenerators.numberAggregationQuery(targetPattern, fieldName, targetAlias, authQuery);
         default:
-            return AggregationQueryGenerators.defaultAggregationQuery(targetPattern, fieldName, targetAlias);
+            return AggregationQueryGenerators.defaultAggregationQuery(targetPattern, fieldName, targetAlias, authQuery);
     }
+}
+
+function getAuthApocParams(auth: AggregationAuth): Record<string, string> {
+    const authParams: Record<string, string> = Object.keys(auth.params).reduce((acc, key) => {
+        acc[key] = `$${key}`;
+        return acc;
+    }, {});
+    if (auth.query) authParams.auth = "$auth";
+    return authParams;
 }
