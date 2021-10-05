@@ -65,13 +65,13 @@ function aggregate({
     let withStrs: string[] = [];
     let params = {};
 
-    Object.entries(inputValue).forEach((e) => {
-        if (["AND", "OR"].includes(e[0])) {
+    Object.entries(inputValue).forEach(([key, value]) => {
+        if (["AND", "OR"].includes(key)) {
             const innerClauses: string[] = [];
 
-            ((e[1] as unknown) as any[]).forEach((v: any, i) => {
+            ((value as unknown) as any[]).forEach((v: any, i) => {
                 const recurse = aggregate({
-                    chainStr: `${chainStr}_${e[0]}_${i}`,
+                    chainStr: `${chainStr}_${key}_${i}`,
                     inputValue: v,
                     nodeOrRelationship,
                     variable,
@@ -88,7 +88,7 @@ function aggregate({
             });
 
             if (innerClauses.length) {
-                aggregations.push(`(${innerClauses.join(` ${e[0]} `)})`);
+                aggregations.push(`(${innerClauses.join(` ${key} `)})`);
             }
 
             return;
@@ -97,9 +97,9 @@ function aggregate({
         const field = [...nodeOrRelationship.primitiveFields, ...nodeOrRelationship.temporalFields].find((field) =>
             logicalOperators.some(
                 (op) =>
-                    e[0].split(`_${op}`)[0] === field.fieldName ||
-                    e[0].split(`_AVERAGE_${op}`)[0] === field.fieldName ||
-                    aggregationOperators.some((x) => e[0].split(`_${x}_${op}`)[0] === field.fieldName)
+                    key.split(`_${op}`)[0] === field.fieldName ||
+                    key.split(`_AVERAGE_${op}`)[0] === field.fieldName ||
+                    aggregationOperators.some((x) => key.split(`_${x}_${op}`)[0] === field.fieldName)
             )
         ) as BaseField;
 
@@ -109,9 +109,9 @@ function aggregate({
             return;
         }
 
-        const [, operatorString] = e[0].split(`${field.fieldName}_`);
-        const paramName = `${chainStr}_${e[0]}`;
-        params[paramName] = e[1];
+        const [, operatorString] = key.split(`${field.fieldName}_`);
+        const paramName = `${chainStr}_${key}`;
+        params[paramName] = value;
 
         if (logicalOperators.some((fO) => operatorString.split(`AVERAGE_`)[1] === fO)) {
             const [, averageOperatorString] = operatorString.split("AVERAGE_");
@@ -203,18 +203,18 @@ function createPredicate({
     let withStrs: string[] = [];
     let params = {};
 
-    Object.entries(aggregation).forEach((entry) => {
-        if (["AND", "OR"].includes(entry[0])) {
+    Object.entries(aggregation).forEach(([key, value]) => {
+        if (["AND", "OR"].includes(key)) {
             const innerClauses: string[] = [];
 
-            ((entry[1] as unknown) as any[]).forEach((value: any, i) => {
+            ((value as unknown) as any[]).forEach((v: any, i) => {
                 const recurse = createPredicate({
                     node,
-                    chainStr: `${chainStr}_${entry[0]}_${i}`,
+                    chainStr: `${chainStr}_${key}_${i}`,
                     context,
                     field,
                     varName,
-                    aggregation: value,
+                    aggregation: v,
                     nodeVariable,
                     edgeVariable,
                     relationship,
@@ -231,29 +231,29 @@ function createPredicate({
             });
 
             if (innerClauses.length) {
-                aggregations.push(`(${innerClauses.join(` ${entry[0]} `)})`);
+                aggregations.push(`(${innerClauses.join(` ${key} `)})`);
             }
 
             return;
         }
 
         ["count", "count_LT", "count_LTE", "count_GT", "count_GTE"].forEach((countType) => {
-            if (entry[0] === countType) {
-                const paramName = `${chainStr}_${entry[0]}`;
-                params[paramName] = entry[1];
+            if (key === countType) {
+                const paramName = `${chainStr}_${key}`;
+                params[paramName] = value;
                 const operator = createOperator(countType.split("_")[1]);
                 aggregations.push(`count(${nodeVariable}) ${operator} $${paramName}`);
             }
         });
 
         ["node", "edge"].forEach((nOrE) => {
-            if (entry[0] !== nOrE) {
+            if (key !== nOrE) {
                 return;
             }
 
             const aggregation = aggregate({
-                chainStr: `${chainStr}_${entry[0]}`,
-                inputValue: entry[1],
+                chainStr: `${chainStr}_${key}`,
+                inputValue: value,
                 nodeOrRelationship: nOrE === "node" ? node : relationship,
                 variable: nOrE === "node" ? nodeVariable : edgeVariable,
             });
