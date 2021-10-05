@@ -1048,8 +1048,7 @@ function makeAugmentedSchema(
                 [`${rel.fieldName}Aggregate`]: {
                     type: aggregationTypeObject,
                     args: {
-                        where: `${rel.typeMeta.name}Where`,
-                        options: `${rel.typeMeta.name}Options`,
+                        // where: `${rel.typeMeta.name}Where`,
                     },
                 },
             });

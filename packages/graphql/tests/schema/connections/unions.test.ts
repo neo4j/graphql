@@ -290,7 +290,7 @@ describe("Unions", () => {
 
             type Book {
               author(options: AuthorOptions, where: AuthorWhere): [Author!]!
-              authorAggregate(options: AuthorOptions, where: AuthorWhere): BookAuthorauthorAggregationResult
+              authorAggregate: BookAuthorauthorAggregationResult
               authorConnection(after: String, first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
               title: String!
             }
@@ -476,7 +476,7 @@ describe("Unions", () => {
 
             type Journal {
               author(options: AuthorOptions, where: AuthorWhere): [Author!]!
-              authorAggregate(options: AuthorOptions, where: AuthorWhere): JournalAuthorauthorAggregationResult
+              authorAggregate: JournalAuthorauthorAggregationResult
               authorConnection(after: String, first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!
               subject: String!
             }

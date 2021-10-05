@@ -99,7 +99,7 @@ describe("Relationship-properties", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate(options: MovieOptions, where: MovieWhere): ActorMoviemoviesAggregationResult
+              moviesAggregate: ActorMoviemoviesAggregationResult
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -285,7 +285,7 @@ describe("Relationship-properties", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate(options: ActorOptions, where: ActorWhere): MovieActoractorsAggregationResult
+              actorsAggregate: MovieActoractorsAggregationResult
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
@@ -577,7 +577,7 @@ describe("Relationship-properties", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate(options: MovieOptions, where: MovieWhere): ActorMoviemoviesAggregationResult
+              moviesAggregate: ActorMoviemoviesAggregationResult
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -775,7 +775,7 @@ describe("Relationship-properties", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate(options: ActorOptions, where: ActorWhere): MovieActoractorsAggregationResult
+              actorsAggregate: MovieActoractorsAggregationResult
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
@@ -1050,7 +1050,7 @@ describe("Relationship-properties", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate(options: MovieOptions, where: MovieWhere): ActorMoviemoviesAggregationResult
+              moviesAggregate: ActorMoviemoviesAggregationResult
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -1237,7 +1237,7 @@ describe("Relationship-properties", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate(options: ActorOptions, where: ActorWhere): MovieActoractorsAggregationResult
+              actorsAggregate: MovieActoractorsAggregationResult
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }

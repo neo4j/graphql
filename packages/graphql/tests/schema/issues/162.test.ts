@@ -145,7 +145,7 @@ describe("162", () => {
             type TigerJawLevel2 {
               id: ID
               part1(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1
-              part1Aggregate(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1part1AggregationResult
+              part1Aggregate: TigerJawLevel2TigerJawLevel2Part1part1AggregationResult
               part1Connection(after: String, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
             }
 
@@ -181,7 +181,7 @@ describe("162", () => {
             type TigerJawLevel2Part1 {
               id: ID
               tiger(options: TigerOptions, where: TigerWhere): Tiger
-              tigerAggregate(options: TigerOptions, where: TigerWhere): TigerJawLevel2Part1TigertigerAggregationResult
+              tigerAggregate: TigerJawLevel2Part1TigertigerAggregationResult
               tigerConnection(after: String, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
             }
 
