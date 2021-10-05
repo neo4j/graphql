@@ -96,7 +96,7 @@ export default function cypherResolver({
         }
 
         const initApocParamsStrs = ["auth: $auth", ...(context.cypherParams ? ["cypherParams: $cypherParams"] : [])];
-        const apocParams = Object.entries(args).reduce(
+        const apocParams = Object.entries(resolveTree.args).reduce(
             (r: { strs: string[]; params: any }, entry) => {
                 return {
                     strs: [...r.strs, `${entry[0]}: $${entry[0]}`],
@@ -105,6 +105,9 @@ export default function cypherResolver({
             },
             { strs: initApocParamsStrs, params }
         ) as { strs: string[]; params: any };
+
+        params = { ...params, ...apocParams.params };
+
         const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
         const expectMultipleValues = !isPrimitive && !isScalar && !isEnum && field.typeMeta.array ? "true" : "false";
