@@ -65,13 +65,7 @@ function createWhereAndParams({
         );
 
         if (key.endsWith("Aggregate")) {
-            const [, reversedFieldName] = key
-                .split("")
-                .reverse()
-                .join("")
-                .split("Aggregate".split("").reverse().join(""));
-            const fieldName = reversedFieldName.split("").reverse().join("");
-
+            const [fieldName] = key.split("Aggregate");
             const relationField = node.relationFields.find((x) => x.fieldName === fieldName) as RelationField;
             const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const relationship = (context.neoSchema.relationships.find(
