@@ -92,7 +92,7 @@ query {
 
 == Aggregation Filtering
 
-This library offers, for each relationship, a aggregation key inside the where argument. You can use the aggregation key to satisfy questions such as: 
+This library offers, for each relationship, an aggregation key inside the where argument. You can use the aggregation key to satisfy questions such as: 
 
 * Find the posts where the number of likes are greater than 5
 * Find flights where the average age of passengers is greater than or equal to 18
