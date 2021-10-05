@@ -29,18 +29,20 @@ import { generateUniqueType } from "../../../../src/utils/test/graphql-types";
 describe("aggregations-field-level-basic", () => {
     let driver: Driver;
     let session: Session;
-    const testCases = ["count", `node {name {longest, shortest}}`];
     const typeMovie = generateUniqueType("Movie");
     const typeActor = generateUniqueType("Actor");
     const typeDefs = `
     type ${typeMovie.name} @auth(rules: [{ isAuthenticated: true }]){
         name: String
+        year: Int
+        createdAt: DateTime
         ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN)
     }
 
     type ${typeActor.name} {
         name: String
-        age: Int
+        year: Int
+        createdAt: DateTime
         ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT)
     }`;
     const secret = "secret";
@@ -54,7 +56,6 @@ describe("aggregations-field-level-basic", () => {
         token = jsonwebtoken.sign(
             {
                 roles: [],
-                sub: 1234,
             },
             secret
         );
@@ -66,6 +67,13 @@ describe("aggregations-field-level-basic", () => {
             },
             secret
         );
+        await session.run(`
+        CREATE (m:${typeMovie.name}
+            {name: "Terminator",testId: 1234,year:1990,createdAt: datetime()})
+            <-[:ACTED_IN]-
+            (:${typeActor.name} { name: "Arnold", year: 1970, createdAt: datetime()})
+
+        CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", year:1985, createdAt: datetime()})`);
     });
 
     afterAll(async () => {
@@ -73,12 +81,19 @@ describe("aggregations-field-level-basic", () => {
         await driver.close();
     });
 
+    const testCases = [
+        { name: "count", query: "count" },
+        { name: "string", query: `node {name {longest, shortest}}` },
+        { name: "number", query: `node {year {max, min, average}}` },
+        { name: "default", query: `node { createdAt {max, min}}` },
+    ];
+
     testCases.forEach((testCase) => {
-        describe(`isAuthenticated auth requests ~ ${testCase}`, () => {
+        describe(`isAuthenticated auth requests ~ ${testCase.name}`, () => {
             let req: IncomingMessage;
             let neoSchema: Neo4jGraphQL;
 
-            beforeAll(async () => {
+            beforeAll(() => {
                 neoSchema = new Neo4jGraphQL({
                     typeDefs,
                     config: {
@@ -91,8 +106,6 @@ describe("aggregations-field-level-basic", () => {
                 const socket = new Socket({ readable: true });
                 req = new IncomingMessage(socket);
                 req.headers.authorization = `Bearer ${invalidToken}`;
-                await session.run(`CREATE (m:${typeMovie.name} { name: "Terminator"})<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold", age: 54})
-                CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", age:37})`);
             });
 
             it("accepts authenticated requests to movie -> actorAggregate", async () => {
@@ -116,7 +129,7 @@ describe("aggregations-field-level-basic", () => {
                 const query = `query {
                 ${typeActor.plural} {
                     ${typeMovie.plural}Aggregate {
-                        ${testCase}
+                        ${testCase.query}
                         }
                     }
                 }`;
@@ -133,7 +146,7 @@ describe("aggregations-field-level-basic", () => {
                 const query = `query {
                 ${typeMovie.plural} {
                     ${typeActor.plural}Aggregate {
-                        ${testCase}
+                        ${testCase.query}
                         }
                     }
                 }`;
@@ -150,7 +163,7 @@ describe("aggregations-field-level-basic", () => {
                 const query = `query {
                 ${typeActor.plural} {
                     ${typeMovie.plural}Aggregate {
-                        ${testCase}
+                        ${testCase.query}
                         }
                     }
                 }`;
@@ -161,12 +174,10 @@ describe("aggregations-field-level-basic", () => {
                     contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
                 });
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
-                await session.run(`CREATE (m:${typeMovie.name} { name: "Terminator"})<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold", age: 54})
-                CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", age:37})`);
             });
         });
 
-        describe(`allow requests ~ ${testCase}`, () => {
+        describe(`allow requests ~ ${testCase.name}`, () => {
             let req: IncomingMessage;
             let neoSchema: Neo4jGraphQL;
 
@@ -174,7 +185,7 @@ describe("aggregations-field-level-basic", () => {
 
             extend type ${typeMovie.name} @auth(rules: [{ allow: { testId: "$jwt.sub" }}])`;
 
-            beforeAll(async () => {
+            beforeAll(() => {
                 neoSchema = new Neo4jGraphQL({
                     typeDefs: extendedTypeDefs,
                     config: {
@@ -187,17 +198,13 @@ describe("aggregations-field-level-basic", () => {
                 const socket = new Socket({ readable: true });
                 req = new IncomingMessage(socket);
                 req.headers.authorization = `Bearer ${token}`;
-
-                await session.run(`
-                CREATE (m:${typeMovie.name} { name: "Terminator", testId: 1234})<-[:ACTED_IN]-(:${typeActor.name} { name: "Arnold", age: 54})
-                CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", age:37})`);
             });
 
             it("authenticated query", async () => {
                 const query = `query {
                     ${typeActor.plural} {
                         ${typeMovie.plural}Aggregate {
-                            ${testCase}
+                            ${testCase.query}
                             }
                         }
                     }`;
@@ -214,7 +221,7 @@ describe("aggregations-field-level-basic", () => {
                 const query = `query {
                     ${typeActor.plural} {
                         ${typeMovie.plural}Aggregate {
-                            ${testCase}
+                            ${testCase.query}
                             }
                         }
                     }`;
@@ -231,7 +238,7 @@ describe("aggregations-field-level-basic", () => {
                 const query = `query {
                     ${typeActor.plural} {
                         ${typeMovie.plural}Aggregate {
-                            ${testCase}
+                            ${testCase.query}
                             }
                         }
                     }`;

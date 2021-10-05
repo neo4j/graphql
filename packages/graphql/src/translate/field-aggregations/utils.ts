@@ -27,6 +27,7 @@ export enum AggregationType {
     BigInt = "BigIntAggregateSelection",
     Float = "FloatAggregateSelection",
     Id = "IDAggregateSelection",
+    DateTime = "DateTimeAggregateSelection",
 }
 
 export function generateResultObject(fields: Record<string, string | undefined>): string {
@@ -40,8 +41,9 @@ export function generateResultObject(fields: Record<string, string | undefined>)
 }
 
 export function getFieldType(field: ResolveTree): AggregationType | undefined {
-    if (field.fieldsByTypeName[AggregationType.Int]) return AggregationType.Int;
-    if (field.fieldsByTypeName[AggregationType.String]) return AggregationType.String;
+    for (const candidateField of Object.values(AggregationType)) {
+        if (field.fieldsByTypeName[candidateField]) return candidateField;
+    }
     return undefined;
 }
 

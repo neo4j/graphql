@@ -65,6 +65,9 @@ const baseTypeScriptRules = {
     "@typescript-eslint/lines-between-class-members": ["error", "always", { exceptAfterSingleLine: true }],
     "@typescript-eslint/no-unnecessary-type-assertion": ["off"],
     "import/prefer-default-export": "off",
+    // disallow certain syntax forms
+    // http://eslint.org/docs/rules/no-restricted-syntax
+    "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
 };
 
 module.exports = {

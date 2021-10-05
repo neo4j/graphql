@@ -93,12 +93,10 @@ function createAggregationQuery(
     return generateResultObject(
         Object.entries(fields).reduce((acc, [fieldName, field]) => {
             const fieldType = getFieldType(field);
-            if (fieldType) {
-                acc[fieldName] = wrapApocRun(
-                    getAggregationSubQuery(targetPattern, fieldName, fieldType, fieldAlias, auth.query),
-                    authParams
-                );
-            }
+            acc[fieldName] = wrapApocRun(
+                getAggregationSubQuery(targetPattern, fieldName, fieldType, fieldAlias, auth.query),
+                authParams
+            );
             return acc;
         }, {} as Record<string, string>)
     );
@@ -107,7 +105,7 @@ function createAggregationQuery(
 function getAggregationSubQuery(
     targetPattern: string,
     fieldName: string,
-    type: AggregationType,
+    type: AggregationType | undefined,
     targetAlias: string,
     authQuery: string
 ): string {
@@ -120,6 +118,7 @@ function getAggregationSubQuery(
         case AggregationType.Float:
             return AggregationQueryGenerators.numberAggregationQuery(targetPattern, fieldName, targetAlias, authQuery);
         default:
+            // TODO: take datetime into account
             return AggregationQueryGenerators.defaultAggregationQuery(targetPattern, fieldName, targetAlias, authQuery);
     }
 }
