@@ -6,7 +6,8 @@ import {
     upperFirst,
 } from "graphql-compose";
 import { Node } from "../classes";
-import { RelationField } from "../types";
+import { WHERE_AGGREGATION_AVERAGE_TYPES, WHERE_AGGREGATION_OPERATORS, WHERE_AGGREGATION_TYPES } from "../constants";
+import { BaseField, RelationField } from "../types";
 import { ObjectFields } from "./get-obj-field-meta";
 
 function createRelationshipFields({
@@ -45,8 +46,11 @@ function createRelationshipFields({
     relationshipFields.forEach((rel) => {
         let hasNonGeneratedProperties = false;
         let hasNonNullNonGeneratedProperties = false;
+        let anyNonNullRelProperties = false;
+        let relFields: ObjectFields | undefined;
+
         if (rel.properties) {
-            const relFields = relationshipPropertyFields.get(rel.properties);
+            relFields = relationshipPropertyFields.get(rel.properties);
 
             if (relFields) {
                 const nonGeneratedProperties = [
@@ -58,27 +62,18 @@ function createRelationshipFields({
                 ];
                 hasNonGeneratedProperties = nonGeneratedProperties.length > 0;
                 hasNonNullNonGeneratedProperties = nonGeneratedProperties.some((field) => field.typeMeta.required);
+                anyNonNullRelProperties = [
+                    ...relFields.primitiveFields,
+                    ...relFields.scalarFields,
+                    ...relFields.enumFields,
+                    ...relFields.temporalFields,
+                    ...relFields.pointFields,
+                ].some((field) => field.typeMeta.required);
             }
         }
 
         if (rel.interface) {
             const refNodes = nodes.filter((x) => rel.interface?.implementations?.includes(x.name));
-
-            let anyNonNullRelProperties = false;
-
-            if (rel.properties) {
-                const relFields = relationshipPropertyFields.get(rel.properties);
-
-                if (relFields) {
-                    anyNonNullRelProperties = [
-                        ...relFields.primitiveFields,
-                        ...relFields.scalarFields,
-                        ...relFields.enumFields,
-                        ...relFields.temporalFields,
-                        ...relFields.pointFields,
-                    ].some((field) => field.typeMeta.required);
-                }
-            }
 
             composeNode.addFields({
                 [rel.fieldName]: {
@@ -89,9 +84,6 @@ function createRelationshipFields({
                     },
                 },
             });
-
-            const upperFieldName = upperFirst(rel.fieldName);
-            const upperNodeName = upperFirst(sourceName);
 
             const connectWhere = schemaComposer.getOrCreateITC(`${rel.typeMeta.name}ConnectWhere`, (tc) => {
                 tc.addFields({
@@ -195,8 +187,6 @@ function createRelationshipFields({
             );
 
             refNodes.forEach((n) => {
-                const unionPrefix = `${sourceName}${upperFieldName}${n.name}`;
-
                 const createName = `${sourceName}${upperFirst(rel.fieldName)}${n.name}CreateFieldInput`;
                 if (!schemaComposer.has(createName)) {
                     schemaComposer.createInputTC({
@@ -475,9 +465,130 @@ function createRelationshipFields({
         const nodeFieldDisconnectInputName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}DisconnectFieldInput`;
 
         const connectionUpdateInputName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}UpdateConnectionInput`;
+        const relationshipWhereTypeInputName = `${sourceName}${upperFirst(rel.fieldName)}AggregateInput`;
+
+        const [nodeWhereAggregationInput, edgeWhereAggregationInput] = [n, relFields].map((nodeOrRelFields) => {
+            if (!nodeOrRelFields) {
+                return;
+            }
+
+            const fields = WHERE_AGGREGATION_TYPES.reduce<BaseField[]>((r, t) => {
+                const f = [...nodeOrRelFields.primitiveFields, ...nodeOrRelFields.temporalFields].filter(
+                    (y) => !y.typeMeta.array && y.typeMeta.name === t
+                );
+
+                if (!f.length) {
+                    return r;
+                }
+
+                return r.concat(f);
+            }, []);
+
+            if (!fields.length) {
+                return;
+            }
+
+            const name = `${sourceName}${upperFirst(rel.fieldName)}${
+                nodeOrRelFields instanceof Node ? `Node` : `Edge`
+            }AggregationWhereInput`;
+
+            const aggregationInput = schemaComposer.createInputTC({
+                name,
+                fields: {
+                    AND: `[${name}!]`,
+                    OR: `[${name}!]`,
+                },
+            });
+
+            fields.forEach((field) => {
+                if (field.typeMeta.name === "ID") {
+                    aggregationInput.addFields({
+                        [`${field.fieldName}_EQUAL`]: "ID",
+                    });
+
+                    return;
+                }
+
+                if (field.typeMeta.name === "String") {
+                    aggregationInput.addFields(
+                        WHERE_AGGREGATION_OPERATORS.reduce((res, operator) => {
+                            return {
+                                ...res,
+                                [`${field.fieldName}_${operator}`]: `${operator === "EQUAL" ? "String" : "Int"}`,
+                                [`${field.fieldName}_AVERAGE_${operator}`]: "Float",
+                                [`${field.fieldName}_LONGEST_${operator}`]: "Int",
+                                [`${field.fieldName}_SHORTEST_${operator}`]: "Int",
+                            };
+                        }, {})
+                    );
+
+                    return;
+                }
+
+                if (WHERE_AGGREGATION_AVERAGE_TYPES.includes(field.typeMeta.name)) {
+                    aggregationInput.addFields(
+                        WHERE_AGGREGATION_OPERATORS.reduce((res, operator) => {
+                            let averageType = "Float";
+
+                            if (field.typeMeta.name === "BigInt") {
+                                averageType = "BigInt";
+                            }
+
+                            if (field.typeMeta.name === "Duration") {
+                                averageType = "Duration";
+                            }
+
+                            return {
+                                ...res,
+                                [`${field.fieldName}_${operator}`]: field.typeMeta.name,
+                                [`${field.fieldName}_AVERAGE_${operator}`]: averageType,
+                                [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
+                                [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
+                            };
+                        }, {})
+                    );
+
+                    return;
+                }
+
+                aggregationInput.addFields(
+                    WHERE_AGGREGATION_OPERATORS.reduce(
+                        (res, operator) => ({
+                            ...res,
+                            [`${field.fieldName}_${operator}`]: field.typeMeta.name,
+                            [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
+                            [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
+                        }),
+                        {}
+                    )
+                );
+            });
+
+            // eslint-disable-next-line consistent-return
+            return aggregationInput;
+        });
+
+        const whereAggregateInput = schemaComposer.createInputTC({
+            name: relationshipWhereTypeInputName,
+            fields: {
+                count: "Int",
+                count_LT: "Int",
+                count_LTE: "Int",
+                count_GT: "Int",
+                count_GTE: "Int",
+                AND: `[${relationshipWhereTypeInputName}!]`,
+                OR: `[${relationshipWhereTypeInputName}!]`,
+                ...(nodeWhereAggregationInput ? { node: nodeWhereAggregationInput } : {}),
+                ...(edgeWhereAggregationInput ? { edge: edgeWhereAggregationInput } : {}),
+            },
+        });
 
         whereInput.addFields({
-            ...{ [rel.fieldName]: `${n.name}Where`, [`${rel.fieldName}_NOT`]: `${n.name}Where` },
+            ...{
+                [rel.fieldName]: `${n.name}Where`,
+                [`${rel.fieldName}_NOT`]: `${n.name}Where`,
+                [`${rel.fieldName}Aggregate`]: whereAggregateInput,
+            },
         });
 
         const createName = `${rel.connectionPrefix}${upperFirst(rel.fieldName)}CreateFieldInput`;

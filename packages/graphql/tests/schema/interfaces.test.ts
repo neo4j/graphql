@@ -115,6 +115,23 @@ describe("Interfaces", () => {
               movies: [MovieNodeMoviesDisconnectFieldInput!]
             }
 
+            input MovieMoviesAggregateInput {
+              AND: [MovieMoviesAggregateInput!]
+              OR: [MovieMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: MovieMoviesNodeAggregationWhereInput
+            }
+
+            input MovieMoviesNodeAggregationWhereInput {
+              AND: [MovieMoviesNodeAggregationWhereInput!]
+              OR: [MovieMoviesNodeAggregationWhereInput!]
+              id_EQUAL: ID
+            }
+
             interface MovieNode {
               customQuery: [Movie]
               id: ID
@@ -216,6 +233,7 @@ describe("Interfaces", () => {
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               movies: MovieWhere
+              moviesAggregate: MovieMoviesAggregateInput
               moviesConnection: MovieNodeMoviesConnectionWhere
               moviesConnection_NOT: MovieNodeMoviesConnectionWhere
               movies_NOT: MovieWhere

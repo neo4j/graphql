@@ -750,6 +750,17 @@ describe("Interface Relationships", () => {
               series: EpisodeSeriesCreateFieldInput
             }
 
+            input EpisodeSeriesAggregateInput {
+              AND: [EpisodeSeriesAggregateInput!]
+              OR: [EpisodeSeriesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: EpisodeSeriesNodeAggregationWhereInput
+            }
+
             input EpisodeSeriesConnectFieldInput {
               connect: SeriesConnectInput
               where: SeriesConnectWhere
@@ -789,6 +800,51 @@ describe("Interface Relationships", () => {
             input EpisodeSeriesFieldInput {
               connect: EpisodeSeriesConnectFieldInput
               create: EpisodeSeriesCreateFieldInput
+            }
+
+            input EpisodeSeriesNodeAggregationWhereInput {
+              AND: [EpisodeSeriesNodeAggregationWhereInput!]
+              OR: [EpisodeSeriesNodeAggregationWhereInput!]
+              episodeCount_AVERAGE_EQUAL: Float
+              episodeCount_AVERAGE_GT: Float
+              episodeCount_AVERAGE_GTE: Float
+              episodeCount_AVERAGE_LT: Float
+              episodeCount_AVERAGE_LTE: Float
+              episodeCount_EQUAL: Int
+              episodeCount_GT: Int
+              episodeCount_GTE: Int
+              episodeCount_LT: Int
+              episodeCount_LTE: Int
+              episodeCount_MAX_EQUAL: Int
+              episodeCount_MAX_GT: Int
+              episodeCount_MAX_GTE: Int
+              episodeCount_MAX_LT: Int
+              episodeCount_MAX_LTE: Int
+              episodeCount_MIN_EQUAL: Int
+              episodeCount_MIN_GT: Int
+              episodeCount_MIN_GTE: Int
+              episodeCount_MIN_LT: Int
+              episodeCount_MIN_LTE: Int
+              title_AVERAGE_EQUAL: Float
+              title_AVERAGE_GT: Float
+              title_AVERAGE_GTE: Float
+              title_AVERAGE_LT: Float
+              title_AVERAGE_LTE: Float
+              title_EQUAL: String
+              title_GT: Int
+              title_GTE: Int
+              title_LONGEST_EQUAL: Int
+              title_LONGEST_GT: Int
+              title_LONGEST_GTE: Int
+              title_LONGEST_LT: Int
+              title_LONGEST_LTE: Int
+              title_LT: Int
+              title_LTE: Int
+              title_SHORTEST_EQUAL: Int
+              title_SHORTEST_GT: Int
+              title_SHORTEST_GTE: Int
+              title_SHORTEST_LT: Int
+              title_SHORTEST_LTE: Int
             }
 
             type EpisodeSeriesRelationship {
@@ -831,6 +887,7 @@ describe("Interface Relationships", () => {
               runtime_NOT: Int
               runtime_NOT_IN: [Int]
               series: SeriesWhere
+              seriesAggregate: EpisodeSeriesAggregateInput
               seriesConnection: EpisodeSeriesConnectionWhere
               seriesConnection_NOT: EpisodeSeriesConnectionWhere
               series_NOT: SeriesWhere
@@ -847,6 +904,68 @@ describe("Interface Relationships", () => {
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               runtime: Int!
               title: String!
+            }
+
+            input MovieActorsAggregateInput {
+              AND: [MovieActorsAggregateInput!]
+              OR: [MovieActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: MovieActorsEdgeAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
+            input MovieActorsEdgeAggregationWhereInput {
+              AND: [MovieActorsEdgeAggregationWhereInput!]
+              OR: [MovieActorsEdgeAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+            }
+
+            input MovieActorsNodeAggregationWhereInput {
+              AND: [MovieActorsNodeAggregationWhereInput!]
+              OR: [MovieActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
             }
 
             type MovieAggregateSelection {
@@ -900,6 +1019,7 @@ describe("Interface Relationships", () => {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
               actors: ActorWhere
+              actorsAggregate: MovieActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere
               actors_NOT: ActorWhere
@@ -952,6 +1072,18 @@ describe("Interface Relationships", () => {
               title: String!
             }
 
+            input ProductionActorsAggregateInput {
+              AND: [ProductionActorsAggregateInput!]
+              OR: [ProductionActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: ProductionActorsEdgeAggregationWhereInput
+              node: ProductionActorsNodeAggregationWhereInput
+            }
+
             input ProductionActorsConnectFieldInput {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
@@ -993,9 +1125,59 @@ describe("Interface Relationships", () => {
               where: ProductionActorsConnectionWhere
             }
 
+            input ProductionActorsEdgeAggregationWhereInput {
+              AND: [ProductionActorsEdgeAggregationWhereInput!]
+              OR: [ProductionActorsEdgeAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+            }
+
             input ProductionActorsFieldInput {
               connect: [ProductionActorsConnectFieldInput!]
               create: [ProductionActorsCreateFieldInput!]
+            }
+
+            input ProductionActorsNodeAggregationWhereInput {
+              AND: [ProductionActorsNodeAggregationWhereInput!]
+              OR: [ProductionActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
             }
 
             type ProductionActorsRelationship implements ActedIn {
@@ -1078,6 +1260,7 @@ describe("Interface Relationships", () => {
               OR: [ProductionWhere!]
               _on: ProductionImplementationsWhere
               actors: ActorWhere
+              actorsAggregate: ProductionActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere
               actors_NOT: ActorWhere
@@ -1122,6 +1305,68 @@ describe("Interface Relationships", () => {
               title: String!
             }
 
+            input SeriesActorsAggregateInput {
+              AND: [SeriesActorsAggregateInput!]
+              OR: [SeriesActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: SeriesActorsEdgeAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
+            input SeriesActorsEdgeAggregationWhereInput {
+              AND: [SeriesActorsEdgeAggregationWhereInput!]
+              OR: [SeriesActorsEdgeAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+            }
+
+            input SeriesActorsNodeAggregationWhereInput {
+              AND: [SeriesActorsNodeAggregationWhereInput!]
+              OR: [SeriesActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
+            }
+
             type SeriesAggregateSelection {
               count: Int!
               episodeCount: IntAggregateSelection!
@@ -1152,6 +1397,17 @@ describe("Interface Relationships", () => {
             input SeriesDisconnectInput {
               actors: [ProductionActorsDisconnectFieldInput!]
               episodes: [SeriesEpisodesDisconnectFieldInput!]
+            }
+
+            input SeriesEpisodesAggregateInput {
+              AND: [SeriesEpisodesAggregateInput!]
+              OR: [SeriesEpisodesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: SeriesEpisodesNodeAggregationWhereInput
             }
 
             input SeriesEpisodesConnectFieldInput {
@@ -1193,6 +1449,31 @@ describe("Interface Relationships", () => {
             input SeriesEpisodesFieldInput {
               connect: [SeriesEpisodesConnectFieldInput!]
               create: [SeriesEpisodesCreateFieldInput!]
+            }
+
+            input SeriesEpisodesNodeAggregationWhereInput {
+              AND: [SeriesEpisodesNodeAggregationWhereInput!]
+              OR: [SeriesEpisodesNodeAggregationWhereInput!]
+              runtime_AVERAGE_EQUAL: Float
+              runtime_AVERAGE_GT: Float
+              runtime_AVERAGE_GTE: Float
+              runtime_AVERAGE_LT: Float
+              runtime_AVERAGE_LTE: Float
+              runtime_EQUAL: Int
+              runtime_GT: Int
+              runtime_GTE: Int
+              runtime_LT: Int
+              runtime_LTE: Int
+              runtime_MAX_EQUAL: Int
+              runtime_MAX_GT: Int
+              runtime_MAX_GTE: Int
+              runtime_MAX_LT: Int
+              runtime_MAX_LTE: Int
+              runtime_MIN_EQUAL: Int
+              runtime_MIN_GT: Int
+              runtime_MIN_GTE: Int
+              runtime_MIN_LT: Int
+              runtime_MIN_LTE: Int
             }
 
             type SeriesEpisodesRelationship {
@@ -1242,6 +1523,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesWhere!]
               OR: [SeriesWhere!]
               actors: ActorWhere
+              actorsAggregate: SeriesActorsAggregateInput
               actorsConnection: ProductionActorsConnectionWhere
               actorsConnection_NOT: ProductionActorsConnectionWhere
               actors_NOT: ActorWhere
@@ -1254,6 +1536,7 @@ describe("Interface Relationships", () => {
               episodeCount_NOT: Int
               episodeCount_NOT_IN: [Int]
               episodes: EpisodeWhere
+              episodesAggregate: SeriesEpisodesAggregateInput
               episodesConnection: SeriesEpisodesConnectionWhere
               episodesConnection_NOT: SeriesEpisodesConnectionWhere
               episodes_NOT: EpisodeWhere
@@ -2139,6 +2422,43 @@ describe("Interface Relationships", () => {
               post: CommentPostFieldInput
             }
 
+            input CommentCreatorAggregateInput {
+              AND: [CommentCreatorAggregateInput!]
+              OR: [CommentCreatorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: CommentCreatorNodeAggregationWhereInput
+            }
+
+            input CommentCreatorNodeAggregationWhereInput {
+              AND: [CommentCreatorNodeAggregationWhereInput!]
+              OR: [CommentCreatorNodeAggregationWhereInput!]
+              id_EQUAL: ID
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
+            }
+
             input CommentDeleteInput {
               creator: ContentCreatorDeleteFieldInput
               post: CommentPostDeleteFieldInput
@@ -2154,6 +2474,17 @@ describe("Interface Relationships", () => {
               offset: Int
               \\"\\"\\"Specify one or more CommentSort objects to sort Comments by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [CommentSort]
+            }
+
+            input CommentPostAggregateInput {
+              AND: [CommentPostAggregateInput!]
+              OR: [CommentPostAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: CommentPostNodeAggregationWhereInput
             }
 
             input CommentPostConnectFieldInput {
@@ -2195,6 +2526,32 @@ describe("Interface Relationships", () => {
             input CommentPostFieldInput {
               connect: CommentPostConnectFieldInput
               create: CommentPostCreateFieldInput
+            }
+
+            input CommentPostNodeAggregationWhereInput {
+              AND: [CommentPostNodeAggregationWhereInput!]
+              OR: [CommentPostNodeAggregationWhereInput!]
+              content_AVERAGE_EQUAL: Float
+              content_AVERAGE_GT: Float
+              content_AVERAGE_GTE: Float
+              content_AVERAGE_LT: Float
+              content_AVERAGE_LTE: Float
+              content_EQUAL: String
+              content_GT: Int
+              content_GTE: Int
+              content_LONGEST_EQUAL: Int
+              content_LONGEST_GT: Int
+              content_LONGEST_GTE: Int
+              content_LONGEST_LT: Int
+              content_LONGEST_LTE: Int
+              content_LT: Int
+              content_LTE: Int
+              content_SHORTEST_EQUAL: Int
+              content_SHORTEST_GT: Int
+              content_SHORTEST_GTE: Int
+              content_SHORTEST_LT: Int
+              content_SHORTEST_LTE: Int
+              id_EQUAL: ID
             }
 
             type CommentPostRelationship {
@@ -2247,6 +2604,7 @@ describe("Interface Relationships", () => {
               content_NOT_STARTS_WITH: String
               content_STARTS_WITH: String
               creator: UserWhere
+              creatorAggregate: CommentCreatorAggregateInput
               creatorConnection: ContentCreatorConnectionWhere
               creatorConnection_NOT: ContentCreatorConnectionWhere
               creator_NOT: UserWhere
@@ -2261,6 +2619,7 @@ describe("Interface Relationships", () => {
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               post: PostWhere
+              postAggregate: CommentPostAggregateInput
               postConnection: CommentPostConnectionWhere
               postConnection_NOT: CommentPostConnectionWhere
               post_NOT: PostWhere
@@ -2285,6 +2644,17 @@ describe("Interface Relationships", () => {
             input ContentCreateInput {
               Comment: CommentCreateInput
               Post: PostCreateInput
+            }
+
+            input ContentCreatorAggregateInput {
+              AND: [ContentCreatorAggregateInput!]
+              OR: [ContentCreatorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: ContentCreatorNodeAggregationWhereInput
             }
 
             input ContentCreatorConnectFieldInput {
@@ -2326,6 +2696,32 @@ describe("Interface Relationships", () => {
             input ContentCreatorFieldInput {
               connect: ContentCreatorConnectFieldInput
               create: ContentCreatorCreateFieldInput
+            }
+
+            input ContentCreatorNodeAggregationWhereInput {
+              AND: [ContentCreatorNodeAggregationWhereInput!]
+              OR: [ContentCreatorNodeAggregationWhereInput!]
+              id_EQUAL: ID
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
             }
 
             type ContentCreatorRelationship {
@@ -2403,6 +2799,7 @@ describe("Interface Relationships", () => {
               content_NOT_STARTS_WITH: String
               content_STARTS_WITH: String
               creator: UserWhere
+              creatorAggregate: ContentCreatorAggregateInput
               creatorConnection: ContentCreatorConnectionWhere
               creatorConnection_NOT: ContentCreatorConnectionWhere
               creator_NOT: UserWhere
@@ -2485,6 +2882,17 @@ describe("Interface Relationships", () => {
               id: IDAggregateSelection!
             }
 
+            input PostCommentsAggregateInput {
+              AND: [PostCommentsAggregateInput!]
+              OR: [PostCommentsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: PostCommentsNodeAggregationWhereInput
+            }
+
             input PostCommentsConnectFieldInput {
               connect: [CommentConnectInput!]
               where: CommentConnectWhere
@@ -2526,6 +2934,32 @@ describe("Interface Relationships", () => {
               create: [PostCommentsCreateFieldInput!]
             }
 
+            input PostCommentsNodeAggregationWhereInput {
+              AND: [PostCommentsNodeAggregationWhereInput!]
+              OR: [PostCommentsNodeAggregationWhereInput!]
+              content_AVERAGE_EQUAL: Float
+              content_AVERAGE_GT: Float
+              content_AVERAGE_GTE: Float
+              content_AVERAGE_LT: Float
+              content_AVERAGE_LTE: Float
+              content_EQUAL: String
+              content_GT: Int
+              content_GTE: Int
+              content_LONGEST_EQUAL: Int
+              content_LONGEST_GT: Int
+              content_LONGEST_GTE: Int
+              content_LONGEST_LT: Int
+              content_LONGEST_LTE: Int
+              content_LT: Int
+              content_LTE: Int
+              content_SHORTEST_EQUAL: Int
+              content_SHORTEST_GT: Int
+              content_SHORTEST_GTE: Int
+              content_SHORTEST_LT: Int
+              content_SHORTEST_LTE: Int
+              id_EQUAL: ID
+            }
+
             type PostCommentsRelationship {
               cursor: String!
               node: Comment!
@@ -2558,6 +2992,43 @@ describe("Interface Relationships", () => {
               content: String
               creator: ContentCreatorFieldInput
               id: ID
+            }
+
+            input PostCreatorAggregateInput {
+              AND: [PostCreatorAggregateInput!]
+              OR: [PostCreatorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: PostCreatorNodeAggregationWhereInput
+            }
+
+            input PostCreatorNodeAggregationWhereInput {
+              AND: [PostCreatorNodeAggregationWhereInput!]
+              OR: [PostCreatorNodeAggregationWhereInput!]
+              id_EQUAL: ID
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
             }
 
             input PostDeleteInput {
@@ -2599,6 +3070,7 @@ describe("Interface Relationships", () => {
               AND: [PostWhere!]
               OR: [PostWhere!]
               comments: CommentWhere
+              commentsAggregate: PostCommentsAggregateInput
               commentsConnection: PostCommentsConnectionWhere
               commentsConnection_NOT: PostCommentsConnectionWhere
               comments_NOT: CommentWhere
@@ -2613,6 +3085,7 @@ describe("Interface Relationships", () => {
               content_NOT_STARTS_WITH: String
               content_STARTS_WITH: String
               creator: UserWhere
+              creatorAggregate: PostCreatorAggregateInput
               creatorConnection: ContentCreatorConnectionWhere
               creatorConnection_NOT: ContentCreatorConnectionWhere
               creator_NOT: UserWhere

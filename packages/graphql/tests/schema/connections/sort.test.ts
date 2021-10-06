@@ -113,6 +113,16 @@ describe("Sort", () => {
               sort: [Node1Sort]
             }
 
+            input Node1RelatedToAggregateInput {
+              AND: [Node1RelatedToAggregateInput!]
+              OR: [Node1RelatedToAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+            }
+
             input Node1RelatedToConnectFieldInput {
               connect: [Node2ConnectInput!]
               where: Node2ConnectWhere
@@ -196,6 +206,7 @@ describe("Sort", () => {
               property_NOT_STARTS_WITH: String
               property_STARTS_WITH: String
               relatedTo: Node2Where
+              relatedToAggregate: Node1RelatedToAggregateInput
               relatedToConnection: Node1RelatedToConnectionWhere
               relatedToConnection_NOT: Node1RelatedToConnectionWhere
               relatedTo_NOT: Node2Where
@@ -233,6 +244,17 @@ describe("Sort", () => {
             input Node2Options {
               limit: Int
               offset: Int
+            }
+
+            input Node2RelatedToAggregateInput {
+              AND: [Node2RelatedToAggregateInput!]
+              OR: [Node2RelatedToAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: Node2RelatedToNodeAggregationWhereInput
             }
 
             input Node2RelatedToConnectFieldInput {
@@ -276,6 +298,31 @@ describe("Sort", () => {
               create: [Node2RelatedToCreateFieldInput!]
             }
 
+            input Node2RelatedToNodeAggregationWhereInput {
+              AND: [Node2RelatedToNodeAggregationWhereInput!]
+              OR: [Node2RelatedToNodeAggregationWhereInput!]
+              property_AVERAGE_EQUAL: Float
+              property_AVERAGE_GT: Float
+              property_AVERAGE_GTE: Float
+              property_AVERAGE_LT: Float
+              property_AVERAGE_LTE: Float
+              property_EQUAL: String
+              property_GT: Int
+              property_GTE: Int
+              property_LONGEST_EQUAL: Int
+              property_LONGEST_GT: Int
+              property_LONGEST_GTE: Int
+              property_LONGEST_LT: Int
+              property_LONGEST_LTE: Int
+              property_LT: Int
+              property_LTE: Int
+              property_SHORTEST_EQUAL: Int
+              property_SHORTEST_GT: Int
+              property_SHORTEST_GTE: Int
+              property_SHORTEST_LT: Int
+              property_SHORTEST_LTE: Int
+            }
+
             type Node2RelatedToRelationship {
               cursor: String!
               node: Node1!
@@ -306,6 +353,7 @@ describe("Sort", () => {
               AND: [Node2Where!]
               OR: [Node2Where!]
               relatedTo: Node1Where
+              relatedToAggregate: Node2RelatedToAggregateInput
               relatedToConnection: Node2RelatedToConnectionWhere
               relatedToConnection_NOT: Node2RelatedToConnectionWhere
               relatedTo_NOT: Node1Where

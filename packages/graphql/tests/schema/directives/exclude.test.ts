@@ -618,6 +618,17 @@ describe("@exclude directive", () => {
               title: String
             }
 
+            input MovieActorsAggregateInput {
+              AND: [MovieActorsAggregateInput!]
+              OR: [MovieActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectFieldInput {
               where: ActorConnectWhere
             }
@@ -654,6 +665,31 @@ describe("@exclude directive", () => {
             input MovieActorsFieldInput {
               connect: [MovieActorsConnectFieldInput!]
               create: [MovieActorsCreateFieldInput!]
+            }
+
+            input MovieActorsNodeAggregationWhereInput {
+              AND: [MovieActorsNodeAggregationWhereInput!]
+              OR: [MovieActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
             }
 
             type MovieActorsRelationship {
@@ -721,6 +757,7 @@ describe("@exclude directive", () => {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
               actors: ActorWhere
+              actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
               actors_NOT: ActorWhere

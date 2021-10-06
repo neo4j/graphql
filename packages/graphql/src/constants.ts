@@ -58,3 +58,24 @@ export const RESERVED_INTERFACE_FIELDS = [
     ["node", "Interface field name 'node' reserved to support relay See https://relay.dev/graphql/"],
     ["cursor", "Interface field name 'cursor' reserved to support relay See https://relay.dev/graphql/"],
 ];
+
+export const WHERE_AGGREGATION_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+
+// Types that you can average
+// https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg
+// https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg-duration
+// String uses avg(size())
+export const WHERE_AGGREGATION_AVERAGE_TYPES = ["String", "Int", "Float", "BigInt", "Duration"];
+
+export const WHERE_AGGREGATION_TYPES = [
+    "ID",
+    "String",
+    "Float",
+    "Int",
+    "BigInt",
+    "DateTime",
+    "LocalDateTime",
+    "LocalTime",
+    "Time",
+    "Duration",
+];

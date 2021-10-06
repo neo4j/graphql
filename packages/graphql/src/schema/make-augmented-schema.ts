@@ -49,7 +49,7 @@ import {
 import pluralize from "pluralize";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth, ConnectionQueryArgs } from "../types";
+import { PrimitiveField, Auth, ConnectionQueryArgs, BaseField } from "../types";
 import {
     aggregateResolver,
     countResolver,
