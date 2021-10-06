@@ -18,7 +18,7 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { Node, Relationship } from "../../classes";
+import { Node } from "../../classes";
 import { Context, RelationField } from "../../types";
 import {
     generateResultObject,
@@ -64,18 +64,11 @@ export function createFieldAggregation({
     const edgeFields: Record<string, ResolveTree> | undefined = getFieldByName("edge", aggregationField)
         ?.fieldsByTypeName[`${fieldPathBase}EdgeAggregateSelection`];
 
-    console.log("nodeFields", nodeFields);
-
-    const relationship = (context.neoSchema.relationships.find(
-        (x) => x.properties === relationAggregationField.properties
-    ) as unknown) as Relationship;
-
     const authData = createFieldAggregationAuth({
         node: referenceNode,
         context,
         subQueryNodeAlias,
         nodeFields,
-        relationship,
     });
 
     const matchWherePattern = createMatchWherePattern(targetPattern, authData);

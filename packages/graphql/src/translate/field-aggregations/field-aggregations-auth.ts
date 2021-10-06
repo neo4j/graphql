@@ -21,12 +21,17 @@ import { ResolveTree } from "graphql-parse-resolve-info";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import createAuthAndParams from "../create-auth-and-params";
 import { Context } from "../../types";
-import { Node, Relationship } from "../../classes";
+import { Node } from "../../classes";
 
 export type AggregationAuth = {
     query: string;
     params: Record<string, string>;
     whereQuery: string;
+};
+
+type PartialAuthQueries = {
+    queries: string[];
+    params: Record<string, string>;
 };
 
 export function createFieldAggregationAuth({
@@ -39,26 +44,26 @@ export function createFieldAggregationAuth({
     context: Context;
     subQueryNodeAlias: string;
     nodeFields: Record<string, ResolveTree> | undefined;
-    relationship: Relationship;
 }): AggregationAuth {
-    const varName = subQueryNodeAlias;
-    let cypherParams: { [k: string]: any } = {};
-    const whereStrs: string[] = [];
-    const cypherStrs: string[] = [];
+    const allowAuth = getAllowAuth({ node, context, varName: subQueryNodeAlias });
+    const whereAuth = getWhereAuth({ node, context, varName: subQueryNodeAlias });
+    const nodeAuth = getFieldAuth({ fields: nodeFields, node, context, varName: subQueryNodeAlias });
 
-    const whereAuth = createAuthAndParams({
-        operation: "READ",
-        entity: node,
-        context,
-        where: { varName, node },
-        escapeQuotes: false,
-    });
+    const cypherStrs = [...nodeAuth.queries, ...allowAuth.queries];
+    const cypherParams = { ...nodeAuth.params, ...allowAuth.params, ...whereAuth.params };
 
-    if (whereAuth[0]) {
-        whereStrs.push(whereAuth[0]);
-        cypherParams = { ...cypherParams, ...whereAuth[1] };
-    }
+    return { query: cypherStrs.join("\n"), params: cypherParams, whereQuery: whereAuth.queries.join("\n") };
+}
 
+function getAllowAuth({
+    node,
+    context,
+    varName,
+}: {
+    node: Node;
+    context: Context;
+    varName: string;
+}): PartialAuthQueries {
     const allowAuth = createAuthAndParams({
         operation: "READ",
         entity: node,
@@ -71,53 +76,86 @@ export function createFieldAggregationAuth({
     });
 
     if (allowAuth[0]) {
-        cypherStrs.push(`CALL apoc.util.validate(NOT(${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-        cypherParams = { ...cypherParams, ...allowAuth[1] };
-    }
-
-    const nodeAuth = getFieldAuthQueries(nodeFields, node, context, node, varName);
-
-    const authStrs = [...nodeAuth.query];
-    cypherParams = { ...cypherParams, ...nodeAuth.params };
-    if (authStrs.length) {
-        cypherStrs.push(`CALL apoc.util.validate(NOT(${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-    }
-    if (cypherStrs.length > 0 || whereStrs.length > 0) {
-        return { query: cypherStrs.join("\n"), params: cypherParams, whereQuery: whereStrs.join("\n") };
-    }
-    return { query: "", params: {}, whereQuery: "" };
-}
-
-function getFieldAuthQueries(
-    fields: Record<string, ResolveTree> | undefined,
-    nodeOrRelation: Node,
-    context: Context,
-    parentNode: Node,
-    varName: string
-): { query: string[]; params: Record<string, string> } {
-    const authStrs: string[] = [];
-    let authParams: Record<string, string> = {};
-    if (fields) {
-        Object.entries(fields).forEach((selection) => {
-            const authField = nodeOrRelation.authableFields.find((x) => x.fieldName === selection[0]);
-            if (authField && authField.auth) {
-                const allowAndParams = createAuthAndParams({
-                    entity: authField,
-                    operation: "READ",
-                    context,
-                    allow: { parentNode, varName, chainStr: authField.fieldName },
-                    escapeQuotes: false,
-                });
-                if (allowAndParams[0]) {
-                    authStrs.push(allowAndParams[0]);
-                    authParams = { ...authParams, ...allowAndParams[1] };
-                }
-            }
-        });
+        return {
+            queries: [`CALL apoc.util.validate(NOT(${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
+            params: allowAuth[1],
+        };
     }
 
     return {
-        query: authStrs,
-        params: authParams,
+        queries: [],
+        params: {},
+    };
+}
+
+function getWhereAuth({
+    node,
+    context,
+    varName,
+}: {
+    node: Node;
+    context: Context;
+    varName: string;
+}): PartialAuthQueries {
+    const whereAuth = createAuthAndParams({
+        operation: "READ",
+        entity: node,
+        context,
+        where: { varName, node },
+    });
+
+    if (whereAuth[0]) {
+        return {
+            queries: [whereAuth[0]],
+            params: whereAuth[1],
+        };
+    }
+
+    return {
+        queries: [],
+        params: {},
+    };
+}
+
+function getFieldAuth({
+    fields = {},
+    node,
+    context,
+    varName,
+}: {
+    fields: Record<string, ResolveTree> | undefined;
+    node: Node;
+    context: Context;
+    varName: string;
+}): PartialAuthQueries {
+    const authStrs: string[] = [];
+    let authParams: Record<string, string> = {};
+
+    Object.entries(fields).forEach((selection) => {
+        const authField = node.authableFields.find((x) => x.fieldName === selection[0]);
+        if (authField && authField.auth) {
+            const allowAndParams = createAuthAndParams({
+                entity: authField,
+                operation: "READ",
+                context,
+                allow: { parentNode: node, varName, chainStr: authField.fieldName },
+                escapeQuotes: false,
+            });
+            if (allowAndParams[0]) {
+                authStrs.push(allowAndParams[0]);
+                authParams = { ...authParams, ...allowAndParams[1] };
+            }
+        }
+    });
+
+    if (authStrs.length > 0) {
+        return {
+            queries: [`CALL apoc.util.validate(NOT(${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
+            params: authParams,
+        };
+    }
+    return {
+        queries: [],
+        params: {},
     };
 }
