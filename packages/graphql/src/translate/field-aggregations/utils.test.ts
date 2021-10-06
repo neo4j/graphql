@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { escapeQuery } from "./utils";
+import { escapeQuery, wrapApocRun } from "./utils";
 
 describe("field-aggregation utils", () => {
     describe("escapeQuery", () => {
@@ -34,6 +34,21 @@ describe("field-aggregation utils", () => {
         test("escape query with single and double quotes", () => {
             const escaped = escapeQuery(`"Hello" and 'goodbye'`);
             expect(escaped).toEqual(`\\"Hello\\" and \\'goodbye\\'`);
+        });
+    });
+
+    describe("wrapApocRun", () => {
+        test("wraps and escapes a query inside runFirstColumn", () => {
+            const result = wrapApocRun(`MATCH(n) RETURN n, "Hello"`);
+            expect(result).toEqual(
+                `head(apoc.cypher.runFirstColumn(" MATCH(n) RETURN n, \\"Hello\\" ", { this: this }))`
+            );
+        });
+        test("adds extra params", () => {
+            const result = wrapApocRun(`MATCH(n) RETURN n`, { auth: "auth" });
+            expect(result).toEqual(
+                `head(apoc.cypher.runFirstColumn(" MATCH(n) RETURN n ", { this: this, auth: auth }))`
+            );
         });
     });
 });
