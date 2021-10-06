@@ -22,7 +22,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { BaseField, Context, GraphQLWhereArg, PrimitiveField, TemporalField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createWhereAndParams from "./create-where-and-params";
-import createDatetimeElement from "./projection/elements/create-datetime-element";
+import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 
 function translateAggregate({ node, context }: { node: Node; context: Context }): [string, any] {
     const whereInput = context.resolveTree.args.where as GraphQLWhereArg;

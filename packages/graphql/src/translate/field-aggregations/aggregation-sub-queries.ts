@@ -18,6 +18,8 @@
  */
 
 import { AggregationAuth } from "./field-aggregations-auth";
+import { generateResultObject } from "./utils";
+import { wrapApocConvertDate } from "../projection/elements/create-datetime-element";
 
 export function createMatchWherePattern(matchPattern: string, auth: AggregationAuth): string {
     return `MATCH ${matchPattern}
@@ -46,11 +48,12 @@ export function defaultAggregationQuery(matchWherePattern: string, fieldName: st
 }
 
 export function dateTimeAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
-    // TODO: use createDatetimeElement instead
     const fieldPath = `${targetAlias}.${fieldName}`;
     return `${matchWherePattern}
-        RETURN {min: apoc.date.convertFormat(toString(min(${fieldPath})), "iso_zoned_date_time", "iso_offset_date_time"),
-        max: apoc.date.convertFormat(toString(max(${fieldPath})), "iso_zoned_date_time", "iso_offset_date_time")}`;
+        RETURN ${generateResultObject({
+            min: wrapApocConvertDate(`min(${fieldPath})`),
+            max: wrapApocConvertDate(`max(${fieldPath})`),
+        })}`;
 }
 
 export function countQuery(matchWherePattern: string, targetAlias: string): string {

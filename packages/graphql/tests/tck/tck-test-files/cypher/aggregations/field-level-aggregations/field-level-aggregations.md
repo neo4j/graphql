@@ -222,8 +222,8 @@ RETURN this {
         node: {
             released: head(apoc.cypher.runFirstColumn("
             MATCH (this)-[r:ACTED_IN]->(n:Movie)
-            RETURN {min: apoc.date.convertFormat(toString(min(n.released)), \"iso_zoned_date_time\", \"iso_offset_date_time\"),
-            max: apoc.date.convertFormat(toString(max(n.released)), \"iso_zoned_date_time\", \"iso_offset_date_time\")} ", { this: this })) }
+            RETURN { min: apoc.date.convertFormat(toString(min(n.released)), \"iso_zoned_date_time\", \"iso_offset_date_time\"),
+            max: apoc.date.convertFormat(toString(max(n.released)), \"iso_zoned_date_time\", \"iso_offset_date_time\") } ", { this: this })) }
         }
 } as this
 ```
