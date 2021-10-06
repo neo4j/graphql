@@ -20,7 +20,14 @@
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Node, Relationship } from "../../classes";
 import { Context, RelationField } from "../../types";
-import { generateResultObject, getFieldType, AggregationType, wrapApocRun, getReferenceNode } from "./utils";
+import {
+    generateResultObject,
+    getFieldType,
+    AggregationType,
+    wrapApocRun,
+    getReferenceNode,
+    getFieldByName,
+} from "./utils";
 import * as AggregationQueryGenerators from "./aggregation-sub-queries";
 import { createFieldAggregationAuth, AggregationAuth } from "./field-aggregations-auth";
 import { createMatchWherePattern } from "./aggregation-sub-queries";
@@ -52,10 +59,12 @@ export function createFieldAggregation({
     const fieldPathBase = `${node.name}${referenceNode.name}${relationAggregationField.fieldName}`;
     const aggregationField = field.fieldsByTypeName[`${fieldPathBase}AggregationResult`];
 
-    const nodeFields: Record<string, ResolveTree> | undefined =
-        aggregationField.node?.fieldsByTypeName[`${fieldPathBase}AggregateSelection`];
-    const edgeFields: Record<string, ResolveTree> | undefined =
-        aggregationField.edge?.fieldsByTypeName[`${fieldPathBase}EdgeAggregateSelection`];
+    const nodeFields: Record<string, ResolveTree> | undefined = getFieldByName("node", aggregationField)
+        ?.fieldsByTypeName[`${fieldPathBase}AggregateSelection`];
+    const edgeFields: Record<string, ResolveTree> | undefined = getFieldByName("edge", aggregationField)
+        ?.fieldsByTypeName[`${fieldPathBase}EdgeAggregateSelection`];
+
+    console.log("nodeFields", nodeFields);
 
     const relationship = (context.neoSchema.relationships.find(
         (x) => x.properties === relationAggregationField.properties
@@ -81,7 +90,7 @@ export function createFieldAggregation({
 
     return {
         query: generateResultObject({
-            count: aggregationField.count
+            count: getFieldByName("count", aggregationField)
                 ? createCountQuery(matchWherePattern, subQueryNodeAlias, authData)
                 : undefined,
             node: createAggregationQuery(matchWherePattern, nodeFields, subQueryNodeAlias, authData),
@@ -114,10 +123,10 @@ function createAggregationQuery(
     const authParams = getAuthApocParams(auth);
 
     return generateResultObject(
-        Object.entries(fields).reduce((acc, [fieldName, field]) => {
+        Object.values(fields).reduce((acc, field) => {
             const fieldType = getFieldType(field);
-            acc[fieldName] = wrapApocRun(
-                getAggregationSubQuery(matchWherePattern, fieldName, fieldType, fieldAlias),
+            acc[field.alias] = wrapApocRun(
+                getAggregationSubQuery(matchWherePattern, field.name, fieldType, fieldAlias),
                 authParams
             );
             return acc;

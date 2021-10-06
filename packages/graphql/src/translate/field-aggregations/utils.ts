@@ -60,3 +60,9 @@ export function getReferenceNode(context: Context, relationField: RelationField)
 export function escapeQuery(query: string): string {
     return query.replace(/("|')/g, "\\$1");
 }
+
+export function getFieldByName(name: string, fields: Record<string, ResolveTree>): ResolveTree | undefined {
+    return Object.values(fields).find((tree) => {
+        return tree.name === name;
+    });
+}
