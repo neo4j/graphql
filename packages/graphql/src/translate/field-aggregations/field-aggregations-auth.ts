@@ -100,19 +100,17 @@ function getFieldAuthQueries(
     if (fields) {
         Object.entries(fields).forEach((selection) => {
             const authField = nodeOrRelation.authableFields.find((x) => x.fieldName === selection[0]);
-            if (authField) {
-                if (authField.auth) {
-                    const allowAndParams = createAuthAndParams({
-                        entity: authField,
-                        operation: "READ",
-                        context,
-                        allow: { parentNode, varName, chainStr: authField.fieldName },
-                        escapeQuotes: false,
-                    });
-                    if (allowAndParams[0]) {
-                        authStrs.push(allowAndParams[0]);
-                        authParams = { ...authParams, ...allowAndParams[1] };
-                    }
+            if (authField && authField.auth) {
+                const allowAndParams = createAuthAndParams({
+                    entity: authField,
+                    operation: "READ",
+                    context,
+                    allow: { parentNode, varName, chainStr: authField.fieldName },
+                    escapeQuotes: false,
+                });
+                if (allowAndParams[0]) {
+                    authStrs.push(allowAndParams[0]);
+                    authParams = { ...authParams, ...allowAndParams[1] };
                 }
             }
         });

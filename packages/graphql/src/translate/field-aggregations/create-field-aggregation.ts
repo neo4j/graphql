@@ -28,7 +28,7 @@ import {
     getReferenceNode,
     getFieldByName,
 } from "./utils";
-import * as AggregationQueryGenerators from "./aggregation-sub-queries";
+import * as AggregationSubQueries from "./aggregation-sub-queries";
 import { createFieldAggregationAuth, AggregationAuth } from "./field-aggregations-auth";
 import { createMatchWherePattern } from "./aggregation-sub-queries";
 
@@ -78,14 +78,6 @@ export function createFieldAggregation({
         relationship,
     });
 
-    // const datetimeElement = createDatetimeElement({
-    //     resolveTree: field,
-    //     field: relationAggregationField,
-    //     variable: subQueryNodeAlias,
-    //     valueOverride: `max(n.${relationAggregationField.fieldName})`,
-    // });
-    // console.log(datetimeElement);
-
     const matchWherePattern = createMatchWherePattern(targetPattern, authData);
 
     return {
@@ -110,7 +102,7 @@ function generateTargetPattern(nodeLabel: string, relationField: RelationField, 
 
 function createCountQuery(matchWherePattern: string, targetAlias: string, auth: AggregationAuth): string {
     const authParams = getAuthApocParams(auth);
-    return wrapApocRun(AggregationQueryGenerators.countQuery(matchWherePattern, targetAlias), authParams);
+    return wrapApocRun(AggregationSubQueries.countQuery(matchWherePattern, targetAlias), authParams);
 }
 
 function createAggregationQuery(
@@ -122,16 +114,16 @@ function createAggregationQuery(
     if (!fields) return undefined;
     const authParams = getAuthApocParams(auth);
 
-    return generateResultObject(
-        Object.values(fields).reduce((acc, field) => {
-            const fieldType = getFieldType(field);
-            acc[field.alias] = wrapApocRun(
-                getAggregationSubQuery(matchWherePattern, field.name, fieldType, fieldAlias),
-                authParams
-            );
-            return acc;
-        }, {} as Record<string, string>)
-    );
+    const fieldsSubQueries = Object.values(fields).reduce((acc, field) => {
+        const fieldType = getFieldType(field);
+        acc[field.alias] = wrapApocRun(
+            getAggregationSubQuery(matchWherePattern, field.name, fieldType, fieldAlias),
+            authParams
+        );
+        return acc;
+    }, {} as Record<string, string>);
+
+    return generateResultObject(fieldsSubQueries);
 }
 
 function getAggregationSubQuery(
@@ -143,16 +135,15 @@ function getAggregationSubQuery(
     switch (type) {
         case AggregationType.String:
         case AggregationType.Id:
-            return AggregationQueryGenerators.stringAggregationQuery(matchWherePattern, fieldName, targetAlias);
+            return AggregationSubQueries.stringAggregationQuery(matchWherePattern, fieldName, targetAlias);
         case AggregationType.Int:
         case AggregationType.BigInt:
         case AggregationType.Float:
-            return AggregationQueryGenerators.numberAggregationQuery(matchWherePattern, fieldName, targetAlias);
+            return AggregationSubQueries.numberAggregationQuery(matchWherePattern, fieldName, targetAlias);
         case AggregationType.DateTime:
-            return AggregationQueryGenerators.dateTimeAggregationQuery(matchWherePattern, fieldName, targetAlias);
+            return AggregationSubQueries.dateTimeAggregationQuery(matchWherePattern, fieldName, targetAlias);
         default:
-            // TODO: take datetime into account
-            return AggregationQueryGenerators.defaultAggregationQuery(matchWherePattern, fieldName, targetAlias);
+            return AggregationSubQueries.defaultAggregationQuery(matchWherePattern, fieldName, targetAlias);
     }
 }
 
