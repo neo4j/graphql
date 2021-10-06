@@ -300,6 +300,18 @@ describe("Unions", () => {
               title: StringAggregateSelection!
             }
 
+            input BookAuthorAggregateInput {
+              AND: [BookAuthorAggregateInput!]
+              OR: [BookAuthorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: BookAuthorEdgeAggregationWhereInput
+              node: BookAuthorNodeAggregationWhereInput
+            }
+
             input BookAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
@@ -341,9 +353,59 @@ describe("Unions", () => {
               where: BookAuthorConnectionWhere
             }
 
+            input BookAuthorEdgeAggregationWhereInput {
+              AND: [BookAuthorEdgeAggregationWhereInput!]
+              OR: [BookAuthorEdgeAggregationWhereInput!]
+              words_AVERAGE_EQUAL: Float
+              words_AVERAGE_GT: Float
+              words_AVERAGE_GTE: Float
+              words_AVERAGE_LT: Float
+              words_AVERAGE_LTE: Float
+              words_EQUAL: Int
+              words_GT: Int
+              words_GTE: Int
+              words_LT: Int
+              words_LTE: Int
+              words_MAX_EQUAL: Int
+              words_MAX_GT: Int
+              words_MAX_GTE: Int
+              words_MAX_LT: Int
+              words_MAX_LTE: Int
+              words_MIN_EQUAL: Int
+              words_MIN_GT: Int
+              words_MIN_GTE: Int
+              words_MIN_LT: Int
+              words_MIN_LTE: Int
+            }
+
             input BookAuthorFieldInput {
               connect: [BookAuthorConnectFieldInput!]
               create: [BookAuthorCreateFieldInput!]
+            }
+
+            input BookAuthorNodeAggregationWhereInput {
+              AND: [BookAuthorNodeAggregationWhereInput!]
+              OR: [BookAuthorNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
             }
 
             type BookAuthorRelationship implements Wrote {
@@ -426,6 +488,7 @@ describe("Unions", () => {
               AND: [BookWhere!]
               OR: [BookWhere!]
               author: AuthorWhere
+              authorAggregate: BookAuthorAggregateInput
               authorConnection: BookAuthorConnectionWhere
               authorConnection_NOT: BookAuthorConnectionWhere
               author_NOT: AuthorWhere
@@ -486,6 +549,18 @@ describe("Unions", () => {
               subject: StringAggregateSelection!
             }
 
+            input JournalAuthorAggregateInput {
+              AND: [JournalAuthorAggregateInput!]
+              OR: [JournalAuthorAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: JournalAuthorEdgeAggregationWhereInput
+              node: JournalAuthorNodeAggregationWhereInput
+            }
+
             input JournalAuthorConnectFieldInput {
               connect: [AuthorConnectInput!]
               edge: WroteCreateInput!
@@ -527,9 +602,59 @@ describe("Unions", () => {
               where: JournalAuthorConnectionWhere
             }
 
+            input JournalAuthorEdgeAggregationWhereInput {
+              AND: [JournalAuthorEdgeAggregationWhereInput!]
+              OR: [JournalAuthorEdgeAggregationWhereInput!]
+              words_AVERAGE_EQUAL: Float
+              words_AVERAGE_GT: Float
+              words_AVERAGE_GTE: Float
+              words_AVERAGE_LT: Float
+              words_AVERAGE_LTE: Float
+              words_EQUAL: Int
+              words_GT: Int
+              words_GTE: Int
+              words_LT: Int
+              words_LTE: Int
+              words_MAX_EQUAL: Int
+              words_MAX_GT: Int
+              words_MAX_GTE: Int
+              words_MAX_LT: Int
+              words_MAX_LTE: Int
+              words_MIN_EQUAL: Int
+              words_MIN_GT: Int
+              words_MIN_GTE: Int
+              words_MIN_LT: Int
+              words_MIN_LTE: Int
+            }
+
             input JournalAuthorFieldInput {
               connect: [JournalAuthorConnectFieldInput!]
               create: [JournalAuthorCreateFieldInput!]
+            }
+
+            input JournalAuthorNodeAggregationWhereInput {
+              AND: [JournalAuthorNodeAggregationWhereInput!]
+              OR: [JournalAuthorNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
             }
 
             type JournalAuthorRelationship implements Wrote {
@@ -612,6 +737,7 @@ describe("Unions", () => {
               AND: [JournalWhere!]
               OR: [JournalWhere!]
               author: AuthorWhere
+              authorAggregate: JournalAuthorAggregateInput
               authorConnection: JournalAuthorConnectionWhere
               authorConnection_NOT: JournalAuthorConnectionWhere
               author_NOT: AuthorWhere

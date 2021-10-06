@@ -144,6 +144,18 @@ describe("Relationship-properties", () => {
               screenTime: IntAggregateSelection!
             }
 
+            input ActorMoviesAggregateInput {
+              AND: [ActorMoviesAggregateInput!]
+              OR: [ActorMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: ActorMoviesEdgeAggregationWhereInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               edge: ActedInCreateInput!
@@ -185,9 +197,59 @@ describe("Relationship-properties", () => {
               where: ActorMoviesConnectionWhere
             }
 
+            input ActorMoviesEdgeAggregationWhereInput {
+              AND: [ActorMoviesEdgeAggregationWhereInput!]
+              OR: [ActorMoviesEdgeAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+            }
+
             input ActorMoviesFieldInput {
               connect: [ActorMoviesConnectFieldInput!]
               create: [ActorMoviesCreateFieldInput!]
+            }
+
+            input ActorMoviesNodeAggregationWhereInput {
+              AND: [ActorMoviesNodeAggregationWhereInput!]
+              OR: [ActorMoviesNodeAggregationWhereInput!]
+              title_AVERAGE_EQUAL: Float
+              title_AVERAGE_GT: Float
+              title_AVERAGE_GTE: Float
+              title_AVERAGE_LT: Float
+              title_AVERAGE_LTE: Float
+              title_EQUAL: String
+              title_GT: Int
+              title_GTE: Int
+              title_LONGEST_EQUAL: Int
+              title_LONGEST_GT: Int
+              title_LONGEST_GTE: Int
+              title_LONGEST_LT: Int
+              title_LONGEST_LTE: Int
+              title_LT: Int
+              title_LTE: Int
+              title_SHORTEST_EQUAL: Int
+              title_SHORTEST_GT: Int
+              title_SHORTEST_GTE: Int
+              title_SHORTEST_LT: Int
+              title_SHORTEST_LTE: Int
             }
 
             type ActorMoviesRelationship implements ActedIn {
@@ -237,6 +299,7 @@ describe("Relationship-properties", () => {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
               movies: MovieWhere
+              moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
               movies_NOT: MovieWhere
@@ -304,6 +367,18 @@ describe("Relationship-properties", () => {
               screenTime: IntAggregateSelection!
             }
 
+            input MovieActorsAggregateInput {
+              AND: [MovieActorsAggregateInput!]
+              OR: [MovieActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: MovieActorsEdgeAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
@@ -345,9 +420,59 @@ describe("Relationship-properties", () => {
               where: MovieActorsConnectionWhere
             }
 
+            input MovieActorsEdgeAggregationWhereInput {
+              AND: [MovieActorsEdgeAggregationWhereInput!]
+              OR: [MovieActorsEdgeAggregationWhereInput!]
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+            }
+
             input MovieActorsFieldInput {
               connect: [MovieActorsConnectFieldInput!]
               create: [MovieActorsCreateFieldInput!]
+            }
+
+            input MovieActorsNodeAggregationWhereInput {
+              AND: [MovieActorsNodeAggregationWhereInput!]
+              OR: [MovieActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
             }
 
             type MovieActorsRelationship implements ActedIn {
@@ -423,6 +548,7 @@ describe("Relationship-properties", () => {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
               actors: ActorWhere
+              actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
               actors_NOT: ActorWhere
@@ -624,6 +750,18 @@ describe("Relationship-properties", () => {
               timestamp: DateTimeAggregateSelection!
             }
 
+            input ActorMoviesAggregateInput {
+              AND: [ActorMoviesAggregateInput!]
+              OR: [ActorMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: ActorMoviesEdgeAggregationWhereInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               edge: ActedInCreateInput!
@@ -665,9 +803,75 @@ describe("Relationship-properties", () => {
               where: ActorMoviesConnectionWhere
             }
 
+            input ActorMoviesEdgeAggregationWhereInput {
+              AND: [ActorMoviesEdgeAggregationWhereInput!]
+              OR: [ActorMoviesEdgeAggregationWhereInput!]
+              id_EQUAL: ID
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              timestamp_EQUAL: DateTime
+              timestamp_GT: DateTime
+              timestamp_GTE: DateTime
+              timestamp_LT: DateTime
+              timestamp_LTE: DateTime
+              timestamp_MAX_EQUAL: DateTime
+              timestamp_MAX_GT: DateTime
+              timestamp_MAX_GTE: DateTime
+              timestamp_MAX_LT: DateTime
+              timestamp_MAX_LTE: DateTime
+              timestamp_MIN_EQUAL: DateTime
+              timestamp_MIN_GT: DateTime
+              timestamp_MIN_GTE: DateTime
+              timestamp_MIN_LT: DateTime
+              timestamp_MIN_LTE: DateTime
+            }
+
             input ActorMoviesFieldInput {
               connect: [ActorMoviesConnectFieldInput!]
               create: [ActorMoviesCreateFieldInput!]
+            }
+
+            input ActorMoviesNodeAggregationWhereInput {
+              AND: [ActorMoviesNodeAggregationWhereInput!]
+              OR: [ActorMoviesNodeAggregationWhereInput!]
+              title_AVERAGE_EQUAL: Float
+              title_AVERAGE_GT: Float
+              title_AVERAGE_GTE: Float
+              title_AVERAGE_LT: Float
+              title_AVERAGE_LTE: Float
+              title_EQUAL: String
+              title_GT: Int
+              title_GTE: Int
+              title_LONGEST_EQUAL: Int
+              title_LONGEST_GT: Int
+              title_LONGEST_GTE: Int
+              title_LONGEST_LT: Int
+              title_LONGEST_LTE: Int
+              title_LT: Int
+              title_LTE: Int
+              title_SHORTEST_EQUAL: Int
+              title_SHORTEST_GT: Int
+              title_SHORTEST_GTE: Int
+              title_SHORTEST_LT: Int
+              title_SHORTEST_LTE: Int
             }
 
             type ActorMoviesRelationship implements ActedIn {
@@ -717,6 +921,7 @@ describe("Relationship-properties", () => {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
               movies: MovieWhere
+              moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
               movies_NOT: MovieWhere
@@ -796,6 +1001,18 @@ describe("Relationship-properties", () => {
               timestamp: DateTimeAggregateSelection!
             }
 
+            input MovieActorsAggregateInput {
+              AND: [MovieActorsAggregateInput!]
+              OR: [MovieActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: MovieActorsEdgeAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
@@ -837,9 +1054,75 @@ describe("Relationship-properties", () => {
               where: MovieActorsConnectionWhere
             }
 
+            input MovieActorsEdgeAggregationWhereInput {
+              AND: [MovieActorsEdgeAggregationWhereInput!]
+              OR: [MovieActorsEdgeAggregationWhereInput!]
+              id_EQUAL: ID
+              screenTime_AVERAGE_EQUAL: Float
+              screenTime_AVERAGE_GT: Float
+              screenTime_AVERAGE_GTE: Float
+              screenTime_AVERAGE_LT: Float
+              screenTime_AVERAGE_LTE: Float
+              screenTime_EQUAL: Int
+              screenTime_GT: Int
+              screenTime_GTE: Int
+              screenTime_LT: Int
+              screenTime_LTE: Int
+              screenTime_MAX_EQUAL: Int
+              screenTime_MAX_GT: Int
+              screenTime_MAX_GTE: Int
+              screenTime_MAX_LT: Int
+              screenTime_MAX_LTE: Int
+              screenTime_MIN_EQUAL: Int
+              screenTime_MIN_GT: Int
+              screenTime_MIN_GTE: Int
+              screenTime_MIN_LT: Int
+              screenTime_MIN_LTE: Int
+              timestamp_EQUAL: DateTime
+              timestamp_GT: DateTime
+              timestamp_GTE: DateTime
+              timestamp_LT: DateTime
+              timestamp_LTE: DateTime
+              timestamp_MAX_EQUAL: DateTime
+              timestamp_MAX_GT: DateTime
+              timestamp_MAX_GTE: DateTime
+              timestamp_MAX_LT: DateTime
+              timestamp_MAX_LTE: DateTime
+              timestamp_MIN_EQUAL: DateTime
+              timestamp_MIN_GT: DateTime
+              timestamp_MIN_GTE: DateTime
+              timestamp_MIN_LT: DateTime
+              timestamp_MIN_LTE: DateTime
+            }
+
             input MovieActorsFieldInput {
               connect: [MovieActorsConnectFieldInput!]
               create: [MovieActorsCreateFieldInput!]
+            }
+
+            input MovieActorsNodeAggregationWhereInput {
+              AND: [MovieActorsNodeAggregationWhereInput!]
+              OR: [MovieActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
             }
 
             type MovieActorsRelationship implements ActedIn {
@@ -915,6 +1198,7 @@ describe("Relationship-properties", () => {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
               actors: ActorWhere
+              actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
               actors_NOT: ActorWhere
@@ -1096,6 +1380,18 @@ describe("Relationship-properties", () => {
               timestamp: DateTimeAggregateSelection!
             }
 
+            input ActorMoviesAggregateInput {
+              AND: [ActorMoviesAggregateInput!]
+              OR: [ActorMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: ActorMoviesEdgeAggregationWhereInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               where: MovieConnectWhere
@@ -1135,9 +1431,55 @@ describe("Relationship-properties", () => {
               where: ActorMoviesConnectionWhere
             }
 
+            input ActorMoviesEdgeAggregationWhereInput {
+              AND: [ActorMoviesEdgeAggregationWhereInput!]
+              OR: [ActorMoviesEdgeAggregationWhereInput!]
+              id_EQUAL: ID
+              timestamp_EQUAL: DateTime
+              timestamp_GT: DateTime
+              timestamp_GTE: DateTime
+              timestamp_LT: DateTime
+              timestamp_LTE: DateTime
+              timestamp_MAX_EQUAL: DateTime
+              timestamp_MAX_GT: DateTime
+              timestamp_MAX_GTE: DateTime
+              timestamp_MAX_LT: DateTime
+              timestamp_MAX_LTE: DateTime
+              timestamp_MIN_EQUAL: DateTime
+              timestamp_MIN_GT: DateTime
+              timestamp_MIN_GTE: DateTime
+              timestamp_MIN_LT: DateTime
+              timestamp_MIN_LTE: DateTime
+            }
+
             input ActorMoviesFieldInput {
               connect: [ActorMoviesConnectFieldInput!]
               create: [ActorMoviesCreateFieldInput!]
+            }
+
+            input ActorMoviesNodeAggregationWhereInput {
+              AND: [ActorMoviesNodeAggregationWhereInput!]
+              OR: [ActorMoviesNodeAggregationWhereInput!]
+              title_AVERAGE_EQUAL: Float
+              title_AVERAGE_GT: Float
+              title_AVERAGE_GTE: Float
+              title_AVERAGE_LT: Float
+              title_AVERAGE_LTE: Float
+              title_EQUAL: String
+              title_GT: Int
+              title_GTE: Int
+              title_LONGEST_EQUAL: Int
+              title_LONGEST_GT: Int
+              title_LONGEST_GTE: Int
+              title_LONGEST_LT: Int
+              title_LONGEST_LTE: Int
+              title_LT: Int
+              title_LTE: Int
+              title_SHORTEST_EQUAL: Int
+              title_SHORTEST_GT: Int
+              title_SHORTEST_GTE: Int
+              title_SHORTEST_LT: Int
+              title_SHORTEST_LTE: Int
             }
 
             type ActorMoviesRelationship implements ActedIn {
@@ -1185,6 +1527,7 @@ describe("Relationship-properties", () => {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
               movies: MovieWhere
+              moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
               movies_NOT: MovieWhere
@@ -1257,6 +1600,18 @@ describe("Relationship-properties", () => {
               timestamp: DateTimeAggregateSelection!
             }
 
+            input MovieActorsAggregateInput {
+              AND: [MovieActorsAggregateInput!]
+              OR: [MovieActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              edge: MovieActorsEdgeAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
               where: ActorConnectWhere
@@ -1296,9 +1651,55 @@ describe("Relationship-properties", () => {
               where: MovieActorsConnectionWhere
             }
 
+            input MovieActorsEdgeAggregationWhereInput {
+              AND: [MovieActorsEdgeAggregationWhereInput!]
+              OR: [MovieActorsEdgeAggregationWhereInput!]
+              id_EQUAL: ID
+              timestamp_EQUAL: DateTime
+              timestamp_GT: DateTime
+              timestamp_GTE: DateTime
+              timestamp_LT: DateTime
+              timestamp_LTE: DateTime
+              timestamp_MAX_EQUAL: DateTime
+              timestamp_MAX_GT: DateTime
+              timestamp_MAX_GTE: DateTime
+              timestamp_MAX_LT: DateTime
+              timestamp_MAX_LTE: DateTime
+              timestamp_MIN_EQUAL: DateTime
+              timestamp_MIN_GT: DateTime
+              timestamp_MIN_GTE: DateTime
+              timestamp_MIN_LT: DateTime
+              timestamp_MIN_LTE: DateTime
+            }
+
             input MovieActorsFieldInput {
               connect: [MovieActorsConnectFieldInput!]
               create: [MovieActorsCreateFieldInput!]
+            }
+
+            input MovieActorsNodeAggregationWhereInput {
+              AND: [MovieActorsNodeAggregationWhereInput!]
+              OR: [MovieActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
             }
 
             type MovieActorsRelationship implements ActedIn {
@@ -1372,6 +1773,7 @@ describe("Relationship-properties", () => {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
               actors: ActorWhere
+              actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
               actors_NOT: ActorWhere

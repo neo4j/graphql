@@ -125,6 +125,17 @@ describe("Interfaces", () => {
               node: MovieMoviemoviesAggregateSelection
             }
 
+            input MovieMoviesAggregateInput {
+              AND: [MovieMoviesAggregateInput!]
+              OR: [MovieMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: MovieMoviesNodeAggregationWhereInput
+            }
+
             input MovieMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               where: MovieConnectWhere
@@ -164,6 +175,12 @@ describe("Interfaces", () => {
             input MovieMoviesFieldInput {
               connect: [MovieMoviesConnectFieldInput!]
               create: [MovieMoviesCreateFieldInput!]
+            }
+
+            input MovieMoviesNodeAggregationWhereInput {
+              AND: [MovieMoviesNodeAggregationWhereInput!]
+              OR: [MovieMoviesNodeAggregationWhereInput!]
+              id_EQUAL: ID
             }
 
             type MovieMoviesRelationship {
@@ -225,6 +242,7 @@ describe("Interfaces", () => {
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
               movies: MovieWhere
+              moviesAggregate: MovieMoviesAggregateInput
               moviesConnection: MovieMoviesConnectionWhere
               moviesConnection_NOT: MovieMoviesConnectionWhere
               movies_NOT: MovieWhere
