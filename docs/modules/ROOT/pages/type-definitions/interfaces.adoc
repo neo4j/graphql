@@ -1,4 +1,4 @@
-[[type-definitions-interface-types]]
+[[type-definitions-interfaces]]
 = Interface Types
 
 The Neo4j GraphQL Library supports the use of interfaces on relationship fields. This chapter will walk through their definition and usage.
