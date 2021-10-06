@@ -36,13 +36,21 @@ export function stringAggregationQuery(matchWherePattern: string, fieldName: str
 export function numberAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
     const fieldPath = `${targetAlias}.${fieldName}`;
     return `${matchWherePattern}
-        RETURN {min: MIN(${fieldPath}), max: MAX(${fieldPath}), average: AVG(${fieldPath})}`;
+        RETURN {min: min(${fieldPath}), max: max(${fieldPath}), average: avg(${fieldPath})}`;
 }
 
 export function defaultAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
     const fieldPath = `${targetAlias}.${fieldName}`;
     return `${matchWherePattern}
-        RETURN {min: MIN(${fieldPath}), max: MAX(${fieldPath})}`;
+        RETURN {min: min(${fieldPath}), max: max(${fieldPath})}`;
+}
+
+export function dateTimeAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
+    // TODO: use createDatetimeElement instead
+    const fieldPath = `${targetAlias}.${fieldName}`;
+    return `${matchWherePattern}
+        RETURN {min: apoc.date.convertFormat(toString(min(${fieldPath})), "iso_zoned_date_time", "iso_offset_date_time"),
+        max: apoc.date.convertFormat(toString(max(${fieldPath})), "iso_zoned_date_time", "iso_offset_date_time")}`;
 }
 
 export function countQuery(matchWherePattern: string, targetAlias: string): string {

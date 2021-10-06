@@ -8,6 +8,7 @@ Schema:
 type Movie {
     title: String
     actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+    released: DateTime
 }
 
 type Actor {
@@ -132,7 +133,7 @@ RETURN this {
             node: {
                 age: head(apoc.cypher.runFirstColumn("
                     MATCH (this)<-[r:ACTED_IN]-(n:Actor)
-                    RETURN {min: MIN(n.age), max: MAX(n.age), average: AVG(n.age)}
+                    RETURN {min: min(n.age), max: max(n.age), average: avg(n.age)}
                 ", { this: this }))
             }
         }
@@ -182,6 +183,47 @@ RETURN this { .title,
                     RETURN {longest: head(list), shortest: last(list)}
                 ", { this: this }))
             }
+        }
+} as this
+```
+
+### Expected Cypher Params
+
+```json
+{}
+```
+
+---
+
+## Node Aggregations - DateTime
+
+### GraphQL Input
+
+```graphql
+query {
+    actors {
+        moviesAggregate {
+            node {
+                released {
+                    min
+                }
+            }
+        }
+    }
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Actor)
+RETURN this {
+    moviesAggregate: {
+        node: {
+            released: head(apoc.cypher.runFirstColumn("
+            MATCH (this)-[r:ACTED_IN]->(n:Movie)
+            RETURN {min: apoc.date.convertFormat(toString(min(n.released)), \"iso_zoned_date_time\", \"iso_offset_date_time\"),
+            max: apoc.date.convertFormat(toString(max(n.released)), \"iso_zoned_date_time\", \"iso_offset_date_time\")} ", { this: this })) }
         }
 } as this
 ```

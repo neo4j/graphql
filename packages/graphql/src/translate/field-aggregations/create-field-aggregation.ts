@@ -69,6 +69,14 @@ export function createFieldAggregation({
         relationship,
     });
 
+    // const datetimeElement = createDatetimeElement({
+    //     resolveTree: field,
+    //     field: relationAggregationField,
+    //     variable: subQueryNodeAlias,
+    //     valueOverride: `max(n.${relationAggregationField.fieldName})`,
+    // });
+    // console.log(datetimeElement);
+
     const matchWherePattern = createMatchWherePattern(targetPattern, authData);
 
     return {
@@ -131,6 +139,8 @@ function getAggregationSubQuery(
         case AggregationType.BigInt:
         case AggregationType.Float:
             return AggregationQueryGenerators.numberAggregationQuery(matchWherePattern, fieldName, targetAlias);
+        case AggregationType.DateTime:
+            return AggregationQueryGenerators.dateTimeAggregationQuery(matchWherePattern, fieldName, targetAlias);
         default:
             // TODO: take datetime into account
             return AggregationQueryGenerators.defaultAggregationQuery(matchWherePattern, fieldName, targetAlias);

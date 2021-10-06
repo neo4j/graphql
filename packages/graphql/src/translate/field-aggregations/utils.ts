@@ -49,10 +49,14 @@ export function getFieldType(field: ResolveTree): AggregationType | undefined {
 
 export function wrapApocRun(query: string, extraParams: Record<string, string> = {}): string {
     const params = generateResultObject({ this: "this", ...extraParams });
-
-    return `head(apoc.cypher.runFirstColumn(" ${query} ", ${params}))`;
+    const escapedQuery = escapeQuery(query);
+    return `head(apoc.cypher.runFirstColumn(" ${escapedQuery} ", ${params}))`;
 }
 
 export function getReferenceNode(context: Context, relationField: RelationField): Node | undefined {
     return context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name);
+}
+
+export function escapeQuery(query: string): string {
+    return query.replace(/("|')/g, "\\$1");
 }

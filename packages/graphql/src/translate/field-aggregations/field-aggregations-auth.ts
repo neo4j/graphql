@@ -51,7 +51,7 @@ export function createFieldAggregationAuth({
         entity: node,
         context,
         where: { varName, node },
-        escapeQuotes: true,
+        escapeQuotes: false,
     });
 
     if (whereAuth[0]) {
@@ -67,11 +67,11 @@ export function createFieldAggregationAuth({
             parentNode: node,
             varName,
         },
-        escapeQuotes: true,
+        escapeQuotes: false,
     });
 
     if (allowAuth[0]) {
-        cypherStrs.push(`CALL apoc.util.validate(NOT(${allowAuth[0]}), \\"${AUTH_FORBIDDEN_ERROR}\\", [0])`);
+        cypherStrs.push(`CALL apoc.util.validate(NOT(${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         cypherParams = { ...cypherParams, ...allowAuth[1] };
     }
 
@@ -80,7 +80,7 @@ export function createFieldAggregationAuth({
     const authStrs = [...nodeAuth.query];
     cypherParams = { ...cypherParams, ...nodeAuth.params };
     if (authStrs.length) {
-        cypherStrs.push(`CALL apoc.util.validate(NOT(${authStrs.join(" AND ")}), \\"${AUTH_FORBIDDEN_ERROR}\\", [0])`);
+        cypherStrs.push(`CALL apoc.util.validate(NOT(${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
     }
     if (cypherStrs.length > 0 || whereStrs.length > 0) {
         return { query: cypherStrs.join("\n"), params: cypherParams, whereQuery: whereStrs.join("\n") };
@@ -107,7 +107,7 @@ function getFieldAuthQueries(
                         operation: "READ",
                         context,
                         allow: { parentNode, varName, chainStr: authField.fieldName },
-                        escapeQuotes: true,
+                        escapeQuotes: false,
                     });
                     if (allowAndParams[0]) {
                         authStrs.push(allowAndParams[0]);
