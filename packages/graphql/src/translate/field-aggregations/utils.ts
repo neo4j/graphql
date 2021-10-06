@@ -30,10 +30,10 @@ export enum AggregationType {
     DateTime = "DateTimeAggregateSelection",
 }
 
-export function generateResultObject(fields: Record<string, string | undefined>): string {
+export function generateResultObject(fields: Record<string, string | undefined | null>): string {
     return `{ ${Object.entries(fields)
-        .map(([key, value]: [string, string | undefined]): string | undefined => {
-            if (!value) return undefined;
+        .map(([key, value]: [string, string | undefined | null]): string | undefined => {
+            if (value === undefined || value === null || value === "") return undefined;
             return `${key}: ${value}`;
         })
         .filter(Boolean)

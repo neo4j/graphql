@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { escapeQuery, wrapApocRun } from "./utils";
+import { escapeQuery, wrapApocRun, generateResultObject } from "./utils";
 
 describe("field-aggregation utils", () => {
     describe("escapeQuery", () => {
@@ -49,6 +49,28 @@ describe("field-aggregation utils", () => {
             expect(result).toEqual(
                 `head(apoc.cypher.runFirstColumn(" MATCH(n) RETURN n ", { this: this, auth: auth }))`
             );
+        });
+    });
+
+    describe("generateResultObject", () => {
+        test("creates a valid cypher object from a js object", () => {
+            const result = generateResultObject({
+                this: "this",
+                that: `"that"`,
+            });
+
+            expect(result).toEqual(`{ this: this, that: "that" }`);
+        });
+
+        test("ignores undefined, null and empty string values", () => {
+            const result = generateResultObject({
+                nobody: "expects",
+                the: undefined,
+                spanish: null,
+                inquisition: "",
+            });
+
+            expect(result).toEqual(`{ nobody: expects }`);
         });
     });
 });
