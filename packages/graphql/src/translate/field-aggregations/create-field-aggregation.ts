@@ -31,6 +31,7 @@ import {
 import * as AggregationSubQueries from "./aggregation-sub-queries";
 import { createFieldAggregationAuth, AggregationAuth } from "./field-aggregations-auth";
 import { createMatchWherePattern } from "./aggregation-sub-queries";
+import { FieldAggregationSchemaTypes } from "../../schema/field-aggregation-composer";
 
 const subQueryNodeAlias = "n";
 const subQueryRelationAlias = "r";
@@ -57,12 +58,13 @@ export function createFieldAggregation({
 
     const targetPattern = generateTargetPattern(nodeLabel, relationAggregationField, referenceNode);
     const fieldPathBase = `${node.name}${referenceNode.name}${relationAggregationField.fieldName}`;
-    const aggregationField = field.fieldsByTypeName[`${fieldPathBase}AggregationResult`];
+    const aggregationField = field.fieldsByTypeName[`${fieldPathBase}${FieldAggregationSchemaTypes.field}`];
 
     const nodeFields: Record<string, ResolveTree> | undefined = getFieldByName("node", aggregationField)
-        ?.fieldsByTypeName[`${fieldPathBase}AggregateSelection`];
+        ?.fieldsByTypeName[`${fieldPathBase}${FieldAggregationSchemaTypes.node}`];
+
     const edgeFields: Record<string, ResolveTree> | undefined = getFieldByName("edge", aggregationField)
-        ?.fieldsByTypeName[`${fieldPathBase}EdgeAggregateSelection`];
+        ?.fieldsByTypeName[`${fieldPathBase}${FieldAggregationSchemaTypes.edge}`];
 
     const authData = createFieldAggregationAuth({
         node: referenceNode,

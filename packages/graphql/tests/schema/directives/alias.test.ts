@@ -52,7 +52,7 @@ describe("Alias", () => {
 
             type Actor {
               actedIn(options: MovieOptions, where: MovieWhere): [Movie]
-              actedInAggregate: ActorMovieactedInAggregationResult
+              actedInAggregate: ActorMovieactedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               city: String
               name: String!
@@ -291,20 +291,20 @@ describe("Alias", () => {
               actedIn: [ActorActedInDisconnectFieldInput!]
             }
 
-            type ActorMovieactedInAggregateSelection {
-              rating: FloatAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
-            type ActorMovieactedInAggregationResult {
+            type ActorMovieactedInAggregationSelection {
               count: Int!
               edge: ActorMovieactedInEdgeAggregateSelection
-              node: ActorMovieactedInAggregateSelection
+              node: ActorMovieactedInNodeAggregateSelection
             }
 
             type ActorMovieactedInEdgeAggregateSelection {
               character: StringAggregateSelection!
               screenTime: IntAggregateSelection!
+            }
+
+            type ActorMovieactedInNodeAggregateSelection {
+              rating: FloatAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             input ActorOptions {

@@ -120,18 +120,18 @@ describe("Relationship", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate: MovieActoractorsAggregationResult
+              actorsAggregate: MovieActoractorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
             }
 
-            type MovieActoractorsAggregateSelection {
-              name: StringAggregateSelection!
+            type MovieActoractorsAggregationSelection {
+              count: Int!
+              node: MovieActoractorsNodeAggregateSelection
             }
 
-            type MovieActoractorsAggregationResult {
-              count: Int!
-              node: MovieActoractorsAggregateSelection
+            type MovieActoractorsNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -371,7 +371,7 @@ describe("Relationship", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate: ActorMoviemoviesAggregationResult
+              moviesAggregate: ActorMoviemoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String
             }
@@ -402,13 +402,13 @@ describe("Relationship", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
-            type ActorMoviemoviesAggregateSelection {
-              id: IDAggregateSelection!
+            type ActorMoviemoviesAggregationSelection {
+              count: Int!
+              node: ActorMoviemoviesNodeAggregateSelection
             }
 
-            type ActorMoviemoviesAggregationResult {
-              count: Int!
-              node: ActorMoviemoviesAggregateSelection
+            type ActorMoviemoviesNodeAggregateSelection {
+              id: IDAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -557,18 +557,18 @@ describe("Relationship", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate: MovieActoractorsAggregationResult
+              actorsAggregate: MovieActoractorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
             }
 
-            type MovieActoractorsAggregateSelection {
-              name: StringAggregateSelection!
+            type MovieActoractorsAggregationSelection {
+              count: Int!
+              node: MovieActoractorsNodeAggregateSelection
             }
 
-            type MovieActoractorsAggregationResult {
-              count: Int!
-              node: MovieActoractorsAggregateSelection
+            type MovieActoractorsNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {

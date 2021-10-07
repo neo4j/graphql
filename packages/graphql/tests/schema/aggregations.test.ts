@@ -615,7 +615,7 @@ describe("Aggregations", () => {
 
             type Post {
               likes(options: UserOptions, where: UserWhere): [User]
-              likesAggregate: PostUserlikesAggregationResult
+              likesAggregate: PostUserlikesAggregationSelection
               likesConnection(after: String, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               title: String
             }
@@ -1079,7 +1079,13 @@ describe("Aggregations", () => {
               title: String
             }
 
-            type PostUserlikesAggregateSelection {
+            type PostUserlikesAggregationSelection {
+              count: Int!
+              edge: PostUserlikesEdgeAggregateSelection
+              node: PostUserlikesNodeAggregateSelection
+            }
+
+            type PostUserlikesEdgeAggregateSelection {
               someBigInt: BigIntAggregateSelection!
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
@@ -1092,13 +1098,7 @@ describe("Aggregations", () => {
               someTime: TimeAggregateSelection!
             }
 
-            type PostUserlikesAggregationResult {
-              count: Int!
-              edge: PostUserlikesEdgeAggregateSelection
-              node: PostUserlikesAggregateSelection
-            }
-
-            type PostUserlikesEdgeAggregateSelection {
+            type PostUserlikesNodeAggregateSelection {
               someBigInt: BigIntAggregateSelection!
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!

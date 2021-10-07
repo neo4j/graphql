@@ -22,11 +22,11 @@ import { ObjectFields } from "./get-obj-field-meta";
 import { Node } from "../classes";
 import { numericalResolver } from "./resolvers";
 
-const composeInt = {
-    type: "Int!",
-    resolve: numericalResolver,
-    args: {},
-};
+export enum FieldAggregationSchemaTypes {
+    field = "AggregationSelection",
+    node = "NodeAggregateSelection",
+    edge = "EdgeAggregateSelection",
+}
 
 export class FieldAggregationComposer {
     private aggregationSelectionTypeNames: string[];
@@ -46,7 +46,7 @@ export class FieldAggregationComposer {
         let aggregateSelectionEdge: ObjectTypeComposer | undefined;
 
         const aggregateSelectionNodeFields = this.getAggregationFields(refNode);
-        const aggregateSelectionNodeName = `${baseTypeName}AggregateSelection`;
+        const aggregateSelectionNodeName = `${baseTypeName}${FieldAggregationSchemaTypes.node}`;
 
         const aggregateSelectionNode = this.createAggregationField(
             aggregateSelectionNodeName,
@@ -55,7 +55,7 @@ export class FieldAggregationComposer {
 
         if (relFields) {
             const aggregateSelectionEdgeFields = this.getAggregationFields(relFields);
-            const aggregateSelectionEdgeName = `${baseTypeName}EdgeAggregateSelection`;
+            const aggregateSelectionEdgeName = `${baseTypeName}${FieldAggregationSchemaTypes.edge}`;
 
             aggregateSelectionEdge = this.createAggregationField(
                 aggregateSelectionEdgeName,
@@ -64,9 +64,13 @@ export class FieldAggregationComposer {
         }
 
         return this.composer.createObjectTC({
-            name: `${baseTypeName}AggregationResult`,
+            name: `${baseTypeName}${FieldAggregationSchemaTypes.field}`,
             fields: {
-                count: composeInt,
+                count: {
+                    type: "Int!",
+                    resolve: numericalResolver,
+                    args: {},
+                },
                 ...(aggregateSelectionNode ? { node: aggregateSelectionNode } : {}),
                 ...(aggregateSelectionEdge ? { edge: aggregateSelectionEdge } : {}),
             },

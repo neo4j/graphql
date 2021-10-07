@@ -80,7 +80,7 @@ describe("Enums", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate: ActorMoviemoviesAggregationResult
+              moviesAggregate: ActorMoviemoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -111,13 +111,13 @@ describe("Enums", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
-            type ActorMoviemoviesAggregateSelection {
-              title: StringAggregateSelection!
+            type ActorMoviemoviesAggregationSelection {
+              count: Int!
+              node: ActorMoviemoviesNodeAggregateSelection
             }
 
-            type ActorMoviemoviesAggregationResult {
-              count: Int!
-              node: ActorMoviemoviesAggregateSelection
+            type ActorMoviemoviesNodeAggregateSelection {
+              title: StringAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -287,18 +287,18 @@ describe("Enums", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate: MovieActoractorsAggregationResult
+              actorsAggregate: MovieActoractorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
 
-            type MovieActoractorsAggregateSelection {
-              name: StringAggregateSelection!
+            type MovieActoractorsAggregationSelection {
+              count: Int!
+              node: MovieActoractorsNodeAggregateSelection
             }
 
-            type MovieActoractorsAggregationResult {
-              count: Int!
-              node: MovieActoractorsAggregateSelection
+            type MovieActoractorsNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {

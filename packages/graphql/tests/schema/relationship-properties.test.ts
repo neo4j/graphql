@@ -99,7 +99,7 @@ describe("Relationship-properties", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate: ActorMoviemoviesAggregationResult
+              moviesAggregate: ActorMoviemoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -130,18 +130,18 @@ describe("Relationship-properties", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
-            type ActorMoviemoviesAggregateSelection {
-              title: StringAggregateSelection!
-            }
-
-            type ActorMoviemoviesAggregationResult {
+            type ActorMoviemoviesAggregationSelection {
               count: Int!
               edge: ActorMoviemoviesEdgeAggregateSelection
-              node: ActorMoviemoviesAggregateSelection
+              node: ActorMoviemoviesNodeAggregateSelection
             }
 
             type ActorMoviemoviesEdgeAggregateSelection {
               screenTime: IntAggregateSelection!
+            }
+
+            type ActorMoviemoviesNodeAggregateSelection {
+              title: StringAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -348,23 +348,23 @@ describe("Relationship-properties", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate: MovieActoractorsAggregationResult
+              actorsAggregate: MovieActoractorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
 
-            type MovieActoractorsAggregateSelection {
-              name: StringAggregateSelection!
-            }
-
-            type MovieActoractorsAggregationResult {
+            type MovieActoractorsAggregationSelection {
               count: Int!
               edge: MovieActoractorsEdgeAggregateSelection
-              node: MovieActoractorsAggregateSelection
+              node: MovieActoractorsNodeAggregateSelection
             }
 
             type MovieActoractorsEdgeAggregateSelection {
               screenTime: IntAggregateSelection!
+            }
+
+            type MovieActoractorsNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -703,7 +703,7 @@ describe("Relationship-properties", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate: ActorMoviemoviesAggregationResult
+              moviesAggregate: ActorMoviemoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -734,20 +734,20 @@ describe("Relationship-properties", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
-            type ActorMoviemoviesAggregateSelection {
-              title: StringAggregateSelection!
-            }
-
-            type ActorMoviemoviesAggregationResult {
+            type ActorMoviemoviesAggregationSelection {
               count: Int!
               edge: ActorMoviemoviesEdgeAggregateSelection
-              node: ActorMoviemoviesAggregateSelection
+              node: ActorMoviemoviesNodeAggregateSelection
             }
 
             type ActorMoviemoviesEdgeAggregateSelection {
               id: IDAggregateSelection!
               screenTime: IntAggregateSelection!
               timestamp: DateTimeAggregateSelection!
+            }
+
+            type ActorMoviemoviesNodeAggregateSelection {
+              title: StringAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -980,25 +980,25 @@ describe("Relationship-properties", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate: MovieActoractorsAggregationResult
+              actorsAggregate: MovieActoractorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
 
-            type MovieActoractorsAggregateSelection {
-              name: StringAggregateSelection!
-            }
-
-            type MovieActoractorsAggregationResult {
+            type MovieActoractorsAggregationSelection {
               count: Int!
               edge: MovieActoractorsEdgeAggregateSelection
-              node: MovieActoractorsAggregateSelection
+              node: MovieActoractorsNodeAggregateSelection
             }
 
             type MovieActoractorsEdgeAggregateSelection {
               id: IDAggregateSelection!
               screenTime: IntAggregateSelection!
               timestamp: DateTimeAggregateSelection!
+            }
+
+            type MovieActoractorsNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -1334,7 +1334,7 @@ describe("Relationship-properties", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate: ActorMoviemoviesAggregationResult
+              moviesAggregate: ActorMoviemoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -1365,19 +1365,19 @@ describe("Relationship-properties", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
-            type ActorMoviemoviesAggregateSelection {
-              title: StringAggregateSelection!
-            }
-
-            type ActorMoviemoviesAggregationResult {
+            type ActorMoviemoviesAggregationSelection {
               count: Int!
               edge: ActorMoviemoviesEdgeAggregateSelection
-              node: ActorMoviemoviesAggregateSelection
+              node: ActorMoviemoviesNodeAggregateSelection
             }
 
             type ActorMoviemoviesEdgeAggregateSelection {
               id: IDAggregateSelection!
               timestamp: DateTimeAggregateSelection!
+            }
+
+            type ActorMoviemoviesNodeAggregateSelection {
+              title: StringAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -1580,24 +1580,24 @@ describe("Relationship-properties", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate: MovieActoractorsAggregationResult
+              actorsAggregate: MovieActoractorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
 
-            type MovieActoractorsAggregateSelection {
-              name: StringAggregateSelection!
-            }
-
-            type MovieActoractorsAggregationResult {
+            type MovieActoractorsAggregationSelection {
               count: Int!
               edge: MovieActoractorsEdgeAggregateSelection
-              node: MovieActoractorsAggregateSelection
+              node: MovieActoractorsNodeAggregateSelection
             }
 
             type MovieActoractorsEdgeAggregateSelection {
               id: IDAggregateSelection!
               timestamp: DateTimeAggregateSelection!
+            }
+
+            type MovieActoractorsNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
