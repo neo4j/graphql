@@ -78,8 +78,18 @@ export function createFieldAggregation({
             count: getFieldByName("count", aggregationField)
                 ? createCountQuery(matchWherePattern, subQueryNodeAlias, authData)
                 : undefined,
-            node: createAggregationQuery(matchWherePattern, nodeFields, subQueryNodeAlias, authData),
-            edge: createAggregationQuery(matchWherePattern, edgeFields, subQueryRelationAlias, authData),
+            node: createAggregationQuery({
+                matchWherePattern,
+                fields: nodeFields,
+                fieldAlias: subQueryNodeAlias,
+                auth: authData,
+            }),
+            edge: createAggregationQuery({
+                matchWherePattern,
+                fields: edgeFields,
+                fieldAlias: subQueryRelationAlias,
+                auth: authData,
+            }),
         }),
         params: authData.params,
     };
@@ -98,19 +108,29 @@ function createCountQuery(matchWherePattern: string, targetAlias: string, auth: 
     return wrapApocRun(AggregationSubQueries.countQuery(matchWherePattern, targetAlias), authParams);
 }
 
-function createAggregationQuery(
-    matchWherePattern: string,
-    fields: Record<string, ResolveTree> | undefined,
-    fieldAlias: string,
-    auth: AggregationAuth
-): string | undefined {
+function createAggregationQuery({
+    matchWherePattern,
+    fields,
+    fieldAlias,
+    auth,
+}: {
+    matchWherePattern: string;
+    fields: Record<string, ResolveTree> | undefined;
+    fieldAlias: string;
+    auth: AggregationAuth;
+}): string | undefined {
     if (!fields) return undefined;
     const authParams = getAuthApocParams(auth);
 
     const fieldsSubQueries = Object.values(fields).reduce((acc, field) => {
         const fieldType = getFieldType(field);
         acc[field.alias] = wrapApocRun(
-            getAggregationSubQuery(matchWherePattern, field.name, fieldType, fieldAlias),
+            getAggregationSubQuery({
+                matchWherePattern,
+                fieldName: field.name,
+                type: fieldType,
+                targetAlias: fieldAlias,
+            }),
             authParams
         );
         return acc;
@@ -119,12 +139,17 @@ function createAggregationQuery(
     return generateResultObject(fieldsSubQueries);
 }
 
-function getAggregationSubQuery(
-    matchWherePattern: string,
-    fieldName: string,
-    type: AggregationType | undefined,
-    targetAlias: string
-): string {
+function getAggregationSubQuery({
+    matchWherePattern,
+    fieldName,
+    type,
+    targetAlias,
+}: {
+    matchWherePattern: string;
+    fieldName: string;
+    type: AggregationType | undefined;
+    targetAlias: string;
+}): string {
     switch (type) {
         case AggregationType.String:
         case AggregationType.Id:
