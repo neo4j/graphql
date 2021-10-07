@@ -204,6 +204,15 @@ describe("generate", () => {
               name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
             };
 
+            export interface StringAggregateInput {
+              shortest?: boolean;
+              longest?: boolean;
+            }
+            export interface UserAggregateInput {
+              count?: boolean;
+              name?: StringAggregateInput;
+            }
+
             export declare class UserModel {
               public find(args: {
                 where?: UserWhere;
@@ -236,6 +245,12 @@ describe("generate", () => {
                 context?: any;
                 rootValue: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
+              public aggregate(args: {
+                where?: UserWhere;
+                aggregate: UserAggregateInput;
+                context?: any;
+                rootValue?: any;
+              }): Promise<UserAggregateSelection>;
             }
             "
         `);
@@ -426,6 +441,15 @@ describe("generate", () => {
               name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
             };
 
+            export interface StringAggregateInput {
+              shortest?: boolean;
+              longest?: boolean;
+            }
+            export interface UserAggregateInput {
+              count?: boolean;
+              name?: StringAggregateInput;
+            }
+
             export declare class UserModel {
               public find(args: {
                 where?: UserWhere;
@@ -458,6 +482,12 @@ describe("generate", () => {
                 context?: any;
                 rootValue: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
+              public aggregate(args: {
+                where?: UserWhere;
+                aggregate: UserAggregateInput;
+                context?: any;
+                rootValue?: any;
+              }): Promise<UserAggregateSelection>;
             }
             "
         `);
@@ -946,6 +976,15 @@ describe("generate", () => {
               name_NOT_ENDS_WITH?: Maybe<Scalars[\\"String\\"]>;
             };
 
+            export interface StringAggregateInput {
+              shortest?: boolean;
+              longest?: boolean;
+            }
+            export interface MovieAggregateInput {
+              count?: boolean;
+              title?: StringAggregateInput;
+            }
+
             export declare class MovieModel {
               public find(args: {
                 where?: MovieWhere;
@@ -980,6 +1019,21 @@ describe("generate", () => {
                 context?: any;
                 rootValue: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
+              public aggregate(args: {
+                where?: MovieWhere;
+                aggregate: MovieAggregateInput;
+                context?: any;
+                rootValue?: any;
+              }): Promise<MovieAggregateSelection>;
+            }
+
+            export interface StringAggregateInput {
+              shortest?: boolean;
+              longest?: boolean;
+            }
+            export interface PersonAggregateInput {
+              count?: boolean;
+              name?: StringAggregateInput;
             }
 
             export declare class PersonModel {
@@ -1014,6 +1068,12 @@ describe("generate", () => {
                 context?: any;
                 rootValue: any;
               }): Promise<{ nodesDeleted: number; relationshipsDeleted: number }>;
+              public aggregate(args: {
+                where?: PersonWhere;
+                aggregate: PersonAggregateInput;
+                context?: any;
+                rootValue?: any;
+              }): Promise<PersonAggregateSelection>;
             }
             "
         `);

@@ -51,7 +51,7 @@ function createLines({ input, searchFor }: { input: string; searchFor: string })
     return lines;
 }
 
-function createAggregationTypeScript({
+function createAggregationInput({
     basedOnSearch,
     typeName,
     aggregateSelections = {},
@@ -77,7 +77,7 @@ function createAggregationTypeScript({
             const newTypeName = `${type.replace(`Selection`, "Input")}`;
 
             if (!aggregateSelections[type]) {
-                const createdInput = createAggregationTypeScript({
+                const createdInput = createAggregationInput({
                     basedOnSearch: `export type ${type} = {`,
                     typeName: newTypeName,
                     aggregateSelections,
@@ -92,7 +92,7 @@ function createAggregationTypeScript({
             return;
         }
 
-        interfaceStrs.push(`${fieldName}?: ${type};`);
+        interfaceStrs.push(`${fieldName}?: boolean;`);
     });
 
     interfaceStrs.push("}");
@@ -127,20 +127,16 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
         const camelName = camelCase(pluralized);
         const upperCamel = upperFirst(camelName);
 
-        const result = createAggregationTypeScript({
+        const aggregationInput = createAggregationInput({
             basedOnSearch: `export type ${node.name}AggregateSelection = {`,
             typeName: `${node.name}AggregateInput`,
             aggregateSelections,
             input: output,
         });
 
-        let joinedResult = `
-            ${Object.values(result[1]).join("\n")}
-            ${result[0]}
-          `;
-
         const model = `
-            ${joinedResult}
+            ${Object.values(aggregationInput[1]).join("\n")}
+            ${aggregationInput[0]}
 
             export declare class ${node.name}Model {
                 public find(args: {
