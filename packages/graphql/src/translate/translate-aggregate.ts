@@ -115,6 +115,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         const temporalField = node.temporalFields.find((x) => x.fieldName === selection[1].name);
         const field: BaseField = (primitiveField as PrimitiveField) || (temporalField as TemporalField);
         let isDateTime = false;
+        let isString = primitiveField && primitiveField.typeMeta.name === "String";
 
         if (!primitiveField && temporalField && temporalField.typeMeta.name === "DateTime") {
             isDateTime = true;
@@ -151,9 +152,29 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                                 valueOverride: `${operator}(this.${fieldName})`,
                             })
                         );
-                    } else {
-                        thisProjections.push(`${entry[1].alias || entry[1].name}: ${operator}(this.${fieldName})`);
+
+                        return;
                     }
+
+                    if (isString) {
+                        const lessOrGraterThan = entry[1].name === "shortest" ? "<" : ">";
+
+                        const reduce = `
+                            reduce(shortest = collect(this.${fieldName})[0], current IN collect(this.${fieldName}) | apoc.cypher.runFirstColumn("
+                                RETURN 
+                                CASE size(current) ${lessOrGraterThan} size(shortest)
+                                WHEN true THEN current
+                                ELSE shortest
+                                END AS result
+                            ", { current: current, shortest: shortest }, false))
+                        `;
+
+                        thisProjections.push(`${entry[1].alias || entry[1].name}: ${reduce}`);
+
+                        return;
+                    }
+
+                    thisProjections.push(`${entry[1].alias || entry[1].name}: ${operator}(this.${fieldName})`);
                 }
             );
 
