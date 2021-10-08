@@ -59,20 +59,4 @@ export abstract class GraphElement {
         this.pointFields = input.pointFields;
         this.ignoredFields = input.ignoredFields;
     }
-
-    // get labelString(): string {
-    //     return this.nodeDirective?.getLabelsString(this.name) || `:${this.name}`;
-    // }
-    //
-    // get labels(): string[] {
-    //     return this.nodeDirective?.getLabels(this.name) || [this.name];
-    // }
-    //
-    // getPlural(options: { camelCase: boolean }): string {
-    //     // camelCase is optional in this case to maintain backward compatibility
-    //     if (this.nodeDirective?.plural) {
-    //         return options.camelCase ? camelCase(this.nodeDirective.plural) : this.nodeDirective.plural;
-    //     }
-    //     return pluralize(options.camelCase ? camelCase(this.name) : this.name);
-    // }
 }
