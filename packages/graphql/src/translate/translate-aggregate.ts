@@ -157,12 +157,12 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                     }
 
                     if (isString) {
-                        const lessOrGraterThan = entry[1].name === "shortest" ? "<" : ">";
+                        const lessOrGreaterThan = entry[1].name === "shortest" ? "<" : ">";
 
                         const reduce = `
                             reduce(shortest = collect(this.${fieldName})[0], current IN collect(this.${fieldName}) | apoc.cypher.runFirstColumn("
                                 RETURN 
-                                CASE size(current) ${lessOrGraterThan} size(shortest)
+                                CASE size(current) ${lessOrGreaterThan} size(shortest)
                                 WHEN true THEN current
                                 ELSE shortest
                                 END AS result
