@@ -18,9 +18,10 @@
  */
 
 import createUpdateAndParams from "./create-update-and-params";
-import { Neo4jGraphQL, Node } from "../classes";
+import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
+import { NodeBuilder } from "../utils/test";
 
 describe("createUpdateAndParams", () => {
     test("should return the correct update and params", () => {
@@ -50,22 +51,10 @@ describe("createUpdateAndParams", () => {
             arguments: [],
         };
 
-        // @ts-ignore
-        const node: Node = {
+        const node = new NodeBuilder({
             name: "Movie",
-            relationFields: [],
-            cypherFields: [],
-            enumFields: [],
-            unionFields: [],
-            scalarFields: [],
             primitiveFields: [idField],
-            temporalFields: [],
-            interfaceFields: [],
-            objectFields: [],
-            pointFields: [],
-            mutableFields: [idField],
-            authableFields: [],
-        };
+        }).instance();
 
         // @ts-ignore
         const neoSchema: Neo4jGraphQL = {

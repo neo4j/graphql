@@ -114,7 +114,7 @@ class Neo4jGraphQL {
         schema: GraphQLSchema;
         config: Neo4jGraphQLConfig;
     }): GraphQLSchema {
-        return addSchemaLevelResolver(schema, (_obj, _args, context: any, resolveInfo: GraphQLResolveInfo) => {
+        return addSchemaLevelResolver(schema, (obj, _args, context: any, resolveInfo: GraphQLResolveInfo) => {
             const { driverConfig } = config;
 
             if (debug.enabled) {
@@ -161,6 +161,7 @@ class Neo4jGraphQL {
             context.auth = createAuthParam({ context });
 
             context.queryOptions = config.queryOptions;
+            return obj;
         });
     }
 

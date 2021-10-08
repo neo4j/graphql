@@ -1,0 +1,54 @@
+[[usage-nextjs]]
+
+:sourcedir: example$code-partials/nextjs
+
+= Usage with Next.js
+
+This page describes the basics on how to use `@neo4j/graphql` as part of a https://nextjs.org[Next.js] application.  
+
+The official documentation on how to setup a GraphQL in Next.js is located https://github.com/vercel/next.js/tree/canary/examples/api-routes-graphql[here].
+
+== Creating a Next.js application
+
+The recommended way to create a Next.js application is to use the Next.js CLI.
+
+[source, bash, indent=0]
+----
+include::{sourcedir}/create-app.sh[]
+----
+
+With the command to start the development server `yarn dev` an index page should now be available on http://localhost:3000.
+
+== Create and configure the API route
+To have a GraphQL API started when the application starts, dependencies are needed and a file `pages/api/graphql.js` should be created and configured.
+
+=== Add dependencies
+
+At this point it's time to add the dependencies needed to run `@neo4j/graphql` inside Next.js.
+
+[source, bash, indent=0]
+----
+include::{sourcedir}/add-dependencies.sh[]
+----
+
+=== Configure secrets (Neo4j credentials)
+Next.js supports `.env` files for storing secrets secrurely, so create a `.env.local` file with the following contents to set it up.
+
+Make sure you have a Neo4j DBMS running on the configured URI below. Download https://neo4j.com/download[Neo4j Desktop] for easy local Neo4j DBMS management.
+
+[source, bash, indent=0]
+----
+include::{sourcedir}/env.example[]
+----
+
+=== Set up the GraphQL API endpoint
+
+Place all of the following in a new file `pages/api/graphql.js`.
+
+[source, javascript, indent=0]
+----
+include::{sourcedir}/graphql.js[]
+----
+
+== Start the server
+That is all that needs to be done for `@neo4j/graphql` to work in a Next.js application. The dev server starts wtih `yarn dev` and Apollo Studio should be loaded on http://localhost:3000 and the front-end part of the Next.js application should be able to query the API.
