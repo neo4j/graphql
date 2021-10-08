@@ -38,6 +38,12 @@ import mapToDbProperty from "../../utils/map-to-db-property";
 const subQueryNodeAlias = "n";
 const subQueryRelationAlias = "r";
 
+type AggregationFields = {
+    count?: ResolveTree;
+    node?: Record<string, ResolveTree>;
+    edge?: Record<string, ResolveTree>;
+};
+
 export function createFieldAggregation({
     context,
     nodeLabel,
@@ -62,47 +68,56 @@ export function createFieldAggregation({
 
     if (!referenceNode || !referenceRelation) return undefined;
 
-    const targetPattern = generateTargetPattern(nodeLabel, relationAggregationField, referenceNode);
     const fieldPathBase = `${node.name}${referenceNode.name}${relationAggregationField.fieldName}`;
-    const aggregationField = field.fieldsByTypeName[`${fieldPathBase}${FieldAggregationSchemaTypes.field}`];
-
-    const nodeFields: Record<string, ResolveTree> | undefined = getFieldByName("node", aggregationField)
-        ?.fieldsByTypeName[`${fieldPathBase}${FieldAggregationSchemaTypes.node}`];
-
-    const edgeFields: Record<string, ResolveTree> | undefined = getFieldByName("edge", aggregationField)
-        ?.fieldsByTypeName[`${fieldPathBase}${FieldAggregationSchemaTypes.edge}`];
+    const aggregationFields = getAggregationFields(fieldPathBase, field);
 
     const authData = createFieldAggregationAuth({
         node: referenceNode,
         context,
         subQueryNodeAlias,
-        nodeFields,
+        nodeFields: aggregationFields.node,
     });
 
+    const targetPattern = generateTargetPattern(nodeLabel, relationAggregationField, referenceNode);
     const matchWherePattern = createMatchWherePattern(targetPattern, authData);
 
     return {
         query: generateResultObject({
-            count: getFieldByName("count", aggregationField)
+            count: aggregationFields.count
                 ? createCountQuery(matchWherePattern, subQueryNodeAlias, authData)
                 : undefined,
             node: createAggregationQuery({
                 matchWherePattern,
-                fields: nodeFields,
+                fields: aggregationFields.node,
                 fieldAlias: subQueryNodeAlias,
                 auth: authData,
-                node: referenceNode,
+                graphElement: referenceNode,
             }),
             edge: createAggregationQuery({
                 matchWherePattern,
-                fields: edgeFields,
+                fields: aggregationFields.edge,
                 fieldAlias: subQueryRelationAlias,
                 auth: authData,
-                node: referenceRelation,
+                graphElement: referenceRelation,
             }),
         }),
         params: authData.params,
     };
+}
+
+function getAggregationFields(fieldPathBase: string, field: ResolveTree): AggregationFields {
+    const aggregationFields = field.fieldsByTypeName[`${fieldPathBase}${FieldAggregationSchemaTypes.field}`];
+    const node: Record<string, ResolveTree> | undefined = getFieldByName("node", aggregationFields)?.fieldsByTypeName[
+        `${fieldPathBase}${FieldAggregationSchemaTypes.node}`
+    ];
+
+    const edge: Record<string, ResolveTree> | undefined = getFieldByName("edge", aggregationFields)?.fieldsByTypeName[
+        `${fieldPathBase}${FieldAggregationSchemaTypes.edge}`
+    ];
+
+    const count = getFieldByName("count", aggregationFields);
+
+    return { count, edge, node };
 }
 
 function generateTargetPattern(nodeLabel: string, relationField: RelationField, referenceNode: Node): string {
@@ -123,20 +138,20 @@ function createAggregationQuery({
     fields,
     fieldAlias,
     auth,
-    node,
+    graphElement,
 }: {
     matchWherePattern: string;
     fields: Record<string, ResolveTree> | undefined;
     fieldAlias: string;
     auth: AggregationAuth;
-    node: Node | Relationship;
+    graphElement: Node | Relationship;
 }): string | undefined {
     if (!fields) return undefined;
     const authParams = getAuthApocParams(auth);
 
     const fieldsSubQueries = Object.values(fields).reduce((acc, field) => {
         const fieldType = getFieldType(field);
-        const dbProperty = mapToDbProperty(node, field.name);
+        const dbProperty = mapToDbProperty(graphElement, field.name);
         acc[field.alias] = wrapApocRun(
             getAggregationSubQuery({
                 matchWherePattern,
