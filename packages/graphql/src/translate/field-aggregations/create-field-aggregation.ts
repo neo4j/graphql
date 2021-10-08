@@ -18,7 +18,7 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { Node } from "../../classes";
+import { Node, Relationship } from "../../classes";
 import { Context, RelationField } from "../../types";
 import {
     generateResultObject,
@@ -27,11 +27,13 @@ import {
     wrapApocRun,
     getReferenceNode,
     getFieldByName,
+    getReferenceRelation,
 } from "./utils";
 import * as AggregationSubQueries from "./aggregation-sub-queries";
 import { createFieldAggregationAuth, AggregationAuth } from "./field-aggregations-auth";
 import { createMatchWherePattern } from "./aggregation-sub-queries";
 import { FieldAggregationSchemaTypes } from "../../schema/field-aggregation-composer";
+import mapToDbProperty from "../../utils/map-to-db-property";
 
 const subQueryNodeAlias = "n";
 const subQueryRelationAlias = "r";
@@ -50,16 +52,21 @@ export function createFieldAggregation({
     const relationAggregationField = node.relationFields.find((x) => {
         return `${x.fieldName}Aggregate` === field.name;
     });
+    const connectionField = node.connectionFields.find((x) => {
+        return `${relationAggregationField?.fieldName}Connection` === x.fieldName;
+    });
 
-    if (!relationAggregationField) return undefined;
-
+    if (!relationAggregationField || !connectionField) return undefined;
     const referenceNode = getReferenceNode(context, relationAggregationField);
-    if (!referenceNode) return undefined;
+    const referenceRelation = getReferenceRelation(context, connectionField);
+
+    if (!referenceNode || !referenceRelation) return undefined;
 
     const targetPattern = generateTargetPattern(nodeLabel, relationAggregationField, referenceNode);
     const fieldPathBase = `${node.name}${referenceNode.name}${relationAggregationField.fieldName}`;
     const aggregationField = field.fieldsByTypeName[`${fieldPathBase}${FieldAggregationSchemaTypes.field}`];
 
+    // These are requested fields
     const nodeFields: Record<string, ResolveTree> | undefined = getFieldByName("node", aggregationField)
         ?.fieldsByTypeName[`${fieldPathBase}${FieldAggregationSchemaTypes.node}`];
 
@@ -85,12 +92,14 @@ export function createFieldAggregation({
                 fields: nodeFields,
                 fieldAlias: subQueryNodeAlias,
                 auth: authData,
+                node: referenceNode,
             }),
             edge: createAggregationQuery({
                 matchWherePattern,
                 fields: edgeFields,
                 fieldAlias: subQueryRelationAlias,
                 auth: authData,
+                node: referenceRelation,
             }),
         }),
         params: authData.params,
@@ -115,21 +124,24 @@ function createAggregationQuery({
     fields,
     fieldAlias,
     auth,
+    node,
 }: {
     matchWherePattern: string;
     fields: Record<string, ResolveTree> | undefined;
     fieldAlias: string;
     auth: AggregationAuth;
+    node: Node | Relationship;
 }): string | undefined {
     if (!fields) return undefined;
     const authParams = getAuthApocParams(auth);
 
     const fieldsSubQueries = Object.values(fields).reduce((acc, field) => {
         const fieldType = getFieldType(field);
+        const dbProperty = mapToDbProperty(node, field.name);
         acc[field.alias] = wrapApocRun(
             getAggregationSubQuery({
                 matchWherePattern,
-                fieldName: field.name,
+                fieldName: dbProperty || field.name,
                 type: fieldType,
                 targetAlias: fieldAlias,
             }),

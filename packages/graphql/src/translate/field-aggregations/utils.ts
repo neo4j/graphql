@@ -18,8 +18,8 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { Node } from "../../classes";
-import { Context, RelationField } from "../../types";
+import { Node, Relationship } from "../../classes";
+import { Context, RelationField, ConnectionField } from "../../types";
 
 export enum AggregationType {
     Int = "IntAggregateSelection",
@@ -55,6 +55,10 @@ export function wrapApocRun(query: string, extraParams: Record<string, string> =
 
 export function getReferenceNode(context: Context, relationField: RelationField): Node | undefined {
     return context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name);
+}
+
+export function getReferenceRelation(context: Context, connectionField: ConnectionField): Relationship | undefined {
+    return context.neoSchema.relationships.find((x) => x.name === connectionField.relationshipTypeName);
 }
 
 export function escapeQuery(query: string): string {

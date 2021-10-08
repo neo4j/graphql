@@ -23,7 +23,7 @@ import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { generateUniqueType } from "../../../../src/utils/test/graphql-types";
 
-describe("Field Level Aggregations Alias", () => {
+describe("Field Level Aggregations Graphql Rename", () => {
     let driver: Driver;
     let session: Session;
     let typeDefs: string;
@@ -66,7 +66,7 @@ describe("Field Level Aggregations Alias", () => {
         await driver.close();
     });
 
-    test("Field Node Aggregation Alias", async () => {
+    test("Field Node Aggregation Rename", async () => {
         const query = `
             query {
               films: ${typeMovie.plural} {
@@ -111,7 +111,7 @@ describe("Field Level Aggregations Alias", () => {
         });
     });
 
-    test("Field Edge Aggregation Alias", async () => {
+    test("Field Edge Aggregation Rename", async () => {
         const query = `
             query {
               films: ${typeMovie.plural} {
