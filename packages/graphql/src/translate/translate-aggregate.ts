@@ -107,8 +107,8 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     }
 
     Object.entries(selections).forEach((selection) => {
-        if (selection[0] === "count") {
-            projections.push(`count: count(${varName})`);
+        if (selection[1].name === "count") {
+            projections.push(`${selection[1].alias || selection[1].name}: count(${varName})`);
         }
 
         const primitiveField = node.primitiveFields.find((x) => x.fieldName === selection[1].name);
