@@ -66,7 +66,6 @@ export function createFieldAggregation({
     const fieldPathBase = `${node.name}${referenceNode.name}${relationAggregationField.fieldName}`;
     const aggregationField = field.fieldsByTypeName[`${fieldPathBase}${FieldAggregationSchemaTypes.field}`];
 
-    // These are requested fields
     const nodeFields: Record<string, ResolveTree> | undefined = getFieldByName("node", aggregationField)
         ?.fieldsByTypeName[`${fieldPathBase}${FieldAggregationSchemaTypes.node}`];
 
