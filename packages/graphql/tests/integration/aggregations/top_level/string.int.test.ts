@@ -26,6 +26,14 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 describe("aggregations-top_level-string", () => {
     let driver: Driver;
 
+    const titles = [10, 11, 12, 13, 14].map((length) =>
+        generate({
+            charset: "alphabetic",
+            readable: true,
+            length,
+        })
+    );
+
     beforeAll(async () => {
         driver = await neo4j();
     });
@@ -50,14 +58,6 @@ describe("aggregations-top_level-string", () => {
         });
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-        const titles = [10, 11, 12, 13, 14].map((length) =>
-            generate({
-                charset: "alphabetic",
-                readable: true,
-                length,
-            })
-        );
 
         try {
             await session.run(
@@ -121,14 +121,6 @@ describe("aggregations-top_level-string", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const titles = [10, 11, 12, 13, 14].map((length) =>
-            generate({
-                charset: "alphabetic",
-                readable: true,
-                length,
-            })
-        );
-
         try {
             await session.run(
                 `
@@ -190,14 +182,6 @@ describe("aggregations-top_level-string", () => {
         });
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-        const titles = [10, 11, 12, 13, 14].map((length) =>
-            generate({
-                charset: "alphabetic",
-                readable: true,
-                length,
-            })
-        );
 
         try {
             await session.run(
