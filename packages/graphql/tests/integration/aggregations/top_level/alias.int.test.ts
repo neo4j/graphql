@@ -72,6 +72,7 @@ describe("aggregations-top_level-alias", () => {
             const query = `
                 {
                     moviesAggregate(where: { testString: "${testString}" }) {
+                        _count: count
                         _id: id {
                             _shortest: shortest
                             _longest: longest
@@ -106,6 +107,7 @@ describe("aggregations-top_level-alias", () => {
             expect(gqlResult.errors).toBeUndefined();
 
             expect((gqlResult.data as any).moviesAggregate).toEqual({
+                _count: 4,
                 _id: {
                     _shortest: "1",
                     _longest: "4444",

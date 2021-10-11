@@ -47,7 +47,15 @@ type Movie {
 
 ```cypher
 MATCH (this:Movie)
-RETURN { id: { shortest: min(this.id), longest: max(this.id) }, title: { shortest: min(this.title), longest: max(this.title) }, imdbRating: { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating) }, createdAt: { min: apoc.date.convertFormat(toString(min(this.createdAt)), "iso_zoned_date_time", "iso_offset_date_time"), max: apoc.date.convertFormat(toString(max(this.createdAt)), "iso_zoned_date_time", "iso_offset_date_time") } }
+RETURN {
+    id: { shortest: min(this.id), longest: max(this.id) },
+    title: {
+        shortest: reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(" RETURN CASE size(current) < size(shortest) WHEN true THEN current ELSE shortest END AS result ", { current: current, shortest: shortest }, false)) ,
+        longest: reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(" RETURN CASE size(current) > size(shortest) WHEN true THEN current ELSE shortest END AS result ", { current: current, shortest: shortest }, false))
+    },
+    imdbRating: { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating) },
+    createdAt: { min: apoc.date.convertFormat(toString(min(this.createdAt)), "iso_zoned_date_time", "iso_offset_date_time"), max: apoc.date.convertFormat(toString(max(this.createdAt)), "iso_zoned_date_time", "iso_offset_date_time") }
+}
 ```
 
 ### Expected Cypher Params
