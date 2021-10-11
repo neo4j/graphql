@@ -77,7 +77,7 @@ const resolvers = {
             return createJWT({ sub: user.id });
         },
         signIn: async (_source, { username, password }) => {
-            const [user] = await User.find({
+            const user = await User.find({
                 where: {
                     username,
                 },
