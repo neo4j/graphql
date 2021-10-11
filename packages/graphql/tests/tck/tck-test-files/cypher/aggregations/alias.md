@@ -22,6 +22,7 @@ type Movie {
 ```graphql
 {
     moviesAggregate {
+        _count: count
         _id: id {
             _shortest: shortest
             _longest: longest
@@ -48,6 +49,7 @@ type Movie {
 ```cypher
 MATCH (this:Movie)
 RETURN {
+    _count: count(this),
     _id: { _shortest: min(this.id), _longest: max(this.id) },
     _title: { _shortest: reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(" RETURN CASE size(current) < size(shortest) WHEN true THEN current ELSE shortest END AS result ", { current: current, shortest: shortest }, false)) ,
     _longest: reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(" RETURN CASE size(current) > size(shortest) WHEN true THEN current ELSE shortest END AS result ", { current: current, shortest: shortest }, false)) },
