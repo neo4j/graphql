@@ -44,7 +44,7 @@ describe("getCypherMeta", () => {
             ],
         };
 
-        const result = getCypherMeta(field, undefined);
+        const result = getCypherMeta(field);
 
         expect(result).toBeUndefined();
     });
@@ -71,7 +71,7 @@ describe("getCypherMeta", () => {
             ],
         };
 
-        expect(() => getCypherMeta(field, undefined)).toThrow("@cypher statement required");
+        expect(() => getCypherMeta(field)).toThrow("@cypher statement required");
     });
 
     test("should throw statement not a string", () => {
@@ -107,7 +107,7 @@ describe("getCypherMeta", () => {
             ],
         };
 
-        expect(() => getCypherMeta(field, undefined)).toThrow("@cypher statement not a string");
+        expect(() => getCypherMeta(field)).toThrow("@cypher statement not a string");
     });
 
     test("should return the correct meta", () => {
@@ -142,7 +142,7 @@ describe("getCypherMeta", () => {
             ],
         };
 
-        const result = getCypherMeta(field, undefined);
+        const result = getCypherMeta(field);
 
         expect(result).toMatchObject({
             statement: "MATCH (m:Movie) RETURN m",

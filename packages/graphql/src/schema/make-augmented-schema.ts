@@ -38,18 +38,11 @@ import {
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import {
-    upperFirst,
-    SchemaComposer,
-    InputTypeComposer,
-    ObjectTypeComposer,
-    InputTypeComposerFieldConfigAsObjectDefinition,
-    printSchema,
-} from "graphql-compose";
+import { SchemaComposer, ObjectTypeComposer, InputTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
 import pluralize from "pluralize";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth, ConnectionQueryArgs, BaseField } from "../types";
+import { PrimitiveField, Auth } from "../types";
 import {
     aggregateResolver,
     countResolver,
@@ -70,7 +63,6 @@ import * as point from "./point";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
 import Relationship from "../classes/Relationship";
 import getWhereFields from "./get-where-fields";
-import { connectionFieldResolver } from "./pagination";
 import { validateDocument } from "./validation";
 import * as constants from "../constants";
 import createRelationshipFields from "./create-relationship-fields";
@@ -207,7 +199,7 @@ function makeAugmentedSchema(
         };
     }, {});
 
-    const queryOptions = composer.createInputTC({
+    composer.createInputTC({
         name: "QueryOptions",
         fields: {
             offset: "Int",
@@ -485,7 +477,7 @@ function makeAugmentedSchema(
                 pointFields: relFields.pointFields,
                 primitiveFields: relFields.primitiveFields,
             },
-            enableRegex: enableRegex || false,
+            enableRegex,
         });
 
         composer.createInputTC({
@@ -541,13 +533,6 @@ function makeAugmentedSchema(
             );
         }
 
-        // const nestedInterfaceField = interfaceFields.relationFields.find((r) => r.interface);
-        // if (nestedInterfaceField) {
-        //     throw new Error(
-        //         `Nested interface relationship fields are not supported: ${interfaceRelationship.name.value}.${nestedInterfaceField.fieldName}`
-        //     );
-        // }
-
         const objectComposeFields = objectFieldsToComposeFields(
             Object.values(interfaceFields).reduce((acc, x) => [...acc, ...x], [])
         );
@@ -566,7 +551,7 @@ function makeAugmentedSchema(
                 pointFields: interfaceFields.pointFields,
                 primitiveFields: interfaceFields.primitiveFields,
             },
-            enableRegex: enableRegex || false,
+            enableRegex,
         });
 
         const [
@@ -582,14 +567,14 @@ function makeAugmentedSchema(
             })
         );
 
-        const whereInput = composer.createInputTC({
+        composer.createInputTC({
             name: `${interfaceRelationship.name.value}Where`,
             fields: { ...interfaceWhereFields, _on: implementationsWhereInput },
         });
 
         const interfaceCreateInput = composer.createInputTC(`${interfaceRelationship.name.value}CreateInput`);
 
-        const interfaceUpdateInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}UpdateInput`, (tc) => {
+        composer.getOrCreateITC(`${interfaceRelationship.name.value}UpdateInput`, (tc) => {
             tc.addFields({
                 ...[
                     ...interfaceFields.primitiveFields,
@@ -838,12 +823,12 @@ function makeAugmentedSchema(
             },
         });
 
-        const whereInput = composer.createInputTC({
+        composer.createInputTC({
             name: `${node.name}Where`,
             fields: queryFields,
         });
 
-        const nodeCreateInput = composer.createInputTC({
+        composer.createInputTC({
             name: `${node.name}CreateInput`,
             // TODO - This reduce duplicated when creating relationship CreateInput - put into shared function?
             fields: [
@@ -871,7 +856,7 @@ function makeAugmentedSchema(
             }, {}),
         });
 
-        const nodeUpdateInput = composer.createInputTC({
+        composer.createInputTC({
             name: `${node.name}UpdateInput`,
             fields: [
                 ...node.primitiveFields,

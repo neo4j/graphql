@@ -44,7 +44,7 @@ describe("getRelationshipMeta", () => {
             ],
         };
 
-        const result = getRelationshipMeta(field, undefined);
+        const result = getRelationshipMeta(field);
 
         expect(result).toBeUndefined();
     });
@@ -71,7 +71,7 @@ describe("getRelationshipMeta", () => {
             ],
         };
 
-        expect(() => getRelationshipMeta(field, undefined)).toThrow("@relationship direction required");
+        expect(() => getRelationshipMeta(field)).toThrow("@relationship direction required");
     });
 
     test("should throw direction not a string", () => {
@@ -106,7 +106,7 @@ describe("getRelationshipMeta", () => {
             ],
         };
 
-        expect(() => getRelationshipMeta(field, undefined)).toThrow("@relationship direction not a enum");
+        expect(() => getRelationshipMeta(field)).toThrow("@relationship direction not a enum");
     });
 
     test("should throw direction invalid", () => {
@@ -141,7 +141,7 @@ describe("getRelationshipMeta", () => {
             ],
         };
 
-        expect(() => getRelationshipMeta(field, undefined)).toThrow("@relationship direction invalid");
+        expect(() => getRelationshipMeta(field)).toThrow("@relationship direction invalid");
     });
 
     test("should throw type required", () => {
@@ -176,7 +176,7 @@ describe("getRelationshipMeta", () => {
             ],
         };
 
-        expect(() => getRelationshipMeta(field, undefined)).toThrow("@relationship type required");
+        expect(() => getRelationshipMeta(field)).toThrow("@relationship type required");
     });
 
     test("should throw type not a string", () => {
@@ -217,7 +217,7 @@ describe("getRelationshipMeta", () => {
             ],
         };
 
-        expect(() => getRelationshipMeta(field, undefined)).toThrow("@relationship type not a string");
+        expect(() => getRelationshipMeta(field)).toThrow("@relationship type not a string");
     });
 
     test("should return the correct meta", () => {
@@ -258,7 +258,7 @@ describe("getRelationshipMeta", () => {
             ],
         };
 
-        const result = getRelationshipMeta(field, undefined);
+        const result = getRelationshipMeta(field);
 
         expect(result).toMatchObject({
             type: "ACTED_IN",
