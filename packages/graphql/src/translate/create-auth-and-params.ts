@@ -23,6 +23,7 @@ import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import mapToDbProperty from "../utils/map-to-db-property";
 import joinPredicates, { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-predicates";
 import ContextParser from "../utils/context-parser";
+import { isString } from "../utils/utils";
 
 interface Res {
     strs: string[];
@@ -97,8 +98,8 @@ function createAuthPredicate({
 
             const authableField = node.authableFields.find((field) => field.fieldName === key);
             if (authableField) {
-                const jwtPath = ContextParser.parseTag(value, "jwt");
-                const ctxPath = ContextParser.parseTag(value, "context");
+                const jwtPath = isString(value) ? ContextParser.parseTag(value, "jwt") : undefined;
+                const ctxPath = isString(value) ? ContextParser.parseTag(value, "context") : undefined;
                 let paramValue: string | undefined = value as string;
 
                 if (jwtPath) {
