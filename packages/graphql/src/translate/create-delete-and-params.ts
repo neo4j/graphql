@@ -86,7 +86,7 @@ function createDeleteAndParams({
                         res.strs.push(`WITH ${withVars.join(", ")}`);
                     }
 
-                    const labels = refNode.getLabelString();
+                    const labels = refNode.getLabelString(context);
                     res.strs.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`);
 
                     const whereStrs: string[] = [];

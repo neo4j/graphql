@@ -154,11 +154,11 @@ class Node {
         ];
     }
 
-    getLabelString(context?: Context): string {
+    getLabelString(context: Context): string {
         return this.nodeDirective?.getLabelsString(this.name, context) || `:${this.name}`;
     }
 
-    getLabels(context?: Context): string[] {
+    getLabels(context: Context): string[] {
         return this.nodeDirective?.getLabels(this.name, context) || [this.name];
     }
 

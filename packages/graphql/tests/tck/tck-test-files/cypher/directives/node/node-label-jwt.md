@@ -5,7 +5,7 @@ Custom label using @node.
 Schema:
 
 ```graphql
-type Actor @node(label: "Person") {
+type Actor @node(additionalLabels: ["$jwt.personlabel"]) {
     name: String
     age: Int
     movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
@@ -55,7 +55,7 @@ RETURN this { .title } as this
 
 ---
 
-## Select Movie with label Film from Actors
+## Select Movie with label Film from Actors with additionalLabels
 
 ### GraphQL Input
 
@@ -74,14 +74,15 @@ query {
 
 ```json
 {
-    "movielabel": "Film"
+    "movielabel": "Film",
+    "personlabel": "Person"
 }
 ```
 
 ### Expected Cypher Output
 
 ```cypher
-MATCH (this:Person)
+MATCH (this:Actor:Person)
 WHERE this.age > $this_age_GT
 RETURN this {
     .name,

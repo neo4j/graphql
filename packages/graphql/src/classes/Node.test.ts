@@ -22,6 +22,8 @@ import { NodeBuilder } from "../utils/test/node-builder";
 import { ContextBuilder } from "../utils/test/context-builder";
 
 describe("Node", () => {
+    const defaultContext = new ContextBuilder().instance();
+
     test("should construct", () => {
         // @ts-ignore
         const input: NodeConstructor = {
@@ -44,24 +46,24 @@ describe("Node", () => {
         expect(new Node(input)).toMatchObject({ name: "Movie" });
     });
 
-    it("should return labelString from node name", () => {
+    test("should return labelString from node name", () => {
         const node = new NodeBuilder({
             name: "Movie",
         }).instance();
 
-        expect(node.getLabelString()).toEqual(":Movie");
+        expect(node.getLabelString(defaultContext)).toEqual(":Movie");
     });
 
-    it("should return labels from node name", () => {
+    test("should return labels from node name", () => {
         const node = new NodeBuilder({
             name: "Movie",
         }).instance();
 
-        expect(node.getLabels()).toEqual(["Movie"]);
+        expect(node.getLabels(defaultContext)).toEqual(["Movie"]);
     });
 
     describe("NodeDirective", () => {
-        it("should return labels updated with jwt values from Context", () => {
+        test("should return labels updated with jwt values from Context", () => {
             const node = new NodeBuilder({
                 name: "Film",
             })
@@ -80,10 +82,13 @@ describe("Node", () => {
                 .instance();
 
             const labels = node.getLabels(context);
+            const labelString = node.getLabelString(context);
+
             expect(labels).toEqual(["Movie"]);
+            expect(labelString).toEqual(":Movie");
         });
 
-        it("should return labels updated with context values from Context", () => {
+        test("should return labels updated with context values from Context", () => {
             const node = new NodeBuilder({
                 name: "Film",
             })
@@ -99,7 +104,36 @@ describe("Node", () => {
                 .instance();
 
             const labels = node.getLabels(context);
+            const labelString = node.getLabelString(context);
+
             expect(labels).toEqual(["Movie"]);
+            expect(labelString).toEqual(":Movie");
+        });
+
+        test("should return additional labels updated with jwt values from Context", () => {
+            const node = new NodeBuilder({
+                name: "Film",
+            })
+                .withNodeDirective({
+                    label: "Film",
+                    additionalLabels: ["$jwt.movielabel"],
+                })
+                .instance();
+
+            const context = new ContextBuilder()
+                .with({
+                    jwt: {
+                        movielabel: "Movie",
+                    },
+                    myKey: "key",
+                })
+                .instance();
+
+            const labels = node.getLabels(context);
+            const labelString = node.getLabelString(context);
+
+            expect(labels).toEqual(["Film", "Movie"]);
+            expect(labelString).toEqual(":Film:Movie");
         });
     });
 });

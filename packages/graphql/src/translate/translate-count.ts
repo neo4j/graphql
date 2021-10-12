@@ -30,7 +30,7 @@ function translateCount({ node, context }: { node: Node; context: Context }): [s
     const whereStrs: string[] = [];
     const cypherStrs: string[] = [];
 
-    const labels = node.getLabelString();
+    const labels = node.getLabelString(context);
 
     cypherStrs.push(`MATCH (${varName}${labels})`);
 

@@ -19,13 +19,12 @@
 
 import { NodeConstructor, Node } from "../../classes";
 import { NodeDirectiveConstructor, NodeDirective } from "../../classes/NodeDirective";
+import { Builder } from "./builder";
 
 // eslint-disable-next-line import/prefer-default-export
-export class NodeBuilder {
-    private options: NodeConstructor;
-
+export class NodeBuilder extends Builder<Node, NodeConstructor> {
     constructor(newOptions: Partial<NodeConstructor> = {}) {
-        this.options = {
+        super({
             name: "",
             relationFields: [],
             connectionFields: [],
@@ -42,7 +41,7 @@ export class NodeBuilder {
             pointFields: [],
             ignoredFields: [],
             ...newOptions,
-        };
+        });
     }
 
     public with(newOptions: Partial<NodeConstructor>): NodeBuilder {

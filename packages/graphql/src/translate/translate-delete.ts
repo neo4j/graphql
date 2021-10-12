@@ -28,7 +28,7 @@ function translateDelete({ context, node }: { context: Context; node: Node }): [
     const { resolveTree } = context;
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const deleteInput = resolveTree.args.delete;
-    const labels = node.getLabelString();
+    const labels = node.getLabelString(context);
 
     const varName = "this";
     const matchStr = `MATCH (${varName}${labels})`;

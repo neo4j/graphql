@@ -21,40 +21,27 @@ import * as neo4j from "neo4j-driver";
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Neo4jGraphQL } from "../../classes";
 import { Context } from "../../types";
+import { Builder } from "./builder";
 
 // eslint-disable-next-line import/prefer-default-export
-export class ContextBuilder {
-    private context: Context;
-
+export class ContextBuilder extends Builder<Context, Context> {
     constructor(newOptions: Partial<Context> = {}) {
-        // const driver = neo4j.driver();
-        this.context = {
+        super({
             driver: {} as neo4j.Driver,
             resolveTree: {} as ResolveTree,
             neoSchema: new Neo4jGraphQL({
                 typeDefs: "",
             }),
-            ...newOptions,
-        };
+            newOptions,
+        });
     }
 
     public with(newOptions: Partial<Context>): ContextBuilder {
-        this.context = { ...this.context, ...newOptions };
+        this.options = { ...this.options, ...newOptions };
         return this;
     }
 
     public instance(): Context {
-        return this.context;
+        return this.options;
     }
 }
-
-// export interface Context {
-//     driver: Driver;
-//     driverConfig?: DriverConfig;
-//     resolveTree: ResolveTree;
-//     neoSchema: Neo4jGraphQL;
-//     jwt?: JwtPayload;
-//     auth?: AuthContext;
-//     queryOptions?: CypherQueryOptions;
-//     [k: string]: any;
-// }

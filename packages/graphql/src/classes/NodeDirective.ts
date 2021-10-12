@@ -38,7 +38,7 @@ export class NodeDirective {
         this.plural = input.plural;
     }
 
-    public getLabelsString(typeName: string, context?: Context): string {
+    public getLabelsString(typeName: string, context: Context): string {
         if (!typeName) {
             throw new Neo4jGraphQLError("Could not generate label string in @node directive due to empty typeName");
         }
@@ -46,10 +46,10 @@ export class NodeDirective {
         return `:${labels.join(":")}`;
     }
 
-    public getLabels(typeName: string, context?: Context): string[] {
+    public getLabels(typeName: string, context: Context): string[] {
         const mainLabel = this.label || typeName;
         const labels = [mainLabel, ...this.additionalLabels];
-        return context ? this.mapLabelsWithContext(labels, context) : labels;
+        return this.mapLabelsWithContext(labels, context);
     }
 
     private mapLabelsWithContext(labels: string[], context: Context): string[] {

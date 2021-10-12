@@ -273,7 +273,9 @@ function createProjectionAndParams({
                     })${inStr}${relTypeStr}${outStr}(${param})`,
                     `WHERE ${referenceNodes
                         .map((x) => {
-                            const labelsStatements = x.getLabels().map((label) => `"${label}" IN labels(${param})`);
+                            const labelsStatements = x
+                                .getLabels(context)
+                                .map((label) => `"${label}" IN labels(${param})`);
                             return `(${labelsStatements.join(" AND ")})`;
                         })
                         .join(" OR ")}`,
@@ -281,7 +283,9 @@ function createProjectionAndParams({
                 ];
 
                 const headStrs: string[] = referenceNodes.map((refNode) => {
-                    const labelsStatements = refNode.getLabels().map((label) => `"${label}" IN labels(${param})`);
+                    const labelsStatements = refNode
+                        .getLabels(context)
+                        .map((label) => `"${label}" IN labels(${param})`);
                     const innerHeadStr: string[] = [
                         `[ ${param} IN [${param}] WHERE (${labelsStatements.join(" AND ")})`,
                     ];

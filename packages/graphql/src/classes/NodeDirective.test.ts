@@ -18,32 +18,35 @@
  */
 
 import { NodeDirective } from "./NodeDirective";
+import { ContextBuilder } from "../utils/test/context-builder";
 
 describe("NodeDirective", () => {
+    const defaultContext = new ContextBuilder().instance();
+
     test("should generate label string with only the input typename", () => {
         const instance = new NodeDirective({});
-        const labelString = instance.getLabelsString("MyLabel");
+        const labelString = instance.getLabelsString("MyLabel", defaultContext);
 
         expect(labelString).toEqual(":MyLabel");
     });
 
     test("should generate label string with directive label", () => {
         const instance = new NodeDirective({ label: "MyOtherLabel" });
-        const labelString = instance.getLabelsString("MyLabel");
+        const labelString = instance.getLabelsString("MyLabel", defaultContext);
 
         expect(labelString).toEqual(":MyOtherLabel");
     });
 
     test("should generate label string adding additional labels to input typename", () => {
         const instance = new NodeDirective({ additionalLabels: ["Label1", "Label2"] });
-        const labelString = instance.getLabelsString("MyLabel");
+        const labelString = instance.getLabelsString("MyLabel", defaultContext);
 
         expect(labelString).toEqual(":MyLabel:Label1:Label2");
     });
 
     test("should generate label string adding additional labels to directive label", () => {
         const instance = new NodeDirective({ label: "MyOtherLabel", additionalLabels: ["Label1", "Label2"] });
-        const labelString = instance.getLabelsString("MyLabel");
+        const labelString = instance.getLabelsString("MyLabel", defaultContext);
 
         expect(labelString).toEqual(":MyOtherLabel:Label1:Label2");
     });
@@ -52,7 +55,7 @@ describe("NodeDirective", () => {
         const instance = new NodeDirective({});
 
         expect(() => {
-            instance.getLabelsString("");
+            instance.getLabelsString("", defaultContext);
         }).toThrow();
     });
 });
