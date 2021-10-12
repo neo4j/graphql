@@ -18,8 +18,10 @@
  */
 
 import { NodeConstructor, Node } from "../../classes";
+import { NodeDirectiveConstructor, NodeDirective } from "../../classes/NodeDirective";
 
-export default class NodeBuilder {
+// eslint-disable-next-line import/prefer-default-export
+export class NodeBuilder {
     private options: NodeConstructor;
 
     constructor(newOptions: Partial<NodeConstructor> = {}) {
@@ -46,6 +48,11 @@ export default class NodeBuilder {
     public with(newOptions: Partial<NodeConstructor>): NodeBuilder {
         this.options = { ...this.options, ...newOptions };
         return this;
+    }
+
+    public withNodeDirective(directiveOptions: NodeDirectiveConstructor): NodeBuilder {
+        const nodeDirective = new NodeDirective(directiveOptions);
+        return this.with({ nodeDirective });
     }
 
     public instance(): Node {

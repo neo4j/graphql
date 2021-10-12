@@ -18,7 +18,7 @@
  */
 
 import updateResolver from "./update";
-import { NodeBuilder } from "../../utils/test";
+import { NodeBuilder } from "../../utils/test/node-builder";
 
 describe("Update resolver", () => {
     test("should return the correct; type, args and resolve", () => {

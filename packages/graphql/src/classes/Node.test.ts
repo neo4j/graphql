@@ -18,7 +18,8 @@
  */
 
 import Node, { NodeConstructor } from "./Node";
-import { NodeBuilder } from "../utils/test";
+import { NodeBuilder } from "../utils/test/node-builder";
+import { ContextBuilder } from "../utils/test/context-builder";
 
 describe("Node", () => {
     test("should construct", () => {
@@ -57,5 +58,48 @@ describe("Node", () => {
         }).instance();
 
         expect(node.getLabels()).toEqual(["Movie"]);
+    });
+
+    describe("NodeDirective", () => {
+        it("should return labels updated with jwt values from Context", () => {
+            const node = new NodeBuilder({
+                name: "Film",
+            })
+                .withNodeDirective({
+                    label: "$jwt.movielabel",
+                })
+                .instance();
+
+            const context = new ContextBuilder()
+                .with({
+                    jwt: {
+                        movielabel: "Movie",
+                    },
+                    myKey: "key",
+                })
+                .instance();
+
+            const labels = node.getLabels(context);
+            expect(labels).toEqual(["Movie"]);
+        });
+
+        it("should return labels updated with context values from Context", () => {
+            const node = new NodeBuilder({
+                name: "Film",
+            })
+                .withNodeDirective({
+                    label: "$context.myKey",
+                })
+                .instance();
+
+            const context = new ContextBuilder()
+                .with({
+                    myKey: "Movie",
+                })
+                .instance();
+
+            const labels = node.getLabels(context);
+            expect(labels).toEqual(["Movie"]);
+        });
     });
 });

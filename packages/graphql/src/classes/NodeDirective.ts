@@ -56,7 +56,6 @@ export class NodeDirective {
         return labels.map((label: string) => {
             const jwtPath = ContextParser.parseTag(label, "jwt");
             const ctxPath = ContextParser.parseTag(label, "context");
-
             if (jwtPath) {
                 return ContextParser.getJwtPropery(jwtPath, context) || label;
             }

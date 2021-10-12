@@ -21,7 +21,7 @@ import createConnectAndParams from "./create-connect-and-params";
 import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
-import { NodeBuilder } from "../utils/test";
+import { NodeBuilder } from "../utils/test/node-builder";
 
 describe("createConnectAndParams", () => {
     test("should return the correct connection", () => {

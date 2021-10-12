@@ -18,7 +18,7 @@
  */
 
 import deleteResolver from "./delete";
-import { NodeBuilder } from "../../utils/test";
+import { NodeBuilder } from "../../utils/test/node-builder";
 
 describe("Delete resolver", () => {
     test("should return the correct; type, args and resolve", () => {
