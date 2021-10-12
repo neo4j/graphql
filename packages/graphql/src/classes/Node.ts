@@ -34,9 +34,10 @@ import type {
     PointField,
     Auth,
     BaseField,
+    Context,
 } from "../types";
 import Exclude from "./Exclude";
-import NodeDirective from "./NodeDirective";
+import { NodeDirective } from "./NodeDirective";
 
 export interface NodeConstructor {
     name: string;
@@ -153,12 +154,12 @@ class Node {
         ];
     }
 
-    getLabelString(): string {
-        return this.nodeDirective?.getLabelsString(this.name) || `:${this.name}`;
+    getLabelString(context?: Context): string {
+        return this.nodeDirective?.getLabelsString(this.name, context) || `:${this.name}`;
     }
 
-    get labels(): string[] {
-        return this.nodeDirective?.getLabels(this.name) || [this.name];
+    getLabels(context?: Context): string[] {
+        return this.nodeDirective?.getLabels(this.name, context) || [this.name];
     }
 
     getPlural(options: { camelCase: boolean }): string {

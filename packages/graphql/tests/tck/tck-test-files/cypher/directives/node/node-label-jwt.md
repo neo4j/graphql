@@ -24,7 +24,7 @@ type Movie @node(label: "$jwt.movielabel") {
 ### GraphQL Input
 
 ```graphql
-{
+query {
     movies {
         title
     }

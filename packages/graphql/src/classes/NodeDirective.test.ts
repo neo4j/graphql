@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import NodeDirective from "./NodeDirective";
+import { NodeDirective } from "./NodeDirective";
 
 describe("NodeDirective", () => {
     test("should generate label string with only the input typename", () => {

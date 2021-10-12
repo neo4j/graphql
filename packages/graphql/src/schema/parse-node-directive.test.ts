@@ -19,7 +19,7 @@
 
 import { parse } from "graphql";
 import parseNodeDirective from "./parse-node-directive";
-import NodeDirective from "../classes/NodeDirective";
+import { NodeDirective } from "../classes/NodeDirective";
 
 describe("parseNodeDirective", () => {
     test("should throw an error if incorrect directive is passed in", () => {

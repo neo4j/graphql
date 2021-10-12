@@ -56,6 +56,6 @@ describe("Node", () => {
             name: "Movie",
         }).instance();
 
-        expect(node.labels).toEqual(["Movie"]);
+        expect(node.getLabels()).toEqual(["Movie"]);
     });
 });

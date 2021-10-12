@@ -27,7 +27,7 @@ export interface NodeDirectiveConstructor {
     plural?: string;
 }
 
-class NodeDirective {
+export class NodeDirective {
     public readonly label: string | undefined;
     public readonly additionalLabels: string[];
     public readonly plural: string | undefined;
@@ -38,35 +38,32 @@ class NodeDirective {
         this.plural = input.plural;
     }
 
-    public getLabelsString(typeName: string): string {
+    public getLabelsString(typeName: string, context?: Context): string {
         if (!typeName) {
             throw new Neo4jGraphQLError("Could not generate label string in @node directive due to empty typeName");
         }
-        const labels = this.getLabels(typeName);
+        const labels = this.getLabels(typeName, context);
         return `:${labels.join(":")}`;
     }
 
-    public getLabels(typeName: string): string[] {
+    public getLabels(typeName: string, context?: Context): string[] {
         const mainLabel = this.label || typeName;
         const labels = [mainLabel, ...this.additionalLabels];
-        return labels;
-        // return this.mapLabelsWithContext(labels, context);
+        return context ? this.mapLabelsWithContext(labels, context) : labels;
     }
 
-    public mapLabelsWithContext(labels: string[], context: Context): string[] {
-        return labels.map((label) => {
+    private mapLabelsWithContext(labels: string[], context: Context): string[] {
+        return labels.map((label: string) => {
             const jwtPath = ContextParser.parseTag(label, "jwt");
             const ctxPath = ContextParser.parseTag(label, "context");
-            let paramValue: string = label as string;
 
             if (jwtPath) {
-                paramValue = ContextParser.getJwtPropery(jwtPath, context) || paramValue;
-            } else if (ctxPath) {
-                paramValue = ContextParser.getContextProperty(ctxPath, context) || paramValue;
+                return ContextParser.getJwtPropery(jwtPath, context) || label;
             }
-            return paramValue;
+            if (ctxPath) {
+                return ContextParser.getContextProperty(ctxPath, context) || label;
+            }
+            return label;
         });
     }
 }
-
-export default NodeDirective;
