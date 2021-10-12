@@ -55,10 +55,7 @@ DETACH DELETE this
 
 ```graphql
 mutation {
-    deleteMovies(
-        where: { id: 123 }
-        delete: { actors: { where: { node: { name: "Actor to delete" } } } }
-    ) {
+    deleteMovies(where: { id: 123 }, delete: { actors: { where: { node: { name: "Actor to delete" } } } }) {
         nodesDeleted
     }
 }
@@ -72,14 +69,8 @@ WHERE this.id = $this_id
 WITH this
 OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
 WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
-WITH this, this_actors0
-CALL {
-    WITH this_actors0
-    FOREACH(_ IN CASE this_actors0 WHEN NULL THEN [] ELSE [1] END |
-        DETACH DELETE this_actors0
-    )
-    RETURN count(*)
-}
+WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
+FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
 DETACH DELETE this
 ```
 
@@ -136,25 +127,13 @@ WHERE this.id = $this_id
 WITH this
 OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
 WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
-WITH this, this_actors0
-CALL {
-    WITH this_actors0
-    FOREACH(_ IN CASE this_actors0 WHEN NULL THEN [] ELSE [1] END |
-        DETACH DELETE this_actors0
-    )
-    RETURN count(*)
-}
+WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
+FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
 WITH this
 OPTIONAL MATCH (this)<-[this_actors1_relationship:ACTED_IN]-(this_actors1:Actor)
 WHERE this_actors1.name = $this_deleteMovies.args.delete.actors[1].where.node.name
-WITH this, this_actors1
-CALL {
-    WITH this_actors1
-    FOREACH(_ IN CASE this_actors1 WHEN NULL THEN [] ELSE [1] END |
-        DETACH DELETE this_actors1
-    )
-    RETURN count(*)
-}
+WITH this, collect(DISTINCT this_actors1) as this_actors1_to_delete
+FOREACH(x IN this_actors1_to_delete | DETACH DELETE x)
 DETACH DELETE this
 ```
 
@@ -221,22 +200,10 @@ WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.na
 WITH this, this_actors0
 OPTIONAL MATCH (this_actors0)-[this_actors0_movies0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
 WHERE this_actors0_movies0.id = $this_deleteMovies.args.delete.actors[0].delete.movies[0].where.node.id
-WITH this, this_actors0, this_actors0_movies0
-CALL {
-    WITH this_actors0_movies0
-    FOREACH(_ IN CASE this_actors0_movies0 WHEN NULL THEN [] ELSE [1] END |
-        DETACH DELETE this_actors0_movies0
-    )
-    RETURN count(*)
-}
-WITH this, this_actors0
-CALL {
-    WITH this_actors0
-    FOREACH(_ IN CASE this_actors0 WHEN NULL THEN [] ELSE [1] END |
-        DETACH DELETE this_actors0
-    )
-    RETURN count(*)
-}
+WITH this, this_actors0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete
+FOREACH(x IN this_actors0_movies0_to_delete | DETACH DELETE x)
+WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
+FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
 DETACH DELETE this
 ```
 
@@ -290,13 +257,7 @@ mutation {
                 delete: {
                     movies: {
                         where: { node: { id: 321 } }
-                        delete: {
-                            actors: {
-                                where: {
-                                    node: { name: "Another actor to delete" }
-                                }
-                            }
-                        }
+                        delete: { actors: { where: { node: { name: "Another actor to delete" } } } }
                     }
                 }
             }
@@ -322,32 +283,15 @@ WITH this, this_actors0, this_actors0_movies0
 OPTIONAL MATCH (this_actors0_movies0)<-[this_actors0_movies0_actors0_relationship:ACTED_IN]-(this_actors0_movies0_actors0:Actor)
 WHERE this_actors0_movies0_actors0.name = $this_deleteMovies.args.delete.actors[0].delete.movies[0].delete.actors[0].where.node.name
 
-WITH this, this_actors0, this_actors0_movies0, this_actors0_movies0_actors0
-CALL {
-    WITH this_actors0_movies0_actors0
-    FOREACH(_ IN CASE this_actors0_movies0_actors0 WHEN NULL THEN [] ELSE [1] END |
-        DETACH DELETE this_actors0_movies0_actors0
-    )
-    RETURN count(*)
-}
+WITH this, this_actors0, this_actors0_movies0, collect(DISTINCT this_actors0_movies0_actors0) as this_actors0_movies0_actors0_to_delete
+FOREACH(x IN this_actors0_movies0_actors0_to_delete | DETACH DELETE x)
 
-WITH this, this_actors0, this_actors0_movies0
-CALL {
-    WITH this_actors0_movies0
-    FOREACH(_ IN CASE this_actors0_movies0 WHEN NULL THEN [] ELSE [1] END |
-        DETACH DELETE this_actors0_movies0
-    )
-    RETURN count(*)
-}
+WITH this, this_actors0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete
+FOREACH(x IN this_actors0_movies0_to_delete | DETACH DELETE x)
 
-WITH this, this_actors0
-CALL {
-    WITH this_actors0
-    FOREACH(_ IN CASE this_actors0 WHEN NULL THEN [] ELSE [1] END |
-        DETACH DELETE this_actors0
-    )
-    RETURN count(*)
-}
+WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
+FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
+
 DETACH DELETE this
 ```
 
