@@ -18,9 +18,10 @@
  */
 
 import createCreateAndParams from "./create-create-and-params";
-import { Neo4jGraphQL, Node } from "../classes";
+import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
+import { NodeBuilder } from "../utils/test";
 
 describe("createCreateAndParams", () => {
     test("should return the correct projection with 1 selection", () => {
@@ -28,8 +29,7 @@ describe("createCreateAndParams", () => {
             title: "some title",
         };
 
-        // @ts-ignore
-        const node: Node = {
+        const node = new NodeBuilder({
             name: "Movie",
             relationFields: [],
             cypherFields: [],
@@ -62,11 +62,11 @@ describe("createCreateAndParams", () => {
                     arguments: [],
                 },
             ],
-            dateTimeFields: [],
+            temporalFields: [],
             interfaceFields: [],
             objectFields: [],
             pointFields: [],
-        };
+        }).instance();
 
         // @ts-ignore
         const neoSchema: Neo4jGraphQL = {

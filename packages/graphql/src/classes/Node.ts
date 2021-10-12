@@ -18,6 +18,8 @@
  */
 
 import { DirectiveNode, NamedTypeNode } from "graphql";
+import camelCase from "camelcase";
+import pluralize from "pluralize";
 import type {
     RelationField,
     ConnectionField,
@@ -28,12 +30,13 @@ import type {
     UnionField,
     InterfaceField,
     ObjectField,
-    DateTimeField,
+    TemporalField,
     PointField,
     Auth,
     BaseField,
 } from "../types";
 import Exclude from "./Exclude";
+import NodeDirective from "./NodeDirective";
 
 export interface NodeConstructor {
     name: string;
@@ -48,49 +51,34 @@ export interface NodeConstructor {
     interfaceFields: InterfaceField[];
     interfaces: NamedTypeNode[];
     objectFields: ObjectField[];
-    dateTimeFields: DateTimeField[];
+    temporalFields: TemporalField[];
     pointFields: PointField[];
     ignoredFields: BaseField[];
     auth?: Auth;
     exclude?: Exclude;
+    nodeDirective?: NodeDirective;
     description?: string;
 }
 
 class Node {
     public name: string;
-
     public relationFields: RelationField[];
-
     public connectionFields: ConnectionField[];
-
     public cypherFields: CypherField[];
-
     public primitiveFields: PrimitiveField[];
-
     public scalarFields: CustomScalarField[];
-
     public enumFields: CustomEnumField[];
-
     public otherDirectives: DirectiveNode[];
-
     public unionFields: UnionField[];
-
     public interfaceFields: InterfaceField[];
-
     public interfaces: NamedTypeNode[];
-
     public objectFields: ObjectField[];
-
-    public dateTimeFields: DateTimeField[];
-
+    public temporalFields: TemporalField[];
     public pointFields: PointField[];
-
     public ignoredFields: BaseField[];
-
     public exclude?: Exclude;
-
+    public nodeDirective?: NodeDirective;
     public auth?: Auth;
-
     public description?: string;
 
     /*
@@ -102,7 +90,7 @@ class Node {
         | CustomEnumField
         | UnionField
         | ObjectField
-        | DateTimeField
+        | TemporalField
         | PointField
         | CypherField
     )[];
@@ -116,7 +104,7 @@ class Node {
         | CustomEnumField
         | UnionField
         | ObjectField
-        | DateTimeField
+        | TemporalField
         | PointField
     )[];
 
@@ -133,10 +121,11 @@ class Node {
         this.interfaceFields = input.interfaceFields;
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
-        this.dateTimeFields = input.dateTimeFields;
+        this.temporalFields = input.temporalFields;
         this.pointFields = input.pointFields;
         this.ignoredFields = input.ignoredFields;
         this.exclude = input.exclude;
+        this.nodeDirective = input.nodeDirective;
         this.auth = input.auth;
         this.description = input.description;
 
@@ -146,13 +135,13 @@ class Node {
             ...input.enumFields,
             ...input.unionFields,
             ...input.objectFields,
-            ...input.dateTimeFields,
+            ...input.temporalFields,
             ...input.pointFields,
             ...input.cypherFields,
         ];
 
         this.mutableFields = [
-            ...input.dateTimeFields,
+            ...input.temporalFields,
             ...input.enumFields,
             ...input.objectFields,
             ...input.scalarFields,
@@ -162,6 +151,22 @@ class Node {
             ...input.unionFields,
             ...input.pointFields,
         ];
+    }
+
+    get labelString(): string {
+        return this.nodeDirective?.getLabelsString(this.name) || `:${this.name}`;
+    }
+
+    get labels(): string[] {
+        return this.nodeDirective?.getLabels(this.name) || [this.name];
+    }
+
+    getPlural(options: { camelCase: boolean }): string {
+        // camelCase is optional in this case to maintain backward compatibility
+        if (this.nodeDirective?.plural) {
+            return options.camelCase ? camelCase(this.nodeDirective.plural) : this.nodeDirective.plural;
+        }
+        return pluralize(options.camelCase ? camelCase(this.name) : this.name);
     }
 }
 

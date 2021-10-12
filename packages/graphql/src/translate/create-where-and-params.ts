@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import { GraphQLWhereArg, Context } from "../types";
+import { GraphQLWhereArg, Context, RelationField } from "../types";
 import { Node, Relationship } from "../classes";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
+import createAggregateWhereAndParams from "./create-aggregate-where-and-params";
 
 interface Res {
     clauses: string[];
@@ -57,6 +58,36 @@ function createWhereAndParams({
         let dbFieldName = mapToDbProperty(node, key);
 
         const pointField = node.pointFields.find((x) => key.startsWith(x.fieldName));
+        // Comparison operations requires adding dates to durations
+        // See https://neo4j.com/developer/cypher/dates-datetimes-durations/#comparing-filtering-values
+        const durationField = node.primitiveFields.find(
+            (x) => key.startsWith(x.fieldName) && x.typeMeta.name === "Duration"
+        );
+
+        if (key.endsWith("Aggregate")) {
+            const [fieldName] = key.split("Aggregate");
+            const relationField = node.relationFields.find((x) => x.fieldName === fieldName) as RelationField;
+            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const relationship = (context.neoSchema.relationships.find(
+                (x) => x.properties === relationField.properties
+            ) as unknown) as Relationship;
+
+            const aggregateWhereAndParams = createAggregateWhereAndParams({
+                node: refNode,
+                chainStr: param,
+                context,
+                field: relationField,
+                varName,
+                aggregation: value,
+                relationship,
+            });
+            if (aggregateWhereAndParams[0]) {
+                res.clauses.push(aggregateWhereAndParams[0]);
+                res.params = { ...res.params, ...aggregateWhereAndParams[1] };
+            }
+
+            return res;
+        }
 
         if (key.endsWith("_NOT")) {
             const [fieldName] = key.split("_NOT");
@@ -64,7 +95,7 @@ function createWhereAndParams({
             const relationField = node.relationFields.find((x) => fieldName === x.fieldName);
             const connectionField = node.connectionFields.find((x) => fieldName === x.fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -78,17 +109,16 @@ function createWhereAndParams({
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
 
+                const labels = refNode.labelString;
                 if (value === null) {
-                    res.clauses.push(
-                        `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`
-                    );
+                    res.clauses.push(`EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
 
                     return res;
                 }
 
                 let resultStr = [
-                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
-                    `AND NONE(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${relationField.typeMeta.name}) | ${param}] INNER_WHERE `,
+                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+                    `AND NONE(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
                 ].join(" ");
 
                 const recurse = createWhereAndParams({
@@ -123,9 +153,11 @@ function createWhereAndParams({
                 const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
                 const outStr = connectionField.relationship.direction === "OUT" ? "->" : "-";
 
+                const labels = refNode.labelString;
+
                 if (value === null) {
                     res.clauses.push(
-                        `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(:${connectionField.relationship.typeMeta.name}))`
+                        `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`
                     );
                     return res;
                 }
@@ -133,8 +165,8 @@ function createWhereAndParams({
                 const collectedMap = `${param}_map`;
 
                 let resultStr = [
-                    `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(:${connectionField.relationship.typeMeta.name}))`,
-                    `AND NONE(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${param}:${connectionField.relationship.typeMeta.name})`,
+                    `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
+                    `AND NONE(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${param}${labels})`,
                     ` | { node: ${param}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
                 ].join(" ");
 
@@ -187,7 +219,7 @@ function createWhereAndParams({
             const [fieldName] = key.split("_NOT_IN");
             dbFieldName = mapToDbProperty(node, fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -209,7 +241,8 @@ function createWhereAndParams({
         if (key.endsWith("_IN")) {
             const [fieldName] = key.split("_IN");
             dbFieldName = mapToDbProperty(node, fieldName);
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -232,7 +265,7 @@ function createWhereAndParams({
             const [fieldName] = key.split("_NOT_INCLUDES");
             dbFieldName = mapToDbProperty(node, fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -255,7 +288,7 @@ function createWhereAndParams({
             const [fieldName] = key.split("_INCLUDES");
             dbFieldName = mapToDbProperty(node, fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -281,17 +314,17 @@ function createWhereAndParams({
             const outStr = equalityRelation.direction === "OUT" ? "->" : "-";
             const relTypeStr = `[:${equalityRelation.type}]`;
 
+            const labels = refNode.labelString;
+
             if (value === null) {
-                res.clauses.push(
-                    `NOT EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${equalityRelation.typeMeta.name}))`
-                );
+                res.clauses.push(`NOT EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
 
                 return res;
             }
 
             let resultStr = [
-                `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${equalityRelation.typeMeta.name}))`,
-                `AND ANY(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}:${equalityRelation.typeMeta.name}) | ${param}] INNER_WHERE `,
+                `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+                `AND ANY(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
             ].join(" ");
 
             const recurse = createWhereAndParams({
@@ -327,9 +360,11 @@ function createWhereAndParams({
             const inStr = equalityConnection.relationship.direction === "IN" ? "<-" : "-";
             const outStr = equalityConnection.relationship.direction === "OUT" ? "->" : "-";
 
+            const labels = refNode.labelString;
+
             if (value === null) {
                 res.clauses.push(
-                    `NOT EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(:${equalityConnection.typeMeta.name}))`
+                    `NOT EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(${labels}))`
                 );
                 return res;
             }
@@ -337,8 +372,8 @@ function createWhereAndParams({
             const collectedMap = `${param}_map`;
 
             let resultStr = [
-                `EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(:${equalityConnection.relationship.typeMeta.name}))`,
-                `AND ANY(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${equalityConnection.relationship.type}]${outStr}(${param}:${equalityConnection.relationship.typeMeta.name})`,
+                `EXISTS((${varName})${inStr}[:${equalityConnection.relationship.type}]${outStr}(${labels}))`,
+                `AND ANY(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${equalityConnection.relationship.type}]${outStr}(${param}${labels})`,
                 ` | { node: ${param}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
             ].join(" ");
 
@@ -484,7 +519,7 @@ function createWhereAndParams({
             const [fieldName] = key.split("_LT");
             dbFieldName = mapToDbProperty(node, fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -492,11 +527,17 @@ function createWhereAndParams({
                     ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
                     : `${varName}.${dbFieldName}`;
 
-            res.clauses.push(
-                pointField
-                    ? `distance(${varName}.${dbFieldName}, point($${param}.point)) < $${param}.distance`
-                    : `${property} < $${param}`
-            );
+            let clause = `${property} < $${param}`;
+
+            if (pointField) {
+                clause = `distance(${varName}.${fieldName}, point($${param}.point)) < $${param}.distance`;
+            }
+
+            if (durationField) {
+                clause = `datetime() + ${property} < datetime() + $${param}`;
+            }
+
+            res.clauses.push(clause);
             res.params[param] = value;
 
             return res;
@@ -506,7 +547,7 @@ function createWhereAndParams({
             const [fieldName] = key.split("_LTE");
             dbFieldName = mapToDbProperty(node, fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -514,11 +555,17 @@ function createWhereAndParams({
                     ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
                     : `${varName}.${dbFieldName}`;
 
-            res.clauses.push(
-                pointField
-                    ? `distance(${varName}.${dbFieldName}, point($${param}.point)) <= $${param}.distance`
-                    : `${property} <= $${param}`
-            );
+            let clause = `${property} <= $${param}`;
+
+            if (pointField) {
+                clause = `distance(${varName}.${fieldName}, point($${param}.point)) <= $${param}.distance`;
+            }
+
+            if (durationField) {
+                clause = `datetime() + ${property} <= datetime() + $${param}`;
+            }
+
+            res.clauses.push(clause);
             res.params[param] = value;
 
             return res;
@@ -528,7 +575,7 @@ function createWhereAndParams({
             const [fieldName] = key.split("_GT");
             dbFieldName = mapToDbProperty(node, fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -536,11 +583,17 @@ function createWhereAndParams({
                     ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
                     : `${varName}.${dbFieldName}`;
 
-            res.clauses.push(
-                pointField
-                    ? `distance(${varName}.${dbFieldName}, point($${param}.point)) > $${param}.distance`
-                    : `${property} > $${param}`
-            );
+            let clause = `${property} > $${param}`;
+
+            if (pointField) {
+                clause = `distance(${varName}.${fieldName}, point($${param}.point)) > $${param}.distance`;
+            }
+
+            if (durationField) {
+                clause = `datetime() + ${property} > datetime() + $${param}`;
+            }
+
+            res.clauses.push(clause);
             res.params[param] = value;
 
             return res;
@@ -550,7 +603,7 @@ function createWhereAndParams({
             const [fieldName] = key.split("_GTE");
             dbFieldName = mapToDbProperty(node, fieldName);
 
-            const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find(
+            const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find(
                 (f) => fieldName === f.fieldName
             )?.coalesceValue;
             const property =
@@ -558,11 +611,17 @@ function createWhereAndParams({
                     ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
                     : `${varName}.${dbFieldName}`;
 
-            res.clauses.push(
-                pointField
-                    ? `distance(${varName}.${dbFieldName}, point($${param}.point)) >= $${param}.distance`
-                    : `${property} >= $${param}`
-            );
+            let clause = `${property} >= $${param}`;
+
+            if (pointField) {
+                clause = `distance(${varName}.${fieldName}, point($${param}.point)) >= $${param}.distance`;
+            }
+
+            if (durationField) {
+                clause = `datetime() + ${property} >= datetime() + $${param}`;
+            }
+
+            res.clauses.push(clause);
             res.params[param] = value;
 
             return res;
@@ -615,7 +674,7 @@ function createWhereAndParams({
                 res.clauses.push(`${varName}.${dbFieldName} = point($${param})`);
             }
         } else {
-            const field = [...node.primitiveFields, ...node.dateTimeFields].find((f) => key === f.fieldName);
+            const field = [...node.primitiveFields, ...node.temporalFields].find((f) => key === f.fieldName);
             const property =
                 field?.coalesceValue !== undefined
                     ? `coalesce(${varName}.${field.fieldName}, ${field.coalesceValue})`

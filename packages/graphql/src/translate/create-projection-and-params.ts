@@ -132,7 +132,7 @@ function createProjectionAndParams({
     resolveType?: boolean;
     inRelationshipProjection?: boolean;
 }): [string, any, ProjectionMeta?] {
-    function reducer(res: Res, [key, field]: [string, any]): Res {
+    function reducer(res: Res, [key, field]: [string, ResolveTree]): Res {
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
@@ -147,7 +147,7 @@ function createProjectionAndParams({
         const relationField = node.relationFields.find((x) => x.fieldName === field.name);
         const connectionField = node.connectionFields.find((x) => x.fieldName === field.name);
         const pointField = node.pointFields.find((x) => x.fieldName === field.name);
-        const dateTimeField = node.dateTimeFields.find((x) => x.fieldName === field.name);
+        const temporalField = node.temporalFields.find((x) => x.fieldName === field.name);
         const authableField = node.authableFields.find((x) => x.fieldName === field.name);
 
         if (authableField) {
@@ -256,7 +256,8 @@ function createProjectionAndParams({
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
             const outStr = relationField.direction === "OUT" ? "->" : "-";
-            const nodeOutStr = `(${param}:${referenceNode?.name})`;
+            const labels = referenceNode?.labelString;
+            const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
             if (relationField.union) {
@@ -267,16 +268,22 @@ function createProjectionAndParams({
                 );
 
                 const unionStrs: string[] = [
-                    `${key}: ${!isArray ? "head(" : ""} [(${
+                    `${key}: ${!isArray ? "head(" : ""} [${param} IN [(${
                         chainStr || varName
                     })${inStr}${relTypeStr}${outStr}(${param})`,
-                    `WHERE ${referenceNodes.map((x) => `"${x.name}" IN labels(${param})`).join(" OR ")}`,
+                    `WHERE ${referenceNodes
+                        .map((x) => {
+                            const labelsStatements = x.labels.map((label) => `"${label}" IN labels(${param})`);
+                            return `(${labelsStatements.join(" AND ")})`;
+                        })
+                        .join(" OR ")}`,
                     `| head(`,
                 ];
 
                 const headStrs: string[] = referenceNodes.map((refNode) => {
+                    const labelsStatements = refNode.labels.map((label) => `"${label}" IN labels(${param})`);
                     const innerHeadStr: string[] = [
-                        `[ ${param} IN [${param}] WHERE "${refNode.name}" IN labels (${param})`,
+                        `[ ${param} IN [${param}] WHERE (${labelsStatements.join(" AND ")})`,
                     ];
 
                     if (field.fieldsByTypeName[refNode.name]) {
@@ -316,7 +323,7 @@ function createProjectionAndParams({
                     return innerHeadStr.join(" ");
                 });
                 unionStrs.push(headStrs.join(" + "));
-                unionStrs.push(") ]");
+                unionStrs.push(`) ] WHERE ${param} IS NOT NULL]`);
 
                 if (optionsInput) {
                     const offsetLimit = createOffsetLimitStr({
@@ -401,10 +408,8 @@ function createProjectionAndParams({
                     res.meta.connectionFields = [];
                 }
 
-                const f = field as ResolveTree;
-
-                res.meta.connectionFields.push(f);
-                res.projection.push(literalElements ? `${f.alias}: ${f.alias}` : `${f.alias}`);
+                res.meta.connectionFields.push(field);
+                res.projection.push(literalElements ? `${field.alias}: ${field.alias}` : `${field.alias}`);
 
                 return res;
             }
@@ -433,8 +438,8 @@ function createProjectionAndParams({
 
         if (pointField) {
             res.projection.push(createPointElement({ resolveTree: field, field: pointField, variable: varName }));
-        } else if (dateTimeField) {
-            res.projection.push(createDatetimeElement({ resolveTree: field, field: dateTimeField, variable: varName }));
+        } else if (temporalField?.typeMeta.name === "DateTime") {
+            res.projection.push(createDatetimeElement({ resolveTree: field, field: temporalField, variable: varName }));
         } else {
             // If field is aliased, rename projected field to alias and set to varName.fieldName
             // e.g. RETURN varname { .fieldName } -> RETURN varName { alias: varName.fieldName }
@@ -461,14 +466,24 @@ function createProjectionAndParams({
         return res;
     }
 
-    const { projection, params, meta } = Object.entries(fieldsByTypeName[node.name] as { [k: string]: any }).reduce(
-        reducer,
-        {
-            projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
-            params: {},
-            meta: {},
-        }
-    );
+    // Include fields of implemented interfaces to allow for fragments on interfaces
+    // cf. https://github.com/neo4j/graphql/issues/476
+
+    const fields = (node.interfaces ?? [])
+        // Map over the implemented interfaces of the node and extract the names
+        .map((implementedInterface) => implementedInterface.name.value)
+        // Combine the fields of the interfaces...
+        .reduce(
+            (prevFields, interfaceName) => ({ ...prevFields, ...fieldsByTypeName[interfaceName] }),
+            // with the fields of the node
+            fieldsByTypeName[node.name]
+        );
+
+    const { projection, params, meta } = Object.entries(fields).reduce(reducer, {
+        projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
+        params: {},
+        meta: {},
+    });
 
     return [`{ ${projection.join(", ")} }`, params, meta];
 }

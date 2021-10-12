@@ -18,8 +18,9 @@
  */
 
 import createProjectionAndParams from "./create-projection-and-params";
-import { Neo4jGraphQL, Node } from "../classes";
+import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
+import { NodeBuilder } from "../utils/test";
 
 describe("createProjectionAndParams", () => {
     test("should be a function", () => {
@@ -38,15 +39,9 @@ describe("createProjectionAndParams", () => {
             },
         };
 
-        // @ts-ignore
-        const node: Node = {
+        const node = new NodeBuilder({
             name: "Movie",
-            relationFields: [],
-            connectionFields: [],
-            cypherFields: [],
-            enumFields: [],
-            unionFields: [],
-            scalarFields: [],
+
             primitiveFields: [
                 {
                     fieldName: "title",
@@ -68,13 +63,7 @@ describe("createProjectionAndParams", () => {
                     arguments: [],
                 },
             ],
-            dateTimeFields: [],
-            pointFields: [],
-            interfaceFields: [],
-            objectFields: [],
-            authableFields: [],
-            mutableFields: [],
-        };
+        }).instance();
 
         // @ts-ignore
         const neoSchema: Neo4jGraphQL = {

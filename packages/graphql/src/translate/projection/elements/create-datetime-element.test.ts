@@ -18,7 +18,7 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { DateTimeField } from "../../../types";
+import { TemporalField } from "../../../types";
 import createDatetimeElement from "./create-datetime-element";
 
 describe("createDatetimeElement", () => {
@@ -30,10 +30,10 @@ describe("createDatetimeElement", () => {
             fieldsByTypeName: {},
         };
 
-        const field: DateTimeField = {
+        const field: TemporalField = {
             // @ts-ignore
             typeMeta: {
-                name: "Point",
+                name: "DateTime",
             },
         };
 
@@ -56,10 +56,10 @@ describe("createDatetimeElement", () => {
             fieldsByTypeName: {},
         };
 
-        const field: DateTimeField = {
+        const field: TemporalField = {
             // @ts-ignore
             typeMeta: {
-                name: "Point",
+                name: "DateTime",
                 array: true,
             },
         };

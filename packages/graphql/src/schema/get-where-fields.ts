@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { CustomEnumField, CustomScalarField, DateTimeField, PointField, PrimitiveField } from "../types";
+import { CustomEnumField, CustomScalarField, PointField, PrimitiveField, TemporalField } from "../types";
 
 interface Fields {
     scalarFields: CustomScalarField[];
     enumFields: CustomEnumField[];
     primitiveFields: PrimitiveField[];
-    dateTimeFields: DateTimeField[];
+    temporalFields: TemporalField[];
     pointFields: PointField[];
 }
 
@@ -44,7 +44,7 @@ function getWhereFields({
             res[f.fieldName] = f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name;
             return res;
         }, {}),
-        ...[...fields.primitiveFields, ...fields.dateTimeFields, ...fields.enumFields, ...fields.pointFields].reduce(
+        ...[...fields.primitiveFields, ...fields.temporalFields, ...fields.enumFields, ...fields.pointFields].reduce(
             (res, f) => {
                 res[f.fieldName] = f.typeMeta.input.where.pretty;
                 res[`${f.fieldName}_NOT`] = f.typeMeta.input.where.pretty;
@@ -62,7 +62,19 @@ function getWhereFields({
                 res[`${f.fieldName}_IN`] = `[${f.typeMeta.input.where.pretty}]`;
                 res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.input.where.pretty}]`;
 
-                if (["Float", "Int", "BigInt", "DateTime", "Date", "LocalDateTime", "Time", "LocalTime"].includes(f.typeMeta.name)) {
+                if (
+                    [
+                        "Float",
+                        "Int",
+                        "BigInt",
+                        "DateTime",
+                        "Date",
+                        "LocalDateTime",
+                        "Time",
+                        "LocalTime",
+                        "Duration",
+                    ].includes(f.typeMeta.name)
+                ) {
                     ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
                         res[`${f.fieldName}${comparator}`] = f.typeMeta.name;
                     });

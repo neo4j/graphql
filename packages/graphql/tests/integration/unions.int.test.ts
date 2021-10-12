@@ -117,7 +117,7 @@ describe("unions", () => {
 
             type Movie {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
@@ -130,14 +130,18 @@ describe("unions", () => {
             charset: "alphabetic",
         });
 
-        const genreName = generate({
+        const genreName1 = generate({
+            charset: "alphabetic",
+        });
+
+        const genreName2 = generate({
             charset: "alphabetic",
         });
 
         const query = `
             {
                 movies (where: {title: "${movieTitle}"}) {
-                    search(where: { Genre: { name: "${genreName}" }}) {
+                    search(where: { Genre: { name: "${genreName1}" }}) {
                         __typename
                         ... on Movie {
                             title
@@ -153,9 +157,11 @@ describe("unions", () => {
         try {
             await session.run(`
                 CREATE (m:Movie {title: "${movieTitle}"})
-                CREATE (g:Genre {name: "${genreName}"})
+                CREATE (g1:Genre {name: "${genreName1}"})
+                CREATE (g2:Genre {name: "${genreName2}"})
                 MERGE (m)-[:SEARCH]->(m)
-                MERGE (m)-[:SEARCH]->(g)
+                MERGE (m)-[:SEARCH]->(g1)
+                MERGE (m)-[:SEARCH]->(g2)
             `);
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -166,7 +172,7 @@ describe("unions", () => {
             expect(gqlResult.errors).toBeFalsy();
 
             expect((gqlResult.data as any).movies[0]).toEqual({
-                search: [{ __typename: "Genre", name: genreName }],
+                search: [{ __typename: "Genre", name: genreName1 }],
             });
         } finally {
             await session.close();

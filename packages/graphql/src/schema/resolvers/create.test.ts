@@ -17,15 +17,14 @@
  * limitations under the License.
  */
 
-import { Node } from "../../classes";
 import createResolver from "./create";
+import { NodeBuilder } from "../../utils/test";
 
 describe("Create resolver", () => {
     test("should return the correct; type, args and resolve", () => {
-        // @ts-ignore
-        const node: Node = {
+        const node = new NodeBuilder({
             name: "Movie",
-        };
+        }).instance();
 
         const result = createResolver({ node });
         expect(result.type).toEqual("CreateMoviesMutationResponse!");

@@ -69,8 +69,13 @@ function createNodeWhereAndParams({
         const operator = match?.groups?.operator;
 
         const pointField = node.pointFields.find((x) => x.fieldName === fieldName);
+        // Comparison operations requires adding dates to durations
+        // See https://neo4j.com/developer/cypher/dates-datetimes-durations/#comparing-filtering-values
+        const durationField = node.scalarFields.find(
+            (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
+        );
 
-        const coalesceValue = [...node.primitiveFields, ...node.dateTimeFields].find((f) => fieldName === f.fieldName)
+        const coalesceValue = [...node.primitiveFields, ...node.temporalFields].find((f) => fieldName === f.fieldName)
             ?.coalesceValue;
 
         const property =
@@ -208,12 +213,19 @@ function createNodeWhereAndParams({
         }
 
         if (operator && ["LT", "LTE", "GTE", "GT"].includes(operator)) {
-            res.clauses.push(
-                pointField
-                    ? `distance(${property}, point($${param}.point)) ${operators[operator]} $${param}.distance`
-                    : `${property} ${operators[operator]} $${param}`
-            );
+            let clause = `${property} ${operators[operator]} $${param}`;
+
+            if (pointField) {
+                clause = `distance(${property}, point($${param}.point)) ${operators[operator]} $${param}.distance`;
+            }
+            
+            if (durationField) {
+                clause = `datetime() + ${property} ${operators[operator]} datetime() + $${param}`;
+            }
+
+            res.clauses.push(clause);
             res.params[key] = value;
+
             return res;
         }
 

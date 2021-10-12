@@ -69,7 +69,7 @@ type User @exclude {
 
 [source, graphql, indent=0]
 ----
-type User @exclude(operation: [CREATE, READ, UPDATE, DELETE]) {
+type User @exclude(operations: [CREATE, READ, UPDATE, DELETE]) {
     name: String
 }
 ----

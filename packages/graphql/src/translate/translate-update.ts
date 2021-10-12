@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-import camelCase from "camelcase";
-import pluralize from "pluralize";
 import { Node, Relationship } from "../classes";
 import { Context, GraphQLWhereArg, RelationField, ConnectionField } from "../types";
 import createWhereAndParams from "./create-where-and-params";
@@ -42,7 +40,8 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const createInput = resolveTree.args.create;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
-    const matchStr = `MATCH (${varName}:${node.name})`;
+    const labels = node.labelString;
+    const matchStr = `MATCH (${varName}${labels})`;
     let whereStr = "";
     let updateStr = "";
     const connectStrs: string[] = [];
@@ -60,8 +59,8 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     // and find field where field.name ~ node.name which exists by construction
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { fieldsByTypeName } = Object.values(
-        resolveTree.fieldsByTypeName[`Update${pluralize(node.name)}MutationResponse`]
-    ).find((field) => field.name === pluralize(camelCase(node.name)))!;
+        resolveTree.fieldsByTypeName[`Update${node.getPlural({ camelCase: false })}MutationResponse`]
+    ).find((field) => field.name === node.getPlural({ camelCase: true }))!;
 
     if (whereInput) {
         const where = createWhereAndParams({
@@ -208,7 +207,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     }${index}`;
                     const nodeName = `${baseName}_node`;
                     const propertiesName = `${baseName}_relationship`;
-                    const relTypeStr = `[${create.edge ? propertiesName : ""}:${relationField.type}]`;
+                    const relTypeStr = `[${relationField.properties ? propertiesName : ""}:${relationField.type}]`;
 
                     const createAndParams = createCreateAndParams({
                         context,
@@ -221,13 +220,13 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     cypherParams = { ...cypherParams, ...createAndParams[1] };
                     createStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
-                    if (create.edge) {
+                    if (relationField.properties) {
                         const relationship = (context.neoSchema.relationships.find(
                             (x) => x.properties === relationField.properties
                         ) as unknown) as Relationship;
 
                         const setA = createSetRelationshipPropertiesAndParams({
-                            properties: create.edge,
+                            properties: create.edge ?? {},
                             varName: propertiesName,
                             relationship,
                             operation: "CREATE",

@@ -19,12 +19,12 @@
 
 import type {
     PrimitiveField,
-    DateTimeField,
     PointField,
     CustomEnumField,
     CypherField,
     CustomScalarField,
     BaseField,
+    TemporalField,
 } from "../types";
 
 export interface RelationshipConstructor {
@@ -36,7 +36,7 @@ export interface RelationshipConstructor {
     primitiveFields?: PrimitiveField[];
     scalarFields?: CustomScalarField[];
     enumFields?: CustomEnumField[];
-    dateTimeFields?: DateTimeField[];
+    temporalFields?: TemporalField[];
     pointFields?: PointField[];
     ignoredFields?: BaseField[];
 }
@@ -56,7 +56,7 @@ class Relationship {
 
     public enumFields: CustomEnumField[];
 
-    public dateTimeFields: DateTimeField[];
+    public temporalFields: TemporalField[];
 
     public pointFields: PointField[];
 
@@ -70,7 +70,7 @@ class Relationship {
         this.primitiveFields = input.primitiveFields || [];
         this.scalarFields = input.scalarFields || [];
         this.enumFields = input.enumFields || [];
-        this.dateTimeFields = input.dateTimeFields || [];
+        this.temporalFields = input.temporalFields || [];
         this.pointFields = input.pointFields || [];
         this.ignoredFields = input.ignoredFields || [];
     }

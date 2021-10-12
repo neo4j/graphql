@@ -18,14 +18,14 @@
  */
 
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { Neo4jGraphQL, Node } from "../classes";
+import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
+import { NodeBuilder } from "../utils/test";
 
 describe("createDisconnectAndParams", () => {
     test("should return the correct disconnect", () => {
-        // @ts-ignore
-        const node: Node = {
+        const node = new NodeBuilder({
             name: "Movie",
             relationFields: [
                 {
@@ -60,14 +60,14 @@ describe("createDisconnectAndParams", () => {
             enumFields: [],
             scalarFields: [],
             primitiveFields: [],
-            dateTimeFields: [],
+            temporalFields: [],
             interfaceFields: [],
             unionFields: [],
             objectFields: [],
             pointFields: [],
             otherDirectives: [],
             interfaces: [],
-        };
+        }).instance();
 
         // @ts-ignore
         const neoSchema: Neo4jGraphQL = {

@@ -22,6 +22,7 @@ import { Neo4jGraphQLAuthenticationError, Node } from "../classes";
 import { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context } from "../types";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import mapToDbProperty from "../utils/map-to-db-property";
+import joinPredicates, { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-predicates";
 
 interface Res {
     strs: string[];
@@ -72,7 +73,7 @@ function createAuthPredicate({
 
     const result = Object.entries(rule[kind] as any).reduce(
         (res: Res, [key, value]) => {
-            if (key === "AND" || key === "OR") {
+            if (isPredicateJoin(key)) {
                 const inner: string[] = [];
 
                 (value as any[]).forEach((v, i) => {
@@ -92,7 +93,7 @@ function createAuthPredicate({
                     res.params = { ...res.params, ...authPredicate[1] };
                 });
 
-                res.strs.push(`(${inner.join(` ${key} `)})`);
+                res.strs.push(joinPredicates(inner, key));
             }
 
             const authableField = node.authableFields.find((field) => field.fieldName === key);
@@ -130,14 +131,12 @@ function createAuthPredicate({
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
                 const relationVarName = relationField.fieldName;
-
+                const labels = refNode.labelString;
                 let resultStr = [
-                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
+                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
                     `AND ${
                         kind === "allow" ? "ANY" : "ALL"
-                    }(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}:${
-                        relationField.typeMeta.name
-                    }) | ${relationVarName}] WHERE `,
+                    }(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}${labels}) | ${relationVarName}] WHERE `,
                 ].join(" ");
 
                 Object.entries(value as any).forEach(([k, v]: [string, any]) => {
@@ -164,7 +163,7 @@ function createAuthPredicate({
         { params: {}, strs: [] }
     );
 
-    return [result.strs.join(" AND "), result.params];
+    return [joinPredicates(result.strs, "AND"), result.params];
 }
 
 function createAuthAndParams({
@@ -226,9 +225,7 @@ function createAuthAndParams({
             { strs: [], params: {} }
         );
 
-        const joined = subPredicates.strs.filter(Boolean).join(" OR ");
-
-        return [joined, subPredicates.params];
+        return [joinPredicates(subPredicates.strs, "OR"), subPredicates.params];
     }
 
     function createSubPredicate({
@@ -270,7 +267,7 @@ function createAuthAndParams({
             }
         }
 
-        ["AND", "OR"].forEach((key) => {
+        PREDICATE_JOINS.forEach((key) => {
             const value = authRule[key] as AuthRule["AND"] | AuthRule["OR"];
 
             if (!value) {
@@ -295,7 +292,7 @@ function createAuthAndParams({
                 predicateParams = { ...predicateParams, ...par };
             });
 
-            thisPredicates.push(predicates.join(` ${key} `));
+            thisPredicates.push(joinPredicates(predicates, key));
             thisParams = { ...thisParams, ...predicateParams };
         });
 
@@ -314,7 +311,7 @@ function createAuthAndParams({
             }
         }
 
-        return [thisPredicates.join(" AND "), thisParams];
+        return [joinPredicates(thisPredicates, "AND"), thisParams];
     }
 
     const subPredicates = authRules.reduce(
@@ -329,7 +326,7 @@ function createAuthAndParams({
         { strs: [], params: {} }
     );
 
-    return [subPredicates.strs.filter(Boolean).join(" OR "), subPredicates.params];
+    return [joinPredicates(subPredicates.strs, "OR"), subPredicates.params];
 }
 
 export default createAuthAndParams;

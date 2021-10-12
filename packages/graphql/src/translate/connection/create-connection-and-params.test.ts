@@ -24,6 +24,7 @@ import { mocked } from "ts-jest/utils";
 import { ConnectionField, Context } from "../../types";
 import createConnectionAndParams from "./create-connection-and-params";
 import Neo4jGraphQL from "../../classes/Neo4jGraphQL";
+import { NodeBuilder } from "../../utils/test";
 
 jest.mock("../../classes/Neo4jGraphQL");
 
@@ -31,19 +32,18 @@ describe("createConnectionAndParams", () => {
     test("Returns entry with no args", () => {
         // @ts-ignore
         const mockedNeo4jGraphQL = mocked(new Neo4jGraphQL(), true);
-        // @ts-ignore
         mockedNeo4jGraphQL.nodes = [
             // @ts-ignore
-            {
+            new NodeBuilder({
                 name: "Actor",
-            },
+            }).instance(),
         ];
         // @ts-ignore
         mockedNeo4jGraphQL.relationships = [
             // @ts-ignore
             {
                 name: "MovieActorsRelationship",
-                dateTimeFields: [],
+                temporalFields: [],
                 enumFields: [],
                 ignoredFields: [],
                 pointFields: [],
@@ -115,19 +115,18 @@ describe("createConnectionAndParams", () => {
     test("Returns entry with sort arg", () => {
         // @ts-ignore
         const mockedNeo4jGraphQL = mocked(new Neo4jGraphQL(), true);
-        // @ts-ignore
         mockedNeo4jGraphQL.nodes = [
             // @ts-ignore
-            {
+            new NodeBuilder({
                 name: "Actor",
-            },
+            }).instance(),
         ];
         // @ts-ignore
         mockedNeo4jGraphQL.relationships = [
             // @ts-ignore
             {
                 name: "MovieActorsRelationship",
-                dateTimeFields: [],
+                temporalFields: [],
                 enumFields: [],
                 ignoredFields: [],
                 pointFields: [],
@@ -215,16 +214,16 @@ describe("createConnectionAndParams", () => {
         // @ts-ignore
         mockedNeo4jGraphQL.nodes = [
             // @ts-ignore
-            {
+            new NodeBuilder({
                 name: "Actor",
-            },
+            }).instance(),
         ];
         // @ts-ignore
         mockedNeo4jGraphQL.relationships = [
             // @ts-ignore
             {
                 name: "MovieActorsRelationship",
-                dateTimeFields: [],
+                temporalFields: [],
                 enumFields: [],
                 ignoredFields: [],
                 pointFields: [],

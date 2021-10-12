@@ -20,7 +20,6 @@
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
 import { forEachField } from "@graphql-tools/utils";
-import camelCase from "camelcase";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
@@ -49,8 +48,9 @@ import {
 import pluralize from "pluralize";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth, ConnectionQueryArgs } from "../types";
+import { PrimitiveField, Auth, ConnectionQueryArgs, BaseField } from "../types";
 import {
+    aggregateResolver,
     countResolver,
     createResolver,
     cypherResolver,
@@ -58,6 +58,8 @@ import {
     deleteResolver,
     findResolver,
     updateResolver,
+    numericalResolver,
+    idResolver,
 } from "./resolvers";
 import * as Scalars from "./scalars";
 import parseExcludeDirective from "./parse-exclude-directive";
@@ -70,6 +72,8 @@ import getWhereFields from "./get-where-fields";
 import { connectionFieldResolver } from "./pagination";
 import { validateDocument } from "./validation";
 import * as constants from "../constants";
+import NodeDirective from "../classes/NodeDirective";
+import parseNodeDirective from "./parse-node-directive";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -120,6 +124,106 @@ function makeAugmentedSchema(
             relationshipsDeleted: new GraphQLNonNull(GraphQLInt),
         },
     });
+
+    const composeInt = {
+        type: "Int!",
+        resolve: numericalResolver,
+        args: {},
+    };
+
+    const composeFloat = {
+        type: "Float!",
+        resolve: numericalResolver,
+        args: {},
+    };
+
+    const composeId = {
+        type: "ID!",
+        resolve: idResolver,
+        args: {},
+    };
+
+    const whereAggregationOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+
+    // Types that you can average
+    // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg
+    // https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg-duration
+    // String uses avg(size())
+    const whereAggregationAverageTypes = ["String", "Int", "Float", "BigInt", "Duration"];
+
+    const whereAggregationTypes: string[] = [
+        "ID",
+        "String",
+        "Float",
+        "Int",
+        "BigInt",
+        "DateTime",
+        "LocalDateTime",
+        "LocalTime",
+        "Time",
+        "Duration",
+    ];
+
+    // Foreach i if i[1] is ? then we will assume it takes on type { min, max }
+    const aggregationSelectionTypeMatrix: [string, any?][] = [
+        [
+            "ID",
+            {
+                shortest: composeId,
+                longest: composeId,
+            },
+        ],
+        [
+            "String",
+            {
+                shortest: "String!",
+                longest: "String!",
+            },
+        ],
+        [
+            "Float",
+            {
+                max: composeFloat,
+                min: composeFloat,
+                average: composeFloat,
+            },
+        ],
+        [
+            "Int",
+            {
+                max: composeInt,
+                min: composeInt,
+                average: composeFloat,
+            },
+        ],
+        [
+            "BigInt",
+            {
+                max: "BigInt!",
+                min: "BigInt!",
+                average: "BigInt!",
+            },
+        ],
+        ["DateTime"],
+        ["LocalDateTime"],
+        ["LocalTime"],
+        ["Time"],
+        ["Duration"],
+    ];
+
+    const aggregationSelectionTypeNames = aggregationSelectionTypeMatrix.map(([name]) => name);
+
+    const aggregationSelectionTypes = aggregationSelectionTypeMatrix.reduce<
+        Record<string, ObjectTypeComposer<unknown, unknown>>
+    >((res, [name, fields]) => {
+        return {
+            ...res,
+            [name]: composer.createObjectTC({
+                name: `${name}AggregateSelection`,
+                fields: fields ?? { min: `${name}!`, max: `${name}!` },
+            }),
+        };
+    }, {});
 
     const queryOptions = composer.createInputTC({
         name: "QueryOptions",
@@ -216,10 +320,11 @@ function makeAugmentedSchema(
         });
 
         const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude"].includes(x.name.value)
+            (x) => !["auth", "exclude", "node"].includes(x.name.value)
         );
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
+        const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
         let auth: Auth;
@@ -230,6 +335,11 @@ function makeAugmentedSchema(
         let exclude: Exclude;
         if (excludeDirective) {
             exclude = parseExcludeDirective(excludeDirective);
+        }
+
+        let nodeDirective: NodeDirective;
+        if (nodeDirectiveDefinition) {
+            nodeDirective = parseNodeDirective(nodeDirectiveDefinition);
         }
 
         const nodeFields = getObjFieldMeta({
@@ -269,6 +379,8 @@ function makeAugmentedSchema(
             auth,
             // @ts-ignore we can be sure it's defined
             exclude,
+            // @ts-ignore we can be sure it's defined
+            nodeDirective,
             description: definition.description?.value,
         });
 
@@ -355,19 +467,16 @@ function makeAugmentedSchema(
         composer.createInputTC({
             name: `${relationship.name.value}UpdateInput`,
             fields: [
-                ...relFields.primitiveFields,
+                ...relFields.primitiveFields.filter((field) => !field.autogenerate && !field.readonly),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
-                ...relFields.dateTimeFields.filter((x) => !x.timestamps),
+                ...relFields.temporalFields.filter((field) => !field.timestamps),
                 ...relFields.pointFields,
             ].reduce(
-                (res, f) =>
-                    f.readonly || (f as PrimitiveField)?.autogenerate
-                        ? res
-                        : {
-                              ...res,
-                              [f.fieldName]: f.typeMeta.input.update.pretty,
-                          },
+                (res, f) => ({
+                    ...res,
+                    [f.fieldName]: f.typeMeta.input.update.pretty,
+                }),
                 {}
             ),
         });
@@ -377,7 +486,7 @@ function makeAugmentedSchema(
             fields: {
                 scalarFields: relFields.scalarFields,
                 enumFields: relFields.enumFields,
-                dateTimeFields: relFields.dateTimeFields,
+                temporalFields: relFields.temporalFields,
                 pointFields: relFields.pointFields,
                 primitiveFields: relFields.primitiveFields,
             },
@@ -393,16 +502,12 @@ function makeAugmentedSchema(
             name: `${relationship.name.value}CreateInput`,
             // TODO - This reduce duplicated when creating node CreateInput - put into shared function?
             fields: [
-                ...relFields.primitiveFields,
+                ...relFields.primitiveFields.filter((field) => !field.autogenerate),
                 ...relFields.scalarFields,
                 ...relFields.enumFields,
-                ...relFields.dateTimeFields.filter((x) => !x.timestamps),
+                ...relFields.temporalFields.filter((field) => !field.timestamps),
                 ...relFields.pointFields,
             ].reduce((res, f) => {
-                if ((f as PrimitiveField)?.autogenerate) {
-                    return res;
-                }
-
                 if ((f as PrimitiveField)?.defaultValue !== undefined) {
                     const field: InputTypeComposerFieldConfigAsObjectDefinition = {
                         type: f.typeMeta.input.create.pretty,
@@ -457,7 +562,7 @@ function makeAugmentedSchema(
             ...node.interfaceFields,
             ...node.objectFields,
             ...node.unionFields,
-            ...node.dateTimeFields,
+            ...node.temporalFields,
             ...node.pointFields,
             ...node.ignoredFields,
         ]);
@@ -474,7 +579,7 @@ function makeAugmentedSchema(
             ...node.primitiveFields,
             ...node.enumFields,
             ...node.scalarFields,
-            ...node.dateTimeFields,
+            ...node.temporalFields,
             ...node.pointFields,
         ].reduce((res, f) => {
             return f.typeMeta.array
@@ -520,11 +625,35 @@ function makeAugmentedSchema(
             typeName: node.name,
             enableRegex,
             fields: {
-                dateTimeFields: node.dateTimeFields,
+                temporalFields: node.temporalFields,
                 enumFields: node.enumFields,
                 pointFields: node.pointFields,
                 primitiveFields: node.primitiveFields,
                 scalarFields: node.scalarFields,
+            },
+        });
+
+        composer.createObjectTC({
+            name: `${node.name}AggregateSelection`,
+            fields: {
+                count: composeInt,
+                ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
+                    if (field.typeMeta.array) {
+                        return res;
+                    }
+
+                    if (!aggregationSelectionTypeNames.includes(field.typeMeta.name)) {
+                        return res;
+                    }
+
+                    const objectTypeComposer = (aggregationSelectionTypes[
+                        field.typeMeta.name
+                    ] as unknown) as ObjectTypeComposer<unknown, unknown>;
+
+                    res[field.fieldName] = objectTypeComposer.NonNull;
+
+                    return res;
+                }, {}),
             },
         });
 
@@ -540,7 +669,7 @@ function makeAugmentedSchema(
                 ...node.primitiveFields,
                 ...node.scalarFields,
                 ...node.enumFields,
-                ...node.dateTimeFields.filter((x) => !x.timestamps),
+                ...node.temporalFields.filter((field) => !field.timestamps),
                 ...node.pointFields,
             ].reduce((res, f) => {
                 if ((f as PrimitiveField)?.autogenerate) {
@@ -567,7 +696,7 @@ function makeAugmentedSchema(
                 ...node.primitiveFields,
                 ...node.scalarFields,
                 ...node.enumFields,
-                ...node.dateTimeFields.filter((x) => !x.timestamps),
+                ...node.temporalFields.filter((field) => !field.timestamps),
                 ...node.pointFields,
             ].reduce(
                 (res, f) =>
@@ -588,10 +717,10 @@ function makeAugmentedSchema(
 
         ["Create", "Update"].map((operation) =>
             composer.createObjectTC({
-                name: `${operation}${pluralize(node.name)}MutationResponse`,
+                name: `${operation}${node.getPlural({ camelCase: false })}MutationResponse`,
                 fields: {
                     info: `${operation}Info!`,
-                    [pluralize(camelCase(node.name))]: `[${node.name}!]!`,
+                    [node.getPlural({ camelCase: true })]: `[${node.name}!]!`,
                 },
             })
         );
@@ -613,6 +742,26 @@ function makeAugmentedSchema(
         }
 
         node.relationFields.forEach((rel) => {
+            let hasNonGeneratedProperties = false;
+            let hasNonNullNonGeneratedProperties = false;
+            let relFields: ObjectFields | undefined;
+
+            if (rel.properties) {
+                relFields = relationshipFields.get(rel.properties);
+
+                if (relFields) {
+                    const nonGeneratedProperties = [
+                        ...relFields.primitiveFields.filter((field) => !field.autogenerate),
+                        ...relFields.scalarFields,
+                        ...relFields.enumFields,
+                        ...relFields.temporalFields.filter((field) => !field.timestamps),
+                        ...relFields.pointFields,
+                    ];
+                    hasNonGeneratedProperties = nonGeneratedProperties.length > 0;
+                    hasNonNullNonGeneratedProperties = nonGeneratedProperties.some((field) => field.typeMeta.required);
+                }
+            }
+
             if (rel.union) {
                 const refNodes = nodes.filter((x) => rel.union?.nodes?.includes(x.name));
 
@@ -669,7 +818,13 @@ function makeAugmentedSchema(
                             name: createName,
                             fields: {
                                 node: `${n.name}CreateInput!`,
-                                ...(rel.properties ? { edge: `${rel.properties}CreateInput!` } : {}),
+                                ...(hasNonGeneratedProperties
+                                    ? {
+                                          edge: `${rel.properties}CreateInput${
+                                              hasNonNullNonGeneratedProperties ? `!` : ""
+                                          }`,
+                                      }
+                                    : {}),
                             },
                         });
 
@@ -706,7 +861,13 @@ function makeAugmentedSchema(
                                               : `${n.name}ConnectInput`,
                                       }
                                     : {}),
-                                ...(rel.properties ? { edge: `${rel.properties}CreateInput!` } : {}),
+                                ...(hasNonGeneratedProperties
+                                    ? {
+                                          edge: `${rel.properties}CreateInput${
+                                              hasNonNullNonGeneratedProperties ? `!` : ""
+                                          }`,
+                                      }
+                                    : {}),
                             },
                         });
 
@@ -738,7 +899,7 @@ function makeAugmentedSchema(
                     composer.createInputTC({
                         name: connectionUpdateInputName,
                         fields: {
-                            ...(rel.properties ? { edge: `${rel.properties}UpdateInput` } : {}),
+                            ...(hasNonGeneratedProperties ? { edge: `${rel.properties}UpdateInput` } : {}),
                             node: updateField,
                         },
                     });
@@ -833,33 +994,133 @@ function makeAugmentedSchema(
 
             const n = nodes.find((x) => x.name === rel.typeMeta.name) as Node;
             const updateField = `${n.name}UpdateInput`;
-
             const nodeFieldInputName = `${node.name}${upperFirst(rel.fieldName)}FieldInput`;
             const nodeFieldUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateFieldInput`;
             const nodeFieldDeleteInputName = `${node.name}${upperFirst(rel.fieldName)}DeleteFieldInput`;
             const nodeFieldDisconnectInputName = `${node.name}${upperFirst(rel.fieldName)}DisconnectFieldInput`;
-
             const connectionUpdateInputName = `${node.name}${upperFirst(rel.fieldName)}UpdateConnectionInput`;
+            const relationshipWhereTypeInputName = `${node.name}${upperFirst(rel.fieldName)}AggregateInput`;
 
-            whereInput.addFields({
-                ...{ [rel.fieldName]: `${n.name}Where`, [`${rel.fieldName}_NOT`]: `${n.name}Where` },
+            const [nodeWhereAggregationInput, edgeWhereAggregationInput] = [n, relFields].map((nodeOrRelFields) => {
+                if (!nodeOrRelFields) {
+                    return;
+                }
+
+                const fields = whereAggregationTypes.reduce<BaseField[]>((r, t) => {
+                    const fields = [...nodeOrRelFields.primitiveFields, ...nodeOrRelFields.temporalFields].filter(
+                        (y) => !y.typeMeta.array && y.typeMeta.name === t
+                    );
+
+                    if (!fields.length) {
+                        return r;
+                    }
+
+                    return r.concat(fields);
+                }, []);
+
+                if (!fields.length) {
+                    return;
+                }
+
+                const name = `${node.name}${upperFirst(rel.fieldName)}${
+                    nodeOrRelFields instanceof Node ? `Node` : `Edge`
+                }AggregationWhereInput`;
+
+                const aggregationInput = composer.createInputTC({
+                    name,
+                    fields: {
+                        AND: `[${name}!]`,
+                        OR: `[${name}!]`,
+                    },
+                });
+
+                fields.forEach((field) => {
+                    if (field.typeMeta.name === "ID") {
+                        aggregationInput.addFields({
+                            [`${field.fieldName}_EQUAL`]: "ID",
+                        });
+
+                        return;
+                    }
+
+                    if (field.typeMeta.name === "String") {
+                        aggregationInput.addFields(
+                            whereAggregationOperators.reduce((res, operator) => {
+                                return {
+                                    ...res,
+                                    [`${field.fieldName}_${operator}`]: `${operator === "EQUAL" ? "String" : "Int"}`,
+                                    [`${field.fieldName}_AVERAGE_${operator}`]: "Float",
+                                    [`${field.fieldName}_LONGEST_${operator}`]: "Int",
+                                    [`${field.fieldName}_SHORTEST_${operator}`]: "Int",
+                                };
+                            }, {})
+                        );
+
+                        return;
+                    }
+
+                    if (whereAggregationAverageTypes.includes(field.typeMeta.name)) {
+                        aggregationInput.addFields(
+                            whereAggregationOperators.reduce((res, operator) => {
+                                let averageType = "Float";
+
+                                if (field.typeMeta.name === "BigInt") {
+                                    averageType = "BigInt";
+                                }
+
+                                if (field.typeMeta.name === "Duration") {
+                                    averageType = "Duration";
+                                }
+
+                                return {
+                                    ...res,
+                                    [`${field.fieldName}_${operator}`]: field.typeMeta.name,
+                                    [`${field.fieldName}_AVERAGE_${operator}`]: averageType,
+                                    [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
+                                    [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
+                                };
+                            }, {})
+                        );
+
+                        return;
+                    }
+
+                    aggregationInput.addFields(
+                        whereAggregationOperators.reduce(
+                            (res, operator) => ({
+                                ...res,
+                                [`${field.fieldName}_${operator}`]: field.typeMeta.name,
+                                [`${field.fieldName}_MIN_${operator}`]: field.typeMeta.name,
+                                [`${field.fieldName}_MAX_${operator}`]: field.typeMeta.name,
+                            }),
+                            {}
+                        )
+                    );
+                });
+
+                return aggregationInput;
             });
 
-            let anyNonNullRelProperties = false;
+            const whereAggregateInput = composer.createInputTC({
+                name: relationshipWhereTypeInputName,
+                fields: {
+                    count: "Int",
+                    count_LT: "Int",
+                    count_LTE: "Int",
+                    count_GT: "Int",
+                    count_GTE: "Int",
+                    AND: `[${relationshipWhereTypeInputName}!]`,
+                    OR: `[${relationshipWhereTypeInputName}!]`,
+                    ...(nodeWhereAggregationInput ? { node: nodeWhereAggregationInput } : {}),
+                    ...(edgeWhereAggregationInput ? { edge: edgeWhereAggregationInput } : {}),
+                },
+            });
 
-            if (rel.properties) {
-                const relFields = relationshipFields.get(rel.properties);
-
-                if (relFields) {
-                    anyNonNullRelProperties = [
-                        ...relFields.primitiveFields,
-                        ...relFields.scalarFields,
-                        ...relFields.enumFields,
-                        ...relFields.dateTimeFields,
-                        ...relFields.pointFields,
-                    ].some((field) => field.typeMeta.required);
-                }
-            }
+            whereInput.addFields({
+                [rel.fieldName]: `${n.name}Where`,
+                [`${rel.fieldName}_NOT`]: `${n.name}Where`,
+                [`${rel.fieldName}Aggregate`]: whereAggregateInput,
+            });
 
             const createName = `${node.name}${upperFirst(rel.fieldName)}CreateFieldInput`;
             const create = rel.typeMeta.array ? `[${createName}!]` : createName;
@@ -868,8 +1129,8 @@ function makeAugmentedSchema(
                     name: createName,
                     fields: {
                         node: `${n.name}CreateInput!`,
-                        ...(rel.properties
-                            ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
+                        ...(hasNonGeneratedProperties
+                            ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
                             : {}),
                     },
                 });
@@ -895,8 +1156,8 @@ function makeAugmentedSchema(
                         ...(n.relationFields.length
                             ? { connect: rel.typeMeta.array ? `[${n.name}ConnectInput!]` : `${n.name}ConnectInput` }
                             : {}),
-                        ...(rel.properties
-                            ? { edge: `${rel.properties}CreateInput${anyNonNullRelProperties ? `!` : ""}` }
+                        ...(hasNonGeneratedProperties
+                            ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
                             : {}),
                     },
                 });
@@ -916,7 +1177,7 @@ function makeAugmentedSchema(
                 name: connectionUpdateInputName,
                 fields: {
                     node: updateField,
-                    ...(rel.properties ? { edge: `${rel.properties}UpdateInput` } : {}),
+                    ...(hasNonGeneratedProperties ? { edge: `${rel.properties}UpdateInput` } : {}),
                 },
             });
 
@@ -1096,7 +1357,7 @@ function makeAugmentedSchema(
                     ...relatedNode.primitiveFields,
                     ...relatedNode.enumFields,
                     ...relatedNode.scalarFields,
-                    ...relatedNode.dateTimeFields,
+                    ...relatedNode.temporalFields,
                     ...relatedNode.pointFields,
                 ].filter((f) => !f.typeMeta.array);
 
@@ -1156,7 +1417,7 @@ function makeAugmentedSchema(
                 properties: connectionField.relationship.properties,
                 ...(relFields
                     ? {
-                          dateTimeFields: relFields.dateTimeFields,
+                          temporalFields: relFields.temporalFields,
                           scalarFields: relFields.scalarFields,
                           primitiveFields: relFields.primitiveFields,
                           pointFields: relFields.pointFields,
@@ -1169,29 +1430,33 @@ function makeAugmentedSchema(
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
-                [pluralize(camelCase(node.name))]: findResolver({ node }),
+                [node.getPlural({ camelCase: true })]: findResolver({ node }),
             });
 
             composer.Query.addFields({
-                [`${pluralize(camelCase(node.name))}Count`]: countResolver({ node }),
+                [`${node.getPlural({ camelCase: true })}Count`]: countResolver({ node }),
+            });
+
+            composer.Query.addFields({
+                [`${node.getPlural({ camelCase: true })}Aggregate`]: aggregateResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("create")) {
             composer.Mutation.addFields({
-                [`create${pluralize(node.name)}`]: createResolver({ node }),
+                [`create${node.getPlural({ camelCase: false })}`]: createResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("delete")) {
             composer.Mutation.addFields({
-                [`delete${pluralize(node.name)}`]: deleteResolver({ node }),
+                [`delete${node.getPlural({ camelCase: false })}`]: deleteResolver({ node }),
             });
         }
 
         if (!node.exclude?.operations.includes("update")) {
             composer.Mutation.addFields({
-                [`update${pluralize(node.name)}`]: updateResolver({ node }),
+                [`update${node.getPlural({ camelCase: false })}`]: updateResolver({ node }),
             });
         }
     });
@@ -1218,7 +1483,7 @@ function makeAugmentedSchema(
                 ...objectFields.scalarFields,
                 ...objectFields.unionFields,
                 ...objectFields.objectFields,
-                ...objectFields.dateTimeFields,
+                ...objectFields.temporalFields,
             ]);
 
             objectComposer.addFields(objectComposeFields);
@@ -1257,8 +1522,18 @@ function makeAugmentedSchema(
     }
 
     const generatedTypeDefs = composer.toSDL();
+    let parsedDoc = parse(generatedTypeDefs);
+    // @ts-ignore
+    const documentNames = parsedDoc.definitions.filter((x) => "name" in x).map((x) => x.name.value);
+
     const generatedResolvers = {
-        ...composer.getResolveMethods(),
+        ...Object.entries(composer.getResolveMethods()).reduce((res, [key, value]) => {
+            if (!documentNames.includes(key)) {
+                return res;
+            }
+
+            return { ...res, [key]: value };
+        }, {}),
         ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
             if (generatedTypeDefs.includes(`scalar ${name}\n`)) {
                 res[name] = scalar;
@@ -1275,7 +1550,6 @@ function makeAugmentedSchema(
     });
 
     const seen = {};
-    let parsedDoc = parse(generatedTypeDefs);
     parsedDoc = {
         ...parsedDoc,
         definitions: parsedDoc.definitions.filter((definition) => {
