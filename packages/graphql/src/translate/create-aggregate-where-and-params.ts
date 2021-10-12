@@ -26,7 +26,7 @@ const logicalOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
 
 const aggregationOperators = ["SHORTEST", "LONGEST", "MIN", "MAX"];
 
-function createOperator(input): Operator {
+function createOperator(input: string): Operator {
     let operator: Operator = "=";
 
     switch (input) {
@@ -135,7 +135,7 @@ function aggregate({
         if (aggregationOperators.some((fO) => logicalOperators.includes(operatorString.split(`${fO}_`)[1]))) {
             if (field.typeMeta.name === "String") {
                 const hoistedVariable = `${paramName}_SIZE`;
-                let isShortest = operatorString.startsWith("SHORTEST_");
+                const isShortest = operatorString.startsWith("SHORTEST_");
                 const [, stringOperator] = operatorString.split(`${isShortest ? `SHORTEST` : "LONGEST"}_`);
 
                 withStrs.push(`size(${variable}.${dbPropertyName}) AS ${hoistedVariable}`);
@@ -147,7 +147,7 @@ function aggregate({
                 return;
             }
 
-            let isMin = operatorString.startsWith("MIN_");
+            const isMin = operatorString.startsWith("MIN_");
             const [, opString] = operatorString.split(`${isMin ? `MIN` : "MAX"}_`);
 
             aggregations.push(
@@ -251,20 +251,20 @@ function createPredicate({
                 return;
             }
 
-            const aggregation = aggregate({
+            const agg = aggregate({
                 chainStr: `${chainStr}_${key}`,
                 inputValue: value,
                 nodeOrRelationship: nOrE === "node" ? node : relationship,
                 variable: nOrE === "node" ? nodeVariable : edgeVariable,
             });
 
-            if (aggregation.aggregations.length) {
-                aggregations.push(aggregation.aggregations.join(" AND "));
-                params = { ...params, ...aggregation.params };
+            if (agg.aggregations.length) {
+                aggregations.push(agg.aggregations.join(" AND "));
+                params = { ...params, ...agg.params };
             }
 
-            if (aggregation.withStrs.length) {
-                withStrs = [...withStrs, ...aggregation.withStrs];
+            if (agg.withStrs.length) {
+                withStrs = [...withStrs, ...agg.withStrs];
             }
         });
     });
@@ -299,10 +299,10 @@ function createAggregateWhereAndParams({
     const nodeVariable = `${chainStr}_node`;
     const edgeVariable = `${chainStr}_edge`;
     const relTypeStr = `[${edgeVariable}:${field.type}]`;
-    const labels = node.getLabelString();
+    const labels = node.getLabelString(context);
     const matchStr = `MATCH (${varName})${inStr}${relTypeStr}${outStr}(${nodeVariable}${labels})`;
 
-    cyphers.push(`apoc.cypher.runFirstColumn(\" ${matchStr}`);
+    cyphers.push(`apoc.cypher.runFirstColumn(" ${matchStr}`);
 
     const { aggregations, params, withStrs } = createPredicate({
         aggregation,

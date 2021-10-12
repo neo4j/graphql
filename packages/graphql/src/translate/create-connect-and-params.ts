@@ -62,7 +62,7 @@ function createConnectAndParams({
         const outStr = relationField.direction === "OUT" ? "->" : "-";
         const relTypeStr = `[${relationField.properties ? relationshipName : ""}:${relationField.type}]`;
 
-        const labels = refNode.getLabelString();
+        const labels = refNode.getLabelString(context);
         const label = labelOverride ? `:${labelOverride}` : labels;
 
         if (parentNode.auth && !fromCreate) {

@@ -7,6 +7,7 @@ Schema:
 ```graphql
 type Actor @node(label: "Person") {
     name: String
+    age: Int
     movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
 }
 
@@ -50,6 +51,99 @@ RETURN this { .title } as this
 
 ```json
 {}
+```
+
+---
+
+## Select Movie with label Film from Actors
+
+### GraphQL Input
+
+```graphql
+query {
+    actors(where: { age_GT: 10 }) {
+        name
+        movies(where: { title: "terminator" }) {
+            title
+        }
+    }
+}
+```
+
+### JWT Object
+
+```json
+{
+    "movielabel": "Film"
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+MATCH (this:Person)
+WHERE this.age > $this_age_GT
+RETURN this {
+    .name,
+    movies: [
+        (this)-[:ACTED_IN]->(this_movies:Film)
+        WHERE this_movies.title = $this_movies_title | this_movies { .title }
+        ] } as this
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this_age_GT": {
+        "high": 0,
+        "low": 10
+    },
+    "this_movies_title": "terminator"
+}
+```
+
+---
+
+## Create Movie with label Film
+
+### GraphQL Input
+
+```graphql
+mutation {
+    createMovies(input: { title: "Titanic" }) {
+        movies {
+            title
+        }
+    }
+}
+```
+
+### JWT Object
+
+```json
+{
+    "movielabel": "Film"
+}
+```
+
+### Expected Cypher Output
+
+```cypher
+CALL {
+    CREATE (this0:Film)
+    SET this0.title = $this0_title
+    RETURN this0
+}
+RETURN this0 { .title } AS this0
+```
+
+### Expected Cypher Params
+
+```json
+{
+    "this0_title": "Titanic"
+}
 ```
 
 ---
