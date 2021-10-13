@@ -19,15 +19,14 @@
 
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { IncomingMessage } from "http";
-import { Socket } from "net";
-import jsonwebtoken from "jsonwebtoken";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { createJwtTokenRequest } from "../../../src/utils/test/utils";
 
 describe("auth/roles", () => {
     let driver: Driver;
+    const secret = "secret";
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -76,14 +75,10 @@ describe("auth/roles", () => {
             }
             `;
 
-            const secret = "secret";
-            const token = jsonwebtoken.sign({ roles: [] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtTokenRequest(secret);
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -115,14 +110,10 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const secret = "secret";
-            const token = jsonwebtoken.sign({ roles: [] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtTokenRequest(secret);
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -157,14 +148,10 @@ describe("auth/roles", () => {
             }
             `;
 
-            const secret = "secret";
-            const token = jsonwebtoken.sign({ roles: [] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtTokenRequest(secret);
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -203,14 +190,10 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const secret = "secret";
-            const token = jsonwebtoken.sign({ roles: [] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtTokenRequest(secret);
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -247,14 +230,10 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const secret = "secret";
-            const token = jsonwebtoken.sign({ roles: [] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtTokenRequest(secret);
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -293,14 +272,10 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const secret = "secret";
-            const token = jsonwebtoken.sign({ roles: [] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtTokenRequest(secret);
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -337,14 +312,10 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const secret = "secret";
-            const token = jsonwebtoken.sign({ roles: [] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtTokenRequest(secret);
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -407,9 +378,6 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const secret = "secret";
-            // missing super-admin
-            const token = jsonwebtoken.sign({ roles: ["admin"] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
@@ -417,10 +385,8 @@ describe("auth/roles", () => {
                     CREATE (:User {id: "${userId}"})
                     CREATE (:Post {id: "${userId}"})
                 `);
-
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                // missing super-admin
+                const req = createJwtTokenRequest(secret, { roles: ["admin"] });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -501,8 +467,6 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const secret = "secret";
-            const token = jsonwebtoken.sign({ roles: [""] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
@@ -511,9 +475,7 @@ describe("auth/roles", () => {
                     CREATE (:User {id: "${userId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtTokenRequest(secret, { roles: [""] });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -576,9 +538,6 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const secret = "secret";
-            // missing super-admin
-            const token = jsonwebtoken.sign({ roles: ["admin"] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
@@ -586,10 +545,8 @@ describe("auth/roles", () => {
                     CREATE (:User {id: "${userId}"})
                     CREATE (:Post {id: "${userId}"})
                 `);
-
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                // missing super-admin
+                const req = createJwtTokenRequest(secret, { roles: ["admin"] });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -670,8 +627,6 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const secret = "secret";
-            const token = jsonwebtoken.sign({ roles: [""] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
@@ -679,9 +634,7 @@ describe("auth/roles", () => {
                     CREATE (:Comment {id: "${commentId}"})<-[:HAS_COMMENT]-(:Post {id: "${postId}"})-[:HAS_POST]->(:User {id: "${userId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtTokenRequest(secret, { roles: [""] });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -718,14 +671,10 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const secret = "secret";
-            const token = jsonwebtoken.sign({ roles: [] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtTokenRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -774,17 +723,13 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const secret = "secret";
-            const token = jsonwebtoken.sign({ roles: [] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
             try {
                 await session.run(`
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtTokenRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -822,14 +767,10 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const secret = "secret";
-            const token = jsonwebtoken.sign({ roles: [] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtTokenRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -865,14 +806,10 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const secret = "secret";
-            const token = jsonwebtoken.sign({ roles: [] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtTokenRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -912,14 +849,10 @@ describe("auth/roles", () => {
                 }
             `;
 
-            const secret = "secret";
-            const token = jsonwebtoken.sign({ roles: [] }, secret);
             const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
             try {
-                const socket = new Socket({ readable: true });
-                const req = new IncomingMessage(socket);
-                req.headers.authorization = `Bearer ${token}`;
+                const req = createJwtTokenRequest(secret, { roles: [] });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,

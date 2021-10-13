@@ -17,14 +17,12 @@
  * limitations under the License.
  */
 
-import jsonwebtoken from "jsonwebtoken";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { Socket } from "net";
-import { IncomingMessage } from "http";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { createJwtTokenRequest } from "../../src/utils/test/utils";
 
 describe("cypher", () => {
     let driver: Driver;
@@ -210,13 +208,6 @@ describe("cypher", () => {
 
                 const secret = "secret";
 
-                const token = jsonwebtoken.sign(
-                    {
-                        roles: [],
-                    },
-                    secret
-                );
-
                 const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
                 const source = `
@@ -241,9 +232,7 @@ describe("cypher", () => {
                         }
                     );
 
-                    const socket = new Socket({ readable: true });
-                    const req = new IncomingMessage(socket);
-                    req.headers.authorization = `Bearer ${token}`;
+                    const req = createJwtTokenRequest(secret);
 
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,

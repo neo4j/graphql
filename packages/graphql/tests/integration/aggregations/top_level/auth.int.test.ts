@@ -22,14 +22,13 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import pluralize from "pluralize";
 import camelCase from "camelcase";
-import { IncomingMessage } from "http";
-import { Socket } from "net";
-import jsonwebtoken from "jsonwebtoken";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { createJwtTokenRequest } from "../../../../src/utils/test/utils";
 
 describe("aggregations-top_level-auth", () => {
     let driver: Driver;
+    const secret = "secret";
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -69,16 +68,6 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign(
-            {
-                roles: [],
-                sub: "invalid",
-            },
-            secret
-        );
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
@@ -86,9 +75,7 @@ describe("aggregations-top_level-auth", () => {
                 CREATE (:${randomType} {id: "${userId}"})
             `);
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
+            const req = createJwtTokenRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -131,16 +118,6 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign(
-            {
-                roles: [],
-                sub: userId,
-            },
-            secret
-        );
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
@@ -148,9 +125,7 @@ describe("aggregations-top_level-auth", () => {
                 CREATE (:User {id: "${userId}"})-[:POSTED]->(:Post {content: randomUUID()})
             `);
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
+            const req = createJwtTokenRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -204,16 +179,6 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign(
-            {
-                roles: [],
-                sub: "invalid",
-            },
-            secret
-        );
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
@@ -221,9 +186,7 @@ describe("aggregations-top_level-auth", () => {
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", imdbRatingInt: rand()})
             `);
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
+            const req = createJwtTokenRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -271,16 +234,6 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign(
-            {
-                roles: [],
-                sub: "invalid",
-            },
-            secret
-        );
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
@@ -288,9 +241,7 @@ describe("aggregations-top_level-auth", () => {
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", someId: "some-random-string"})
             `);
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
+            const req = createJwtTokenRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -338,16 +289,6 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign(
-            {
-                roles: [],
-                sub: "invalid",
-            },
-            secret
-        );
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
@@ -355,9 +296,7 @@ describe("aggregations-top_level-auth", () => {
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", someString: "some-random-string"})
             `);
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
+            const req = createJwtTokenRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -405,16 +344,6 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign(
-            {
-                roles: [],
-                sub: "invalid",
-            },
-            secret
-        );
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
@@ -422,9 +351,7 @@ describe("aggregations-top_level-auth", () => {
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", imdbRatingFloat: rand()})
             `);
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
+            const req = createJwtTokenRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -472,16 +399,6 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign(
-            {
-                roles: [],
-                sub: "invalid",
-            },
-            secret
-        );
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
@@ -489,9 +406,7 @@ describe("aggregations-top_level-auth", () => {
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", imdbRatingBigInt: rand()})
             `);
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
+            const req = createJwtTokenRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -539,16 +454,6 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign(
-            {
-                roles: [],
-                sub: "invalid",
-            },
-            secret
-        );
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
@@ -556,9 +461,7 @@ describe("aggregations-top_level-auth", () => {
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", createdAt: datetime()})
             `);
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
+            const req = createJwtTokenRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -606,16 +509,6 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign(
-            {
-                roles: [],
-                sub: "invalid",
-            },
-            secret
-        );
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         try {
@@ -623,9 +516,7 @@ describe("aggregations-top_level-auth", () => {
                 CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", createdAt: datetime()})
             `);
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
+            const req = createJwtTokenRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
