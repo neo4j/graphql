@@ -22,7 +22,7 @@ import { IncomingMessage } from "http";
 import jsonwebtoken from "jsonwebtoken";
 
 // eslint-disable-next-line import/prefer-default-export
-export function createJwtTokenRequest(secret: string, extraData: Record<string, string> = {}): IncomingMessage {
+export function createJwtRequest(secret: string, extraData: Record<string, string> = {}): IncomingMessage {
     const token = jsonwebtoken.sign(
         {
             roles: [],

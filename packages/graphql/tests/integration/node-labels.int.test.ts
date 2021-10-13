@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../../src/utils/test/graphql-types";
-import { createJwtTokenRequest } from "../../src/utils/test/utils";
+import { createJwtRequest } from "../../src/utils/test/utils";
 
 describe("Node directive labels", () => {
     let driver: Driver;
@@ -77,7 +77,7 @@ describe("Node directive labels", () => {
 
         const secret = "1234";
 
-        const req = createJwtTokenRequest(secret, { filmLabel: typeFilm.name });
+        const req = createJwtRequest(secret, { filmLabel: typeFilm.name });
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
