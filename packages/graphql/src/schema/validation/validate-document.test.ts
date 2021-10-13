@@ -142,11 +142,11 @@ describe("validateDocument", () => {
         expect(res).toBeUndefined();
     });
 
-    test("should not throw error on use of internal input types", () => {
+    test("should not throw error on use of internal node input types", () => {
         const doc = parse(`
             type Mutation {
                 login: String
-                createPost(input: PostCreateInput!): Post!
+                createPost(input: PostCreateInput!, options: PostOptions): Post!
                     @cypher(
                         statement: """
                         CREATE (post:Post)
