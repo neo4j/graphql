@@ -24,21 +24,31 @@ import { Context } from "../../types";
 import execute from "../../utils/execute";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 
-export default function subscribeToUpdatesResolver({ node }: { node: Node }) {
+export default function subscribeToNodeResolver({ node }: { node: Node }) {
     return {
         // type: `Update${node.getPlural({ camelCase: false })}MutationResponse!`,
-        type: `${ node.name }!`,
+        type: `${ node.name }SubscriptionResponse!`,
         kind: 'subscription',
         args: {
             where: `${node.name}Where`,
+            types: `[NodeUpdatedType!]`,
         },
         description: `Subscribe to updates from ${ node.name }`,
-        resolve: (payload) => payload,
+        resolve: (payload) => { return { ...payload }; },
         subscribe: withFilter(
-            (root, args, context, info) => context.pubsub.asyncIterator(`node.${ node.name }.updated`),
+            (root, args, context) => {
+                const iterators = [ `${ node.name }.Updated` ];
+
+                return context.pubsub.asyncIterator(iterators);
+            },
             async (payload, args, context: Context, info) => {
                 if (!payload || !payload.id) { return false; }
 
+                if (args?.types && !args.types.includes(payload.type)) {
+                    return false;
+                }
+
+                // TODO: move this into context creation for websocket
                 context.resolveTree = getNeo4jResolveTree(info);
                 context.neoSchema.authenticateContext(context);
                 context.resolveTree.args = context.resolveTree.args || {};
@@ -55,11 +65,18 @@ export default function subscribeToUpdatesResolver({ node }: { node: Node }) {
                     context,
                 });
 
-    
                 const [ record ] = executeResult.records;
-                if (record?.this) {
-                    Object.assign(payload, record.this);
+
+                if (payload.properties) {
+                    // eslint-disable-next-line no-param-reassign
+                    payload.fieldsUpdated = Object.keys(payload.properties);
                 }
+
+                if (record?.this) {
+                    // eslint-disable-next-line no-param-reassign
+                    payload[node.name.toLowerCase()] = record.this;
+                }
+                console.log(payload, record);
 
                 return Boolean(record?.this);
             }

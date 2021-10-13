@@ -185,10 +185,10 @@ function createUpdateAndParams({
                             }
                             updateStrs.push("YIELD value");
                             withProjector.markMutationMeta({
-                                nodeOrEdge: 'node',
-                                type: 'updated',
+                                type: 'Updated',
                                 idVar: 'value._id',
                                 name: refNode.name,
+                                properties: update.update.node,
                             });
 
                             const paramsString = Object.keys(innerApocParams)
@@ -214,7 +214,7 @@ function createUpdateAndParams({
                                 }[${index}].update.edge`,
                             });
 
-                            const updateStrs = [setProperties, `RETURN id(${ varName }) as _id`];
+                            const updateStrs = [setProperties, `RETURN id(${ varName }) as _id, id(${ relationshipVariable }) as _relId, id(${ parentVar }) as _parentId`];
                             const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}}`;
@@ -227,10 +227,16 @@ function createUpdateAndParams({
                             updateStrs.push(`YIELD value`);
                             // updateStrs.push(`YIELD value as ${relationshipVariable}_${key}${index}_edge`);
                             withProjector.markMutationMeta({
-                                nodeOrEdge: 'edge',
-                                type: 'updated',
+                                type: 'RelationshipUpdated',
+                                name: node.name,
+                                relationshipName: relationship.name,
+                                toName: 'toName (temporary)',
+
                                 idVar: 'value._id',
-                                name: relationship.name,
+                                relationshipIDVar: 'val._relId',
+                                toIDVar: 'val._parentId',
+
+                                properties: update.update.edge,
                             });
                             res.strs.push(updateStrs.join("\n"));
                         }

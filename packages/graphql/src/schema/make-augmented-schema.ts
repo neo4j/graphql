@@ -76,7 +76,7 @@ import { validateDocument } from "./validation";
 import * as constants from "../constants";
 import NodeDirective from "../classes/NodeDirective";
 import parseNodeDirective from "./parse-node-directive";
-import subscribeToUpdatesResolver from "./resolvers/subscribeToUpdates";
+import subscribeToNodeResolver from "./resolvers/subscribeToNode";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -246,6 +246,27 @@ function makeAugmentedSchema(
             DESC: {
                 value: "DESC",
                 description: "Sort by field values in descending order.",
+            },
+        },
+    });
+
+    composer.createEnumTC({
+        name: "NodeUpdatedType",
+        values: {
+            Updated: {
+                value: "Updated",
+            },
+            Created: {
+                value: "Created",
+            },
+            Deleted: {
+                value: "Deleted",
+            },
+            Connected: {
+                value: "Connected",
+            },
+            Disconnected: {
+                value: "Disconnected",
             },
         },
     });
@@ -727,6 +748,22 @@ function makeAugmentedSchema(
                 },
             })
         );
+
+        composer.createObjectTC({
+            name: `${ node.name }SubscriptionResponse`,
+            fields: {
+
+                type: 'String!',
+                name: 'String!',
+                id: 'Int!',
+                toID: 'String',
+                toType: 'String',
+                relationshipID: 'String',
+                relationshipType: 'String',
+                fieldsUpdated: '[ String! ]',
+                [ node.name.toLowerCase() ]: `${node.name}`,
+            },
+        });
 
         let nodeConnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
         let nodeDisconnectInput: InputTypeComposer<any> = (undefined as unknown) as InputTypeComposer<any>;
@@ -1465,7 +1502,7 @@ function makeAugmentedSchema(
 
         // TODO: exclude subscriptions somehow
         composer.Subscription.addFields({
-            [`subscribeTo${ node.name }Updates`]: subscribeToUpdatesResolver({ node }),
+            [`subscribeTo${ node.name }`]: subscribeToNodeResolver({ node }),
         });
     });
 

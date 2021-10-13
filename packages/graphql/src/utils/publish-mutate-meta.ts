@@ -40,7 +40,7 @@ function publishMutateMeta(input: {
                 // eslint-disable-next-line no-continue
                 if (!meta.id) { continue; }
                 meta.id = (meta.id as unknown as Integer).toNumber();
-                const trigger = `${ meta.nodeOrEdge }.${ meta.name }.${ meta.type }`;
+                const trigger = `${ meta.name }.${ meta.type }`;
 
                 debug("%s", `${ trigger }: ${JSON.stringify(meta, null, 2)}`);
 

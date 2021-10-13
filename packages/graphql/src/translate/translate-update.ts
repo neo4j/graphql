@@ -18,19 +18,19 @@
  */
 
 import { Node, Relationship } from "../classes";
-import { Context, GraphQLWhereArg, RelationField, ConnectionField } from "../types";
-import createWhereAndParams from "./create-where-and-params";
-import createProjectionAndParams from "./create-projection-and-params";
-import createCreateAndParams from "./create-create-and-params";
-import createAuthAndParams from "./create-auth-and-params";
-import createUpdateAndParams from "./create-update-and-params";
-import createConnectAndParams from "./create-connect-and-params";
-import createDisconnectAndParams from "./create-disconnect-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createDeleteAndParams from "./create-delete-and-params";
-import createConnectionAndParams from "./connection/create-connection-and-params";
-import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import WithProjector from "../classes/WithProjector";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { ConnectionField, Context, GraphQLWhereArg, RelationField } from "../types";
+import createConnectionAndParams from "./connection/create-connection-and-params";
+import createAuthAndParams from "./create-auth-and-params";
+import createConnectAndParams from "./create-connect-and-params";
+import createCreateAndParams from "./create-create-and-params";
+import createDeleteAndParams from "./create-delete-and-params";
+import createDisconnectAndParams from "./create-disconnect-and-params";
+import createProjectionAndParams from "./create-projection-and-params";
+import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
+import createUpdateAndParams from "./create-update-and-params";
+import createWhereAndParams from "./create-where-and-params";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
@@ -95,10 +95,10 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     }
 
     withProjector.markMutationMeta({
-        nodeOrEdge: 'node',
-        type: 'updated',
+        type: 'Updated',
         idVar: 'id(this)',
         name: node.name,
+        properties: updateInput,
     });
 
     if (updateInput) {

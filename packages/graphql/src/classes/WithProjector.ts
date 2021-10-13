@@ -23,22 +23,38 @@ export interface WithProjectorConstructor {
 
 }
 
-export type MutationMetaNodeOrEdge = 'node' | 'edge';
-export type MutationMetaType =  'updated' | 'created' | 'deleted' | 'connected' | 'disconnected';
+export type MutationMetaType =  'Updated' | 'Created' | 'Deleted' | 'Connected' | 'Disconnected' | 'RelationshipUpdated';
 
 export interface MutationMeta {
     id: number;
-    nodeOrEdge?: MutationMetaNodeOrEdge;
     name: string;
     type: MutationMetaType;
 }
 
 export interface MutationMetaVars {
     idVar: string;
-    nodeOrEdge?: MutationMetaNodeOrEdge;
     name: string;
     type: MutationMetaType;
+
 }
+
+interface MutationMetaRelationshipVars {
+    toIDVar: string;
+    toName: string;
+    relationshipName: string;
+    relationshipIDVar: string;
+}
+
+export interface UpdatedMutationMetaVars extends MutationMetaVars {
+    type: 'Updated';
+    properties: any;
+}
+export interface RelationshipUpdatedMutationMetaVars extends MutationMetaVars, MutationMetaRelationshipVars {
+    type: 'RelationshipUpdated';
+    properties: any;
+}
+
+type MetaVars = UpdatedMutationMetaVars | RelationshipUpdatedMutationMetaVars;
 
 class WithProjector {
     
@@ -86,7 +102,7 @@ class WithProjector {
         return `WITH ${ withVars.join(', ') }`;
     }
 
-    markMutationMeta(mutationMeta: MutationMetaVars) {
+    markMutationMeta(mutationMeta: MetaVars) {
         this.mutationMeta = mutationMeta;
 
     }
@@ -109,7 +125,6 @@ class WithProjector {
         // WITH new metaInfo object
         if (this.mutationMeta) {
             const props = [
-                `nodeOrEdge: "${ this.mutationMeta.nodeOrEdge }"`,
                 `type: "${ this.mutationMeta.type }"`,
                 `id: ${ this.mutationMeta.idVar }`,
                 `name: "${ this.mutationMeta.name }"`,
