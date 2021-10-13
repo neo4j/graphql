@@ -30,7 +30,7 @@ type Movie {
 
 ```cypher
 MATCH (this:Movie)
-RETURN { title: { shortest: min(this.title) } }
+RETURN { title: { shortest: reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(" RETURN CASE size(current) < size(shortest) WHEN true THEN current ELSE shortest END AS result ", { current: current, shortest: shortest }, false)) } }
 ```
 
 ### Expected Cypher Params
@@ -59,7 +59,7 @@ RETURN { title: { shortest: min(this.title) } }
 
 ```cypher
 MATCH (this:Movie)
-RETURN { title: { longest: max(this.title) } }
+RETURN { title: { longest: reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(" RETURN CASE size(current) > size(shortest) WHEN true THEN current ELSE shortest END AS result ", { current: current, shortest: shortest }, false)) } }
 ```
 
 ### Expected Cypher Params
@@ -89,7 +89,12 @@ RETURN { title: { longest: max(this.title) } }
 
 ```cypher
 MATCH (this:Movie)
-RETURN { title: { shortest: min(this.title), longest: max(this.title) } }
+RETURN {
+    title: {
+        shortest: reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(" RETURN CASE size(current) < size(shortest) WHEN true THEN current ELSE shortest END AS result ", { current: current, shortest: shortest }, false)) ,
+        longest: reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(" RETURN CASE size(current) > size(shortest) WHEN true THEN current ELSE shortest END AS result ", { current: current, shortest: shortest }, false))
+    }
+}
 ```
 
 ### Expected Cypher Params
