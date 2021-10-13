@@ -93,19 +93,19 @@ MATCH (this: Film)
 RETURN this { .title } as this
 ----
 
-===== Using $jwt and $context
+===== Using `$jwt` and `$context`
 In some cases, we may want to generate dynamic labels depending on the user requesting. In these cases, we can use
-the variable `$jwt` to define a custom label define in the jwt token
-(similarly to how it is used in the xref::auth/index.adoc[@auth directive]):
+the variable `$jwt` to define a custom label define in the JWT.
+(similarly to how it is used in the xref::auth/index.adoc[`@auth` directive]):
 
 [source, graphql, indent=0]
 ----
-type User @node(label: "$jwt.sud") {
+type User @node(label: "$jwt.sub") {
     name: String!
 }
 ----
 
-The following query will yield a different cypher query depending on the user JWT token
+The following query will yield a different cypher query depending on the user JWT:
 
 [source, graphql, indent=0]
 ----
@@ -116,7 +116,7 @@ The following query will yield a different cypher query depending on the user JW
 }
 ----
 
-Assuming an user with `"sud": 1234`, the cypher query will look like:
+Assuming an user with `"sub": 1234`, the Cypher query will look like:
 
 [source, cypher, indent=0]
 ----
@@ -138,7 +138,7 @@ When running the server with Apollo:
 ----
 new ApolloServer({
     schema: neoSchema.schema,
-    context: ({ req }: any) => ({ req, appId: "1234" }),
+    context: ({ req }) => ({ req, appId: "1234" }),
 });
 ----
 
