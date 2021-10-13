@@ -94,9 +94,7 @@ RETURN this { .title } as this
 ----
 
 ===== Using `$jwt` and `$context`
-In some cases, we may want to generate dynamic labels depending on the user requesting. In these cases, we can use
-the variable `$jwt` to define a custom label define in the JWT.
-(similarly to how it is used in the xref::auth/index.adoc[`@auth` directive]):
+In some cases, we may want to generate dynamic labels depending on the user requesting. In these cases, we can use the variable `$jwt` to define a custom label define in the JWT (similarly to how it is used in the xref::auth/index.adoc[`@auth` directive]):
 
 [source, graphql, indent=0]
 ----
