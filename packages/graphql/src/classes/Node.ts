@@ -95,45 +95,6 @@ class Node extends GraphElement {
     public auth?: Auth;
     public description?: string;
 
-    /**
-     * Fields you can apply auth allow and bind to
-     */
-    public authableFields: (
-        | PrimitiveField
-        | CustomScalarField
-        | CustomEnumField
-        | UnionField
-        | ObjectField
-        | TemporalField
-        | PointField
-        | CypherField
-    )[];
-
-    /**
-     * Fields you can set in a create or update mutation
-     */
-    public mutableFields: (
-        | PrimitiveField
-        | CustomScalarField
-        | CustomEnumField
-        | UnionField
-        | ObjectField
-        | TemporalField
-        | PointField
-    )[];
-
-    /**
-     * Fields you can sort on
-     */
-    public sortableFields: (
-        | PrimitiveField
-        | CustomScalarField
-        | CustomEnumField
-        | TemporalField
-        | PointField
-        | CypherField
-    )[];
-
     constructor(input: NodeConstructor) {
         super(input);
         this.relationFields = input.relationFields;
@@ -147,54 +108,6 @@ class Node extends GraphElement {
         this.exclude = input.exclude;
         this.nodeDirective = input.nodeDirective;
         this.auth = input.auth;
-        this.description = input.description;
-
-        this.authableFields = [
-            ...input.primitiveFields,
-            ...input.scalarFields,
-            ...input.enumFields,
-            ...input.unionFields,
-            ...input.objectFields,
-            ...input.temporalFields,
-            ...input.pointFields,
-            ...input.cypherFields,
-        ];
-
-        this.mutableFields = [
-            ...input.temporalFields,
-            ...input.enumFields,
-            ...input.objectFields,
-            ...input.scalarFields,
-            ...input.primitiveFields,
-            ...input.interfaceFields,
-            ...input.objectFields,
-            ...input.unionFields,
-            ...input.pointFields,
-        ];
-
-        this.sortableFields = [
-            ...input.primitiveFields,
-            ...input.scalarFields,
-            ...input.enumFields,
-            ...input.temporalFields,
-            ...input.pointFields,
-            ...input.cypherFields.filter((field) =>
-                [
-                    "Boolean",
-                    "ID",
-                    "Int",
-                    "BigInt",
-                    "Float",
-                    "String",
-                    "DateTime",
-                    "LocalDateTime",
-                    "Time",
-                    "LocalTime",
-                    "Date",
-                    "Duration",
-                ].includes(field.typeMeta.name)
-            ),
-        ].filter((field) => !field.typeMeta.array);
     }
 
     public get labelString(): string {
