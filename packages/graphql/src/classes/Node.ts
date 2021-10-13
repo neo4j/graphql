@@ -18,6 +18,8 @@
  */
 
 import { DirectiveNode, NamedTypeNode } from "graphql";
+import camelCase from "camelcase";
+import pluralize from "pluralize";
 import type {
     RelationField,
     ConnectionField,
@@ -60,41 +62,23 @@ export interface NodeConstructor {
 
 class Node {
     public name: string;
-
     public relationFields: RelationField[];
-
     public connectionFields: ConnectionField[];
-
     public cypherFields: CypherField[];
-
     public primitiveFields: PrimitiveField[];
-
     public scalarFields: CustomScalarField[];
-
     public enumFields: CustomEnumField[];
-
     public otherDirectives: DirectiveNode[];
-
     public unionFields: UnionField[];
-
     public interfaceFields: InterfaceField[];
-
     public interfaces: NamedTypeNode[];
-
     public objectFields: ObjectField[];
-
     public temporalFields: TemporalField[];
-
     public pointFields: PointField[];
-
     public ignoredFields: BaseField[];
-
     public exclude?: Exclude;
-
     public nodeDirective?: NodeDirective;
-
     public auth?: Auth;
-
     public description?: string;
 
     /**
@@ -211,6 +195,14 @@ class Node {
 
     get labels(): string[] {
         return this.nodeDirective?.getLabels(this.name) || [this.name];
+    }
+
+    getPlural(options: { camelCase: boolean }): string {
+        // camelCase is optional in this case to maintain backward compatibility
+        if (this.nodeDirective?.plural) {
+            return options.camelCase ? camelCase(this.nodeDirective.plural) : this.nodeDirective.plural;
+        }
+        return pluralize(options.camelCase ? camelCase(this.name) : this.name);
     }
 }
 
