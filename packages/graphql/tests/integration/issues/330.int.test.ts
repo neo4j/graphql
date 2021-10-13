@@ -21,7 +21,7 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtTokenRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../src/utils/test/utils";
 
 // Reference: https://github.com/neo4j/graphql/pull/330
 // Reference: https://github.com/neo4j/graphql/pull/303#discussion_r671148932
@@ -56,7 +56,7 @@ describe("unauthenticated-requests", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
-        const req = createJwtTokenRequest(secret);
+        const req = createJwtRequest(secret);
 
         const gqlResult = await graphql({
             schema: neoSchema.schema,
@@ -86,7 +86,7 @@ describe("unauthenticated-requests", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
-        const req = createJwtTokenRequest(secret);
+        const req = createJwtRequest(secret);
 
         const gqlResult = await graphql({
             schema: neoSchema.schema,
@@ -118,7 +118,7 @@ describe("unauthenticated-requests", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
-        const req = createJwtTokenRequest(secret);
+        const req = createJwtRequest(secret);
 
         const gqlResult = await graphql({
             schema: neoSchema.schema,

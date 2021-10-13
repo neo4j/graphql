@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
 import neo4j from "../neo4j";
-import { createJwtTokenRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../src/utils/test/utils";
 
 describe("should inject the auth into cypher directive", () => {
     let driver: Driver;
@@ -60,7 +60,7 @@ describe("should inject the auth into cypher directive", () => {
         `;
 
         try {
-            const req = createJwtTokenRequest(secret, { sub: userId });
+            const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -148,7 +148,7 @@ describe("should inject the auth into cypher directive", () => {
         `;
 
         try {
-            const req = createJwtTokenRequest(secret, { sub: userId });
+            const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -244,7 +244,7 @@ describe("should inject the auth into cypher directive", () => {
                 CREATE (:User {id: "${userId}"})
             `);
 
-            const req = createJwtTokenRequest(secret, { sub: userId });
+            const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,

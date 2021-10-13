@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtTokenRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../src/utils/test/utils";
 
 describe("326", () => {
     let driver: Driver;
@@ -78,7 +78,7 @@ describe("326", () => {
                 { id }
             );
 
-            const req = createJwtTokenRequest(secret, { sub: "invalid" });
+            const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -135,7 +135,7 @@ describe("326", () => {
                 { id }
             );
 
-            const req = createJwtTokenRequest(secret, { sub: "invalid" });
+            const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,

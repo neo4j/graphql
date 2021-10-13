@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
 import neo4j from "../neo4j";
-import { createJwtTokenRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../src/utils/test/utils";
 
 describe("auth/where", () => {
     let driver: Driver;
@@ -67,7 +67,7 @@ describe("auth/where", () => {
                     CREATE (:User {id: "${userId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: userId });
+                const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -131,7 +131,7 @@ describe("auth/where", () => {
                     MERGE (u)-[:HAS_POST]->(p2)
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: userId });
+                const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -209,7 +209,7 @@ describe("auth/where", () => {
                     MERGE (u)-[:HAS_POST]->(p2)
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: userId });
+                const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -285,7 +285,7 @@ describe("auth/where", () => {
                         MERGE (u)-[:HAS_CONTENT]->(p2)
                     `);
 
-                    const req = createJwtTokenRequest(secret, { sub: userId });
+                    const req = createJwtRequest(secret, { sub: userId });
 
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,
@@ -364,7 +364,7 @@ describe("auth/where", () => {
                     MERGE (u)-[:HAS_CONTENT]->(p2)
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: userId });
+                const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -422,7 +422,7 @@ describe("auth/where", () => {
                     CREATE (:User {id: "${userId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: userId });
+                const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -471,7 +471,7 @@ describe("auth/where", () => {
                     CREATE (:User {id: "${userId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: userId });
+                const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -540,7 +540,7 @@ describe("auth/where", () => {
                     CREATE (:Post {id: "${postId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: userId });
+                const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -601,7 +601,7 @@ describe("auth/where", () => {
                     CREATE (:Post {id: "${postId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: userId });
+                const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -663,7 +663,7 @@ describe("auth/where", () => {
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: userId });
+                const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -723,7 +723,7 @@ describe("auth/where", () => {
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: userId });
+                const req = createJwtRequest(secret, { sub: userId });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,

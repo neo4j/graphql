@@ -24,7 +24,7 @@ import pluralize from "pluralize";
 import camelCase from "camelcase";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-import { createJwtTokenRequest } from "../../src/utils/test/utils";
+import { createJwtRequest } from "../../src/utils/test/utils";
 
 describe("count", () => {
     let driver: Driver;
@@ -187,7 +187,7 @@ describe("count", () => {
                 }
             `;
 
-            const req = createJwtTokenRequest(secret, { sub: userId });
+            const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -238,7 +238,7 @@ describe("count", () => {
                 }
             `;
 
-            const req = createJwtTokenRequest(secret, { sub: "invalid" });
+            const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,

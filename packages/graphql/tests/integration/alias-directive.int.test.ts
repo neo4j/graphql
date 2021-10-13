@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import * as neo4jDriver from "neo4j-driver";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-import { createJwtTokenRequest } from "../../src/utils/test/utils";
+import { createJwtRequest } from "../../src/utils/test/utils";
 
 describe("@alias directive", () => {
     let driver: Driver;
@@ -101,7 +101,7 @@ describe("@alias directive", () => {
         `;
 
         // For the @auth
-        const req = createJwtTokenRequest(secret, { roles: ["reader"] });
+        const req = createJwtRequest(secret, { roles: ["reader"] });
 
         const gqlResult = await graphql({
             schema: neoSchema.schema,
@@ -134,7 +134,7 @@ describe("@alias directive", () => {
 
         // For the @auth
         const tokenSub = dbName;
-        const req = createJwtTokenRequest(secret, { roles: ["reader"], sub: tokenSub });
+        const req = createJwtRequest(secret, { roles: ["reader"], sub: tokenSub });
 
         const gqlResult = await graphql({
             schema: neoSchema.schema,

@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtTokenRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../src/utils/test/utils";
 
 describe("413", () => {
     let driver: Driver;
@@ -82,7 +82,7 @@ describe("413", () => {
                 { tenantID }
             );
 
-            const req = createJwtTokenRequest(secret, {
+            const req = createJwtRequest(secret, {
                 tenant_id: tenantID,
             });
 

@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-import { createJwtTokenRequest } from "../../src/utils/test/utils";
+import { createJwtRequest } from "../../src/utils/test/utils";
 
 describe("cypher", () => {
     let driver: Driver;
@@ -232,7 +232,7 @@ describe("cypher", () => {
                         }
                     );
 
-                    const req = createJwtTokenRequest(secret);
+                    const req = createJwtRequest(secret);
 
                     const gqlResult = await graphql({
                         schema: neoSchema.schema,

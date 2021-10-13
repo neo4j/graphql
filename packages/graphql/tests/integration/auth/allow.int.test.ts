@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtTokenRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../src/utils/test/utils";
 
 describe("auth/allow", () => {
     let driver: Driver;
@@ -67,7 +67,7 @@ describe("auth/allow", () => {
                     CREATE (:User {id: "${userId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -113,7 +113,7 @@ describe("auth/allow", () => {
                     CREATE (:User {id: "${userId}", password: "letmein"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -170,7 +170,7 @@ describe("auth/allow", () => {
                     CREATE (:Post {id: "${postId}"})<-[:HAS_POST]-(:User {id: "${userId}", password: "letmein"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -231,7 +231,7 @@ describe("auth/allow", () => {
                     CREATE (:Post {id: "${postId}"})<-[:HAS_POST]-(:User {id: "${userId}", password: "letmein"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -290,7 +290,7 @@ describe("auth/allow", () => {
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -353,7 +353,7 @@ describe("auth/allow", () => {
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -426,7 +426,7 @@ describe("auth/allow", () => {
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})-[:HAS_COMMENT]->(:Comment {id: "${commentId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -475,7 +475,7 @@ describe("auth/allow", () => {
                     CREATE (:User {id: "${userId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -524,7 +524,7 @@ describe("auth/allow", () => {
                     CREATE (:User {id: "${userId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -583,7 +583,7 @@ describe("auth/allow", () => {
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -644,7 +644,7 @@ describe("auth/allow", () => {
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -692,7 +692,7 @@ describe("auth/allow", () => {
                     CREATE (:User {id: "${userId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -758,7 +758,7 @@ describe("auth/allow", () => {
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -819,7 +819,7 @@ describe("auth/allow", () => {
                     CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -901,7 +901,7 @@ describe("auth/allow", () => {
                                     (:Comment {id: "${commentId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -963,7 +963,7 @@ describe("auth/allow", () => {
                     CREATE (:Post {id: "${postId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,
@@ -1044,7 +1044,7 @@ describe("auth/allow", () => {
                     CREATE (:Post {id: "${postId}"})-[:HAS_COMMENT]->(:Comment {id: "${commentId}"})
                 `);
 
-                const req = createJwtTokenRequest(secret, { sub: "invalid" });
+                const req = createJwtRequest(secret, { sub: "invalid" });
 
                 const gqlResult = await graphql({
                     schema: neoSchema.schema,

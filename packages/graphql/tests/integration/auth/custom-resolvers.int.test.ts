@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtTokenRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../src/utils/test/utils";
 
 describe("auth/custom-resolvers", () => {
     let driver: Driver;
@@ -70,7 +70,7 @@ describe("auth/custom-resolvers", () => {
                 config: { jwt: { secret } },
             });
 
-            const req = createJwtTokenRequest(secret, { sub: userId });
+            const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -111,7 +111,7 @@ describe("auth/custom-resolvers", () => {
                 config: { jwt: { secret } },
             });
 
-            const req = createJwtTokenRequest(secret, { sub: userId });
+            const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -159,7 +159,7 @@ describe("auth/custom-resolvers", () => {
                 },
             });
 
-            const req = createJwtTokenRequest(secret, { sub: userId });
+            const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,

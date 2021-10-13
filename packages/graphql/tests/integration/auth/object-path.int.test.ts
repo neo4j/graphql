@@ -22,7 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtTokenRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../src/utils/test/utils";
 
 describe("auth/object-path", () => {
     let driver: Driver;
@@ -66,7 +66,7 @@ describe("auth/object-path", () => {
                 CREATE (:User {id: "${userId}"})
             `);
 
-            const req = createJwtTokenRequest(secret, {
+            const req = createJwtRequest(secret, {
                 nested: {
                     object: {
                         path: {
@@ -130,7 +130,7 @@ describe("auth/object-path", () => {
                 CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
             `);
 
-            const req = createJwtTokenRequest(secret);
+            const req = createJwtRequest(secret);
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -182,7 +182,7 @@ describe("auth/object-path", () => {
                 CREATE (:User {id: "${userId}"})
             `);
 
-            const req = createJwtTokenRequest(secret, {
+            const req = createJwtRequest(secret, {
                 "https://github.com/claims": { "https://github.com/claims/roles": ["admin"] },
             });
 
