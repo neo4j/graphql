@@ -37,8 +37,9 @@ import type {
 } from "../types";
 import Exclude from "./Exclude";
 import NodeDirective from "./NodeDirective";
+import { GraphElement, GraphElementConstructor } from "./GraphElement";
 
-export interface NodeConstructor {
+export interface NodeConstructor extends GraphElementConstructor {
     name: string;
     relationFields: RelationField[];
     connectionFields: ConnectionField[];
@@ -60,22 +61,35 @@ export interface NodeConstructor {
     description?: string;
 }
 
-class Node {
-    public name: string;
+type MutableField =
+    | PrimitiveField
+    | CustomScalarField
+    | CustomEnumField
+    | UnionField
+    | ObjectField
+    | TemporalField
+    | PointField
+    | CypherField;
+
+type AuthableField =
+    | PrimitiveField
+    | CustomScalarField
+    | CustomEnumField
+    | UnionField
+    | ObjectField
+    | TemporalField
+    | PointField
+    | CypherField;
+
+class Node extends GraphElement {
     public relationFields: RelationField[];
     public connectionFields: ConnectionField[];
     public cypherFields: CypherField[];
-    public primitiveFields: PrimitiveField[];
-    public scalarFields: CustomScalarField[];
-    public enumFields: CustomEnumField[];
     public otherDirectives: DirectiveNode[];
     public unionFields: UnionField[];
     public interfaceFields: InterfaceField[];
     public interfaces: NamedTypeNode[];
     public objectFields: ObjectField[];
-    public temporalFields: TemporalField[];
-    public pointFields: PointField[];
-    public ignoredFields: BaseField[];
     public exclude?: Exclude;
     public nodeDirective?: NodeDirective;
     public auth?: Auth;
@@ -121,21 +135,15 @@ class Node {
     )[];
 
     constructor(input: NodeConstructor) {
-        this.name = input.name;
+        super(input);
         this.relationFields = input.relationFields;
         this.connectionFields = input.connectionFields;
         this.cypherFields = input.cypherFields;
-        this.primitiveFields = input.primitiveFields;
-        this.scalarFields = input.scalarFields;
-        this.enumFields = input.enumFields;
         this.otherDirectives = input.otherDirectives;
         this.unionFields = input.unionFields;
         this.interfaceFields = input.interfaceFields;
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
-        this.temporalFields = input.temporalFields;
-        this.pointFields = input.pointFields;
-        this.ignoredFields = input.ignoredFields;
         this.exclude = input.exclude;
         this.nodeDirective = input.nodeDirective;
         this.auth = input.auth;
@@ -189,15 +197,44 @@ class Node {
         ].filter((field) => !field.typeMeta.array);
     }
 
-    get labelString(): string {
+    public get labelString(): string {
         return this.nodeDirective?.getLabelsString(this.name) || `:${this.name}`;
     }
 
-    get labels(): string[] {
+    public get labels(): string[] {
         return this.nodeDirective?.getLabels(this.name) || [this.name];
     }
 
-    getPlural(options: { camelCase: boolean }): string {
+    // Fields you can set in a create or update mutation
+    public get mutableFields(): MutableField[] {
+        return [
+            ...this.temporalFields,
+            ...this.enumFields,
+            ...this.objectFields,
+            ...this.scalarFields,
+            ...this.primitiveFields,
+            ...this.interfaceFields,
+            ...this.objectFields,
+            ...this.unionFields,
+            ...this.pointFields,
+        ];
+    }
+
+    // Fields you can apply auth allow and bind to
+    public get authableFields(): AuthableField[] {
+        return [
+            ...this.primitiveFields,
+            ...this.scalarFields,
+            ...this.enumFields,
+            ...this.unionFields,
+            ...this.objectFields,
+            ...this.temporalFields,
+            ...this.pointFields,
+            ...this.cypherFields,
+        ];
+    }
+
+    public getPlural(options: { camelCase: boolean }): string {
         // camelCase is optional in this case to maintain backward compatibility
         if (this.nodeDirective?.plural) {
             return options.camelCase ? camelCase(this.nodeDirective.plural) : this.nodeDirective.plural;

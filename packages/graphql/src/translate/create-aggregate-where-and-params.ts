@@ -19,6 +19,7 @@
 
 import { Node, Relationship } from "../classes";
 import { RelationField, Context, BaseField } from "../types";
+import { GraphElement } from "../classes/GraphElement";
 
 type Operator = "=" | "<" | "<=" | ">" | ">=";
 
@@ -57,7 +58,7 @@ function aggregate({
     variable,
 }: {
     inputValue: any;
-    nodeOrRelationship: Node | Relationship;
+    nodeOrRelationship: GraphElement;
     chainStr: string;
     variable: string;
 }): { aggregations: string[]; params: any; withStrs: string[] } {
