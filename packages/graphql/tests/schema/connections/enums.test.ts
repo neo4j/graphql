@@ -110,6 +110,17 @@ describe("Enums", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
+            input ActorMoviesAggregateInput {
+              AND: [ActorMoviesAggregateInput!]
+              OR: [ActorMoviesAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
               edge: ActedInCreateInput!
@@ -154,6 +165,31 @@ describe("Enums", () => {
             input ActorMoviesFieldInput {
               connect: [ActorMoviesConnectFieldInput!]
               create: [ActorMoviesCreateFieldInput!]
+            }
+
+            input ActorMoviesNodeAggregationWhereInput {
+              AND: [ActorMoviesNodeAggregationWhereInput!]
+              OR: [ActorMoviesNodeAggregationWhereInput!]
+              title_AVERAGE_EQUAL: Float
+              title_AVERAGE_GT: Float
+              title_AVERAGE_GTE: Float
+              title_AVERAGE_LT: Float
+              title_AVERAGE_LTE: Float
+              title_EQUAL: String
+              title_GT: Int
+              title_GTE: Int
+              title_LONGEST_EQUAL: Int
+              title_LONGEST_GT: Int
+              title_LONGEST_GTE: Int
+              title_LONGEST_LT: Int
+              title_LONGEST_LTE: Int
+              title_LT: Int
+              title_LTE: Int
+              title_SHORTEST_EQUAL: Int
+              title_SHORTEST_GT: Int
+              title_SHORTEST_GTE: Int
+              title_SHORTEST_LT: Int
+              title_SHORTEST_LTE: Int
             }
 
             type ActorMoviesRelationship implements ActedIn {
@@ -201,6 +237,7 @@ describe("Enums", () => {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
               movies: MovieWhere
+              moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionWhere
               moviesConnection_NOT: ActorMoviesConnectionWhere
               movies_NOT: MovieWhere
@@ -242,6 +279,17 @@ describe("Enums", () => {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
+            }
+
+            input MovieActorsAggregateInput {
+              AND: [MovieActorsAggregateInput!]
+              OR: [MovieActorsAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: MovieActorsNodeAggregationWhereInput
             }
 
             input MovieActorsConnectFieldInput {
@@ -288,6 +336,31 @@ describe("Enums", () => {
             input MovieActorsFieldInput {
               connect: [MovieActorsConnectFieldInput!]
               create: [MovieActorsCreateFieldInput!]
+            }
+
+            input MovieActorsNodeAggregationWhereInput {
+              AND: [MovieActorsNodeAggregationWhereInput!]
+              OR: [MovieActorsNodeAggregationWhereInput!]
+              name_AVERAGE_EQUAL: Float
+              name_AVERAGE_GT: Float
+              name_AVERAGE_GTE: Float
+              name_AVERAGE_LT: Float
+              name_AVERAGE_LTE: Float
+              name_EQUAL: String
+              name_GT: Int
+              name_GTE: Int
+              name_LONGEST_EQUAL: Int
+              name_LONGEST_GT: Int
+              name_LONGEST_GTE: Int
+              name_LONGEST_LT: Int
+              name_LONGEST_LTE: Int
+              name_LT: Int
+              name_LTE: Int
+              name_SHORTEST_EQUAL: Int
+              name_SHORTEST_GT: Int
+              name_SHORTEST_GTE: Int
+              name_SHORTEST_LT: Int
+              name_SHORTEST_LTE: Int
             }
 
             type MovieActorsRelationship implements ActedIn {
@@ -361,6 +434,7 @@ describe("Enums", () => {
               AND: [MovieWhere!]
               OR: [MovieWhere!]
               actors: ActorWhere
+              actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionWhere
               actorsConnection_NOT: MovieActorsConnectionWhere
               actors_NOT: ActorWhere
