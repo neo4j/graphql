@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import { GraphQLWhereArg, Context } from "../types";
+import { GraphQLWhereArg, Context, RelationField } from "../types";
 import { Node, Relationship } from "../classes";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
+import createAggregateWhereAndParams from "./create-aggregate-where-and-params";
 
 interface Res {
     clauses: string[];
@@ -67,6 +68,31 @@ function createWhereAndParams({
             // internal ID resolver
             res.clauses.push(`(id(${varName}) = $${param})`);
             res.params[param] = value;
+            return res;
+        }
+
+        if (key.endsWith("Aggregate")) {
+            const [fieldName] = key.split("Aggregate");
+            const relationField = node.relationFields.find((x) => x.fieldName === fieldName) as RelationField;
+            const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const relationship = (context.neoSchema.relationships.find(
+                (x) => x.properties === relationField.properties
+            ) as unknown) as Relationship;
+
+            const aggregateWhereAndParams = createAggregateWhereAndParams({
+                node: refNode,
+                chainStr: param,
+                context,
+                field: relationField,
+                varName,
+                aggregation: value,
+                relationship,
+            });
+            if (aggregateWhereAndParams[0]) {
+                res.clauses.push(aggregateWhereAndParams[0]);
+                res.params = { ...res.params, ...aggregateWhereAndParams[1] };
+            }
+
             return res;
         }
 
@@ -513,7 +539,7 @@ function createWhereAndParams({
             if (pointField) {
                 clause = `distance(${varName}.${fieldName}, point($${param}.point)) < $${param}.distance`;
             }
-            
+
             if (durationField) {
                 clause = `datetime() + ${property} < datetime() + $${param}`;
             }
@@ -541,7 +567,7 @@ function createWhereAndParams({
             if (pointField) {
                 clause = `distance(${varName}.${fieldName}, point($${param}.point)) <= $${param}.distance`;
             }
-            
+
             if (durationField) {
                 clause = `datetime() + ${property} <= datetime() + $${param}`;
             }
@@ -569,7 +595,7 @@ function createWhereAndParams({
             if (pointField) {
                 clause = `distance(${varName}.${fieldName}, point($${param}.point)) > $${param}.distance`;
             }
-            
+
             if (durationField) {
                 clause = `datetime() + ${property} > datetime() + $${param}`;
             }
@@ -597,7 +623,7 @@ function createWhereAndParams({
             if (pointField) {
                 clause = `distance(${varName}.${fieldName}, point($${param}.point)) >= $${param}.distance`;
             }
-            
+
             if (durationField) {
                 clause = `datetime() + ${property} >= datetime() + $${param}`;
             }
