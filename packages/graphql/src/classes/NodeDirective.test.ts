@@ -83,7 +83,7 @@ describe("NodeDirective", () => {
         });
         expect(() => {
             instance.getLabelsString("label", context);
-        }).toThrow("Value $jwt.var1 required.");
+        }).toThrow("Type value required.");
     });
 
     test("should throw if context variable is missing in context", () => {
@@ -93,6 +93,6 @@ describe("NodeDirective", () => {
         });
         expect(() => {
             instance.getLabelsString("label", context);
-        }).toThrow("Value $context.var1 required.");
+        }).toThrow("Type value required.");
     });
 });

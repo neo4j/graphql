@@ -60,7 +60,7 @@ export class NodeDirective {
 
             if (ctxPath) {
                 const mappedLabel = ContextParser.getProperty(ctxPath, context);
-                if (!mappedLabel) throw new Error(`Value ${label} required.`);
+                if (!mappedLabel) throw new Error(`Type value required.`);
                 return this.escapeLabel(mappedLabel);
             }
             return label;
