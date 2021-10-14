@@ -98,7 +98,7 @@ In some cases, we may want to generate dynamic labels depending on the user requ
 
 [source, graphql, indent=0]
 ----
-type User @node(label: "$jwt.sub") {
+type User @node(label: "$jwt.username") {
     name: String!
 }
 ----
@@ -114,11 +114,11 @@ The following query will yield a different cypher query depending on the user JW
 }
 ----
 
-Assuming an user with `"sub": 1234`, the Cypher query will look like:
+Assuming an user with the value `"username": "arthur"` in JWT, the Cypher query will look like:
 
 [source, cypher, indent=0]
 ----
-MATCH (this: 1234)
+MATCH (this:arthur)
 RETURN this { .name } as this
 ----
 
@@ -136,7 +136,7 @@ When running the server with Apollo:
 ----
 new ApolloServer({
     schema: neoSchema.schema,
-    context: ({ req }) => ({ req, appId: "1234" }),
+    context: ({ req }) => ({ req, appId: "myApp" }),
 });
 ----
 
@@ -185,7 +185,14 @@ In this case, the resulting Cypher query will use the labels `ActorDB` and `Pers
 MATCH (this:ActorDB:Person)
 RETURN this { .name } as this
 ----
-<<#_using_jwt_and_context,Context and JWT variables>> can be used with `additionalLabels` in the same fashion as with `labels`.
+<<#_using_jwt_and_context,Context and JWT variables>> can be used with `additionalLabels` in the same fashion as in `label`:
+
+[source, graphql, indent=0]
+----
+type User @node(additionalLabels: ["$jwt.username"]) {
+    name: String!
+}
+----
 
 ==== `plural`
 The parameter `plural` redefines how to compose the plural of the type for the generated operations. This is particularly
