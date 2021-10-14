@@ -7,11 +7,7 @@ export default class ContextParser {
         return path;
     }
 
-    public static getContextProperty(path: string, context: Context): string | undefined {
+    public static getProperty(path: string, context: Context): string | undefined {
         return dotProp.get({ value: context }, `value.${path}`);
-    }
-
-    public static getJwtPropery(path: string, context: Context): string | undefined {
-        return ContextParser.getContextProperty(`jwt.${path}`, context);
     }
 }

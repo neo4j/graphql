@@ -99,13 +99,13 @@ function createAuthPredicate({
             const authableField = node.authableFields.find((field) => field.fieldName === key);
             if (authableField) {
                 const jwtPath = isString(value) ? ContextParser.parseTag(value, "jwt") : undefined;
-                const ctxPath = isString(value) ? ContextParser.parseTag(value, "context") : undefined;
-                let paramValue: string | undefined = value as string;
+                let ctxPath = isString(value) ? ContextParser.parseTag(value, "context") : undefined;
+                let paramValue = value as string | undefined;
 
-                if (jwtPath) {
-                    paramValue = ContextParser.getJwtPropery(jwtPath, context);
-                } else if (ctxPath) {
-                    paramValue = ContextParser.getContextProperty(ctxPath, context);
+                if (jwtPath) ctxPath = `jwt.${jwtPath}`;
+
+                if (ctxPath) {
+                    paramValue = ContextParser.getProperty(ctxPath, context);
                 }
 
                 if (paramValue === undefined && allowUnauthenticated !== true) {

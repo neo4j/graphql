@@ -75,4 +75,24 @@ describe("NodeDirective", () => {
         const labelString = instance.getLabelsString("label", context);
         expect(labelString).toEqual(":label:`123-321`:`Hello`");
     });
+
+    test("should throw if jwt variable is missing in context", () => {
+        const context = new ContextBuilder({}).instance();
+        const instance = new NodeDirective({
+            additionalLabels: ["$jwt.var1"],
+        });
+        expect(() => {
+            instance.getLabelsString("label", context);
+        }).toThrow("Value $jwt.var1 required.");
+    });
+
+    test("should throw if context variable is missing in context", () => {
+        const context = new ContextBuilder({}).instance();
+        const instance = new NodeDirective({
+            additionalLabels: ["$context.var1"],
+        });
+        expect(() => {
+            instance.getLabelsString("label", context);
+        }).toThrow("Value $context.var1 required.");
+    });
 });

@@ -55,12 +55,13 @@ export class NodeDirective {
     private mapLabelsWithContext(labels: string[], context: Context): string[] {
         return labels.map((label: string) => {
             const jwtPath = ContextParser.parseTag(label, "jwt");
-            const ctxPath = ContextParser.parseTag(label, "context");
-            if (jwtPath) {
-                return this.escapeLabel(ContextParser.getJwtPropery(jwtPath, context) || label);
-            }
+            let ctxPath = ContextParser.parseTag(label, "context");
+            if (jwtPath) ctxPath = `jwt.${jwtPath}`;
+
             if (ctxPath) {
-                return this.escapeLabel(ContextParser.getContextProperty(ctxPath, context) || label);
+                const mappedLabel = ContextParser.getProperty(ctxPath, context);
+                if (!mappedLabel) throw new Error(`Value ${label} required.`);
+                return this.escapeLabel(mappedLabel);
             }
             return label;
         });
