@@ -192,7 +192,7 @@ describe("Field Level Aggregations", () => {
         });
     });
 
-    describe("Edge aggregations", () => {
+    describe("edge aggregations", () => {
         test("max, min and avg integers", async () => {
             const query = `
             query {

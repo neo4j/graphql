@@ -48,7 +48,7 @@ export function getFieldType(field: ResolveTree): AggregationType | undefined {
 }
 
 export function wrapApocRun(query: string, extraParams: Record<string, string> = {}): string {
-    const params = generateResultObject({ this: "this", ...extraParams });
+    const params = generateResultObject(extraParams);
     const escapedQuery = escapeQuery(query);
     return `head(apoc.cypher.runFirstColumn(" ${escapedQuery} ", ${params}))`;
 }

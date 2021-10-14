@@ -96,7 +96,7 @@ RETURN this { .name,
             count: head(apoc.cypher.runFirstColumn("
             MATCH (this)-[r:ACTED_IN]->(n:Movie)
             CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \"@neo4j/graphql/UNAUTHENTICATED\", [0])), \"@neo4j/graphql/FORBIDDEN\", [0])
-            RETURN COUNT(n) ", { this: this, auth: $auth }))
+            RETURN COUNT(n) ", { auth: $auth, this: this  }))
         }
 } as this
 ```

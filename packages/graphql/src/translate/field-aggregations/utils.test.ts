@@ -40,15 +40,11 @@ describe("field-aggregation utils", () => {
     describe("wrapApocRun", () => {
         test("wraps and escapes a query inside runFirstColumn", () => {
             const result = wrapApocRun(`MATCH(n) RETURN n, "Hello"`);
-            expect(result).toEqual(
-                `head(apoc.cypher.runFirstColumn(" MATCH(n) RETURN n, \\"Hello\\" ", { this: this }))`
-            );
+            expect(result).toEqual(`head(apoc.cypher.runFirstColumn(" MATCH(n) RETURN n, \\"Hello\\" ", {  }))`);
         });
         test("adds extra params", () => {
             const result = wrapApocRun(`MATCH(n) RETURN n`, { auth: "auth" });
-            expect(result).toEqual(
-                `head(apoc.cypher.runFirstColumn(" MATCH(n) RETURN n ", { this: this, auth: auth }))`
-            );
+            expect(result).toEqual(`head(apoc.cypher.runFirstColumn(" MATCH(n) RETURN n ", { auth: auth }))`);
         });
     });
 
