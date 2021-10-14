@@ -18,7 +18,7 @@
  */
 
 import { NodeDirective } from "./NodeDirective";
-import { ContextBuilder } from "../utils/test/context-builder";
+import { ContextBuilder } from "../utils/test/builders/context-builder";
 
 describe("NodeDirective", () => {
     const defaultContext = new ContextBuilder().instance();
@@ -53,9 +53,26 @@ describe("NodeDirective", () => {
 
     test("should throw an error if there are no labels", () => {
         const instance = new NodeDirective({});
-
         expect(() => {
             instance.getLabelsString("", defaultContext);
         }).toThrow();
+    });
+
+    test("should escape context labels", () => {
+        const context = new ContextBuilder({ escapeTest1: "123-321", escapeTest2: "He`l`lo" }).instance();
+        const instance = new NodeDirective({
+            additionalLabels: ["$context.escapeTest1", "$context.escapeTest2"],
+        });
+        const labelString = instance.getLabelsString("label", context);
+        expect(labelString).toEqual(":label:`123-321`:`Hello`");
+    });
+
+    test("should escape jwt labels", () => {
+        const context = new ContextBuilder({ jwt: { escapeTest1: "123-321", escapeTest2: "He`l`lo" } }).instance();
+        const instance = new NodeDirective({
+            additionalLabels: ["$jwt.escapeTest1", "$jwt.escapeTest2"],
+        });
+        const labelString = instance.getLabelsString("label", context);
+        expect(labelString).toEqual(":label:`123-321`:`Hello`");
     });
 });

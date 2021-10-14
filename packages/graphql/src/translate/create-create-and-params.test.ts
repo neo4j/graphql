@@ -21,7 +21,7 @@ import createCreateAndParams from "./create-create-and-params";
 import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
-import { NodeBuilder } from "../utils/test/node-builder";
+import { NodeBuilder } from "../utils/test/builders/node-builder";
 
 describe("createCreateAndParams", () => {
     test("should return the correct projection with 1 selection", () => {

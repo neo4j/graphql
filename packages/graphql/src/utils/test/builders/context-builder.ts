@@ -19,8 +19,8 @@
 
 import * as neo4j from "neo4j-driver";
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { Neo4jGraphQL } from "../../classes";
-import { Context } from "../../types";
+import { Neo4jGraphQL } from "../../../classes";
+import { Context } from "../../../types";
 import { Builder } from "./builder";
 
 // eslint-disable-next-line import/prefer-default-export
@@ -32,7 +32,7 @@ export class ContextBuilder extends Builder<Context, Context> {
             neoSchema: new Neo4jGraphQL({
                 typeDefs: "",
             }),
-            newOptions,
+            ...newOptions,
         });
     }
 

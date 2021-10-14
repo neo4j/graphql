@@ -18,8 +18,8 @@
  */
 
 import Node, { NodeConstructor } from "./Node";
-import { NodeBuilder } from "../utils/test/node-builder";
-import { ContextBuilder } from "../utils/test/context-builder";
+import { NodeBuilder } from "../utils/test/builders/node-builder";
+import { ContextBuilder } from "../utils/test/builders/context-builder";
 
 describe("Node", () => {
     const defaultContext = new ContextBuilder().instance();
@@ -84,8 +84,8 @@ describe("Node", () => {
             const labels = node.getLabels(context);
             const labelString = node.getLabelString(context);
 
-            expect(labels).toEqual(["Movie"]);
-            expect(labelString).toEqual(":Movie");
+            expect(labels).toEqual(["`Movie`"]);
+            expect(labelString).toEqual(":`Movie`");
         });
 
         test("should return labels updated with context values from Context", () => {
@@ -106,8 +106,8 @@ describe("Node", () => {
             const labels = node.getLabels(context);
             const labelString = node.getLabelString(context);
 
-            expect(labels).toEqual(["Movie"]);
-            expect(labelString).toEqual(":Movie");
+            expect(labels).toEqual(["`Movie`"]);
+            expect(labelString).toEqual(":`Movie`");
         });
 
         test("should return additional labels updated with jwt values from Context", () => {
@@ -132,8 +132,8 @@ describe("Node", () => {
             const labels = node.getLabels(context);
             const labelString = node.getLabelString(context);
 
-            expect(labels).toEqual(["Film", "Movie"]);
-            expect(labelString).toEqual(":Film:Movie");
+            expect(labels).toEqual(["Film", "`Movie`"]);
+            expect(labelString).toEqual(":Film:`Movie`");
         });
     });
 });

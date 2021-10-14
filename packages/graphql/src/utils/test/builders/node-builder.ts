@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { NodeConstructor, Node } from "../../classes";
-import { NodeDirectiveConstructor, NodeDirective } from "../../classes/NodeDirective";
+import { NodeConstructor, Node } from "../../../classes";
+import { NodeDirectiveConstructor, NodeDirective } from "../../../classes/NodeDirective";
 import { Builder } from "./builder";
 
 // eslint-disable-next-line import/prefer-default-export

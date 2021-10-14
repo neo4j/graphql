@@ -43,7 +43,7 @@ query {
 ### Expected Cypher Output
 
 ```cypher
-MATCH (this:Film)
+MATCH (this:`Film`)
 RETURN this { .title } as this
 ```
 
@@ -82,12 +82,12 @@ query {
 ### Expected Cypher Output
 
 ```cypher
-MATCH (this:Actor:Person)
+MATCH (this:Actor:`Person`)
 WHERE this.age > $this_age_GT
 RETURN this {
     .name,
     movies: [
-        (this)-[:ACTED_IN]->(this_movies:Film)
+        (this)-[:ACTED_IN]->(this_movies:`Film`)
         WHERE this_movies.title = $this_movies_title | this_movies { .title }
         ] } as this
 ```
@@ -132,7 +132,7 @@ mutation {
 
 ```cypher
 CALL {
-    CREATE (this0:Film)
+    CREATE (this0:`Film`)
     SET this0.title = $this0_title
     RETURN this0
 }

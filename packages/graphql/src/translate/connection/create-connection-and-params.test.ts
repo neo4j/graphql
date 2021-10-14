@@ -24,7 +24,7 @@ import { mocked } from "ts-jest/utils";
 import { ConnectionField, Context } from "../../types";
 import createConnectionAndParams from "./create-connection-and-params";
 import Neo4jGraphQL from "../../classes/Neo4jGraphQL";
-import { NodeBuilder } from "../../utils/test/node-builder";
+import { NodeBuilder } from "../../utils/test/builders/node-builder";
 
 jest.mock("../../classes/Neo4jGraphQL");
 

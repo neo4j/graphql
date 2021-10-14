@@ -57,12 +57,17 @@ export class NodeDirective {
             const jwtPath = ContextParser.parseTag(label, "jwt");
             const ctxPath = ContextParser.parseTag(label, "context");
             if (jwtPath) {
-                return ContextParser.getJwtPropery(jwtPath, context) || label;
+                return this.escapeLabel(ContextParser.getJwtPropery(jwtPath, context) || label);
             }
             if (ctxPath) {
-                return ContextParser.getContextProperty(ctxPath, context) || label;
+                return this.escapeLabel(ContextParser.getContextProperty(ctxPath, context) || label);
             }
             return label;
         });
+    }
+
+    private escapeLabel(label: string): string {
+        const escapedLabel = label.replace(/`/g, "");
+        return `\`${escapedLabel}\``;
     }
 }

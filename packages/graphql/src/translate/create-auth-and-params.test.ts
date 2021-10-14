@@ -21,7 +21,7 @@ import { generate } from "randomstring";
 import createAuthAndParams from "./create-auth-and-params";
 import { Neo4jGraphQL } from "../classes";
 import { trimmer } from "../utils";
-import { NodeBuilder } from "../utils/test/node-builder";
+import { NodeBuilder } from "../utils/test/builders/node-builder";
 
 describe("createAuthAndParams", () => {
     describe("operations", () => {
