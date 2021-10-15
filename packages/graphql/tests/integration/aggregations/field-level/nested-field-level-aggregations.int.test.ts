@@ -100,15 +100,5 @@ describe("Nested Field Level Aggregations", () => {
             title: "Total Recall",
             actorAggregate: { count: 1 },
         });
-
-        // expect(gqlResult.data?.actors[0]).toEqual(
-        //     [
-        //         { name: "Arnold", movies: [{ title: "Terminator", actorAggregate: { count: 2 } }] },
-        //         { name: "Linda", movies: [{ title: "Terminator", actorAggregate: { count: 2 } }] },
-        //     ].sort()
-        // );
-        // expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
-        //     count: 2,
-        // });
     });
 });
