@@ -81,6 +81,14 @@ type AuthableField =
     | PointField
     | CypherField;
 
+type SortableField =
+    | PrimitiveField
+    | CustomScalarField
+    | CustomEnumField
+    | TemporalField
+    | PointField
+    | CypherField;
+
 class Node extends GraphElement {
     public relationFields: RelationField[];
     public connectionFields: ConnectionField[];
@@ -145,6 +153,33 @@ class Node extends GraphElement {
             ...this.pointFields,
             ...this.cypherFields,
         ];
+    }
+
+    // Fields you can sort on
+    public get sortableFields(): SortableField[] {
+        return [
+            ...this.primitiveFields,
+            ...this.scalarFields,
+            ...this.enumFields,
+            ...this.temporalFields,
+            ...this.pointFields,
+            ...this.cypherFields.filter((field) =>
+                [
+                    "Boolean",
+                    "ID",
+                    "Int",
+                    "BigInt",
+                    "Float",
+                    "String",
+                    "DateTime",
+                    "LocalDateTime",
+                    "Time",
+                    "LocalTime",
+                    "Date",
+                    "Duration",
+                ].includes(field.typeMeta.name)
+            ),
+        ].filter((field) => !field.typeMeta.array);
     }
 
     public getPlural(options: { camelCase: boolean }): string {
