@@ -710,6 +710,7 @@ describe("Interface Relationships", () => {
             type Episode {
               runtime: Int!
               series(options: SeriesOptions, where: SeriesWhere): Series!
+              seriesAggregate: EpisodeSeriesseriesAggregationSelection
               seriesConnection(after: String, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
             }
 
@@ -865,6 +866,16 @@ describe("Interface Relationships", () => {
               where: EpisodeSeriesConnectionWhere
             }
 
+            type EpisodeSeriesseriesAggregationSelection {
+              count: Int!
+              node: EpisodeSeriesseriesNodeAggregateSelection
+            }
+
+            type EpisodeSeriesseriesNodeAggregateSelection {
+              episodeCount: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
             \\"\\"\\"Fields to sort Episodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one EpisodeSort object.\\"\\"\\"
             input EpisodeSort {
               runtime: SortDirection
@@ -901,9 +912,24 @@ describe("Interface Relationships", () => {
 
             type Movie implements Production {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate: MovieActoractorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               runtime: Int!
               title: String!
+            }
+
+            type MovieActoractorsAggregationSelection {
+              count: Int!
+              edge: MovieActoractorsEdgeAggregateSelection
+              node: MovieActoractorsNodeAggregateSelection
+            }
+
+            type MovieActoractorsEdgeAggregateSelection {
+              screenTime: IntAggregateSelection!
+            }
+
+            type MovieActoractorsNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -1298,11 +1324,27 @@ describe("Interface Relationships", () => {
 
             type Series implements Production {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
+              actorsAggregate: SeriesActoractorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               episodeCount: Int!
               episodes(options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
+              episodesAggregate: SeriesEpisodeepisodesAggregationSelection
               episodesConnection(after: String, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
               title: String!
+            }
+
+            type SeriesActoractorsAggregationSelection {
+              count: Int!
+              edge: SeriesActoractorsEdgeAggregateSelection
+              node: SeriesActoractorsNodeAggregateSelection
+            }
+
+            type SeriesActoractorsEdgeAggregateSelection {
+              screenTime: IntAggregateSelection!
+            }
+
+            type SeriesActoractorsNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -1397,6 +1439,15 @@ describe("Interface Relationships", () => {
             input SeriesDisconnectInput {
               actors: [ProductionActorsDisconnectFieldInput!]
               episodes: [SeriesEpisodesDisconnectFieldInput!]
+            }
+
+            type SeriesEpisodeepisodesAggregationSelection {
+              count: Int!
+              node: SeriesEpisodeepisodesNodeAggregateSelection
+            }
+
+            type SeriesEpisodeepisodesNodeAggregateSelection {
+              runtime: IntAggregateSelection!
             }
 
             input SeriesEpisodesAggregateInput {
@@ -2394,9 +2445,11 @@ describe("Interface Relationships", () => {
             type Comment implements Content {
               content: String
               creator(options: UserOptions, where: UserWhere): User
+              creatorAggregate: CommentUsercreatorAggregationSelection
               creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
               post(options: PostOptions, where: PostWhere): Post
+              postAggregate: CommentPostpostAggregationSelection
               postConnection(after: String, first: Int, sort: [CommentPostConnectionSort!], where: CommentPostConnectionWhere): CommentPostConnection!
             }
 
@@ -2572,6 +2625,16 @@ describe("Interface Relationships", () => {
               where: CommentPostConnectionWhere
             }
 
+            type CommentPostpostAggregationSelection {
+              count: Int!
+              node: CommentPostpostNodeAggregateSelection
+            }
+
+            type CommentPostpostNodeAggregateSelection {
+              content: StringAggregateSelection!
+              id: IDAggregateSelection!
+            }
+
             input CommentRelationInput {
               creator: ContentCreatorCreateFieldInput
               post: CommentPostCreateFieldInput
@@ -2588,6 +2651,16 @@ describe("Interface Relationships", () => {
               creator: ContentCreatorUpdateFieldInput
               id: ID
               post: CommentPostUpdateFieldInput
+            }
+
+            type CommentUsercreatorAggregationSelection {
+              count: Int!
+              node: CommentUsercreatorNodeAggregateSelection
+            }
+
+            type CommentUsercreatorNodeAggregateSelection {
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input CommentWhere {
@@ -2869,9 +2942,11 @@ describe("Interface Relationships", () => {
 
             type Post implements Content {
               comments(options: CommentOptions, where: CommentWhere): [Comment]
+              commentsAggregate: PostCommentcommentsAggregationSelection
               commentsConnection(after: String, first: Int, sort: [PostCommentsConnectionSort!], where: PostCommentsConnectionWhere): PostCommentsConnection!
               content: String
               creator(options: UserOptions, where: UserWhere): User
+              creatorAggregate: PostUsercreatorAggregationSelection
               creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
             }
@@ -2879,6 +2954,16 @@ describe("Interface Relationships", () => {
             type PostAggregateSelection {
               content: StringAggregateSelection!
               count: Int!
+              id: IDAggregateSelection!
+            }
+
+            type PostCommentcommentsAggregationSelection {
+              count: Int!
+              node: PostCommentcommentsNodeAggregateSelection
+            }
+
+            type PostCommentcommentsNodeAggregateSelection {
+              content: StringAggregateSelection!
               id: IDAggregateSelection!
             }
 
@@ -3064,6 +3149,16 @@ describe("Interface Relationships", () => {
               content: String
               creator: ContentCreatorUpdateFieldInput
               id: ID
+            }
+
+            type PostUsercreatorAggregationSelection {
+              count: Int!
+              node: PostUsercreatorNodeAggregateSelection
+            }
+
+            type PostUsercreatorNodeAggregateSelection {
+              id: IDAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             input PostWhere {

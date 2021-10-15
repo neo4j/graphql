@@ -8,6 +8,7 @@ import {
 import { Node } from "../classes";
 import { WHERE_AGGREGATION_AVERAGE_TYPES, WHERE_AGGREGATION_OPERATORS, WHERE_AGGREGATION_TYPES } from "../constants";
 import { BaseField, RelationField } from "../types";
+import { FieldAggregationComposer } from "./field-aggregation-composer";
 import { ObjectFields } from "./get-obj-field-meta";
 
 function createRelationshipFields({
@@ -18,6 +19,7 @@ function createRelationshipFields({
     sourceName,
     nodes,
     relationshipPropertyFields,
+    aggregationSelectionTypes,
 }: {
     relationshipFields: RelationField[];
     schemaComposer: SchemaComposer;
@@ -25,6 +27,7 @@ function createRelationshipFields({
     sourceName: string;
     nodes: Node[];
     relationshipPropertyFields: Map<string, ObjectFields>;
+    aggregationSelectionTypes: Record<string, ObjectTypeComposer<unknown, unknown>>;
 }) {
     const whereInput = schemaComposer.getITC(`${sourceName}Where`);
     const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
@@ -632,6 +635,24 @@ function createRelationshipFields({
                 },
             },
         });
+
+        if (composeNode instanceof ObjectTypeComposer) {
+            const baseTypeName = `${sourceName}${n.name}${rel.fieldName}`;
+            const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer, aggregationSelectionTypes);
+
+            const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
+                baseTypeName,
+                n,
+                relFields
+            );
+
+            composeNode.addFields({
+                [`${rel.fieldName}Aggregate`]: {
+                    type: aggregationTypeObject,
+                    args: {},
+                },
+            });
+        }
 
         schemaComposer.getOrCreateITC(connectionUpdateInputName, (tc) => {
             tc.addFields({

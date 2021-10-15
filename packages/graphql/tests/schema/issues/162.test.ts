@@ -145,6 +145,7 @@ describe("162", () => {
             type TigerJawLevel2 {
               id: ID
               part1(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1
+              part1Aggregate: TigerJawLevel2TigerJawLevel2Part1part1AggregationSelection
               part1Connection(after: String, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
             }
 
@@ -180,6 +181,7 @@ describe("162", () => {
             type TigerJawLevel2Part1 {
               id: ID
               tiger(options: TigerOptions, where: TigerWhere): Tiger
+              tigerAggregate: TigerJawLevel2Part1TigertigerAggregationSelection
               tigerConnection(after: String, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
             }
 
@@ -380,6 +382,15 @@ describe("162", () => {
               where: TigerJawLevel2Part1TigerConnectionWhere
             }
 
+            type TigerJawLevel2Part1TigertigerAggregationSelection {
+              count: Int!
+              node: TigerJawLevel2Part1TigertigerNodeAggregateSelection
+            }
+
+            type TigerJawLevel2Part1TigertigerNodeAggregateSelection {
+              x: IntAggregateSelection!
+            }
+
             input TigerJawLevel2Part1UpdateConnectionInput {
               node: TigerJawLevel2Part1UpdateInput
             }
@@ -425,6 +436,15 @@ describe("162", () => {
             \\"\\"\\"Fields to sort TigerJawLevel2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one TigerJawLevel2Sort object.\\"\\"\\"
             input TigerJawLevel2Sort {
               id: SortDirection
+            }
+
+            type TigerJawLevel2TigerJawLevel2Part1part1AggregationSelection {
+              count: Int!
+              node: TigerJawLevel2TigerJawLevel2Part1part1NodeAggregateSelection
+            }
+
+            type TigerJawLevel2TigerJawLevel2Part1part1NodeAggregateSelection {
+              id: IDAggregateSelection!
             }
 
             input TigerJawLevel2UpdateInput {

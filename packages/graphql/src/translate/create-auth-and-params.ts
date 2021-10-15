@@ -244,11 +244,12 @@ function createAuthAndParams({
             thisPredicates.push(createRolesStr({ roles: authRule.roles, escapeQuotes }));
         }
 
+        const quotes = escapeQuotes ? '\\"' : '"';
         if (!skipIsAuthenticated && (authRule.isAuthenticated === true || authRule.isAuthenticated === false)) {
             thisPredicates.push(
                 `apoc.util.validatePredicate(NOT($auth.isAuthenticated = ${Boolean(
                     authRule.isAuthenticated
-                )}), "${AUTH_UNAUTHENTICATED_ERROR}", [0])`
+                )}), ${quotes}${AUTH_UNAUTHENTICATED_ERROR}${quotes}, [0])`
             );
         }
 

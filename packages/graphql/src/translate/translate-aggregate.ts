@@ -22,7 +22,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { BaseField, Context, GraphQLWhereArg, PrimitiveField, TemporalField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createWhereAndParams from "./create-where-and-params";
-import createDatetimeElement from "./projection/elements/create-datetime-element";
+import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 
 function translateAggregate({ node, context }: { node: Node; context: Context }): [string, any] {
     const whereInput = context.resolveTree.args.where as GraphQLWhereArg;
@@ -115,7 +115,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         const temporalField = node.temporalFields.find((x) => x.fieldName === selection[1].name);
         const field: BaseField = (primitiveField as PrimitiveField) || (temporalField as TemporalField);
         let isDateTime = false;
-        let isString = primitiveField && primitiveField.typeMeta.name === "String";
+        const isString = primitiveField && primitiveField.typeMeta.name === "String";
 
         if (!primitiveField && temporalField && temporalField.typeMeta.name === "DateTime") {
             isDateTime = true;
@@ -161,7 +161,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
 
                         const reduce = `
                             reduce(shortest = collect(this.${fieldName})[0], current IN collect(this.${fieldName}) | apoc.cypher.runFirstColumn("
-                                RETURN 
+                                RETURN
                                 CASE size(current) ${lessOrGreaterThan} size(shortest)
                                 WHEN true THEN current
                                 ELSE shortest

@@ -603,6 +603,7 @@ function makeAugmentedSchema(
             sourceName: interfaceRelationship.name.value,
             nodes,
             relationshipPropertyFields: relationshipFields,
+            aggregationSelectionTypes,
         });
 
         relationships = [
@@ -884,6 +885,7 @@ function makeAugmentedSchema(
             sourceName: node.name,
             nodes,
             relationshipPropertyFields: relationshipFields,
+            aggregationSelectionTypes,
         });
 
         relationships = [
