@@ -29,33 +29,12 @@ type User {
     posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
 }
 
-extend type User
-    @auth(
-        rules: [
-            {
-                operations: [READ, CREATE, UPDATE, CONNECT, DISCONNECT, DELETE]
-                roles: ["admin"]
-            }
-        ]
-    )
+extend type User @auth(rules: [{ operations: [READ, CREATE, UPDATE, CONNECT, DISCONNECT, DELETE], roles: ["admin"] }])
 
-extend type Post
-    @auth(
-        rules: [
-            {
-                operations: [CONNECT, DISCONNECT, DELETE]
-                roles: ["super-admin"]
-            }
-        ]
-    )
+extend type Post @auth(rules: [{ operations: [CONNECT, DISCONNECT, DELETE], roles: ["super-admin"] }])
 
 extend type User {
-    password: String
-        @auth(
-            rules: [
-                { operations: [READ, CREATE, UPDATE], roles: ["super-admin"] }
-            ]
-        )
+    password: String @auth(rules: [{ operations: [READ, CREATE, UPDATE], roles: ["super-admin"] }])
 }
 
 extend type User {
@@ -512,17 +491,7 @@ RETURN this { .id } AS this
 ```graphql
 mutation {
     updateComments(
-        update: {
-            post: {
-                update: {
-                    node: {
-                        creator: {
-                            connect: { where: { node: { id: "user-id" } } }
-                        }
-                    }
-                }
-            }
-        }
+        update: { post: { update: { node: { creator: { connect: { where: { node: { id: "user-id" } } } } } } } }
     ) {
         comments {
             content
@@ -684,17 +653,7 @@ RETURN this { .id } AS this
 ```graphql
 mutation {
     updateComments(
-        update: {
-            post: {
-                update: {
-                    node: {
-                        creator: {
-                            disconnect: { where: { node: { id: "user-id" } } }
-                        }
-                    }
-                }
-            }
-        }
+        update: { post: { update: { node: { creator: { disconnect: { where: { node: { id: "user-id" } } } } } } } }
     ) {
         comments {
             content
@@ -855,9 +814,8 @@ WITH this, this_posts0
 
 CALL apoc.util.validate(NOT(ANY(r IN ["super-admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), "@neo4j/graphql/FORBIDDEN", [0])
 
-FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_posts0
-)
+WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
+FOREACH(x IN this_posts0_to_delete | DETACH DELETE x)
 
 WITH this CALL apoc.util.validate(NOT(ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), "@neo4j/graphql/FORBIDDEN", [0])
 
