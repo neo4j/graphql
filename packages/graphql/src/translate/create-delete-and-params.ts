@@ -153,10 +153,10 @@ function createDeleteAndParams({
                         res.params = { ...res.params, ...deleteAndParams[1] };
                     }
 
-                    res.strs.push(`
-                    FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END |
-                        DETACH DELETE ${_varName}
-                    )`);
+                    res.strs.push(
+                        `WITH ${[...withVars, `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`].join(", ")}`
+                    );
+                    res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
                 });
             });
 
