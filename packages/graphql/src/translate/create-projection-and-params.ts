@@ -23,12 +23,13 @@ import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createDatetimeElement from "./projection/elements/create-datetime-element";
+import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
 // eslint-disable-next-line import/no-cycle
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
+import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 
 interface Res {
     projection: string[];
@@ -409,6 +410,19 @@ function createProjectionAndParams({
 
             res.projection.push(nestedQuery);
 
+            return res;
+        }
+
+        const aggregationFieldProjection = createFieldAggregation({
+            context,
+            nodeLabel: chainStr || varName,
+            node,
+            field,
+        });
+
+        if (aggregationFieldProjection) {
+            res.projection.push(`${key}: ${aggregationFieldProjection.query}`);
+            res.params = { ...res.params, ...aggregationFieldProjection.params };
             return res;
         }
 

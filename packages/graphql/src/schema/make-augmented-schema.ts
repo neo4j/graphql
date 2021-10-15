@@ -74,6 +74,7 @@ import { validateDocument } from "./validation";
 import * as constants from "../constants";
 import NodeDirective from "../classes/NodeDirective";
 import parseNodeDirective from "./parse-node-directive";
+import { FieldAggregationComposer } from "./field-aggregation-composer";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -1161,6 +1162,21 @@ function makeAugmentedSchema(
                         where: `${rel.typeMeta.name}Where`,
                         options: `${rel.typeMeta.name}Options`,
                     },
+                },
+            });
+
+            const baseTypeName = `${node.name}${n.name}${rel.fieldName}`;
+            const fieldAggregationComposer = new FieldAggregationComposer(composer, aggregationSelectionTypes);
+            const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
+                baseTypeName,
+                n,
+                relFields
+            );
+
+            composeNode.addFields({
+                [`${rel.fieldName}Aggregate`]: {
+                    type: aggregationTypeObject,
+                    args: {},
                 },
             });
 
