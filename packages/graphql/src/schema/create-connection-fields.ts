@@ -135,15 +135,7 @@ function createConnectionFields({
 
             const connectionSort = schemaComposer.getOrCreateITC(`${connectionField.typeMeta.name}Sort`);
 
-            const nodeSortFields = [
-                ...relatedNode.primitiveFields,
-                ...relatedNode.enumFields,
-                ...relatedNode.scalarFields,
-                ...relatedNode.temporalFields,
-                ...relatedNode.pointFields,
-            ].filter((f) => !f.typeMeta.array);
-
-            if (nodeSortFields.length) {
+            if (relatedNode.sortableFields.length) {
                 connectionSort.addFields({
                     node: `${connectionField.relationship.typeMeta.name}Sort`,
                 });
@@ -166,7 +158,7 @@ function createConnectionFields({
             };
 
             // If any sortable fields, add sort argument to connection field
-            if (nodeSortFields.length || connectionField.relationship.properties) {
+            if (relatedNode.sortableFields.length || connectionField.relationship.properties) {
                 composeNodeArgs = {
                     ...composeNodeArgs,
                     sort: connectionSort.NonNull.List,

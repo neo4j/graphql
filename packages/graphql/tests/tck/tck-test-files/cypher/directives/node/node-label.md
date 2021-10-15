@@ -465,9 +465,8 @@ WHERE this.id = $this_id
 WITH this
 OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Person)
 WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
-FOREACH(_ IN CASE this_actors0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_actors0
-)
+WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
+FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
 DETACH DELETE this
 ```
 

@@ -1,8 +1,19 @@
-graphql:
-  - packages/graphql/**/*
-
-ogm:
-  - packages/ogm/**/*
-  
-documentation:
-  - docs/modules/ROOT/**/*
+version: 1
+labels:
+  - label: feature
+    title: ^(?:feature|feat|Feature|Feat):.*
+  - label: fix
+    title: ^(?:bugfix|fix|Bugfix|Fix):.*
+  - label: feature
+    branch: ^(?:feature|feat)/.*
+  - label: fix
+    branch: ^(?:bugfix|fix)/.*
+  - label: documentation
+    files:
+      - docs/modules/ROOT/.*
+  - label: graphql
+    files:
+      - packages/graphql/.*
+  - label: ogm
+    files:
+      - packages/ogm/.*

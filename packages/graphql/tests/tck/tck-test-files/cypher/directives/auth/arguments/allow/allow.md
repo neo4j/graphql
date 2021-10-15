@@ -593,9 +593,9 @@ WHERE this_posts0.id = $this_deleteUsers.args.delete.posts[0].where.node.id
 WITH this, this_posts0
 CALL apoc.util.validate(NOT(EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
 
-FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_posts0
-)
+WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
+FOREACH(x IN this_posts0_to_delete | DETACH DELETE x)
+
 WITH this
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 DETACH DELETE this

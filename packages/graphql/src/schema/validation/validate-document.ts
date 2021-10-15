@@ -77,12 +77,16 @@ function filterDocument(document: DocumentNode): DocumentNode {
     const filterInputTypes = (fields: readonly InputValueDefinitionNode[] | undefined) => {
         return fields?.filter((f) => {
             const type = getArgumentType(f.type);
-            const match = /(?<nodeName>.+)(?:CreateInput|Sort|UpdateInput|Where)/gm.exec(type);
-            if (match?.groups?.nodeName) {
-                if (nodeNames.includes(match.groups.nodeName)) {
+
+            const nodeMatch = /(?<nodeName>.+)(?:ConnectInput|ConnectWhere|CreateInput|DeleteInput|DisconnectInput|Options|RelationInput|Sort|UpdateInput|Where)/gm.exec(
+                type
+            );
+            if (nodeMatch?.groups?.nodeName) {
+                if (nodeNames.includes(nodeMatch.groups.nodeName)) {
                     return false;
                 }
             }
+
             return true;
         });
     };

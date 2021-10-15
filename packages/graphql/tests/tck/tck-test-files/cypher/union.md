@@ -501,7 +501,8 @@ WHERE this.title = $this_title
 WITH this
 OPTIONAL MATCH (this)-[this_delete_search_Genre0_relationship:SEARCH]->(this_delete_search_Genre0:Genre)
 WHERE this_delete_search_Genre0.name = $updateMovies.args.delete.search.Genre[0].where.node.name
-FOREACH(_ IN CASE this_delete_search_Genre0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_delete_search_Genre0 )
+WITH this, collect(DISTINCT this_delete_search_Genre0) as this_delete_search_Genre0_to_delete
+FOREACH(x IN this_delete_search_Genre0_to_delete | DETACH DELETE x)
 RETURN this { .title } AS this
 ```
 

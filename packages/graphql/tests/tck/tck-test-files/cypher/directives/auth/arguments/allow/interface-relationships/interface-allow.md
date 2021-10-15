@@ -385,18 +385,19 @@ OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_co
 WHERE this_content_Comment0.id = $this_deleteUsers.args.delete.content[0].where.node.id
 WITH this, this_content_Comment0
 CALL apoc.util.validate(NOT(EXISTS((this_content_Comment0)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_content_Comment0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content_Comment0_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
-FOREACH(_ IN CASE this_content_Comment0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_content_Comment0
-)
+
+WITH this, collect(DISTINCT this_content_Comment0) as this_content_Comment0_to_delete 
+FOREACH(x IN this_content_Comment0_to_delete | DETACH DELETE x)
+
 WITH this
 
 OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
 WHERE this_content_Post0.id = $this_deleteUsers.args.delete.content[0].where.node.id
 WITH this, this_content_Post0
 CALL apoc.util.validate(NOT(EXISTS((this_content_Post0)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_content_Post0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content_Post0_auth_allow0_creator_id)), "@neo4j/graphql/FORBIDDEN", [0])
-FOREACH(_ IN CASE this_content_Post0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_content_Post0
-)
+
+WITH this, collect(DISTINCT this_content_Post0) as this_content_Post0_to_delete 
+FOREACH(x IN this_content_Post0_to_delete | DETACH DELETE x)
 
 WITH this
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])

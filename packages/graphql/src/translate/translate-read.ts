@@ -170,11 +170,11 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         matchStr,
         whereStr,
         authStr,
-        ...(sortStr ? [`WITH ${varName}`, sortStr] : []),
         ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
         ...connectionStrs,
         ...interfaceStrs,
         `RETURN ${varName} ${projStr} as ${varName}`,
+        ...(sortStr ? [sortStr] : []),
         offsetStr,
         limitStr,
     ];

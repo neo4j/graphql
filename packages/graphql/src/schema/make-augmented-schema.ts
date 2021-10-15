@@ -741,22 +741,13 @@ function makeAugmentedSchema(
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
-        const sortFields = [
-            ...node.primitiveFields,
-            ...node.enumFields,
-            ...node.scalarFields,
-            ...node.temporalFields,
-            ...node.pointFields,
-        ].reduce((res, f) => {
-            return f.typeMeta.array
-                ? {
-                      ...res,
-                  }
-                : {
-                      ...res,
-                      [f.fieldName]: sortDirection.getTypeName(),
-                  };
-        }, {});
+        const sortFields = node.sortableFields.reduce(
+            (res, f) => ({
+                ...res,
+                [f.fieldName]: sortDirection.getTypeName(),
+            }),
+            {}
+        );
 
         if (Object.keys(sortFields).length) {
             const sortInput = composer.createInputTC({

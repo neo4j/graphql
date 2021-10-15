@@ -596,16 +596,16 @@ WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 
 WITH this
 OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
-FOREACH(_ IN CASE this_content_Comment0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_content_Comment0
-)
+
+WITH this, collect(DISTINCT this_content_Comment0) as this_content_Comment0_to_delete 
+FOREACH(x IN this_content_Comment0_to_delete | DETACH DELETE x)
 
 WITH this
 OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
 WHERE EXISTS((this_content_Post0)<-[:HAS_CONTENT]-(:User)) AND ALL(creator IN [(this_content_Post0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content_Post0_auth_where0_creator_id)
-FOREACH(_ IN CASE this_content_Post0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_content_Post0
-)
+
+WITH this, collect(DISTINCT this_content_Post0) as this_content_Post0_to_delete 
+FOREACH(x IN this_content_Post0_to_delete | DETACH DELETE x)
 
 DETACH DELETE this
 ```
