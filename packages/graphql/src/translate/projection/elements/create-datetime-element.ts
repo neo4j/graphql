@@ -20,7 +20,7 @@
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { TemporalField } from "../../../types";
 
-function createDatetimeElement({
+export function createDatetimeElement({
     resolveTree,
     field,
     variable,
@@ -33,10 +33,10 @@ function createDatetimeElement({
 }): string {
     const dbFieldName = field.dbPropertyName || resolveTree.name;
     return field.typeMeta.array
-        ? `${resolveTree.alias}: [ dt in ${variable}.${dbFieldName} | apoc.date.convertFormat(toString(dt), "iso_zoned_date_time", "iso_offset_date_time") ]`
-        : `${resolveTree.alias}: apoc.date.convertFormat(toString(${
-              valueOverride || `${variable}.${dbFieldName}`
-          }), "iso_zoned_date_time", "iso_offset_date_time")`;
+        ? `${resolveTree.alias}: [ dt in ${variable}.${dbFieldName} | ${wrapApocConvertDate("dt")} ]`
+        : `${resolveTree.alias}: ${wrapApocConvertDate(valueOverride || `${variable}.${dbFieldName}`)}`;
 }
 
-export default createDatetimeElement;
+export function wrapApocConvertDate(value: string): string {
+    return `apoc.date.convertFormat(toString(${value}), "iso_zoned_date_time", "iso_offset_date_time")`;
+}

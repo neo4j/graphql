@@ -22,7 +22,7 @@ const baseRules = {
     "no-param-reassign": "warn", // Dangerous to have this off (out-of-scope side effects are bad), but there are some valid reasons for violations (Array.reduce(), setting GraphQL context, etc.), so use comments to disable ESLint for these
     "max-classes-per-file": "off", // Stylistic decision - we can judge whether there are too many classes in one file during code review
     "eslint-comments/no-unused-disable": "error", // Turn on optional rule to report eslint-disable comments having no effect
-    "class-methods-use-this": "off"    
+    "class-methods-use-this": "off",
 };
 
 const typeScriptParser = {
@@ -65,6 +65,10 @@ const baseTypeScriptRules = {
     "@typescript-eslint/quotes": "off",
     "@typescript-eslint/lines-between-class-members": ["error", "always", { exceptAfterSingleLine: true }],
     "@typescript-eslint/no-unnecessary-type-assertion": ["off"],
+    "import/prefer-default-export": "off",
+    // disallow certain syntax forms
+    // http://eslint.org/docs/rules/no-restricted-syntax
+    "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
 };
 
 module.exports = {
