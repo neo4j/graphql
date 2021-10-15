@@ -64,7 +64,7 @@ describe("NodeDirective", () => {
             additionalLabels: ["$context.escapeTest1", "$context.escapeTest2"],
         });
         const labelString = instance.getLabelsString("label", context);
-        expect(labelString).toEqual(":label:`123-321`:`Hello`");
+        expect(labelString).toEqual(":label:`123-321`:`He``l``lo`");
     });
 
     test("should escape jwt labels", () => {
@@ -73,7 +73,7 @@ describe("NodeDirective", () => {
             additionalLabels: ["$jwt.escapeTest1", "$jwt.escapeTest2"],
         });
         const labelString = instance.getLabelsString("label", context);
-        expect(labelString).toEqual(":label:`123-321`:`Hello`");
+        expect(labelString).toEqual(":label:`123-321`:`He``l``lo`");
     });
 
     test("should throw if jwt variable is missing in context", () => {

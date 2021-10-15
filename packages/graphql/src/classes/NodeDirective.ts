@@ -68,7 +68,7 @@ export class NodeDirective {
     }
 
     private escapeLabel(label: string): string {
-        const escapedLabel = label.replace(/`/g, "");
+        const escapedLabel = label.replace(/`/g, "``");
         return `\`${escapedLabel}\``;
     }
 }
