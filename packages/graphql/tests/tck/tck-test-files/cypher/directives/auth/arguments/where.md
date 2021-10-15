@@ -20,39 +20,18 @@ type Post {
     creator: User @relationship(type: "HAS_POST", direction: IN)
 }
 
-extend type User
-    @auth(
-        rules: [
-            {
-                operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT]
-                where: { id: "$jwt.sub" }
-            }
-        ]
-    )
+extend type User @auth(rules: [{ operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT], where: { id: "$jwt.sub" } }])
 
 extend type User {
-    password: String!
-        @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
+    password: String! @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
 }
 
 extend type Post {
-    secretKey: String!
-        @auth(
-            rules: [
-                { operations: [READ], where: { creator: { id: "$jwt.sub" } } }
-            ]
-        )
+    secretKey: String! @auth(rules: [{ operations: [READ], where: { creator: { id: "$jwt.sub" } } }])
 }
 
 extend type Post
-    @auth(
-        rules: [
-            {
-                operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT]
-                where: { creator: { id: "$jwt.sub" } }
-            }
-        ]
-    )
+    @auth(rules: [{ operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT], where: { creator: { id: "$jwt.sub" } } }])
 ```
 
 ---
@@ -793,7 +772,8 @@ WITH this
 OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
 WHERE EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_auth_where0_creator_id)
 
-FOREACH(_ IN CASE this_posts0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_posts0 )
+WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
+FOREACH(x IN this_posts0_to_delete | DETACH DELETE x)
 
 DETACH DELETE this
 ```
@@ -825,14 +805,7 @@ DETACH DELETE this
 ```graphql
 mutation {
     createUsers(
-        input: [
-            {
-                id: "123"
-                name: "Bob"
-                password: "password"
-                posts: { connect: { where: { node: {} } } }
-            }
-        ]
+        input: [{ id: "123", name: "Bob", password: "password", posts: { connect: { where: { node: {} } } } }]
     ) {
         users {
             id
@@ -897,12 +870,7 @@ RETURN this0 { .id } AS this0
 mutation {
     createUsers(
         input: [
-            {
-                id: "123"
-                name: "Bob"
-                password: "password"
-                posts: { connect: { where: { node: { id: "post-id" } } } }
-            }
+            { id: "123", name: "Bob", password: "password", posts: { connect: { where: { node: { id: "post-id" } } } } }
         ]
     ) {
         users {
@@ -1023,9 +991,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateUsers(
-        update: { posts: { connect: { where: { node: { id: "new-id" } } } } }
-    ) {
+    updateUsers(update: { posts: { connect: { where: { node: { id: "new-id" } } } } }) {
         users {
             id
         }
@@ -1255,11 +1221,7 @@ RETURN this { .id } AS this
 
 ```graphql
 mutation {
-    updateUsers(
-        update: {
-            posts: [{ disconnect: { where: { node: { id: "new-id" } } } }]
-        }
-    ) {
+    updateUsers(update: { posts: [{ disconnect: { where: { node: { id: "new-id" } } } }] }) {
         users {
             id
         }
