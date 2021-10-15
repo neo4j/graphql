@@ -26,6 +26,14 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 describe("aggregations-top_level-string", () => {
     let driver: Driver;
 
+    const titles = [10, 11, 12, 13, 14].map((length) =>
+        generate({
+            charset: "alphabetic",
+            readable: true,
+            length,
+        })
+    );
+
     beforeAll(async () => {
         driver = await neo4j();
     });
@@ -54,10 +62,10 @@ describe("aggregations-top_level-string", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testId: $id, title: "1"})
-                    CREATE (:Movie {testId: $id, title: "22"})
-                    CREATE (:Movie {testId: $id, title: "333"})
-                    CREATE (:Movie {testId: $id, title: "4444"})
+                    CREATE (:Movie {testId: $id, title: "${titles[0]}"})
+                    CREATE (:Movie {testId: $id, title: "${titles[1]}"})
+                    CREATE (:Movie {testId: $id, title: "${titles[2]}"})
+                    CREATE (:Movie {testId: $id, title: "${titles[3]}"})
                 `,
                 {
                     id,
@@ -88,7 +96,7 @@ describe("aggregations-top_level-string", () => {
 
             expect((gqlResult.data as any).moviesAggregate).toEqual({
                 title: {
-                    shortest: "1",
+                    shortest: titles[0],
                 },
             });
         } finally {
@@ -116,11 +124,11 @@ describe("aggregations-top_level-string", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testId: $id, title: "1"})
-                    CREATE (:Movie {testId: $id, title: "22"})
-                    CREATE (:Movie {testId: $id, title: "333"})
-                    CREATE (:Movie {testId: $id, title: "4444"})
-                `,
+                CREATE (:Movie {testId: $id, title: "${titles[0]}"})
+                CREATE (:Movie {testId: $id, title: "${titles[1]}"})
+                CREATE (:Movie {testId: $id, title: "${titles[2]}"})
+                CREATE (:Movie {testId: $id, title: "${titles[3]}"})
+            `,
                 {
                     id,
                 }
@@ -150,7 +158,7 @@ describe("aggregations-top_level-string", () => {
 
             expect((gqlResult.data as any).moviesAggregate).toEqual({
                 title: {
-                    longest: "4444",
+                    longest: titles[3],
                 },
             });
         } finally {
@@ -178,10 +186,10 @@ describe("aggregations-top_level-string", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testId: $id, title: "1"})
-                    CREATE (:Movie {testId: $id, title: "22"})
-                    CREATE (:Movie {testId: $id, title: "333"})
-                    CREATE (:Movie {testId: $id, title: "4444"})
+                    CREATE (:Movie {testId: $id, title: "${titles[0]}"})
+                    CREATE (:Movie {testId: $id, title: "${titles[1]}"})
+                    CREATE (:Movie {testId: $id, title: "${titles[2]}"})
+                    CREATE (:Movie {testId: $id, title: "${titles[3]}"})
                 `,
                 {
                     id,
@@ -213,8 +221,8 @@ describe("aggregations-top_level-string", () => {
 
             expect((gqlResult.data as any).moviesAggregate).toEqual({
                 title: {
-                    shortest: "1",
-                    longest: "4444",
+                    shortest: titles[0],
+                    longest: titles[3],
                 },
             });
         } finally {

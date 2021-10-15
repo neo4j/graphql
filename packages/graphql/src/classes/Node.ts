@@ -37,9 +37,10 @@ import type {
     Context,
 } from "../types";
 import Exclude from "./Exclude";
+import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
 
-export interface NodeConstructor {
+export interface NodeConstructor extends GraphElementConstructor {
     name: string;
     relationFields: RelationField[];
     connectionFields: ConnectionField[];
@@ -61,108 +62,122 @@ export interface NodeConstructor {
     description?: string;
 }
 
-class Node {
-    public name: string;
+type MutableField =
+    | PrimitiveField
+    | CustomScalarField
+    | CustomEnumField
+    | UnionField
+    | ObjectField
+    | TemporalField
+    | PointField
+    | CypherField;
+
+type AuthableField =
+    | PrimitiveField
+    | CustomScalarField
+    | CustomEnumField
+    | UnionField
+    | ObjectField
+    | TemporalField
+    | PointField
+    | CypherField;
+
+type SortableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField | PointField | CypherField;
+
+class Node extends GraphElement {
     public relationFields: RelationField[];
     public connectionFields: ConnectionField[];
     public cypherFields: CypherField[];
-    public primitiveFields: PrimitiveField[];
-    public scalarFields: CustomScalarField[];
-    public enumFields: CustomEnumField[];
     public otherDirectives: DirectiveNode[];
     public unionFields: UnionField[];
     public interfaceFields: InterfaceField[];
     public interfaces: NamedTypeNode[];
     public objectFields: ObjectField[];
-    public temporalFields: TemporalField[];
-    public pointFields: PointField[];
-    public ignoredFields: BaseField[];
     public exclude?: Exclude;
     public nodeDirective?: NodeDirective;
     public auth?: Auth;
     public description?: string;
 
-    /*
-        Fields you can apply auth allow and bind to
-    */
-    public authableFields: (
-        | PrimitiveField
-        | CustomScalarField
-        | CustomEnumField
-        | UnionField
-        | ObjectField
-        | TemporalField
-        | PointField
-        | CypherField
-    )[];
-
-    /*
-        Fields you can set in a create or update mutation
-    */
-    public mutableFields: (
-        | PrimitiveField
-        | CustomScalarField
-        | CustomEnumField
-        | UnionField
-        | ObjectField
-        | TemporalField
-        | PointField
-    )[];
-
     constructor(input: NodeConstructor) {
-        this.name = input.name;
+        super(input);
         this.relationFields = input.relationFields;
         this.connectionFields = input.connectionFields;
         this.cypherFields = input.cypherFields;
-        this.primitiveFields = input.primitiveFields;
-        this.scalarFields = input.scalarFields;
-        this.enumFields = input.enumFields;
         this.otherDirectives = input.otherDirectives;
         this.unionFields = input.unionFields;
         this.interfaceFields = input.interfaceFields;
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
-        this.temporalFields = input.temporalFields;
-        this.pointFields = input.pointFields;
-        this.ignoredFields = input.ignoredFields;
         this.exclude = input.exclude;
         this.nodeDirective = input.nodeDirective;
         this.auth = input.auth;
-        this.description = input.description;
+    }
 
-        this.authableFields = [
-            ...input.primitiveFields,
-            ...input.scalarFields,
-            ...input.enumFields,
-            ...input.unionFields,
-            ...input.objectFields,
-            ...input.temporalFields,
-            ...input.pointFields,
-            ...input.cypherFields,
-        ];
-
-        this.mutableFields = [
-            ...input.temporalFields,
-            ...input.enumFields,
-            ...input.objectFields,
-            ...input.scalarFields,
-            ...input.primitiveFields,
-            ...input.interfaceFields,
-            ...input.objectFields,
-            ...input.unionFields,
-            ...input.pointFields,
+    // Fields you can set in a create or update mutation
+    public get mutableFields(): MutableField[] {
+        return [
+            ...this.temporalFields,
+            ...this.enumFields,
+            ...this.objectFields,
+            ...this.scalarFields,
+            ...this.primitiveFields,
+            ...this.interfaceFields,
+            ...this.objectFields,
+            ...this.unionFields,
+            ...this.pointFields,
         ];
     }
 
-    getLabelString(context: Context): string {
+    /** Fields you can apply auth allow and bind to */
+    public get authableFields(): AuthableField[] {
+        return [
+            ...this.primitiveFields,
+            ...this.scalarFields,
+            ...this.enumFields,
+            ...this.unionFields,
+            ...this.objectFields,
+            ...this.temporalFields,
+            ...this.pointFields,
+            ...this.cypherFields,
+        ];
+    }
+
+    /** Fields you can sort on */
+    public get sortableFields(): SortableField[] {
+        return [
+            ...this.primitiveFields,
+            ...this.scalarFields,
+            ...this.enumFields,
+            ...this.temporalFields,
+            ...this.pointFields,
+            ...this.cypherFields.filter((field) =>
+                [
+                    "Boolean",
+                    "ID",
+                    "Int",
+                    "BigInt",
+                    "Float",
+                    "String",
+                    "DateTime",
+                    "LocalDateTime",
+                    "Time",
+                    "LocalTime",
+                    "Date",
+                    "Duration",
+                ].includes(field.typeMeta.name)
+            ),
+        ].filter((field) => !field.typeMeta.array);
+    }
+
+    public getLabelString(context: Context): string {
         return this.nodeDirective?.getLabelsString(this.name, context) || `:${this.name}`;
     }
 
-    getLabels(context: Context): string[] {
+    public getLabels(context: Context): string[] {
         return this.nodeDirective?.getLabels(this.name, context) || [this.name];
     }
 
-    getPlural(options: { camelCase: boolean }): string {
+    public getPlural(options: { camelCase: boolean }): string {
         // camelCase is optional in this case to maintain backward compatibility
         if (this.nodeDirective?.plural) {
             return options.camelCase ? camelCase(this.nodeDirective.plural) : this.nodeDirective.plural;
