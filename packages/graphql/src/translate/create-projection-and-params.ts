@@ -287,7 +287,17 @@ function createProjectionAndParams({
                         `[ ${param} IN [${param}] WHERE (${labelsStatements.join(" AND ")})`,
                     ];
 
-                    if (field.fieldsByTypeName[refNode.name]) {
+                    // Extract interface names implemented by reference node
+                    const refNodeInterfaceNames = refNode.interfaces.map(
+                        (implementedInterface) => implementedInterface.name.value
+                    );
+
+                    // Determine if there are any fields to project
+                    const hasFields = Object.keys(field.fieldsByTypeName).some((fieldByTypeName) =>
+                        [refNode.name, ...refNodeInterfaceNames].includes(fieldByTypeName)
+                    );
+
+                    if (hasFields) {
                         const recurse = createProjectionAndParams({
                             fieldsByTypeName: field.fieldsByTypeName,
                             node: refNode,

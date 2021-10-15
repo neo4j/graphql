@@ -26,6 +26,7 @@ import type {
     BaseField,
     TemporalField,
 } from "../types";
+import { GraphElement } from "./GraphElement";
 
 export interface RelationshipConstructor {
     name: string;
@@ -41,29 +42,23 @@ export interface RelationshipConstructor {
     ignoredFields?: BaseField[];
 }
 
-class Relationship {
-    public name: string;
-    public type: string;
-    public description?: string;
+class Relationship extends GraphElement {
     public properties?: string;
-    public primitiveFields: PrimitiveField[];
-    public scalarFields: CustomScalarField[];
-    public enumFields: CustomEnumField[];
-    public temporalFields: TemporalField[];
-    public pointFields: PointField[];
-    public ignoredFields: BaseField[];
 
     constructor(input: RelationshipConstructor) {
-        this.name = input.name;
-        this.type = input.type;
-        this.description = input.description;
+        super({
+            name: input.name,
+            description: input.description,
+            cypherFields: input.cypherFields || [],
+            primitiveFields: input.primitiveFields || [],
+            scalarFields: input.scalarFields || [],
+            enumFields: input.enumFields || [],
+            temporalFields: input.temporalFields || [],
+            pointFields: input.pointFields || [],
+            ignoredFields: input.ignoredFields || [],
+        });
+
         this.properties = input.properties;
-        this.primitiveFields = input.primitiveFields || [];
-        this.scalarFields = input.scalarFields || [];
-        this.enumFields = input.enumFields || [];
-        this.temporalFields = input.temporalFields || [];
-        this.pointFields = input.pointFields || [];
-        this.ignoredFields = input.ignoredFields || [];
     }
 }
 

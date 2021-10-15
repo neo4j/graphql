@@ -301,7 +301,9 @@ MATCH (this:User)
 WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
 CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $name_auth_allow0_id), "@neo4j/graphql/FORBIDDEN", [0])
-RETURN { name: { shortest: min(this.name), longest: max(this.name) } }
+RETURN { name: {
+    shortest: reduce(shortest = collect(this.name)[0], current IN collect(this.name) | apoc.cypher.runFirstColumn(" RETURN CASE size(current) < size(shortest) WHEN true THEN current ELSE shortest END AS result ", { current: current, shortest: shortest }, false)) ,
+    longest: reduce(shortest = collect(this.name)[0], current IN collect(this.name) | apoc.cypher.runFirstColumn(" RETURN CASE size(current) > size(shortest) WHEN true THEN current ELSE shortest END AS result ", { current: current, shortest: shortest }, false)) } }
 ```
 
 ### Expected Cypher Params
