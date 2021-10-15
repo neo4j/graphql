@@ -20,14 +20,13 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import { IncomingMessage } from "http";
-import { Socket } from "net";
-import jsonwebtoken from "jsonwebtoken";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import neo4j from "../../neo4j";
+import { createJwtRequest } from "../../../../src/utils/test/utils";
 
 describe("should inject the auth into cypher directive", () => {
     let driver: Driver;
+    const secret = "secret";
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -52,10 +51,6 @@ describe("should inject the auth into cypher directive", () => {
             charset: "alphabetic",
         });
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign({ sub: userId }, secret);
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         const query = `
@@ -65,9 +60,7 @@ describe("should inject the auth into cypher directive", () => {
         `;
 
         try {
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
+            const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -146,10 +139,6 @@ describe("should inject the auth into cypher directive", () => {
             charset: "alphabetic",
         });
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign({ sub: userId }, secret);
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         const query = `
@@ -159,9 +148,7 @@ describe("should inject the auth into cypher directive", () => {
         `;
 
         try {
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
+            const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,
@@ -242,10 +229,6 @@ describe("should inject the auth into cypher directive", () => {
             charset: "alphabetic",
         });
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign({ sub: userId }, secret);
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         const query = `
@@ -261,9 +244,7 @@ describe("should inject the auth into cypher directive", () => {
                 CREATE (:User {id: "${userId}"})
             `);
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
+            const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
                 schema: neoSchema.schema,

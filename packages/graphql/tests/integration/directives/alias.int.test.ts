@@ -21,11 +21,9 @@ import { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
 import * as neo4jDriver from "neo4j-driver";
-import { IncomingMessage } from "http";
-import { Socket } from "net";
-import jsonwebtoken from "jsonwebtoken";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { createJwtRequest } from "../../../src/utils/test/utils";
 
 describe("@alias directive", () => {
     let driver: Driver;
@@ -108,12 +106,7 @@ describe("@alias directive", () => {
         `;
 
         // For the @auth
-
-        const token = jsonwebtoken.sign({ roles: ["reader"] }, secret);
-
-        const socket = new Socket({ readable: true });
-        const req = new IncomingMessage(socket);
-        req.headers.authorization = `Bearer ${token}`;
+        const req = createJwtRequest(secret, { roles: ["reader"] });
 
         const gqlResult = await graphql({
             schema: neoSchema.schema,
@@ -146,11 +139,7 @@ describe("@alias directive", () => {
 
         // For the @auth
         const tokenSub = dbName;
-        const token = jsonwebtoken.sign({ roles: ["reader"], sub: tokenSub }, secret);
-
-        const socket = new Socket({ readable: true });
-        const req = new IncomingMessage(socket);
-        req.headers.authorization = `Bearer ${token}`;
+        const req = createJwtRequest(secret, { roles: ["reader"], sub: tokenSub });
 
         const gqlResult = await graphql({
             schema: neoSchema.schema,
