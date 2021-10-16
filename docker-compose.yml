@@ -1,0 +1,33 @@
+version: '3'
+
+### Pre-configured docker compose file used while running integration tests
+
+services:
+  neo4j:
+    image: "neo4j:4.2"
+
+    ports:
+    - "7474:7474"
+    - "7687:7687"
+    - "6362:6362"
+    environment:
+      NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
+      NEO4JLABS_PLUGINS: '["apoc"]'
+      NEO4J_dbms_security_procedures_unrestricted: apoc.*
+      NEO4J_AUTH: neo4j/INSECURE
+    volumes:
+    - "neo4j-graphql-data:/data"
+    - "neo4j-graphql-data:/conf"
+    - "neo4j-graphql-data:/plugins"
+    - "neo4j-graphql-data:/import"
+    - "neo4j-graphql-data:/logs"
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass INSECURE
+    volumes:
+      - neo4j-graphql-data:/data
+
+volumes:
+  neo4j-graphql-data:

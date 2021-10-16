@@ -56,11 +56,17 @@ The Jest extension should automatically detect the tests for this repository and
 
 ## Testing
 
-In order to run all of the tests, you will need to have a local instance of Neo4j running! We highly recommend [Neo4j Desktop](https://neo4j.com/download/) to easily get up and running with a local Neo4j instance.
+In order to run all of the tests, you will need to have a local instance of Neo4j running! We highly recommend [Neo4j Desktop](https://neo4j.com/download/) to easily get up and running with a local Neo4j instance. For quicker setup, you can use [Docker and Docker-compose](https://docs.docker.com/get-docker/)
 
-1. Create and start a new DBMS with a database named neo4j (default).
-2. Install APOC plugin for that DB.
-3. Create appropriate user by running the following command in the DB:
+### Neo4j Database Setup Option 1: Neo4j Desktop
+
+1. Install [Neo4j Desktop](https://neo4j.com/download/)
+
+2. Create and start a new DBMS with a database named neo4j (default).
+
+3. Install APOC plugin for that DB.
+
+4. Create appropriate user by running the following command in the DB:
 
    ```cypher
    CREATE USER admin
@@ -69,13 +75,23 @@ In order to run all of the tests, you will need to have a local instance of Neo4
    SET STATUS ACTIVE
    ```
 
-4. Grant roles to admin user:
+5. Grant roles to admin user:
 
    ```cypher
    GRANT ROLE admin to admin
    ```
 
-5. Run tests with `yarn test`.
+### Neo4j Database Setup Option 1: Docker & Docker Compose
+
+1. Install [Docker and Docker-compose](https://docs.docker.com/get-docker/)
+
+2. Run `docker-compose up` in the root directory. Wait for `Remote interface available at http://localhost:7474/`
+
+3. Run tests with `NEO_URL=bolt://localhost:7687 NEO_USER=neo4j NEO_PASSWORD=INSECURE yarn test`
+
+### Running Tests with Jest
+
+1. Run tests with `yarn test`.
 
 Tests are run using Jest, which has been configured to allow for execution of test suites at any level in the project.
 
