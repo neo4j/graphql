@@ -158,7 +158,7 @@ MATCH (this:Movie)
 CREATE (this_create_search_Genre0_node:Genre)
 SET this_create_search_Genre0_node.name = $this_create_search_Genre0_node_name
 MERGE (this)-[:SEARCH]->(this_create_search_Genre0_node)
-RETURN this { .title } AS this
+RETURN this { .title } AS this, [val in ( [ {type: "Updated", id: id(this), name: "Movie"} ]) WHERE val IS NOT NULL AND val.id IS NOT NULL] as mutateMeta
 ```
 
 ### Expected Cypher Params
@@ -247,12 +247,12 @@ mutation {
 MATCH (this:Movie)
 WHERE this.title = $this_title
 
-WITH this
+WITH this, [val in ( [ {type: "Updated", id: id(this), name: "Movie"} ]) WHERE val IS NOT NULL AND val.id IS NOT NULL] as mutateMeta
 OPTIONAL MATCH (this)-[this_search0_relationship:SEARCH]->(this_search_Genre0:Genre)
 WHERE this_search_Genre0.name = $updateMovies.args.update.search.Genre[0].where.node.name
-CALL apoc.do.when(this_search_Genre0 IS NOT NULL, " SET this_search_Genre0.name = $this_update_search_Genre0_name RETURN count(*) ", "", {this:this, updateMovies: $updateMovies, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name}) YIELD value as _
+CALL apoc.do.when(this_search_Genre0 IS NOT NULL, " SET this_search_Genre0.name = $this_update_search_Genre0_name RETURN id(this_search_Genre0) as _id ", "", {this:this, updateMovies: $updateMovies, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name}) YIELD value
 
-RETURN this { .title } AS this
+RETURN this { .title } AS this, [val in (mutateMeta + [ {type: "Updated", id: value._id, name: "Genre"} ]) WHERE val IS NOT NULL AND val.id IS NOT NULL] as mutateMeta
 ```
 
 ### Expected Cypher Params
@@ -328,7 +328,7 @@ CALL {
     RETURN count(*)
 }
 
-RETURN this { .title } AS this
+RETURN this { .title } AS this, [val in ( [ {type: "Updated", id: id(this), name: "Movie"} ]) WHERE val IS NOT NULL AND val.id IS NOT NULL] as mutateMeta
 ```
 
 ### Expected Cypher Params
@@ -396,7 +396,7 @@ CALL {
     RETURN count(*)
 }
 
-RETURN this { .title } AS this
+RETURN this { .title } AS this, [val in ( [ {type: "Updated", id: id(this), name: "Movie"} ]) WHERE val IS NOT NULL AND val.id IS NOT NULL] as mutateMeta
 ```
 
 ### Expected Cypher Params
@@ -456,7 +456,7 @@ CALL {
     FOREACH(_ IN CASE this_connect_search_Genre0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node) )
     RETURN count(*)
 }
-RETURN this { .title } AS this
+RETURN this { .title } AS this, [val in ( [ {type: "Updated", id: id(this), name: "Movie"} ]) WHERE val IS NOT NULL AND val.id IS NOT NULL] as mutateMeta
 ```
 
 ### Expected Cypher Params
@@ -497,7 +497,7 @@ OPTIONAL MATCH (this)-[this_delete_search_Genre0_relationship:SEARCH]->(this_del
 WHERE this_delete_search_Genre0.name = $updateMovies.args.delete.search.Genre[0].where.node.name
 WITH this, collect(DISTINCT this_delete_search_Genre0) as this_delete_search_Genre0_to_delete
 FOREACH(x IN this_delete_search_Genre0_to_delete | DETACH DELETE x)
-RETURN this { .title } AS this
+RETURN this { .title } AS this, [val in ( [ {type: "Updated", id: id(this), name: "Movie"} ]) WHERE val IS NOT NULL AND val.id IS NOT NULL] as mutateMeta
 ```
 
 ### Expected Cypher Params
