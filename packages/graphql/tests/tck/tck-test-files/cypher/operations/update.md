@@ -662,9 +662,10 @@ WHERE this.id = $this_id
 WITH this
 OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
 WHERE this_delete_actors0_relationship.screenTime = $updateMovies.args.delete.actors[0].where.edge.screenTime AND this_delete_actors0.name = $updateMovies.args.delete.actors[0].where.node.name
-FOREACH(_ IN CASE this_delete_actors0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_delete_actors0
-)
+
+WITH this, collect(DISTINCT this_delete_actors0) as this_delete_actors0_to_delete
+FOREACH(x IN this_delete_actors0_to_delete | DETACH DELETE x)
+
 RETURN this { .id } AS this
 ```
 
@@ -734,9 +735,10 @@ CALL apoc.do.when(this_actors0 IS NOT NULL, "
 WITH this
 OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
 WHERE this_delete_actors0.name = $updateMovies.args.delete.actors[0].where.node.name
-FOREACH(_ IN CASE this_delete_actors0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_delete_actors0
-)
+
+WITH this, collect(DISTINCT this_delete_actors0) as this_delete_actors0_to_delete
+FOREACH(x IN this_delete_actors0_to_delete | DETACH DELETE x)
+
 RETURN this { .id } AS this
 ```
 
@@ -809,9 +811,10 @@ WHERE this.id = $this_id
 WITH this
 OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:ACTED_IN]-(this_actors0_delete0:Actor)
 WHERE this_actors0_delete0.name = $updateMovies.args.update.actors[0].delete[0].where.node.name
-FOREACH(_ IN CASE this_actors0_delete0 WHEN NULL THEN [] ELSE [1] END |
-    DETACH DELETE this_actors0_delete0
-)
+
+WITH this, collect(DISTINCT this_actors0_delete0) as this_actors0_delete0_to_delete
+FOREACH(x IN this_actors0_delete0_to_delete | DETACH DELETE x)
+
 RETURN this { .id } AS this
 ```
 
@@ -878,8 +881,13 @@ WHERE this_actors0_delete0.name = $updateMovies.args.update.actors[0].delete[0].
 WITH this, this_actors0_delete0
 OPTIONAL MATCH (this_actors0_delete0)-[this_actors0_delete0_movies0_relationship:ACTED_IN]->(this_actors0_delete0_movies0:Movie)
 WHERE this_actors0_delete0_movies0.id = $updateMovies.args.update.actors[0].delete[0].delete.movies[0].where.node.id
-FOREACH(_ IN CASE this_actors0_delete0_movies0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_actors0_delete0_movies0 )
-FOREACH(_ IN CASE this_actors0_delete0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_actors0_delete0 )
+
+WITH this, this_actors0_delete0, collect(DISTINCT this_actors0_delete0_movies0) as this_actors0_delete0_movies0_to_delete 
+FOREACH(x IN this_actors0_delete0_movies0_to_delete | DETACH DELETE x) 
+
+WITH this, collect(DISTINCT this_actors0_delete0) as this_actors0_delete0_to_delete 
+FOREACH(x IN this_actors0_delete0_to_delete | DETACH DELETE x)
+
 RETURN this { .id } AS this
 ```
 

@@ -615,6 +615,7 @@ describe("Aggregations", () => {
 
             type Post {
               likes(options: UserOptions, where: UserWhere): [User]
+              likesAggregate: PostUserlikesAggregationSelection
               likesConnection(after: String, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               title: String
             }
@@ -1076,6 +1077,38 @@ describe("Aggregations", () => {
             input PostUpdateInput {
               likes: [PostLikesUpdateFieldInput!]
               title: String
+            }
+
+            type PostUserlikesAggregationSelection {
+              count: Int!
+              edge: PostUserlikesEdgeAggregateSelection
+              node: PostUserlikesNodeAggregateSelection
+            }
+
+            type PostUserlikesEdgeAggregateSelection {
+              someBigInt: BigIntAggregateSelection!
+              someDateTime: DateTimeAggregateSelection!
+              someDuration: DurationAggregateSelection!
+              someFloat: FloatAggregateSelection!
+              someId: IDAggregateSelection!
+              someInt: IntAggregateSelection!
+              someLocalDateTime: LocalDateTimeAggregateSelection!
+              someLocalTime: LocalTimeAggregateSelection!
+              someString: StringAggregateSelection!
+              someTime: TimeAggregateSelection!
+            }
+
+            type PostUserlikesNodeAggregateSelection {
+              someBigInt: BigIntAggregateSelection!
+              someDateTime: DateTimeAggregateSelection!
+              someDuration: DurationAggregateSelection!
+              someFloat: FloatAggregateSelection!
+              someId: IDAggregateSelection!
+              someInt: IntAggregateSelection!
+              someLocalDateTime: LocalDateTimeAggregateSelection!
+              someLocalTime: LocalTimeAggregateSelection!
+              someString: StringAggregateSelection!
+              someTime: TimeAggregateSelection!
             }
 
             input PostWhere {
