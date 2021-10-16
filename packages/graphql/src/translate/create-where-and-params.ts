@@ -64,7 +64,7 @@ function createWhereAndParams({
             (x) => key.startsWith(x.fieldName) && x.typeMeta.name === "Duration"
         );
 
-        if (key === '__id') {
+        if (key === '_id') {
             // internal ID resolver
             res.clauses.push(`(id(${varName}) = $${param})`);
             res.params[param] = value;

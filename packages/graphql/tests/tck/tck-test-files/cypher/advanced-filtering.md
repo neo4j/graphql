@@ -42,7 +42,7 @@ NEO4J_GRAPHQL_ENABLE_REGEX=1
 
 ```cypher
 MATCH (this:Movie)
-WHERE this._id IN $this__id_IN
+WHERE this._id IN $this_id_IN
 RETURN this { ._id } as this
 ```
 
@@ -52,7 +52,7 @@ RETURN this { ._id } as this
 {
     "this__id_IN": ["123"]
 }
-```
+``
 
 ---
 

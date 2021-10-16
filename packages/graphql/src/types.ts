@@ -200,7 +200,7 @@ export interface GraphQLWhereArg {
     AND?: GraphQLWhereArg[];
     OR?: GraphQLWhereArg[];
     // Internal ID used to limit results to a single ID
-    __id?: number;
+    _id?: number;
 }
 
 export interface ConnectionWhereArg {
