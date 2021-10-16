@@ -32,12 +32,15 @@ export interface MutationMeta {
     name: string;
     type: MutationMetaType;
 }
+export interface UpdatedMutationMeta extends MutationMeta {
+    type: 'Updated',
+    properties: any;
+}
 
 export interface MutationMetaVars {
     idVar: string;
     name: string;
     type: MutationMetaType;
-
 }
 
 interface MutationMetaRelationshipVars {
@@ -51,6 +54,7 @@ export interface UpdatedMutationMetaVars extends MutationMetaVars {
     type: 'Updated';
     properties: any;
 }
+
 export interface RelationshipUpdatedMutationMetaVars extends MutationMetaVars, MutationMetaRelationshipVars {
     type: 'RelationshipUpdated';
     properties: any;

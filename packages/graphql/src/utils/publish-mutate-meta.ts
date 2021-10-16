@@ -18,7 +18,7 @@
  */
 
 import Debug from "debug";
-import { MutationMeta } from "../classes/WithProjector";
+import { MutationMeta, UpdatedMutationMeta } from "../classes/WithProjector";
 import { DEBUG_PUBLISH } from "../constants";
 import { Context } from "../types";
 import { ExecuteResult } from "./execute";
@@ -28,6 +28,18 @@ const debug = Debug(DEBUG_PUBLISH);
 export interface MutationEvent extends Omit<MutationMeta, 'id'> {
     id: number;
     bookmark?: string;
+}
+
+export interface UpdatedMutationEvent extends Omit<UpdatedMutationMeta, 'id'> {
+    id: number;
+    bookmark?: string;
+}
+
+
+export function isUpdatedMutationEvent(
+    ev: MutationEvent,
+): ev is UpdatedMutationEvent {
+    return ev.type === 'Updated';
 }
 
 function publishMutateMeta(input: {

@@ -24,6 +24,7 @@ import translateRead from "../../translate/translate-read";
 import { Context } from "../../types";
 import execute from "../../utils/execute";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
+import { isUpdatedMutationEvent, MutationEvent } from "../../utils/publish-mutate-meta";
 
 export default function subscribeToNodeResolver({ node }: { node: Node }) {
     return {
@@ -56,7 +57,7 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
                 const iterators = types.map((ev) => `${ node.name }.${ ev }`);
                 return context.pubsub.asyncIterator(iterators);
             },
-            async (payload, args, context: Context) => {
+            async (payload: MutationEvent, args, context: Context) => {
                 if (!payload || !payload.id) { return false; }
 
                 if (args?.types && !args.types.includes(payload.type)) {
@@ -71,26 +72,31 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
                 // eslint-disable-next-line @typescript-eslint/dot-notation
                 context.resolveTree.args.where['_id'] = payload.id;
                 const [cypher, params] = translateRead({ context, node });
+
+                let bookmarks: string[] | undefined;
+                if (payload.bookmark) {
+                    bookmarks = [ payload.bookmark ];
+                }
     
                 const executeResult = await execute({
                     cypher,
                     params,
                     defaultAccessMode: "READ",
                     context,
+                    bookmarks,
                 });
 
                 const [ record ] = executeResult.records;
 
-                if (payload.properties) {
+                if (isUpdatedMutationEvent(payload)) {
                     // eslint-disable-next-line no-param-reassign
-                    payload.fieldsUpdated = Object.keys(payload.properties);
+                    (payload as any).fieldsUpdated = Object.keys(payload.properties);
                 }
 
                 if (record?.this) {
                     // eslint-disable-next-line no-param-reassign
                     payload[node.name.toLowerCase()] = record.this;
                 }
-                console.log(payload, record);
 
                 return Boolean(record?.this);
             }

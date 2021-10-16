@@ -39,12 +39,17 @@ async function execute(input: {
     params: any;
     defaultAccessMode: SessionMode;
     context: Context;
+    // Bookmarks to execute for this query only
+    bookmarks?: string[],
 }): Promise<ExecuteResult> {
     const sessionParams: {
         defaultAccessMode?: SessionMode;
         bookmarks?: string | string[];
         database?: string;
-    } = { defaultAccessMode: input.defaultAccessMode };
+    } = {
+        defaultAccessMode: input.defaultAccessMode,
+        bookmarks: input.bookmarks,
+    };
 
     const driverConfig = input.context.driverConfig as DriverConfig;
     if (driverConfig) {
@@ -53,7 +58,11 @@ async function execute(input: {
         }
 
         if (driverConfig.bookmarks) {
-            sessionParams.bookmarks = driverConfig.bookmarks;
+            sessionParams.bookmarks = sessionParams.bookmarks || [];
+            sessionParams.bookmarks = [
+                ...Array.isArray(sessionParams.bookmarks) ? sessionParams.bookmarks : [sessionParams.bookmarks],
+                ...Array.isArray(driverConfig.bookmarks) ? driverConfig.bookmarks : [driverConfig.bookmarks],
+            ];
         }
     }
 
