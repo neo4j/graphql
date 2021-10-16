@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import { Integer } from "neo4j-driver";
+
 export interface WithProjectorConstructor {
     variables?: string[];
     mutateMetaListVarName?: string;
@@ -26,7 +28,7 @@ export interface WithProjectorConstructor {
 export type MutationMetaType =  'Updated' | 'Created' | 'Deleted' | 'Connected' | 'Disconnected' | 'RelationshipUpdated';
 
 export interface MutationMeta {
-    id: number;
+    id: Integer;
     name: string;
     type: MutationMetaType;
 }

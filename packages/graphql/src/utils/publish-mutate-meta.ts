@@ -18,7 +18,6 @@
  */
 
 import Debug from "debug";
-import { Integer } from "neo4j-driver";
 import { MutationMeta } from "../classes/WithProjector";
 import { DEBUG_PUBLISH } from "../constants";
 import { Context } from "../types";
@@ -26,30 +25,35 @@ import { ExecuteResult } from "./execute";
 
 const debug = Debug(DEBUG_PUBLISH);
 
+export interface MutationEvent extends Omit<MutationMeta, 'id'> {
+    id: number;
+    bookmark?: string;
+}
+
 function publishMutateMeta(input: {
     context: Context;
     executeResult: ExecuteResult;
 }): void {
     const { context, executeResult } = input;
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const x of executeResult.records) {
-        if (x.mutateMeta && Array.isArray(x.mutateMeta)) {
-            // eslint-disable-next-line no-restricted-syntax
-            for (const meta of x.mutateMeta as MutationMeta[]) {
-                // eslint-disable-next-line no-continue
-                if (!meta.id) { continue; }
-                meta.id = (meta.id as unknown as Integer).toNumber();
-                const trigger = `${ meta.name }.${ meta.type }`;
+    executeResult.records.forEach((record) => {
+        if (!Array.isArray(record.mutateMeta)) { return; }
+        record.mutateMeta.forEach((meta: MutationMeta) => {
+            if (!meta.id) { return; }
+            const trigger = `${ meta.name }.${ meta.type }`;
+            const mutationEvent = {
+                ...meta,
+                id: meta.id.toNumber(),
+                bookmark: executeResult.bookmark,
+            };
 
-                debug("%s", `${ trigger }: ${JSON.stringify(meta, null, 2)}`);
+            debug("%s", `${ trigger }: ${JSON.stringify(meta, null, 2)}`);
 
-                context.pubsub.publish(trigger, meta)
-                    .catch((err) => debug(`Failed to publish ${ trigger }: %s`, err));
-            }
+            context.pubsub.publish(trigger, mutationEvent)
+                .catch((err) => debug(`Failed to publish ${ trigger }: %s`, err));
+        });
 
-        }
-    }
+    });
 }
 
 export default publishMutateMeta;

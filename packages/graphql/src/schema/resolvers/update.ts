@@ -18,9 +18,7 @@
  */
 
 import { FieldNode, GraphQLResolveInfo } from "graphql";
-import { Integer } from "neo4j-driver";
 import { Node } from "../../classes";
-import { MutationMeta } from "../../classes/WithProjector";
 import { translateUpdate } from "../../translate";
 import { Context } from "../../types";
 import { execute, publishMutateMeta } from "../../utils";
