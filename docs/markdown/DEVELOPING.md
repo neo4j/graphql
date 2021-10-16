@@ -87,7 +87,7 @@ In order to run all of the tests, you will need to have a local instance of Neo4
 
 2. Run `docker-compose up` in the root directory. Wait for `Remote interface available at http://localhost:7474/`
 
-3. Run tests with `NEO_URL=bolt://localhost:7687 NEO_USER=neo4j NEO_PASSWORD=INSECURE yarn test`
+3. Run tests with `NEO_URL=bolt://localhost:7687 NEO_USER=neo4j NEO_PASSWORD=notasecurepassword yarn test`
 
 ### Running Tests with Jest
 

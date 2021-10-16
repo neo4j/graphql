@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { GraphQLResolveInfo } from "graphql";
 import { withFilter } from "graphql-subscriptions";
 import { Node } from "../../classes";
 import translateRead from "../../translate/translate-read";
@@ -36,26 +37,39 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
         description: `Subscribe to updates from ${ node.name }`,
         resolve: (payload) => { return { ...payload }; },
         subscribe: withFilter(
-            (root, args, context) => {
-                const iterators = [ `${ node.name }.Updated` ];
+            (root, args, context, info: GraphQLResolveInfo) => {
+    
+                context.resolveTree = getNeo4jResolveTree(info);
+                context.neoSchema.authenticateContext(context);
+                context.resolveTree.args = context.resolveTree.args || {};
+                context.resolveTree.args.where = context.resolveTree.args.where || {};
 
+                // Rewrite resolve tree to read tile
+                context.resolveTree.fieldsByTypeName = {
+                    ...context.resolveTree.fieldsByTypeName
+                        [`${ node.name }SubscriptionResponse`]
+                        [node.name.toLowerCase()]
+                        .fieldsByTypeName,
+                };
+
+                const types: string[] = args.types || [ 'Updated', 'Created' ];
+                const iterators = types.map((ev) => `${ node.name }.${ ev }`);
                 return context.pubsub.asyncIterator(iterators);
             },
-            async (payload, args, context: Context, info) => {
+            async (payload, args, context: Context) => {
                 if (!payload || !payload.id) { return false; }
 
                 if (args?.types && !args.types.includes(payload.type)) {
                     return false;
                 }
-
-                // TODO: move this into context creation for websocket
-                context.resolveTree = getNeo4jResolveTree(info);
-                context.neoSchema.authenticateContext(context);
+                if (!context?.resolveTree) { return false; }
+                
+                // Ensure context.resolveTree.args.where is set.
                 context.resolveTree.args = context.resolveTree.args || {};
                 context.resolveTree.args.where = context.resolveTree.args.where || {};
-                // eslint-disable-next-line @typescript-eslint/dot-notation
-                context.resolveTree.args.where['__id'] = payload.id;
 
+                // eslint-disable-next-line @typescript-eslint/dot-notation
+                context.resolveTree.args.where['_id'] = payload.id;
                 const [cypher, params] = translateRead({ context, node });
     
                 const executeResult = await execute({
