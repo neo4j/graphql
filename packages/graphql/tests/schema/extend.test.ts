@@ -40,6 +40,7 @@ describe("Extend", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CreateInfo {
@@ -93,6 +94,18 @@ describe("Extend", () => {
               name: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              movie: Movie
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               id: ID
               name: String
@@ -129,6 +142,14 @@ describe("Extend", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -145,6 +166,11 @@ describe("Extend", () => {
             type StringAggregateSelection {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(types: [NodeUpdatedType!], where: MovieWhere): MovieSubscriptionResponse!
             }
 
             type UpdateInfo {

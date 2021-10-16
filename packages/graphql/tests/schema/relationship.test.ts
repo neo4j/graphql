@@ -41,6 +41,7 @@ describe("Relationship", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type Actor {
@@ -70,6 +71,18 @@ describe("Relationship", () => {
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
+            }
+
+            type ActorSubscriptionResponse {
+              actor: Actor
+              fieldsUpdated: [String!]
+              id: Int!
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
             }
 
             input ActorUpdateInput {
@@ -264,6 +277,18 @@ describe("Relationship", () => {
               id: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              movie: Movie
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               id: ID
@@ -298,6 +323,14 @@ describe("Relationship", () => {
               updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
             type PageInfo {
               endCursor: String
@@ -325,6 +358,13 @@ describe("Relationship", () => {
             type StringAggregateSelection {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Actor\\"\\"\\"
+              subscribeToActor(types: [NodeUpdatedType!], where: ActorWhere): ActorSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(types: [NodeUpdatedType!], where: MovieWhere): MovieSubscriptionResponse!
             }
 
             type UpdateActorsMutationResponse {
@@ -367,6 +407,7 @@ describe("Relationship", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type Actor {
@@ -501,6 +542,18 @@ describe("Relationship", () => {
             \\"\\"\\"Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.\\"\\"\\"
             input ActorSort {
               name: SortDirection
+            }
+
+            type ActorSubscriptionResponse {
+              actor: Actor
+              fieldsUpdated: [String!]
+              id: Int!
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
             }
 
             input ActorUpdateInput {
@@ -708,6 +761,18 @@ describe("Relationship", () => {
               id: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              movie: Movie
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
               id: ID
@@ -742,6 +807,14 @@ describe("Relationship", () => {
               updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
             type PageInfo {
               endCursor: String
@@ -769,6 +842,13 @@ describe("Relationship", () => {
             type StringAggregateSelection {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Actor\\"\\"\\"
+              subscribeToActor(types: [NodeUpdatedType!], where: ActorWhere): ActorSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(types: [NodeUpdatedType!], where: MovieWhere): MovieSubscriptionResponse!
             }
 
             type UpdateActorsMutationResponse {

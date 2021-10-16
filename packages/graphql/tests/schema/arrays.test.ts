@@ -38,6 +38,7 @@ describe("Arrays", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CreateInfo {
@@ -99,6 +100,18 @@ describe("Arrays", () => {
               id: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              movie: Movie
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               averageRating: Float
               id: ID
@@ -138,6 +151,14 @@ describe("Arrays", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -149,6 +170,11 @@ describe("Arrays", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(types: [NodeUpdatedType!], where: MovieWhere): MovieSubscriptionResponse!
             }
 
             type UpdateInfo {

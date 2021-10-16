@@ -108,6 +108,18 @@ describe("Custom-mutations", () => {
               id: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              movie: Movie
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               id: ID
             }
@@ -135,6 +147,14 @@ describe("Custom-mutations", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -151,6 +171,8 @@ describe("Custom-mutations", () => {
             }
 
             type Subscription {
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(types: [NodeUpdatedType!], where: MovieWhere): MovieSubscriptionResponse!
               testSubscription(input: ExampleInput): String
             }
 

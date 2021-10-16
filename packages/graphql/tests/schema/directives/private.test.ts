@@ -37,6 +37,7 @@ describe("Private", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CreateInfo {
@@ -67,6 +68,14 @@ describe("Private", () => {
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
@@ -78,6 +87,11 @@ describe("Private", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from User\\"\\"\\"
+              subscribeToUser(types: [NodeUpdatedType!], where: UserWhere): UserSubscriptionResponse!
             }
 
             type UpdateInfo {
@@ -116,6 +130,18 @@ describe("Private", () => {
             \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
             input UserSort {
               id: SortDirection
+            }
+
+            type UserSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+              user: User
             }
 
             input UserUpdateInput {

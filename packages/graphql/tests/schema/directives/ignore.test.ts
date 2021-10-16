@@ -39,6 +39,7 @@ describe("Ignore", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CreateInfo {
@@ -69,6 +70,14 @@ describe("Ignore", () => {
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
@@ -85,6 +94,11 @@ describe("Ignore", () => {
             type StringAggregateSelection {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from User\\"\\"\\"
+              subscribeToUser(types: [NodeUpdatedType!], where: UserWhere): UserSubscriptionResponse!
             }
 
             type UpdateInfo {
@@ -132,6 +146,18 @@ describe("Ignore", () => {
               id: SortDirection
               password: SortDirection
               username: SortDirection
+            }
+
+            type UserSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+              user: User
             }
 
             input UserUpdateInput {

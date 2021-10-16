@@ -45,6 +45,7 @@ describe("Aggregations", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
@@ -183,6 +184,18 @@ describe("Aggregations", () => {
               title: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              movie: Movie
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               createdAt: DateTime
               id: ID
@@ -291,6 +304,14 @@ describe("Aggregations", () => {
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
@@ -307,6 +328,11 @@ describe("Aggregations", () => {
             type StringAggregateSelection {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(types: [NodeUpdatedType!], where: MovieWhere): MovieSubscriptionResponse!
             }
 
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
@@ -373,6 +399,7 @@ describe("Aggregations", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
@@ -603,6 +630,14 @@ describe("Aggregations", () => {
               deleteUsers(where: UserWhere): DeleteInfo!
               updatePosts(connect: PostConnectInput, create: PostRelationInput, delete: PostDeleteInput, disconnect: PostDisconnectInput, update: PostUpdateInput, where: PostWhere): UpdatePostsMutationResponse!
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
+            }
+
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -1074,6 +1109,18 @@ describe("Aggregations", () => {
               title: SortDirection
             }
 
+            type PostSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              name: String!
+              post: Post
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input PostUpdateInput {
               likes: [PostLikesUpdateFieldInput!]
               title: String
@@ -1150,6 +1197,13 @@ describe("Aggregations", () => {
             type StringAggregateSelection {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Post\\"\\"\\"
+              subscribeToPost(types: [NodeUpdatedType!], where: PostWhere): PostSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from User\\"\\"\\"
+              subscribeToUser(types: [NodeUpdatedType!], where: UserWhere): UserSubscriptionResponse!
             }
 
             \\"\\"\\"A time, represented as an RFC3339 time string\\"\\"\\"
@@ -1241,6 +1295,18 @@ describe("Aggregations", () => {
               someLocalTime: SortDirection
               someString: SortDirection
               someTime: SortDirection
+            }
+
+            type UserSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+              user: User
             }
 
             input UserUpdateInput {

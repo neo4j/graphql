@@ -36,6 +36,7 @@ describe("Point", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CreateInfo {
@@ -79,6 +80,18 @@ describe("Point", () => {
               filmedAt: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              movie: Movie
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               filmedAt: PointInput
             }
@@ -101,6 +114,14 @@ describe("Point", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
             }
 
             type Point {
@@ -136,6 +157,11 @@ describe("Point", () => {
               DESC
             }
 
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(types: [NodeUpdatedType!], where: MovieWhere): MovieSubscriptionResponse!
+            }
+
             type UpdateInfo {
               bookmark: String
               nodesCreated: Int!
@@ -165,6 +191,7 @@ describe("Point", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CartesianPoint {
@@ -227,6 +254,18 @@ describe("Point", () => {
               partLocation: SortDirection
             }
 
+            type MachineSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              machine: Machine
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input MachineUpdateInput {
               partLocation: CartesianPointInput
             }
@@ -251,6 +290,14 @@ describe("Point", () => {
               updateMachines(update: MachineUpdateInput, where: MachineWhere): UpdateMachinesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
@@ -262,6 +309,11 @@ describe("Point", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Machine\\"\\"\\"
+              subscribeToMachine(types: [NodeUpdatedType!], where: MachineWhere): MachineSubscriptionResponse!
             }
 
             type UpdateInfo {
@@ -293,6 +345,7 @@ describe("Point", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CreateInfo {
@@ -329,6 +382,18 @@ describe("Point", () => {
               offset: Int
             }
 
+            type MovieSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              movie: Movie
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               filmedAt: [PointInput!]
             }
@@ -346,6 +411,14 @@ describe("Point", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
             }
 
             type Point {
@@ -366,6 +439,11 @@ describe("Point", () => {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesCount(where: MovieWhere): Int!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(types: [NodeUpdatedType!], where: MovieWhere): MovieSubscriptionResponse!
             }
 
             type UpdateInfo {
@@ -397,6 +475,7 @@ describe("Point", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CartesianPoint {
@@ -447,6 +526,18 @@ describe("Point", () => {
               offset: Int
             }
 
+            type MachineSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              machine: Machine
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input MachineUpdateInput {
               partLocations: [CartesianPointInput!]
             }
@@ -466,10 +557,23 @@ describe("Point", () => {
               updateMachines(update: MachineUpdateInput, where: MachineWhere): UpdateMachinesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               machines(options: MachineOptions, where: MachineWhere): [Machine!]!
               machinesAggregate(where: MachineWhere): MachineAggregateSelection!
               machinesCount(where: MachineWhere): Int!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Machine\\"\\"\\"
+              subscribeToMachine(types: [NodeUpdatedType!], where: MachineWhere): MachineSubscriptionResponse!
             }
 
             type UpdateInfo {

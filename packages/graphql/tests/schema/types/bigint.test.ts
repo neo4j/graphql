@@ -37,6 +37,7 @@ describe("Bigint", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             \\"\\"\\"A BigInt value up to 64 bits in size, which can be a number or a string if used inline, or a string only if used as a variable. Always returned as a string.\\"\\"\\"
@@ -94,6 +95,18 @@ describe("Bigint", () => {
               size: SortDirection
             }
 
+            type FileSubscriptionResponse {
+              fieldsUpdated: [String!]
+              file: File
+              id: Int!
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input FileUpdateInput {
               name: String
               size: BigInt
@@ -128,6 +141,14 @@ describe("Bigint", () => {
               updateFiles(update: FileUpdateInput, where: FileWhere): UpdateFilesMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               files(options: FileOptions, where: FileWhere): [File!]!
               filesAggregate(where: FileWhere): FileAggregateSelection!
@@ -144,6 +165,11 @@ describe("Bigint", () => {
             type StringAggregateSelection {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from File\\"\\"\\"
+              subscribeToFile(types: [NodeUpdatedType!], where: FileWhere): FileSubscriptionResponse!
             }
 
             type UpdateFilesMutationResponse {

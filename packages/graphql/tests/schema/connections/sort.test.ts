@@ -41,6 +41,7 @@ describe("Sort", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CreateInfo {
@@ -190,6 +191,18 @@ describe("Sort", () => {
             \\"\\"\\"Fields to sort Node1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Node1Sort object.\\"\\"\\"
             input Node1Sort {
               property: SortDirection
+            }
+
+            type Node1SubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              name: String!
+              node1: Node1
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
             }
 
             input Node1UpdateInput {
@@ -360,6 +373,18 @@ describe("Sort", () => {
               relatedTo: [Node2RelatedToCreateFieldInput!]
             }
 
+            type Node2SubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              name: String!
+              node2: Node2
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input Node2UpdateInput {
               relatedTo: [Node2RelatedToUpdateFieldInput!]
             }
@@ -372,6 +397,14 @@ describe("Sort", () => {
               relatedToConnection: Node2RelatedToConnectionWhere
               relatedToConnection_NOT: Node2RelatedToConnectionWhere
               relatedTo_NOT: Node1Where
+            }
+
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -401,6 +434,13 @@ describe("Sort", () => {
             type StringAggregateSelection {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Node1\\"\\"\\"
+              subscribeToNode1(types: [NodeUpdatedType!], where: Node1Where): Node1SubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Node2\\"\\"\\"
+              subscribeToNode2(types: [NodeUpdatedType!], where: Node2Where): Node2SubscriptionResponse!
             }
 
             type UpdateInfo {

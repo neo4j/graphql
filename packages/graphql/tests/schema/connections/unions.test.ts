@@ -53,6 +53,7 @@ describe("Unions", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type Author {
@@ -266,6 +267,18 @@ describe("Unions", () => {
               name: SortDirection
             }
 
+            type AuthorSubscriptionResponse {
+              author: Author
+              fieldsUpdated: [String!]
+              id: Int!
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input AuthorUpdateInput {
               name: String
               publications: AuthorPublicationsUpdateInput
@@ -477,6 +490,18 @@ describe("Unions", () => {
             \\"\\"\\"Fields to sort Books by. The order in which sorts are applied is not guaranteed when specifying many fields in one BookSort object.\\"\\"\\"
             input BookSort {
               title: SortDirection
+            }
+
+            type BookSubscriptionResponse {
+              book: Book
+              fieldsUpdated: [String!]
+              id: Int!
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
             }
 
             input BookUpdateInput {
@@ -728,6 +753,18 @@ describe("Unions", () => {
               subject: SortDirection
             }
 
+            type JournalSubscriptionResponse {
+              fieldsUpdated: [String!]
+              id: Int!
+              journal: Journal
+              name: String!
+              relationshipID: String
+              relationshipType: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input JournalUpdateInput {
               author: [JournalAuthorUpdateFieldInput!]
               subject: String
@@ -763,6 +800,14 @@ describe("Unions", () => {
               updateAuthors(connect: AuthorConnectInput, create: AuthorRelationInput, delete: AuthorDeleteInput, disconnect: AuthorDisconnectInput, update: AuthorUpdateInput, where: AuthorWhere): UpdateAuthorsMutationResponse!
               updateBooks(connect: BookConnectInput, create: BookRelationInput, delete: BookDeleteInput, disconnect: BookDisconnectInput, update: BookUpdateInput, where: BookWhere): UpdateBooksMutationResponse!
               updateJournals(connect: JournalConnectInput, create: JournalRelationInput, delete: JournalDeleteInput, disconnect: JournalDisconnectInput, update: JournalUpdateInput, where: JournalWhere): UpdateJournalsMutationResponse!
+            }
+
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
@@ -807,6 +852,15 @@ describe("Unions", () => {
             type StringAggregateSelection {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Author\\"\\"\\"
+              subscribeToAuthor(types: [NodeUpdatedType!], where: AuthorWhere): AuthorSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Book\\"\\"\\"
+              subscribeToBook(types: [NodeUpdatedType!], where: BookWhere): BookSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Journal\\"\\"\\"
+              subscribeToJournal(types: [NodeUpdatedType!], where: JournalWhere): JournalSubscriptionResponse!
             }
 
             type UpdateAuthorsMutationResponse {
