@@ -20,7 +20,7 @@
 import { ResolveTree } from "graphql-parse-resolve-info";
 import Relationship from "../../../classes/Relationship";
 import mapToDbProperty from "../../../utils/map-to-db-property";
-import createDatetimeElement from "./create-datetime-element";
+import { createDatetimeElement } from "./create-datetime-element";
 import createPointElement from "./create-point-element";
 
 function createRelationshipPropertyElement({

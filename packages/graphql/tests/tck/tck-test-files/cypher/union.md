@@ -7,15 +7,7 @@ Schema:
 ```graphql
 union Search = Movie | Genre
 
-type Genre
-    @auth(
-        rules: [
-            {
-                operations: [READ]
-                allow: { name: "$jwt.jwtAllowedNamesExample" }
-            }
-        ]
-    ) {
+type Genre @auth(rules: [{ operations: [READ], allow: { name: "$jwt.jwtAllowedNamesExample" } }]) {
     name: String
 }
 
@@ -106,16 +98,7 @@ RETURN this {
 
 ```graphql
 mutation {
-    createMovies(
-        input: [
-            {
-                title: "some movie"
-                search: {
-                    Genre: { create: [{ node: { name: "some genre" } }] }
-                }
-            }
-        ]
-    ) {
+    createMovies(input: [{ title: "some movie", search: { Genre: { create: [{ node: { name: "some genre" } }] } } }]) {
         movies {
             title
         }
@@ -160,9 +143,7 @@ RETURN this0 {
 
 ```graphql
 mutation {
-    updateMovies(
-        create: { search: { Genre: [{ node: { name: "some genre" } }] } }
-    ) {
+    updateMovies(create: { search: { Genre: [{ node: { name: "some genre" } }] } }) {
         movies {
             title
         }
@@ -197,16 +178,7 @@ RETURN this { .title } AS this
 ```graphql
 mutation {
     createMovies(
-        input: [
-            {
-                title: "some movie"
-                search: {
-                    Genre: {
-                        connect: [{ where: { node: { name: "some genre" } } }]
-                    }
-                }
-            }
-        ]
+        input: [{ title: "some movie", search: { Genre: { connect: [{ where: { node: { name: "some genre" } } }] } } }]
     ) {
         movies {
             title
@@ -259,12 +231,7 @@ mutation {
     updateMovies(
         where: { title: "some movie" }
         update: {
-            search: {
-                Genre: {
-                    where: { node: { name: "some genre" } }
-                    update: { node: { name: "some new genre" } }
-                }
-            }
+            search: { Genre: { where: { node: { name: "some genre" } }, update: { node: { name: "some new genre" } } } }
         }
     ) {
         movies {
@@ -334,13 +301,7 @@ RETURN this { .title } AS this
 mutation {
     updateMovies(
         where: { title: "some movie" }
-        update: {
-            search: {
-                Genre: {
-                    disconnect: [{ where: { node: { name: "some genre" } } }]
-                }
-            }
-        }
+        update: { search: { Genre: { disconnect: [{ where: { node: { name: "some genre" } } }] } } }
     ) {
         movies {
             title
@@ -409,9 +370,7 @@ RETURN this { .title } AS this
 mutation {
     updateMovies(
         where: { title: "some movie" }
-        disconnect: {
-            search: { Genre: { where: { node: { name: "some genre" } } } }
-        }
+        disconnect: { search: { Genre: { where: { node: { name: "some genre" } } } } }
     ) {
         movies {
             title
@@ -475,9 +434,7 @@ RETURN this { .title } AS this
 mutation {
     updateMovies(
         where: { title: "some movie" }
-        connect: {
-            search: { Genre: { where: { node: { name: "some genre" } } } }
-        }
+        connect: { search: { Genre: { where: { node: { name: "some genre" } } } } }
     ) {
         movies {
             title
@@ -521,9 +478,7 @@ RETURN this { .title } AS this
 mutation {
     updateMovies(
         where: { title: "some movie" }
-        delete: {
-            search: { Genre: { where: { node: { name: "some genre" } } } }
-        }
+        delete: { search: { Genre: { where: { node: { name: "some genre" } } } } }
     ) {
         movies {
             title
@@ -540,7 +495,8 @@ WHERE this.title = $this_title
 WITH this
 OPTIONAL MATCH (this)-[this_delete_search_Genre0_relationship:SEARCH]->(this_delete_search_Genre0:Genre)
 WHERE this_delete_search_Genre0.name = $updateMovies.args.delete.search.Genre[0].where.node.name
-FOREACH(_ IN CASE this_delete_search_Genre0 WHEN NULL THEN [] ELSE [1] END | DETACH DELETE this_delete_search_Genre0 )
+WITH this, collect(DISTINCT this_delete_search_Genre0) as this_delete_search_Genre0_to_delete
+FOREACH(x IN this_delete_search_Genre0_to_delete | DETACH DELETE x)
 RETURN this { .title } AS this
 ```
 
