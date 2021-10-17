@@ -49,7 +49,7 @@ export interface UpdatedMutationMeta extends MutationMeta {
     properties: any;
 }
 export interface RelationshipUpdatedMutationMeta extends MutationMeta {
-    type: 'Updated',
+    type: 'RelationshipUpdated',
     properties: any;
     toID: Integer;
     toName: string;

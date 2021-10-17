@@ -92,6 +92,26 @@ function publishMutateMeta(input: {
         )));
     });
 
+    /**
+     * Duplicate RelationshipUpdated node as reverse if types are different
+     * --
+     * If a relationship exists between two different types, notify both of those types
+     * that their relationship was updated.
+     */
+    mutateMetas.forEach((meta) => {
+        if (meta.type === 'RelationshipUpdated'
+            && meta.name !== meta.toName
+        ) {
+            mutateMetas.push({
+                ...meta,
+                toID: meta.id,
+                toName: meta.name,
+                id: meta.toID,
+                name: meta.toName,
+            });
+        }
+    });
+
     mutateMetas.forEach((meta) => {
         if (!meta.id) { return; }
         const trigger = `${ meta.name }.${ meta.type }`;
