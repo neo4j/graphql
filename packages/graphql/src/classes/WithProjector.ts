@@ -27,6 +27,8 @@ export interface WithProjectorConstructor {
 
 export type MutationMetaType =  'Updated' | 'Created' | 'Deleted' | 'Connected' | 'Disconnected' | 'RelationshipUpdated';
 
+export type MutationMetaCommon = UpdatedMutationMeta;
+
 export interface MutationMeta {
     id: Integer;
     name: string;
@@ -37,6 +39,7 @@ export interface UpdatedMutationMeta extends MutationMeta {
     properties: any;
 }
 
+export type MutationMetaVarsCommon = UpdatedMutationMetaVars | RelationshipUpdatedMutationMetaVars;
 export interface MutationMetaVars {
     idVar: string;
     name: string;
@@ -52,15 +55,14 @@ interface MutationMetaRelationshipVars {
 
 export interface UpdatedMutationMetaVars extends MutationMetaVars {
     type: 'Updated';
-    properties: any;
+    propertiesVar?: string;
 }
 
 export interface RelationshipUpdatedMutationMetaVars extends MutationMetaVars, MutationMetaRelationshipVars {
     type: 'RelationshipUpdated';
-    properties: any;
+    propertiesVar?: string;
 }
 
-type MetaVars = UpdatedMutationMetaVars | RelationshipUpdatedMutationMetaVars;
 
 class WithProjector {
     
@@ -69,7 +71,7 @@ class WithProjector {
     public mutateMetaVariableDeclared = false;
 
     protected parent?: WithProjector;
-    protected mutationMeta?: MutationMetaVars;
+    protected mutationMeta?: MutationMetaVarsCommon;
 
     constructor(input: WithProjectorConstructor) {
         this.variables = input.variables || [];
@@ -108,7 +110,7 @@ class WithProjector {
         return `WITH ${ withVars.join(', ') }`;
     }
 
-    markMutationMeta(mutationMeta: MetaVars) {
+    markMutationMeta(mutationMeta: MutationMetaVarsCommon) {
         this.mutationMeta = mutationMeta;
 
     }
@@ -135,6 +137,11 @@ class WithProjector {
                 `id: ${ this.mutationMeta.idVar }`,
                 `name: "${ this.mutationMeta.name }"`,
             ];
+
+            if (this.mutationMeta.propertiesVar) {
+                props.push(`properties: ${ this.mutationMeta.propertiesVar }`);
+            }
+
             const metaInfo = `{${ props.join(', ') }}`;
             metaListVariable += `${ this.mutateMetaVariableDeclared ? ' + ' : '' } [ ${ metaInfo } ]`;
         }

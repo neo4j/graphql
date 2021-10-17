@@ -88,7 +88,7 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
 
                 const [ record ] = executeResult.records;
 
-                if (isUpdatedMutationEvent(payload)) {
+                if (isUpdatedMutationEvent(payload) && payload.properties) {
                     // eslint-disable-next-line no-param-reassign
                     (payload as any).fieldsUpdated = Object.keys(payload.properties);
                 }

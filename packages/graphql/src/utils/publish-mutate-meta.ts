@@ -18,7 +18,7 @@
  */
 
 import Debug from "debug";
-import { MutationMeta, UpdatedMutationMeta } from "../classes/WithProjector";
+import { MutationMeta, MutationMetaCommon, UpdatedMutationMeta } from "../classes/WithProjector";
 import { DEBUG_PUBLISH } from "../constants";
 import { Context } from "../types";
 import { ExecuteResult } from "./execute";
@@ -27,13 +27,10 @@ const debug = Debug(DEBUG_PUBLISH);
 
 export interface MutationEvent extends Omit<MutationMeta, 'id'> {
     id: number;
-    bookmark?: string;
+    bookmark?: string | null;
 }
 
-export interface UpdatedMutationEvent extends Omit<UpdatedMutationMeta, 'id'> {
-    id: number;
-    bookmark?: string;
-}
+export interface UpdatedMutationEvent extends Omit<MutationEvent, 'type'>, Omit<UpdatedMutationMeta, 'id'> {}
 
 
 export function isUpdatedMutationEvent(
@@ -50,16 +47,16 @@ function publishMutateMeta(input: {
 
     executeResult.records.forEach((record) => {
         if (!Array.isArray(record.mutateMeta)) { return; }
-        record.mutateMeta.forEach((meta: MutationMeta) => {
+        record.mutateMeta.forEach((meta: MutationMetaCommon) => {
             if (!meta.id) { return; }
             const trigger = `${ meta.name }.${ meta.type }`;
-            const mutationEvent = {
+            const mutationEvent: UpdatedMutationEvent = {
                 ...meta,
                 id: meta.id.toNumber(),
                 bookmark: executeResult.bookmark,
             };
 
-            debug("%s", `${ trigger }: ${JSON.stringify(meta, null, 2)}`);
+            debug("%s", `${ trigger }: ${JSON.stringify(mutationEvent, null, 2)}`);
 
             context.pubsub.publish(trigger, mutationEvent)
                 .catch((err) => debug(`Failed to publish ${ trigger }: %s`, err));

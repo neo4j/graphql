@@ -65,11 +65,21 @@ function createUpdateAndParams({
 }): [string, any] {
     let hasAppliedTimeStamps = false;
 
+    /**
+     * **NOTE**
+     * Update input is now being sent to neo4j twice. Instead of flattening each input parameter,
+     * perhaps we can utilize the object being sent to neo4j?
+     * `objUpdateParams` is necessary for subscriptions to sent an object containing
+     * the updated properties.
+     */
+    const objUpdateParams = {}; 
+
     function reducer(res: Res, [key, value]: [string, any]) {
 
 
         let param;
 
+        objUpdateParams[key] = value;
         if (chainStr) {
             param = `${chainStr}_${key}`;
         } else {
@@ -188,7 +198,7 @@ function createUpdateAndParams({
                                 type: 'Updated',
                                 idVar: 'value._id',
                                 name: refNode.name,
-                                properties: update.update.node,
+                                // properties: `$`,
                             });
 
                             const paramsString = Object.keys(innerApocParams)
@@ -236,7 +246,7 @@ function createUpdateAndParams({
                                 relationshipIDVar: 'val._relId',
                                 toIDVar: 'val._parentId',
 
-                                properties: update.update.edge,
+                                // properties: update.update.edge,
                             });
                             res.strs.push(updateStrs.join("\n"));
                         }
@@ -474,6 +484,12 @@ function createUpdateAndParams({
         const apocStr = `CALL apoc.util.validate(NOT(${postAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
         // TODO: postAuthStrs with updated node ids
         postAuthStr = `${ withProjector.nextWith() }\n${apocStr}`;
+    }
+
+    if (chainStr) {
+        params[chainStr] = objUpdateParams;
+    } else {
+        params[`${parentVar}_update`] = objUpdateParams;
     }
 
     const str = `${preAuthStr}\n${strs.join("\n")}\n${postAuthStr}`;

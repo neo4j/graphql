@@ -94,14 +94,14 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         whereStr = `WHERE ${whereStrs.join(" AND ")}`;
     }
 
-    withProjector.markMutationMeta({
-        type: 'Updated',
-        idVar: 'id(this)',
-        name: node.name,
-        properties: updateInput,
-    });
-
     if (updateInput) {
+        withProjector.markMutationMeta({
+            type: 'Updated',
+            idVar: `id(${ varName })`,
+            name: node.name,
+            propertiesVar: `$${ varName }_update`,
+        });
+
         const updateAndParams = createUpdateAndParams({
             context,
             node,
@@ -116,6 +116,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             ...cypherParams,
             ...updateAndParams[1],
         };
+        console.log(cypherParams);
         updateArgs = {
             ...updateArgs,
             ...(updateStr.includes(resolveTree.name) ? { update: updateInput } : {}),

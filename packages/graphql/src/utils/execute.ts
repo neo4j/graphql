@@ -116,6 +116,7 @@ async function execute(input: {
             records: result.records.map((r) => r.toObject()),
         };
     } catch (error) {
+        if (!(error instanceof Error)) { throw error; }
         if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_FORBIDDEN_ERROR}`)) {
             throw new Neo4jGraphQLForbiddenError("Forbidden");
         }
