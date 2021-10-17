@@ -18,6 +18,7 @@
  */
 
 import Debug from "debug";
+import { Integer, isDate, isDateTime, isDuration, isInt, isLocalDateTime, isLocalTime, isPoint, isTime, Node, Relationship } from 'neo4j-driver';
 import { MutationMetaCommon } from "../classes/WithProjector";
 import { DEBUG_PUBLISH } from "../constants";
 import { Context } from "../types";
@@ -30,6 +31,46 @@ export interface MutationEvent extends Omit<MutationMetaCommon, 'id'> {
     toID?: number;
     relationshipID?: number;
     bookmark?: string | null;
+}
+
+function isNodeOrRelationship(n: any): n is Node | Relationship {
+    return n && n.properties; // TODO: fix this to test if it is Node or Relationship
+}
+
+function convertProperties(properties: any) {
+    if (isNodeOrRelationship(properties)) {
+        return convertProperties(properties.properties);
+    }
+
+    const newProperties = {};
+    Object.keys(properties).forEach((key) => {
+        if (isNodeOrRelationship(properties)) {
+            newProperties[key] = convertProperties(properties[key]);
+            return;
+        }
+
+        if (isInt(properties[key])) {
+            newProperties[key] = Integer.toNumber(properties[key]);
+            return;
+        }
+
+        if (
+            isDateTime(properties[key]) ||
+            isDate(properties[key]) ||
+            isTime(properties[key]) ||
+            isDuration(properties[key]) ||
+            isPoint(properties[key]) ||
+            isLocalDateTime(properties[key]) ||
+            isLocalTime(properties[key])
+        ) {
+            newProperties[key] = properties[key].toString();
+            return;
+        }
+
+        newProperties[key] = properties[key];
+    });
+
+    return newProperties;
 }
 
 function publishMutateMeta(input: {
@@ -60,6 +101,7 @@ function publishMutateMeta(input: {
             toID: 'toID' in meta ? meta.toID.toNumber() : undefined,
             relationshipID: 'relationshipID' in meta ? meta.relationshipID.toNumber() : undefined,
             bookmark: executeResult.bookmark,
+            properties: 'properties' in meta ? convertProperties(meta.properties) : undefined,
         };
 
         debug("%s", `${ trigger }: ${JSON.stringify(mutationEvent, null, 2)}`);
