@@ -116,7 +116,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             ...cypherParams,
             ...updateAndParams[1],
         };
-        console.log(cypherParams);
+        console.log(updateAndParams);
         updateArgs = {
             ...updateArgs,
             ...(updateStr.includes(resolveTree.name) ? { update: updateInput } : {}),

@@ -26,6 +26,11 @@ import execute from "../../utils/execute";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
 import { isUpdatedMutationEvent, MutationEvent } from "../../utils/publish-mutate-meta";
 
+export interface MutationSubscriptionResult extends MutationEvent {
+    fieldsUpdated: string[];
+    [ key: string ]: any;
+}
+
 export default function subscribeToNodeResolver({ node }: { node: Node }) {
     return {
         // type: `Update${node.getPlural({ camelCase: false })}MutationResponse!`,
@@ -57,7 +62,7 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
                 const iterators = types.map((ev) => `${ node.name }.${ ev }`);
                 return context.pubsub.asyncIterator(iterators);
             },
-            async (payload: MutationEvent, args, context: Context) => {
+            async (payload: MutationSubscriptionResult, args, context: Context) => {
                 if (!payload || !payload.id) { return false; }
 
                 if (args?.types && !args.types.includes(payload.type)) {
@@ -90,7 +95,7 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
 
                 if (isUpdatedMutationEvent(payload) && payload.properties) {
                     // eslint-disable-next-line no-param-reassign
-                    (payload as any).fieldsUpdated = Object.keys(payload.properties);
+                    payload.propsUpdated = Object.keys(payload.properties);
                 }
 
                 if (record?.this) {

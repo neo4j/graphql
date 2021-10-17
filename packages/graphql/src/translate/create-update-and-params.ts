@@ -79,7 +79,6 @@ function createUpdateAndParams({
 
         let param;
 
-        objUpdateParams[key] = value;
         if (chainStr) {
             param = `${chainStr}_${key}`;
         } else {
@@ -166,6 +165,7 @@ function createUpdateAndParams({
 
                             const auth = createAuthParam({ context });
                             let innerApocParams = { auth };
+                            const nodeUpdateChainStr = `${param}${relationField.union ? `_${refNode.name}` : ""}${index}`;
 
                             const updateAndParams = createUpdateAndParams({
                                 context,
@@ -174,7 +174,7 @@ function createUpdateAndParams({
                                 varName: _varName,
                                 withProjector: childWithProjector,
                                 parentVar: _varName,
-                                chainStr: `${param}${relationField.union ? `_${refNode.name}` : ""}${index}`,
+                                chainStr: nodeUpdateChainStr,
                                 insideDoWhen: true,
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
@@ -198,7 +198,7 @@ function createUpdateAndParams({
                                 type: 'Updated',
                                 idVar: 'value._id',
                                 name: refNode.name,
-                                // properties: `$`,
+                                propertiesVar: `$${ nodeUpdateChainStr }`,
                             });
 
                             const paramsString = Object.keys(innerApocParams)
@@ -386,6 +386,7 @@ function createUpdateAndParams({
             }
 
             res.params[param] = value;
+            objUpdateParams[key] = value;
         }
 
         if (authableField) {

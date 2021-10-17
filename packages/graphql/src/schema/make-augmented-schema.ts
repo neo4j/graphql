@@ -751,8 +751,8 @@ function makeAugmentedSchema(
                 toID: 'String',
                 toType: 'String',
                 relationshipID: 'String',
-                relationshipType: 'String',
-                fieldsUpdated: '[ String! ]',
+                relationshipName: 'String',
+                propsUpdated: '[ String! ]',
                 [ node.name.toLowerCase() ]: `${node.name}`,
             },
         });

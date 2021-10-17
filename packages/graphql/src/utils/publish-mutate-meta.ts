@@ -45,23 +45,32 @@ function publishMutateMeta(input: {
 }): void {
     const { context, executeResult } = input;
 
-    executeResult.records.forEach((record) => {
-        if (!Array.isArray(record.mutateMeta)) { return; }
-        record.mutateMeta.forEach((meta: MutationMetaCommon) => {
-            if (!meta.id) { return; }
-            const trigger = `${ meta.name }.${ meta.type }`;
-            const mutationEvent: UpdatedMutationEvent = {
-                ...meta,
-                id: meta.id.toNumber(),
-                bookmark: executeResult.bookmark,
-            };
+    let mutateMetas: MutationMetaCommon[] = [];
 
-            debug("%s", `${ trigger }: ${JSON.stringify(mutationEvent, null, 2)}`);
+    // TODO: refactor duplicate combinator
+    executeResult.records.forEach((r) => {
+        const arrMutateMeta = r.mutateMeta;
+        if (!Array.isArray(arrMutateMeta)) { return; }
+        mutateMetas = mutateMetas.concat(
+            arrMutateMeta
+            .filter((mutateMeta) =>
+                !mutateMetas.find((v) => JSON.stringify(v) === JSON.stringify(mutateMeta)
+        )));
+    });
 
-            context.pubsub.publish(trigger, mutationEvent)
-                .catch((err) => debug(`Failed to publish ${ trigger }: %s`, err));
-        });
+    mutateMetas.forEach((meta) => {
+        if (!meta.id) { return; }
+        const trigger = `${ meta.name }.${ meta.type }`;
+        const mutationEvent: UpdatedMutationEvent = {
+            ...meta,
+            id: meta.id.toNumber(),
+            bookmark: executeResult.bookmark,
+        };
 
+        debug("%s", `${ trigger }: ${JSON.stringify(mutationEvent, null, 2)}`);
+
+        context.pubsub.publish(trigger, mutationEvent)
+            .catch((err) => debug(`Failed to publish ${ trigger }: %s`, err));
     });
 }
 

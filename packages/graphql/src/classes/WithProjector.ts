@@ -126,11 +126,12 @@ class WithProjector {
 
         let metaListVariable = '';
         // WITH existing metaInfo array
-        if (this.mutateMetaVariableDeclared) {
-            metaListVariable = `${ this.mutateMetaListVarName }`;
-        }
+        // if (this.mutateMetaVariableDeclared) {
+            // metaListVariable = `${ this.mutateMetaListVarName }`;
+        // }
 
         // WITH new metaInfo object
+        let mutationMetaOperation: string | undefined;
         if (this.mutationMeta) {
             const props = [
                 `type: "${ this.mutationMeta.type }"`,
@@ -143,21 +144,29 @@ class WithProjector {
             }
 
             const metaInfo = `{${ props.join(', ') }}`;
-            metaListVariable += `${ this.mutateMetaVariableDeclared ? ' + ' : '' } [ ${ metaInfo } ]`;
+            const metaWhere = [
+                `metaVal IS NOT NULL`,
+                `metaVal.id IS NOT NULL`,
+            ];
+
+            mutationMetaOperation = `[ metaVal IN [${ metaInfo }] WHERE ${ metaWhere.join(' AND ') } ]`;
         }
 
-        // WITH as metaInfo array
-        if (this.mutateMetaVariableDeclared || this.mutationMeta) {
-
-            // Remove nulls
-            metaListVariable = `[val in (${ metaListVariable }) WHERE val IS NOT NULL AND val.id IS NOT NULL]`;
-
-            // Alias metaListVariable
-            metaListVariable += ` as ${ this.mutateMetaListVarName }`;
-
+        if        ( this.mutateMetaVariableDeclared &&  mutationMetaOperation) {
+            metaListVariable = `${ this.mutateMetaListVarName } + ${ mutationMetaOperation }`;
+        } else if ( this.mutateMetaVariableDeclared && !mutationMetaOperation) {
+            metaListVariable = `${ this.mutateMetaListVarName }`;
+        } else if (!this.mutateMetaVariableDeclared &&  mutationMetaOperation) {
+            metaListVariable = `${ mutationMetaOperation }`;
             // Mark the mutateMeta variable as declared, meaning we can
             // add it to a new mutationMeta for the next WITH clause 
             this.mutateMetaVariableDeclared = true;
+        } else if (!this.mutateMetaVariableDeclared && !mutationMetaOperation) {
+            metaListVariable = ``;
+        }
+
+        if (mutationMetaOperation) {
+            metaListVariable = `${ metaListVariable } as ${ this.mutateMetaListVarName }`;
         }
 
         return metaListVariable;
