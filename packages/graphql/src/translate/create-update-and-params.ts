@@ -213,15 +213,17 @@ function createUpdateAndParams({
                             res.strs.push(
                                 `CALL apoc.do.when(${relationshipVariable} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`
                             );
+                            
+                            const setRelationshipParameterPrefix = `${parameterPrefix}.${key}${
+                                relationField.union ? `.${refNode.name}` : ""
+                            }[${index}].update.edge`;
 
                             const setProperties = createSetRelationshipProperties({
                                 properties: update.update.edge,
                                 varName: relationshipVariable,
                                 relationship,
                                 operation: "UPDATE",
-                                parameterPrefix: `${parameterPrefix}.${key}${
-                                    relationField.union ? `.${refNode.name}` : ""
-                                }[${index}].update.edge`,
+                                parameterPrefix: setRelationshipParameterPrefix,
                             });
 
                             const returnVars = [
@@ -238,7 +240,7 @@ function createUpdateAndParams({
                                 updateStrs.push(`", "", ${apocArgs})`);
                             }
                             updateStrs.push(`YIELD value`);
-                            // updateStrs.push(`YIELD value as ${relationshipVariable}_${key}${index}_edge`);
+
                             withProjector.markMutationMeta({
                                 type: 'RelationshipUpdated',
                                 name: node.name,
@@ -249,7 +251,7 @@ function createUpdateAndParams({
                                 relationshipIDVar: 'value._relId',
                                 toIDVar: `id(${ _varName })`,
 
-                                // propertiesVar: '',
+                                propertiesVar: `$${ setRelationshipParameterPrefix }`,
                             });
                             res.strs.push(updateStrs.join("\n"));
                         }
@@ -281,7 +283,7 @@ function createUpdateAndParams({
                             refNode,
                             value: update.connect,
                             varName: `${_varName}_connect`,
-                            withVars: withProjector.variables, // TODO: use withProjector
+                            withProjector,
                             parentVar,
                             relationField,
                             labelOverride: relationField.union ? refNode.name : "",

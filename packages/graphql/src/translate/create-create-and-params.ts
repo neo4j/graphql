@@ -24,6 +24,7 @@ import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
+import WithProjector from "../classes/WithProjector";
 
 interface Res {
     creates: string[];
@@ -121,7 +122,7 @@ function createCreateAndParams({
 
                 if (v.connect) {
                     const connectAndParams = createConnectAndParams({
-                        withVars,
+                        withProjector: new WithProjector({}), // TODO: fix for create
                         value: v.connect,
                         varName: `${_varName}${relationField.union ? "_" : ""}${unionTypeName}_connect`,
                         parentVar: varName,

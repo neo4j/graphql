@@ -18,11 +18,12 @@
  */
 
 import { Node, Relationship } from "../classes";
-import { RelationField, Context } from "../types";
-import createWhereAndParams from "./create-where-and-params";
-import createAuthAndParams from "./create-auth-and-params";
+import WithProjector from "../classes/WithProjector";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { Context, RelationField } from "../types";
+import createAuthAndParams from "./create-auth-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
+import createWhereAndParams from "./create-where-and-params";
 
 interface Res {
     connects: string[];
@@ -30,7 +31,7 @@ interface Res {
 }
 
 function createConnectAndParams({
-    withVars,
+    withProjector,
     value,
     varName,
     relationField,
@@ -42,7 +43,7 @@ function createConnectAndParams({
     fromCreate,
     insideDoWhen,
 }: {
-    withVars: string[];
+    withProjector: WithProjector,
     value: any;
     varName: string;
     relationField: RelationField;
@@ -73,17 +74,22 @@ function createConnectAndParams({
                 where: { varName: parentVar, node: parentNode },
             });
             if (whereAuth[0]) {
-                res.connects.push(`WITH ${withVars.join(", ")}`);
+                res.connects.push(withProjector.nextWith());
                 res.connects.push(`WHERE ${whereAuth[0]}`);
                 res.params = { ...res.params, ...whereAuth[1] };
             }
         }
 
-        res.connects.push(`WITH ${withVars.join(", ")}`);
+        res.connects.push(withProjector.nextWith({}));
+        const childWithProjector = withProjector.createChild(baseName);
         res.connects.push("CALL {");
 
-        res.connects.push(`WITH ${withVars.join(", ")}`);
-        res.connects.push(`OPTIONAL MATCH (${nodeName}${label})`);
+        res.connects.push(childWithProjector.nextWith());
+        /**
+         * NOTE: this was changed from OPTIONAL MATCH to MATCH so we
+         * can remove the FOREACH. Will this break things?
+         */
+        res.connects.push(`MATCH (${nodeName}${label})`);
 
         const whereStrs: string[] = [];
         if (connect.where) {
@@ -144,7 +150,8 @@ function createConnectAndParams({
 
         if (preAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            res.connects.push(`WITH ${[...withVars, nodeName].join(", ")}`);
+            res.connects.push(childWithProjector.nextWith()); // TODO: fix auth with nodeName
+            // res.connects.push(`WITH ${[...withVars, nodeName].join(", ")}`);
             res.connects.push(
                 `CALL apoc.util.validate(NOT(${preAuth.connects.join(
                     " AND "
@@ -158,7 +165,7 @@ function createConnectAndParams({
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
-        res.connects.push(`FOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
+        // res.connects.push(`FOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
         res.connects.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         if (relationField.properties) {
@@ -172,11 +179,25 @@ function createConnectAndParams({
                 relationship,
                 operation: "CREATE",
             });
+
+            childWithProjector.markMutationMeta({
+                type: 'Connected',
+                name: parentNode.name,
+                relationshipName: relationship.name,
+                toName: refNode.name,
+    
+                idVar: `id(${ parentVar })`,
+                relationshipIDVar: `id(${ relationshipName })`,
+                toIDVar: `id(${ nodeName })`,
+                propertiesVar: relationshipName,
+            });
+
             res.connects.push(setA[0]);
             res.params = { ...res.params, ...setA[1] };
         }
 
-        res.connects.push(`)`); // close FOREACH
+        // res.connects.push(`SET mutateMeta = []`); // close FOREACH
+        // res.connects.push(`)`); // close FOREACH
 
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
@@ -198,7 +219,7 @@ function createConnectAndParams({
 
                         newRefNodes.forEach((newRefNode) => {
                             const recurse = createConnectAndParams({
-                                withVars: [...withVars, nodeName],
+                                withProjector, // TODO: create child with projector
                                 value: relField.union ? v[newRefNode.name] : v,
                                 varName: `${nodeName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
                                 relationField: relField,
@@ -252,7 +273,8 @@ function createConnectAndParams({
 
         if (postAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            res.connects.push(`WITH ${[...withVars, nodeName].join(", ")}`);
+            res.connects.push(withProjector.nextWith()); // TODO: fix auth with nodeName
+            // res.connects.push(`WITH ${[...withVars, nodeName].join(", ")}`);
             res.connects.push(
                 `CALL apoc.util.validate(NOT(${postAuth.connects.join(
                     " AND "
@@ -261,8 +283,11 @@ function createConnectAndParams({
             res.params = { ...res.params, ...postAuth.params };
         }
 
-        res.connects.push("RETURN count(*)");
+        res.connects.push(childWithProjector.nextReturn(undefined, undefined, {
+            excludeVariables: childWithProjector.variables,
+        }));
         res.connects.push("}");
+        res.connects.push(withProjector.mergeWithChild(childWithProjector));
 
         return res;
     }

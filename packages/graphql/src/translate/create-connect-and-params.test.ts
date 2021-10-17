@@ -22,6 +22,7 @@ import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../utils/test";
+import WithProjector from "../classes/WithProjector";
 
 describe("createConnectAndParams", () => {
     test("should return the correct connection", () => {
@@ -76,7 +77,7 @@ describe("createConnectAndParams", () => {
         const context: Context = { neoSchema };
 
         const result = createConnectAndParams({
-            withVars: ["this"],
+            withProjector: new WithProjector({}),
             value: [
                 {
                     where: { node: { title: "abc" } },

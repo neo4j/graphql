@@ -181,7 +181,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     relationField,
                     value: relationField.union ? entry[1][refNode.name] : entry[1],
                     varName: `${varName}_connect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
-                    withVars: [varName],
+                    withProjector,
                     parentNode: node,
                     labelOverride: relationField.union ? refNode.name : "",
                 });
@@ -300,15 +300,6 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         });
     }
 
-    const returnStrs = [
-        `${varName} ${projStr} AS ${varName}`
-    ];
-
-    const nextReturn = withProjector.nextReturn();
-    if (nextReturn) {
-        returnStrs.push(nextReturn);
-    }
-
     const cypher = [
         matchStr,
         whereStr,
@@ -321,7 +312,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         ...(projAuth ? [projAuth] : []),
         ...connectionStrs,
 
-        `RETURN ${ returnStrs.join(', ') }`,
+        `${ withProjector.nextReturn(varName, projStr) }`,
     ];
 
     return [

@@ -22,12 +22,22 @@ import { Integer } from "neo4j-driver";
 export interface WithProjectorConstructor {
     variables?: string[];
     mutateMetaListVarName?: string;
+    subName?: string;
 
 }
 
 export type MutationMetaType =  'Updated' | 'Created' | 'Deleted' | 'Connected' | 'Disconnected' | 'RelationshipUpdated';
 
-export type MutationMetaCommon = UpdatedMutationMeta | RelationshipUpdatedMutationMeta;
+/**
+ * Mutation Meta Outputs
+ * These are interfaces that are returned as a result of queries
+ */
+
+export type MutationMetaCommon =
+    UpdatedMutationMeta |
+    RelationshipUpdatedMutationMeta |
+    ConnectedMutationMeta
+;
 
 export interface MutationMeta {
     id: Integer;
@@ -46,15 +56,31 @@ export interface RelationshipUpdatedMutationMeta extends MutationMeta {
     relationshipName: string;
     relationshipID: Integer;
 }
+export interface ConnectedMutationMeta extends MutationMeta {
+    type: 'Connected',
+    properties: any;
+    toID: Integer;
+    toName: string;
+    relationshipName: string;
+    relationshipID: Integer;
+}
 
-export type MutationMetaVarsCommon = UpdatedMutationMetaVars | RelationshipUpdatedMutationMetaVars;
+/**
+ * Mutation Meta Variables
+ * These are interfaces used with the `markMutationMeta` function
+ */
+
+export type MutationMetaVarsCommon =
+    UpdatedMutationMetaVars |
+    ConnectedMutationMetaVars |
+    RelationshipUpdatedMutationMetaVars
+;
 
 export interface MutationMetaVars {
     idVar: string;
     name: string;
     type: MutationMetaType;
 }
-
 
 export interface UpdatedMutationMetaVars extends MutationMetaVars {
     type: 'Updated';
@@ -70,8 +96,26 @@ export interface RelationshipUpdatedMutationMetaVars extends MutationMetaVars {
     relationshipIDVar: string;
 }
 
+export interface ConnectedMutationMetaVars extends MutationMetaVars {
+    type: 'Connected';
+    propertiesVar?: string;
+    toIDVar: string;
+    toName: string;
+    relationshipName: string;
+    relationshipIDVar: string;
+}
+
+export interface NextBlockOptions {
+    declareMutateMeta?: boolean;
+    simpleReferencesOnly?: boolean;
+    excludeVariables?: string[];
+    excludeMutateMeta?: boolean;
+}
+
+
 class WithProjector {
     
+    public subName?: string;
     public variables: string[];
     public mutateMetaListVarName: string;
     public mutateMetaVariableDeclared = false;
@@ -81,7 +125,15 @@ class WithProjector {
 
     constructor(input: WithProjectorConstructor) {
         this.variables = input.variables || [];
-        this.mutateMetaListVarName = input.mutateMetaListVarName || 'mutateMeta';
+        this.subName = input.subName;
+
+        if (input.mutateMetaListVarName) {
+            this.mutateMetaListVarName = input.mutateMetaListVarName;
+        } else if (this.subName) {
+            this.mutateMetaListVarName = `${ this.subName }_mutateMeta`;
+        } else {
+            this.mutateMetaListVarName = 'mutateMeta';
+        }
     }
 
     addVariable(variableName: string) {
@@ -92,28 +144,52 @@ class WithProjector {
      * Used as a variable in a return function
      * @returns `metaList as metaList`, `metaList + [ { id: _id, ... } ]` or empty string
      */
-    nextReturn() {
-        return this.generateMetaListVariable();
-    }
+    nextReturn(varName?: string, projStr?: string, opts: NextBlockOptions = {}) {
+        if (varName) {
+            // eslint-disable-next-line no-param-reassign
+            opts.excludeVariables = opts.excludeVariables || [];
+            // eslint-disable-next-line no-param-reassign
+            opts.excludeVariables = opts.excludeVariables.concat(varName ? [ varName ] : []);
+        }
 
-    nextWith() {
-
-        const withVars = [ ...this.variables ];
-
-        const metaListVariable = this.generateMetaListVariable();
-
-        // Only add this variable if we need it
-        if (metaListVariable !== '') {
-            withVars.push(metaListVariable);
+        const returnVars = this.nextBlockVars(opts);
+        if (varName && projStr) {
+            returnVars.push(`${varName} ${projStr} AS ${varName}`);
         }
 
         // With may still be required, even though we are not passing any variables.
         // Will probably never happen
+        if (returnVars.length === 0) {
+            return `RETURN count(*)`;
+        }
+        return `RETURN ${ returnVars.join(', ') }`;
+    }
+
+    nextWith(opts: NextBlockOptions = {}) {
+        const withVars = this.nextBlockVars(opts);
+
+        // With may still be required, even though we are not passing any variables.
+        // Will probably never happen
         if (withVars.length === 0) {
-            return `WITH [] as _`;
+            return `WITH count(*)`;
+        }
+        return `WITH ${ withVars.join(', ') }`;
+    }
+
+    nextBlockVars(opts: NextBlockOptions = {}) {
+
+        const vars = [ ...this.variables
+            .filter((v) => opts.excludeVariables ? !opts.excludeVariables.includes(v) : true)
+        ];
+
+        const metaListVariable = this.generateMetaListVariable(opts);
+
+        // Only add this variable if we need it
+        if (!opts.excludeMutateMeta && metaListVariable !== '') {
+            vars.push(metaListVariable);
         }
 
-        return `WITH ${ withVars.join(', ') }`;
+        return vars;
     }
 
     markMutationMeta(mutationMeta: MutationMetaVarsCommon) {
@@ -121,20 +197,43 @@ class WithProjector {
 
     }
 
-    createChild() {
-        const childWithProjector = new WithProjector({ variables: [ ...this.variables ] });
+    createChild(subName?: string) {
+        const childWithProjector = new WithProjector({
+            subName,
+            variables: [ ...this.variables ],
+        });
         childWithProjector.parent = this;
 
         return childWithProjector;
     }
 
-    private generateMetaListVariable() {
+    mergeWithChild(child: WithProjector) {
+        if (!child) { return ''; }
+        const childVarName = child.mutateMetaListVarName;
+        if (this.mutateMetaListVarName === childVarName) { return ''; }
+
+        const withVars = this.nextBlockVars({
+            excludeMutateMeta: true,
+        });
+
+        if (this.mutateMetaVariableDeclared) {
+            withVars.push(`${ this.mutateMetaListVarName } + ${ childVarName } as ${ this.mutateMetaListVarName }`);
+        } else {
+            withVars.push(`${ childVarName } as ${ this.mutateMetaListVarName }`);
+            this.mutateMetaVariableDeclared = true;
+        }
+
+        return `WITH ${ withVars.join(', ') }`;
+    }
+
+    private generateMetaListVariable(opts: NextBlockOptions = {}) {
+
+        // Skip operation if we can only use simple references
+        if (opts.simpleReferencesOnly) {
+            return this.mutateMetaVariableDeclared ? this.mutateMetaListVarName : '';
+        }
 
         let metaListVariable = '';
-        // WITH existing metaInfo array
-        // if (this.mutateMetaVariableDeclared) {
-            // metaListVariable = `${ this.mutateMetaListVarName }`;
-        // }
 
         // WITH new metaInfo object
         let mutationMetaOperation: string | undefined;
@@ -174,6 +273,7 @@ class WithProjector {
             ];
 
             mutationMetaOperation = `[ metaVal IN [${ metaInfo }] WHERE ${ metaWhere.join(' AND ') } ]`;
+            this.mutationMeta = undefined;
         }
 
         if        ( this.mutateMetaVariableDeclared &&  mutationMetaOperation) {
@@ -185,11 +285,14 @@ class WithProjector {
             // Mark the mutateMeta variable as declared, meaning we can
             // add it to a new mutationMeta for the next WITH clause 
             this.mutateMetaVariableDeclared = true;
-        } else if (!this.mutateMetaVariableDeclared && !mutationMetaOperation) {
+        } else if (!this.mutateMetaVariableDeclared && !mutationMetaOperation && !opts.declareMutateMeta) {
             metaListVariable = ``;
+        } else if (!this.mutateMetaVariableDeclared && !mutationMetaOperation && opts.declareMutateMeta) {
+            metaListVariable = `[]`;
+            this.mutateMetaVariableDeclared = true;
         }
 
-        if (mutationMetaOperation) {
+        if (mutationMetaOperation || opts.declareMutateMeta) {
             metaListVariable = `${ metaListVariable } as ${ this.mutateMetaListVarName }`;
         }
 
