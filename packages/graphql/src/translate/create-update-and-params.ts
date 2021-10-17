@@ -224,7 +224,10 @@ function createUpdateAndParams({
                                 }[${index}].update.edge`,
                             });
 
-                            const updateStrs = [setProperties, `RETURN id(${ varName }) as _id, id(${ relationshipVariable }) as _relId, id(${ parentVar }) as _parentId`];
+                            const returnVars = [
+                                `id(${ relationshipVariable }) as _relId`
+                            ];
+                            const updateStrs = [setProperties, `RETURN ${ returnVars.join(', ') }`];
                             const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}}`;
@@ -240,13 +243,13 @@ function createUpdateAndParams({
                                 type: 'RelationshipUpdated',
                                 name: node.name,
                                 relationshipName: relationship.name,
-                                toName: 'toName (temporary)',
+                                toName: refNode.name,
 
-                                idVar: 'value._id',
-                                relationshipIDVar: 'val._relId',
-                                toIDVar: 'val._parentId',
+                                idVar: `id(${ varName })`,
+                                relationshipIDVar: 'value._relId',
+                                toIDVar: `id(${ _varName })`,
 
-                                // properties: update.update.edge,
+                                // propertiesVar: '',
                             });
                             res.strs.push(updateStrs.join("\n"));
                         }

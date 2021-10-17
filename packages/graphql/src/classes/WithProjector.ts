@@ -27,7 +27,7 @@ export interface WithProjectorConstructor {
 
 export type MutationMetaType =  'Updated' | 'Created' | 'Deleted' | 'Connected' | 'Disconnected' | 'RelationshipUpdated';
 
-export type MutationMetaCommon = UpdatedMutationMeta;
+export type MutationMetaCommon = UpdatedMutationMeta | RelationshipUpdatedMutationMeta;
 
 export interface MutationMeta {
     id: Integer;
@@ -38,31 +38,37 @@ export interface UpdatedMutationMeta extends MutationMeta {
     type: 'Updated',
     properties: any;
 }
+export interface RelationshipUpdatedMutationMeta extends MutationMeta {
+    type: 'Updated',
+    properties: any;
+    toID: Integer;
+    toName: string;
+    relationshipName: string;
+    relationshipID: Integer;
+}
 
 export type MutationMetaVarsCommon = UpdatedMutationMetaVars | RelationshipUpdatedMutationMetaVars;
+
 export interface MutationMetaVars {
     idVar: string;
     name: string;
     type: MutationMetaType;
 }
 
-interface MutationMetaRelationshipVars {
-    toIDVar: string;
-    toName: string;
-    relationshipName: string;
-    relationshipIDVar: string;
-}
 
 export interface UpdatedMutationMetaVars extends MutationMetaVars {
     type: 'Updated';
     propertiesVar?: string;
 }
 
-export interface RelationshipUpdatedMutationMetaVars extends MutationMetaVars, MutationMetaRelationshipVars {
+export interface RelationshipUpdatedMutationMetaVars extends MutationMetaVars {
     type: 'RelationshipUpdated';
     propertiesVar?: string;
+    toIDVar: string;
+    toName: string;
+    relationshipName: string;
+    relationshipIDVar: string;
 }
-
 
 class WithProjector {
     
@@ -133,15 +139,33 @@ class WithProjector {
         // WITH new metaInfo object
         let mutationMetaOperation: string | undefined;
         if (this.mutationMeta) {
-            const props = [
-                `type: "${ this.mutationMeta.type }"`,
-                `id: ${ this.mutationMeta.idVar }`,
-                `name: "${ this.mutationMeta.name }"`,
-            ];
+            const props: string[] = [];
+            const definiteKeys = Object.keys(this.mutationMeta).filter((k) => !k.endsWith('Var'));
+            definiteKeys.forEach((propName) => {
+                if (!this.mutationMeta) { return; }
+                const definite = this.mutationMeta[propName];
+                if (!definite) { return; }
+                props.push(`${ propName }: "${ definite }"`);
+            });
 
-            if (this.mutationMeta.propertiesVar) {
-                props.push(`properties: ${ this.mutationMeta.propertiesVar }`);
-            }
+            const varKeys = Object.keys(this.mutationMeta).filter((k) => k.endsWith('Var'));
+            varKeys.forEach((varNameKey) => {
+                if (!this.mutationMeta) { return; }
+                const propName = varNameKey.replace('Var', '');
+                const varName = this.mutationMeta[varNameKey];
+                if (!varName) { return; }
+                props.push(`${ propName }: ${ varName }`);
+            });
+
+            // if (isUpdatedMutationMetaVars(this.mutationMeta)) {
+            //     if (this.mutationMeta.propertiesVar) {
+            //         props.push(`properties: ${ this.mutationMeta.propertiesVar }`);
+            //     }
+            // }
+
+            // if ('toIdVar' in this.mutationMeta) {
+            //     props.push(`properties: ${ this.mutationMeta.propertiesVar }`);
+            // }
 
             const metaInfo = `{${ props.join(', ') }}`;
             const metaWhere = [

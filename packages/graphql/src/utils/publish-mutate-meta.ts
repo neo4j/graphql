@@ -18,25 +18,18 @@
  */
 
 import Debug from "debug";
-import { MutationMeta, MutationMetaCommon, UpdatedMutationMeta } from "../classes/WithProjector";
+import { MutationMetaCommon } from "../classes/WithProjector";
 import { DEBUG_PUBLISH } from "../constants";
 import { Context } from "../types";
 import { ExecuteResult } from "./execute";
 
 const debug = Debug(DEBUG_PUBLISH);
 
-export interface MutationEvent extends Omit<MutationMeta, 'id'> {
+export interface MutationEvent extends Omit<MutationMetaCommon, 'id'> {
     id: number;
+    toID?: number;
+    relationshipID?: number;
     bookmark?: string | null;
-}
-
-export interface UpdatedMutationEvent extends Omit<MutationEvent, 'type'>, Omit<UpdatedMutationMeta, 'id'> {}
-
-
-export function isUpdatedMutationEvent(
-    ev: MutationEvent,
-): ev is UpdatedMutationEvent {
-    return ev.type === 'Updated';
 }
 
 function publishMutateMeta(input: {
@@ -61,9 +54,11 @@ function publishMutateMeta(input: {
     mutateMetas.forEach((meta) => {
         if (!meta.id) { return; }
         const trigger = `${ meta.name }.${ meta.type }`;
-        const mutationEvent: UpdatedMutationEvent = {
+        const mutationEvent: MutationEvent = {
             ...meta,
             id: meta.id.toNumber(),
+            toID: 'toID' in meta ? meta.toID.toNumber() : undefined,
+            relationshipID: 'relationshipID' in meta ? meta.relationshipID.toNumber() : undefined,
             bookmark: executeResult.bookmark,
         };
 

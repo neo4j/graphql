@@ -24,7 +24,7 @@ import translateRead from "../../translate/translate-read";
 import { Context } from "../../types";
 import execute from "../../utils/execute";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
-import { isUpdatedMutationEvent, MutationEvent } from "../../utils/publish-mutate-meta";
+import { MutationEvent } from "../../utils/publish-mutate-meta";
 
 export interface MutationSubscriptionResult extends MutationEvent {
     fieldsUpdated: string[];
@@ -93,7 +93,7 @@ export default function subscribeToNodeResolver({ node }: { node: Node }) {
 
                 const [ record ] = executeResult.records;
 
-                if (isUpdatedMutationEvent(payload) && payload.properties) {
+                if ('properties' in payload) {
                     // eslint-disable-next-line no-param-reassign
                     payload.propsUpdated = Object.keys(payload.properties);
                 }
