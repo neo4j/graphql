@@ -84,7 +84,7 @@ function createConnectAndParams({
         const childWithProjector = withProjector.createChild(baseName);
         res.connects.push("CALL {");
 
-        res.connects.push(childWithProjector.nextWith());
+        res.connects.push(childWithProjector.nextWith({}));
         /**
          * NOTE: this was changed from OPTIONAL MATCH to MATCH so we
          * can remove the FOREACH. Will this break things?

@@ -260,9 +260,8 @@ class WithProjector {
         return childWithProjector;
     }
 
-    mergeWithChild(child: WithProjector) {
+    mergeWithChild(child: WithProjector, childVarName = child.mutateMetaListVarName) {
         if (!child) { return ''; }
-        const childVarName = child.mutateMetaListVarName;
         if (this.mutateMetaListVarName === childVarName) { return ''; }
 
         const withVars = this.nextBlockVars({

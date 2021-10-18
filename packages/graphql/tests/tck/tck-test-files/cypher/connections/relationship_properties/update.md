@@ -58,11 +58,12 @@ WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
 
 CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, "
 SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
-RETURN count(*)
+RETURN this, this_actors0, [ metaVal IN [{type: 'RelationshipUpdated', name: 'Movie', relationshipName: 'MovieActorsRelationship', toName: 'Actor', id: id(this), relationshipID: this_acted_in0_relationship, toID: id(this_actors0), properties: $updateMovies.args.update.actors[0].update.edge}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
 ", "", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies})
-YIELD value as this_acted_in0_relationship_actors0_edge
+YIELD value
 
-RETURN this { .title } AS this
+WITH this, value.mutateMeta as mutateMeta
+RETURN mutateMeta, this { .title } AS this
 ```
 
 ### Expected Cypher Params
@@ -136,18 +137,20 @@ OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Acto
 WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
 
 CALL apoc.do.when(this_actors0 IS NOT NULL, "
-SET this_actors0.name = $this_update_actors0_name
-RETURN count(*)
-", "", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
-YIELD value as _
+    SET this_actors0.name = $this_update_actors0_name
+    RETURN this, this_actors0, [ metaVal IN [{type: 'Updated', name: 'Actor', id: id(this_actors0), properties: $this_update_actors0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+", "", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name,this_update_actors0:$this_update_actors0})
+YIELD value
+WITH this, value.mutateMeta as mutateMeta
 
 CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, "
 SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
-RETURN count(*)
+RETURN this, this_actors0, [ metaVal IN [{type: 'RelationshipUpdated', name: 'Movie', relationshipName: 'MovieActorsRelationship', toName: 'Actor', id: id(this), relationshipID: this_acted_in0_relationship, toID: id(this_actors0), properties: $updateMovies.args.update.actors[0].update.edge}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
 ", "", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies})
-YIELD value as this_acted_in0_relationship_actors0_edge
+YIELD value
 
-RETURN this { .title } AS this
+WITH this, mutateMeta + value.mutateMeta as mutateMeta
+RETURN mutateMeta, this { .title } AS this
 ```
 
 ### Expected Cypher Params
@@ -161,6 +164,9 @@ RETURN this { .title } AS this
     },
     "this_title": "Forrest Gump",
     "this_update_actors0_name": "Tom Hanks",
+    "this_update_actors0": {
+        "name": "Tom Hanks"
+    },
     "updateMovies": {
         "args": {
             "update": {

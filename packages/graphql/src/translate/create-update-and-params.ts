@@ -183,18 +183,22 @@ function createUpdateAndParams({
                             });
                             res.params = { ...res.params, ...updateAndParams[1], auth };
                             innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
+                            
 
-                            const updateStrs = [updateAndParams[0], `RETURN id(${ _varName }) as _id`];
+                            const updateStrs = [updateAndParams[0]];
+
                             const apocArgs = `{${withProjector.variables.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}, ${_varName}:${_varName}REPLACE_ME}`;
 
+                            updateStrs.push(childWithProjector.nextReturn());
                             if (insideDoWhen) {
                                 updateStrs.push(`\\", \\"\\", ${apocArgs})`);
                             } else {
                                 updateStrs.push(`", "", ${apocArgs})`);
                             }
                             updateStrs.push("YIELD value");
+                            updateStrs.push(withProjector.mergeWithChild(childWithProjector, `value.${ childWithProjector.mutateMetaListVarName }`));
 
                             const paramsString = Object.keys(innerApocParams)
                                 .reduce((r: string[], k) => [...r, `${k}:$${k}`], [])
@@ -205,6 +209,8 @@ function createUpdateAndParams({
                         }
 
                         if (update.update.edge) {
+                            const childWithProjector = withProjector.createChild();
+                            childWithProjector.addVariable(_varName);
                             res.strs.push(
                                 `CALL apoc.do.when(${relationshipVariable} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`
                             );
@@ -221,10 +227,21 @@ function createUpdateAndParams({
                                 parameterPrefix: setRelationshipParameterPrefix,
                             });
 
-                            const returnVars = [
-                                `id(${ relationshipVariable }) as _relId`
-                            ];
-                            const updateStrs = [setProperties, `RETURN ${ returnVars.join(', ') }`];
+                            childWithProjector.markMutationMeta({
+                                type: 'RelationshipUpdated',
+                                name: node.name,
+                                relationshipName: relationship.name,
+                                toName: refNode.name,
+
+                                idVar: `id(${ varName })`,
+                                relationshipIDVar: `${ relationshipVariable }`,
+                                toIDVar: `id(${ _varName })`,
+
+                                propertiesVar: `$${ setRelationshipParameterPrefix }`,
+                            });
+
+                            const updateStrs = [setProperties];
+                            updateStrs.push(childWithProjector.nextReturn());
                             const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}}`;
@@ -235,19 +252,9 @@ function createUpdateAndParams({
                                 updateStrs.push(`", "", ${apocArgs})`);
                             }
                             updateStrs.push(`YIELD value`);
+                            updateStrs.push(withProjector.mergeWithChild(childWithProjector, `value.${ childWithProjector.mutateMetaListVarName }`));
 
-                            withProjector.markMutationMeta({
-                                type: 'RelationshipUpdated',
-                                name: node.name,
-                                relationshipName: relationship.name,
-                                toName: refNode.name,
 
-                                idVar: `id(${ varName })`,
-                                relationshipIDVar: 'value._relId',
-                                toIDVar: `id(${ _varName })`,
-
-                                propertiesVar: `$${ setRelationshipParameterPrefix }`,
-                            });
                             res.strs.push(updateStrs.join("\n"));
                         }
                     }
@@ -441,7 +448,7 @@ function createUpdateAndParams({
     if (Object.keys(objUpdateParams).length) {
         withProjector.markMutationMeta({
             type: 'Updated',
-            idVar: 'value._id',
+            idVar: `id(${ varName })`,
             name: node.name,
             propertiesVar: `$${ objUpdateParamsKey }`,
         });
