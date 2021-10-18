@@ -95,12 +95,6 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     }
 
     if (updateInput) {
-        withProjector.markMutationMeta({
-            type: 'Updated',
-            idVar: `id(${ varName })`,
-            name: node.name,
-            propertiesVar: `$${ varName }_update`,
-        });
 
         const updateAndParams = createUpdateAndParams({
             context,

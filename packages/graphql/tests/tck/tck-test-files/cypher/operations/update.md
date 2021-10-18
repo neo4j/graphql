@@ -620,7 +620,7 @@ SET this_create_movies1_node.id = $this_create_movies1_node_id
 SET this_create_movies1_node.title = $this_create_movies1_node_title
 MERGE (this)-[this_create_movies1_relationship:ACTED_IN]->(this_create_movies1_node)
 
-RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_movies { .id, .title } ] } AS this
+RETURN [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this_create_movies1_node), properties: this_create_movies1_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta, this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie) | this_movies { .id, .title } ] } AS this
 ```
 
 ### Expected Cypher Params
@@ -728,10 +728,11 @@ OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Acto
 WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
 CALL apoc.do.when(this_actors0 IS NOT NULL, "
     SET this_actors0.name = $this_update_actors0_name
-    RETURN count(*)
+    RETURN id(this_actors0) as _id
 ",
 "",
-{this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name}) YIELD value as _
+{this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name,this_update_actors0:$this_update_actors0})
+YIELD value
 WITH this
 OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
 WHERE this_delete_actors0.name = $updateMovies.args.delete.actors[0].where.node.name
@@ -739,7 +740,7 @@ WHERE this_delete_actors0.name = $updateMovies.args.delete.actors[0].where.node.
 WITH this, collect(DISTINCT this_delete_actors0) as this_delete_actors0_to_delete
 FOREACH(x IN this_delete_actors0_to_delete | DETACH DELETE x)
 
-RETURN this { .id } AS this
+RETURN mutateMeta, this { .id } AS this
 ```
 
 ### Expected Cypher Params
@@ -752,6 +753,9 @@ RETURN this { .id } AS this
         "isAuthenticated": true,
         "jwt": {},
         "roles": []
+    },
+    "this_update_actors0": {
+        "name": "Updated name"
     },
     "updateMovies": {
         "args": {
@@ -815,7 +819,7 @@ WHERE this_actors0_delete0.name = $updateMovies.args.update.actors[0].delete[0].
 WITH this, collect(DISTINCT this_actors0_delete0) as this_actors0_delete0_to_delete
 FOREACH(x IN this_actors0_delete0_to_delete | DETACH DELETE x)
 
-RETURN this { .id } AS this
+RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta, this { .id } AS this
 ```
 
 ### Expected Cypher Params
@@ -876,7 +880,8 @@ mutation {
 ```cypher
 MATCH (this:Movie)
 WHERE this.id = $this_id
-WITH this OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:ACTED_IN]-(this_actors0_delete0:Actor)
+WITH this
+OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:ACTED_IN]-(this_actors0_delete0:Actor)
 WHERE this_actors0_delete0.name = $updateMovies.args.update.actors[0].delete[0].where.node.name
 WITH this, this_actors0_delete0
 OPTIONAL MATCH (this_actors0_delete0)-[this_actors0_delete0_movies0_relationship:ACTED_IN]->(this_actors0_delete0_movies0:Movie)
@@ -888,7 +893,7 @@ FOREACH(x IN this_actors0_delete0_movies0_to_delete | DETACH DELETE x)
 WITH this, collect(DISTINCT this_actors0_delete0) as this_actors0_delete0_to_delete 
 FOREACH(x IN this_actors0_delete0_to_delete | DETACH DELETE x)
 
-RETURN this { .id } AS this
+RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta, this { .id } AS this
 ```
 
 ### Expected Cypher Params

@@ -73,6 +73,7 @@ function createUpdateAndParams({
      * the updated properties.
      */
     const objUpdateParams = {}; 
+    const objUpdateParamsKey = chainStr || `${parentVar}_update`;
 
     function reducer(res: Res, [key, value]: [string, any]) {
 
@@ -194,12 +195,6 @@ function createUpdateAndParams({
                                 updateStrs.push(`", "", ${apocArgs})`);
                             }
                             updateStrs.push("YIELD value");
-                            withProjector.markMutationMeta({
-                                type: 'Updated',
-                                idVar: 'value._id',
-                                name: refNode.name,
-                                propertiesVar: `$${ nodeUpdateChainStr }`,
-                            });
 
                             const paramsString = Object.keys(innerApocParams)
                                 .reduce((r: string[], k) => [...r, `${k}:$${k}`], [])
@@ -316,13 +311,13 @@ function createUpdateAndParams({
                     }
 
                     if (update.create) {
-                        res.strs.push(withProjector.nextWith());
 
                         const creates = relationField.typeMeta.array ? update.create : [update.create];
                         creates.forEach((create, i) => {
                             const baseName = `${_varName}_create${i}`;
                             const nodeName = `${baseName}_node`;
                             const propertiesName = `${baseName}_relationship`;
+                            res.strs.push(withProjector.nextWith());
                             const withProjectorChild = withProjector.createChild();
                             withProjectorChild.addVariable(nodeName);
 
@@ -354,6 +349,7 @@ function createUpdateAndParams({
                                 });
                                 res.strs.push(setA);
                             }
+                            res.strs.push(withProjector.mergeWithChild(withProjectorChild));
                         });
                     }
                 });
@@ -442,6 +438,16 @@ function createUpdateAndParams({
         params: {},
     });
 
+    if (Object.keys(objUpdateParams).length) {
+        withProjector.markMutationMeta({
+            type: 'Updated',
+            idVar: 'value._id',
+            name: node.name,
+            propertiesVar: `$${ objUpdateParamsKey }`,
+        });
+        params[objUpdateParamsKey] = objUpdateParams;
+    }
+
     let preAuthStrs: string[] = [];
     let postAuthStrs: string[] = [];
 
@@ -490,12 +496,6 @@ function createUpdateAndParams({
         const apocStr = `CALL apoc.util.validate(NOT(${postAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
         // TODO: postAuthStrs with updated node ids
         postAuthStr = `${ withProjector.nextWith() }\n${apocStr}`;
-    }
-
-    if (chainStr) {
-        params[chainStr] = objUpdateParams;
-    } else {
-        params[`${parentVar}_update`] = objUpdateParams;
     }
 
     const str = `${preAuthStr}\n${strs.join("\n")}\n${postAuthStr}`;
