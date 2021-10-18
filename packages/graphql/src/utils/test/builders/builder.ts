@@ -17,4 +17,16 @@
  * limitations under the License.
  */
 
-export { default as NodeBuilder } from "./node-builder";
+/** Base class for test builders */
+// eslint-disable-next-line import/prefer-default-export
+export abstract class Builder<T, C> {
+    protected options: C;
+
+    constructor(options: C) {
+        this.options = options;
+    }
+
+    public abstract with(options: Partial<C>): Builder<T, C>;
+
+    public abstract instance(): T;
+}

@@ -72,7 +72,7 @@ import getWhereFields from "./get-where-fields";
 import { connectionFieldResolver } from "./pagination";
 import { validateDocument } from "./validation";
 import * as constants from "../constants";
-import NodeDirective from "../classes/NodeDirective";
+import { NodeDirective } from "../classes/NodeDirective";
 import parseNodeDirective from "./parse-node-directive";
 import { FieldAggregationComposer } from "./field-aggregation-composer";
 

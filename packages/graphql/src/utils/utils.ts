@@ -17,21 +17,8 @@
  * limitations under the License.
  */
 
-import { NodeBuilder } from "../../utils/test/builders/node-builder";
-import findResolver from "./read";
-
-describe("Read resolver", () => {
-    test("should return the correct; type, args and resolve", () => {
-        const node = new NodeBuilder({
-            name: "Movie",
-        }).instance();
-
-        const result = findResolver({ node });
-        expect(result.type).toEqual(`[Movie!]!`);
-        expect(result.resolve).toBeInstanceOf(Function);
-        expect(result.args).toMatchObject({
-            where: `MovieWhere`,
-            options: `MovieOptions`,
-        });
-    });
-});
+/** Checks if value is string */
+// eslint-disable-next-line import/prefer-default-export
+export function isString(value: any): value is string {
+    return typeof value === "string" || value instanceof String;
+}
