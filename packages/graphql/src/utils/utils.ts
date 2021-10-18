@@ -18,7 +18,6 @@
  */
 
 /** Checks if value is string */
-// eslint-disable-next-line import/prefer-default-export
 export function isString(value: any): value is string {
     return typeof value === "string" || value instanceof String;
 }

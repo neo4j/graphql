@@ -22,7 +22,7 @@ import { IncomingMessage } from "http";
 import jsonwebtoken from "jsonwebtoken";
 
 /** Creates a JWT valid request with the given secret and the extraData in the JWT token */
-// eslint-disable-next-line import/prefer-default-export
+
 export function createJwtRequest(secret: string, extraData: Record<string, any> = {}): IncomingMessage {
     const token = jsonwebtoken.sign(
         {

@@ -49,7 +49,7 @@ const baseTypeScriptRules = {
     "@typescript-eslint/no-explicit-any": "off", // Long term goal should be to have this rule on
     "@typescript-eslint/no-use-before-define": "off", // Unavoidable in some places, but a refactor should potentially happen and this rule switched on
     "@typescript-eslint/explicit-module-boundary-types": "off", // TODO We should really define what our functions return
-    "@typescript-eslint/no-unused-vars": ["error"], // Additional rule enabled because we don't want unused variables hanging about!
+    "@typescript-eslint/no-unused-vars": ["error", { args: "none" }], // Additional rule enabled because we don't want unused variables hanging about! Note: Unused parameters are allowed
     /*
     start of @typescript-eslint/recommended-requiring-type-checking rules
     TODO Over the long term, reduce our usage of `any` and switch these rules on

@@ -18,7 +18,7 @@
  */
 
 /** Base class for test builders */
-// eslint-disable-next-line import/prefer-default-export
+
 export abstract class Builder<T, C> {
     protected options: C;
 
