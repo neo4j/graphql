@@ -20,6 +20,8 @@
 import fs from "fs";
 import path from "path";
 
+export const TCK_DIR = path.join(__dirname,  "../tck-test-files");
+
 type Params = {
     [key: string]: unknown;
 };
@@ -39,6 +41,7 @@ export type TestCase = {
     schema?: string;
     tests: Test[];
     file: string;
+    filePath: string;
     envVars?: string;
 };
 
@@ -103,11 +106,13 @@ function extractSchema(contents: string): string {
 function generateTests(filePath): TestCase {
     const data = fs.readFileSync(filePath, { encoding: "utf8" });
     const file = path.basename(filePath);
+    const strippedPath = `${ filePath }`.replace(`${ TCK_DIR }/`, '');
     const dataStr = data.toString();
 
     const out: TestCase = {
         tests: extractTests(dataStr),
         file: `${file}`,
+        filePath: strippedPath,
     };
 
     out.schema = extractSchema(dataStr);

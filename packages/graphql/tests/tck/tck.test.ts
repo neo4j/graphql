@@ -28,7 +28,6 @@ import {
 } from "graphql";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { SchemaDirectiveVisitor } from "@graphql-tools/utils";
-import path from "path";
 import jsonwebtoken from "jsonwebtoken";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
@@ -44,6 +43,7 @@ import { Context } from "../../src/types";
 import { Neo4jGraphQL } from "../../src";
 import {
     generateTestCasesFromMd,
+    TCK_DIR,
     setTestEnvVars,
     Test,
     TestCase,
@@ -55,7 +55,6 @@ import { Node } from "../../src/classes";
 import createAuthParam from "../../src/translate/create-auth-param";
 import getNeo4jResolveTree from "../../src/utils/get-neo4j-resolve-tree";
 
-const TCK_DIR = path.join(__dirname, "tck-test-files");
 
 const secret = "secret";
 
@@ -78,8 +77,8 @@ class CustomDirective extends SchemaDirectiveVisitor {
 describe("TCK Generated tests", () => {
     const testCases: TestCase[] = generateTestCasesFromMd(TCK_DIR);
 
-    testCases.forEach(({ schema, tests, file, envVars }) => {
-        describe(`${file}`, () => {
+    testCases.forEach(({ schema, tests, filePath, envVars }) => {
+        describe(`${filePath}`, () => {
             setTestEnvVars(envVars);
             const document = parse(schema as string);
             // @ts-ignore
