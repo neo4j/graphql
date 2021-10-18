@@ -37,6 +37,8 @@ export type MutationMetaCommon =
     UpdatedMutationMeta |
     RelationshipUpdatedMutationMeta |
     ConnectedMutationMeta |
+    DisconnectedMutationMeta |
+    DeletedMutationMeta |
     CreatedMutationMeta
 ;
 
@@ -65,9 +67,19 @@ export interface ConnectedMutationMeta extends MutationMeta {
     relationshipName: string;
     relationshipID: Integer;
 }
+export interface DisconnectedMutationMeta extends MutationMeta {
+    type: 'Disconnected',
+    toID: Integer;
+    toName: string;
+    relationshipName: string;
+    relationshipID: Integer;
+}
 export interface CreatedMutationMeta extends MutationMeta {
     type: 'Created',
     properties: any;
+}
+export interface DeletedMutationMeta extends MutationMeta {
+    type: 'Deleted',
 }
 
 /**
@@ -78,7 +90,9 @@ export interface CreatedMutationMeta extends MutationMeta {
 export type MutationMetaVarsCommon =
     UpdatedMutationMetaVars |
     ConnectedMutationMetaVars |
+    DisconnectedMutationMetaVars |
     RelationshipUpdatedMutationMetaVars |
+    DeletedMutationMetaVars |
     CreatedMutationMetaVars
 ;
 
@@ -92,6 +106,10 @@ export interface UpdatedMutationMetaVars extends MutationMetaVars {
     type: 'Updated';
     propertiesVar?: string;
 }
+export interface DeletedMutationMetaVars extends MutationMetaVars {
+    type: 'Deleted';
+}
+
 export interface CreatedMutationMetaVars extends MutationMetaVars {
     type: 'Created';
     propertiesVar?: string;
@@ -104,6 +122,14 @@ export interface RelationshipUpdatedMutationMetaVars extends MutationMetaVars {
     toName: string;
     relationshipName: string;
     relationshipIDVar: string;
+}
+
+export interface DisconnectedMutationMetaVars extends MutationMetaVars {
+    type: 'Disconnected';
+    toIDVar: string;
+    toName: string;
+    relationshipName?: string;
+    relationshipIDVar?: string;
 }
 
 export interface ConnectedMutationMetaVars extends MutationMetaVars {
@@ -120,6 +146,7 @@ export interface NextBlockOptions {
     simpleReferencesOnly?: boolean;
     excludeVariables?: string[];
     additionalMutateMeta?: string;
+    additionalVariables?: string[];
 }
 
 export interface Projection {
@@ -153,6 +180,14 @@ class WithProjector {
 
     addVariable(variableName: string) {
         this.variables.push(variableName);
+    }
+
+    removeVariable(variableName: string) {
+        const index = this.variables.indexOf(variableName);
+        if (index >= 0) {
+            this.variables.splice(index, 1);
+        }
+
     }
 
     /**
@@ -195,6 +230,10 @@ class WithProjector {
         const vars = [ ...this.variables
             .filter((v) => opts.excludeVariables ? !opts.excludeVariables.includes(v) : true)
         ];
+
+        if (opts.additionalVariables) {
+            vars.push(...opts.additionalVariables);
+        }
 
         const metaListVariable = this.generateMetaListVariable(opts);
 

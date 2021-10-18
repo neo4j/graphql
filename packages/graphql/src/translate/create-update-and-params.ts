@@ -258,7 +258,7 @@ function createUpdateAndParams({
                             refNode,
                             value: update.disconnect,
                             varName: `${_varName}_disconnect`,
-                            withVars: withProjector.variables, // TODO: use withProjector
+                            withProjector,
                             parentVar,
                             relationField,
                             labelOverride: relationField.union ? refNode.name : "",
@@ -299,7 +299,7 @@ function createUpdateAndParams({
                             varName: innerVarName,
                             chainStr: innerVarName,
                             parentVar,
-                            withVars: withProjector.variables, // TODO: use withProjector
+                            withProjector,
                             insideDoWhen,
                             parameterPrefix: `${parameterPrefix}.${key}${
                                 relationField.typeMeta.array ? `[${index}]` : ``

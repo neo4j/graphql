@@ -136,7 +136,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     relationField,
                     value: relationField.union ? entry[1][refNode.name] : entry[1],
                     varName: `${varName}_disconnect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
-                    withVars: [varName],
+                    withProjector,
                     parentNode: node,
                     parameterPrefix: `${resolveTree.name}.args.disconnect.${entry[0]}${
                         relationField.union ? `.${refNode.name}` : ""
@@ -250,7 +250,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             deleteInput,
             varName: `${varName}_delete`,
             parentVar: varName,
-            withVars: [varName],
+            withProjector,
             parameterPrefix: `${resolveTree.name}.args.delete`,
         });
         [deleteStr] = deleteAndParams;

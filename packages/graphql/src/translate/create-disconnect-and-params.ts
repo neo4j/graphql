@@ -18,9 +18,10 @@
  */
 
 import { Node, Relationship } from "../classes";
-import { RelationField, Context } from "../types";
-import createAuthAndParams from "./create-auth-and-params";
+import WithProjector from "../classes/WithProjector";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { Context, RelationField } from "../types";
+import createAuthAndParams from "./create-auth-and-params";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
 interface Res {
@@ -29,7 +30,7 @@ interface Res {
 }
 
 function createDisconnectAndParams({
-    withVars,
+    withProjector,
     value,
     varName,
     relationField,
@@ -41,7 +42,7 @@ function createDisconnectAndParams({
     insideDoWhen,
     parameterPrefix,
 }: {
-    withVars: string[];
+    withProjector: WithProjector;
     value: any;
     varName: string;
     relationField: RelationField;
@@ -71,16 +72,19 @@ function createDisconnectAndParams({
                 where: { varName: parentVar, node: parentNode },
             });
             if (whereAuth[0]) {
-                res.disconnects.push(`WITH ${withVars.join(", ")}`);
+                res.disconnects.push(withProjector.nextWith());
                 res.disconnects.push(`WHERE ${whereAuth[0]}`);
                 res.params = { ...res.params, ...whereAuth[1] };
             }
         }
 
-        res.disconnects.push(`WITH ${withVars.join(", ")}`);
+        res.disconnects.push(withProjector.nextWith());
+        const childWithProjector = withProjector.createChild(_varName);
+        childWithProjector.addVariable(_varName);
+        childWithProjector.addVariable(relVarName);
         res.disconnects.push("CALL {");
 
-        res.disconnects.push(`WITH ${withVars.join(", ")}`);
+        res.disconnects.push(withProjector.nextWith());
         res.disconnects.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${label})`);
 
         const whereStrs: string[] = [];
@@ -149,7 +153,7 @@ function createDisconnectAndParams({
 
         if (preAuth.disconnects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            res.disconnects.push(`WITH ${[...withVars, _varName, relVarName].join(", ")}`);
+            res.disconnects.push( childWithProjector.nextWith() );
             res.disconnects.push(
                 `CALL apoc.util.validate(NOT(${preAuth.disconnects.join(
                     " AND "
@@ -161,7 +165,19 @@ function createDisconnectAndParams({
         /*
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
+           
         */
+
+        childWithProjector.markMutationMeta({
+            type: 'Disconnected',
+            idVar: `id(${ parentVar })`,
+            name: parentNode.name,
+            toIDVar: `id(${ _varName })`,
+            toName: refNode.name,
+            relationshipIDVar: `id(${ _varName }_rel)`,
+            relationshipName: relationship.name,
+        });
+        res.disconnects.push(childWithProjector.nextWith());
         res.disconnects.push(`FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END | `);
         res.disconnects.push(`DELETE ${_varName}_rel`);
         res.disconnects.push(`)`); // close FOREACH
@@ -187,7 +203,7 @@ function createDisconnectAndParams({
 
                         newRefNodes.forEach((newRefNode) => {
                             const recurse = createDisconnectAndParams({
-                                withVars: [...withVars, _varName],
+                                withProjector: childWithProjector,
                                 value: relField.union ? v[newRefNode.name] : v,
                                 varName: `${_varName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
                                 relationField: relField,
@@ -244,7 +260,9 @@ function createDisconnectAndParams({
 
         if (postAuth.disconnects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            res.disconnects.push(`WITH ${[...withVars, _varName].join(", ")}`);
+            
+            // TODO: might have to use child here?
+            res.disconnects.push(childWithProjector.nextWith());
             res.disconnects.push(
                 `CALL apoc.util.validate(NOT(${postAuth.disconnects.join(
                     " AND "
@@ -253,8 +271,9 @@ function createDisconnectAndParams({
             res.params = { ...res.params, ...postAuth.params };
         }
 
-        res.disconnects.push("RETURN count(*)");
+        res.disconnects.push(childWithProjector.nextReturn([], { excludeVariables: withProjector.variables }));
         res.disconnects.push("}");
+        res.disconnects.push(withProjector.mergeWithChild(childWithProjector));
 
         return res;
     }

@@ -22,6 +22,7 @@ import { Context } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import WithProjector from "../classes/WithProjector";
 
 interface Res {
     strs: string[];
@@ -34,7 +35,7 @@ function createDeleteAndParams({
     node,
     parentVar,
     chainStr,
-    withVars,
+    withProjector,
     context,
     insideDoWhen,
     parameterPrefix,
@@ -45,7 +46,7 @@ function createDeleteAndParams({
     varName: string;
     chainStr?: string;
     node: Node;
-    withVars: string[];
+    withProjector: WithProjector;
     context: Context;
     insideDoWhen?: boolean;
     parameterPrefix: string;
@@ -72,6 +73,9 @@ function createDeleteAndParams({
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const outStr = relationField.direction === "OUT" ? "->" : "-";
 
+            res.strs.push(withProjector.nextWith());
+            const childWithProjector = withProjector.createChild(varName);
+
             refNodes.forEach((refNode) => {
                 const v = relationField.union ? value[refNode.name] : value;
                 const deletes = relationField.typeMeta.array ? v : [v];
@@ -81,10 +85,7 @@ function createDeleteAndParams({
                         : `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
                     const relationshipVariable = `${_varName}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
-
-                    if (withVars) {
-                        res.strs.push(`WITH ${withVars.join(", ")}`);
-                    }
+                    childWithProjector.addVariable(_varName);
 
                     const labels = refNode.labelString;
                     res.strs.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`);
@@ -106,6 +107,7 @@ function createDeleteAndParams({
                             whereStrs.push(whereAndParams[0]);
                         }
                     }
+
                     const whereAuth = createAuthAndParams({
                         operation: "DELETE",
                         entity: refNode,
@@ -129,7 +131,7 @@ function createDeleteAndParams({
                     });
                     if (allowAuth[0]) {
                         const quote = insideDoWhen ? `\\"` : `"`;
-                        res.strs.push(`WITH ${[...withVars, _varName].join(", ")}`);
+                        res.strs.push(childWithProjector.nextWith());
                         res.strs.push(
                             `CALL apoc.util.validate(NOT(${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
                         );
@@ -142,7 +144,7 @@ function createDeleteAndParams({
                             node: refNode,
                             deleteInput: d.delete,
                             varName: _varName,
-                            withVars: [...withVars, _varName],
+                            withProjector: childWithProjector,
                             parentVar: _varName,
                             parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
                                 relationField.union ? `.${refNode.name}` : ""
@@ -153,10 +155,22 @@ function createDeleteAndParams({
                         res.params = { ...res.params, ...deleteAndParams[1] };
                     }
 
-                    res.strs.push(
-                        `WITH ${[...withVars, `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`].join(", ")}`
-                    );
+                    childWithProjector.markMutationMeta({
+                        type: 'Deleted',
+                        idVar: `id(${ _varName })`,
+                        name: refNode.name,
+                    });
+
+                    // childWithProjector.removeVariable(varName);
+                    // childWithProjector.removeVariable(_varName);
+                    childWithProjector.removeVariable(_varName);
+                    res.strs.push(childWithProjector.nextWith({
+                        additionalVariables: [
+                            `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`,
+                        ]
+                    }));
                     res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
+                    res.strs.push(withProjector.mergeWithChild(childWithProjector));
                 });
             });
 
