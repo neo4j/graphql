@@ -93,15 +93,16 @@ function publishMutateMeta(input: {
     });
 
     /**
-     * Duplicate RelationshipUpdated node as reverse if types are different
+     * Duplicate relationship events as reverse if types are different
      * --
      * If a relationship exists between two different types, notify both of those types
      * that their relationship was updated.
      */
     mutateMetas.forEach((meta) => {
-        if (meta.type === 'RelationshipUpdated'
-            && meta.name !== meta.toName
-        ) {
+        ([ 'RelationshipUpdated', 'Connected', 'Disconnected' ] as const).forEach((type) => {
+            if (meta.type !== type) { return; }
+            if (meta.name !== meta.toName) { return; }
+
             mutateMetas.push({
                 ...meta,
                 toID: meta.id,
@@ -109,7 +110,7 @@ function publishMutateMeta(input: {
                 id: meta.toID,
                 name: meta.toName,
             });
-        }
+        });
     });
 
     mutateMetas.forEach((meta) => {
