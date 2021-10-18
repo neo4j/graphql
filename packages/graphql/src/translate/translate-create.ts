@@ -18,11 +18,12 @@
  */
 
 import { Node } from "../classes";
-import createProjectionAndParams from "./create-projection-and-params";
-import createCreateAndParams from "./create-create-and-params";
-import { Context, ConnectionField } from "../types";
+import WithProjector, { Projection } from "../classes/WithProjector";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { ConnectionField, Context } from "../types";
 import createConnectionAndParams from "./connection/create-connection-and-params";
+import createCreateAndParams from "./create-create-and-params";
+import createProjectionAndParams from "./create-projection-and-params";
 
 function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
     const connectionStrs: string[] = [];
@@ -37,9 +38,13 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
         resolveTree.fieldsByTypeName[`Create${node.getPlural({ camelCase: false })}MutationResponse`]
     ).find((field) => field.name === node.getPlural({ camelCase: true }))!;
 
+    const withProjector = new WithProjector({ variables: [] });
+
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {
             const varName = `this${index}`;
+            const withProjectorChild = withProjector.createChild(varName);
+            withProjectorChild.addVariable(varName);
 
             const create = [`CALL {`];
 
@@ -48,11 +53,12 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
                 node,
                 context,
                 varName,
-                withVars: [varName],
+                withProjector: withProjectorChild,
             });
             create.push(`${createAndParams[0]}`);
-            create.push(`RETURN ${varName}`);
+            create.push(withProjectorChild.nextReturn());
             create.push(`}`);
+            create.push(withProjector.mergeWithChild(withProjectorChild));
 
             res.createStrs.push(create.join("\n"));
             res.params = { ...res.params, ...createAndParams[1] };
@@ -121,23 +127,23 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
           }, {})
         : {};
 
-    const projectionStr = createStrs
-        .map(
-            (_, i) =>
-                `\nthis${i} ${projection[0]
-                    // First look to see if projection param is being reassigned
-                    // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
-                    .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                    .replace(/\$REPLACE_ME/g, "$projection")
-                    .replace(/REPLACE_ME/g, `this${i}`)} AS this${i}`
-        )
-        .join(", ");
+    const projections: Projection[] = createStrs.map((v, i) => {
+        return {
+            initialVariable: `this${ i }`,
+            str: projection[0]
+                // First look to see if projection param is being reassigned
+                // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
+                .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
+                .replace(/\$REPLACE_ME/g, "$projection")
+                .replace(/REPLACE_ME/g, `this${i}`),
+        }
+    });
 
     const authCalls = createStrs
         .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
         .join("\n");
 
-    const cypher = [`${createStrs.join("\n")}`, authCalls, ...replacedConnectionStrs, `\nRETURN ${projectionStr}`];
+    const cypher = [`${createStrs.join("\n")}`, authCalls, ...replacedConnectionStrs, withProjector.nextReturn(projections)];
 
     return [cypher.filter(Boolean).join("\n"), { ...params, ...replacedProjectionParams, ...replacedConnectionParams }];
 }

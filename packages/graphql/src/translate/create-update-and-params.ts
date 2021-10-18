@@ -331,7 +331,7 @@ function createUpdateAndParams({
                                 node: refNode,
                                 input: create.node,
                                 varName: nodeName,
-                                withVars: withProjectorChild.variables,
+                                withProjector: withProjectorChild,
                                 insideDoWhen,
                             });
                             res.strs.push(createAndParams[0]);

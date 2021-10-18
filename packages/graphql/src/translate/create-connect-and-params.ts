@@ -168,6 +168,8 @@ function createConnectAndParams({
         // res.connects.push(`FOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
         res.connects.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
+        let relationshipNodeName: string | undefined;
+        let relationshipIDVar: string | undefined;
         if (relationField.properties) {
             const relationship = (context.neoSchema.relationships.find(
                 (x) => x.properties === relationField.properties
@@ -180,21 +182,23 @@ function createConnectAndParams({
                 operation: "CREATE",
             });
 
-            childWithProjector.markMutationMeta({
-                type: 'Connected',
-                name: parentNode.name,
-                relationshipName: relationship.name,
-                toName: refNode.name,
-    
-                idVar: `id(${ parentVar })`,
-                relationshipIDVar: `id(${ relationshipName })`,
-                toIDVar: `id(${ nodeName })`,
-                propertiesVar: relationshipName,
-            });
-
             res.connects.push(setA[0]);
             res.params = { ...res.params, ...setA[1] };
+            relationshipNodeName = relationship.name;
+            relationshipIDVar = `id(${ relationshipName })`;
         }
+
+        childWithProjector.markMutationMeta({
+            type: 'Connected',
+            name: parentNode.name,
+            relationshipName: relationshipNodeName,
+            toName: refNode.name,
+
+            idVar: `id(${ parentVar })`,
+            relationshipIDVar,
+            toIDVar: `id(${ nodeName })`,
+            propertiesVar: relationshipName,
+        });
 
         // res.connects.push(`SET mutateMeta = []`); // close FOREACH
         // res.connects.push(`)`); // close FOREACH
@@ -283,7 +287,7 @@ function createConnectAndParams({
             res.params = { ...res.params, ...postAuth.params };
         }
 
-        res.connects.push(childWithProjector.nextReturn(undefined, undefined, {
+        res.connects.push(childWithProjector.nextReturn([], {
             excludeVariables: childWithProjector.variables,
         }));
         res.connects.push("}");

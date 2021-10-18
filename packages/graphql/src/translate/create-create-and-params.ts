@@ -18,13 +18,13 @@
  */
 
 import { Node, Relationship } from "../classes";
-import { Context } from "../types";
-import createConnectAndParams from "./create-connect-and-params";
-import createAuthAndParams from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
-import mapToDbProperty from "../utils/map-to-db-property";
 import WithProjector from "../classes/WithProjector";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { Context } from "../types";
+import mapToDbProperty from "../utils/map-to-db-property";
+import createAuthAndParams from "./create-auth-and-params";
+import createConnectAndParams from "./create-connect-and-params";
+import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 
 interface Res {
     creates: string[];
@@ -41,16 +41,17 @@ function createCreateAndParams({
     varName,
     node,
     context,
-    withVars,
+    withProjector,
     insideDoWhen,
 }: {
     input: any;
     varName: string;
     node: Node;
     context: Context;
-    withVars: string[];
+    withProjector: WithProjector;
     insideDoWhen?: boolean;
 }): [string, any] {
+
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const _varName = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => key === x.fieldName);
@@ -82,18 +83,21 @@ function createCreateAndParams({
                 if (v.create) {
                     const creates = relationField.typeMeta.array ? v.create : [v.create];
                     creates.forEach((create, index) => {
-                        res.creates.push(`\nWITH ${withVars.join(", ")}`);
+                        res.creates.push(withProjector.nextWith());
 
                         const baseName = `${_varName}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
                         const nodeName = `${baseName}_node`;
                         const propertiesName = `${baseName}_relationship`;
+
+                        const childWithProjector = withProjector.createChild(baseName);
+                        childWithProjector.addVariable(nodeName);
 
                         const recurse = createCreateAndParams({
                             input: create.node,
                             context,
                             node: refNode,
                             varName: nodeName,
-                            withVars: [...withVars, nodeName],
+                            withProjector: childWithProjector,
                         });
                         res.creates.push(recurse[0]);
                         res.params = { ...res.params, ...recurse[1] };
@@ -117,12 +121,14 @@ function createCreateAndParams({
                             res.creates.push(setA[0]);
                             res.params = { ...res.params, ...setA[1] };
                         }
+
+                        withProjector.mergeWithChild(childWithProjector);
                     });
                 }
 
                 if (v.connect) {
                     const connectAndParams = createConnectAndParams({
-                        withProjector: new WithProjector({}), // TODO: fix for create
+                        withProjector,
                         value: v.connect,
                         varName: `${_varName}${relationField.union ? "_" : ""}${unionTypeName}_connect`,
                         parentVar: varName,
@@ -193,6 +199,13 @@ function createCreateAndParams({
         initial.push(`SET ${varName}.${f.dbPropertyName} = randomUUID()`);
     });
 
+    withProjector.markMutationMeta({
+        type: 'Created',
+        name: node.name,
+        idVar: `id(${ varName })`,
+        propertiesVar: varName,
+    });
+
     // eslint-disable-next-line prefer-const
     let { creates, params, meta } = Object.entries(input).reduce(reducer, {
         creates: initial,
@@ -210,14 +223,14 @@ function createCreateAndParams({
             escapeQuotes: Boolean(insideDoWhen),
         });
         if (bindAndParams[0]) {
-            creates.push(`WITH ${withVars.join(", ")}`);
+            creates.push(withProjector.nextWith());
             creates.push(`CALL apoc.util.validate(NOT(${bindAndParams[0]}), ${forbiddenString}, [0])`);
             params = { ...params, ...bindAndParams[1] };
         }
     }
 
     if (meta?.authStrs.length) {
-        creates.push(`WITH ${withVars.join(", ")}`);
+        creates.push(withProjector.nextWith());
         creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
     }
 

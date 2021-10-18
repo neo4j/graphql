@@ -224,7 +224,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                         node: refNode,
                         input: create.node,
                         varName: nodeName,
-                        withVars: [varName, nodeName],
+                        withProjector, // TODO: create child with projector?
                     });
                     createStrs.push(createAndParams[0]);
                     cypherParams = { ...cypherParams, ...createAndParams[1] };
@@ -312,7 +312,10 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         ...(projAuth ? [projAuth] : []),
         ...connectionStrs,
 
-        `${ withProjector.nextReturn(varName, projStr) }`,
+        `${ withProjector.nextReturn([{
+            initialVariable: varName,
+            str: projStr,
+        }]) }`,
     ];
 
     return [

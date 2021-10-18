@@ -36,7 +36,8 @@ export type MutationMetaType =  'Updated' | 'Created' | 'Deleted' | 'Connected' 
 export type MutationMetaCommon =
     UpdatedMutationMeta |
     RelationshipUpdatedMutationMeta |
-    ConnectedMutationMeta
+    ConnectedMutationMeta |
+    CreatedMutationMeta
 ;
 
 export interface MutationMeta {
@@ -64,6 +65,10 @@ export interface ConnectedMutationMeta extends MutationMeta {
     relationshipName: string;
     relationshipID: Integer;
 }
+export interface CreatedMutationMeta extends MutationMeta {
+    type: 'Created',
+    properties: any;
+}
 
 /**
  * Mutation Meta Variables
@@ -73,7 +78,8 @@ export interface ConnectedMutationMeta extends MutationMeta {
 export type MutationMetaVarsCommon =
     UpdatedMutationMetaVars |
     ConnectedMutationMetaVars |
-    RelationshipUpdatedMutationMetaVars
+    RelationshipUpdatedMutationMetaVars |
+    CreatedMutationMetaVars
 ;
 
 export interface MutationMetaVars {
@@ -84,6 +90,10 @@ export interface MutationMetaVars {
 
 export interface UpdatedMutationMetaVars extends MutationMetaVars {
     type: 'Updated';
+    propertiesVar?: string;
+}
+export interface CreatedMutationMetaVars extends MutationMetaVars {
+    type: 'Created';
     propertiesVar?: string;
 }
 
@@ -101,8 +111,8 @@ export interface ConnectedMutationMetaVars extends MutationMetaVars {
     propertiesVar?: string;
     toIDVar: string;
     toName: string;
-    relationshipName: string;
-    relationshipIDVar: string;
+    relationshipName?: string;
+    relationshipIDVar?: string;
 }
 
 export interface NextBlockOptions {
@@ -112,6 +122,11 @@ export interface NextBlockOptions {
     excludeMutateMeta?: boolean;
 }
 
+export interface Projection {
+    initialVariable: string;
+    outputVariable?: string;
+    str: string;
+}
 
 class WithProjector {
     
@@ -144,17 +159,16 @@ class WithProjector {
      * Used as a variable in a return function
      * @returns `metaList as metaList`, `metaList + [ { id: _id, ... } ]` or empty string
      */
-    nextReturn(varName?: string, projStr?: string, opts: NextBlockOptions = {}) {
-        if (varName) {
-            // eslint-disable-next-line no-param-reassign
-            opts.excludeVariables = opts.excludeVariables || [];
-            // eslint-disable-next-line no-param-reassign
-            opts.excludeVariables = opts.excludeVariables.concat(varName ? [ varName ] : []);
+    nextReturn(projections: Projection[] = [], opts: NextBlockOptions = {}) {
+        // eslint-disable-next-line no-param-reassign
+        opts.excludeVariables = opts.excludeVariables || [];
+        for (const projection of projections) {
+            opts.excludeVariables.push(projection.initialVariable);
         }
 
         const returnVars = this.nextBlockVars(opts);
-        if (varName && projStr) {
-            returnVars.push(`${varName} ${projStr} AS ${varName}`);
+        for (const p of projections) {
+            returnVars.push(`${ p.initialVariable } ${ p.str } AS ${ p.outputVariable || p.initialVariable }`);
         }
 
         // With may still be required, even though we are not passing any variables.
@@ -239,12 +253,12 @@ class WithProjector {
         let mutationMetaOperation: string | undefined;
         if (this.mutationMeta) {
             const props: string[] = [];
-            const definiteKeys = Object.keys(this.mutationMeta).filter((k) => !k.endsWith('Var'));
-            definiteKeys.forEach((propName) => {
+            const literalKeys = Object.keys(this.mutationMeta).filter((k) => !k.endsWith('Var'));
+            literalKeys.forEach((propName) => {
                 if (!this.mutationMeta) { return; }
-                const definite = this.mutationMeta[propName];
-                if (!definite) { return; }
-                props.push(`${ propName }: "${ definite }"`);
+                const literal = this.mutationMeta[propName];
+                if (!literal) { return; }
+                props.push(`${ propName }: '${ literal }'`);
             });
 
             const varKeys = Object.keys(this.mutationMeta).filter((k) => k.endsWith('Var'));
