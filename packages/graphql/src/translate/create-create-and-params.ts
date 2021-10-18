@@ -122,7 +122,6 @@ function createCreateAndParams({
                             res.params = { ...res.params, ...setA[1] };
                         }
 
-                        withProjector.addVariable(varName);
                         withProjector.mergeWithChild(childWithProjector);
                     });
                 }
