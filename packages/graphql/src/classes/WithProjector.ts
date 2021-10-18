@@ -119,7 +119,7 @@ export interface NextBlockOptions {
     declareMutateMeta?: boolean;
     simpleReferencesOnly?: boolean;
     excludeVariables?: string[];
-    excludeMutateMeta?: boolean;
+    additionalMutateMeta?: string;
 }
 
 export interface Projection {
@@ -199,7 +199,7 @@ class WithProjector {
         const metaListVariable = this.generateMetaListVariable(opts);
 
         // Only add this variable if we need it
-        if (!opts.excludeMutateMeta && metaListVariable !== '') {
+        if (metaListVariable !== '') {
             vars.push(metaListVariable);
         }
 
@@ -227,15 +227,8 @@ class WithProjector {
         if (this.mutateMetaListVarName === childVarName) { return ''; }
 
         const withVars = this.nextBlockVars({
-            excludeMutateMeta: true,
+            additionalMutateMeta: childVarName,
         });
-
-        if (this.mutateMetaVariableDeclared) {
-            withVars.push(`${ this.mutateMetaListVarName } + ${ childVarName } as ${ this.mutateMetaListVarName }`);
-        } else {
-            withVars.push(`${ childVarName } as ${ this.mutateMetaListVarName }`);
-            this.mutateMetaVariableDeclared = true;
-        }
 
         return `WITH ${ withVars.join(', ') }`;
     }
@@ -246,8 +239,6 @@ class WithProjector {
         if (opts.simpleReferencesOnly) {
             return this.mutateMetaVariableDeclared ? this.mutateMetaListVarName : '';
         }
-
-        let metaListVariable = '';
 
         // WITH new metaInfo object
         let mutationMetaOperation: string | undefined;
@@ -290,24 +281,38 @@ class WithProjector {
             this.mutationMeta = undefined;
         }
 
+        let metaListVariable = '';
+        let doAlias = false;
         if        ( this.mutateMetaVariableDeclared &&  mutationMetaOperation) {
             metaListVariable = `${ this.mutateMetaListVarName } + ${ mutationMetaOperation }`;
+            doAlias = true;
         } else if ( this.mutateMetaVariableDeclared && !mutationMetaOperation) {
             metaListVariable = `${ this.mutateMetaListVarName }`;
         } else if (!this.mutateMetaVariableDeclared &&  mutationMetaOperation) {
             metaListVariable = `${ mutationMetaOperation }`;
-            // Mark the mutateMeta variable as declared, meaning we can
-            // add it to a new mutationMeta for the next WITH clause 
-            this.mutateMetaVariableDeclared = true;
+            doAlias = true;
         } else if (!this.mutateMetaVariableDeclared && !mutationMetaOperation && !opts.declareMutateMeta) {
             metaListVariable = ``;
         } else if (!this.mutateMetaVariableDeclared && !mutationMetaOperation && opts.declareMutateMeta) {
             metaListVariable = `[]`;
-            this.mutateMetaVariableDeclared = true;
+            doAlias = true;
         }
 
-        if (mutationMetaOperation || opts.declareMutateMeta) {
+
+        if (opts.additionalMutateMeta) {
+            if (metaListVariable === '') {
+                metaListVariable = opts.additionalMutateMeta;
+            } else {
+                metaListVariable = `${ metaListVariable } + ${ opts.additionalMutateMeta }`;
+            }
+            doAlias = true;
+        }
+
+        if (doAlias) {
             metaListVariable = `${ metaListVariable } as ${ this.mutateMetaListVarName }`;
+            // Mark the mutateMeta variable as declared, meaning we can
+            // add it to a new mutationMeta for the next WITH clause 
+            this.mutateMetaVariableDeclared = true;
         }
 
         return metaListVariable;

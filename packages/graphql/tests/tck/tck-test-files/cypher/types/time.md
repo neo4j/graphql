@@ -105,9 +105,11 @@ mutation {
 CALL {
     CREATE (this0:Movie)
     SET this0.time = $this0_time
-    RETURN this0
+    RETURN this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
 }
-RETURN this0 { .time } AS this0
+
+WITH this0, this0_mutateMeta as mutateMeta
+RETURN mutateMeta, this0 { .time } AS this0
 ```
 
 ### Expected Cypher Params
@@ -146,7 +148,7 @@ mutation {
 ```cypher
 MATCH (this:Movie)
 SET this.time = $this_update_time
-RETURN this { .id, .time } AS this
+RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta, this { .id, .time } AS this
 ```
 
 ### Expected Cypher Params
@@ -159,6 +161,15 @@ RETURN this { .id, .time } AS this
         "second": 40,
         "nanosecond": 845512000,
         "timeZoneOffsetSeconds": 23400
+    },
+    "this_update": {
+        "time": {
+            "hour": 9,
+            "minute": 24,
+            "second": 40,
+            "nanosecond": 845512000,
+            "timeZoneOffsetSeconds": 23400
+        }
     }
 }
 ```

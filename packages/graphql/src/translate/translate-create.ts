@@ -58,6 +58,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
             create.push(`${createAndParams[0]}`);
             create.push(withProjectorChild.nextReturn());
             create.push(`}`);
+            withProjector.addVariable(varName);
             create.push(withProjector.mergeWithChild(withProjectorChild));
 
             res.createStrs.push(create.join("\n"));

@@ -73,9 +73,10 @@ mutation {
 CALL {
     CREATE (this0:Movie)
     SET this0.datetime = $this0_datetime
-    RETURN this0
+    RETURN this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
 }
-RETURN this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), "iso_zoned_date_time", "iso_offset_date_time") } AS this0
+WITH this0, this0_mutateMeta as mutateMeta
+RETURN mutateMeta, this0 { datetime: apoc.date.convertFormat(toString(this0.datetime), "iso_zoned_date_time", "iso_offset_date_time") } AS this0
 ```
 
 ### Expected Cypher Params
@@ -118,7 +119,7 @@ mutation {
 ```cypher
 MATCH (this:Movie)
 SET this.datetime = $this_update_datetime
-RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time") } AS this
+RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta, this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), "iso_zoned_date_time", "iso_offset_date_time") } AS this
 ```
 
 ### Expected Cypher Params
@@ -135,6 +136,19 @@ RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), "i
         "timeZoneId": null,
         "timeZoneOffsetSeconds": 0,
         "year": 1970
+    },
+    "this_update": {
+        "datetime": {
+            "day": 1,
+            "hour": 0,
+            "minute": 0,
+            "month": 1,
+            "nanosecond": 0,
+            "second": 0,
+            "timeZoneId": null,
+            "timeZoneOffsetSeconds": 0,
+            "year": 1970
+        }
     }
 }
 ```

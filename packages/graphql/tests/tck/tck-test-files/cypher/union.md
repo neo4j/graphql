@@ -120,7 +120,7 @@ CALL {
 
     RETURN this0, this0_mutateMeta
 }
-WITH this0_mutateMeta as mutateMeta
+WITH this0, this0_mutateMeta as mutateMeta
 RETURN mutateMeta, this0 { .title } AS this0
 ```
 
@@ -205,7 +205,7 @@ CALL {
     WITH this0, this0_mutateMeta + this0_search_Genre_connect0_mutateMeta as this0_mutateMeta
     RETURN this0, this0_mutateMeta
 }
-WITH this0_mutateMeta as mutateMeta
+WITH this0, this0_mutateMeta as mutateMeta
 RETURN mutateMeta, this0 { .title } AS this0
 ```
 

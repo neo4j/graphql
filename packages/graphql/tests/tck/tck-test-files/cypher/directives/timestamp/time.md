@@ -36,9 +36,10 @@ CALL {
     CREATE (this0:Movie)
     SET this0.createdAt = time()
     SET this0.id = $this0_id
-    RETURN this0
+    RETURN this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
 }
-RETURN this0 { .id } AS this0
+WITH this0, this0_mutateMeta as mutateMeta
+RETURN mutateMeta, this0 { .id } AS this0
 ```
 
 ### Expected Cypher Params
@@ -72,7 +73,7 @@ MATCH (this:Movie)
 SET this.updatedAt = time()
 SET this.id = $this_update_id
 SET this.name = $this_update_name
-RETURN this { .id } AS this
+RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta, this { .id } AS this
 ```
 
 ### Expected Cypher Params
@@ -80,7 +81,11 @@ RETURN this { .id } AS this
 ```json
 {
     "this_update_id": "123",
-    "this_update_name": "dan"
+    "this_update_name": "dan",
+    "this_update": {
+        "id": "123",
+        "name": "dan"
+    }
 }
 ```
 

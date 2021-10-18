@@ -109,9 +109,10 @@ mutation {
 CALL {
     CREATE (this0:Movie)
     SET this0.localDT = $this0_localDT
-    RETURN this0
+    RETURN this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
 }
-RETURN this0 { .localDT } AS this0
+WITH this0, this0_mutateMeta as mutateMeta
+RETURN mutateMeta, this0 { .localDT } AS this0
 ```
 
 ### Expected Cypher Params
@@ -152,7 +153,7 @@ mutation {
 ```cypher
 MATCH (this:Movie)
 SET this.localDT = $this_update_localDT
-RETURN this { .id, .localDT } AS this
+RETURN [ metaVal IN [{type: 'Updated', name: 'Movie', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta, this { .id, .localDT } AS this
 ```
 
 ### Expected Cypher Params
@@ -167,6 +168,17 @@ RETURN this { .id, .localDT } AS this
         "minute": 24,
         "second": 40,
         "nanosecond": 845512000
+    },
+    "this_update": {
+        "localDT": {
+            "year": 1881,
+            "month": 7,
+            "day": 13,
+            "hour": 9,
+            "minute": 24,
+            "second": 40,
+            "nanosecond": 845512000
+        }
     }
 }
 ```
