@@ -1165,7 +1165,7 @@ function makeAugmentedSchema(
                 },
             });
 
-            const baseTypeName = `${node.name}${n.name}${rel.fieldName}`; // TODO: upperFirst(rel.fieldName)
+            const baseTypeName = `${node.name}${n.name}${upperFirst(rel.fieldName)}`;
             const fieldAggregationComposer = new FieldAggregationComposer(composer, aggregationSelectionTypes);
             const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
                 baseTypeName,

@@ -80,7 +80,7 @@ describe("Enums", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate: ActorMoviemoviesAggregationSelection
+              moviesAggregate: ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -111,12 +111,12 @@ describe("Enums", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
-            type ActorMoviemoviesAggregationSelection {
+            type ActorMovieMoviesAggregationSelection {
               count: Int!
-              node: ActorMoviemoviesNodeAggregateSelection
+              node: ActorMovieMoviesNodeAggregateSelection
             }
 
-            type ActorMoviemoviesNodeAggregateSelection {
+            type ActorMovieMoviesNodeAggregateSelection {
               title: StringAggregateSelection!
             }
 
@@ -287,17 +287,17 @@ describe("Enums", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate: MovieActoractorsAggregationSelection
+              actorsAggregate: MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
 
-            type MovieActoractorsAggregationSelection {
+            type MovieActorActorsAggregationSelection {
               count: Int!
-              node: MovieActoractorsNodeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
             }
 
-            type MovieActoractorsNodeAggregateSelection {
+            type MovieActorActorsNodeAggregateSelection {
               name: StringAggregateSelection!
             }
 
