@@ -75,11 +75,11 @@ describe("Relationship", () => {
 
             type ActorSubscriptionResponse {
               actor: Actor
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -278,12 +278,12 @@ describe("Relationship", () => {
             }
 
             type MovieSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               movie: Movie
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -546,11 +546,11 @@ describe("Relationship", () => {
 
             type ActorSubscriptionResponse {
               actor: Actor
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -762,12 +762,12 @@ describe("Relationship", () => {
             }
 
             type MovieSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               movie: Movie
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!

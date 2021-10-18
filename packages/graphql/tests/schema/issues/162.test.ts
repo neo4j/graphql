@@ -309,11 +309,11 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1SubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               tigerjawlevel2part1: TigerJawLevel2Part1
               toID: String
               toType: String
@@ -469,11 +469,11 @@ describe("162", () => {
             }
 
             type TigerJawLevel2SubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               tigerjawlevel2: TigerJawLevel2
               toID: String
               toType: String
@@ -527,11 +527,11 @@ describe("162", () => {
             }
 
             type TigerSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               tiger: Tiger
               toID: String
               toType: String

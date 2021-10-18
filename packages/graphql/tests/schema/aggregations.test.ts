@@ -185,12 +185,12 @@ describe("Aggregations", () => {
             }
 
             type MovieSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               movie: Movie
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -1110,12 +1110,12 @@ describe("Aggregations", () => {
             }
 
             type PostSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
               post: Post
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -1298,11 +1298,11 @@ describe("Aggregations", () => {
             }
 
             type UserSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!

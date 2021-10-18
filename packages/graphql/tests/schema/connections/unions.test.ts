@@ -269,11 +269,11 @@ describe("Unions", () => {
 
             type AuthorSubscriptionResponse {
               author: Author
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -494,11 +494,11 @@ describe("Unions", () => {
 
             type BookSubscriptionResponse {
               book: Book
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -754,12 +754,12 @@ describe("Unions", () => {
             }
 
             type JournalSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               journal: Journal
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!

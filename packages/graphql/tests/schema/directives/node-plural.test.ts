@@ -109,11 +109,11 @@ describe("Node Directive", () => {
                 }
 
                 type TechSubscriptionResponse {
-                  fieldsUpdated: [String!]
                   id: Int!
                   name: String!
+                  propsUpdated: [String!]
                   relationshipID: String
-                  relationshipType: String
+                  relationshipName: String
                   tech: Tech
                   toID: String
                   toType: String
@@ -270,11 +270,11 @@ describe("Node Directive", () => {
                 }
 
                 type TechSubscriptionResponse {
-                  fieldsUpdated: [String!]
                   id: Int!
                   name: String!
+                  propsUpdated: [String!]
                   relationshipID: String
-                  relationshipType: String
+                  relationshipName: String
                   tech: Tech
                   toID: String
                   toType: String
@@ -431,11 +431,11 @@ describe("Node Directive", () => {
                 }
 
                 type TechSubscriptionResponse {
-                  fieldsUpdated: [String!]
                   id: Int!
                   name: String!
+                  propsUpdated: [String!]
                   relationshipID: String
-                  relationshipType: String
+                  relationshipName: String
                   tech: Tech
                   toID: String
                   toType: String
@@ -569,11 +569,11 @@ describe("Node Directive", () => {
                 }
 
                 type TechSubscriptionResponse {
-                  fieldsUpdated: [String!]
                   id: Int!
                   name: String!
+                  propsUpdated: [String!]
                   relationshipID: String
-                  relationshipType: String
+                  relationshipName: String
                   tech: Tech
                   toID: String
                   toType: String
@@ -621,11 +621,11 @@ describe("Node Directive", () => {
                 }
 
                 type TechsSubscriptionResponse {
-                  fieldsUpdated: [String!]
                   id: Int!
                   name: String!
+                  propsUpdated: [String!]
                   relationshipID: String
-                  relationshipType: String
+                  relationshipName: String
                   techs: Techs
                   toID: String
                   toType: String
@@ -748,11 +748,11 @@ describe("Node Directive", () => {
                 }
 
                 type TechSubscriptionResponse {
-                  fieldsUpdated: [String!]
                   id: Int!
                   name: String!
+                  propsUpdated: [String!]
                   relationshipID: String
-                  relationshipType: String
+                  relationshipName: String
                   tech: Tech
                   toID: String
                   toType: String
@@ -813,11 +813,11 @@ describe("Node Directive", () => {
                 }
 
                 type UserSubscriptionResponse {
-                  fieldsUpdated: [String!]
                   id: Int!
                   name: String!
+                  propsUpdated: [String!]
                   relationshipID: String
-                  relationshipType: String
+                  relationshipName: String
                   toID: String
                   toType: String
                   type: String!
@@ -927,11 +927,11 @@ describe("Node Directive", () => {
                 }
 
                 type TechSubscriptionResponse {
-                  fieldsUpdated: [String!]
                   id: Int!
                   name: String!
+                  propsUpdated: [String!]
                   relationshipID: String
-                  relationshipType: String
+                  relationshipName: String
                   tech: Tech
                   toID: String
                   toType: String
@@ -992,11 +992,11 @@ describe("Node Directive", () => {
                 }
 
                 type UserSubscriptionResponse {
-                  fieldsUpdated: [String!]
                   id: Int!
                   name: String!
+                  propsUpdated: [String!]
                   relationshipID: String
-                  relationshipType: String
+                  relationshipName: String
                   toID: String
                   toType: String
                   type: String!
@@ -1119,11 +1119,11 @@ describe("Node Directive", () => {
                 }
 
                 type UserSubscriptionResponse {
-                  fieldsUpdated: [String!]
                   id: Int!
                   name: String!
+                  propsUpdated: [String!]
                   relationshipID: String
-                  relationshipType: String
+                  relationshipName: String
                   toID: String
                   toType: String
                   type: String!
@@ -1171,11 +1171,11 @@ describe("Node Directive", () => {
                 }
 
                 type UsersSubscriptionResponse {
-                  fieldsUpdated: [String!]
                   id: Int!
                   name: String!
+                  propsUpdated: [String!]
                   relationshipID: String
-                  relationshipType: String
+                  relationshipName: String
                   toID: String
                   toType: String
                   type: String!

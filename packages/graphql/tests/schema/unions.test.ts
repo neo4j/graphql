@@ -99,12 +99,12 @@ describe("Unions", () => {
             }
 
             type GenreSubscriptionResponse {
-              fieldsUpdated: [String!]
               genre: Genre
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -329,12 +329,12 @@ describe("Unions", () => {
             }
 
             type MovieSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               movie: Movie
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!

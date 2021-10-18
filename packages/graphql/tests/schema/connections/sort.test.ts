@@ -194,12 +194,12 @@ describe("Sort", () => {
             }
 
             type Node1SubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
               node1: Node1
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -374,12 +374,12 @@ describe("Sort", () => {
             }
 
             type Node2SubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
               node2: Node2
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
