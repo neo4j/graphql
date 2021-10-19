@@ -31,14 +31,15 @@ function getWhereFields({
     typeName,
     fields,
     enableRegex,
+    isInterface,
 }: {
     typeName: string;
     fields: Fields;
     enableRegex?: boolean;
-}): { OR: string; AND: string; [k: string]: string } {
+    isInterface?: boolean;
+}): { [k: string]: string } {
     return {
-        OR: `[${typeName}Where!]`,
-        AND: `[${typeName}Where!]`,
+        ...(isInterface ? {} : { OR: `[${typeName}Where!]`, AND: `[${typeName}Where!]` }),
         // Custom scalar fields only support basic equality
         ...fields.scalarFields.reduce((res, f) => {
             res[f.fieldName] = f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name;

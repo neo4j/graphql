@@ -552,6 +552,7 @@ function makeAugmentedSchema(
                 primitiveFields: interfaceFields.primitiveFields,
             },
             enableRegex,
+            isInterface: true,
         });
 
         const [

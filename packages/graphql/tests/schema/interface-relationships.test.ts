@@ -345,8 +345,6 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionWhere {
-              AND: [ProductionWhere!]
-              OR: [ProductionWhere!]
               _on: ProductionImplementationsWhere
               title: String
               title_CONTAINS: String
@@ -1282,8 +1280,6 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionWhere {
-              AND: [ProductionWhere!]
-              OR: [ProductionWhere!]
               _on: ProductionImplementationsWhere
               actors: ActorWhere
               actorsAggregate: ProductionActorsAggregateInput
@@ -1842,8 +1838,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1Where {
-              AND: [Interface1Where!]
-              OR: [Interface1Where!]
               _on: Interface1ImplementationsWhere
               field1: String
               field1_CONTAINS: String
@@ -1888,8 +1882,6 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2Where {
-              AND: [Interface2Where!]
-              OR: [Interface2Where!]
               _on: Interface2ImplementationsWhere
               field2: String
               field2_CONTAINS: String
@@ -2858,8 +2850,6 @@ describe("Interface Relationships", () => {
             }
 
             input ContentWhere {
-              AND: [ContentWhere!]
-              OR: [ContentWhere!]
               _on: ContentImplementationsWhere
               content: String
               content_CONTAINS: String
