@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-// eslint-disable-next-line import/no-unresolved
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { printSchema } from "graphql";
 

@@ -315,7 +315,7 @@ class Model {
     }): Promise<T> {
         const queryName = `${pluralize(camelCase(this.name))}Aggregate`;
 
-        let selections: string[] = [];
+        const selections: string[] = [];
 
         Object.entries(aggregate).forEach((entry) => {
             // Must be count
@@ -328,7 +328,7 @@ class Model {
             const thisSelections: string[] = [];
             Object.entries(entry[1] as any).forEach((e) => {
                 if (Boolean(e[1]) === false) {
-                    return false;
+                    return;
                 }
 
                 thisSelections.push(e[0]);

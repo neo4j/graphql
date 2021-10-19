@@ -24,7 +24,7 @@ import { Context } from "../../types";
 import { translateAggregate } from "../../translate";
 
 export default function aggregateResolver({ node }: { node: Node }) {
-    async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
+    async function resolve(_root: any, _args: any, _context: unknown, _info: GraphQLResolveInfo) {
         const context = _context as Context;
 
         const [cypher, params] = translateAggregate({

@@ -23,7 +23,6 @@ import { Neo4jGraphQL } from "../../../classes";
 import { Context } from "../../../types";
 import { Builder } from "./builder";
 
-// eslint-disable-next-line import/prefer-default-export
 export class ContextBuilder extends Builder<Context, Context> {
     constructor(newOptions: Partial<Context> = {}) {
         super({
