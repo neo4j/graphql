@@ -1176,7 +1176,9 @@ function makeAugmentedSchema(
             composeNode.addFields({
                 [`${rel.fieldName}Aggregate`]: {
                     type: aggregationTypeObject,
-                    args: {},
+                    args: {
+                        where: `${rel.typeMeta.name}Where`,
+                    },
                 },
             });
 
