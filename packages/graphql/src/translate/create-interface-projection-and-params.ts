@@ -94,15 +94,12 @@ function createInterfaceProjectionAndParams({
                 context,
                 node: refNode,
                 nodeVariable: param,
-                // chainStr: `${param}_${refNode.name}`,
-                // authValidateStrs: recurse[2]?.authValidateStrs,
                 parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                     resolveTree.alias
                 }.args.where`,
             });
             if (rootNodeWhereAndParams[0]) {
                 whereStrs.push(rootNodeWhereAndParams[0]);
-                // params = { ...params, ...{ args: { where: rootNodeWhereAndParams[1] } } };
                 whereArgs = { ...whereArgs, ...rootNodeWhereAndParams[1] };
             }
 
@@ -125,18 +122,12 @@ function createInterfaceProjectionAndParams({
                     context,
                     node: refNode,
                     nodeVariable: param,
-                    // chainStr: `${param}_${refNode.name}`,
-                    // authValidateStrs: recurse[2]?.authValidateStrs,
                     parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
                         resolveTree.alias
                     }.args.where._on.${refNode.name}`,
                 });
                 if (onTypeNodeWhereAndParams[0]) {
                     whereStrs.push(onTypeNodeWhereAndParams[0]);
-                    // params = {
-                    //     ...params,
-                    //     ...{ args: { where: { _on: { [refNode.name]: onTypeNodeWhereAndParams[1] } } } },
-                    // };
                     if (whereArgs._on) {
                         // eslint-disable-next-line prefer-destructuring
                         whereArgs._on[refNode.name] = onTypeNodeWhereAndParams[1];
@@ -217,18 +208,6 @@ function createInterfaceProjectionAndParams({
         params.args = { where: whereArgs };
     }
 
-    // if (optionsInput) {
-    //     const offsetLimit = createOffsetLimitStr({
-    //         offset: optionsInput.offset,
-    //         limit: optionsInput.limit,
-    //     });
-    //     if (offsetLimit) {
-    //         unionStrs.push(offsetLimit);
-    //     }
-    // }
-    // unionStrs.push(`${!isArray ? ")" : ""}`);
-    // res.projection.push(interfaceProjection.join("\n"));
-    // return res;
     return {
         cypher: interfaceProjection.join("\n"),
         params: {

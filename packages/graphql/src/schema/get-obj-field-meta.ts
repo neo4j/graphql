@@ -19,7 +19,6 @@
 
 import {
     BooleanValueNode,
-    DirectiveNode,
     EnumTypeDefinitionNode,
     FloatValueNode,
     InterfaceTypeDefinitionNode,
@@ -213,8 +212,6 @@ function getObjFieldMeta({
                         implementations,
                     };
                 }
-
-                // if (obj.kind !== "InterfaceTypeDefinition") {
 
                 // TODO: This will be brittle if more than one interface
 
