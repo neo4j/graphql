@@ -85,6 +85,7 @@ describe("Interfaces", () => {
               customQuery: [Movie]
               id: ID
               movies(options: MovieOptions, where: MovieWhere): [Movie]
+              moviesAggregate: MovieMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [MovieMoviesConnectionSort!], where: MovieMoviesConnectionWhere): MovieMoviesConnection!
               nodes: [MovieNode]
             }
@@ -113,6 +114,15 @@ describe("Interfaces", () => {
 
             input MovieDisconnectInput {
               movies: [MovieMoviesDisconnectFieldInput!]
+            }
+
+            type MovieMovieMoviesAggregationSelection {
+              count: Int!
+              node: MovieMovieMoviesNodeAggregateSelection
+            }
+
+            type MovieMovieMoviesNodeAggregateSelection {
+              id: IDAggregateSelection!
             }
 
             input MovieMoviesAggregateInput {

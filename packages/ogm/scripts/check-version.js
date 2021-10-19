@@ -1,4 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const search = require("libnpmsearch");
+// eslint-disable-next-line import/no-extraneous-dependencies
 const semver = require("semver");
 const packageJSON = require("../package.json");
 

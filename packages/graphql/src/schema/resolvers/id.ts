@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import defaultFieldResolver from "./defaultField";
 import { Integer, isInt } from "neo4j-driver";
+import defaultFieldResolver from "./defaultField";
 
 function id(source, args, context, info) {
     const value = defaultFieldResolver(source, args, context, info);

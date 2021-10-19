@@ -19,15 +19,14 @@
 
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { IncomingMessage } from "http";
-import { Socket } from "net";
-import jsonwebtoken from "jsonwebtoken";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { createJwtRequest } from "../../../src/utils/test/utils";
 
 // Reference: https://github.com/neo4j/graphql/pull/330
 // Reference: https://github.com/neo4j/graphql/pull/303#discussion_r671148932
 describe("unauthenticated-requests", () => {
+    const secret = "secret";
     let driver: Driver;
 
     beforeAll(async () => {
@@ -55,15 +54,9 @@ describe("unauthenticated-requests", () => {
             }
         `;
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign({}, secret);
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
-        const socket = new Socket({ readable: true });
-        const req = new IncomingMessage(socket);
-        req.headers.authorization = `Bearer ${token}`;
+        const req = createJwtRequest(secret);
 
         const gqlResult = await graphql({
             schema: neoSchema.schema,
@@ -91,15 +84,9 @@ describe("unauthenticated-requests", () => {
             }
         `;
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign({}, secret);
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
-        const socket = new Socket({ readable: true });
-        const req = new IncomingMessage(socket);
-        req.headers.authorization = `Bearer ${token}`;
+        const req = createJwtRequest(secret);
 
         const gqlResult = await graphql({
             schema: neoSchema.schema,
@@ -129,15 +116,9 @@ describe("unauthenticated-requests", () => {
             }
         `;
 
-        const secret = "secret";
-
-        const token = jsonwebtoken.sign({}, secret);
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
-        const socket = new Socket({ readable: true });
-        const req = new IncomingMessage(socket);
-        req.headers.authorization = `Bearer ${token}`;
+        const req = createJwtRequest(secret);
 
         const gqlResult = await graphql({
             schema: neoSchema.schema,

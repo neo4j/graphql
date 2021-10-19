@@ -18,7 +18,7 @@
  */
 
 import { DirectiveNode, valueFromASTUntyped } from "graphql";
-import NodeDirective from "../classes/NodeDirective";
+import { NodeDirective } from "../classes/NodeDirective";
 
 function parseNodeDirective(nodeDirective: DirectiveNode) {
     if (!nodeDirective || nodeDirective.name.value !== "node") {

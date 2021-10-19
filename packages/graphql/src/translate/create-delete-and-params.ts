@@ -86,7 +86,7 @@ function createDeleteAndParams({
                         res.strs.push(`WITH ${withVars.join(", ")}`);
                     }
 
-                    const labels = refNode.labelString;
+                    const labels = refNode.getLabelString(context);
                     res.strs.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`);
 
                     const whereStrs: string[] = [];
@@ -153,10 +153,10 @@ function createDeleteAndParams({
                         res.params = { ...res.params, ...deleteAndParams[1] };
                     }
 
-                    res.strs.push(`
-                    FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END |
-                        DETACH DELETE ${_varName}
-                    )`);
+                    res.strs.push(
+                        `WITH ${[...withVars, `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`].join(", ")}`
+                    );
+                    res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
                 });
             });
 

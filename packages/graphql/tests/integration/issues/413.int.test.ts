@@ -21,11 +21,9 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import { IncomingMessage } from "http";
-import { Socket } from "net";
-import jsonwebtoken from "jsonwebtoken";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { createJwtRequest } from "../../../src/utils/test/utils";
 
 describe("413", () => {
     let driver: Driver;
@@ -66,13 +64,6 @@ describe("413", () => {
 
         const secret = "secret";
 
-        const token = jsonwebtoken.sign(
-            {
-                tenant_id: tenantID,
-            },
-            secret
-        );
-
         const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
 
         const query = `
@@ -91,9 +82,9 @@ describe("413", () => {
                 { tenantID }
             );
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
+            const req = createJwtRequest(secret, {
+                tenant_id: tenantID,
+            });
 
             const result = await graphql({
                 schema: neoSchema.schema,

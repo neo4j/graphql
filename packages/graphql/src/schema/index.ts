@@ -17,4 +17,4 @@
  * limitations under the License.
  */
 
-export { default as makeAugmentedSchema } from "./make-augmented-schema"; // eslint-disable-line import/prefer-default-export
+export { default as makeAugmentedSchema } from "./make-augmented-schema";

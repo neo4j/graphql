@@ -18,6 +18,8 @@
  */
 
 import { Neo4jGraphQLError } from "./Error";
+import { Context } from "../types";
+import ContextParser from "../utils/context-parser";
 
 export interface NodeDirectiveConstructor {
     label?: string;
@@ -25,7 +27,7 @@ export interface NodeDirectiveConstructor {
     plural?: string;
 }
 
-class NodeDirective {
+export class NodeDirective {
     public readonly label: string | undefined;
     public readonly additionalLabels: string[];
     public readonly plural: string | undefined;
@@ -36,18 +38,37 @@ class NodeDirective {
         this.plural = input.plural;
     }
 
-    public getLabelsString(typeName: string): string {
+    public getLabelsString(typeName: string, context: Context): string {
         if (!typeName) {
             throw new Neo4jGraphQLError("Could not generate label string in @node directive due to empty typeName");
         }
-        const labels = this.getLabels(typeName);
+        const labels = this.getLabels(typeName, context);
         return `:${labels.join(":")}`;
     }
 
-    public getLabels(typeName: string): string[] {
+    public getLabels(typeName: string, context: Context): string[] {
         const mainLabel = this.label || typeName;
-        return [mainLabel, ...this.additionalLabels];
+        const labels = [mainLabel, ...this.additionalLabels];
+        return this.mapLabelsWithContext(labels, context);
+    }
+
+    private mapLabelsWithContext(labels: string[], context: Context): string[] {
+        return labels.map((label: string) => {
+            const jwtPath = ContextParser.parseTag(label, "jwt");
+            let ctxPath = ContextParser.parseTag(label, "context");
+            if (jwtPath) ctxPath = `jwt.${jwtPath}`;
+
+            if (ctxPath) {
+                const mappedLabel = ContextParser.getProperty(ctxPath, context);
+                if (!mappedLabel) throw new Error(`Type value required.`);
+                return this.escapeLabel(mappedLabel);
+            }
+            return label;
+        });
+    }
+
+    private escapeLabel(label: string): string {
+        const escapedLabel = label.replace(/`/g, "``");
+        return `\`${escapedLabel}\``;
     }
 }
-
-export default NodeDirective;

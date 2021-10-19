@@ -60,7 +60,7 @@ function createDisconnectAndParams({
         const relVarName = `${_varName}_rel`;
         const relTypeStr = `[${relVarName}:${relationField.type}]`;
 
-        const labels = refNode.labelString;
+        const labels = refNode.getLabelString(context);
         const label = labelOverride ? `:${labelOverride}` : labels;
 
         if (parentNode.auth) {

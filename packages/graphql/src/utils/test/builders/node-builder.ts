@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { NodeConstructor, Node } from "../../classes";
+import { NodeConstructor, Node } from "../../../classes";
+import { NodeDirectiveConstructor, NodeDirective } from "../../../classes/NodeDirective";
+import { Builder } from "./builder";
 
-export default class NodeBuilder {
-    private options: NodeConstructor;
-
+export class NodeBuilder extends Builder<Node, NodeConstructor> {
     constructor(newOptions: Partial<NodeConstructor> = {}) {
-        this.options = {
+        super({
             name: "",
             relationFields: [],
             connectionFields: [],
@@ -40,12 +40,17 @@ export default class NodeBuilder {
             pointFields: [],
             ignoredFields: [],
             ...newOptions,
-        };
+        });
     }
 
     public with(newOptions: Partial<NodeConstructor>): NodeBuilder {
         this.options = { ...this.options, ...newOptions };
         return this;
+    }
+
+    public withNodeDirective(directiveOptions: NodeDirectiveConstructor): NodeBuilder {
+        const nodeDirective = new NodeDirective(directiveOptions);
+        return this.with({ nodeDirective });
     }
 
     public instance(): Node {

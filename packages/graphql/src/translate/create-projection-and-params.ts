@@ -24,12 +24,13 @@ import createWhereAndParams from "./create-where-and-params";
 import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createDatetimeElement from "./projection/elements/create-datetime-element";
+import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
 // eslint-disable-next-line import/no-cycle
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
+import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 
 interface Res {
     projection: string[];
@@ -319,7 +320,7 @@ function createProjectionAndParams({
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
             const outStr = relationField.direction === "OUT" ? "->" : "-";
-            const labels = referenceNode?.labelString;
+            const labels = referenceNode?.getLabelString(context);
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
@@ -336,7 +337,9 @@ function createProjectionAndParams({
                     })${inStr}${relTypeStr}${outStr}(${param})`,
                     `WHERE ${referenceNodes
                         .map((x) => {
-                            const labelsStatements = x.labels.map((label) => `"${label}" IN labels(${param})`);
+                            const labelsStatements = x
+                                .getLabels(context)
+                                .map((label) => `"${label}" IN labels(${param})`);
                             return `(${labelsStatements.join(" AND ")})`;
                         })
                         .join(" OR ")}`,
@@ -344,12 +347,24 @@ function createProjectionAndParams({
                 ];
 
                 const headStrs: string[] = referenceNodes.map((refNode) => {
-                    const labelsStatements = refNode.labels.map((label) => `"${label}" IN labels(${param})`);
+                    const labelsStatements = refNode
+                        .getLabels(context)
+                        .map((label) => `"${label}" IN labels(${param})`);
                     const innerHeadStr: string[] = [
                         `[ ${param} IN [${param}] WHERE (${labelsStatements.join(" AND ")})`,
                     ];
 
-                    if (field.fieldsByTypeName[refNode.name]) {
+                    // Extract interface names implemented by reference node
+                    const refNodeInterfaceNames = refNode.interfaces.map(
+                        (implementedInterface) => implementedInterface.name.value
+                    );
+
+                    // Determine if there are any fields to project
+                    const hasFields = Object.keys(field.fieldsByTypeName).some((fieldByTypeName) =>
+                        [refNode.name, ...refNodeInterfaceNames].includes(fieldByTypeName)
+                    );
+
+                    if (hasFields) {
                         const recurse = createProjectionAndParams({
                             fieldsByTypeName: field.fieldsByTypeName,
                             node: refNode,
@@ -462,6 +477,19 @@ function createProjectionAndParams({
 
             res.projection.push(nestedQuery);
 
+            return res;
+        }
+
+        const aggregationFieldProjection = createFieldAggregation({
+            context,
+            nodeLabel: chainStr || varName,
+            node,
+            field,
+        });
+
+        if (aggregationFieldProjection) {
+            res.projection.push(`${key}: ${aggregationFieldProjection.query}`);
+            res.params = { ...res.params, ...aggregationFieldProjection.params };
             return res;
         }
 

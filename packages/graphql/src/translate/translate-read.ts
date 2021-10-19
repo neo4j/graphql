@@ -31,7 +31,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const optionsInput = resolveTree.args.options as GraphQLOptionsArg;
 
-    const labels = node.labelString;
+    const labels = node.getLabelString(context);
 
     const varName = "this";
     const matchStr = `MATCH (${varName}${labels})`;
@@ -151,10 +151,10 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         matchStr,
         whereStr,
         authStr,
-        ...(sortStr ? [`WITH ${varName}`, sortStr] : []),
         ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
         ...connectionStrs,
         `RETURN ${varName} ${projStr} as ${varName}`,
+        ...(sortStr ? [sortStr] : []),
         offsetStr,
         limitStr,
     ];

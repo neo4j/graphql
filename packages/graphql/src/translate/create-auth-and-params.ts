@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
-import dotProp from "dot-prop";
 import { Neo4jGraphQLAuthenticationError, Node } from "../classes";
 import { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context } from "../types";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import mapToDbProperty from "../utils/map-to-db-property";
 import joinPredicates, { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-predicates";
+import ContextParser from "../utils/context-parser";
+import { isString } from "../utils/utils";
 
 interface Res {
     strs: string[];
@@ -68,7 +69,6 @@ function createAuthPredicate({
         return ["", {}];
     }
 
-    const { jwt } = context;
     const { allowUnauthenticated } = rule;
 
     const result = Object.entries(rule[kind] as any).reduce(
@@ -98,14 +98,14 @@ function createAuthPredicate({
 
             const authableField = node.authableFields.find((field) => field.fieldName === key);
             if (authableField) {
-                const [, jwtPath] = (value as string)?.split?.("$jwt.") || [];
-                const [, ctxPath] = (value as string)?.split?.("$context.") || [];
-                let paramValue: string | null = value as string;
+                const jwtPath = isString(value) ? ContextParser.parseTag(value, "jwt") : undefined;
+                let ctxPath = isString(value) ? ContextParser.parseTag(value, "context") : undefined;
+                let paramValue = value as string | undefined;
 
-                if (jwtPath) {
-                    paramValue = dotProp.get({ value: jwt }, `value.${jwtPath}`) as string;
-                } else if (ctxPath) {
-                    paramValue = dotProp.get({ value: context }, `value.${ctxPath}`) as string;
+                if (jwtPath) ctxPath = `jwt.${jwtPath}`;
+
+                if (ctxPath) {
+                    paramValue = ContextParser.getProperty(ctxPath, context);
                 }
 
                 if (paramValue === undefined && allowUnauthenticated !== true) {
@@ -131,7 +131,7 @@ function createAuthPredicate({
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
                 const relationVarName = relationField.fieldName;
-                const labels = refNode.labelString;
+                const labels = refNode.getLabelString(context);
                 let resultStr = [
                     `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
                     `AND ${
@@ -244,11 +244,12 @@ function createAuthAndParams({
             thisPredicates.push(createRolesStr({ roles: authRule.roles, escapeQuotes }));
         }
 
+        const quotes = escapeQuotes ? '\\"' : '"';
         if (!skipIsAuthenticated && (authRule.isAuthenticated === true || authRule.isAuthenticated === false)) {
             thisPredicates.push(
                 `apoc.util.validatePredicate(NOT($auth.isAuthenticated = ${Boolean(
                     authRule.isAuthenticated
-                )}), "${AUTH_UNAUTHENTICATED_ERROR}", [0])`
+                )}), ${quotes}${AUTH_UNAUTHENTICATED_ERROR}${quotes}, [0])`
             );
         }
 
