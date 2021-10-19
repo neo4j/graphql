@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-// eslint-disable-next-line import/no-unresolved
 const neo4j = require("neo4j-driver");
 const server = require("./server");
 

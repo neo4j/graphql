@@ -17,21 +17,16 @@
  * limitations under the License.
  */
 
-import { NodeBuilder } from "../../utils/test/builders/node-builder";
-import findResolver from "./read";
+/** Base class for test builders */
 
-describe("Read resolver", () => {
-    test("should return the correct; type, args and resolve", () => {
-        const node = new NodeBuilder({
-            name: "Movie",
-        }).instance();
+export abstract class Builder<T, C> {
+    protected options: C;
 
-        const result = findResolver({ node });
-        expect(result.type).toEqual(`[Movie!]!`);
-        expect(result.resolve).toBeInstanceOf(Function);
-        expect(result.args).toMatchObject({
-            where: `MovieWhere`,
-            options: `MovieOptions`,
-        });
-    });
-});
+    constructor(options: C) {
+        this.options = options;
+    }
+
+    public abstract with(options: Partial<C>): Builder<T, C>;
+
+    public abstract instance(): T;
+}

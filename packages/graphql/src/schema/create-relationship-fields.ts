@@ -637,7 +637,7 @@ function createRelationshipFields({
         });
 
         if (composeNode instanceof ObjectTypeComposer) {
-            const baseTypeName = `${sourceName}${n.name}${rel.fieldName}`;
+            const baseTypeName = `${sourceName}${n.name}${upperFirst(rel.fieldName)}`;
             const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer, aggregationSelectionTypes);
 
             const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(

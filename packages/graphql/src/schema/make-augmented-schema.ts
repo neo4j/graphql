@@ -67,7 +67,7 @@ import { validateDocument } from "./validation";
 import * as constants from "../constants";
 import createRelationshipFields from "./create-relationship-fields";
 import createConnectionFields from "./create-connection-fields";
-import NodeDirective from "../classes/NodeDirective";
+import { NodeDirective } from "../classes/NodeDirective";
 import parseNodeDirective from "./parse-node-directive";
 
 function makeAugmentedSchema(

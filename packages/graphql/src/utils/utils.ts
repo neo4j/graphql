@@ -17,4 +17,7 @@
  * limitations under the License.
  */
 
-export { default as NodeBuilder } from "./node-builder";
+/** Checks if value is string */
+export function isString(value: any): value is string {
+    return typeof value === "string" || value instanceof String;
+}

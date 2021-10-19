@@ -614,17 +614,17 @@ describe("@exclude directive", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]
-              actorsAggregate: MovieActoractorsAggregationSelection
+              actorsAggregate: MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String
             }
 
-            type MovieActoractorsAggregationSelection {
+            type MovieActorActorsAggregationSelection {
               count: Int!
-              node: MovieActoractorsNodeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
             }
 
-            type MovieActoractorsNodeAggregateSelection {
+            type MovieActorActorsNodeAggregateSelection {
               name: StringAggregateSelection!
             }
 

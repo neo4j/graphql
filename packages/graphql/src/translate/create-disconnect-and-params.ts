@@ -66,8 +66,7 @@ function createDisconnectAndParams({
 
         const subquery: string[] = [];
         let params;
-
-        const labels = relatedNode.labelString;
+        const labels = relatedNode.getLabelString(context);
         const label = labelOverride ? `:${labelOverride}` : labels;
 
         subquery.push(`WITH ${withVars.join(", ")}`);

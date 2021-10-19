@@ -27,7 +27,7 @@ const logicalOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
 
 const aggregationOperators = ["SHORTEST", "LONGEST", "MIN", "MAX"];
 
-function createOperator(input): Operator {
+function createOperator(input: string): Operator {
     let operator: Operator = "=";
 
     switch (input) {
@@ -300,7 +300,7 @@ function createAggregateWhereAndParams({
     const nodeVariable = `${chainStr}_node`;
     const edgeVariable = `${chainStr}_edge`;
     const relTypeStr = `[${edgeVariable}:${field.type}]`;
-    const labels = node.labelString;
+    const labels = node.getLabelString(context);
     const matchStr = `MATCH (${varName})${inStr}${relTypeStr}${outStr}(${nodeVariable}${labels})`;
 
     cyphers.push(`apoc.cypher.runFirstColumn(" ${matchStr}`);

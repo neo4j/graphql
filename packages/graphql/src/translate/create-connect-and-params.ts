@@ -69,8 +69,7 @@ function createConnectAndParams({
         const relTypeStr = `[${relationField.properties ? relationshipName : ""}:${relationField.type}]`;
 
         const subquery: string[] = [];
-
-        const labels = relatedNode.labelString;
+        const labels = relatedNode.getLabelString(context);
         const label = labelOverride ? `:${labelOverride}` : labels;
 
         subquery.push(`\tWITH ${withVars.join(", ")}`);
@@ -85,18 +84,6 @@ function createConnectAndParams({
             ) {
                 return { subquery: "", params: {} };
             }
-
-            // const where = createWhereAndParams({
-            //     varName: nodeName,
-            //     whereInput: connect.where.node,
-            //     node: relatedNode,
-            //     context,
-            //     recursing: true,
-            // });
-            // if (where[0]) {
-            //     whereStrs.push(where[0]);
-            //     params = { ...params, ...where[1] };
-            // }
 
             const rootNodeWhereAndParams = createWhereAndParams({
                 whereInput: {
@@ -122,7 +109,6 @@ function createConnectAndParams({
             });
             if (rootNodeWhereAndParams[0]) {
                 whereStrs.push(rootNodeWhereAndParams[0]);
-                // params = { ...params, ...{ args: { where: rootNodeWhereAndParams[1] } } };
                 params = { ...params, ...rootNodeWhereAndParams[1] };
             }
 

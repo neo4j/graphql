@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-/* eslint-disable import/prefer-default-export */
-
 import { GraphQLScalarType, Kind } from "graphql";
 
 export const ScalarType = new GraphQLScalarType({
@@ -53,5 +51,3 @@ export const ScalarType = new GraphQLScalarType({
         }
     },
 });
-
-/* eslint-enable import/prefer-default-export */

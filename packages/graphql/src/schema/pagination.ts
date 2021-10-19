@@ -46,7 +46,7 @@ export function connectionFieldResolver({
     info: GraphQLResolveInfo;
 }) {
     const firstField = info.fieldNodes[0];
-    const selectionSet = firstField.selectionSet;
+    const { selectionSet } = firstField;
 
     let value = source[connectionField.fieldName];
     if (firstField.alias) {
@@ -54,7 +54,7 @@ export function connectionFieldResolver({
     }
 
     const totalCountKey = getAliasKey({ selectionSet, key: "totalCount" });
-    const totalCount = value.totalCount;
+    const { totalCount } = value;
 
     return {
         [totalCountKey]: isInt(totalCount) ? totalCount.toNumber() : totalCount,
@@ -88,7 +88,7 @@ export function createConnectionWithEdgeProperties({
     // increment the last cursor position by one for the sliceStart
     const sliceStart = lastEdgeCursor + 1;
 
-    const edges = source?.edges || [];
+    const edges: any[] = source?.edges || [];
 
     const selections = selectionSet?.selections || [];
 
@@ -96,7 +96,7 @@ export function createConnectionWithEdgeProperties({
     const cursorKey = getAliasKey({ selectionSet: edgesField?.selectionSet, key: "cursor" });
     const nodeKey = getAliasKey({ selectionSet: edgesField?.selectionSet, key: "node" });
 
-    const sliceEnd = sliceStart + ((first as number) || edges.length);
+    const sliceEnd = sliceStart + (first || (edges.length as number));
 
     const mappedEdges = edges.map((value, index) => {
         return {

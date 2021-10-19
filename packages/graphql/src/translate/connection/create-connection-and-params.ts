@@ -107,7 +107,7 @@ function createConnectionAndParams({
                         Object.prototype.hasOwnProperty.call(resolveTree.args.where, i)
                     ))
             ) {
-                const labels = n.labelString;
+                const labels = n.getLabelString(context);
                 const relatedNodeVariable = `${nodeVariable}_${n.name}`;
                 const nodeOutStr = `(${relatedNodeVariable}${labels})`;
 
@@ -276,7 +276,7 @@ function createConnectionAndParams({
     } else {
         const relatedNodeVariable = `${nodeVariable}_${field.relationship.typeMeta.name.toLowerCase()}`;
         const relatedNode = context.neoSchema.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
-        const labels = relatedNode.labelString;
+        const labels = relatedNode.getLabelString(context);
         const nodeOutStr = `(${relatedNodeVariable}${labels})`;
         subquery.push(`MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}${nodeOutStr}`);
 

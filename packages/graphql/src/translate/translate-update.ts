@@ -30,7 +30,6 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
-import { ObjectTypeComposer } from "graphql-compose";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
@@ -42,7 +41,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const createInput = resolveTree.args.create;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
-    const labels = node.labelString;
+    const labels = node.getLabelString(context);
     const matchStr = `MATCH (${varName}${labels})`;
     let whereStr = "";
     let updateStr = "";

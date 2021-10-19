@@ -34,10 +34,11 @@ import type {
     PointField,
     Auth,
     BaseField,
+    Context,
 } from "../types";
 import Exclude from "./Exclude";
-import NodeDirective from "./NodeDirective";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
+import { NodeDirective } from "./NodeDirective";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -112,14 +113,6 @@ class Node extends GraphElement {
         this.auth = input.auth;
     }
 
-    public get labelString(): string {
-        return this.nodeDirective?.getLabelsString(this.name) || `:${this.name}`;
-    }
-
-    public get labels(): string[] {
-        return this.nodeDirective?.getLabels(this.name) || [this.name];
-    }
-
     // Fields you can set in a create or update mutation
     public get mutableFields(): MutableField[] {
         return [
@@ -135,7 +128,7 @@ class Node extends GraphElement {
         ];
     }
 
-    // Fields you can apply auth allow and bind to
+    /** Fields you can apply auth allow and bind to */
     public get authableFields(): AuthableField[] {
         return [
             ...this.primitiveFields,
@@ -149,7 +142,7 @@ class Node extends GraphElement {
         ];
     }
 
-    // Fields you can sort on
+    /** Fields you can sort on */
     public get sortableFields(): SortableField[] {
         return [
             ...this.primitiveFields,
@@ -174,6 +167,14 @@ class Node extends GraphElement {
                 ].includes(field.typeMeta.name)
             ),
         ].filter((field) => !field.typeMeta.array);
+    }
+
+    public getLabelString(context: Context): string {
+        return this.nodeDirective?.getLabelsString(this.name, context) || `:${this.name}`;
+    }
+
+    public getLabels(context: Context): string[] {
+        return this.nodeDirective?.getLabels(this.name, context) || [this.name];
     }
 
     public getPlural(options: { camelCase: boolean }): string {

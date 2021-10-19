@@ -32,7 +32,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     const whereStrs: string[] = [];
     const cypherStrs: string[] = [];
 
-    const labels = node.labelString;
+    const labels = node.getLabelString(context);
 
     cypherStrs.push(`MATCH (${varName}${labels})`);
 

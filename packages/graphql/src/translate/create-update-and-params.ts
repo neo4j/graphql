@@ -140,7 +140,7 @@ function createUpdateAndParams({
                             subquery.push(`WITH ${withVars.join(", ")}`);
                         }
 
-                        const labels = refNode.labelString;
+                        const labels = refNode.getLabelString(context);
                         subquery.push(
                             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`
                         );
