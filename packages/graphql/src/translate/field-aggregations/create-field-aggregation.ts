@@ -82,14 +82,14 @@ export function createFieldAggregation({
     const targetPattern = generateTargetPattern(nodeLabel, relationAggregationField, referenceNode, context);
 
     const whereInput = (field.args.where as GraphQLWhereArg) || {};
+
     const [whereQuery, whereParams] = createWhereAndParams({
         whereInput,
         varName: subQueryNodeAlias,
-        node,
+        node: referenceNode,
         context,
         recursing: false,
     });
-
     const serializedWhereParams = Object.entries(whereParams).reduce((acc, [key, value]) => {
         const serializedValue = isString(value) ? `"${value}"` : value;
         acc[key] = serializedValue;

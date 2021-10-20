@@ -95,13 +95,15 @@ function aggregate({
             return;
         }
 
-        const field = [...nodeOrRelationship.primitiveFields, ...nodeOrRelationship.temporalFields].find((field) =>
-            logicalOperators.some(
-                (op) =>
-                    key.split(`_${op}`)[0] === field.fieldName ||
-                    key.split(`_AVERAGE_${op}`)[0] === field.fieldName ||
-                    aggregationOperators.some((x) => key.split(`_${x}_${op}`)[0] === field.fieldName)
-            )
+        const field = [...nodeOrRelationship.primitiveFields, ...nodeOrRelationship.temporalFields].find(
+            (fieldItem) => {
+                return logicalOperators.some(
+                    (op) =>
+                        key.split(`_${op}`)[0] === fieldItem.fieldName ||
+                        key.split(`_AVERAGE_${op}`)[0] === fieldItem.fieldName ||
+                        aggregationOperators.some((x) => key.split(`_${x}_${op}`)[0] === fieldItem.fieldName)
+                );
+            }
         ) as BaseField;
 
         const dbPropertyName = field.dbPropertyName || field.fieldName;
@@ -332,7 +334,7 @@ function createAggregateWhereAndParams({
               .join(", ")}`
         : "";
 
-    cyphers.push(`", { this: ${varName}${apocParams} }, false )`);
+    cyphers.push(`", { ${varName}: ${varName}${apocParams} }, false )`);
 
     return [cyphers.join("\n"), params];
 }
