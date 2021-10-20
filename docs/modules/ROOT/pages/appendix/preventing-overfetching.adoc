@@ -1,5 +1,5 @@
 [[appendix-preventing-overfetching]]
-== Preventing overfetching
+= Preventing overfetching
 
 When querying for unions and interfaces in Cypher, each union member/interface implementation is broken out into a subquery and joined with `UNION`. For example, using one of the examples above, when we query with no `where` argument, each subquery has a similar structure:
 

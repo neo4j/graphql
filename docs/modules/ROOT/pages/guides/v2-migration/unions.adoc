@@ -29,7 +29,7 @@ union Production = Movie | Series
 
 The structure of input types for union queries and mutations have been changed for user friendliness, and a more consistent API.
 
-Essentially, field names which were previously of template `${unionFieldName}_${concreteType}` (for example, "actedIn_Movie") are now an object, with the field name at the top, and the member types under it.
+Essentially, field names which were previously of template `<unionFieldName>_<concreteType>` (for example, "actedIn_Movie") are now an object, with the field name at the top, and the member types under it.
 
 For example, a Mutation which would have previously been:
 

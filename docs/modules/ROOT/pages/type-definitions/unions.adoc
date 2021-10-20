@@ -1,5 +1,5 @@
 [[type-definitions-unions]]
-== Unions
+= Unions
 
 The Neo4j GraphQL Library supports the use of unions on relationship fields. For example, the following schema defines a `User` type, that has a relationship `HAS_CONTENT`, of type `[Content]`. `Content` is of type `union` representing either a `Blog` or a `Post`.
 
@@ -25,7 +25,7 @@ type User {
 Below you can find some examples of how queries and mutations work with this example.
 
 [[type-definitions-unions-querying]]
-=== Querying a union
+== Querying a union
 
 Which union members are returned by a Query are dictated by the `where` filter applied.
 
@@ -63,7 +63,7 @@ query GetUsersWithAllContent {
 
 This is to prevent overfetching, and you can find an explanation of this xref::appendix/preventing-overfetching.adoc[here].
 
-=== Creating a union
+== Creating a union
 
 The below mutation creates the user and their content:
 
