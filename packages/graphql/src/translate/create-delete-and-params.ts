@@ -154,11 +154,7 @@ function createDeleteAndParams({
                                     return false;
                                 }
 
-                                if (
-                                    relationField.interface &&
-                                    d.delete._on &&
-                                    Object.prototype.hasOwnProperty.call(d.delete._on, refNode.name)
-                                ) {
+                                if (relationField.interface && d.delete?._on?.[refNode.name]) {
                                     const onArray = Array.isArray(d.delete._on[refNode.name])
                                         ? d.delete._on[refNode.name]
                                         : [d.delete._on[refNode.name]];
@@ -186,11 +182,7 @@ function createDeleteAndParams({
                         res.strs.push(deleteAndParams[0]);
                         res.params = { ...res.params, ...deleteAndParams[1] };
 
-                        if (
-                            relationField.interface &&
-                            d.delete._on &&
-                            Object.prototype.hasOwnProperty.call(d.delete._on, refNode.name)
-                        ) {
+                        if (relationField.interface && d.delete?._on?.[refNode.name]) {
                             const onDeletes = Array.isArray(d.delete._on[refNode.name])
                                 ? d.delete._on[refNode.name]
                                 : [d.delete._on[refNode.name]];

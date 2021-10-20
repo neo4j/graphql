@@ -169,11 +169,7 @@ function createDisconnectAndParams({
                             return false;
                         }
 
-                        if (
-                            relationField.interface &&
-                            c._on &&
-                            Object.prototype.hasOwnProperty.call(c._on, relatedNode.name)
-                        ) {
+                        if (relationField.interface && c?._on?.[relatedNode.name]) {
                             const onArray = Array.isArray(c._on[relatedNode.name])
                                 ? c._on[relatedNode.name]
                                 : [c._on[relatedNode.name]];
@@ -228,7 +224,7 @@ function createDisconnectAndParams({
                 subquery.push(reduced.disconnects.join("\n"));
                 params = { ...params, ...reduced.params };
 
-                if (relationField.interface && c._on && Object.prototype.hasOwnProperty.call(c._on, relatedNode.name)) {
+                if (relationField.interface && c?._on?.[relatedNode.name]) {
                     const onDisconnects = Array.isArray(c._on[relatedNode.name])
                         ? c._on[relatedNode.name]
                         : [c._on[relatedNode.name]];

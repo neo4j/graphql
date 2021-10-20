@@ -96,11 +96,7 @@ function createConnectionWhereAndParams({
                     whereInput: {
                         ...Object.entries(v).reduce((args, [key, value]) => {
                             if (key !== "_on") {
-                                if (
-                                    v._on &&
-                                    Object.prototype.hasOwnProperty.call(v._on, node.name) &&
-                                    Object.prototype.hasOwnProperty.call(v._on[node.name], key)
-                                ) {
+                                if (v?._on?.[node.name]?.[key]) {
                                     return args;
                                 }
                                 return { ...args, [key]: value };
@@ -121,7 +117,7 @@ function createConnectionWhereAndParams({
                     res = { whereStrs, params };
                 }
 
-                if (v._on && Object.prototype.hasOwnProperty.call(v._on, node.name)) {
+                if (v?._on?.[node.name]) {
                     const onTypeNodeWhere = createNodeWhereAndParams({
                         whereInput: {
                             ...Object.entries(v).reduce((args, [key, value]) => {

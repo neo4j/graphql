@@ -173,11 +173,7 @@ function createUpdateAndParams({
                                         return false;
                                     }
 
-                                    if (
-                                        relationField.interface &&
-                                        update.update.node._on &&
-                                        Object.prototype.hasOwnProperty.call(update.update.node._on, refNode.name)
-                                    ) {
+                                    if (relationField.interface && update.update.node?._on?.[refNode.name]) {
                                         const onArray = Array.isArray(update.update.node._on[refNode.name])
                                             ? update.update.node._on[refNode.name]
                                             : [update.update.node._on[refNode.name]];
@@ -207,11 +203,7 @@ function createUpdateAndParams({
                             innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
                             const updateStrs = [updateAndParams[0]];
 
-                            if (
-                                relationField.interface &&
-                                update.update.node._on &&
-                                Object.prototype.hasOwnProperty.call(update.update.node._on, refNode.name)
-                            ) {
+                            if (relationField.interface && update.update.node?._on?.[refNode.name]) {
                                 const onUpdateAndParams = createUpdateAndParams({
                                     context,
                                     node: refNode,

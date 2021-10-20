@@ -77,6 +77,7 @@ function createConnectAndParams({
 
         const whereStrs: string[] = [];
         if (connect.where) {
+            // If _on is the only where key and it doesn't contain this implementation, don't connect it
             if (
                 connect.where.node._on &&
                 Object.keys(connect.where.node).length === 1 &&
@@ -89,11 +90,8 @@ function createConnectAndParams({
                 whereInput: {
                     ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
                         if (k !== "_on") {
-                            if (
-                                connect.where.node._on &&
-                                Object.prototype.hasOwnProperty.call(connect.where.node._on, relatedNode.name) &&
-                                Object.prototype.hasOwnProperty.call(connect.where.node._on[relatedNode.name], k)
-                            ) {
+                            // If this where key is also inside _on for this implementation, use the one in _on instead
+                            if (connect.where.node?._on?.[relatedNode.name]?.[k]) {
                                 return args;
                             }
                             return { ...args, [k]: v };
@@ -113,10 +111,7 @@ function createConnectAndParams({
             }
 
             // For _on filters
-            if (
-                connect.where.node._on &&
-                Object.prototype.hasOwnProperty.call(connect.where.node._on, relatedNode.name)
-            ) {
+            if (connect.where.node?._on?.[relatedNode.name]) {
                 const onTypeNodeWhereAndParams = createWhereAndParams({
                     whereInput: {
                         ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
@@ -234,11 +229,7 @@ function createConnectAndParams({
                             return false;
                         }
 
-                        if (
-                            relationField.interface &&
-                            c._on &&
-                            Object.prototype.hasOwnProperty.call(c._on, relatedNode.name)
-                        ) {
+                        if (relationField.interface && c?._on?.[relatedNode.name]) {
                             const onArray = Array.isArray(c._on[relatedNode.name])
                                 ? c._on[relatedNode.name]
                                 : [c._on[relatedNode.name]];
@@ -288,7 +279,7 @@ function createConnectAndParams({
                 subquery.push(reduced.connects.join("\n"));
                 params = { ...params, ...reduced.params };
 
-                if (relationField.interface && c._on && Object.prototype.hasOwnProperty.call(c._on, relatedNode.name)) {
+                if (relationField.interface && c?._on?.[relatedNode.name]) {
                     const onConnects = Array.isArray(c._on[relatedNode.name])
                         ? c._on[relatedNode.name]
                         : [c._on[relatedNode.name]];

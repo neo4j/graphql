@@ -30,6 +30,7 @@ import createConnectionWhereAndParams from "../where/create-connection-where-and
 import createAuthAndParams from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createOffsetLimitStr } from "../../schema/pagination";
+import filterInterfaceNodes from "../../utils/filter-interface-nodes";
 
 function createConnectionAndParams({
     resolveTree,
@@ -89,12 +90,8 @@ function createConnectionAndParams({
             ? context.neoSchema.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name))
             : context.neoSchema.nodes.filter(
                   (x) =>
-                      field.relationship.interface?.implementations?.includes(x.name) &&
-                      (!whereInput?.node ||
-                          Object.keys(whereInput.node).length > 1 ||
-                          !Object.prototype.hasOwnProperty.call(whereInput.node, "_on") ||
-                          (Object.keys(whereInput.node).length === 1 &&
-                              Object.prototype.hasOwnProperty.call(whereInput?.node?._on, x.name)))
+                      field.relationship?.interface?.implementations?.includes(x.name) &&
+                      filterInterfaceNodes({ node: x, whereInput: whereInput?.node })
               );
         const subqueries: string[] = [];
 

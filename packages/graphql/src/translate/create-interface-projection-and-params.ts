@@ -2,6 +2,7 @@ import { ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { ConnectionField, Context, InterfaceWhereArg, RelationField } from "../types";
+import filterInterfaceNodes from "../utils/filter-interface-nodes";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
@@ -32,12 +33,7 @@ function createInterfaceProjectionAndParams({
     const whereInput = resolveTree.args.where as InterfaceWhereArg;
 
     const referenceNodes = context.neoSchema.nodes.filter(
-        (x) =>
-            field.interface?.implementations?.includes(x.name) &&
-            (!whereInput ||
-                Object.keys(whereInput).length > 1 ||
-                !Object.prototype.hasOwnProperty.call(whereInput, "_on") ||
-                (Object.keys(whereInput).length === 1 && Object.prototype.hasOwnProperty.call(whereInput._on, x.name)))
+        (x) => field.interface?.implementations?.includes(x.name) && filterInterfaceNodes({ node: x, whereInput })
     );
 
     let whereArgs: { _on?: any; [str: string]: any } = {};
@@ -78,11 +74,8 @@ function createInterfaceProjectionAndParams({
                 whereInput: {
                     ...Object.entries(whereInput).reduce((args, [k, v]) => {
                         if (k !== "_on") {
-                            if (
-                                whereInput._on &&
-                                Object.prototype.hasOwnProperty.call(whereInput._on, refNode.name) &&
-                                Object.prototype.hasOwnProperty.call(whereInput._on[refNode.name], k)
-                            ) {
+                            // If this where key is also inside _on for this implementation, use the one in _on instead
+                            if (whereInput?._on?.[refNode.name]?.[k]) {
                                 return args;
                             }
                             return { ...args, [k]: v };
@@ -104,7 +97,7 @@ function createInterfaceProjectionAndParams({
             }
 
             // For _on filters
-            if (whereInput._on && Object.prototype.hasOwnProperty.call(whereInput._on, refNode.name)) {
+            if (whereInput?._on?.[refNode.name]) {
                 const onTypeNodeWhereAndParams = createNodeWhereAndParams({
                     whereInput: {
                         ...Object.entries(whereInput).reduce((args, [k, v]) => {
