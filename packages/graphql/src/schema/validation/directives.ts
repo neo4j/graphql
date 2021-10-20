@@ -28,6 +28,18 @@ import {
 import { ExcludeOperationEnum, RelationshipDirectionEnum, TimestampOperationEnum } from "./enums";
 import { ScalarType } from "./scalars";
 
+export const aliasDirective = new GraphQLDirective({
+    name: "alias",
+    description: "Instructs @neo4j/graphql to map a GraphQL field to a Neo4j node or relationship property.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        property: {
+            description: "The name of the Neo4j property",
+            type: new GraphQLNonNull(GraphQLString),
+        },
+    },
+});
+
 export const coalesceDirective = new GraphQLDirective({
     name: "coalesce",
     description:
@@ -103,6 +115,26 @@ export const ignoreDirective = new GraphQLDirective({
     locations: [DirectiveLocation.FIELD_DEFINITION],
 });
 
+export const nodeDirective = new GraphQLDirective({
+    name: "node",
+    description: "Informs @neo4j/graphql of node metadata",
+    locations: [DirectiveLocation.OBJECT],
+    args: {
+        label: {
+            description: "Map the GraphQL type to a custom Neo4j node label",
+            type: GraphQLString,
+        },
+        additionalLabels: {
+            description: "Map the GraphQL type to match additional Neo4j node labels",
+            type: GraphQLList(new GraphQLNonNull(GraphQLString)),
+        },
+        plural: {
+            description: "Defines a custom plural for the Node API",
+            type: GraphQLString,
+        },
+    },
+});
+
 export const privateDirective = new GraphQLDirective({
     name: "private",
     description: "Instructs @neo4j/graphql to only expose a field through the Neo4j GraphQL OGM.",
@@ -155,41 +187,23 @@ export const timestampDirective = new GraphQLDirective({
     },
 });
 
+export const uniqueDirective = new GraphQLDirective({
+    name: "unique",
+    description:
+        "Informs @neo4j/graphql that there should be a uniqueness constraint in the database for the decorated field.",
+    locations: [DirectiveLocation.FIELD_DEFINITION],
+    args: {
+        constraintName: {
+            description:
+                "The name which should be used for this constraint. By default; type name, followed by an underscore, followed by the field name.",
+            type: GraphQLString,
+        },
+    },
+});
+
 export const writeonlyDirective = new GraphQLDirective({
     name: "writeonly",
     description:
         "Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
-});
-
-export const aliasDirective = new GraphQLDirective({
-    name: "alias",
-    description: "Instructs @neo4j/graphql to map a GraphQL field to a Neo4j node or relationship property.",
-    locations: [DirectiveLocation.FIELD_DEFINITION],
-    args: {
-        property: {
-            description: "The name of the Neo4j property",
-            type: new GraphQLNonNull(GraphQLString),
-        },
-    },
-});
-
-export const nodeDirective = new GraphQLDirective({
-    name: "node",
-    description: "Informs @neo4j/graphql of node metadata",
-    locations: [DirectiveLocation.OBJECT],
-    args: {
-        label: {
-            description: "Map the GraphQL type to a custom Neo4j node label",
-            type: GraphQLString,
-        },
-        additionalLabels: {
-            description: "Map the GraphQL type to match additional Neo4j node labels",
-            type: GraphQLList(new GraphQLNonNull(GraphQLString)),
-        },
-        plural: {
-            description: "Defines a custom plural for the Node API",
-            type: GraphQLString,
-        },
-    },
 });

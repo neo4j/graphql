@@ -43,6 +43,12 @@ The `@ignore` directive ignores a field, and it will need an alternative mechani
 
 Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-ignore[`@ignore`]
 
+== `@node`
+
+The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
+
+Reference: xref::type-definitions/database-mapping.adoc#type-definitions-node[`@node`]
+
 == `@private`
 
 The `@private` directive protects fields which should only be available through the xref::ogm/index.adoc[OGM].
@@ -79,20 +85,12 @@ The `@timestamp` directive flags fields to be used to store timestamps on create
 
 Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-timestamp[`@timestamp`]
 
+== `@unique`
+
+The `@unique` directive indicates that there should be a uniqueness constraint in the database for the fields that it is applied to.
+
 == `@writeonly`
 
 The `@writeonly` directive marks fields as write-only.
 
 Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-writeonly[`@writeonly`]
-
-== `@alias`
-
-The `@alias` directive will map a GraphQL schema field to a Neo4j property on a node or relationship.
-
-Reference: xref::type-definitions/database-mapping.adoc#type-definitions-alias[`@alias`]
-
-== `@node`
-
-The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
-
-Reference: xref::type-definitions/database-mapping.adoc#type-definitions-node[`@node`]
