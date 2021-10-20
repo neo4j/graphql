@@ -20,7 +20,7 @@
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { upperFirst } from "graphql-compose";
 import { Node, Relationship } from "../../classes";
-import { Context, RelationField } from "../../types";
+import { Context, RelationField, GraphQLWhereArg } from "../../types";
 import {
     generateResultObject,
     getFieldType,
@@ -35,6 +35,7 @@ import { createFieldAggregationAuth, AggregationAuth } from "./field-aggregation
 import { createMatchWherePattern } from "./aggregation-sub-queries";
 import { FieldAggregationSchemaTypes } from "../../schema/field-aggregation-composer";
 import mapToDbProperty from "../../utils/map-to-db-property";
+import createWhereAndParams from "../create-where-and-params";
 
 const subQueryNodeAlias = "n";
 const subQueryRelationAlias = "r";
@@ -72,7 +73,6 @@ export function createFieldAggregation({
 
     const fieldPathBase = `${node.name}${referenceNode.name}${upperFirst(relationAggregationField.fieldName)}`;
     const aggregationFields = getAggregationFields(fieldPathBase, field);
-
     const authData = createFieldAggregationAuth({
         node: referenceNode,
         context,
@@ -80,12 +80,26 @@ export function createFieldAggregation({
         nodeFields: aggregationFields.node,
     });
     const targetPattern = generateTargetPattern(nodeLabel, relationAggregationField, referenceNode, context);
-    const matchWherePattern = createMatchWherePattern(targetPattern, authData);
 
+    const whereInput = (field.args.where as GraphQLWhereArg) || {};
+    const [whereQuery, whereParams] = createWhereAndParams({
+        whereInput,
+        varName: subQueryNodeAlias,
+        node,
+        context,
+        recursing: false,
+    });
+    const matchWherePattern = createMatchWherePattern(targetPattern, authData, whereQuery);
     return {
         query: generateResultObject({
             count: aggregationFields.count
-                ? createCountQuery({ nodeLabel, matchWherePattern, targetAlias: subQueryNodeAlias, auth: authData })
+                ? createCountQuery({
+                      nodeLabel,
+                      matchWherePattern,
+                      targetAlias: subQueryNodeAlias,
+                      auth: authData,
+                      whereParams,
+                  })
                 : undefined,
             node: createAggregationQuery({
                 nodeLabel,
@@ -94,6 +108,7 @@ export function createFieldAggregation({
                 fieldAlias: subQueryNodeAlias,
                 auth: authData,
                 graphElement: referenceNode,
+                whereParams,
             }),
             edge: createAggregationQuery({
                 nodeLabel,
@@ -102,9 +117,10 @@ export function createFieldAggregation({
                 fieldAlias: subQueryRelationAlias,
                 auth: authData,
                 graphElement: referenceRelation,
+                whereParams,
             }),
         }),
-        params: authData.params,
+        params: { ...authData.params, ...whereParams },
     };
 }
 
@@ -141,14 +157,17 @@ function createCountQuery({
     matchWherePattern,
     targetAlias,
     auth,
+    whereParams,
 }: {
     nodeLabel: string;
     matchWherePattern: string;
     targetAlias: string;
     auth: AggregationAuth;
+    whereParams: Record<string, string>;
 }): string {
     const authParams = getAuthApocParams(auth);
     return wrapApocRun(AggregationSubQueries.countQuery(matchWherePattern, targetAlias), {
+        ...whereParams,
         ...authParams,
         [nodeLabel]: nodeLabel,
     });
@@ -161,6 +180,7 @@ function createAggregationQuery({
     fieldAlias,
     auth,
     graphElement,
+    whereParams,
 }: {
     nodeLabel: string;
     matchWherePattern: string;
@@ -168,6 +188,7 @@ function createAggregationQuery({
     fieldAlias: string;
     auth: AggregationAuth;
     graphElement: Node | Relationship;
+    whereParams: Record<string, string>;
 }): string | undefined {
     if (!fields) return undefined;
     const authParams = getAuthApocParams(auth);
@@ -183,7 +204,7 @@ function createAggregationQuery({
                 type: fieldType,
                 targetAlias: fieldAlias,
             }),
-            { ...authParams, [nodeLabel]: nodeLabel }
+            { ...whereParams, ...authParams, [nodeLabel]: nodeLabel }
         );
         return acc;
     }, {} as Record<string, string>);

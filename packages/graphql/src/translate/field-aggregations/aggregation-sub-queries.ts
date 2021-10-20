@@ -21,9 +21,17 @@ import { AggregationAuth } from "./field-aggregations-auth";
 import { generateResultObject } from "./utils";
 import { wrapApocConvertDate } from "../projection/elements/create-datetime-element";
 
-export function createMatchWherePattern(matchPattern: string, auth: AggregationAuth): string {
-    return `MATCH ${matchPattern}
-        ${auth.whereQuery ? `WHERE ${auth.whereQuery}` : ""}${auth.query}`;
+export function createMatchWherePattern(matchPattern: string, auth: AggregationAuth, whereInput: string): string {
+    let whereQuery = "";
+    let andQuery = "";
+    if (!whereInput && auth.whereQuery) {
+        whereQuery = "WHERE";
+    }
+    if (whereInput && auth.whereQuery) {
+        andQuery = "AND";
+    }
+
+    return `MATCH ${matchPattern} ${whereQuery} ${whereInput} ${andQuery} ${auth.whereQuery}${auth.query}`;
 }
 
 export function stringAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
