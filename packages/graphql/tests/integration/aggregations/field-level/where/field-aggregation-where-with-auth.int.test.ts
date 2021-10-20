@@ -92,6 +92,15 @@ describe(`Field Level Auth Where Requests`, () => {
             ${typeMovie.plural} {
                 ${typeActor.plural}Aggregate(where: {year_GT: 10}) {
                     count
+                    node {
+                        year {
+                            max
+                        },
+                        name {
+                            longest,
+                            shortest
+                        }
+                    },
                     }
                 }
             }`;
@@ -108,6 +117,15 @@ describe(`Field Level Auth Where Requests`, () => {
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
             count: 1,
+            node: {
+                year: {
+                    max: 1970,
+                },
+                name: {
+                    longest: "Arnold",
+                    shortest: "Arnold",
+                },
+            },
         });
     });
 });

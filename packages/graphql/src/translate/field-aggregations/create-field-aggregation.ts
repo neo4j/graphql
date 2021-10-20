@@ -18,7 +18,7 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { upperFirst } from "graphql-compose";
+import { upperFirst, isString } from "graphql-compose";
 import { Node, Relationship } from "../../classes";
 import { Context, RelationField, GraphQLWhereArg } from "../../types";
 import {
@@ -89,7 +89,14 @@ export function createFieldAggregation({
         context,
         recursing: false,
     });
+
+    const serializedWhereParams = Object.entries(whereParams).reduce((acc, [key, value]) => {
+        const serializedValue = isString(value) ? `"${value}"` : value;
+        acc[key] = serializedValue;
+        return acc;
+    }, {});
     const matchWherePattern = createMatchWherePattern(targetPattern, authData, whereQuery);
+
     return {
         query: generateResultObject({
             count: aggregationFields.count
@@ -98,7 +105,7 @@ export function createFieldAggregation({
                       matchWherePattern,
                       targetAlias: subQueryNodeAlias,
                       auth: authData,
-                      whereParams,
+                      whereParams: serializedWhereParams,
                   })
                 : undefined,
             node: createAggregationQuery({
@@ -108,7 +115,7 @@ export function createFieldAggregation({
                 fieldAlias: subQueryNodeAlias,
                 auth: authData,
                 graphElement: referenceNode,
-                whereParams,
+                whereParams: serializedWhereParams,
             }),
             edge: createAggregationQuery({
                 nodeLabel,
@@ -117,7 +124,7 @@ export function createFieldAggregation({
                 fieldAlias: subQueryRelationAlias,
                 auth: authData,
                 graphElement: referenceRelation,
-                whereParams,
+                whereParams: serializedWhereParams,
             }),
         }),
         params: { ...authData.params, ...whereParams },
