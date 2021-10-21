@@ -18,10 +18,10 @@
  */
 
 import { FieldNode, GraphQLResolveInfo } from "graphql";
-import { execute } from "../../utils";
-import { translateCreate } from "../../translate";
 import { Node } from "../../classes";
+import { translateCreate } from "../../translate";
 import { Context } from "../../types";
+import { execute, publishMutateMeta } from "../../utils";
 
 export default function createResolver({ node }: { node: Node }) {
     async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
@@ -40,13 +40,23 @@ export default function createResolver({ node }: { node: Node }) {
         ) as FieldNode; // Field exist by construction and must be selected as it is the only field.
 
         const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
+        const record = executeResult.records[0] || {};
+        if (record.mutateMeta) {
+            publishMutateMeta({
+                context,
+                executeResult,
+            });
+            delete record.mutateMeta;
+        }
+
+        const result = Object.values(record);
 
         return {
             info: {
                 bookmark: executeResult.bookmark,
                 ...executeResult.statistics,
             },
-            [responseKey]: Object.values(executeResult.records[0] || {}),
+            [responseKey]: result,
         };
     }
 
