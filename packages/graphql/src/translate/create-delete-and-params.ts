@@ -74,17 +74,18 @@ function createDeleteAndParams({
             const outStr = relationField.direction === "OUT" ? "->" : "-";
 
             res.strs.push(withProjector.nextWith());
-            const childWithProjector = withProjector.createChild(varName);
 
             refNodes.forEach((refNode) => {
                 const v = relationField.union ? value[refNode.name] : value;
                 const deletes = relationField.typeMeta.array ? v : [v];
                 deletes.forEach((d, index) => {
+                    // eslint-disable-next-line no-underscore-dangle
                     const _varName = chainStr
                         ? `${varName}${index}`
                         : `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
                     const relationshipVariable = `${_varName}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
+                    const childWithProjector = withProjector.createChild(_varName);
                     childWithProjector.addVariable(_varName);
 
                     const labels = refNode.labelString;
@@ -161,9 +162,6 @@ function createDeleteAndParams({
                         name: refNode.name,
                     });
 
-                    // childWithProjector.removeVariable(varName);
-                    // childWithProjector.removeVariable(_varName);
-                    childWithProjector.removeVariable(_varName);
                     res.strs.push(childWithProjector.nextWith({
                         additionalVariables: [
                             `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`,

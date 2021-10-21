@@ -58,6 +58,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
             create.push(`${createAndParams[0]}`);
             create.push(withProjectorChild.nextReturn([], {
                 excludeVariables: withProjector.variables,
+                reduceMeta: true,
             }));
             create.push(`}`);
             withProjector.addVariable(varName);
