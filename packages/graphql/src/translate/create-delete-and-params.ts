@@ -85,8 +85,8 @@ function createDeleteAndParams({
                         : `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
                     const relationshipVariable = `${_varName}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
-                    const childWithProjector = withProjector.createChild(_varName);
-                    childWithProjector.addVariable(_varName);
+                    // const childWithProjector = withProjector.createChild(_varName);
+                    withProjector.addVariable(_varName);
 
                     const labels = refNode.labelString;
                     res.strs.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`);
@@ -132,7 +132,7 @@ function createDeleteAndParams({
                     });
                     if (allowAuth[0]) {
                         const quote = insideDoWhen ? `\\"` : `"`;
-                        res.strs.push(childWithProjector.nextWith());
+                        res.strs.push(withProjector.nextWith());
                         res.strs.push(
                             `CALL apoc.util.validate(NOT(${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
                         );
@@ -145,7 +145,7 @@ function createDeleteAndParams({
                             node: refNode,
                             deleteInput: d.delete,
                             varName: _varName,
-                            withProjector: childWithProjector,
+                            withProjector,
                             parentVar: _varName,
                             parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
                                 relationField.union ? `.${refNode.name}` : ""
@@ -156,19 +156,20 @@ function createDeleteAndParams({
                         res.params = { ...res.params, ...deleteAndParams[1] };
                     }
 
-                    childWithProjector.markMutationMeta({
+                    withProjector.markMutationMeta({
                         type: 'Deleted',
                         idVar: `id(${ _varName })`,
                         name: refNode.name,
                     });
 
-                    res.strs.push(childWithProjector.nextWith({
+                    res.strs.push(withProjector.nextWith({
                         additionalVariables: [
                             `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`,
                         ]
                     }));
                     res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
-                    res.strs.push(withProjector.mergeWithChild(childWithProjector));
+                    res.strs.push(withProjector.nextWith());
+                    // res.strs.push(withProjector.mergeWithChild(childWithProjector));
                 });
             });
 
