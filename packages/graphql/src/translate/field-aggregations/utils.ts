@@ -32,7 +32,7 @@ export enum AggregationType {
     DateTime = "DateTimeAggregateSelection",
 }
 
-type FieldRecord = NestedRecord<string | undefined | null | Integer>;
+type FieldRecord = NestedRecord<string | undefined | null | Integer | FieldRecord[]>;
 
 export function generateResultObject(fields: FieldRecord): string {
     return `{ ${Object.entries(fields)
@@ -40,6 +40,17 @@ export function generateResultObject(fields: FieldRecord): string {
             if (value === undefined || value === null || value === "") return undefined;
             if (isNeoInt(value)) {
                 return `${key}: ${value}`;
+            }
+            if (Array.isArray(value)) {
+                const array2 = value
+                    .map((x) => {
+                        if (typeof x === "object" && !isNeoInt(x)) {
+                            return generateResultObject(x);
+                        }
+                        return x;
+                    })
+                    .join(",");
+                return `${key}: [${array2}]`;
             }
             if (typeof value === "object") {
                 return `${key}: ${generateResultObject(value)}`;
@@ -52,17 +63,31 @@ export function generateResultObject(fields: FieldRecord): string {
 
 export function serializeParams(params: FieldRecord): NestedRecord<string> {
     return Object.entries(params).reduce((acc, [key, value]) => {
-        if (isNeoInt(value)) {
-            acc[key] = value;
-        } else if (isString(value)) {
-            acc[key] = `"${value}"`;
-        } else if (typeof value === "object") {
-            acc[key] = serializeParams(value as any);
-        } else {
-            acc[key] = value;
-        }
+        acc[key] = serializeParam(value);
         return acc;
     }, {});
+}
+
+// TODO: improve types
+function serializeParam(
+    value: FieldRecord[0]
+): NestedRecord<string | Integer> | string | Integer | undefined | Array<any> {
+    if (isNeoInt(value)) {
+        return value;
+    }
+    if (isString(value)) {
+        return `"${value}"`;
+    }
+    if (Array.isArray(value)) {
+        return value.map((x) => serializeParam(x));
+    }
+    if (typeof value === "object") {
+        return serializeParams(value as any);
+    }
+    if (value) {
+        return value;
+    }
+    return undefined;
 }
 
 export function getFieldType(field: ResolveTree): AggregationType | undefined {

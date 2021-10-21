@@ -66,7 +66,7 @@ describe("Field Level Aggregations Where", () => {
         await driver.close();
     });
 
-    test("count nodes where string equals", async () => {
+    test("Count nodes where string equals", async () => {
         const query = `
             query {
               ${typeMovie.plural} {
@@ -86,6 +86,29 @@ describe("Field Level Aggregations Where", () => {
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
             count: 1,
+        });
+    });
+
+    test("Count nodes with OR query", async () => {
+        const query = `
+            query {
+              ${typeMovie.plural} {
+                ${typeActor.plural}Aggregate(where: {OR: [{name: "Linda"}, {name: "Arnold"}]}) {
+                  count
+                }
+              }
+            }
+            `;
+
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: query,
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+            count: 2,
         });
     });
 
@@ -127,6 +150,94 @@ describe("Field Level Aggregations Where", () => {
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
+            count: 1,
+        });
+    });
+
+    test("Count nodes with where in connection edge", async () => {
+        const query = `
+            query {
+                ${typeActor.plural} {
+                  ${typeMovie.plural}Aggregate(where:{${typeActor.plural}Connection: {edge: {screentime_GT: 10}}}){
+                    count
+                  }
+                }
+          }`;
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: query,
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
+            count: 1,
+        });
+    });
+
+    test("Count nodes with where in connection node using OR", async () => {
+        const query = `
+            query {
+                ${typeActor.plural} {
+                  ${typeMovie.plural}Aggregate(where:{${typeActor.plural}Connection: {node: {OR: [{name: "Linda"},{name: "Arnold"}]}}}){
+                    count
+                  }
+                }
+          }`;
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: query,
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
+            count: 1,
+        });
+    });
+
+    test("Count nodes with where using IN strings", async () => {
+        const query = `
+            query {
+              ${typeMovie.plural} {
+                ${typeActor.plural}Aggregate(where: {name_IN: ["Linda", "Arnold"]}) {
+                  count
+                }
+              }
+            }
+            `;
+
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: query,
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+            count: 2,
+        });
+    });
+
+    test("Count nodes with where using IN ints", async () => {
+        const query = `
+            query {
+              ${typeMovie.plural} {
+                ${typeActor.plural}Aggregate(where: {age_IN: [40, 60, 37]}) {
+                  count
+                }
+              }
+            }
+            `;
+
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: query,
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
             count: 1,
         });
     });
