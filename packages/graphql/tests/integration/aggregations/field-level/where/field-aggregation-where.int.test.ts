@@ -109,4 +109,25 @@ describe("Field Level Aggregations Where", () => {
             count: 2,
         });
     });
+
+    test("Count nodes with where in connection node", async () => {
+        const query = `
+            query {
+                ${typeActor.plural} {
+                  ${typeMovie.plural}Aggregate(where:{${typeActor.plural}Connection: {node: {name: "Linda"}}}){
+                    count
+                  }
+                }
+          }`;
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: query,
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
+            count: 1,
+        });
+    });
 });

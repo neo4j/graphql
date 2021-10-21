@@ -17,15 +17,14 @@
  * limitations under the License.
  */
 
-import { Integer, isInt } from "neo4j-driver";
 import defaultFieldResolver from "./defaultField";
+import { isNeoInt } from "../../utils/utils";
 
 function id(source, args, context, info) {
     const value = defaultFieldResolver(source, args, context, info);
 
-    // @ts-ignore: outputValue is unknown, and to cast to object would be an antipattern
-    if (isInt(value)) {
-        return (value as Integer).toNumber();
+    if (isNeoInt(value)) {
+        return value.toNumber();
     }
 
     if (typeof value === "number") {

@@ -17,7 +17,17 @@
  * limitations under the License.
  */
 
+import { Integer, isInt } from "neo4j-driver";
+
 /** Checks if value is string */
-export function isString(value: any): value is string {
+export function isString(value: unknown): value is string {
     return typeof value === "string" || value instanceof String;
 }
+
+/** Checks if value a Neo4j int object */
+export function isNeoInt(value: unknown): value is Integer {
+    return isInt(value);
+}
+
+/** Nested Records helper type, supports any level of recursion. Ending in properties of type T */
+export interface NestedRecord<T> extends Record<string | symbol | number, T | NestedRecord<T>> {} // Using interface to allow recursive types

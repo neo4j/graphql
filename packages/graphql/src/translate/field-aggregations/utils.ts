@@ -18,8 +18,10 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
+import { Integer } from "neo4j-driver";
 import { Node, Relationship } from "../../classes";
 import { Context, RelationField, ConnectionField } from "../../types";
+import { isNeoInt, isString, NestedRecord } from "../../utils/utils";
 
 export enum AggregationType {
     Int = "IntAggregateSelection",
@@ -30,14 +32,37 @@ export enum AggregationType {
     DateTime = "DateTimeAggregateSelection",
 }
 
-export function generateResultObject(fields: Record<string, string | undefined | null>): string {
+type FieldRecord = NestedRecord<string | undefined | null | Integer>;
+
+export function generateResultObject(fields: FieldRecord): string {
     return `{ ${Object.entries(fields)
-        .map(([key, value]: [string, string | undefined | null]): string | undefined => {
+        .map(([key, value]): string | undefined => {
             if (value === undefined || value === null || value === "") return undefined;
+            if (isNeoInt(value)) {
+                return `${key}: ${value}`;
+            }
+            if (typeof value === "object") {
+                return `${key}: ${generateResultObject(value)}`;
+            }
             return `${key}: ${value}`;
         })
         .filter(Boolean)
         .join(", ")} }`;
+}
+
+export function serializeParams(params: FieldRecord): NestedRecord<string> {
+    return Object.entries(params).reduce((acc, [key, value]) => {
+        if (isNeoInt(value)) {
+            acc[key] = value;
+        } else if (isString(value)) {
+            acc[key] = `"${value}"`;
+        } else if (typeof value === "object") {
+            acc[key] = serializeParams(value as any);
+        } else {
+            acc[key] = value;
+        }
+        return acc;
+    }, {});
 }
 
 export function getFieldType(field: ResolveTree): AggregationType | undefined {
@@ -47,7 +72,8 @@ export function getFieldType(field: ResolveTree): AggregationType | undefined {
     return undefined;
 }
 
-export function wrapApocRun(query: string, extraParams: Record<string, string> = {}): string {
+/** Wraps a query inside an apoc call, correctly escaping strings and params */
+export function wrapApocRun(query: string, extraParams: NestedRecord<string | Integer> = {}): string {
     const params = generateResultObject(extraParams);
     const escapedQuery = escapeQuery(query);
     return `head(apoc.cypher.runFirstColumn(" ${escapedQuery} ", ${params}))`;

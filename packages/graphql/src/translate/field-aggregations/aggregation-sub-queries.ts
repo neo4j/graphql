@@ -24,7 +24,7 @@ import { wrapApocConvertDate } from "../projection/elements/create-datetime-elem
 export function createMatchWherePattern(matchPattern: string, auth: AggregationAuth, whereInput: string): string {
     let whereQuery = "";
     let andQuery = "";
-    if (!whereInput && auth.whereQuery) {
+    if (whereInput || auth.whereQuery) {
         whereQuery = "WHERE";
     }
     if (whereInput && auth.whereQuery) {

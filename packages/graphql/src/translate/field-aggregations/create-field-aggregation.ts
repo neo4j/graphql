@@ -18,7 +18,7 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { upperFirst, isString } from "graphql-compose";
+import { upperFirst } from "graphql-compose";
 import { Node, Relationship } from "../../classes";
 import { Context, RelationField, GraphQLWhereArg } from "../../types";
 import {
@@ -29,6 +29,7 @@ import {
     getReferenceNode,
     getFieldByName,
     getReferenceRelation,
+    serializeParams,
 } from "./utils";
 import * as AggregationSubQueries from "./aggregation-sub-queries";
 import { createFieldAggregationAuth, AggregationAuth } from "./field-aggregations-auth";
@@ -36,6 +37,7 @@ import { createMatchWherePattern } from "./aggregation-sub-queries";
 import { FieldAggregationSchemaTypes } from "../../schema/field-aggregation-composer";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import createWhereAndParams from "../create-where-and-params";
+import { NestedRecord } from "../../utils/utils";
 
 const subQueryNodeAlias = "n";
 const subQueryRelationAlias = "r";
@@ -88,13 +90,9 @@ export function createFieldAggregation({
         varName: subQueryNodeAlias,
         node: referenceNode,
         context,
-        recursing: false,
+        recursing: true,
     });
-    const serializedWhereParams = Object.entries(whereParams).reduce((acc, [key, value]) => {
-        const serializedValue = isString(value) ? `"${value}"` : value;
-        acc[key] = serializedValue;
-        return acc;
-    }, {});
+    const serializedWhereParams = serializeParams(whereParams);
     const matchWherePattern = createMatchWherePattern(targetPattern, authData, whereQuery);
 
     return {
@@ -170,7 +168,7 @@ function createCountQuery({
     matchWherePattern: string;
     targetAlias: string;
     auth: AggregationAuth;
-    whereParams: Record<string, string>;
+    whereParams: NestedRecord<string>;
 }): string {
     const authParams = getAuthApocParams(auth);
     return wrapApocRun(AggregationSubQueries.countQuery(matchWherePattern, targetAlias), {
@@ -195,7 +193,7 @@ function createAggregationQuery({
     fieldAlias: string;
     auth: AggregationAuth;
     graphElement: Node | Relationship;
-    whereParams: Record<string, string>;
+    whereParams: NestedRecord<string>;
 }): string | undefined {
     if (!fields) return undefined;
     const authParams = getAuthApocParams(auth);
