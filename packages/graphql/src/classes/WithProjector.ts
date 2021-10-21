@@ -147,6 +147,7 @@ export interface NextBlockOptions {
     excludeVariables?: string[];
     additionalMutateMeta?: string;
     additionalVariables?: string[];
+    reduceMeta?: boolean;
 }
 
 export interface Projection {
@@ -343,6 +344,14 @@ class WithProjector {
             } else {
                 metaListVariable = `${ metaListVariable } + ${ opts.additionalMutateMeta }`;
             }
+            doAlias = true;
+        }
+
+        if (opts.reduceMeta && (doAlias || this.mutateMetaVariableDeclared)) {
+            const tempVar1 = `tmp1_${ this.mutateMetaListVarName }`;
+            const tempVar2 = `tmp2_${ this.mutateMetaListVarName }`;
+
+            metaListVariable = `REDUCE(${ tempVar1 } = [], ${ tempVar2 } IN COLLECT(${ metaListVariable }) | ${ tempVar1 } + ${ tempVar2 })`;
             doAlias = true;
         }
 

@@ -311,6 +311,7 @@ function createConnectAndParams({
 
         res.connects.push(childWithProjector.nextReturn([], {
             excludeVariables: childWithProjector.variables,
+            reduceMeta: true,
         }));
         res.connects.push("}");
         res.connects.push(withProjector.mergeWithChild(childWithProjector));
