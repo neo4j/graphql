@@ -63,7 +63,7 @@ async function assertConstraints({
                 if (field.unique) {
                     constraintsToCreate.push({
                         constraintName: field.unique.constraintName,
-                        label: node.name,
+                        label: node.getMainLabel(),
                         property: field.fieldName,
                     });
                 }
@@ -103,7 +103,7 @@ async function assertConstraints({
         nodes.forEach((node) => {
             node.constrainableFields.forEach((field) => {
                 if (field.unique) {
-                    if (!existingConstraints[node.name]?.includes(field.fieldName)) {
+                    if (!existingConstraints[node.getMainLabel()]?.includes(field.fieldName)) {
                         missingConstraints.push(`Missing constraint for ${node.name}.${field.fieldName}`);
                     }
                 }

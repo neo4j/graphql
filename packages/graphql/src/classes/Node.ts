@@ -183,6 +183,10 @@ class Node extends GraphElement {
         return this.nodeDirective?.getLabels(this.name, context) || [this.name];
     }
 
+    public getMainLabel(): string {
+        return this.nodeDirective?.label || this.name;
+    }
+
     public getPlural(options: { camelCase: boolean }): string {
         // camelCase is optional in this case to maintain backward compatibility
         if (this.nodeDirective?.plural) {
