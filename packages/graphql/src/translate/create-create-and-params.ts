@@ -89,15 +89,15 @@ function createCreateAndParams({
                         const nodeName = `${baseName}_node`;
                         const propertiesName = `${baseName}_relationship`;
 
-                        const childWithProjector = withProjector.createChild(baseName);
-                        childWithProjector.addVariable(nodeName);
+                        // const childWithProjector = withProjector.createChild(baseName);
+                        withProjector.addVariable(nodeName);
 
                         const recurse = createCreateAndParams({
                             input: create.node,
                             context,
                             node: refNode,
                             varName: nodeName,
-                            withProjector: childWithProjector,
+                            withProjector,
                         });
                         res.creates.push(recurse[0]);
                         res.params = { ...res.params, ...recurse[1] };
@@ -122,7 +122,8 @@ function createCreateAndParams({
                             res.params = { ...res.params, ...setA[1] };
                         }
 
-                        withProjector.mergeWithChild(childWithProjector);
+                        // withProjector.mergeWithChild(childWithProjector);
+                        withProjector.removeVariable(nodeName);
                     });
                 }
 
