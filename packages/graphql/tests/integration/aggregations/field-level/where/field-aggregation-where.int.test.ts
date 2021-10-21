@@ -133,66 +133,68 @@ describe("Field Level Aggregations Where", () => {
         });
     });
 
-    test("Count nodes with where in connection node", async () => {
-        const query = `
+    describe("Using connections in where", () => {
+        test("Count nodes with where in connection node", async () => {
+            const query = `
             query {
                 ${typeActor.plural} {
-                  ${typeMovie.plural}Aggregate(where:{${typeActor.plural}Connection: {node: {name: "Linda"}}}){
-                    count
-                  }
+                    ${typeMovie.plural}Aggregate(where:{${typeActor.plural}Connection: {node: {name: "Linda"}}}){
+                        count
+                    }
                 }
-          }`;
-        const gqlResult = await graphql({
-            schema: neoSchema.schema,
-            source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            }`;
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+            expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
+                count: 1,
+            });
         });
 
-        expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
-            count: 1,
-        });
-    });
-
-    test("Count nodes with where in connection edge", async () => {
-        const query = `
+        test("Count nodes with where in connection edge", async () => {
+            const query = `
             query {
                 ${typeActor.plural} {
-                  ${typeMovie.plural}Aggregate(where:{${typeActor.plural}Connection: {edge: {screentime_GT: 10}}}){
-                    count
-                  }
+                    ${typeMovie.plural}Aggregate(where:{${typeActor.plural}Connection: {edge: {screentime_GT: 10}}}){
+                        count
+                    }
                 }
-          }`;
-        const gqlResult = await graphql({
-            schema: neoSchema.schema,
-            source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            }`;
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+            expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
+                count: 1,
+            });
         });
 
-        expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
-            count: 1,
-        });
-    });
-
-    test("Count nodes with where in connection node using OR", async () => {
-        const query = `
+        test("Count nodes with where in connection node using OR", async () => {
+            const query = `
             query {
                 ${typeActor.plural} {
-                  ${typeMovie.plural}Aggregate(where:{${typeActor.plural}Connection: {node: {OR: [{name: "Linda"},{name: "Arnold"}]}}}){
-                    count
-                  }
+                    ${typeMovie.plural}Aggregate(where:{${typeActor.plural}Connection: {node: {OR: [{name: "Linda"},{name: "Arnold"}]}}}){
+                        count
+                    }
                 }
-          }`;
-        const gqlResult = await graphql({
-            schema: neoSchema.schema,
-            source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
-        });
+            }`;
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            });
 
-        expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
-            count: 1,
+            expect(gqlResult.errors).toBeUndefined();
+            expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
+                count: 1,
+            });
         });
     });
 
