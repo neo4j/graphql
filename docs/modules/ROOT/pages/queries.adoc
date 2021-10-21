@@ -251,5 +251,3 @@ query {
     }
 }
 ----
-
-NOTE: Unlike top-level aggregations, `where` arguments are not supported.
