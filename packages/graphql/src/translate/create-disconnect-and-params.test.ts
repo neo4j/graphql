@@ -22,6 +22,7 @@ import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../utils/test";
+import WithProjector from "../classes/WithProjector";
 
 describe("createDisconnectAndParams", () => {
     test("should return the correct disconnect", () => {
@@ -79,7 +80,7 @@ describe("createDisconnectAndParams", () => {
         const context: Context = { neoSchema };
 
         const result = createDisconnectAndParams({
-            withVars: ["this"],
+            withProjector: new WithProjector({ variables: [ 'this' ] }),
             value: [
                 {
                     where: { node: { title: "abc" } },

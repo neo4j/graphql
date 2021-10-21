@@ -85,11 +85,9 @@ function createConnectAndParams({
         res.connects.push("CALL {");
 
         res.connects.push(childWithProjector.nextWith({}));
-        /**
-         * NOTE: this was changed from OPTIONAL MATCH to MATCH so we
-         * can remove the FOREACH. Will this break things?
-         */
-        res.connects.push(`MATCH (${nodeName}${label})`);
+
+        res.connects.push(`OPTIONAL MATCH (${nodeName}${label})`);
+        childWithProjector.addVariable(nodeName);
 
         const whereStrs: string[] = [];
         if (connect.where) {
@@ -166,7 +164,11 @@ function createConnectAndParams({
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
         // res.connects.push(`FOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
-        res.connects.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        res.connects.push(`CALL apoc.do.when(${ nodeName } IS NOT NULL, ${ insideDoWhen ? '\\"' : '"' }`);
+        const mergeStrs: string[] = [];
+        const mergeWithProjector = childWithProjector.createChild(nodeName);
+        mergeStrs.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        // mergeWithProjector.addVariable(relTypeStr);
 
         let relationshipNodeName: string | undefined;
         let relationshipIDVar: string | undefined;
@@ -182,13 +184,13 @@ function createConnectAndParams({
                 operation: "CREATE",
             });
 
-            res.connects.push(setA[0]);
+            mergeStrs.push(setA[0]);
             res.params = { ...res.params, ...setA[1] };
             relationshipNodeName = relationship.name;
             relationshipIDVar = `id(${ relationshipName })`;
         }
 
-        childWithProjector.markMutationMeta({
+        mergeWithProjector.markMutationMeta({
             type: 'Connected',
             name: parentNode.name,
             relationshipName: relationshipNodeName,
@@ -197,11 +199,31 @@ function createConnectAndParams({
             idVar: `id(${ parentVar })`,
             relationshipIDVar,
             toIDVar: `id(${ nodeName })`,
-            propertiesVar: relationshipName,
+            propertiesVar: relationField.properties ? relationshipName : undefined,
         });
+        mergeStrs.push(mergeWithProjector.nextReturn());
 
-        // res.connects.push(`SET mutateMeta = []`); // close FOREACH
+        const apocArgs = `{${childWithProjector.variables.map((withVar) => `${withVar}:${withVar}`).join(", ")}}`;
+
+        if (insideDoWhen) {
+            mergeStrs.push(`\\", \\"\\", ${apocArgs})`);
+        } else {
+            mergeStrs.push(`", "", ${apocArgs})`);
+        }
+
+        mergeStrs.push("YIELD value");
+        mergeStrs.push(childWithProjector.mergeWithChild(mergeWithProjector, `value.${ mergeWithProjector.mutateMetaListVarName }`));
+
+        // const paramsString = Object.keys(innerApocParams)
+        //     .reduce((r: string[], k) => [...r, `${k}:$${k}`], [])
+        //     .join(",");
+
+        const mergeStr = mergeStrs.join("\n");
+        // const mergeStr = mergeStrs.join("\n").replace(/REPLACE_ME/g, `, ${ paramsString }`);
+
+        res.connects.push(mergeStr);
         // res.connects.push(`)`); // close FOREACH
+        // res.connects.push(`CALL apoc.do.when(${ nodeName } IS NOT NULL, ${ insideDoWhen ? '\\"' : '"' }`);
 
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];

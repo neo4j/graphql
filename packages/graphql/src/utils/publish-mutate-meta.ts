@@ -122,8 +122,10 @@ function publishMutateMeta(input: {
             toID: 'toID' in meta ? meta.toID.toNumber() : undefined,
             relationshipID: 'relationshipID' in meta ? meta.relationshipID.toNumber() : undefined,
             bookmark: executeResult.bookmark,
-            properties: 'properties' in meta ? convertProperties(meta.properties) : undefined,
         };
+        if ('properties' in meta) {
+            (mutationEvent as any).properties = convertProperties(meta.properties);
+        }
 
         debug("%s", `${ trigger }: ${JSON.stringify(mutationEvent, null, 2)}`);
 
