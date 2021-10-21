@@ -98,6 +98,7 @@ function getObjFieldMeta({
             const coalesceDirective = field?.directives?.find((x) => x.name.value === "coalesce");
             const timestampDirective = field?.directives?.find((x) => x.name.value === "timestamp");
             const aliasDirective = field?.directives?.find((x) => x.name.value === "alias");
+            const uniqueDirective = field?.directives?.find((x) => x.name.value === "unique");
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
             const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
@@ -122,6 +123,7 @@ function getObjFieldMeta({
                             "coalesce",
                             "timestamp",
                             "alias",
+                            "unique",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
@@ -129,6 +131,15 @@ function getObjFieldMeta({
                 description: field.description?.value,
                 readonly: field?.directives?.some((d) => d.name.value === "readonly"),
                 writeonly: field?.directives?.some((d) => d.name.value === "writeonly"),
+                ...(uniqueDirective
+                    ? {
+                          unique: {
+                              constraintName:
+                                  uniqueDirective.arguments?.find((a) => a.name.value === "constraintName")?.name
+                                      .value || `${obj.name.value}_${field.name.value}`,
+                          },
+                      }
+                    : {}),
             };
             if (aliasDirective) {
                 const aliasMeta = getAliasMeta(field);

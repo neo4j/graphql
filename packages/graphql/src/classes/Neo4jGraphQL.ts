@@ -31,6 +31,7 @@ import { getJWT } from "../auth/index";
 import { DEBUG_GRAPHQL } from "../constants";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "../translate/create-auth-param";
+import assertConstraints, { AssertConstraintOptions } from "./utils/asserts-constraints";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -169,6 +170,19 @@ class Neo4jGraphQL {
         }
 
         return checkNeo4jCompat({ driver, driverConfig });
+    }
+
+    async assertConstraints(
+        input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertConstraintOptions } = {}
+    ): Promise<void> {
+        const driver = input.driver || this.driver;
+        const driverConfig = input.driverConfig || this.config?.driverConfig;
+
+        if (!driver) {
+            throw new Error("neo4j-driver Driver missing");
+        }
+
+        await assertConstraints({ driver, driverConfig, nodes: this.nodes, options: input.options });
     }
 }
 
