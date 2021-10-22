@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { wrapApocRun, serializeResultObject } from "./apoc-run-utils";
+import { wrapApocRun, serializeObject } from "./apoc-run-utils";
 
 describe("field-aggregation utils", () => {
     describe("wrapApocRun", () => {
@@ -31,9 +31,9 @@ describe("field-aggregation utils", () => {
         });
     });
 
-    describe("serializeResultObject", () => {
+    describe("serializeObject", () => {
         test("creates a valid cypher object from a js object", () => {
-            const result = serializeResultObject({
+            const result = serializeObject({
                 this: "this",
                 that: `"that"`,
             });
@@ -42,7 +42,7 @@ describe("field-aggregation utils", () => {
         });
 
         test("ignores undefined, null and empty string values", () => {
-            const result = serializeResultObject({
+            const result = serializeObject({
                 nobody: "expects",
                 the: undefined,
                 spanish: null,
@@ -50,20 +50,6 @@ describe("field-aggregation utils", () => {
             });
 
             expect(result).toEqual(`{ nobody: expects }`);
-        });
-
-        test("serializes nested objects", () => {
-            const result = serializeResultObject({
-                nobody: {
-                    expects: {
-                        the: {
-                            spanish: "inquisition",
-                        },
-                    },
-                },
-            });
-
-            expect(result).toEqual(`{ nobody: { expects: { the: { spanish: inquisition } } } }`);
         });
     });
 });

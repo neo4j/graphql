@@ -19,7 +19,7 @@
 
 import { AggregationAuth } from "./field-aggregations-auth";
 import { wrapApocConvertDate } from "../projection/elements/create-datetime-element";
-import { serializeResultObject } from "./apoc-run-utils";
+import { serializeObject } from "./apoc-run-utils";
 
 export function createMatchWherePattern(matchPattern: string, auth: AggregationAuth, whereInput: string): string {
     let whereQuery = "";
@@ -58,7 +58,7 @@ export function defaultAggregationQuery(matchWherePattern: string, fieldName: st
 export function dateTimeAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
     const fieldPath = `${targetAlias}.${fieldName}`;
     return `${matchWherePattern}
-        RETURN ${serializeResultObject({
+        RETURN ${serializeObject({
             min: wrapApocConvertDate(`min(${fieldPath})`),
             max: wrapApocConvertDate(`max(${fieldPath})`),
         })}`;

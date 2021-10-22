@@ -243,4 +243,27 @@ describe("Field Level Aggregations Where", () => {
             count: 1,
         });
     });
+
+    test("Count nodes with datetime filter", async () => {
+        const query = `
+            query {
+              ${typeMovie.plural} {
+                ${typeActor.plural}Aggregate(where: {born_GT: "2000-01-01"}) {
+                  count
+                }
+              }
+            }
+            `;
+
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: query,
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+            count: 1,
+        });
+    });
 });

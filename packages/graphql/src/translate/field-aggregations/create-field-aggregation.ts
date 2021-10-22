@@ -29,11 +29,10 @@ import { FieldAggregationSchemaTypes } from "../../schema/field-aggregation-comp
 import mapToDbProperty from "../../utils/map-to-db-property";
 import createWhereAndParams from "../create-where-and-params";
 import {
-    escapeStringParams,
-    serializeResultObject,
-    FieldRecord,
+    serializeObject,
     wrapApocRun,
-    getAuthApocParams,
+    serializeAuthParamsForApocRun,
+    serializeParamsForApocRun,
 } from "./apoc-run-utils";
 
 const subQueryNodeAlias = "n";
@@ -96,11 +95,10 @@ export function createFieldAggregation({
         context,
     });
     const matchWherePattern = createMatchWherePattern(targetPattern, authData, whereQuery);
-
-    const apocRunParams = { ...escapeStringParams(whereParams), ...getAuthApocParams(authData) };
+    const apocRunParams = { ...serializeParamsForApocRun(whereParams), ...serializeAuthParamsForApocRun(authData) };
 
     return {
-        query: serializeResultObject({
+        query: serializeObject({
             count: aggregationFields.count
                 ? createCountQuery({
                       nodeLabel,
@@ -176,7 +174,7 @@ function createCountQuery({
     nodeLabel: string;
     matchWherePattern: string;
     targetAlias: string;
-    params: FieldRecord;
+    params: Record<string, string>;
 }): string {
     return wrapApocRun(AggregationSubQueries.countQuery(matchWherePattern, targetAlias), {
         ...params,
@@ -197,7 +195,7 @@ function createAggregationQuery({
     fields: Record<string, ResolveTree>;
     fieldAlias: string;
     graphElement: Node | Relationship;
-    params: FieldRecord;
+    params: Record<string, string>;
 }): string {
     const fieldsSubQueries = Object.values(fields).reduce((acc, field) => {
         const fieldType = getFieldType(field);
@@ -218,7 +216,7 @@ function createAggregationQuery({
         return acc;
     }, {} as Record<string, string>);
 
-    return serializeResultObject(fieldsSubQueries);
+    return serializeObject(fieldsSubQueries);
 }
 
 function getAggregationSubQuery({

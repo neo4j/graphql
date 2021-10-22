@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-import { Integer, isInt } from "neo4j-driver";
+import { Integer, isInt, Time, LocalTime, Duration, Date, LocalDateTime, DateTime } from "neo4j-driver";
+
+export type NeoTemporal = Time | LocalTime | Duration | Date | LocalDateTime | DateTime;
 
 /** Checks if value is string */
 export function isString(value: unknown): value is string {
     return typeof value === "string" || value instanceof String;
 }
 
-/** Checks if value a Neo4j int object */
+/** Checks if value is a Neo4j int object */
 export function isNeoInt(value: unknown): value is Integer {
     return isInt(value);
 }
-
-/** Nested Records helper type, supports any level of recursion. Ending in properties of type T */
-export interface NestedRecord<T> extends Record<string | symbol | number, T | NestedRecord<T>> {} // Using interface to allow recursive types

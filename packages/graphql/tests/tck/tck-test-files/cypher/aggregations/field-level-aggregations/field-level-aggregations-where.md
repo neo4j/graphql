@@ -45,7 +45,7 @@ RETURN this { .title,
             MATCH (this)<-[r:ACTED_IN]-(n:Actor)
             WHERE n.age > $n_age_GT
             RETURN COUNT(n)
-            ", { n_age_GT: 40, this: this }))
+            ", { n_age_GT: $n_age_GT, this: this }))
         }
 } as this
 ```
