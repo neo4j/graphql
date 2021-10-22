@@ -76,13 +76,21 @@ CALL {
     WITH this
     OPTIONAL MATCH (this_connect_actors_LeadActor0_node:LeadActor)
     WHERE this_connect_actors_LeadActor0_node.name = $this_connect_actors_LeadActor0_node_name
-    FOREACH(_ IN CASE this_connect_actors_LeadActor0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)<-[:ACTED_IN]-(this_connect_actors_LeadActor0_node) )
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_actors_LeadActor0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)<-[:ACTED_IN]-(this_connect_actors_LeadActor0_node)
+        )
+    )
     WITH this, this_connect_actors_LeadActor0_node
     CALL {
         WITH this, this_connect_actors_LeadActor0_node
         OPTIONAL MATCH (this_connect_actors_LeadActor0_node_actedIn_Series0_node:Series)
         WHERE this_connect_actors_LeadActor0_node_actedIn_Series0_node.name = $this_connect_actors_LeadActor0_node_actedIn_Series0_node_name
-        FOREACH(_ IN CASE this_connect_actors_LeadActor0_node_actedIn_Series0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this_connect_actors_LeadActor0_node)-[:ACTED_IN]->(this_connect_actors_LeadActor0_node_actedIn_Series0_node) )
+        FOREACH(_ IN CASE this_connect_actors_LeadActor0_node WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this_connect_actors_LeadActor0_node_actedIn_Series0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this_connect_actors_LeadActor0_node)-[:ACTED_IN]->(this_connect_actors_LeadActor0_node_actedIn_Series0_node)
+            )
+        )
         RETURN count(*)
     }
     RETURN count(*)

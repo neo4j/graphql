@@ -95,15 +95,13 @@ function aggregate({
             return;
         }
 
-        const field = [...nodeOrRelationship.primitiveFields, ...nodeOrRelationship.temporalFields].find(
-            (fieldItem) => {
-                return logicalOperators.some(
-                    (op) =>
-                        key.split(`_${op}`)[0] === fieldItem.fieldName ||
-                        key.split(`_AVERAGE_${op}`)[0] === fieldItem.fieldName ||
-                        aggregationOperators.some((x) => key.split(`_${x}_${op}`)[0] === fieldItem.fieldName)
-                );
-            }
+        const field = [...nodeOrRelationship.primitiveFields, ...nodeOrRelationship.temporalFields].find((f) =>
+            logicalOperators.some(
+                (op) =>
+                    key.split(`_${op}`)[0] === f.fieldName ||
+                    key.split(`_AVERAGE_${op}`)[0] === f.fieldName ||
+                    aggregationOperators.some((x) => key.split(`_${x}_${op}`)[0] === f.fieldName)
+            )
         ) as BaseField;
 
         const dbPropertyName = field.dbPropertyName || field.fieldName;

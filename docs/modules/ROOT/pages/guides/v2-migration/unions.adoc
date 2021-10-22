@@ -29,7 +29,7 @@ union Production = Movie | Series
 
 The structure of input types for union queries and mutations have been changed for user friendliness, and a more consistent API.
 
-Essentially, field names which were previously of template `${unionFieldName}_${concreteType}` (for example, "actedIn_Movie") are now an object, with the field name at the top, and the member types under it.
+Essentially, field names which were previously of template `<unionFieldName>_<concreteType>` (for example, "actedIn_Movie") are now an object, with the field name at the top, and the member types under it.
 
 For example, a Mutation which would have previously been:
 
@@ -131,4 +131,4 @@ query {
 }
 ----
 
-Furthermore, the where argument used now dictates which union members are returned from the database, to prevent overfetching. Please see xref::type-definitions/unions-and-interfaces.adoc#type-definitions-unions-and-interfaces-union-types-querying[Querying a union] for background and explanation of this decision.
+Furthermore, the where argument used now dictates which union members are returned from the database, to prevent overfetching. Please see xref::appendix/preventing-overfetching.adoc[this page] for background and explanation of this decision.

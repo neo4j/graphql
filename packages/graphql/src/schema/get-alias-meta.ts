@@ -17,18 +17,13 @@
  * limitations under the License.
  */
 
-import { FieldDefinitionNode, StringValueNode } from "graphql";
+import { DirectiveNode, StringValueNode } from "graphql";
 
 type AliasMeta = {
     property: string;
 };
 
-function getAliasMeta(field: FieldDefinitionNode): AliasMeta | undefined {
-    const directive = field.directives?.find((x) => x.name.value === "alias");
-    if (!directive) {
-        return undefined;
-    }
-
+function getAliasMeta(directive: DirectiveNode): AliasMeta | undefined {
     const stmtArg = directive.arguments?.find((x) => x.name.value === "property");
     if (!stmtArg) {
         throw new Error("@alias property argument is required");
