@@ -199,8 +199,10 @@ CALL {
         WITH this0
         OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
         WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_name
-        FOREACH(_ IN CASE this0_search_Genre_connect0_node WHEN NULL THEN [] ELSE [1] END |
-            MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
+        FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_search_Genre_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
+            )
         )
         RETURN count(*)
     }
@@ -453,7 +455,11 @@ CALL {
     WITH this
     OPTIONAL MATCH (this_connect_search_Genre0_node:Genre)
     WHERE this_connect_search_Genre0_node.name = $this_connect_search_Genre0_node_name
-    FOREACH(_ IN CASE this_connect_search_Genre0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node) )
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_search_Genre0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
+        )
+    )
     RETURN count(*)
 }
 RETURN this { .title } AS this

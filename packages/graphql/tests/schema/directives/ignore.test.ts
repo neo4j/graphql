@@ -22,14 +22,19 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("Ignore", () => {
-    test("Simple", () => {
+describe("@ignore directive", () => {
+    test("passes fields directly through with no generation", () => {
         const typeDefs = gql`
-            type User {
+            interface UserInterface {
+                ignored: String @ignore
+            }
+
+            type User implements UserInterface {
                 id: ID!
                 username: String!
                 password: String!
                 nickname: String! @ignore
+                ignored: String
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -100,8 +105,9 @@ describe("Ignore", () => {
               users: [User!]!
             }
 
-            type User {
+            type User implements UserInterface {
               id: ID!
+              ignored: String
               nickname: String!
               password: String!
               username: String!
@@ -118,6 +124,10 @@ describe("Ignore", () => {
               id: ID!
               password: String!
               username: String!
+            }
+
+            interface UserInterface {
+              ignored: String
             }
 
             input UserOptions {
