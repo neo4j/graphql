@@ -166,12 +166,16 @@ describe("assertConstraints", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `SHOW UNIQUE CONSTRAINTS WHERE "${type.name}" IN labelsOrTypes`;
+            const cypher = `SHOW UNIQUE CONSTRAINTS`;
 
             try {
                 const result = await session.run(cypher);
 
-                expect(result.records.map((record) => record.toObject())).toHaveLength(1);
+                expect(
+                    result.records
+                        .map((record) => record.toObject())
+                        .filter((record) => record.labelsOrTypes.includes(type.name))
+                ).toHaveLength(1);
             } finally {
                 await session.close();
             }
@@ -199,12 +203,20 @@ describe("assertConstraints", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `SHOW UNIQUE CONSTRAINTS WHERE "${type.name}" IN labelsOrTypes AND "internationalStandardBookNumber" IN properties`;
+            const cypher = `SHOW UNIQUE CONSTRAINTS`;
 
             try {
                 const result = await session.run(cypher);
 
-                expect(result.records.map((record) => record.toObject())).toHaveLength(1);
+                expect(
+                    result.records
+                        .map((record) => record.toObject())
+                        .filter(
+                            (record) =>
+                                record.labelsOrTypes.includes(type.name) &&
+                                record.properties.includes("internationalStandardBookNumber")
+                        )
+                ).toHaveLength(1);
             } finally {
                 await session.close();
             }
@@ -356,12 +368,16 @@ describe("assertConstraints", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `SHOW UNIQUE CONSTRAINTS WHERE "${type.name}" IN labelsOrTypes`;
+            const cypher = `SHOW UNIQUE CONSTRAINTS`;
 
             try {
                 const result = await session.run(cypher);
 
-                expect(result.records.map((record) => record.toObject())).toHaveLength(1);
+                expect(
+                    result.records
+                        .map((record) => record.toObject())
+                        .filter((record) => record.labelsOrTypes.includes(type.name))
+                ).toHaveLength(1);
             } finally {
                 await session.close();
             }
@@ -389,12 +405,19 @@ describe("assertConstraints", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `SHOW UNIQUE CONSTRAINTS WHERE "${type.name}" IN labelsOrTypes AND "identifier" IN properties`;
+            const cypher = `SHOW UNIQUE CONSTRAINTS`;
 
             try {
                 const result = await session.run(cypher);
 
-                expect(result.records.map((record) => record.toObject())).toHaveLength(1);
+                expect(
+                    result.records
+                        .map((record) => record.toObject())
+                        .filter(
+                            (record) =>
+                                record.labelsOrTypes.includes(type.name) && record.properties.includes("identifier")
+                        )
+                ).toHaveLength(1);
             } finally {
                 await session.close();
             }
@@ -422,12 +445,16 @@ describe("assertConstraints", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `SHOW UNIQUE CONSTRAINTS WHERE "${type.name}" IN labelsOrTypes`;
+            const cypher = `SHOW UNIQUE CONSTRAINTS`;
 
             try {
                 const result = await session.run(cypher);
 
-                expect(result.records.map((record) => record.toObject())).toHaveLength(0);
+                expect(
+                    result.records
+                        .map((record) => record.toObject())
+                        .filter((record) => record.labelsOrTypes.includes(type.name))
+                ).toHaveLength(0);
             } finally {
                 await session.close();
             }
@@ -455,12 +482,19 @@ describe("assertConstraints", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `SHOW UNIQUE CONSTRAINTS WHERE "${type.name}" IN labelsOrTypes AND "identifier" IN properties`;
+            const cypher = `SHOW UNIQUE CONSTRAINTS`;
 
             try {
                 const result = await session.run(cypher);
 
-                expect(result.records.map((record) => record.toObject())).toHaveLength(0);
+                expect(
+                    result.records
+                        .map((record) => record.toObject())
+                        .filter(
+                            (record) =>
+                                record.labelsOrTypes.includes(type.name) && record.properties.includes("identifier")
+                        )
+                ).toHaveLength(0);
             } finally {
                 await session.close();
             }
