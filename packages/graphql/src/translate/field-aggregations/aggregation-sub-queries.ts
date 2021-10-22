@@ -22,14 +22,8 @@ import { wrapApocConvertDate } from "../projection/elements/create-datetime-elem
 import { serializeObject } from "./apoc-run-utils";
 
 export function createMatchWherePattern(matchPattern: string, auth: AggregationAuth, whereInput: string): string {
-    let whereQuery = "";
-    let andQuery = "";
-    if (whereInput || auth.whereQuery) {
-        whereQuery = "WHERE";
-    }
-    if (whereInput && auth.whereQuery) {
-        andQuery = "AND";
-    }
+    const whereQuery = whereInput || auth.whereQuery ? "WHERE" : "";
+    const andQuery = whereInput && auth.whereQuery ? "AND" : "";
 
     return `MATCH ${matchPattern} ${whereQuery} ${whereInput} ${andQuery} ${auth.whereQuery} ${auth.query}`;
 }

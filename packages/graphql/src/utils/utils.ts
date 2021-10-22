@@ -17,9 +17,7 @@
  * limitations under the License.
  */
 
-import { Integer, isInt, Time, LocalTime, Duration, Date, LocalDateTime, DateTime } from "neo4j-driver";
-
-export type NeoTemporal = Time | LocalTime | Duration | Date | LocalDateTime | DateTime;
+import { Integer, isInt } from "neo4j-driver";
 
 /** Checks if value is string */
 export function isString(value: unknown): value is string {

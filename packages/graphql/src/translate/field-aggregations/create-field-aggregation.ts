@@ -78,10 +78,8 @@ export function createFieldAggregation({
         nodeFields: aggregationFields.node,
     });
 
-    const whereInput = (field.args.where as GraphQLWhereArg) || {};
-
     const [whereQuery, whereParams] = createWhereAndParams({
-        whereInput,
+        whereInput: (field.args.where as GraphQLWhereArg) || {},
         varName: subQueryNodeAlias,
         node: referenceNode,
         context,
