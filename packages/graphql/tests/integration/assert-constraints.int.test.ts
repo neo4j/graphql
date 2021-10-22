@@ -18,24 +18,44 @@
  */
 
 import { Driver } from "neo4j-driver";
+import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../../src/utils/test/graphql-types";
 
 describe("assertConstraints", () => {
     let driver: Driver;
+    let databaseName: string;
 
     beforeAll(async () => {
         driver = await neo4j();
+
+        databaseName = generate({ readable: true });
+
+        const cypher = `CREATE DATABASE ${databaseName}`;
+        const session = driver.session();
+        try {
+            await session.run(cypher);
+        } finally {
+            await session.close();
+        }
     });
 
     afterAll(async () => {
         await driver.close();
+
+        const cypher = `DROP DATABASE ${databaseName}`;
+
+        const session = driver.session();
+        try {
+            await session.run(cypher);
+        } finally {
+            await session.close();
+        }
     });
 
     test("should throw an error when all necessary constraints do not exist", async () => {
         const type = generateUniqueType("Book");
-        console.log(type);
 
         const typeDefs = `
             type ${type.name} {
@@ -46,14 +66,13 @@ describe("assertConstraints", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        await expect(neoSchema.assertConstraints({ driver })).rejects.toThrow(
+        await expect(neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })).rejects.toThrow(
             `Missing constraint for ${type.name}.isan`
         );
     });
 
     test("should not throw an error when all necessary constraints exist", async () => {
         const type = generateUniqueType("Book");
-        console.log(type);
 
         const typeDefs = `
             type ${type.name} {
@@ -64,7 +83,7 @@ describe("assertConstraints", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const session = driver.session();
+        const session = driver.session({ database: databaseName });
 
         const cypher = `CREATE CONSTRAINT ${type.name}_isan ON (n:${type.name}) ASSERT n.isan IS UNIQUE`;
 
@@ -74,12 +93,13 @@ describe("assertConstraints", () => {
             await session.close();
         }
 
-        await expect(neoSchema.assertConstraints({ driver })).resolves.not.toThrow();
+        await expect(
+            neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+        ).resolves.not.toThrow();
     });
 
     test("should create a constraint if it doesn't exist and specified in options", async () => {
         const type = generateUniqueType("Book");
-        console.log(type);
 
         const typeDefs = `
             type ${type.name} {
@@ -90,9 +110,11 @@ describe("assertConstraints", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        await expect(neoSchema.assertConstraints({ driver, options: { create: true } })).resolves.not.toThrow();
+        await expect(
+            neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName }, options: { create: true } })
+        ).resolves.not.toThrow();
 
-        const session = driver.session();
+        const session = driver.session({ database: databaseName });
 
         const cypher = `SHOW UNIQUE CONSTRAINTS WHERE "${type.name}" IN labelsOrTypes`;
 
