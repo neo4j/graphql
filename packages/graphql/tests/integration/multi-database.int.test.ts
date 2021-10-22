@@ -28,35 +28,54 @@ describe("multi-database", () => {
     const id = generate({
         charset: "alphabetic",
     });
+    let MULTIDB_SUPPORT = true;
     const dbName = "non-default-db-name";
 
     beforeAll(async () => {
         driver = await neo4j();
 
-        // Create DB
-        const createSession = driver.session();
-        await createSession.writeTransaction((tx) => tx.run(`CREATE DATABASE \`${dbName}\``));
-        await createSession.close();
+        try {
+            // Create DB
+            const createSession = driver.session();
+            await createSession.writeTransaction((tx) => tx.run(`CREATE DATABASE \`${dbName}\``));
+            await createSession.close();
 
-        // Write data
-        const writeSession = driver.session({ database: dbName, bookmarks: createSession.lastBookmark() });
-        await writeSession.writeTransaction((tx) => tx.run("CREATE (:Movie {id: $id})", { id }));
-        await writeSession.close();
+            // Write data
+            const writeSession = driver.session({ database: dbName, bookmarks: createSession.lastBookmark() });
+            await writeSession.writeTransaction((tx) => tx.run("CREATE (:Movie {id: $id})", { id }));
+            await writeSession.close();
 
-        // Make sure it's written before we continue
-        const waitSession = driver.session({ database: dbName, bookmarks: writeSession.lastBookmark() });
-        await waitSession.readTransaction((tx) => tx.run("MATCH (m:Movie) RETURN COUNT(m)"));
-        await waitSession.close();
+            // Make sure it's written before we continue
+            const waitSession = driver.session({ database: dbName, bookmarks: writeSession.lastBookmark() });
+            await waitSession.readTransaction((tx) => tx.run("MATCH (m:Movie) RETURN COUNT(m)"));
+            await waitSession.close();
+        } catch (e) {
+            if (e instanceof Error) {
+                if (e.message.includes("Unsupported administration command")) {
+                    // No multi-db support, so we skip tests
+                    MULTIDB_SUPPORT = false;
+                }
+            }
+        }
     });
 
     afterAll(async () => {
-        const dropSession = driver.session();
-        await dropSession.writeTransaction((tx) => tx.run(`DROP DATABASE \`${dbName}\``));
-        await dropSession.close();
+        if (MULTIDB_SUPPORT) {
+            const dropSession = driver.session();
+            await dropSession.writeTransaction((tx) => tx.run(`DROP DATABASE \`${dbName}\``));
+            await dropSession.close();
+        }
         await driver.close();
     });
 
     test("should fail for non-existing database specified via context", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const typeDefs = `
             type Movie {
                 id: ID!
@@ -82,6 +101,13 @@ describe("multi-database", () => {
         expect((result.errors as any)[0].message).toBeTruthy();
     });
     test("should specify the database via context", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const typeDefs = `
             type Movie {
                 id: ID!
@@ -108,6 +134,13 @@ describe("multi-database", () => {
     });
 
     test("should fail for non-existing database specified via neo4j construction", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const typeDefs = `
             type Movie {
                 id: ID!
@@ -137,6 +170,13 @@ describe("multi-database", () => {
         expect((result.errors as any)[0].message).toContain("Unable to get a routing table for database");
     });
     test("should specify the database via neo4j construction", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
         const typeDefs = `
             type Movie {
                 id: ID!
