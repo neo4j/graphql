@@ -32,13 +32,14 @@ describe("assertConstraints", () => {
 
         databaseName = generate({ readable: true });
 
-        const cypher = `CREATE DATABASE ${databaseName} WAIT 5 SECONDS`;
+        const cypher = `CREATE DATABASE ${databaseName}`;
         const session = driver.session();
         try {
             await session.run(cypher);
         } finally {
             await session.close();
         }
+        await new Promise((x) => setTimeout(x, 5000));
     });
 
     afterAll(async () => {
