@@ -60,7 +60,7 @@ describe("assertConstraints", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    isan: String! @unique
+                    isbn: String! @unique
                     title: String!
                 }
             `;
@@ -69,7 +69,24 @@ describe("assertConstraints", () => {
 
             await expect(
                 neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
-            ).rejects.toThrow(`Missing constraint for ${type.name}.isan`);
+            ).rejects.toThrow(`Missing constraint for ${type.name}.isbn`);
+        });
+
+        test("should throw an error when all necessary constraints do not exist when used with @alias", async () => {
+            const type = generateUniqueType("Book");
+
+            const typeDefs = `
+                type ${type.name} {
+                    isbn: String! @unique @alias(property: "internationalStandardBookNumber")
+                    title: String!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            await expect(
+                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+            ).rejects.toThrow(`Missing constraint for ${type.name}.internationalStandardBookNumber`);
         });
 
         test("should not throw an error when all necessary constraints exist", async () => {
@@ -77,7 +94,7 @@ describe("assertConstraints", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    isan: String! @unique
+                    isbn: String! @unique
                     title: String!
                 }
             `;
@@ -86,7 +103,34 @@ describe("assertConstraints", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `CREATE CONSTRAINT ${type.name}_isan ON (n:${type.name}) ASSERT n.isan IS UNIQUE`;
+            const cypher = `CREATE CONSTRAINT ${type.name}_isbn ON (n:${type.name}) ASSERT n.isbn IS UNIQUE`;
+
+            try {
+                await session.run(cypher);
+            } finally {
+                await session.close();
+            }
+
+            await expect(
+                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+            ).resolves.not.toThrow();
+        });
+
+        test("should not throw an error when all necessary constraints exist when used with @alias", async () => {
+            const type = generateUniqueType("Book");
+
+            const typeDefs = `
+                type ${type.name} {
+                    isbn: String! @unique @alias(property: "internationalStandardBookNumber")
+                    title: String!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const session = driver.session({ database: databaseName });
+
+            const cypher = `CREATE CONSTRAINT ${type.name}_isbn ON (n:${type.name}) ASSERT n.internationalStandardBookNumber IS UNIQUE`;
 
             try {
                 await session.run(cypher);
@@ -104,7 +148,7 @@ describe("assertConstraints", () => {
 
             const typeDefs = `
                 type ${type.name} {
-                    isan: String! @unique
+                    isbn: String! @unique
                     title: String!
                 }
             `;
@@ -122,6 +166,39 @@ describe("assertConstraints", () => {
             const session = driver.session({ database: databaseName });
 
             const cypher = `SHOW UNIQUE CONSTRAINTS WHERE "${type.name}" IN labelsOrTypes`;
+
+            try {
+                const result = await session.run(cypher);
+
+                expect(result.records.map((record) => record.toObject())).toHaveLength(1);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should create a constraint if it doesn't exist and specified in options when used with @alias", async () => {
+            const type = generateUniqueType("Book");
+
+            const typeDefs = `
+                type ${type.name} {
+                    isbn: String! @unique @alias(property: "internationalStandardBookNumber")
+                    title: String!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            await expect(
+                neoSchema.assertConstraints({
+                    driver,
+                    driverConfig: { database: databaseName },
+                    options: { create: true },
+                })
+            ).resolves.not.toThrow();
+
+            const session = driver.session({ database: databaseName });
+
+            const cypher = `SHOW UNIQUE CONSTRAINTS WHERE "${type.name}" IN labelsOrTypes AND "internationalStandardBookNumber" IN properties`;
 
             try {
                 const result = await session.run(cypher);
@@ -151,12 +228,46 @@ describe("assertConstraints", () => {
             ).rejects.toThrow(`Missing constraint for ${type.name}.id`);
         });
 
+        test("should throw an error when all necessary constraints do not exist when used with @alias", async () => {
+            const type = generateUniqueType("User");
+
+            const typeDefs = `
+                type ${type.name} {
+                    id: ID! @id @alias(property: "identifier")
+                    name: String!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            await expect(
+                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+            ).rejects.toThrow(`Missing constraint for ${type.name}.identifier`);
+        });
+
         test("should not throw an error when unique argument is set to false", async () => {
             const type = generateUniqueType("User");
 
             const typeDefs = `
                 type ${type.name} {
                     id: ID! @id(unique: false)
+                    name: String!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            await expect(
+                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+            ).resolves.not.toThrow();
+        });
+
+        test("should not throw an error when unique argument is set to false when used with @alias", async () => {
+            const type = generateUniqueType("User");
+
+            const typeDefs = `
+                type ${type.name} {
+                    id: ID! @id(unique: false) @alias(property: "identifier")
                     name: String!
                 }
             `;
@@ -195,6 +306,33 @@ describe("assertConstraints", () => {
             ).resolves.not.toThrow();
         });
 
+        test("should not throw an error when all necessary constraints exist when used with @alias", async () => {
+            const type = generateUniqueType("User");
+
+            const typeDefs = `
+                type ${type.name} {
+                    id: ID! @id @alias(property: "identifier")
+                    name: String!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const session = driver.session({ database: databaseName });
+
+            const cypher = `CREATE CONSTRAINT ${type.name}_id ON (n:${type.name}) ASSERT n.identifier IS UNIQUE`;
+
+            try {
+                await session.run(cypher);
+            } finally {
+                await session.close();
+            }
+
+            await expect(
+                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+            ).resolves.not.toThrow();
+        });
+
         test("should create a constraint if it doesn't exist and specified in options", async () => {
             const type = generateUniqueType("User");
 
@@ -228,6 +366,39 @@ describe("assertConstraints", () => {
             }
         });
 
+        test("should create a constraint if it doesn't exist and specified in options when used with @alias", async () => {
+            const type = generateUniqueType("User");
+
+            const typeDefs = `
+                type ${type.name} {
+                    id: ID! @id @alias(property: "identifier")
+                    name: String!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            await expect(
+                neoSchema.assertConstraints({
+                    driver,
+                    driverConfig: { database: databaseName },
+                    options: { create: true },
+                })
+            ).resolves.not.toThrow();
+
+            const session = driver.session({ database: databaseName });
+
+            const cypher = `SHOW UNIQUE CONSTRAINTS WHERE "${type.name}" IN labelsOrTypes AND "identifier" IN properties`;
+
+            try {
+                const result = await session.run(cypher);
+
+                expect(result.records.map((record) => record.toObject())).toHaveLength(1);
+            } finally {
+                await session.close();
+            }
+        });
+
         test("should not create a constraint if it doesn't exist and unique option is set to false", async () => {
             const type = generateUniqueType("User");
 
@@ -251,6 +422,39 @@ describe("assertConstraints", () => {
             const session = driver.session({ database: databaseName });
 
             const cypher = `SHOW UNIQUE CONSTRAINTS WHERE "${type.name}" IN labelsOrTypes`;
+
+            try {
+                const result = await session.run(cypher);
+
+                expect(result.records.map((record) => record.toObject())).toHaveLength(0);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should not create a constraint if it doesn't exist and unique option is set to false when used with @alias", async () => {
+            const type = generateUniqueType("User");
+
+            const typeDefs = `
+                type ${type.name} {
+                    id: ID! @id(unique: false) @alias(property: "identifier")
+                    name: String!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            await expect(
+                neoSchema.assertConstraints({
+                    driver,
+                    driverConfig: { database: databaseName },
+                    options: { create: true },
+                })
+            ).resolves.not.toThrow();
+
+            const session = driver.session({ database: databaseName });
+
+            const cypher = `SHOW UNIQUE CONSTRAINTS WHERE "${type.name}" IN labelsOrTypes AND "identifier" IN properties`;
 
             try {
                 const result = await session.run(cypher);

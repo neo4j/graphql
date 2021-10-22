@@ -64,7 +64,7 @@ async function assertConstraints({
                     constraintsToCreate.push({
                         constraintName: field.unique.constraintName,
                         label: node.getMainLabel(),
-                        property: field.fieldName,
+                        property: field.dbPropertyName || field.fieldName,
                     });
                 }
             });
@@ -103,8 +103,9 @@ async function assertConstraints({
         nodes.forEach((node) => {
             node.constrainableFields.forEach((field) => {
                 if (field.unique) {
-                    if (!existingConstraints[node.getMainLabel()]?.includes(field.fieldName)) {
-                        missingConstraints.push(`Missing constraint for ${node.name}.${field.fieldName}`);
+                    const property = field.dbPropertyName || field.fieldName;
+                    if (!existingConstraints[node.getMainLabel()]?.includes(property)) {
+                        missingConstraints.push(`Missing constraint for ${node.name}.${property}`);
                     }
                 }
             });
