@@ -121,12 +121,23 @@ function getObjFieldMeta({
             const aliasDirective =
                 field?.directives?.find((x) => x.name.value === "alias") ||
                 interfaceField?.directives?.find((x) => x.name.value === "alias");
+
             const uniqueDirective = field?.directives?.find((x) => x.name.value === "unique");
+            if (uniqueDirective && obj.kind === "InterfaceTypeDefinition") {
+                throw new Error(
+                    `@unique directive cannot be used on interface type fields: ${obj.name.value}.${field.name.value}`
+                );
+            }
+
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
             const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
             const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
             const fieldObject = objects.find((x) => x.name.value === typeMeta.name);
+
+            const idDirectiveUniqueArgument = idDirective?.arguments?.find((a) => a.name.value === "unique")?.value as
+                | BooleanValueNode
+                | undefined;
 
             const baseField: BaseField = {
                 fieldName: field.name.value,
@@ -158,16 +169,21 @@ function getObjFieldMeta({
                 writeonly:
                     field?.directives?.some((d) => d.name.value === "writeonly") ||
                     interfaceField?.directives?.some((x) => x.name.value === "writeonly"),
-                ...(uniqueDirective
+                ...(uniqueDirective ||
+                (obj.kind === "ObjectTypeDefinition" &&
+                    idDirective &&
+                    (!idDirectiveUniqueArgument || idDirectiveUniqueArgument.value))
                     ? {
                           unique: {
                               constraintName:
-                                  uniqueDirective.arguments?.find((a) => a.name.value === "constraintName")?.name
-                                      .value || `${obj.name.value}_${field.name.value}`,
+                                  (uniqueDirective?.arguments?.find((a) => a.name.value === "constraintName")?.value as
+                                      | StringValueNode
+                                      | undefined)?.value || `${obj.name.value}_${field.name.value}`,
                           },
                       }
                     : {}),
             };
+
             if (aliasDirective) {
                 const aliasMeta = getAliasMeta(aliasDirective);
                 if (aliasMeta) {

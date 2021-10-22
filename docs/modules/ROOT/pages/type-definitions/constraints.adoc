@@ -15,6 +15,8 @@ directive @unique(
 ) on FIELD_DEFINITION
 ----
 
+Additionally, the usage of the xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-id[`@id`] directive by default implies that there should be a unique node property constraint in the database for that property.
+
 Using this directive does not automatically ensure the existence of these constraints, and you will need to run a function on server startup. See the section xref::type-definitions/constraints.adoc#type-definitions-constraints-asserting[Asserting constraints] below for details.
 
 === `@unique` directive usage
@@ -60,12 +62,13 @@ type Colour @node(label: "Color", additionalLabels: ["Hue"]) {
 [[type-definitions-constraints-asserting]]
 == Asserting constraints
 
-In order to ensure that the specified constraints exist in the database, you will need to run the function `assertConstraints`, the full details of which can be found in the xref::api-reference/neo4jgraphql.adoc#api-reference-assertconstraints[API reference]. A simple example to create the necessary constraints might look like the following, assuming a valid driver instance in the variable `driver`:
+In order to ensure that the specified constraints exist in the database, you will need to run the function `assertConstraints`, the full details of which can be found in the xref::api-reference/neo4jgraphql.adoc#api-reference-assertconstraints[API reference]. A simple example to create the necessary constraints might look like the following, assuming a valid driver instance in the variable `driver`. This will create two constraints, one for each field decorated with `@id` or `@unique`:
 
 [source, javascript, indent=0]
 ----
 const typeDefs = gql`
     type Colour {
+        id: ID! @id
         hexadecimal: String! @unique
     }
 `;
