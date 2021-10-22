@@ -32,6 +32,7 @@ describe("createDisconnectAndParams", () => {
                     direction: "OUT",
                     type: "SIMILAR",
                     fieldName: "similarMovies",
+                    inherited: false,
                     typeMeta: {
                         name: "Movie",
                         array: true,
@@ -90,7 +91,7 @@ describe("createDisconnectAndParams", () => {
             relationField: node.relationFields[0],
             parentVar: "this",
             context,
-            refNode: node,
+            refNodes: [node],
             parentNode: node,
             parameterPrefix: "this", // TODO
         });

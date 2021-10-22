@@ -35,21 +35,47 @@ export const DEBUG_AUTH = `${DEBUG_PREFIX}:auth`;
 export const DEBUG_GRAPHQL = `${DEBUG_PREFIX}:graphql`;
 export const DEBUG_EXECUTE = `${DEBUG_PREFIX}:execute`;
 
-// [0]Name [1]Error
 export const RESERVED_TYPE_NAMES = [
-    [
-        "PageInfo",
-        "Type or Interface with name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.",
-    ],
-    [
-        "Connection",
-        'Type or Interface with name ending "Connection" are reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.',
-    ],
-    ["Node", "Type or Interface with name 'Node' reserved to support relay See https://relay.dev/graphql/"],
+    {
+        regex: /^PageInfo$/,
+        error:
+            "Type or Interface with name `PageInfo` reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.",
+    },
+    {
+        regex: /^.+Connection$/,
+        error:
+            'Type or Interface with name ending "Connection" are reserved to support the pagination model of connections. See https://relay.dev/graphql/connections.htm#sec-Reserved-Types for more information.',
+    },
+    {
+        regex: /^Node$/,
+        error:
+            "Type or Interface with name `Node` reserved to support Relay. See https://relay.dev/graphql/ for more information.",
+    },
 ];
 
 // [0]Field [1]Error
 export const RESERVED_INTERFACE_FIELDS = [
     ["node", "Interface field name 'node' reserved to support relay See https://relay.dev/graphql/"],
     ["cursor", "Interface field name 'cursor' reserved to support relay See https://relay.dev/graphql/"],
+];
+
+export const WHERE_AGGREGATION_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+
+// Types that you can average
+// https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg
+// https://neo4j.com/docs/cypher-manual/current/functions/aggregating/#functions-avg-duration
+// String uses avg(size())
+export const WHERE_AGGREGATION_AVERAGE_TYPES = ["String", "Int", "Float", "BigInt", "Duration"];
+
+export const WHERE_AGGREGATION_TYPES = [
+    "ID",
+    "String",
+    "Float",
+    "Int",
+    "BigInt",
+    "DateTime",
+    "LocalDateTime",
+    "LocalTime",
+    "Time",
+    "Duration",
 ];

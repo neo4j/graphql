@@ -85,17 +85,63 @@ function createConnectionWhereAndParams({
             }
 
             if (k.startsWith("node") || k.startsWith(node.name)) {
-                const nodeWhere = createNodeWhereAndParams({
-                    whereInput: v,
+                let { whereStrs } = res;
+                let { params } = res;
+
+                if (Object.keys(v).length === 1 && v._on && !Object.prototype.hasOwnProperty.call(v._on, node.name)) {
+                    throw new Error("_on is used as the only argument and node is not present within");
+                }
+
+                const rootNodeWhere = createNodeWhereAndParams({
+                    whereInput: {
+                        ...Object.entries(v).reduce((args, [key, value]) => {
+                            if (key !== "_on") {
+                                if (v?._on?.[node.name]?.[key]) {
+                                    return args;
+                                }
+                                return { ...args, [key]: value };
+                            }
+
+                            return args;
+                        }, {}),
+                    },
                     node,
                     nodeVariable,
                     context,
                     parameterPrefix: `${parameterPrefix}.${k}`,
                 });
 
-                const whereStrs = [...res.whereStrs, k.endsWith("_NOT") ? `(NOT ${nodeWhere[0]})` : nodeWhere[0]];
-                const params = { ...res.params, [k]: nodeWhere[1] };
-                res = { whereStrs, params };
+                if (rootNodeWhere[0]) {
+                    whereStrs = [...whereStrs, k.endsWith("_NOT") ? `(NOT ${rootNodeWhere[0]})` : rootNodeWhere[0]];
+                    params = { ...params, [k]: rootNodeWhere[1] };
+                    res = { whereStrs, params };
+                }
+
+                if (v?._on?.[node.name]) {
+                    const onTypeNodeWhere = createNodeWhereAndParams({
+                        whereInput: {
+                            ...Object.entries(v).reduce((args, [key, value]) => {
+                                if (key !== "_on") {
+                                    return { ...args, [key]: value };
+                                }
+
+                                if (Object.prototype.hasOwnProperty.call(value, node.name)) {
+                                    return { ...args, ...(value as any)[node.name] };
+                                }
+
+                                return args;
+                            }, {}),
+                        },
+                        node,
+                        nodeVariable,
+                        context,
+                        parameterPrefix: `${parameterPrefix}.${k}._on.${node.name}`,
+                    });
+
+                    whereStrs = [...whereStrs, k.endsWith("_NOT") ? `(NOT ${onTypeNodeWhere[0]})` : onTypeNodeWhere[0]];
+                    params = { ...params, [k]: onTypeNodeWhere[1] };
+                    res = { whereStrs, params };
+                }
             }
             return res;
         },

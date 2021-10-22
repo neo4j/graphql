@@ -10,10 +10,16 @@ type Actor {
     movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
 }
 
-type Movie {
+interface MovieInterface {
     id: ID
     title: String
     actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+}
+
+type Movie implements MovieInterface {
+    id: ID
+    title: String
+    actors: [Actor]
     topActor: Actor @relationship(type: "TOP_ACTOR", direction: OUT)
 }
 ```

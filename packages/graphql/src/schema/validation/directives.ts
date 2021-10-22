@@ -86,7 +86,7 @@ export const excludeDirective = new GraphQLDirective({
     name: "exclude",
     description:
         "Instructs @neo4j/graphql to exclude the specified operations from query and mutation generation. If used without an argument, no queries or mutations will be generated for this type.",
-    locations: [DirectiveLocation.OBJECT],
+    locations: [DirectiveLocation.INTERFACE, DirectiveLocation.OBJECT],
     args: {
         operations: {
             defaultValue: ExcludeOperationEnum.getValues().map((v) => v.value),
