@@ -1,0 +1,4 @@
+[[appendix]]
+= Appendix
+
+- xref::appendix/preventing-overfetching.adoc[Preventing overfetching] - details on the steps taken to prevent overfetching when dealing with unions and interfaces.

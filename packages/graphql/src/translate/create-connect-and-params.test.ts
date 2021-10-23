@@ -37,6 +37,7 @@ describe("createConnectAndParams", () => {
                     direction: "OUT",
                     type: "SIMILAR",
                     fieldName: "similarMovies",
+                    inherited: false,
                     typeMeta: {
                         name: "Movie",
                         array: true,
@@ -88,7 +89,7 @@ describe("createConnectAndParams", () => {
             relationField: node.relationFields[0],
             parentVar: "this",
             context,
-            refNode: node,
+            refNodes: [node],
             parentNode: node,
         });
 
@@ -99,14 +100,22 @@ describe("createConnectAndParams", () => {
                     WITH this
                     OPTIONAL MATCH (this0_node:Movie)
                     WHERE this0_node.title = $this0_node_title
-                    FOREACH(_ IN CASE this0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this)-[:SIMILAR]->(this0_node) )
+                    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+                        FOREACH(_ IN CASE this0_node WHEN NULL THEN [] ELSE [1] END |
+                            MERGE (this)-[:SIMILAR]->(this0_node)
+                        )
+                    )
 
                     WITH this, this0_node
                     CALL {
                         WITH this, this0_node
                         OPTIONAL MATCH (this0_node_similarMovies0_node:Movie)
                         WHERE this0_node_similarMovies0_node.title = $this0_node_similarMovies0_node_title
-                        FOREACH(_ IN CASE this0_node_similarMovies0_node WHEN NULL THEN [] ELSE [1] END | MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node) )
+                        FOREACH(_ IN CASE this0_node WHEN NULL THEN [] ELSE [1] END |
+                            FOREACH(_ IN CASE this0_node_similarMovies0_node WHEN NULL THEN [] ELSE [1] END |
+                                MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
+                            )
+                        )
                         RETURN count(*)
                     }
 

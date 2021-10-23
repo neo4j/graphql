@@ -22,12 +22,17 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("Private", () => {
-    test("Simple", () => {
+describe("@private directive", () => {
+    test("does not add fields to schema", () => {
         const typeDefs = gql`
-            type User {
+            interface UserInterface {
+                private: String @private
+            }
+
+            type User implements UserInterface {
                 id: ID
                 password: String @private
+                private: String
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -107,7 +112,7 @@ describe("Private", () => {
               users: [User!]!
             }
 
-            type User {
+            type User implements UserInterface {
               id: ID
             }
 
@@ -119,6 +124,8 @@ describe("Private", () => {
             input UserCreateInput {
               id: ID
             }
+
+            interface UserInterface
 
             input UserOptions {
               limit: Int

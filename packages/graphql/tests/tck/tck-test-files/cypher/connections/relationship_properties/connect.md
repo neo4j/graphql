@@ -5,14 +5,12 @@ Schema:
 ```graphql
 type Movie {
     title: String!
-    actors: [Actor!]!
-        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+    actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
 }
 
 type Actor {
     name: String!
-    movies: [Movie!]!
-        @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+    movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
 }
 
 interface ActedIn {
@@ -28,14 +26,7 @@ interface ActedIn {
 
 ```graphql
 mutation {
-    createMovies(
-        input: [
-            {
-                title: "Forrest Gump"
-                actors: { connect: [{ edge: { screenTime: 60 } }] }
-            }
-        ]
-    ) {
+    createMovies(input: [{ title: "Forrest Gump", actors: { connect: [{ edge: { screenTime: 60 } }] } }]) {
         movies {
             title
             actorsConnection {
@@ -61,9 +52,11 @@ CALL {
     CALL {
         WITH this0
         OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-        FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
-            MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
-            SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
+        FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+                SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
+            )
         )
         RETURN count(*)
     }
@@ -104,14 +97,7 @@ mutation {
         input: [
             {
                 title: "Forrest Gump"
-                actors: {
-                    connect: [
-                        {
-                            where: { node: { name: "Tom Hanks" } }
-                            edge: { screenTime: 60 }
-                        }
-                    ]
-                }
+                actors: { connect: [{ where: { node: { name: "Tom Hanks" } }, edge: { screenTime: 60 } }] }
             }
         ]
     ) {
@@ -141,9 +127,11 @@ CALL {
         WITH this0
         OPTIONAL MATCH (this0_actors_connect0_node:Actor)
         WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_name
-        FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
-            MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
-            SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
+        FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+                SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
+            )
         )
         RETURN count(*)
     }
@@ -181,10 +169,7 @@ this0 { .title, actorsConnection } AS this0
 
 ```graphql
 mutation {
-    updateMovies(
-        where: { title: "Forrest Gump" }
-        connect: { actors: { edge: { screenTime: 60 } } }
-    ) {
+    updateMovies(where: { title: "Forrest Gump" }, connect: { actors: { edge: { screenTime: 60 } } }) {
         movies {
             title
             actorsConnection {
@@ -209,9 +194,11 @@ WITH this
 CALL {
     WITH this
     OPTIONAL MATCH (this_connect_actors0_node:Actor)
-    FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
-        SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
+        )
     )
     RETURN count(*)
 }
@@ -247,12 +234,7 @@ RETURN this { .title, actorsConnection } AS this
 mutation {
     updateMovies(
         where: { title: "Forrest Gump" }
-        connect: {
-            actors: {
-                where: { node: { name: "Tom Hanks" } }
-                edge: { screenTime: 60 }
-            }
-        }
+        connect: { actors: { where: { node: { name: "Tom Hanks" } }, edge: { screenTime: 60 } } }
     ) {
         movies {
             title
@@ -279,9 +261,11 @@ CALL {
     WITH this
     OPTIONAL MATCH (this_connect_actors0_node:Actor)
     WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
-    FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
-        SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
+        )
     )
     RETURN count(*)
 }

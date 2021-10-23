@@ -116,7 +116,7 @@ function createWhereAndParams({
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
 
-                const labels = refNode.labelString;
+                const labels = refNode.getLabelString(context);
                 if (value === null) {
                     res.clauses.push(`EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
 
@@ -160,7 +160,7 @@ function createWhereAndParams({
                 const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
                 const outStr = connectionField.relationship.direction === "OUT" ? "->" : "-";
 
-                const labels = refNode.labelString;
+                const labels = refNode.getLabelString(context);
 
                 if (value === null) {
                     res.clauses.push(
@@ -321,7 +321,7 @@ function createWhereAndParams({
             const outStr = equalityRelation.direction === "OUT" ? "->" : "-";
             const relTypeStr = `[:${equalityRelation.type}]`;
 
-            const labels = refNode.labelString;
+            const labels = refNode.getLabelString(context);
 
             if (value === null) {
                 res.clauses.push(`NOT EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
@@ -367,7 +367,7 @@ function createWhereAndParams({
             const inStr = equalityConnection.relationship.direction === "IN" ? "<-" : "-";
             const outStr = equalityConnection.relationship.direction === "OUT" ? "->" : "-";
 
-            const labels = refNode.labelString;
+            const labels = refNode.getLabelString(context);
 
             if (value === null) {
                 res.clauses.push(

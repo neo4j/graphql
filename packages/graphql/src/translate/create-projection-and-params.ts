@@ -40,6 +40,7 @@ interface Res {
 interface ProjectionMeta {
     authValidateStrs?: string[];
     connectionFields?: ResolveTree[];
+    interfaceFields?: ResolveTree[];
 }
 
 function createNodeWhereAndParams({
@@ -257,9 +258,28 @@ function createProjectionAndParams({
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const relTypeStr = `[:${relationField.type}]`;
             const outStr = relationField.direction === "OUT" ? "->" : "-";
-            const labels = referenceNode?.labelString;
+            const labels = referenceNode?.getLabelString(context);
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
+
+            if (relationField.interface) {
+                if (!res.meta.interfaceFields) {
+                    res.meta.interfaceFields = [];
+                }
+
+                const f = field;
+
+                res.meta.interfaceFields.push(f);
+
+                let offsetLimitStr = "";
+                if (optionsInput) {
+                    offsetLimitStr = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
+                }
+
+                res.projection.push(`${f.alias}: collect(${f.alias})${offsetLimitStr}`);
+
+                return res;
+            }
 
             if (relationField.union) {
                 const referenceNodes = context.neoSchema.nodes.filter(
@@ -274,7 +294,9 @@ function createProjectionAndParams({
                     })${inStr}${relTypeStr}${outStr}(${param})`,
                     `WHERE ${referenceNodes
                         .map((x) => {
-                            const labelsStatements = x.labels.map((label) => `"${label}" IN labels(${param})`);
+                            const labelsStatements = x
+                                .getLabels(context)
+                                .map((label) => `"${label}" IN labels(${param})`);
                             return `(${labelsStatements.join(" AND ")})`;
                         })
                         .join(" OR ")}`,
@@ -282,7 +304,9 @@ function createProjectionAndParams({
                 ];
 
                 const headStrs: string[] = referenceNodes.map((refNode) => {
-                    const labelsStatements = refNode.labels.map((label) => `"${label}" IN labels(${param})`);
+                    const labelsStatements = refNode
+                        .getLabels(context)
+                        .map((label) => `"${label}" IN labels(${param})`);
                     const innerHeadStr: string[] = [
                         `[ ${param} IN [${param}] WHERE (${labelsStatements.join(" AND ")})`,
                     ];

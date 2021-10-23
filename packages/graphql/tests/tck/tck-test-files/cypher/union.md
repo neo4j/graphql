@@ -198,8 +198,12 @@ CALL {
         WITH this0
         MATCH (this0_search_Genre_connect0_node:Genre)
         WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_name
-        MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
-        RETURN [ metaVal IN [{type: 'Connected', name: 'Movie', toName: 'Genre', id: id(this0), toID: id(this0_search_Genre_connect0_node), properties: this0_search_Genre_connect0_relationship}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_search_Genre_connect0_mutateMeta
+        FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_search_Genre_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
+            )
+        )
+        RETURN count(*)
     }
 
     WITH this0, this0_mutateMeta + this0_search_Genre_connect0_mutateMeta as this0_mutateMeta
@@ -460,8 +464,12 @@ CALL {
     WITH this
     MATCH (this_connect_search_Genre0_node:Genre)
     WHERE this_connect_search_Genre0_node.name = $this_connect_search_Genre0_node_name
-    MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
-    RETURN [ metaVal IN [{type: 'Connected', name: 'Movie', toName: 'Genre', id: id(this), toID: id(this_connect_search_Genre0_node), properties: this_connect_search_Genre0_relationship}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_search_Genre0_mutateMeta
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_search_Genre0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
+        )
+    )
+    RETURN count(*)
 }
 
 WITH this, this_connect_search_Genre0_mutateMeta as mutateMeta

@@ -86,6 +86,7 @@ WHERE this.id = $this_id
 WITH this
 OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
 WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
+
 CALL apoc.do.when(this_actors0 IS NOT NULL,
   "
     SET this_actors0.name = $this_update_actors0_name
@@ -283,8 +284,12 @@ CALL {
     WITH this
     MATCH (this_connect_actors0_node:Actor)
     WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
-    MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
-    RETURN [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'ActorMoviesRelationship', toName: 'Actor', id: id(this), relationshipID: id(this_connect_actors0_relationship), toID: id(this_connect_actors0_node), properties: this_connect_actors0_relationship}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_actors0_mutateMeta
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+        )
+    )
+    RETURN count(*)
 }
 WITH this, this_connect_actors0_mutateMeta as mutateMeta
 RETURN mutateMeta, this { .id } AS this
@@ -325,20 +330,28 @@ MATCH (this:Movie)
 WHERE this.id = $this_id
 WITH this
 CALL {
-  WITH this
-  MATCH (this_connect_actors0_node:Actor)
-  WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
-  MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
-  RETURN [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'ActorMoviesRelationship', toName: 'Actor', id: id(this), relationshipID: id(this_connect_actors0_relationship), toID: id(this_connect_actors0_node), properties: this_connect_actors0_relationship}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_actors0_mutateMeta
+    WITH this
+    OPTIONAL MATCH (this_connect_actors0_node:Actor)
+    WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+        )
+    )
+    RETURN count(*)
 }
 WITH this, this_connect_actors0_mutateMeta as mutateMeta
 WITH this, mutateMeta
 CALL {
-  WITH this
-  MATCH (this_connect_actors1_node:Actor)
-  WHERE this_connect_actors1_node.name = $this_connect_actors1_node_name
-  MERGE (this)<-[this_connect_actors1_relationship:ACTED_IN]-(this_connect_actors1_node)
-  RETURN [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'ActorMoviesRelationship', toName: 'Actor', id: id(this), relationshipID: id(this_connect_actors1_relationship), toID: id(this_connect_actors1_node), properties: this_connect_actors1_relationship}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_actors1_mutateMeta
+    WITH this
+    OPTIONAL MATCH (this_connect_actors1_node:Actor)
+    WHERE this_connect_actors1_node.name = $this_connect_actors1_node_name
+    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+        FOREACH(_ IN CASE this_connect_actors1_node WHEN NULL THEN [] ELSE [1] END |
+            MERGE (this)<-[this_connect_actors1_relationship:ACTED_IN]-(this_connect_actors1_node)
+        )
+    )
+    RETURN count(*)
 }
 WITH this, mutateMeta + this_connect_actors1_mutateMeta as mutateMeta
 RETURN mutateMeta, this { .id } AS this

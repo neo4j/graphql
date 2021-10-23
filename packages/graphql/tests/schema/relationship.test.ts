@@ -133,17 +133,17 @@ describe("Relationship", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate: MovieActoractorsAggregationSelection
+              actorsAggregate: MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
             }
 
-            type MovieActoractorsAggregationSelection {
+            type MovieActorActorsAggregationSelection {
               count: Int!
-              node: MovieActoractorsNodeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
             }
 
-            type MovieActoractorsNodeAggregateSelection {
+            type MovieActorActorsNodeAggregateSelection {
               name: StringAggregateSelection!
             }
 
@@ -412,7 +412,7 @@ describe("Relationship", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate: ActorMoviemoviesAggregationSelection
+              moviesAggregate: ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String
             }
@@ -443,12 +443,12 @@ describe("Relationship", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
-            type ActorMoviemoviesAggregationSelection {
+            type ActorMovieMoviesAggregationSelection {
               count: Int!
-              node: ActorMoviemoviesNodeAggregateSelection
+              node: ActorMovieMoviesNodeAggregateSelection
             }
 
-            type ActorMoviemoviesNodeAggregateSelection {
+            type ActorMovieMoviesNodeAggregateSelection {
               id: IDAggregateSelection!
             }
 
@@ -610,17 +610,17 @@ describe("Relationship", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate: MovieActoractorsAggregationSelection
+              actorsAggregate: MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
             }
 
-            type MovieActoractorsAggregationSelection {
+            type MovieActorActorsAggregationSelection {
               count: Int!
-              node: MovieActoractorsNodeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
             }
 
-            type MovieActoractorsNodeAggregateSelection {
+            type MovieActorActorsNodeAggregateSelection {
               name: StringAggregateSelection!
             }
 

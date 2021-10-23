@@ -22,7 +22,7 @@ import { Kind } from "graphql/language";
 
 function valueOfObjectValueNode(ast: ObjectValueNode) {
     return Object.values(ast.fields).reduce((a, b) => {
-        // eslint-disable-next-line no-param-reassign, @typescript-eslint/no-use-before-define
+        // eslint-disable-next-line no-param-reassign
         a[b.name.value] = parseValueNode(b.value);
 
         return a;

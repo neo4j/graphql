@@ -19,15 +19,19 @@
 
 import { Node } from "../classes";
 import WithProjector, { Projection } from "../classes/WithProjector";
+import createProjectionAndParams from "./create-projection-and-params";
+import createCreateAndParams from "./create-create-and-params";
+import { Context, ConnectionField, RelationField } from "../types";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { ConnectionField, Context } from "../types";
 import createConnectionAndParams from "./connection/create-connection-and-params";
-import createCreateAndParams from "./create-create-and-params";
-import createProjectionAndParams from "./create-projection-and-params";
+import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 
 function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
     const connectionStrs: string[] = [];
+    const interfaceStrs: string[] = [];
     let connectionParams: any;
+    let interfaceParams: any;
 
     const { resolveTree } = context;
 
@@ -110,11 +114,39 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
         });
     }
 
+    if (projection[2]?.interfaceFields?.length) {
+        projection[2].interfaceFields.forEach((interfaceResolveTree) => {
+            const relationshipField = node.relationFields.find(
+                (x) => x.fieldName === interfaceResolveTree.name
+            ) as RelationField;
+            const interfaceProjection = createInterfaceProjectionAndParams({
+                resolveTree: interfaceResolveTree,
+                field: relationshipField,
+                context,
+                node,
+                nodeVariable: "REPLACE_ME",
+            });
+            interfaceStrs.push(interfaceProjection.cypher);
+            if (!interfaceParams) interfaceParams = {};
+            interfaceParams = { ...interfaceParams, ...interfaceProjection.params };
+        });
+    }
+
     const replacedConnectionStrs = connectionStrs.length
         ? createStrs.map((_, i) => {
               return connectionStrs
                   .map((connectionStr) => {
                       return connectionStr.replace(/REPLACE_ME/g, `this${i}`);
+                  })
+                  .join("\n");
+          })
+        : [];
+
+    const replacedInterfaceStrs = interfaceStrs.length
+        ? createStrs.map((_, i) => {
+              return interfaceStrs
+                  .map((interfaceStr) => {
+                      return interfaceStr.replace(/REPLACE_ME/g, `this${i}`);
                   })
                   .join("\n");
           })
@@ -131,17 +163,28 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
           }, {})
         : {};
 
-    const projections: Projection[] = createStrs.map((v, i) => {
-        return {
-            initialVariable: `this${ i }`,
-            str: projection[0]
-                // First look to see if projection param is being reassigned
-                // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
-                .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                .replace(/\$REPLACE_ME/g, "$projection")
-                .replace(/REPLACE_ME/g, `this${i}`),
-        }
-    });
+    const replacedInterfaceParams = interfaceParams
+        ? createStrs.reduce((res1, _, i) => {
+              return {
+                  ...res1,
+                  ...Object.entries(interfaceParams).reduce((res2, [key, value]) => {
+                      return { ...res2, [key.replace("REPLACE_ME", `this${i}`)]: value };
+                  }, {}),
+              };
+          }, {})
+        : {};
+
+    const projectionStr = createStrs
+        .map(
+            (_, i) =>
+                `\nthis${i} ${projection[0]
+                    // First look to see if projection param is being reassigned
+                    // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
+                    .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
+                    .replace(/\$REPLACE_ME/g, "$projection")
+                    .replace(/REPLACE_ME/g, `this${i}`)} AS this${i}`
+        )
+        .join(", ");
 
     const authCalls = createStrs
         .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
@@ -151,10 +194,14 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
         `${createStrs.join("\n")}`,
         authCalls,
         ...replacedConnectionStrs,
+        ...replacedInterfaceStrs,
         withProjector.nextReturn(projections)
     ];
 
-    return [cypher.filter(Boolean).join("\n"), { ...params, ...replacedProjectionParams, ...replacedConnectionParams }];
+    return [
+        cypher.filter(Boolean).join("\n"),
+        { ...params, ...replacedProjectionParams, ...replacedConnectionParams, ...replacedInterfaceParams },
+    ];
 }
 
 export default translateCreate;
