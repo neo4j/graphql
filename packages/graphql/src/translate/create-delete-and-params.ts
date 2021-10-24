@@ -228,7 +228,7 @@ function createDeleteAndParams({
                     res.strs.push(`FOREACH(x IN ${ varNameToDelete } | DETACH DELETE x)`);
                     withProjector.removeVariable(varNameToDelete);
                     withProjector.removeVariable(_varName);
-                    res.strs.push(withProjector.nextWith());
+                    res.strs.push(withProjector.nextWith({ reduceMeta: true }));
                 });
             });
 

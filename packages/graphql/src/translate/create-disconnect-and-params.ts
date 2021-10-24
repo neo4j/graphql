@@ -338,7 +338,10 @@ function createDisconnectAndParams({
         }
         childWithProjector.removeVariable(_varName);
         childWithProjector.removeVariable(relVarName);
-        subquery.push(childWithProjector.nextReturn([], { excludeVariables: withProjector.variables }));
+        subquery.push(childWithProjector.nextReturn([], {
+            excludeVariables: withProjector.variables,
+            reduceMeta: true,
+        }));
 
         return { subquery: subquery.join("\n"), params };
     }
