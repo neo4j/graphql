@@ -18,9 +18,9 @@
  */
 
 import { Node, Relationship } from "../classes";
+import WithProjector from "../classes/WithProjector";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { Context } from "../types";
-import WithProjector from "../classes/WithProjector";
 import mapToDbProperty from "../utils/map-to-db-property";
 import createAuthAndParams from "./create-auth-and-params";
 import createAuthParam from "./create-auth-param";
@@ -165,6 +165,7 @@ function createUpdateAndParams({
                             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`
                         );
                         subWithProjector.addVariable(_varName);
+                        subWithProjector.addVariable(relationshipVariable);
 
                         if (node.auth) {
                             const whereAuth = createAuthAndParams({
@@ -186,7 +187,6 @@ function createUpdateAndParams({
                             subquery.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
 
                             const childWithProjector = subWithProjector.createChild();
-                            childWithProjector.addVariable(_varName);
 
                             const auth = createAuthParam({ context });
                             let innerApocParams = { auth };
@@ -277,7 +277,6 @@ function createUpdateAndParams({
                                 `CALL apoc.do.when(${relationshipVariable} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`
                             );
                             const childWithProjector = subWithProjector.createChild();
-                            childWithProjector.addVariable(relationshipVariable);
                             
                             const setRelationshipParameterPrefix = `${parameterPrefix}.${key}${
                                 relationField.union ? `.${refNode.name}` : ""
@@ -324,6 +323,7 @@ function createUpdateAndParams({
                             subquery.push(updateStrs.join("\n"));
                         }
                         subWithProjector.removeVariable(_varName);
+                        subWithProjector.removeVariable(relationshipVariable);
                     }
 
                     if (update.disconnect) {
@@ -385,23 +385,21 @@ function createUpdateAndParams({
                     }
 
                     if (update.create) {
-                        subquery.push(subWithProjector.nextWith());
 
                         const creates = relationField.typeMeta.array ? update.create : [update.create];
                         creates.forEach((create, i) => {
                             const baseName = `${_varName}_create${i}`;
                             const nodeName = `${baseName}_node`;
                             const propertiesName = `${baseName}_relationship`;
-                            res.strs.push(subWithProjector.nextWith());
-                            const childWithProjector = subWithProjector.createChild();
-                            childWithProjector.addVariable(nodeName);
+                            subquery.push(subWithProjector.nextWith());
+                            subWithProjector.addVariable(nodeName);
 
                             const createAndParams = createCreateAndParams({
                                 context,
                                 node: refNode,
                                 input: create.node,
                                 varName: nodeName,
-                                withProjector: childWithProjector,
+                                withProjector: subWithProjector,
                                 insideDoWhen,
                             });
                             subquery.push(createAndParams[0]);
@@ -424,7 +422,8 @@ function createUpdateAndParams({
                                 });
                                 subquery.push(setA);
                             }
-                            res.strs.push(subWithProjector.mergeWithChild(childWithProjector));
+                            subWithProjector.removeVariable(nodeName);
+                            subquery.push(subWithProjector.nextWith());
                         });
                     }
 

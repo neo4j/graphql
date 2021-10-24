@@ -306,6 +306,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     cypherParams = { ...cypherParams, ...createAndParams[1] };
                     updateStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
                     withProjector.removeVariable(nodeName);
+                    
 
                     let relationship: Relationship | undefined;
                     if (relationField.properties) {
@@ -335,6 +336,9 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
 
                         propertiesVar: relationField.properties ? propertiesName : undefined,
                     });
+
+                    updateStrs.push(withProjector.nextWith());
+
                 });
             });
         });
