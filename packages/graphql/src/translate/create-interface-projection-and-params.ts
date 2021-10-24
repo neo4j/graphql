@@ -42,7 +42,7 @@ function createInterfaceProjectionAndParams({
     let whereArgs: { _on?: any; [str: string]: any } = {};
 
     const cypher = [
-        withProjector.nextWith(),
+        withProjector.nextWith({ reduceMeta: true }),
         'CALL {'
     ];
 

@@ -336,7 +336,8 @@ function createDisconnectAndParams({
             );
             params = { ...params, ...postAuth.params };
         }
-
+        childWithProjector.removeVariable(_varName);
+        childWithProjector.removeVariable(relVarName);
         subquery.push(childWithProjector.nextReturn([], { excludeVariables: withProjector.variables }));
 
         return { subquery: subquery.join("\n"), params };
@@ -358,16 +359,24 @@ function createDisconnectAndParams({
         }
 
         res.disconnects.push( withProjector.nextWith() );
-        const childWithProjector = withProjector.createChild(parentVar);
         res.disconnects.push("CALL {");
+        const childWithProjector = withProjector.createChild(parentVar);
+
+        let mutateMetaVariableDeclared = false;
 
         if (relationField.interface) {
             const subqueries: string[] = [];
             refNodes.forEach((refNode) => {
+                // this_mutateMeta will not be declared at the beginning of each UNION.
+                childWithProjector.mutateMetaVariableDeclared = false;
                 const subquery = createSubqueryContents(refNode, disconnect, index, childWithProjector);
                 if (subquery.subquery) {
                     subqueries.push(subquery.subquery);
                     res.params = { ...res.params, ...subquery.params };
+                }
+
+                if (childWithProjector.mutateMetaVariableDeclared) {
+                    mutateMetaVariableDeclared = true;
                 }
             });
             res.disconnects.push(subqueries.join("\nUNION\n"));
@@ -378,7 +387,9 @@ function createDisconnectAndParams({
         }
 
         res.disconnects.push("}");
-        res.disconnects.push(withProjector.mergeWithChild(childWithProjector));
+        if (mutateMetaVariableDeclared) {
+            res.disconnects.push(withProjector.mergeWithChild(childWithProjector));
+        }
 
         return res;
     }
