@@ -354,6 +354,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     const nodeName = `${baseName}_node${relationField.interface ? `_${refNode.name}` : ""}`;
                     const propertiesName = `${baseName}_relationship`;
                     const relTypeStr = `[${relationField.properties ? propertiesName : ""}:${relationField.type}]`;
+                    withProjector.addVariable(nodeName);
                     const createAndParams = createCreateAndParams({
                         context,
                         node: refNode,
@@ -365,8 +366,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     updateStrs.push(withProjector.nextWith());
                     cypherParams = { ...cypherParams, ...createAndParams[1] };
                     updateStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
-                    // TODO: emit connected event?
-
+                    withProjector.removeVariable(nodeName);
 
                     let relationship: Relationship | undefined;
                     if (relationField.properties) {
@@ -468,7 +468,9 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         withProjector.nextReturn([{
             initialVariable: varName,
             str: projStr,
-        }]),
+        }], {
+            reduceMeta: true,
+        }),
     ];
 
     return [
