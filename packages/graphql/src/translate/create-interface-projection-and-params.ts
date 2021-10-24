@@ -1,5 +1,6 @@
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { Node } from "../classes";
+import WithProjector from "../classes/WithProjector";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { ConnectionField, Context, InterfaceWhereArg, RelationField } from "../types";
 import filterInterfaceNodes from "../utils/filter-interface-nodes";
@@ -15,6 +16,7 @@ function createInterfaceProjectionAndParams({
     node,
     nodeVariable,
     parameterPrefix,
+    withProjector,
 }: {
     resolveTree: ResolveTree;
     field: RelationField;
@@ -22,6 +24,7 @@ function createInterfaceProjectionAndParams({
     node: Node;
     nodeVariable: string;
     parameterPrefix?: string;
+    withProjector: WithProjector,
 }): { cypher: string; params: Record<string, any> } {
     let globalParams = {};
     let params: { args?: any } = {};
@@ -38,10 +41,20 @@ function createInterfaceProjectionAndParams({
 
     let whereArgs: { _on?: any; [str: string]: any } = {};
 
+    const cypher = [
+        withProjector.nextWith(),
+        'CALL {'
+    ];
+
+    const childWithProjector = withProjector.createChild(nodeVariable);
+    const subqueryReturns: string[] = [];
+
     const subqueries = referenceNodes.map((refNode) => {
         const param = `${nodeVariable}_${refNode.name}`;
         const subquery = [
-            `WITH ${nodeVariable}`,
+            withProjector.nextWith({
+                excludeVariables: subqueryReturns,
+            }),
             `MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}(${param}:${refNode.name})`,
         ];
 
@@ -182,13 +195,23 @@ function createInterfaceProjectionAndParams({
                     context,
                     node: refNode,
                     nodeVariable: param,
+                    withProjector,
                 });
                 subquery.push(interfaceProjection.cypher);
                 params = { ...params, ...interfaceProjection.params };
             });
         }
 
-        subquery.push(`RETURN ${recurse[0]} AS ${field.fieldName}`);
+        if (!subqueryReturns.includes(field.fieldName)) {
+            subqueryReturns.push(field.fieldName);
+        }
+        subquery.push(childWithProjector.nextReturn([{
+            str: recurse[0],
+            outputVariable: field.fieldName,
+        }], {
+            excludeVariables: withProjector.variables,
+            reduceMeta: true,
+        }));
         globalParams = {
             ...globalParams,
             ...recurse[1],
@@ -196,13 +219,18 @@ function createInterfaceProjectionAndParams({
 
         return subquery.join("\n");
     });
-    const interfaceProjection = [`WITH ${nodeVariable}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
+    cypher.push(...subqueries.join("\nUNION\n").split('\n'));
+
+    cypher.push('}');
+
+    subqueryReturns.map((r) => withProjector.addVariable(r));
+
     if (Object.keys(whereArgs).length) {
         params.args = { where: whereArgs };
     }
 
     return {
-        cypher: interfaceProjection.join("\n"),
+        cypher: cypher.join("\n"),
         params: {
             ...globalParams,
             ...(Object.keys(params).length ? { [`${nodeVariable}_${resolveTree.alias}`]: params } : {}),

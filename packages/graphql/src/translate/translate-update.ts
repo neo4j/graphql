@@ -412,7 +412,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             parameterPrefix: `${resolveTree.name}.args.delete`,
         });
         const [deleteStr] = deleteAndParams;
-        updateStrs.push(deleteStr);
+        updateStrs.push(...deleteStr.split('\n'));
         cypherParams = {
             ...cypherParams,
             ...deleteAndParams[1],
@@ -455,8 +455,9 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 context,
                 node,
                 nodeVariable: varName,
+                withProjector,
             });
-            updateStrs.push(interfaceProjection.cypher);
+            updateStrs.push(...interfaceProjection.cypher.split('\n'));
             cypherParams = { ...cypherParams, ...interfaceProjection.params };
         });
     }

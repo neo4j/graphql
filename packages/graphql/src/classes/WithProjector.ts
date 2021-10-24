@@ -151,9 +151,9 @@ export interface NextBlockOptions {
 }
 
 export interface Projection {
-    initialVariable: string;
+    initialVariable?: string;
     outputVariable?: string;
-    str: string;
+    str?: string;
 }
 
 class WithProjector {
@@ -180,6 +180,7 @@ class WithProjector {
     }
 
     addVariable(variableName: string) {
+        if (this.variables.includes(variableName)) { return; }
         this.variables.push(variableName);
     }
 
@@ -197,14 +198,24 @@ class WithProjector {
      */
     nextReturn(projections: Projection[] = [], opts: NextBlockOptions = {}) {
         // eslint-disable-next-line no-param-reassign
-        opts.excludeVariables = opts.excludeVariables || [];
+        opts.excludeVariables = [ ...(opts.excludeVariables || []) ];
         for (const projection of projections) {
-            opts.excludeVariables.push(projection.initialVariable);
+            if (projection.initialVariable) {
+                opts.excludeVariables.push(projection.initialVariable);
+            }
+            if (projection.outputVariable) {
+                opts.excludeVariables.push(projection.outputVariable);
+            }
         }
 
         const returnVars = this.nextBlockVars(opts);
         for (const p of projections) {
-            returnVars.push(`${ p.initialVariable } ${ p.str } AS ${ p.outputVariable || p.initialVariable }`);
+            let pOut = `${ p.initialVariable || '' } ${ p.str }`;
+            if (p.outputVariable || p.initialVariable) {
+                pOut += ` AS ${ p.outputVariable || p.initialVariable }`;
+            }
+
+            returnVars.push(pOut);
         }
 
         // With may still be required, even though we are not passing any variables.

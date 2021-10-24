@@ -91,7 +91,6 @@ function createDeleteAndParams({
                           }${index}`;
                     const relationshipVariable = `${_varName}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
-                    // const childWithProjector = withProjector.createChild(_varName);
                     withProjector.addVariable(_varName);
 
                     const whereStrs: string[] = [];
@@ -112,6 +111,7 @@ function createDeleteAndParams({
                                 whereStrs.push(whereAndParams[0]);
                             }
                         } catch {
+                            withProjector.removeVariable(_varName);
                             return;
                         }
                     }
@@ -150,6 +150,19 @@ function createDeleteAndParams({
                         );
                         res.params = { ...res.params, ...allowAuth[1] };
                     }
+
+                    withProjector.markMutationMeta({
+                        type: 'Deleted',
+                        idVar: `id(${ _varName })`,
+                        name: refNode.name,
+                    });
+
+                    res.strs.push(withProjector.nextWith({
+                        additionalVariables: [
+                            `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`,
+                        ]
+                    }));
+                    res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
 
                     if (d.delete) {
                         const nestedDeleteInput = Object.entries(d.delete)
@@ -211,21 +224,7 @@ function createDeleteAndParams({
                             });
                         }
                     }
-
-                    withProjector.markMutationMeta({
-                        type: 'Deleted',
-                        idVar: `id(${ _varName })`,
-                        name: refNode.name,
-                    });
-
-                    res.strs.push(withProjector.nextWith({
-                        additionalVariables: [
-                            `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`,
-                        ]
-                    }));
-                    res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
-                    res.strs.push(withProjector.nextWith());
-                    // res.strs.push(withProjector.mergeWithChild(childWithProjector));
+                    withProjector.removeVariable(_varName);
                 });
             });
 
