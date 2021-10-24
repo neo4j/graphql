@@ -444,6 +444,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         });
     }
 
+    const withInterfaces: string[] = [];
     if (projection[2]?.interfaceFields?.length) {
         projection[2].interfaceFields.forEach((interfaceResolveTree) => {
             const relationshipField = node.relationFields.find(
@@ -459,8 +460,11 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             });
             updateStrs.push(...interfaceProjection.cypher.split('\n'));
             cypherParams = { ...cypherParams, ...interfaceProjection.params };
+            withInterfaces.push(interfaceResolveTree.name);
         });
     }
+
+    withInterfaces.forEach((name) => withProjector.removeVariable(name));
 
     const [projStr] = projection;
     const cypher = [

@@ -157,12 +157,13 @@ function createDeleteAndParams({
                         name: refNode.name,
                     });
 
+                    const varNameToDelete = `${_varName}_to_delete`;
                     res.strs.push(withProjector.nextWith({
                         additionalVariables: [
-                            `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`,
+                            `collect(DISTINCT ${_varName}) as ${ varNameToDelete }`,
                         ]
                     }));
-                    res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
+                    withProjector.addVariable(varNameToDelete);
 
                     if (d.delete) {
                         const nestedDeleteInput = Object.entries(d.delete)
@@ -224,7 +225,10 @@ function createDeleteAndParams({
                             });
                         }
                     }
+                    res.strs.push(`FOREACH(x IN ${ varNameToDelete } | DETACH DELETE x)`);
+                    withProjector.removeVariable(varNameToDelete);
                     withProjector.removeVariable(_varName);
+                    res.strs.push(withProjector.nextWith());
                 });
             });
 
