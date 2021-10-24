@@ -1214,6 +1214,7 @@ describe("@exclude directive", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CreateInfo {
@@ -1254,6 +1255,18 @@ describe("@exclude directive", () => {
               title: SortDirection
             }
 
+            type MovieSubscriptionResponse {
+              id: Int!
+              movie: Movie
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input MovieUpdateInput {
               title: String
             }
@@ -1278,6 +1291,14 @@ describe("@exclude directive", () => {
               deleteMovies(where: MovieWhere): DeleteInfo!
               deleteSeries(where: SeriesWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
             }
 
             interface Production {
@@ -1318,6 +1339,18 @@ describe("@exclude directive", () => {
               title: SortDirection
             }
 
+            type SeriesSubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              series: Series
+              toID: String
+              toType: String
+              type: String!
+            }
+
             input SeriesWhere {
               AND: [SeriesWhere!]
               OR: [SeriesWhere!]
@@ -1343,6 +1376,13 @@ describe("@exclude directive", () => {
             type StringAggregateSelection {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(types: [NodeUpdatedType!], where: MovieWhere): MovieSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Series\\"\\"\\"
+              subscribeToSeries(types: [NodeUpdatedType!], where: SeriesWhere): SeriesSubscriptionResponse!
             }
 
             type UpdateInfo {

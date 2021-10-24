@@ -468,6 +468,18 @@ describe("162", () => {
               id: SortDirection
             }
 
+            type TigerJawLevel2SubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              tigerjawlevel2: TigerJawLevel2
+              toID: String
+              toType: String
+              type: String!
+            }
+
             type TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection {
               count: Int!
               node: TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection

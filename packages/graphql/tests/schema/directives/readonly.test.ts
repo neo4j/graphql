@@ -37,6 +37,7 @@ describe("@readonly directive", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CreateInfo {
@@ -67,6 +68,14 @@ describe("@readonly directive", () => {
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
@@ -83,6 +92,11 @@ describe("@readonly directive", () => {
             type StringAggregateSelection {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from User\\"\\"\\"
+              subscribeToUser(types: [NodeUpdatedType!], where: UserWhere): UserSubscriptionResponse!
             }
 
             type UpdateInfo {
@@ -125,6 +139,18 @@ describe("@readonly directive", () => {
             input UserSort {
               id: SortDirection
               username: SortDirection
+            }
+
+            type UserSubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toType: String
+              type: String!
+              user: User
             }
 
             input UserUpdateInput {
@@ -178,6 +204,7 @@ describe("@readonly directive", () => {
             "schema {
               query: Query
               mutation: Mutation
+              subscription: Subscription
             }
 
             type CreateInfo {
@@ -208,6 +235,14 @@ describe("@readonly directive", () => {
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
@@ -224,6 +259,11 @@ describe("@readonly directive", () => {
             type StringAggregateSelection {
               longest: String!
               shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from User\\"\\"\\"
+              subscribeToUser(types: [NodeUpdatedType!], where: UserWhere): UserSubscriptionResponse!
             }
 
             type UpdateInfo {
@@ -271,6 +311,18 @@ describe("@readonly directive", () => {
             input UserSort {
               id: SortDirection
               username: SortDirection
+            }
+
+            type UserSubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toType: String
+              type: String!
+              user: User
             }
 
             input UserUpdateInput {
