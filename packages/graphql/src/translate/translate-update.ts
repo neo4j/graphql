@@ -412,9 +412,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         withProjector.nextReturn([{
             initialVariable: varName,
             str: projStr,
-        }], {
-            reduceMeta: true,
-        }),
+        }], {}),
     ];
 
     return [
