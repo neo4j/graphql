@@ -465,6 +465,7 @@ function createConnectAndParams({
             const subquery = createSubqueryContents(refNodes[0], connect, index, childWithProjector);
             res.connects.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
+            mutateMetaVariableDeclared = childWithProjector.mutateMetaVariableDeclared;
         }
 
         res.connects.push("}");
