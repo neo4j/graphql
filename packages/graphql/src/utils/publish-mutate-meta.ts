@@ -23,6 +23,7 @@ import { MutationMetaCommon } from "../classes/WithProjector";
 import { DEBUG_PUBLISH } from "../constants";
 import { Context } from "../types";
 import { ExecuteResult } from "./execute";
+import { localPubSub } from "./pubsub";
 
 const debug = Debug(DEBUG_PUBLISH);
 
@@ -139,6 +140,9 @@ function publishMutateMeta(input: {
         }
 
         debug("%s", `${ trigger }: ${JSON.stringify(mutationEvent, null, 2)}`);
+
+        localPubSub.publish(trigger, mutationEvent)
+            .catch((err) => debug(`Failed to publish ${ trigger }: %s`, err));
 
         context.pubsub.publish(trigger, mutationEvent)
             .catch((err) => debug(`Failed to publish ${ trigger }: %s`, err));
