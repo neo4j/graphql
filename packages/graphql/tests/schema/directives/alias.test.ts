@@ -53,7 +53,7 @@ describe("Alias", () => {
 
             type Actor {
               actedIn(options: MovieOptions, where: MovieWhere): [Movie]
-              actedInAggregate: ActorMovieactedInAggregationSelection
+              actedInAggregate: ActorMovieActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               city: String
               name: String!
@@ -292,18 +292,18 @@ describe("Alias", () => {
               actedIn: [ActorActedInDisconnectFieldInput!]
             }
 
-            type ActorMovieactedInAggregationSelection {
+            type ActorMovieActedInAggregationSelection {
               count: Int!
-              edge: ActorMovieactedInEdgeAggregateSelection
-              node: ActorMovieactedInNodeAggregateSelection
+              edge: ActorMovieActedInEdgeAggregateSelection
+              node: ActorMovieActedInNodeAggregateSelection
             }
 
-            type ActorMovieactedInEdgeAggregateSelection {
+            type ActorMovieActedInEdgeAggregateSelection {
               character: StringAggregateSelection!
               screenTime: IntAggregateSelection!
             }
 
-            type ActorMovieactedInNodeAggregateSelection {
+            type ActorMovieActedInNodeAggregateSelection {
               rating: FloatAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -327,11 +327,11 @@ describe("Alias", () => {
 
             type ActorSubscriptionResponse {
               actor: Actor
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -441,12 +441,12 @@ describe("Alias", () => {
             }
 
             type MovieSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               movie: Movie
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!

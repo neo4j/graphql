@@ -18,6 +18,7 @@
  */
 
 import { ResolveTree } from "graphql-parse-resolve-info";
+import { upperFirst } from "graphql-compose";
 import { Node, Relationship } from "../../classes";
 import { Context, RelationField } from "../../types";
 import {
@@ -58,6 +59,7 @@ export function createFieldAggregation({
     const relationAggregationField = node.relationFields.find((x) => {
         return `${x.fieldName}Aggregate` === field.name;
     });
+
     const connectionField = node.connectionFields.find((x) => {
         return `${relationAggregationField?.fieldName}Connection` === x.fieldName;
     });
@@ -68,7 +70,7 @@ export function createFieldAggregation({
 
     if (!referenceNode || !referenceRelation) return undefined;
 
-    const fieldPathBase = `${node.name}${referenceNode.name}${relationAggregationField.fieldName}`;
+    const fieldPathBase = `${node.name}${referenceNode.name}${upperFirst(relationAggregationField.fieldName)}`;
     const aggregationFields = getAggregationFields(fieldPathBase, field);
 
     const authData = createFieldAggregationAuth({
@@ -77,7 +79,7 @@ export function createFieldAggregation({
         subQueryNodeAlias,
         nodeFields: aggregationFields.node,
     });
-    const targetPattern = generateTargetPattern(nodeLabel, relationAggregationField, referenceNode);
+    const targetPattern = generateTargetPattern(nodeLabel, relationAggregationField, referenceNode, context);
     const matchWherePattern = createMatchWherePattern(targetPattern, authData);
 
     return {
@@ -121,10 +123,15 @@ function getAggregationFields(fieldPathBase: string, field: ResolveTree): Aggreg
     return { count, edge, node };
 }
 
-function generateTargetPattern(nodeLabel: string, relationField: RelationField, referenceNode: Node): string {
+function generateTargetPattern(
+    nodeLabel: string,
+    relationField: RelationField,
+    referenceNode: Node,
+    context: Context
+): string {
     const inStr = relationField.direction === "IN" ? "<-" : "-";
     const outStr = relationField.direction === "OUT" ? "->" : "-";
-    const nodeOutStr = `(${subQueryNodeAlias}${referenceNode.labelString})`;
+    const nodeOutStr = `(${subQueryNodeAlias}${referenceNode.getLabelString(context)})`;
 
     return `(${nodeLabel})${inStr}[${subQueryRelationAlias}:${relationField.type}]${outStr}${nodeOutStr}`;
 }

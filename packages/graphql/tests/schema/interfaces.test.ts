@@ -86,8 +86,8 @@ describe("Interfaces", () => {
               customQuery: [Movie]
               id: ID
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate: MovieMoviemoviesAggregationSelection
-              moviesConnection(after: String, first: Int, sort: [MovieMoviesConnectionSort!], where: MovieMoviesConnectionWhere): MovieMoviesConnection!
+              moviesAggregate: MovieMovieMoviesAggregationSelection
+              moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
               nodes: [MovieNode]
             }
 
@@ -97,7 +97,7 @@ describe("Interfaces", () => {
             }
 
             input MovieConnectInput {
-              movies: [MovieMoviesConnectFieldInput!]
+              movies: [MovieNodeMoviesConnectFieldInput!]
             }
 
             input MovieConnectWhere {
@@ -106,23 +106,23 @@ describe("Interfaces", () => {
 
             input MovieCreateInput {
               id: ID
-              movies: MovieMoviesFieldInput
+              movies: MovieNodeMoviesFieldInput
             }
 
             input MovieDeleteInput {
-              movies: [MovieMoviesDeleteFieldInput!]
+              movies: [MovieNodeMoviesDeleteFieldInput!]
             }
 
             input MovieDisconnectInput {
-              movies: [MovieMoviesDisconnectFieldInput!]
+              movies: [MovieNodeMoviesDisconnectFieldInput!]
             }
 
-            type MovieMoviemoviesAggregationSelection {
+            type MovieMovieMoviesAggregationSelection {
               count: Int!
-              node: MovieMoviemoviesNodeAggregateSelection
+              node: MovieMovieMoviesNodeAggregateSelection
             }
 
-            type MovieMoviemoviesNodeAggregateSelection {
+            type MovieMovieMoviesNodeAggregateSelection {
               id: IDAggregateSelection!
             }
 
@@ -137,75 +137,76 @@ describe("Interfaces", () => {
               node: MovieMoviesNodeAggregationWhereInput
             }
 
-            input MovieMoviesConnectFieldInput {
-              connect: [MovieConnectInput!]
-              where: MovieConnectWhere
-            }
-
-            type MovieMoviesConnection {
-              edges: [MovieMoviesRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input MovieMoviesConnectionSort {
-              node: MovieSort
-            }
-
-            input MovieMoviesConnectionWhere {
-              AND: [MovieMoviesConnectionWhere!]
-              OR: [MovieMoviesConnectionWhere!]
-              node: MovieWhere
-              node_NOT: MovieWhere
-            }
-
-            input MovieMoviesCreateFieldInput {
-              node: MovieCreateInput!
-            }
-
-            input MovieMoviesDeleteFieldInput {
-              delete: MovieDeleteInput
-              where: MovieMoviesConnectionWhere
-            }
-
-            input MovieMoviesDisconnectFieldInput {
-              disconnect: MovieDisconnectInput
-              where: MovieMoviesConnectionWhere
-            }
-
-            input MovieMoviesFieldInput {
-              connect: [MovieMoviesConnectFieldInput!]
-              create: [MovieMoviesCreateFieldInput!]
-            }
-
             input MovieMoviesNodeAggregationWhereInput {
               AND: [MovieMoviesNodeAggregationWhereInput!]
               OR: [MovieMoviesNodeAggregationWhereInput!]
               id_EQUAL: ID
             }
 
-            type MovieMoviesRelationship {
-              cursor: String!
-              node: Movie!
-            }
-
-            input MovieMoviesUpdateConnectionInput {
-              node: MovieUpdateInput
-            }
-
-            input MovieMoviesUpdateFieldInput {
-              connect: [MovieMoviesConnectFieldInput!]
-              create: [MovieMoviesCreateFieldInput!]
-              delete: [MovieMoviesDeleteFieldInput!]
-              disconnect: [MovieMoviesDisconnectFieldInput!]
-              update: MovieMoviesUpdateConnectionInput
-              where: MovieMoviesConnectionWhere
-            }
-
             interface MovieNode {
               customQuery: [Movie]
               id: ID
               movies: [Movie]
+              moviesConnection: MovieNodeMoviesConnection!
+            }
+
+            input MovieNodeMoviesConnectFieldInput {
+              connect: [MovieConnectInput!]
+              where: MovieConnectWhere
+            }
+
+            type MovieNodeMoviesConnection {
+              edges: [MovieNodeMoviesRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input MovieNodeMoviesConnectionSort {
+              node: MovieSort
+            }
+
+            input MovieNodeMoviesConnectionWhere {
+              AND: [MovieNodeMoviesConnectionWhere!]
+              OR: [MovieNodeMoviesConnectionWhere!]
+              node: MovieWhere
+              node_NOT: MovieWhere
+            }
+
+            input MovieNodeMoviesCreateFieldInput {
+              node: MovieCreateInput!
+            }
+
+            input MovieNodeMoviesDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: MovieNodeMoviesConnectionWhere
+            }
+
+            input MovieNodeMoviesDisconnectFieldInput {
+              disconnect: MovieDisconnectInput
+              where: MovieNodeMoviesConnectionWhere
+            }
+
+            input MovieNodeMoviesFieldInput {
+              connect: [MovieNodeMoviesConnectFieldInput!]
+              create: [MovieNodeMoviesCreateFieldInput!]
+            }
+
+            type MovieNodeMoviesRelationship {
+              cursor: String!
+              node: Movie!
+            }
+
+            input MovieNodeMoviesUpdateConnectionInput {
+              node: MovieUpdateInput
+            }
+
+            input MovieNodeMoviesUpdateFieldInput {
+              connect: [MovieNodeMoviesConnectFieldInput!]
+              create: [MovieNodeMoviesCreateFieldInput!]
+              delete: [MovieNodeMoviesDeleteFieldInput!]
+              disconnect: [MovieNodeMoviesDisconnectFieldInput!]
+              update: MovieNodeMoviesUpdateConnectionInput
+              where: MovieNodeMoviesConnectionWhere
             }
 
             input MovieOptions {
@@ -216,7 +217,7 @@ describe("Interfaces", () => {
             }
 
             input MovieRelationInput {
-              movies: [MovieMoviesCreateFieldInput!]
+              movies: [MovieNodeMoviesCreateFieldInput!]
             }
 
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
@@ -225,12 +226,12 @@ describe("Interfaces", () => {
             }
 
             type MovieSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               movie: Movie
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -238,7 +239,7 @@ describe("Interfaces", () => {
 
             input MovieUpdateInput {
               id: ID
-              movies: [MovieMoviesUpdateFieldInput!]
+              movies: [MovieNodeMoviesUpdateFieldInput!]
             }
 
             input MovieWhere {
@@ -256,8 +257,8 @@ describe("Interfaces", () => {
               id_STARTS_WITH: ID
               movies: MovieWhere
               moviesAggregate: MovieMoviesAggregateInput
-              moviesConnection: MovieMoviesConnectionWhere
-              moviesConnection_NOT: MovieMoviesConnectionWhere
+              moviesConnection: MovieNodeMoviesConnectionWhere
+              moviesConnection_NOT: MovieNodeMoviesConnectionWhere
               movies_NOT: MovieWhere
             }
 

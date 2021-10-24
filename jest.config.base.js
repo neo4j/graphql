@@ -1,4 +1,5 @@
 const path = require("path");
+require('dotenv').config();
 
 module.exports = {
     globalSetup: path.join(__dirname, "jest.global-setup.js"),

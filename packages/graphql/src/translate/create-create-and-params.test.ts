@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import createCreateAndParams from "./create-create-and-params";
 import { Neo4jGraphQL } from "../classes";
+import WithProjector from "../classes/WithProjector";
 import { Context } from "../types";
 import { trimmer } from "../utils";
-import { NodeBuilder } from "../utils/test";
+import { NodeBuilder } from "../utils/test/builders/node-builder";
+import createCreateAndParams from "./create-create-and-params";
 
 describe("createCreateAndParams", () => {
     test("should return the correct projection with 1 selection", () => {
@@ -79,7 +80,7 @@ describe("createCreateAndParams", () => {
             // @ts-ignore
             context: { neoSchema } as Context,
             varName: "this0",
-            withVars: ["this0"],
+            withProjector: new WithProjector({ variables: [ 'this0' ] }),
         });
 
         expect(trimmer(result[0])).toEqual(

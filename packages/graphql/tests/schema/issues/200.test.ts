@@ -78,11 +78,11 @@ describe("200", () => {
 
             type CategorySubscriptionResponse {
               category: Category
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!

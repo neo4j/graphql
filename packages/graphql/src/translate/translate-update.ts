@@ -29,6 +29,7 @@ import createDeleteAndParams from "./create-delete-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
+import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createWhereAndParams from "./create-where-and-params";
 
@@ -41,19 +42,15 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const createInput = resolveTree.args.create;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
-    const labels = node.labelString;
+    const labels = node.getLabelString(context);
     const matchStr = `MATCH (${varName}${labels})`;
-    let whereStr = "";
-    let updateStr = "";
-    const connectStrs: string[] = [];
-    const disconnectStrs: string[] = [];
-    const createStrs: string[] = [];
-    let deleteStr = "";
-    let projAuth = "";
-    let projStr = "";
+
+    const updateStrs: string[] = [
+        matchStr,
+    ];
+
     let cypherParams: { [k: string]: any } = {};
     const whereStrs: string[] = [];
-    const connectionStrs: string[] = [];
     let updateArgs = {};
 
     const withProjector = new WithProjector({ variables: [ varName ] });
@@ -64,6 +61,22 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const { fieldsByTypeName } = Object.values(
         resolveTree.fieldsByTypeName[`Update${node.getPlural({ camelCase: false })}MutationResponse`]
     ).find((field) => field.name === node.getPlural({ camelCase: true }))!;
+
+    const projection = createProjectionAndParams({
+        node,
+        context,
+        fieldsByTypeName,
+        varName,
+    });
+
+    cypherParams = { ...cypherParams, ...projection[1] };
+
+    let projAuth: string | undefined;
+    if (projection[2]?.authValidateStrs?.length) {
+        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
+            " AND "
+        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+    }
 
     if (whereInput) {
         const where = createWhereAndParams({
@@ -91,16 +104,10 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     }
 
     if (whereStrs.length) {
-        whereStr = `WHERE ${whereStrs.join(" AND ")}`;
+        updateStrs.push(`WHERE ${whereStrs.join(" AND ")}`);
     }
 
     if (updateInput) {
-        withProjector.markMutationMeta({
-            type: 'Updated',
-            idVar: `id(${ varName })`,
-            name: node.name,
-            propertiesVar: `$${ varName }_update`,
-        });
 
         const updateAndParams = createUpdateAndParams({
             context,
@@ -111,7 +118,9 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             withProjector,
             parameterPrefix: `${resolveTree.name}.args.update`,
         });
-        [updateStr] = updateAndParams;
+        const [updateStr] = updateAndParams;
+        updateStrs.push(updateStr);
+
         cypherParams = {
             ...cypherParams,
             ...updateAndParams[1],
@@ -131,27 +140,49 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 Object.keys(entry[1]).forEach((unionTypeName) => {
                     refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
             } else {
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
-            refNodes.forEach((refNode) => {
+
+            if (relationField.interface) {
                 const disconnectAndParams = createDisconnectAndParams({
                     context,
                     parentVar: varName,
-                    refNode,
+                    refNodes,
                     relationField,
-                    value: relationField.union ? entry[1][refNode.name] : entry[1],
-                    varName: `${varName}_disconnect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
-                    withVars: [varName],
+                    value: entry[1],
+                    varName: `${varName}_disconnect_${entry[0]}`,
+                    withProjector,
                     parentNode: node,
-                    parameterPrefix: `${resolveTree.name}.args.disconnect.${entry[0]}${
-                        relationField.union ? `.${refNode.name}` : ""
-                    }`,
-                    labelOverride: relationField.union ? refNode.name : "",
+                    parameterPrefix: `${resolveTree.name}.args.disconnect.${entry[0]}`,
+                    labelOverride: "",
                 });
-                disconnectStrs.push(disconnectAndParams[0]);
+                updateStrs.push(...disconnectAndParams[0].split('\n'));
                 cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
-            });
+            } else {
+                refNodes.forEach((refNode) => {
+                    const disconnectAndParams = createDisconnectAndParams({
+                        context,
+                        parentVar: varName,
+                        refNodes: [refNode],
+                        relationField,
+                        value: relationField.union ? entry[1][refNode.name] : entry[1],
+                        varName: `${varName}_disconnect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
+                        withProjector,
+                        parentNode: node,
+                        parameterPrefix: `${resolveTree.name}.args.disconnect.${entry[0]}${
+                            relationField.union ? `.${refNode.name}` : ""
+                        }`,
+                        labelOverride: relationField.union ? refNode.name : "",
+                    });
+                    updateStrs.push(disconnectAndParams[0]);
+                    cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
+                });
+            }
         });
 
         updateArgs = {
@@ -170,24 +201,45 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 Object.keys(entry[1]).forEach((unionTypeName) => {
                     refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
             } else {
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
-            refNodes.forEach((refNode) => {
+
+            if (relationField.interface) {
                 const connectAndParams = createConnectAndParams({
                     context,
                     parentVar: varName,
-                    refNode,
+                    refNodes,
                     relationField,
-                    value: relationField.union ? entry[1][refNode.name] : entry[1],
-                    varName: `${varName}_connect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
+                    value: entry[1],
+                    varName: `${varName}_connect_${entry[0]}`,
                     withProjector,
                     parentNode: node,
-                    labelOverride: relationField.union ? refNode.name : "",
+                    labelOverride: "",
                 });
-                connectStrs.push(connectAndParams[0]);
+                updateStrs.push(connectAndParams[0]);
                 cypherParams = { ...cypherParams, ...connectAndParams[1] };
-            });
+            } else {
+                refNodes.forEach((refNode) => {
+                    const connectAndParams = createConnectAndParams({
+                        context,
+                        parentVar: varName,
+                        refNodes: [refNode],
+                        relationField,
+                        value: relationField.union ? entry[1][refNode.name] : entry[1],
+                        varName: `${varName}_connect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
+                        withProjector,
+                        parentNode: node,
+                        labelOverride: relationField.union ? refNode.name : "",
+                    });
+                    updateStrs.push(connectAndParams[0]);
+                    cypherParams = { ...cypherParams, ...connectAndParams[1] };
+                });
+            }
         });
     }
 
@@ -201,6 +253,10 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 Object.keys(entry[1]).forEach((unionTypeName) => {
                     refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
             } else {
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
@@ -209,29 +265,52 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             const outStr = relationField.direction === "OUT" ? "->" : "-";
 
             refNodes.forEach((refNode) => {
-                const v = relationField.union ? entry[1][refNode.name] : entry[1];
+                let v = relationField.union ? entry[1][refNode.name] : entry[1];
+
+                if (relationField.interface) {
+                    if (relationField.typeMeta.array) {
+                        v = entry[1]
+                            .filter((c) => Object.keys(c.node).includes(refNode.name))
+                            .map((c) => ({ edge: c.edge, node: c.node[refNode.name] }));
+
+                        if (!v.length) {
+                            return;
+                        }
+                    } else {
+                        if (!entry[1].node[refNode.name]) {
+                            return;
+                        }
+                        v = { edge: entry[1].edge, node: entry[1].node[refNode.name] };
+                    }
+                }
+
                 const creates = relationField.typeMeta.array ? v : [v];
+
                 creates.forEach((create, index) => {
                     const baseName = `${varName}_create_${entry[0]}${
-                        relationField.union ? `_${refNode.name}` : ""
+                        relationField.union || relationField.interface ? `_${refNode.name}` : ""
                     }${index}`;
-                    const nodeName = `${baseName}_node`;
+                    const nodeName = `${baseName}_node${relationField.interface ? `_${refNode.name}` : ""}`;
                     const propertiesName = `${baseName}_relationship`;
                     const relTypeStr = `[${relationField.properties ? propertiesName : ""}:${relationField.type}]`;
-
+                    withProjector.addVariable(nodeName);
                     const createAndParams = createCreateAndParams({
                         context,
                         node: refNode,
                         input: create.node,
                         varName: nodeName,
-                        withVars: [varName, nodeName],
+                        withProjector,
                     });
-                    createStrs.push(createAndParams[0]);
+                    updateStrs.push(createAndParams[0]);
+                    updateStrs.push(withProjector.nextWith());
                     cypherParams = { ...cypherParams, ...createAndParams[1] };
-                    createStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+                    updateStrs.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+                    withProjector.removeVariable(nodeName);
+                    
 
+                    let relationship: Relationship | undefined;
                     if (relationField.properties) {
-                        const relationship = (context.neoSchema.relationships.find(
+                        relationship = (context.neoSchema.relationships.find(
                             (x) => x.properties === relationField.properties
                         ) as unknown) as Relationship;
 
@@ -241,9 +320,25 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                             relationship,
                             operation: "CREATE",
                         });
-                        createStrs.push(setA[0]);
+                        updateStrs.push(setA[0]);
                         cypherParams = { ...cypherParams, ...setA[1] };
                     }
+
+                    withProjector.markMutationMeta({
+                        type: 'Connected',
+                        idVar: `id(${ nodeName })`,
+                        name: node.name,
+
+                        toIDVar: `id(${ varName })`,
+                        toName: refNode.name,
+                        relationshipName: relationship ? relationship.name : undefined,
+                        relationshipIDVar: relationField.properties ? `id(${ propertiesName })` : undefined,
+
+                        propertiesVar: relationField.properties ? propertiesName : undefined,
+                    });
+
+                    updateStrs.push(withProjector.nextWith());
+
                 });
             });
         });
@@ -256,10 +351,11 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             deleteInput,
             varName: `${varName}_delete`,
             parentVar: varName,
-            withVars: [varName],
+            withProjector,
             parameterPrefix: `${resolveTree.name}.args.delete`,
         });
-        [deleteStr] = deleteAndParams;
+        const [deleteStr] = deleteAndParams;
+        updateStrs.push(...deleteStr.split('\n'));
         cypherParams = {
             ...cypherParams,
             ...deleteAndParams[1],
@@ -270,18 +366,8 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         };
     }
 
-    const projection = createProjectionAndParams({
-        node,
-        context,
-        fieldsByTypeName,
-        varName,
-    });
-    [projStr] = projection;
-    cypherParams = { ...cypherParams, ...projection[1] };
-    if (projection[2]?.authValidateStrs?.length) {
-        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
-            " AND "
-        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+    if (projAuth) {
+        updateStrs.push(projAuth);
     }
 
     if (projection[2]?.connectionFields?.length) {
@@ -294,25 +380,43 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 field: connectionField,
                 context,
                 nodeVariable: varName,
+                // withProjector,
             });
-            connectionStrs.push(connection[0]);
+            updateStrs.push(connection[0]);
             cypherParams = { ...cypherParams, ...connection[1] };
         });
     }
 
-    const cypher = [
-        matchStr,
-        whereStr,
-        updateStr,
-        connectStrs.join("\n"),
-        disconnectStrs.join("\n"),
-        createStrs.join("\n"),
-        deleteStr,
-        ...(connectionStrs.length || projAuth ? [`WITH ${varName}`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
-        ...(projAuth ? [projAuth] : []),
-        ...connectionStrs,
+    const withInterfaces: string[] = [];
+    if (projection[2]?.interfaceFields?.length) {
+        projection[2].interfaceFields.forEach((interfaceResolveTree) => {
+            const relationshipField = node.relationFields.find(
+                (x) => x.fieldName === interfaceResolveTree.name
+            ) as RelationField;
+            const interfaceProjection = createInterfaceProjectionAndParams({
+                resolveTree: interfaceResolveTree,
+                field: relationshipField,
+                context,
+                node,
+                nodeVariable: varName,
+                withProjector,
+            });
+            updateStrs.push(...interfaceProjection.cypher.split('\n'));
+            cypherParams = { ...cypherParams, ...interfaceProjection.params };
+            withInterfaces.push(interfaceResolveTree.name);
+        });
+    }
 
-        `${ withProjector.nextReturn(varName, projStr) }`,
+    withInterfaces.forEach((name) => withProjector.removeVariable(name));
+
+    const [projStr] = projection;
+    const cypher = [
+        ...updateStrs,
+        // ...(connectionStrs.length || projAuth ? [`WITH ${varName}`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
+        withProjector.nextReturn([{
+            initialVariable: varName,
+            str: projStr,
+        }], {}),
     ];
 
     return [

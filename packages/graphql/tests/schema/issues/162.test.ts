@@ -163,7 +163,7 @@ describe("162", () => {
             type TigerJawLevel2 {
               id: ID
               part1(options: TigerJawLevel2Part1Options, where: TigerJawLevel2Part1Where): TigerJawLevel2Part1
-              part1Aggregate: TigerJawLevel2TigerJawLevel2Part1part1AggregationSelection
+              part1Aggregate: TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection
               part1Connection(after: String, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
             }
 
@@ -199,7 +199,7 @@ describe("162", () => {
             type TigerJawLevel2Part1 {
               id: ID
               tiger(options: TigerOptions, where: TigerWhere): Tiger
-              tigerAggregate: TigerJawLevel2Part1TigertigerAggregationSelection
+              tigerAggregate: TigerJawLevel2Part1TigerTigerAggregationSelection
               tigerConnection(after: String, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
             }
 
@@ -309,11 +309,11 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1SubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               tigerjawlevel2part1: TigerJawLevel2Part1
               toID: String
               toType: String
@@ -399,6 +399,15 @@ describe("162", () => {
               node: Tiger!
             }
 
+            type TigerJawLevel2Part1TigerTigerAggregationSelection {
+              count: Int!
+              node: TigerJawLevel2Part1TigerTigerNodeAggregateSelection
+            }
+
+            type TigerJawLevel2Part1TigerTigerNodeAggregateSelection {
+              x: IntAggregateSelection!
+            }
+
             input TigerJawLevel2Part1TigerUpdateConnectionInput {
               node: TigerUpdateInput
             }
@@ -410,15 +419,6 @@ describe("162", () => {
               disconnect: TigerJawLevel2Part1TigerDisconnectFieldInput
               update: TigerJawLevel2Part1TigerUpdateConnectionInput
               where: TigerJawLevel2Part1TigerConnectionWhere
-            }
-
-            type TigerJawLevel2Part1TigertigerAggregationSelection {
-              count: Int!
-              node: TigerJawLevel2Part1TigertigerNodeAggregateSelection
-            }
-
-            type TigerJawLevel2Part1TigertigerNodeAggregateSelection {
-              x: IntAggregateSelection!
             }
 
             input TigerJawLevel2Part1UpdateConnectionInput {
@@ -469,23 +469,23 @@ describe("162", () => {
             }
 
             type TigerJawLevel2SubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               tigerjawlevel2: TigerJawLevel2
               toID: String
               toType: String
               type: String!
             }
 
-            type TigerJawLevel2TigerJawLevel2Part1part1AggregationSelection {
+            type TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection {
               count: Int!
-              node: TigerJawLevel2TigerJawLevel2Part1part1NodeAggregateSelection
+              node: TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection
             }
 
-            type TigerJawLevel2TigerJawLevel2Part1part1NodeAggregateSelection {
+            type TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection {
               id: IDAggregateSelection!
             }
 
@@ -527,11 +527,11 @@ describe("162", () => {
             }
 
             type TigerSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               tiger: Tiger
               toID: String
               toType: String

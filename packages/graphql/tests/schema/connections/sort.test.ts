@@ -78,7 +78,7 @@ describe("Sort", () => {
             type Node1 {
               property: String!
               relatedTo(options: Node2Options, where: Node2Where): [Node2!]!
-              relatedToAggregate: Node1Node2relatedToAggregationSelection
+              relatedToAggregate: Node1Node2RelatedToAggregationSelection
               relatedToConnection(after: String, first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
             }
 
@@ -108,7 +108,7 @@ describe("Sort", () => {
               relatedTo: [Node1RelatedToDisconnectFieldInput!]
             }
 
-            type Node1Node2relatedToAggregationSelection {
+            type Node1Node2RelatedToAggregationSelection {
               count: Int!
             }
 
@@ -194,12 +194,12 @@ describe("Sort", () => {
             }
 
             type Node1SubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
               node1: Node1
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -232,7 +232,7 @@ describe("Sort", () => {
 
             type Node2 {
               relatedTo(options: Node1Options, where: Node1Where): [Node1!]!
-              relatedToAggregate: Node2Node1relatedToAggregationSelection
+              relatedToAggregate: Node2Node1RelatedToAggregationSelection
               relatedToConnection(after: String, first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
             }
 
@@ -260,12 +260,12 @@ describe("Sort", () => {
               relatedTo: [Node2RelatedToDisconnectFieldInput!]
             }
 
-            type Node2Node1relatedToAggregationSelection {
+            type Node2Node1RelatedToAggregationSelection {
               count: Int!
-              node: Node2Node1relatedToNodeAggregateSelection
+              node: Node2Node1RelatedToNodeAggregateSelection
             }
 
-            type Node2Node1relatedToNodeAggregateSelection {
+            type Node2Node1RelatedToNodeAggregateSelection {
               property: StringAggregateSelection!
             }
 
@@ -374,12 +374,12 @@ describe("Sort", () => {
             }
 
             type Node2SubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
               node2: Node2
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!

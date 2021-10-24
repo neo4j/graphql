@@ -24,75 +24,104 @@ import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
-describe("https://github.com/neo4j/graphql/issues/550", () => {
+describe("https://github.com/neo4j/graphql/issues/505", () => {
     let driver: Driver;
     // Update to use _INCLUDES once https://github.com/neo4j/graphql/pull/500 is merged
     const typeDefs = gql`
-    type Person {
-        id: ID! @id(autogenerate: false)
-
-        authId: String
-        
-        workspaces: [Workspace!] @relationship(type: "MEMBER_OF", direction: OUT)
-
-        adminOf: [Workspace!] @relationship(type: "HAS_ADMIN", direction: IN)
-
-        createdPages: [Page!] @relationship(type: "CREATED_PAGE", direction: OUT)
-    }
-
-    type Workspace @auth(rules: [
-        { 
-            operations: [READ],
-            where: { 
-                OR: [
-                    { members: { authId: """$jwt.sub""" } }
-                    { admins: { authId: """$jwt.sub""" } }
-                ]
-            }
+        type Person {
+            id: ID! @id(autogenerate: false)
+            authId: String
+            workspaces: [Workspace!] @relationship(type: "MEMBER_OF", direction: OUT)
+            adminOf: [Workspace!] @relationship(type: "HAS_ADMIN", direction: IN)
+            createdPages: [Page!] @relationship(type: "CREATED_PAGE", direction: OUT)
         }
-    ]) @exclude(operations: [CREATE, UPDATE]) {
-        id: ID! @id(autogenerate: false)
 
-        name: String!
+        type Workspace
+            @auth(
+                rules: [
+                    {
+                        operations: [READ]
+                        where: {
+                            OR: [
+                                {
+                                    members: {
+                                        authId: """
+                                        $jwt.sub
+                                        """
+                                    }
+                                }
+                                {
+                                    admins: {
+                                        authId: """
+                                        $jwt.sub
+                                        """
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            )
+            @exclude(operations: [CREATE, UPDATE]) {
+            id: ID! @id(autogenerate: false)
+            name: String!
+            members: [Person!] @relationship(type: "MEMBER_OF", direction: IN)
+            admins: [Person!] @relationship(type: "HAS_ADMIN", direction: OUT)
+            pages: [Page!] @relationship(type: "HAS_PAGE", direction: OUT)
+        }
 
-        members: [Person!] @relationship(type: "MEMBER_OF", direction: IN)
-
-        admins: [Person!] @relationship(type: "HAS_ADMIN", direction: OUT)
-
-        pages: [Page!] @relationship(type: "HAS_PAGE", direction: OUT)
-    }
-
-    type Page @auth(rules: [
-        {
-            operations: [READ],
-            where: {
-                OR: [ 
-                    { owner: { authId: """$jwt.sub""" } }, 
-                    { 
-                        AND: [ 
-                            { shared: true },
-                            { 
-                                workspace: {
-                                    OR: [
-                                        { members: { authId: """$jwt.sub""" } },
-                                        { admins: { authId: """$jwt.sub""" } },
+        type Page
+            @auth(
+                rules: [
+                    {
+                        operations: [READ]
+                        where: {
+                            OR: [
+                                {
+                                    owner: {
+                                        authId: """
+                                        $jwt.sub
+                                        """
+                                    }
+                                }
+                                {
+                                    AND: [
+                                        { shared: true }
+                                        {
+                                            workspace: {
+                                                OR: [
+                                                    {
+                                                        members: {
+                                                            authId: """
+                                                            $jwt.sub
+                                                            """
+                                                        }
+                                                    }
+                                                    {
+                                                        admins: {
+                                                            authId: """
+                                                            $jwt.sub
+                                                            """
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
                                     ]
                                 }
-                            }
-                        ] 
-                    } 
-                ] 
-            }
+                            ]
+                        }
+                    }
+                ]
+            ) {
+            id: ID! @id(autogenerate: false)
+
+            shared: Boolean!
+
+            owner: Person! @relationship(type: "CREATED_PAGE", direction: IN)
+
+            workspace: Workspace! @relationship(type: "HAS_PAGE", direction: IN)
         }
-    ]) {
-        id: ID! @id(autogenerate: false)
-
-        shared: Boolean!
-
-        owner: Person! @relationship(type: "CREATED_PAGE", direction: IN)
-
-        workspace: Workspace! @relationship(type: "HAS_PAGE", direction: IN)
-    }
     `;
 
     beforeAll(async () => {
@@ -108,7 +137,9 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
         const userId = generate({ charset: "alphabetic" });
         const workspaceId = generate({ charset: "alphabetic" });
-        const pageIds = Array(2).fill(0).map(() => generate({ charset: "alphabetic" }));
+        const pageIds = Array(2)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
 
         await session.run(
             `CREATE (u:Person {id: $userId, authId: $userId}),
@@ -126,7 +157,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
 
         const variableValues = {
             userId,
-            workspaceId
+            workspaceId,
         };
 
         const mutation = `
@@ -160,14 +191,14 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             const mutationResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { 
+                contextValue: {
                     driver,
                     driverConfig: {
-                        bookmarks: session.lastBookmark() 
+                        bookmarks: session.lastBookmark(),
                     },
                     jwt: {
-                        sub: userId
-                    }
+                        sub: userId,
+                    },
                 },
                 variableValues,
             });
@@ -181,7 +212,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             expect(mutationResult?.data?.workspaces[0]?.pages).toHaveLength(2);
 
             expect(mutationResult?.data?.pages).toHaveLength(2);
-            
+
             expect(mutationResult?.data?.allPages).toHaveLength(2);
         } finally {
             await session.close();
@@ -192,8 +223,12 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
         const session = driver.session();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
         const userId = generate({ charset: "alphabetic" });
-        const workspaceIds = Array(2).fill(0).map(() => generate({ charset: "alphabetic" }));
-        const pageIds = Array(4).fill(0).map(() => generate({ charset: "alphabetic" }));
+        const workspaceIds = Array(2)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
+        const pageIds = Array(4)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
 
         await session.run(
             `CREATE (u:Person {id: $userId, authId: $userId}),
@@ -214,7 +249,15 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
                 (u)-[:CREATED_PAGE]->(p2),
                 (u)-[:CREATED_PAGE]->(p3)
             `,
-            { userId, w0id: workspaceIds[0], w1id: workspaceIds[1], p0id: pageIds[0], p1id: pageIds[1], p2id: pageIds[2], p3id: pageIds[3] }
+            {
+                userId,
+                w0id: workspaceIds[0],
+                w1id: workspaceIds[1],
+                p0id: pageIds[0],
+                p1id: pageIds[1],
+                p2id: pageIds[2],
+                p3id: pageIds[3],
+            }
         );
 
         const variableValues = {
@@ -229,7 +272,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
                         id
                     }
                 }
-                
+
                 workspaces(where: { id: $workspaceId })
                 {
                     pages {
@@ -253,14 +296,14 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             const mutationResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { 
+                contextValue: {
                     driver,
                     driverConfig: {
-                        bookmarks: session.lastBookmark() 
+                        bookmarks: session.lastBookmark(),
                     },
                     jwt: {
-                        sub: userId
-                    }
+                        sub: userId,
+                    },
                 },
                 variableValues,
             });
@@ -274,7 +317,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             expect(mutationResult?.data?.workspaces[0]?.pages).toHaveLength(2);
 
             expect(mutationResult?.data?.pages).toHaveLength(2);
-            
+
             expect(mutationResult?.data?.allPages).toHaveLength(4);
         } finally {
             await session.close();
@@ -284,9 +327,15 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
     test("multiple users, multiple workspaces, multiple shared pages", async () => {
         const session = driver.session();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-        const userIds = Array(2).fill(0).map(() => generate({ charset: "alphabetic" }));
-        const workspaceIds = Array(2).fill(0).map(() => generate({ charset: "alphabetic" }));
-        const pageIds = Array(4).fill(0).map(() => generate({ charset: "alphabetic" }));
+        const userIds = Array(2)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
+        const workspaceIds = Array(2)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
+        const pageIds = Array(4)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
 
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
@@ -313,7 +362,16 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
                 (u0)-[:CREATED_PAGE]->(p2),
                 (u0)-[:CREATED_PAGE]->(p3)
             `,
-            { u0id: userIds[0], u1id: userIds[1], w0id: workspaceIds[0], w1id: workspaceIds[1], p0id: pageIds[0], p1id: pageIds[1], p2id: pageIds[2], p3id: pageIds[3] }
+            {
+                u0id: userIds[0],
+                u1id: userIds[1],
+                w0id: workspaceIds[0],
+                w1id: workspaceIds[1],
+                p0id: pageIds[0],
+                p1id: pageIds[1],
+                p2id: pageIds[2],
+                p3id: pageIds[3],
+            }
         );
 
         const variableValues = {
@@ -328,7 +386,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
                         id
                     }
                 }
-                
+
                 workspaces(where: { id: $workspaceId })
                 {
                     pages {
@@ -352,14 +410,14 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             const mutationResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { 
+                contextValue: {
                     driver,
                     driverConfig: {
-                        bookmarks: session.lastBookmark() 
+                        bookmarks: session.lastBookmark(),
                     },
                     jwt: {
-                        sub: userIds[1]
-                    }
+                        sub: userIds[1],
+                    },
                 },
                 variableValues,
             });
@@ -373,7 +431,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             expect(mutationResult?.data?.workspaces[0]?.pages).toHaveLength(2);
 
             expect(mutationResult?.data?.pages).toHaveLength(2);
-            
+
             expect(mutationResult?.data?.allPages).toHaveLength(4);
         } finally {
             await session.close();
@@ -383,9 +441,15 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
     test("multiple users, multiple workspaces, multiple mixed shared pages", async () => {
         const session = driver.session();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-        const userIds = Array(2).fill(0).map(() => generate({ charset: "alphabetic" }));
-        const workspaceIds = Array(2).fill(0).map(() => generate({ charset: "alphabetic" }));
-        const pageIds = Array(4).fill(0).map(() => generate({ charset: "alphabetic" }));
+        const userIds = Array(2)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
+        const workspaceIds = Array(2)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
+        const pageIds = Array(4)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
 
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
@@ -412,7 +476,16 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
                 (u0)-[:CREATED_PAGE]->(p2),
                 (u0)-[:CREATED_PAGE]->(p3)
             `,
-            { u0id: userIds[0], u1id: userIds[1], w0id: workspaceIds[0], w1id: workspaceIds[1], p0id: pageIds[0], p1id: pageIds[1], p2id: pageIds[2], p3id: pageIds[3] }
+            {
+                u0id: userIds[0],
+                u1id: userIds[1],
+                w0id: workspaceIds[0],
+                w1id: workspaceIds[1],
+                p0id: pageIds[0],
+                p1id: pageIds[1],
+                p2id: pageIds[2],
+                p3id: pageIds[3],
+            }
         );
 
         const variableValues = {
@@ -427,7 +500,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
                         id
                     }
                 }
-                
+
                 workspaces(where: { id: $workspaceId })
                 {
                     pages {
@@ -451,14 +524,14 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             const mutationResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { 
+                contextValue: {
                     driver,
                     driverConfig: {
-                        bookmarks: session.lastBookmark() 
+                        bookmarks: session.lastBookmark(),
                     },
                     jwt: {
-                        sub: userIds[1]
-                    }
+                        sub: userIds[1],
+                    },
                 },
                 variableValues,
             });
@@ -472,7 +545,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             expect(mutationResult?.data?.workspaces[0]?.pages).toHaveLength(1);
 
             expect(mutationResult?.data?.pages).toHaveLength(1);
-            
+
             expect(mutationResult?.data?.allPages).toHaveLength(2);
         } finally {
             await session.close();
@@ -482,9 +555,15 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
     test("multiple users, multiple workspaces, multiple private pages", async () => {
         const session = driver.session();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-        const userIds = Array(2).fill(0).map(() => generate({ charset: "alphabetic" }));
-        const workspaceIds = Array(2).fill(0).map(() => generate({ charset: "alphabetic" }));
-        const pageIds = Array(4).fill(0).map(() => generate({ charset: "alphabetic" }));
+        const userIds = Array(2)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
+        const workspaceIds = Array(2)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
+        const pageIds = Array(4)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
 
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
@@ -511,7 +590,16 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
                 (u0)-[:CREATED_PAGE]->(p2),
                 (u0)-[:CREATED_PAGE]->(p3)
             `,
-            { u0id: userIds[0], u1id: userIds[1], w0id: workspaceIds[0], w1id: workspaceIds[1], p0id: pageIds[0], p1id: pageIds[1], p2id: pageIds[2], p3id: pageIds[3] }
+            {
+                u0id: userIds[0],
+                u1id: userIds[1],
+                w0id: workspaceIds[0],
+                w1id: workspaceIds[1],
+                p0id: pageIds[0],
+                p1id: pageIds[1],
+                p2id: pageIds[2],
+                p3id: pageIds[3],
+            }
         );
 
         const variableValues = {
@@ -526,7 +614,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
                         id
                     }
                 }
-                
+
                 workspaces(where: { id: $workspaceId })
                 {
                     pages {
@@ -550,14 +638,14 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             const mutationResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { 
+                contextValue: {
                     driver,
                     driverConfig: {
-                        bookmarks: session.lastBookmark() 
+                        bookmarks: session.lastBookmark(),
                     },
                     jwt: {
-                        sub: userIds[1]
-                    }
+                        sub: userIds[1],
+                    },
                 },
                 variableValues,
             });
@@ -571,7 +659,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             expect(mutationResult?.data?.workspaces[0]?.pages).toHaveLength(0);
 
             expect(mutationResult?.data?.pages).toHaveLength(0);
-            
+
             expect(mutationResult?.data?.allPages).toHaveLength(0);
         } finally {
             await session.close();
@@ -581,9 +669,15 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
     test("multiple users, multiple workspaces where not member, multiple shared pages", async () => {
         const session = driver.session();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-        const userIds = Array(2).fill(0).map(() => generate({ charset: "alphabetic" }));
-        const workspaceIds = Array(2).fill(0).map(() => generate({ charset: "alphabetic" }));
-        const pageIds = Array(4).fill(0).map(() => generate({ charset: "alphabetic" }));
+        const userIds = Array(2)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
+        const workspaceIds = Array(2)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
+        const pageIds = Array(4)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
 
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
@@ -610,7 +704,16 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
                 (u0)-[:CREATED_PAGE]->(p2),
                 (u0)-[:CREATED_PAGE]->(p3)
             `,
-            { u0id: userIds[0], u1id: userIds[1], w0id: workspaceIds[0], w1id: workspaceIds[1], p0id: pageIds[0], p1id: pageIds[1], p2id: pageIds[2], p3id: pageIds[3] }
+            {
+                u0id: userIds[0],
+                u1id: userIds[1],
+                w0id: workspaceIds[0],
+                w1id: workspaceIds[1],
+                p0id: pageIds[0],
+                p1id: pageIds[1],
+                p2id: pageIds[2],
+                p3id: pageIds[3],
+            }
         );
 
         const variableValues = {
@@ -625,7 +728,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
                         id
                     }
                 }
-                
+
                 workspaces(where: { id: $workspaceId })
                 {
                     pages {
@@ -649,14 +752,14 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             const mutationResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { 
+                contextValue: {
                     driver,
                     driverConfig: {
-                        bookmarks: session.lastBookmark() 
+                        bookmarks: session.lastBookmark(),
                     },
                     jwt: {
-                        sub: userIds[1]
-                    }
+                        sub: userIds[1],
+                    },
                 },
                 variableValues,
             });
@@ -669,7 +772,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             expect(mutationResult?.data?.workspaces).toHaveLength(0);
 
             expect(mutationResult?.data?.pages).toHaveLength(0);
-            
+
             expect(mutationResult?.data?.allPages).toHaveLength(0);
         } finally {
             await session.close();
@@ -679,9 +782,15 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
     test("multiple users, multiple workspaces with partial membership, multiple shared pages", async () => {
         const session = driver.session();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-        const userIds = Array(2).fill(0).map(() => generate({ charset: "alphabetic" }));
-        const workspaceIds = Array(2).fill(0).map(() => generate({ charset: "alphabetic" }));
-        const pageIds = Array(4).fill(0).map(() => generate({ charset: "alphabetic" }));
+        const userIds = Array(2)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
+        const workspaceIds = Array(2)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
+        const pageIds = Array(4)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
 
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
@@ -708,7 +817,16 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
                 (u0)-[:CREATED_PAGE]->(p2),
                 (u0)-[:CREATED_PAGE]->(p3)
             `,
-            { u0id: userIds[0], u1id: userIds[1], w0id: workspaceIds[0], w1id: workspaceIds[1], p0id: pageIds[0], p1id: pageIds[1], p2id: pageIds[2], p3id: pageIds[3] }
+            {
+                u0id: userIds[0],
+                u1id: userIds[1],
+                w0id: workspaceIds[0],
+                w1id: workspaceIds[1],
+                p0id: pageIds[0],
+                p1id: pageIds[1],
+                p2id: pageIds[2],
+                p3id: pageIds[3],
+            }
         );
 
         const variableValues = {
@@ -723,7 +841,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
                         id
                     }
                 }
-                
+
                 workspaces(where: { id: $workspaceId })
                 {
                     pages {
@@ -747,14 +865,14 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             const mutationResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { 
+                contextValue: {
                     driver,
                     driverConfig: {
-                        bookmarks: session.lastBookmark() 
+                        bookmarks: session.lastBookmark(),
                     },
                     jwt: {
-                        sub: userIds[1]
-                    }
+                        sub: userIds[1],
+                    },
                 },
                 variableValues,
             });
@@ -768,7 +886,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             expect(mutationResult?.data?.workspaces[0]?.pages).toHaveLength(2);
 
             expect(mutationResult?.data?.pages).toHaveLength(2);
-            
+
             expect(mutationResult?.data?.allPages).toHaveLength(2);
         } finally {
             await session.close();
@@ -778,9 +896,15 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
     test("multiple users, multiple workspaces with partial membership, multiple mixed shared pages", async () => {
         const session = driver.session();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-        const userIds = Array(2).fill(0).map(() => generate({ charset: "alphabetic" }));
-        const workspaceIds = Array(2).fill(0).map(() => generate({ charset: "alphabetic" }));
-        const pageIds = Array(4).fill(0).map(() => generate({ charset: "alphabetic" }));
+        const userIds = Array(2)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
+        const workspaceIds = Array(2)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
+        const pageIds = Array(4)
+            .fill(0)
+            .map(() => generate({ charset: "alphabetic" }));
 
         // current relationship on where checks *all* nodes hold true
         // so all members/admins of workspace must have matching jwt sub
@@ -807,7 +931,16 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
                 (u0)-[:CREATED_PAGE]->(p2),
                 (u0)-[:CREATED_PAGE]->(p3)
             `,
-            { u0id: userIds[0], u1id: userIds[1], w0id: workspaceIds[0], w1id: workspaceIds[1], p0id: pageIds[0], p1id: pageIds[1], p2id: pageIds[2], p3id: pageIds[3] }
+            {
+                u0id: userIds[0],
+                u1id: userIds[1],
+                w0id: workspaceIds[0],
+                w1id: workspaceIds[1],
+                p0id: pageIds[0],
+                p1id: pageIds[1],
+                p2id: pageIds[2],
+                p3id: pageIds[3],
+            }
         );
 
         const variableValues = {
@@ -822,7 +955,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
                         id
                     }
                 }
-                
+
                 workspaces(where: { id: $workspaceId })
                 {
                     pages {
@@ -846,14 +979,14 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             const mutationResult = await graphql({
                 schema: neoSchema.schema,
                 source: mutation,
-                contextValue: { 
+                contextValue: {
                     driver,
                     driverConfig: {
-                        bookmarks: session.lastBookmark() 
+                        bookmarks: session.lastBookmark(),
                     },
                     jwt: {
-                        sub: userIds[1]
-                    }
+                        sub: userIds[1],
+                    },
                 },
                 variableValues,
             });
@@ -867,7 +1000,7 @@ describe("https://github.com/neo4j/graphql/issues/550", () => {
             expect(mutationResult?.data?.workspaces[0]?.pages).toHaveLength(0);
 
             expect(mutationResult?.data?.pages).toHaveLength(0);
-            
+
             expect(mutationResult?.data?.allPages).toHaveLength(0);
         } finally {
             await session.close();

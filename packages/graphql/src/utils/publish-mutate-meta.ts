@@ -18,7 +18,7 @@
  */
 
 import Debug from "debug";
-import { Integer, isDate, isDateTime, isDuration, isInt, isLocalDateTime, isLocalTime, isPoint, isTime, Node, Relationship } from 'neo4j-driver';
+import { isDate, isDateTime, isDuration, isInt, isLocalDateTime, isLocalTime, isPoint, isTime, Node, Relationship } from 'neo4j-driver';
 import { MutationMetaCommon } from "../classes/WithProjector";
 import { DEBUG_PUBLISH } from "../constants";
 import { Context } from "../types";
@@ -49,12 +49,12 @@ function convertProperties(properties: any) {
             return;
         }
 
-        if (isInt(properties[key])) {
-            newProperties[key] = Integer.toNumber(properties[key]);
+        if (properties[key] && isInt(properties[key])) {
+            newProperties[key] = properties[key].toNumber();
             return;
         }
 
-        if (
+        if (properties[key] &&(
             isDateTime(properties[key]) ||
             isDate(properties[key]) ||
             isTime(properties[key]) ||
@@ -62,12 +62,14 @@ function convertProperties(properties: any) {
             isPoint(properties[key]) ||
             isLocalDateTime(properties[key]) ||
             isLocalTime(properties[key])
-        ) {
+        )) {
             newProperties[key] = properties[key].toString();
             return;
         }
 
-        newProperties[key] = properties[key];
+        if (properties[key] !== undefined) {
+            newProperties[key] = properties[key];
+        }
     });
 
     return newProperties;
@@ -93,15 +95,16 @@ function publishMutateMeta(input: {
     });
 
     /**
-     * Duplicate RelationshipUpdated node as reverse if types are different
+     * Duplicate relationship events as reverse if types are different
      * --
      * If a relationship exists between two different types, notify both of those types
      * that their relationship was updated.
      */
     mutateMetas.forEach((meta) => {
-        if (meta.type === 'RelationshipUpdated'
-            && meta.name !== meta.toName
-        ) {
+        ([ 'RelationshipUpdated', 'Connected', 'Disconnected' ] as const).forEach((type) => {
+            if (meta.type !== type) { return; }
+            if (meta.name !== meta.toName) { return; }
+
             mutateMetas.push({
                 ...meta,
                 toID: meta.id,
@@ -109,20 +112,31 @@ function publishMutateMeta(input: {
                 id: meta.toID,
                 name: meta.toName,
             });
-        }
+        });
     });
 
     mutateMetas.forEach((meta) => {
         if (!meta.id) { return; }
         const trigger = `${ meta.name }.${ meta.type }`;
+        if (!meta.id) { return; }
+
         const mutationEvent: MutationEvent = {
-            ...meta,
+            ...meta as any,
             id: meta.id.toNumber(),
-            toID: 'toID' in meta ? meta.toID.toNumber() : undefined,
-            relationshipID: 'relationshipID' in meta ? meta.relationshipID.toNumber() : undefined,
             bookmark: executeResult.bookmark,
-            properties: 'properties' in meta ? convertProperties(meta.properties) : undefined,
         };
+
+        if ('properties' in meta) {
+            (mutationEvent as any).properties = convertProperties(meta.properties);
+        }
+
+        if ('toID' in meta && meta.toID) {
+            mutationEvent.toID = meta.toID.toNumber();
+        }
+
+        if ('relationshipID' in meta && meta.relationshipID) {
+            mutationEvent.relationshipID = meta.relationshipID.toNumber();
+        }
 
         debug("%s", `${ trigger }: ${JSON.stringify(mutationEvent, null, 2)}`);
 

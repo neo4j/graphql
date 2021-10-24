@@ -100,7 +100,7 @@ describe("Relationship-properties", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate: ActorMoviemoviesAggregationSelection
+              moviesAggregate: ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -131,17 +131,17 @@ describe("Relationship-properties", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
-            type ActorMoviemoviesAggregationSelection {
+            type ActorMovieMoviesAggregationSelection {
               count: Int!
-              edge: ActorMoviemoviesEdgeAggregateSelection
-              node: ActorMoviemoviesNodeAggregateSelection
+              edge: ActorMovieMoviesEdgeAggregateSelection
+              node: ActorMovieMoviesNodeAggregateSelection
             }
 
-            type ActorMoviemoviesEdgeAggregateSelection {
+            type ActorMovieMoviesEdgeAggregateSelection {
               screenTime: IntAggregateSelection!
             }
 
-            type ActorMoviemoviesNodeAggregateSelection {
+            type ActorMovieMoviesNodeAggregateSelection {
               title: StringAggregateSelection!
             }
 
@@ -293,11 +293,11 @@ describe("Relationship-properties", () => {
 
             type ActorSubscriptionResponse {
               actor: Actor
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -361,22 +361,22 @@ describe("Relationship-properties", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate: MovieActoractorsAggregationSelection
+              actorsAggregate: MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
 
-            type MovieActoractorsAggregationSelection {
+            type MovieActorActorsAggregationSelection {
               count: Int!
-              edge: MovieActoractorsEdgeAggregateSelection
-              node: MovieActoractorsNodeAggregateSelection
+              edge: MovieActorActorsEdgeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
             }
 
-            type MovieActoractorsEdgeAggregateSelection {
+            type MovieActorActorsEdgeAggregateSelection {
               screenTime: IntAggregateSelection!
             }
 
-            type MovieActoractorsNodeAggregateSelection {
+            type MovieActorActorsNodeAggregateSelection {
               name: StringAggregateSelection!
             }
 
@@ -553,12 +553,12 @@ describe("Relationship-properties", () => {
             }
 
             type MovieSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               movie: Movie
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -744,7 +744,7 @@ describe("Relationship-properties", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate: ActorMoviemoviesAggregationSelection
+              moviesAggregate: ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -775,19 +775,19 @@ describe("Relationship-properties", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
-            type ActorMoviemoviesAggregationSelection {
+            type ActorMovieMoviesAggregationSelection {
               count: Int!
-              edge: ActorMoviemoviesEdgeAggregateSelection
-              node: ActorMoviemoviesNodeAggregateSelection
+              edge: ActorMovieMoviesEdgeAggregateSelection
+              node: ActorMovieMoviesNodeAggregateSelection
             }
 
-            type ActorMoviemoviesEdgeAggregateSelection {
+            type ActorMovieMoviesEdgeAggregateSelection {
               id: IDAggregateSelection!
               screenTime: IntAggregateSelection!
               timestamp: DateTimeAggregateSelection!
             }
 
-            type ActorMoviemoviesNodeAggregateSelection {
+            type ActorMovieMoviesNodeAggregateSelection {
               title: StringAggregateSelection!
             }
 
@@ -955,11 +955,11 @@ describe("Relationship-properties", () => {
 
             type ActorSubscriptionResponse {
               actor: Actor
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -1033,24 +1033,24 @@ describe("Relationship-properties", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate: MovieActoractorsAggregationSelection
+              actorsAggregate: MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
 
-            type MovieActoractorsAggregationSelection {
+            type MovieActorActorsAggregationSelection {
               count: Int!
-              edge: MovieActoractorsEdgeAggregateSelection
-              node: MovieActoractorsNodeAggregateSelection
+              edge: MovieActorActorsEdgeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
             }
 
-            type MovieActoractorsEdgeAggregateSelection {
+            type MovieActorActorsEdgeAggregateSelection {
               id: IDAggregateSelection!
               screenTime: IntAggregateSelection!
               timestamp: DateTimeAggregateSelection!
             }
 
-            type MovieActoractorsNodeAggregateSelection {
+            type MovieActorActorsNodeAggregateSelection {
               name: StringAggregateSelection!
             }
 
@@ -1243,12 +1243,12 @@ describe("Relationship-properties", () => {
             }
 
             type MovieSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               movie: Movie
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -1415,7 +1415,7 @@ describe("Relationship-properties", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate: ActorMoviemoviesAggregationSelection
+              moviesAggregate: ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -1446,18 +1446,18 @@ describe("Relationship-properties", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
-            type ActorMoviemoviesAggregationSelection {
+            type ActorMovieMoviesAggregationSelection {
               count: Int!
-              edge: ActorMoviemoviesEdgeAggregateSelection
-              node: ActorMoviemoviesNodeAggregateSelection
+              edge: ActorMovieMoviesEdgeAggregateSelection
+              node: ActorMovieMoviesNodeAggregateSelection
             }
 
-            type ActorMoviemoviesEdgeAggregateSelection {
+            type ActorMovieMoviesEdgeAggregateSelection {
               id: IDAggregateSelection!
               timestamp: DateTimeAggregateSelection!
             }
 
-            type ActorMoviemoviesNodeAggregateSelection {
+            type ActorMovieMoviesNodeAggregateSelection {
               title: StringAggregateSelection!
             }
 
@@ -1601,11 +1601,11 @@ describe("Relationship-properties", () => {
 
             type ActorSubscriptionResponse {
               actor: Actor
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -1673,23 +1673,23 @@ describe("Relationship-properties", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate: MovieActoractorsAggregationSelection
+              actorsAggregate: MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
 
-            type MovieActoractorsAggregationSelection {
+            type MovieActorActorsAggregationSelection {
               count: Int!
-              edge: MovieActoractorsEdgeAggregateSelection
-              node: MovieActoractorsNodeAggregateSelection
+              edge: MovieActorActorsEdgeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
             }
 
-            type MovieActoractorsEdgeAggregateSelection {
+            type MovieActorActorsEdgeAggregateSelection {
               id: IDAggregateSelection!
               timestamp: DateTimeAggregateSelection!
             }
 
-            type MovieActoractorsNodeAggregateSelection {
+            type MovieActorActorsNodeAggregateSelection {
               name: StringAggregateSelection!
             }
 
@@ -1858,12 +1858,12 @@ describe("Relationship-properties", () => {
             }
 
             type MovieSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               movie: Movie
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!

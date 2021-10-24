@@ -18,13 +18,13 @@
  */
 
 import { Node, Relationship } from "../classes";
-import { Context } from "../types";
-import createConnectAndParams from "./create-connect-and-params";
-import createAuthAndParams from "./create-auth-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
-import mapToDbProperty from "../utils/map-to-db-property";
 import WithProjector from "../classes/WithProjector";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { Context } from "../types";
+import mapToDbProperty from "../utils/map-to-db-property";
+import createAuthAndParams from "./create-auth-and-params";
+import createConnectAndParams from "./create-connect-and-params";
+import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 
 interface Res {
     creates: string[];
@@ -41,16 +41,17 @@ function createCreateAndParams({
     varName,
     node,
     context,
-    withVars,
+    withProjector,
     insideDoWhen,
 }: {
     input: any;
     varName: string;
     node: Node;
     context: Context;
-    withVars: string[];
+    withProjector: WithProjector;
     insideDoWhen?: boolean;
 }): [string, any] {
+
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const _varName = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => key === x.fieldName);
@@ -71,29 +72,39 @@ function createCreateAndParams({
                 });
 
                 // refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
             } else {
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             refNodes.forEach((refNode) => {
                 const v = relationField.union ? value[refNode.name] : value;
-                const unionTypeName = relationField.union ? refNode.name : "";
+                const unionTypeName = relationField.union || relationField.interface ? refNode.name : "";
 
                 if (v.create) {
                     const creates = relationField.typeMeta.array ? v.create : [v.create];
                     creates.forEach((create, index) => {
-                        res.creates.push(`\nWITH ${withVars.join(", ")}`);
+                        if (relationField.interface && !create.node[refNode.name]) {
+                            return;
+                        }
+                        res.creates.push(withProjector.nextWith());
 
                         const baseName = `${_varName}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
                         const nodeName = `${baseName}_node`;
                         const propertiesName = `${baseName}_relationship`;
 
+                        // const childWithProjector = withProjector.createChild(baseName);
+                        withProjector.addVariable(nodeName);
+
                         const recurse = createCreateAndParams({
-                            input: create.node,
+                            input: relationField.interface ? create.node[refNode.name] : create.node,
                             context,
                             node: refNode,
                             varName: nodeName,
-                            withVars: [...withVars, nodeName],
+                            withProjector,
                         });
                         res.creates.push(recurse[0]);
                         res.params = { ...res.params, ...recurse[1] };
@@ -117,18 +128,21 @@ function createCreateAndParams({
                             res.creates.push(setA[0]);
                             res.params = { ...res.params, ...setA[1] };
                         }
+
+                        // withProjector.mergeWithChild(childWithProjector);
+                        withProjector.removeVariable(nodeName);
                     });
                 }
 
-                if (v.connect) {
+                if (!relationField.interface && v.connect) {
                     const connectAndParams = createConnectAndParams({
-                        withProjector: new WithProjector({}), // TODO: fix for create
+                        withProjector,
                         value: v.connect,
                         varName: `${_varName}${relationField.union ? "_" : ""}${unionTypeName}_connect`,
                         parentVar: varName,
                         relationField,
                         context,
-                        refNode,
+                        refNodes: [refNode],
                         labelOverride: unionTypeName,
                         parentNode: node,
                         fromCreate: true,
@@ -137,6 +151,23 @@ function createCreateAndParams({
                     res.params = { ...res.params, ...connectAndParams[1] };
                 }
             });
+
+            if (relationField.interface && value.connect) {
+                const connectAndParams = createConnectAndParams({
+                    withProjector,
+                    value: value.connect,
+                    varName: `${_varName}${relationField.union ? "_" : ""}_connect`,
+                    parentVar: varName,
+                    relationField,
+                    context,
+                    refNodes,
+                    labelOverride: "",
+                    parentNode: node,
+                    fromCreate: true,
+                });
+                res.creates.push(connectAndParams[0]);
+                res.params = { ...res.params, ...connectAndParams[1] };
+            }
 
             return res;
         }
@@ -177,7 +208,7 @@ function createCreateAndParams({
         return res;
     }
 
-    const labels = node.labelString;
+    const labels = node.getLabelString(context);
     const initial = [`CREATE (${varName}${labels})`];
 
     const timestampedFields = node.temporalFields.filter(
@@ -191,6 +222,13 @@ function createCreateAndParams({
     const autogeneratedIdFields = node.primitiveFields.filter((x) => x.autogenerate);
     autogeneratedIdFields.forEach((f) => {
         initial.push(`SET ${varName}.${f.dbPropertyName} = randomUUID()`);
+    });
+
+    withProjector.markMutationMeta({
+        type: 'Created',
+        name: node.name,
+        idVar: `id(${ varName })`,
+        propertiesVar: varName,
     });
 
     // eslint-disable-next-line prefer-const
@@ -210,14 +248,14 @@ function createCreateAndParams({
             escapeQuotes: Boolean(insideDoWhen),
         });
         if (bindAndParams[0]) {
-            creates.push(`WITH ${withVars.join(", ")}`);
+            creates.push(withProjector.nextWith());
             creates.push(`CALL apoc.util.validate(NOT(${bindAndParams[0]}), ${forbiddenString}, [0])`);
             params = { ...params, ...bindAndParams[1] };
         }
     }
 
     if (meta?.authStrs.length) {
-        creates.push(`WITH ${withVars.join(", ")}`);
+        creates.push(withProjector.nextWith());
         creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
     }
 

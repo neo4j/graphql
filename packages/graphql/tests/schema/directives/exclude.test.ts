@@ -22,8 +22,8 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("Exclude", () => {
-    test("Using `@exclude` directive to skip generation of Query", () => {
+describe("@exclude directive", () => {
+    test("can be used to skip generation of Query", () => {
         const typeDefs = gql`
             type Actor @exclude(operations: [READ]) {
                 name: String
@@ -53,11 +53,11 @@ describe("Exclude", () => {
 
             type ActorSubscriptionResponse {
               actor: Actor
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -130,12 +130,12 @@ describe("Exclude", () => {
             }
 
             type MovieSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               movie: Movie
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -223,7 +223,7 @@ describe("Exclude", () => {
         `);
     });
 
-    test("Using `@exclude` directive to skip generator of Mutation", () => {
+    test("can be used to skip generation of Mutation", () => {
         const typeDefs = gql`
             type Actor @exclude(operations: [CREATE]) {
                 name: String
@@ -262,11 +262,11 @@ describe("Exclude", () => {
 
             type ActorSubscriptionResponse {
               actor: Actor
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -349,7 +349,7 @@ describe("Exclude", () => {
         `);
     });
 
-    test('Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations and removes the type itself if not referenced elsewhere', () => {
+    test("can be used with no arguments to skip generation of all Queries and Mutations and removes the type itself if not referenced elsewhere", () => {
         const typeDefs = gql`
             type Actor @exclude {
                 name: String
@@ -375,11 +375,11 @@ describe("Exclude", () => {
 
             type ActorSubscriptionResponse {
               actor: Actor
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -443,12 +443,12 @@ describe("Exclude", () => {
             }
 
             type MovieSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               movie: Movie
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -528,7 +528,7 @@ describe("Exclude", () => {
         `);
     });
 
-    test('Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations but retains the type itself if referenced elsewhere', () => {
+    test("can be used with no arguments to skip generation of all Queries and Mutations but retains the type itself if referenced elsewhere", () => {
         const typeDefs = gql`
             type Actor @exclude {
                 name: String
@@ -558,11 +558,11 @@ describe("Exclude", () => {
 
             type ActorSubscriptionResponse {
               actor: Actor
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -626,12 +626,12 @@ describe("Exclude", () => {
             }
 
             type MovieSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               movie: Movie
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -712,7 +712,7 @@ describe("Exclude", () => {
         `);
     });
 
-    test('Using `@exclude` directive with `"*"` skips generation of all Queries and Mutations but retains the type itself if referenced in a `@relationship` directive', () => {
+    test("can be used with no arguments to skip generation of all Queries and Mutations but retains the type itself if referenced in a `@relationship` directive", () => {
         const typeDefs = gql`
             type Actor @exclude {
                 name: String
@@ -759,11 +759,11 @@ describe("Exclude", () => {
 
             type ActorSubscriptionResponse {
               actor: Actor
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -807,17 +807,17 @@ describe("Exclude", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]
-              actorsAggregate: MovieActoractorsAggregationSelection
+              actorsAggregate: MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String
             }
 
-            type MovieActoractorsAggregationSelection {
+            type MovieActorActorsAggregationSelection {
               count: Int!
-              node: MovieActoractorsNodeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
             }
 
-            type MovieActoractorsNodeAggregateSelection {
+            type MovieActorActorsNodeAggregateSelection {
               name: StringAggregateSelection!
             }
 
@@ -952,12 +952,12 @@ describe("Exclude", () => {
             }
 
             type MovieSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               movie: Movie
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -1051,7 +1051,7 @@ describe("Exclude", () => {
         `);
     });
 
-    test("Ensure generation doesn't break if `@exclude` is provided with an empty array", () => {
+    test("doesn't break if provided with an empty array", () => {
         const typeDefs = gql`
             type Actor @exclude(operations: []) {
                 name: String
@@ -1094,11 +1094,11 @@ describe("Exclude", () => {
 
             type ActorSubscriptionResponse {
               actor: Actor
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -1188,6 +1188,214 @@ describe("Exclude", () => {
               nodesDeleted: Int!
               relationshipsCreated: Int!
               relationshipsDeleted: Int!
+            }
+            "
+        `);
+    });
+
+    test("can be used with interfaces", () => {
+        const typeDefs = gql`
+            interface Production @exclude(operations: [CREATE]) {
+                title: String
+            }
+
+            type Movie implements Production {
+                title: String
+            }
+
+            type Series implements Production @exclude(operations: [UPDATE]) {
+                title: String
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+              subscription: Subscription
+            }
+
+            type CreateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateSeriesMutationResponse {
+              info: CreateInfo!
+              series: [Series!]!
+            }
+
+            type DeleteInfo {
+              bookmark: String
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type Movie implements Production {
+              title: String
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [MovieSort]
+            }
+
+            \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
+            input MovieSort {
+              title: SortDirection
+            }
+
+            type MovieSubscriptionResponse {
+              id: Int!
+              movie: Movie
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              toID: String
+              toType: String
+              type: String!
+            }
+
+            input MovieUpdateInput {
+              title: String
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              OR: [MovieWhere!]
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String]
+              title_NOT: String
+              title_NOT_CONTAINS: String
+              title_NOT_ENDS_WITH: String
+              title_NOT_IN: [String]
+              title_NOT_STARTS_WITH: String
+              title_STARTS_WITH: String
+            }
+
+            type Mutation {
+              createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
+              deleteMovies(where: MovieWhere): DeleteInfo!
+              deleteSeries(where: SeriesWhere): DeleteInfo!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            enum NodeUpdatedType {
+              Connected
+              Created
+              Deleted
+              Disconnected
+              Updated
+            }
+
+            interface Production {
+              title: String
+            }
+
+            type Query {
+              movies(options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesCount(where: MovieWhere): Int!
+              series(options: SeriesOptions, where: SeriesWhere): [Series!]!
+              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+              seriesCount(where: SeriesWhere): Int!
+            }
+
+            type Series implements Production {
+              title: String
+            }
+
+            type SeriesAggregateSelection {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
+            input SeriesCreateInput {
+              title: String
+            }
+
+            input SeriesOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
+              sort: [SeriesSort]
+            }
+
+            \\"\\"\\"Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.\\"\\"\\"
+            input SeriesSort {
+              title: SortDirection
+            }
+
+            type SeriesSubscriptionResponse {
+              id: Int!
+              name: String!
+              propsUpdated: [String!]
+              relationshipID: String
+              relationshipName: String
+              series: Series
+              toID: String
+              toType: String
+              type: String!
+            }
+
+            input SeriesWhere {
+              AND: [SeriesWhere!]
+              OR: [SeriesWhere!]
+              title: String
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_IN: [String]
+              title_NOT: String
+              title_NOT_CONTAINS: String
+              title_NOT_ENDS_WITH: String
+              title_NOT_IN: [String]
+              title_NOT_STARTS_WITH: String
+              title_STARTS_WITH: String
+            }
+
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String!
+              shortest: String!
+            }
+
+            type Subscription {
+              \\"\\"\\"Subscribe to updates from Movie\\"\\"\\"
+              subscribeToMovie(types: [NodeUpdatedType!], where: MovieWhere): MovieSubscriptionResponse!
+              \\"\\"\\"Subscribe to updates from Series\\"\\"\\"
+              subscribeToSeries(types: [NodeUpdatedType!], where: SeriesWhere): SeriesSubscriptionResponse!
+            }
+
+            type UpdateInfo {
+              bookmark: String
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
             }
             "
         `);

@@ -18,9 +18,9 @@
  */
 
 import { Node, Relationship } from "../classes";
+import WithProjector from "../classes/WithProjector";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { Context } from "../types";
-import WithProjector from "../classes/WithProjector";
 import mapToDbProperty from "../utils/map-to-db-property";
 import createAuthAndParams from "./create-auth-and-params";
 import createAuthParam from "./create-auth-param";
@@ -73,6 +73,7 @@ function createUpdateAndParams({
      * the updated properties.
      */
     const objUpdateParams = {}; 
+    const objUpdateParamsKey = chainStr || `${parentVar}_update`;
 
     function reducer(res: Res, [key, value]: [string, any]) {
 
@@ -100,6 +101,10 @@ function createUpdateAndParams({
                 Object.keys(value).forEach((unionTypeName) => {
                     refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
+            } else if (relationField.interface) {
+                relationField.interface?.implementations?.forEach((implementationName) => {
+                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                });
             } else {
                 refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
@@ -107,39 +112,60 @@ function createUpdateAndParams({
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const outStr = relationField.direction === "OUT" ? "->" : "-";
 
+            res.strs.push(withProjector.nextWith());
+            const subqueries: string[] = [];
+            let subWithProjector = withProjector;
+            let mutateMetaVariableDeclared = false;
+            if (relationField.interface) {
+                subWithProjector = withProjector.createChild(varName);
+            }
+
             refNodes.forEach((refNode) => {
                 const v = relationField.union ? value[refNode.name] : value;
                 const updates = relationField.typeMeta.array ? v : [v];
+                const subquery: string[] = [];
+
                 updates.forEach((update, index) => {
                     const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
                     const _varName = `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
+                    if (relationField.interface) {
+                        subWithProjector.mutateMetaVariableDeclared = false;
+                    }
 
                     if (update.update) {
-                        res.strs.push(withProjector.nextWith());
-
-                        const labels = refNode.labelString;
-                        res.strs.push(
-                            `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`
-                        );
-
                         const whereStrs: string[] = [];
 
                         if (update.where) {
-                            const where = createConnectionWhereAndParams({
-                                whereInput: update.where,
-                                node: refNode,
-                                nodeVariable: _varName,
-                                relationship,
-                                relationshipVariable,
-                                context,
-                                parameterPrefix: `${parameterPrefix}.${key}${
-                                    relationField.union ? `.${refNode.name}` : ""
-                                }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
-                            });
-                            const [whereClause] = where;
-                            whereStrs.push(whereClause);
+                            try {
+                                const where = createConnectionWhereAndParams({
+                                    whereInput: update.where,
+                                    node: refNode,
+                                    nodeVariable: _varName,
+                                    relationship,
+                                    relationshipVariable,
+                                    context,
+                                    parameterPrefix: `${parameterPrefix}.${key}${
+                                        relationField.union ? `.${refNode.name}` : ""
+                                    }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
+                                });
+                                const [whereClause] = where;
+                                if (whereClause) {
+                                    whereStrs.push(whereClause);
+                                }
+                            } catch {
+                                return;
+                            }
                         }
+
+                        subquery.push(subWithProjector.nextWith());
+
+                        const labels = refNode.getLabelString(context);
+                        subquery.push(
+                            `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`
+                        );
+                        subWithProjector.addVariable(_varName);
+                        subWithProjector.addVariable(relationshipVariable);
 
                         if (node.auth) {
                             const whereAuth = createAuthAndParams({
@@ -154,23 +180,41 @@ function createUpdateAndParams({
                             }
                         }
                         if (whereStrs.length) {
-                            res.strs.push(`WHERE ${whereStrs.join(" AND ")}`);
+                            subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
                         }
 
                         if (update.update.node) {
-                            res.strs.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
+                            subquery.push(`CALL apoc.do.when(${_varName} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`);
 
-                            const childWithProjector = withProjector.createChild();
-                            childWithProjector.addVariable(_varName);
+                            const childWithProjector = subWithProjector.createChild();
 
                             const auth = createAuthParam({ context });
                             let innerApocParams = { auth };
                             const nodeUpdateChainStr = `${param}${relationField.union ? `_${refNode.name}` : ""}${index}`;
 
+                            const nestedUpdateInput = Object.entries(update.update.node)
+                                .filter(([k]) => {
+                                    if (k === "_on") {
+                                        return false;
+                                    }
+
+                                    if (relationField.interface && update.update.node?._on?.[refNode.name]) {
+                                        const onArray = Array.isArray(update.update.node._on[refNode.name])
+                                            ? update.update.node._on[refNode.name]
+                                            : [update.update.node._on[refNode.name]];
+                                        if (onArray.some((onKey) => Object.prototype.hasOwnProperty.call(onKey, k))) {
+                                            return false;
+                                        }
+                                    }
+
+                                    return true;
+                                })
+                                .reduce((d1, [k1, v1]) => ({ ...d1, [k1]: v1 }), {});
+
                             const updateAndParams = createUpdateAndParams({
                                 context,
                                 node: refNode,
-                                updateInput: update.update.node,
+                                updateInput: nestedUpdateInput,
                                 varName: _varName,
                                 withProjector: childWithProjector,
                                 parentVar: _varName,
@@ -182,37 +226,57 @@ function createUpdateAndParams({
                             });
                             res.params = { ...res.params, ...updateAndParams[1], auth };
                             innerApocParams = { ...innerApocParams, ...updateAndParams[1] };
+                            const updateStrs = [updateAndParams[0]];
 
-                            const updateStrs = [updateAndParams[0], `RETURN id(${ _varName }) as _id`];
-                            const apocArgs = `{${withProjector.variables.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
+                            if (relationField.interface && update.update.node?._on?.[refNode.name]) {
+                                const onUpdateAndParams = createUpdateAndParams({
+                                    context,
+                                    node: refNode,
+                                    updateInput: update.update.node._on[refNode.name],
+                                    varName: _varName,
+                                    withProjector: childWithProjector,
+                                    parentVar: _varName,
+                                    chainStr: `${param}${relationField.union ? `_${refNode.name}` : ""}${index}_on_${
+                                        refNode.name
+                                    }`,
+                                    insideDoWhen: true,
+                                    parameterPrefix: `${parameterPrefix}.${key}${
+                                        relationField.union ? `.${refNode.name}` : ""
+                                    }${relationField.typeMeta.array ? `[${index}]` : ``}.update.node._on.${
+                                        refNode.name
+                                    }`,
+                                });
+                                res.params = { ...res.params, ...onUpdateAndParams[1], auth };
+                                innerApocParams = { ...innerApocParams, ...onUpdateAndParams[1] };
+                                updateStrs.push(onUpdateAndParams[0]);
+                            }
+
+                            const apocArgs = `{${subWithProjector.variables.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}, ${_varName}:${_varName}REPLACE_ME}`;
 
+                            updateStrs.push(childWithProjector.nextReturn());
                             if (insideDoWhen) {
                                 updateStrs.push(`\\", \\"\\", ${apocArgs})`);
                             } else {
                                 updateStrs.push(`", "", ${apocArgs})`);
                             }
                             updateStrs.push("YIELD value");
-                            withProjector.markMutationMeta({
-                                type: 'Updated',
-                                idVar: 'value._id',
-                                name: refNode.name,
-                                propertiesVar: `$${ nodeUpdateChainStr }`,
-                            });
+                            updateStrs.push(subWithProjector.mergeWithChild(childWithProjector, `value.${ childWithProjector.mutateMetaListVarName }`));
 
                             const paramsString = Object.keys(innerApocParams)
                                 .reduce((r: string[], k) => [...r, `${k}:$${k}`], [])
                                 .join(",");
 
                             const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
-                            res.strs.push(updateStr);
+                            subquery.push(updateStr);
                         }
 
                         if (update.update.edge) {
-                            res.strs.push(
+                            subquery.push(
                                 `CALL apoc.do.when(${relationshipVariable} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`
                             );
+                            const childWithProjector = subWithProjector.createChild();
                             
                             const setRelationshipParameterPrefix = `${parameterPrefix}.${key}${
                                 relationField.union ? `.${refNode.name}` : ""
@@ -226,44 +290,49 @@ function createUpdateAndParams({
                                 parameterPrefix: setRelationshipParameterPrefix,
                             });
 
-                            const returnVars = [
-                                `id(${ relationshipVariable }) as _relId`
-                            ];
-                            const updateStrs = [setProperties, `RETURN ${ returnVars.join(', ') }`];
-                            const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
-                                parameterPrefix?.split(".")[0]
-                            }: $${parameterPrefix?.split(".")[0]}}`;
-
-                            if (insideDoWhen) {
-                                updateStrs.push(`\\", \\"\\", ${apocArgs})`);
-                            } else {
-                                updateStrs.push(`", "", ${apocArgs})`);
-                            }
-                            updateStrs.push(`YIELD value`);
-
-                            withProjector.markMutationMeta({
+                            childWithProjector.markMutationMeta({
                                 type: 'RelationshipUpdated',
                                 name: node.name,
                                 relationshipName: relationship.name,
                                 toName: refNode.name,
 
                                 idVar: `id(${ varName })`,
-                                relationshipIDVar: 'value._relId',
+                                relationshipIDVar: `id(${ relationshipVariable })`,
                                 toIDVar: `id(${ _varName })`,
 
                                 propertiesVar: `$${ setRelationshipParameterPrefix }`,
                             });
-                            res.strs.push(updateStrs.join("\n"));
+
+                            const updateStrs = [setProperties];
+                            updateStrs.push(childWithProjector.nextReturn());
+
+                            const apocArgs = `{${[
+                                `${relationshipVariable}:${relationshipVariable}`,
+                                `${parameterPrefix?.split(".")[0]}: $${parameterPrefix?.split(".")[0]}`,
+                                ...withProjector.variables.map((wpv) => `${wpv}:${wpv}`),
+                            ].join(', ')}}`;
+
+                            if (insideDoWhen) {
+                                updateStrs.push(`\\", \\"\\", ${apocArgs})`);
+                            } else {
+                                updateStrs.push(`", "", ${apocArgs})`);
+                            }
+                            const valueName = `${relationshipVariable}_${key}${index}_edge`;
+                            updateStrs.push(`YIELD value as ${ valueName }`);
+                            updateStrs.push(subWithProjector.mergeWithChild(childWithProjector, `${ valueName }.${ childWithProjector.mutateMetaListVarName }`));
+                            subquery.push(updateStrs.join("\n"));
                         }
+                        subWithProjector.removeVariable(_varName);
+                        subWithProjector.removeVariable(relationshipVariable);
                     }
 
                     if (update.disconnect) {
                         const disconnectAndParams = createDisconnectAndParams({
                             context,
-                            refNode,
+                            refNodes: [refNode],
                             value: update.disconnect,
                             varName: `${_varName}_disconnect`,
-                            withVars: withProjector.variables, // TODO: use withProjector
+                            withProjector: subWithProjector,
                             parentVar,
                             relationField,
                             labelOverride: relationField.union ? refNode.name : "",
@@ -273,24 +342,24 @@ function createUpdateAndParams({
                                 relationField.union ? `.${refNode.name}` : ""
                             }${relationField.typeMeta.array ? `[${index}]` : ""}.disconnect`,
                         });
-                        res.strs.push(disconnectAndParams[0]);
+                        subquery.push(disconnectAndParams[0]);
                         res.params = { ...res.params, ...disconnectAndParams[1] };
                     }
 
                     if (update.connect) {
                         const connectAndParams = createConnectAndParams({
                             context,
-                            refNode,
+                            refNodes: [refNode],
                             value: update.connect,
                             varName: `${_varName}_connect`,
-                            withProjector,
+                            withProjector: subWithProjector,
                             parentVar,
                             relationField,
                             labelOverride: relationField.union ? refNode.name : "",
                             parentNode: node,
                             insideDoWhen,
                         });
-                        res.strs.push(connectAndParams[0]);
+                        subquery.push(connectAndParams[0]);
                         res.params = { ...res.params, ...connectAndParams[1] };
                     }
 
@@ -304,39 +373,38 @@ function createUpdateAndParams({
                             varName: innerVarName,
                             chainStr: innerVarName,
                             parentVar,
-                            withVars: withProjector.variables, // TODO: use withProjector
+                            withProjector: subWithProjector,
                             insideDoWhen,
                             parameterPrefix: `${parameterPrefix}.${key}${
                                 relationField.typeMeta.array ? `[${index}]` : ``
                             }.delete`, // its use here
                             recursing: true,
                         });
-                        res.strs.push(deleteAndParams[0]);
+                        subquery.push(deleteAndParams[0]);
                         res.params = { ...res.params, ...deleteAndParams[1] };
                     }
 
                     if (update.create) {
-                        res.strs.push(withProjector.nextWith());
 
                         const creates = relationField.typeMeta.array ? update.create : [update.create];
                         creates.forEach((create, i) => {
                             const baseName = `${_varName}_create${i}`;
                             const nodeName = `${baseName}_node`;
                             const propertiesName = `${baseName}_relationship`;
-                            const withProjectorChild = withProjector.createChild();
-                            withProjectorChild.addVariable(nodeName);
+                            subquery.push(subWithProjector.nextWith());
+                            subWithProjector.addVariable(nodeName);
 
                             const createAndParams = createCreateAndParams({
                                 context,
                                 node: refNode,
                                 input: create.node,
                                 varName: nodeName,
-                                withVars: withProjectorChild.variables,
+                                withProjector: subWithProjector,
                                 insideDoWhen,
                             });
-                            res.strs.push(createAndParams[0]);
+                            subquery.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
-                            res.strs.push(
+                            subquery.push(
                                 `MERGE (${parentVar})${inStr}[${create.edge ? propertiesName : ""}:${
                                     relationField.type
                                 }]${outStr}(${nodeName})`
@@ -352,12 +420,38 @@ function createUpdateAndParams({
                                         relationField.union ? `.${refNode.name}` : ""
                                     }[${index}].create[${i}].edge`,
                                 });
-                                res.strs.push(setA);
+                                subquery.push(setA);
                             }
+                            subWithProjector.removeVariable(nodeName);
+                            subquery.push(subWithProjector.nextWith());
                         });
                     }
+
+                    if (relationField.interface) {
+                        if (subWithProjector.mutateMetaVariableDeclared) {
+                            mutateMetaVariableDeclared = true;
+                        }
+                        subquery.push(subWithProjector.nextReturn([], {
+                            excludeVariables: withProjector.variables,
+                        }));
+                    }
                 });
+
+                if (subquery.length) {
+                    subqueries.push(subquery.join("\n"));
+                }
             });
+
+            if (relationField.interface) {
+                res.strs.push("CALL {");
+                res.strs.push(subqueries.join("\nUNION\n"));
+                res.strs.push("}");
+                if (mutateMetaVariableDeclared) {
+                    res.strs.push(withProjector.mergeWithChild(subWithProjector));
+                }
+            } else {
+                res.strs.push(subqueries.join("\n"));
+            }
 
             return res;
         }
@@ -436,14 +530,19 @@ function createUpdateAndParams({
     // const preAuthWithStr = withProjector.nextWith();
     const preAuthWithStr = '';
 
-    // eslint-disable-next-line prefer-const
-    let { strs, params, meta = { preAuthStrs: [], postAuthStrs: [] } } = Object.entries(updateInput).reduce(reducer, {
+    let params = {};
+
+    // let { strs, params, meta = { preAuthStrs: [], postAuthStrs: [] } }
+    const updateRes = Object.entries(updateInput).reduce(reducer, {
         strs: [],
-        params: {},
+        params,
     });
 
     let preAuthStrs: string[] = [];
     let postAuthStrs: string[] = [];
+    const cypher: string[] = [];
+    preAuthStrs = [ ...preAuthStrs, ...updateRes.meta?.preAuthStrs || [] ];
+    postAuthStrs = [ ...postAuthStrs, ...updateRes.meta?.postAuthStrs || [] ];
 
     const preAuth = createAuthAndParams({
         entity: node,
@@ -455,6 +554,25 @@ function createUpdateAndParams({
     if (preAuth[0]) {
         preAuthStrs.push(preAuth[0]);
         params = { ...params, ...preAuth[1] };
+    }
+
+    const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
+    if (preAuthStrs.length) {
+        const apocStr = `CALL apoc.util.validate(NOT(${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
+        cypher.push(`${preAuthWithStr}\n${apocStr}`);
+    }
+
+    cypher.push(...updateRes.strs);
+    params = { ...params, ...updateRes.params };
+
+    if (Object.keys(objUpdateParams).length) {
+        withProjector.markMutationMeta({
+            type: 'Updated',
+            idVar: `id(${ varName })`,
+            name: node.name,
+            propertiesVar: `$${ objUpdateParamsKey }`,
+        });
+        params[objUpdateParamsKey] = objUpdateParams;
     }
 
     const postAuth = createAuthAndParams({
@@ -471,34 +589,14 @@ function createUpdateAndParams({
         params = { ...params, ...postAuth[1] };
     }
 
-    if (meta) {
-        preAuthStrs = [...preAuthStrs, ...meta.preAuthStrs];
-        postAuthStrs = [...postAuthStrs, ...meta.postAuthStrs];
-    }
-
-    let preAuthStr = "";
-    let postAuthStr = "";
-
-    const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
-
-    if (preAuthStrs.length) {
-        const apocStr = `CALL apoc.util.validate(NOT(${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
-        preAuthStr = `${preAuthWithStr}\n${apocStr}`;
-    }
-
     if (postAuthStrs.length) {
         const apocStr = `CALL apoc.util.validate(NOT(${postAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
         // TODO: postAuthStrs with updated node ids
-        postAuthStr = `${ withProjector.nextWith() }\n${apocStr}`;
+        cypher.push(`${ withProjector.nextWith() }`);
+        cypher.push(`${apocStr}`);
     }
 
-    if (chainStr) {
-        params[chainStr] = objUpdateParams;
-    } else {
-        params[`${parentVar}_update`] = objUpdateParams;
-    }
-
-    const str = `${preAuthStr}\n${strs.join("\n")}\n${postAuthStr}`;
+    const str = cypher.join('\n');
 
     return [str, params];
 }

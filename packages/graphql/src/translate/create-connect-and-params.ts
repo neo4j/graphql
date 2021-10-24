@@ -36,7 +36,7 @@ function createConnectAndParams({
     varName,
     relationField,
     parentVar,
-    refNode,
+    refNodes,
     context,
     labelOverride,
     parentNode,
@@ -49,13 +49,20 @@ function createConnectAndParams({
     relationField: RelationField;
     parentVar: string;
     context: Context;
-    refNode: Node;
+    refNodes: Node[];
     labelOverride?: string;
     parentNode: Node;
     fromCreate?: boolean;
     insideDoWhen?: boolean;
 }): [string, any] {
-    function reducer(res: Res, connect: any, index): Res {
+    function createSubqueryContents(
+        relatedNode: Node,
+        connect: any,
+        index: number,
+        childWithProjector: WithProjector,
+    ): { subquery: string; params: Record<string, any> } {
+        let params = {};
+
         const baseName = `${varName}${index}`;
         const nodeName = `${baseName}_node`;
         const relationshipName = `${baseName}_relationship`;
@@ -63,72 +70,102 @@ function createConnectAndParams({
         const outStr = relationField.direction === "OUT" ? "->" : "-";
         const relTypeStr = `[${relationField.properties ? relationshipName : ""}:${relationField.type}]`;
 
-        const labels = refNode.labelString;
+        const subquery: string[] = [];
+        const labels = relatedNode.getLabelString(context);
         const label = labelOverride ? `:${labelOverride}` : labels;
 
-        if (parentNode.auth && !fromCreate) {
-            const whereAuth = createAuthAndParams({
-                operation: "CONNECT",
-                entity: parentNode,
-                context,
-                where: { varName: parentVar, node: parentNode },
-            });
-            if (whereAuth[0]) {
-                res.connects.push(withProjector.nextWith());
-                res.connects.push(`WHERE ${whereAuth[0]}`);
-                res.params = { ...res.params, ...whereAuth[1] };
-            }
-        }
-
-        res.connects.push(withProjector.nextWith({}));
-        const childWithProjector = withProjector.createChild(baseName);
-        res.connects.push("CALL {");
-
-        res.connects.push(childWithProjector.nextWith());
-        /**
-         * NOTE: this was changed from OPTIONAL MATCH to MATCH so we
-         * can remove the FOREACH. Will this break things?
-         */
-        res.connects.push(`MATCH (${nodeName}${label})`);
+        subquery.push(withProjector.nextWith());
+        subquery.push(`\tOPTIONAL MATCH (${nodeName}${label})`);
+        childWithProjector.addVariable(nodeName);
 
         const whereStrs: string[] = [];
         if (connect.where) {
-            const where = createWhereAndParams({
-                varName: nodeName,
-                whereInput: connect.where.node,
-                node: refNode,
+            // If _on is the only where key and it doesn't contain this implementation, don't connect it
+            if (
+                connect.where.node._on &&
+                Object.keys(connect.where.node).length === 1 &&
+                !Object.prototype.hasOwnProperty.call(connect.where.node._on, relatedNode.name)
+            ) {
+                return { subquery: "", params: {} };
+            }
+
+            const rootNodeWhereAndParams = createWhereAndParams({
+                whereInput: {
+                    ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
+                        if (k !== "_on") {
+                            // If this where key is also inside _on for this implementation, use the one in _on instead
+                            if (connect.where.node?._on?.[relatedNode.name]?.[k]) {
+                                return args;
+                            }
+                            return { ...args, [k]: v };
+                        }
+
+                        return args;
+                    }, {}),
+                },
                 context,
+                node: relatedNode,
+                varName: nodeName,
                 recursing: true,
             });
-            if (where[0]) {
-                whereStrs.push(where[0]);
-                res.params = { ...res.params, ...where[1] };
+            if (rootNodeWhereAndParams[0]) {
+                whereStrs.push(rootNodeWhereAndParams[0]);
+                params = { ...params, ...rootNodeWhereAndParams[1] };
+            }
+
+            // For _on filters
+            if (connect.where.node?._on?.[relatedNode.name]) {
+                const onTypeNodeWhereAndParams = createWhereAndParams({
+                    whereInput: {
+                        ...Object.entries(connect.where.node).reduce((args, [k, v]) => {
+                            if (k !== "_on") {
+                                return { ...args, [k]: v };
+                            }
+
+                            if (Object.prototype.hasOwnProperty.call(v, relatedNode.name)) {
+                                return { ...args, ...(v as any)[relatedNode.name] };
+                            }
+
+                            return args;
+                        }, {}),
+                    },
+                    context,
+                    node: relatedNode,
+                    varName: `${nodeName}`,
+                    chainStr: `${nodeName}_on_${relatedNode.name}`,
+                    recursing: true,
+                });
+                if (onTypeNodeWhereAndParams[0]) {
+                    whereStrs.push(onTypeNodeWhereAndParams[0]);
+                    params = { ...params, ...onTypeNodeWhereAndParams[1] };
+                }
             }
         }
-        if (refNode.auth) {
+
+        if (relatedNode.auth) {
             const whereAuth = createAuthAndParams({
                 operation: "CONNECT",
-                entity: refNode,
+                entity: relatedNode,
                 context,
-                where: { varName: nodeName, node: refNode },
+                where: { varName: nodeName, node: relatedNode },
             });
             if (whereAuth[0]) {
                 whereStrs.push(whereAuth[0]);
-                res.params = { ...res.params, ...whereAuth[1] };
+                params = { ...params, ...whereAuth[1] };
             }
         }
 
         if (whereStrs.length) {
-            res.connects.push(`WHERE ${whereStrs.join(" AND ")}`);
+            subquery.push(`\tWHERE ${whereStrs.join(" AND ")}`);
         }
 
-        const preAuth = [...(!fromCreate ? [parentNode] : []), refNode].reduce(
+        const preAuth = [...(!fromCreate ? [parentNode] : []), relatedNode].reduce(
             (result: Res, node, i) => {
                 if (!node.auth) {
                     return result;
                 }
 
-                const [str, params] = createAuthAndParams({
+                const [str, p] = createAuthAndParams({
                     entity: node,
                     operation: "CONNECT",
                     context,
@@ -141,7 +178,8 @@ function createConnectAndParams({
                 }
 
                 result.connects.push(str);
-                result.params = { ...result.params, ...params };
+                // eslint-disable-next-line no-param-reassign
+                result.params = { ...result.params, ...p };
 
                 return result;
             },
@@ -150,14 +188,13 @@ function createConnectAndParams({
 
         if (preAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            res.connects.push(childWithProjector.nextWith()); // TODO: fix auth with nodeName
-            // res.connects.push(`WITH ${[...withVars, nodeName].join(", ")}`);
-            res.connects.push(
-                `CALL apoc.util.validate(NOT(${preAuth.connects.join(
+            subquery.push(withProjector.nextWith({ additionalVariables: [ nodeName ] }));
+            subquery.push(
+                `\tCALL apoc.util.validate(NOT(${preAuth.connects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
-            res.params = { ...res.params, ...preAuth.params };
+            params = { ...params, ...preAuth.params };
         }
 
         /*
@@ -165,8 +202,15 @@ function createConnectAndParams({
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
-        // res.connects.push(`FOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
-        res.connects.push(`MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        subquery.push(`CALL apoc.do.when(${ nodeName } IS NOT NULL AND ${ parentVar } IS NOT NULL, ${ insideDoWhen ? '\\"' : '"' }`);
+        const mergeStrs: string[] = [];
+        const mergeWithProjector = childWithProjector.createChild(nodeName);
+
+        mergeStrs.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+
+        let relationshipNodeName: string | undefined;
+        let relationshipIDVar: string | undefined;
+        let innerApocParams = {};
 
         if (relationField.properties) {
             const relationship = (context.neoSchema.relationships.find(
@@ -179,77 +223,167 @@ function createConnectAndParams({
                 relationship,
                 operation: "CREATE",
             });
-
-            childWithProjector.markMutationMeta({
-                type: 'Connected',
-                name: parentNode.name,
-                relationshipName: relationship.name,
-                toName: refNode.name,
-    
-                idVar: `id(${ parentVar })`,
-                relationshipIDVar: `id(${ relationshipName })`,
-                toIDVar: `id(${ nodeName })`,
-                propertiesVar: relationshipName,
-            });
-
-            res.connects.push(setA[0]);
-            res.params = { ...res.params, ...setA[1] };
+            mergeStrs.push(setA[0]);
+            innerApocParams = { ...innerApocParams, ...setA[1] };
+            params = { ...params, ...setA[1] };
         }
 
-        // res.connects.push(`SET mutateMeta = []`); // close FOREACH
+        mergeWithProjector.markMutationMeta({
+            type: 'Connected',
+            name: parentNode.name,
+            relationshipName: relationshipNodeName,
+            toName: relatedNode.name,
+
+            idVar: `id(${ parentVar })`,
+            relationshipIDVar,
+            toIDVar: `id(${ nodeName })`,
+            propertiesVar: relationField.properties ? relationshipName : undefined,
+        });
+        mergeStrs.push(mergeWithProjector.nextReturn([], {}));
+
+        const apocArgs = `{${
+            childWithProjector.variables.map((withVar) => `${withVar}:${withVar}`)
+            .concat(Object.keys(innerApocParams).map((k) => `${ k }:$${ k }`))
+            .join(", ")
+        }}`;
+
+        if (insideDoWhen) {
+            mergeStrs.push(`\\", \\"\\", ${apocArgs})`);
+        } else {
+            mergeStrs.push(`", "", ${apocArgs})`);
+        }
+
+        mergeStrs.push("YIELD value");
+        mergeStrs.push(childWithProjector.mergeWithChild(mergeWithProjector, `value.${ mergeWithProjector.mutateMetaListVarName }`));
+
+
+        const mergeStr = mergeStrs.join("\n");
+        // const mergeStr = mergeStrs.join("\n").replace(/REPLACE_ME/g, `, ${ paramsString }`);
+
+        subquery.push(mergeStr);
         // res.connects.push(`)`); // close FOREACH
 
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
             connects.forEach((c) => {
-                const reduced = Object.entries(c).reduce(
-                    (r: Res, [k, v]: [string, any]) => {
-                        const relField = refNode.relationFields.find((x) => k === x.fieldName) as RelationField;
-                        const newRefNodes: Node[] = [];
-
-                        if (relField.union) {
-                            Object.keys(v).forEach((modelName) => {
-                                newRefNodes.push(context.neoSchema.nodes.find((x) => x.name === modelName) as Node);
-                            });
-                        } else {
-                            newRefNodes.push(
-                                context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
-                            );
+                const reduced = Object.entries(c)
+                    .filter(([k]) => {
+                        if (k === "_on") {
+                            return false;
                         }
 
-                        newRefNodes.forEach((newRefNode) => {
-                            const recurse = createConnectAndParams({
-                                withProjector, // TODO: create child with projector
-                                value: relField.union ? v[newRefNode.name] : v,
-                                varName: `${nodeName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
-                                relationField: relField,
-                                parentVar: nodeName,
-                                context,
-                                refNode: newRefNode,
-                                parentNode: refNode,
-                                labelOverride: relField.union ? newRefNode.name : "",
+                        if (relationField.interface && c?._on?.[relatedNode.name]) {
+                            const onArray = Array.isArray(c._on[relatedNode.name])
+                                ? c._on[relatedNode.name]
+                                : [c._on[relatedNode.name]];
+                            if (onArray.some((onKey) => Object.prototype.hasOwnProperty.call(onKey, k))) {
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    })
+                    .reduce(
+                        (r: Res, [k, v]: [string, any]) => {
+                            const relField = relatedNode.relationFields.find((x) => k === x.fieldName) as RelationField;
+                            const newRefNodes: Node[] = [];
+
+                            if (relField.union) {
+                                Object.keys(v).forEach((modelName) => {
+                                    newRefNodes.push(context.neoSchema.nodes.find((x) => x.name === modelName) as Node);
+                                });
+                            } else {
+                                newRefNodes.push(
+                                    context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
+                                );
+                            }
+
+                            newRefNodes.forEach((newRefNode) => {
+                                const recurse = createConnectAndParams({
+                                    withProjector: childWithProjector,
+                                    value: relField.union ? v[newRefNode.name] : v,
+                                    varName: `${nodeName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
+                                    relationField: relField,
+                                    parentVar: nodeName,
+                                    context,
+                                    refNodes: [newRefNode],
+                                    parentNode: relatedNode,
+                                    labelOverride: relField.union ? newRefNode.name : "",
+                                });
+                                r.connects.push(recurse[0]);
+                                // eslint-disable-next-line no-param-reassign
+                                r.params = { ...r.params, ...recurse[1] };
                             });
-                            r.connects.push(recurse[0]);
-                            r.params = { ...r.params, ...recurse[1] };
-                        });
 
-                        return r;
-                    },
-                    { connects: [], params: {} }
-                );
+                            return r;
+                        },
+                        { connects: [], params: {} }
+                    );
 
-                res.connects.push(reduced.connects.join("\n"));
-                res.params = { ...res.params, ...reduced.params };
+                subquery.push(reduced.connects.join("\n"));
+                params = { ...params, ...reduced.params };
+
+                if (relationField.interface && c?._on?.[relatedNode.name]) {
+                    const onConnects = Array.isArray(c._on[relatedNode.name])
+                        ? c._on[relatedNode.name]
+                        : [c._on[relatedNode.name]];
+
+                    onConnects.forEach((onConnect, onConnectIndex) => {
+                        const onReduced = Object.entries(onConnect).reduce(
+                            (r: Res, [k, v]: [string, any]) => {
+                                const relField = relatedNode.relationFields.find((x) =>
+                                    k.startsWith(x.fieldName)
+                                ) as RelationField;
+                                const newRefNodes: Node[] = [];
+
+                                if (relField.union) {
+                                    Object.keys(v).forEach((modelName) => {
+                                        newRefNodes.push(
+                                            context.neoSchema.nodes.find((x) => x.name === modelName) as Node
+                                        );
+                                    });
+                                } else {
+                                    newRefNodes.push(
+                                        context.neoSchema.nodes.find((x) => x.name === relField.typeMeta.name) as Node
+                                    );
+                                }
+
+                                newRefNodes.forEach((newRefNode) => {
+                                    const recurse = createConnectAndParams({
+                                        withProjector: childWithProjector,
+                                        value: relField.union ? v[newRefNode.name] : v,
+                                        varName: `${nodeName}_on_${relatedNode.name}${onConnectIndex}_${k}`,
+                                        relationField: relField,
+                                        parentVar: nodeName,
+                                        context,
+                                        refNodes: [newRefNode],
+                                        parentNode: relatedNode,
+                                        labelOverride: relField.union ? newRefNode.name : "",
+                                    });
+                                    r.connects.push(recurse[0]);
+                                    // eslint-disable-next-line no-param-reassign
+                                    r.params = { ...r.params, ...recurse[1] };
+                                });
+
+                                return r;
+                            },
+                            { connects: [], params: {} }
+                        );
+
+                        subquery.push(onReduced.connects.join("\n"));
+                        params = { ...params, ...onReduced.params };
+                    });
+                }
             });
         }
 
-        const postAuth = [...(!fromCreate ? [parentNode] : []), refNode].reduce(
+        const postAuth = [...(!fromCreate ? [parentNode] : []), relatedNode].reduce(
             (result: Res, node, i) => {
                 if (!node.auth) {
                     return result;
                 }
 
-                const [str, params] = createAuthAndParams({
+                const [str, p] = createAuthAndParams({
                     entity: node,
                     operation: "CONNECT",
                     context,
@@ -264,7 +398,8 @@ function createConnectAndParams({
                 }
 
                 result.connects.push(str);
-                result.params = { ...result.params, ...params };
+                // eslint-disable-next-line no-param-reassign
+                result.params = { ...result.params, ...p };
 
                 return result;
             },
@@ -273,21 +408,71 @@ function createConnectAndParams({
 
         if (postAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            res.connects.push(withProjector.nextWith()); // TODO: fix auth with nodeName
-            // res.connects.push(`WITH ${[...withVars, nodeName].join(", ")}`);
-            res.connects.push(
-                `CALL apoc.util.validate(NOT(${postAuth.connects.join(
+            subquery.push(childWithProjector.nextWith());
+            subquery.push(
+                `\tCALL apoc.util.validate(NOT(${postAuth.connects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
-            res.params = { ...res.params, ...postAuth.params };
+            params = { ...params, ...postAuth.params };
         }
 
-        res.connects.push(childWithProjector.nextReturn(undefined, undefined, {
-            excludeVariables: childWithProjector.variables,
+        childWithProjector.removeVariable(nodeName);
+
+        subquery.push(childWithProjector.nextReturn([], {
+            excludeVariables: withProjector.variables,
+            reduceMeta: true,
         }));
+
+        return { subquery: subquery.join("\n"), params };
+    }
+
+    function reducer(res: Res, connect: any, index): Res {
+        if (parentNode.auth && !fromCreate) {
+            const whereAuth = createAuthAndParams({
+                operation: "CONNECT",
+                entity: parentNode,
+                context,
+                where: { varName: parentVar, node: parentNode },
+            });
+            if (whereAuth[0]) {
+                res.connects.push(withProjector.nextWith());
+                res.connects.push(`WHERE ${whereAuth[0]}`);
+                res.params = { ...res.params, ...whereAuth[1] };
+            }
+        }
+
+        res.connects.push(withProjector.nextWith());
+        res.connects.push("CALL {");
+        const childWithProjector = withProjector.createChild(varName);
+        let mutateMetaVariableDeclared = false;
+
+        if (relationField.interface) {
+            const subqueries: string[] = [];
+            refNodes.forEach((refNode) => {
+                // this_mutateMeta will not be declared at the beginning of each UNION.
+                childWithProjector.mutateMetaVariableDeclared = false;
+                const subquery = createSubqueryContents(refNode, connect, index, childWithProjector);
+                if (subquery.subquery) {
+                    subqueries.push(subquery.subquery);
+                    res.params = { ...res.params, ...subquery.params };
+                }
+
+                if (childWithProjector.mutateMetaVariableDeclared) {
+                    mutateMetaVariableDeclared = true;
+                }
+            });
+            res.connects.push(subqueries.join("\nUNION\n"));
+        } else {
+            const subquery = createSubqueryContents(refNodes[0], connect, index, childWithProjector);
+            res.connects.push(subquery.subquery);
+            res.params = { ...res.params, ...subquery.params };
+        }
+
         res.connects.push("}");
-        res.connects.push(withProjector.mergeWithChild(childWithProjector));
+        if (mutateMetaVariableDeclared) {
+            res.connects.push(withProjector.mergeWithChild(childWithProjector));
+        }
 
         return res;
     }

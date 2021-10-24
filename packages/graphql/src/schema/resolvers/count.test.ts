@@ -21,7 +21,7 @@ const executeMock = jest.fn();
 
 /* eslint-disable import/first */
 import countResolver from "./count";
-import { NodeBuilder } from "../../utils/test";
+import { NodeBuilder } from "../../utils/test/builders/node-builder";
 /* eslint-enable import/first */
 
 jest.mock("../../translate", () => {

@@ -71,13 +71,9 @@ export interface Neo4jGraphQLConstructor extends Omit<IExecutableSchemaDefinitio
 
 class Neo4jGraphQL {
     public schema: GraphQLSchema;
-
     public nodes: Node[];
-
     public relationships: Relationship[];
-
     public document: DocumentNode;
-
     private driver?: Driver;
 
     public pubsub: PubSubEngine;

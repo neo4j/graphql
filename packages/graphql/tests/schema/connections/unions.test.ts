@@ -269,11 +269,11 @@ describe("Unions", () => {
 
             type AuthorSubscriptionResponse {
               author: Author
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -303,7 +303,7 @@ describe("Unions", () => {
 
             type Book {
               author(options: AuthorOptions, where: AuthorWhere): [Author!]!
-              authorAggregate: BookAuthorauthorAggregationSelection
+              authorAggregate: BookAuthorAuthorAggregationSelection
               authorConnection(after: String, first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
               title: String!
             }
@@ -323,6 +323,20 @@ describe("Unions", () => {
               count_LTE: Int
               edge: BookAuthorEdgeAggregationWhereInput
               node: BookAuthorNodeAggregationWhereInput
+            }
+
+            type BookAuthorAuthorAggregationSelection {
+              count: Int!
+              edge: BookAuthorAuthorEdgeAggregateSelection
+              node: BookAuthorAuthorNodeAggregateSelection
+            }
+
+            type BookAuthorAuthorEdgeAggregateSelection {
+              words: IntAggregateSelection!
+            }
+
+            type BookAuthorAuthorNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input BookAuthorConnectFieldInput {
@@ -441,20 +455,6 @@ describe("Unions", () => {
               where: BookAuthorConnectionWhere
             }
 
-            type BookAuthorauthorAggregationSelection {
-              count: Int!
-              edge: BookAuthorauthorEdgeAggregateSelection
-              node: BookAuthorauthorNodeAggregateSelection
-            }
-
-            type BookAuthorauthorEdgeAggregateSelection {
-              words: IntAggregateSelection!
-            }
-
-            type BookAuthorauthorNodeAggregateSelection {
-              name: StringAggregateSelection!
-            }
-
             input BookConnectInput {
               author: [BookAuthorConnectFieldInput!]
             }
@@ -494,11 +494,11 @@ describe("Unions", () => {
 
             type BookSubscriptionResponse {
               book: Book
-              fieldsUpdated: [String!]
               id: Int!
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!
@@ -564,7 +564,7 @@ describe("Unions", () => {
 
             type Journal {
               author(options: AuthorOptions, where: AuthorWhere): [Author!]!
-              authorAggregate: JournalAuthorauthorAggregationSelection
+              authorAggregate: JournalAuthorAuthorAggregationSelection
               authorConnection(after: String, first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!
               subject: String!
             }
@@ -584,6 +584,20 @@ describe("Unions", () => {
               count_LTE: Int
               edge: JournalAuthorEdgeAggregationWhereInput
               node: JournalAuthorNodeAggregationWhereInput
+            }
+
+            type JournalAuthorAuthorAggregationSelection {
+              count: Int!
+              edge: JournalAuthorAuthorEdgeAggregateSelection
+              node: JournalAuthorAuthorNodeAggregateSelection
+            }
+
+            type JournalAuthorAuthorEdgeAggregateSelection {
+              words: IntAggregateSelection!
+            }
+
+            type JournalAuthorAuthorNodeAggregateSelection {
+              name: StringAggregateSelection!
             }
 
             input JournalAuthorConnectFieldInput {
@@ -702,20 +716,6 @@ describe("Unions", () => {
               where: JournalAuthorConnectionWhere
             }
 
-            type JournalAuthorauthorAggregationSelection {
-              count: Int!
-              edge: JournalAuthorauthorEdgeAggregateSelection
-              node: JournalAuthorauthorNodeAggregateSelection
-            }
-
-            type JournalAuthorauthorEdgeAggregateSelection {
-              words: IntAggregateSelection!
-            }
-
-            type JournalAuthorauthorNodeAggregateSelection {
-              name: StringAggregateSelection!
-            }
-
             input JournalConnectInput {
               author: [JournalAuthorConnectFieldInput!]
             }
@@ -754,12 +754,12 @@ describe("Unions", () => {
             }
 
             type JournalSubscriptionResponse {
-              fieldsUpdated: [String!]
               id: Int!
               journal: Journal
               name: String!
+              propsUpdated: [String!]
               relationshipID: String
-              relationshipType: String
+              relationshipName: String
               toID: String
               toType: String
               type: String!

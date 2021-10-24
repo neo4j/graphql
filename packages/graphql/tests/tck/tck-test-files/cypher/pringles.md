@@ -47,35 +47,17 @@ mutation {
             {
                 id: 1
                 name: "Pringles"
-                sizes: {
-                    create: [
-                        { node: { id: 103, name: "Small" } }
-                        { node: { id: 104, name: "Large" } }
-                    ]
-                }
-                colors: {
-                    create: [
-                        { node: { id: 100, name: "Red" } }
-                        { node: { id: 102, name: "Green" } }
-                    ]
-                }
+                sizes: { create: [{ node: { id: 103, name: "Small" } }, { node: { id: 104, name: "Large" } }] }
+                colors: { create: [{ node: { id: 100, name: "Red" } }, { node: { id: 102, name: "Green" } }] }
                 photos: {
                     create: [
-                        {
-                            node: {
-                                id: 105
-                                description: "Outdoor photo"
-                                url: "outdoor.png"
-                            }
-                        }
+                        { node: { id: 105, description: "Outdoor photo", url: "outdoor.png" } }
                         {
                             node: {
                                 id: 106
                                 description: "Green photo"
                                 url: "g.png"
-                                color: {
-                                    connect: { where: { node: { id: "102" } } }
-                                }
+                                color: { connect: { where: { node: { id: "102" } } } }
                             }
                         }
                         {
@@ -83,9 +65,7 @@ mutation {
                                 id: 107
                                 description: "Red photo"
                                 url: "r.png"
-                                color: {
-                                    connect: { where: { node: { id: "100" } } }
-                                }
+                                color: { connect: { where: { node: { id: "100" } } } }
                             }
                         }
                     ]
@@ -150,8 +130,10 @@ CALL {
         WITH this0, this0_photos1_node
         OPTIONAL MATCH (this0_photos1_node_color_connect0_node:Color)
         WHERE this0_photos1_node_color_connect0_node.id = $this0_photos1_node_color_connect0_node_id
-        FOREACH(_ IN CASE this0_photos1_node_color_connect0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
+        FOREACH(_ IN CASE this0_photos1_node WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_photos1_node_color_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
+            )
         )
         RETURN count(*)
     }
@@ -168,8 +150,10 @@ CALL {
         WITH this0, this0_photos2_node
         OPTIONAL MATCH (this0_photos2_node_color_connect0_node:Color)
         WHERE this0_photos2_node_color_connect0_node.id = $this0_photos2_node_color_connect0_node_id
-        FOREACH(_ IN CASE this0_photos2_node_color_connect0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
+        FOREACH(_ IN CASE this0_photos2_node WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this0_photos2_node_color_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
+            )
         )
         RETURN count(*)
     }
@@ -229,12 +213,8 @@ mutation {
                         node: {
                             description: "Light Green Photo"
                             color: {
-                                connect: {
-                                    where: { node: { name: "Light Green" } }
-                                }
-                                disconnect: {
-                                    where: { node: { name: "Green" } }
-                                }
+                                connect: { where: { node: { name: "Light Green" } } }
+                                disconnect: { where: { node: { name: "Green" } } }
                             }
                         }
                     }
@@ -268,7 +248,7 @@ CALL apoc.do.when(this_photos0 IS NOT NULL,
         OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
         WHERE this_photos0_color0_disconnect0.name = $updateProducts.args.update.photos[0].update.node.color.disconnect.where.node.name
         FOREACH(_ IN CASE this_photos0_color0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
-        DELETE this_photos0_color0_disconnect0_rel
+            DELETE this_photos0_color0_disconnect0_rel
         )
 
         RETURN count(*)
@@ -279,8 +259,10 @@ CALL apoc.do.when(this_photos0 IS NOT NULL,
         WITH this, this_photos0
         OPTIONAL MATCH (this_photos0_color0_connect0_node:Color)
         WHERE this_photos0_color0_connect0_node.name = $this_photos0_color0_connect0_node_name
-        FOREACH(_ IN CASE this_photos0_color0_connect0_node WHEN NULL THEN [] ELSE [1] END |
-        MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
+        FOREACH(_ IN CASE this_photos0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE this_photos0_color0_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
+            )
         )
         RETURN count(*)
     }

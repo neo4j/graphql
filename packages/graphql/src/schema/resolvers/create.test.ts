@@ -18,7 +18,7 @@
  */
 
 import createResolver from "./create";
-import { NodeBuilder } from "../../utils/test";
+import { NodeBuilder } from "../../utils/test/builders/node-builder";
 
 describe("Create resolver", () => {
     test("should return the correct; type, args and resolve", () => {
