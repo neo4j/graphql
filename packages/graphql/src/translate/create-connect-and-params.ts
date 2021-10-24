@@ -58,7 +58,8 @@ function createConnectAndParams({
     function createSubqueryContents(
         relatedNode: Node,
         connect: any,
-        index: number
+        index: number,
+        childWithProjector: WithProjector,
     ): { subquery: string; params: Record<string, any> } {
         let params = {};
 
@@ -73,8 +74,9 @@ function createConnectAndParams({
         const labels = relatedNode.getLabelString(context);
         const label = labelOverride ? `:${labelOverride}` : labels;
 
-        subquery.push(`\tWITH ${withVars.join(", ")}`);
+        subquery.push(withProjector.nextWith());
         subquery.push(`\tOPTIONAL MATCH (${nodeName}${label})`);
+        childWithProjector.addVariable(nodeName);
 
         const whereStrs: string[] = [];
         if (connect.where) {
@@ -176,6 +178,7 @@ function createConnectAndParams({
                 }
 
                 result.connects.push(str);
+                // eslint-disable-next-line no-param-reassign
                 result.params = { ...result.params, ...p };
 
                 return result;
@@ -185,7 +188,7 @@ function createConnectAndParams({
 
         if (preAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
+            subquery.push(withProjector.nextWith({ additionalVariables: [ nodeName ] }));
             subquery.push(
                 `\tCALL apoc.util.validate(NOT(${preAuth.connects.join(
                     " AND "
@@ -199,9 +202,11 @@ function createConnectAndParams({
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
-        subquery.push(`\tFOREACH(_ IN CASE ${parentVar} WHEN NULL THEN [] ELSE [1] END | `);
-        subquery.push(`\t\tFOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
-        subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        subquery.push(`CALL apoc.do.when(${ nodeName } IS NOT NULL AND ${ parentVar } IS NOT NULL, ${ insideDoWhen ? '\\"' : '"' }`);
+        const mergeStrs: string[] = [];
+        const mergeWithProjector = childWithProjector.createChild(nodeName);
+
+        mergeStrs.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         let relationshipNodeName: string | undefined;
         let relationshipIDVar: string | undefined;
@@ -220,8 +225,11 @@ function createConnectAndParams({
             params = { ...params, ...setA[1] };
         }
 
-        subquery.push(`\t\t)`); // close FOREACH
-        subquery.push(`\t)`); // close FOREACH
+        mergeWithProjector.markMutationMeta({
+            type: 'Connected',
+            name: parentNode.name,
+            relationshipName: relationshipNodeName,
+            toName: relatedNode.name,
 
             idVar: `id(${ parentVar })`,
             relationshipIDVar,
@@ -248,9 +256,8 @@ function createConnectAndParams({
         const mergeStr = mergeStrs.join("\n");
         // const mergeStr = mergeStrs.join("\n").replace(/REPLACE_ME/g, `, ${ paramsString }`);
 
-        res.connects.push(mergeStr);
+        subquery.push(mergeStr);
         // res.connects.push(`)`); // close FOREACH
-        // res.connects.push(`CALL apoc.do.when(${ nodeName } IS NOT NULL, ${ insideDoWhen ? '\\"' : '"' }`);
 
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
@@ -289,7 +296,7 @@ function createConnectAndParams({
 
                             newRefNodes.forEach((newRefNode) => {
                                 const recurse = createConnectAndParams({
-                                    withVars: [...withVars, nodeName],
+                                    withProjector: childWithProjector,
                                     value: relField.union ? v[newRefNode.name] : v,
                                     varName: `${nodeName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
                                     relationField: relField,
@@ -300,6 +307,7 @@ function createConnectAndParams({
                                     labelOverride: relField.union ? newRefNode.name : "",
                                 });
                                 r.connects.push(recurse[0]);
+                                // eslint-disable-next-line no-param-reassign
                                 r.params = { ...r.params, ...recurse[1] };
                             });
 
@@ -338,7 +346,7 @@ function createConnectAndParams({
 
                                 newRefNodes.forEach((newRefNode) => {
                                     const recurse = createConnectAndParams({
-                                        withVars: [...withVars, nodeName],
+                                        withProjector: childWithProjector,
                                         value: relField.union ? v[newRefNode.name] : v,
                                         varName: `${nodeName}_on_${relatedNode.name}${onConnectIndex}_${k}`,
                                         relationField: relField,
@@ -349,6 +357,7 @@ function createConnectAndParams({
                                         labelOverride: relField.union ? newRefNode.name : "",
                                     });
                                     r.connects.push(recurse[0]);
+                                    // eslint-disable-next-line no-param-reassign
                                     r.params = { ...r.params, ...recurse[1] };
                                 });
 
@@ -385,6 +394,7 @@ function createConnectAndParams({
                 }
 
                 result.connects.push(str);
+                // eslint-disable-next-line no-param-reassign
                 result.params = { ...result.params, ...p };
 
                 return result;
@@ -394,7 +404,7 @@ function createConnectAndParams({
 
         if (postAuth.connects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
+            subquery.push(childWithProjector.nextWith());
             subquery.push(
                 `\tCALL apoc.util.validate(NOT(${postAuth.connects.join(
                     " AND "
@@ -417,19 +427,20 @@ function createConnectAndParams({
                 where: { varName: parentVar, node: parentNode },
             });
             if (whereAuth[0]) {
-                res.connects.push(`WITH ${withVars.join(", ")}`);
+                res.connects.push(withProjector.nextWith());
                 res.connects.push(`WHERE ${whereAuth[0]}`);
                 res.params = { ...res.params, ...whereAuth[1] };
             }
         }
 
-        res.connects.push(`WITH ${withVars.join(", ")}`);
+        res.connects.push(withProjector.nextWith());
+        const childWithProjector = withProjector.createChild(varName);
         res.connects.push("CALL {");
 
         if (relationField.interface) {
             const subqueries: string[] = [];
             refNodes.forEach((refNode) => {
-                const subquery = createSubqueryContents(refNode, connect, index);
+                const subquery = createSubqueryContents(refNode, connect, index, childWithProjector);
                 if (subquery.subquery) {
                     subqueries.push(subquery.subquery);
                     res.params = { ...res.params, ...subquery.params };
@@ -437,7 +448,7 @@ function createConnectAndParams({
             });
             res.connects.push(subqueries.join("\nUNION\n"));
         } else {
-            const subquery = createSubqueryContents(refNodes[0], connect, index);
+            const subquery = createSubqueryContents(refNodes[0], connect, index, childWithProjector);
             res.connects.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
         }

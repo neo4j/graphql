@@ -44,23 +44,13 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const varName = "this";
     const labels = node.getLabelString(context);
     const matchStr = `MATCH (${varName}${labels})`;
-    // let whereStr = "";
-    // let updateStr = "";
 
     const updateStrs: string[] = [
         matchStr,
     ];
 
-    // const connectStrs: string[] = [];
-    // const disconnectStrs: string[] = [];
-    // const createStrs: string[] = [];
-
-    // let deleteStr = "";
-    // let projAuth = "";
-    // let projStr = "";
     let cypherParams: { [k: string]: any } = {};
     const whereStrs: string[] = [];
-    const interfaceStrs: string[] = [];
     let updateArgs = {};
 
     const withProjector = new WithProjector({ variables: [ varName ] });
@@ -172,7 +162,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     parameterPrefix: `${resolveTree.name}.args.disconnect.${entry[0]}`,
                     labelOverride: "",
                 });
-                disconnectStrs.push(disconnectAndParams[0]);
+                updateStrs.push(disconnectAndParams[0]);
                 cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
             } else {
                 refNodes.forEach((refNode) => {
@@ -183,14 +173,14 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                         relationField,
                         value: relationField.union ? entry[1][refNode.name] : entry[1],
                         varName: `${varName}_disconnect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
-                        withVars: [varName],
+                        withProjector,
                         parentNode: node,
                         parameterPrefix: `${resolveTree.name}.args.disconnect.${entry[0]}${
                             relationField.union ? `.${refNode.name}` : ""
                         }`,
                         labelOverride: relationField.union ? refNode.name : "",
                     });
-                    disconnectStrs.push(disconnectAndParams[0]);
+                    updateStrs.push(disconnectAndParams[0]);
                     cypherParams = { ...cypherParams, ...disconnectAndParams[1] };
                 });
             }
@@ -226,7 +216,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                     parentNode: node,
                     labelOverride: "",
                 });
-                connectStrs.push(connectAndParams[0]);
+                updateStrs.push(connectAndParams[0]);
                 cypherParams = { ...cypherParams, ...connectAndParams[1] };
             } else {
                 refNodes.forEach((refNode) => {
@@ -237,11 +227,11 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                         relationField,
                         value: relationField.union ? entry[1][refNode.name] : entry[1],
                         varName: `${varName}_connect_${entry[0]}${relationField.union ? `_${refNode.name}` : ""}`,
-                        withVars: [varName],
+                        withProjector,
                         parentNode: node,
                         labelOverride: relationField.union ? refNode.name : "",
                     });
-                    connectStrs.push(connectAndParams[0]);
+                    updateStrs.push(connectAndParams[0]);
                     cypherParams = { ...cypherParams, ...connectAndParams[1] };
                 });
             }
@@ -405,15 +395,15 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
                 node,
                 nodeVariable: varName,
             });
-            interfaceStrs.push(interfaceProjection.cypher);
+            updateStrs.push(interfaceProjection.cypher);
             cypherParams = { ...cypherParams, ...interfaceProjection.params };
         });
     }
 
+    const [projStr] = projection;
     const cypher = [
         ...updateStrs,
         // ...(connectionStrs.length || projAuth ? [`WITH ${varName}`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
-        ...interfaceStrs,
         withProjector.nextReturn([{
             initialVariable: varName,
             str: projStr,

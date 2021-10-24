@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import createCreateAndParams from "./create-create-and-params";
 import { Neo4jGraphQL } from "../classes";
+import WithProjector from "../classes/WithProjector";
 import { Context } from "../types";
 import { trimmer } from "../utils";
-import { NodeBuilder } from "../utils/test";
-import WithProjector from "../classes/WithProjector";
+import { NodeBuilder } from "../utils/test/builders/node-builder";
+import createCreateAndParams from "./create-create-and-params";
 
 describe("createCreateAndParams", () => {
     test("should return the correct projection with 1 selection", () => {

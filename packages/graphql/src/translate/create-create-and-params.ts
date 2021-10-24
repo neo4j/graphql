@@ -154,7 +154,7 @@ function createCreateAndParams({
 
             if (relationField.interface && value.connect) {
                 const connectAndParams = createConnectAndParams({
-                    withVars,
+                    withProjector,
                     value: value.connect,
                     varName: `${_varName}${relationField.union ? "_" : ""}_connect`,
                     parentVar: varName,

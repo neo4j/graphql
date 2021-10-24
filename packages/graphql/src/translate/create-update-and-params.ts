@@ -112,6 +112,7 @@ function createUpdateAndParams({
             const inStr = relationField.direction === "IN" ? "<-" : "-";
             const outStr = relationField.direction === "OUT" ? "->" : "-";
 
+            res.strs.push(withProjector.nextWith());
             const subqueries: string[] = [];
 
             refNodes.forEach((refNode) => {
@@ -149,9 +150,7 @@ function createUpdateAndParams({
                             }
                         }
 
-                        if (withVars) {
-                            subquery.push(`WITH ${withVars.join(", ")}`);
-                        }
+                        subquery.push(withProjector.nextWith());
 
                         const labels = refNode.getLabelString(context);
                         subquery.push(
@@ -226,7 +225,7 @@ function createUpdateAndParams({
                                     node: refNode,
                                     updateInput: update.update.node._on[refNode.name],
                                     varName: _varName,
-                                    withVars: [...withVars, _varName],
+                                    withProjector: childWithProjector,
                                     parentVar: _varName,
                                     chainStr: `${param}${relationField.union ? `_${refNode.name}` : ""}${index}_on_${
                                         refNode.name
@@ -243,8 +242,8 @@ function createUpdateAndParams({
                                 updateStrs.push(onUpdateAndParams[0]);
                             }
 
-                            updateStrs.push("RETURN count(*)");
-                            const apocArgs = `{${withVars.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
+                            updateStrs.push(childWithProjector.nextReturn());
+                            const apocArgs = `{${withProjector.variables.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}, ${_varName}:${_varName}REPLACE_ME}`;
 
@@ -269,6 +268,8 @@ function createUpdateAndParams({
                             subquery.push(
                                 `CALL apoc.do.when(${relationshipVariable} IS NOT NULL, ${insideDoWhen ? '\\"' : '"'}`
                             );
+                            const childWithProjector = withProjector.createChild();
+                            childWithProjector.addVariable(relationshipVariable);
                             
                             const setRelationshipParameterPrefix = `${parameterPrefix}.${key}${
                                 relationField.union ? `.${refNode.name}` : ""
@@ -306,7 +307,9 @@ function createUpdateAndParams({
                             } else {
                                 updateStrs.push(`", "", ${apocArgs})`);
                             }
-                            updateStrs.push(`YIELD value as ${relationshipVariable}_${key}${index}_edge`);
+                            const valueName = `${relationshipVariable}_${key}${index}_edge`;
+                            updateStrs.push(`YIELD value as ${ valueName }`);
+                            updateStrs.push(withProjector.mergeWithChild(childWithProjector, `${ valueName }.${ childWithProjector.mutateMetaListVarName }`));
                             subquery.push(updateStrs.join("\n"));
                         }
                     }
@@ -370,9 +373,7 @@ function createUpdateAndParams({
                     }
 
                     if (update.create) {
-                        if (withVars) {
-                            subquery.push(`WITH ${withVars.join(", ")}`);
-                        }
+                        subquery.push(withProjector.nextWith());
 
                         const creates = relationField.typeMeta.array ? update.create : [update.create];
                         creates.forEach((create, i) => {
@@ -426,7 +427,6 @@ function createUpdateAndParams({
             });
 
             if (relationField.interface) {
-                res.strs.push(`WITH ${withVars.join(", ")}`);
                 res.strs.push("CALL {");
                 res.strs.push(subqueries.join("\nUNION\n"));
                 res.strs.push("}");

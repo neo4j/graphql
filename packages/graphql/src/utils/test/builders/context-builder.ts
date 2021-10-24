@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import * as neo4j from "neo4j-driver";
 import { ResolveTree } from "graphql-parse-resolve-info";
+import { PubSub } from "graphql-subscriptions";
+import * as neo4j from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../classes";
 import { Context } from "../../../types";
 import { Builder } from "./builder";
@@ -28,6 +29,7 @@ export class ContextBuilder extends Builder<Context, Context> {
         super({
             driver: {} as neo4j.Driver,
             resolveTree: {} as ResolveTree,
+            pubsub: new PubSub(),
             neoSchema: new Neo4jGraphQL({
                 typeDefs: "",
             }),

@@ -23,7 +23,6 @@ import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import { Context, ConnectionField, RelationField } from "../types";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import { ConnectionField, Context } from "../types";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 
@@ -174,17 +173,17 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
           }, {})
         : {};
 
-    const projectionStr = createStrs
-        .map(
-            (_, i) =>
-                `\nthis${i} ${projection[0]
-                    // First look to see if projection param is being reassigned
-                    // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
-                    .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                    .replace(/\$REPLACE_ME/g, "$projection")
-                    .replace(/REPLACE_ME/g, `this${i}`)} AS this${i}`
-        )
-        .join(", ");
+    const projections: Projection[] = createStrs.map((v, i) => {
+        return {
+            initialVariable: `this${ i }`,
+            str: projection[0]
+                // First look to see if projection param is being reassigned
+                // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
+                .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
+                .replace(/\$REPLACE_ME/g, "$projection")
+                .replace(/REPLACE_ME/g, `this${i}`),
+        };
+    });
 
     const authCalls = createStrs
         .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))

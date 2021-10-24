@@ -19,8 +19,7 @@
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
-import { forEachField, visitSchema } from "@graphql-tools/utils";
-import { visitSchema as composeVisitSchema } from 'graphql-compose/lib/utils/schemaVisitor';
+import { forEachField } from "@graphql-tools/utils";
 import {
     DefinitionNode,
     DirectiveDefinitionNode,
@@ -37,20 +36,26 @@ import {
     parse,
     print,
     ScalarTypeDefinitionNode,
-    UnionTypeDefinitionNode,
+    UnionTypeDefinitionNode
 } from "graphql";
 import {
-    upperFirst,
-    SchemaComposer,
-    InputTypeComposer,
-    ObjectTypeComposer,
-    InputTypeComposerFieldConfigAsObjectDefinition,
-    forEachKey,
+    forEachKey, InputTypeComposerFieldConfigAsObjectDefinition, ObjectTypeComposer, SchemaComposer
 } from "graphql-compose";
 import pluralize from "pluralize";
-import { Node, Exclude } from "../classes";
+import { Exclude, Node } from "../classes";
+import { NodeDirective } from "../classes/NodeDirective";
+import Relationship from "../classes/Relationship";
+import * as constants from "../constants";
+import { Auth, PrimitiveField } from "../types";
+import createConnectionFields from "./create-connection-fields";
+import createRelationshipFields from "./create-relationship-fields";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth } from "../types";
+import getCustomResolvers from "./get-custom-resolvers";
+import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
+import getWhereFields from "./get-where-fields";
+import parseExcludeDirective from "./parse-exclude-directive";
+import parseNodeDirective from "./parse-node-directive";
+import * as point from "./point";
 import {
     aggregateResolver,
     countResolver,
@@ -58,27 +63,12 @@ import {
     cypherResolver,
     defaultFieldResolver,
     deleteResolver,
-    findResolver,
-    updateResolver,
-    numericalResolver,
-    idResolver,
+    findResolver, idResolver, numericalResolver, updateResolver
 } from "./resolvers";
-import * as Scalars from "./scalars";
-import parseExcludeDirective from "./parse-exclude-directive";
-import getCustomResolvers from "./get-custom-resolvers";
-import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
-import * as point from "./point";
-import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
-import Relationship from "../classes/Relationship";
-import getWhereFields from "./get-where-fields";
-import { validateDocument } from "./validation";
-import * as constants from "../constants";
-import createRelationshipFields from "./create-relationship-fields";
-import createConnectionFields from "./create-connection-fields";
-import { NodeDirective } from "../classes/NodeDirective";
-import parseNodeDirective from "./parse-node-directive";
-import { FieldAggregationComposer } from "./field-aggregation-composer";
 import subscribeToNodeResolver from "./resolvers/subscribeToNode";
+import * as Scalars from "./scalars";
+import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
+import { validateDocument } from "./validation";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,

@@ -116,9 +116,7 @@ function createDeleteAndParams({
                         }
                     }
 
-                    if (withVars) {
-                        res.strs.push(`WITH ${withVars.join(", ")}`);
-                    }
+                    withProjector.nextWith();
 
                     const labels = refNode.getLabelString(context);
                     res.strs.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`);
@@ -199,7 +197,7 @@ function createDeleteAndParams({
                                     node: refNode,
                                     deleteInput: onDelete,
                                     varName: _varName,
-                                    withVars: [...withVars, _varName],
+                                    withProjector,
                                     parentVar: _varName,
                                     parameterPrefix: `${parameterPrefix}${!recursing ? `.${key}` : ""}${
                                         relationField.union ? `.${refNode.name}` : ""

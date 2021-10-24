@@ -57,7 +57,8 @@ function createDisconnectAndParams({
     function createSubqueryContents(
         relatedNode: Node,
         disconnect: any,
-        index: number
+        index: number,
+        childWithProjector: WithProjector,
     ): { subquery: string; params: Record<string, any> } {
         const _varName = `${varName}${index}`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
@@ -70,8 +71,10 @@ function createDisconnectAndParams({
         const labels = relatedNode.getLabelString(context);
         const label = labelOverride ? `:${labelOverride}` : labels;
 
-        subquery.push(`WITH ${withVars.join(", ")}`);
+        subquery.push(childWithProjector.nextWith());
         subquery.push(`OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${label})`);
+        childWithProjector.addVariable(_varName);
+        childWithProjector.addVariable(relVarName);
 
         const relationship = (context.neoSchema.relationships.find(
             (x) => x.properties === relationField.properties
@@ -143,7 +146,7 @@ function createDisconnectAndParams({
 
         if (preAuth.disconnects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            subquery.push(`WITH ${[...withVars, _varName, relVarName].join(", ")}`);
+            subquery.push(childWithProjector.nextWith());
             subquery.push(
                 `CALL apoc.util.validate(NOT(${preAuth.disconnects.join(
                     " AND "
@@ -201,7 +204,7 @@ function createDisconnectAndParams({
 
                             newRefNodes.forEach((newRefNode) => {
                                 const recurse = createDisconnectAndParams({
-                                    withVars: [...withVars, _varName],
+                                    withProjector: childWithProjector,
                                     value: relField.union ? v[newRefNode.name] : v,
                                     varName: `${_varName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
                                     relationField: relField,
@@ -253,7 +256,7 @@ function createDisconnectAndParams({
 
                                 newRefNodes.forEach((newRefNode) => {
                                     const recurse = createDisconnectAndParams({
-                                        withVars: [...withVars, _varName],
+                                        withProjector: childWithProjector,
                                         value: relField.union ? v[newRefNode.name] : v,
                                         varName: `${_varName}_${k}${relField.union ? `_${newRefNode.name}` : ""}`,
                                         relationField: relField,
@@ -314,7 +317,7 @@ function createDisconnectAndParams({
 
         if (postAuth.disconnects.length) {
             const quote = insideDoWhen ? `\\"` : `"`;
-            subquery.push(`WITH ${[...withVars, _varName].join(", ")}`);
+            subquery.push(childWithProjector.nextWith());
             subquery.push(
                 `CALL apoc.util.validate(NOT(${postAuth.disconnects.join(
                     " AND "
@@ -324,6 +327,7 @@ function createDisconnectAndParams({
         }
 
         subquery.push("RETURN count(*)");
+        subquery.push(childWithProjector.nextReturn([], { excludeVariables: withProjector.variables }));
 
         return { subquery: subquery.join("\n"), params };
     }
@@ -337,19 +341,20 @@ function createDisconnectAndParams({
                 where: { varName: parentVar, node: parentNode },
             });
             if (whereAuth[0]) {
-                res.disconnects.push(`WITH ${withVars.join(", ")}`);
+                res.disconnects.push( withProjector.nextWith() );
                 res.disconnects.push(`WHERE ${whereAuth[0]}`);
                 res.params = { ...res.params, ...whereAuth[1] };
             }
         }
 
-        res.disconnects.push(`WITH ${withVars.join(", ")}`);
+        res.disconnects.push( withProjector.nextWith() );
+        const childWithProjector = withProjector.createChild(parentVar);
         res.disconnects.push("CALL {");
 
         if (relationField.interface) {
             const subqueries: string[] = [];
             refNodes.forEach((refNode) => {
-                const subquery = createSubqueryContents(refNode, disconnect, index);
+                const subquery = createSubqueryContents(refNode, disconnect, index, childWithProjector);
                 if (subquery.subquery) {
                     subqueries.push(subquery.subquery);
                     res.params = { ...res.params, ...subquery.params };
@@ -357,7 +362,7 @@ function createDisconnectAndParams({
             });
             res.disconnects.push(subqueries.join("\nUNION\n"));
         } else {
-            const subquery = createSubqueryContents(refNodes[0], disconnect, index);
+            const subquery = createSubqueryContents(refNodes[0], disconnect, index, childWithProjector);
             res.disconnects.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
         }

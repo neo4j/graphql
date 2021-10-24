@@ -21,7 +21,6 @@ import createConnectAndParams from "./create-connect-and-params";
 import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
-import { NodeBuilder } from "../utils/test";
 import WithProjector from "../classes/WithProjector";
 
 describe("createConnectAndParams", () => {

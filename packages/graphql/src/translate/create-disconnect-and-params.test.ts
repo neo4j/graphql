@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import createDisconnectAndParams from "./create-disconnect-and-params";
 import { Neo4jGraphQL } from "../classes";
+import WithProjector from "../classes/WithProjector";
 import { Context } from "../types";
 import { trimmer } from "../utils";
-import { NodeBuilder } from "../utils/test";
-import WithProjector from "../classes/WithProjector";
+import { NodeBuilder } from "../utils/test/builders/node-builder";
+import createDisconnectAndParams from "./create-disconnect-and-params";
 
 describe("createDisconnectAndParams", () => {
     test("should return the correct disconnect", () => {
