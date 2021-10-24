@@ -164,6 +164,7 @@ function createUpdateAndParams({
                         subquery.push(
                             `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`
                         );
+                        subWithProjector.addVariable(_varName);
 
                         if (node.auth) {
                             const whereAuth = createAuthAndParams({
@@ -297,7 +298,7 @@ function createUpdateAndParams({
                                 toName: refNode.name,
 
                                 idVar: `id(${ varName })`,
-                                relationshipIDVar: `${ relationshipVariable }`,
+                                relationshipIDVar: `id(${ relationshipVariable })`,
                                 toIDVar: `id(${ _varName })`,
 
                                 propertiesVar: `$${ setRelationshipParameterPrefix }`,
@@ -305,9 +306,12 @@ function createUpdateAndParams({
 
                             const updateStrs = [setProperties];
                             updateStrs.push(childWithProjector.nextReturn());
-                            const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
-                                parameterPrefix?.split(".")[0]
-                            }: $${parameterPrefix?.split(".")[0]}}`;
+
+                            const apocArgs = `{${[
+                                `${relationshipVariable}:${relationshipVariable}`,
+                                `${parameterPrefix?.split(".")[0]}: $${parameterPrefix?.split(".")[0]}`,
+                                ...withProjector.variables.map((wpv) => `${wpv}:${wpv}`),
+                            ].join(', ')}}`;
 
                             if (insideDoWhen) {
                                 updateStrs.push(`\\", \\"\\", ${apocArgs})`);
@@ -319,6 +323,7 @@ function createUpdateAndParams({
                             updateStrs.push(subWithProjector.mergeWithChild(childWithProjector, `${ valueName }.${ childWithProjector.mutateMetaListVarName }`));
                             subquery.push(updateStrs.join("\n"));
                         }
+                        subWithProjector.removeVariable(_varName);
                     }
 
                     if (update.disconnect) {
