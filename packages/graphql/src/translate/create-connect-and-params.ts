@@ -443,16 +443,23 @@ function createConnectAndParams({
         }
 
         res.connects.push(withProjector.nextWith());
-        const childWithProjector = withProjector.createChild(varName);
         res.connects.push("CALL {");
+        const childWithProjector = withProjector.createChild(varName);
+        let mutateMetaVariableDeclared = false;
 
         if (relationField.interface) {
             const subqueries: string[] = [];
             refNodes.forEach((refNode) => {
+                // this_mutateMeta will not be declared at the beginning of each UNION.
+                childWithProjector.mutateMetaVariableDeclared = false;
                 const subquery = createSubqueryContents(refNode, connect, index, childWithProjector);
                 if (subquery.subquery) {
                     subqueries.push(subquery.subquery);
                     res.params = { ...res.params, ...subquery.params };
+                }
+
+                if (childWithProjector.mutateMetaVariableDeclared) {
+                    mutateMetaVariableDeclared = true;
                 }
             });
             res.connects.push(subqueries.join("\nUNION\n"));
@@ -463,7 +470,9 @@ function createConnectAndParams({
         }
 
         res.connects.push("}");
-        res.connects.push(withProjector.mergeWithChild(childWithProjector));
+        if (mutateMetaVariableDeclared) {
+            res.connects.push(withProjector.mergeWithChild(childWithProjector));
+        }
 
         return res;
     }
