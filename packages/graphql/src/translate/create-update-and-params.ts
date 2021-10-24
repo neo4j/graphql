@@ -242,7 +242,6 @@ function createUpdateAndParams({
                                 updateStrs.push(onUpdateAndParams[0]);
                             }
 
-                            updateStrs.push(childWithProjector.nextReturn());
                             const apocArgs = `{${withProjector.variables.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}, ${_varName}:${_varName}REPLACE_ME}`;
@@ -417,7 +416,7 @@ function createUpdateAndParams({
                     }
 
                     if (relationField.interface) {
-                        subquery.push("RETURN count(*)");
+                        subquery.push(withProjector.nextReturn());
                     }
                 });
 

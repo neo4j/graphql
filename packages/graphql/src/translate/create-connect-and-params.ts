@@ -210,6 +210,8 @@ function createConnectAndParams({
 
         let relationshipNodeName: string | undefined;
         let relationshipIDVar: string | undefined;
+        let innerApocParams = {};
+
         if (relationField.properties) {
             const relationship = (context.neoSchema.relationships.find(
                 (x) => x.properties === relationField.properties
@@ -221,7 +223,8 @@ function createConnectAndParams({
                 relationship,
                 operation: "CREATE",
             });
-            subquery.push(setA[0]);
+            mergeStrs.push(setA[0]);
+            innerApocParams = { ...innerApocParams, ...setA[1] };
             params = { ...params, ...setA[1] };
         }
 
@@ -238,7 +241,11 @@ function createConnectAndParams({
         });
         mergeStrs.push(mergeWithProjector.nextReturn());
 
-        const apocArgs = `{${childWithProjector.variables.map((withVar) => `${withVar}:${withVar}`).join(", ")}}`;
+        const apocArgs = `{${
+            childWithProjector.variables.map((withVar) => `${withVar}:${withVar}`)
+            .concat(Object.keys(innerApocParams).map((k) => `${ k }:$${ k }`))
+            .join(", ")
+        }}`;
 
         if (insideDoWhen) {
             mergeStrs.push(`\\", \\"\\", ${apocArgs})`);
@@ -249,9 +256,6 @@ function createConnectAndParams({
         mergeStrs.push("YIELD value");
         mergeStrs.push(childWithProjector.mergeWithChild(mergeWithProjector, `value.${ mergeWithProjector.mutateMetaListVarName }`));
 
-        // const paramsString = Object.keys(innerApocParams)
-        //     .reduce((r: string[], k) => [...r, `${k}:$${k}`], [])
-        //     .join(",");
 
         const mergeStr = mergeStrs.join("\n");
         // const mergeStr = mergeStrs.join("\n").replace(/REPLACE_ME/g, `, ${ paramsString }`);
@@ -413,7 +417,7 @@ function createConnectAndParams({
             params = { ...params, ...postAuth.params };
         }
 
-        subquery.push("\tRETURN count(*)");
+        subquery.push(childWithProjector.nextReturn([], { excludeVariables: withProjector.variables }));
 
         return { subquery: subquery.join("\n"), params };
     }

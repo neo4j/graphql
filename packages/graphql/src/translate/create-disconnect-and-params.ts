@@ -155,6 +155,17 @@ function createDisconnectAndParams({
             params = { ...params, ...preAuth.params };
         }
 
+        childWithProjector.markMutationMeta({
+            type: 'Disconnected',
+            idVar: `id(${ parentVar })`,
+            name: parentNode.name,
+            toIDVar: `id(${ _varName })`,
+            toName: relatedNode.name,
+            relationshipIDVar: `id(${ _varName }_rel)`,
+            relationshipName: relationship.name,
+        });
+        subquery.push(childWithProjector.nextWith());
+
         /*
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
@@ -326,7 +337,6 @@ function createDisconnectAndParams({
             params = { ...params, ...postAuth.params };
         }
 
-        subquery.push("RETURN count(*)");
         subquery.push(childWithProjector.nextReturn([], { excludeVariables: withProjector.variables }));
 
         return { subquery: subquery.join("\n"), params };
