@@ -162,7 +162,7 @@ function createDisconnectAndParams({
             toIDVar: `id(${ _varName })`,
             toName: relatedNode.name,
             relationshipIDVar: `id(${ _varName }_rel)`,
-            relationshipName: relationship.name,
+            relationshipName: relationField.type,
         });
         subquery.push(childWithProjector.nextWith());
 

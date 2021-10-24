@@ -22,6 +22,7 @@ import { Neo4jGraphQL } from "../classes";
 import { Context } from "../types";
 import { trimmer } from "../utils";
 import WithProjector from "../classes/WithProjector";
+import { NodeBuilder } from "../utils/test/builders/node-builder";
 
 describe("createConnectAndParams", () => {
     test("should return the correct connection", () => {
@@ -77,7 +78,7 @@ describe("createConnectAndParams", () => {
         const context: Context = { neoSchema };
 
         const result = createConnectAndParams({
-            withProjector: new WithProjector({}),
+            withProjector: new WithProjector({ variables: [ 'this' ] }),
             value: [
                 {
                     where: { node: { title: "abc" } },
@@ -99,26 +100,27 @@ describe("createConnectAndParams", () => {
                     WITH this
                     OPTIONAL MATCH (this0_node:Movie)
                     WHERE this0_node.title = $this0_node_title
-                    FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-                        FOREACH(_ IN CASE this0_node WHEN NULL THEN [] ELSE [1] END |
-                            MERGE (this)-[:SIMILAR]->(this0_node)
-                        )
-                    )
+                    CALL apoc.do.when(this0_node IS NOT NULL AND this IS NOT NULL, "
+                        MERGE (this)-[:SIMILAR]->(this0_node)
+                        RETURN this, this0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', toName: 'Movie', id: id(this), toID: id(this0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_node_mutateMeta
+                    ", "", {this:this, this0_node:this0_node})
+                    YIELD value
 
-                    WITH this, this0_node
+                    WITH this, this0_node, value.this0_node_mutateMeta as this_mutateMeta
+                    WITH this, this0_node, this_mutateMeta
                     CALL {
-                        WITH this, this0_node
+                        WITH this, this0_node, this_mutateMeta
                         OPTIONAL MATCH (this0_node_similarMovies0_node:Movie)
                         WHERE this0_node_similarMovies0_node.title = $this0_node_similarMovies0_node_title
-                        FOREACH(_ IN CASE this0_node WHEN NULL THEN [] ELSE [1] END |
-                            FOREACH(_ IN CASE this0_node_similarMovies0_node WHEN NULL THEN [] ELSE [1] END |
-                                MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
-                            )
-                        )
-                        RETURN count(*)
+                        CALL apoc.do.when(this0_node_similarMovies0_node IS NOT NULL AND this0_node IS NOT NULL, "
+                            MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
+                            RETURN this, this0_node, this0_node_similarMovies0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', toName: 'Movie', id: id(this0_node), toID: id(this0_node_similarMovies0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_node_similarMovies0_node_mutateMeta
+                        ", "", {this:this, this0_node:this0_node, this0_node_similarMovies0_node:this0_node_similarMovies0_node})
+                        YIELD value
+                        WITH this, this0_node, this0_node_similarMovies0_node, value.this0_node_similarMovies0_node_mutateMeta as this0_node_similarMovies_mutateMeta
+                        RETURN REDUCE(tmp1_this0_node_similarMovies_mutateMeta = [], tmp2_this0_node_similarMovies_mutateMeta IN COLLECT(this0_node_similarMovies_mutateMeta) | tmp1_this0_node_similarMovies_mutateMeta + tmp2_this0_node_similarMovies_mutateMeta) as this0_node_similarMovies_mutateMeta
                     }
-
-                    RETURN count(*)
+                    RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
                 }
             `)
         );
