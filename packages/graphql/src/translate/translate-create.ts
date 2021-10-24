@@ -113,6 +113,7 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
         });
     }
 
+    const withInterfaces: string[] = [];
     if (projection[2]?.interfaceFields?.length) {
         projection[2].interfaceFields.forEach((interfaceResolveTree) => {
             const relationshipField = node.relationFields.find(
@@ -124,12 +125,15 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
                 context,
                 node,
                 nodeVariable: "REPLACE_ME",
+                withProjector,
             });
             interfaceStrs.push(interfaceProjection.cypher);
             if (!interfaceParams) interfaceParams = {};
             interfaceParams = { ...interfaceParams, ...interfaceProjection.params };
+            withInterfaces.push(interfaceResolveTree.name);
         });
     }
+    withInterfaces.forEach((name) => withProjector.removeVariable(name));
 
     const replacedConnectionStrs = connectionStrs.length
         ? createStrs.map((_, i) => {
