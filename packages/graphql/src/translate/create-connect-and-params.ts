@@ -239,7 +239,7 @@ function createConnectAndParams({
             toIDVar: `id(${ nodeName })`,
             propertiesVar: relationField.properties ? relationshipName : undefined,
         });
-        mergeStrs.push(mergeWithProjector.nextReturn());
+        mergeStrs.push(mergeWithProjector.nextReturn([], {}));
 
         const apocArgs = `{${
             childWithProjector.variables.map((withVar) => `${withVar}:${withVar}`)
@@ -417,7 +417,10 @@ function createConnectAndParams({
             params = { ...params, ...postAuth.params };
         }
 
-        subquery.push(childWithProjector.nextReturn([], { excludeVariables: withProjector.variables }));
+        subquery.push(childWithProjector.nextReturn([], {
+            excludeVariables: withProjector.variables,
+            reduceMeta: true,
+        }));
 
         return { subquery: subquery.join("\n"), params };
     }

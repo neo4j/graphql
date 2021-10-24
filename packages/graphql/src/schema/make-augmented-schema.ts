@@ -41,6 +41,7 @@ import {
 import {
     forEachKey, InputTypeComposerFieldConfigAsObjectDefinition, ObjectTypeComposer, SchemaComposer
 } from "graphql-compose";
+import { GraphQLToolsResolveMethods } from "graphql-compose/lib/SchemaComposer";
 import pluralize from "pluralize";
 import { Exclude, Node } from "../classes";
 import { NodeDirective } from "../classes/NodeDirective";
@@ -1039,23 +1040,9 @@ function makeAugmentedSchema(
 
     const generatedTypeDefs = composer.toSDL();
     let parsedDoc = parse(generatedTypeDefs);
-    // @ts-ignore
-    const documentNames = parsedDoc.definitions.filter((x) => "name" in x).map((x) => x.name.value);
+    const documentNames = parsedDoc.definitions.filter((x: any) => "name" in x).map((x: any) => x.name.value);
 
-    // getResolveMethods() does not return subscribe() property so we need to build
-    // getSubscriptionResolveMethods() ourselves:
-    const Subscription = {};
-    forEachKey(composer.Subscription.getFields(), (fc, fieldName) => {
-        // const typename = composer.Subscription.getTypeName();
-        if (!fc.subscribe) return;
-        // if (!Subscription[typename]) resolveMethods[typename] = {};
-        Subscription[fieldName] = {
-            resolve: fc.resolve,
-            subscribe: fc.subscribe,
-        };
-    });
-
-    const generatedResolvers = {
+    const generatedResolvers: { [key: string]: GraphQLToolsResolveMethods<any> | { resolve: any, subscribe: any } } = {
         ...Object.entries(composer.getResolveMethods()).reduce((res, [key, value]) => {
             if (!documentNames.includes(key)) {
                 return res;
@@ -1063,7 +1050,6 @@ function makeAugmentedSchema(
 
             return { ...res, [key]: value };
         }, {}),
-        Subscription,
         ...Object.entries(Scalars).reduce((res, [name, scalar]) => {
             if (generatedTypeDefs.includes(`scalar ${name}\n`)) {
                 res[name] = scalar;
@@ -1071,6 +1057,21 @@ function makeAugmentedSchema(
             return res;
         }, {}),
     };
+
+    // getResolveMethods() does not return subscribe() property so we need to build
+    // getSubscriptionResolveMethods() ourselves:
+    delete generatedResolvers.Subscription;
+    forEachKey(composer.Subscription.getFields(), (fc, fieldName) => {
+        if (!fc.subscribe) return;
+        if (!documentNames.includes(fieldName)) {
+            return;
+        }
+
+        generatedResolvers.Subscription[fieldName] = {
+            resolve: fc.resolve,
+            subscribe: fc.subscribe,
+        };
+    });
 
     unions.forEach((union) => {
         if (!generatedResolvers[union.name.value]) {
