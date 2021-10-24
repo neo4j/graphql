@@ -417,6 +417,8 @@ function createConnectAndParams({
             params = { ...params, ...postAuth.params };
         }
 
+        childWithProjector.removeVariable(nodeName);
+
         subquery.push(childWithProjector.nextReturn([], {
             excludeVariables: withProjector.variables,
             reduceMeta: true,
