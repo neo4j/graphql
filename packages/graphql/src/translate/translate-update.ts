@@ -331,7 +331,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
 
                         toIDVar: `id(${ varName })`,
                         toName: refNode.name,
-                        relationshipName: relationship ? relationship.name : undefined,
+                        relationshipName: relationField.type,
                         relationshipIDVar: relationField.properties ? `id(${ propertiesName })` : undefined,
 
                         propertiesVar: relationField.properties ? propertiesName : undefined,

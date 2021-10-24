@@ -27,7 +27,7 @@ import { localPubSub } from "./pubsub";
 
 const debug = Debug(DEBUG_PUBLISH);
 
-export interface MutationEvent extends Omit<MutationMetaCommon, 'id'> {
+export interface MutationEvent extends Omit<MutationMetaCommon, 'id' | 'toID' | 'relationshipID'> {
     id: number;
     toID?: number;
     relationshipID?: number;
@@ -139,6 +139,16 @@ function publishMutateMeta(input: {
             mutationEvent.relationshipID = meta.relationshipID.toNumber();
         }
 
+        publish(trigger, mutationEvent);
+
+        const [ reversedTrigger, reversedMutationEvent ] = reverseMutationEvent(mutationEvent);
+        if (reversedTrigger && reversedMutationEvent) {
+            publish(reversedTrigger, reversedMutationEvent);
+        }
+    });
+
+    function publish(trigger: string, mutationEvent: MutationEvent) {
+
         debug("%s", `${ trigger }: ${JSON.stringify(mutationEvent, null, 2)}`);
 
         localPubSub.publish(trigger, mutationEvent)
@@ -146,7 +156,20 @@ function publishMutateMeta(input: {
 
         context.pubsub.publish(trigger, mutationEvent)
             .catch((err) => debug(`Failed to publish ${ trigger }: %s`, err));
-    });
+    }
+
+    function reverseMutationEvent(ev): [ string,  MutationEvent ] | [] {
+        if (![ 'RelationshipUpdated', 'Connected', 'Disconnected' ].includes(ev.type)) { return []; }
+
+        const reversed: any = { ...ev };
+        reversed.toName = ev.name;
+        reversed.toID = ev.id;
+        reversed.name = ev.toName;
+        reversed.id = ev.toID;
+        const reversedTrigger = `${ reversed.name }.${ reversed.type }`;
+
+        return [ reversedTrigger, reversed as MutationEvent ];
+    }
 }
 
 export default publishMutateMeta;

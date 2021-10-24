@@ -25,7 +25,7 @@ import { generate } from "randomstring";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 
-describe("interface relationships", () => {
+describe("mutation events (update > connect)", () => {
     let driver: Driver;
     let neoSchema: Neo4jGraphQL;
 
