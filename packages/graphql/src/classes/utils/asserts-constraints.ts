@@ -25,6 +25,76 @@ export interface AssertConstraintOptions {
     create?: boolean;
 }
 
+// Format of modern return from "SHOW CONSTRAINTS"
+interface Constraint {
+    id: number;
+    name: string;
+    type: string;
+    entityType?: string;
+    labelsOrTypes: string[];
+    properties: string[];
+    ownedIndexId: number;
+}
+
+/**
+ * Format of constraint returned from db.constraints procedure. For example:
+ *
+ *  {
+ *      description: "CONSTRAINT ON ( cjzrqcaflcfrvpjdmctjjvtbkmaqtvdkbook:cJzrQcaFLCFRvPJDmCTJjvtBkmaQtvdkBook ) ASSERT (cjzrqcaflcfrvpjdmctjjvtbkmaqtvdkbook.isbn) IS UNIQUE",
+ *      details: "Constraint( id=4, name='cJzrQcaFLCFRvPJDmCTJjvtBkmaQtvdkBook_isbn', type='UNIQUENESS', schema=(:cJzrQcaFLCFRvPJDmCTJjvtBkmaQtvdkBook {isbn}), ownedIndex=3 )",
+ *      name: "cJzrQcaFLCFRvPJDmCTJjvtBkmaQtvdkBook_isbn"
+ *  }
+ */
+export interface LegacyConstraint {
+    description?: string;
+    details?: string;
+    name?: string;
+}
+
+export function parseLegacyConstraint(record: LegacyConstraint): Constraint {
+    if (!record.details || !record.details.startsWith("Constraint( ")) {
+        throw new Error("Unable to parse constraint details");
+    }
+
+    const constraintDetails = record.details.substr(12).slice(0, -2);
+    const detailsKeys = constraintDetails.split(", ");
+
+    const constraint = detailsKeys.reduce((c, kv) => {
+        const [k, v] = kv.split("=");
+
+        switch (k) {
+            case "id":
+                return { ...c, [k]: parseInt(v, 10) };
+            case "name":
+            case "type": {
+                // Trim leading and trailing apostrophe
+                const value = v.substr(1).slice(0, -1);
+
+                // If a uniqueness constraint, it's definitely for node property
+                if (value === "UNIQUENESS") {
+                    return { ...c, [k]: value, entityType: "NODE" };
+                }
+                return { ...c, [k]: value };
+            }
+            case "schema": {
+                // Parse the format of schema string, example given above
+                const match = /^\(:(?<label>.+) {(?<property>.+)}\)$/gm.exec(v);
+
+                const label = match?.groups?.label;
+                const property = match?.groups?.property;
+
+                return { ...c, labelsOrTypes: [label], properties: [property] };
+            }
+            case "ownedIndex":
+                return { ...c, ownedIndexId: parseInt(v, 10) };
+            default:
+                throw new Error(`Unknown key within constraint details: ${k}`);
+        }
+    }, {});
+
+    return constraint as Constraint;
+}
+
 async function assertConstraints({
     driver,
     driverConfig,
@@ -76,7 +146,9 @@ async function assertConstraints({
             await session.run(cypher);
         }
     } else {
-        const cypher = "SHOW UNIQUE CONSTRAINTS";
+        const cypher = "CALL db.constraints";
+        // TODO: Swap line below with above when 4.1 no longer supported
+        // const cypher = "SHOW UNIQUE CONSTRAINTS";
 
         const existingConstraints: Record<string, string[]> = {};
         const missingConstraints: string[] = [];
@@ -87,8 +159,14 @@ async function assertConstraints({
             result.records
                 .map((record) => record.toObject())
                 .forEach((record) => {
-                    const label = record.labelsOrTypes[0];
-                    const property = record.properties[0];
+                    const constraint = parseLegacyConstraint(record);
+
+                    const label = constraint.labelsOrTypes[0];
+                    const property = constraint.properties[0];
+
+                    // TODO: Swap lines below with above to switch to "SHOW CONSTRAINTS"
+                    // const label = record.labelsOrTypes[0];
+                    // const property = record.properties[0];
 
                     if (existingConstraints[label]) {
                         existingConstraints[label].push(property);
