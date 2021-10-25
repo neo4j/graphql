@@ -26,7 +26,6 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
     type Field = Parameters<SchemaDirectiveVisitor["visitFieldDefinition"]>[0];
 
     class DisallowDirective extends SchemaDirectiveVisitor {
-        // eslint-disable-next-line class-methods-use-this
         public visitFieldDefinition(field: Field) {
             field.resolve = function () {
                 // Disallow any and all access, all the time

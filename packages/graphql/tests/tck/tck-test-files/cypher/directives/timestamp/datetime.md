@@ -5,11 +5,18 @@ Tests TimeStamps operations on DateTime fields. ⚠ The string in params is actu
 Schema:
 
 ```graphql
-type Movie {
+interface MovieInterface {
+    interfaceTimestamp: DateTime @timestamp(operations: [CREATE, UPDATE])
+    overrideTimestamp: DateTime @timestamp(operations: [CREATE, UPDATE])
+}
+
+type Movie implements MovieInterface {
     id: ID
     name: String
     createdAt: DateTime @timestamp(operations: [CREATE])
     updatedAt: DateTime @timestamp(operations: [UPDATE])
+    interfaceTimestamp: DateTime
+    overrideTimestamp: DateTime @timestamp(operations: [CREATE])
 }
 ```
 
@@ -35,6 +42,8 @@ mutation {
 CALL {
     CREATE (this0:Movie)
     SET this0.createdAt = datetime()
+    SET this0.interfaceTimestamp = datetime()
+    SET this0.overrideTimestamp = datetime()
     SET this0.id = $this0_id
     RETURN this0
 }
@@ -70,6 +79,7 @@ mutation {
 ```cypher
 MATCH (this:Movie)
 SET this.updatedAt = datetime()
+SET this.interfaceTimestamp = datetime()
 SET this.id = $this_update_id
 SET this.name = $this_update_name
 RETURN this { .id } AS this

@@ -32,7 +32,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     const whereStrs: string[] = [];
     const cypherStrs: string[] = [];
 
-    const labels = node.labelString;
+    const labels = node.getLabelString(context);
 
     cypherStrs.push(`MATCH (${varName}${labels})`);
 
@@ -115,7 +115,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         const temporalField = node.temporalFields.find((x) => x.fieldName === selection[1].name);
         const field: BaseField = (primitiveField as PrimitiveField) || (temporalField as TemporalField);
         let isDateTime = false;
-        let isString = primitiveField && primitiveField.typeMeta.name === "String";
+        const isString = primitiveField && primitiveField.typeMeta.name === "String";
 
         if (!primitiveField && temporalField && temporalField.typeMeta.name === "DateTime") {
             isDateTime = true;

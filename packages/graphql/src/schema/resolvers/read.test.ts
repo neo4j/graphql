@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { NodeBuilder } from "../../utils/test";
+import { NodeBuilder } from "../../utils/test/builders/node-builder";
 import findResolver from "./read";
 
 describe("Read resolver", () => {

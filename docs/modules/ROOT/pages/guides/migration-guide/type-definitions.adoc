@@ -146,11 +146,11 @@ Using them in Queries and Mutations should feel remarkably similar.
 
 === Interface Types
 
-Interface Types are not yet supported in `@neo4j/graphql`. `neo4j-graphql-js` leverages multiple labels for this purpose, which are not yet supported in the new library.
+Supported, queryable using inline fragments as per `neo4j-graphql-js`, but can also be created using Nested Mutations. See xref::type-definitions/unions.adoc#type-definitions-interfaces[Interfaces].
 
 === Union Types
 
-Supported, queryable using inline fragments as per `neo4j-graphql-js`, but can also be created using Nested Mutations. See xref::type-definitions/unions-and-interfaces.adoc#type-definitions-unions-and-interfaces-union-types[Union Types].
+Supported, queryable using inline fragments as per `neo4j-graphql-js`, but can also be created using Nested Mutations. See xref::type-definitions/unions.adoc#type-definitions-unions[Unions].
 
 == Fields
 

@@ -25,6 +25,7 @@ import {
     IntValueNode,
     Kind,
     ListValueNode,
+    NamedTypeNode,
     ObjectTypeDefinitionNode,
     ScalarTypeDefinitionNode,
     StringValueNode,
@@ -83,21 +84,43 @@ function getObjFieldMeta({
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
 }) {
+    const objInterfaceNames = [...(obj.interfaces || [])] as NamedTypeNode[];
+    const objInterfaces = interfaces.filter((i) => objInterfaceNames.map((n) => n.name.value).includes(i.name.value));
+
     return obj?.fields?.reduce(
         (res: ObjectFields, field) => {
-            if (field?.directives?.some((x) => x.name.value === "private")) {
+            const interfaceField = objInterfaces
+                .find((i) => i.fields?.map((f) => f.name.value).includes(field.name.value))
+                ?.fields?.find((f) => f.name.value === field.name.value);
+
+            if (
+                field?.directives?.some((x) => x.name.value === "private") ||
+                interfaceField?.directives?.some((x) => x.name.value === "private")
+            ) {
                 return res;
             }
 
-            const relationshipMeta = getRelationshipMeta(field);
-            const cypherMeta = getCypherMeta(field);
+            const relationshipMeta = getRelationshipMeta(field, interfaceField);
+            const cypherMeta = getCypherMeta(field, interfaceField);
             const typeMeta = getFieldTypeMeta(field);
-            const authDirective = field.directives?.find((x) => x.name.value === "auth");
-            const idDirective = field?.directives?.find((x) => x.name.value === "id");
-            const defaultDirective = field?.directives?.find((x) => x.name.value === "default");
-            const coalesceDirective = field?.directives?.find((x) => x.name.value === "coalesce");
-            const timestampDirective = field?.directives?.find((x) => x.name.value === "timestamp");
-            const aliasDirective = field?.directives?.find((x) => x.name.value === "alias");
+            const authDirective =
+                field.directives?.find((x) => x.name.value === "auth") ||
+                interfaceField?.directives?.find((x) => x.name.value === "auth");
+            const idDirective =
+                field?.directives?.find((x) => x.name.value === "id") ||
+                interfaceField?.directives?.find((x) => x.name.value === "id");
+            const defaultDirective =
+                field?.directives?.find((x) => x.name.value === "default") ||
+                interfaceField?.directives?.find((x) => x.name.value === "default");
+            const coalesceDirective =
+                field?.directives?.find((x) => x.name.value === "coalesce") ||
+                interfaceField?.directives?.find((x) => x.name.value === "coalesce");
+            const timestampDirective =
+                field?.directives?.find((x) => x.name.value === "timestamp") ||
+                interfaceField?.directives?.find((x) => x.name.value === "timestamp");
+            const aliasDirective =
+                field?.directives?.find((x) => x.name.value === "alias") ||
+                interfaceField?.directives?.find((x) => x.name.value === "alias");
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
             const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
@@ -127,21 +150,21 @@ function getObjFieldMeta({
                 arguments: [...(field.arguments || [])],
                 ...(authDirective ? { auth: getAuth(authDirective) } : {}),
                 description: field.description?.value,
-                readonly: field?.directives?.some((d) => d.name.value === "readonly"),
-                writeonly: field?.directives?.some((d) => d.name.value === "writeonly"),
+                readonly:
+                    field?.directives?.some((d) => d.name.value === "readonly") ||
+                    interfaceField?.directives?.some((x) => x.name.value === "readonly"),
+                writeonly:
+                    field?.directives?.some((d) => d.name.value === "writeonly") ||
+                    interfaceField?.directives?.some((x) => x.name.value === "writeonly"),
             };
             if (aliasDirective) {
-                const aliasMeta = getAliasMeta(field);
+                const aliasMeta = getAliasMeta(aliasDirective);
                 if (aliasMeta) {
                     baseField.dbPropertyName = aliasMeta.property;
                 }
             }
 
             if (relationshipMeta) {
-                if (fieldInterface) {
-                    throw new Error("cannot have interface on relationship");
-                }
-
                 if (authDirective) {
                     throw new Error("cannot have auth directive on a relationship");
                 }
@@ -161,6 +184,7 @@ function getObjFieldMeta({
                 const relationField: RelationField = {
                     ...baseField,
                     ...relationshipMeta,
+                    inherited: false,
                 };
 
                 if (fieldUnion) {
@@ -178,42 +202,68 @@ function getObjFieldMeta({
                     relationField.union = unionField;
                 }
 
-                res.relationFields.push(relationField);
+                if (fieldInterface) {
+                    const implementations = objects
+                        .filter((n) => n.interfaces?.some((i) => i.name.value === fieldInterface.name.value))
+                        .map((n) => n.name.value);
 
-                if (obj.kind !== "InterfaceTypeDefinition") {
-                    const connectionTypeName = `${obj.name.value}${upperFirst(`${baseField.fieldName}Connection`)}`;
-                    const relationshipTypeName = `${obj.name.value}${upperFirst(`${baseField.fieldName}Relationship`)}`;
+                    relationField.interface = {
+                        ...baseField,
+                        implementations,
+                    };
+                }
 
-                    const connectionField: ConnectionField = {
-                        fieldName: `${baseField.fieldName}Connection`,
-                        relationshipTypeName,
-                        typeMeta: {
-                            name: connectionTypeName,
-                            required: true,
-                            pretty: `${connectionTypeName}!`,
-                            input: {
-                                where: {
-                                    type: `${connectionTypeName}Where`,
-                                    pretty: `${connectionTypeName}Where`,
-                                },
-                                create: {
-                                    type: "",
-                                    pretty: "",
-                                },
-                                update: {
-                                    type: "",
-                                    pretty: "",
-                                },
+                // TODO: This will be brittle if more than one interface
+
+                let connectionPrefix = obj.name.value;
+
+                if (obj.interfaces && obj.interfaces.length) {
+                    const inter = interfaces.find(
+                        (i) => i.name.value === (obj.interfaces as NamedTypeNode[])[0].name.value
+                    ) as InterfaceTypeDefinitionNode;
+
+                    if (inter.fields?.some((f) => f.name.value === baseField.fieldName)) {
+                        connectionPrefix = obj.interfaces[0].name.value;
+                        relationField.inherited = true;
+                    }
+                }
+
+                relationField.connectionPrefix = connectionPrefix;
+
+                const connectionTypeName = `${connectionPrefix}${upperFirst(`${baseField.fieldName}Connection`)}`;
+                const relationshipTypeName = `${connectionPrefix}${upperFirst(`${baseField.fieldName}Relationship`)}`;
+
+                const connectionField: ConnectionField = {
+                    fieldName: `${baseField.fieldName}Connection`,
+                    relationshipTypeName,
+                    typeMeta: {
+                        name: connectionTypeName,
+                        required: true,
+                        pretty: `${connectionTypeName}!`,
+                        input: {
+                            where: {
+                                type: `${connectionTypeName}Where`,
+                                pretty: `${connectionTypeName}Where`,
+                            },
+                            create: {
+                                type: "",
+                                pretty: "",
+                            },
+                            update: {
+                                type: "",
+                                pretty: "",
                             },
                         },
-                        otherDirectives: [],
-                        arguments: [...(field.arguments || [])],
-                        description: field.description?.value,
-                        relationship: relationField,
-                    };
+                    },
+                    otherDirectives: [],
+                    arguments: [...(field.arguments || [])],
+                    description: field.description?.value,
+                    relationship: relationField,
+                };
 
-                    res.connectionFields.push(connectionField);
-                }
+                res.relationFields.push(relationField);
+                res.connectionFields.push(connectionField);
+                // }
             } else if (cypherMeta) {
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
@@ -276,10 +326,9 @@ function getObjFieldMeta({
                     throw new Error("@coalesce directive can only be used on primitive type fields");
                 }
 
-                const interfaceField: InterfaceField = {
+                res.interfaceFields.push({
                     ...baseField,
-                };
-                res.interfaceFields.push(interfaceField);
+                });
             } else if (fieldObject) {
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
@@ -293,7 +342,10 @@ function getObjFieldMeta({
                     ...baseField,
                 };
                 res.objectFields.push(objectField);
-            } else if (field.directives?.some((d) => d.name.value === "ignore")) {
+            } else if (
+                field.directives?.some((d) => d.name.value === "ignore") ||
+                interfaceField?.directives?.some((d) => d.name.value === "ignore")
+            ) {
                 res.ignoredFields.push(baseField);
             } else {
                 // eslint-disable-next-line no-lonely-if
