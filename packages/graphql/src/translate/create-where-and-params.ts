@@ -141,7 +141,7 @@ function createWhereAndParams({
             }
 
             if (connectionField) {
-                let nodeEntries: any = value;
+                let nodeEntries: Record<string, any> = value;
 
                 if (!connectionField?.relationship.union) {
                     nodeEntries = { [connectionField.relationship.typeMeta.name]: value };
@@ -353,7 +353,7 @@ function createWhereAndParams({
 
         const equalityConnection = node.connectionFields?.find((x) => key === x.fieldName);
         if (equalityConnection) {
-            let nodeEntries: any = value;
+            let nodeEntries: Record<string, any> = value;
 
             if (!equalityConnection?.relationship.union) {
                 nodeEntries = { [equalityConnection.relationship.typeMeta.name]: value };
