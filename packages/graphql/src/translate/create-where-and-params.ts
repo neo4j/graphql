@@ -186,15 +186,18 @@ function createWhereAndParams({
                     resultStr += connectionWhere[0];
                     resultStr += ")"; // close ALL
                     res.clauses.push(resultStr);
+
+                    const resolveTreeParams = recursing
+                        ? {
+                              [`${varName}_${context.resolveTree.name}`]: {
+                                  where: { [`${connectionField.fieldName}_NOT`]: connectionWhere[1] },
+                              },
+                          }
+                        : { [`${varName}_${context.resolveTree.name}`]: context.resolveTree.args };
+
                     res.params = {
                         ...res.params,
-                        ...(recursing
-                            ? {
-                                  [`${varName}_${context.resolveTree.name}`]: {
-                                      where: { [`${connectionField.fieldName}_NOT`]: connectionWhere[1] },
-                                  },
-                              }
-                            : { [`${varName}_${context.resolveTree.name}`]: context.resolveTree.args }),
+                        ...resolveTreeParams,
                     };
                 });
 
@@ -399,15 +402,18 @@ function createWhereAndParams({
                 resultStr += connectionWhere[0];
                 resultStr += ")"; // close ALL
                 res.clauses.push(resultStr);
+
+                const resolveTreeParams = recursing
+                    ? {
+                          [`${varName}_${context.resolveTree.name}`]: {
+                              where: { [`${equalityConnection.fieldName}_NOT`]: connectionWhere[1] },
+                          },
+                      }
+                    : { [`${varName}_${context.resolveTree.name}`]: context.resolveTree.args };
+
                 res.params = {
                     ...res.params,
-                    ...(recursing
-                        ? {
-                              [`${varName}_${context.resolveTree.name}`]: {
-                                  where: { [equalityConnection.fieldName]: connectionWhere[1] },
-                              },
-                          }
-                        : { [`${varName}_${context.resolveTree.name}`]: context.resolveTree.args }),
+                    ...resolveTreeParams,
                 };
             });
 
