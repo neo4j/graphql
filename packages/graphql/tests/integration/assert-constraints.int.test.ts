@@ -22,10 +22,12 @@ import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../../src/utils/test/graphql-types";
+import { parseLegacyConstraint } from "../../src/classes/utils/asserts-constraints";
 
 describe("assertConstraints", () => {
     let driver: Driver;
     let databaseName: string;
+    let MULTIDB_SUPPORT = true;
 
     beforeAll(async () => {
         driver = await neo4j();
@@ -36,6 +38,13 @@ describe("assertConstraints", () => {
         const session = driver.session();
         try {
             await session.run(cypher);
+        } catch (e) {
+            if (e instanceof Error) {
+                if (e.message.includes(`Neo4jError: Unsupported administration command: ${cypher}`)) {
+                    // No multi-db support, so we skip tests
+                    MULTIDB_SUPPORT = false;
+                }
+            }
         } finally {
             await session.close();
         }
@@ -43,20 +52,29 @@ describe("assertConstraints", () => {
     });
 
     afterAll(async () => {
-        await driver.close();
+        if (MULTIDB_SUPPORT) {
+            await driver.close();
 
-        const cypher = `DROP DATABASE ${databaseName}`;
+            const cypher = `DROP DATABASE ${databaseName}`;
 
-        const session = driver.session();
-        try {
-            await session.run(cypher);
-        } finally {
-            await session.close();
+            const session = driver.session();
+            try {
+                await session.run(cypher);
+            } finally {
+                await session.close();
+            }
         }
     });
 
     describe("@unique", () => {
         test("should throw an error when all necessary constraints do not exist", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("Book");
 
             const typeDefs = `
@@ -74,6 +92,13 @@ describe("assertConstraints", () => {
         });
 
         test("should throw an error when all necessary constraints do not exist when used with @alias", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("Book");
 
             const typeDefs = `
@@ -91,6 +116,13 @@ describe("assertConstraints", () => {
         });
 
         test("should not throw an error when all necessary constraints exist", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("Book");
 
             const typeDefs = `
@@ -118,6 +150,13 @@ describe("assertConstraints", () => {
         });
 
         test("should not throw an error when all necessary constraints exist when used with @alias", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("Book");
 
             const typeDefs = `
@@ -145,6 +184,13 @@ describe("assertConstraints", () => {
         });
 
         test("should create a constraint if it doesn't exist and specified in options", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("Book");
 
             const typeDefs = `
@@ -166,14 +212,20 @@ describe("assertConstraints", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `SHOW UNIQUE CONSTRAINTS`;
+            const cypher = "CALL db.constraints";
+            // TODO: Swap line below with above when 4.1 no longer supported
+            // const cypher = "SHOW UNIQUE CONSTRAINTS";
 
             try {
                 const result = await session.run(cypher);
 
                 expect(
                     result.records
-                        .map((record) => record.toObject())
+                        .map((record) => {
+                            return parseLegacyConstraint(record.toObject());
+                            // TODO: Swap line below with above when 4.1 no longer supported
+                            // return record.toObject();
+                        })
                         .filter((record) => record.labelsOrTypes.includes(type.name))
                 ).toHaveLength(1);
             } finally {
@@ -182,6 +234,13 @@ describe("assertConstraints", () => {
         });
 
         test("should create a constraint if it doesn't exist and specified in options when used with @alias", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("Book");
 
             const typeDefs = `
@@ -203,14 +262,20 @@ describe("assertConstraints", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `SHOW UNIQUE CONSTRAINTS`;
+            const cypher = "CALL db.constraints";
+            // TODO: Swap line below with above when 4.1 no longer supported
+            // const cypher = "SHOW UNIQUE CONSTRAINTS";
 
             try {
                 const result = await session.run(cypher);
 
                 expect(
                     result.records
-                        .map((record) => record.toObject())
+                        .map((record) => {
+                            return parseLegacyConstraint(record.toObject());
+                            // TODO: Swap line below with above when 4.1 no longer supported
+                            // return record.toObject();
+                        })
                         .filter(
                             (record) =>
                                 record.labelsOrTypes.includes(type.name) &&
@@ -225,6 +290,13 @@ describe("assertConstraints", () => {
 
     describe("@id", () => {
         test("should throw an error when all necessary constraints do not exist", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("User");
 
             const typeDefs = `
@@ -242,6 +314,13 @@ describe("assertConstraints", () => {
         });
 
         test("should throw an error when all necessary constraints do not exist when used with @alias", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("User");
 
             const typeDefs = `
@@ -259,6 +338,13 @@ describe("assertConstraints", () => {
         });
 
         test("should not throw an error when unique argument is set to false", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("User");
 
             const typeDefs = `
@@ -276,6 +362,13 @@ describe("assertConstraints", () => {
         });
 
         test("should not throw an error when unique argument is set to false when used with @alias", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("User");
 
             const typeDefs = `
@@ -293,6 +386,13 @@ describe("assertConstraints", () => {
         });
 
         test("should not throw an error when all necessary constraints exist", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("User");
 
             const typeDefs = `
@@ -320,6 +420,13 @@ describe("assertConstraints", () => {
         });
 
         test("should not throw an error when all necessary constraints exist when used with @alias", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("User");
 
             const typeDefs = `
@@ -347,6 +454,13 @@ describe("assertConstraints", () => {
         });
 
         test("should create a constraint if it doesn't exist and specified in options", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("User");
 
             const typeDefs = `
@@ -368,14 +482,20 @@ describe("assertConstraints", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `SHOW UNIQUE CONSTRAINTS`;
+            const cypher = "CALL db.constraints";
+            // TODO: Swap line below with above when 4.1 no longer supported
+            // const cypher = "SHOW UNIQUE CONSTRAINTS";
 
             try {
                 const result = await session.run(cypher);
 
                 expect(
                     result.records
-                        .map((record) => record.toObject())
+                        .map((record) => {
+                            return parseLegacyConstraint(record.toObject());
+                            // TODO: Swap line below with above when 4.1 no longer supported
+                            // return record.toObject();
+                        })
                         .filter((record) => record.labelsOrTypes.includes(type.name))
                 ).toHaveLength(1);
             } finally {
@@ -384,6 +504,13 @@ describe("assertConstraints", () => {
         });
 
         test("should create a constraint if it doesn't exist and specified in options when used with @alias", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("User");
 
             const typeDefs = `
@@ -405,14 +532,20 @@ describe("assertConstraints", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `SHOW UNIQUE CONSTRAINTS`;
+            const cypher = "CALL db.constraints";
+            // TODO: Swap line below with above when 4.1 no longer supported
+            // const cypher = "SHOW UNIQUE CONSTRAINTS";
 
             try {
                 const result = await session.run(cypher);
 
                 expect(
                     result.records
-                        .map((record) => record.toObject())
+                        .map((record) => {
+                            return parseLegacyConstraint(record.toObject());
+                            // TODO: Swap line below with above when 4.1 no longer supported
+                            // return record.toObject();
+                        })
                         .filter(
                             (record) =>
                                 record.labelsOrTypes.includes(type.name) && record.properties.includes("identifier")
@@ -424,6 +557,13 @@ describe("assertConstraints", () => {
         });
 
         test("should not create a constraint if it doesn't exist and unique option is set to false", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("User");
 
             const typeDefs = `
@@ -445,14 +585,20 @@ describe("assertConstraints", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `SHOW UNIQUE CONSTRAINTS`;
+            const cypher = "CALL db.constraints";
+            // TODO: Swap line below with above when 4.1 no longer supported
+            // const cypher = "SHOW UNIQUE CONSTRAINTS";
 
             try {
                 const result = await session.run(cypher);
 
                 expect(
                     result.records
-                        .map((record) => record.toObject())
+                        .map((record) => {
+                            return parseLegacyConstraint(record.toObject());
+                            // TODO: Swap line below with above when 4.1 no longer supported
+                            // return record.toObject();
+                        })
                         .filter((record) => record.labelsOrTypes.includes(type.name))
                 ).toHaveLength(0);
             } finally {
@@ -461,6 +607,13 @@ describe("assertConstraints", () => {
         });
 
         test("should not create a constraint if it doesn't exist and unique option is set to false when used with @alias", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+                pending();
+                return;
+            }
+
             const type = generateUniqueType("User");
 
             const typeDefs = `
@@ -482,14 +635,20 @@ describe("assertConstraints", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `SHOW UNIQUE CONSTRAINTS`;
+            const cypher = "CALL db.constraints";
+            // TODO: Swap line below with above when 4.1 no longer supported
+            // const cypher = "SHOW UNIQUE CONSTRAINTS";
 
             try {
                 const result = await session.run(cypher);
 
                 expect(
                     result.records
-                        .map((record) => record.toObject())
+                        .map((record) => {
+                            return parseLegacyConstraint(record.toObject());
+                            // TODO: Swap line below with above when 4.1 no longer supported
+                            // return record.toObject();
+                        })
                         .filter(
                             (record) =>
                                 record.labelsOrTypes.includes(type.name) && record.properties.includes("identifier")

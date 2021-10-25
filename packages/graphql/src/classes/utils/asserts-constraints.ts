@@ -157,16 +157,14 @@ async function assertConstraints({
             const result = await session.run(cypher);
 
             result.records
-                .map((record) => record.toObject())
-                .forEach((record) => {
-                    const constraint = parseLegacyConstraint(record);
-
+                .map((record) => {
+                    return parseLegacyConstraint(record.toObject());
+                    // TODO: Swap line below with above when 4.1 no longer supported
+                    // return record.toObject();
+                })
+                .forEach((constraint) => {
                     const label = constraint.labelsOrTypes[0];
                     const property = constraint.properties[0];
-
-                    // TODO: Swap lines below with above to switch to "SHOW CONSTRAINTS"
-                    // const label = record.labelsOrTypes[0];
-                    // const property = record.properties[0];
 
                     if (existingConstraints[label]) {
                         existingConstraints[label].push(property);
