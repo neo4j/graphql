@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import { Driver, Session } from "neo4j-driver";
 import Node from "../Node";
 import { DriverConfig } from "../..";
 
@@ -95,6 +95,79 @@ export function parseLegacyConstraint(record: LegacyConstraint): Constraint {
     return constraint as Constraint;
 }
 
+async function createConstraints({ nodes, session }: { nodes: Node[]; session: Session }) {
+    const constraintsToCreate: { constraintName: string; label: string; property: string }[] = [];
+
+    nodes.forEach((node) => {
+        node.constrainableFields.forEach((field) => {
+            if (field.unique) {
+                constraintsToCreate.push({
+                    constraintName: field.unique.constraintName,
+                    label: node.getMainLabel(),
+                    property: field.dbPropertyName || field.fieldName,
+                });
+            }
+        });
+    });
+
+    try {
+        for (const constraintToCreate of constraintsToCreate) {
+            const cypher = `CREATE CONSTRAINT ${constraintToCreate.constraintName} IF NOT EXISTS ON (n:${constraintToCreate.label}) ASSERT n.${constraintToCreate.property} IS UNIQUE`;
+            // eslint-disable-next-line no-await-in-loop
+            await session.run(cypher);
+        }
+    } finally {
+        await session.close();
+    }
+}
+
+async function checkConstraints({ nodes, session }: { nodes: Node[]; session: Session }) {
+    const cypher = "CALL db.constraints";
+    // TODO: Swap line below with above when 4.1 no longer supported
+    // const cypher = "SHOW UNIQUE CONSTRAINTS";
+
+    const existingConstraints: Record<string, string[]> = {};
+    const missingConstraints: string[] = [];
+
+    try {
+        const result = await session.run(cypher);
+
+        result.records
+            .map((record) => {
+                return parseLegacyConstraint(record.toObject());
+                // TODO: Swap line below with above when 4.1 no longer supported
+                // return record.toObject();
+            })
+            .forEach((constraint) => {
+                const label = constraint.labelsOrTypes[0];
+                const property = constraint.properties[0];
+
+                if (existingConstraints[label]) {
+                    existingConstraints[label].push(property);
+                } else {
+                    existingConstraints[label] = [property];
+                }
+            });
+    } finally {
+        await session.close();
+    }
+
+    nodes.forEach((node) => {
+        node.constrainableFields.forEach((field) => {
+            if (field.unique) {
+                const property = field.dbPropertyName || field.fieldName;
+                if (!existingConstraints[node.getMainLabel()]?.includes(property)) {
+                    missingConstraints.push(`Missing constraint for ${node.name}.${property}`);
+                }
+            }
+        });
+    });
+
+    if (missingConstraints.length) {
+        throw new Error(missingConstraints.join("\n"));
+    }
+}
+
 async function assertConstraints({
     driver,
     driverConfig,
@@ -126,71 +199,10 @@ async function assertConstraints({
     const session = driver.session(sessionParams);
 
     if (options?.create) {
-        const constraintsToCreate: { constraintName: string; label: string; property: string }[] = [];
-
-        nodes.forEach((node) => {
-            node.constrainableFields.forEach((field) => {
-                if (field.unique) {
-                    constraintsToCreate.push({
-                        constraintName: field.unique.constraintName,
-                        label: node.getMainLabel(),
-                        property: field.dbPropertyName || field.fieldName,
-                    });
-                }
-            });
-        });
-
-        for (const constraintToCreate of constraintsToCreate) {
-            const cypher = `CREATE CONSTRAINT ${constraintToCreate.constraintName} IF NOT EXISTS ON (n:${constraintToCreate.label}) ASSERT n.${constraintToCreate.property} IS UNIQUE`;
-            // eslint-disable-next-line no-await-in-loop
-            await session.run(cypher);
-        }
-    } else {
-        const cypher = "CALL db.constraints";
-        // TODO: Swap line below with above when 4.1 no longer supported
-        // const cypher = "SHOW UNIQUE CONSTRAINTS";
-
-        const existingConstraints: Record<string, string[]> = {};
-        const missingConstraints: string[] = [];
-
-        try {
-            const result = await session.run(cypher);
-
-            result.records
-                .map((record) => {
-                    return parseLegacyConstraint(record.toObject());
-                    // TODO: Swap line below with above when 4.1 no longer supported
-                    // return record.toObject();
-                })
-                .forEach((constraint) => {
-                    const label = constraint.labelsOrTypes[0];
-                    const property = constraint.properties[0];
-
-                    if (existingConstraints[label]) {
-                        existingConstraints[label].push(property);
-                    } else {
-                        existingConstraints[label] = [property];
-                    }
-                });
-        } finally {
-            await session.close();
-        }
-
-        nodes.forEach((node) => {
-            node.constrainableFields.forEach((field) => {
-                if (field.unique) {
-                    const property = field.dbPropertyName || field.fieldName;
-                    if (!existingConstraints[node.getMainLabel()]?.includes(property)) {
-                        missingConstraints.push(`Missing constraint for ${node.name}.${property}`);
-                    }
-                }
-            });
-        });
-
-        if (missingConstraints.length) {
-            throw new Error(missingConstraints.join("\n"));
-        }
+        return createConstraints({ nodes, session });
     }
+
+    return checkConstraints({ nodes, session });
 }
 
 export default assertConstraints;
