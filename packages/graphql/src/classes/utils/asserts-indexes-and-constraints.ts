@@ -21,7 +21,7 @@ import { Driver, Session } from "neo4j-driver";
 import Node from "../Node";
 import { DriverConfig } from "../..";
 
-export interface AssertConstraintOptions {
+export interface AssertIndexesAndConstraintsOptions {
     create?: boolean;
 }
 
@@ -168,7 +168,7 @@ async function checkConstraints({ nodes, session }: { nodes: Node[]; session: Se
     }
 }
 
-async function assertConstraints({
+async function assertIndexesAndConstraints({
     driver,
     driverConfig,
     nodes,
@@ -177,7 +177,7 @@ async function assertConstraints({
     driver: Driver;
     driverConfig?: DriverConfig;
     nodes: Node[];
-    options?: AssertConstraintOptions;
+    options?: AssertIndexesAndConstraintsOptions;
 }) {
     await driver.verifyConnectivity();
 
@@ -205,4 +205,4 @@ async function assertConstraints({
     return checkConstraints({ nodes, session });
 }
 
-export default assertConstraints;
+export default assertIndexesAndConstraints;

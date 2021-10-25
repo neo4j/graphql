@@ -22,9 +22,9 @@ import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../../src/utils/test/graphql-types";
-import { parseLegacyConstraint } from "../../src/classes/utils/asserts-constraints";
+import { parseLegacyConstraint } from "../../src/classes/utils/asserts-indexes-and-constraints";
 
-describe("assertConstraints", () => {
+describe("assertIndexesAndConstraints", () => {
     let driver: Driver;
     let databaseName: string;
     let MULTIDB_SUPPORT = true;
@@ -87,7 +87,7 @@ describe("assertConstraints", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             await expect(
-                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
             ).rejects.toThrow(`Missing constraint for ${type.name}.isbn`);
         });
 
@@ -111,7 +111,7 @@ describe("assertConstraints", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             await expect(
-                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
             ).rejects.toThrow(`Missing constraint for ${type.name}.internationalStandardBookNumber`);
         });
 
@@ -145,7 +145,7 @@ describe("assertConstraints", () => {
             }
 
             await expect(
-                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
             ).resolves.not.toThrow();
         });
 
@@ -179,7 +179,7 @@ describe("assertConstraints", () => {
             }
 
             await expect(
-                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
             ).resolves.not.toThrow();
         });
 
@@ -203,7 +203,7 @@ describe("assertConstraints", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             await expect(
-                neoSchema.assertConstraints({
+                neoSchema.assertIndexesAndConstraints({
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
@@ -253,7 +253,7 @@ describe("assertConstraints", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             await expect(
-                neoSchema.assertConstraints({
+                neoSchema.assertIndexesAndConstraints({
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
@@ -309,7 +309,7 @@ describe("assertConstraints", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             await expect(
-                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
             ).rejects.toThrow(`Missing constraint for ${type.name}.id`);
         });
 
@@ -333,7 +333,7 @@ describe("assertConstraints", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             await expect(
-                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
             ).rejects.toThrow(`Missing constraint for ${type.name}.identifier`);
         });
 
@@ -357,7 +357,7 @@ describe("assertConstraints", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             await expect(
-                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
             ).resolves.not.toThrow();
         });
 
@@ -381,7 +381,7 @@ describe("assertConstraints", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             await expect(
-                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
             ).resolves.not.toThrow();
         });
 
@@ -415,7 +415,7 @@ describe("assertConstraints", () => {
             }
 
             await expect(
-                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
             ).resolves.not.toThrow();
         });
 
@@ -449,7 +449,7 @@ describe("assertConstraints", () => {
             }
 
             await expect(
-                neoSchema.assertConstraints({ driver, driverConfig: { database: databaseName } })
+                neoSchema.assertIndexesAndConstraints({ driver, driverConfig: { database: databaseName } })
             ).resolves.not.toThrow();
         });
 
@@ -473,7 +473,7 @@ describe("assertConstraints", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             await expect(
-                neoSchema.assertConstraints({
+                neoSchema.assertIndexesAndConstraints({
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
@@ -523,7 +523,7 @@ describe("assertConstraints", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             await expect(
-                neoSchema.assertConstraints({
+                neoSchema.assertIndexesAndConstraints({
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
@@ -576,7 +576,7 @@ describe("assertConstraints", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             await expect(
-                neoSchema.assertConstraints({
+                neoSchema.assertIndexesAndConstraints({
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },
@@ -626,7 +626,7 @@ describe("assertConstraints", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             await expect(
-                neoSchema.assertConstraints({
+                neoSchema.assertIndexesAndConstraints({
                     driver,
                     driverConfig: { database: databaseName },
                     options: { create: true },

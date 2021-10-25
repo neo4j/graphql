@@ -1,4 +1,4 @@
-import { LegacyConstraint, parseLegacyConstraint } from "./asserts-constraints";
+import { LegacyConstraint, parseLegacyConstraint } from "./asserts-indexes-and-constraints";
 
 describe("parseLegacyConstraint", () => {
     test("parses record", () => {
