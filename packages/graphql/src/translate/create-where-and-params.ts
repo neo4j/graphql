@@ -406,7 +406,7 @@ function createWhereAndParams({
                 const resolveTreeParams = recursing
                     ? {
                           [`${varName}_${context.resolveTree.name}`]: {
-                              where: { [`${equalityConnection.fieldName}_NOT`]: connectionWhere[1] },
+                              where: { [equalityConnection.fieldName]: connectionWhere[1] },
                           },
                       }
                     : { [`${varName}_${context.resolveTree.name}`]: context.resolveTree.args };
