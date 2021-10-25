@@ -23,6 +23,7 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../../src/utils/test/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/488", () => {
     let driver: Driver;
@@ -38,25 +39,30 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
     test("should return correct data based on issue", async () => {
         const session = driver.session();
 
+        const testJournalist = generateUniqueType("Journalist");
+        const testEmoji = generateUniqueType("Emoji");
+        const testHashtag = generateUniqueType("Hashtag");
+        const testText = generateUniqueType("Text");
+
         const typeDefs = gql`
-            type Journalist {
+            type ${testJournalist.name} {
                 id: ID!
                 keywords: [Keyword]! @relationship(type: "HAS_KEYWORD", direction: OUT)
             }
 
-            union Keyword = Emoji | Hashtag | Text
+            union Keyword = ${testEmoji.name} | ${testHashtag.name} | ${testText.name}
 
-            type Emoji {
+            type ${testEmoji.name} {
                 id: ID! @id
                 type: String!
             }
 
-            type Hashtag {
+            type ${testHashtag.name} {
                 id: ID! @id
                 type: String!
             }
 
-            type Text {
+            type ${testText.name} {
                 id: ID! @id
                 type: String!
             }
@@ -75,11 +81,11 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
         const emojiType = "Smile";
 
         const query = `
-            query Query($journalistsWhere: JournalistWhere) {
-                journalists(where: $journalistsWhere) {
+            query Query($journalistsWhere: ${testJournalist.name}Where) {
+                ${testJournalist.plural}(where: $journalistsWhere) {
                   id
                   keywords {
-                    ... on Emoji {
+                    ... on ${testEmoji.name} {
                       id
                       type
                     }
@@ -92,7 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
             journalistsWhere: {
                 id: journalistId,
                 keywordsConnection: {
-                    Emoji: {
+                    [testEmoji.name]: {
                         node: {
                             type: emojiType,
                         },
@@ -103,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
 
         try {
             await session.run(`
-                CREATE (j:Journalist { id: "${journalistId}" })-[:HAS_KEYWORD]->(:Emoji { id: "${emojiId}", type: "${emojiType}" })
+                CREATE (j:${testJournalist.name} { id: "${journalistId}" })-[:HAS_KEYWORD]->(:${testEmoji.name} { id: "${emojiId}", type: "${emojiType}" })
             `);
 
             const result = await graphql({
@@ -120,7 +126,7 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
             expect(result.errors).toBeFalsy();
 
             expect(result.data as any).toEqual({
-                journalists: [
+                [testJournalist.plural]: [
                     {
                         id: journalistId,
                         keywords: [
