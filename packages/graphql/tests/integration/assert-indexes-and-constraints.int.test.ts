@@ -43,6 +43,8 @@ describe("assertIndexesAndConstraints", () => {
                 if (e.message.includes(`Neo4jError: Unsupported administration command: ${cypher}`)) {
                     // No multi-db support, so we skip tests
                     MULTIDB_SUPPORT = false;
+                } else {
+                    throw e;
                 }
             }
         } finally {
