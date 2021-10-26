@@ -84,6 +84,7 @@ export function createFieldAggregation({
         node: referenceNode,
         context,
         recursing: true,
+        chainStr: `${nodeLabel}_${field.name}_${subQueryNodeAlias}`,
     });
 
     const targetPattern = createTargetPattern({

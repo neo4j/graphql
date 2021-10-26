@@ -29,7 +29,7 @@ describe("Field Level Aggregations Where", () => {
     let typeDefs: string;
 
     const typeMovie = generateUniqueType("Movie");
-    const typeActor = generateUniqueType("Actor");
+    const typePerson = generateUniqueType("Person");
 
     let neoSchema: Neo4jGraphQL;
 
@@ -39,14 +39,14 @@ describe("Field Level Aggregations Where", () => {
         typeDefs = `
         type ${typeMovie.name} {
             title: String
-            ${typeActor.plural}: [${typeActor.name}] @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
+            actors: [${typePerson.name}] @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
         }
 
-        type ${typeActor.name} {
+        type ${typePerson.name} {
             name: String
             age: Int
             born: DateTime
-            ${typeMovie.plural}: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
+            movies: [${typeMovie.name}] @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
         }
 
         interface ActedIn {
@@ -57,8 +57,9 @@ describe("Field Level Aggregations Where", () => {
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
         session = driver.session();
-        await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
-        CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37, born: datetime('2000-02-02')})`);
+        await session.run(`
+            CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typePerson.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
+            CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typePerson.name} {name: "Linda", age:37, born: datetime('2000-02-02')})`);
     });
 
     afterAll(async () => {
@@ -70,7 +71,7 @@ describe("Field Level Aggregations Where", () => {
         const query = `
             query {
               ${typeMovie.plural} {
-                ${typeActor.plural}Aggregate(where: {name: "Linda"}) {
+                actorsAggregate(where: {name: "Linda"}) {
                   count
                 }
               }
@@ -84,7 +85,7 @@ describe("Field Level Aggregations Where", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+        expect((gqlResult as any).data[typeMovie.plural][0].actorsAggregate).toEqual({
             count: 1,
         });
     });
@@ -93,7 +94,7 @@ describe("Field Level Aggregations Where", () => {
         const query = `
             query {
               ${typeMovie.plural} {
-                ${typeActor.plural}Aggregate(where: {OR: [{name: "Linda"}, {name: "Arnold"}]}) {
+                actorsAggregate(where: {OR: [{name: "Linda"}, {name: "Arnold"}]}) {
                   count
                 }
               }
@@ -107,7 +108,7 @@ describe("Field Level Aggregations Where", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+        expect((gqlResult as any).data[typeMovie.plural][0].actorsAggregate).toEqual({
             count: 2,
         });
     });
@@ -116,7 +117,7 @@ describe("Field Level Aggregations Where", () => {
         const query = `
             query {
               ${typeMovie.plural} {
-                ${typeActor.plural}Aggregate(where: {${typeMovie.plural}Aggregate: {count:1}}) {
+                actorsAggregate(where: {moviesAggregate: {count:1}}) {
                   count
                 }
               }
@@ -128,7 +129,7 @@ describe("Field Level Aggregations Where", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+        expect((gqlResult as any).data[typeMovie.plural][0].actorsAggregate).toEqual({
             count: 2,
         });
     });
@@ -137,8 +138,8 @@ describe("Field Level Aggregations Where", () => {
         test("Count nodes with where in connection node", async () => {
             const query = `
             query {
-                ${typeActor.plural} {
-                    ${typeMovie.plural}Aggregate(where:{${typeActor.plural}Connection: {node: {name: "Linda"}}}){
+                ${typePerson.plural} {
+                    moviesAggregate(where:{actorsConnection: {node: {name: "Linda"}}}){
                         count
                     }
                 }
@@ -150,7 +151,7 @@ describe("Field Level Aggregations Where", () => {
             });
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
+            expect((gqlResult as any).data[typePerson.plural][0].moviesAggregate).toEqual({
                 count: 1,
             });
         });
@@ -158,8 +159,8 @@ describe("Field Level Aggregations Where", () => {
         test("Count nodes with where in connection edge", async () => {
             const query = `
             query {
-                ${typeActor.plural} {
-                    ${typeMovie.plural}Aggregate(where:{${typeActor.plural}Connection: {edge: {screentime_GT: 10}}}){
+                ${typePerson.plural} {
+                    moviesAggregate(where:{actorsConnection: {edge: {screentime_GT: 10}}}){
                         count
                     }
                 }
@@ -171,7 +172,7 @@ describe("Field Level Aggregations Where", () => {
             });
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
+            expect((gqlResult as any).data[typePerson.plural][0].moviesAggregate).toEqual({
                 count: 1,
             });
         });
@@ -179,8 +180,8 @@ describe("Field Level Aggregations Where", () => {
         test("Count nodes with where in connection node using OR", async () => {
             const query = `
             query {
-                ${typeActor.plural} {
-                    ${typeMovie.plural}Aggregate(where:{${typeActor.plural}Connection: {node: {OR: [{name: "Linda"},{name: "Arnold"}]}}}){
+                ${typePerson.plural} {
+                    moviesAggregate(where:{actorsConnection: {node: {OR: [{name: "Linda"},{name: "Arnold"}]}}}){
                         count
                     }
                 }
@@ -192,7 +193,7 @@ describe("Field Level Aggregations Where", () => {
             });
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult as any).data[typeActor.plural][0][`${typeMovie.plural}Aggregate`]).toEqual({
+            expect((gqlResult as any).data[typePerson.plural][0].moviesAggregate).toEqual({
                 count: 1,
             });
         });
@@ -202,7 +203,7 @@ describe("Field Level Aggregations Where", () => {
         const query = `
             query {
               ${typeMovie.plural} {
-                ${typeActor.plural}Aggregate(where: {name_IN: ["Linda", "Arnold"]}) {
+                actorsAggregate(where: {name_IN: ["Linda", "Arnold"]}) {
                   count
                 }
               }
@@ -216,7 +217,7 @@ describe("Field Level Aggregations Where", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+        expect((gqlResult as any).data[typeMovie.plural][0].actorsAggregate).toEqual({
             count: 2,
         });
     });
@@ -225,7 +226,7 @@ describe("Field Level Aggregations Where", () => {
         const query = `
             query {
               ${typeMovie.plural} {
-                ${typeActor.plural}Aggregate(where: {age_IN: [40, 60, 37]}) {
+                actorsAggregate(where: {age_IN: [40, 60, 37]}) {
                   count
                 }
               }
@@ -239,7 +240,7 @@ describe("Field Level Aggregations Where", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+        expect((gqlResult as any).data[typeMovie.plural][0].actorsAggregate).toEqual({
             count: 1,
         });
     });
@@ -248,7 +249,7 @@ describe("Field Level Aggregations Where", () => {
         const query = `
             query {
               ${typeMovie.plural} {
-                ${typeActor.plural}Aggregate(where: {born_GT: "2000-01-01"}) {
+                actorsAggregate(where: {born_GT: "2000-01-01"}) {
                   count
                 }
               }
@@ -262,7 +263,7 @@ describe("Field Level Aggregations Where", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+        expect((gqlResult as any).data[typeMovie.plural][0].actorsAggregate).toEqual({
             count: 1,
         });
     });
