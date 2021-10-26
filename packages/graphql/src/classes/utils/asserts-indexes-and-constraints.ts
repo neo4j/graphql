@@ -18,8 +18,12 @@
  */
 
 import { Driver, Session } from "neo4j-driver";
+import Debug from "debug";
 import Node from "../Node";
 import { DriverConfig } from "../..";
+import { DEBUG_EXECUTE } from "../../constants";
+
+const debug = Debug(DEBUG_EXECUTE);
 
 export interface AssertIndexesAndConstraintsOptions {
     create?: boolean;
@@ -113,8 +117,11 @@ async function createConstraints({ nodes, session }: { nodes: Node[]; session: S
     try {
         for (const constraintToCreate of constraintsToCreate) {
             const cypher = `CREATE CONSTRAINT ${constraintToCreate.constraintName} IF NOT EXISTS ON (n:${constraintToCreate.label}) ASSERT n.${constraintToCreate.property} IS UNIQUE`;
+            debug(`About to execute Cypher: ${cypher}`);
             // eslint-disable-next-line no-await-in-loop
-            await session.run(cypher);
+            const result = await session.run(cypher);
+            const { constraintsAdded } = result.summary.counters.updates();
+            debug(`Created ${constraintsAdded} new constraint${constraintsAdded ? "" : "s"}`);
         }
     } finally {
         await session.close();
@@ -130,6 +137,7 @@ async function checkConstraints({ nodes, session }: { nodes: Node[]; session: Se
     const missingConstraints: string[] = [];
 
     try {
+        debug(`About to execute Cypher: ${cypher}`);
         const result = await session.run(cypher);
 
         result.records
@@ -166,6 +174,8 @@ async function checkConstraints({ nodes, session }: { nodes: Node[]; session: Se
     if (missingConstraints.length) {
         throw new Error(missingConstraints.join("\n"));
     }
+
+    debug("Successfully checked for the existence of all necessary constraints");
 }
 
 async function assertIndexesAndConstraints({

@@ -381,4 +381,23 @@ describe("makeAugmentedSchema", () => {
             );
         });
     });
+
+    describe("Directive combinations", () => {
+        test("@unique can't be used with @relationship", () => {
+            const typeDefs = gql`
+                type Movie {
+                    id: ID
+                    actors: [Actor] @relationship(type: "ACTED_IN", direction: OUT) @unique
+                }
+
+                type Actor {
+                    name: String
+                }
+            `;
+
+            expect(() => makeAugmentedSchema({ typeDefs })).toThrow(
+                "Directive @unique cannot be used in combination with @relationship"
+            );
+        });
+    });
 });
