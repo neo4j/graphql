@@ -22,8 +22,7 @@ import { generateResultObject } from "./utils";
 import { wrapApocConvertDate } from "../projection/elements/create-datetime-element";
 
 export function createMatchWherePattern(matchPattern: string, auth: AggregationAuth): string {
-    return `MATCH ${matchPattern}
-        ${auth.whereQuery ? `WHERE ${auth.whereQuery}` : ""}${auth.query}`;
+    return `MATCH ${matchPattern} ${auth.whereQuery ? `WHERE ${auth.whereQuery}` : ""}${auth.query}`;
 }
 
 export function stringAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
@@ -49,14 +48,12 @@ export function defaultAggregationQuery(matchWherePattern: string, fieldName: st
 
 export function dateTimeAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
     const fieldPath = `${targetAlias}.${fieldName}`;
-    return `${matchWherePattern}
-        RETURN ${generateResultObject({
-            min: wrapApocConvertDate(`min(${fieldPath})`),
-            max: wrapApocConvertDate(`max(${fieldPath})`),
-        })}`;
+    return `${matchWherePattern} RETURN ${generateResultObject({
+        min: wrapApocConvertDate(`min(${fieldPath})`),
+        max: wrapApocConvertDate(`max(${fieldPath})`),
+    })}`;
 }
 
 export function countQuery(matchWherePattern: string, targetAlias: string): string {
-    return `${matchWherePattern}
-    RETURN COUNT(${targetAlias})`;
+    return `${matchWherePattern} RETURN COUNT(${targetAlias})`;
 }

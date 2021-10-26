@@ -40,6 +40,8 @@ export type TestCase = {
     tests: Test[];
     file: string;
     envVars?: string;
+    path: string;
+    title: string;
 };
 
 function captureOrEmptyString(contents: string, re: RegExp): string {
@@ -50,6 +52,7 @@ function captureOrEmptyString(contents: string, re: RegExp): string {
     return "";
 }
 
+const titleRe = /#(?<capture>([^\n]+))/;
 const nameRe = /##(?<capture>([^\n]+))/;
 const graphqlQueryRe = /### GraphQL Input\s+```graphql(?<capture>(.|\s)*?)```/;
 const graphqlParamsRe = /### GraphQL Params Input\s+```json(?<capture>(.|\s)*?)```/;
@@ -108,6 +111,8 @@ function generateTests(filePath): TestCase {
     const out: TestCase = {
         tests: extractTests(dataStr),
         file: `${file}`,
+        path: filePath,
+        title: captureOrEmptyString(data, titleRe).trim(),
     };
 
     out.schema = extractSchema(dataStr);
