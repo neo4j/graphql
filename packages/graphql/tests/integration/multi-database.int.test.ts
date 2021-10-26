@@ -54,7 +54,11 @@ describe("multi-database", () => {
                 if (e.message.includes("Unsupported administration command")) {
                     // No multi-db support, so we skip tests
                     MULTIDB_SUPPORT = false;
+                } else {
+                    throw e;
                 }
+            } else {
+                throw e;
             }
         }
     });
