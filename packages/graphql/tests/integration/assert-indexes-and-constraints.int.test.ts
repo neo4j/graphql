@@ -19,6 +19,8 @@
 
 import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
+import { graphql } from "graphql";
+import { gql } from "apollo-server";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../../src/utils/test/graphql-types";
@@ -32,7 +34,7 @@ describe("assertIndexesAndConstraints", () => {
     beforeAll(async () => {
         driver = await neo4j();
 
-        databaseName = generate({ readable: true });
+        databaseName = generate({ readable: true, charset: "alphabetic" });
 
         const cypher = `CREATE DATABASE ${databaseName}`;
         const session = driver.session();
@@ -66,6 +68,103 @@ describe("assertIndexesAndConstraints", () => {
                 await session.close();
             }
         }
+    });
+
+    test("should create a constraint if it doesn't exist and specified in options, and then throw an error in the event of constraint validation", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
+        const isbn = generate({ readable: true });
+        const title = generate({ readable: true });
+
+        const typeDefs = gql`
+            type Book {
+                isbn: String! @unique
+                title: String!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        await expect(
+            neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            })
+        ).resolves.not.toThrow();
+
+        const session = driver.session({ database: databaseName });
+
+        const cypher = "CALL db.constraints";
+        // TODO: Swap line below with above when 4.1 no longer supported
+        // const cypher = "SHOW UNIQUE CONSTRAINTS";
+
+        try {
+            const result = await session.run(cypher);
+
+            expect(
+                result.records
+                    .map((record) => {
+                        return parseLegacyConstraint(record.toObject());
+                        // TODO: Swap line below with above when 4.1 no longer supported
+                        // return record.toObject();
+                    })
+                    .filter((record) => record.labelsOrTypes.includes("Book"))
+            ).toHaveLength(1);
+        } finally {
+            await session.close();
+        }
+
+        const mutation = `
+            mutation CreateBooks($isbn: String!, $title: String!) {
+                createBooks(input: [{ isbn: $isbn, title: $title }]) {
+                    books {
+                        isbn
+                        title
+                    }
+                }
+            }
+        `;
+
+        const createResult = await graphql({
+            schema: neoSchema.schema,
+            source: mutation,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+            variableValues: {
+                isbn,
+                title,
+            },
+        });
+
+        expect(createResult.errors).toBeFalsy();
+
+        expect(createResult.data).toEqual({
+            createBooks: { books: [{ isbn, title }] },
+        });
+
+        const errorResult = await graphql({
+            schema: neoSchema.schema,
+            source: mutation,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+            variableValues: {
+                isbn,
+                title,
+            },
+        });
+
+        expect(errorResult.errors).toHaveLength(1);
+        expect(errorResult.errors?.[0].message).toEqual("Constraint validation failed");
     });
 
     describe("@unique", () => {

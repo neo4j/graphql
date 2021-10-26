@@ -17,9 +17,13 @@
  * limitations under the License.
  */
 
-import { SessionMode, Transaction, QueryResult } from "neo4j-driver";
+import { SessionMode, Transaction, QueryResult, Neo4jError } from "neo4j-driver";
 import Debug from "debug";
-import { Neo4jGraphQLForbiddenError, Neo4jGraphQLAuthenticationError } from "../classes";
+import {
+    Neo4jGraphQLForbiddenError,
+    Neo4jGraphQLAuthenticationError,
+    Neo4jGraphQLConstraintValidationError,
+} from "../classes";
 import { AUTH_FORBIDDEN_ERROR, AUTH_UNAUTHENTICATED_ERROR, DEBUG_EXECUTE } from "../constants";
 import createAuthParam from "../translate/create-auth-param";
 import { Context, DriverConfig } from "../types";
@@ -107,12 +111,18 @@ async function execute(input: {
             records: result.records.map((r) => r.toObject()),
         };
     } catch (error) {
-        if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_FORBIDDEN_ERROR}`)) {
-            throw new Neo4jGraphQLForbiddenError("Forbidden");
-        }
+        if (error instanceof Neo4jError) {
+            if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_FORBIDDEN_ERROR}`)) {
+                throw new Neo4jGraphQLForbiddenError("Forbidden");
+            }
 
-        if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_UNAUTHENTICATED_ERROR}`)) {
-            throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
+            if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_UNAUTHENTICATED_ERROR}`)) {
+                throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
+            }
+
+            if (error.code === "Neo.ClientError.Schema.ConstraintValidationFailed") {
+                throw new Neo4jGraphQLConstraintValidationError("Constraint validation failed");
+            }
         }
 
         debug("%s", error);
