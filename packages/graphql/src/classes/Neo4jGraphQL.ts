@@ -26,7 +26,7 @@ import type { DriverConfig, CypherQueryOptions } from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
-import { checkNeo4jCompat } from "../utils";
+import checkNeo4jCompat from "./utils/verify-database";
 import { getJWT } from "../auth/index";
 import { DEBUG_GRAPHQL } from "../constants";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";

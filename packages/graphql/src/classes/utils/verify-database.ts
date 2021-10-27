@@ -19,8 +19,8 @@
 
 import { Driver } from "neo4j-driver";
 import semver from "semver";
-import { MIN_NEO4J_VERSION, MIN_APOC_VERSION, REQUIRED_APOC_FUNCTIONS, REQUIRED_APOC_PROCEDURES } from "../constants";
-import { DriverConfig } from "../types";
+import { REQUIRED_APOC_FUNCTIONS, REQUIRED_APOC_PROCEDURES, MIN_VERSIONS } from "../../constants";
+import { DriverConfig } from "../../types";
 
 interface DBInfo {
     version: string;
@@ -69,12 +69,30 @@ async function checkNeo4jCompat({ driver, driverConfig }: { driver: Driver; driv
         const info = result.records[0].toObject() as DBInfo;
         const errors: string[] = [];
 
-        if (semver.lt(semver.coerce(info.version), MIN_NEO4J_VERSION)) {
-            errors.push(`Expected minimum Neo4j version: '${MIN_NEO4J_VERSION}' received: '${info.version}'`);
-        }
+        if (!info.version.includes("aura")) {
+            const minimumVersions = MIN_VERSIONS.find(({ majorMinor }) => info.version.startsWith(majorMinor));
+            const coercedNeo4jVersion = semver.coerce(info.version);
 
-        if (semver.lt(semver.coerce(info.apocVersion), MIN_APOC_VERSION)) {
-            errors.push(`Expected minimum APOC version: '${MIN_APOC_VERSION}' received: '${info.apocVersion}'`);
+            if (!minimumVersions) {
+                // If new major/minor version comes out, this will stop error being thrown
+                if (semver.lt(coercedNeo4jVersion, MIN_VERSIONS[0].neo4j)) {
+                    errors.push(
+                        `Expected Neo4j version '${MIN_VERSIONS[0].majorMinor}' or greater, received: '${info.version}'`
+                    );
+                }
+            } else {
+                if (semver.lt(coercedNeo4jVersion, minimumVersions.neo4j)) {
+                    errors.push(
+                        `Expected minimum Neo4j version: '${minimumVersions.neo4j}' received: '${info.version}'`
+                    );
+                }
+
+                if (!info.apocVersion.startsWith(minimumVersions.majorMinor)) {
+                    errors.push(
+                        `APOC version does not match Neo4j version '${minimumVersions.majorMinor}', received: '${info.apocVersion}'`
+                    );
+                }
+            }
         }
 
         const missingFunctions = REQUIRED_APOC_FUNCTIONS.filter((f) => !info.functions.includes(f));
