@@ -90,7 +90,7 @@ export interface TypeMeta {
     };
 }
 
-interface Unique {
+export interface Unique {
     constraintName: string;
 }
 

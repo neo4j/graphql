@@ -57,8 +57,6 @@ describe("assertIndexesAndConstraints", () => {
 
     afterAll(async () => {
         if (MULTIDB_SUPPORT) {
-            await driver.close();
-
             const cypher = `DROP DATABASE ${databaseName}`;
 
             const session = driver.session();
@@ -68,6 +66,7 @@ describe("assertIndexesAndConstraints", () => {
                 await session.close();
             }
         }
+        await driver.close();
     });
 
     test("should create a constraint if it doesn't exist and specified in options, and then throw an error in the event of constraint validation", async () => {

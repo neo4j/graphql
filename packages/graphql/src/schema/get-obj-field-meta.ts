@@ -54,6 +54,7 @@ import {
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
+import parseUnique from "./parse/parse-unique-directive";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -118,22 +119,13 @@ function getObjFieldMeta({
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
 
-            const uniqueDirective = directives.find((x) => x.name.value === "unique");
-            if (uniqueDirective && obj.kind === "InterfaceTypeDefinition") {
-                throw new Error(
-                    `@unique directive cannot be used on interface type fields: ${obj.name.value}.${field.name.value}`
-                );
-            }
+            const unique = parseUnique(directives, obj, field.name.value);
 
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
             const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
             const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
             const fieldObject = objects.find((x) => x.name.value === typeMeta.name);
-
-            const idDirectiveUniqueArgument = idDirective?.arguments?.find((a) => a.name.value === "unique")?.value as
-                | BooleanValueNode
-                | undefined;
 
             const baseField: BaseField = {
                 fieldName: field.name.value,
@@ -165,19 +157,7 @@ function getObjFieldMeta({
                 writeonly:
                     directives.some((d) => d.name.value === "writeonly") ||
                     interfaceField?.directives?.some((x) => x.name.value === "writeonly"),
-                ...(uniqueDirective ||
-                (obj.kind === "ObjectTypeDefinition" &&
-                    idDirective &&
-                    (!idDirectiveUniqueArgument || idDirectiveUniqueArgument.value))
-                    ? {
-                          unique: {
-                              constraintName:
-                                  (uniqueDirective?.arguments?.find((a) => a.name.value === "constraintName")?.value as
-                                      | StringValueNode
-                                      | undefined)?.value || `${obj.name.value}_${field.name.value}`,
-                          },
-                      }
-                    : {}),
+                ...(unique ? { unique } : {}),
             };
 
             if (aliasDirective) {
