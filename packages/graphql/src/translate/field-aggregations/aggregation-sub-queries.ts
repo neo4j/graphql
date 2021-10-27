@@ -18,12 +18,14 @@
  */
 
 import { AggregationAuth } from "./field-aggregations-auth";
-import { generateResultObject } from "./utils";
 import { wrapApocConvertDate } from "../projection/elements/create-datetime-element";
+import { serializeObject } from "./apoc-run-utils";
 
-export function createMatchWherePattern(matchPattern: string, auth: AggregationAuth): string {
-    return `MATCH ${matchPattern}
-        ${auth.whereQuery ? `WHERE ${auth.whereQuery}` : ""}${auth.query}`;
+export function createMatchWherePattern(matchPattern: string, auth: AggregationAuth, whereInput: string): string {
+    const whereQuery = whereInput || auth.whereQuery ? "WHERE" : "";
+    const andQuery = whereInput && auth.whereQuery ? "AND" : "";
+
+    return `MATCH ${matchPattern} ${whereQuery} ${whereInput} ${andQuery} ${auth.whereQuery} ${auth.query}`;
 }
 
 export function stringAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
@@ -50,7 +52,7 @@ export function defaultAggregationQuery(matchWherePattern: string, fieldName: st
 export function dateTimeAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
     const fieldPath = `${targetAlias}.${fieldName}`;
     return `${matchWherePattern}
-        RETURN ${generateResultObject({
+        RETURN ${serializeObject({
             min: wrapApocConvertDate(`min(${fieldPath})`),
             max: wrapApocConvertDate(`max(${fieldPath})`),
         })}`;
