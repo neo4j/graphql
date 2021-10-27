@@ -28,27 +28,32 @@ const TCK_DIR = path.join(__dirname, "tck-test-files");
 function main() {
     const testCases: TestCase[] = generateTestCasesFromMd(TCK_DIR);
 
-    testCases.forEach((t, i) => {
-        console.log(i, t.file);
-    });
-    const testCase = testCases[98];
-    const serializedSetup = createDescribe(testCase);
-    const serializedTests = testCase.tests.map(createTest);
+    testCases.forEach((testCase, i) => {
+        console.log(i, testCase.file);
 
-    const localPath = testCase.path.split("graphql/tests/tck/tck-test-files/cypher/")[1];
-    const depth = localPath.split("/").length;
+        const serializedSetup = createDescribe(testCase);
+        const serializedTests = testCase.tests.map(createTest);
 
-    const fileContent = `${copyright}
-${createImports(depth)}
+        const localPath = testCase.path.split("graphql/tests/tck/tck-test-files/cypher/")[1];
+        const depth = localPath.split("/").length;
+
+        const fileContent = `${copyright}
+${createImports(depth, !!testCase.envVars)}
 ${serializedSetup}
 ${serializedTests.join("\n")}
 });`;
 
-    const basePath = testCase.path.split(path.extname(testCase.path))[0];
-    fs.writeFileSync(`${basePath}.test.ts`, fileContent);
+        const basePath = testCase.path.split(path.extname(testCase.path))[0];
+        fs.writeFileSync(`${basePath}.test.ts`, fileContent);
+    });
 }
 
 function createDescribe(testCase: TestCase): string {
+    const afterAll = `
+afterAll(() => {
+    unsetTestEnvVars(undefined);
+});
+    `;
     return `
     describe("${testCase.title}", () => {
         const secret = "secret";
@@ -64,17 +69,18 @@ function createDescribe(testCase: TestCase): string {
                 typeDefs,
                 config: { enableRegex: true, jwt: { secret } },
             });
-            setTestEnvVars("${testCase.envVars}");
+            ${testCase.envVars ? `setTestEnvVars("${testCase.envVars}")` : ""};
         });
 
-        afterAll(() => {
-            unsetTestEnvVars(undefined);
-        });
+        ${testCase.envVars ? afterAll : ""};
+
 
     `;
 }
 
 function createTest(test: Test): string {
+    const variableParams = JSON.stringify(test.graphQlParams);
+
     return `
     test("${test.name}", async () => {
         const query = gql\`
@@ -82,7 +88,6 @@ ${test.graphQlQuery}
         \`;
 
         const driverBuilder = new DriverBuilder();
-
         const req = createJwtRequest("secret", ${JSON.stringify(test.jwt)});
 
         await graphql({
@@ -92,26 +97,27 @@ ${test.graphQlQuery}
                 req,
                 driver: driverBuilder.instance(),
             },
-            variableValues: ${JSON.stringify(test.graphQlParams)}
+            ${variableParams === "{}" ? `variableValues: ${variableParams}` : ""}
         });
 
-        expect(trimmer(driverBuilder.runMock.calls[0][0])).toMatchInlineSnapshot();
+        expect(formatCypher(driverBuilder.runMock.calls[0][0])).toMatchInlineSnapshot();
 
-        expect(JSON.stringify(driverBuilder.runMock.calls[0][1])).toMatchInlineSnapshot();
+        expect(formatParams(driverBuilder.runMock.calls[0][1])).toMatchInlineSnapshot();
     });
     `;
 }
 
-function createImports(depth: number) {
+function createImports(depth: number, envImport: boolean) {
     const prePath = "../".repeat(depth);
     return `
 import { gql } from "apollo-server";
 import { DocumentNode, graphql } from "graphql";
 import { Neo4jGraphQL } from "${prePath}../../../src";
-import trimmer from "${prePath}../../../src/utils/trimmer";
-import { setTestEnvVars, unsetTestEnvVars } from "${prePath}../utils/tck-test-utils";
 import { createJwtRequest } from "${prePath}../../../src/utils/test/utils";
 import { DriverBuilder } from "${prePath}../../../src/utils/test/builders/driver-builder";
+import { formatCypher, formatParams${
+        envImport ? ", setTestEnvVars, unsetTestEnvVars" : ""
+    } } from "${prePath}../utils/tck-test-utils";
     `;
 }
 

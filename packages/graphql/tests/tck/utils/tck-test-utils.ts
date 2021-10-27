@@ -56,3 +56,11 @@ export function unsetTestEnvVars(envVars: string | undefined): void {
         });
     }
 }
+
+export function formatCypher(cypher: string): string {
+    return cypher.replace(/\s*\n/g, "\n");
+}
+
+export function formatParams(params: Record<string, any>): string {
+    return JSON.stringify(params, null, 4);
+}

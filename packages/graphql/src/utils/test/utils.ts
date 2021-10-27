@@ -29,7 +29,8 @@ export function createJwtRequest(secret: string, extraData: Record<string, any> 
             roles: [],
             ...extraData,
         },
-        secret
+        secret,
+        { noTimestamp: true }
     );
     const socket = new Socket({ readable: true });
     const req = new IncomingMessage(socket);
