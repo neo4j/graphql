@@ -708,7 +708,7 @@ describe("Interface Relationships", () => {
             type Episode {
               runtime: Int!
               series(options: SeriesOptions, where: SeriesWhere): Series!
-              seriesAggregate: EpisodeSeriesSeriesAggregationSelection
+              seriesAggregate(where: SeriesWhere): EpisodeSeriesSeriesAggregationSelection
               seriesConnection(after: String, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
             }
 
@@ -910,7 +910,7 @@ describe("Interface Relationships", () => {
 
             type Movie implements Production {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate: MovieActorActorsAggregationSelection
+              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               runtime: Int!
               title: String!
@@ -1320,11 +1320,11 @@ describe("Interface Relationships", () => {
 
             type Series implements Production {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
-              actorsAggregate: SeriesActorActorsAggregationSelection
+              actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               episodeCount: Int!
               episodes(options: EpisodeOptions, where: EpisodeWhere): [Episode!]!
-              episodesAggregate: SeriesEpisodeEpisodesAggregationSelection
+              episodesAggregate(where: EpisodeWhere): SeriesEpisodeEpisodesAggregationSelection
               episodesConnection(after: String, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
               title: String!
             }
@@ -2437,11 +2437,11 @@ describe("Interface Relationships", () => {
             type Comment implements Content {
               content: String
               creator(options: UserOptions, where: UserWhere): User
-              creatorAggregate: CommentUserCreatorAggregationSelection
+              creatorAggregate(where: UserWhere): CommentUserCreatorAggregationSelection
               creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
               post(options: PostOptions, where: PostWhere): Post
-              postAggregate: CommentPostPostAggregationSelection
+              postAggregate(where: PostWhere): CommentPostPostAggregationSelection
               postConnection(after: String, first: Int, sort: [CommentPostConnectionSort!], where: CommentPostConnectionWhere): CommentPostConnection!
             }
 
@@ -2932,11 +2932,11 @@ describe("Interface Relationships", () => {
 
             type Post implements Content {
               comments(options: CommentOptions, where: CommentWhere): [Comment]
-              commentsAggregate: PostCommentCommentsAggregationSelection
+              commentsAggregate(where: CommentWhere): PostCommentCommentsAggregationSelection
               commentsConnection(after: String, first: Int, sort: [PostCommentsConnectionSort!], where: PostCommentsConnectionWhere): PostCommentsConnection!
               content: String
               creator(options: UserOptions, where: UserWhere): User
-              creatorAggregate: PostUserCreatorAggregationSelection
+              creatorAggregate(where: UserWhere): PostUserCreatorAggregationSelection
               creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
             }

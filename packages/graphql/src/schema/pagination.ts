@@ -19,8 +19,9 @@
 
 import { FieldNode, GraphQLResolveInfo, SelectionSetNode } from "graphql";
 import { getOffsetWithDefault, offsetToCursor } from "graphql-relay/connection/arrayConnection";
-import { Integer, isInt } from "neo4j-driver";
+import { Integer } from "neo4j-driver";
 import { ConnectionField, ConnectionQueryArgs } from "../types";
+import { isNeoInt } from "../utils/utils";
 
 function getAliasKey({ selectionSet, key }: { selectionSet: SelectionSetNode | undefined; key: string }): string {
     const selection = (selectionSet?.selections || []).find(
@@ -57,7 +58,7 @@ export function connectionFieldResolver({
     const { totalCount } = value;
 
     return {
-        [totalCountKey]: isInt(totalCount) ? totalCount.toNumber() : totalCount,
+        [totalCountKey]: isNeoInt(totalCount) ? totalCount.toNumber() : totalCount,
         ...createConnectionWithEdgeProperties({ source: value, selectionSet, args, totalCount }),
     };
 }
@@ -149,8 +150,8 @@ export function createOffsetLimitStr({
     }
 
     if (hasLimit && hasOffset) {
-        const sliceStart = isInt(offset as Integer) ? (offset as Integer).toNumber() : offset;
-        const itemsToGrab = isInt(limit as Integer) ? (limit as Integer).toNumber() : limit;
+        const sliceStart = isNeoInt(offset) ? offset.toNumber() : offset;
+        const itemsToGrab = isNeoInt(limit) ? limit.toNumber() : limit;
         const sliceEnd = (sliceStart as number) + (itemsToGrab as number);
         offsetLimitStr = `[${offset}..${sliceEnd}]`;
     }
