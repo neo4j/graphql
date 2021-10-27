@@ -54,7 +54,7 @@ import {
 } from "../types";
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
-import parseUnique from "./parse/parse-unique-directive";
+import getUniqueMeta from "./parse/get-unique-meta";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -119,7 +119,7 @@ function getObjFieldMeta({
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
 
-            const unique = parseUnique(directives, obj, field.name.value);
+            const unique = getUniqueMeta(directives, obj, field.name.value);
 
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
             const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);

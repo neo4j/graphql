@@ -8,7 +8,7 @@ import {
 import { Unique } from "../../types";
 
 // eslint-disable-next-line consistent-return
-function parseUnique(
+function getUniqueMeta(
     directives: DirectiveNode[],
     type: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
     fieldName: string
@@ -20,11 +20,11 @@ function parseUnique(
     }
 
     if (uniqueDirective) {
+        const constraintName = uniqueDirective.arguments?.find((a) => a.name.value === "constraintName");
         return {
-            constraintName:
-                (uniqueDirective.arguments?.find((a) => a.name.value === "constraintName")?.value as
-                    | StringValueNode
-                    | undefined)?.value || `${type.name.value}_${fieldName}`,
+            constraintName: constraintName
+                ? (constraintName.value as StringValueNode).value
+                : `${type.name.value}_${fieldName}`,
         };
     }
 
@@ -47,4 +47,4 @@ function parseUnique(
     }
 }
 
-export default parseUnique;
+export default getUniqueMeta;
