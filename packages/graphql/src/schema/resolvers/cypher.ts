@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { isInt } from "neo4j-driver";
 import { execute } from "../../utils";
 import { BaseField, ConnectionField, Context } from "../../types";
 import { graphqlArgsToCompose } from "../to-compose";
@@ -26,6 +25,7 @@ import createAuthParam from "../../translate/create-auth-param";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import createProjectionAndParams from "../../translate/create-projection-and-params";
 import createConnectionAndParams from "../../translate/connection/create-connection-and-params";
+import { isNeoInt } from "../../utils/utils";
 
 export default function cypherResolver({
     field,
@@ -156,7 +156,7 @@ export default function cypherResolver({
                 return undefined;
             }
 
-            if (isInt(value)) {
+            if (isNeoInt(value)) {
                 return Number(value);
             }
 

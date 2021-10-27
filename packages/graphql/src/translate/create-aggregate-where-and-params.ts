@@ -332,7 +332,7 @@ function createAggregateWhereAndParams({
               .join(", ")}`
         : "";
 
-    cyphers.push(`", { this: ${varName}${apocParams} }, false )`);
+    cyphers.push(`", { ${varName}: ${varName}${apocParams} }, false )`);
 
     return [cyphers.join("\n"), params];
 }

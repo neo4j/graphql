@@ -122,5 +122,3 @@ RETURN this { .name,
     "sub": "super_admin"
 }
 ```
-
----

@@ -30,27 +30,11 @@ export enum AggregationType {
     DateTime = "DateTimeAggregateSelection",
 }
 
-export function generateResultObject(fields: Record<string, string | undefined | null>): string {
-    return `{ ${Object.entries(fields)
-        .map(([key, value]: [string, string | undefined | null]): string | undefined => {
-            if (value === undefined || value === null || value === "") return undefined;
-            return `${key}: ${value}`;
-        })
-        .filter(Boolean)
-        .join(", ")} }`;
-}
-
 export function getFieldType(field: ResolveTree): AggregationType | undefined {
     for (const candidateField of Object.values(AggregationType)) {
         if (field.fieldsByTypeName[candidateField]) return candidateField;
     }
     return undefined;
-}
-
-export function wrapApocRun(query: string, extraParams: Record<string, string> = {}): string {
-    const params = generateResultObject(extraParams);
-    const escapedQuery = escapeQuery(query);
-    return `head(apoc.cypher.runFirstColumn(" ${escapedQuery} ", ${params}))`;
 }
 
 export function getReferenceNode(context: Context, relationField: RelationField): Node | undefined {
