@@ -103,14 +103,12 @@ async function createConstraints({ nodes, session }: { nodes: Node[]; session: S
     const constraintsToCreate: { constraintName: string; label: string; property: string }[] = [];
 
     nodes.forEach((node) => {
-        node.constrainableFields.forEach((field) => {
-            if (field.unique) {
-                constraintsToCreate.push({
-                    constraintName: field.unique.constraintName,
-                    label: node.getMainLabel(),
-                    property: field.dbPropertyName || field.fieldName,
-                });
-            }
+        node.uniqueFields.forEach((field) => {
+            constraintsToCreate.push({
+                constraintName: field.unique!.constraintName,
+                label: node.getMainLabel(),
+                property: field.dbPropertyName || field.fieldName,
+            });
         });
     });
 
@@ -161,12 +159,10 @@ async function checkConstraints({ nodes, session }: { nodes: Node[]; session: Se
     }
 
     nodes.forEach((node) => {
-        node.constrainableFields.forEach((field) => {
-            if (field.unique) {
-                const property = field.dbPropertyName || field.fieldName;
-                if (!existingConstraints[node.getMainLabel()]?.includes(property)) {
-                    missingConstraints.push(`Missing constraint for ${node.name}.${property}`);
-                }
+        node.uniqueFields.forEach((field) => {
+            const property = field.dbPropertyName || field.fieldName;
+            if (!existingConstraints[node.getMainLabel()]?.includes(property)) {
+                missingConstraints.push(`Missing constraint for ${node.name}.${property}`);
             }
         });
     });

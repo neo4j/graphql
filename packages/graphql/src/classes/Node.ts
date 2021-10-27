@@ -175,6 +175,10 @@ class Node extends GraphElement {
         return [...this.primitiveFields, ...this.temporalFields, ...this.pointFields];
     }
 
+    public get uniqueFields(): ConstrainableField[] {
+        return this.constrainableFields.filter((field) => field.unique);
+    }
+
     public getLabelString(context: Context): string {
         return this.nodeDirective?.getLabelsString(this.name, context) || `:${this.name}`;
     }
