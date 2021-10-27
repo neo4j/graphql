@@ -87,22 +87,16 @@ function createTest(test: Test): string {
 ${test.graphQlQuery}
         \`;
 
-        const driverBuilder = new DriverBuilder();
-        const req = createJwtRequest("secret", ${JSON.stringify(test.jwt)});
 
-        await graphql({
-            schema: neoSchema.schema,
-            source: query.loc!.source,
-            contextValue: {
-                req,
-                driver: driverBuilder.instance(),
-            },
-            ${variableParams === "{}" ? `variableValues: ${variableParams}` : ""}
+        const req = createJwtRequest("secret", ${JSON.stringify(test.jwt)});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+            ${variableParams === "{}" ? `` : `variableValues: ${variableParams}`}
         });
 
-        expect(formatCypher(driverBuilder.runMock.calls[0][0])).toMatchInlineSnapshot();
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot();
 
-        expect(formatParams(driverBuilder.runMock.calls[0][1])).toMatchInlineSnapshot();
+        expect(formatParams(result.params)).toMatchInlineSnapshot();
     });
     `;
 }
@@ -111,11 +105,10 @@ function createImports(depth: number, envImport: boolean) {
     const prePath = "../".repeat(depth);
     return `
 import { gql } from "apollo-server";
-import { DocumentNode, graphql } from "graphql";
+import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "${prePath}../../../src";
 import { createJwtRequest } from "${prePath}../../../src/utils/test/utils";
-import { DriverBuilder } from "${prePath}../../../src/utils/test/builders/driver-builder";
-import { formatCypher, formatParams${
+import { formatCypher, translateQuery, formatParams${
         envImport ? ", setTestEnvVars, unsetTestEnvVars" : ""
     } } from "${prePath}../utils/tck-test-utils";
     `;

@@ -17,7 +17,11 @@
  * limitations under the License.
  */
 
+import { DocumentNode, graphql } from "graphql";
+import { IncomingMessage } from "http";
 import createAuthParam from "../../../src/translate/create-auth-param";
+import { Neo4jGraphQL } from "../../../src";
+import { DriverBuilder } from "../../../src/utils/test/builders/driver-builder";
 
 export function compareParams({
     params,
@@ -58,9 +62,36 @@ export function unsetTestEnvVars(envVars: string | undefined): void {
 }
 
 export function formatCypher(cypher: string): string {
-    return cypher.replace(/\s*\n/g, "\n");
+    return cypher.replace(/\s+\n/g, "\n");
 }
 
 export function formatParams(params: Record<string, any>): string {
     return JSON.stringify(params, null, 4);
+}
+
+export async function translateQuery(
+    neoSchema: Neo4jGraphQL,
+    query: DocumentNode,
+    options: {
+        req?: IncomingMessage;
+        variableValues?: Record<string, any>;
+    }
+): Promise<{ cypher: string; params: Record<string, any> }> {
+    const driverBuilder = new DriverBuilder();
+
+    await graphql({
+        schema: neoSchema.schema,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        source: query.loc!.source,
+        contextValue: {
+            req: options.req,
+            driver: driverBuilder.instance(),
+        },
+        variableValues: options.variableValues,
+    });
+
+    return {
+        cypher: driverBuilder.runMock.calls[0][0],
+        params: driverBuilder.runMock.calls[0][1],
+    };
 }
