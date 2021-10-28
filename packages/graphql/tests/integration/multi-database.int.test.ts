@@ -171,7 +171,11 @@ describe("multi-database", () => {
             variableValues: { id },
             contextValue: {}, // This is needed, otherwise the context in resolvers will be undefined
         });
-        expect((result.errors as any)[0].message).toContain("Unable to get a routing table for database");
+
+        expect([
+            "Unable to get a routing table for database 'non-existing-db' because this database does not exist",
+            "Database does not exist. Database name: 'non-existing-db'.",
+        ]).toContain((result.errors as any)[0].message);
     });
     test("should specify the database via neo4j construction", async () => {
         // Skip if multi-db not supported
