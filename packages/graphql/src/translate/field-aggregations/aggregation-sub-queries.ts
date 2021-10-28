@@ -59,6 +59,5 @@ export function dateTimeAggregationQuery(matchWherePattern: string, fieldName: s
 }
 
 export function countQuery(matchWherePattern: string, targetAlias: string): string {
-    return `${matchWherePattern}
-    RETURN COUNT(${targetAlias})`;
+    return `${matchWherePattern} RETURN COUNT(${targetAlias})`;
 }
