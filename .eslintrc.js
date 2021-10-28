@@ -126,7 +126,12 @@ module.exports = {
             ...typeScriptParser,
             plugins: ["@typescript-eslint"],
             extends: baseTypeScriptExtends,
-            rules: { "no-console": "off", ...baseTypeScriptRules, "@typescript-eslint/ban-ts-comment": "off" },
+            rules: {
+                "no-console": "off",
+                ...baseTypeScriptRules,
+                "@typescript-eslint/ban-ts-comment": "off",
+                "@typescript-eslint/no-non-null-assertion": "off",
+            },
         },
     ],
 };
