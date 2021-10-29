@@ -74,7 +74,7 @@ describe("Cypher relationship", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)   | this_topActor { .name } ]) } as this"
+            RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)   | this_topActor { .name } ]) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -99,7 +99,7 @@ describe("Cypher relationship", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor)   | this_actors { .name } ] } as this"
+            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor)   | this_actors { .name } ] } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -127,7 +127,7 @@ describe("Cypher relationship", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)   | this_topActor { .name, movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie)   | this_topActor_movies { .title } ] } ]) } as this"
+            RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)   | this_topActor { .name, movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie)   | this_topActor_movies { .title } ] } ]) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -156,7 +156,7 @@ describe("Cypher relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.title = $this_title
-            RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)  WHERE this_topActor.name = $this_topActor_name | this_topActor { .name, movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie)  WHERE this_topActor_movies.title = $this_topActor_movies_title | this_topActor_movies { .title } ] } ]) } as this"
+            RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)  WHERE this_topActor.name = $this_topActor_name | this_topActor { .name, movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie)  WHERE this_topActor_movies.title = $this_topActor_movies_title | this_topActor_movies { .title } ] } ]) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

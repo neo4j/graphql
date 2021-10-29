@@ -94,19 +94,21 @@ describe("Interface Relationships - Update create", () => {
             CREATE (this_create_actedIn_Movie0_node_Movie:Movie)
             SET this_create_actedIn_Movie0_node_Movie.title = $this_create_actedIn_Movie0_node_Movie_title
             SET this_create_actedIn_Movie0_node_Movie.runtime = $this_create_actedIn_Movie0_node_Movie_runtime
+            WITH this, this_create_actedIn_Movie0_node_Movie, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this_create_actedIn_Movie0_node_Movie), properties: this_create_actedIn_Movie0_node_Movie}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
             MERGE (this)-[this_create_actedIn_Movie0_relationship:ACTED_IN]->(this_create_actedIn_Movie0_node_Movie)
             SET this_create_actedIn_Movie0_relationship.screenTime = $this_create_actedIn_Movie0_relationship_screenTime
-            WITH this
+            WITH this, mutateMeta + [ metaVal IN [{type: 'Connected', name: 'Actor', toName: 'Movie', relationshipName: 'ACTED_IN', id: id(this_create_actedIn_Movie0_node_Movie), toID: id(this), relationshipID: id(this_create_actedIn_Movie0_relationship), properties: this_create_actedIn_Movie0_relationship}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            WITH this, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
             CALL {
-            WITH this
+            WITH this, mutateMeta
             MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-            RETURN { __resolveType: \\"Movie\\", title: this_Movie.title, runtime: this_Movie.runtime } AS actedIn
+            RETURN  { __resolveType: \\"Movie\\", title: this_Movie.title, runtime: this_Movie.runtime } AS actedIn
             UNION
-            WITH this
+            WITH this, mutateMeta
             MATCH (this)-[:ACTED_IN]->(this_Series:Series)
-            RETURN { __resolveType: \\"Series\\", title: this_Series.title, episodes: this_Series.episodes } AS actedIn
+            RETURN  { __resolveType: \\"Series\\", title: this_Series.title, episodes: this_Series.episodes } AS actedIn
             }
-            RETURN this { .name, actedIn: collect(actedIn) } AS this"
+            RETURN mutateMeta, this { .name, actedIn: collect(actedIn) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

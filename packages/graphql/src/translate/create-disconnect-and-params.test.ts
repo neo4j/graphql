@@ -115,8 +115,10 @@ describe("createDisconnectAndParams", () => {
                     FOREACH(_ IN CASE this0_similarMovies0 WHEN NULL THEN [] ELSE [1] END | DELETE this0_similarMovies0_rel )
                     RETURN REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
                 }
+                WITH this, this0, this0_rel, this_mutateMeta + this0_mutateMeta as this_mutateMeta
                 RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
             }
+            WITH this, this_mutateMeta as mutateMeta
             `)
         );
 

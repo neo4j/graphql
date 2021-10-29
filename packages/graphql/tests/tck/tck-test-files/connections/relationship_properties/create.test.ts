@@ -86,21 +86,21 @@ describe("Relationship Properties Create Cypher", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0
+            WITH this0, [ metaVal IN [{type: 'Created', name: 'Movie', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
             CREATE (this0_actors0_node:Actor)
             SET this0_actors0_node.name = $this0_actors0_node_name
             MERGE (this0)<-[this0_actors0_relationship:ACTED_IN]-(this0_actors0_node)
             SET this0_actors0_relationship.screenTime = $this0_actors0_relationship_screenTime
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'Actor', id: id(this0_actors0_node), properties: this0_actors0_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
+            WITH this0, this0_mutateMeta as mutateMeta
             CALL {
             WITH this0
             MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
             WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN
-            this0 { .title, actorsConnection } AS this0"
+            RETURN mutateMeta, this0 { .title, actorsConnection } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

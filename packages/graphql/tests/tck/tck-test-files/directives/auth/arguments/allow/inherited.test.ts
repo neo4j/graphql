@@ -94,7 +94,7 @@ describe("@auth allow when inherited from interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .id } as this"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -123,7 +123,7 @@ describe("@auth allow when inherited from interface", () => {
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_password_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .password } as this"
+            RETURN this { .password } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -154,7 +154,7 @@ describe("@auth allow when inherited from interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .id, posts: [ (this)-[:HAS_POST]->(this_posts:Post)  WHERE apoc.util.validatePredicate(NOT(EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_posts { .content } ] } as this"
+            RETURN this { .id, posts: [ (this)-[:HAS_POST]->(this_posts:Post)  WHERE apoc.util.validatePredicate(NOT(EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_posts { .content } ] } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -184,7 +184,7 @@ describe("@auth allow when inherited from interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Post)
             CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { creator: head([ (this)<-[:HAS_POST]-(this_creator:User)  WHERE apoc.util.validatePredicate(NOT(this_creator.id IS NOT NULL AND this_creator.id = $this_creator_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT(this_creator.id IS NOT NULL AND this_creator.id = $this_creator_password_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_creator { .password } ]) } as this"
+            RETURN this { creator: head([ (this)<-[:HAS_POST]-(this_creator:User)  WHERE apoc.util.validatePredicate(NOT(this_creator.id IS NOT NULL AND this_creator.id = $this_creator_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT(this_creator.id IS NOT NULL AND this_creator.id = $this_creator_password_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_creator { .password } ]) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -219,7 +219,7 @@ describe("@auth allow when inherited from interface", () => {
             "MATCH (this:User)
             WHERE this.id = $this_id
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .id, posts: [ (this)-[:HAS_POST]->(this_posts:Post)  WHERE this_posts.id = $this_posts_id AND apoc.util.validatePredicate(NOT(EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_posts { comments: [ (this_posts)-[:HAS_COMMENT]->(this_posts_comments:Comment)  WHERE this_posts_comments.id = $this_posts_comments_id AND apoc.util.validatePredicate(NOT(EXISTS((this_posts_comments)<-[:HAS_COMMENT]-(:User)) AND ANY(creator IN [(this_posts_comments)<-[:HAS_COMMENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_comments_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_posts_comments { .content } ] } ] } as this"
+            RETURN this { .id, posts: [ (this)-[:HAS_POST]->(this_posts:Post)  WHERE this_posts.id = $this_posts_id AND apoc.util.validatePredicate(NOT(EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_posts { comments: [ (this_posts)-[:HAS_COMMENT]->(this_posts_comments:Comment)  WHERE this_posts_comments.id = $this_posts_comments_id AND apoc.util.validatePredicate(NOT(EXISTS((this_posts_comments)<-[:HAS_COMMENT]-(:User)) AND ANY(creator IN [(this_posts_comments)<-[:HAS_COMMENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_comments_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_posts_comments { .content } ] } ] } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -253,17 +253,19 @@ describe("@auth allow when inherited from interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
             WHERE this.id = $this_id
-            WITH this
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.id = $this_update_id
-            RETURN this { .id } AS this"
+            RETURN [ metaVal IN [{type: 'Updated', name: 'User', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"old-id\\",
                 \\"this_update_id\\": \\"new-id\\",
-                \\"this_auth_allow0_id\\": \\"old-id\\"
+                \\"this_auth_allow0_id\\": \\"old-id\\",
+                \\"this_update\\": {
+                    \\"id\\": \\"new-id\\"
+                }
             }"
         `);
     });
@@ -287,18 +289,20 @@ describe("@auth allow when inherited from interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
             WHERE this.id = $this_id
-            WITH this
-            CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id AND this.id IS NOT NULL AND this.id = $this_update_password_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_update_password_auth_allow0_id AND this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.password = $this_update_password
-            RETURN this { .id } AS this"
+            RETURN [ metaVal IN [{type: 'Updated', name: 'User', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"id-01\\",
                 \\"this_update_password\\": \\"new-password\\",
+                \\"this_auth_allow0_id\\": \\"id-01\\",
                 \\"this_update_password_auth_allow0_id\\": \\"id-01\\",
-                \\"this_auth_allow0_id\\": \\"id-01\\"
+                \\"this_update\\": {
+                    \\"password\\": \\"new-password\\"
+                }
             }"
         `);
     });
@@ -322,25 +326,29 @@ describe("@auth allow when inherited from interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Post)
             WHERE this.id = $this_id
-            WITH this
             CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH this
             WITH this
             OPTIONAL MATCH (this)<-[this_has_post0_relationship:HAS_POST]-(this_creator0:User)
             CALL apoc.do.when(this_creator0 IS NOT NULL, \\"
-            WITH this, this_creator0
             CALL apoc.util.validate(NOT(this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0_auth_allow0_id), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             SET this_creator0.id = $this_update_creator0_id
-            RETURN count(*)
-            \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_id:$this_update_creator0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
-            YIELD value as _
-            RETURN this { .id } AS this"
+            RETURN this, this_creator0, this_has_post0_relationship, [ metaVal IN [{type: 'Updated', name: 'User', id: id(this_creator0), properties: $this_update_creator0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            \\", \\"\\", {this:this, this_creator0:this_creator0, this_has_post0_relationship:this_has_post0_relationship, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_id:$this_update_creator0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id,this_update_creator0:$this_update_creator0})
+            YIELD value
+            WITH this, this_creator0, this_has_post0_relationship, value.mutateMeta as mutateMeta
+            RETURN mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"post-id\\",
+                \\"this_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_update_creator0_id\\": \\"new-id\\",
                 \\"this_creator0_auth_allow0_id\\": \\"user-id\\",
+                \\"this_update_creator0\\": {
+                    \\"id\\": \\"new-id\\"
+                },
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -353,7 +361,6 @@ describe("@auth allow when inherited from interface", () => {
                         \\"sub\\": \\"user-id\\"
                     }
                 },
-                \\"this_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"updatePosts\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -393,26 +400,30 @@ describe("@auth allow when inherited from interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Post)
             WHERE this.id = $this_id
-            WITH this
             CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH this
             WITH this
             OPTIONAL MATCH (this)<-[this_has_post0_relationship:HAS_POST]-(this_creator0:User)
             CALL apoc.do.when(this_creator0 IS NOT NULL, \\"
-            WITH this, this_creator0
-            CALL apoc.util.validate(NOT(this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0_auth_allow0_id AND this_creator0.id IS NOT NULL AND this_creator0.id = $this_update_creator0_password_auth_allow0_id), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
+            CALL apoc.util.validate(NOT(this_creator0.id IS NOT NULL AND this_creator0.id = $this_update_creator0_password_auth_allow0_id AND this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0_auth_allow0_id), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             SET this_creator0.password = $this_update_creator0_password
-            RETURN count(*)
-            \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_password:$this_update_creator0_password,this_update_creator0_password_auth_allow0_id:$this_update_creator0_password_auth_allow0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
-            YIELD value as _
-            RETURN this { .id } AS this"
+            RETURN this, this_creator0, this_has_post0_relationship, [ metaVal IN [{type: 'Updated', name: 'User', id: id(this_creator0), properties: $this_update_creator0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            \\", \\"\\", {this:this, this_creator0:this_creator0, this_has_post0_relationship:this_has_post0_relationship, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_password:$this_update_creator0_password,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id,this_update_creator0_password_auth_allow0_id:$this_update_creator0_password_auth_allow0_id,this_update_creator0:$this_update_creator0})
+            YIELD value
+            WITH this, this_creator0, this_has_post0_relationship, value.mutateMeta as mutateMeta
+            RETURN mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"post-id\\",
+                \\"this_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_update_creator0_password\\": \\"new-password\\",
-                \\"this_update_creator0_password_auth_allow0_id\\": \\"user-id\\",
                 \\"this_creator0_auth_allow0_id\\": \\"user-id\\",
+                \\"this_update_creator0_password_auth_allow0_id\\": \\"user-id\\",
+                \\"this_update_creator0\\": {
+                    \\"password\\": \\"new-password\\"
+                },
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -425,7 +436,6 @@ describe("@auth allow when inherited from interface", () => {
                         \\"sub\\": \\"user-id\\"
                     }
                 },
-                \\"this_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"updatePosts\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -495,8 +505,9 @@ describe("@auth allow when inherited from interface", () => {
             WHERE this_posts0.id = $this_deleteUsers.args.delete.posts[0].where.node.id
             WITH this, this_posts0
             CALL apoc.util.validate(NOT(EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
+            WITH this, this_posts0, collect(DISTINCT this_posts0) as this_posts0_to_delete, [ metaVal IN [{type: 'Deleted', name: 'Post', id: id(this_posts0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
             FOREACH(x IN this_posts0_to_delete | DETACH DELETE x)
+            WITH this, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
             WITH this
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             DETACH DELETE this"
@@ -552,12 +563,14 @@ describe("@auth allow when inherited from interface", () => {
             WHERE this_disconnect_posts0.id = $updateUsers.args.disconnect.posts[0].where.node.id
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT(this_disconnect_posts0.id IS NOT NULL AND this_disconnect_posts0.id = $this_disconnect_posts0User0_allow_auth_allow0_id AND EXISTS((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0Post1_allow_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH this, this_disconnect_posts0, this_disconnect_posts0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Post', relationshipName: 'HAS_POST', id: id(this), toID: id(this_disconnect_posts0), relationshipID: id(this_disconnect_posts0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_posts0_rel
             )
-            RETURN count(*)
+            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
             }
-            RETURN this { .id } AS this"
+            WITH this, this_mutateMeta as mutateMeta
+            RETURN mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -608,42 +621,46 @@ describe("@auth allow when inherited from interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Comment)
             WHERE this.id = $this_id
-            WITH this
             CALL apoc.util.validate(NOT(EXISTS((this)<-[:HAS_COMMENT]-(:User)) AND ANY(creator IN [(this)<-[:HAS_COMMENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH this
             WITH this
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_post0_disconnect0_rel:HAS_COMMENT]-(this_post0_disconnect0:Post)
             WITH this, this_post0_disconnect0, this_post0_disconnect0_rel
             CALL apoc.util.validate(NOT(EXISTS((this_post0_disconnect0)<-[:HAS_COMMENT]-(:User)) AND ANY(creator IN [(this_post0_disconnect0)<-[:HAS_COMMENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post0_disconnect0Comment0_allow_auth_allow0_creator_id) AND EXISTS((this_post0_disconnect0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_post0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post0_disconnect0Post1_allow_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH this, this_post0_disconnect0, this_post0_disconnect0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Comment', toName: 'Post', relationshipName: 'HAS_COMMENT', id: id(this), toID: id(this_post0_disconnect0), relationshipID: id(this_post0_disconnect0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
             FOREACH(_ IN CASE this_post0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_post0_disconnect0_rel
             )
-            WITH this, this_post0_disconnect0
+            WITH this, this_post0_disconnect0, this_post0_disconnect0_rel, this_mutateMeta
             CALL {
-            WITH this, this_post0_disconnect0
+            WITH this, this_post0_disconnect0, this_post0_disconnect0_rel
             OPTIONAL MATCH (this_post0_disconnect0)<-[this_post0_disconnect0_creator0_rel:HAS_POST]-(this_post0_disconnect0_creator0:User)
             WHERE this_post0_disconnect0_creator0.id = $updateComments.args.update.post.disconnect.disconnect.creator.where.node.id
-            WITH this, this_post0_disconnect0, this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel
+            WITH this, this_post0_disconnect0, this_post0_disconnect0_rel, this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel
             CALL apoc.util.validate(NOT(EXISTS((this_post0_disconnect0_creator0)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_post0_disconnect0_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post0_disconnect0_creator0Post0_allow_auth_allow0_creator_id) AND this_post0_disconnect0_creator0.id IS NOT NULL AND this_post0_disconnect0_creator0.id = $this_post0_disconnect0_creator0User1_allow_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH this, this_post0_disconnect0, this_post0_disconnect0_rel, this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Post', toName: 'User', relationshipName: 'HAS_POST', id: id(this_post0_disconnect0), toID: id(this_post0_disconnect0_creator0), relationshipID: id(this_post0_disconnect0_creator0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_post0_disconnect0_mutateMeta
             FOREACH(_ IN CASE this_post0_disconnect0_creator0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_post0_disconnect0_creator0_rel
             )
-            RETURN count(*)
+            RETURN REDUCE(tmp1_this_post0_disconnect0_mutateMeta = [], tmp2_this_post0_disconnect0_mutateMeta IN COLLECT(this_post0_disconnect0_mutateMeta) | tmp1_this_post0_disconnect0_mutateMeta + tmp2_this_post0_disconnect0_mutateMeta) as this_post0_disconnect0_mutateMeta
             }
-            RETURN count(*)
+            WITH this, this_post0_disconnect0, this_post0_disconnect0_rel, this_mutateMeta + this_post0_disconnect0_mutateMeta as this_mutateMeta
+            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
             }
-            RETURN this { .id } AS this"
+            WITH this, this_mutateMeta as mutateMeta
+            RETURN mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"comment-id\\",
+                \\"this_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_post0_disconnect0Comment0_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_post0_disconnect0Post1_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_post0_disconnect0_creator0Post0_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_post0_disconnect0_creator0User1_allow_auth_allow0_id\\": \\"user-id\\",
-                \\"this_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"updateComments\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -688,19 +705,21 @@ describe("@auth allow when inherited from interface", () => {
             WHERE this.id = $this_id
             WITH this
             CALL {
-            	WITH this
+            WITH this
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
             	WHERE this_connect_posts0_node.id = $this_connect_posts0_node_id
-            	WITH this, this_connect_posts0_node
+            WITH this, this_connect_posts0_node
             	CALL apoc.util.validate(NOT(this_connect_posts0_node.id IS NOT NULL AND this_connect_posts0_node.id = $this_connect_posts0_nodeUser0_allow_auth_allow0_id AND EXISTS((this_connect_posts0_node)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_connect_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_posts0_nodePost1_allow_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
+            CALL apoc.do.when(this_connect_posts0_node IS NOT NULL AND this IS NOT NULL, \\"
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-            		)
-            	)
-            	RETURN count(*)
+            RETURN this, this_connect_posts0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_POST', toName: 'Post', id: id(this), toID: id(this_connect_posts0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_posts0_node_mutateMeta
+            \\", \\"\\", {this:this, this_connect_posts0_node:this_connect_posts0_node})
+            YIELD value
+            WITH this, this_connect_posts0_node, value.this_connect_posts0_node_mutateMeta as this_connect_posts_mutateMeta
+            RETURN REDUCE(tmp1_this_connect_posts_mutateMeta = [], tmp2_this_connect_posts_mutateMeta IN COLLECT(this_connect_posts_mutateMeta) | tmp1_this_connect_posts_mutateMeta + tmp2_this_connect_posts_mutateMeta) as this_connect_posts_mutateMeta
             }
-            RETURN this { .id } AS this"
+            WITH this, this_connect_posts_mutateMeta as mutateMeta
+            RETURN mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

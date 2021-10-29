@@ -63,7 +63,7 @@ describe("Cypher Points", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:PointContainer)
             WHERE this.points = [p in $this_points | point(p)]
-            RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this"
+            RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -98,7 +98,7 @@ describe("Cypher Points", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:PointContainer)
             WHERE (NOT this.points = [p in $this_points_NOT | point(p)])
-            RETURN this { points: [p in this.points | { point:p }] } as this"
+            RETURN this { points: [p in this.points | { point:p }] } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -134,7 +134,7 @@ describe("Cypher Points", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:PointContainer)
             WHERE point($this_points_INCLUDES) IN this.points
-            RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this"
+            RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -168,7 +168,7 @@ describe("Cypher Points", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:PointContainer)
             WHERE (NOT point($this_points_NOT_INCLUDES) IN this.points)
-            RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } as this"
+            RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -205,10 +205,10 @@ describe("Cypher Points", () => {
             "CALL {
             CREATE (this0:PointContainer)
             SET this0.points = [p in $this0_points | point(p)]
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'PointContainer', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
-            RETURN
-            this0 { points: [p in this0.points | { point:p, crs: p.crs }] } AS this0"
+            WITH this0, this0_mutateMeta as mutateMeta
+            RETURN mutateMeta, this0 { points: [p in this0.points | { point:p, crs: p.crs }] } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -247,7 +247,7 @@ describe("Cypher Points", () => {
             "MATCH (this:PointContainer)
             WHERE this.id = $this_id
             SET this.points = [p in $this_update_points | point(p)]
-            RETURN this { points: [p in this.points | { point:p, crs: p.crs }] } AS this"
+            RETURN [ metaVal IN [{type: 'Updated', name: 'PointContainer', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta, this { points: [p in this.points | { point:p, crs: p.crs }] } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -258,7 +258,15 @@ describe("Cypher Points", () => {
                         \\"longitude\\": 1,
                         \\"latitude\\": 2
                     }
-                ]
+                ],
+                \\"this_update\\": {
+                    \\"points\\": [
+                        {
+                            \\"longitude\\": 1,
+                            \\"latitude\\": 2
+                        }
+                    ]
+                }
             }"
         `);
     });

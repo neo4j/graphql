@@ -78,7 +78,7 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { .title } as this
+            RETURN this { .title } AS this
             ORDER BY this.id DESC"
         `);
 
@@ -102,7 +102,7 @@ describe("Cypher sort tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             RETURN this { totalGenres:  apoc.cypher.runFirstColumn(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-            RETURN count(DISTINCT genre)\\", {this: this, auth: $auth}, false) } as this
+            RETURN count(DISTINCT genre)\\", {this: this, auth: $auth}, false) } AS this
             ORDER BY this.totalGenres DESC"
         `);
 
@@ -135,7 +135,7 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { .title } as this
+            RETURN this { .title } AS this
             ORDER BY this.id DESC, this.title ASC"
         `);
 
@@ -163,7 +163,7 @@ describe("Cypher sort tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.title = $this_title
-            RETURN this { .title } as this
+            RETURN this { .title } AS this
             ORDER BY this.id DESC, this.title ASC
             SKIP $this_offset
             LIMIT $this_limit"
@@ -202,7 +202,7 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { genres: apoc.coll.sortMulti([ (this)-[:HAS_GENRE]->(this_genres:Genre)   | this_genres { .name } ], ['name']) } as this"
+            RETURN this { genres: apoc.coll.sortMulti([ (this)-[:HAS_GENRE]->(this_genres:Genre)   | this_genres { .name } ], ['name']) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -226,7 +226,7 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { genres: apoc.coll.sortMulti([ (this)-[:HAS_GENRE]->(this_genres:Genre)   | this_genres { .name } ], ['^name']) } as this"
+            RETURN this { genres: apoc.coll.sortMulti([ (this)-[:HAS_GENRE]->(this_genres:Genre)   | this_genres { .name } ], ['^name']) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -252,7 +252,7 @@ describe("Cypher sort tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             RETURN this { genres: apoc.coll.sortMulti([ (this)-[:HAS_GENRE]->(this_genres:Genre)   | this_genres { .name, totalMovies:  apoc.cypher.runFirstColumn(\\"MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
-            RETURN count(DISTINCT movie)\\", {this: this_genres, auth: $auth}, false) } ], ['^totalMovies']) } as this"
+            RETURN count(DISTINCT movie)\\", {this: this_genres, auth: $auth}, false) } ], ['^totalMovies']) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

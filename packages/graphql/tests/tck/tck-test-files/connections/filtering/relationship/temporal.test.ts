@@ -86,7 +86,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
             WITH collect({ startDate: this_acted_in_relationship.startDate, endDateTime: apoc.date.convertFormat(toString(this_acted_in_relationship.endDateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), node: { name: this_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -87,12 +87,12 @@ describe("Cypher Auth isAuthenticated", () => {
             CREATE (this0:Post)
             SET this0.id = $this0_id
             SET this0.content = $this0_content
-            WITH this0
+            WITH this0, [ metaVal IN [{type: 'Created', name: 'Post', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
             CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
-            RETURN
-            this0 { .id } AS this0"
+            WITH this0, this0_mutateMeta as mutateMeta
+            RETURN mutateMeta, this0 { .id } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -136,10 +136,10 @@ describe("Cypher Auth isAuthenticated", () => {
             CREATE (this0:Comment)
             SET this0.id = $this0_id
             SET this0.content = $this0_content
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'Comment', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
-            RETURN
-            this0 { .id } AS this0"
+            WITH this0, this0_mutateMeta as mutateMeta
+            RETURN mutateMeta, this0 { .id } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -169,16 +169,18 @@ describe("Cypher Auth isAuthenticated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Post)
             WHERE this.id = $this_id
-            WITH this
             CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.id = $this_update_id
-            RETURN this { .id } AS this"
+            RETURN [ metaVal IN [{type: 'Updated', name: 'Post', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"1\\",
                 \\"this_update_id\\": \\"id-1\\",
+                \\"this_update\\": {
+                    \\"id\\": \\"id-1\\"
+                },
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -215,13 +217,16 @@ describe("Cypher Auth isAuthenticated", () => {
             "MATCH (this:Comment)
             WHERE this.id = $this_id
             SET this.id = $this_update_id
-            RETURN this { .id } AS this"
+            RETURN [ metaVal IN [{type: 'Updated', name: 'Comment', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"1\\",
-                \\"this_update_id\\": \\"id-1\\"
+                \\"this_update_id\\": \\"id-1\\",
+                \\"this_update\\": {
+                    \\"id\\": \\"id-1\\"
+                }
             }"
         `);
     });
@@ -246,27 +251,30 @@ describe("Cypher Auth isAuthenticated", () => {
             "MATCH (this:User)
             WITH this
             CALL {
-            	WITH this
+            WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
+            CALL apoc.do.when(this_connect_content0_node IS NOT NULL AND this IS NOT NULL, \\"
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            		)
-            	)
-            	RETURN count(*)
+            RETURN this, this_connect_content0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Comment', id: id(this), toID: id(this_connect_content0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_content0_node_mutateMeta
+            \\", \\"\\", {this:this, this_connect_content0_node:this_connect_content0_node})
+            YIELD value
+            WITH this, this_connect_content0_node, value.this_connect_content0_node_mutateMeta as this_connect_content_mutateMeta
+            RETURN REDUCE(tmp1_this_connect_content_mutateMeta = [], tmp2_this_connect_content_mutateMeta IN COLLECT(this_connect_content_mutateMeta) | tmp1_this_connect_content_mutateMeta + tmp2_this_connect_content_mutateMeta) as this_connect_content_mutateMeta
             UNION
-            	WITH this
+            WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
-            	WITH this, this_connect_content0_node
+            WITH this, this_connect_content0_node
             	CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
+            CALL apoc.do.when(this_connect_content0_node IS NOT NULL AND this IS NOT NULL, \\"
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            		)
-            	)
-            	RETURN count(*)
+            RETURN this, this_connect_content0_node, [ metaVal IN [{type: 'Connected', name: 'User', relationshipName: 'HAS_CONTENT', toName: 'Post', id: id(this), toID: id(this_connect_content0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_content0_node_mutateMeta
+            \\", \\"\\", {this:this, this_connect_content0_node:this_connect_content0_node})
+            YIELD value
+            WITH this, this_connect_content0_node, value.this_connect_content0_node_mutateMeta as this_connect_content_mutateMeta
+            RETURN REDUCE(tmp1_this_connect_content_mutateMeta = [], tmp2_this_connect_content_mutateMeta IN COLLECT(this_connect_content_mutateMeta) | tmp1_this_connect_content_mutateMeta + tmp2_this_connect_content_mutateMeta) as this_connect_content_mutateMeta
             }
-            RETURN this { .id } AS this"
+            WITH this, this_connect_content_mutateMeta as mutateMeta
+            RETURN mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -309,21 +317,24 @@ describe("Cypher Auth isAuthenticated", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
+            WITH this, this_disconnect_content0, this_disconnect_content0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Comment', relationshipName: 'HAS_CONTENT', id: id(this), toID: id(this_disconnect_content0), relationshipID: id(this_disconnect_content0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
-            RETURN count(*)
+            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
             CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH this, this_disconnect_content0, this_disconnect_content0_rel, [ metaVal IN [{type: 'Disconnected', name: 'User', toName: 'Post', relationshipName: 'HAS_CONTENT', id: id(this), toID: id(this_disconnect_content0), relationshipID: id(this_disconnect_content0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
-            RETURN count(*)
+            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
             }
-            RETURN this { .id } AS this"
+            WITH this, this_mutateMeta as mutateMeta
+            RETURN mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -432,14 +443,15 @@ describe("Cypher Auth isAuthenticated", () => {
             "MATCH (this:User)
             WITH this
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
-            WITH this, collect(DISTINCT this_content_Comment0) as this_content_Comment0_to_delete
+            WITH this, this_content_Comment0, collect(DISTINCT this_content_Comment0) as this_content_Comment0_to_delete, [ metaVal IN [{type: 'Deleted', name: 'Comment', id: id(this_content_Comment0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
             FOREACH(x IN this_content_Comment0_to_delete | DETACH DELETE x)
-            WITH this
+            WITH this, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
-            WITH this, this_content_Post0
+            WITH this, this_content_Post0, mutateMeta
             CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this, collect(DISTINCT this_content_Post0) as this_content_Post0_to_delete
+            WITH this, this_content_Post0, collect(DISTINCT this_content_Post0) as this_content_Post0_to_delete, mutateMeta + [ metaVal IN [{type: 'Deleted', name: 'Post', id: id(this_content_Post0)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
             FOREACH(x IN this_content_Post0_to_delete | DETACH DELETE x)
+            WITH this, REDUCE(tmp1_mutateMeta = [], tmp2_mutateMeta IN COLLECT(mutateMeta) | tmp1_mutateMeta + tmp2_mutateMeta) as mutateMeta
             DETACH DELETE this"
         `);
 

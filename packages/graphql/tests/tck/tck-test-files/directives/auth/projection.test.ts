@@ -64,19 +64,20 @@ describe("Cypher Auth Projection", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WITH this
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_update_id_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.id = $this_update_id
-            WITH this
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_id_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .id } AS this"
+            RETURN [ metaVal IN [{type: 'Updated', name: 'User', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_id_auth_allow0_id\\": \\"super_admin\\",
                 \\"this_update_id\\": \\"new-id\\",
                 \\"this_update_id_auth_allow0_id\\": \\"super_admin\\",
-                \\"this_id_auth_allow0_id\\": \\"super_admin\\"
+                \\"this_update\\": {
+                    \\"id\\": \\"new-id\\"
+                }
             }"
         `);
     });
@@ -101,18 +102,18 @@ describe("Cypher Auth Projection", () => {
             "CALL {
             CREATE (this0:User)
             SET this0.id = $this0_id
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'User', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ]) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
+            WITH this0, this0_mutateMeta as mutateMeta
             CALL {
             CREATE (this1:User)
             SET this1.id = $this1_id
-            RETURN this1
+            RETURN this1, REDUCE(tmp1_this1_mutateMeta = [], tmp2_this1_mutateMeta IN COLLECT([ metaVal IN [{type: 'Created', name: 'User', id: id(this1), properties: this1}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ]) | tmp1_this1_mutateMeta + tmp2_this1_mutateMeta) as this1_mutateMeta
             }
+            WITH this0, this1, mutateMeta + this1_mutateMeta as mutateMeta
             CALL apoc.util.validate(NOT(this0.id IS NOT NULL AND this0.id = $projection_id_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(NOT(this1.id IS NOT NULL AND this1.id = $projection_id_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN
-            this0 { .id } AS this0,
-            this1 { .id } AS this1"
+            RETURN mutateMeta, this0 { .id } AS this0, this1 { .id } AS this1"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

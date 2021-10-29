@@ -86,11 +86,12 @@ describe("Mixed nesting", () => {
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, movies: [ (this_actor)-[:ACTED_IN]->(this_actor_movies:Movie)  WHERE (NOT this_actor_movies.title = $this_actor_movies_title_NOT) | this_actor_movies { .title } ] } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_title\\": \\"Forrest Gump\\",
                 \\"this_actor_movies_title_NOT\\": \\"Forrest Gump\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
@@ -100,8 +101,7 @@ describe("Mixed nesting", () => {
                             }
                         }
                     }
-                },
-                \\"this_title\\": \\"Forrest Gump\\"
+                }
             }"
         `);
     });
@@ -155,11 +155,12 @@ describe("Mixed nesting", () => {
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, moviesConnection: moviesConnection } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_title\\": \\"Forrest Gump\\",
                 \\"this_actor_movie_actors_name_NOT\\": \\"Tom Hanks\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
@@ -182,8 +183,7 @@ describe("Mixed nesting", () => {
                             }
                         }
                     }
-                },
-                \\"this_title\\": \\"Forrest Gump\\"
+                }
             }"
         `);
     });
@@ -222,7 +222,7 @@ describe("Mixed nesting", () => {
             WHERE (NOT this_actors_movie.title = $this_actors_moviesConnection.args.where.node.title_NOT)
             WITH collect({ screenTime: this_actors_acted_in_relationship.screenTime, node: { title: this_actors_movie.title } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS moviesConnection
-            } RETURN moviesConnection\\", { this_actors: this_actors, this_actors_moviesConnection: $this_actors_moviesConnection }, false) } ] } as this"
+            } RETURN moviesConnection\\", { this_actors: this_actors, this_actors_moviesConnection: $this_actors_moviesConnection }, false) } ] } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

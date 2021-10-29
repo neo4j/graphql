@@ -90,11 +90,12 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { firstName: this_actor.firstName, lastName: this_actor.lastName } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_title\\": \\"Forrest Gump\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -126,8 +127,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                             }
                         }
                     }
-                },
-                \\"this_title\\": \\"Forrest Gump\\"
+                }
             }"
         `);
     });

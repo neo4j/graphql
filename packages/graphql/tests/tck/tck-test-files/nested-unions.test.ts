@@ -102,29 +102,33 @@ describe("Nested Unions", () => {
             WHERE this.title = $this_title
             WITH this
             CALL {
-            	WITH this
+            WITH this
             	OPTIONAL MATCH (this_connect_actors_LeadActor0_node:LeadActor)
             	WHERE this_connect_actors_LeadActor0_node.name = $this_connect_actors_LeadActor0_node_name
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actors_LeadActor0_node WHEN NULL THEN [] ELSE [1] END |
+            CALL apoc.do.when(this_connect_actors_LeadActor0_node IS NOT NULL AND this IS NOT NULL, \\"
             			MERGE (this)<-[:ACTED_IN]-(this_connect_actors_LeadActor0_node)
-            		)
-            	)
-            WITH this, this_connect_actors_LeadActor0_node
+            RETURN this, this_connect_actors_LeadActor0_node, [ metaVal IN [{type: 'Connected', name: 'Movie', relationshipName: 'ACTED_IN', toName: 'LeadActor', id: id(this), toID: id(this_connect_actors_LeadActor0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_actors_LeadActor0_node_mutateMeta
+            \\", \\"\\", {this:this, this_connect_actors_LeadActor0_node:this_connect_actors_LeadActor0_node})
+            YIELD value
+            WITH this, this_connect_actors_LeadActor0_node, value.this_connect_actors_LeadActor0_node_mutateMeta as this_connect_actors_LeadActor_mutateMeta
+            WITH this, this_connect_actors_LeadActor0_node, this_connect_actors_LeadActor_mutateMeta
             CALL {
-            	WITH this, this_connect_actors_LeadActor0_node
+            WITH this, this_connect_actors_LeadActor0_node, this_connect_actors_LeadActor_mutateMeta
             	OPTIONAL MATCH (this_connect_actors_LeadActor0_node_actedIn_Series0_node:Series)
             	WHERE this_connect_actors_LeadActor0_node_actedIn_Series0_node.name = $this_connect_actors_LeadActor0_node_actedIn_Series0_node_name
-            	FOREACH(_ IN CASE this_connect_actors_LeadActor0_node WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actors_LeadActor0_node_actedIn_Series0_node WHEN NULL THEN [] ELSE [1] END |
+            CALL apoc.do.when(this_connect_actors_LeadActor0_node_actedIn_Series0_node IS NOT NULL AND this_connect_actors_LeadActor0_node IS NOT NULL, \\"
             			MERGE (this_connect_actors_LeadActor0_node)-[:ACTED_IN]->(this_connect_actors_LeadActor0_node_actedIn_Series0_node)
-            		)
-            	)
-            	RETURN count(*)
+            RETURN this, this_connect_actors_LeadActor0_node, this_connect_actors_LeadActor0_node_actedIn_Series0_node, [ metaVal IN [{type: 'Connected', name: 'LeadActor', relationshipName: 'ACTED_IN', toName: 'Series', id: id(this_connect_actors_LeadActor0_node), toID: id(this_connect_actors_LeadActor0_node_actedIn_Series0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_actors_LeadActor0_node_actedIn_Series0_node_mutateMeta
+            \\", \\"\\", {this:this, this_connect_actors_LeadActor0_node:this_connect_actors_LeadActor0_node, this_connect_actors_LeadActor0_node_actedIn_Series0_node:this_connect_actors_LeadActor0_node_actedIn_Series0_node})
+            YIELD value
+            WITH this, this_connect_actors_LeadActor0_node, this_connect_actors_LeadActor0_node_actedIn_Series0_node, value.this_connect_actors_LeadActor0_node_actedIn_Series0_node_mutateMeta as this_connect_actors_LeadActor0_node_actedIn_Series_mutateMeta
+            RETURN REDUCE(tmp1_this_connect_actors_LeadActor0_node_actedIn_Series_mutateMeta = [], tmp2_this_connect_actors_LeadActor0_node_actedIn_Series_mutateMeta IN COLLECT(this_connect_actors_LeadActor0_node_actedIn_Series_mutateMeta) | tmp1_this_connect_actors_LeadActor0_node_actedIn_Series_mutateMeta + tmp2_this_connect_actors_LeadActor0_node_actedIn_Series_mutateMeta) as this_connect_actors_LeadActor0_node_actedIn_Series_mutateMeta
             }
-            	RETURN count(*)
+            WITH this, this_connect_actors_LeadActor0_node, this_connect_actors_LeadActor_mutateMeta + this_connect_actors_LeadActor0_node_actedIn_Series_mutateMeta as this_connect_actors_LeadActor_mutateMeta
+            RETURN REDUCE(tmp1_this_connect_actors_LeadActor_mutateMeta = [], tmp2_this_connect_actors_LeadActor_mutateMeta IN COLLECT(this_connect_actors_LeadActor_mutateMeta) | tmp1_this_connect_actors_LeadActor_mutateMeta + tmp2_this_connect_actors_LeadActor_mutateMeta) as this_connect_actors_LeadActor_mutateMeta
             }
-            RETURN this { .title, actors:  [this_actors IN [(this)<-[:ACTED_IN]-(this_actors) WHERE (\\"LeadActor\\" IN labels(this_actors)) OR (\\"Extra\\" IN labels(this_actors)) | head( [ this_actors IN [this_actors] WHERE (\\"LeadActor\\" IN labels(this_actors)) | this_actors { __resolveType: \\"LeadActor\\",  .name, actedIn:  [this_actors_actedIn IN [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) OR (\\"Series\\" IN labels(this_actors_actedIn)) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Movie\\" }  ] + [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Series\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Series\\",  .name } ] ) ] WHERE this_actors_actedIn IS NOT NULL]  } ] + [ this_actors IN [this_actors] WHERE (\\"Extra\\" IN labels(this_actors)) | this_actors { __resolveType: \\"Extra\\" }  ] ) ] WHERE this_actors IS NOT NULL]  } AS this"
+            WITH this, this_connect_actors_LeadActor_mutateMeta as mutateMeta
+            RETURN mutateMeta, this { .title, actors:  [this_actors IN [(this)<-[:ACTED_IN]-(this_actors) WHERE (\\"LeadActor\\" IN labels(this_actors)) OR (\\"Extra\\" IN labels(this_actors)) | head( [ this_actors IN [this_actors] WHERE (\\"LeadActor\\" IN labels(this_actors)) | this_actors { __resolveType: \\"LeadActor\\",  .name, actedIn:  [this_actors_actedIn IN [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) OR (\\"Series\\" IN labels(this_actors_actedIn)) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Movie\\" }  ] + [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Series\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Series\\",  .name } ] ) ] WHERE this_actors_actedIn IS NOT NULL]  } ] + [ this_actors IN [this_actors] WHERE (\\"Extra\\" IN labels(this_actors)) | this_actors { __resolveType: \\"Extra\\" }  ] ) ] WHERE this_actors IS NOT NULL]  } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -180,22 +184,26 @@ describe("Nested Unions", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors_LeadActor0_rel:ACTED_IN]-(this_disconnect_actors_LeadActor0:LeadActor)
             WHERE this_disconnect_actors_LeadActor0.name = $updateMovies.args.disconnect.actors.LeadActor[0].where.node.name
+            WITH this, this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Movie', toName: 'LeadActor', relationshipName: 'ACTED_IN', id: id(this), toID: id(this_disconnect_actors_LeadActor0), relationshipID: id(this_disconnect_actors_LeadActor0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actors_LeadActor0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors_LeadActor0_rel
             )
-            WITH this, this_disconnect_actors_LeadActor0
+            WITH this, this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, this_mutateMeta
             CALL {
-            WITH this, this_disconnect_actors_LeadActor0
+            WITH this, this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel
             OPTIONAL MATCH (this_disconnect_actors_LeadActor0)-[this_disconnect_actors_LeadActor0_actedIn_Series0_rel:ACTED_IN]->(this_disconnect_actors_LeadActor0_actedIn_Series0:Series)
             WHERE this_disconnect_actors_LeadActor0_actedIn_Series0.name = $updateMovies.args.disconnect.actors.LeadActor[0].disconnect.actedIn.Series[0].where.node.name
+            WITH this, this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel, [ metaVal IN [{type: 'Disconnected', name: 'LeadActor', toName: 'Series', relationshipName: 'ACTED_IN', id: id(this_disconnect_actors_LeadActor0), toID: id(this_disconnect_actors_LeadActor0_actedIn_Series0), relationshipID: id(this_disconnect_actors_LeadActor0_actedIn_Series0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_disconnect_actors_LeadActor0_mutateMeta
             FOREACH(_ IN CASE this_disconnect_actors_LeadActor0_actedIn_Series0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors_LeadActor0_actedIn_Series0_rel
             )
-            RETURN count(*)
+            RETURN REDUCE(tmp1_this_disconnect_actors_LeadActor0_mutateMeta = [], tmp2_this_disconnect_actors_LeadActor0_mutateMeta IN COLLECT(this_disconnect_actors_LeadActor0_mutateMeta) | tmp1_this_disconnect_actors_LeadActor0_mutateMeta + tmp2_this_disconnect_actors_LeadActor0_mutateMeta) as this_disconnect_actors_LeadActor0_mutateMeta
             }
-            RETURN count(*)
+            WITH this, this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel, this_mutateMeta + this_disconnect_actors_LeadActor0_mutateMeta as this_mutateMeta
+            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
             }
-            RETURN this { .title, actors:  [this_actors IN [(this)<-[:ACTED_IN]-(this_actors) WHERE (\\"LeadActor\\" IN labels(this_actors)) OR (\\"Extra\\" IN labels(this_actors)) | head( [ this_actors IN [this_actors] WHERE (\\"LeadActor\\" IN labels(this_actors)) | this_actors { __resolveType: \\"LeadActor\\",  .name, actedIn:  [this_actors_actedIn IN [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) OR (\\"Series\\" IN labels(this_actors_actedIn)) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Movie\\" }  ] + [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Series\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Series\\",  .name } ] ) ] WHERE this_actors_actedIn IS NOT NULL]  } ] + [ this_actors IN [this_actors] WHERE (\\"Extra\\" IN labels(this_actors)) | this_actors { __resolveType: \\"Extra\\" }  ] ) ] WHERE this_actors IS NOT NULL]  } AS this"
+            WITH this, this_mutateMeta as mutateMeta
+            RETURN mutateMeta, this { .title, actors:  [this_actors IN [(this)<-[:ACTED_IN]-(this_actors) WHERE (\\"LeadActor\\" IN labels(this_actors)) OR (\\"Extra\\" IN labels(this_actors)) | head( [ this_actors IN [this_actors] WHERE (\\"LeadActor\\" IN labels(this_actors)) | this_actors { __resolveType: \\"LeadActor\\",  .name, actedIn:  [this_actors_actedIn IN [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) OR (\\"Series\\" IN labels(this_actors_actedIn)) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Movie\\" }  ] + [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Series\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Series\\",  .name } ] ) ] WHERE this_actors_actedIn IS NOT NULL]  } ] + [ this_actors IN [this_actors] WHERE (\\"Extra\\" IN labels(this_actors)) | this_actors { __resolveType: \\"Extra\\" }  ] ) ] WHERE this_actors IS NOT NULL]  } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

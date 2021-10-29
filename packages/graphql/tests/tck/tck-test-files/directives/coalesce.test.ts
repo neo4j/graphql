@@ -106,7 +106,7 @@ describe("Cypher coalesce()", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
             WHERE coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $this_id AND coalesce(this.name, \\"Jane Smith\\") =~ $this_name_MATCHES AND (NOT coalesce(this.verified, false) = $this_verified_NOT) AND coalesce(this.numberOfFriends, 0) > $this_numberOfFriends_GT AND coalesce(this.rating, 2.5) < $this_rating_LT AND coalesce(this.fromInterface, \\"From Interface\\") = $this_fromInterface AND coalesce(this.toBeOverridden, \\"Overridden\\") = $this_toBeOverridden
-            RETURN this { .name } as this"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

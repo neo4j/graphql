@@ -75,12 +75,12 @@ describe("Cypher Auth Allow", () => {
             CREATE (this0:User)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
-            WITH this0
+            WITH this0, [ metaVal IN [{type: 'Created', name: 'User', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
             CALL apoc.util.validate(NOT(this0.id IS NOT NULL AND this0.id = $this0_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
-            RETURN
-            this0 { .id } AS this0"
+            WITH this0, this0_mutateMeta as mutateMeta
+            RETURN mutateMeta, this0 { .id } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -125,24 +125,24 @@ describe("Cypher Auth Allow", () => {
             CREATE (this0:User)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
-            WITH this0
+            WITH this0, [ metaVal IN [{type: 'Created', name: 'User', id: id(this0), properties: this0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
             CREATE (this0_posts0_node:Post)
             SET this0_posts0_node.id = $this0_posts0_node_id
-            WITH this0, this0_posts0_node
+            WITH this0, this0_posts0_node, this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'Post', id: id(this0_posts0_node), properties: this0_posts0_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
             CREATE (this0_posts0_node_creator0_node:User)
             SET this0_posts0_node_creator0_node.id = $this0_posts0_node_creator0_node_id
-            WITH this0, this0_posts0_node, this0_posts0_node_creator0_node
+            WITH this0, this0_posts0_node, this0_posts0_node_creator0_node, this0_mutateMeta + [ metaVal IN [{type: 'Created', name: 'User', id: id(this0_posts0_node_creator0_node), properties: this0_posts0_node_creator0_node}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this0_mutateMeta
             CALL apoc.util.validate(NOT(this0_posts0_node_creator0_node.id IS NOT NULL AND this0_posts0_node_creator0_node.id = $this0_posts0_node_creator0_node_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this0_posts0_node)<-[:HAS_POST]-(this0_posts0_node_creator0_node)
-            WITH this0, this0_posts0_node
+            WITH this0, this0_posts0_node, this0_mutateMeta
             CALL apoc.util.validate(NOT(EXISTS((this0_posts0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this0_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_posts0_node_auth_bind0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this0)-[:HAS_POST]->(this0_posts0_node)
-            WITH this0
+            WITH this0, this0_mutateMeta
             CALL apoc.util.validate(NOT(this0.id IS NOT NULL AND this0.id = $this0_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this0
+            RETURN this0, REDUCE(tmp1_this0_mutateMeta = [], tmp2_this0_mutateMeta IN COLLECT(this0_mutateMeta) | tmp1_this0_mutateMeta + tmp2_this0_mutateMeta) as this0_mutateMeta
             }
-            RETURN
-            this0 { .id } AS this0"
+            WITH this0, this0_mutateMeta as mutateMeta
+            RETURN mutateMeta, this0 { .id } AS this0"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -178,15 +178,18 @@ describe("Cypher Auth Allow", () => {
             "MATCH (this:User)
             WHERE this.id = $this_id
             SET this.id = $this_update_id
-            WITH this
+            WITH this, [ metaVal IN [{type: 'Updated', name: 'User', id: id(this), properties: $this_update}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .id } AS this"
+            RETURN mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"id-01\\",
                 \\"this_update_id\\": \\"not bound\\",
+                \\"this_update\\": {
+                    \\"id\\": \\"not bound\\"
+                },
                 \\"this_auth_bind0_id\\": \\"id-01\\"
             }"
         `);
@@ -220,30 +223,37 @@ describe("Cypher Auth Allow", () => {
             "MATCH (this:User)
             WHERE this.id = $this_id
             WITH this
+            WITH this
             OPTIONAL MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
             WHERE this_posts0.id = $updateUsers.args.update.posts[0].where.node.id
             CALL apoc.do.when(this_posts0 IS NOT NULL, \\"
-            WITH this, this_posts0
+            WITH this, this_posts0, this_has_post0_relationship
+            WITH this, this_posts0, this_has_post0_relationship
             OPTIONAL MATCH (this_posts0)<-[this_posts0_has_post0_relationship:HAS_POST]-(this_posts0_creator0:User)
             CALL apoc.do.when(this_posts0_creator0 IS NOT NULL, \\\\\\"
             SET this_posts0_creator0.id = $this_update_posts0_creator0_id
-            WITH this, this_posts0, this_posts0_creator0
+            WITH this, this_posts0, this_has_post0_relationship, this_posts0_creator0, this_posts0_has_post0_relationship, [ metaVal IN [{type: 'Updated', name: 'User', id: id(this_posts0_creator0), properties: $this_update_posts0_creator0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
             CALL apoc.util.validate(NOT(this_posts0_creator0.id IS NOT NULL AND this_posts0_creator0.id = $this_posts0_creator0_auth_bind0_id), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
-            RETURN count(*)
-            \\\\\\", \\\\\\"\\\\\\", {this:this, this_posts0:this_posts0, updateUsers: $updateUsers, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id})
-            YIELD value as _
-            RETURN count(*)
-            \\", \\"\\", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id})
-            YIELD value as _
-            WITH this
+            RETURN this, this_posts0, this_has_post0_relationship, this_posts0_creator0, this_posts0_has_post0_relationship, mutateMeta
+            \\\\\\", \\\\\\"\\\\\\", {this:this, this_posts0:this_posts0, this_has_post0_relationship:this_has_post0_relationship, this_posts0_creator0:this_posts0_creator0, this_posts0_has_post0_relationship:this_posts0_has_post0_relationship, updateUsers: $updateUsers, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_update_posts0_creator0:$this_update_posts0_creator0,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id})
+            YIELD value
+            WITH this, this_posts0, this_has_post0_relationship, this_posts0_creator0, this_posts0_has_post0_relationship, value.mutateMeta as mutateMeta
+            RETURN this, this_posts0, this_has_post0_relationship, mutateMeta
+            \\", \\"\\", {this:this, this_posts0:this_posts0, this_has_post0_relationship:this_has_post0_relationship, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_update_posts0_creator0:$this_update_posts0_creator0,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id})
+            YIELD value
+            WITH this, this_posts0, this_has_post0_relationship, value.mutateMeta as mutateMeta
+            WITH this, mutateMeta
             CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .id } AS this"
+            RETURN mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"id-01\\",
                 \\"this_update_posts0_creator0_id\\": \\"not bound\\",
+                \\"this_update_posts0_creator0\\": {
+                    \\"id\\": \\"not bound\\"
+                },
                 \\"this_posts0_creator0_auth_bind0_id\\": \\"id-01\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
@@ -309,19 +319,21 @@ describe("Cypher Auth Allow", () => {
             WHERE this.id = $this_id
             WITH this
             CALL {
-            	WITH this
+            WITH this
             	OPTIONAL MATCH (this_connect_creator0_node:User)
             	WHERE this_connect_creator0_node.id = $this_connect_creator0_node_id
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_creator0_node WHEN NULL THEN [] ELSE [1] END |
+            CALL apoc.do.when(this_connect_creator0_node IS NOT NULL AND this IS NOT NULL, \\"
             			MERGE (this)<-[:HAS_POST]-(this_connect_creator0_node)
-            		)
-            	)
-            	WITH this, this_connect_creator0_node
+            RETURN this, this_connect_creator0_node, [ metaVal IN [{type: 'Connected', name: 'Post', relationshipName: 'HAS_POST', toName: 'User', id: id(this), toID: id(this_connect_creator0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_connect_creator0_node_mutateMeta
+            \\", \\"\\", {this:this, this_connect_creator0_node:this_connect_creator0_node})
+            YIELD value
+            WITH this, this_connect_creator0_node, value.this_connect_creator0_node_mutateMeta as this_connect_creator_mutateMeta
+            WITH this, this_connect_creator0_node, this_connect_creator_mutateMeta
             	CALL apoc.util.validate(NOT(EXISTS((this_connect_creator0_node)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_connect_creator0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_creator0_nodePost0_bind_auth_bind0_creator_id) AND this_connect_creator0_node.id IS NOT NULL AND this_connect_creator0_node.id = $this_connect_creator0_nodeUser1_bind_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	RETURN count(*)
+            RETURN REDUCE(tmp1_this_connect_creator_mutateMeta = [], tmp2_this_connect_creator_mutateMeta IN COLLECT(this_connect_creator_mutateMeta) | tmp1_this_connect_creator_mutateMeta + tmp2_this_connect_creator_mutateMeta) as this_connect_creator_mutateMeta
             }
-            RETURN this { .id } AS this"
+            WITH this, this_connect_creator_mutateMeta as mutateMeta
+            RETURN mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -358,14 +370,16 @@ describe("Cypher Auth Allow", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
             WHERE this_disconnect_creator0.id = $updatePosts.args.disconnect.creator.where.node.id
+            WITH this, this_disconnect_creator0, this_disconnect_creator0_rel, [ metaVal IN [{type: 'Disconnected', name: 'Post', toName: 'User', relationshipName: 'HAS_POST', id: id(this), toID: id(this_disconnect_creator0), relationshipID: id(this_disconnect_creator0_rel)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_mutateMeta
             FOREACH(_ IN CASE this_disconnect_creator0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_creator0_rel
             )
-            WITH this, this_disconnect_creator0
+            WITH this, this_disconnect_creator0, this_disconnect_creator0_rel, this_mutateMeta
             CALL apoc.util.validate(NOT(EXISTS((this_disconnect_creator0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_disconnect_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_creator0Post0_bind_auth_bind0_creator_id) AND this_disconnect_creator0.id IS NOT NULL AND this_disconnect_creator0.id = $this_disconnect_creator0User1_bind_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN count(*)
+            RETURN REDUCE(tmp1_this_mutateMeta = [], tmp2_this_mutateMeta IN COLLECT(this_mutateMeta) | tmp1_this_mutateMeta + tmp2_this_mutateMeta) as this_mutateMeta
             }
-            RETURN this { .id } AS this"
+            WITH this, this_mutateMeta as mutateMeta
+            RETURN mutateMeta, this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -78,7 +78,7 @@ describe("Field Level Aggregations Alias", () => {
                     WITH n as n
                     ORDER BY size(n.name) DESC
                     WITH collect(n.name) as list
-                    RETURN {longest: head(list), shortest: last(list)} \\", { this: this })) } } } as this"
+                    RETURN {longest: head(list), shortest: last(list)} \\", { this: this })) } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

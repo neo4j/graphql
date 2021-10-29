@@ -97,31 +97,38 @@ describe("#324", () => {
             "MATCH (this:Person)
             WHERE this.identifier = $this_identifier
             WITH this
+            WITH this
             OPTIONAL MATCH (this)-[this_car0_relationship:CAR]->(this_car0:Car)
             CALL apoc.do.when(this_car0 IS NOT NULL, \\"
-            WITH this, this_car0
+            WITH this, this_car0, this_car0_relationship
+            WITH this, this_car0, this_car0_relationship
             OPTIONAL MATCH (this_car0)-[this_car0_manufacturer0_relationship:MANUFACTURER]->(this_car0_manufacturer0:Manufacturer)
             CALL apoc.do.when(this_car0_manufacturer0 IS NOT NULL, \\\\\\"
             SET this_car0_manufacturer0.name = $this_update_car0_manufacturer0_name
-            WITH this, this_car0, this_car0_manufacturer0
+            WITH this, this_car0, this_car0_relationship, this_car0_manufacturer0, this_car0_manufacturer0_relationship
+            WITH this, this_car0, this_car0_relationship, this_car0_manufacturer0, this_car0_manufacturer0_relationship
             CALL {
-            	WITH this, this_car0, this_car0_manufacturer0
+            WITH this, this_car0, this_car0_relationship, this_car0_manufacturer0, this_car0_manufacturer0_relationship
             	OPTIONAL MATCH (this_car0_manufacturer0_logo0_connect0_node:Logo)
             	WHERE this_car0_manufacturer0_logo0_connect0_node.identifier = $this_car0_manufacturer0_logo0_connect0_node_identifier
-            	FOREACH(_ IN CASE this_car0_manufacturer0 WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_car0_manufacturer0_logo0_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            CALL apoc.do.when(this_car0_manufacturer0_logo0_connect0_node IS NOT NULL AND this_car0_manufacturer0 IS NOT NULL, \\\\\\"
             			MERGE (this_car0_manufacturer0)-[:LOGO]->(this_car0_manufacturer0_logo0_connect0_node)
-            		)
-            	)
-            	RETURN count(*)
+            RETURN this, this_car0, this_car0_relationship, this_car0_manufacturer0, this_car0_manufacturer0_relationship, this_car0_manufacturer0_logo0_connect0_node, [ metaVal IN [{type: 'Connected', name: 'Manufacturer', relationshipName: 'LOGO', toName: 'Logo', id: id(this_car0_manufacturer0), toID: id(this_car0_manufacturer0_logo0_connect0_node)}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as this_car0_manufacturer0_logo0_connect0_node_mutateMeta
+            \\\\\\", \\\\\\"\\\\\\", {this:this, this_car0:this_car0, this_car0_relationship:this_car0_relationship, this_car0_manufacturer0:this_car0_manufacturer0, this_car0_manufacturer0_relationship:this_car0_manufacturer0_relationship, this_car0_manufacturer0_logo0_connect0_node:this_car0_manufacturer0_logo0_connect0_node})
+            YIELD value
+            WITH this, this_car0, this_car0_relationship, this_car0_manufacturer0, this_car0_manufacturer0_relationship, this_car0_manufacturer0_logo0_connect0_node, value.this_car0_manufacturer0_logo0_connect0_node_mutateMeta as this_car0_manufacturer0_logo0_connect_mutateMeta
+            RETURN REDUCE(tmp1_this_car0_manufacturer0_logo0_connect_mutateMeta = [], tmp2_this_car0_manufacturer0_logo0_connect_mutateMeta IN COLLECT(this_car0_manufacturer0_logo0_connect_mutateMeta) | tmp1_this_car0_manufacturer0_logo0_connect_mutateMeta + tmp2_this_car0_manufacturer0_logo0_connect_mutateMeta) as this_car0_manufacturer0_logo0_connect_mutateMeta
             }
-            RETURN count(*)
-            \\\\\\", \\\\\\"\\\\\\", {this:this, this_car0:this_car0, updatePeople: $updatePeople, this_car0_manufacturer0:this_car0_manufacturer0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier})
-            YIELD value as _
-            RETURN count(*)
-            \\", \\"\\", {this:this, updatePeople: $updatePeople, this_car0:this_car0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier})
-            YIELD value as _
-            RETURN this { .identifier } AS this"
+            WITH this, this_car0, this_car0_relationship, this_car0_manufacturer0, this_car0_manufacturer0_relationship, this_car0_manufacturer0_logo0_connect_mutateMeta as mutateMeta
+            RETURN this, this_car0, this_car0_relationship, this_car0_manufacturer0, this_car0_manufacturer0_relationship, mutateMeta + [ metaVal IN [{type: 'Updated', name: 'Manufacturer', id: id(this_car0_manufacturer0), properties: $this_update_car0_manufacturer0}] WHERE metaVal IS NOT NULL AND metaVal.id IS NOT NULL ] as mutateMeta
+            \\\\\\", \\\\\\"\\\\\\", {this:this, this_car0:this_car0, this_car0_relationship:this_car0_relationship, this_car0_manufacturer0:this_car0_manufacturer0, this_car0_manufacturer0_relationship:this_car0_manufacturer0_relationship, updatePeople: $updatePeople, this_car0_manufacturer0:this_car0_manufacturer0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier,this_update_car0_manufacturer0:$this_update_car0_manufacturer0})
+            YIELD value
+            WITH this, this_car0, this_car0_relationship, this_car0_manufacturer0, this_car0_manufacturer0_relationship, value.mutateMeta as mutateMeta
+            RETURN this, this_car0, this_car0_relationship, mutateMeta
+            \\", \\"\\", {this:this, this_car0:this_car0, this_car0_relationship:this_car0_relationship, updatePeople: $updatePeople, this_car0:this_car0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier,this_update_car0_manufacturer0:$this_update_car0_manufacturer0})
+            YIELD value
+            WITH this, this_car0, this_car0_relationship, value.mutateMeta as mutateMeta
+            RETURN mutateMeta, this { .identifier } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -129,6 +136,9 @@ describe("#324", () => {
                 \\"this_identifier\\": \\"Someone\\",
                 \\"this_update_car0_manufacturer0_name\\": \\"Manufacturer\\",
                 \\"this_car0_manufacturer0_logo0_connect0_node_identifier\\": \\"Opel Logo\\",
+                \\"this_update_car0_manufacturer0\\": {
+                    \\"name\\": \\"Manufacturer\\"
+                },
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],

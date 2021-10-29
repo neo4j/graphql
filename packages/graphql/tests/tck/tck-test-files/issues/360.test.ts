@@ -66,7 +66,7 @@ describe("#360", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Event)
             WHERE (this.start >= $this_AND_start_GTE AND this.start <= $this_AND1_start_LTE)
-            RETURN this { start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), .activity } as this"
+            RETURN this { start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), .activity } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -114,7 +114,7 @@ describe("#360", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Event)
             WHERE (this.start >= $this_OR_start_GTE OR this.start <= $this_OR1_start_LTE)
-            RETURN this { start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), .activity } as this"
+            RETURN this { start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), .activity } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
