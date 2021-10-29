@@ -53,7 +53,7 @@ describe("multi-database", () => {
             if (e instanceof Error) {
                 if (
                     e.message.includes(
-                        "Neo4jError: This is an administration command and it should be executed against the system database: CREATE DATABASE"
+                        "This is an administration command and it should be executed against the system database"
                     ) ||
                     e.message.includes("Unsupported administration command")
                 ) {
