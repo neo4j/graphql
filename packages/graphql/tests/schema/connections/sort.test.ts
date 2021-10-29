@@ -78,7 +78,7 @@ describe("Sort", () => {
             type Node1 {
               property: String!
               relatedTo(options: Node2Options, where: Node2Where): [Node2!]!
-              relatedToAggregate: Node1Node2RelatedToAggregationSelection
+              relatedToAggregate(where: Node2Where): Node1Node2RelatedToAggregationSelection
               relatedToConnection(after: String, first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
             }
 
@@ -232,7 +232,7 @@ describe("Sort", () => {
 
             type Node2 {
               relatedTo(options: Node1Options, where: Node1Where): [Node1!]!
-              relatedToAggregate: Node2Node1RelatedToAggregationSelection
+              relatedToAggregate(where: Node1Where): Node2Node1RelatedToAggregationSelection
               relatedToConnection(after: String, first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
             }
 

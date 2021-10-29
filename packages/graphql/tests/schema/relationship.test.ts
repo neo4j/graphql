@@ -133,7 +133,7 @@ describe("Relationship", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate: MovieActorActorsAggregationSelection
+              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
             }
@@ -412,7 +412,7 @@ describe("Relationship", () => {
 
             type Actor {
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate: ActorMovieMoviesAggregationSelection
+              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String
             }
@@ -610,7 +610,7 @@ describe("Relationship", () => {
 
             type Movie {
               actors(options: ActorOptions, where: ActorWhere): [Actor]!
-              actorsAggregate: MovieActorActorsAggregationSelection
+              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
             }

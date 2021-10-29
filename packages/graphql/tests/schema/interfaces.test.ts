@@ -86,7 +86,7 @@ describe("Interfaces", () => {
               customQuery: [Movie]
               id: ID
               movies(options: MovieOptions, where: MovieWhere): [Movie]
-              moviesAggregate: MovieMovieMoviesAggregationSelection
+              moviesAggregate(where: MovieWhere): MovieMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
               nodes: [MovieNode]
             }

@@ -182,10 +182,11 @@ jobs:
 
     services:
       neo4j:
-        image: neo4j:${{ matrix.neo4j-version }}
+        image: neo4j:${{ matrix.neo4j-version }}-enterprise
         env:
           NEO4J_AUTH: neo4j/testpassword
           NEO4JLABS_PLUGINS: '["apoc"]'
+          NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
         ports:
           - 7687:7687
 

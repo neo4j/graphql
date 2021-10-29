@@ -53,6 +53,8 @@ import {
     ConnectionField,
 } from "../types";
 import parseValueNode from "./parse-value-node";
+import checkDirectiveCombinations from "./check-directive-combinations";
+import getUniqueMeta from "./parse/get-unique-meta";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -93,34 +95,32 @@ function getObjFieldMeta({
                 .find((i) => i.fields?.map((f) => f.name.value).includes(field.name.value))
                 ?.fields?.find((f) => f.name.value === field.name.value);
 
-            if (
-                field?.directives?.some((x) => x.name.value === "private") ||
-                interfaceField?.directives?.some((x) => x.name.value === "private")
-            ) {
+            // Create array of directives for this field. Field directives override interface field directives.
+            const directives = [
+                ...(field?.directives || []),
+                ...(interfaceField?.directives || []).filter(
+                    (d) => !field.directives?.find((fd) => fd.name.value === d.name.value)
+                ),
+            ];
+
+            checkDirectiveCombinations(directives);
+
+            if (directives.some((x) => x.name.value === "private")) {
                 return res;
             }
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
             const typeMeta = getFieldTypeMeta(field);
-            const authDirective =
-                field.directives?.find((x) => x.name.value === "auth") ||
-                interfaceField?.directives?.find((x) => x.name.value === "auth");
-            const idDirective =
-                field?.directives?.find((x) => x.name.value === "id") ||
-                interfaceField?.directives?.find((x) => x.name.value === "id");
-            const defaultDirective =
-                field?.directives?.find((x) => x.name.value === "default") ||
-                interfaceField?.directives?.find((x) => x.name.value === "default");
-            const coalesceDirective =
-                field?.directives?.find((x) => x.name.value === "coalesce") ||
-                interfaceField?.directives?.find((x) => x.name.value === "coalesce");
-            const timestampDirective =
-                field?.directives?.find((x) => x.name.value === "timestamp") ||
-                interfaceField?.directives?.find((x) => x.name.value === "timestamp");
-            const aliasDirective =
-                field?.directives?.find((x) => x.name.value === "alias") ||
-                interfaceField?.directives?.find((x) => x.name.value === "alias");
+            const authDirective = directives.find((x) => x.name.value === "auth");
+            const idDirective = directives.find((x) => x.name.value === "id");
+            const defaultDirective = directives.find((x) => x.name.value === "default");
+            const coalesceDirective = directives.find((x) => x.name.value === "coalesce");
+            const timestampDirective = directives.find((x) => x.name.value === "timestamp");
+            const aliasDirective = directives.find((x) => x.name.value === "alias");
+
+            const unique = getUniqueMeta(directives, obj, field.name.value);
+
             const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
             const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);
             const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
@@ -145,18 +145,21 @@ function getObjFieldMeta({
                             "coalesce",
                             "timestamp",
                             "alias",
+                            "unique",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
                 ...(authDirective ? { auth: getAuth(authDirective) } : {}),
                 description: field.description?.value,
                 readonly:
-                    field?.directives?.some((d) => d.name.value === "readonly") ||
+                    directives.some((d) => d.name.value === "readonly") ||
                     interfaceField?.directives?.some((x) => x.name.value === "readonly"),
                 writeonly:
-                    field?.directives?.some((d) => d.name.value === "writeonly") ||
+                    directives.some((d) => d.name.value === "writeonly") ||
                     interfaceField?.directives?.some((x) => x.name.value === "writeonly"),
+                ...(unique ? { unique } : {}),
             };
+
             if (aliasDirective) {
                 const aliasMeta = getAliasMeta(aliasDirective);
                 if (aliasMeta) {
