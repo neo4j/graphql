@@ -5,11 +5,11 @@ import {
     SchemaComposer,
     upperFirst,
 } from "graphql-compose";
-import { Node } from "../classes";
-import { WHERE_AGGREGATION_AVERAGE_TYPES, WHERE_AGGREGATION_OPERATORS, WHERE_AGGREGATION_TYPES } from "../constants";
-import { BaseField, RelationField } from "../types";
-import { FieldAggregationComposer } from "./field-aggregation-composer";
-import { ObjectFields } from "./get-obj-field-meta";
+import { Node } from "../../classes";
+import { WHERE_AGGREGATION_AVERAGE_TYPES, WHERE_AGGREGATION_OPERATORS, WHERE_AGGREGATION_TYPES } from "../../constants";
+import { BaseField, RelationField } from "../../types";
+import { FieldAggregationComposer } from "../field-aggregation-composer";
+import { ObjectFields } from "../get-obj-field-meta";
 
 function createRelationshipFields({
     relationshipFields,
