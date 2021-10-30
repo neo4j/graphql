@@ -710,9 +710,7 @@ function makeAugmentedSchema(
             implementationsDisconnectInput,
             implementationsUpdateInput,
             implementationsWhereInput,
-        ].forEach((c) => {
-            ensureNonEmptyInput(c);
-        });
+        ].forEach((c) => ensureNonEmptyInput(c));
     });
 
     if (pointInTypeDefs) {
