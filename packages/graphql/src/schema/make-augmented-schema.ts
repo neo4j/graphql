@@ -36,16 +36,24 @@ import {
     parse,
     print,
     ScalarTypeDefinitionNode,
-    UnionTypeDefinitionNode,
+    UnionTypeDefinitionNode
 } from "graphql";
-import {
-    forEachKey, InputTypeComposer, InputTypeComposerFieldConfigAsObjectDefinition, ObjectTypeComposer, SchemaComposer
-} from "graphql-compose";
-import { GraphQLToolsResolveMethods } from "graphql-compose/lib/SchemaComposer";
+import { InputTypeComposerFieldConfigAsObjectDefinition, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
-import { Node, Exclude } from "../classes";
+import { Exclude, Node } from "../classes";
+import { NodeDirective } from "../classes/NodeDirective";
+import Relationship from "../classes/Relationship";
+import * as constants from "../constants";
+import { Auth, PrimitiveField } from "../types";
+import createConnectionFields from "./create-connection-fields";
+import createRelationshipFields from "./create-relationship-fields";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth } from "../types";
+import getCustomResolvers from "./get-custom-resolvers";
+import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
+import getWhereFields from "./get-where-fields";
+import parseExcludeDirective from "./parse-exclude-directive";
+import parseNodeDirective from "./parse-node-directive";
+import * as point from "./point";
 import {
     aggregateResolver,
     countResolver,
@@ -53,25 +61,11 @@ import {
     cypherResolver,
     defaultFieldResolver,
     deleteResolver,
-    findResolver,
-    updateResolver,
-    numericalResolver,
-    idResolver,
+    findResolver, idResolver, numericalResolver, updateResolver
 } from "./resolvers";
 import * as Scalars from "./scalars";
-import parseExcludeDirective from "./parse-exclude-directive";
-import getCustomResolvers from "./get-custom-resolvers";
-import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
-import * as point from "./point";
 import { graphqlDirectivesToCompose, objectFieldsToComposeFields } from "./to-compose";
-import Relationship from "../classes/Relationship";
-import getWhereFields from "./get-where-fields";
 import { validateDocument } from "./validation";
-import * as constants from "../constants";
-import createRelationshipFields from "./create-relationship-fields";
-import createConnectionFields from "./create-connection-fields";
-import { NodeDirective } from "../classes/NodeDirective";
-import parseNodeDirective from "./parse-node-directive";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
