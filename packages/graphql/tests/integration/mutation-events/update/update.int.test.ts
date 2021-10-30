@@ -26,7 +26,7 @@ import { Neo4jGraphQL } from "../../../../src/classes";
 import { localEventEmitter } from "../../../../src/utils/pubsub";
 import neo4j from "../../neo4j";
 
-describe("mutation events (update > update)", () => {
+describe.skip("mutation events (update > update)", () => {
     let driver: Driver;
     let neoSchema: Neo4jGraphQL;
 
