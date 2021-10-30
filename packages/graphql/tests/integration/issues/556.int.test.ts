@@ -18,9 +18,8 @@
  */
 
 import { gql } from "apollo-server";
-import { validateSchema } from "graphql";
 import { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../../../src/classes";
+import { validateDocument } from "../../../src/schema/validation";
 import neo4j from "../neo4j";
 
 
@@ -35,9 +34,8 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
         await driver.close();
     });
 
-    test("should compile type defs with no errors", () => {
-
-        const typeDefs = gql`
+    test("should validate document with no errors", () => {
+        const doc = gql`
             type Journalist {
                 articles: [Article]! @relationship(type: "HAS_ARTICLE", direction: OUT, properties: "HasArticle" )
             }
@@ -68,11 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
                 id: ID @id
             }
         `;
- 
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        expect(neoSchema.schema).toBeDefined();
 
-        const errors = validateSchema(neoSchema.schema);
-        expect(errors).toEqual([]);
+        expect(() => validateDocument(doc)).not.toThrow();
     });
 });
