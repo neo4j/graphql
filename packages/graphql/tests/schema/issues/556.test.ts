@@ -19,22 +19,10 @@
 
 import { gql } from "apollo-server";
 import { validateSchema } from "graphql";
-import { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import neo4j from "../neo4j";
 
 
 describe("https://github.com/neo4j/graphql/issues/556", () => {
-    let driver: Driver;
-
-    beforeAll(async () => {
-        driver = await neo4j();
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
-
     test("should compile type defs with no errors", () => {
 
         const typeDefs = gql`
@@ -48,7 +36,8 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
 
             type Article {
                 id: ID! @id
-                blocks: [Block]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock" )
+                blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock" )
+                images: [ Image! ] @relationship(type: "HAS_IMAGE", direction: OUT )
             }
 
             interface HasBlock @relationshipProperties {
@@ -66,6 +55,20 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
 
             type DividerBlock implements Block {
                 id: ID @id
+            }
+
+            type ImageBlock implements Block {
+                id: ID @id
+                images: [ Image! ]! @relationship(type: "HAS_IMAGE", direction: OUT )
+            }
+
+            interface Image {
+                featuredIn: [ Article! ]
+            }
+
+            type PDFImage implements Image {
+                featuredIn: [ Article! ] @relationship(type: "HAS_IMAGE", direction: IN )
+                url: String!
             }
         `;
  

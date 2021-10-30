@@ -38,7 +38,7 @@ import {
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode
 } from "graphql";
-import { InputTypeComposerFieldConfigAsObjectDefinition, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import { InputTypeComposer, InputTypeComposerFieldConfigAsObjectDefinition, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { Exclude, Node } from "../classes";
 import { NodeDirective } from "../classes/NodeDirective";
@@ -507,6 +507,21 @@ function makeAugmentedSchema(
         });
     });
 
+    function ensureNonEmptyInput(inputName: string | InputTypeComposer<any>) {
+        let input;
+        if (typeof inputName === 'string') {
+            input = composer.getITC(inputName);
+        } else {
+            input = inputName;
+        }
+
+        if (input.getFieldNames().length === 0) {
+            input.addFields({
+                _emptyInput: 'Boolean',
+            });
+        }
+    }
+
     interfaceRelationships.forEach((interfaceRelationship) => {
         const implementations = objectNodes.filter((n) =>
             n.interfaces?.some((i) => i.name.value === interfaceRelationship.name.value)
@@ -686,6 +701,18 @@ function makeAugmentedSchema(
             );
             interfaceDisconnectInput.setField("_on", implementationsDisconnectInput);
         }
+
+        ensureNonEmptyInput(`${ interfaceRelationship.name.value }CreateInput`);
+        ensureNonEmptyInput(`${ interfaceRelationship.name.value }UpdateInput`);
+        [
+            implementationsConnectInput,
+            implementationsDeleteInput,
+            implementationsDisconnectInput,
+            implementationsUpdateInput,
+            implementationsWhereInput,
+        ].forEach((c) => {
+            ensureNonEmptyInput(c);
+        });
     });
 
     if (pointInTypeDefs) {
@@ -899,15 +926,6 @@ function makeAugmentedSchema(
 
         ensureNonEmptyInput(`${ node.name }UpdateInput`);
         ensureNonEmptyInput(`${ node.name }CreateInput`);
-
-        function ensureNonEmptyInput(inputName: string) {
-            const input = composer.getITC(inputName);
-            if (input.getFieldNames().length === 0) {
-                input.addFields({
-                    _emptyInput: 'Boolean',
-                });
-            }
-        }
 
         if (!node.exclude?.operations.includes("read")) {
             composer.Query.addFields({
