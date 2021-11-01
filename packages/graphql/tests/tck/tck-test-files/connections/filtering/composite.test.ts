@@ -95,6 +95,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_title\\": \\"Forrest Gump\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -126,8 +127,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                             }
                         }
                     }
-                },
-                \\"this_title\\": \\"Forrest Gump\\"
+                }
             }"
         `);
     });

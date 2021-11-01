@@ -133,6 +133,7 @@ describe("Connections Alias", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_title\\": \\"Forrest Gump\\",
                 \\"this_hanks\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -150,8 +151,7 @@ describe("Connections Alias", () => {
                             }
                         }
                     }
-                },
-                \\"this_title\\": \\"Forrest Gump\\"
+                }
             }"
         `);
     });
