@@ -193,3 +193,21 @@ export const writeonlyDirective = new GraphQLDirective({
         "Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
 });
+
+export const fulltextDirective = new GraphQLDirective({
+    name: "fulltext",
+    description:
+        "Informs @neo4j/graphql that there should be a fulltext index in the database, allows users to search by the index in the generated schema.",
+    args: {
+        name: {
+            type: new GraphQLNonNull(GraphQLString),
+        },
+        fields: {
+            type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
+        },
+        defaultThreshold: {
+            type: GraphQLString,
+        },
+    },
+    locations: [DirectiveLocation.OBJECT],
+});
