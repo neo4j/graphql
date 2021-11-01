@@ -91,6 +91,12 @@ The `@timestamp` directive flags fields to be used to store timestamps on create
 
 Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-timestamp[`@timestamp`]
 
+== `@unique`
+
+The `@unique` directive indicates that there should be a uniqueness constraint in the database for the fields that it is applied to.
+
+Reference: xref::type-definitions/constraints.adoc#type-definitions-constraints-unique[Unique node property constraints]
+
 == `@writeonly`
 
 The `@writeonly` directive marks fields as write-only.
