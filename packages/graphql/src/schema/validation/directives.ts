@@ -24,6 +24,7 @@ import {
     GraphQLNonNull,
     GraphQLList,
     GraphQLBoolean,
+    GraphQLInputObjectType,
 } from "graphql";
 import { ExcludeOperationEnum, RelationshipDirectionEnum, TimestampOperationEnum } from "./enums";
 import { ScalarType } from "./scalars";
@@ -217,14 +218,25 @@ export const fulltextDirective = new GraphQLDirective({
     description:
         "Informs @neo4j/graphql that there should be a fulltext index in the database, allows users to search by the index in the generated schema.",
     args: {
-        name: {
-            type: new GraphQLNonNull(GraphQLString),
-        },
-        fields: {
-            type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
-        },
-        defaultThreshold: {
-            type: GraphQLString,
+        indexes: {
+            type: new GraphQLNonNull(
+                new GraphQLList(
+                    new GraphQLInputObjectType({
+                        name: "FullTextInput",
+                        fields: {
+                            name: {
+                                type: new GraphQLNonNull(GraphQLString),
+                            },
+                            fields: {
+                                type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
+                            },
+                            defaultThreshold: {
+                                type: GraphQLString,
+                            },
+                        },
+                    })
+                )
+            ),
         },
     },
     locations: [DirectiveLocation.OBJECT],
