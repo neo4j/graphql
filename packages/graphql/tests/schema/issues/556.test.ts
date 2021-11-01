@@ -78,4 +78,41 @@ describe("https://github.com/neo4j/graphql/issues/556", () => {
         const errors = validateSchema(neoSchema.schema);
         expect(errors).toEqual([]);
     });
+    test("should compile empty type def with error", () => {
+
+        const typeDefs = `
+            type Journalist {
+            }
+
+        `;
+ 
+        expect(() => new Neo4jGraphQL({ typeDefs })).toThrow();
+    });
+    test("should compile empty input with error", () => {
+
+        const typeDefs = `
+            input JournalistInput {
+            }
+            type Journalist {
+                query(input: JournalistInput): Int
+            }
+
+        `;
+ 
+        expect(() => new Neo4jGraphQL({ typeDefs })).toThrow();
+    });
+    test("should compile empty interface with error", () => {
+
+        const typeDefs = `
+            interface Person {
+            }
+
+            type Journalist implements Person {
+                test: Int
+            }
+
+        `;
+ 
+        expect(() => new Neo4jGraphQL({ typeDefs })).toThrow();
+    });
 });
