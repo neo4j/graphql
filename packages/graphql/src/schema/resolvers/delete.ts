@@ -45,6 +45,7 @@ export default function deleteResolver({ node }: { node: Node }) {
                       delete: `${node.name}DeleteInput`,
                   }
                 : {}),
+            ...(node.fulltextDirective ? { search: `${node.name}Search` } : {}),
         },
     };
 }
