@@ -44,7 +44,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
 
-    const topLevelMatch = translateTopLevelMatch({ node, context, varName });
+    const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });
     matchAndWhereStr = topLevelMatch[0];
     cypherParams = { ...cypherParams, ...topLevelMatch[1] };
 

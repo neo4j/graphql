@@ -1,6 +1,6 @@
 import { dedent } from "graphql-compose";
 import { Node } from "../classes";
-import { Context, GraphQLWhereArg } from "../types";
+import { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createWhereAndParams from "./create-where-and-params";
 
@@ -8,10 +8,12 @@ function translateTopLevelMatch({
     node,
     context,
     varName,
+    operation,
 }: {
     context: Context;
     node: Node;
     varName: string;
+    operation: AuthOperations;
 }): [string, Record<string, unknown>] {
     let cyphers: string[] = [];
     let cypherParams = {};
@@ -59,7 +61,7 @@ function translateTopLevelMatch({
     }
 
     const whereAuth = createAuthAndParams({
-        operation: "READ",
+        operation,
         entity: node,
         context,
         where: { varName, node },
