@@ -69,6 +69,7 @@ import createRelationshipFields from "./create-relationship-fields";
 import createConnectionFields from "./create-connection-fields";
 import { NodeDirective } from "../classes/NodeDirective";
 import parseNodeDirective from "./parse-node-directive";
+import getUniqueFields from "./get-unique-fields";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -821,6 +822,13 @@ function makeAugmentedSchema(
             fields: queryFields,
         });
 
+        const uniqueFields = getUniqueFields(node);
+
+        composer.createInputTC({
+            name: `${node.name}UniqueWhere`,
+            fields: uniqueFields,
+        });
+
         composer.createInputTC({
             name: `${node.name}CreateInput`,
             // TODO - This reduce duplicated when creating relationship CreateInput - put into shared function?
@@ -879,6 +887,7 @@ function makeAugmentedSchema(
             })
         );
 
+        // createRelationshipFields
         createRelationshipFields({
             relationshipFields: node.relationFields,
             schemaComposer: composer,

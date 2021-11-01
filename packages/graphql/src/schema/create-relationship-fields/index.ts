@@ -10,6 +10,7 @@ import { WHERE_AGGREGATION_AVERAGE_TYPES, WHERE_AGGREGATION_OPERATORS, WHERE_AGG
 import { BaseField, RelationField } from "../../types";
 import { FieldAggregationComposer } from "../field-aggregation-composer";
 import { ObjectFields } from "../get-obj-field-meta";
+import { createConnectOrCreateField } from "./create-connect-or-create-field";
 
 function createRelationshipFields({
     relationshipFields,
@@ -623,6 +624,8 @@ function createRelationshipFields({
             });
         });
 
+        const connectOrCreate = createConnectOrCreateField({ rel, node: n, schemaComposer });
+
         composeNode.addFields({
             [rel.fieldName]: {
                 type: rel.typeMeta.pretty,
@@ -671,11 +674,17 @@ function createRelationshipFields({
             });
         });
 
+        const mutationFields: Record<string, string> = {
+            create,
+            connect,
+        };
+
+        if (connectOrCreate) {
+            mutationFields.connectOrCreate = connectOrCreate;
+        }
+
         schemaComposer.getOrCreateITC(nodeFieldInputName, (tc) => {
-            tc.addFields({
-                create,
-                connect,
-            });
+            tc.addFields(mutationFields);
         });
 
         if (!schemaComposer.has(nodeFieldDeleteInputName)) {
