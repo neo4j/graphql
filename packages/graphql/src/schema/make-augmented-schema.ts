@@ -45,6 +45,7 @@ import { NodeDirective } from "../classes/NodeDirective";
 import Relationship from "../classes/Relationship";
 import * as constants from "../constants";
 import { Auth, PrimitiveField } from "../types";
+import { isString } from "../utils/utils";
 import createConnectionFields from "./create-connection-fields";
 import createRelationshipFields from "./create-relationship-fields";
 import getAuth from "./get-auth";
@@ -507,13 +508,8 @@ function makeAugmentedSchema(
         });
     });
 
-    function ensureNonEmptyInput(inputName: string | InputTypeComposer<any>) {
-        let input;
-        if (typeof inputName === 'string') {
-            input = composer.getITC(inputName);
-        } else {
-            input = inputName;
-        }
+    function ensureNonEmptyInput(nameOrInput: string | InputTypeComposer<any>) {
+        const input = isString(nameOrInput) ? composer.getITC(nameOrInput) : nameOrInput;
 
         if (input.getFieldNames().length === 0) {
             input.addFields({
