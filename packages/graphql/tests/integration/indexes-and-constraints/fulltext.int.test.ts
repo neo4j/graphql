@@ -170,4 +170,75 @@ describe("assertIndexesAndConstraints/fulltext", () => {
             [type.plural]: [{ title }],
         });
     });
+
+    test("should throw when missing index", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
+        const indexName = generate({ readable: true });
+        const type = generateUniqueType("Movie");
+
+        const typeDefs = gql`
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
+                title: String!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        await expect(
+            neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+            })
+        ).rejects.toThrow(`Missing @fulltext index '${indexName}' on Node '${type.name}'`);
+    });
+
+    test("should throw when index is missing fields", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
+        const indexName = generate({ readable: true });
+        const type = generateUniqueType("Movie");
+
+        const typeDefs = gql`
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
+                title: String!
+                description: String!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const session = driver.session({ database: databaseName });
+
+        try {
+            await session.run(
+                [
+                    `CALL db.index.fulltext.createNodeIndex(`,
+                    `"${indexName}",`,
+                    `["${type.name}"],`,
+                    `["title"]`,
+                    `)`,
+                ].join(" ")
+            );
+        } finally {
+            await session.close();
+        }
+
+        await expect(
+            neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+            })
+        ).rejects.toThrow(`@fulltext index '${indexName}' on Node '${type.name}' is missing field 'description'`);
+    });
 });

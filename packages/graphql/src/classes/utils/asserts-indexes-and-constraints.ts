@@ -123,75 +123,68 @@ async function createConstraints({ nodes, session }: { nodes: Node[]; session: S
         }
     });
 
-    try {
-        for (const constraintToCreate of constraintsToCreate) {
-            const cypher = [
-                `CREATE CONSTRAINT ${constraintToCreate.constraintName}`,
-                `IF NOT EXISTS ON (n:${constraintToCreate.label})`,
-                `ASSERT n.${constraintToCreate.property} IS UNIQUE`,
-            ].join(" ");
+    for (const constraintToCreate of constraintsToCreate) {
+        const cypher = [
+            `CREATE CONSTRAINT ${constraintToCreate.constraintName}`,
+            `IF NOT EXISTS ON (n:${constraintToCreate.label})`,
+            `ASSERT n.${constraintToCreate.property} IS UNIQUE`,
+        ].join(" ");
 
-            debug(`About to execute Cypher: ${cypher}`);
+        debug(`About to execute Cypher: ${cypher}`);
 
-            // eslint-disable-next-line no-await-in-loop
-            const result = await session.run(cypher);
+        // eslint-disable-next-line no-await-in-loop
+        const result = await session.run(cypher);
 
-            const { constraintsAdded } = result.summary.counters.updates();
+        const { constraintsAdded } = result.summary.counters.updates();
 
-            debug(`Created ${constraintsAdded} new constraint${constraintsAdded ? "" : "s"}`);
-        }
+        debug(`Created ${constraintsAdded} new constraint${constraintsAdded ? "" : "s"}`);
+    }
 
-        for (const indexToCreate of indexesToCreate) {
-            const cypher = [
-                `CALL db.index.fulltext.createNodeIndex("${indexToCreate.indexName}",`,
-                `["${indexToCreate.label}"],`,
-                `[${indexToCreate.properties.map((p) => `"${p}"`).join(", ")}]`,
-                `)`,
-            ].join(" ");
+    for (const indexToCreate of indexesToCreate) {
+        const cypher = [
+            `CALL db.index.fulltext.createNodeIndex(`,
+            `"${indexToCreate.indexName}",`,
+            `["${indexToCreate.label}"],`,
+            `[${indexToCreate.properties.map((p) => `"${p}"`).join(", ")}]`,
+            `)`,
+        ].join(" ");
 
-            debug(`About to execute Cypher: ${cypher}`);
+        debug(`About to execute Cypher: ${cypher}`);
 
-            // eslint-disable-next-line no-await-in-loop
-            await session.run(cypher);
+        // eslint-disable-next-line no-await-in-loop
+        await session.run(cypher);
 
-            debug(`Created @fulltext index ${indexToCreate.indexName}`);
-        }
-    } finally {
-        await session.close();
+        debug(`Created @fulltext index ${indexToCreate.indexName}`);
     }
 }
 
 async function checkConstraints({ nodes, session }: { nodes: Node[]; session: Session }) {
-    const cypher = "CALL db.constraints";
+    const constrainsCypher = "CALL db.constraints";
     // TODO: Swap line below with above when 4.1 no longer supported
-    // const cypher = "SHOW UNIQUE CONSTRAINTS";
+    // const constrainsCypher = "SHOW UNIQUE CONSTRAINTS";
 
     const existingConstraints: Record<string, string[]> = {};
     const missingConstraints: string[] = [];
 
-    try {
-        debug(`About to execute Cypher: ${cypher}`);
-        const result = await session.run(cypher);
+    debug(`About to execute Cypher: ${constrainsCypher}`);
+    const constraintsResult = await session.run(constrainsCypher);
 
-        result.records
-            .map((record) => {
-                return parseLegacyConstraint(record.toObject());
-                // TODO: Swap line below with above when 4.1 no longer supported
-                // return record.toObject();
-            })
-            .forEach((constraint) => {
-                const label = constraint.labelsOrTypes[0];
-                const property = constraint.properties[0];
+    constraintsResult.records
+        .map((record) => {
+            return parseLegacyConstraint(record.toObject());
+            // TODO: Swap line below with above when 4.1 no longer supported
+            // return record.toObject();
+        })
+        .forEach((constraint) => {
+            const label = constraint.labelsOrTypes[0];
+            const property = constraint.properties[0];
 
-                if (existingConstraints[label]) {
-                    existingConstraints[label].push(property);
-                } else {
-                    existingConstraints[label] = [property];
-                }
-            });
-    } finally {
-        await session.close();
-    }
+            if (existingConstraints[label]) {
+                existingConstraints[label].push(property);
+            } else {
+                existingConstraints[label] = [property];
+            }
+        });
 
     nodes.forEach((node) => {
         node.uniqueFields.forEach((field) => {
@@ -207,6 +200,58 @@ async function checkConstraints({ nodes, session }: { nodes: Node[]; session: Se
     }
 
     debug("Successfully checked for the existence of all necessary constraints");
+
+    const existingIndexes: Record<string, { labelsOrTypes: string; properties: string[] }> = {};
+    const indexErrors: string[] = [];
+    const indexesCypher = "CALL db.indexes";
+
+    debug(`About to execute Cypher: ${indexesCypher}`);
+    const indexesResult = await session.run(indexesCypher);
+
+    indexesResult.records.forEach((record) => {
+        const index = record.toObject();
+
+        if (index.type !== "FULLTEXT" || index.entityType !== "NODE") {
+            return;
+        }
+
+        if (existingIndexes[index.name]) {
+            return;
+        }
+
+        existingIndexes[index.name] = {
+            labelsOrTypes: index.labelsOrTypes,
+            properties: index.properties,
+        };
+    });
+
+    nodes.forEach((node) => {
+        if (node.fulltextDirective) {
+            node.fulltextDirective.indexes.forEach((index) => {
+                const existingIndex = existingIndexes[index.name];
+                if (!existingIndex) {
+                    indexErrors.push(`Missing @fulltext index '${index.name}' on Node '${node.name}'`);
+
+                    return;
+                }
+
+                index.fields.forEach((field) => {
+                    const property = existingIndex.properties.find((p) => p === field);
+                    if (!property) {
+                        indexErrors.push(
+                            `@fulltext index '${index.name}' on Node '${node.name}' is missing field '${field}'`
+                        );
+                    }
+                });
+            });
+        }
+    });
+
+    if (indexErrors.length) {
+        throw new Error(indexErrors.join("\n"));
+    }
+
+    debug("Successfully checked for the existence of all necessary indexes");
 }
 
 async function assertIndexesAndConstraints({
@@ -239,11 +284,15 @@ async function assertIndexesAndConstraints({
 
     const session = driver.session(sessionParams);
 
-    if (options?.create) {
-        return createConstraints({ nodes, session });
+    try {
+        if (options?.create) {
+            await createConstraints({ nodes, session });
+        } else {
+            await checkConstraints({ nodes, session });
+        }
+    } finally {
+        await session.close();
     }
-
-    return checkConstraints({ nodes, session });
 }
 
 export default assertIndexesAndConstraints;
