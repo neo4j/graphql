@@ -6,10 +6,14 @@ export function createConnectOrCreateField({
     node,
     rel,
     schemaComposer,
+    hasNonGeneratedProperties,
+    hasNonNullNonGeneratedProperties,
 }: {
     node: Node;
     rel: RelationField;
     schemaComposer: SchemaComposer;
+    hasNonGeneratedProperties: boolean;
+    hasNonNullNonGeneratedProperties: boolean;
 }): string | undefined {
     if (node.uniqueFields.length === 0) {
         return undefined;
@@ -20,9 +24,9 @@ export function createConnectOrCreateField({
     schemaComposer.getOrCreateITC(connectOrCreateOnCreateName, (tc) => {
         tc.addFields({
             node: `${node.name}CreateInput!`,
-            // ...(hasNonGeneratedProperties
-            //     ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
-            //     : {}),
+            ...(hasNonGeneratedProperties
+                ? { edge: `${rel.properties}CreateInput${hasNonNullNonGeneratedProperties ? `!` : ""}` }
+                : {}),
         });
     });
 

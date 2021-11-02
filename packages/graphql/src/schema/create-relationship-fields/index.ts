@@ -624,7 +624,13 @@ function createRelationshipFields({
             });
         });
 
-        const connectOrCreate = createConnectOrCreateField({ rel, node: n, schemaComposer });
+        const connectOrCreate = createConnectOrCreateField({
+            rel,
+            node: n,
+            schemaComposer,
+            hasNonGeneratedProperties,
+            hasNonNullNonGeneratedProperties,
+        });
 
         composeNode.addFields({
             [rel.fieldName]: {
