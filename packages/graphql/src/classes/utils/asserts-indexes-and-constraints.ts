@@ -101,6 +101,7 @@ export function parseLegacyConstraint(record: LegacyConstraint): Constraint {
 
 async function createConstraints({ nodes, session }: { nodes: Node[]; session: Session }) {
     const constraintsToCreate: { constraintName: string; label: string; property: string }[] = [];
+    const indexesToCreate: { indexName: string; label: string; properties: string[] }[] = [];
 
     nodes.forEach((node) => {
         node.uniqueFields.forEach((field) => {
@@ -110,16 +111,50 @@ async function createConstraints({ nodes, session }: { nodes: Node[]; session: S
                 property: field.dbPropertyName || field.fieldName,
             });
         });
+
+        if (node.fulltextDirective) {
+            node.fulltextDirective.indexes.forEach((index) => {
+                indexesToCreate.push({
+                    indexName: index.name,
+                    label: node.getMainLabel(),
+                    properties: index.fields,
+                });
+            });
+        }
     });
 
     try {
         for (const constraintToCreate of constraintsToCreate) {
-            const cypher = `CREATE CONSTRAINT ${constraintToCreate.constraintName} IF NOT EXISTS ON (n:${constraintToCreate.label}) ASSERT n.${constraintToCreate.property} IS UNIQUE`;
+            const cypher = [
+                `CREATE CONSTRAINT ${constraintToCreate.constraintName}`,
+                `IF NOT EXISTS ON (n:${constraintToCreate.label})`,
+                `ASSERT n.${constraintToCreate.property} IS UNIQUE`,
+            ].join(" ");
+
             debug(`About to execute Cypher: ${cypher}`);
+
             // eslint-disable-next-line no-await-in-loop
             const result = await session.run(cypher);
+
             const { constraintsAdded } = result.summary.counters.updates();
+
             debug(`Created ${constraintsAdded} new constraint${constraintsAdded ? "" : "s"}`);
+        }
+
+        for (const indexToCreate of indexesToCreate) {
+            const cypher = [
+                `CALL db.index.fulltext.createNodeIndex("${indexToCreate.indexName}",`,
+                `["${indexToCreate.label}"],`,
+                `[${indexToCreate.properties.map((p) => `"${p}"`).join(", ")}]`,
+                `)`,
+            ].join(" ");
+
+            debug(`About to execute Cypher: ${cypher}`);
+
+            // eslint-disable-next-line no-await-in-loop
+            await session.run(cypher);
+
+            debug(`Created @fulltext index ${indexToCreate.indexName}`);
         }
     } finally {
         await session.close();
