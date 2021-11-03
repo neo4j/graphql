@@ -45,7 +45,7 @@ function translateTopLevelMatch({
         cyphers.push(`MATCH (${varName}${node.getLabelString(context)})`);
     } else {
         if (Object.entries(searchInput).length > 1) {
-            throw new Error("Can only call one search at any given time"); // TODO test me
+            throw new Error("Can only call one search at any given time");
         }
 
         const [indexName, indexInput] = Object.entries(searchInput)[0];

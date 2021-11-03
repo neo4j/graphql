@@ -171,6 +171,56 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         });
     });
 
+    test("should create two index's if they dont exist and then throw and error when users queries both at once", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
+        const title = generate({ readable: true, charset: "alphabetic" });
+        const indexName1 = generate({ readable: true, charset: "alphabetic" });
+        const indexName2 = generate({ readable: true, charset: "alphabetic" });
+        const type = generateUniqueType("Movie");
+
+        const typeDefs = gql`
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }, { name: "${indexName2}", fields: ["description"] }]) {
+                title: String!
+                description: String!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        await expect(
+            neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            })
+        ).resolves.not.toThrow();
+
+        const query = `
+            query {
+                ${type.plural}(search: { ${indexName1}: { phrase: "${title}" }, ${indexName2}: { phrase: "${title}" } }) {
+                    title
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors && gqlResult.errors[0].message).toBe("Can only call one search at any given time");
+    });
+
     test("should create index if it doesn't exist (using node label) and then query using the index", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
