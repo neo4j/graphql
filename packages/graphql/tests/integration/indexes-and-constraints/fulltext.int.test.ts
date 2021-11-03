@@ -267,6 +267,102 @@ describe("assertIndexesAndConstraints/fulltext", () => {
         });
     });
 
+    test("should create index if it doesn't exist (using field alias) and then query using the index", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
+        const title = generate({ readable: true, charset: "alphabetic" });
+        const indexName = generate({ readable: true, charset: "alphabetic" });
+        const label = generate({ readable: true, charset: "alphabetic" });
+        const type = generateUniqueType("Movie");
+
+        const typeDefs = gql`
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
+                title: String! @alias(property: "newTitle")
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        await expect(
+            neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            })
+        ).resolves.not.toThrow();
+
+        const session = driver.session({ database: databaseName });
+
+        const cypher = `
+            CALL db.indexes() yield 
+                name AS name, 
+                type AS type, 
+                entityType AS entityType, 
+                labelsOrTypes AS labelsOrTypes,
+                properties AS properties
+            WHERE name = "${indexName}"
+            RETURN { 
+                 name: name,
+                 type: type,
+                 entityType: entityType,
+                 labelsOrTypes: labelsOrTypes,
+                 properties: properties
+            } as result
+        `;
+
+        try {
+            const result = await session.run(cypher);
+
+            const record = result.records[0].get("result") as {
+                name: string;
+                type: string;
+                entityType: string;
+                labelsOrTypes: string[];
+                properties: string[];
+            };
+
+            expect(record.name).toEqual(indexName);
+            expect(record.type).toEqual("FULLTEXT");
+            expect(record.entityType).toEqual("NODE");
+            expect(record.labelsOrTypes).toEqual([label]);
+            expect(record.properties).toEqual(["newTitle"]);
+
+            await session.run(`
+                CREATE (:${label} { newTitle: "${title}" })
+            `);
+        } finally {
+            await session.close();
+        }
+
+        const query = `
+            query {
+                ${type.plural}(search: { ${indexName}: { phrase: "${title}" } }) {
+                    title
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data).toEqual({
+            [type.plural]: [{ title }],
+        });
+    });
+
     test("should throw when missing index", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
@@ -336,5 +432,52 @@ describe("assertIndexesAndConstraints/fulltext", () => {
                 driverConfig: { database: databaseName },
             })
         ).rejects.toThrow(`@fulltext index '${indexName}' on Node '${type.name}' is missing field 'description'`);
+    });
+
+    test("should throw when index is missing fields (using field alias)", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
+            pending();
+            return;
+        }
+
+        const indexName = generate({ readable: true, charset: "alphabetic" });
+        const alias = generate({ readable: true, charset: "alphabetic" });
+        const type = generateUniqueType("Movie");
+
+        const typeDefs = gql`
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
+                title: String!
+                description: String! @alias(property: "${alias}")
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const session = driver.session({ database: databaseName });
+
+        try {
+            await session.run(
+                [
+                    `CALL db.index.fulltext.createNodeIndex(`,
+                    `"${indexName}",`,
+                    `["${type.name}"],`,
+                    `["title", "description"]`,
+                    `)`,
+                ].join(" ")
+            );
+        } finally {
+            await session.close();
+        }
+
+        await expect(
+            neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+            })
+        ).rejects.toThrow(
+            `@fulltext index '${indexName}' on Node '${type.name}' is missing field 'description' aliased to field '${alias}'`
+        );
     });
 });

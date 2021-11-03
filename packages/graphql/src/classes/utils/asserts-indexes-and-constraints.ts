@@ -114,10 +114,16 @@ async function createConstraints({ nodes, session }: { nodes: Node[]; session: S
 
         if (node.fulltextDirective) {
             node.fulltextDirective.indexes.forEach((index) => {
+                const properties = index.fields.map((field) => {
+                    const stringField = node.primitiveFields.find((f) => f.fieldName === field);
+
+                    return stringField?.dbPropertyName || field;
+                });
+
                 indexesToCreate.push({
                     indexName: index.name,
                     label: node.getMainLabel(),
-                    properties: index.fields,
+                    properties,
                 });
             });
         }
@@ -236,10 +242,15 @@ async function checkConstraints({ nodes, session }: { nodes: Node[]; session: Se
                 }
 
                 index.fields.forEach((field) => {
-                    const property = existingIndex.properties.find((p) => p === field);
+                    const stringField = node.primitiveFields.find((f) => f.fieldName === field);
+                    const fieldName = stringField?.dbPropertyName || field;
+
+                    const property = existingIndex.properties.find((p) => p === fieldName);
                     if (!property) {
+                        const aliasError = stringField?.dbPropertyName ? ` aliased to field '${fieldName}''` : "";
+
                         indexErrors.push(
-                            `@fulltext index '${index.name}' on Node '${node.name}' is missing field '${field}'`
+                            `@fulltext index '${index.name}' on Node '${node.name}' is missing field '${field}'${aliasError}`
                         );
                     }
                 });
