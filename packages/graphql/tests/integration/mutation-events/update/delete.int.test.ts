@@ -17,41 +17,32 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
-import faker from "faker";
 import { gql } from "apollo-server";
+import faker from "faker";
+import { graphql } from "graphql";
+import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { localEventEmitter } from "../../../../src/utils/pubsub";
+import neo4j from "../../neo4j";
 
-describe.skip("interface relationships", () => {
+describe("mutation events (update > delete)", () => {
     let driver: Driver;
     let neoSchema: Neo4jGraphQL;
+
+    const events: { event: string | symbol, payload: any }[] = [];
+    function onEvent(event: string | symbol, payload) {
+        events.push({ event, payload });
+    }
+
 
     beforeAll(async () => {
         driver = await neo4j();
 
         const typeDefs = gql`
-            type Episode {
-                runtime: Int!
-                series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
-            }
-
-            interface Production {
-                title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-            }
-
-            type Movie implements Production {
+            type Movie {
                 title: String!
                 runtime: Int!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-            }
-
-            type Series implements Production {
-                title: String!
-                episodes: [Episode!]! @relationship(type: "HAS_EPISODE", direction: OUT)
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
@@ -61,20 +52,26 @@ describe.skip("interface relationships", () => {
 
             type Actor {
                 name: String!
-                actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
+        localEventEmitter.addAnyListener(onEvent);
+    });
+
+    beforeEach(() => {
+        events.splice(0);
     });
 
     afterAll(async () => {
         await driver.close();
+        localEventEmitter.removeAnyListener(onEvent);
     });
 
-    test("should delete using interface relationship fields", async () => {
+    test("should delete and emit events", async () => {
         const session = driver.session();
 
         const actorName = generate({
@@ -89,12 +86,6 @@ describe.skip("interface relationships", () => {
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
 
-        const seriesTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesScreenTime = faker.random.number();
-
         const query = `
             mutation DeleteMovie($name: String, $title: String) {
                 updateActors(where: { name: $name }, delete: { actedIn: { where: { node: { title: $title } } } }) {
@@ -102,9 +93,7 @@ describe.skip("interface relationships", () => {
                         name
                         actedIn {
                             title
-                            ... on Movie {
-                                runtime
-                            }
+                            runtime
                         }
                     }
                 }
@@ -116,15 +105,12 @@ describe.skip("interface relationships", () => {
                 `
                 CREATE (a:Actor { name: $actorName })
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })
             `,
                 {
                     actorName,
                     movieTitle,
                     movieRuntime,
                     movieScreenTime,
-                    seriesTitle,
-                    seriesScreenTime,
                 }
             );
 
@@ -144,14 +130,18 @@ describe.skip("interface relationships", () => {
                 updateActors: {
                     actors: [
                         {
-                            actedIn: [
-                                {
-                                    title: seriesTitle,
-                                },
-                            ],
+                            actedIn: [],
                             name: actorName,
                         },
                     ],
+                },
+            });
+            expect(events).toHaveLength(1);
+            expect(events[0]).toMatchObject({
+                event: 'Movie.Deleted',
+                payload: {
+                    name: 'Movie',
+                    type: 'Deleted',
                 },
             });
         } finally {
@@ -159,7 +149,7 @@ describe.skip("interface relationships", () => {
         }
     });
 
-    test("should nested delete using interface relationship fields", async () => {
+    test("should nested delete and emit events", async () => {
         const session = driver.session();
 
         const actorName1 = generate({
@@ -177,12 +167,6 @@ describe.skip("interface relationships", () => {
         });
         const movieRuntime = faker.random.number();
         const movieScreenTime = faker.random.number();
-
-        const seriesTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const seriesScreenTime = faker.random.number();
 
         const query = `
             mutation DeleteMovie($name1: String, $name2: String, $title: String) {
@@ -199,11 +183,9 @@ describe.skip("interface relationships", () => {
                         name
                         actedIn {
                             title
+                            runtime
                             actors {
                                 name
-                            }
-                            ... on Movie {
-                                runtime
                             }
                         }
                     }
@@ -216,7 +198,6 @@ describe.skip("interface relationships", () => {
                 `
                 CREATE (a:Actor { name: $actorName1 })
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })<-[:ACTED_IN]-(aa:Actor { name: $actorName2 })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $seriesTitle })<-[:ACTED_IN]-(aa)
             `,
                 {
                     actorName1,
@@ -224,8 +205,6 @@ describe.skip("interface relationships", () => {
                     movieTitle,
                     movieRuntime,
                     movieScreenTime,
-                    seriesTitle,
-                    seriesScreenTime,
                 }
             );
 
@@ -245,15 +224,25 @@ describe.skip("interface relationships", () => {
                 updateActors: {
                     actors: [
                         {
-                            actedIn: [
-                                {
-                                    title: seriesTitle,
-                                    actors: [{ name: actorName1 }],
-                                },
-                            ],
                             name: actorName1,
+                            actedIn: [],
                         },
                     ],
+                },
+            });
+            expect(events).toHaveLength(2);
+            expect(events[0]).toMatchObject({
+                event: 'Movie.Deleted',
+                payload: {
+                    name: 'Movie',
+                    type: 'Deleted',
+                },
+            });
+            expect(events[1]).toMatchObject({
+                event: 'Actor.Deleted',
+                payload: {
+                    name: 'Actor',
+                    type: 'Deleted',
                 },
             });
         } finally {
@@ -261,100 +250,4 @@ describe.skip("interface relationships", () => {
         }
     });
 
-    test("should nested delete using interface relationship fields using where _on to only delete certain type", async () => {
-        const session = driver.session();
-
-        const actorName1 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const actorName2 = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
-        const movieTitle = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-        const movieRuntime = faker.random.number();
-        const movieScreenTime = faker.random.number();
-
-        const seriesScreenTime = faker.random.number();
-
-        const query = `
-            mutation DeleteMovie($name1: String, $name2: String, $title: String) {
-                updateActors(
-                    where: { name: $name1 }
-                    delete: {
-                        actedIn: {
-                            where: { node: { _on: { Movie: { title: $title } } } }
-                            delete: { actors: { where: { node: { name: $name2 } } } }
-                        }
-                    }
-                ) {
-                    actors {
-                        name
-                        actedIn {
-                            title
-                            actors {
-                                name
-                            }
-                            ... on Movie {
-                                runtime
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        try {
-            await session.run(
-                `
-                CREATE (a:Actor { name: $actorName1 })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(:Movie { title: $movieTitle, runtime:$movieRuntime })<-[:ACTED_IN]-(aa:Actor { name: $actorName2 })
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:Series { title: $movieTitle })<-[:ACTED_IN]-(aa)
-            `,
-                {
-                    actorName1,
-                    actorName2,
-                    movieTitle,
-                    movieRuntime,
-                    movieScreenTime,
-                    seriesScreenTime,
-                }
-            );
-
-            const gqlResult = await graphql({
-                schema: neoSchema.schema,
-                source: query,
-                contextValue: {
-                    driver,
-                    driverConfig: { bookmarks: session.lastBookmark() },
-                },
-                variableValues: { name1: actorName1, name2: actorName2, title: movieTitle },
-            });
-
-            expect(gqlResult.errors).toBeFalsy();
-
-            expect(gqlResult.data).toEqual({
-                updateActors: {
-                    actors: [
-                        {
-                            actedIn: [
-                                {
-                                    title: movieTitle,
-                                    actors: [{ name: actorName1 }],
-                                },
-                            ],
-                            name: actorName1,
-                        },
-                    ],
-                },
-            });
-        } finally {
-            await session.close();
-        }
-    });
 });

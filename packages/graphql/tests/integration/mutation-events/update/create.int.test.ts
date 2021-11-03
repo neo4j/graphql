@@ -40,6 +40,7 @@ describe("interface relationships", () => {
 
         const typeDefs = gql`
             type Episode {
+                title: String!
                 runtime: Int!
                 series: Series! @relationship(type: "HAS_EPISODE", direction: IN)
             }
@@ -367,7 +368,118 @@ describe("interface relationships", () => {
         }
     });
 
-    test("simple update create without relationship properties", async () => {
+    test("simple update create without relationship properties and emit events", async () => {
 
+        const session = driver.session();
+
+        const seriesTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const episodeTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const episodeRunTime = faker.random.number();
+
+        const query = `
+            mutation UpdateCreate(
+                $seriesTitle: String!
+                $episodeTitle: String!
+                $episodeRunTime: Int!
+            ) {
+                updateSeries(
+                    where: { title: $seriesTitle }
+                    create: {
+                        episodes: [
+                            {
+                                node: {
+                                    title: $episodeTitle,
+                                    runtime: $episodeRunTime
+                                }
+                            }
+                        ]
+                    }
+                ) {
+                    series {
+                        title
+                        episodes {
+                            title
+                            runtime
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await session.run(
+                `
+                CREATE (s:Series { title: $seriesTitle })
+            `,
+                { seriesTitle }
+            );
+
+            const gqlResult = await graphql({
+                schema: neoSchema.schema,
+                source: query,
+                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                variableValues: {
+                    seriesTitle,
+                    episodeTitle,
+                    episodeRunTime,
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult.data).toEqual({
+                updateSeries: {
+                    series: [{
+                        title: seriesTitle,
+                        episodes: [
+                            {
+                                title: episodeTitle,
+                                runtime: episodeRunTime,
+                            },
+                        ],
+                    }]
+                },
+            });
+            expect(events).toHaveLength(3);
+            expect(events[0]).toMatchObject({
+                event: 'Episode.Created',
+                payload: {
+                    name: 'Episode',
+                    type: 'Created',
+                    properties: {
+                        title: episodeTitle,
+                        runtime: episodeRunTime,
+                    },
+                },
+            });
+            expect(events[1]).toMatchObject({
+                event: 'Series.Connected',
+                payload: {
+                    name: 'Series',
+                    type: 'Connected',
+                    toName: 'Episode',
+                    relationshipName: 'HAS_EPISODE',
+                },
+            });
+            expect(events[1].payload.properties).toBeUndefined();
+            expect(events[2]).toMatchObject({
+                event: 'Episode.Connected',
+                payload: {
+                    name: 'Episode',
+                    type: 'Connected',
+                    toName: 'Series',
+                    relationshipName: 'HAS_EPISODE',
+                },
+            });
+            expect(events[2].payload.properties).toBeUndefined();
+        } finally {
+            await session.close();
+        }
     });
 });
