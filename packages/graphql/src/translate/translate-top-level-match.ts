@@ -38,7 +38,7 @@ function translateTopLevelMatch({
     let cypherParams = {};
     const { resolveTree } = context;
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
-    const searchInput = (resolveTree.args.search || {}) as Record<string, { phrase: string; score?: number }>;
+    const searchInput = (resolveTree.args.search || {}) as Record<string, { phrase: string; score_EQUAL?: number }>;
     let whereStrs: string[] = [];
 
     if (!Object.entries(searchInput).length) {
@@ -49,7 +49,8 @@ function translateTopLevelMatch({
         }
 
         const [indexName, indexInput] = Object.entries(searchInput)[0];
-        const paramPhraseName = `${varName}_search_${indexName}_phrase`;
+        const baseParamName = `${varName}_search_${indexName}`;
+        const paramPhraseName = `${baseParamName}_phrase`;
         cypherParams[paramPhraseName] = indexInput.phrase;
 
         cyphers.push(
@@ -65,6 +66,25 @@ function translateTopLevelMatch({
             node.getLabels(context).forEach((label) => {
                 whereStrs.push(`"${label.replace(/`/g, "")}" IN labels(${varName})`);
             });
+        }
+
+        if (node.fulltextDirective) {
+            const index = node.fulltextDirective.indexes.find((index) => index.name === indexName);
+            let thresholdParamName = baseParamName;
+            let threshold: number | undefined = undefined;
+
+            if (indexInput.score_EQUAL) {
+                thresholdParamName = `${thresholdParamName}_score_EQUAL`;
+                threshold = indexInput.score_EQUAL;
+            } else if (index?.defaultThreshold) {
+                thresholdParamName = `${thresholdParamName}_defaultThreshold`;
+                threshold = index.defaultThreshold;
+            }
+
+            if (threshold !== undefined) {
+                cypherParams[thresholdParamName] = threshold;
+                whereStrs.push(`score = ${thresholdParamName}`);
+            }
         }
     }
 

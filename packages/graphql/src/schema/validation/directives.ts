@@ -25,6 +25,7 @@ import {
     GraphQLList,
     GraphQLBoolean,
     GraphQLInputObjectType,
+    GraphQLInt,
 } from "graphql";
 import { ExcludeOperationEnum, RelationshipDirectionEnum, TimestampOperationEnum } from "./enums";
 import { ScalarType } from "./scalars";
@@ -231,7 +232,7 @@ export const fulltextDirective = new GraphQLDirective({
                                 type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
                             },
                             defaultThreshold: {
-                                type: GraphQLString,
+                                type: GraphQLInt,
                             },
                         },
                     })

@@ -68,7 +68,7 @@ export type Auth = {
 export type FullTextIndex = {
     name: string;
     fields: string[];
-    defaultThreshold?: string;
+    defaultThreshold?: number;
 };
 
 export type FullText = {
