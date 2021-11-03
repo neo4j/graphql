@@ -36,14 +36,13 @@ function translateTopLevelMatch({
 }): [string, Record<string, unknown>] {
     let cyphers: string[] = [];
     let cypherParams = {};
-
     const { resolveTree } = context;
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const searchInput = (resolveTree.args.search || {}) as Record<string, { phrase: string; score?: number }>;
-    const labels = node.getLabelString(context);
+    let whereStrs: string[] = [];
 
     if (!Object.entries(searchInput).length) {
-        cyphers.push(`MATCH (${varName}${labels})`);
+        cyphers.push(`MATCH (${varName}${node.getLabelString(context)})`);
     } else {
         if (Object.entries(searchInput).length > 1) {
             throw new Error("Can only call one search at any given time"); // TODO test me
@@ -61,9 +60,13 @@ function translateTopLevelMatch({
                 ) YIELD node as this, score as score
             `)
         );
-    }
 
-    let whereStrs: string[] = [];
+        if (node.nodeDirective?.additionalLabels?.length) {
+            node.getLabels(context).forEach((label) => {
+                whereStrs.push(`"${label.replace(/`/g, "")}" IN labels(${varName})`);
+            });
+        }
+    }
 
     if (whereInput) {
         const where = createWhereAndParams({
