@@ -2,33 +2,41 @@ import { Context, RelationField } from "../../types";
 import { Node } from "../../classes";
 import { CypherParams } from "../types";
 
-export function buildMergeStatement({
-    node,
-    relationField,
-    nodeVar,
-    context,
-    nodeParameters,
-    relationTarget,
-}: {
+type TargetNode = {
+    varName: string;
     node?: Node;
-    relationField?: RelationField;
-    nodeVar: string;
+    parameters?: Record<string, any>;
+};
+
+export function buildMergeStatement({
+    // node,
+    node,
+    relation,
+    // nodeVar,
+    context,
+}: // nodeParameters,
+{
+    node: TargetNode;
+    relation?: TargetNode & { relationField: RelationField };
+    // node?: Node;
+    // nodeVar: string;
+    // nodeParameters?: Record<string, any>;
     context: Context;
-    nodeParameters?: Record<string, any>;
-    relationTarget?: string;
 }): [string, CypherParams] {
-    const labels = node ? node.getLabelString(context) : "";
-    const [parametersQuery, parameters] = parseNodeParameters(nodeVar, nodeParameters);
-    const nodeQuery = `MERGE (${nodeVar}${labels} ${parametersQuery})`;
-    if (relationField) {
-        const relationshipName = `${nodeVar}_relationship`;
+    const labels = node.node ? node.node.getLabelString(context) : "";
+    const [parametersQuery, parameters] = parseNodeParameters(node.varName, node.parameters);
+    const nodeQuery = `MERGE (${node.varName}${labels} ${parametersQuery})`;
+
+    if (relation) {
+        const { relationField } = relation;
+        const relationshipName = `${node.varName}_relationship_${relation.varName}`;
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
         const relTypeStr = `[${relationField.properties ? relationshipName : ""}:${relationField.type}]`;
 
         const relationQuery = `${inStr}${relTypeStr}${outStr}`;
 
-        const relationTargetQuery = `(${relationTarget})`;
+        const relationTargetQuery = `(${relation.varName})`;
 
         const mergeQuery = `${nodeQuery}${relationQuery}${relationTargetQuery}`;
         return [mergeQuery, {}];
