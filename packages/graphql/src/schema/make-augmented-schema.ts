@@ -887,7 +887,6 @@ function makeAugmentedSchema(
             })
         );
 
-        // createRelationshipFields
         createRelationshipFields({
             relationshipFields: node.relationFields,
             schemaComposer: composer,
