@@ -77,6 +77,7 @@ function createConnectOrCreateSubQuery({
     // const query = `MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`;
 
     const whereNodeParameters = input?.where?.node;
+    const onCreateNode = input?.onCreate?.node;
     const [mergeNodeQuery, mergeNodeParams] = buildMergeStatement({
         node: {
             node: refNode,
@@ -84,9 +85,9 @@ function createConnectOrCreateSubQuery({
             parameters: whereNodeParameters,
         },
         context,
+        onCreate: onCreateNode,
     });
 
-    // TODO: on create
     // const whereEdgeParameters = input?.where?.edge;
     const [mergeRelationQuery, mergeRelationParams] = buildMergeStatement({
         node: {

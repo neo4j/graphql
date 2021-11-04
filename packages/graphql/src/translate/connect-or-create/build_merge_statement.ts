@@ -9,23 +9,19 @@ type TargetNode = {
 };
 
 export function buildMergeStatement({
-    // node,
     node,
     relation,
-    // nodeVar,
     context,
-}: // nodeParameters,
-{
+    onCreate,
+}: {
     node: TargetNode;
     relation?: TargetNode & { relationField: RelationField };
-    // node?: Node;
-    // nodeVar: string;
-    // nodeParameters?: Record<string, any>;
     context: Context;
+    onCreate?: Record<string, any>;
 }): [string, CypherParams] {
     const labels = node.node ? node.node.getLabelString(context) : "";
     const [parametersQuery, parameters] = parseNodeParameters(node.varName, node.parameters);
-    const nodeQuery = `MERGE (${node.varName}${labels} ${parametersQuery})`;
+    let nodeQuery = `MERGE (${node.varName}${labels} ${parametersQuery})`;
 
     if (relation) {
         const { relationField } = relation;
@@ -36,12 +32,21 @@ export function buildMergeStatement({
 
         const relationQuery = `${inStr}${relTypeStr}${outStr}`;
 
-        const relationTargetQuery = `(${relation.varName})`;
+        const relationTargetQuery = `(${relation.varName})`; // TODO: take node parameters into account
 
-        const mergeQuery = `${nodeQuery}${relationQuery}${relationTargetQuery}`;
-        return [mergeQuery, {}];
+        nodeQuery = `${nodeQuery}${relationQuery}${relationTargetQuery}`;
     }
-    return [nodeQuery, parameters];
+
+    let onCreateParams = {};
+    if (onCreate) {
+        const [onCreateQuery, params] = buildOnCreate(onCreate, node.varName);
+        nodeQuery = `${nodeQuery}
+        ${onCreateQuery}`;
+
+        onCreateParams = params;
+    }
+
+    return [nodeQuery, { ...parameters, ...onCreateParams }];
 }
 
 function parseNodeParameters(nodeVar: string, parameters: CypherParams | undefined): [string, CypherParams] {
@@ -65,8 +70,19 @@ function transformKey(nodeVar: string, key: string): string {
     return `${nodeVar}_${key}`;
 }
 
+function buildOnCreate(onCreate: Record<string, any>, nodeVar: string): [string, CypherParams] {
+    const queries: string[] = [];
+    const parameters = {};
+
+    Object.entries(onCreate).forEach(([key, value]) => {
+        queries.push(`SET ${nodeVar}.${key} = $${transformKey(nodeVar, key)}`);
+        parameters[transformKey(nodeVar, key)] = value;
+    });
+    return [queries.join("\n"), parameters];
+}
+
 // WARN: Dupe from apoc-run-utils.ts
-export function serializeObject(fields: Record<string, string | undefined | null>): string {
+function serializeObject(fields: Record<string, string | undefined | null>): string {
     return `{ ${Object.entries(fields)
         .map(([key, value]): string | undefined => {
             if (value === undefined || value === null || value === "") return undefined;

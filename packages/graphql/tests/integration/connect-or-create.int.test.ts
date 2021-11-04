@@ -18,7 +18,7 @@
  */
 
 import pluralize from "pluralize";
-import { Driver, Session } from "neo4j-driver";
+import { Driver, Session, Integer } from "neo4j-driver";
 import { graphql } from "graphql";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src";
@@ -111,7 +111,7 @@ describe("ConnectOrCreate", () => {
 
         expect(result.records).toHaveLength(1);
         expect(result.records[0].toObject().title).toEqual("The Terminal");
-        expect(result.records[0].toObject().id).toEqual(5);
+        expect((result.records[0].toObject().id as Integer).toNumber()).toEqual(5);
     });
 
     test("ConnectOrCreate on existing node", async () => {
