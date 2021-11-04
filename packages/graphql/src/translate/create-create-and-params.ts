@@ -24,6 +24,7 @@ import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
+import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
 
 interface Res {
     creates: string[];
@@ -142,6 +143,19 @@ function createCreateAndParams({
                     });
                     res.creates.push(connectAndParams[0]);
                     res.params = { ...res.params, ...connectAndParams[1] };
+                }
+
+                if (v.connectOrCreate) {
+                    const [connectOrCreateQuery, connectOrCreateParams] = createConnectOrCreateAndParams({
+                        input: v.connectOrCreate,
+                        varName: `${_varName}${relationField.union ? "_" : ""}${unionTypeName}_connectOrCreate`,
+                        parentVar: varName,
+                        relationField,
+                        refNode,
+                        context,
+                    });
+                    res.creates.push(connectOrCreateQuery);
+                    res.params = { ...res.params, ...connectOrCreateParams };
                 }
             });
 

@@ -24,7 +24,7 @@ import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src";
 import { generateUniqueType } from "../../src/utils/test/graphql-types";
 
-describe.skip("ConnectOrCreate", () => {
+describe("ConnectOrCreate", () => {
     let driver: Driver;
     let session: Session;
     let typeDefs: string;
@@ -55,8 +55,6 @@ describe.skip("ConnectOrCreate", () => {
         `;
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
-        // await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
-        // CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37, born: datetime('2000-02-02')})`);
     });
 
     beforeEach(() => {
@@ -106,17 +104,72 @@ describe.skip("ConnectOrCreate", () => {
             },
         ]);
 
-        // TODO: CHECK the terminal is created
-
-        const result = await session.run(
-            `
+        const result = await session.run(`
           MATCH (m:${typeMovie.name} {id: 5})
-          RETURN m.title
-        `
-        );
+          RETURN m.title as title, m.id as id
+        `);
 
-        console.log(result.records[0].toObject() as any);
+        expect(result.records).toHaveLength(1);
+        expect(result.records[0].toObject().title).toEqual("The Terminal");
+        expect(result.records[0].toObject().id).toEqual(5);
+    });
 
-        // expect((reFind.records[0].toObject() as any).m.properties).toMatchObject({ id });
+    test("ConnectOrCreate on existing node", async () => {
+        const testActorName = "aRandomActor";
+        await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator2", id: 2222})`);
+        const query = `
+            mutation {
+              create${pluralize(typeActor.name)}(
+                input: [
+                  {
+                    name: "${testActorName}"
+                    ${typeMovie.plural}: {
+                      connectOrCreate: {
+                        where: { node: { id: 2222 } }
+                        onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal", id: 2222 } }
+                      }
+                    }
+                  }
+                ]
+              ) {
+                ${typeActor.plural} {
+                  name
+                }
+              }
+            }
+            `;
+
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: query,
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult as any).data[`create${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
+            {
+                name: testActorName,
+            },
+        ]);
+
+        const actorsWithMovieCount = await session.run(`
+          MATCH (a:${typeActor.name} {name: "${testActorName}"})-[]->(m:${typeMovie.name} {id: 2222})
+          RETURN COUNT(a) as count
+        `);
+
+        expect(actorsWithMovieCount.records[0].toObject().count.toInt()).toEqual(1);
+
+        const moviesWithIdCount = await session.run(`
+          MATCH (m:${typeMovie.name} {id: 2222})
+          RETURN COUNT(m) as count
+        `);
+
+        expect(moviesWithIdCount.records[0].toObject().count.toInt()).toEqual(1);
+
+        const theTerminalMovieCount = await session.run(`
+          MATCH (m:${typeMovie.name} {id: 2222, name: "The Terminal"})
+          RETURN COUNT(m) as count
+        `);
+
+        expect(theTerminalMovieCount.records[0].toObject().count.toInt()).toEqual(0);
     });
 });

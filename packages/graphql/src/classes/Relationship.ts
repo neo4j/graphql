@@ -60,6 +60,14 @@ class Relationship extends GraphElement {
 
         this.properties = input.properties;
     }
+
+    public getLabelString(): string {
+        return `:${this.name}`;
+    }
+
+    public getLabels(): string[] {
+        return [this.name];
+    }
 }
 
 export default Relationship;
