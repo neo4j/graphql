@@ -1,5 +1,5 @@
 import { RelationField, Context } from "../../types";
-import { buildMergeStatement } from "./build_merge_statement";
+import { buildMergeStatement } from "./build-merge-statement";
 import { CypherParams } from "../types";
 import { Node } from "../../classes";
 
