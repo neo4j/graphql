@@ -134,7 +134,7 @@ describe("ConnectOrCreate", () => {
                     ${typeMovie.plural}: {
                       connectOrCreate: {
                         where: { node: { id: 2222 } }
-                        onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal", id: 2222 } }
+                        onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal", id: 22224 } }
                       }
                     }
                   }
@@ -187,5 +187,11 @@ describe("ConnectOrCreate", () => {
 
         expect(actedInRelation.records).toHaveLength(1);
         expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toEqual(105);
+
+        const newIdMovieCount = await session.run(`
+            MATCH (m:${typeMovie.name} {id: 22224})
+            RETURN COUNT(m) as count
+            `);
+        expect(newIdMovieCount.records[0].toObject().count.toInt()).toEqual(0);
     });
 });

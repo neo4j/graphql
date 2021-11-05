@@ -52,7 +52,7 @@ export function buildMergeStatement({
 
     if (onCreateQuery.length > 0) {
         nodeQuery = `${nodeQuery}
-        ON CREATE
+        ON CREATE SET
         ${onCreateQuery.join("\n")}`;
     }
 
@@ -63,13 +63,13 @@ function parseNodeParameters(nodeVar: string, parameters: CypherParams | undefin
     if (!parameters) return ["", {}];
 
     const cypherParameters = Object.entries(parameters).reduce((acc, [key, value]) => {
-        const paramKey = transformKey(nodeVar, key);
+        const paramKey = transformKey(`${nodeVar}_where`, key);
         acc[paramKey] = value;
         return acc;
     }, {});
 
     const nodeParameters = Object.keys(parameters).reduce((acc, key) => {
-        acc[key] = `$${transformKey(nodeVar, key)}`;
+        acc[key] = `$${transformKey(`${nodeVar}_where`, key)}`;
         return acc;
     }, {});
 
@@ -85,10 +85,10 @@ function buildOnCreate(onCreate: Record<string, any>, nodeVar: string): [string,
     const parameters = {};
 
     Object.entries(onCreate).forEach(([key, value]) => {
-        queries.push(`SET ${nodeVar}.${key} = $${transformKey(nodeVar, key)}`);
+        queries.push(`${nodeVar}.${key} = $${transformKey(nodeVar, key)}`);
         parameters[transformKey(nodeVar, key)] = value;
     });
-    return [queries.join("\n"), parameters];
+    return [queries.join(",\n"), parameters];
 }
 
 // WARN: Dupe from apoc-run-utils.ts

@@ -68,14 +68,6 @@ function createConnectOrCreateSubQuery({
     refNode: Node;
     context: Context;
 }): [string, CypherParams] {
-    // const nodeName = `${baseName}_node`;
-    // const relationshipName = `${baseName}_relationship`;
-    // const inStr = relationField.direction === "IN" ? "<-" : "-";
-    // const outStr = relationField.direction === "OUT" ? "->" : "-";
-    // const relTypeStr = `[${relationField.properties ? relationshipName : ""}:${relationField.type}]`;
-
-    // const query = `MERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`;
-
     const whereNodeParameters = input?.where?.node;
     const onCreateNode = input?.onCreate?.node;
     const [mergeNodeQuery, mergeNodeParams] = buildMergeStatement({
@@ -100,8 +92,6 @@ function createConnectOrCreateSubQuery({
         },
         context,
     });
-
-    // TODO: on create 2
 
     return [
         `${mergeNodeQuery}
