@@ -57,12 +57,12 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const interfaceStrs: string[] = [];
     let updateArgs = {};
 
-    // Due to potential aliasing of returned object in response we look through fields of UpdateMutationResponse
-    // and find field where field.name ~ node.name which exists by construction
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { fieldsByTypeName } = Object.values(
-        resolveTree.fieldsByTypeName[`Update${node.getPlural({ camelCase: false })}MutationResponse`]
-    ).find((field) => field.name === node.getPlural({ camelCase: true }))!;
+    const mutationResponse =
+        resolveTree.fieldsByTypeName[`Update${node.getPlural({ camelCase: false })}MutationResponse`];
+
+    const nodeProjection = Object.values(mutationResponse).find(
+        (field) => field.name === node.getPlural({ camelCase: true })
+    );
 
     if (whereInput) {
         const where = createWhereAndParams({
@@ -327,52 +327,58 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         };
     }
 
-    const projection = createProjectionAndParams({
-        node,
-        context,
-        fieldsByTypeName,
-        varName,
-    });
-    [projStr] = projection;
-    cypherParams = { ...cypherParams, ...projection[1] };
-    if (projection[2]?.authValidateStrs?.length) {
-        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
-            " AND "
-        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+    if (nodeProjection?.fieldsByTypeName) {
+        const projection = createProjectionAndParams({
+            node,
+            context,
+            fieldsByTypeName: nodeProjection.fieldsByTypeName,
+            varName,
+        });
+        [projStr] = projection;
+        cypherParams = { ...cypherParams, ...projection[1] };
+        if (projection[2]?.authValidateStrs?.length) {
+            projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
+                " AND "
+            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        }
+
+        if (projection[2]?.connectionFields?.length) {
+            projection[2].connectionFields.forEach((connectionResolveTree) => {
+                const connectionField = node.connectionFields.find(
+                    (x) => x.fieldName === connectionResolveTree.name
+                ) as ConnectionField;
+                const connection = createConnectionAndParams({
+                    resolveTree: connectionResolveTree,
+                    field: connectionField,
+                    context,
+                    nodeVariable: varName,
+                });
+                connectionStrs.push(connection[0]);
+                cypherParams = { ...cypherParams, ...connection[1] };
+            });
+        }
+
+        if (projection[2]?.interfaceFields?.length) {
+            projection[2].interfaceFields.forEach((interfaceResolveTree) => {
+                const relationshipField = node.relationFields.find(
+                    (x) => x.fieldName === interfaceResolveTree.name
+                ) as RelationField;
+                const interfaceProjection = createInterfaceProjectionAndParams({
+                    resolveTree: interfaceResolveTree,
+                    field: relationshipField,
+                    context,
+                    node,
+                    nodeVariable: varName,
+                });
+                interfaceStrs.push(interfaceProjection.cypher);
+                cypherParams = { ...cypherParams, ...interfaceProjection.params };
+            });
+        }
     }
 
-    if (projection[2]?.connectionFields?.length) {
-        projection[2].connectionFields.forEach((connectionResolveTree) => {
-            const connectionField = node.connectionFields.find(
-                (x) => x.fieldName === connectionResolveTree.name
-            ) as ConnectionField;
-            const connection = createConnectionAndParams({
-                resolveTree: connectionResolveTree,
-                field: connectionField,
-                context,
-                nodeVariable: varName,
-            });
-            connectionStrs.push(connection[0]);
-            cypherParams = { ...cypherParams, ...connection[1] };
-        });
-    }
-
-    if (projection[2]?.interfaceFields?.length) {
-        projection[2].interfaceFields.forEach((interfaceResolveTree) => {
-            const relationshipField = node.relationFields.find(
-                (x) => x.fieldName === interfaceResolveTree.name
-            ) as RelationField;
-            const interfaceProjection = createInterfaceProjectionAndParams({
-                resolveTree: interfaceResolveTree,
-                field: relationshipField,
-                context,
-                node,
-                nodeVariable: varName,
-            });
-            interfaceStrs.push(interfaceProjection.cypher);
-            cypherParams = { ...cypherParams, ...interfaceProjection.params };
-        });
-    }
+    const returnStatement = nodeProjection
+        ? `RETURN ${varName} ${projStr} AS ${varName}`
+        : `RETURN 'Query cannot conclude with CALL'`;
 
     const cypher = [
         matchStr,
@@ -386,7 +392,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         ...(projAuth ? [projAuth] : []),
         ...connectionStrs,
         ...interfaceStrs,
-        `RETURN ${varName} ${projStr} AS ${varName}`,
+        returnStatement,
     ];
 
     return [
