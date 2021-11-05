@@ -198,6 +198,7 @@ describe("Aggregations", () => {
 
             input ActorMoviesUpdateFieldInput {
               connect: [ActorMoviesConnectFieldInput!]
+              connectOrCreate: [ActorMoviesConnectOrCreateFieldInput!]
               create: [ActorMoviesCreateFieldInput!]
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]

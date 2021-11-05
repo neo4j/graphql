@@ -155,6 +155,7 @@ function createRelationshipFields({
                 });
             });
 
+            // ADD HERE (for extra field)
             const updateFieldInput = schemaComposer.getOrCreateITC(
                 `${sourceName}${upperFirst(rel.fieldName)}UpdateFieldInput`,
                 (tc) => {
@@ -341,19 +342,21 @@ function createRelationshipFields({
                     });
                 }
 
+                const updateFields: Record<string, string> = {
+                    where: whereName,
+                    update: connectionUpdateInputName,
+                    connect,
+                    disconnect: rel.typeMeta.array ? `[${disconnectName}!]` : disconnectName,
+                    create,
+                    delete: rel.typeMeta.array ? `[${deleteName}!]` : deleteName,
+                };
+
                 const updateName = `${unionPrefix}UpdateFieldInput`;
                 const update = rel.typeMeta.array ? `[${updateName}!]` : updateName;
                 if (!schemaComposer.has(updateName)) {
                     schemaComposer.createInputTC({
                         name: updateName,
-                        fields: {
-                            where: whereName,
-                            update: connectionUpdateInputName,
-                            connect,
-                            disconnect: rel.typeMeta.array ? `[${disconnectName}!]` : disconnectName,
-                            create,
-                            delete: rel.typeMeta.array ? `[${deleteName}!]` : deleteName,
-                        },
+                        fields: updateFields,
                     });
 
                     unionUpdateInput.addFields({
@@ -624,14 +627,6 @@ function createRelationshipFields({
             });
         });
 
-        const connectOrCreate = createConnectOrCreateField({
-            rel,
-            node: n,
-            schemaComposer,
-            hasNonGeneratedProperties,
-            hasNonNullNonGeneratedProperties,
-        });
-
         composeNode.addFields({
             [rel.fieldName]: {
                 type: rel.typeMeta.pretty,
@@ -669,15 +664,29 @@ function createRelationshipFields({
             });
         });
 
+        const connectOrCreate = createConnectOrCreateField({
+            rel,
+            node: n,
+            schemaComposer,
+            hasNonGeneratedProperties,
+            hasNonNullNonGeneratedProperties,
+        });
+
+        const updateFields: Record<string, string> = {
+            where: `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectionWhere`,
+            update: connectionUpdateInputName,
+            connect,
+            disconnect: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,
+            create,
+            delete: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
+        };
+
+        if (connectOrCreate) {
+            updateFields.connectOrCreate = connectOrCreate;
+        }
+
         schemaComposer.getOrCreateITC(nodeFieldUpdateInputName, (tc) => {
-            tc.addFields({
-                where: `${rel.connectionPrefix}${upperFirst(rel.fieldName)}ConnectionWhere`,
-                update: connectionUpdateInputName,
-                connect,
-                disconnect: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,
-                create,
-                delete: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
-            });
+            tc.addFields(updateFields);
         });
 
         const mutationFields: Record<string, string> = {

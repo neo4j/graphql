@@ -29,6 +29,8 @@ import createAuthAndParams from "./create-auth-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
+import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
+import { wrapInCall } from "./utils";
 
 interface Res {
     strs: string[];
@@ -311,6 +313,19 @@ function createUpdateAndParams({
                         });
                         subquery.push(connectAndParams[0]);
                         res.params = { ...res.params, ...connectAndParams[1] };
+                    }
+
+                    if (update.connectOrCreate) {
+                        const [connectOrCreateQuery, connectOrCreateParams] = createConnectOrCreateAndParams({
+                            input: update.connectOrCreate,
+                            varName: `${_varName}_connectOrCreate`,
+                            parentVar: varName,
+                            relationField,
+                            refNode,
+                            context,
+                        });
+                        subquery.push(wrapInCall(connectOrCreateQuery, varName));
+                        res.params = { ...res.params, ...connectOrCreateParams };
                     }
 
                     if (update.delete) {

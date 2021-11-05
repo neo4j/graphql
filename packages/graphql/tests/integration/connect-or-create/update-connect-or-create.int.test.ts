@@ -20,11 +20,11 @@
 import pluralize from "pluralize";
 import { Driver, Session, Integer } from "neo4j-driver";
 import { graphql } from "graphql";
-import neo4j from "./neo4j";
-import { Neo4jGraphQL } from "../../src";
-import { generateUniqueType } from "../../src/utils/test/graphql-types";
+import neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src";
+import { generateUniqueType } from "../../../src/utils/test/graphql-types";
 
-describe("ConnectOrCreate", () => {
+describe("Update -> ConnectOrCreate", () => {
     let driver: Driver;
     let session: Session;
     let typeDefs: string;
@@ -69,13 +69,14 @@ describe("ConnectOrCreate", () => {
         await driver.close();
     });
 
-    test("ConnectOrCreate creates new node", async () => {
+    test("Update with ConnectOrCreate creates new node", async () => {
+        await session.run(`CREATE (:${typeActor.name} { name: "Tom Hanks"})`);
+
         const query = `
             mutation {
-              create${pluralize(typeActor.name)}(
-                input: [
-                  {
-                    name: "Tom Hanks"
+              update${pluralize(typeActor.name)}(
+                update: {
+                    name: "Tom Hanks 2"
                     ${typeMovie.plural}: {
                       connectOrCreate: {
                         where: { node: { id: 5 } }
@@ -83,7 +84,7 @@ describe("ConnectOrCreate", () => {
                       }
                     }
                   }
-                ]
+                where: { name: "Tom Hanks"}
               ) {
                 ${typeActor.plural} {
                   name
@@ -98,9 +99,9 @@ describe("ConnectOrCreate", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[`create${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
+        expect((gqlResult as any).data[`update${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
             {
-                name: "Tom Hanks",
+                name: "Tom Hanks 2",
             },
         ]);
 
@@ -114,7 +115,7 @@ describe("ConnectOrCreate", () => {
         expect((movieTitleAndId.records[0].toObject().id as Integer).toNumber()).toEqual(5);
 
         const actedInRelation = await session.run(`
-            MATCH (:${typeMovie.name} {id: 5})<-[r:ACTED_IN]-(:${typeActor.name} {name: "Tom Hanks"})
+            MATCH (:${typeMovie.name} {id: 5})<-[r:ACTED_IN]-(:${typeActor.name} {name: "Tom Hanks 2"})
             RETURN r.screentime as screentime
             `);
 
@@ -122,15 +123,17 @@ describe("ConnectOrCreate", () => {
         expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toEqual(105);
     });
 
-    test("ConnectOrCreate on existing node", async () => {
+    test("Update with ConnectOrCreate on existing node", async () => {
         const testActorName = "aRandomActor";
+        const updatedActorName = "updatedActor";
         await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator2", id: 2222})`);
+        await session.run(`CREATE (:${typeActor.name} { name: "${testActorName}"})`);
+
         const query = `
             mutation {
-              create${pluralize(typeActor.name)}(
-                input: [
-                  {
-                    name: "${testActorName}"
+              update${pluralize(typeActor.name)}(
+                update: {
+                    name: "${updatedActorName}"
                     ${typeMovie.plural}: {
                       connectOrCreate: {
                         where: { node: { id: 2222 } }
@@ -138,7 +141,7 @@ describe("ConnectOrCreate", () => {
                       }
                     }
                   }
-                ]
+                where: { name: "${testActorName}"}
               ) {
                 ${typeActor.plural} {
                   name
@@ -153,14 +156,14 @@ describe("ConnectOrCreate", () => {
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[`create${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
+        expect((gqlResult as any).data[`update${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
             {
-                name: testActorName,
+                name: updatedActorName,
             },
         ]);
 
         const actorsWithMovieCount = await session.run(`
-          MATCH (a:${typeActor.name} {name: "${testActorName}"})-[]->(m:${typeMovie.name} {id: 2222})
+          MATCH (a:${typeActor.name} {name: "${updatedActorName}"})-[]->(m:${typeMovie.name} {id: 2222})
           RETURN COUNT(a) as count
         `);
 
@@ -181,7 +184,7 @@ describe("ConnectOrCreate", () => {
         expect(theTerminalMovieCount.records[0].toObject().count.toInt()).toEqual(0);
 
         const actedInRelation = await session.run(`
-            MATCH (:${typeMovie.name} {id: 2222})<-[r:ACTED_IN]-(:${typeActor.name} {name: "${testActorName}"})
+            MATCH (:${typeMovie.name} {id: 2222})<-[r:ACTED_IN]-(:${typeActor.name} {name: "${updatedActorName}"})
             RETURN r.screentime as screentime
             `);
 
