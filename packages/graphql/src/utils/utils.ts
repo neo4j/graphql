@@ -28,3 +28,22 @@ export function isString(value: unknown): value is string {
 export function isNeoInt(value: unknown): value is Integer {
     return isInt(value);
 }
+
+/** Joins all valid statements with given separator, ignoring empty or undefined statements */
+export function joinStatements(statements: string | Array<string | undefined>, separator = "\n"): string {
+    return filterTruthy(arrayfy(statements)).join(separator);
+}
+
+/** Makes sure input is an array, if not it turns into an array (empty array if input is null or undefined) */
+export function arrayfy<T>(raw: T | Array<T> | undefined | null): Array<T> {
+    if (Array.isArray(raw)) return raw;
+    if (raw === undefined || raw === null) return [];
+    return [raw];
+}
+
+/** Filter all elements in an array, only leaving truthy values */
+export function filterTruthy(arr: Array<boolean | null | undefined>): Array<true>;
+export function filterTruthy<T>(arr: Array<T | null | undefined>): Array<T>;
+export function filterTruthy<T>(arr: Array<T | null | undefined>): Array<T> {
+    return arr.filter(Boolean) as Array<T>;
+}

@@ -1,6 +1,7 @@
 import { Context, RelationField } from "../../types";
 import { Node } from "../../classes";
 import { CypherParams } from "../types";
+import { joinStatements } from "../../utils/utils";
 
 type TargetNode = {
     varName: string;
@@ -51,9 +52,7 @@ export function buildMergeStatement({
     }
 
     if (onCreateQuery.length > 0) {
-        nodeQuery = `${nodeQuery}
-        ON CREATE SET
-        ${onCreateQuery.join("\n")}`;
+        nodeQuery = joinStatements([nodeQuery, "ON CREATE SET", ...onCreateQuery]);
     }
 
     return [nodeQuery, { ...parameters, ...onCreateParams }];
@@ -88,7 +87,7 @@ function buildOnCreate(onCreate: Record<string, any>, nodeVar: string): [string,
         queries.push(`${nodeVar}.${key} = $${transformKey(nodeVar, key)}`);
         parameters[transformKey(nodeVar, key)] = value;
     });
-    return [queries.join(",\n"), parameters];
+    return [joinStatements(queries, ",\n"), parameters];
 }
 
 // WARN: Dupe from apoc-run-utils.ts

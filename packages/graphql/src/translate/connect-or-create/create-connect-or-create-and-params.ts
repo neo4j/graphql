@@ -2,6 +2,7 @@ import { RelationField, Context } from "../../types";
 import { buildMergeStatement } from "./build-merge-statement";
 import { CypherParams } from "../types";
 import { Node } from "../../classes";
+import { joinStatements } from "../../utils/utils";
 
 type CreateOrConnectInput = Array<{
     where: {
@@ -50,7 +51,7 @@ export function createConnectOrCreateAndParams({
         { queries: [] as string[], params: {} as Record<string, any> }
     );
 
-    return [result.queries.join("\n"), result.params];
+    return [joinStatements(result.queries), result.params];
 }
 
 function createConnectOrCreateSubQuery({
@@ -94,22 +95,10 @@ function createConnectOrCreateSubQuery({
     });
 
     return [
-        `${mergeNodeQuery}
-        ${mergeRelationQuery}
-                `,
+        joinStatements([mergeNodeQuery, mergeRelationQuery]),
         {
             ...mergeNodeParams,
             ...mergeRelationParams,
         },
     ];
 }
-
-// const query = `
-// MERGE (this0_movies0:Movie { isan: "0000-0000-03B6-0000-O-0000-0006-P" })`;
-
-// if (input[0].onCreate) {
-//     // ADD
-//     // ON CREATE
-//     // SET this0_movies0.title = "Forrest Gump"
-//     // SET this0_movies0.isan = "0000-0000-03B6-0000-O-0000-0006-P"`;
-// }
