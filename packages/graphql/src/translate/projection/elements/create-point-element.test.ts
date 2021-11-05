@@ -58,7 +58,13 @@ describe("createPointElement", () => {
             variable: "this",
         });
 
-        expect(element).toEqual("point: { point: this.point, crs: this.point.crs }");
+        expect(element).toMatchInlineSnapshot(`
+            "point: apoc.cypher.runFirstColumn('RETURN
+            CASE this.point IS NOT NULL
+            	WHEN true THEN { point: this.point, crs: this.point.crs }
+            	ELSE NULL
+            END AS result',{ this: this },false)"
+        `);
     });
 
     test("returns projection element for array of point values", () => {
@@ -98,6 +104,12 @@ describe("createPointElement", () => {
             variable: "this",
         });
 
-        expect(element).toEqual("points: [p in this.points | { point:p, crs: p.crs }]");
+        expect(element).toMatchInlineSnapshot(`
+            "points: apoc.cypher.runFirstColumn('RETURN
+            CASE this.points IS NOT NULL
+            	WHEN true THEN [p in this.points | { point:p, crs: p.crs }]
+            	ELSE NULL
+            END AS result',{ this: this },false)"
+        `);
     });
 });
