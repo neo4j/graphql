@@ -6,22 +6,23 @@ type TargetNode = {
     varName: string;
     node?: Node;
     parameters?: Record<string, any>;
+    onCreate?: Record<string, any>;
 };
 
 export function buildMergeStatement({
     node,
     relation,
     context,
-    onCreate,
 }: {
     node: TargetNode;
     relation?: TargetNode & { relationField: RelationField };
     context: Context;
-    onCreate?: Record<string, any>;
 }): [string, CypherParams] {
     const labels = node.node ? node.node.getLabelString(context) : "";
     const [parametersQuery, parameters] = parseNodeParameters(node.varName, node.parameters);
     let nodeQuery = `MERGE (${node.varName}${labels} ${parametersQuery})`;
+    let onCreateParams = {};
+    const onCreateQuery: string[] = [];
 
     if (relation) {
         const { relationField } = relation;
@@ -35,15 +36,24 @@ export function buildMergeStatement({
         const relationTargetQuery = `(${relation.varName})`; // TODO: take node parameters into account
 
         nodeQuery = `${nodeQuery}${relationQuery}${relationTargetQuery}`;
+
+        if (relation.onCreate) {
+            const [onCreateRelationQuery, params] = buildOnCreate(relation.onCreate, relationshipName);
+            onCreateQuery.push(onCreateRelationQuery);
+            onCreateParams = { ...params, ...onCreateParams };
+        }
     }
 
-    let onCreateParams = {};
-    if (onCreate) {
-        const [onCreateQuery, params] = buildOnCreate(onCreate, node.varName);
-        nodeQuery = `${nodeQuery}
-        ${onCreateQuery}`;
+    if (node.onCreate) {
+        const [onCreateNodeQuery, params] = buildOnCreate(node.onCreate, node.varName);
+        onCreateQuery.push(onCreateNodeQuery);
+        onCreateParams = { ...params, ...onCreateParams };
+    }
 
-        onCreateParams = params;
+    if (onCreateQuery.length > 0) {
+        nodeQuery = `${nodeQuery}
+        ON CREATE
+        ${onCreateQuery.join("\n")}`;
     }
 
     return [nodeQuery, { ...parameters, ...onCreateParams }];

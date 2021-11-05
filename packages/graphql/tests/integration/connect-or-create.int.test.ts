@@ -104,14 +104,22 @@ describe("ConnectOrCreate", () => {
             },
         ]);
 
-        const result = await session.run(`
+        const movieTitleAndId = await session.run(`
           MATCH (m:${typeMovie.name} {id: 5})
           RETURN m.title as title, m.id as id
         `);
 
-        expect(result.records).toHaveLength(1);
-        expect(result.records[0].toObject().title).toEqual("The Terminal");
-        expect((result.records[0].toObject().id as Integer).toNumber()).toEqual(5);
+        expect(movieTitleAndId.records).toHaveLength(1);
+        expect(movieTitleAndId.records[0].toObject().title).toEqual("The Terminal");
+        expect((movieTitleAndId.records[0].toObject().id as Integer).toNumber()).toEqual(5);
+
+        const actedInRelation = await session.run(`
+            MATCH (:${typeMovie.name} {id: 5})<-[r:ACTED_IN]-(:${typeActor.name} {name: "Tom Hanks"})
+            RETURN r.screentime as screentime
+            `);
+
+        expect(actedInRelation.records).toHaveLength(1);
+        expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toEqual(105);
     });
 
     test("ConnectOrCreate on existing node", async () => {
@@ -171,5 +179,13 @@ describe("ConnectOrCreate", () => {
         `);
 
         expect(theTerminalMovieCount.records[0].toObject().count.toInt()).toEqual(0);
+
+        const actedInRelation = await session.run(`
+            MATCH (:${typeMovie.name} {id: 2222})<-[r:ACTED_IN]-(:${typeActor.name} {name: "${testActorName}"})
+            RETURN r.screentime as screentime
+            `);
+
+        expect(actedInRelation.records).toHaveLength(1);
+        expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toEqual(105);
     });
 });

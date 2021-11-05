@@ -83,12 +83,12 @@ function createConnectOrCreateSubQuery({
             node: refNode,
             varName: baseName,
             parameters: whereNodeParameters,
+            onCreate: onCreateNode,
         },
         context,
-        onCreate: onCreateNode,
     });
 
-    // const whereEdgeParameters = input?.where?.edge;
+    const onCreateEdge = input?.onCreate?.edge;
     const [mergeRelationQuery, mergeRelationParams] = buildMergeStatement({
         node: {
             varName: parentVar,
@@ -96,6 +96,7 @@ function createConnectOrCreateSubQuery({
         relation: {
             relationField,
             varName: baseName,
+            onCreate: onCreateEdge,
         },
         context,
     });
