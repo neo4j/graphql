@@ -76,7 +76,7 @@ function getJWT(context: Context): any {
             // Create a JWK Client with a rate limit that
             // limits the number of calls to our JWK endpoint
             client = new JwksClient({
-                jwksUri: jwtConfig.jwkEndpoint || "",
+                jwksUri: jwtConfig.jwkEndpoint,
                 rateLimit: true,
                 jwksRequestsPerMinute: 10, // Default Value
                 cache: true, // Default Value
