@@ -50,7 +50,7 @@ Where is used on the following operations;
 
 The `where` argument can be combined with `roles` within auth rules to support rule based filtering of results.
 
-Revising the early example schema, if we update the auth rules to instead provide two sets of rules for two different roles, we can specify that jwts with the `user` role can only see their own `User` node, as before, but now, those with the `admin` role can see all users:
+Revising the early example schema, if you update the auth rules to instead provide two sets of rules for two different roles, you can specify that JWTs with the `user` role can only see their own `User` node, as before, but now, those with the `admin` role can see all users:
 
 [source, graphql, indent=0]
 ----
