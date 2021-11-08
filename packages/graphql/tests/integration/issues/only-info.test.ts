@@ -24,7 +24,7 @@ import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
-describe("only-info", () => {
+describe("https://github.com/neo4j/graphql/issues/567", () => {
     let driver: Driver;
 
     beforeAll(async () => {
