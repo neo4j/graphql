@@ -1,8 +1,27 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { RelationField, Context } from "../../types";
 import { buildMergeStatement } from "./build-merge-statement";
-import { CypherParams } from "../types";
+import { CypherStatement } from "../types";
 import { Node } from "../../classes";
-import { joinStatements } from "../../utils/utils";
+import { joinStatements } from "../utils";
 
 type CreateOrConnectInput = Array<{
     where: {
@@ -28,12 +47,12 @@ export function createConnectOrCreateAndParams({
     relationField: RelationField;
     refNode: Node;
     context: Context;
-}): [string, CypherParams] {
-    const result = input.reduce(
-        (acc, inputItem, index) => {
+}): CypherStatement {
+    const statements = input.map(
+        (inputItem, index): CypherStatement => {
             const subqueryBaseName = `${varName}${index}`;
 
-            const [query, params] = createConnectOrCreateSubQuery({
+            return createConnectOrCreateSubQuery({
                 input: inputItem,
                 baseName: subqueryBaseName,
                 parentVar,
@@ -41,17 +60,10 @@ export function createConnectOrCreateAndParams({
                 refNode,
                 context,
             });
-
-            acc.queries.push(query);
-            return {
-                queries: acc.queries,
-                params: { ...params, ...acc.params },
-            };
-        },
-        { queries: [] as string[], params: {} as Record<string, any> }
+        }
     );
 
-    return [joinStatements(result.queries), result.params];
+    return joinStatements(statements);
 }
 
 function createConnectOrCreateSubQuery({
@@ -68,10 +80,10 @@ function createConnectOrCreateSubQuery({
     relationField: RelationField;
     refNode: Node;
     context: Context;
-}): [string, CypherParams] {
+}): CypherStatement {
     const whereNodeParameters = input?.where?.node;
     const onCreateNode = input?.onCreate?.node;
-    const [mergeNodeQuery, mergeNodeParams] = buildMergeStatement({
+    const mergeNodeStatement = buildMergeStatement({
         node: {
             node: refNode,
             varName: baseName,
@@ -82,7 +94,7 @@ function createConnectOrCreateSubQuery({
     });
 
     const onCreateEdge = input?.onCreate?.edge;
-    const [mergeRelationQuery, mergeRelationParams] = buildMergeStatement({
+    const mergeRelationStatement = buildMergeStatement({
         node: {
             varName: parentVar,
         },
@@ -94,11 +106,5 @@ function createConnectOrCreateSubQuery({
         context,
     });
 
-    return [
-        joinStatements([mergeNodeQuery, mergeRelationQuery]),
-        {
-            ...mergeNodeParams,
-            ...mergeRelationParams,
-        },
-    ];
+    return joinStatements([mergeNodeStatement, mergeRelationStatement]);
 }

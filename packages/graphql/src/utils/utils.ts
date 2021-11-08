@@ -29,8 +29,8 @@ export function isNeoInt(value: unknown): value is Integer {
     return isInt(value);
 }
 
-/** Joins all valid statements with given separator, ignoring empty or undefined statements */
-export function joinStatements(statements: string | Array<string | undefined>, separator = "\n"): string {
+/** Joins all strings with given separator, ignoring empty or undefined statements */
+export function joinStrings(statements: string | Array<string | undefined>, separator = "\n"): string {
     return filterTruthy(arrayfy(statements)).join(separator);
 }
 

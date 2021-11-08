@@ -20,3 +20,6 @@
 import { NestedRecord } from "../types";
 
 export type CypherParams = NestedRecord<string>;
+
+/** Represent a cypher statement with params */
+export type CypherStatement = [string, CypherParams];

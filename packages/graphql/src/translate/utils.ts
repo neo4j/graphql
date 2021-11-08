@@ -17,9 +17,49 @@
  * limitations under the License.
  */
 
-import { joinStatements } from "../utils/utils";
+import { joinStrings, isString, arrayfy, filterTruthy } from "../utils/utils";
+import { CypherStatement, CypherParams } from "./types";
 
 export function wrapInCall(statement: string, withVarName: string, returnStatement = "RETURN COUNT(*)"): string {
     const withStatement = `WITH ${withVarName}`;
-    return joinStatements([withStatement, "CALL {", withStatement, statement, returnStatement, "}"]);
+    return joinStrings([withStatement, "CALL {", withStatement, statement, returnStatement, "}"]);
+}
+
+/** Joins all valid cypher statements and params with given separator, ignoring empty or undefined statements */
+export function joinStatements(
+    statements: string | CypherStatement | Array<string | undefined | CypherStatement>,
+    separator?: string
+): CypherStatement {
+    const statementsArray = filterTruthy(arrayfy(statements));
+    const statementsStrings = statementsArray.map((statement) => {
+        return getStatementString(statement);
+    });
+    const statementsParams = statementsArray.reduce((acc, statement) => {
+        return { ...acc, ...getStatementParams(statement) };
+    }, {} as CypherParams);
+    return [joinStrings(statementsStrings, separator), statementsParams];
+}
+
+/** Serializes object into a string for Cypher objects */
+export function serializeObject(fields: Record<string, string | undefined | null>): string {
+    return `{ ${Object.entries(fields)
+        .map(([key, value]): string | undefined => {
+            if (value === undefined || value === null || value === "") return undefined;
+            return `${key}: ${value}`;
+        })
+        .filter(Boolean)
+        .join(", ")} }`;
+}
+
+/** Generates a string to be used as parameter key */
+export function generateParameterKey(prefix: string, key: string): string {
+    return `${prefix}_${key}`;
+}
+
+function getStatementString(statement: string | CypherStatement): string {
+    return isString(statement) ? statement : statement[0];
+}
+
+function getStatementParams(statement: string | CypherStatement): CypherParams {
+    return isString(statement) ? {} : statement[1];
 }

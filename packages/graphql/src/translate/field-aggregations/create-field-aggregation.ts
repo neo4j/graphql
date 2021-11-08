@@ -28,12 +28,8 @@ import { createMatchWherePattern } from "./aggregation-sub-queries";
 import { FieldAggregationSchemaTypes } from "../../schema/field-aggregation-composer";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import createWhereAndParams from "../create-where-and-params";
-import {
-    serializeObject,
-    wrapApocRun,
-    serializeAuthParamsForApocRun,
-    serializeParamsForApocRun,
-} from "./apoc-run-utils";
+import { wrapApocRun, serializeAuthParamsForApocRun, serializeParamsForApocRun } from "./apoc-run-utils";
+import { serializeObject } from "../utils";
 
 const subQueryNodeAlias = "n";
 const subQueryRelationAlias = "r";

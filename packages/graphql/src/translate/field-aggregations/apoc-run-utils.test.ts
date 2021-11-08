@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { wrapApocRun, serializeObject } from "./apoc-run-utils";
+import { wrapApocRun } from "./apoc-run-utils";
 
-describe("field-aggregation utils", () => {
+describe("apoc translation utils", () => {
     describe("wrapApocRun", () => {
         test("wraps and escapes a query inside runFirstColumn", () => {
             const result = wrapApocRun(`MATCH(n) RETURN n, "Hello"`);
@@ -28,28 +28,6 @@ describe("field-aggregation utils", () => {
         test("adds extra params", () => {
             const result = wrapApocRun(`MATCH(n) RETURN n`, { auth: "auth" });
             expect(result).toEqual(`head(apoc.cypher.runFirstColumn(" MATCH(n) RETURN n ", { auth: auth }))`);
-        });
-    });
-
-    describe("serializeObject", () => {
-        test("creates a valid cypher object from a js object", () => {
-            const result = serializeObject({
-                this: "this",
-                that: `"that"`,
-            });
-
-            expect(result).toEqual(`{ this: this, that: "that" }`);
-        });
-
-        test("ignores undefined, null and empty string values", () => {
-            const result = serializeObject({
-                nobody: "expects",
-                the: undefined,
-                spanish: null,
-                inquisition: "",
-            });
-
-            expect(result).toEqual(`{ nobody: expects }`);
         });
     });
 });

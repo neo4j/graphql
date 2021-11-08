@@ -86,7 +86,7 @@ describe("Create or connect", () => {
             MERGE (this0_movies_connectOrCreate0:Movie { title: $this0_movies_connectOrCreate0_where_title })
             ON CREATE SET
             this0_movies_connectOrCreate0.title = $this0_movies_connectOrCreate0_title
-            MERGE (this0 )-[this0_relationship_this0_movies_connectOrCreate0:ACTED_IN]->(this0_movies_connectOrCreate0)
+            MERGE (this0)-[this0_relationship_this0_movies_connectOrCreate0:ACTED_IN]->(this0_movies_connectOrCreate0)
             ON CREATE SET
             this0_relationship_this0_movies_connectOrCreate0.screentime = $this0_relationship_this0_movies_connectOrCreate0_screentime
             RETURN this0
@@ -145,7 +145,7 @@ describe("Create or connect", () => {
             MERGE (this_movies0_connectOrCreate0:Movie { title: $this_movies0_connectOrCreate0_where_title })
             ON CREATE SET
             this_movies0_connectOrCreate0.title = $this_movies0_connectOrCreate0_title
-            MERGE (this )-[this_relationship_this_movies0_connectOrCreate0:ACTED_IN]->(this_movies0_connectOrCreate0)
+            MERGE (this)-[this_relationship_this_movies0_connectOrCreate0:ACTED_IN]->(this_movies0_connectOrCreate0)
             ON CREATE SET
             this_relationship_this_movies0_connectOrCreate0.screentime = $this_relationship_this_movies0_connectOrCreate0_screentime
             RETURN COUNT(*)

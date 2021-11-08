@@ -1,7 +1,28 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Context, RelationField } from "../../types";
 import { Node } from "../../classes";
-import { CypherParams } from "../types";
-import { joinStatements } from "../../utils/utils";
+import { CypherStatement } from "../types";
+import { joinStrings } from "../../utils/utils";
+import { buildNodeStatement } from "./build-node-statement";
+import { generateParameterKey, joinStatements } from "../utils";
 
 type TargetNode = {
     varName: string;
@@ -18,85 +39,69 @@ export function buildMergeStatement({
     node: TargetNode;
     relation?: TargetNode & { relationField: RelationField };
     context: Context;
-}): [string, CypherParams] {
-    const labels = node.node ? node.node.getLabelString(context) : "";
-    const [parametersQuery, parameters] = parseNodeParameters(node.varName, node.parameters);
-    let nodeQuery = `MERGE (${node.varName}${labels} ${parametersQuery})`;
-    let onCreateParams = {};
-    const onCreateQuery: string[] = [];
+}): CypherStatement {
+    const nodeStatement = buildNodeStatement({
+        node: node.node,
+        parameters: node.parameters,
+        context,
+        varName: node.varName,
+    });
+
+    let nodeOnCreateStatement: CypherStatement | undefined;
+    let relationStatement: CypherStatement | undefined;
+    let relationOnCreateStatement: CypherStatement | undefined;
 
     if (relation) {
-        const { relationField } = relation;
         const relationshipName = `${node.varName}_relationship_${relation.varName}`;
-        const inStr = relationField.direction === "IN" ? "<-" : "-";
-        const outStr = relationField.direction === "OUT" ? "->" : "-";
-        const relTypeStr = `[${relationField.properties ? relationshipName : ""}:${relationField.type}]`;
-
-        const relationQuery = `${inStr}${relTypeStr}${outStr}`;
-
-        const relationTargetQuery = `(${relation.varName})`; // TODO: take node parameters into account
-
-        nodeQuery = `${nodeQuery}${relationQuery}${relationTargetQuery}`;
+        relationStatement = buildRelationStatement({ relation, context, relationshipName });
 
         if (relation.onCreate) {
-            const [onCreateRelationQuery, params] = buildOnCreate(relation.onCreate, relationshipName);
-            onCreateQuery.push(onCreateRelationQuery);
-            onCreateParams = { ...params, ...onCreateParams };
+            relationOnCreateStatement = buildOnCreate(relation.onCreate, relationshipName);
         }
     }
 
+    const mergeNodeStatement = joinStatements(["MERGE ", nodeStatement, relationStatement], "");
+
     if (node.onCreate) {
-        const [onCreateNodeQuery, params] = buildOnCreate(node.onCreate, node.varName);
-        onCreateQuery.push(onCreateNodeQuery);
-        onCreateParams = { ...params, ...onCreateParams };
+        nodeOnCreateStatement = buildOnCreate(node.onCreate, node.varName);
     }
 
-    if (onCreateQuery.length > 0) {
-        nodeQuery = joinStatements([nodeQuery, "ON CREATE SET", ...onCreateQuery]);
-    }
-
-    return [nodeQuery, { ...parameters, ...onCreateParams }];
+    const onCreateSetQuery = nodeOnCreateStatement || relationOnCreateStatement ? "ON CREATE SET" : "";
+    return joinStatements([mergeNodeStatement, onCreateSetQuery, nodeOnCreateStatement, relationOnCreateStatement]);
 }
 
-function parseNodeParameters(nodeVar: string, parameters: CypherParams | undefined): [string, CypherParams] {
-    if (!parameters) return ["", {}];
+function buildRelationStatement({
+    relation,
+    context,
+    relationshipName,
+}: {
+    relation: TargetNode & { relationField: RelationField };
+    context: Context;
+    relationshipName: string;
+}): CypherStatement {
+    const { relationField } = relation;
+    const inStr = relationField.direction === "IN" ? "<-" : "-";
+    const outStr = relationField.direction === "OUT" ? "->" : "-";
+    const relTypeStr = `[${relationField.properties ? relationshipName : ""}:${relationField.type}]`;
 
-    const cypherParameters = Object.entries(parameters).reduce((acc, [key, value]) => {
-        const paramKey = transformKey(`${nodeVar}_where`, key);
-        acc[paramKey] = value;
-        return acc;
-    }, {});
+    const nodeStatement = buildNodeStatement({
+        node: relation.node,
+        varName: relation.varName,
+        context,
+        parameters: relation.parameters,
+    });
 
-    const nodeParameters = Object.keys(parameters).reduce((acc, key) => {
-        acc[key] = `$${transformKey(`${nodeVar}_where`, key)}`;
-        return acc;
-    }, {});
-
-    return [serializeObject(nodeParameters), cypherParameters];
+    const relationQuery = `${inStr}${relTypeStr}${outStr}`;
+    return joinStatements([`${relationQuery}`, nodeStatement], "");
 }
 
-function transformKey(nodeVar: string, key: string): string {
-    return `${nodeVar}_${key}`;
-}
-
-function buildOnCreate(onCreate: Record<string, any>, nodeVar: string): [string, CypherParams] {
+function buildOnCreate(onCreate: Record<string, any>, nodeVar: string): CypherStatement {
     const queries: string[] = [];
     const parameters = {};
 
     Object.entries(onCreate).forEach(([key, value]) => {
-        queries.push(`${nodeVar}.${key} = $${transformKey(nodeVar, key)}`);
-        parameters[transformKey(nodeVar, key)] = value;
+        queries.push(`${nodeVar}.${key} = $${generateParameterKey(nodeVar, key)}`);
+        parameters[generateParameterKey(nodeVar, key)] = value;
     });
-    return [joinStatements(queries, ",\n"), parameters];
-}
-
-// WARN: Dupe from apoc-run-utils.ts
-function serializeObject(fields: Record<string, string | undefined | null>): string {
-    return `{ ${Object.entries(fields)
-        .map(([key, value]): string | undefined => {
-            if (value === undefined || value === null || value === "") return undefined;
-            return `${key}: ${value}`;
-        })
-        .filter(Boolean)
-        .join(", ")} }`;
+    return [joinStrings(queries, ",\n"), parameters];
 }
