@@ -68,8 +68,8 @@ function translateCreate({ context, node }: { context: Context; node: Node }): [
     };
 
     let replacedProjectionParams: Record<string, unknown> = {};
-    let projectionStr: string | undefined = undefined;
-    let authCalls: string | undefined = undefined;
+    let projectionStr: string | undefined;
+    let authCalls: string | undefined;
 
     if (nodeProjection) {
         let projAuth = "";
