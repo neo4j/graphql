@@ -35,18 +35,18 @@ export default function createResolver({ node }: { node: Node }) {
             context,
         });
 
-        const responseField = info.fieldNodes[0].selectionSet?.selections.find(
+        const nodeProjection = info.fieldNodes[0].selectionSet?.selections.find(
             (selection) => selection.kind === "Field" && selection.name.value === node.getPlural({ camelCase: true })
-        ) as FieldNode; // Field exist by construction and must be selected as it is the only field.
+        ) as FieldNode;
 
-        const responseKey = responseField.alias ? responseField.alias.value : responseField.name.value;
+        const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
 
         return {
             info: {
                 bookmark: executeResult.bookmark,
                 ...executeResult.statistics,
             },
-            [responseKey]: Object.values(executeResult.records[0] || {}),
+            ...(nodeProjection ? { [nodeKey]: Object.values(executeResult.records[0] || {}) } : {}),
         };
     }
 
