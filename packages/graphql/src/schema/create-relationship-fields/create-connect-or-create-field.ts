@@ -39,8 +39,8 @@ export function createConnectOrCreateField({
 
     schemaComposer.getOrCreateITC(connectOrCreateName, (tc) => {
         tc.addFields({
-            where: connectOrCreateWhere,
-            onCreate: connectOrCreateOnCreateName,
+            where: `${connectOrCreateWhere}!`,
+            onCreate: `${connectOrCreateOnCreateName}!`,
         });
     });
     return connectOrCreate;

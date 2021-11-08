@@ -19,15 +19,17 @@
 
 import pluralize from "pluralize";
 import { Driver, Session, Integer } from "neo4j-driver";
-import { graphql } from "graphql";
+import { graphql, DocumentNode } from "graphql";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../../src/utils/test/graphql-types";
+import { gql } from "apollo-server";
+import { getQuerySource } from "../../utils";
 
 describe("Create -> ConnectOrCreate", () => {
     let driver: Driver;
     let session: Session;
-    let typeDefs: string;
+    let typeDefs: DocumentNode;
 
     const typeMovie = generateUniqueType("Movie");
     const typeActor = generateUniqueType("Actor");
@@ -37,7 +39,7 @@ describe("Create -> ConnectOrCreate", () => {
     beforeAll(async () => {
         driver = await neo4j();
 
-        typeDefs = `
+        typeDefs = gql`
         type ${typeMovie.name} {
             title: String!
             id: Int! @unique
@@ -70,7 +72,7 @@ describe("Create -> ConnectOrCreate", () => {
     });
 
     test("ConnectOrCreate creates new node", async () => {
-        const query = `
+        const query = gql`
             mutation {
               create${pluralize(typeActor.name)}(
                 input: [
@@ -94,7 +96,7 @@ describe("Create -> ConnectOrCreate", () => {
 
         const gqlResult = await graphql({
             schema: neoSchema.schema,
-            source: query,
+            source: getQuerySource(query),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
@@ -125,7 +127,7 @@ describe("Create -> ConnectOrCreate", () => {
     test("ConnectOrCreate on existing node", async () => {
         const testActorName = "aRandomActor";
         await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator2", id: 2222})`);
-        const query = `
+        const query = gql`
             mutation {
               create${pluralize(typeActor.name)}(
                 input: [
@@ -149,7 +151,7 @@ describe("Create -> ConnectOrCreate", () => {
 
         const gqlResult = await graphql({
             schema: neoSchema.schema,
-            source: query,
+            source: getQuerySource(query),
             contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
         });
         expect(gqlResult.errors).toBeUndefined();
