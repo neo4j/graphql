@@ -52,11 +52,6 @@ export function serializeObject(fields: Record<string, string | undefined | null
         .join(", ")} }`;
 }
 
-/** Generates a string to be used as parameter key */
-export function generateParameterKey(prefix: string, key: string): string {
-    return `${prefix}_${key}`;
-}
-
 function getStatementString(statement: string | CypherStatement): string {
     return isString(statement) ? statement : statement[0];
 }

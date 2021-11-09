@@ -63,10 +63,10 @@ describe("build node statement", () => {
             },
         });
 
-        expect(statement[0]).toEqual(`(this:TestLabel { name: $this_where_name, age: $this_where_age })`);
+        expect(statement[0]).toEqual(`(this:TestLabel { name: $this_node_name, age: $this_node_age })`);
         expect(statement[1]).toEqual({
-            this_where_name: "User",
-            this_where_age: 34,
+            this_node_name: "User",
+            this_node_age: 34,
         });
     });
 });

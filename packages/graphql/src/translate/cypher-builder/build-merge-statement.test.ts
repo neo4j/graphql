@@ -38,7 +38,7 @@ describe("build merge statement", () => {
     describe("node merge", () => {
         it("build merge node statement", () => {
             const statement = buildMergeStatement({
-                node: {
+                leftNode: {
                     varName: "this",
                     node,
                 },
@@ -51,7 +51,7 @@ describe("build merge statement", () => {
 
         it("build merge node statement with onCreate", () => {
             const statement = buildMergeStatement({
-                node: {
+                leftNode: {
                     varName: "this",
                     node,
                     onCreate: {
@@ -64,12 +64,12 @@ describe("build merge statement", () => {
 
             expect(dedent(statement[0])).toEqual(dedent`MERGE (this:MyLabel)
                 ON CREATE SET
-                this.age = $this_age,
-                this.name = $this_name
+                this.age = $this_on_create_age,
+                this.name = $this_on_create_name
             `);
             expect(statement[1]).toEqual({
-                this_age: 23,
-                this_name: "Keanu",
+                this_on_create_age: 23,
+                this_on_create_name: "Keanu",
             });
         });
     });
@@ -77,24 +77,26 @@ describe("build merge statement", () => {
         it("build merge relation statement", () => {
             const relationField = new RelationFieldBuilder().instance();
             const statement = buildMergeStatement({
-                node: {
+                leftNode: {
                     varName: "this",
                 },
-                relation: {
+                rightNode: {
                     varName: "that",
+                },
+                relation: {
                     relationField,
                 },
                 context,
             });
 
-            expect(statement[0]).toEqual("MERGE (this)-[]->(that)");
+            expect(statement[0]).toEqual("MERGE (this)-[this_relationship_that]->(that)");
             expect(statement[1]).toEqual({});
         });
 
         it("build merge relation statement with onCreate", () => {
             const relationField = new RelationFieldBuilder().instance();
             const statement = buildMergeStatement({
-                node: {
+                leftNode: {
                     varName: "this",
                     node,
                     onCreate: {
@@ -102,8 +104,10 @@ describe("build merge statement", () => {
                         name: "Keanu",
                     },
                 },
-                relation: {
+                rightNode: {
                     varName: "that",
+                },
+                relation: {
                     onCreate: {
                         screentime: 10,
                     },
@@ -112,16 +116,16 @@ describe("build merge statement", () => {
                 context,
             });
 
-            expect(dedent(statement[0])).toEqual(dedent`MERGE (this:MyLabel)-[]->(that)
+            expect(dedent(statement[0])).toEqual(dedent`MERGE (this:MyLabel)-[this_relationship_that]->(that)
                 ON CREATE SET
-                this.age = $this_age,
-                this.name = $this_name
-                this_relationship_that.screentime = $this_relationship_that_screentime
+                this.age = $this_on_create_age,
+                this.name = $this_on_create_name
+                this_relationship_that.screentime = $this_relationship_that_on_create_screentime
             `);
             expect(statement[1]).toEqual({
-                this_age: 23,
-                this_name: "Keanu",
-                this_relationship_that_screentime: 10,
+                this_on_create_age: 23,
+                this_on_create_name: "Keanu",
+                this_relationship_that_on_create_screentime: 10,
             });
         });
     });

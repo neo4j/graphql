@@ -20,7 +20,8 @@
 import { Context } from "../../types";
 import { CypherStatement, CypherParams } from "../types";
 import { Node } from "../../classes";
-import { generateParameterKey, serializeObject } from "../utils";
+import { serializeObject } from "../utils";
+import { generateParameterKey } from "./utils";
 
 export function buildNodeStatement({
     varName,
@@ -44,14 +45,15 @@ export function buildNodeStatement({
 function parseNodeParameters(nodeVar: string, parameters: CypherParams | undefined): CypherStatement {
     if (!parameters) return ["", {}];
 
+    // TODO: generate cypher in the same function
     const cypherParameters = Object.entries(parameters).reduce((acc, [key, value]) => {
-        const paramKey = generateParameterKey(`${nodeVar}_where`, key);
+        const paramKey = generateParameterKey(`${nodeVar}`, "node", key);
         acc[paramKey] = value;
         return acc;
     }, {});
 
     const nodeParameters = Object.keys(parameters).reduce((acc, key) => {
-        acc[key] = `$${generateParameterKey(`${nodeVar}_where`, key)}`;
+        acc[key] = `$${generateParameterKey(`${nodeVar}`, "node", key)}`;
         return acc;
     }, {});
 

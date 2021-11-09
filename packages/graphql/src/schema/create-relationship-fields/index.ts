@@ -155,7 +155,6 @@ function createRelationshipFields({
                 });
             });
 
-            // TODO: add connectOrCreate?
             const updateFieldInput = schemaComposer.getOrCreateITC(
                 `${sourceName}${upperFirst(rel.fieldName)}UpdateFieldInput`,
                 (tc) => {

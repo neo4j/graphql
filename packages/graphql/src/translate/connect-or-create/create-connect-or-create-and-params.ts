@@ -24,12 +24,12 @@ import { Node } from "../../classes";
 import { joinStatements } from "../utils";
 
 type CreateOrConnectInput = Array<{
-    where: {
+    where?: {
         node: Record<string, any>;
     };
-    onCreate: {
-        node: Record<string, any>;
-        edge: Record<string, any>;
+    onCreate?: {
+        node?: Record<string, any>;
+        edge?: Record<string, any>;
     };
 }>;
 
@@ -81,10 +81,47 @@ function createConnectOrCreateSubQuery({
     refNode: Node;
     context: Context;
 }): CypherStatement {
-    const whereNodeParameters = input?.where?.node;
-    const onCreateNode = input?.onCreate?.node;
-    const mergeNodeStatement = buildMergeStatement({
-        node: {
+    const mergeRelatedNodeStatement = mergeRelatedNode({
+        input,
+        baseName,
+        refNode,
+        context,
+    });
+
+    const onCreateEdge = input.onCreate?.edge;
+    const mergeRelationStatement = buildMergeStatement({
+        leftNode: {
+            varName: parentVar,
+        },
+        rightNode: {
+            varName: baseName,
+        },
+        relation: {
+            relationField,
+            onCreate: onCreateEdge,
+        },
+        context,
+    });
+
+    return joinStatements([mergeRelatedNodeStatement, mergeRelationStatement]);
+}
+
+function mergeRelatedNode({
+    input,
+    baseName,
+    refNode,
+    context,
+}: {
+    input: CreateOrConnectInput[0];
+    baseName: string;
+    refNode: Node;
+    context: Context;
+}): CypherStatement {
+    const whereNodeParameters = input.where?.node;
+    const onCreateNode = input.onCreate?.node;
+
+    return buildMergeStatement({
+        leftNode: {
             node: refNode,
             varName: baseName,
             parameters: whereNodeParameters,
@@ -92,19 +129,4 @@ function createConnectOrCreateSubQuery({
         },
         context,
     });
-
-    const onCreateEdge = input?.onCreate?.edge;
-    const mergeRelationStatement = buildMergeStatement({
-        node: {
-            varName: parentVar,
-        },
-        relation: {
-            relationField,
-            varName: baseName,
-            onCreate: onCreateEdge,
-        },
-        context,
-    });
-
-    return joinStatements([mergeNodeStatement, mergeRelationStatement]);
 }

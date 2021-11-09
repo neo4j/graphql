@@ -39,6 +39,11 @@ export class RelationFieldBuilder extends Builder<RelationField, RelationField> 
         });
     }
 
+    public with(newOptions: Partial<RelationField>): RelationFieldBuilder {
+        this.options = { ...this.options, ...newOptions };
+        return this;
+    }
+
     public instance(): RelationField {
         return this.options;
     }
