@@ -31,6 +31,19 @@ type TargetNode = {
     onCreate?: Record<string, any>;
 };
 
+type MergeNodeArguments = {
+    node: TargetNode & { node: Node };
+    context: Context;
+};
+
+type MergeRelationArguments = {
+    node: TargetNode;
+    relation: TargetNode & { relationField: RelationField };
+    context: Context;
+};
+
+export function buildMergeStatement(args: MergeNodeArguments): CypherStatement;
+export function buildMergeStatement(args: MergeRelationArguments): CypherStatement;
 export function buildMergeStatement({
     node,
     relation,
@@ -82,7 +95,8 @@ function buildRelationStatement({
     const { relationField } = relation;
     const inStr = relationField.direction === "IN" ? "<-" : "-";
     const outStr = relationField.direction === "OUT" ? "->" : "-";
-    const relTypeStr = `[${relationField.properties ? relationshipName : ""}:${relationField.type}]`;
+    const relationLabel = relationField.type ? `:${relationField.type}` : "";
+    const relTypeStr = `[${relationField.properties ? relationshipName : ""}${relationLabel}]`;
 
     const nodeStatement = buildNodeStatement({
         node: relation.node,

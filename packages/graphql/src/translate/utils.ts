@@ -20,6 +20,7 @@
 import { joinStrings, isString, arrayfy, filterTruthy } from "../utils/utils";
 import { CypherStatement, CypherParams } from "./types";
 
+/** Wraps a string in a CALL statement */
 export function wrapInCall(statement: string, withVarName: string, returnStatement = "RETURN COUNT(*)"): string {
     const withStatement = `WITH ${withVarName}`;
     return joinStrings([withStatement, "CALL {", withStatement, statement, returnStatement, "}"]);

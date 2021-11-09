@@ -18,7 +18,7 @@
  */
 
 import { RelationField, Context } from "../../types";
-import { buildMergeStatement } from "./build-merge-statement";
+import { buildMergeStatement } from "../cypher-builder/build-merge-statement";
 import { CypherStatement } from "../types";
 import { Node } from "../../classes";
 import { joinStatements } from "../utils";
