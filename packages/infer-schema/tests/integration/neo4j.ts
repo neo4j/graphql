@@ -22,29 +22,26 @@ import * as util from "util";
 
 let driver;
 
-async function connect(username?: string, password?: string, boltUrl?: string): Promise<neo4j.Driver> {
+async function connect(): Promise<neo4j.Driver> {
     if (driver) {
         return driver;
     }
 
-    const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
-    const user = username || NEO_USER;
-    const pass = password || NEO_PASSWORD;
-    const url = boltUrl || NEO_URL;
+    const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687" } = process.env;
 
     if (process.env.NEO_WAIT && !driver) {
         await util.promisify(setTimeout)(Number(process.env.NEO_WAIT));
     }
 
-    const auth = neo4j.auth.basic(user, pass);
+    const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
 
-    driver = neo4j.driver(url, auth);
+    driver = neo4j.driver(NEO_URL, auth);
 
     try {
         await driver.verifyConnectivity();
     } catch (error) {
         if (error instanceof Error) {
-            throw new Error(`Could not connect to neo4j @ ${url} Error: ${error.message}`);
+            throw new Error(`Could not connect to neo4j @ ${NEO_URL} Error: ${error.message}`);
         }
     }
 

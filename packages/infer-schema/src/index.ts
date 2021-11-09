@@ -17,10 +17,75 @@
  * limitations under the License.
  */
 
-import neo4j, { Driver } from "neo4j-driver";
+import { Session } from "neo4j-driver";
+import { mapNeo4jToGraphQLType } from "./map-neo4j-to-graphql-type";
 
-export async function inferSchema(driver: Driver): Promise<string> {
-    await driver.verifyConnectivity();
-    //driver.session({ defaultAccessMode: neo4j.session.READ });
-    return "hello";
+type NodeMap = {
+    [key: string]: Neo4jNode;
+};
+
+type NodeTypePropertiesRecord = {
+    nodeType: string;
+    nodeLabels: string[];
+    propertyName: string;
+    propertyTypes: string[];
+    mandatory: boolean;
+};
+
+export async function inferSchema(session: Session): Promise<string> {
+    // Labels
+    const neo4jNodes: NodeMap = {};
+
+    // Label properties
+    const labelPropsRes = await session.readTransaction((tx) =>
+        tx.run(`CALL db.schema.nodeTypeProperties()
+    YIELD nodeType, nodeLabels, propertyName, propertyTypes, mandatory
+    WITH *
+    WHERE propertyName =~ "[_A-Za-z][_0-9A-Za-z]*" 
+    AND all(x IN nodeLabels WHERE (x =~ "[A-Za-z][_0-9A-Za-z]*"))
+    RETURN *`)
+    );
+    if (!labelPropsRes?.records.length) {
+        return "";
+    }
+    const nodeTypeProperties = labelPropsRes.records.map((r) => r.toObject()) as NodeTypePropertiesRecord[];
+
+    // Find unique "nodeType"s to build Neo4jNode instances
+    new Set(nodeTypeProperties.map((nt) => nt.nodeType)).forEach((nodeType) => {
+        const propertiesRows = nodeTypeProperties.filter((nt) => nt.nodeType === nodeType);
+        if (!propertiesRows) {
+            return;
+        }
+        const { nodeLabels } = propertiesRows[0];
+        const neo4jNode = new Neo4jNode(nodeLabels[0], nodeLabels.slice(1));
+        propertiesRows.forEach((propertyRow) =>
+            neo4jNode.addField(
+                propertyRow.propertyName,
+                mapNeo4jToGraphQLType(propertyRow.propertyTypes, propertyRow.mandatory)
+            )
+        );
+        neo4jNodes[nodeType] = neo4jNode;
+    });
+
+    return Object.keys(neo4jNodes)
+        .map((typeName) => neo4jNodes[typeName].toString())
+        .join("\n\n");
+}
+
+class Neo4jNode {
+    label: string;
+    additionalLabels: string[];
+    fields: string[][] = [];
+    constructor(label: string, additionalLabels: string[] = []) {
+        this.label = label;
+        this.additionalLabels = additionalLabels;
+    }
+
+    addField(name: string, type: string) {
+        this.fields.push([name, type]);
+    }
+
+    toString() {
+        return `type ${this.label} {\n\t${this.fields.map(([name, type]) => `${name}: ${type}`).join("\n\t")}\n}`;
+    }
 }
