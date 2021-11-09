@@ -72,13 +72,16 @@ export async function inferSchema(session: Session): Promise<string> {
         .join("\n\n");
 }
 
+type Directives = {
+    node: NodeDirective;
+};
 class Neo4jNode {
     label: string;
-    additionalLabels: string[];
     fields: string[][] = [];
+    directives: Directives = { node: new NodeDirective() };
     constructor(label: string, additionalLabels: string[] = []) {
         this.label = label;
-        this.additionalLabels = additionalLabels;
+        this.directives.node.addAdditionalLabels(additionalLabels);
     }
 
     addField(name: string, type: string) {
@@ -86,6 +89,25 @@ class Neo4jNode {
     }
 
     toString() {
-        return `type ${this.label} {\n\t${this.fields.map(([name, type]) => `${name}: ${type}`).join("\n\t")}\n}`;
+        return `type ${this.label} ${this.directives.node.toString()}{\n\t${this.fields
+            .map(([name, type]) => `${name}: ${type}`)
+            .join("\n\t")}\n}`;
+    }
+}
+
+class NodeDirective {
+    additionalLabels: string[] = [];
+    addAdditionalLabels(labels: string[] | string) {
+        if (!labels.length) {
+            return;
+        }
+        this.additionalLabels = this.additionalLabels.concat(labels);
+    }
+
+    toString() {
+        if (!this.additionalLabels.length) {
+            return "";
+        }
+        return `@node(additonalLabels: ["${this.additionalLabels.join('","')}"]) `;
     }
 }

@@ -131,4 +131,33 @@ describe("Infer Schema nodes basic tests", () => {
             }"
         `);
     });
+    test("Can infer additional labels", async () => {
+        const nodeProperties = { first: "testString", second: neo4j.int(42) };
+        // Create some data
+        const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
+        await wSession.writeTransaction((tx) =>
+            tx.run(
+                `CREATE (:TestLabel {strProp: $props.first})
+                CREATE (:TestLabel2:TestLabel3 {singleProp: $props.second})`,
+                { props: nodeProperties }
+            )
+        );
+        const bm = wSession.lastBookmark();
+        await wSession.close();
+
+        // Infer the schema
+        const session = driver.session({ defaultAccessMode: neo4j.session.WRITE, bookmarks: bm, database: dbName });
+        const schema = await inferSchema(session);
+        await session.close();
+        // Then
+        expect(schema).toMatchInlineSnapshot(`
+            "type TestLabel2 @node(additonalLabels: [\\"TestLabel3\\"]) {
+            	singleProp: Int!
+            }
+
+            type TestLabel {
+            	strProp: String!
+            }"
+        `);
+    });
 });
