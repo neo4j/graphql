@@ -21,8 +21,7 @@
         "test:unit": "jest src/**/*.test.ts",
         "test:unit:watch": "test:unit -- --watch",
         "test:int": "jest tests/integration",
-        "test:int:watch": "test:int -- --watch",
-        "conditional-publish": "(node ./scripts/check-version.js && npm publish --access=public) ; exit 0"
+        "test:int:watch": "test:int -- --watch"
     },
     "author": "Neo4j Inc.",
     "dependencies": {
