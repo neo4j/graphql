@@ -33,9 +33,16 @@ type NodeTypePropertiesRecord = {
 };
 
 export async function inferSchema(session: Session): Promise<string> {
-    // Labels
-    const neo4jNodes: NodeMap = {};
+    // Nodes
+    const neo4jNodes = await inferNodes(session);
 
+    return Object.keys(neo4jNodes)
+        .map((typeName) => neo4jNodes[typeName].toString())
+        .join("\n\n");
+}
+
+async function inferNodes(session: Session): Promise<NodeMap> {
+    const nodes = {};
     // Label properties
     const labelPropsRes = await session.readTransaction((tx) =>
         tx.run(`CALL db.schema.nodeTypeProperties()
@@ -43,7 +50,7 @@ export async function inferSchema(session: Session): Promise<string> {
     RETURN *`)
     );
     if (!labelPropsRes?.records.length) {
-        return "";
+        return nodes;
     }
     const nodeTypeProperties = labelPropsRes.records.map((r) => r.toObject()) as NodeTypePropertiesRecord[];
 
@@ -58,7 +65,7 @@ export async function inferSchema(session: Session): Promise<string> {
         const typeName = mainLabel.replace(/[^_0-9A-Z]+/gi, "_");
         let counter = 2;
         let uniqueTypeName = typeName;
-        while (typeof neo4jNodes[uniqueTypeName] !== "undefined") {
+        while (typeof nodes[uniqueTypeName] !== "undefined") {
             uniqueTypeName = typeName + String(counter);
             counter += 1;
         }
@@ -69,12 +76,9 @@ export async function inferSchema(session: Session): Promise<string> {
                 mapNeo4jToGraphQLType(propertyRow.propertyTypes, propertyRow.mandatory)
             )
         );
-        neo4jNodes[uniqueTypeName] = neo4jNode;
+        nodes[uniqueTypeName] = neo4jNode;
     });
-
-    return Object.keys(neo4jNodes)
-        .map((typeName) => neo4jNodes[typeName].toString())
-        .join("\n\n");
+    return nodes;
 }
 
 type Directives = {
