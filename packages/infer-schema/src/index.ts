@@ -40,9 +40,6 @@ export async function inferSchema(session: Session): Promise<string> {
     const labelPropsRes = await session.readTransaction((tx) =>
         tx.run(`CALL db.schema.nodeTypeProperties()
     YIELD nodeType, nodeLabels, propertyName, propertyTypes, mandatory
-    WITH *
-    WHERE propertyName =~ "[_A-Za-z][_0-9A-Za-z]*" 
-    AND all(x IN nodeLabels WHERE (x =~ "[A-Za-z][_0-9A-Za-z]*"))
     RETURN *`)
     );
     if (!labelPropsRes?.records.length) {
@@ -57,14 +54,22 @@ export async function inferSchema(session: Session): Promise<string> {
             return;
         }
         const { nodeLabels } = propertiesRows[0];
-        const neo4jNode = new Neo4jNode(nodeLabels[0], nodeLabels.slice(1));
+        const mainLabel = nodeLabels[0];
+        const typeName = mainLabel.replace(/[^_0-9A-Z]+/gi, "_");
+        let counter = 2;
+        let uniqueTypeName = typeName;
+        while (typeof neo4jNodes[uniqueTypeName] !== "undefined") {
+            uniqueTypeName = typeName + String(counter);
+            counter += 1;
+        }
+        const neo4jNode = new Neo4jNode(uniqueTypeName, mainLabel, nodeLabels.slice(1));
         propertiesRows.forEach((propertyRow) =>
             neo4jNode.addField(
                 propertyRow.propertyName,
                 mapNeo4jToGraphQLType(propertyRow.propertyTypes, propertyRow.mandatory)
             )
         );
-        neo4jNodes[nodeType] = neo4jNode;
+        neo4jNodes[uniqueTypeName] = neo4jNode;
     });
 
     return Object.keys(neo4jNodes)
@@ -77,10 +82,15 @@ type Directives = {
 };
 class Neo4jNode {
     label: string;
+    typeName: string;
     fields: string[][] = [];
     directives: Directives = { node: new NodeDirective() };
-    constructor(label: string, additionalLabels: string[] = []) {
+    constructor(typeName: string, label: string, additionalLabels: string[] = []) {
+        this.typeName = typeName;
         this.label = label;
+        if (this.label !== this.typeName) {
+            this.directives.node.addLabel(this.label);
+        }
         this.directives.node.addAdditionalLabels(additionalLabels);
     }
 
@@ -89,14 +99,20 @@ class Neo4jNode {
     }
 
     toString() {
-        return `type ${this.label} ${this.directives.node.toString()}{\n\t${this.fields
+        return `type ${this.typeName} ${this.directives.node.toString()}{\n\t${this.fields
             .map(([name, type]) => `${name}: ${type}`)
             .join("\n\t")}\n}`;
     }
 }
 
 class NodeDirective {
+    label?: string;
     additionalLabels: string[] = [];
+
+    addLabel(label: string) {
+        this.label = label;
+    }
+
     addAdditionalLabels(labels: string[] | string) {
         if (!labels.length) {
             return;
@@ -105,9 +121,13 @@ class NodeDirective {
     }
 
     toString() {
-        if (!this.additionalLabels.length) {
-            return "";
+        const directiveArguments: string[] = [];
+        if (this.label) {
+            directiveArguments.push(`label: "${this.label}"`);
         }
-        return `@node(additonalLabels: ["${this.additionalLabels.join('","')}"]) `;
+        if (this.additionalLabels.length) {
+            directiveArguments.push(`additonalLabels: ["${this.additionalLabels.join('","')}"]`);
+        }
+        return directiveArguments.length ? `@node(${directiveArguments.join(", ")}) ` : "";
     }
 }
