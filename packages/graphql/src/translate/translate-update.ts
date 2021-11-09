@@ -26,11 +26,12 @@ import createAuthAndParams from "./create-auth-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, RELATIONSHIP_REQUIREMENT_PREFIX } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
+import createRelationshipValidationStr from "./create-relationship-validation-str";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
@@ -102,6 +103,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
             parentVar: varName,
             withVars: [varName],
             parameterPrefix: `${resolveTree.name}.args.update`,
+            fromTopLevel: true,
         });
         [updateStr] = updateAndParams;
         cypherParams = {
@@ -376,6 +378,8 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         }
     }
 
+    const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
+
     const returnStatement = nodeProjection
         ? `RETURN ${varName} ${projStr} AS ${varName}`
         : `RETURN 'Query cannot conclude with CALL'`;
@@ -390,6 +394,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         deleteStr,
         ...(connectionStrs.length || projAuth ? [`WITH ${varName}`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
         ...(projAuth ? [projAuth] : []),
+        ...(relationshipValidationStr ? [`WITH ${varName}`, relationshipValidationStr] : []),
         ...connectionStrs,
         ...interfaceStrs,
         returnStatement,

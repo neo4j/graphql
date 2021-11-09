@@ -29,6 +29,7 @@ import createAuthAndParams from "./create-auth-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
+import createRelationshipValidationStr from "./create-relationship-validation-str";
 
 interface Res {
     strs: string[];
@@ -51,6 +52,7 @@ function createUpdateAndParams({
     withVars,
     context,
     parameterPrefix,
+    fromTopLevel,
 }: {
     parentVar: string;
     updateInput: any;
@@ -61,6 +63,7 @@ function createUpdateAndParams({
     insideDoWhen?: boolean;
     context: Context;
     parameterPrefix: string;
+    fromTopLevel?: boolean;
 }): [string, any] {
     let hasAppliedTimeStamps = false;
 
@@ -510,6 +513,7 @@ function createUpdateAndParams({
 
     let preAuthStr = "";
     let postAuthStr = "";
+    const relationshipValidationStr = !fromTopLevel ? createRelationshipValidationStr({ node, context, varName }) : "";
 
     const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
 
@@ -523,9 +527,15 @@ function createUpdateAndParams({
         postAuthStr = `${withStr}\n${apocStr}`;
     }
 
-    const str = `${preAuthStr}\n${strs.join("\n")}\n${postAuthStr}`;
-
-    return [str, params];
+    return [
+        [
+            preAuthStr,
+            ...strs,
+            postAuthStr,
+            ...(relationshipValidationStr ? [withStr, relationshipValidationStr] : []),
+        ].join("\n"),
+        params,
+    ];
 }
 
 export default createUpdateAndParams;
