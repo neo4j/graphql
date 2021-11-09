@@ -1,0 +1,319 @@
+[[type-definitions-interfaces]]
+= Interface Types
+
+The Neo4j GraphQL Library supports the use of interfaces on relationship fields. This chapter will walk through their definition and usage.
+
+== Type definitions
+
+The following schema defines a `Actor` type, that has a relationship `ACTED_IN`, of type `[Production]`. `Production` is an interface type with `Movie` and `Series` implementations. Note in this example that relationship properties have also been used with the `@relationshipProperties` directive as syntactic sugar, so that interfaces representing relationship properties can be easily distinguished.
+
+[source, graphql, indent=0]
+----
+interface Production {
+    title: String!
+    actors: [Actor!]!
+}
+
+type Movie implements Production {
+    title: String!
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+    runtime: Int!
+}
+
+type Series implements Production {
+    title: String!
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+    episodes: Int!
+}
+
+interface ActedIn @relationshipProperties {
+    role: String!
+}
+
+type Actor {
+    name: String!
+    actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+}
+----
+
+These type definitions will be used for the rest of the examples in this chapter.
+
+=== Directive inheritance
+
+Any directives present on an interface or its fields will be "inherited" by any object types implementing it. For example, the type definitions above could be refactored to have the `@relationship` directive on the `actors` field in the `Production` interface instead of on each implementing type as it is currently:
+
+[source, graphql, indent=0]
+----
+interface Production {
+    title: String!
+    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+}
+
+type Movie implements Production {
+    title: String!
+    actors: [Actor!]!
+    runtime: Int!
+}
+
+type Series implements Production {
+    title: String!
+    actors: [Actor!]!
+    episodes: Int!
+}
+
+interface ActedIn @relationshipProperties {
+    role: String!
+}
+
+type Actor {
+    name: String!
+    actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+}
+----
+
+==== Overriding
+
+In addition to inheritance, directives can be overridden on a per-implementation basis. Say you had an interface defining some `Content`, with some basic authorization rules:
+
+[source, graphql, indent=0]
+----
+interface Content
+    @auth(rules: [{ operations: [CREATE, UPDATE, DELETE], allow: { author: { username: "$jwt.sub" } } }]) {
+    title: String!
+    author: [Author!]! @relationship(type: "HAS_CONTENT", direction: IN)
+}
+
+type User {
+    username: String!
+    content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
+}
+----
+
+You might implement this once for public content and once for private content which has additional rules in place:
+
+[source, graphql, indent=0]
+----
+type PublicContent implements Content {
+    title: String!
+    author: [Author!]!
+}
+
+type PrivateContent implements Content
+    @auth(rules: [{ operations: [CREATE, READ, UPDATE, DELETE], allow: { author: { username: "$jwt.sub" } } }]) {
+    title: String!
+    author: [Author!]!
+}
+----
+
+The `PublicContent` type will inherit the auth rules from the `Content` interface, whilst the `PrivateContent` type will use the auth rules specified there.
+
+In summary, there are three choices for the application of directives when using interfaces:
+
+- Directives specified on the interface and inherited by all implementing types when the directives for every type are the same.
+- Directives specified on the interface and overridden by certain implementing types when directives are broadly the same with a few discrepancies.
+- Directives specified on implementing types alone when there is very little commonality between types, or certain types need a directive and others don't.
+
+[[type-definitions-interfaced-types-querying]]
+== Querying an interface
+
+Which implementations are returned by a Query are dictated by the `where` filter applied.
+
+For example, the following will return all productions with title starting "The " for every actor:
+
+[source, graphql, indent=0]
+----
+query GetProductionsStartingWithThe {
+    actors {
+        name
+        actedIn(where: { node: { title_STARTS_WITH: "The " } }) {
+            title
+            ... on Movie {
+                runtime
+            }
+            ... on Series {
+                episodes
+            }
+        }
+    }
+}
+----
+
+Whilst the query below will only return the movies with title starting with "The " for each actor.
+
+[source, graphql, indent=0]
+----
+query GetMoviesStartingWithThe {
+    actors {
+        name
+        actedIn(where: { node: { _on: { Movie: { title_STARTS_WITH: "The " } } } }) {
+            title
+            ... on Movie {
+                runtime
+            }
+        }
+    }
+}
+----
+
+This is to prevent overfetching, and you can find an explanation of this xref::appendix/preventing-overfetching.adoc[here].
+
+Alternatively, these implementation specific filters can be used to override filtering for a specific implementation. For example, if you wanted all productions with title starting with "The ", but movies with title starting with "A ", you could achieve this using the following:
+
+[source, graphql, indent=0]
+----
+query GetProductionsStartingWith {
+    actors {
+        name
+        actedIn(where: { node: { title_STARTS_WITH: "The ", _on: { Movie: { title_STARTS_WITH: "A " } } } }) {
+            title
+            ... on Movie {
+                runtime
+            }
+            ... on Series {
+                episodes
+            }
+        }
+    }
+}
+----
+
+== Creating using an interface field
+
+The below mutation creates an actor and some productions they've acted in:
+
+[source, graphql, indent=0]
+----
+mutation CreateActorAndProductions {
+    createActors(
+        input: [
+            {
+                name: "Chris Pratt"
+                actedIn: {
+                    create: [
+                        {
+                            edge: {
+                                role: "Mario"
+                            }
+                            node: {
+                                Movie: {
+                                    title: "Super Mario Bros"
+                                    runtime: 90
+                                }
+                            }
+                        }
+                        {
+                            edge: {
+                                role: "Starlord"
+                            }
+                            node: {
+                                Movie: {
+                                    title: "Guardians of the Galaxy"
+                                    runtime: 122
+                                }
+                            }
+                        }
+                        {
+                            edge: {
+                                role: "Andy"
+                            }
+                            node: {
+                                Series: {
+                                    title: "Parks and Recreation"
+                                    episodes: 126
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    ) {
+        actors {
+            name
+            actedIn {
+                title
+            }
+        }
+    }
+}
+----
+
+== Nested interface operations
+
+Operations on interfaces are abstract until you instruct them not to be. Take the following example:
+
+[source, graphql, indent=0]
+----
+mutation CreateActorAndProductions {
+    updateActors(
+        where: { name: "Woody Harrelson" }
+        connect: {
+            actedIn: {
+                where: { node: { title: "Zombieland" } }
+                connect: { actors: { where: { node: { name: "Emma Stone" } } } }
+            }
+        }
+    ) {
+        actors {
+            name
+            actedIn {
+                title
+            }
+        }
+    }
+}
+----
+
+The above Mutation will:
+
+1. Find any `Actor` nodes with the name "Woody Harrelson"
+2. Connect those nodes to any `Production` (`Movie` or `Series`) nodes with the title "Zombieland"
+3. Connect the connected `Production` nodes to any `Actor` nodes with the name "Emma Stone"
+
+As you can see, this is abstract all the way down. If you wanted to only connect `Movie` nodes to `Actor` nodes with name "Emma Stone", you could instead do:
+
+[source, graphql, indent=0]
+----
+mutation CreateActorAndProductions {
+    updateActors(
+        where: { name: "Woody Harrelson" }
+        connect: {
+            actedIn: {
+                where: { node: { title: "Zombieland" } }
+                connect: { _on: { Movie: { actors: { where: { node: { name: "Emma Stone" } } } } } }
+            }
+        }
+    ) {
+        actors {
+            name
+            actedIn {
+                title
+            }
+        }
+    }
+}
+----
+
+Likewise, you could move this up a level to make sure you only connect to `Movie` nodes with title "Zombieland":
+
+[source, graphql, indent=0]
+----
+mutation CreateActorAndProductions {
+    updateActors(
+        where: { name: "Woody Harrelson" }
+        connect: {
+            actedIn: {
+                where: { node: { _on: { Movie: { title: "Zombieland" } } } }
+                connect: { actors: { where: { node: { name: "Emma Stone" } } } }
+            }
+        }
+    ) {
+        actors {
+            name
+            actedIn {
+                title
+            }
+        }
+    }
+}
+----

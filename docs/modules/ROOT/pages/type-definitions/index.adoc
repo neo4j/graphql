@@ -3,7 +3,8 @@
 
 - xref::type-definitions/basics.adoc[Basics] - Learn how to define your nodes and relationships using GraphQL type definitions.
 - xref::type-definitions/types.adoc[Types] - Learn about the various data types available in the Neo4j GraphQL Library.
-- xref::type-definitions/unions-and-interfaces.adoc[Unions and Interfaces] - Learn about two GraphQL concepts, unions and interfaces, and how they map to the Neo4j database.
+- xref::type-definitions/unions.adoc[Unions] - Learn about GraphQL unions and how they map to the Neo4j database.
+- xref::type-definitions/interfaces.adoc[Interfaces] - Learn about GraphQL interfaces and how they map to the Neo4j database.
 - xref::type-definitions/relationships.adoc[Relationships] - Learn more about defining relationships using the Neo4j GraphQL Library.
 - xref::type-definitions/access-control.adoc[Access Control] - Learn about how to restrict access to certain types or fields.
 - xref::type-definitions/autogeneration.adoc[Autogeneration] - Learn about certain types which you can enable autogeneration of values for.

@@ -41,6 +41,7 @@ interface Res {
 interface ProjectionMeta {
     authValidateStrs?: string[];
     connectionFields?: ResolveTree[];
+    interfaceFields?: ResolveTree[];
 }
 
 function createNodeWhereAndParams({
@@ -219,9 +220,9 @@ function createProjectionAndParams({
 
                 referencedNodes.forEach((refNode) => {
                     if (refNode) {
-                        const labelsStatements = refNode.labels.map(
-                            (label) => `"${label}" IN labels(${varName}_${key})`
-                        );
+                        const labelsStatements = refNode
+                            .getLabels(context)
+                            .map((label) => `"${label}" IN labels(${varName}_${key})`);
                         unionWheres.push(`(${labelsStatements.join("AND")})`);
 
                         const innerHeadStr: string[] = [
@@ -323,6 +324,25 @@ function createProjectionAndParams({
             const labels = referenceNode?.getLabelString(context);
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
+
+            if (relationField.interface) {
+                if (!res.meta.interfaceFields) {
+                    res.meta.interfaceFields = [];
+                }
+
+                const f = field;
+
+                res.meta.interfaceFields.push(f);
+
+                let offsetLimitStr = "";
+                if (optionsInput) {
+                    offsetLimitStr = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
+                }
+
+                res.projection.push(`${f.alias}: collect(${f.alias})${offsetLimitStr}`);
+
+                return res;
+            }
 
             if (relationField.union) {
                 const referenceNodes = context.neoSchema.nodes.filter(

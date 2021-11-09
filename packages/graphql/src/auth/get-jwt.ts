@@ -19,6 +19,7 @@
 
 import { IncomingMessage } from "http";
 import jsonwebtoken from "jsonwebtoken";
+import { JwksClient } from "jwks-rsa";
 import Debug from "debug";
 import { Context } from "../types";
 import { DEBUG_AUTH } from "../constants";
@@ -28,6 +29,7 @@ const debug = Debug(DEBUG_AUTH);
 function getJWT(context: Context): any {
     const jwtConfig = context.neoSchema.config?.jwt;
     let result;
+    let client;
 
     if (!jwtConfig) {
         debug("JWT not configured");
@@ -68,8 +70,33 @@ function getJWT(context: Context): any {
             debug("Skipping verifying JWT as noVerify is not set");
 
             result = jsonwebtoken.decode(token);
-        } else {
-            debug("Verifying JWT");
+        } else if (jwtConfig.jwkEndpoint) {
+            debug("Verifying JWT using OpenID Public Key Endpoint");
+
+            // Create a JWK Client with a rate limit that
+            // limits the number of calls to our JWK endpoint
+            client = new JwksClient({
+                jwksUri: jwtConfig.jwkEndpoint,
+                rateLimit: true,
+                jwksRequestsPerMinute: 10, // Default Value
+                cache: true, // Default Value
+                cacheMaxEntries: 5, // Default value
+                cacheMaxAge: 600000, // Defaults to 10m
+            });
+
+            /* eslint-disable-next-line no-inner-declarations */
+            function getKey(header, callback) {
+                client.getSigningKey(header.kid, function (err, key) {
+                    const signingKey = key.getPublicKey();
+                    callback(null, signingKey);
+                });
+            }
+
+            result = jsonwebtoken.verify(token, getKey, {
+                algorithms: ["HS256", "RS256"],
+            });
+        } else if (jwtConfig.secret) {
+            debug("Verifying JWT using secret");
 
             result = jsonwebtoken.verify(token, jwtConfig.secret, {
                 algorithms: ["HS256", "RS256"],

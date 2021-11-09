@@ -20,10 +20,11 @@
 import { Node } from "../classes";
 import createWhereAndParams from "./create-where-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
-import { GraphQLWhereArg, GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField } from "../types";
+import { GraphQLWhereArg, GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField, RelationField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
+import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 
 function translateRead({ node, context }: { context: Context; node: Node }): [string, any] {
     const { resolveTree } = context;
@@ -45,6 +46,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
     let cypherParams: { [k: string]: any } = {};
     const whereStrs: string[] = [];
     const connectionStrs: string[] = [];
+    const interfaceStrs: string[] = [];
 
     const projection = createProjectionAndParams({
         node,
@@ -73,6 +75,23 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
             });
             connectionStrs.push(connection[0]);
             cypherParams = { ...cypherParams, ...connection[1] };
+        });
+    }
+
+    if (projection[2]?.interfaceFields?.length) {
+        projection[2].interfaceFields.forEach((interfaceResolveTree) => {
+            const relationshipField = node.relationFields.find(
+                (x) => x.fieldName === interfaceResolveTree.name
+            ) as RelationField;
+            const interfaceProjection = createInterfaceProjectionAndParams({
+                resolveTree: interfaceResolveTree,
+                field: relationshipField,
+                context,
+                node,
+                nodeVariable: varName,
+            });
+            interfaceStrs.push(interfaceProjection.cypher);
+            cypherParams = { ...cypherParams, ...interfaceProjection.params };
         });
     }
 
@@ -153,6 +172,7 @@ function translateRead({ node, context }: { context: Context; node: Node }): [st
         authStr,
         ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
         ...connectionStrs,
+        ...interfaceStrs,
         `RETURN ${varName} ${projStr} as ${varName}`,
         ...(sortStr ? [sortStr] : []),
         offsetStr,
