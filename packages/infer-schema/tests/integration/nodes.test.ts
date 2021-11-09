@@ -30,7 +30,7 @@ describe("Infer Schema nodes basic tests", () => {
         try {
             await cSession.writeTransaction((tx) => tx.run(`CREATE DATABASE ${dbName}`));
         } catch (e) {
-            console.log(e);
+            // ignore
         }
         const waitSession = driver.session({
             defaultAccessMode: neo4j.session.READ,
@@ -50,7 +50,7 @@ describe("Infer Schema nodes basic tests", () => {
         try {
             await cSession.writeTransaction((tx) => tx.run(`DROP DATABASE ${dbName}`));
         } catch (e) {
-            console.log(e);
+            // ignore
         }
         await driver.close();
     });
