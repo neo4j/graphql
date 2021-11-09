@@ -83,6 +83,8 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             RETURN count(*)
             \\", \\"\\", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies})
             YIELD value as this_acted_in0_relationship_actors0_edge
+            WITH this
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this { .title } AS this"
         `);
 
@@ -150,6 +152,8 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
             CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
             SET this_actors0.name = $this_update_actors0_name
+            WITH this, this_actors0
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this_actors0)-[:ACTED_IN]->(:Movie))), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.movies required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN count(*)
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
             YIELD value as _
@@ -158,6 +162,8 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             RETURN count(*)
             \\", \\"\\", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies})
             YIELD value as this_acted_in0_relationship_actors0_edge
+            WITH this
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this { .title } AS this"
         `);
 
