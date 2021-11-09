@@ -155,7 +155,7 @@ function createRelationshipFields({
                 });
             });
 
-            // ADD HERE (for extra field)
+            // TODO: add connectOrCreate?
             const updateFieldInput = schemaComposer.getOrCreateITC(
                 `${sourceName}${upperFirst(rel.fieldName)}UpdateFieldInput`,
                 (tc) => {
@@ -342,6 +342,7 @@ function createRelationshipFields({
                     });
                 }
 
+                // TODO: update fields connect or create?
                 const updateFields: Record<string, string> = {
                     where: whereName,
                     update: connectionUpdateInputName,
@@ -350,6 +351,18 @@ function createRelationshipFields({
                     create,
                     delete: rel.typeMeta.array ? `[${deleteName}!]` : deleteName,
                 };
+
+                const connectOrCreate = createConnectOrCreateField({
+                    rel,
+                    node: n,
+                    schemaComposer,
+                    hasNonGeneratedProperties,
+                    hasNonNullNonGeneratedProperties,
+                });
+
+                if (connectOrCreate) {
+                    updateFields.connectOrCreate = connectOrCreate;
+                }
 
                 const updateName = `${unionPrefix}UpdateFieldInput`;
                 const update = rel.typeMeta.array ? `[${updateName}!]` : updateName;
@@ -372,12 +385,18 @@ function createRelationshipFields({
                     },
                 });
 
+                const fieldInputFields = {
+                    create,
+                    connect,
+                } as Record<string, string>;
+
+                if (connectOrCreate) {
+                    fieldInputFields.connectOrCreate = connectOrCreate;
+                }
+
                 schemaComposer.createInputTC({
                     name: nodeFieldInputName,
-                    fields: {
-                        create,
-                        connect,
-                    },
+                    fields: fieldInputFields,
                 });
 
                 schemaComposer.createInputTC({
@@ -460,6 +479,7 @@ function createRelationshipFields({
             return;
         }
 
+        // UNION END
         const n = nodes.find((x) => x.name === rel.typeMeta.name) as Node;
         const updateField = `${n.name}UpdateInput`;
 
