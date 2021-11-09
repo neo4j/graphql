@@ -33,8 +33,7 @@
         "build": "tsc --project src/",
         "build:clean": "run-s clean build",
         "watch": "tsc -w",
-        "start": "run-s build:clean watch",
-        "conditional-publish": "(node ./scripts/check-version.js && npm publish --access=public) ; exit 0"
+        "start": "run-s build:clean watch"
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
