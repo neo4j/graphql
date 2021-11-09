@@ -22,7 +22,7 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../src";
 
-describe("Aggregations", () => {
+describe("Connect Or Create", () => {
     test("Connect Or Create", () => {
         const typeDefs = gql`
             type Movie {
