@@ -341,7 +341,6 @@ function createRelationshipFields({
                     });
                 }
 
-                // TODO: update fields connect or create?
                 const updateFields: Record<string, string> = {
                     where: whereName,
                     update: connectionUpdateInputName,
@@ -478,7 +477,6 @@ function createRelationshipFields({
             return;
         }
 
-        // UNION END
         const n = nodes.find((x) => x.name === rel.typeMeta.name) as Node;
         const updateField = `${n.name}UpdateInput`;
 
