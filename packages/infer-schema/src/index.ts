@@ -57,15 +57,15 @@ type RelationshipRecord = {
 
 export async function inferSchema(session: Session): Promise<string> {
     // Nodes
-    const neo4jNodes = await inferNodes(session);
+    const typeNodes = await inferNodes(session);
 
     // Rels
-    const neo4jRels = await inferRelationships(session);
+    const relationships = await inferRelationships(session);
 
-    const hydratedNodes = hydrateRelationships(neo4jNodes, neo4jRels);
+    const hydratedNodes = hydrateRelationships(typeNodes, relationships);
 
     const sorted = Object.keys(hydratedNodes).sort();
-    return sorted.map((typeName) => neo4jNodes[typeName].toString()).join("\n\n");
+    return sorted.map((typeName) => typeNodes[typeName].toString()).join("\n\n");
 }
 
 function hydrateRelationships(nodes: NodeMap, rels: RelationshipMap): NodeMap {
@@ -173,7 +173,7 @@ async function inferNodes(session: Session): Promise<NodeMap> {
             counter += 1;
         }
         takenTypeNames.push(uniqueTypeName);
-        const neo4jNode = new TypeNode(uniqueTypeName, mainLabel, nodeLabels.slice(1));
+        const typeNode = new TypeNode(uniqueTypeName, mainLabel, nodeLabels.slice(1));
         propertiesRows.forEach((propertyRow) => {
             if (!propertyRow.propertyTypes) {
                 if (debug.enabled) {
@@ -190,15 +190,15 @@ async function inferNodes(session: Session): Promise<NodeMap> {
                 }
                 return;
             }
-            neo4jNode.addField(
+            typeNode.addField(
                 new NodeField(
                     propertyRow.propertyName,
                     mapNeo4jToGraphQLType(propertyRow.propertyTypes, propertyRow.mandatory)
                 )
             );
         });
-        if (neo4jNode.fields.length) {
-            nodes[mainLabel] = neo4jNode;
+        if (typeNode.fields.length) {
+            nodes[mainLabel] = typeNode;
         }
     });
     return nodes;
