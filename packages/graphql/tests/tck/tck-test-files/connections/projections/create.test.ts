@@ -79,6 +79,8 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
+            WITH this0
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this0
             }
             CALL {
@@ -126,11 +128,15 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
+            WITH this0
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this0
             }
             CALL {
             CREATE (this1:Movie)
             SET this1.title = $this1_title
+            WITH this1
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this1)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this1
             }
             CALL {
@@ -186,11 +192,15 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
+            WITH this0
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this0
             }
             CALL {
             CREATE (this1:Movie)
             SET this1.title = $this1_title
+            WITH this1
+            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this1)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this1
             }
             CALL {

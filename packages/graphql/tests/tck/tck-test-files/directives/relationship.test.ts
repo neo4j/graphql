@@ -161,9 +161,9 @@ describe("Cypher relationship", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_title\\": \\"some title\\",
                 \\"this_topActor_movies_title\\": \\"top actor movie\\",
-                \\"this_topActor_name\\": \\"top actor\\",
-                \\"this_title\\": \\"some title\\"
+                \\"this_topActor_name\\": \\"top actor\\"
             }"
         `);
     });

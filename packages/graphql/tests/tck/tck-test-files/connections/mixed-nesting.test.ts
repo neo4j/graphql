@@ -91,6 +91,7 @@ describe("Mixed nesting", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_title\\": \\"Forrest Gump\\",
                 \\"this_actor_movies_title_NOT\\": \\"Forrest Gump\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
@@ -100,8 +101,7 @@ describe("Mixed nesting", () => {
                             }
                         }
                     }
-                },
-                \\"this_title\\": \\"Forrest Gump\\"
+                }
             }"
         `);
     });
@@ -160,6 +160,7 @@ describe("Mixed nesting", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_title\\": \\"Forrest Gump\\",
                 \\"this_actor_movie_actors_name_NOT\\": \\"Tom Hanks\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
@@ -182,8 +183,7 @@ describe("Mixed nesting", () => {
                             }
                         }
                     }
-                },
-                \\"this_title\\": \\"Forrest Gump\\"
+                }
             }"
         `);
     });
@@ -227,6 +227,7 @@ describe("Mixed nesting", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_title\\": \\"Forrest Gump\\",
                 \\"this_actors_moviesConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -236,8 +237,7 @@ describe("Mixed nesting", () => {
                         }
                     }
                 },
-                \\"this_actors_name\\": \\"Tom Hanks\\",
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"this_actors_name\\": \\"Tom Hanks\\"
             }"
         `);
     });
