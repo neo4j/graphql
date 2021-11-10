@@ -17,13 +17,17 @@
  * limitations under the License.
  */
 
+import Debug from "debug";
 import { Session } from "neo4j-driver";
 import { NodeField } from "./classes/NodeField";
 import { RelationshipDirective } from "./classes/RelationshipDirective";
 import { RelationshipType } from "./classes/RelationshipType";
 import { TypeNode } from "./classes/TypeNode";
+import { DEBUG_INFER_SCHEMA } from "./constants";
 import { inferRelationshipFieldName } from "./infer-relationship-field-name";
 import { mapNeo4jToGraphQLType } from "./map-neo4j-to-graphql-type";
+
+const debug = Debug(DEBUG_INFER_SCHEMA);
 
 type NodeMap = {
     [key: string]: TypeNode;
