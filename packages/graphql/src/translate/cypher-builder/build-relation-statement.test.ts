@@ -38,7 +38,7 @@ describe("build relation statement", () => {
             name: "AnotherNode",
         }).instance();
     });
-    it("build relation statement", () => {
+    test("build relation statement", () => {
         const relationField = new RelationFieldBuilder().instance();
         const statement = buildRelationStatement({
             leftNode: {
@@ -60,7 +60,7 @@ describe("build relation statement", () => {
         expect(statement[1]).toEqual({});
     });
 
-    it("build relation statement with different direction and label", () => {
+    test("build relation statement with different direction and label", () => {
         const relationField = new RelationFieldBuilder({ direction: "IN", type: "MyRelation" }).instance();
         const statement = buildRelationStatement({
             leftNode: {
@@ -82,7 +82,7 @@ describe("build relation statement", () => {
         expect(statement[1]).toEqual({});
     });
 
-    it("build relation statement with node parameters", () => {
+    test("build relation statement with node parameters", () => {
         const relationField = new RelationFieldBuilder({ direction: "IN", type: "MyRelation" }).instance();
         const statement = buildRelationStatement({
             leftNode: {

@@ -29,7 +29,7 @@ describe("build node statement", () => {
         context = new ContextBuilder().instance();
     });
 
-    it("build simple node statement", () => {
+    test("build simple node statement", () => {
         const statement = buildNodeStatement({
             varName: "this",
             context,
@@ -39,7 +39,7 @@ describe("build node statement", () => {
         expect(statement[1]).toEqual({});
     });
 
-    it("build node statement with labels", () => {
+    test("build node statement with labels", () => {
         const node = new NodeBuilder({ name: "TestLabel" }).instance();
         const statement = buildNodeStatement({
             varName: "this",
@@ -51,7 +51,7 @@ describe("build node statement", () => {
         expect(statement[1]).toEqual({});
     });
 
-    it("build node statement with parameters", () => {
+    test("build node statement with parameters", () => {
         const node = new NodeBuilder({ name: "TestLabel" }).instance();
         const statement = buildNodeStatement({
             varName: "this",

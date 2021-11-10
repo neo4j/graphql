@@ -36,7 +36,7 @@ describe("build merge statement", () => {
         }).instance();
     });
     describe("node merge", () => {
-        it("build merge node statement", () => {
+        test("build simple merge node statement", () => {
             const statement = buildMergeStatement({
                 leftNode: {
                     varName: "this",
@@ -49,7 +49,7 @@ describe("build merge statement", () => {
             expect(statement[1]).toEqual({});
         });
 
-        it("build merge node statement with onCreate", () => {
+        test("build merge node statement with onCreate", () => {
             const statement = buildMergeStatement({
                 leftNode: {
                     varName: "this",
@@ -74,7 +74,7 @@ describe("build merge statement", () => {
         });
     });
     describe("relation merge", () => {
-        it("build merge relation statement", () => {
+        test("build merge relation statement", () => {
             const relationField = new RelationFieldBuilder().instance();
             const statement = buildMergeStatement({
                 leftNode: {
@@ -93,7 +93,7 @@ describe("build merge statement", () => {
             expect(statement[1]).toEqual({});
         });
 
-        it("build merge relation statement with onCreate", () => {
+        test("build merge relation statement with onCreate", () => {
             const relationField = new RelationFieldBuilder().instance();
             const statement = buildMergeStatement({
                 leftNode: {

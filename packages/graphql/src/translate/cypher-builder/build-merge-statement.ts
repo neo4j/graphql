@@ -18,7 +18,7 @@
  */
 
 import { Context, RelationField } from "../../types";
-import { Node } from "../../classes";
+import { Node, Neo4jGraphQLCypherBuilderError } from "../../classes";
 import { CypherStatement } from "../types";
 import { joinStrings } from "../../utils/utils";
 import { buildNodeStatement } from "./build-node-statement";
@@ -75,7 +75,10 @@ export function buildMergeStatement({
         onCreateStatements.push(buildOnCreate(rightNode.onCreate, rightNode.varName));
     }
 
-    if (relation && rightNode) {
+    if (relation || rightNode) {
+        if (!relation) throw new Neo4jGraphQLCypherBuilderError("Missing relation in Cypher merge relation statement");
+        if (!rightNode)
+            throw new Neo4jGraphQLCypherBuilderError("Missing rightnode in Cypher merge relation statement");
         const relationshipName = relation.varName || `${leftNode.varName}_relationship_${rightNode.varName}`;
         leftStatement = buildRelationStatement({
             context,

@@ -86,7 +86,7 @@ describe(`Field Level Auth Where Requests`, () => {
         await driver.close();
     });
 
-    it("unauthenticated query on normal field", async () => {
+    test("unauthenticated query on normal field", async () => {
         const query = `query {
             ${typeMovie.plural} {
                 ${typeActor.plural}Aggregate {
@@ -107,7 +107,7 @@ describe(`Field Level Auth Where Requests`, () => {
         expect(gqlResult.errors).toBeUndefined();
     });
 
-    it("unauthenticated query on auth field", async () => {
+    test("unauthenticated query on auth field", async () => {
         const query = `query {
             ${typeMovie.plural} {
                 ${typeActor.plural}Aggregate {
@@ -128,7 +128,7 @@ describe(`Field Level Auth Where Requests`, () => {
         expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
     });
 
-    it("authenticated query on auth field", async () => {
+    test("authenticated query on auth field", async () => {
         const query = `query {
             ${typeMovie.plural} {
                 ${typeActor.plural}Aggregate {

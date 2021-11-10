@@ -96,7 +96,7 @@ describe(`Field Level Auth Where Requests`, () => {
         await driver.close();
     });
 
-    it("authenticated query", async () => {
+    test("authenticated query", async () => {
         const query = `query {
             ${typeMovie.plural} {
                 ${typeActor.plural}Aggregate {
@@ -120,7 +120,7 @@ describe(`Field Level Auth Where Requests`, () => {
         });
     });
 
-    it("unauthenticated query", async () => {
+    test("unauthenticated query", async () => {
         const query = `query {
             ${typeMovie.plural} {
                 ${typeActor.plural}Aggregate {
@@ -137,7 +137,7 @@ describe(`Field Level Auth Where Requests`, () => {
         expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
     });
 
-    it("authenticated query with wrong credentials", async () => {
+    test("authenticated query with wrong credentials", async () => {
         const query = `query {
             ${typeMovie.plural} {
                 ${typeActor.plural}Aggregate {

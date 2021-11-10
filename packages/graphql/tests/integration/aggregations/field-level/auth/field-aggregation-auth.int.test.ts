@@ -102,7 +102,7 @@ describe("Field Level Aggregations Auth", () => {
                 req.headers.authorization = `Bearer ${token}`;
             });
 
-            it("accepts authenticated requests to movie -> actorAggregate", async () => {
+            test("accepts authenticated requests to movie -> actorAggregate", async () => {
                 const query = `query {
                 ${typeMovie.plural} {
                     ${typeActor.plural}Aggregate {
@@ -119,7 +119,7 @@ describe("Field Level Aggregations Auth", () => {
                 expect(gqlResult.errors).toBeUndefined();
             });
 
-            it("accepts authenticated requests to actor -> movieAggregate", async () => {
+            test("accepts authenticated requests to actor -> movieAggregate", async () => {
                 const query = `query {
                 ${typeActor.plural} {
                     ${typeMovie.plural}Aggregate {
@@ -136,7 +136,7 @@ describe("Field Level Aggregations Auth", () => {
                 expect(gqlResult.errors).toBeUndefined();
             });
 
-            it("rejects unauthenticated requests to movie -> actorAggregate", async () => {
+            test("rejects unauthenticated requests to movie -> actorAggregate", async () => {
                 const query = `query {
                 ${typeMovie.plural} {
                     ${typeActor.plural}Aggregate {
@@ -153,7 +153,7 @@ describe("Field Level Aggregations Auth", () => {
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             });
 
-            it("rejects unauthenticated requests to actor -> movieAggregate", async () => {
+            test("rejects unauthenticated requests to actor -> movieAggregate", async () => {
                 const query = `query {
                 ${typeActor.plural} {
                     ${typeMovie.plural}Aggregate {
@@ -207,7 +207,7 @@ describe("Field Level Aggregations Auth", () => {
                 );
             });
 
-            it("authenticated query", async () => {
+            test("authenticated query", async () => {
                 const query = `query {
                     ${typeActor.plural} {
                         ${typeMovie.plural}Aggregate {
@@ -228,7 +228,7 @@ describe("Field Level Aggregations Auth", () => {
                 expect(gqlResult.errors).toBeUndefined();
             });
 
-            it("unauthenticated query", async () => {
+            test("unauthenticated query", async () => {
                 const query = `query {
                     ${typeActor.plural} {
                         ${typeMovie.plural}Aggregate {
@@ -245,7 +245,7 @@ describe("Field Level Aggregations Auth", () => {
                 expect((gqlResult.errors as any[])[0].message).toEqual("Unauthenticated");
             });
 
-            it("authenticated query with wrong credentials", async () => {
+            test("authenticated query with wrong credentials", async () => {
                 const query = `query {
                     ${typeActor.plural} {
                         ${typeMovie.plural}Aggregate {
