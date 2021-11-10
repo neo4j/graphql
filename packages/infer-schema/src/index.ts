@@ -26,6 +26,7 @@ import { TypeNode } from "./classes/TypeNode";
 import { DEBUG_INFER_SCHEMA } from "./constants";
 import { inferRelationshipFieldName } from "./infer-relationship-field-name";
 import { mapNeo4jToGraphQLType } from "./map-neo4j-to-graphql-type";
+import { uniqueString } from "./unique-string";
 
 const debug = Debug(DEBUG_INFER_SCHEMA);
 
@@ -165,14 +166,10 @@ async function inferNodes(session: Session): Promise<NodeMap> {
         const { nodeLabels } = propertiesRows[0];
         const mainLabel = nodeLabels[0];
         const typeName = mainLabel.replace(/[^_0-9A-Z]+/gi, "_");
-        let counter = 2;
-        let uniqueTypeName = typeName;
-        // Avoid type name clashes
-        while (takenTypeNames.includes(uniqueTypeName)) {
-            uniqueTypeName = typeName + String(counter);
-            counter += 1;
-        }
+
+        const uniqueTypeName = uniqueString(typeName, takenTypeNames);
         takenTypeNames.push(uniqueTypeName);
+
         const typeNode = new TypeNode(uniqueTypeName, mainLabel, nodeLabels.slice(1));
         propertiesRows.forEach((propertyRow) => {
             if (!propertyRow.propertyTypes) {
