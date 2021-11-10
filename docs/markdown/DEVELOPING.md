@@ -31,7 +31,7 @@ git@github.com:USERNAME/graphql.git
 You will then need to add our repository as an upstream:
 
 ```bash
-git add remote upstream git@github.com/neo4j/graphql.git
+git remote add upstream git@github.com:neo4j/graphql.git
 ```
 
 You can then fetch and merge from the upstream to keep in sync.

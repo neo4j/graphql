@@ -90,7 +90,11 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WHERE distance(this_actor.currentLocation, point($this_actorsConnection.args.where.node.currentLocation_DISTANCE.point)) = $this_actorsConnection.args.where.node.currentLocation_DISTANCE.distance
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, currentLocation: { point: this_actor.currentLocation } } }) AS edges
+            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, currentLocation: apoc.cypher.runFirstColumn('RETURN
+            CASE this_actor.currentLocation IS NOT NULL
+            	WHEN true THEN { point: this_actor.currentLocation }
+            	ELSE NULL
+            END AS result',{ this_actor: this_actor },false) } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
