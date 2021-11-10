@@ -19,10 +19,11 @@
 
 import Debug from "debug";
 import { Session } from "neo4j-driver";
+import { NodeDirective } from "./classes/NodeDirective";
 import { NodeField } from "./classes/NodeField";
 import { Relationship } from "./classes/Relationship";
 import { RelationshipDirective } from "./classes/RelationshipDirective";
-import { TypeNode } from "./classes/TypeNode";
+import { GraphQLNode } from "./classes/GraphQLNode";
 import { DEBUG_INFER_SCHEMA } from "./constants";
 import { inferRelationshipFieldName } from "./infer-relationship-field-name";
 import { mapNeo4jToGraphQLType } from "./map-neo4j-to-graphql-type";
@@ -31,7 +32,7 @@ import { uniqueString } from "./unique-string";
 const debug = Debug(DEBUG_INFER_SCHEMA);
 
 type NodeMap = {
-    [key: string]: TypeNode;
+    [key: string]: GraphQLNode;
 };
 
 type NodeTypePropertiesRecord = {
@@ -173,7 +174,14 @@ async function inferNodes(sessionFactory: () => Session): Promise<NodeMap> {
         const uniqueTypeName = uniqueString(typeName, takenTypeNames);
         takenTypeNames.push(uniqueTypeName);
 
-        const typeNode = new TypeNode(uniqueTypeName, mainLabel, nodeLabels.slice(1));
+        const node = new GraphQLNode("type", uniqueTypeName);
+        const nodeDirective = new NodeDirective();
+        if (mainLabel !== uniqueTypeName) {
+            nodeDirective.addLabel(mainLabel);
+        }
+        nodeDirective.addAdditionalLabels(nodeLabels.slice(1));
+        node.addDirective(nodeDirective);
+
         propertiesRows.forEach((propertyRow) => {
             if (!propertyRow.propertyTypes) {
                 if (debug.enabled) {
@@ -190,15 +198,15 @@ async function inferNodes(sessionFactory: () => Session): Promise<NodeMap> {
                 }
                 return;
             }
-            typeNode.addField(
+            node.addField(
                 new NodeField(
                     propertyRow.propertyName,
                     mapNeo4jToGraphQLType(propertyRow.propertyTypes, propertyRow.mandatory)
                 )
             );
         });
-        if (typeNode.fields.length) {
-            nodes[mainLabel] = typeNode;
+        if (node.fields.length) {
+            nodes[mainLabel] = node;
         }
     });
     return nodes;

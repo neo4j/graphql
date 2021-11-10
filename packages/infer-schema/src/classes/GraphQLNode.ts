@@ -17,25 +17,23 @@
  * limitations under the License.
  */
 
-import { NodeDirective } from "./NodeDirective";
+import { Directive } from "../types";
 import { NodeField } from "./NodeField";
 
-type NodeDirectives = {
-    node: NodeDirective;
-};
+type NodeType = "type" | "interface";
 
-export class TypeNode {
-    label: string;
+export class GraphQLNode {
+    type: NodeType;
     typeName: string;
     fields: NodeField[] = [];
-    directives: NodeDirectives = { node: new NodeDirective() };
-    constructor(typeName: string, label: string, additionalLabels: string[] = []) {
+    directives: Directive[] = [];
+    constructor(type: NodeType, typeName: string) {
+        this.type = type;
         this.typeName = typeName;
-        this.label = label;
-        if (this.label !== this.typeName) {
-            this.directives.node.addLabel(this.label);
-        }
-        this.directives.node.addAdditionalLabels(additionalLabels);
+    }
+
+    addDirective(d: Directive) {
+        this.directives.push(d);
     }
 
     addField(field: NodeField) {
@@ -47,7 +45,7 @@ export class TypeNode {
         let innerParts: string[] = [];
         innerParts = innerParts.concat(this.fields.map((field) => field.toString()));
 
-        parts.push(`type ${this.typeName} ${this.directives.node.toString()}{`);
+        parts.push(`${this.type} ${this.typeName} ${this.directives.map((d) => d.toString()).join(" ")}{`);
         parts.push(innerParts);
         parts.push(`}`);
         return parts.map((p) => (Array.isArray(p) ? `\t${p.join("\n\t")}` : p)).join("\n");
