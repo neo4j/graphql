@@ -122,12 +122,12 @@ describe("Infer Schema nodes basic tests", () => {
         await session.close();
         // Then
         expect(schema).toMatchInlineSnapshot(`
-            "type TestLabel2 {
-            	singleProp: Int!
+            "type TestLabel {
+            	strProp: String!
             }
 
-            type TestLabel {
-            	strProp: String!
+            type TestLabel2 {
+            	singleProp: Int!
             }"
         `);
     });
@@ -151,12 +151,12 @@ describe("Infer Schema nodes basic tests", () => {
         await session.close();
         // Then
         expect(schema).toMatchInlineSnapshot(`
-            "type TestLabel2 @node(additonalLabels: [\\"TestLabel3\\"]) {
-            	singleProp: Int!
+            "type TestLabel {
+            	strProp: String!
             }
 
-            type TestLabel {
-            	strProp: String!
+            type TestLabel2 @node(additonalLabels: [\\"TestLabel3\\"]) {
+            	singleProp: Int!
             }"
         `);
     });
@@ -179,12 +179,12 @@ describe("Infer Schema nodes basic tests", () => {
         await session.close();
         // Then
         expect(schema).toMatchInlineSnapshot(`
-            "type Test_Label @node(label: \\"Test\`Label\\") {
-            	strProp: String!
+            "type Test_Label2 @node(label: \\"Test-Label\\") {
+            	singleProp: Int!
             }
 
-            type Test_Label2 @node(label: \\"Test-Label\\") {
-            	singleProp: Int!
+            type Test_Label @node(label: \\"Test\`Label\\") {
+            	strProp: String!
             }"
         `);
     });

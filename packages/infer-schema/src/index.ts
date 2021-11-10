@@ -56,9 +56,8 @@ export async function inferSchema(session: Session): Promise<string> {
 
     const hydratedNodes = hydrateConnections(neo4jNodes, neo4jRels);
 
-    return Object.keys(hydratedNodes)
-        .map((typeName) => neo4jNodes[typeName].toString())
-        .join("\n\n");
+    const sorted = Object.keys(hydratedNodes).sort();
+    return sorted.map((typeName) => neo4jNodes[typeName].toString()).join("\n\n");
 }
 
 function hydrateConnections(nodes: NodeMap, rels: RelationshipMap): NodeMap {
@@ -67,8 +66,16 @@ function hydrateConnections(nodes: NodeMap, rels: RelationshipMap): NodeMap {
         connections.forEach((connection) => {
             const from = nodes[connection.from];
             const to = nodes[connection.to];
-            from.addRelationshipField(connection, "OUT", to.typeName);
-            to.addRelationshipField(connection, "IN", from.typeName);
+
+            const fromField = new NodeField(camelcase(connection.type + to.typeName), `[${to.typeName}]`);
+            const fromDirective = new RelationshipDirective(connection.type, "OUT");
+            fromField.addDirective(fromDirective);
+            from.addField(fromField);
+
+            const toField = new NodeField(camelcase(from.typeName + connection.type), `[${from.typeName}]`);
+            const toDirective = new RelationshipDirective(connection.type, "IN");
+            toField.addDirective(toDirective);
+            to.addField(toField);
         });
     });
     return nodes;
@@ -135,6 +142,7 @@ async function inferNodes(session: Session): Promise<NodeMap> {
     const nodeTypeProperties = labelPropsRes.records.map((r) => r.toObject()) as NodeTypePropertiesRecord[];
 
     // Find unique "nodeType"s to build Neo4jNode instances
+    const takenTypeNames: string[] = [];
     new Set(nodeTypeProperties.map((nt) => nt.nodeType)).forEach((nodeType) => {
         const propertiesRows = nodeTypeProperties.filter((nt) => nt.nodeType === nodeType);
         if (!propertiesRows) {
@@ -145,15 +153,19 @@ async function inferNodes(session: Session): Promise<NodeMap> {
         const typeName = mainLabel.replace(/[^_0-9A-Z]+/gi, "_");
         let counter = 2;
         let uniqueTypeName = typeName;
-        while (typeof nodes[uniqueTypeName] !== "undefined") {
+        // Avoid type name clashes
+        while (takenTypeNames.includes(uniqueTypeName)) {
             uniqueTypeName = typeName + String(counter);
             counter += 1;
         }
+        takenTypeNames.push(uniqueTypeName);
         const neo4jNode = new Neo4jNode(uniqueTypeName, mainLabel, nodeLabels.slice(1));
         propertiesRows.forEach((propertyRow) =>
             neo4jNode.addField(
-                propertyRow.propertyName,
-                mapNeo4jToGraphQLType(propertyRow.propertyTypes, propertyRow.mandatory)
+                new NodeField(
+                    propertyRow.propertyName,
+                    mapNeo4jToGraphQLType(propertyRow.propertyTypes, propertyRow.mandatory)
+                )
             )
         );
         nodes[mainLabel] = neo4jNode;
@@ -171,13 +183,6 @@ class Connection {
         this.from = from;
         this.to = to;
         this.type = type;
-    }
-
-    toString(direction: Direction) {
-        const args: string[] = [];
-        args.push(`type: "${this.type}"`);
-        args.push(`direction: ${direction}`);
-        return `@relationship(${args.join(", ")})`;
     }
 }
 class Neo4jRelationship {
@@ -197,16 +202,10 @@ class Neo4jRelationship {
 type NodeDirectives = {
     node: NodeDirective;
 };
-type RelationshipFields = {
-    IN: RelationshipField[];
-    OUT: RelationshipField[];
-};
-type RelationshipField = { relationship: Connection; remoteTypeName: string };
 class Neo4jNode {
     label: string;
     typeName: string;
-    fields: string[][] = [];
-    relationshipFields: RelationshipFields = { IN: [], OUT: [] };
+    fields: NodeField[] = [];
     directives: NodeDirectives = { node: new NodeDirective() };
     constructor(typeName: string, label: string, additionalLabels: string[] = []) {
         this.typeName = typeName;
@@ -217,34 +216,14 @@ class Neo4jNode {
         this.directives.node.addAdditionalLabels(additionalLabels);
     }
 
-    addField(name: string, type: string) {
-        this.fields.push([name, type]);
-    }
-
-    addRelationshipField(relationship: Connection, direction: Direction, remoteTypeName: string) {
-        this.relationshipFields[direction].push({ relationship, remoteTypeName });
+    addField(field: NodeField) {
+        this.fields.push(field);
     }
 
     toString() {
         const parts: (string | string[])[] = [];
         let innerParts: string[] = [];
-        innerParts = innerParts.concat(this.fields.map(([name, type]) => `${name}: ${type}`));
-        innerParts = innerParts.concat(
-            this.relationshipFields.OUT.map(
-                (c) =>
-                    `${camelcase(c.relationship.type + c.remoteTypeName)}: [${
-                        c.remoteTypeName
-                    }] ${c.relationship.toString("OUT")}`
-            )
-        );
-        innerParts = innerParts.concat(
-            this.relationshipFields.IN.map(
-                (c) =>
-                    `${camelcase(c.remoteTypeName + c.relationship.type)}: [${
-                        c.remoteTypeName
-                    }] ${c.relationship.toString("IN")}`
-            )
-        );
+        innerParts = innerParts.concat(this.fields.map((field) => field.toString()));
 
         parts.push(`type ${this.typeName} ${this.directives.node.toString()}{`);
         parts.push(innerParts);
@@ -252,8 +231,45 @@ class Neo4jNode {
         return parts.map((p) => (Array.isArray(p) ? `\t${p.join("\n\t")}` : p)).join("\n");
     }
 }
+class NodeField {
+    name: string;
+    type: string;
+    directives: Directive[] = [];
+    constructor(name: string, type: string) {
+        this.name = name;
+        this.type = type;
+    }
 
-class NodeDirective {
+    addDirective(d: Directive) {
+        this.directives.push(d);
+    }
+
+    toString() {
+        const directiveString = this.directives?.map((d) => d.toString()).join(" ") || "";
+        return `${this.name}: ${this.type}${directiveString ? ` ${directiveString}` : ""}`;
+    }
+}
+
+interface Directive {
+    toString(): string;
+}
+class RelationshipDirective implements Directive {
+    direction: Direction;
+    type: string;
+    constructor(type: string, direction: Direction) {
+        this.type = type;
+        this.direction = direction;
+    }
+
+    toString() {
+        const args: string[] = [];
+        args.push(`type: "${this.type}"`);
+        args.push(`direction: ${this.direction}`);
+        return `@relationship(${args.join(", ")})`;
+    }
+}
+
+class NodeDirective implements Directive {
     label?: string;
     additionalLabels: string[] = [];
 
