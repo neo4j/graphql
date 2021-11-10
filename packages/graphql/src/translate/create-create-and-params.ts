@@ -246,7 +246,7 @@ function createCreateAndParams({
         creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
     }
 
-    let relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
+    const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
     if (relationshipValidationStr) {
         creates.push(`WITH ${withVars.join(", ")}`);
         creates.push(relationshipValidationStr);
