@@ -79,12 +79,12 @@ describe("Infer Schema on graphs", () => {
         expect(schema).toMatchInlineSnapshot(`
             "type Actor {
             	name: String!
-            	actedInMovie: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT)
+            	actedInMovies: [Movie] @relationship(type: \\"ACTED_IN\\", direction: OUT)
             }
 
             type Movie {
             	title: String!
-            	actorActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN)
+            	actorsActedIn: [Actor] @relationship(type: \\"ACTED_IN\\", direction: IN)
             }"
         `);
     });

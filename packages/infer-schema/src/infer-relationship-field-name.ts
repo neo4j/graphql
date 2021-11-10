@@ -18,6 +18,7 @@
  */
 
 import camelcase from "camelcase";
+import pluralize from "pluralize";
 import { Direction } from "./types";
 
 export function inferRelationshipFieldName(
@@ -27,7 +28,7 @@ export function inferRelationshipFieldName(
     direction: Direction
 ): string {
     if (direction === "OUT") {
-        return camelcase(relType + toType);
+        return camelcase(relType + pluralize(toType));
     }
-    return camelcase(fromType + relType);
+    return camelcase(pluralize(fromType) + relType);
 }
