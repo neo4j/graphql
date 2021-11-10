@@ -512,8 +512,13 @@ function makeAugmentedSchema(
         const input = isString(nameOrInput) ? composer.getITC(nameOrInput) : nameOrInput;
 
         if (input.getFieldNames().length === 0) {
+            const faqURL = `https://neo4j.com/docs/graphql-manual/current/troubleshooting/faqs/`;
             input.addFields({
-                _emptyInput: 'Boolean',
+                _emptyInput: {
+                    type: 'Boolean',
+                    description: `Appears because this input type would be empty otherwise because this type is ` +
+                        `composed of just generated and/or relationship properties. See ${ faqURL }`,
+                },
             });
         }
     }
