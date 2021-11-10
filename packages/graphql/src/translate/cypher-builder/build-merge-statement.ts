@@ -26,24 +26,6 @@ import { joinStatements } from "../utils";
 import { buildRelationStatement } from "./build-relation-statement";
 import { generateParameterKey } from "./utils";
 
-// type TargetNode = {
-//     varName: string;
-//     node?: Node;
-//     parameters?: Record<string, any>;
-//     onCreate?: Record<string, any>;
-// };
-//
-// type MergeNodeArguments = {
-//     node: TargetNode & { node: Node };
-//     context: Context;
-// };
-//
-// type MergeRelationArguments = {
-//     node: TargetNode;
-//     relation: TargetNode & { relationField: RelationField };
-//     context: Context;
-// };
-
 type TargetNode = {
     varName: string;
     node?: Node;
