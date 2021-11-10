@@ -20,7 +20,7 @@
 import { Context } from "../../types";
 import { CypherStatement, CypherParams } from "../types";
 import { Node } from "../../classes";
-import { serializeParamenters, padLeft } from "./utils";
+import { serializeParameters, padLeft } from "./utils";
 
 export function buildNodeStatement({
     varName,
@@ -40,5 +40,5 @@ export function buildNodeStatement({
 }
 
 function parseNodeParameters(nodeVar: string, parameters: CypherParams | undefined): CypherStatement {
-    return serializeParamenters(`${nodeVar}_node`, parameters);
+    return serializeParameters(`${nodeVar}_node`, parameters);
 }

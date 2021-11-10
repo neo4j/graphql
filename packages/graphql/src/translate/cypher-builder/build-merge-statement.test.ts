@@ -129,7 +129,7 @@ describe("build merge statement", () => {
             });
         });
 
-        test("throws if missing relation", () => {
+        test("throws if missing relation data", () => {
             const relationField = new RelationFieldBuilder().instance();
             expect(() => {
                 buildMergeStatement({

@@ -22,7 +22,7 @@ import { Node } from "../../classes";
 import { CypherStatement } from "../types";
 import { buildNodeStatement } from "./build-node-statement";
 import { joinStatements } from "../utils";
-import { serializeParamenters, padLeft } from "./utils";
+import { serializeParameters, padLeft } from "./utils";
 
 type TargetNode = {
     varName: string;
@@ -75,5 +75,5 @@ function getRelationSubStatement({ relationField, varName, parameters }: TargetR
 }
 
 function serializeRelationParameters(varName: string, parameters: Record<string, any> | undefined): CypherStatement {
-    return serializeParamenters(`${varName}_relation`, parameters);
+    return serializeParameters(`${varName}_relation`, parameters);
 }

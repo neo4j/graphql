@@ -29,7 +29,7 @@ export function wrapInCall(statement: string, withVarName: string, returnStateme
 /** Joins all valid cypher statements and params with given separator, ignoring empty or undefined statements */
 export function joinStatements(
     statements: string | CypherStatement | Array<string | undefined | CypherStatement>,
-    separator?: string
+    separator = "\n"
 ): CypherStatement {
     const statementsArray = filterTruthy(arrayfy(statements));
     const statementsStrings = statementsArray.map((statement) => {

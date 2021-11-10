@@ -26,7 +26,7 @@ export function generateParameterKey(preffix: string, key: string): string {
 }
 
 /** Serializes an object and splits between the serialized statement and params */
-export function serializeParamenters(keyPreffix: string, parameters: CypherParams | undefined): CypherStatement {
+export function serializeParameters(keyPreffix: string, parameters: CypherParams | undefined): CypherStatement {
     if (!parameters) return ["", {}];
 
     const cypherParameters: CypherParams = {};
