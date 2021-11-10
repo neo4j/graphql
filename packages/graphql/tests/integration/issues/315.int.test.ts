@@ -36,8 +36,8 @@ describe("https://github.com/neo4j/graphql/issues/315", () => {
 
         type User {
             id: ID!
-            friends: [User!]! @relationship(type: "HAS_FRIEND", direction: OUT)
-            posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+            friends: [User] @relationship(type: "HAS_FRIEND", direction: OUT)
+            posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
         }
 
         type Query {
