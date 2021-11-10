@@ -21,7 +21,6 @@ import Debug from "debug";
 import { Session } from "neo4j-driver";
 import { NodeDirective } from "./classes/NodeDirective";
 import { NodeField } from "./classes/NodeField";
-import { Relationship } from "./classes/Relationship";
 import { RelationshipDirective } from "./classes/RelationshipDirective";
 import { GraphQLNode } from "./classes/GraphQLNode";
 import { DEBUG_INFER_SCHEMA } from "./constants";
@@ -52,6 +51,11 @@ type RelationshipRecord = {
     from: string;
     to: string;
     relType: string;
+};
+type Relationship = {
+    from: string;
+    to: string;
+    type: string;
 };
 
 export async function inferSchema(sessionFactory: () => Session): Promise<string> {
@@ -138,7 +142,7 @@ async function inferRelationships(sessionFactory: () => Session): Promise<Relati
         const { relType } = relationships[0];
         const typeOnly = relType.slice(2, -1);
         relationships.forEach(({ from, to }) => {
-            rels.push(new Relationship(typeOnly, from, to));
+            rels.push({ type: typeOnly, from, to });
         });
     });
 
