@@ -132,7 +132,7 @@ export const nodeDirective = new GraphQLDirective({
         },
         additionalLabels: {
             description: "Map the GraphQL type to match additional Neo4j node labels",
-            type: GraphQLList(new GraphQLNonNull(GraphQLString)),
+            type: new GraphQLList(new GraphQLNonNull(GraphQLString)),
         },
         plural: {
             description: "Defines a custom plural for the Node API",

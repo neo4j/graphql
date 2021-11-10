@@ -39,10 +39,50 @@ describe("Cypher directive", () => {
                         RETURN m
                         """
                     )
+
+                tvShows(title: String): [Movie]
+                    @cypher(
+                        statement: """
+                        MATCH (t:TVShow {title: $title})
+                        RETURN t
+                        """
+                    )
+
+                movieOrTVShow(title: String): [MovieOrTVShow]
+                    @cypher(
+                        statement: """
+                        MATCH (n)
+                        WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
+                        RETURN n
+                        """
+                    )
+
                 randomNumber: Int
                     @cypher(
                         statement: """
                         RETURN rand()
+                        """
+                    )
+            }
+
+            union MovieOrTVShow = Movie | TVShow
+
+            type TVShow {
+                id: ID
+                title: String
+                numSeasons: Int
+                actors: [Actor]
+                    @cypher(
+                        statement: """
+                        MATCH (a:Actor)
+                        RETURN a
+                        """
+                    )
+                topActor: Actor
+                    @cypher(
+                        statement: """
+                        MATCH (a:Actor)
+                        RETURN a
                         """
                     )
             }
@@ -262,6 +302,58 @@ describe("Cypher directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_topActor_movies_title\\": \\"some title\\",
+                \\"auth\\": {
+                    \\"isAuthenticated\\": true,
+                    \\"roles\\": [],
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
+                }
+            }"
+        `);
+    });
+
+    test("Union directive", async () => {
+        const query = gql`
+            {
+                actors {
+                    movieOrTVShow(title: "some title") {
+                        ... on Movie {
+                            id
+                            title
+                            topActor {
+                                name
+                            }
+                        }
+                        ... on TVShow {
+                            id
+                            title
+                            topActor {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            RETURN this { movieOrTVShow: [this_movieOrTVShow IN apoc.cypher.runFirstColumn(\\"MATCH (n)
+            WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
+            RETURN n\\", {this: this, auth: $auth, title: $this_movieOrTVShow_title}, false) WHERE (\\"Movie\\" IN labels(this_movieOrTVShow)) OR (\\"TVShow\\" IN labels(this_movieOrTVShow))  |   [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (\\"Movie\\" IN labels(this_movieOrTVShow)) | this_movieOrTVShow { __resolveType: \\"Movie\\",  .id, .title, topActor: head([this_movieOrTVShow_topActor IN apoc.cypher.runFirstColumn(\\"MATCH (a:Actor)
+            RETURN a\\", {this: this_movieOrTVShow, auth: $auth}, false) | this_movieOrTVShow_topActor { .name }]) } ] + [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (\\"TVShow\\" IN labels(this_movieOrTVShow)) | this_movieOrTVShow { __resolveType: \\"TVShow\\",  .id, .title, topActor: head([this_movieOrTVShow_topActor IN apoc.cypher.runFirstColumn(\\"MATCH (a:Actor)
+            RETURN a\\", {this: this_movieOrTVShow, auth: $auth}, false) | this_movieOrTVShow_topActor { .name }]) } ] ] } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_movieOrTVShow_title\\": \\"some title\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [],

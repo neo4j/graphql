@@ -38,7 +38,8 @@ import assertIndexesAndConstraints, {
 const debug = Debug(DEBUG_GRAPHQL);
 
 export interface Neo4jGraphQLJWT {
-    secret: string;
+    jwkEndpoint?: string;
+    secret?: string;
     noVerify?: boolean;
     rolesPath?: string;
 }
