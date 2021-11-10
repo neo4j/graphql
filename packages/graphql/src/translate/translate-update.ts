@@ -18,33 +18,30 @@
  */
 
 import { Node, Relationship } from "../classes";
-import { Context, GraphQLWhereArg, RelationField, ConnectionField } from "../types";
-import createWhereAndParams from "./create-where-and-params";
+import { Context, RelationField, ConnectionField } from "../types";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import createAuthAndParams from "./create-auth-and-params";
 import createUpdateAndParams from "./create-update-and-params";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { AUTH_FORBIDDEN_ERROR, RELATIONSHIP_REQUIREMENT_PREFIX } from "../constants";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
+import translateTopLevelMatch from "./translate-top-level-match";
 import createRelationshipValidationStr from "./create-relationship-validation-str";
 
 function translateUpdate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { resolveTree } = context;
-    const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const updateInput = resolveTree.args.update;
     const connectInput = resolveTree.args.connect;
     const disconnectInput = resolveTree.args.disconnect;
     const createInput = resolveTree.args.create;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
-    const labels = node.getLabelString(context);
-    const matchStr = `MATCH (${varName}${labels})`;
-    let whereStr = "";
+
+    let matchAndWhereStr = "";
     let updateStr = "";
     const connectStrs: string[] = [];
     const disconnectStrs: string[] = [];
@@ -53,7 +50,11 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     let projAuth = "";
     let projStr = "";
     let cypherParams: { [k: string]: any } = {};
-    const whereStrs: string[] = [];
+
+    const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "UPDATE" });
+    matchAndWhereStr = topLevelMatch[0];
+    cypherParams = { ...cypherParams, ...topLevelMatch[1] };
+
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
     let updateArgs = {};
@@ -64,35 +65,6 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
     const nodeProjection = Object.values(mutationResponse).find(
         (field) => field.name === node.getPlural({ camelCase: true })
     );
-
-    if (whereInput) {
-        const where = createWhereAndParams({
-            whereInput,
-            varName,
-            node,
-            context,
-            recursing: true,
-        });
-        if (where[0]) {
-            whereStrs.push(where[0]);
-            cypherParams = { ...cypherParams, ...where[1] };
-        }
-    }
-
-    const whereAuth = createAuthAndParams({
-        operation: "UPDATE",
-        entity: node,
-        context,
-        where: { varName, node },
-    });
-    if (whereAuth[0]) {
-        whereStrs.push(whereAuth[0]);
-        cypherParams = { ...cypherParams, ...whereAuth[1] };
-    }
-
-    if (whereStrs.length) {
-        whereStr = `WHERE ${whereStrs.join(" AND ")}`;
-    }
 
     if (updateInput) {
         const updateAndParams = createUpdateAndParams({
@@ -385,8 +357,7 @@ function translateUpdate({ node, context }: { node: Node; context: Context }): [
         : `RETURN 'Query cannot conclude with CALL'`;
 
     const cypher = [
-        matchStr,
-        whereStr,
+        matchAndWhereStr,
         updateStr,
         connectStrs.join("\n"),
         disconnectStrs.join("\n"),

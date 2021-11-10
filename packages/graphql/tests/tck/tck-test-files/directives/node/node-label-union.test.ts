@@ -80,9 +80,9 @@ describe("Node directive with unions", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_title\\": \\"some title\\",
                 \\"this_search_Genre_name\\": \\"Horror\\",
-                \\"this_search_Movie_title\\": \\"The Matrix\\",
-                \\"this_title\\": \\"some title\\"
+                \\"this_search_Movie_title\\": \\"The Matrix\\"
             }"
         `);
     });

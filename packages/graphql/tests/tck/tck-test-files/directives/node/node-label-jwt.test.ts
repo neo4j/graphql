@@ -96,11 +96,11 @@ describe("Label in Node directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_movies_title\\": \\"terminator\\",
                 \\"this_age_GT\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                }
+                },
+                \\"this_movies_title\\": \\"terminator\\"
             }"
         `);
     });

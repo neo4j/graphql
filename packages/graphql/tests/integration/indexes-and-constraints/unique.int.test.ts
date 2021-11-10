@@ -21,12 +21,12 @@ import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
-import neo4j from "./neo4j";
-import { Neo4jGraphQL } from "../../src/classes";
-import { generateUniqueType } from "../../src/utils/test/graphql-types";
-import { parseLegacyConstraint } from "../../src/classes/utils/asserts-indexes-and-constraints";
+import neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../../src/utils/test/graphql-types";
+import { parseLegacyConstraint } from "../../../src/classes/utils/asserts-indexes-and-constraints";
 
-describe("assertIndexesAndConstraints", () => {
+describe("assertIndexesAndConstraints/unique", () => {
     let driver: Driver;
     let databaseName: string;
     let MULTIDB_SUPPORT = true;

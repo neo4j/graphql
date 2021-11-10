@@ -24,6 +24,8 @@ import {
     GraphQLNonNull,
     GraphQLList,
     GraphQLBoolean,
+    GraphQLInputObjectType,
+    GraphQLInt,
 } from "graphql";
 import { ExcludeOperationEnum, RelationshipDirectionEnum, TimestampOperationEnum } from "./enums";
 import { ScalarType } from "./scalars";
@@ -210,4 +212,33 @@ export const writeonlyDirective = new GraphQLDirective({
     description:
         "Instructs @neo4j/graphql to only include a field in the generated input types for the object type within which the directive is applied, but exclude it from the object type itself.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
+});
+
+export const fulltextDirective = new GraphQLDirective({
+    name: "fulltext",
+    description:
+        "Informs @neo4j/graphql that there should be a fulltext index in the database, allows users to search by the index in the generated schema.",
+    args: {
+        indexes: {
+            type: new GraphQLNonNull(
+                new GraphQLList(
+                    new GraphQLInputObjectType({
+                        name: "FullTextInput",
+                        fields: {
+                            name: {
+                                type: new GraphQLNonNull(GraphQLString),
+                            },
+                            fields: {
+                                type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
+                            },
+                            defaultThreshold: {
+                                type: GraphQLInt,
+                            },
+                        },
+                    })
+                )
+            ),
+        },
+    },
+    locations: [DirectiveLocation.OBJECT],
 });

@@ -19,51 +19,20 @@
 
 import { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import { BaseField, Context, GraphQLWhereArg, PrimitiveField, TemporalField } from "../types";
+import { BaseField, Context, PrimitiveField, TemporalField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
-import createWhereAndParams from "./create-where-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
+import translateTopLevelMatch from "./translate-top-level-match";
 
 function translateAggregate({ node, context }: { node: Node; context: Context }): [string, any] {
-    const whereInput = context.resolveTree.args.where as GraphQLWhereArg;
     const { fieldsByTypeName } = context.resolveTree;
     const varName = "this";
     let cypherParams: { [k: string]: any } = {};
-    const whereStrs: string[] = [];
     const cypherStrs: string[] = [];
 
-    const labels = node.getLabelString(context);
-
-    cypherStrs.push(`MATCH (${varName}${labels})`);
-
-    if (whereInput) {
-        const where = createWhereAndParams({
-            whereInput,
-            varName,
-            node,
-            context,
-            recursing: true,
-        });
-        if (where[0]) {
-            whereStrs.push(where[0]);
-            cypherParams = { ...cypherParams, ...where[1] };
-        }
-    }
-
-    const whereAuth = createAuthAndParams({
-        operation: "READ",
-        entity: node,
-        context,
-        where: { varName, node },
-    });
-    if (whereAuth[0]) {
-        whereStrs.push(whereAuth[0]);
-        cypherParams = { ...cypherParams, ...whereAuth[1] };
-    }
-
-    if (whereStrs.length) {
-        cypherStrs.push(`WHERE ${whereStrs.join(" AND ")}`);
-    }
+    const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });
+    cypherStrs.push(topLevelMatch[0]);
+    cypherParams = { ...cypherParams, ...topLevelMatch[1] };
 
     const allowAuth = createAuthAndParams({
         operation: "READ",

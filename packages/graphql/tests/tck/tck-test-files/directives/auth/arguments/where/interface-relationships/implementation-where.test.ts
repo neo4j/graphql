@@ -173,8 +173,8 @@ describe("Cypher Auth Where", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_Post_auth_where0_creator_id\\": \\"id-01\\",
-                \\"this_auth_where0_id\\": \\"id-01\\"
+                \\"this_auth_where0_id\\": \\"id-01\\",
+                \\"this_Post_auth_where0_creator_id\\": \\"id-01\\"
             }"
         `);
     });
@@ -227,8 +227,8 @@ describe("Cypher Auth Where", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_Post_auth_where0_creator_id\\": \\"id-01\\",
-                \\"this_auth_where0_id\\": \\"id-01\\"
+                \\"this_auth_where0_id\\": \\"id-01\\",
+                \\"this_Post_auth_where0_creator_id\\": \\"id-01\\"
             }"
         `);
     });
@@ -282,6 +282,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_auth_where0_id\\": \\"id-01\\",
                 \\"this_Post_auth_where0_creator_id\\": \\"id-01\\",
                 \\"this_contentConnection\\": {
                     \\"args\\": {
@@ -291,8 +292,7 @@ describe("Cypher Auth Where", () => {
                             }
                         }
                     }
-                },
-                \\"this_auth_where0_id\\": \\"id-01\\"
+                }
             }"
         `);
     });

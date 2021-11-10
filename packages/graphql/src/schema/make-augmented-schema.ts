@@ -38,11 +38,16 @@ import {
     ScalarTypeDefinitionNode,
     UnionTypeDefinitionNode,
 } from "graphql";
-import { SchemaComposer, ObjectTypeComposer, InputTypeComposerFieldConfigAsObjectDefinition } from "graphql-compose";
+import {
+    SchemaComposer,
+    ObjectTypeComposer,
+    InputTypeComposerFieldConfigAsObjectDefinition,
+    upperFirst,
+} from "graphql-compose";
 import pluralize from "pluralize";
 import { Node, Exclude } from "../classes";
 import getAuth from "./get-auth";
-import { PrimitiveField, Auth } from "../types";
+import { PrimitiveField, Auth, FullText } from "../types";
 import {
     aggregateResolver,
     countResolver,
@@ -69,6 +74,7 @@ import createRelationshipFields from "./create-relationship-fields";
 import createConnectionFields from "./create-connection-fields";
 import { NodeDirective } from "../classes/NodeDirective";
 import parseNodeDirective from "./parse-node-directive";
+import parseFulltextDirective from "./parse/parse-fulltext-directive";
 
 function makeAugmentedSchema(
     { typeDefs, ...schemaDefinition }: IExecutableSchemaDefinition,
@@ -280,11 +286,12 @@ function makeAugmentedSchema(
 
     const nodes = objectNodes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude", "node"].includes(x.name.value)
+            (x) => !["auth", "exclude", "node", "fulltext"].includes(x.name.value)
         );
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
+        const fulltextDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "fulltext");
         const nodeInterfaces = [...(definition.interfaces || [])] as NamedTypeNode[];
 
         const { interfaceAuthDirectives, interfaceExcludeDirectives } = nodeInterfaces.reduce<{
@@ -348,6 +355,15 @@ function makeAugmentedSchema(
             objects: objectNodes,
         });
 
+        let fulltextDirective: FullText;
+        if (fulltextDirectiveDefinition) {
+            fulltextDirective = parseFulltextDirective({
+                directive: fulltextDirectiveDefinition,
+                nodeFields,
+                definition,
+            });
+        }
+
         nodeFields.relationFields.forEach((relationship) => {
             if (relationship.properties) {
                 const propertiesInterface = interfaces.find((i) => i.name.value === relationship.properties);
@@ -381,6 +397,8 @@ function makeAugmentedSchema(
             exclude,
             // @ts-ignore we can be sure it's defined
             nodeDirective,
+            // @ts-ignore we can be sure it's defined
+            fulltextDirective,
             description: definition.description?.value,
         });
 
@@ -820,6 +838,26 @@ function makeAugmentedSchema(
             name: `${node.name}Where`,
             fields: queryFields,
         });
+
+        if (node.fulltextDirective) {
+            const fields = node.fulltextDirective.indexes.reduce((res, index) => {
+                return {
+                    ...res,
+                    [index.name]: composer.createInputTC({
+                        name: `${node.name}${upperFirst(index.name)}Fulltext`,
+                        fields: {
+                            phrase: "String!",
+                            score_EQUAL: "Int",
+                        },
+                    }),
+                };
+            }, {});
+
+            composer.createInputTC({
+                name: `${node.name}Fulltext`,
+                fields: fields,
+            });
+        }
 
         composer.createInputTC({
             name: `${node.name}CreateInput`,

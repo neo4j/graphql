@@ -65,6 +65,16 @@ export type Auth = {
     type: "JWT";
 };
 
+export type FullTextIndex = {
+    name: string;
+    fields: string[];
+    defaultThreshold?: number;
+};
+
+export type FullText = {
+    indexes: FullTextIndex[];
+};
+
 /**
  * Metadata about a field.type on either
  * FieldDefinitionNode or InputValueDefinitionNode.
