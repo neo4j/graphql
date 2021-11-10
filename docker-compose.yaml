@@ -1,0 +1,34 @@
+version: "3.0"
+
+services:
+    neo4j-service:
+        image: neo4j:4.2.9-enterprise
+        ports:
+            - 7474:7474
+            - 7687:7687
+        environment:
+            - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+            - NEO4J_AUTH=neo4j/test
+            - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+            - NEO4JLABS_PLUGINS=["apoc"]
+            - NEO4J_dbms_security_procedures_whitelist=apoc.*
+        volumes:
+            - $HOME/neo4j/data:/data
+            - $HOME/neo4j/logs:/logs
+            - $HOME/neo4j/import:/var/lib/neo4j/import
+            - $HOME/neo4j/plugins:/plugins
+        healthcheck:
+            test: wget http://localhost:7474/browser -O -
+            interval: 1s
+            timeout: 1s
+            retries: 40
+    tests:
+        build:
+            context: .
+        environment:
+            - NEO_URL=neo4j://neo4j-service:7687
+            - NEO_USER=neo4j
+            - NEO_PASSWORD=test
+        depends_on:
+            neo4j-service:
+                condition: service_healthy
