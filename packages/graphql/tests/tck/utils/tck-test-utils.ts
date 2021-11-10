@@ -96,7 +96,11 @@ export async function translateQuery(
         // Because we dont return the correct
         // contract that the schema is expecting,
         // instead we return a string and params for testing
-        const expectedErrors = ["Cannot read property 'get' of undefined", "Cannot return null for non-nullable"];
+        const expectedErrors = [
+            "Cannot read property 'get' of undefined",
+            "Cannot return null for non-nullable",
+            "Cannot read properties of undefined (reading 'get')",
+        ];
 
         if (!expectedErrors.some((error) => errorString.includes(error))) {
             throw new Error(errorString);
