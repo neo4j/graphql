@@ -101,20 +101,18 @@ CALL db.index.fulltext.createNodeIndex("ProductName", ["Product"], ["name"])
 
 === Using the `@fulltext` directive 
 
-Once you specify the index, you will now gain a 'Top Level' `search` key on the following operations: 
+Once you specify the index, you will now gain a 'Top Level' `fulltext` key on the following operations: 
 
 1. read
-2. update
-3. delete
-4. count
-5. aggregate
+2. count
+3. aggregate
 
-Here we use the `search` key, and the phrase is using https://lucene.apache.org/[Lucene’s full-text query language] to match and return Products: 
+Here we use the `fulltext` key, and the phrase is using https://lucene.apache.org/[Lucene’s full-text query language] to match and return Products: 
 
 [source, graphql, indent=0]
 ----
 query {
-    products(search: { ProductName: { phrase: "beer OR cerveza" } }) {
+    products(fulltext: { ProductName: { phrase: "beer OR cerveza" } }) {
         name
     }
 }
@@ -125,13 +123,13 @@ You can also, optionally, specify the score for matching:
 [source, graphql, indent=0]
 ----
 query {
-    products(search: { ProductName: { phrase: "beer OR cerveza", score_EQUAL: 10 } }) {
+    products(fulltext: { ProductName: { phrase: "beer OR cerveza", score_EQUAL: 10 } }) {
         name
     }
 }
 ----
 
-> Note that you can only query one Fulltext index at once and that the search key is only available on 'Top Level' queries. 
+> Note that you can only query one Fulltext index at once and that the fulltext key is only available on 'Top Level' queries. 
 
 
 [[type-definitions-indexes-and-constraints-asserting]]

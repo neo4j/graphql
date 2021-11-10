@@ -42,7 +42,7 @@ export default function findResolver({ node }: { node: Node }) {
         args: {
             where: `${node.name}Where`,
             options: `${node.name}Options`,
-            ...(node.fulltextDirective ? { search: `${node.name}Search` } : {}),
+            ...(node.fulltextDirective ? { fulltext: `${node.name}Fulltext` } : {}),
         },
     };
 }

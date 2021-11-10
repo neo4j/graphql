@@ -22,7 +22,7 @@ import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher -> fulltext -> Score", () => {
-    test("simple match with search property and score_EQUAL", async () => {
+    test("simple match with fulltext property and score_EQUAL", async () => {
         const typeDefs = gql`
             type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) {
                 title: String
@@ -35,7 +35,7 @@ describe("Cypher -> fulltext -> Score", () => {
 
         const query = gql`
             query {
-                movies(search: { MovieTitle: { phrase: "something AND something", score_EQUAL: 1 } }) {
+                movies(fulltext: { MovieTitle: { phrase: "something AND something", score_EQUAL: 1 } }) {
                     title
                 }
             }
@@ -46,16 +46,16 @@ describe("Cypher -> fulltext -> Score", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_search_MovieTitle_phrase
+                $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
-            WHERE score = this_search_MovieTitle_score_EQUAL
+            WHERE score = this_fulltext_MovieTitle_score_EQUAL
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_search_MovieTitle_phrase\\": \\"something AND something\\",
-                \\"this_search_MovieTitle_score_EQUAL\\": {
+                \\"this_fulltext_MovieTitle_phrase\\": \\"something AND something\\",
+                \\"this_fulltext_MovieTitle_score_EQUAL\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 }
@@ -63,7 +63,7 @@ describe("Cypher -> fulltext -> Score", () => {
         `);
     });
 
-    test("simple match with search property and defaultThreshold", async () => {
+    test("simple match with fulltext property and defaultThreshold", async () => {
         const typeDefs = gql`
             type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"], defaultThreshold: 10 }]) {
                 title: String
@@ -76,7 +76,7 @@ describe("Cypher -> fulltext -> Score", () => {
 
         const query = gql`
             query {
-                movies(search: { MovieTitle: { phrase: "something AND something" } }) {
+                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                     title
                 }
             }
@@ -87,21 +87,21 @@ describe("Cypher -> fulltext -> Score", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_search_MovieTitle_phrase
+                $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
-            WHERE score = this_search_MovieTitle_defaultThreshold
+            WHERE score = this_fulltext_MovieTitle_defaultThreshold
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_search_MovieTitle_phrase\\": \\"something AND something\\",
-                \\"this_search_MovieTitle_defaultThreshold\\": 10
+                \\"this_fulltext_MovieTitle_phrase\\": \\"something AND something\\",
+                \\"this_fulltext_MovieTitle_defaultThreshold\\": 10
             }"
         `);
     });
 
-    test("simple match with search property and defaultThreshold override with incomming query score", async () => {
+    test("simple match with fulltext property and defaultThreshold override with incomming query score", async () => {
         const typeDefs = gql`
             type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"], defaultThreshold: 10 }]) {
                 title: String
@@ -114,7 +114,7 @@ describe("Cypher -> fulltext -> Score", () => {
 
         const query = gql`
             query {
-                movies(search: { MovieTitle: { phrase: "something AND something", score_EQUAL: 55 } }) {
+                movies(fulltext: { MovieTitle: { phrase: "something AND something", score_EQUAL: 55 } }) {
                     title
                 }
             }
@@ -125,16 +125,16 @@ describe("Cypher -> fulltext -> Score", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_search_MovieTitle_phrase
+                $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
-            WHERE score = this_search_MovieTitle_score_EQUAL
+            WHERE score = this_fulltext_MovieTitle_score_EQUAL
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_search_MovieTitle_phrase\\": \\"something AND something\\",
-                \\"this_search_MovieTitle_score_EQUAL\\": {
+                \\"this_fulltext_MovieTitle_phrase\\": \\"something AND something\\",
+                \\"this_fulltext_MovieTitle_score_EQUAL\\": {
                     \\"low\\": 55,
                     \\"high\\": 0
                 }

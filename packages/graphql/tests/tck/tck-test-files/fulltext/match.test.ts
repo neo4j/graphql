@@ -38,10 +38,10 @@ describe("Cypher -> fulltext -> Match", () => {
         });
     });
 
-    test("simple match with single search property", async () => {
+    test("simple match with single fulltext property", async () => {
         const query = gql`
             query {
-                movies(search: { MovieTitle: { phrase: "something AND something" } }) {
+                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                     title
                 }
             }
@@ -52,14 +52,45 @@ describe("Cypher -> fulltext -> Match", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_search_MovieTitle_phrase
+                $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_search_MovieTitle_phrase\\": \\"something AND something\\"
+                \\"this_fulltext_MovieTitle_phrase\\": \\"something AND something\\"
+            }"
+        `);
+    });
+
+    test("match with where and single fulltext property", async () => {
+        const query = gql`
+            query {
+                movies(
+                    fulltext: { MovieTitle: { phrase: "something AND something" } }
+                    where: { title: "some-title" }
+                ) {
+                    title
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query, {});
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL db.index.fulltext.queryNodes(
+                \\"MovieTitle\\",
+                $this_fulltext_MovieTitle_phrase
+            ) YIELD node as this, score as score
+            WHERE this.title = $this_title
+            RETURN this { .title } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_fulltext_MovieTitle_phrase\\": \\"something AND something\\",
+                \\"this_title\\": \\"some-title\\"
             }"
         `);
     });

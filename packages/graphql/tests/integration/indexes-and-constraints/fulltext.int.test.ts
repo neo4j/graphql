@@ -149,7 +149,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
 
         const query = `
             query {
-                ${type.plural}(search: { ${indexName}: { phrase: "${title}" } }) {
+                ${type.plural}(fulltext: { ${indexName}: { phrase: "${title}" } }) {
                     title
                 }
             }
@@ -203,7 +203,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
 
         const query = `
             query {
-                ${type.plural}(search: { ${indexName1}: { phrase: "${title}" }, ${indexName2}: { phrase: "${title}" } }) {
+                ${type.plural}(fulltext: { ${indexName1}: { phrase: "${title}" }, ${indexName2}: { phrase: "${title}" } }) {
                     title
                 }
             }
@@ -295,7 +295,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
 
         const query = `
             query {
-                ${type.plural}(search: { ${indexName}: { phrase: "${title}" } }) {
+                ${type.plural}(fulltext: { ${indexName}: { phrase: "${title}" } }) {
                     title
                 }
             }
@@ -391,7 +391,7 @@ describe("assertIndexesAndConstraints/fulltext", () => {
 
         const query = `
             query {
-                ${type.plural}(search: { ${indexName}: { phrase: "${title}" } }) {
+                ${type.plural}(fulltext: { ${indexName}: { phrase: "${title}" } }) {
                     title
                 }
             }

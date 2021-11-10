@@ -38,18 +38,18 @@ function translateTopLevelMatch({
     let cypherParams = {};
     const { resolveTree } = context;
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
-    const searchInput = (resolveTree.args.search || {}) as Record<string, { phrase: string; score_EQUAL?: number }>;
+    const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string; score_EQUAL?: number }>;
     let whereStrs: string[] = [];
 
-    if (!Object.entries(searchInput).length) {
+    if (!Object.entries(fulltextInput).length) {
         cyphers.push(`MATCH (${varName}${node.getLabelString(context)})`);
     } else {
-        if (Object.entries(searchInput).length > 1) {
+        if (Object.entries(fulltextInput).length > 1) {
             throw new Error("Can only call one search at any given time");
         }
 
-        const [indexName, indexInput] = Object.entries(searchInput)[0];
-        const baseParamName = `${varName}_search_${indexName}`;
+        const [indexName, indexInput] = Object.entries(fulltextInput)[0];
+        const baseParamName = `${varName}_fulltext_${indexName}`;
         const paramPhraseName = `${baseParamName}_phrase`;
         cypherParams[paramPhraseName] = indexInput.phrase;
 

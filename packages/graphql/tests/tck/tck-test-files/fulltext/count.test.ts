@@ -38,10 +38,10 @@ describe("Cypher -> fulltext -> Count", () => {
         });
     });
 
-    test("simple count with single search property", async () => {
+    test("simple count with single fulltext property", async () => {
         const query = gql`
             query {
-                moviesCount(search: { MovieTitle: { phrase: "something AND something" } })
+                moviesCount(fulltext: { MovieTitle: { phrase: "something AND something" } })
             }
         `;
 
@@ -50,14 +50,14 @@ describe("Cypher -> fulltext -> Count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_search_MovieTitle_phrase
+                $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
             RETURN count(this)"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_search_MovieTitle_phrase\\": \\"something AND something\\"
+                \\"this_fulltext_MovieTitle_phrase\\": \\"something AND something\\"
             }"
         `);
     });

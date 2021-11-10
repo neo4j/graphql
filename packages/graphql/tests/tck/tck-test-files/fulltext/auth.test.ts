@@ -56,7 +56,7 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const query = gql`
             query {
-                movies(search: { MovieTitle: { phrase: "something AND something" } }) {
+                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                     title
                 }
             }
@@ -69,14 +69,14 @@ describe("Cypher -> fulltext -> Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_search_MovieTitle_phrase
+                $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
             WHERE EXISTS((this)<-[:DIRECTED]-(:Person)) AND ALL(director IN [(this)<-[:DIRECTED]-(director:Person) | director] WHERE director.id IS NOT NULL AND director.id = $this_auth_where0_director_id)
             RETURN this { .title } as this"
         `);
 
         expect(result.params).toMatchObject({
-            this_search_MovieTitle_phrase: "something AND something",
+            this_fulltext_MovieTitle_phrase: "something AND something",
             this_auth_where0_director_id: sub,
         });
     });
@@ -113,7 +113,7 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const query = gql`
             query {
-                movies(search: { MovieTitle: { phrase: "something AND something" } }) {
+                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                     title
                 }
             }
@@ -126,14 +126,14 @@ describe("Cypher -> fulltext -> Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_search_MovieTitle_phrase
+                $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
             CALL apoc.util.validate(NOT(EXISTS((this)<-[:DIRECTED]-(:Person)) AND ANY(director IN [(this)<-[:DIRECTED]-(director:Person) | director] WHERE director.id IS NOT NULL AND director.id = $this_auth_allow0_director_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } as this"
         `);
 
         expect(result.params).toMatchObject({
-            this_search_MovieTitle_phrase: "something AND something",
+            this_fulltext_MovieTitle_phrase: "something AND something",
             this_auth_allow0_director_id: sub,
         });
     });

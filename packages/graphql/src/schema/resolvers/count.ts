@@ -46,6 +46,6 @@ export default function countResolver({ node }: { node: Node }) {
     return {
         type: `Int!`,
         resolve,
-        args: { where: `${node.name}Where`, ...(node.fulltextDirective ? { search: `${node.name}Search` } : {}) },
+        args: { where: `${node.name}Where`, ...(node.fulltextDirective ? { fulltext: `${node.name}Fulltext` } : {}) },
     };
 }

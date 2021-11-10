@@ -24,7 +24,7 @@ import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test
 import { generate } from "randomstring";
 
 describe("Cypher -> fulltext -> Additional Labels", () => {
-    test("simple match with single search property and static additionalLabels", async () => {
+    test("simple match with single fulltext property and static additionalLabels", async () => {
         const typeDefs = gql`
             type Movie
                 @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
@@ -39,7 +39,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
 
         const query = gql`
             query {
-                movies(search: { MovieTitle: { phrase: "something AND something" } }) {
+                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                     title
                 }
             }
@@ -50,7 +50,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_search_MovieTitle_phrase
+                $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
             WHERE \\"Movie\\" IN labels(this) AND \\"AnotherLabel\\" IN labels(this)
             RETURN this { .title } as this"
@@ -58,12 +58,12 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_search_MovieTitle_phrase\\": \\"something AND something\\"
+                \\"this_fulltext_MovieTitle_phrase\\": \\"something AND something\\"
             }"
         `);
     });
 
-    test("simple match with single search property and jwt additionalLabels", async () => {
+    test("simple match with single fulltext property and jwt additionalLabels", async () => {
         const typeDefs = gql`
             type Movie
                 @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
@@ -72,10 +72,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
             }
         `;
 
-        const label = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
+        const label = "some-label";
 
         const secret = "supershhhhhh";
 
@@ -90,7 +87,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
 
         const query = gql`
             query {
-                movies(search: { MovieTitle: { phrase: "something AND something" } }) {
+                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
                     title
                 }
             }
@@ -104,7 +101,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_search_MovieTitle_phrase
+                $this_fulltext_MovieTitle_phrase
             ) YIELD node as this, score as score
             WHERE \\"Movie\\" IN labels(this) AND \\"${label}\\" IN labels(this)
             RETURN this { .title } as this"
@@ -112,7 +109,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_search_MovieTitle_phrase\\": \\"something AND something\\"
+                \\"this_fulltext_MovieTitle_phrase\\": \\"something AND something\\"
             }"
         `);
     });

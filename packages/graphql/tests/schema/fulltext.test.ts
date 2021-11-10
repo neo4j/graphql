@@ -79,12 +79,17 @@ describe("@fulltext schema", () => {
               title: String
             }
 
-            input MovieMovieDescriptionSearch {
+            input MovieFulltext {
+              MovieDescription: MovieMovieDescriptionFulltext
+              MovieTitle: MovieMovieTitleFulltext
+            }
+
+            input MovieMovieDescriptionFulltext {
               phrase: String!
               score_EQUAL: Int
             }
 
-            input MovieMovieTitleSearch {
+            input MovieMovieTitleFulltext {
               phrase: String!
               score_EQUAL: Int
             }
@@ -94,11 +99,6 @@ describe("@fulltext schema", () => {
               offset: Int
               \\"\\"\\"Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
               sort: [MovieSort]
-            }
-
-            input MovieSearch {
-              MovieDescription: MovieMovieDescriptionSearch
-              MovieTitle: MovieMovieTitleSearch
             }
 
             \\"\\"\\"Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.\\"\\"\\"
@@ -139,14 +139,14 @@ describe("@fulltext schema", () => {
 
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              deleteMovies(search: MovieSearch, where: MovieWhere): DeleteInfo!
-              updateMovies(search: MovieSearch, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              deleteMovies(where: MovieWhere): DeleteInfo!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
             type Query {
-              movies(options: MovieOptions, search: MovieSearch, where: MovieWhere): [Movie!]!
-              moviesAggregate(search: MovieSearch, where: MovieWhere): MovieAggregateSelection!
-              moviesCount(search: MovieSearch, where: MovieWhere): Int!
+              movies(fulltext: MovieFulltext, options: MovieOptions, where: MovieWhere): [Movie!]!
+              moviesAggregate(fulltext: MovieFulltext, where: MovieWhere): MovieAggregateSelection!
+              moviesCount(fulltext: MovieFulltext, where: MovieWhere): Int!
             }
 
             enum SortDirection {

@@ -55,7 +55,6 @@ export default function updateResolver({ node }: { node: Node }) {
         args: {
             where: `${node.name}Where`,
             update: `${node.name}UpdateInput`,
-            ...(node.fulltextDirective ? { search: `${node.name}Search` } : {}),
             ...(node.relationFields.length
                 ? {
                       connect: `${node.name}ConnectInput`,

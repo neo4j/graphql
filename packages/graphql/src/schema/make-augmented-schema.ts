@@ -844,7 +844,7 @@ function makeAugmentedSchema(
                 return {
                     ...res,
                     [index.name]: composer.createInputTC({
-                        name: `${node.name}${upperFirst(index.name)}Search`,
+                        name: `${node.name}${upperFirst(index.name)}Fulltext`,
                         fields: {
                             phrase: "String!",
                             score_EQUAL: "Int",
@@ -854,7 +854,7 @@ function makeAugmentedSchema(
             }, {});
 
             composer.createInputTC({
-                name: `${node.name}Search`,
+                name: `${node.name}Fulltext`,
                 fields: fields,
             });
         }
