@@ -20,8 +20,8 @@
 import Debug from "debug";
 import { Session } from "neo4j-driver";
 import { NodeField } from "./classes/NodeField";
+import { Relationship } from "./classes/Relationship";
 import { RelationshipDirective } from "./classes/RelationshipDirective";
-import { RelationshipType } from "./classes/RelationshipType";
 import { TypeNode } from "./classes/TypeNode";
 import { DEBUG_INFER_SCHEMA } from "./constants";
 import { inferRelationshipFieldName } from "./infer-relationship-field-name";
@@ -32,9 +32,6 @@ const debug = Debug(DEBUG_INFER_SCHEMA);
 
 type NodeMap = {
     [key: string]: TypeNode;
-};
-type RelationshipMap = {
-    [key: string]: RelationshipType;
 };
 
 type NodeTypePropertiesRecord = {
@@ -69,35 +66,32 @@ export async function inferSchema(sessionFactory: () => Session): Promise<string
     return sorted.map((typeName) => typeNodes[typeName].toString()).join("\n\n");
 }
 
-function hydrateRelationships(nodes: NodeMap, rels: RelationshipMap): NodeMap {
-    Object.keys(rels).forEach((relType) => {
-        const { relationships } = rels[relType];
-        relationships.forEach((rel) => {
-            const from = nodes[rel.from];
-            const to = nodes[rel.to];
+function hydrateRelationships(nodes: NodeMap, rels: Relationship[]): NodeMap {
+    rels.forEach((rel) => {
+        const from = nodes[rel.from];
+        const to = nodes[rel.to];
 
-            const fromField = new NodeField(
-                inferRelationshipFieldName(rel.type, from.typeName, to.typeName, "OUT"),
-                `[${to.typeName}]`
-            );
-            const fromDirective = new RelationshipDirective(rel.type, "OUT");
-            fromField.addDirective(fromDirective);
-            from.addField(fromField);
+        const fromField = new NodeField(
+            inferRelationshipFieldName(rel.type, from.typeName, to.typeName, "OUT"),
+            `[${to.typeName}]`
+        );
+        const fromDirective = new RelationshipDirective(rel.type, "OUT");
+        fromField.addDirective(fromDirective);
+        from.addField(fromField);
 
-            const toField = new NodeField(
-                inferRelationshipFieldName(rel.type, from.typeName, to.typeName, "IN"),
-                `[${from.typeName}]`
-            );
-            const toDirective = new RelationshipDirective(rel.type, "IN");
-            toField.addDirective(toDirective);
-            to.addField(toField);
-        });
+        const toField = new NodeField(
+            inferRelationshipFieldName(rel.type, from.typeName, to.typeName, "IN"),
+            `[${from.typeName}]`
+        );
+        const toDirective = new RelationshipDirective(rel.type, "IN");
+        toField.addDirective(toDirective);
+        to.addField(toField);
     });
     return nodes;
 }
 
-async function inferRelationships(sessionFactory: () => Session): Promise<RelationshipMap> {
-    const rels: RelationshipMap = {};
+async function inferRelationships(sessionFactory: () => Session): Promise<Relationship[]> {
+    const rels: Relationship[] = [];
     const relSession = sessionFactory();
     const typePropsRes = await relSession.readTransaction((tx) =>
         tx.run(`CALL db.schema.relTypeProperties()
@@ -135,18 +129,16 @@ async function inferRelationships(sessionFactory: () => Session): Promise<Relati
         // });
     });
     const results = await Promise.all(queries);
-    results.forEach((result, i) => {
+    results.forEach((result) => {
         const relationships = result.records.map((r) => r.toObject()) as RelationshipRecord[];
         if (!relationships) {
             return;
         }
         const { relType } = relationships[0];
         const typeOnly = relType.slice(2, -1);
-        const rel = new RelationshipType(typeOnly);
         relationships.forEach(({ from, to }) => {
-            rel.addRelationship(from, to);
+            rels.push(new Relationship(typeOnly, from, to));
         });
-        rels[typeOnly] = rel;
     });
 
     return rels;
