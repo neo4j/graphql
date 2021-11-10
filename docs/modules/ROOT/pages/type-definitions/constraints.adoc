@@ -59,6 +59,54 @@ type Colour @node(label: "Color", additionalLabels: ["Hue"]) {
 }
 ----
 
+=== `connectOrCreate` mutations
+If a related node has `@unique` directives defined, a `connectOrCreate` field can be used in a
+nested xref::mutations/update.adoc[update] or xref::mutations/create.adoc[create] to perform a `MERGE` operation on the related node, creating a
+relation and the related node if it doesn't exists.
+
+Consider the following type definition:
+[source, graphql, indent=0]
+----
+type Actor {
+    name: String!
+    movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+}
+
+type Movie {
+    title: String
+    id: String! @unique
+    actors: [Actor]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+}
+----
+
+Because a movie id is unique, `connectOrCreate` can be used in an Actor mutation to ensure a movie exists before connecting, note that only `@unique`
+parameters can be used in `where`:
+
+[source, graphql, indent=0]
+----
+mutation Mutation {
+  createActors(input: {
+    name: "Tom Hanks",
+    movies: {
+      connectOrCreate: {
+        where: {node: {id: "1234"}}
+        onCreate: {node: {title: "Forrest Gump", id: "1234"}}
+      }
+    }
+  }) {
+    info {
+      nodesCreated
+    }
+  }
+}
+----
+
+This will ensure that a movie with id 1234 exists and it is connected to `"Tom Hanks"`. If the movie does not exists, it will be created
+with the title _"Forrest Gump"_. Note that if the movie with the given id already exists, it will be connected to it, regardless of the title.
+
+The same operation is available when updating an actor.
+
+
 [[type-definitions-constraints-asserting]]
 == Asserting constraints
 
