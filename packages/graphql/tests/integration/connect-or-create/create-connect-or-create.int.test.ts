@@ -81,7 +81,7 @@ describe("Create -> ConnectOrCreate", () => {
                     ${typeMovie.plural}: {
                       connectOrCreate: {
                         where: { node: { id: 5 } }
-                        onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal", id: 5 } }
+                        onCreate: { node: { title: "The Terminal", id: 5 } }
                       }
                     }
                   }
@@ -121,7 +121,6 @@ describe("Create -> ConnectOrCreate", () => {
             `);
 
         expect(actedInRelation.records).toHaveLength(1);
-        expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toEqual(105);
     });
 
     test("ConnectOrCreate on existing node", async () => {
@@ -195,5 +194,59 @@ describe("Create -> ConnectOrCreate", () => {
             RETURN COUNT(m) as count
             `);
         expect(newIdMovieCount.records[0].toObject().count.toInt()).toEqual(0);
+    });
+
+    test("ConnectOrCreate creates new node with edge data", async () => {
+        const actorName = "Tommy Hanks The Little";
+        const query = gql`
+            mutation {
+              create${pluralize(typeActor.name)}(
+                input: [
+                  {
+                    name: "${actorName}"
+                    ${typeMovie.plural}: {
+                      connectOrCreate: {
+                        where: { node: { id: 52 } }
+                        onCreate: { edge: { screentime: 105 }, node: { title: "The Terminal 2", id: 52 } }
+                      }
+                    }
+                  }
+                ]
+              ) {
+                ${typeActor.plural} {
+                  name
+                }
+              }
+            }
+            `;
+
+        const gqlResult = await graphql({
+            schema: neoSchema.schema,
+            source: getQuerySource(query),
+            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+        });
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult as any).data[`create${pluralize(typeActor.name)}`][`${typeActor.plural}`]).toEqual([
+            {
+                name: actorName,
+            },
+        ]);
+
+        const movieTitleAndId = await session.run(`
+          MATCH (m:${typeMovie.name} {id: 52})
+          RETURN m.title as title, m.id as id
+        `);
+
+        expect(movieTitleAndId.records).toHaveLength(1);
+        expect(movieTitleAndId.records[0].toObject().title).toEqual("The Terminal 2");
+        expect((movieTitleAndId.records[0].toObject().id as Integer).toNumber()).toEqual(52);
+
+        const actedInRelation = await session.run(`
+            MATCH (:${typeMovie.name} {id: 52})<-[r:ACTED_IN]-(:${typeActor.name} {name: "${actorName}"})
+            RETURN r.screentime as screentime
+            `);
+
+        expect(actedInRelation.records).toHaveLength(1);
+        expect((actedInRelation.records[0].toObject().screentime as Integer).toNumber()).toEqual(105);
     });
 });
