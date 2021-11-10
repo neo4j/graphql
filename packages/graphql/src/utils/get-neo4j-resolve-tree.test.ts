@@ -25,34 +25,84 @@ describe("getNeo4jResolveTree", () => {
         resolvers: {},
         typeDefs: `
         type Query {
-            a: String
+            aQuery(test: String): String
         }
         type Mutation {
-            a: String
+            aMutation(test: String): String
         }
         type Subscription {
-            a: String
+            aSubscription(test: String): String
         }
         `,
     });
 
-    test("resolve tree creates a resolve tree for a schema", () => {
+    test("creates a resolve tree for a query", () => {
+
         const resolveTree = getNeo4jResolveTree({
             schema,
         } as any, {
             resolveTree: {
-                alias: 'alias',
-                name: 'name',
-                args: {},
+                name: 'aQuery',
+                args: {
+                    test: 'test',
+                },
                 fieldsByTypeName: {},
             },
         } as any);
         expect(resolveTree).toEqual({
-            alias: 'alias',
-            args: {},
-            fieldsByTypeName: {},
-            name: {},
+            name: 'aQuery',
+            args: {
+                test: 'test',
+            },
+            fieldsByTypeName: {
+                
+            },
+        });
+    });
+    test("creates a resolve tree for a mutation", () => {
 
+        const resolveTree = getNeo4jResolveTree({
+            schema,
+        } as any, {
+            resolveTree: {
+                name: 'aMutation',
+                args: {
+                    test: 'test',
+                },
+                fieldsByTypeName: {},
+            },
+        } as any);
+        expect(resolveTree).toEqual({
+            name: 'aMutation',
+            args: {
+                test: 'test',
+            },
+            fieldsByTypeName: {
+                
+            },
+        });
+    });
+    test("creates a resolve tree for a subscription", () => {
+
+        const resolveTree = getNeo4jResolveTree({
+            schema,
+        } as any, {
+            resolveTree: {
+                name: 'aSubscription',
+                args: {
+                    test: 'test',
+                },
+                fieldsByTypeName: {},
+            },
+        } as any);
+        expect(resolveTree).toEqual({
+            name: 'aSubscription',
+            args: {
+                test: 'test',
+            },
+            fieldsByTypeName: {
+                
+            },
         });
     });
 });
