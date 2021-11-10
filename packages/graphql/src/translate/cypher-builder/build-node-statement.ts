@@ -20,8 +20,7 @@
 import { Context } from "../../types";
 import { CypherStatement, CypherParams } from "../types";
 import { Node } from "../../classes";
-import { serializeObject } from "../utils";
-import { generateParameterKey } from "./utils";
+import { serializeParamenters, padLeft } from "./utils";
 
 export function buildNodeStatement({
     varName,
@@ -37,24 +36,9 @@ export function buildNodeStatement({
     const labels = node ? node.getLabelString(context) : "";
     const [parametersQuery, parsedParameters] = parseNodeParameters(varName, parameters);
 
-    const parameterQueryString = parametersQuery ? ` ${parametersQuery}` : "";
-
-    return [`(${varName}${labels}${parameterQueryString})`, parsedParameters];
+    return [`(${varName}${labels}${padLeft(parametersQuery)})`, parsedParameters];
 }
 
 function parseNodeParameters(nodeVar: string, parameters: CypherParams | undefined): CypherStatement {
-    if (!parameters) return ["", {}];
-
-    const parameterKeyPreffix = `${nodeVar}_node`;
-
-    const cypherParameters: CypherParams = {};
-    const nodeParameters: Record<string, string> = {};
-
-    for (const [key, value] of Object.entries(parameters)) {
-        const paramKey = generateParameterKey(parameterKeyPreffix, key);
-        cypherParameters[paramKey] = value;
-        nodeParameters[key] = `$${paramKey}`;
-    }
-
-    return [serializeObject(nodeParameters), cypherParameters];
+    return serializeParamenters(`${nodeVar}_node`, parameters);
 }

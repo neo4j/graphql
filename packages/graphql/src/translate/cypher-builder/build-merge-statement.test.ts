@@ -22,7 +22,7 @@ import { ContextBuilder } from "../../utils/test/builders/context-builder";
 import { Context } from "../../types";
 import { buildMergeStatement } from "./build-merge-statement";
 import { NodeBuilder } from "../../utils/test/builders/node-builder";
-import { Node } from "../../classes";
+import { Node, Neo4jGraphQLCypherBuilderError } from "../../classes";
 import { RelationFieldBuilder } from "../../utils/test/builders/relation-field-builder";
 
 describe("build merge statement", () => {
@@ -127,6 +127,45 @@ describe("build merge statement", () => {
                 this_on_create_name: "Keanu",
                 this_relationship_that_on_create_screentime: 10,
             });
+        });
+
+        test("throws if missing relation", () => {
+            const relationField = new RelationFieldBuilder().instance();
+            expect(() => {
+                buildMergeStatement({
+                    leftNode: {
+                        varName: "this",
+                        node,
+                        onCreate: {
+                            age: 23,
+                            name: "Keanu",
+                        },
+                    },
+                    rightNode: {
+                        varName: "that",
+                    },
+                    context,
+                } as any);
+            }).toThrow(Neo4jGraphQLCypherBuilderError);
+            expect(() => {
+                buildMergeStatement({
+                    leftNode: {
+                        varName: "this",
+                        node,
+                        onCreate: {
+                            age: 23,
+                            name: "Keanu",
+                        },
+                    },
+                    relation: {
+                        onCreate: {
+                            screentime: 10,
+                        },
+                        relationField,
+                    },
+                    context,
+                } as any);
+            }).toThrow(Neo4jGraphQLCypherBuilderError);
         });
     });
 });

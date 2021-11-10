@@ -22,6 +22,7 @@ import { Node } from "../../classes";
 import { CypherStatement } from "../types";
 import { buildNodeStatement } from "./build-node-statement";
 import { joinStatements } from "../utils";
+import { serializeParamenters, padLeft } from "./utils";
 
 type TargetNode = {
     varName: string;
@@ -32,6 +33,7 @@ type TargetNode = {
 type TargetRelation = {
     varName: string;
     relationField: RelationField;
+    parameters?: Record<string, any>;
 };
 
 export function buildRelationStatement({
@@ -45,7 +47,7 @@ export function buildRelationStatement({
     relation: TargetRelation;
     context: Context;
 }): CypherStatement {
-    const relationStatement = getRelationSubStatement(relation.relationField, relation.varName);
+    const relationStatement = getRelationSubStatement(relation);
 
     const leftNodeStatement = buildNodeStatement({
         context,
@@ -60,11 +62,18 @@ export function buildRelationStatement({
     return joinStatements([leftNodeStatement, relationStatement, rightNodeStatement], "");
 }
 
-function getRelationSubStatement(relationField: RelationField, relationshipName: string): CypherStatement {
+function getRelationSubStatement({ relationField, varName, parameters }: TargetRelation): CypherStatement {
     const leftConnection = relationField.direction === "IN" ? "<-" : "-";
     const rightConnection = relationField.direction === "OUT" ? "->" : "-";
     const relationLabel = relationField.type ? `:${relationField.type}` : "";
-    const relTypeStr = `[${relationshipName || ""}${relationLabel}]`;
-    // TODO: add relationField.properties
-    return [`${leftConnection}${relTypeStr}${rightConnection}`, {}];
+
+    const [relParamsQuery, relParams] = serializeRelationParameters(varName, parameters);
+
+    const relTypeStr = `[${varName || ""}${relationLabel}${padLeft(relParamsQuery)}]`;
+
+    return [`${leftConnection}${relTypeStr}${rightConnection}`, relParams];
+}
+
+function serializeRelationParameters(varName: string, parameters: Record<string, any> | undefined): CypherStatement {
+    return serializeParamenters(`${varName}_relation`, parameters);
 }

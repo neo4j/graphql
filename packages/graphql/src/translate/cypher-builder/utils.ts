@@ -17,7 +17,32 @@
  * limitations under the License.
  */
 
+import { CypherStatement, CypherParams } from "../types";
+import { serializeObject } from "../utils";
+
 /** Generates a string to be used as parameter key */
 export function generateParameterKey(preffix: string, key: string): string {
     return `${preffix}_${key}`;
+}
+
+/** Serializes an object and splits between the serialized statement and params */
+export function serializeParamenters(keyPreffix: string, parameters: CypherParams | undefined): CypherStatement {
+    if (!parameters) return ["", {}];
+
+    const cypherParameters: CypherParams = {};
+    const nodeParameters: Record<string, string> = {};
+
+    for (const [key, value] of Object.entries(parameters)) {
+        const paramKey = generateParameterKey(keyPreffix, key);
+        cypherParameters[paramKey] = value;
+        nodeParameters[key] = `$${paramKey}`;
+    }
+
+    return [serializeObject(nodeParameters), cypherParameters];
+}
+
+/** Adds spaces to the left of the string, returns empty string is variable is undefined or empty string */
+export function padLeft(str: string | undefined): string {
+    if (!str) return "";
+    return ` ${str}`;
 }

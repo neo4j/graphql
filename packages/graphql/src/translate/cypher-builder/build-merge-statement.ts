@@ -79,6 +79,7 @@ export function buildMergeStatement({
         if (!relation) throw new Neo4jGraphQLCypherBuilderError("Missing relation in Cypher merge relation statement");
         if (!rightNode)
             throw new Neo4jGraphQLCypherBuilderError("Missing rightnode in Cypher merge relation statement");
+
         const relationshipName = relation.varName || `${leftNode.varName}_relationship_${rightNode.varName}`;
         leftStatement = buildRelationStatement({
             context,

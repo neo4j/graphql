@@ -88,19 +88,12 @@ function createConnectOrCreateSubQuery({
         context,
     });
 
-    const onCreateEdge = input.onCreate?.edge;
-    const mergeRelationStatement = buildMergeStatement({
-        leftNode: {
-            varName: parentVar,
-        },
-        rightNode: {
-            varName: baseName,
-        },
-        relation: {
-            relationField,
-            onCreate: onCreateEdge,
-        },
+    const mergeRelationStatement = mergeRelation({
+        input,
+        baseName,
         context,
+        parentVar,
+        relationField,
     });
 
     return joinStatements([mergeRelatedNodeStatement, mergeRelationStatement]);
@@ -126,6 +119,35 @@ function mergeRelatedNode({
             varName: baseName,
             parameters: whereNodeParameters,
             onCreate: onCreateNode,
+        },
+        context,
+    });
+}
+
+function mergeRelation({
+    input,
+    baseName,
+    parentVar,
+    context,
+    relationField,
+}: {
+    input: CreateOrConnectInput[0];
+    baseName: string;
+    context: Context;
+    relationField: RelationField;
+    parentVar: string;
+}): CypherStatement {
+    const onCreateEdge = input.onCreate?.edge;
+    return buildMergeStatement({
+        leftNode: {
+            varName: parentVar,
+        },
+        rightNode: {
+            varName: baseName,
+        },
+        relation: {
+            relationField,
+            onCreate: onCreateEdge,
         },
         context,
     });

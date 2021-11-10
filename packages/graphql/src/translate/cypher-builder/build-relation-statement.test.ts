@@ -38,7 +38,7 @@ describe("build relation statement", () => {
             name: "AnotherNode",
         }).instance();
     });
-    test("build relation statement", () => {
+    test("simple relation", () => {
         const relationField = new RelationFieldBuilder().instance();
         const statement = buildRelationStatement({
             leftNode: {
@@ -60,7 +60,7 @@ describe("build relation statement", () => {
         expect(statement[1]).toEqual({});
     });
 
-    test("build relation statement with different direction and label", () => {
+    test("with different direction and label", () => {
         const relationField = new RelationFieldBuilder({ direction: "IN", type: "MyRelation" }).instance();
         const statement = buildRelationStatement({
             leftNode: {
@@ -82,7 +82,7 @@ describe("build relation statement", () => {
         expect(statement[1]).toEqual({});
     });
 
-    test("build relation statement with node parameters", () => {
+    test("with node parameters", () => {
         const relationField = new RelationFieldBuilder({ direction: "IN", type: "MyRelation" }).instance();
         const statement = buildRelationStatement({
             leftNode: {
@@ -95,6 +95,9 @@ describe("build relation statement", () => {
             rightNode: {
                 node: nodeB,
                 varName: "that",
+                parameters: {
+                    name: "Zaphod",
+                },
             },
             relation: {
                 relationField,
@@ -104,10 +107,40 @@ describe("build relation statement", () => {
         });
 
         expect(statement[0]).toEqual(
-            "(this:MyLabel { name: $this_node_name })<-[relationName:MyRelation]-(that:AnotherNode)"
+            "(this:MyLabel { name: $this_node_name })<-[relationName:MyRelation]-(that:AnotherNode { name: $that_node_name })"
         );
         expect(statement[1]).toEqual({
             this_node_name: "Arthur",
+            that_node_name: "Zaphod",
+        });
+    });
+
+    test("with relation parameters", () => {
+        const relationField = new RelationFieldBuilder({ direction: "IN", type: "MyRelation" }).instance();
+        const statement = buildRelationStatement({
+            leftNode: {
+                node: nodeA,
+                varName: "this",
+            },
+            rightNode: {
+                node: nodeB,
+                varName: "that",
+            },
+            relation: {
+                relationField,
+                varName: "relationName",
+                parameters: {
+                    status: "frenemies",
+                },
+            },
+            context,
+        });
+
+        expect(statement[0]).toEqual(
+            "(this:MyLabel)<-[relationName:MyRelation { status: $relationName_relation_status }]-(that:AnotherNode)"
+        );
+        expect(statement[1]).toEqual({
+            relationName_relation_status: "frenemies",
         });
     });
 });
